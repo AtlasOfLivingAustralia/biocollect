@@ -1,0 +1,13 @@
+ins {
+    background-color: #c6ffc6;
+    text-decoration: none;
+    font-size: medium;
+    border-bottom-color: #003399;
+}
+
+del {
+    background-color: #ffc6c6;
+    font-size: medium;
+    border-bottom-color: #003399;
+}
+div br:nth-child(2n) { display: none; }

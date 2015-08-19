@@ -1,0 +1,59 @@
+.ac_results {
+    padding: 0px;
+    overflow: hidden;
+    z-index: 99999;
+    border:1px solid #d1d1d1;
+    background:#fff;
+    -moz-border-radius:0 0 3px 3px; /* FF1+ */
+    -webkit-border-radius:0 0 3px 3px; /* Saf3+, Chrome */
+    -o-border-radius:0 0 3px 3px;
+    -icab-border-radius:0 0 3px 3px;
+    -khtml-border-radius:0 0 3px 3px;
+    border-radius:0 0 3px 3px; /* Opera 7.7, IE 9 */
+}
+
+.ac_results ul {
+    width: 100%;
+    list-style-position: outside;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ac_results li {
+    margin: 0px;
+    padding: 7px;
+    cursor: default;
+    display: block;
+    /*
+    if width will be 100% horizontal scrollbar will apear
+    when scroll mode will be used
+    */
+    /*width: 100%;font: menu;*/
+
+    font-size: 14px;
+    /*
+    it is very important, if line-height not setted or setted
+    in relative units scroll will be broken in firefox
+    */
+    line-height: 16px;
+    overflow: hidden;
+    text-align:left;
+    color:#333a3f;
+}
+
+.ac_loading {
+    background: white url('../images/spinner.gif') right center no-repeat;
+}
+
+li.ac_odd {
+    background-color:transparent;
+}
+
+li.ac_over {
+    background-color: #df4a21;
+    color: #fff;
+}
+.ac_results li strong { color:#3a5c83;}
+.ac_results li.ac_over strong { color:#fff;}
+

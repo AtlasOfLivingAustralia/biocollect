@@ -1,0 +1,138 @@
+/*
+ * Copyright (C) 2015 Atlas of Living Australia
+ * All Rights Reserved.
+ *
+ * The contents of this file are subject to the Mozilla Public
+ * License Version 1.1 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of
+ * the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS
+ * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
+ * rights and limitations under the License.
+ */
+
+#locationLatLng {
+    color: #DDD;
+}
+
+.select-mini {
+    width: auto !important;
+    height: 24px;
+    font-size: 12px;
+    line-height: 20px;
+    margin-bottom: 2px;
+}
+
+#speciesGroup {
+    /*width: 18%;*/
+    /*float: left;*/
+    margin-bottom: 10px;
+}
+
+#speciesSubGroup {
+    /*width: 80%;*/
+    /*float: left;*/
+    /*padding-left: 15px;*/
+    /*margin-top: 20px;*/
+}
+
+#speciesSubGroup .btn-group {
+    margin-left: 0 !important;
+    margin-top: 10px;
+}
+
+.sub-groups {
+    /*display: inline-block;*/
+    /*margin-top: 10px;*/
+}
+
+.sub-groups .btn, #speciesGroup1 .btn {
+    margin-bottom: 4px;
+    margin-right: 4px;
+}
+
+.leaflet-popup-content {
+    font-size: 11px;
+}
+
+/* Gallery styling */
+.imgCon {
+    display: inline-block;
+    /* margin-right: 8px; */
+    text-align: center;
+    line-height: 1.3em;
+    background-color: #DDD;
+    color: #DDD;
+    font-size: 12px;
+    /*text-shadow: 2px 2px 6px rgba(255, 255, 255, 1);*/
+    /* padding: 5px; */
+    /* margin-bottom: 8px; */
+    margin: 2px 4px 2px 0;
+    position: relative;
+}
+.imgCon img {
+    height: 120px;
+    /*min-width: 100px;*/
+    max-width: 300px;
+}
+#singleSpeciesImages .imgCon img {
+    height: 90px;
+    /*min-width: 90px;*/
+    max-width: 150px;
+    cursor: zoom-in;
+}
+#singleSpeciesImages .imgCon img.zoomed {
+    height: 100%;
+    min-width: auto;
+    max-width: none;
+    cursor: zoom-out;
+}
+/*#singleSpeciesImages .imgCon img {*/
+/*-webkit-transition: all 0.5s ease;*/
+/*-moz-transition: all 0.5s ease;*/
+/*-o-transition: all 0.5s ease;*/
+/*transition: all 0.5s ease;*/
+/*}*/
+.imgCon .meta {
+    opacity: 0.8;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    text-align: left;
+    padding: 4px 5px 2px 5px;
+}
+.imgCon .brief {
+    color: black;
+    background-color: white;
+}
+.imgCon .detail {
+    color: white;
+    background-color: black;
+    opacity: 0.7;
+}
+.imgCon.hide {
+    display: none;
+}
+
+#imgModalZ {
+    width: 700px;
+    /*margin-top: -300px !important; */
+    margin-left: -350px !important;
+}
+
+.bieBtn {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.counts {
+    font-size: 12px;
+    color: #637073;
+}
+.btn-primary .counts {
+    color: #fff;
+}

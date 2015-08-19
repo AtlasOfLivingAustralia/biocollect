@@ -1,0 +1,40 @@
+
+.fn-gantt .gantt-deferred {
+    background-color: #bd362f;
+}
+.fn-gantt .gantt-deferred .fn-label {
+    color: #ffffff !important;
+}
+
+.fn-gantt .gantt-started {
+    background-color: #5bb75b;
+}
+.fn-gantt .gantt-started .fn-label {
+    color: #ffffff !important;
+}
+
+.fn-gantt .gantt-planned {
+    background-color: #faa732;
+}
+.fn-gantt .gantt-planned .fn-label {
+    color: #ffffff !important;
+}
+
+.fn-gantt .gantt-finished {
+    background-color: #2f96b4;
+}
+.fn-gantt .gantt-finished .fn-label {
+    color: #ffffff !important;
+}
+
+.fn-gantt .gantt-cancelled {
+    background-color: #222222;
+}
+
+.fn-gantt .gantt-cancelled .fn-label {
+    color: #ffffff !important;
+}
+
+.fn-gantt .fn-content {
+    border: 1px solid #ddd;
+}

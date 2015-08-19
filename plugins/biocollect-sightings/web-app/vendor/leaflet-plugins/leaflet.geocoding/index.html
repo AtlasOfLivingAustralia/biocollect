@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (C) 2014 Atlas of Living Australia
+  ~ All Rights Reserved.
+  ~
+  ~ The contents of this file are subject to the Mozilla Public
+  ~ License Version 1.1 (the "License"); you may not use this file
+  ~ except in compliance with the License. You may obtain a copy of
+  ~ the License at http://www.mozilla.org/MPL/
+  ~
+  ~ Software distributed under the License is distributed on an "AS
+  ~ IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+  ~ implied. See the License for the specific language governing
+  ~ rights and limitations under the License.
+  -->
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Geocoding Leaflet plugin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.css" rel="stylesheet">
+
+    <link href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" rel="stylesheet" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" />
+    <![endif]-->
+
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.css" rel="stylesheet" />
+
+
+    <style type="text/css">
+
+/* Jumbotrons
+-------------------------------------------------- */
+
+/* Base class
+------------------------- */
+#overview {
+  background-color: #40454F;
+
+    color: #FFF;
+  text-decoration: none;
+  border-bottom: 2px solid #FFF;
+}
+
+#overview .lead {
+  color: #9EA1A6;
+}
+
+section {
+  padding-top: 30px;
+}
+
+
+/* Sidenav for Docs
+-------------------------------------------------- */
+
+.bs-docs-sidenav {
+  width: 228px;
+  margin: 30px 0 0;
+  padding: 0;
+  background-color: #fff;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  -webkit-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+     -moz-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+          box-shadow: 0 1px 4px rgba(0,0,0,.065);
+}
+.bs-docs-sidenav > li > a {
+  display: block;
+  width: 190px \9;
+  margin: 0 0 -1px;
+  padding: 8px 14px;
+  border: 1px solid #e5e5e5;
+}
+.bs-docs-sidenav > li:first-child > a {
+  -webkit-border-radius: 6px 6px 0 0;
+     -moz-border-radius: 6px 6px 0 0;
+          border-radius: 6px 6px 0 0;
+}
+.bs-docs-sidenav > li:last-child > a {
+  -webkit-border-radius: 0 0 6px 6px;
+     -moz-border-radius: 0 0 6px 6px;
+          border-radius: 0 0 6px 6px;
+}
+.bs-docs-sidenav > .active > a {
+  position: relative;
+  z-index: 2;
+  padding: 9px 15px;
+  border: 0;
+  text-shadow: 0 1px 0 rgba(0,0,0,.15);
+  -webkit-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+     -moz-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+          box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+}
+/* Chevrons */
+.bs-docs-sidenav .icon-chevron-right {
+  float: right;
+  margin-top: 2px;
+  margin-right: -6px;
+  opacity: .25;
+}
+.bs-docs-sidenav > li > a:hover {
+  background-color: #f5f5f5;
+}
+.bs-docs-sidenav a:hover .icon-chevron-right {
+  opacity: .5;
+}
+.bs-docs-sidenav .active .icon-chevron-right,
+.bs-docs-sidenav .active a:hover .icon-chevron-right {
+  background-image: url(../img/glyphicons-halflings-white.png);
+  opacity: 1;
+}
+.bs-docs-sidenav.affix {
+  top: 0px;
+}
+.bs-docs-sidenav.affix-bottom {
+  position: absolute;
+  top: auto;
+  bottom: 270px;
+}
+
+
+.footer {
+    background-color: #F5F5F5;
+    border-top: 1px solid #E5E5E5;
+    margin-top: 70px;
+    padding: 30px 0;
+    text-align: center;
+}
+
+
+
+pre.prettyprint {
+    display: block;
+    width: auto;
+    overflow: auto;
+    white-space: pre;
+    word-wrap: normal;
+    padding: 10px;
+  }
+
+
+    </style>
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="http://twitter.github.com/bootstrap/assets/ico/favicon.png">
+  </head>
+
+<body data-target=".bs-docs-sidebar" data-spy="scroll">
+
+    <header class="jumbotron" id="overview">
+      <div class="container">
+        <h3>Geocoding Leaflet plugin</h3>
+        <p class="lead">Leaflet geocoding controls</p>
+      </div>
+    </header>
+
+
+    <div class="container">
+
+      <div class="row">
+        <div  class="span3 bs-docs-sidebar">
+          <ul id="navbar" class="nav nav-list bs-docs-sidenav affix-top">
+            <li><a href="#example"><i class="icon-chevron-right"></i> Example</a></li>
+            <li><a href="#description"><i class="icon-chevron-right"></i> Description</a></li>
+            <li><a href="#usage"><i class="icon-chevron-right"></i> Usage</a></li>
+            <li><a href="#options"><i class="icon-chevron-right"></i> Options</a></li>
+            <li><a href="#methods"><i class="icon-chevron-right"></i> Methods</a></li>
+            <li><a href="#custom"><i class="icon-chevron-right"></i> Custom providers</a></li>
+            <li><a href="#source"><i class="icon-chevron-right"></i> Source code</a></li>
+          </ul>
+        </div>
+        <div class="span9">
+          <section id="example">
+            <div class="page-header">
+              <h1>Example</h1>
+            </div>
+            <h3>Geocoding tool</h3>
+
+            <div class="input-append">
+              <input class="span2" id="geocodeinput" type="text">
+              <div class="btn-group">
+                <button id="geocodebutton" class="btn" onclick="geocode()">OSM (address)</button>
+                <button class="btn dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href="#" onclick="setProvider('osm', event)">OSM (address)</a></li>
+                  <li><a href="#" onclick="setProvider('custom', event)">Custom (OSM address)</a></li>
+                  <li><a href="#" onclick="setProvider('google', event)">Google (address)</a></li>
+                  <li><a href="#" onclick="setProvider('esri', event)">ESRI (address)</a></li>
+                  <li><a href="#" onclick="setProvider('bing', event)">Bing (address)</a></li>
+                  <li><a href="#" onclick="setProvider('geonames', event)">Geonames (address)</a></li>
+                  <li><a href="#" onclick="setProvider('mapquest', event)">MapQuest (address)</a></li>
+                  <li><a href="#" onclick="setProvider('nokia', event)">Nokia (address)</a></li>
+                  <li><a href="#" onclick="setProvider('yandex', event)">Yandex (address)</a></li>
+                  <li><a href="#" onclick="setProvider('rucadastre', event)">RuCadastre (parcel numbers)</a></li>
+                </ul>
+              </div><!-- /btn-group -->
+            </div>
+
+
+            <div id="map" style="width:100%; height:600px; "></div>
+
+
+          </section>
+
+          <section id="description">
+            <div class="page-header">
+              <h1>Description</h1>
+            </div>
+            <p>Simple Leaflet geocoding control, comes with an default set of providers:</p>
+            <ul>
+              <li>OpenStreetMap</li>
+              <li>Google</li>
+              <li>Bing</li>
+              <li>Esri</li>
+              <li>Geonames</li>
+              <li>Nokia</li>
+              <li>Yandex</li>
+              <li>RuCadastre</li>
+            </ul>
+          </section>
+
+
+          <section id="usage">
+            <div class="page-header">
+              <h1>Usage</h1>
+            </div>
+            <h3>Add script</h3>
+<pre class="prettyprint linenums">
+&lt;script src=&quot;http://olegsmith.github.com/leaflet.geocoding/leaflet.geocoding.js&quot;&gt;&lt;/script&gt;
+
+&lt;script&gt;
+    var map = L.map('map').setView([55.751667, 37.617778], 13);
+    L.control.scale().addTo(map);
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+         maxZoom: 18
+        , attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+    <b>var geocoding = new L.Geocoding({
+      apikeys : {
+        'bing' : 'bingKey'
+        , 'nokia' : 'nokiaKey'
+      }
+    });
+
+    map.addControl(geocoding);
+  </b>
+
+&lt;/script&gt;
+</pre>
+
+            <h3>Geocode</h3>
+<pre class="prettyprint linenums">
+&lt;script&gt;
+
+      geocoding.geocode('address');
+
+&lt;/script&gt;
+</pre>
+
+          </section>
+
+          <section id="options">
+            <div class="page-header">
+              <h1>Options</h1>
+            </div>
+
+            <table class="table table-bordered table-striped">
+            <thead>
+             <tr>
+               <th style="width: 100px;">Name</th>
+               <th style="width: 50px;">type</th>
+               <th style="width: 150px;">default</th>
+               <th>description</th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+               <td>provider</td>
+               <td>string</td>
+               <td>'osm'</td>
+               <td>Current provider</td>
+             </tr>
+             <tr>
+               <td>providers</td>
+               <td>object</td>
+               <td>{'osm' : function() {}, 'google' : function() {}, ...}</td>
+               <td>Providers geocode functions</td>
+             </tr>
+             <tr>
+               <td>apikeys</td>
+               <td>object</td>
+               <td>{bing: 'bingKey', ...}</td>
+               <td>API keys</td>
+             </tr>
+             <tr>
+               <td>apikeys.bing</td>
+               <td>string</td>
+               <td></td>
+               <td>Bing API key</td>
+             </tr>
+             <tr>
+               <td>apikeys.nokia</td>
+               <td>string</td>
+               <td></td>
+               <td>Nokia API key</td>
+             </tr>
+
+
+            </tbody>
+          </table>
+
+          </section>
+
+          <section id="methods">
+            <div class="page-header">
+              <h1>Methods</h1>
+            </div>
+
+            <table class="table table-bordered table-striped">
+            <thead>
+             <tr>
+               <th style="width: 100px;">Name</th>
+               <th style="width: 150px;">argument type</th>
+               <th>description</th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+               <td>geocode</td>
+               <td>string</td>
+               <td>Geocode</td>
+             </tr>
+
+             <tr>
+               <td>setOptions</td>
+               <td>object</td>
+               <td>Set options</td>
+             </tr>
+            </tbody>
+          </table>
+
+          </section>
+
+          <section id="custom">
+            <div class="page-header">
+              <h1>Custom provider</h1>
+            </div>
+            <h3>Add script</h3>
+<pre class="prettyprint linenums">
+&lt;script&gt;
+
+      // OSM-like custom geocoding provider
+      var custom_geocoding_provider = function(arg) {
+        var that = this
+            , query = arg.query
+            , cb = arg.cb;
+
+        $.ajax({
+            url : 'http://nominatim.openstreetmap.org/search'
+            , dataType : 'jsonp'
+            , jsonp : 'json_callback'
+            , data : {
+                'q' : query
+                , 'format' : 'json'
+            }
+        })
+        .done(function(data){
+            if (data.length>0) {
+                var res=data[0];
+                cb({
+                    query : query
+                    , content : res.display_name
+                    , latlng : new L.LatLng(res.lat, res.lon)
+                    , bounds : new L.LatLngBounds([res.boundingbox[0], res.boundingbox[2]], [res.boundingbox[1], res.boundingbox[3]])
+                });
+            }
+        });
+      }
+
+      // Add custom provider to provider list
+      var geocoding = new L.Geocoding({
+        apikeys : {
+          'bing' : 'Anqm0F_JjIZvT0P3abS6KONpaBaKuTnITRrnYuiJCE0WOhH6ZbE4DzeT6brvKVR5'
+          , 'nokia' : 'HGHGJHgdbndbmbsdf7675wefdvvdsnb'
+        }
+        , providers : {
+          <b>'custom' : custom_geocoding_provider</b>
+        }
+      });
+
+      // Set custom provider default
+      geocoding.setOptions({provider:'custom'})
+
+      // Geocoding
+      geocoding.geocode('address')
+
+&lt;/script&gt;
+</pre>
+
+          </section>
+
+          <section id="source">
+            <div class="page-header">
+              <h1>Source code</h1>
+            </div>
+            <div class="jumbotron">
+              <a class="btn btn-large btn-success" href="https://github.com/olegsmith/leaflet.geocoding">View on GitHub</a>
+              <a class="btn btn-large btn-success" href="https://github.com/olegsmith/leaflet.geocoding/zipball/master">.zip file</a>
+            </div>
+
+          </section>
+
+        </div>
+      </div>
+    </div> <!-- /container -->
+
+      <div class="footer">
+        <div class="container">
+          <p class="copyright">
+            Leaflet.Gecoding maintained by <a href="https://github.com/olegsmith">olegsmith</a>
+          </p>
+        </div>
+      </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/r298/run_prettify.js"></script>
+
+    <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+
+    <script src="leaflet.geocoding.js"></script>
+
+    <script>
+
+      var map = L.map('map').setView([55.751667, 37.617778], 13);
+
+      L.control.scale().addTo(map);
+
+      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+
+      var custom_geocoding_provider = function(arg) {
+        var that = this
+            , query = arg.query
+            , cb = arg.cb;
+
+        $.ajax({
+            url : 'http://nominatim.openstreetmap.org/search'
+            , dataType : 'jsonp'
+            , jsonp : 'json_callback'
+            , data : {
+                'q' : query
+                , 'format' : 'json'
+            }
+        })
+        .done(function(data){
+            if (data.length>0) {
+                var res=data[0];
+                cb({
+                    query : query
+                    , content : res.display_name
+                    , latlng : new L.LatLng(res.lat, res.lon)
+                    , bounds : new L.LatLngBounds([res.boundingbox[0], res.boundingbox[2]], [res.boundingbox[1], res.boundingbox[3]])
+                });
+            }
+        });
+      }
+
+
+      var geocoding = new L.Geocoding({
+        apikeys : {
+          'bing' : 'Anqm0F_JjIZvT0P3abS6KONpaBaKuTnITRrnYuiJCE0WOhH6ZbE4DzeT6brvKVR5'
+          , 'mapquest' : 'Kmjtd%7Cluua2qu7n9%2C7a%3Do5-lzbgq'
+          , 'nokia' : 'HGHGJHgdbndbmbsdf7675wefdvvdsnb'
+        }
+        , providers : {
+          'custom' : custom_geocoding_provider
+        }
+      });
+
+      map.addControl(geocoding);
+
+      $('#geocodeinput').on('keydown', function(e) {
+        if (e.keyCode == 13 ) {
+          e.preventDefault();
+          geocoding.geocode( $('#geocodeinput').val())
+        }
+      });
+
+      function geocode() {
+        geocoding.geocode($("#geocodeinput").val());
+      }
+
+      function setProvider(provider, e) {
+        e.preventDefault();
+        $('#geocodebutton').text(e.target.innerHTML);
+        geocoding.setOptions({provider:provider})
+      }
+
+
+      // make code pretty
+      window.prettyPrint && prettyPrint()
+
+    </script>
+
+    <script>
+      $('#navbar').affix({offset:110});
+    </script>
+
+</body>
+</html>

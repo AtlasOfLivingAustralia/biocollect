@@ -1,0 +1,507 @@
+/*
+ * Copyright (C) 2014 Atlas of Living Australia
+ * All Rights Reserved.
+ *
+ * The contents of this file are subject to the Mozilla Public
+ * License Version 1.1 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of
+ * the License at http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS
+ * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
+ * rights and limitations under the License.
+ */
+
+/* Base class */
+.boxed-heading {
+    position: relative;
+    margin: 15px 0;
+    padding: 50px 15px 14px;
+    *padding-top: 19px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    /*-webkit-border-radius: 4px;*/
+    /*-moz-border-radius: 4px;*/
+    /*border-radius: 4px;*/
+}
+
+/* Echo out a label for the example */
+.boxed-heading:after {
+    /* content: "Example"; */
+    content: attr(data-content);
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    padding: 7px 15px;
+    font-size: 125%;
+    font-weight: 300;
+    background-color: #ddd;
+    /*background-color: #E0E0E0;*/
+    border: 1px solid #ccc;
+    color: inherit;
+    /*-webkit-border-radius: 4px 0 4px 0;*/
+    /*-moz-border-radius: 4px 0 4px 0;*/
+    /*border-radius: 4px 0 4px 0;*/
+}
+
+/* Remove spacing between an example and it's code */
+.boxed-heading + .prettyprint {
+    margin-top: -20px;
+    padding-top: 15px;
+}
+
+.container h1 {
+    font-size: 200%;
+}
+.container h2 {
+    font-size: 175%;
+}
+.container h3 {
+    font-size: 150%;
+}
+.container h4 {
+    font-size: 125%;
+}
+
+.speciesName {
+    font-weight: bold;
+    font-style: italic;
+}
+
+.actionButtons {
+    margin-bottom: 5px;
+}
+
+.actionButtons .btn-small {
+    font-size: 12px;
+}
+
+#recordsPaginateSummary {
+    margin: 0 ;
+}
+
+#sightingsBlurb {
+    margin-bottom: 10px;
+}
+
+#sortWidget {
+    float: right;
+}
+
+#sortWidget select {
+    height: 26px;
+    width: auto;
+    font-size: 13px;
+    line-height: 18px;
+    margin-bottom: 5px;
+}
+
+
+.fileinput-button {
+    position: relative;
+    overflow: hidden;
+    vertical-align: top;
+    margin: 4px 5px 5px 0;
+}
+.fileinput-button input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    opacity: 0;
+    -ms-filter: 'alpha(opacity=0)';
+    font-size: 200px;
+    direction: ltr;
+    cursor: pointer;
+}
+
+/*.form-horizontal {*/
+    /*line-height: 3;*/
+/*}*/
+
+.input-auto {
+    width: auto !important;
+    height: 24px;
+    font-size: 12px;
+    line-height: 20px;
+    margin-bottom: 2px;
+}
+
+.validationErrors:not(.tt-hint)  {
+    border: 1px solid #f26849 !important;
+    /*color: red;*/
+}
+
+label {
+    display: inline-block;
+    font-weight: normal !important;
+}
+
+
+select.slim {
+    height: 26px;
+    width: auto;
+    font-size: 13px;
+    line-height: 18px;
+    margin-bottom: 4px;
+}
+select.slim2 {
+    height: 26px;
+    width: auto;
+    font-size: 13px;
+    line-height: 18px;
+}
+
+select.narrow {
+    width: auto;
+    margin-bottom: 0px;
+}
+
+input#speciesLookup {
+    /*margin-top: 5px;*/
+}
+
+/*.input-xlarge {*/
+    /*width: 350px;*/
+/*}*/
+
+span.label, span.badge {
+    font-size: 12px;
+    padding-top: 4px;
+}
+
+.tag {
+    font-size: 13px;
+    padding: .4em .4em .4em;
+    margin: 0 .1em;
+}
+.tag a {
+    color: #bbb;
+    cursor: pointer;
+    opacity: 0.6;
+}
+.tag a:hover {
+    opacity: 1.0
+}
+.tag .remove {
+    vertical-align: bottom;
+    top: 0;
+}
+.tag a .fa {
+    /*color: #fff;*/
+    font-size: 12px;
+    margin-bottom: 2px;
+    margin-left: 5px;
+}
+
+
+#tagsBlock {
+    margin: 10px 0;
+}
+
+#tagsBlock .tag {
+    /*line-height: 1em;*/
+    margin-bottom: 3px;
+    display: inline-block;
+    padding: 4px;
+}
+
+#tagsBlock a .fa {
+    margin-bottom: 2px;
+}
+
+.tagGroup {
+    line-height: 1.8em;
+}
+
+#speciesOne, #speciesTwo {
+    float: left;
+    max-width: 47%;
+    margin-right: 10px;
+}
+
+td label {
+    margin: 4px 0;
+}
+
+#species > .label {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 6px 9px 6px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+.flagBtn, .questionBtn {
+    margin-top: 3px;
+}
+
+.helphint {
+    display: inline-block;
+    margin-bottom: 5px;
+    color: grey;
+}
+
+#species .row-fluid .span6 {
+    /*display: table-cell;*/
+    /*vertical-align: bottom;*/
+    /*float: none;*/
+}
+
+#sightingForm input[type=radio] {
+    vertical-align: top;
+    margin-left: 5px;
+}
+
+#mapWidget {
+    /*margin-top: -20px;*/
+}
+
+#mapWidget > .input-append, #mapWidget > .btn, #mapWidget > .label {
+    display: inline-block;
+    margin-bottom: 0;
+    margin-top: 5px;
+}
+#mapWidget #map {
+    margin: 10px 0;
+}
+#taxonDetails {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    /*display: inline-block;*/
+}
+#taxonDetails table {
+    display: inline-block;
+}
+#taxonDetails table td {
+    padding: 5px 9px 0px 4px;
+}
+
+#identificationChoice, #showConfident {
+    margin-bottom: 10px;
+}
+
+#speciesMisc {
+    margin-top: 10px;
+}
+
+.sciName {
+    display: block;
+    font-size: 15px;
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+.sciName a {
+    /*color: white;*/
+}
+
+.commonName {
+    display: block;
+    font-size: 15px;
+}
+
+.row#content {
+    margin-top: 15px;
+}
+
+#content .btn-mini {
+    font-size: 13px;
+    font-weight: 300;
+    /*padding-top: 1px;*/
+}
+
+table.formInputTable {
+    margin: 5px 0 5px 0;
+}
+
+table.formInputTable td {
+    padding: 1px 8px 1px 0;
+}
+
+.imageRow {
+    margin-bottom: 5px;
+}
+
+.imageRow img.serverLoaded {
+    max-height: 100px;
+    max-width:100px;
+}
+
+#occurrenceRemarks {
+    width: 80%;
+}
+
+#eventDatePicker select {
+    height: 30px;
+    width: auto;
+    font-size: 13px;
+    line-height: 18px;
+    margin-bottom: 0;
+}
+
+#eventDate_hour:before {
+    content: '<br>Time: ';
+}
+
+.leaflet-popup-content > div {
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+#markerIcon {
+    position: relative;
+    top: -15px;
+    z-index: 1001;
+    cursor: pointer;
+}
+
+#mapTip {
+    margin-top: 15px;
+}
+
+a.adminLink {
+    cursor: default;
+}
+
+a.adminLink:hover {
+    cursor: default;
+    text-decoration: none;
+}
+
+#imageModal {
+    width: 700px;
+    margin-left:  -350px;
+}
+
+#imageModal .modal-body {
+    max-height: 500px;
+    text-align: center;
+}
+
+.requiredBlock {
+    vertical-align: top;
+}
+
+.requiredBlock i, .requiredBlock textarea, .requiredBlock select  {
+    display: inline-block;
+    vertical-align: top;
+}
+
+#identifyHelpTrigger {
+    position: absolute;
+    margin-left: 100px;
+    top: 10px;
+    right: 10px;
+}
+
+#identifyHelpModal .modal-dialog  {
+    width:90%;
+}
+
+#termsOfUse {
+    margin-bottom: 14px;
+}
+
+.titleRow {
+    margin-bottom: 10px;
+}
+.titleRow h2 {
+    margin-bottom: 0;
+}
+.modal-body {
+    max-height: calc(100vh - 212px);
+    overflow-y: auto;
+}
+
+.modal-header h2, .modal-header h3, .modal-header h4 {
+    margin-bottom: 0;
+}
+
+#content .table-responsive {
+    overflow-x: visible;
+}
+
+.formInputTable td div {
+    /*z-index: 1002;*/
+}
+
+.bootstrap-datetimepicker-widget {
+    z-index: 1002;
+}
+
+.formInputTable .fa {
+    min-width: 13px;
+}
+
+#submitArea {
+    text-align: center;
+    position: relative;
+}
+
+/* Fix for ala-styles.css "issues" */
+body #main {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+body p, body li, body ul {
+    font-size: 14px;
+}
+
+body.nav-species {
+    font-size: 12px;
+}
+
+body .panel .panel-heading {
+    font-size: 115%;
+    font-weight: normal;
+}
+
+body .input-group-addon, body .form-control {
+    border-radius: 0px;
+}
+
+/* Fixes for IE < 8 */
+@media screen\9 {
+    .fileinput-button input {
+        filter: alpha(opacity=0);
+        font-size: 100%;
+        height: 100%;
+    }
+}
+
+@media (max-width: 767px) {
+    .input-xlarge {
+        width: 100%;
+    }
+    #imageModal {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        right: 20px;
+        width: auto;
+        margin: 0;
+    }
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+    body.nav-species { font-size: 14px; }
+    .nav-species #main{padding:40px 0;}
+}
+
+@media only screen and (min-width : 980px) {
+    .nav-species #main{padding-top: 0px;}
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px) {
+    .container{width:1100px;}
+    .nav-species #main{padding:0;}
+}
+
+

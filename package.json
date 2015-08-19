@@ -1,0 +1,29 @@
+{
+  "name": "fieldcapture-hubs-plugin",
+  "version": "1.1.3",
+  "description": "Karma / jasmine configuration for testing project javascript",
+  "main": "test/unit/javascript",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "jquery": "1.11.0",
+    "karma": "^0.12.32",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-coverage": "^0.4.2",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-jasmine": "^0.3.0",
+    "karma-jasmine-jquery": "^0.1.1",
+    "karma-jquery": "^0.1.0",
+    "karma-phantomjs-launcher": "^0.2.0",
+    "karma-remote-reporter": "^0.2.0",
+    "phantomjs": "^1.9.17",
+    "remote": "^0.2.6"
+  },
+  "scripts": {
+    "test": "karma start karma.conf.js"
+  },
+  "author": "",
+  "license": ""
+}

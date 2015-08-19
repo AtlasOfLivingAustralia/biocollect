@@ -1,0 +1,37 @@
+language: groovy
+sudo: false
+jdk:
+  - oraclejdk7
+node_js:
+  - "0.10"
+branches:
+  only:
+  - master
+before_install:
+- rm -rf ~/.gvm
+- curl -s get.gvmtool.net > ~/install_gvm.sh
+- chmod 775 ~/install_gvm.sh
+- ~/install_gvm.sh
+- echo "gvm_auto_answer=true" > ~/.gvm/etc/config
+- source ~/.gvm/bin/gvm-init.sh
+- GRAILS_VERSION=`grep '^app\.grails\.version=' ./biocollect/application.properties | sed -e
+  's/^app\.grails\.version=//g'`
+- gvm install grails $GRAILS_VERSION || true
+before_script:
+- mkdir -p ~/.grails; wget -q -O ~/.grails/settings.groovy https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/travis_grails_settings_new.groovy
+
+script:
+  - cd fieldcapture-hubs-plugin;
+  - npm install --save-dev
+  - node_modules/karma/bin/karma start karma.conf.js --single-run --browsers PhantomJS
+  - MAVEN_REPO="ala-repo-snapshot"; grep 'def version =' ./FieldcapturePluginGrailsPlugin.groovy | grep -q "\-SNAPSHOT"; if [ "$?" = "1" ]; then MAVEN_REPO="ala-repo-release"; fi;
+  - grails clean; grails refresh-dependencies --non-interactive; grails test-app --non-interactive
+  - '[ "$TRAVIS_PULL_REQUEST" != "false" ] || grails prod maven-deploy --repository=$MAVEN_REPO --non-interactive'
+  - cd ../fieldcapture-hub;
+  - MAVEN_REPO="ala-repo-snapshot"; grep '^app\.version=' ./application.properties | grep -q "\-SNAPSHOT"; if [ "$?" = "1" ]; then MAVEN_REPO="ala-repo-release"; fi;
+  - grails clean; grails refresh-dependencies --non-interactive; grails prod war
+  - '[ "$TRAVIS_PULL_REQUEST" != "false" ] || grails prod maven-deploy --repository=$MAVEN_REPO --non-interactive'
+env:
+  global:
+  - secure: enbmAS6MFwP5f/94ZK8UHbGu0uJtdKNGr1HJsVTCa2Nfv5P3zXRkbmW2kKsvV7AXROUOz7+GAkNYzWbb1NApLkNcjwq5Dptip20uYfYCXqgVw76S2ddubpsOWoBgGETpSCO0zi6YnBwzdc1aY5+IP8UKgY34sHjgppNfe39UUmQ=
+  - secure: OU/lhyGMduFcAtC/YHs/bCdEzH4wI9JYCwfU5dt/BLueP60Em7LcG3nbSFyCb2oK4eHTDdEHiSyMOsbrQ0wrs6zLitjUcNZIR9/gi6wKIGNli65xlevTbmFE59TXiNbbaMfccidJTehJCE+8N8X6QR3nXFKIReRMYimaAz58KWU=
