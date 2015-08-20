@@ -23,6 +23,7 @@ before_script:
 - MAVEN_REPO="ala-repo-snapshot"; grep '^app\.version=' ./application.properties |
   grep -q "\-SNAPSHOT"; if [ "$?" = "1" ]; then MAVEN_REPO="ala-repo-release"; fi;
 - echo "MAVEN_REPO:$MAVEN_REPO"
+- node --version
 - npm install
 script:
 - node_modules/karma/bin/karma start karma.conf.js --single-run --browsers PhantomJS
@@ -30,7 +31,7 @@ script:
 - grails clean && grails refresh-dependencies --non-interactive && grails test-app
   --non-interactive && grails prod maven-deploy --repository=$MAVEN_REPO --non-interactive
   --stacktrace
-- cd ..
+- cd ../..
 - grails clean && grails refresh-dependencies --non-interactive && grails test-app
   --non-interactive && grails prod maven-deploy --repository=$MAVEN_REPO --non-interactive
   --stacktrace
