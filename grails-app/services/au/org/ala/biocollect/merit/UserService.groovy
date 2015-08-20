@@ -8,7 +8,11 @@ class UserService {
 
     @PostConstruct
     private void init() {
-        auditBaseUrl = grailsApplication.config.ecodata.service.url + '/audit'
+        try {
+            auditBaseUrl = grailsApplication.config.ecodata.service.url + '/audit'
+        } catch (e) {
+            log.debug("This configuration property does not get initialized in test environment", e)
+        }
     }
 
     def getCurrentUserDisplayName() {
