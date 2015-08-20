@@ -1,9 +1,9 @@
 language: groovy
 sudo: false
 jdk:
-  - oraclejdk7
+- oraclejdk7
 node_js:
-  - "0.10"
+- '0.12'
 branches:
   only:
   - master
@@ -11,27 +11,30 @@ before_install:
 - rm -rf ~/.gvm
 - curl -s get.gvmtool.net > ~/install_gvm.sh
 - chmod 775 ~/install_gvm.sh
-- ~/install_gvm.sh
+- "~/install_gvm.sh"
 - echo "gvm_auto_answer=true" > ~/.gvm/etc/config
 - source ~/.gvm/bin/gvm-init.sh
-- GRAILS_VERSION=`grep '^app\.grails\.version=' ./biocollect/application.properties | sed -e
-  's/^app\.grails\.version=//g'`
+- GRAILS_VERSION=`grep '^\s*app.grails.version' application.properties | sed -e 's/^\s*app\.grails\.version=//g'
+  | tr -d "\r"`
+- echo "GRAILS_VERSION:$GRAILS_VERSION"
 - gvm install grails $GRAILS_VERSION || true
 before_script:
 - mkdir -p ~/.grails; wget -q -O ~/.grails/settings.groovy https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/travis_grails_settings_new.groovy
-
+- MAVEN_REPO="ala-repo-snapshot"; grep '^app\.version=' ./application.properties |
+  grep -q "\-SNAPSHOT"; if [ "$?" = "1" ]; then MAVEN_REPO="ala-repo-release"; fi;
+- echo "MAVEN_REPO:$MAVEN_REPO"
+- npm install
 script:
-  - cd fieldcapture-hubs-plugin;
-  - npm install --save-dev
-  - node_modules/karma/bin/karma start karma.conf.js --single-run --browsers PhantomJS
-  - MAVEN_REPO="ala-repo-snapshot"; grep 'def version =' ./FieldcapturePluginGrailsPlugin.groovy | grep -q "\-SNAPSHOT"; if [ "$?" = "1" ]; then MAVEN_REPO="ala-repo-release"; fi;
-  - grails clean; grails refresh-dependencies --non-interactive; grails test-app --non-interactive
-  - '[ "$TRAVIS_PULL_REQUEST" != "false" ] || grails prod maven-deploy --repository=$MAVEN_REPO --non-interactive'
-  - cd ../fieldcapture-hub;
-  - MAVEN_REPO="ala-repo-snapshot"; grep '^app\.version=' ./application.properties | grep -q "\-SNAPSHOT"; if [ "$?" = "1" ]; then MAVEN_REPO="ala-repo-release"; fi;
-  - grails clean; grails refresh-dependencies --non-interactive; grails prod war
-  - '[ "$TRAVIS_PULL_REQUEST" != "false" ] || grails prod maven-deploy --repository=$MAVEN_REPO --non-interactive'
+- node_modules/karma/bin/karma start karma.conf.js --single-run --browsers PhantomJS
+- cd plugins/biocollect-sightings
+- grails clean && grails refresh-dependencies --non-interactive && grails test-app
+  --non-interactive && grails prod maven-deploy --repository=$MAVEN_REPO --non-interactive
+  --stacktrace
+- cd ..
+- grails clean && grails refresh-dependencies --non-interactive && grails test-app
+  --non-interactive && grails prod maven-deploy --repository=$MAVEN_REPO --non-interactive
+  --stacktrace
 env:
   global:
-  - secure: enbmAS6MFwP5f/94ZK8UHbGu0uJtdKNGr1HJsVTCa2Nfv5P3zXRkbmW2kKsvV7AXROUOz7+GAkNYzWbb1NApLkNcjwq5Dptip20uYfYCXqgVw76S2ddubpsOWoBgGETpSCO0zi6YnBwzdc1aY5+IP8UKgY34sHjgppNfe39UUmQ=
-  - secure: OU/lhyGMduFcAtC/YHs/bCdEzH4wI9JYCwfU5dt/BLueP60Em7LcG3nbSFyCb2oK4eHTDdEHiSyMOsbrQ0wrs6zLitjUcNZIR9/gi6wKIGNli65xlevTbmFE59TXiNbbaMfccidJTehJCE+8N8X6QR3nXFKIReRMYimaAz58KWU=
+  - secure: U/09fO5MoAMmyGXkFZUc6AXi/V1cow3vpWl2LDdp+ddqVdbvDqBr8fj5w9kpQZEwSRBcod7GKxKpB+DXnQj1yjFGnj2Fp34zwcoOPt4pxtJH++dUWNUVNELKrt3cC2CmuUy5zSXEDC6EhVufXb+AySAXHLzwT6/AVbx0iYheWLtik3YqkNZ2Ny75zgvSCc450Ucxdcazc70U7SqnnIthr9HpUxB566JP7lPLw6y0/yHRn8FMDkV3ICYaUnuSJdmsGWw4obagAu+FT9V424GBFPB6qmVfGS9G8IWKV/Was1CdftPbvWPhHtT0NpwpRxnGIQV6xDsFA2hztsc4H9jUvDJ794uvHfU9cjutR4C66+PxGYsohRuTIMz9VeAcPywY5hAtVWB0yFID5mA4yo1VQ3xvJCTknlsRVtVXenhMMQmEqUTRI37dV0czWl9hhjl644xYdfj0T+PSQrEh0NKLBcmmb4fxuI95YOO1IaKoY7+nrskhEyudgVX5Oj5JjV8TP+iXojMT927JN6cILvrprUQbhIVE5srOaZcPElieAvUVMShYfFKLF14EsPh0nkRrjikvMJwiFewomt6TlLpdN4XwTBrG20kKkuijOV7GlgEB7O/zbhfL16m2+lesI9hA7ylavKr1YqxENYa8ESUeurl66M4UJEXxSWbJkkGz08Q=
+  - secure: aDQyUOaNj+7D9ug0bhhtnxIbVikKnNrFc2GJe+cRgl0PgPHffuHVGndINcgJW6T3nlLkRwP8Z5Ic9Y2a+C0tzWxiGs2+sHHyw0VaASHzcxV5aH15jgb2MMOY2JkaYVSEp7rvlLeHfLposA1NcvTk9u9nKG0k8R96vTLH3c+cFc6wmKfOFtfUZKu+qi75idaxeHoFQGiNMjU81mzFUA5UeNsNEiazTp8x9HUlqWofOJfrzRzUcp1PKHTV1MJdWyeVDJHg+OWdiWKjA5F/gkpcIFfkxYuvb2WM63wTrYdHBEIfBeGWzFMmbHMwM0SEOkgJQVhEiOfIK67+S/p5hWl/R/gyaf9xj2eZ7DARNNIyuohyXYcOT0gzSoLRXSANU64nrwlgQAJOhHpgFOTdejpZm8XIEOyakCImnJxLjTEivBIujfqT80esomN7rcEj0dulM8uOy1fi4FeyonMyR65ZwduPFaOop93CFSgw9aHlFyRh6Z0n0YNCRbuWLPPRt9ZjaLte7eEIlf87CmS0DDS1vCtKjoHN165K/gpBTltmVZDqBfT70BqVG+DIf3oBZW7scroSlcdJj18axyCIxsPibbCu4ezHgNpM84J2+f7BSaBvKuh00csvu5P0e3h3laHI6jzc0MkWWbV6ZB5e7ctG2fptXIZxse3X0I1tdgL3x08=
