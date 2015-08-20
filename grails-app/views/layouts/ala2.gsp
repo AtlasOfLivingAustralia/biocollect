@@ -187,7 +187,7 @@
         }); // end document ready
     </r:script>
 </g:if>
-<g:if test="${grailsApplication.config.bugherd.integration}">
+<g:if test="${java.lang.Boolean.parseBoolean(grailsApplication.config.bugherd.integration)}">
     <r:script>
         (function (d, t) {
             var bh = d.createElement(t), s = d.getElementsByTagName(t)[0];
