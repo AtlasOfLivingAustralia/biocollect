@@ -42,7 +42,7 @@ Once we know what we need, we might be able to promote the code base to the bioc
 * The app is expected to run in port 8087 locally. Just add the option `-Dserver.port=8087` to the run-app command:
 ![Imgur](http://i.imgur.com/syIKPgy.png)
 
-### Running Javascript automatic Âtests
+### Running Javascript automatic tests
 * Executing the tests requires node.js
 * It is recommended to install the Intellij node.js and karma plugins.
 * To install the test dependencies, run the following command in the repo root folder:
