@@ -11,7 +11,7 @@ class DocumentService {
     def webService, grailsApplication
 
     def get(String id) {
-        def url = "${grailsApplication.config.ecodata.service.url}document/${id}"
+        def url = "${grailsApplication.config.ecodata.service.url}/document/${id}"
         return webService.getJson(url)
     }
 
@@ -21,7 +21,7 @@ class DocumentService {
     }
 
     def updateDocument(doc) {
-        def url = "${grailsApplication.config.ecodata.service.url}document/${doc.documentId?:''}"
+        def url = "${grailsApplication.config.ecodata.service.url}/document/${doc.documentId?:''}"
 
         return webService.doPost(url, doc)
     }

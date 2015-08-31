@@ -185,7 +185,7 @@ var ProjectActivitiesSettingsViewModel =  function(pActivitiesVM) {
                     $.each(self.projectActivities(), function(i, obj){
                         if(obj.current()){
                             obj.projectActivityId(data.resp.projectActivityId);
-                        }
+                       }
                     });
                     showAlert(message, "alert-success",  divId);
                 }
@@ -200,6 +200,24 @@ var ProjectActivitiesSettingsViewModel =  function(pActivitiesVM) {
                         showAlert(message, "alert-success",  divId);
                     }
                 }
+
+                // update document
+                if (!data.error) {
+                    var doc = data.doc;
+                    if(doc && doc.content && doc.content.documentId && doc.content.url){
+                        $.each(self.projectActivities(), function(i, obj){
+                            if(obj.current()){
+                                var logoDocument = obj.findDocumentByRole(obj.documents(), 'logo');
+                                if(logoDocument){
+                                    obj.removeLogoImage();
+                                    logoDocument.documentId = doc.content.documentId;
+                                    logoDocument.url = doc.content.url;
+                                    obj.documents.push(logoDocument);
+                                }
+                            }
+                        });
+                    }
+                }
             },
             error: function (data) {
                 var status = data.status;
@@ -210,7 +228,7 @@ var ProjectActivitiesSettingsViewModel =  function(pActivitiesVM) {
 }
 
 var pActivityInfo = function(o, selected){
-    var self = this;
+    var self = $.extend(this, new Documents());
     if(!o) o = {};
 
     self.projectActivityId = ko.observable(o.projectActivityId);
@@ -221,13 +239,18 @@ var pActivityInfo = function(o, selected){
     self.endDate = ko.observable(o.endDate).extend({simpleDate:false});
     self.commentsAllowed = ko.observable(o.commentsAllowed ? o.commentsAllowed : false);
     self.published = ko.observable(o.published ? o.published : false);
-    self.logoUrl = ko.observable(fcConfig.imageLocation + "/no-image-2.png");
+
     self.current = ko.observable(selected);
 
     self.addActivity = function(){
     };
 
     self.transients = self.transients || {};
+    self.transients.imageUploadUrl  = ko.observable(fcConfig.imageUploadUrl);
+    self.transients.logoUrl = ko.pureComputed(function(){
+       return self.logoUrl() ? self.logoUrl() : fcConfig.imageLocation + "/no-image-2.png";
+    });
+
     var isBeforeToday = function(date) {
         return moment(date) < moment().startOf('day');
     };
@@ -267,6 +290,14 @@ var pActivityInfo = function(o, selected){
         return status;
     });
 
+    if (o.documents !== undefined && o.documents.length > 0) {
+        $.each(['logo'], function(i, role){
+            var document = self.findDocumentByRole(o.documents, role);
+            if (document) {
+                self.documents.push(document);
+            }
+        });
+    }
 };
 
 var ProjectActivity = function (o, pActivityForms, projectId, selected, sites){
@@ -321,16 +352,22 @@ var ProjectActivity = function (o, pActivityForms, projectId, selected, sites){
 
     self.asJSON = function(by){
         var jsData;
+
         if(by == "access"){
             jsData = {};
-            jsData.access =  ko.mapping.toJS(self.access, {ignore:[]});
+            var ignore = self.ignore.concat([]);
+            jsData.access =  ko.mapping.toJS(self.access, {ignore:ignore});
         }
         else if(by == "form"){
             jsData = {};
             jsData.pActivityFormName = self.pActivityFormName();
         }
         else if(by == "info"){
-            jsData = ko.mapping.toJS(self, {ignore:['current','pActivityForms','pActivityFormImages', 'access', 'species','sites','transients','endDate']});
+            var ignore = self.ignore.concat(['current','pActivityForms','pActivityFormImages', 'access', 'species','sites','transients','endDate']);
+            ignore = $.grep( ignore, function( item, i ) {
+                return item != "documents";
+            });
+            jsData = ko.mapping.toJS(self, {ignore:ignore} );
             jsData.endDate = moment(self.endDate(), 'YYYY-MM-DDThh:mm:ssZ').isValid() ? self.endDate() : "";
         }
         else if(by == "species"){
@@ -350,9 +387,9 @@ var ProjectActivity = function (o, pActivityForms, projectId, selected, sites){
         }
         else if(by == "visibility"){
             jsData = {};
-            jsData.visibility = ko.mapping.toJS(self.visibility, {ignore:['transients']});
+            var ignore = self.ignore.concat(['transients']);
+            jsData.visibility = ko.mapping.toJS(self.visibility, {ignore:ignore});
         }
-
         return JSON.stringify(jsData, function (key, value) { return value === undefined ? "" : value; });
     }
 };

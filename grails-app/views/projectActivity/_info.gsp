@@ -71,11 +71,38 @@
                     </div>
                 </div>
             </div>
-            <!-- /ko -->
 
-        <!-- /ko -->
+            <div class="row-fluid">
+                <div class="span3 text-right">
+                    <label class="control-label">Attach logo</label>
+                </div>
 
-    </br></br>
+
+                <div class="span2 text-left">
+                    <img  alt="No image" data-bind="attr:{src: transients.logoUrl()}">
+                    </br>
+                    <span class="btn fileinput-button pull-left"
+                          data-bind="
+                            attr:{'data-role':'logo',
+                                'data-url': transients.imageUploadUrl(),
+                                'data-owner-type': 'projectActivityId',
+                                'data-owner-id': projectActivityId()},
+                            stagedImageUpload: documents,
+                            visible:!logoUrl()"
+
+                            <i class="icon-plus"></i>
+                            <input id="logo" type="file" name="files">
+                            <span>Attach</span></span>
+                    <button class="btn btn-small" data-bind="click:removeLogoImage, visible:logoUrl()"><i class="icon-minus"></i> Remove</button>
+                </div>
+
+            </div>
+
+    <!-- /ko -->
+
+<!-- /ko -->
+
+</br> </br>
     <div class="row-fluid">
         <div class="span12">
             <button class="btn-primary btn block" data-bind="click: saveInfo"> Save </button>

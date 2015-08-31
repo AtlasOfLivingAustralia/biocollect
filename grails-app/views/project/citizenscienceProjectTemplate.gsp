@@ -42,6 +42,7 @@
         speciesListUrl: "${createLink(controller: 'search', action: 'searchSpeciesList')}",
         speciesListsServerUrl: "${grailsApplication.config.lists.baseURL}",
         speciesSearchUrl: "${createLink(controller: 'search', action: 'species')}",
+        imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
 
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}"

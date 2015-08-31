@@ -38,7 +38,7 @@
 
         <div class="span12">
             <div class="span2 well">
-                <img alt="No image provided" data-bind="attr:{title:name, src:logoUrl}"/>
+                <img alt="No image" data-bind="attr:{title:name, src: transients.logoUrl()}"/>
             </div>
             <div class="span6">
                 <a href="#" data-bind="onClickShowTab: $parent.setCurrent, tabId: '#data-tab'"><span data-bind="text:name" style="font-size:150%;font-weight:bold"></span></a>

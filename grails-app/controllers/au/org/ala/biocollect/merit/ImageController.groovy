@@ -195,7 +195,7 @@ class ImageController {
 
     def encodeImageURL(prefix, filename) {
         def encodedFileName = filename.encodeAsURL().replaceAll('\\+', '%20')
-        URI uri = new URI(prefix + encodedFileName)
+        URI uri = new URI(prefix + "/" + encodedFileName)
         return uri.toURL();
     }
 

@@ -7,8 +7,10 @@ class ProjectActivityService {
 
     def webService, grailsApplication
 
-    def getAllByProject(projectId){
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/getAllByProject/'+ projectId).list
+    def getAllByProject(projectId, levelOfDetail = ""){
+        def params = '?'
+        params += levelOfDetail ? "view=${levelOfDetail}&" : ''
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/getAllByProject/'+ projectId + params).list
     }
 
     def get(projectActivityId){
