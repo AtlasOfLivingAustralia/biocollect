@@ -48,7 +48,6 @@ describe("pActivityInfo Spec", function () {
         expect(projectActivity.endDate()).toEqual("");
         expect(projectActivity.commentsAllowed()).toEqual(false);
         expect(projectActivity.published()).toEqual(false);
-        expect(projectActivity.logoUrl()).toEqual("//no-image-2.png");
         expect(projectActivity.current()).toEqual(undefined);
         expect(projectActivity.transients.status()).toEqual("Active, Not yet started");
         expect(projectActivity.transients.daysTotal()).toEqual(-1);
