@@ -43,24 +43,6 @@
 
         <g:render template="header"></g:render>
 
-        <div class="row-fluid input-block-level">
-            <div class="span12 title-attribute">
-                <div class="row-fluid">
-                    <div class="span3">
-                        <fc:select data-bind='options:transients.project.sites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."' printable="${printView}"/>
-                    </div>
-                    <div class="span6">
-                    </div>
-                    <div class="span3">
-                        <div id="smallMap" style="width:100%"></div>
-                    </div>
-                </div>
-                <!-- <h5 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">Name: <span data-bind="text:type"></span></h5> -->
-            </div>
-        </div>
-
-    </div>
-
 <!-- ko stopBinding: true -->
     <g:each in="${metaModel?.outputs}" var="outputName">
         <g:if test="${outputName != 'Photo Points'}">
@@ -180,12 +162,22 @@
 <!-- /ko -->
 
 
-    <div class="output-block well" data-bind="with:transients.photoPointModel">
-        <h3>Photo Points</h3>
+    <div class="row-fluid">
 
-        <g:render template="/site/photoPoints"></g:render>
+        <div class="span12 well">
+            <h3>Site Details:</h3>
+            <fc:select data-bind='options:transients.project.sites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."' printable="${printView}"/>
+            <div id="map" style="width:100%; height: 512px;"></div>
+        </div>
 
     </div>
+
+    <div class="output-block well" data-bind="with:transients.photoPointModel">
+        <h3>Photo Points</h3>
+        <g:render template="/site/photoPoints"></g:render>
+    </div>
+
+
     <g:if test="${!printView}">
         <div class="form-actions">
             <button type="button" id="save" class="btn btn-primary">Submit</button>
@@ -483,17 +475,24 @@
 
 
         var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
-        mapFeatures = {zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []};
+        var mapOptions = {
+            zoomToBounds:true,
+            zoomLimit:16,
+            highlightOnHover:true,
+            features:[],
+            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+            wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+        };
 
-        init_map_with_features({
-                mapContainer: "smallMap",
-                zoomToBounds:true,
-                zoomLimit:16,
-                featureService: "${createLink(controller: 'proxy', action:'feature')}",
+        map = init_map_with_features({
+                mapContainer: "map",
+                scrollwheel: false,
+                featureService: "${createLink(controller: 'proxy', action: 'feature')}",
                 wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
             },
-            mapFeatures
+            mapOptions
         );
+
         ko.applyBindings(viewModel);
 
         master.register('activityModel', viewModel.modelForSaving, viewModel.dirtyFlag.isDirty, viewModel.dirtyFlag.reset);
