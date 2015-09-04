@@ -1,5 +1,6 @@
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.PreAuthorise
 import grails.converters.JSON
 
 class ProjectActivityController {

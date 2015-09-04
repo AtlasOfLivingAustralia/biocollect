@@ -232,8 +232,14 @@ modules = {
 
     projectActivity {
         defaultBundle 'application'
-        dependsOn 'knockout'
+        dependsOn 'knockout', 'projectActivityInfo'
         resource url: 'js/projectActivity.js'
+    }
+
+    projectActivityInfo{
+        defaultBundle 'application'
+        dependsOn 'knockout'
+        resource url: 'js/projectActivityInfo.js'
     }
 
     species {
