@@ -41,6 +41,7 @@ module.exports = function (config) {
             'web-app/js/organisation.js',
             'web-app/js/sites.js',
             'web-app/js/speciesModel.js',
+            'web-app/js/projectActivityInfo.js',
             'web-app/js/projectActivity.js',
             'test/js/spec/**/*.js'
         ],
