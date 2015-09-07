@@ -4,7 +4,7 @@ import org.codehaus.groovy.grails.web.json.JSONArray
 
 class BioActivityController {
 
-    def activityModel, projectService, metadataService, siteService, projectActivityService
+    def activityModel, projectService, metadataService, siteService, projectActivityService, userService
 
     private Map activityModel(activity, projectId) {
         // pass the activity
@@ -45,12 +45,18 @@ class BioActivityController {
     }
 
     def create(String id) {
-
+        def userId = userService.getCurrentUserId()
         def pActivity = projectActivityService.get(id, "docs")
         def projectId = pActivity?.projectId
+
+        if (!projectService.canUserEditProject(userId, projectId)) {
+            flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
+            redirect(controller:'project', action:'index', id: projectId)
+            return
+        }
+
         def type = pActivity?.pActivityFormName
         def siteId = null
-
         def activity = [activityId: "", siteId: siteId, projectId: projectId]
         def model = activityModel(activity, projectId)
         model.pActivity = pActivity
