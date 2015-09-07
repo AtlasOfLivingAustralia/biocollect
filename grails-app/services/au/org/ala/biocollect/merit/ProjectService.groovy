@@ -154,7 +154,7 @@ class ProjectService {
      * @param projectId
      * @return boolean
      */
-    def canUserEditProject(userId, projectId) {
+    def canUserEditProject(userId, projectId, merit = true) {
         def userCanEdit
 
         if (userService.userIsSiteAdmin()) {
@@ -166,13 +166,22 @@ class ProjectService {
         }
 
         // Merit projects are not allowed to be edited.
-        if (userCanEdit) {
+        if (userCanEdit && merit) {
             def project = get(projectId, 'brief')
             def program = metadataService.programModel(project.associatedProgram)
             userCanEdit = !program?.isMeritProgramme
         }
 
         userCanEdit
+    }
+
+    /**
+     * Does the current user have permission the permission to edit project activity /survey?
+     * @param userId the user to test.
+     * @param the project to test.
+     */
+    def canUserEditSurveys(userId, projectId){
+        canUserEditProject(userId, projectId, false)
     }
 
     /**

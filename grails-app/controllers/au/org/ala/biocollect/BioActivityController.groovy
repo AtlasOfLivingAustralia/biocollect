@@ -49,10 +49,9 @@ class BioActivityController {
         def pActivity = projectActivityService.get(id, "docs")
         def projectId = pActivity?.projectId
 
-        if (!projectService.canUserEditProject(userId, projectId)) {
+        if (!projectService.canUserEditSurveys(userId, projectId)) {
             flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
             redirect(controller:'project', action:'index', id: projectId)
-            return
         }
 
         def type = pActivity?.pActivityFormName
