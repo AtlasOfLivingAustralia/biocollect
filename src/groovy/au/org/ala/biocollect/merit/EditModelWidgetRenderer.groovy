@@ -88,7 +88,7 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderEmbeddedImages(WidgetRenderContext context) {
-        // The file upload template has support for muliple images.
+        // The file upload template has support for multiple images.
         renderEmbeddedImage(context)
     }
 
@@ -134,7 +134,11 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
         context.writer << """<div data-bind="ifnot:${context.source}()">"""
         context.writer << """    <button class="btn" id="doAttach" data-bind="click:function(target) {attachDocument(${context.source})}">Attach Document</button>"""
         context.writer << """</div>"""
+    }
 
-
+    @Override
+    void renderSingleSighting(WidgetRenderContext context) {
+        context.writer << context.g.render(plugin: "biocollectSightings", template: "/submitSighting/submitSightingResources")
+        context.writer << context.g.render(plugin: "biocollectSightings", template: "/submitSighting/submitSighting")
     }
 }

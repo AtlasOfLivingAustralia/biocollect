@@ -117,7 +117,7 @@ accuracyValues=[0,10,50,100,500,1000,5000,10000]
 //flag.issues = ['Identification','Geocoding Issue','Suspected Outlier','Temporal Issue','Taxonomic Issue','Habitat Issue']
 flag.issues = ['IDENTIFICATION','GEOCODING_ISSUE','TEMPORAL_ISSUE','HABITAT_ISSUE','--','INAPPROPRIATE_IMAGE']
 showBiocacheLinks = false
-identify.subgroupFacet="names_and_lsid33"
+identify.subgroupFacet="names_and_lsid"
 identify.enabled = true
 // ----------------------------------
 

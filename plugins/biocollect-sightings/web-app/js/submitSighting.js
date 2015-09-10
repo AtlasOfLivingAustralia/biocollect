@@ -310,7 +310,7 @@ $(document).ready(function() {
     $(document.body).on('change', '#guid', function(e) {
         //console.log('#guid on change');
         //$('#speciesLookup').alaAutocomplete.reset();
-        $('#speciesLookup').val('');
+        //$('#speciesLookup').val('');
         var guid = $(this).val();
         setSpecies(guid);
     });
@@ -592,6 +592,28 @@ function addServerImage(image, index) {
 }
 
 /**
+ * Used by the validation engine jquery plugin to validate the selection of a species name or species tags on the Record a Sighting form.
+ *
+ * This rule is defined on the #speciesLookup element.
+ *
+ */
+function validateSpeciesSelection(field, rules, i, options) {
+    var species = $("#taxonDetails .sciName").is(':visible');
+    var tags = $("#tagsBlock").children().length > 0;
+    var media = $("#files").children().length > 0;
+
+    if (!species && (!tags || !media)) {
+        // there is a bug with the funcCall option in JQuery Validation Engine where the rule is triggered but the
+        // message is not raised unless the 'required' rule is also present.
+        // The work-around for this is to manually add the 'required' rule when the message is raised.
+        // http://stackoverflow.com/questions/16182395/jquery-validation-engine-funccall-not-working-if-only-rule
+        rules.push('required');
+        return "Either species name is required OR one or more tags AND media files are both required"
+    }
+}
+
+
+/**
  * Returns true if tag is already present in page DOM
  *
  * @param tag
@@ -607,4 +629,37 @@ function isTagPresent(tag) {
     });
 
     return isTagPresent
+}
+
+
+
+function Sighting() {
+
+    var dirty = false;
+
+    $(":input").change(function() {
+        dirty = true;
+    });
+
+    this.getSightingsDataAsJS = function () {
+        var record = {};
+
+        $(":input").each(function (index, field) {
+            if (field.id) {
+                record[field.id] = field.value;
+            }
+        });
+
+        console.log(JSON.stringify(record));
+
+        return record;
+    };
+
+    this.isDirty = function () {
+        return dirty;
+    };
+
+    this.reset = function () {
+        dirty = false;
+    };
 }

@@ -27,6 +27,8 @@ class UrlMappings {
                         action = [GET: "get", POST: "upload", PUT: "upload", DELETE: "delete"]
                 }
 
+                "/sightingAjax/saveBookmarkLocation" controller: "sightingAjax", action: [POST:"saveBookmarkLocation"]
+
                 "/$controller/$id?"(parseRequest:true) {
 
                         action = [GET: "get", POST: "upload", PUT: "upload", DELETE: "delete"]

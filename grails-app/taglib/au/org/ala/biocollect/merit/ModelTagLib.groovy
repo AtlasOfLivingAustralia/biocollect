@@ -143,6 +143,9 @@ class ModelTagLib {
             case 'document':
                 renderer.renderDocument(renderContext)
                 break
+            case 'singleSighting':
+                renderer.renderSingleSighting(renderContext)
+                break
             default:
                 log.warn("Unhandled widget type: ${model.type}")
                 break

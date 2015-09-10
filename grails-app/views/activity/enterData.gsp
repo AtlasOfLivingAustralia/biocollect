@@ -26,7 +26,7 @@
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,activity,attachDocuments,species,amplify,imageViewer"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,activity,attachDocuments,species,amplify,imageViewer,bootstrap"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -150,7 +150,7 @@
               <h3>Debug</h3>
               <div>
                   <h4>KO model</h4>
-                  <pre data-bind="text:ko.toJSON($root.modelForSaving(),null,2)"></pre>
+                  %{--<pre data-bind="text:ko.toJSON($root.modelForSaving(),null,2)"></pre>--}%
                   <h4>Activity</h4>
                   <pre>${activity?.encodeAsHTML()}</pre>
                   <h4>Site</h4>
@@ -216,13 +216,17 @@
                     };
 
                     // this returns a JS object ready for saving
-                    self.modelForSaving = function () {
-                        // get model as a plain javascript object
-                        var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
+                    if (viewModelName === "Single_SightingViewModel") {
+                        self.modelForSaving = self.data.sighting.getSightingsDataAsJS;
+                    } else {
+                        self.modelForSaving = function () {
+                            // get model as a plain javascript object
+                            var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
 
-                        // get rid of any transient observables
-                        return self.removeBeforeSave(jsData);
-                    };
+                            // get rid of any transient observables
+                            return self.removeBeforeSave(jsData);
+                        };
+                    }
 
                     // this is a version of toJSON that just returns the model as it will be saved
                     // it is used for detecting when the model is modified (in a way that should invoke a save)
@@ -250,7 +254,14 @@
                 window[viewModelInstance].loadData(output);
 
                 // dirtyFlag must be defined after data is loaded
-                window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);
+                if (viewModelName === "Single_SightingViewModel") {
+                    window[viewModelInstance].dirtyFlag = {
+                        isDirty: window[viewModelInstance].data.sighting.isDirty,
+                        reset: window[viewModelInstance].data.sighting.reset
+                    };
+                } else {
+                    window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);
+                }
 
                 ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
 

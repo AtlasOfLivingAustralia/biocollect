@@ -55,7 +55,7 @@ class WebserviceService {
 
             response.failure = { resp ->
                 def error = [error: "Unexpected error: ${resp.statusLine.statusCode} : ${resp.statusLine.reasonPhrase}", status: resp.statusLine.statusCode]
-                log.error "Oops: " + error.error
+                log.error "Oops: ${error.error} for ${url}"
                 return error
             }
         }

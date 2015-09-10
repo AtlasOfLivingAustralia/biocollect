@@ -118,7 +118,7 @@ modules = {
 
     leafletGoogle {
         dependsOn 'leaflet'
-        resource url: 'https://maps.google.com/maps/api/js?v=3.2&sensor=false', plugin: 'biocollect-sightings', attrs: [type: "js"], disposition: 'head'
+//        resource url: 'https://maps.google.com/maps/api/js?v=3.2&sensor=false', plugin: 'biocollect-sightings', attrs: [type: "js"], disposition: 'head'
         resource url: 'vendor/leaflet-plugins/Google.js', plugin: 'biocollect-sightings'
     }
 

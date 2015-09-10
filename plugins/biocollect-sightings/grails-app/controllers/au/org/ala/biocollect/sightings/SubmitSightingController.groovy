@@ -38,7 +38,6 @@ class SubmitSightingController {
         log.debug "getTaxonForGuid = ${getTaxonForGuid(id)}"
         [
                 taxon: getTaxonForGuid(id),
-                coordinateSources: grailsApplication.config.coordinates.sources,
                 speciesGroupsMap: bieService.getSpeciesGroupsMap(),
                 user:authService.userDetails()
         ]
@@ -79,7 +78,6 @@ class SubmitSightingController {
             return new ModelAndView('index', [
                     sighting: sighting,
                     taxon: getTaxonForGuid(guid),
-                    coordinateSources: grailsApplication.config.coordinates.sources,
                     speciesGroupsMap: bieService.getSpeciesGroupsMap(),
                     user:authService.userDetails()
             ])

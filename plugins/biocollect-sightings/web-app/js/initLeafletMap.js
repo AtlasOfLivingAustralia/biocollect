@@ -138,14 +138,12 @@ $(document).ready(function() {
 
     // Save current location
     $('#bookmarkLocation').click(function(e) {
-        e.preventDefault();
         var bookmark = {
             locality: $('#locality').val(),
             userId: GSP_VARS.user.userId,
             decimalLatitude: Number($('#decimalLatitude').val()),
             decimalLongitude: Number($('#decimalLongitude').val())
         };
-
         $.ajax({
             url: GSP_VARS.saveBookmarksUrl,
             dataType: 'json',
@@ -340,7 +338,7 @@ function updateLocation(latlng, keepView) {
                 data: JSON.stringify(params),
                 contentType: 'application/json',
                 type: 'POST',
-                dataType: 'json',
+                dataType: 'json'
             }).done(function(data){
                 var messages = [];
                 if (data.habitatMismatch && data.habitatMismatchDetail) {

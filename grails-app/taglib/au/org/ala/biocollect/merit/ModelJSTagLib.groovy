@@ -20,6 +20,8 @@ class ModelJSTagLib {
             }
             else if (model.dataType == 'matrix') {
                 matrixModel attrs, model, out
+            } else if (model.dataType == 'singleSighting' || model.dataType == 'multipleSightings') {
+                sightingsModel(attrs, model, out)
             }
         }
         // TODO only necessary if the model has a field of type species.
@@ -64,6 +66,8 @@ class ModelJSTagLib {
             }
             else if (mod.dataType == 'document') {
                 documentViewModel(mod, out)
+            } else if (mod.dataType == 'singleSighting') {
+                singleSightingViewModel(mod, out)
             }
         }
         out << INDENT*3 << "self.transients.site = site;"
@@ -305,6 +309,13 @@ class ModelJSTagLib {
         out << "];\n"
     }
 
+    /**
+     * Creates a js array containing Sighting objects for use with single or multiple sighing models
+     */
+    def sightingsModel(attrs, model, out) {
+        out << INDENT*2 << "var ${model.name}Sightings = [];"
+    }
+
     def matrixViewModel(attrs, model, out) {
         out << """
             self.data.${model.name} = [];//ko.observable([]);
@@ -474,6 +485,10 @@ class ModelJSTagLib {
 
     def documentViewModel(model, out) {
         out << "\n" << INDENT*3 << "self.data.${model.name} = ko.observable();\n"
+    }
+
+    def singleSightingViewModel(model, out) {
+        out << "\n" << INDENT*3 << "self.data.sighting = new Sighting();"
     }
 
     def computedObservable(model, propertyContext, dependantContext, out) {
