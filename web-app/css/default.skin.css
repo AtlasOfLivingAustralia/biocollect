@@ -23,6 +23,10 @@ body {
     height: 100%; /*FIXED FOOTER*/
 }
 
+#main-content {
+    padding-bottom: 20px; /* matches .content bottom padding in merit */
+}
+
 #fixed-footer-wrapper {  /*FIXED FOOTER*/
     min-height: 100%;
     height: auto !important; /* for IE6 */
@@ -103,4 +107,13 @@ footer img {
 .logo-small {
     width: 1.2em;
     margin: 0 2px;
+}
+
+/* apply colours to nav list divs masquerading as a */
+.nav-list > li > div {
+    color: #C44D34;
+}
+
+.nav-list>.active>div, .nav-list>.active>div:hover, .nav-list>.active>div:focus {
+    background-color: #c44d34;
 }

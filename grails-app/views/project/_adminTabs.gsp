@@ -51,10 +51,22 @@
 
                 <!-- DOCUMENTS -->
                 <div id="edit-documents" class="pill-pane">
-                    <h3>Project Documents</h3>
+                    %{--<h3>Project Documents</h3>--}%
+                    %{--<div class="row-fluid">--}%
+                        %{--<div class="span10">--}%
+                        %{--</div>--}%
+                    %{--</div>--}%
+                    <h3>Project Resources</h3>
                     <div class="row-fluid">
                         <div class="span10">
+                            <g:render template="/shared/editDocuments"
+                                    model="[useExistingModel: true,editable:true, filterBy: 'all', ignore: '', imageUrl:resource(dir:'/images/filetypes'),containerId:'adminDocumentList']"/>
                         </div>
+                    </div>
+                    %{--The modal view containing the contents for a modal dialog used to attach a document--}%
+                    <g:render template="/shared/attachDocument"/>
+                    <div class="row-fluid attachDocumentModal">
+                        <button class="btn" id="doAttach" data-bind="click:attachDocument">Attach Document</button>
                     </div>
                 </div>
 

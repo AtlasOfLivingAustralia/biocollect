@@ -1,15 +1,35 @@
 <script id="imageDocTmpl" type="text/html">
-<a class="pull-left" style="width:32px;height:32px;" data-bind="attr:{href:url}" target="_blank">
+<span class="pull-left" style="width:32px;height:32px;">
     <img class="media-object img-rounded span1" data-bind="attr:{src:thumbnailUrl}, alt:name" style="width:32px;height:32px;" width="32" height="32" alt="image preview icon">
-</a>
-<div data-bind="template:'imgMediaBody'"></div>
+</span>
+<div class="media-body">
+    <a class="pull-right" data-bind="attr:{href:url}, clickBubble: false" target="_blank">
+        <i class="fa fa-download"></i>
+    </a>
+    <span>
+        <small class="media-heading" data-bind="text:name"></small>
+    </span>
+    <span class="muted" data-bind="if:$data.attribution">
+        <small data-bind="text:attribution"></small>
+    </span>
+</div>
 </script>
 
 <script id="objDocTmpl" type="text/html">
-<a class="pull-left" data-bind="attr:{href:url}">
+<span class="pull-left">
     <img class="media-object" data-bind="attr:{src:filetypeImg(), alt:name}" alt="document icon">
-</a>
-<div data-bind="template:'docMediaBody'"></div>
+</span>
+<div class="media-body">
+    <a class="pull-right" data-bind="attr:{href:url}, clickBubble: false" target="_blank">
+        <i class="fa fa-download"></i>
+    </a>
+    <span>
+        <small class="media-heading" data-bind="text:name"></small>
+    </span>
+    <span class="muted" data-bind="if:$data.attribution">
+        <small data-bind="text:attribution"></small>
+    </span>
+</div>
 </script>
 
 <script id="imageDocEditTmpl" type="text/html">
@@ -36,10 +56,13 @@
 
 <script id="docMediaBody" type="text/html">
 <div class="media-body">
+    <a class="pull-right" data-bind="attr:{href:url}" target="_blank">
+        <i class="fa fa-download"></i>
+    </a>
     <a data-bind="attr:{href:url}">
         <small class="media-heading" data-bind="text:name"></small>
     </a>
-    <span data-bind="if:$data.attribution">
+    <span class="muted" data-bind="if:$data.attribution">
         <small data-bind="text:attribution"></small>
     </span>
 </div>
@@ -47,10 +70,13 @@
 
 <script id="imgMediaBody" type="text/html">
 <div class="media-body">
+    <a class="pull-right" data-bind="attr:{href:url}" target="_blank">
+        <i class="fa fa-download"></i>
+    </a>
     <a data-bind="attr:{href:url}" target="_blank">
         <small class="media-heading" data-bind="text:name"></small>
     </a>
-    <span data-bind="if:$data.attribution">
+    <span class="muted" data-bind="if:$data.attribution">
         <small data-bind="text:attribution"></small>
     </span>
 </div>

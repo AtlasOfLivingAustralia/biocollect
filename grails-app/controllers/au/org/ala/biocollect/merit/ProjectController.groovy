@@ -84,7 +84,7 @@ class ProjectController {
 
         [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
          news:[label:'News', visible: true, type:'tab'],
-         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:user?.isEditor,  visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
+         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:!project.isExternal, template:'/projectActivity/data', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
          site:[label:'Location', visible: !project.isExternal, stopBinding:true, wordForSite:'Location', template:'/site/sitesList', editable:user?.isEditor == true, type:'tab'],

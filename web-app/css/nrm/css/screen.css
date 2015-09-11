@@ -2465,3 +2465,12 @@ span.merit {
     width: 16px;
     margin: 0 2px;
 }
+
+/* apply primary colour to nav list div masquerading as a */
+.nav-list > li > div {
+    color: #006699;
+}
+
+.nav-list > .active > div, .nav-list > .active > div:hover, .nav-list > .active > div:focus {
+    background-color: #006699;
+}
