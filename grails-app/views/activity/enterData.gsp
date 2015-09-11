@@ -217,7 +217,15 @@
 
                     // this returns a JS object ready for saving
                     if (viewModelName === "Single_SightingViewModel") {
-                        self.modelForSaving = self.data.sighting.getSightingsDataAsJS;
+                        self.modelForSaving = function() {
+                            var outputData = {
+                                name: "${output.name}",
+                                outputId: "${output.outputId}",
+                                data: self.data.sighting.getSightingsDataAsJS()
+                            };
+
+                            return outputData;
+                        }
                     } else {
                         self.modelForSaving = function () {
                             // get model as a plain javascript object

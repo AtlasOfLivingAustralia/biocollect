@@ -281,7 +281,8 @@ $(document).ready(function() {
 
     // species subgroup drop-down
     $('#speciesSubgroups').change(function(e) {
-        addTagLabel($(this).val(), 'subgroup');
+        var subgroup = $(this).val();
+        addTagLabel(subgroup, 'subgroup');
         //$(this).val(''); // reset
     });
 
@@ -650,9 +651,37 @@ function Sighting() {
             }
         });
 
+        record.speciesTags = [];
+        $('.tags').each(function() {
+            var tag = {
+                name: $(this).val(),
+                type: $(this).attr('class').split(" ")[1]
+            };
+            record.speciesTags.push(tag)
+        });
+
         console.log(JSON.stringify(record));
 
         return record;
+    };
+
+    this.loadSightingData = function (data) {
+        console.log(JSON.stringify(data));
+
+        for (var property in data) {
+            $('#' + property).val(data[property]);
+            $('#' + property).change();
+        }
+
+        if (data.speciesTags) {
+            data.speciesTags.forEach(function (tag) {
+                addTagLabel(tag.name, tag.type);
+            });
+        }
+
+        if (data.guid) {
+            setSpecies(data.guid);
+        }
     };
 
     this.isDirty = function () {

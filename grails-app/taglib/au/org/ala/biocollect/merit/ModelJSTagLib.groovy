@@ -109,7 +109,8 @@ class ModelJSTagLib {
                 out << INDENT*4 << "if (doc) {\n"
                 out << INDENT*8 << "self.data['${mod.name}'](new DocumentViewModel(doc));\n"
                 out << INDENT*4 << "}\n"
-
+            } else if (mod.dataType == 'singleSighting') {
+                out << INDENT*4 << "self.data.sighting.loadSightingData(data);\n"
             }
         }
     }
