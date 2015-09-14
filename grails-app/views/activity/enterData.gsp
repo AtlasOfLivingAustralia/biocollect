@@ -216,25 +216,7 @@
                     };
 
                     // this returns a JS object ready for saving
-                    if (viewModelName === "Single_SightingViewModel") {
-                        self.modelForSaving = function() {
-                            var outputData = {
-                                name: "${output.name}",
-                                outputId: "${output.outputId}",
-                                data: self.data.sighting.getSightingsDataAsJS()
-                            };
-
-                            return outputData;
-                        }
-                    } else {
-                        self.modelForSaving = function () {
-                            // get model as a plain javascript object
-                            var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
-
-                            // get rid of any transient observables
-                            return self.removeBeforeSave(jsData);
-                        };
-                    }
+                    <md:jsSaveModel model="${model}" output="${output}"/>
 
                     // this is a version of toJSON that just returns the model as it will be saved
                     // it is used for detecting when the model is modified (in a way that should invoke a save)
@@ -262,16 +244,9 @@
                 window[viewModelInstance].loadData(output);
 
                 // dirtyFlag must be defined after data is loaded
-                if (viewModelName === "Single_SightingViewModel") {
-                    window[viewModelInstance].dirtyFlag = {
-                        isDirty: window[viewModelInstance].data.sighting.isDirty,
-                        reset: window[viewModelInstance].data.sighting.reset
-                    };
-                } else {
-                    window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);
-                }
+                <md:jsDirtyFlag model="${model}"/>
 
-                ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
+               ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
 
                 // this resets the baseline for detecting changes to the model
                 // - shouldn't be required if everything behaves itself but acts as a backup for

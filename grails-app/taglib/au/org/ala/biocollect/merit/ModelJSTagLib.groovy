@@ -115,6 +115,49 @@ class ModelJSTagLib {
         }
     }
 
+    def jsSaveModel = { attrs ->
+        attrs.model?.dataModel?.each { mod ->
+            switch (mod.dataType) {
+                case "singleSighting":
+                    out << INDENT*4 << "self.modelForSaving = function() {\n"
+                    out << INDENT*8 << "var outputData = {\n"
+                    out << INDENT*12 << "name: '${attrs.output.name}',\n"
+                    out << INDENT*12 << "outputId: '${attrs.output.outputId}',\n"
+                    out << INDENT*12 << "data: self.data.sighting.getSightingsDataAsJS()\n"
+                    out << INDENT*8 << "};\n"
+                    out << INDENT*8 << "return outputData;\n"
+                    out << INDENT*4 << "}\n"
+                    break
+                default:
+                    out << INDENT*4 << "self.modelForSaving = function () {\n"
+                        // get model as a plain javascript object
+                    out << INDENT*8 << "var jsData = ko.mapping.toJS(self, {'ignore':['transients']});\n"
+                        // get rid of any transient observables
+                    out << INDENT*8 << "return self.removeBeforeSave(jsData);\n"
+                    out << INDENT*4 << "};\n\n"
+                    break
+            }
+        }
+    }
+
+    def jsDirtyFlag = { attrs ->
+        attrs.model?.dataModel?.each { mod ->
+            switch (mod.dataType) {
+                case "singleSighting":
+                    out << """
+                        window[viewModelInstance].dirtyFlag = {
+                            isDirty: window[viewModelInstance].data.sighting.isDirty,
+                            reset: window[viewModelInstance].data.sighting.reset
+                        };
+                    """
+                    break
+                default:
+                    out << "window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);"
+                    break
+            }
+        }
+    }
+
     def columnTotalsModel(out, attrs, model) {
         if (!model.columnTotals) { return }
         out << INDENT*3 << "self.data.${model.columnTotals.name} = ko.observable({});\n"
