@@ -107,9 +107,4 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
         context.writer << """</div>"""
     }
 
-    @Override
-    void renderSingleSighting(WidgetRenderContext context) {
-        println "sdfkghdfklghdfsklghsdfklghdfslkghdfsklghsdfklghdfsklghsdfklghkdlsfgklsdfgkldsfghkldsfhgkldsfgkldshgdsflkghdsfklghdsfklghdsfklghsdfklghdsflkghdsfklghdfslkgh"
-        context.writer << """<iframe src="/${request.contextRoot() + "/submitSighting"}"></iframe> """
-    }
 }

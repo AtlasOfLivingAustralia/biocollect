@@ -136,9 +136,4 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
         context.writer << """</div>"""
     }
 
-    @Override
-    void renderSingleSighting(WidgetRenderContext context) {
-        context.writer << context.g.render(plugin: "biocollectSightings", template: "/submitSighting/submitSightingResources")
-        context.writer << context.g.render(plugin: "biocollectSightings", template: "/submitSighting/submitSighting")
-    }
 }

@@ -53,7 +53,7 @@ class ModelTagLib {
                     photoPoints out, attrs, mod, index
                     break
                 case 'template':
-                    out << g.render(template:mod.source, plugin: 'fieldcapture-plugin')
+                    out << g.render(template:mod.source, plugin: "${mod.plugin ?: 'fieldcapture-plugin'}")
                     break
             }
         }
@@ -142,9 +142,6 @@ class ModelTagLib {
                 break
             case 'document':
                 renderer.renderDocument(renderContext)
-                break
-            case 'singleSighting':
-                renderer.renderSingleSighting(renderContext)
                 break
             default:
                 log.warn("Unhandled widget type: ${model.type}")

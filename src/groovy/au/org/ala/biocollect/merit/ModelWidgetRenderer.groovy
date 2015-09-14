@@ -21,7 +21,6 @@ public interface ModelWidgetRenderer {
     void renderLink(WidgetRenderContext context)
     void renderDate(WidgetRenderContext context)
     void renderDocument(WidgetRenderContext context)
-    void renderSingleSighting(WidgetRenderContext context)
 
 }
 
