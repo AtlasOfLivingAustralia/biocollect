@@ -2,7 +2,7 @@ package au.org.ala.biocollect.merit
 import grails.converters.JSON
 
 class SearchController {
-    def searchService, webService, speciesService, grailsApplication, commonService
+    def searchService, webService, speciesService, grailsApplication, commonService, projectActivityService
 
     /**
      * Main search page that takes its input from the search bar in the header
@@ -21,13 +21,35 @@ class SearchController {
      * @return
      */
     def species(String q, Integer limit) {
-
         render speciesService.searchForSpecies(q, limit, params.listId) as JSON
-
     }
 
     def searchSpeciesList(String sort, Integer max, Integer offset){
         render speciesService.searchSpeciesList(sort, max, offset) as JSON
+    }
+
+    //Search species by project activity species constraint.
+    def searchSpecies(String id, String q, Integer limit){
+        def pActivity = projectActivityService.get(id)
+        def result
+        switch(pActivity?.species?.type){
+            case 'SINGLE_SPECIES':
+                result = speciesService.searchForSpecies(pActivity?.species?.singleSpecies?.name, 1)
+                break
+
+            case 'ALL_SPECIES':
+                result = speciesService.searchForSpecies(q, limit)
+                break
+
+            case 'GROUP_OF_SPECIES':
+                def lists = pActivity?.species?.speciesLists
+                result = speciesService.searchSpeciesInLists(q, lists, limit)
+                break
+            default:
+                result = [autoCompleteList: []]
+                break
+        }
+        render result as JSON
     }
 
     @PreAuthorise(accessLevel = 'siteReadOnly', redirectController ='home', redirectAction = 'index')

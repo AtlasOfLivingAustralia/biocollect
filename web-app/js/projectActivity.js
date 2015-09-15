@@ -354,7 +354,7 @@ var SpeciesConstraintViewModel = function (o){
 
     self.type = ko.observable(o.type);
     self.allSpeciesLists  = new SpeciesListsViewModel();
-    self.singleSpecies = new Species(o.singleSpecies);
+    self.singleSpecies = new SpeciesViewModel(o.singleSpecies);
     self.speciesLists = ko.observableArray($.map(o.speciesLists ? o.speciesLists : [], function (obj, i) {
         return new SpeciesList(obj);
     }));
@@ -563,7 +563,7 @@ var SpeciesList = function(o){
     self.listType = ko.observable(o.listType);
     self.allSpecies = ko.observableArray();
     self.addNewSpeciesName = function(){
-        self.allSpecies.push(new Species());
+        self.allSpecies.push(new SpeciesViewModel());
     };
     self.removeNewSpeciesName = function(species){
         self.allSpecies.remove(species);
@@ -573,27 +573,6 @@ var SpeciesList = function(o){
     self.transients.bulkSpeciesNames = ko.observable(o.bulkSpeciesNames);
     self.transients.url  = ko.observable(fcConfig.speciesListsServerUrl + "/speciesListItem/list/" + o.dataResourceUid);
     self.transients.check = ko.observable(false);
-};
-
-var Species = function(o){
-    var self = this;
-    if(!o) o = {};
-    self.name = ko.observable(o.name);
-    self.guid = ko.observable(o.guid);
-
-    self.transients = {};
-    self.transients.name = ko.observable(o.name);
-    self.transients.guid = ko.observable(o.guid);
-
-    self.focusLost = function(event) {
-        self.name(self.transients.name());
-        self.guid(self.transients.guid());
-    };
-
-    self.transients.guid.subscribe(function(newValue) {
-        self.name(self.transients.name());
-        self.guid(self.transients.guid());
-    });
 };
 
 var ImagesViewModel = function(image){

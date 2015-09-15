@@ -51,6 +51,10 @@ class ActivityService {
         activity
     }
 
+    def activitiesForUser(userId){
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/activitiesForUser/' + userId)?.list
+    }
+
     def create(activity) {
         update('', activity)
     }

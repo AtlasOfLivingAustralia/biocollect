@@ -17,6 +17,18 @@ class SpeciesService {
         return results
     }
 
+    def searchSpeciesInLists(searchTerm, lists, limit = 10){
+        def results
+        def autoCompleteList = []
+        lists?.each{ list ->
+            def listResults =  filterSpeciesList(searchTerm, list?.dataResourceUid)
+            listResults.autoCompleteList?.each{
+                autoCompleteList << it
+            }
+        }
+        results = [autoCompleteList: autoCompleteList]
+    }
+
     /**
      * Searches for an exact match of scientific name in the BIE and optionally a project list.
      * @param scientificName the scientific name of the taxa to search for.
@@ -36,7 +48,7 @@ class SpeciesService {
      * @return a JSON formatted String of the form {"autoCompleteList":[{...results...}]}
      */
     private def filterSpeciesList(String query, String listId) {
-        def listContents = webService.getJson("${grailsApplication.config.lists.baseURL}/ws/speciesListItems/${listId}", false)
+        def listContents = webService.getJson("${grailsApplication.config.lists.baseURL}/ws/speciesListItems/${listId}")
 
         def filtered = listContents.findResults({it.name?.toLowerCase().contains(query.toLowerCase()) ? [id: it.id, listId: listId, name: it.name, scientificNameMatches:[it.name], guid:it.lsid]: null})
 

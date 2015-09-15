@@ -87,7 +87,6 @@ class ProjectController {
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:user?.isEditor,  visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:!project.isExternal, template:'/projectActivity/data', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
-         site:[label:'Location', visible: !project.isExternal, stopBinding:true, wordForSite:'Location', template:'/site/sitesList', editable:user?.isEditor == true, type:'tab'],
          admin:[label:'Admin', template:'adminTabs', visible:(user?.isAdmin || user?.isCaseManager), type:'tab']]
     }
 

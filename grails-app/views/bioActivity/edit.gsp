@@ -2,18 +2,18 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <g:if test="${printView}">
-        <meta name="layout" content="nrmPrint"/>
-        <title>Print | ${activity.type} | Bio Collect</title>
-    </g:if>
-    <g:else>
-        <meta name="layout" content="${hubConfig.skin}"/>
-        <title>Create | ${activity.type} | Bio Collect</title>
-    </g:else>
+  <g:if test="${printView}">
+    <meta name="layout" content="nrmPrint"/>
+    <title>Print | ${activity.type} | Bio Collect</title>
+  </g:if>
+  <g:else>
+    <meta name="layout" content="${hubConfig.skin}"/>
+    <title>Edit | ${activity.type} | Bio Collect</title>
+  </g:else>
 
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-    <r:script disposition="head">
+  <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
+  <r:script disposition="head">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
@@ -24,103 +24,103 @@
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         imageLocation:"${resource(dir:'/images')}",
         speciesSearch: "${createLink(controller: 'search', action:'searchSpecies', params:[id: pActivity.projectActivityId, limit:10])}",
-        bioActivityUpdate: "${createLink(controller: 'bioActivity', action:'ajaxUpdate', params:[pActivityId: pActivity.projectActivityId])}"
+        bioActivityUpdate: "${createLink(controller: 'bioActivity', action:'ajaxUpdate', params:[pActivityId: pActivity.projectActivityId, id:id])}"
         },
         here = document.location.href;
-    </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,activity,attachDocuments,amplify,imageViewer,projectActivityInfo,species"/>
+  </r:script>
+  <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,activity,attachDocuments,amplify,imageViewer,projectActivityInfo,species"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
-    <div id="koActivityMainBlock">
-        <g:if test="${!printView}">
-            <ul class="breadcrumb">
-                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-                <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
-                <li class="active">
-                    <span>${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span>
-                </li>
-            </ul>
+  <div id="koActivityMainBlock">
+    <g:if test="${!printView}">
+      <ul class="breadcrumb">
+        <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
+        <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
+        <li class="active">
+          <span>${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span>
+        </li>
+      </ul>
+    </g:if>
+
+    <g:render template="header"></g:render>
+
+  <!-- ko stopBinding: true -->
+    <g:each in="${metaModel?.outputs}" var="outputName">
+      <g:if test="${outputName != 'Photo Points'}">
+        <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
+        <g:set var="model" value="${outputModels[outputName]}"/>
+        <g:set var="output" value="${activity.outputs.find {it.name == outputName}}"/>
+        <g:if test="${!output}">
+          <g:set var="output" value="[name: outputName]"/>
         </g:if>
 
-        <g:render template="header"></g:render>
+        <md:modelStyles model="${model}" edit="true"/>
 
-<!-- ko stopBinding: true -->
-    <g:each in="${metaModel?.outputs}" var="outputName">
-        <g:if test="${outputName != 'Photo Points'}">
-            <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
-            <g:set var="model" value="${outputModels[outputName]}"/>
-            <g:set var="output" value="${activity.outputs.find {it.name == outputName}}"/>
-            <g:if test="${!output}">
-                <g:set var="output" value="[name: outputName]"/>
-            </g:if>
+        <div class="output-block well" id="ko${blockId}">
 
-            <md:modelStyles model="${model}" edit="true"/>
+          <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h3>
 
-            <div class="output-block well" id="ko${blockId}">
+          <!-- add the dynamic components -->
 
-                <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h3>
+          <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}" printable="${printView}" />
 
-                <!-- add the dynamic components -->
-
-                <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}" printable="${printView}" />
-
-                <r:script>
+          <r:script>
                     $(function(){
                         var viewModelName = "${blockId}ViewModel", viewModelInstance = viewModelName + "Instance";
 
                         // load dynamic models - usually objects in a list
-                        <md:jsModelObjects model="${model}" site="${site}"  edit="true" viewModelInstance="${blockId}ViewModelInstance"/>
+            <md:jsModelObjects model="${model}" site="${site}"  edit="true" viewModelInstance="${blockId}ViewModelInstance"/>
 
-                        this[viewModelName] = function () {
-                            var self = this;
-                            self.name = "${output.name}";
+            this[viewModelName] = function () {
+                var self = this;
+                self.name = "${output.name}";
                             self.outputId = "${output.outputId}";
                             self.data = {};
                             self.transients = {};
                             self.transients.dummy = ko.observable();
                             // add declarations for dynamic data
-                            <md:jsViewModel model="${model}"  output="${output.name}"  edit="true" viewModelInstance="${blockId}ViewModelInstance"/>
-                            // this will be called when generating a savable model to remove transient properties
-                            self.removeBeforeSave = function (jsData) {
-                                // add code to remove any transients added by the dynamic tags
-                                <md:jsRemoveBeforeSave model="${model}"/>
-                                delete jsData.activityType;
-                                delete jsData.transients;
-                                return jsData;
-                            };
+            <md:jsViewModel model="${model}"  output="${output.name}"  edit="true" viewModelInstance="${blockId}ViewModelInstance"/>
+            // this will be called when generating a savable model to remove transient properties
+            self.removeBeforeSave = function (jsData) {
+                // add code to remove any transients added by the dynamic tags
+            <md:jsRemoveBeforeSave model="${model}"/>
+            delete jsData.activityType;
+            delete jsData.transients;
+            return jsData;
+        };
 
-                            // this returns a JS object ready for saving
-                            self.modelForSaving = function () {
-                                // get model as a plain javascript object
-                                var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
+        // this returns a JS object ready for saving
+        self.modelForSaving = function () {
+            // get model as a plain javascript object
+            var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
 
-                                // get rid of any transient observables
-                                return self.removeBeforeSave(jsData);
-                            };
+            // get rid of any transient observables
+            return self.removeBeforeSave(jsData);
+        };
 
-                            // this is a version of toJSON that just returns the model as it will be saved
-                            // it is used for detecting when the model is modified (in a way that should invoke a save)
-                            // the ko.toJSON conversion is preserved so we can use it to view the active model for debugging
-                            self.modelAsJSON = function () {
-                                return JSON.stringify(self.modelForSaving());
-                            };
+        // this is a version of toJSON that just returns the model as it will be saved
+        // it is used for detecting when the model is modified (in a way that should invoke a save)
+        // the ko.toJSON conversion is preserved so we can use it to view the active model for debugging
+        self.modelAsJSON = function () {
+            return JSON.stringify(self.modelForSaving());
+        };
 
-                            self.loadData = function (data) {
-                                // load dynamic data
-                                <md:jsLoadModel model="${model}"/>
+        self.loadData = function (data) {
+            // load dynamic data
+            <md:jsLoadModel model="${model}"/>
 
-                                // if there is no data in tables then add an empty row for the user to add data
-                                if (typeof self.addRow === 'function' && self.rowCount() === 0) {
-                                    self.addRow();
-                                }
-                                self.transients.dummy.notifySubscribers();
-                            };
-                        };
+            // if there is no data in tables then add an empty row for the user to add data
+            if (typeof self.addRow === 'function' && self.rowCount() === 0) {
+                self.addRow();
+            }
+            self.transients.dummy.notifySubscribers();
+        };
+    };
 
-                        window[viewModelInstance] = new this[viewModelName](site);
+    window[viewModelInstance] = new this[viewModelName](site);
 
-                        var output = ${output.data ?: '{}'};
+    var output = ${output.data ?: '{}'};
 
                         window[viewModelInstance].loadData(output);
 
@@ -158,75 +158,75 @@
                             window[viewModelInstance].loadData(savedOutput);
                         }
                     });
-                </r:script>
-            </div>
-        </g:if>
+          </r:script>
+        </div>
+      </g:if>
     </g:each>
-<!-- /ko -->
+  <!-- /ko -->
 
 
     <div class="row-fluid">
 
-        <div class="span12 well">
-            <h3>Site Details:</h3>
-            <fc:select data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."' printable="${printView}"/>
-            <div id="map" style="width:100%; height: 512px;"></div>
-        </div>
+      <div class="span12 well">
+        <h3>Site Details:</h3>
+        <fc:select data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."' printable="${printView}"/>
+        <div id="map" style="width:100%; height: 512px;"></div>
+      </div>
 
     </div>
 
     <div class="output-block well" data-bind="with:transients.photoPointModel">
-        <h3>Photo Points</h3>
-        <g:render template="/site/photoPoints"></g:render>
+      <h3>Photo Points</h3>
+      <g:render template="/site/photoPoints"></g:render>
     </div>
 
 
     <g:if test="${!printView}">
-        <div class="form-actions">
-            <button type="button" id="save" class="btn btn-primary">Submit</button>
-            <button type="button" id="cancel" class="btn">Cancel</button>
-        </div>
+      <div class="form-actions">
+        <button type="button" id="save" class="btn btn-primary">Submit</button>
+        <button type="button" id="cancel" class="btn">Cancel</button>
+      </div>
     </g:if>
 
     <g:if env="development" test="${!printView}">
-        <div class="expandable-debug">
-            <hr />
-            <h3>Debug</h3>
-            <div>
-                <h4>KO model</h4>
-                <pre data-bind="text:ko.toJSON($root.modelForSaving(),null,2)"></pre>
-                <h4>Activity</h4>
-                <pre>${activity?.encodeAsHTML()}</pre>
-                <h4>Site</h4>
-                <pre>${site?.encodeAsHTML()}</pre>
-                <h4>Sites</h4>
-                <pre>${(sites as JSON).toString()}</pre>
-                <h4>Project</h4>
-                <pre>${project?.encodeAsHTML()}</pre>
-                <h4>Activity model</h4>
-                <pre>${metaModel}</pre>
-                <h4>Output models</h4>
-                <pre>${outputModels?.encodeAsHTML()}</pre>
-                <h4>Map features</h4>
-                <pre>${mapFeatures.toString()}</pre>
-            </div>
+      <div class="expandable-debug">
+        <hr />
+        <h3>Debug</h3>
+        <div>
+          <h4>KO model</h4>
+          <pre data-bind="text:ko.toJSON($root.modelForSaving(),null,2)"></pre>
+          <h4>Activity</h4>
+          <pre>${activity?.encodeAsHTML()}</pre>
+          <h4>Site</h4>
+          <pre>${site?.encodeAsHTML()}</pre>
+          <h4>Sites</h4>
+          <pre>${(sites as JSON).toString()}</pre>
+          <h4>Project</h4>
+          <pre>${project?.encodeAsHTML()}</pre>
+          <h4>Activity model</h4>
+          <pre>${metaModel}</pre>
+          <h4>Output models</h4>
+          <pre>${outputModels?.encodeAsHTML()}</pre>
+          <h4>Map features</h4>
+          <pre>${mapFeatures.toString()}</pre>
         </div>
+      </div>
     </g:if>
 
-</div>
+  </div>
 
-<div id="timeoutMessage" class="hide">
+  <div id="timeoutMessage" class="hide">
 
     <span class='label label-important'>Important</span><h4>There was an error while trying to save your changes.</h4>
     <p>This could be because your login has timed out or the internet is unavailable.</p>
     <p>Your data has been saved on this computer but you may need to login again before the data can be sent to the server.</p>
     <a href="${createLink(action:'enterData', id:activity.activityId)}?returnTo=${returnTo}">Click here to refresh your login and reload this page.</a>
-</div>
+  </div>
 
 
-<g:render template="/shared/imagerViewerModal" model="[readOnly:false]"></g:render>
+  <g:render template="/shared/imagerViewerModal" model="[readOnly:false]"></g:render>
 
-<r:script>
+  <r:script>
 
     var returnTo = "${returnTo}";
 
@@ -305,8 +305,8 @@
                             errorText = "<span class='label label-important'>Important</span><h4>There was an error while trying to save your changes.</h4>";
                             $.each(data.errors, function (i, error) {
                                 errorText += "<p>Saving <b>" +
-                                    (error.name === 'activity' ? 'the activity context' : error.name) +
-                                    "</b> threw the following error:<br><blockquote>" + error.error + "</blockquote></p>";
+  (error.name === 'activity' ? 'the activity context' : error.name) +
+  "</b> threw the following error:<br><blockquote>" + error.error + "</blockquote></p>";
                             });
                             errorText += "<p>Any other changes should have been saved.</p>";
                             bootbox.alert(errorText);
@@ -455,7 +455,7 @@
                 bootbox.confirm("Delete this entire activity? Are you sure?", function(result) {
                     if (result) {
                         document.location.href = "${createLink(action:'delete',id:activity.activityId,
-        params:[returnTo:grailsApplication.config.grails.serverURL + '/' + returnTo])}";
+          params:[returnTo:grailsApplication.config.grails.serverURL + '/' + returnTo])}";
                     }
                 });
             };
@@ -473,8 +473,8 @@
         var viewModel = new ViewModel(
             activity,
             site,
-            ${project ? "JSON.parse('${project.toString().encodeAsJavaScript()}')": 'null'},
-            ${metaModel ?: 'null'},
+    ${project ? "JSON.parse('${project.toString().encodeAsJavaScript()}')": 'null'},
+    ${metaModel ?: 'null'},
             pActivity);
 
 
@@ -502,6 +502,6 @@
         master.register('activityModel', viewModel.modelForSaving, viewModel.dirtyFlag.isDirty, viewModel.dirtyFlag.reset);
 
     });
-</r:script>
+  </r:script>
 </body>
 </html>

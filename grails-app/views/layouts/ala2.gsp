@@ -56,8 +56,12 @@
                                 <div class="dropdown-menu pull-right">
                                     <fc:userProjectList />
                                 </div>
+
                                 <button class="btn btn-small btn-fc btnNewProject" title="new project">
                                     <i class="icon-plus"></i><span class="">&nbsp; New Project</span>
+                                </button>
+                                <button class="btn btn-small btn-fc btnMyData" title="new project">
+                                    <i class="icon-folder-open"></i><span class="">&nbsp; My Records</span>
                                 </button>
                             </div>
                             <g:if test="${fc.userIsSiteAdmin()}">
@@ -141,6 +145,11 @@
         $(".btnProfile").click(function (e) {
             window.location = "${createLink(controller: 'myProfile')}";
         });
+
+        $(".btnMyData").click(function (e) {
+            window.location = "${createLink(controller: 'bioActivity', action: 'list')}";
+        });
+
 
         $("#toggleFluid").click(function(el){
             var fluidNo = $('div.container-fluid').length;

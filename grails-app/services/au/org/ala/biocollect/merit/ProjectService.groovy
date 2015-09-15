@@ -162,7 +162,6 @@ class ProjectService {
         } else {
             def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProject?projectId=${projectId}&userId=${userId}"
             userCanEdit = webService.getJson(url)?.userIsEditor?:false
-
         }
 
         // Merit projects are not allowed to be edited.
@@ -176,13 +175,25 @@ class ProjectService {
     }
 
     /**
-     * Does the current user have permission the permission to edit project activity /survey?
+     * Can user edit bio collect activity
      * @param userId the user to test.
-     * @param the project to test.
+     * @param the activity to test.
      */
-    def canUserEditSurveys(userId, projectId){
-        canUserEditProject(userId, projectId, false)
+    def canUserEditActivity(userId, activity){
+
+        def userCanEdit = false
+        if(userService.userIsSiteAdmin()){
+            userCanEdit = true
+        } else {
+            def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProject?projectId=${activity?.projectId}&userId=${userId}"
+            def result = webService.getJson(url)?.userIsEditor ?: false
+            if (result && activity?.userId == userId) {
+                userCanEdit = true
+            }
+        }
+        userCanEdit
     }
+
 
     /**
      * Does the current user have permission to view details of the requested projectId?

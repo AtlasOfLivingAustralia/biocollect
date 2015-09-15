@@ -94,13 +94,16 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderAutocomplete(WidgetRenderContext context) {
+        renderFusedAutocomplete(context)
+    }
+
+    @Override
+    void renderFusedAutocomplete(WidgetRenderContext context) {
         def newAttrs = new Databindings()
-        def link = context.g.createLink(controller: 'search', action:'species', absolute:'true')
-
-        newAttrs.add "value", "transients.textFieldValue"
+        def source = context.g.createLink(controller: 'search', action:'species', absolute:'true')
+        newAttrs.add "value", "name"
         newAttrs.add "event", "{focusout:focusLost}"
-        newAttrs.add "autocomplete", "{url:'${link}', render: renderItem, listId: list, result:speciesSelected, valueChangeCallback:textFieldChanged}"
-
+        newAttrs.add "fusedAutocomplete", "{source:transients.source, name:transients.name, guid:transients.guid}"
         context.writer << context.g.render(template: '/output/speciesTemplate', plugin:'fieldcapture-plugin', model:[source: context.source, databindAttrs: newAttrs.toString(), validationAttrs:context.validationAttr])
     }
 

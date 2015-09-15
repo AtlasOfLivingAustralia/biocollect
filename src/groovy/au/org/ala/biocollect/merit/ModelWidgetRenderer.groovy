@@ -17,6 +17,7 @@ public interface ModelWidgetRenderer {
     void renderEmbeddedImage(WidgetRenderContext context)
     void renderEmbeddedImages(WidgetRenderContext context)
     void renderAutocomplete(WidgetRenderContext context)
+    void renderFusedAutocomplete(WidgetRenderContext context)
     void renderPhotoPoint(WidgetRenderContext context)
     void renderLink(WidgetRenderContext context)
     void renderDate(WidgetRenderContext context)

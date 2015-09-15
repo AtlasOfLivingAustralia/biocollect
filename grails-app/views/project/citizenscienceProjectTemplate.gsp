@@ -162,7 +162,7 @@
             });
         }
 
-        initialiseSites(project.sites);
+        initialiseProjectArea();
         var pActivitiesVM = new ProjectActivitiesViewModel(pActivities, pActivityForms, project.projectId, project.sites);
         initialiseProjectActivitiesList(pActivitiesVM);
         initialiseProjectActivitiesData(pActivitiesVM);
