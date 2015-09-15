@@ -131,7 +131,6 @@ class ProjectControllerSpec extends Specification {
         model.projectContent.about.visible == true
         model.projectContent.documents.visible == false
         model.projectContent.activities.visible == false
-        model.projectContent.site.visible == false
         model.projectContent.admin.visible == false
     }
 
@@ -153,7 +152,6 @@ class ProjectControllerSpec extends Specification {
         model.projectContent.about.visible == true
         model.projectContent.documents.visible == false
         model.projectContent.activities.visible == false
-        model.projectContent.site.visible == false
         model.projectContent.admin.visible == true
     }
 
@@ -174,8 +172,6 @@ class ProjectControllerSpec extends Specification {
         model.projectContent.about.visible == true
         model.projectContent.documents.visible == true
         model.projectContent.activities.visible == true
-        model.projectContent.site.visible == true
-        model.projectContent.site.editable == false
         model.projectContent.admin.visible == false
     }
 
@@ -196,8 +192,6 @@ class ProjectControllerSpec extends Specification {
         model.projectContent.about.visible == true
         model.projectContent.documents.visible == true
         model.projectContent.activities.visible == true
-        model.projectContent.site.visible == true
-        model.projectContent.site.editable == true
         model.projectContent.admin.visible == false
     }
 
@@ -220,8 +214,6 @@ class ProjectControllerSpec extends Specification {
         model.projectContent.about.visible == true
         model.projectContent.documents.visible == true
         model.projectContent.activities.visible == true
-        model.projectContent.site.visible == true
-        model.projectContent.site.editable == true
         model.projectContent.admin.visible == true
     }
 
@@ -263,8 +255,6 @@ class ProjectControllerSpec extends Specification {
 
         model.projectContent.activities.label == 'Surveys'
         model.projectContent.activities.wordForActivity == 'Survey'
-        model.projectContent.site.label == 'Location'
-        model.projectContent.site.wordForSite == 'Location'
     }
 
     int orgCount = 0;
