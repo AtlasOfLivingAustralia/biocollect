@@ -20,6 +20,7 @@
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
+        bieUrl: "${grailsApplication.config.bie.baseURL}",
         imageLocation:"${resource(dir:'/images/filetypes')}"
         },
         here = document.location.href;

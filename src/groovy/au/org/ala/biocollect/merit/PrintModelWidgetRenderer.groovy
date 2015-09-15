@@ -68,6 +68,11 @@ class PrintModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderFusedAutocomplete(WidgetRenderContext context) {
+        defaultRender(context)
+    }
+
+    @Override
     void renderPhotoPoint(WidgetRenderContext context) {
         defaultRender(context)
     }
