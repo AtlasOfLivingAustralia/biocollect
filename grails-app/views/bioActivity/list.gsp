@@ -56,6 +56,7 @@
                                 </a>
                             </div>
                             <div class="span4">
+                                <a data-bind="attr:{'href': transients.viewUrl}"><span class="badge badge-info">view</span></a>
                                 <a data-bind="attr:{'href': transients.editUrl}"><span class="badge badge-warning">edit</span></a>
                                 <a data-bind="attr:{'href': transients.deleteUrl}"><span class="badge badge-important">delete</span></a>
                             </div>
@@ -72,8 +73,6 @@
     </div>
 
 </div>
-
-
 
 <r:script>
     var ActivityListsViewModel = function(){
