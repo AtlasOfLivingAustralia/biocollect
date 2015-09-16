@@ -763,7 +763,7 @@ function Documents() {
 
     self.ignore = ['documents', 'links', 'logoUrl', 'bannerUrl', 'mainImageUrl', 'primaryImages', 'embeddedVideos',
         'ignore', 'transients', 'documentFilter', 'documentFilterFieldOptions', 'documentFilterField',
-        'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments'];
+        'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass'];
 
 }
 
