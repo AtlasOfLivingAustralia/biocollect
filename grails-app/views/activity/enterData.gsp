@@ -22,7 +22,7 @@
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
-        imageLocation:"${resource(dir:'/images/filetypes')}"
+        imageLocation:"${resource(dir:'/images')}"
         },
         here = document.location.href;
     </r:script>

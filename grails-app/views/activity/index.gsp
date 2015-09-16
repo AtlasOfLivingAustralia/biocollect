@@ -20,7 +20,7 @@
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
-        imageLocation:"${resource(dir:'/images/filetypes')}"
+        imageLocation:"${resource(dir:'/images')}"
         },
         here = document.location.href;
     </r:script>

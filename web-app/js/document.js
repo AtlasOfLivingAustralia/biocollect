@@ -38,7 +38,7 @@ function DocumentViewModel (doc, owner, settings) {
     // the notes field can be used as a pseudo-document (eg a deferral reason) or just for additional metadata
     this.notes = ko.observable(doc.notes);
     this.filetypeImg = function () {
-        return self.settings.imageLocation + "/" + iconnameFromFilename(self.filename());
+        return self.settings.imageLocation + '/filetypes/' + iconnameFromFilename(self.filename());
     };
     this.status = ko.observable(doc.status || 'active');
     this.attribution = ko.observable(doc ? doc.attribution : '');
@@ -55,6 +55,7 @@ function DocumentViewModel (doc, owner, settings) {
     this.progress = ko.observable(0);
     this.complete = ko.observable(false);
     this.readOnly = doc && doc.readOnly ? doc.readOnly : false;
+    this.contentType = ko.observable(doc ? doc.contentType : 'application/octet-stream');
     this.fileButtonText = ko.computed(function() {
         return (self.filename() ? "Change file" : "Attach file");
     });
@@ -406,7 +407,7 @@ var DocModel = function (doc) {
     this.url = doc.url;
     this.thumbnailUrl = doc.thumbnailUrl ? doc.thumbnailUrl : doc.url;
     this.filetypeImg = function () {
-        return imageLocation + "/" + iconnameFromFilename(self.filename);
+        return imageLocation + "/filetypes/" + iconnameFromFilename(self.filename);
     };
 };
 function DocListViewModel(documents) {

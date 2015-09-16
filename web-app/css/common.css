@@ -1,0 +1,91 @@
+/* Documents specific styles */
+
+.nav-list.fc-docs-list {
+    width: 100%;
+    padding: 0;
+}
+
+.fc-docs-list-well {
+    max-height: 550px;
+    overflow-y: auto;
+}
+
+.fc-docs-list .media-body {
+    line-height: 32px;
+}
+
+.well-small .fc-docs-list.nav-list > li > a,
+.well-small .fc-docs-list.nav-list .nav-header,
+.well-small .fc-docs-list.nav-list > li > div {
+    margin-left: -9px;
+    margin-right: -9px;
+}
+
+
+/* Allow divs to masquerade as a in nav lists */
+.nav-list > li > div {
+    padding: 3px 15px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+}
+
+.nav>li>div:hover {
+    text-decoration: none;
+    background-color: #dcdcdc;
+}
+
+.nav-list>.active>div, .nav-list>.active>div:hover, .nav-list>.active>div:focus {
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.row-fluid [class*="span"].fc-resource-preview-container {
+    position: relative;
+    /*height: 100%;*/
+    min-height: 600px;
+    margin-bottom: 20px;
+}
+
+.well.fc-resource-preview-well {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fc-resource-preview {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.row-eq-height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.nav-list>.active>a>div.media-body>a,
+.nav-list>.active>div>div.media-body>a {
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.2);
+}
+.nav-list>.active>a>div.media-body>a:hover,
+.nav-list>.active>a>div.media-body>a:focus,
+.nav-list>.active>div>div.media-body>a:hover,
+.nav-list>.active>div>div.media-body>a:focus{
+    color: #ddd;
+}
+/* End Documents */
