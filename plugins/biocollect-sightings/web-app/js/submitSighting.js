@@ -706,8 +706,8 @@ function Sighting() {
         $('#taxonDetails').addClass('hide');
         $('#noSpecies').removeClass('hide').show();
 
+        $('#tagsBlock').empty();
 
         dirty = false;
-
     };
 }
