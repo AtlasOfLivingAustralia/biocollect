@@ -771,6 +771,7 @@ class ModelJSTagLib {
                     self.selectedIndex(-1);
                     self.addOrEditMode(true);
                     self.reset();
+                    self.toggleOverallSaveButton();
                 };
 
                 self.reset = function() {
@@ -783,6 +784,8 @@ class ModelJSTagLib {
                     } else {
                         self.detailView.sighting.reset();
                     }
+
+                    self.toggleOverallSaveButton();
                 }
 
                 self.editItem = function(item) {
@@ -794,6 +797,8 @@ class ModelJSTagLib {
                         self.detailView.sighting.loadSightingData(self.items()[index]);
 
                         self.addOrEditMode(true);
+
+                        self.toggleOverallSaveButton();
                     }
                 };
 
@@ -803,9 +808,12 @@ class ModelJSTagLib {
                     if (index > -1 && index < self.items().length) {
                         self.items.splice(index, 1);
                     }
+
+                    self.toggleOverallSaveButton();
                 };
 
                 self.saveItem = function() {
+                console.log("here")
                     if (\$('#validation-container').validationEngine('validate')) {
                         var data = self.detailView.sighting.getSightingsDataAsJS();
 
@@ -818,19 +826,26 @@ class ModelJSTagLib {
 
                         self.addOrEditMode(false);
                         self.selectedIndex(-1);
+                        self.toggleOverallSaveButton();
                     }
                 };
 
                 self.cancelItem = function() {
                     self.addOrEditMode(false);
                     self.selectedIndex(-1);
+                    self.toggleOverallSaveButton();
                 };
 
                 self.loadItems = function(data) {
-                    console.log("items to be displayed = " + JSON.stringify(data))
                     if (data) {
                         self.items = ko.observableArray(data);
                     }
+
+                    self.toggleOverallSaveButton();
+                };
+
+                self.toggleOverallSaveButton = function() {
+                    \$("#save").prop('disabled', (self.items().length == 0  || self.addOrEditMode()));
                 };
             };
         """
