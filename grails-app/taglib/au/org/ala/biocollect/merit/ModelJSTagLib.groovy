@@ -810,10 +810,8 @@ class ModelJSTagLib {
                         var data = self.detailView.sighting.getSightingsDataAsJS();
 
                         if (self.selectedIndex() > -1) {
-console.log("new data: " + JSON.stringify(data))
                             var oldData = self.items()[self.selectedIndex()]
                             self.items.replace(oldData, data);
-console.log("updated array item: " + JSON.stringify(self.items()[self.selectedIndex()]))
                         } else {
                             self.items.push(data);
                         }
@@ -829,13 +827,12 @@ console.log("updated array item: " + JSON.stringify(self.items()[self.selectedIn
                 };
 
                 self.loadItems = function(data) {
-                    console.log(JSON.stringify("items to be displayed = " + data))
-                    if (data && data.${attrs.model?.dataModel[0]?.master?.name}) {
-                        self.items = ko.observableArray(data.${attrs.model?.dataModel[0]?.master?.name});
+                    console.log("items to be displayed = " + JSON.stringify(data))
+                    if (data) {
+                        self.items = ko.observableArray(data);
                     }
                 };
             };
-
         """
 
         jsModelObjects([output: attrs.output, model: constructDetailModelFromMasterDetail(attrs.model)])

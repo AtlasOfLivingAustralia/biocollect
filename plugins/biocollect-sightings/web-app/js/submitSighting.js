@@ -644,6 +644,7 @@ function Sighting() {
             "locationRemark",
             "dateStr",
             "timeStr",
+            "userId",
             "individualCount",
             "eventDate",
             "occurrenceRemarks",
