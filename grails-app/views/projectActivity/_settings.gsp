@@ -28,7 +28,12 @@
                     <!-- ko  foreach: projectActivities -->
                         <li>
                             <a href="#" data-bind="click: $root.setCurrent" >
-                                <span data-bind="text: name"></span> <span data-bind="if: current"> <span class="badge badge-important">selected</span></span>
+                                <span data-bind="attr:{'class': published() ? 'badge badge-success' : 'badge badge-important'}">
+                                <span data-bind="if:published()"> <small>P</small></span>
+                                <span data-bind="if:!published()"> <small>X</small></span>
+                                </span>
+                                <span data-bind="text: name"></span>
+                                <span data-bind="if: current"> <span class="badge badge-info">selected</span></span>
                             </a>
                         </li>
                         </br>
@@ -45,6 +50,7 @@
 
         </div>
 
+        <div id="project-activities-publish-result-placeholder"></div>
 
         <!-- ko if: projectActivities().length > 0 -->
         <div class="row-fluid">

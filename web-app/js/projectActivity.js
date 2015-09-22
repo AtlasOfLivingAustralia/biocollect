@@ -96,33 +96,60 @@ var ProjectActivitiesSettingsViewModel =  function(pActivitiesVM) {
         showAlert("Successfully added.", "alert-success",  'project-activities-result-placeholder');
     };
 
+
+    self.publish = function(){
+        var jsData =  self.current().asJSAll();
+        var error;
+        if(jsData.published){
+            jsData  = {};
+            jsData.published = false;
+            return self.genericUpdate(jsData, 'publish',"Successfully unpublished the survey");
+        }else if(!jsData.name && !jsData.description && !jsData.startDate){
+            error = "Required fields are missing in 'Survey Info' tab";
+        }else if((jsData.species && !jsData.species.type) || !jsData.species){
+            error = "Required fields are missing in 'Species' tab";
+        }else if(!jsData.pActivityFormName){
+            error = "Required fields are missing in 'Surveys Form' tab";
+        }
+        else if((jsData.sites && jsData.sites.length == 0) || !jsData.sites){
+            error = "Minimum one 'Location' must be selected";
+        }
+        if(!error){
+            jsData.published = true;
+            return self.genericUpdate(jsData, 'publish',"Successfully published the survey");
+
+        }else{
+            showAlert(error, "alert-error",  'project-activities-publish-result-placeholder');
+        }
+    };
+
     self.saveAccess = function(access){
         var caller = "access";
-        return self.genericUpdate(self.current().asJSON(caller), caller);
+        return self.genericUpdate(self.current().asJS(caller), caller);
     };
 
     self.saveForm = function(){
         var caller = "form";
-        return self.genericUpdate(self.current().asJSON(caller), caller);
+        return self.genericUpdate(self.current().asJS(caller), caller);
     };
 
     self.saveInfo = function(){
         var caller = "info";
-        return self.genericUpdate(self.current().asJSON(caller), caller);
+        return self.genericUpdate(self.current().asJS(caller), caller);
     };
 
     self.saveSpecies = function(){
         var caller = "species";
-        return self.genericUpdate(self.current().asJSON(caller), caller);
+        return self.genericUpdate(self.current().asJS(caller), caller);
     };
 
     self.saveSites = function(){
         var caller = "sites";
-        return self.genericUpdate(self.current().asJSON(caller), caller);
+        return self.genericUpdate(self.current().asJS(caller), caller);
     };
     self.saveVisibility = function(){
         var caller = "visibility";
-        return self.genericUpdate(self.current().asJSON(caller), caller);
+        return self.genericUpdate(self.current().asJS(caller), caller);
     };
 
     self.deleteProjectActivity = function() {
@@ -146,7 +173,7 @@ var ProjectActivitiesSettingsViewModel =  function(pActivitiesVM) {
                     showAlert("Successfully deleted.", "alert-success",  'project-activities-result-placeholder');
                 }
                 else{
-                    self.genericUpdate(self.current().asJSON("info"), "info");
+                    self.genericUpdate(self.current().asJS("info"), "info","Successfully deleted.");
                 }
             }
         });
@@ -158,22 +185,27 @@ var ProjectActivitiesSettingsViewModel =  function(pActivitiesVM) {
             return false;
         }
 
+        var divId = 'project-activities-'+ caller +'-result-placeholder';
+        if(caller != "publish" && model.published){
+            showAlert("Unpublish before editing the survey", "alert-error", divId);
+            return;
+        }
+
         message = typeof message !== 'undefined' ? message : 'Successfully updated';
         var pActivity = self.current();
         var url = pActivity.projectActivityId() ? fcConfig.projectActivityUpdateUrl + "&id=" +
         pActivity.projectActivityId() : fcConfig.projectActivityCreateUrl;
 
-        var divId = 'project-activities-'+ caller +'-result-placeholder';
-
         if(caller != "info" && pActivity.projectActivityId() === undefined){
             showAlert("Please save 'Survey Info' details before applying other constraints.", "alert-error",  divId);
             return;
         }
+        var asJSON = JSON.stringify(model, function (key, value) { return value === undefined ? "" : value; });
 
         $.ajax({
             url: url,
             type: 'POST',
-            data: model,
+            data: asJSON,
             contentType: 'application/json',
             success: function (data) {
 
@@ -184,9 +216,12 @@ var ProjectActivitiesSettingsViewModel =  function(pActivitiesVM) {
                     $.each(self.projectActivities(), function(i, obj){
                         if(obj.current()){
                             obj.projectActivityId(data.resp.projectActivityId);
-                       }
+                            obj.published(model.published);
+                        }
                     });
+
                     showAlert(message, "alert-success",  divId);
+
                 }
                 else{
                     if(pActivity.status() == "deleted"){
@@ -196,6 +231,11 @@ var ProjectActivitiesSettingsViewModel =  function(pActivitiesVM) {
                         }
                         showAlert(message, "alert-success",  divId);
                     }else{
+                        $.each(self.projectActivities(), function(i, obj){
+                            if(obj.current()){
+                                obj.published(model.published);
+                            }
+                        });
                         showAlert(message, "alert-success",  divId);
                     }
                 }
@@ -248,9 +288,17 @@ var ProjectActivity = function (o, pActivityForms, projectId, selected, sites){
     self.transients.warning = ko.computed(function(){
         return self.projectActivityId() === undefined ? true : false;
     });
-    self.sites = ko.observableArray($.map(sites ? sites : [], function (obj, i) {
-        return new SiteList(obj, o.sites);
-    }));
+
+
+    self.sites = ko.observableArray();
+    self.loadSites = function(projectSites, surveySites){
+        $.map(projectSites ? projectSites : [], function (obj, i) {
+            var defaultSites = [];
+            surveySites && surveySites.length > 0 ? $.merge(defaultSites, surveySites) : defaultSites.push(obj.siteId);
+            self.sites.push(new SiteList(obj, defaultSites));
+        });
+    };
+    self.loadSites(sites, o.sites);
 
     var images = [];
     $.each(pActivityForms, function(index, form){
@@ -276,15 +324,21 @@ var ProjectActivity = function (o, pActivityForms, projectId, selected, sites){
         });
     });
 
-    self.asJSON = function(by){
+    self.asJSAll = function(){
+        var jsData = $.extend({},
+            self.asJS("info"),
+            self.asJS("access"),
+            self.asJS("form"),
+            self.asJS("species"),
+            self.asJS("visibility"),
+            self.asJS("sites"));
+        return jsData;
+    };
+
+    self.asJS = function(by){
         var jsData;
 
-        if(by == "access"){
-            jsData = {};
-            var ignore = self.ignore.concat([]);
-            jsData.access =  ko.mapping.toJS(self.access, {ignore:ignore});
-        }
-        else if(by == "form"){
+        if(by == "form"){
             jsData = {};
             jsData.pActivityFormName = self.pActivityFormName();
         }
@@ -316,7 +370,8 @@ var ProjectActivity = function (o, pActivityForms, projectId, selected, sites){
             var ignore = self.ignore.concat(['transients']);
             jsData.visibility = ko.mapping.toJS(self.visibility, {ignore:ignore});
         }
-        return JSON.stringify(jsData, function (key, value) { return value === undefined ? "" : value; });
+
+        return jsData;
     }
 };
 
@@ -328,7 +383,7 @@ var SiteList = function(o, surveySites){
     self.siteId = ko.observable(o.siteId);
     self.name = ko.observable(o.name);
     self.added = ko.observable(false);
-    self.siteUrl = ko.observable(fcConfig.siteViewUrl + "/" + self.siteId())
+    self.siteUrl = ko.observable(fcConfig.siteViewUrl + "/" + self.siteId());
 
     self.addSite = function(){
         self.added(true);
@@ -338,7 +393,7 @@ var SiteList = function(o, surveySites){
     };
 
     self.load = function(surveySites){
-        $.each(surveySites, function( index, siteId ) {
+       $.each(surveySites, function( index, siteId ) {
             if(siteId == self.siteId()){
                 self.added(true);
             }

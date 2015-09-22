@@ -86,7 +86,7 @@
         <!-- /ko -->
 
     </br>
-    <div class="row-fluid pull-right">
+    <div class="row-fluid">
 
         <div class="span12">
             <button class="btn-primary btn block" data-bind="click: saveSpecies"> Save </button>
