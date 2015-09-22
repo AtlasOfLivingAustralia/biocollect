@@ -29,45 +29,50 @@ class ModelJSTagLib {
 
         def site = attrs.site ? attrs.site.toString() : "{}"
         out << INDENT*2 << "var site = ${site};\n"
+
+
+        attrs.model?.viewModel?.each { view ->
+            switch (view.type) {
+                case "masterDetail":
+                    masterDetailView(attrs, view, out)
+                    break
+            }
+        }
     }
 
     def jsViewModel = { attrs ->
+        createDataModelJS(attrs)
+    }
+
+    def createDataModelJS(attrs, String container = "self.data") {
         attrs.model?.dataModel?.each { mod ->
             if (mod.dataType  == 'list') {
                 listViewModel(attrs, mod, out)
                 columnTotalsModel out, attrs, mod
-            }
-            else if (mod.dataType == 'matrix') {
+            } else if (mod.dataType == 'matrix') {
                 matrixViewModel(attrs, mod, out)
-            }
-            else if (mod.computed) {
+            } else if (mod.computed) {
                 computedViewModel(out, attrs, mod, 'self.data', 'self.data')
-            }
-            else if (mod.dataType == 'text') {
+            } else if (mod.dataType == 'text') {
                 textViewModel(mod, out)
-            }
-            else if (mod.dataType == 'number') {
+            } else if (mod.dataType == 'number') {
                 numberViewModel(mod, out)
-            }
-            else if (mod.dataType == 'stringList') {
+            } else if (mod.dataType == 'stringList') {
                 stringListModel(mod, out)
-            }
-            else if (mod.dataType == 'image') {
+            } else if (mod.dataType == 'image') {
                 imageModel(mod, out)
-            }
-            else if (mod.dataType == 'photoPoints') {
+            } else if (mod.dataType == 'photoPoints') {
                 photoPointModel(attrs, mod, out)
-            }
-            else if (mod.dataType == 'species') {
+            } else if (mod.dataType == 'species') {
                 speciesModel(attrs, mod, out)
-            }
-            else if (mod.dataType == 'date') {
+            } else if (mod.dataType == 'date') {
                 dateViewModel(mod, out)
-            }
-            else if (mod.dataType == 'document') {
+            } else if (mod.dataType == 'document') {
                 documentViewModel(mod, out)
             } else if (mod.dataType == 'singleSighting') {
-                singleSightingViewModel(mod, out)
+                singleSightingViewModel(mod, out, container)
+            } else if (mod.dataType == 'masterDetail') {
+                masterDetailViewModel(mod, out)
             }
         }
         out << INDENT*3 << "self.transients.site = site;"
@@ -111,6 +116,8 @@ class ModelJSTagLib {
                 out << INDENT*4 << "}\n"
             } else if (mod.dataType == 'singleSighting') {
                 out << INDENT*4 << "self.data.sighting.loadSightingData(data);\n"
+            } else if (mod.dataType == 'masterDetail') {
+                out << INDENT*4 << "self.data.masterDetail.loadItems(data['${mod.name}']);\n"
             }
         }
     }
@@ -124,6 +131,16 @@ class ModelJSTagLib {
                     out << INDENT*12 << "name: '${attrs.output.name}',\n"
                     out << INDENT*12 << "outputId: '${attrs.output.outputId}',\n"
                     out << INDENT*12 << "data: self.data.sighting.getSightingsDataAsJS()\n"
+                    out << INDENT*8 << "};\n"
+                    out << INDENT*8 << "return outputData;\n"
+                    out << INDENT*4 << "}\n"
+                    break
+                case "masterDetail":
+                    out << INDENT*4 << "self.modelForSaving = function() {\n"
+                    out << INDENT*8 << "var outputData = {\n"
+                    out << INDENT*12 << "name: '${attrs.output.name}',\n"
+                    out << INDENT*12 << "outputId: '${attrs.output.outputId}',\n"
+                    out << INDENT*12 << "data: {${mod.name}: self.data.masterDetail.items()}\n"
                     out << INDENT*8 << "};\n"
                     out << INDENT*8 << "return outputData;\n"
                     out << INDENT*4 << "}\n"
@@ -531,8 +548,14 @@ class ModelJSTagLib {
         out << "\n" << INDENT*3 << "self.data.${model.name} = ko.observable();\n"
     }
 
-    def singleSightingViewModel(model, out) {
-        out << "\n" << INDENT*3 << "self.data.sighting = new Sighting();"
+    def singleSightingViewModel(model, out, String container = "self.data") {
+        out << "\n" << INDENT*3 << "${container}.sighting = new Sighting();"
+    }
+
+    def masterDetailViewModel(model, out) {
+        out << "\n" << INDENT*3 << "self.data.masterDetail = new MasterDetail();"
+
+        createDataModelJS([model: [dataModel: [model.detail]]], "self.data.masterDetail.detailView")
     }
 
     def computedObservable(model, propertyContext, dependantContext, out) {
@@ -730,6 +753,96 @@ class ModelJSTagLib {
             def stringifiedOptions = "["+ model.constraints.join(",")+"]"
             out << INDENT*3 << "self.transients.${model.name}Constraints = ${stringifiedOptions};\n"
         }
+    }
+
+    def masterDetailView(attrs, view, out) {
+        out << """
+            function MasterDetail() {
+                var self = this;
+
+                self.detailView = {};
+
+                self.items = ko.observableArray();
+                self.addOrEditMode = ko.observable(false);
+                self.currentItem = ko.observable();
+                self.selectedIndex = ko.observable(-1);
+
+                self.addItem = function() {
+                    self.selectedIndex(-1);
+                    self.addOrEditMode(true);
+                    self.reset();
+                };
+
+                self.reset = function() {
+                    if (typeof self.detailView === "undefined") {
+                        self.detailView = {};
+                    }
+
+                    if (typeof self.detailView.sighting === "undefined") {
+                        self.detailView.sighting = new Sighting();
+                    } else {
+                        self.detailView.sighting.reset();
+                    }
+                }
+
+                self.editItem = function(item) {
+                    var index = self.items.indexOf(item);
+                    if (index > -1 && index < self.items().length) {
+                        self.selectedIndex(index);
+
+                        self.reset();
+                        self.detailView.sighting.loadSightingData(self.items()[index]);
+
+                        self.addOrEditMode(true);
+                    }
+                };
+
+                self.removeItem = function(item) {
+                    var index = self.items.indexOf(item);
+
+                    if (index > -1 && index < self.items().length) {
+                        self.items.splice(index, 1);
+                    }
+                };
+
+                self.saveItem = function() {
+                    if (\$('#validation-container').validationEngine('validate')) {
+                        var data = self.detailView.sighting.getSightingsDataAsJS();
+
+                        if (self.selectedIndex() > -1) {
+console.log("new data: " + JSON.stringify(data))
+                            var oldData = self.items()[self.selectedIndex()]
+                            self.items.replace(oldData, data);
+console.log("updated array item: " + JSON.stringify(self.items()[self.selectedIndex()]))
+                        } else {
+                            self.items.push(data);
+                        }
+
+                        self.addOrEditMode(false);
+                        self.selectedIndex(-1);
+                    }
+                };
+
+                self.cancelItem = function() {
+                    self.addOrEditMode(false);
+                    self.selectedIndex(-1);
+                };
+
+                self.loadItems = function(data) {
+                    console.log(JSON.stringify("items to be displayed = " + data))
+                    if (data && data.${attrs.model?.dataModel[0]?.master?.name}) {
+                        self.items = ko.observableArray(data.${attrs.model?.dataModel[0]?.master?.name});
+                    }
+                };
+            };
+
+        """
+
+        jsModelObjects([output: attrs.output, model: constructDetailModelFromMasterDetail(attrs.model)])
+    }
+
+    static constructDetailModelFromMasterDetail(Map masterDetailModel) {
+        [dataModel: masterDetailModel?.dataModel?.detail, viewModel: masterDetailModel?.viewModel?.detail]
     }
 
     /*------------ methods to look up attributes in the view model -------------*/

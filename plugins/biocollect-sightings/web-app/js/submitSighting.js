@@ -304,9 +304,6 @@ $(document).ready(function() {
         }
     });
 
-    // autocomplete on species lookup
-    //$('#speciesLookup').alaAutocomplete({maxHits: 15}); // will trigger a change event on #taxonConceptID when item is selected
-
     // detect change on #taxonConceptID input (autocomplete selection) and load species details
     $(document.body).on('change', '#guid', function(e) {
         //console.log('#guid on change');
@@ -335,9 +332,6 @@ $(document).ready(function() {
         existingImagesIndex++;
     });
 
-    // init date picker
-    //$('#dateStr').datepicker({format: 'dd-mm-yyyy'});
-
     // clear validation errors red border on input blur
     $('.validationErrors').on('blur', function(e) {
         $(this).removeClass('validationErrors');
@@ -348,17 +342,6 @@ $(document).ready(function() {
         $('#guid').val(GSP_VARS.guid).change();
         $('#confident').trigger( "click" );
     }
-
-    // init qtip (tooltip)
-    //$('.tooltips').qtip({
-    //    style: {
-    //        classes: 'ui-tooltip-rounded ui-tooltip-shadow'
-    //    },
-    //    position: {
-    //        target: 'mouse',
-    //        adjust: { x: 6, y: 14 }
-    //    }
-    //});
 
     // trigger image assisted identification popup
     $('.identifyHelpTrigger').click(function(e) {
@@ -645,8 +628,29 @@ function Sighting() {
     this.getSightingsDataAsJS = function () {
         var record = {};
 
-        $(":input").each(function (index, field) {
-            if (field.id) {
+        var fields = ["guid",
+            "scientificName",
+            "commonName",
+            "kingdom",
+            "family",
+            "speciesLookup",
+            "speciesGroups",
+            "speciesSubgroups",
+            "imageLicense",
+            "decimalLatitude",
+            "decimalLongitude",
+            "coordinateUncertaintyInMeters",
+            "locality",
+            "locationRemark",
+            "dateStr",
+            "timeStr",
+            "individualCount",
+            "eventDate",
+            "occurrenceRemarks",
+            "speciesTags"];
+
+        $("#sighting :input").each(function (index, field) {
+            if (field.id && fields.indexOf(field.id) > -1) {
                 record[field.id] = field.value;
             }
         });
@@ -660,20 +664,16 @@ function Sighting() {
             record.speciesTags.push(tag)
         });
 
-        console.log(JSON.stringify(record));
-
         return record;
     };
 
     this.loadSightingData = function (data) {
-        console.log(JSON.stringify(data));
-
         for (var property in data) {
             $('#' + property).val(data[property]);
             $('#' + property).change();
         }
 
-        if (data.speciesTags) {
+        if (typeof data.speciesTags !== 'undefined') {
             data.speciesTags.forEach(function (tag) {
                 addTagLabel(tag.name, tag.type);
             });
@@ -682,6 +682,8 @@ function Sighting() {
         if (data.guid) {
             setSpecies(data.guid);
         }
+
+        dirty = false;
     };
 
     this.isDirty = function () {
@@ -689,6 +691,22 @@ function Sighting() {
     };
 
     this.reset = function () {
+        $("#sighting :input").each(function (index, field) {
+            if (field.id) {
+                if (field.id === "individualCount") {
+                    field.value = "1";
+                } else {
+                    field.value = "";
+                }
+            }
+        });
+
+        clearTaxonDetails();
+        $('#taxonDetails').addClass('hide');
+        $('#noSpecies').removeClass('hide').show();
+
+
         dirty = false;
+
     };
 }

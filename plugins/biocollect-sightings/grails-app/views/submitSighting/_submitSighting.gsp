@@ -31,6 +31,7 @@
         <input type="hidden" name="recordedBy" id="recordedBy" value="${sighting?.recordedBy ?: user?.displayName}"/>
 
         <!-- Species -->
+    <div id="sighting">
         <div class="boxed-heading" id="species" data-content="Species">
             <div class="row-fluid">
                 <div class="span4">
@@ -365,7 +366,7 @@
             </div>
         </div>
 
-    <%-- Template HTML used by JS code via .clone() --%>
+        <%-- Template HTML used by JS code via .clone() --%>
         <div class="hide imageRow row" id="uploadActionsTmpl">
             <div class="span2"><span class="preview pull-right"></span></div>
 
@@ -423,4 +424,6 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
+    </div>
+
 </g:if>

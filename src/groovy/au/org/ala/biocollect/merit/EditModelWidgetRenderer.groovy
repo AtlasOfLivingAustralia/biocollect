@@ -1,10 +1,18 @@
 package au.org.ala.biocollect.merit
 
+import apple.laf.JRSUIConstants.Widget
+
 public class EditModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderLiteral(WidgetRenderContext context) {
         context.writer << "<span ${context.attributes.toString()}>${context.model.source}</span>"
+    }
+
+    @Override
+    void renderReadonlyText(WidgetRenderContext context) {
+        context.databindAttrs.add 'value', context.source
+        context.writer << "<span ${context.attributes.toString()} data-bind='${context.databindAttrs.toString()}'></span>"
     }
 
     @Override
@@ -117,6 +125,16 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
     @Override
     void renderLink(WidgetRenderContext context) {
         context.writer << "<a href=\"" + context.g.createLink(context.specialProperties(context.model.properties)) + "\">${context.model.source}</a>"
+    }
+
+    @Override
+    void renderButtonGroup(WidgetRenderContext context) {
+        context.model.buttons.each {
+            context.writer << """
+            <a href="#" data-bind="${it.dataBind}" class="${it.class}" title="${it.title}"><span class="${it.iconClass}">&nbsp;</span>${it.title}</a>
+        """
+        }
+
     }
 
     @Override

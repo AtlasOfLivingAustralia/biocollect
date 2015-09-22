@@ -342,6 +342,35 @@
             });
             return dirty;
         };
+
+        /**
+        * Collect the activity form data into a single javascript object
+        * @returns JS object containing form data, or null if there is no data
+        */
+        this.collectData = function() {
+            var activityData, outputs = [], photoPoints;
+            $.each(this.subscribers, function(i, obj) {
+                if (obj.isDirty()) {
+                    if (obj.model === 'activityModel') {
+                        activityData = obj.get();
+                    } else if (obj.model === 'photoPoints') {
+                        photoPoints = obj.get();
+                    }
+                    else {
+                        outputs.push(obj.get());
+                    }
+                }
+            });
+            if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
+                return null;
+            } else {
+                if (activityData === undefined) { activityData = {}}
+                activityData.outputs = outputs;
+
+                return activityData;
+            }
+        };
+
         /**
          * Makes an ajax call to save any sections that have been modified. This includes the activity
          * itself and each output.
@@ -355,31 +384,19 @@
          */
         this.save = function () {
 
-            var activityData, outputs = [], photoPoints;
             if ($('#validation-container').validationEngine('validate')) {
-                $.each(this.subscribers, function(i, obj) {
-                    if (obj.isDirty()) {
-                        if (obj.model === 'activityModel') {
-                            activityData = obj.get();
-                        } else if (obj.model === 'photoPoints') {
-                            photoPoints = obj.get();
-                        }
-                        else {
-                            outputs.push(obj.get());
-                        }
-                    }
-                });
-                if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
+                var toSave = this.collectData();
+
+                if (!toSave) {
                     alert("Nothing to save.");
                     return;
                 }
+
+                toSave = JSON.stringify(toSave);
+
                 // Don't allow another save to be initiated.
                 blockUIWithMessage("Saving activity data...");
 
-                if (activityData === undefined) { activityData = {}}
-                activityData.outputs = outputs;
-
-                var toSave = JSON.stringify(activityData);
                 amplify.store('activity-${activity.activityId}', toSave);
                 var unblock = true;
                 $.ajax({

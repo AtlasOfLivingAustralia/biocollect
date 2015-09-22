@@ -65,7 +65,7 @@ $(document).ready(function() {
 
     var baseLayers = {
         "Street": gmap_road,
-        "Satellite": gmap_sat,
+        "Satellite": gmap_sat
         //"Terrain": gmap_ter,
         //"Street": osm,
         //"Satellite": Esri_WorldImagery
@@ -83,7 +83,7 @@ $(document).ready(function() {
     radius = $('#coordinateUncertaintyInMeters').val();
     circle = L.circle(null, radius,  {color: '#df4a21'});
 
-    L.Icon.Default.imagePath = GSP_VARS.leafletImagesDir; ;
+    L.Icon.Default.imagePath = GSP_VARS.leafletImagesDir; 
 
     var popup1 = L.popup().setContent('<p>Hello world!<br />This is a nice popup.</p>');
 
