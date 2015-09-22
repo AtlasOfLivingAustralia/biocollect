@@ -6,16 +6,16 @@ branches:
   only:
   - master
 before_install:
-- rm -rf ~/.gvm
-- curl -s get.gvmtool.net > ~/install_gvm.sh
-- chmod 775 ~/install_gvm.sh
-- "~/install_gvm.sh"
-- echo "gvm_auto_answer=true" > ~/.gvm/etc/config
-- source ~/.gvm/bin/gvm-init.sh
+- rm -rf ~/.sdkman
+- curl -s get.sdkmantool.net > ~/install_sdkman.sh
+- chmod 775 ~/install_sdkman.sh
+- "~/install_sdkman.sh"
+- echo "sdkman_auto_answer=true" > ~/.sdkman/etc/config
+- source ~/.sdkman/bin/sdkman-init.sh
 - GRAILS_VERSION=`grep '^\s*app.grails.version' application.properties | sed -e 's/^\s*app\.grails\.version=//g'
   | tr -d "\r"`
 - echo "GRAILS_VERSION:$GRAILS_VERSION"
-- gvm install grails $GRAILS_VERSION || true
+- sdkman install grails $GRAILS_VERSION || true
 before_script:
 - mkdir -p ~/.grails; wget -q -O ~/.grails/settings.groovy https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/travis_grails_settings_new.groovy
 - MAVEN_REPO="ala-repo-snapshot"; grep '^app\.version=' ./application.properties |
