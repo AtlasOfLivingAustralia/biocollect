@@ -367,7 +367,7 @@
         </div>
 
         <%-- Template HTML used by JS code via .clone() --%>
-        <div class="hide imageRow row" id="uploadActionsTmpl">
+        <div class="hide imageRow row-fluid" id="uploadActionsTmpl">
             <div class="span2"><span class="preview pull-right"></span></div>
 
             <div class="span10">

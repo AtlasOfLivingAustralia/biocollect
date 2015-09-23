@@ -148,21 +148,9 @@ $(document).ready(function() {
         var node = $(data.context[0]);
         var index = node.data('index') + existingImagesIndex;
         var result = data.result; // ajax results
+
         if (result.success) {
-            var link = $('<a>')
-                .attr('target', '_blank')
-                .prop('href', result.url);
-            node.find('.preview').wrap(link);
-            // populate hidden input fields
-            node.find('.identifier').val(result.url).attr('name', 'multimedia['+ index + '].identifier');
-            node.find('.title').val(result.filename).attr('name', 'multimedia['+ index + '].title');
-            node.find('.format').val(result.mimeType).attr('name', 'multimedia['+ index + '].format');
-            node.find('.creator').val((GSP_VARS.user && GSP_VARS.user.userDisplayName) ? GSP_VARS.user.userDisplayName : 'ALA User').attr('name', 'multimedia['+ index + '].creator');
-            node.find('.license').val($('#imageLicense').val()).attr('name', 'multimedia['+ index + '].license');
-            if (result.exif && result.exif.date) {
-                node.find('.created').val(result.exif.date).attr('name', 'multimedia['+ index + '].created');
-            }
-            insertImageMetadata(node);
+            insertImage(node, result, index);
         } else if (data.error) {
             // in case an error still returns a 200 OK... (our service shouldn't)
             var error = $('<div class="alert alert-error"/>').text(data.error);
@@ -391,6 +379,25 @@ $(document).ready(function() {
     });
 
 }); // end of $(document).ready(function()
+
+function insertImage(node, image, index) {
+    var identifier = image.identifier ? image.identifier : image.url;
+    var link = $('<a>')
+        .attr('target', '_blank')
+        .prop('href', identifier);
+    node.find('.preview').wrap(link);
+    node.find('.preview').append($('<img/>').attr('src',image.identifier).addClass('serverLoaded'));
+    node.find('.filename').append(image.title);
+    node.find('.identifier').val(identifier).attr('name', 'multimedia['+ index + '].identifier');
+    node.find('.title').val(image.filename).attr('name', 'multimedia['+ index + '].title');
+    node.find('.format').val(image.mimeType).attr('name', 'multimedia['+ index + '].format');
+    node.find('.creator').val((GSP_VARS.user && GSP_VARS.user.userDisplayName) ? GSP_VARS.user.userDisplayName : 'ALA User').attr('name', 'multimedia['+ index + '].creator');
+    node.find('.license').val($('#imageLicense').val()).attr('name', 'multimedia['+ index + '].license');
+    if (image.exif && image.exif.date) {
+        node.find('.created').val(image.exif.date).attr('name', 'multimedia['+ index + '].created');
+    }
+    insertImageMetadata(node);
+}
 
 function insertImageMetadata(imageRow) {
     // imageRow is a jQuery object
@@ -647,13 +654,11 @@ function Sighting() {
             "userId",
             "individualCount",
             "eventDate",
-            "occurrenceRemarks",
-            "speciesTags"];
+            "occurrenceRemarks"];
 
-        $("#sighting :input").each(function (index, field) {
-            if (field.id && fields.indexOf(field.id) > -1) {
-                record[field.id] = field.value;
-            }
+        fields.forEach(function (field) {
+            var elem = $("#" + field)[0];
+            record[elem.id] = elem.value;
         });
 
         record.speciesTags = [];
@@ -665,13 +670,32 @@ function Sighting() {
             record.speciesTags.push(tag)
         });
 
+        record.multimedia = [];
+        $(".metadata.media").each(function (index, field) {
+            var image = {};
+
+            $(this).find("input[type=hidden]").each(function (index, field) {
+                if (field.name) {
+                    image[field.className] = field.value;
+                }
+            });
+
+            if (image.identifier) {
+                record.multimedia.push(image);
+            }
+        });
+        console.log(JSON.stringify(record));
+
         return record;
     };
 
     this.loadSightingData = function (data) {
         for (var property in data) {
-            $('#' + property).val(data[property]);
-            $('#' + property).change();
+            var elem = $('#' + property);
+            if (elem) {
+                elem.val(data[property]);
+                elem.change();
+            }
         }
 
         if (typeof data.speciesTags !== 'undefined') {
@@ -684,11 +708,26 @@ function Sighting() {
             setSpecies(data.guid);
         }
 
+        if (data.multimedia) {
+            var index = 0;
+            data.multimedia.forEach(function (media) {
+                var node = $('#uploadActionsTmpl').clone(true).removeAttr('id').removeClass('hide').appendTo('#files');
+
+                media.test = media.identifier;
+                insertImage(node, media, index);
+                index = index + 1;
+            });
+        }
+
         dirty = false;
     };
 
     this.isDirty = function () {
         return dirty;
+    };
+
+    this.resetDirtyFlag = function() {
+        dirty = false;
     };
 
     this.reset = function () {
@@ -707,6 +746,13 @@ function Sighting() {
         $('#noSpecies').removeClass('hide').show();
 
         $('#tagsBlock').empty();
+
+        $(".metadata.media").each(function () {
+            var identifierElem = $(this).find(".identifier")[0];
+            if (identifierElem && identifierElem.value) {
+                $(this).parents('.imageRow').remove();
+            }
+        });
 
         dirty = false;
     };

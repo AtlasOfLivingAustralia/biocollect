@@ -164,7 +164,7 @@ class ModelJSTagLib {
                     out << """
                         window[viewModelInstance].dirtyFlag = {
                             isDirty: window[viewModelInstance].data.sighting.isDirty,
-                            reset: window[viewModelInstance].data.sighting.reset
+                            reset: window[viewModelInstance].data.sighting.resetDirtyFlag
                         };
                     """
                     break

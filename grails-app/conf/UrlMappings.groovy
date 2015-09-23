@@ -28,6 +28,7 @@ class UrlMappings {
                 }
 
                 "/sightingAjax/saveBookmarkLocation" controller: "sightingAjax", action: [POST:"saveBookmarkLocation"]
+                "/uploads/$file**"(controller:"sightingImage", action:"index")
 
                 "/$controller/$id?"(parseRequest:true) {
 

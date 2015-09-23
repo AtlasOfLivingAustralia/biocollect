@@ -241,7 +241,9 @@
 
                 var output = ${output.data ?: '{}'};
 
-                window[viewModelInstance].loadData(output);
+                if (Object.keys(output).length) {
+                    window[viewModelInstance].loadData(output);
+                }
 
                 // dirtyFlag must be defined after data is loaded
                 <md:jsDirtyFlag model="${model}"/>
@@ -450,6 +452,7 @@
         };
         this.reset = function () {
             $.each(this.subscribers, function(i, obj) {
+            console.log("Reset called -> dirty = " + obj.isDirty())
                 if (obj.isDirty()) {
                     obj.reset();
                 }
