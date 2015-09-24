@@ -1,7 +1,5 @@
 package au.org.ala.biocollect.merit
 
-import apple.laf.JRSUIConstants.Widget
-
 public class EditModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
