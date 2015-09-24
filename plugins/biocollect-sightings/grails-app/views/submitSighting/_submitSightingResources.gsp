@@ -1,5 +1,5 @@
 <r:require
-        modules="fileuploads, exif, moment, pigeonhole, bs2_datepicker, udraggable, fontawesome, purl, submitSighting, inview, identify, leafletGoogle"/>
+        modules="fileuploads, exif, moment, pigeonhole, bs2_datepicker, udraggable, fontawesome, purl, submitSighting, inview, identify, leafletGoogle, leafletEasyButton"/>
 
 <r:script disposition="head">
         // global var to pass in GSP/Grails values into external JS files

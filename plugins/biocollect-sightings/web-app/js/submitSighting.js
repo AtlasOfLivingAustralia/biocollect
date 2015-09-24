@@ -754,6 +754,8 @@ function Sighting() {
             }
         });
 
+        resetMap();
+
         dirty = false;
     };
 }

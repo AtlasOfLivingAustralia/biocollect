@@ -122,6 +122,12 @@ modules = {
         resource url: 'vendor/leaflet-plugins/Google.js', plugin: 'biocollect-sightings'
     }
 
+    leafletEasyButton {
+        dependsOn 'leaflet'
+        resource url: 'vendor/leaflet-plugins/Leaflet.EasyButton-1.1.2/easy-button.css', plugin: 'biocollect-sightings'
+        resource url: 'vendor/leaflet-plugins/Leaflet.EasyButton-1.1.2/easy-button.js', plugin: 'biocollect-sightings'
+    }
+
     inview {
         dependsOn 'jquery'
         resource url: 'vendor/jquery.inview/jquery.inview.js', plugin: 'biocollect-sightings'

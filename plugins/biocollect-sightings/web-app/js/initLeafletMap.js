@@ -213,6 +213,9 @@ $(document).ready(function() {
         $('#decimalLongitude').change();
     }
 
+    L.easyButton('fa-refresh', function(btn, map) {
+        resetMap();
+    }).addTo(map);
 }); // end document load function
 
 function loadBookmarks() {
@@ -409,4 +412,12 @@ function reverseGeocodeGoogle(lat, lng) {
             }
         });
     }
+}
+
+function resetMap() {
+    $("#markerIcon").css({left: "312px", top: "280px", position: "absolute", right: "auto", bottom: "auto", display: "block"});
+
+    map.removeLayer(marker);
+    map.removeLayer(circle);
+    map.setView([-28, 134], 3);
 }
