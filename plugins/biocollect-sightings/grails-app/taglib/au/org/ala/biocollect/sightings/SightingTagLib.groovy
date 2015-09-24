@@ -15,7 +15,7 @@ class SightingTagLib {
 
     def generateBiocacheLink = { attrs ->
 
-        def baseUrl = grailsApplication.config.biocache.baseURL + "/occurrences/search?q=*:*&fq=("
+        def baseUrl = "${grailsApplication.config.biocache.baseURL}/occurrences/search?q=*:*&fq=("
 
         //add stuff
         attrs.dataResourceUids.eachWithIndex { uid, idx ->

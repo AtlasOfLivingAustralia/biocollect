@@ -213,8 +213,6 @@
             var fId = $(this).data("id");
             //if (prevFeatureId) alaMap.unAnimateFeatureById(prevFeatureId);
             alaMap.animateFeatureById(fId);
-            $(thisEl).tooltip('hide');
-            //console.log("toggle", prevFeatureId, fId);
             if (!prevFeatureId) {
                 $("#proj_" + fId).slideToggle();
                 $(thisEl).find(".showHideCaret").html("&#9660;");

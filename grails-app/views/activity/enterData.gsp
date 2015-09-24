@@ -26,7 +26,7 @@
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,activity,attachDocuments,species,amplify,imageViewer"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,activity,attachDocuments,species,amplify,imageViewer,bootstrap"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -150,7 +150,7 @@
               <h3>Debug</h3>
               <div>
                   <h4>KO model</h4>
-                  <pre data-bind="text:ko.toJSON($root.modelForSaving(),null,2)"></pre>
+                  %{--<pre data-bind="text:ko.toJSON($root.modelForSaving(),null,2)"></pre>--}%
                   <h4>Activity</h4>
                   <pre>${activity?.encodeAsHTML()}</pre>
                   <h4>Site</h4>
@@ -216,13 +216,7 @@
                     };
 
                     // this returns a JS object ready for saving
-                    self.modelForSaving = function () {
-                        // get model as a plain javascript object
-                        var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
-
-                        // get rid of any transient observables
-                        return self.removeBeforeSave(jsData);
-                    };
+                    <md:jsSaveModel model="${model}" output="${output}"/>
 
                     // this is a version of toJSON that just returns the model as it will be saved
                     // it is used for detecting when the model is modified (in a way that should invoke a save)
@@ -247,12 +241,14 @@
 
                 var output = ${output.data ?: '{}'};
 
-                window[viewModelInstance].loadData(output);
+                if (Object.keys(output).length) {
+                    window[viewModelInstance].loadData(output);
+                }
 
                 // dirtyFlag must be defined after data is loaded
-                window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);
+                <md:jsDirtyFlag model="${model}"/>
 
-                ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
+               ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
 
                 // this resets the baseline for detecting changes to the model
                 // - shouldn't be required if everything behaves itself but acts as a backup for
@@ -348,6 +344,35 @@
             });
             return dirty;
         };
+
+        /**
+        * Collect the activity form data into a single javascript object
+        * @returns JS object containing form data, or null if there is no data
+        */
+        this.collectData = function() {
+            var activityData, outputs = [], photoPoints;
+            $.each(this.subscribers, function(i, obj) {
+                if (obj.isDirty()) {
+                    if (obj.model === 'activityModel') {
+                        activityData = obj.get();
+                    } else if (obj.model === 'photoPoints') {
+                        photoPoints = obj.get();
+                    }
+                    else {
+                        outputs.push(obj.get());
+                    }
+                }
+            });
+            if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
+                return null;
+            } else {
+                if (activityData === undefined) { activityData = {}}
+                activityData.outputs = outputs;
+
+                return activityData;
+            }
+        };
+
         /**
          * Makes an ajax call to save any sections that have been modified. This includes the activity
          * itself and each output.
@@ -361,31 +386,19 @@
          */
         this.save = function () {
 
-            var activityData, outputs = [], photoPoints;
             if ($('#validation-container').validationEngine('validate')) {
-                $.each(this.subscribers, function(i, obj) {
-                    if (obj.isDirty()) {
-                        if (obj.model === 'activityModel') {
-                            activityData = obj.get();
-                        } else if (obj.model === 'photoPoints') {
-                            photoPoints = obj.get();
-                        }
-                        else {
-                            outputs.push(obj.get());
-                        }
-                    }
-                });
-                if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
+                var toSave = this.collectData();
+
+                if (!toSave) {
                     alert("Nothing to save.");
                     return;
                 }
+
+                toSave = JSON.stringify(toSave);
+
                 // Don't allow another save to be initiated.
                 blockUIWithMessage("Saving activity data...");
 
-                if (activityData === undefined) { activityData = {}}
-                activityData.outputs = outputs;
-
-                var toSave = JSON.stringify(activityData);
                 amplify.store('activity-${activity.activityId}', toSave);
                 var unblock = true;
                 $.ajax({
@@ -439,6 +452,7 @@
         };
         this.reset = function () {
             $.each(this.subscribers, function(i, obj) {
+            console.log("Reset called -> dirty = " + obj.isDirty())
                 if (obj.isDirty()) {
                     obj.reset();
                 }

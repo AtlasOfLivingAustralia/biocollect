@@ -1,13 +1,26 @@
 package au.org.ala.biocollect.merit
+
+import au.org.ala.biocollect.sightings.BieService
 import grails.converters.JSON
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.ss.util.CellReference
 import org.codehaus.groovy.grails.web.json.JSONArray
+import org.grails.plugins.excelimport.ExcelImportService
 
 class ActivityController {
 
-    def activityService, siteService, projectService, metadataService, userService, excelImportService, webService, grailsApplication, speciesService, documentService
+    ActivityService activityService
+    SiteService siteService
+    ProjectService projectService
+    MetadataService metadataService
+    UserService userService
+    ExcelImportService excelImportService
+    WebService webService
+    def grailsApplication
+    SpeciesService speciesService
+    DocumentService documentService
+    BieService bieService
 
     static ignore = ['action','controller','id']
 
@@ -31,8 +44,11 @@ class ActivityController {
                 }
             }
             model.themes = metadataService.getThemesForProject(model.project)
-
         }
+
+        model.speciesGroupsMap = bieService.getSpeciesGroupsMap()
+        model.user = userService.getUser()
+
         model
     }
 

@@ -65,7 +65,7 @@ $(document).ready(function() {
 
     var baseLayers = {
         "Street": gmap_road,
-        "Satellite": gmap_sat,
+        "Satellite": gmap_sat
         //"Terrain": gmap_ter,
         //"Street": osm,
         //"Satellite": Esri_WorldImagery
@@ -83,7 +83,7 @@ $(document).ready(function() {
     radius = $('#coordinateUncertaintyInMeters').val();
     circle = L.circle(null, radius,  {color: '#df4a21'});
 
-    L.Icon.Default.imagePath = GSP_VARS.leafletImagesDir; ;
+    L.Icon.Default.imagePath = GSP_VARS.leafletImagesDir; 
 
     var popup1 = L.popup().setContent('<p>Hello world!<br />This is a nice popup.</p>');
 
@@ -138,14 +138,12 @@ $(document).ready(function() {
 
     // Save current location
     $('#bookmarkLocation').click(function(e) {
-        e.preventDefault();
         var bookmark = {
             locality: $('#locality').val(),
             userId: GSP_VARS.user.userId,
             decimalLatitude: Number($('#decimalLatitude').val()),
             decimalLongitude: Number($('#decimalLongitude').val())
         };
-
         $.ajax({
             url: GSP_VARS.saveBookmarksUrl,
             dataType: 'json',
@@ -214,6 +212,17 @@ $(document).ready(function() {
     if (GSP_VARS.sightingBean && GSP_VARS.sightingBean.decimalLatitude && GSP_VARS.sightingBean.decimalLongitude) {
         $('#decimalLongitude').change();
     }
+
+    L.easyButton({
+        states: [{
+            stateName: 'default',
+            icon: 'fa-refresh',
+            title: 'Reset map',
+            onClick: function(control) {
+                resetMap();
+            }
+        }]
+    }).addTo(map);
 
 }); // end document load function
 
@@ -340,7 +349,7 @@ function updateLocation(latlng, keepView) {
                 data: JSON.stringify(params),
                 contentType: 'application/json',
                 type: 'POST',
-                dataType: 'json',
+                dataType: 'json'
             }).done(function(data){
                 var messages = [];
                 if (data.habitatMismatch && data.habitatMismatchDetail) {
@@ -411,4 +420,18 @@ function reverseGeocodeGoogle(lat, lng) {
             }
         });
     }
+}
+
+function resetMap() {
+    $("#markerIcon").css({left: "312px", top: "280px", position: "absolute", right: "auto", bottom: "auto", display: "block"});
+
+    map.removeLayer(marker);
+    map.removeLayer(circle);
+    map.setView([-28, 134], 3);
+
+    $("#decimalLatitude").val("");
+    $("#decimalLongitude").val("");
+    $("#coordinateUncertaintyInMeters").val("");
+    $("#georeferenceProtocol").val("");
+    $("#locality").val("");
 }

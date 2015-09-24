@@ -59,10 +59,8 @@ class ImageService {
         BufferedImage img = ImageIO.read(imageFile)
         BufferedImage tn = Scalr.resize(img, 100, Scalr.OP_ANTIALIAS)
         File tnFile = new File(colDir, thumbFilename)
-        File tnFile2 = new File(colDir, thumbFilename + "2")
         try {
             def success = ImageIO.write(tn, ext, tnFile)
-            def test = ImageIO.write(img, ext, tnFile2)
             log.debug "Thumbnailing: " + success
         } catch(IOException e) {
             log.error "Write error for " + tnFile.getPath() + ": " + e.getMessage(), e
@@ -93,10 +91,8 @@ class ImageService {
             }
 
             uploaded = new File("${grailsApplication.config.media.uploadDir}/image_${uuid}${ext}")
-            //uploaded = new File("${grailsApplication.config.media.uploadDir}/${filename}")
         } else {
             uploaded = File.createTempFile('grails', "image_${uuid}${ext}")
-            //uploaded = File.createTempFile('grails', "${filename}")
         }
 
         if (uploaded) {

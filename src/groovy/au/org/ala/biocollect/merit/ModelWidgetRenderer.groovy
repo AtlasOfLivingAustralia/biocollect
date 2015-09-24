@@ -7,6 +7,7 @@ public interface ModelWidgetRenderer {
 
     void renderLiteral(WidgetRenderContext context)
     void renderText(WidgetRenderContext context)
+    void renderReadonlyText(WidgetRenderContext context)
     void renderNumber(WidgetRenderContext context)
     void renderBoolean(WidgetRenderContext context)
     void renderTextArea(WidgetRenderContext context)
@@ -22,6 +23,7 @@ public interface ModelWidgetRenderer {
     void renderLink(WidgetRenderContext context)
     void renderDate(WidgetRenderContext context)
     void renderDocument(WidgetRenderContext context)
+    void renderButtonGroup(WidgetRenderContext context)
 
 }
 

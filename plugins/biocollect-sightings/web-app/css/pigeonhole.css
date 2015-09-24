@@ -272,9 +272,6 @@ td label {
     margin-bottom: 5px;
     /*display: inline-block;*/
 }
-#taxonDetails table {
-    display: inline-block;
-}
 #taxonDetails table td {
     padding: 5px 9px 0px 4px;
 }

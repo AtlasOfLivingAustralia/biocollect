@@ -1,16 +1,33 @@
+/**
+ * Copied from http://grantm.github.io/jquery-udraggable/jquery.event.ue.js
+ *
+ * This version is different to the original from https://github.com/mmikowski/jquery.event.ue/blob/master/jquery.event.ue.js in that it removes many of the 'preventDefault' function calls.
+ *
+ * These calls were causing the udraggable plugin to affect the behaviour of click-and-drag operations such as selecting text with the mouse.
+ *
+ * See issue 9 from https://github.com/grantm/jquery-udraggable.
+ */
+
 /*
- * Copyright (C) 2015 Atlas of Living Australia
- * All Rights Reserved.
+ * Jquery plugin for unified mouse and touch events
  *
- * The contents of this file are subject to the Mozilla Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/MPL/
+ * Copyright (c) 2013 Michael S. Mikowski
+ * (mike[dot]mikowski[at]gmail[dotcom])
  *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
+ * Dual licensed under the MIT or GPL Version 2
+ * http://jquery.org/license
+ *
+ * Versions
+ *  0.3.0 - Initial jQuery plugin site release
+ *        - Replaced scrollwheel zoom with drag motion.
+ *          This resolved a conflict with scrollable areas.
+ *  0.3.1 - Change for jQuery plugins site
+ *  0.3.2 - Updated to jQuery 1.9.1.
+ *          Confirmed 1.7.0-1.9.1 compatibility.
+ *  0.4.2 - Updated documentation
+ *  0.4.3 - Removed fatal execption possibility if originalEvent
+ *          is not defined on event object
+ *
  */
 
 /*jslint           browser : true,   continue : true,
@@ -114,8 +131,8 @@
     Ue = {
         setup : function( data, a_names, fn_bind ) {
             var
-                elem_this = this,
-                $to_bind  = $(elem_this),
+                this_el     = this,
+                $to_bind    = $(this_el),
                 seen_map    = {},
                 option_map, idx, namespace_key, ue_namespace_code, namespace_list
                 ;
@@ -126,7 +143,7 @@
 
             option_map = {};
             $.extend( true, option_map, defaultOptMap );
-            $.data( elem_this, optionKey, option_map );
+            $.data( this_el, optionKey, option_map );
 
             namespace_list = makeListPlus(a_names.slice(0));
             if ( ! namespace_list.length
@@ -149,14 +166,15 @@
                     $to_bind.bind( 'mousewheel' + ue_namespace_code, onMousewheel );
                 }
 
-            boundList.push_uniq( elem_this ); // record as bound element
+            boundList.push_uniq( this_el ); // record as bound element
 
             if ( ! isMoveBound ) {
                 // console.log('first element bound - adding global binds');
-                $(document).bind( 'mousemove.__ue', onMouse  );
-                $(document).bind( 'touchmove.__ue', onTouch  );
-                $(document).bind( 'mouseup.__ue'  , onMouse  );
-                $(document).bind( 'touchend.__ue' , onTouch  );
+                $(document).bind( 'mousemove.__ue',   onMouse );
+                $(document).bind( 'touchmove.__ue',   onTouch );
+                $(document).bind( 'mouseup.__ue'  ,   onMouse );
+                $(document).bind( 'touchend.__ue' ,   onTouch );
+                $(document).bind( 'touchcancel.__ue', onTouch );
                 isMoveBound = true;
             }
         },
@@ -176,8 +194,8 @@
         // this always executes immediate after setup (if first binding)
         add : function ( arg_map ) {
             var
-                elem_this       = this,
-                option_map      = $.data( elem_this, optionKey ),
+                this_el         = this,
+                option_map      = $.data( this_el, optionKey ),
                 namespace_str   = arg_map.namespace,
                 event_type      = arg_map.type,
                 bound_ns_map, namespace_list, idx, namespace_key
@@ -275,6 +293,7 @@
                 $(document).unbind( 'touchmove.__ue');
                 $(document).unbind( 'mouseup.__ue');
                 $(document).unbind( 'touchend.__ue');
+                $(document).unbind( 'touchcancel.__ue');
                 isMoveBound = false;
             }
         }
@@ -647,12 +666,12 @@
     // We use the 'type' attribute to dispatch to motion control
     onTouch = function ( event ) {
         var
-            elem_this   = this,
+            this_el     = this,
             timestamp   = +new Date(),
             o_event     = event.originalEvent,
-            a_touches   = o_event.changedTouches || [],
-            idx, touch_event, motion_id,
-            handler_fn
+            touch_list  = o_event ? o_event.changedTouches || [] : [],
+            touch_count = touch_list.length,
+            idx, touch_event, motion_id, handler_fn
             ;
 
         doDisableMouse = true;
@@ -660,25 +679,29 @@
         event.timeStamp = timestamp;
 
         switch ( event.type ) {
-            case 'touchstart' : handler_fn = fnMotionStart; break;
+            case 'touchstart' :
+                handler_fn = fnMotionStart;
+                event.preventDefault();
+                break;
             case 'touchmove'  :
                 handler_fn = fnMotionMove;
                 break;
-            case 'touchend'   : handler_fn = fnMotionEnd;   break;
+            case 'touchend'    :
+            case 'touchcancel' : handler_fn = fnMotionEnd;   break;
             default : handler_fn = null;
         }
 
         if ( ! handler_fn ) { return; }
 
-        for ( idx = 0; idx < a_touches.length; idx++ ) {
-            touch_event  = a_touches[idx];
+        for ( idx = 0; idx < touch_count; idx++ ) {
+            touch_event  = touch_list[idx];
 
             motion_id = 'touch' + String(touch_event.identifier);
 
             event.clientX   = touch_event.clientX;
             event.clientY   = touch_event.clientY;
             handler_fn({
-                elem      : elem_this,
+                elem      : this_el,
                 motion_id : motion_id,
                 event_src : event
             });
@@ -691,7 +714,7 @@
     // We use the 'type' attribute to dispatch to motion control
     onMouse = function ( event ) {
         var
-            elem_this     = this,
+            this_el       = this,
             motion_id     = 'mouse' + String(event.button),
             request_dzoom = false,
             handler_fn
@@ -710,19 +733,24 @@
         }
 
         switch ( event.type ) {
-            case 'mousedown' : handler_fn = fnMotionStart; event.preventDefault(); break;
-            case 'mouseup'   : handler_fn = fnMotionEnd;   break;
-            case 'mousemove' :
-                handler_fn = fnMotionMove;
+            case 'mousedown' :
+                handler_fn = fnMotionStart;
                 event.preventDefault();
                 break;
-            default          : handler_fn = null;
+            case 'mouseup'   :
+                handler_fn = fnMotionEnd;
+                break;
+            case 'mousemove' :
+                handler_fn = fnMotionMove;
+                break;
+            default:
+                handler_fn = null;
         }
 
         if ( ! handler_fn ) { return; }
 
         handler_fn({
-            elem          : elem_this,
+            elem          : this_el,
             event_src     : event,
             request_dzoom : request_dzoom,
             motion_id     : motion_id
