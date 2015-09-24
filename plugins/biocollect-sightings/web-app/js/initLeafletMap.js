@@ -213,9 +213,17 @@ $(document).ready(function() {
         $('#decimalLongitude').change();
     }
 
-    L.easyButton('fa-refresh', function(btn, map) {
-        resetMap();
+    L.easyButton({
+        states: [{
+            stateName: 'default',
+            icon: 'fa-refresh',
+            title: 'Reset map',
+            onClick: function(control) {
+                resetMap();
+            }
+        }]
     }).addTo(map);
+
 }); // end document load function
 
 function loadBookmarks() {
@@ -420,4 +428,10 @@ function resetMap() {
     map.removeLayer(marker);
     map.removeLayer(circle);
     map.setView([-28, 134], 3);
+
+    $("#decimalLatitude").val("");
+    $("#decimalLongitude").val("");
+    $("#coordinateUncertaintyInMeters").val("");
+    $("#georeferenceProtocol").val("");
+    $("#locality").val("");
 }
