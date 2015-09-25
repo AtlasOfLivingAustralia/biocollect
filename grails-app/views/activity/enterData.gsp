@@ -286,13 +286,14 @@
     </g:each>
 <!-- /ko -->
 
+    <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
+        <div class="output-block" data-bind="with:transients.photoPointModel">
+            <h3>Photo Points</h3>
 
-    <div class="output-block" data-bind="with:transients.photoPointModel">
-        <h3>Photo Points</h3>
+             <g:render template="/site/photoPoints"></g:render>
+        </div>
+    </g:if>
 
-         <g:render template="/site/photoPoints"></g:render>
-
-    </div>
     <g:if test="${!printView}">
         <div class="form-actions">
             <button type="button" id="save" class="btn btn-primary">Save changes</button>

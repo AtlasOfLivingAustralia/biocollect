@@ -165,21 +165,24 @@
 <!-- /ko -->
 
 
-    <div class="row-fluid">
+    <g:if test="${metaModel.supportsSites?.toBoolean()}">
+        <div class="row-fluid">
 
-        <div class="span12 well">
-            <h3>Site Details:</h3>
-            <fc:select data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."' printable="${printView}"/>
-            <div id="map" style="width:100%; height: 512px;"></div>
+            <div class="span12 well">
+                <h3>Site Details:</h3>
+                <fc:select data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."' printable="${printView}"/>
+                <div id="map" style="width:100%; height: 512px;"></div>
+            </div>
+
         </div>
+    </g:if>
 
-    </div>
-
-    <div class="output-block well" data-bind="with:transients.photoPointModel">
-        <h3>Photo Points</h3>
-        <g:render template="/site/photoPoints"></g:render>
-    </div>
-
+    <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
+        <div class="output-block well" data-bind="with:transients.photoPointModel">
+            <h3>Photo Points</h3>
+            <g:render template="/site/photoPoints"></g:render>
+        </div>
+    </g:if>
 
     <g:if test="${!printView}">
         <div class="form-actions">
