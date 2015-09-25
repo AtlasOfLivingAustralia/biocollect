@@ -90,7 +90,13 @@
             if (options.polygonMarkerAreaKm2 !== undefined) {
                 this.polygonMarkerAreaKm2 = this.polygonMarkerAreaKm2;
             }
-            this.map = new google.maps.Map(document.getElementById(this.containerId), {
+
+            var mapContainer = document.getElementById(this.containerId);
+            if (!mapContainer || typeof mapContainer === "undefined") {
+                return;
+            }
+
+            this.map = new google.maps.Map(mapContainer, {
                 zoom: 3,
                 center: new google.maps.LatLng(-28.5, 133.5),
                 panControl: false,
