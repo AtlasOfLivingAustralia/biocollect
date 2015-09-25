@@ -191,7 +191,7 @@
                 <div class="span6" id="mapWidget">
                     <div class="row-fluid">
                         <div class="span4">
-                            <button class="btn btn-default span11" id="useMyLocation">
+                            <button class="btn btn-default" id="useMyLocation">
                                 <i class="fa fa-location-arrow fa-lg"
                                    style="margin-left:-2px;margin-right:2px;"></i> Current location <r:img
                                     uri="/images/spinner.gif" class="spinner0" style="display:none;height: 18px;"/>
@@ -214,7 +214,7 @@
                     </div>
 
                     <div style="position:relative;">
-                        <div id="map" style="width: 100%; height: 280px"></div>
+                        <div id="sightingMap" style="width: 100%; height: 280px"></div>
 
                         <div class="" id="mapTip"><strong><i class="fa fa-info-circle"></i> Hint:
                         </strong> drag the marker to fine-tune your location

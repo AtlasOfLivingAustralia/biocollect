@@ -15,7 +15,7 @@
 
 /*  Global var GSP_VARS required to be set in calling page */
 
-var map, geocoding, marker, circle, radius, initalBounds, bookmarks, geocoder;
+var sightingMap, geocoding, marker, circle, radius, initalBounds, bookmarks, geocoder;
 
 $(document).ready(function() {
     if (typeof GSP_VARS == 'undefined') {
@@ -53,7 +53,7 @@ $(document).ready(function() {
         maxZoom: 17
     });
 
-    map = L.map('map', {
+    sightingMap = L.map('sightingMap', {
         center: [-28, 134],
         zoom: 3,
         scrollWheelZoom: false,
@@ -61,7 +61,7 @@ $(document).ready(function() {
         //layers: [osm, MapQuestOpen_Aerial]
         });
 
-    initalBounds = map.getBounds().toBBoxString(); // save for geocoding lookups
+    initalBounds = sightingMap.getBounds().toBBoxString(); // save for geocoding lookups
 
     var baseLayers = {
         "Street": gmap_road,
@@ -71,13 +71,12 @@ $(document).ready(function() {
         //"Satellite": Esri_WorldImagery
     };
 
-    map.addLayer(gmap_road);
+    sightingMap.addLayer(gmap_road);
 
-    L.control.layers(baseLayers).addTo(map);
+    L.control.layers(baseLayers).addTo(sightingMap);
 
     marker = L.marker(null, {draggable: true}).on('dragend', function() {
         updateLocation(this.getLatLng().wrap(), true);
-        //console.log('position', map.latLngToLayerPoint(marker.getLatLng()));
     });
 
     radius = $('#coordinateUncertaintyInMeters').val();
@@ -87,16 +86,14 @@ $(document).ready(function() {
 
     var popup1 = L.popup().setContent('<p>Hello world!<br />This is a nice popup.</p>');
 
-    map.on('locationfound', function(e) {
+    sightingMap.on('locationfound', function(e) {
         // create a marker at the users "latlng" and add it to the map
-        marker.setLatLng(e.latlng).addTo(map);
+        marker.setLatLng(e.latlng).addTo(sightingMap);
         updateLocation(e.latlng);
     }).on('locationerror', function(e){
-        //console.log(e);
         alert("Location could not be determined. Try entering an address instead.");
     }).on('contextmenu',function(e){
-        //alert('right click');
-        popup1.openOn(map);
+        popup1.openOn(sightingMap);
     }); // triggered from map.locate()
 
 
@@ -110,7 +107,6 @@ $(document).ready(function() {
 
     $('#geocodebutton').click(function(e) {
         e.preventDefault();
-        //geocodeAddress($('#geocodeinput').val());
         googleGeocodeAddress($('#geocodeinput').val());
     });
 
@@ -125,14 +121,13 @@ $(document).ready(function() {
         var lng = $('#decimalLongitude').val();
 
         if (lat && lng) {
-            //updateMapWithLocation(lat, lng);
             updateLocation(new L.LatLng(lat, lng));
         }
     });
 
     $('#coordinateUncertaintyInMeters').change(function() {
         updateLocation(marker.getLatLng());
-    })
+    });
 
     loadBookmarks();
 
@@ -154,10 +149,8 @@ $(document).ready(function() {
             if (data.error) {
                 alert("Location could not be saved - " + data.error, 'Error');
             } else {
-                // reload bookmarks
                 alert("Location was saved");
                 loadBookmarks();
-                //$('#bookmarkedLocations option').eq(0).after('<option value="' + bookmark.decimalLatitude + ',' + bookmark.decimalLongitude + '">' + bookmark.locality + '</option>');
             }
         }).fail(function( jqXHR, textStatus, errorThrown ) {
             alert("Error: " + textStatus + " - " + errorThrown);
@@ -180,7 +173,6 @@ $(document).ready(function() {
             if (location) {
                 var latlng =  new L.LatLng(location.decimalLatitude, location.decimalLongitude);
                 updateLocation(latlng);
-                //geocodeAddress(location.locality);
             } else {
                 alert("Error: bookmark could not be loaded.");
             }
@@ -193,10 +185,9 @@ $(document).ready(function() {
     $(".drag").udraggable({
         containment: 'parent',
         stop: function(evt, el) {
-            //console.log("transformMarker", el);
             var x = el.offset.left + 12;
             var y = el.offset.top + 40;
-            marker.setLatLng(map.containerPointToLatLng([x, y])).addTo(map);
+            marker.setLatLng(sightingMap.containerPointToLatLng([x, y])).addTo(sightingMap);
             updateLocation(marker.getLatLng(), true);
             $(this).hide();
         }
@@ -205,7 +196,7 @@ $(document).ready(function() {
     // handler for zoom in button on Marler popup
     $('#location').on('click', '#zoomMarker', function(e) {
         e.preventDefault();
-        map.setView(marker.getLatLng(), 16);
+        sightingMap.setView(marker.getLatLng(), 16);
     });
 
     // update map in edit mode
@@ -222,7 +213,7 @@ $(document).ready(function() {
                 resetMap();
             }
         }]
-    }).addTo(map);
+    }).addTo(sightingMap);
 
 }); // end document load function
 
@@ -251,7 +242,6 @@ function loadBookmarks() {
 
 function geocodeAddress(query) {
     $.ajax({
-        // https://api.opencagedata.com/geocode/v1/json?q=Canberra,+ACT&key=577ca677f86a3a4589b17814ec399112
         url : 'https://api.opencagedata.com/geocode/v1/json',
         dataType : 'jsonp',
         jsonp : 'callback',
@@ -262,7 +252,6 @@ function geocodeAddress(query) {
         }
     })
     .done(function(data){
-        //console.log("geonames", data);
         if (data.results.length > 0) {
             var res = data.results[0];
             var latlng, bounds;
@@ -277,7 +266,7 @@ function geocodeAddress(query) {
 
             if (res.bounds && res.bounds.southwest && res.bounds.northeast) {
                 bounds = new L.LatLngBounds([res.bounds.southwest.lat, res.bounds.southwest.lng], [res.bounds.northeast.lat, res.bounds.northeast.lng]);
-                map.fitBounds(bounds);
+                sightingMap.fitBounds(bounds);
             }
         } else {
             bootbox.alert('location was not found, try a different address or place name');
@@ -311,7 +300,7 @@ function googleGeocodeAddress(address) {
 function geolocate() {
     // this triggers a 'locationfound' event, which is registered further up in code.
     $('.spinner0').show();
-    map.locate({setView: true, maxZoom: 16}).on('locationfound', function(e){
+    sightingMap.locate({setView: true, maxZoom: 16}).on('locationfound', function(e){
         $('.spinner0').hide();
     }).on('locationerror', function(e){
         $('.spinner0').hide();
@@ -320,16 +309,15 @@ function geolocate() {
 }
 
 function updateLocation(latlng, keepView) {
-    //console.log("Marker moved to: "+latlng.toString());
     if (latlng) {
         $('.spinner1').removeClass('hide');
         $('.drag').hide();
         $('#decimalLatitude').val(latlng.lat);
         $('#decimalLongitude').val(latlng.lng);
-        marker.setLatLng(latlng).bindPopup('<div>Sighting location</div><button class="btn btn-small" id="zoomMarker">Zoom in</button>', { maxWidth:250 }).addTo(map);
-        circle.setLatLng(latlng).setRadius($('#coordinateUncertaintyInMeters').val()).addTo(map);
+        marker.setLatLng(latlng).bindPopup('<div>Sighting location</div><button class="btn btn-small" id="zoomMarker">Zoom in</button>', { maxWidth:250 }).addTo(sightingMap);
+        circle.setLatLng(latlng).setRadius($('#coordinateUncertaintyInMeters').val()).addTo(sightingMap);
         if (!keepView) {
-            map.setView(latlng, 16);
+            sightingMap.setView(latlng, 16);
         }
         $('#georeferenceProtocol').val('Google maps');
         $('#bookmarkLocation').removeClass('disabled').removeAttr('disabled'); // activate button
@@ -343,7 +331,7 @@ function updateLocation(latlng, keepView) {
                 decimalLatitude: latlng.lat,
                 decimalLongitude: latlng.lng,
                 scientificName: sciName
-            }
+            };
             $.ajax({
                 url: GSP_VARS.validateUrl,
                 data: JSON.stringify(params),
@@ -383,8 +371,6 @@ function updateLocation(latlng, keepView) {
  * @param lng
  */
 function reverseGeocode(lat, lng) {
-    // http://nominatim.openstreetmap.org/reverse?format=json&lat=-30.1484782&lon=153.1961178&zoom=18&addressdetails=1&accept-language=en&json_callback=foo123
-    //console.log("lat lng", lat, lng);
     if (lat && lng) {
         $('#locality').val('');
         var url = "http://nominatim.openstreetmap.org/reverse?format=json&lat="+lat+
@@ -395,8 +381,7 @@ function reverseGeocode(lat, lng) {
             }
         }).fail(function( jqXHR, textStatus, errorThrown ) {
             bootbox.alert("Error: " + textStatus + " - " + errorThrown);
-        }).always(function() {  //
-            // $('.spinner').hide();
+        }).always(function() {
         });
     }
 
@@ -425,9 +410,9 @@ function reverseGeocodeGoogle(lat, lng) {
 function resetMap() {
     $("#markerIcon").css({left: "312px", top: "280px", position: "absolute", right: "auto", bottom: "auto", display: "block"});
 
-    map.removeLayer(marker);
-    map.removeLayer(circle);
-    map.setView([-28, 134], 3);
+    sightingMap.removeLayer(marker);
+    sightingMap.removeLayer(circle);
+    sightingMap.setView([-28, 134], 3);
 
     $("#decimalLatitude").val("");
     $("#decimalLongitude").val("");
