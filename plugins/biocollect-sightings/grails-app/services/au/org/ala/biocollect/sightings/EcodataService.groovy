@@ -196,7 +196,7 @@ class EcodataService {
     }
 
     def addBookmarkLocation(JSONObject bookmarkLocation) {
-        def url = grailsApplication.config.ecodata.service.url + "//location/"
+        def url = grailsApplication.config.ecodata.service.url + "/location/"
         def result = webserviceService.doJsonPost(url, bookmarkLocation.toString())
         log.debug "ecodata post bookmark result = ${result}"
         // if error return Map below

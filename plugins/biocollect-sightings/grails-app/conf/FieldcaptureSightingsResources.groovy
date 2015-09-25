@@ -118,8 +118,14 @@ modules = {
 
     leafletGoogle {
         dependsOn 'leaflet'
-        resource url: 'https://maps.google.com/maps/api/js?v=3.2&sensor=false', plugin: 'biocollect-sightings', attrs: [type: "js"], disposition: 'head'
+//        resource url: 'https://maps.google.com/maps/api/js?v=3.2&sensor=false', plugin: 'biocollect-sightings', attrs: [type: "js"], disposition: 'head'
         resource url: 'vendor/leaflet-plugins/Google.js', plugin: 'biocollect-sightings'
+    }
+
+    leafletEasyButton {
+        dependsOn 'leaflet'
+        resource url: 'vendor/leaflet-plugins/Leaflet.EasyButton-1.1.2/easy-button.css', plugin: 'biocollect-sightings'
+        resource url: 'vendor/leaflet-plugins/Leaflet.EasyButton-1.1.2/easy-button.js', plugin: 'biocollect-sightings'
     }
 
     inview {

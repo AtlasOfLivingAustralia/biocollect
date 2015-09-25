@@ -16,6 +16,11 @@ class PrintModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderReadonlyText(WidgetRenderContext context) {
+        defaultRender(context)
+    }
+
+    @Override
     void renderNumber(WidgetRenderContext context) {
         defaultRender(context)
     }
@@ -90,6 +95,11 @@ class PrintModelWidgetRenderer implements ModelWidgetRenderer {
     @Override
     void renderDocument(WidgetRenderContext context) {
         defaultRender(context)
+    }
+
+    @Override
+    void renderButtonGroup(WidgetRenderContext context) {
+
     }
 
     private void defaultRender(WidgetRenderContext context) {

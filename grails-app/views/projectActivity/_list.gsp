@@ -34,6 +34,7 @@
     <!-- /ko -->
 
     <!-- ko foreach: projectActivities -->
+    <!-- ko if: published() -->
     <div class="row-fluid">
 
         <div class="span12">
@@ -93,6 +94,7 @@
         </div>
 
     </div>
+    <!-- /ko -->
     <!-- /ko -->
 
 </div>
