@@ -79,6 +79,8 @@ class OrganisationControllerSpec extends Specification {
 
     def "soft delete an organisation"() {
         when:
+        setupOrganisationAdmin()
+        request.method = 'POST'
         controller.ajaxDelete('id')
         then:
         1 * organisationService.update('id', [status:'deleted'])
@@ -90,6 +92,7 @@ class OrganisationControllerSpec extends Specification {
         def document = [organisationId: 'id', name:'name', description:'description']
         def organisation = testOrganisation()
         organisation.documents = [document]
+        request.method = 'POST'
         request.json = (organisation as JSON).toString()
         request.addHeader('Accept', 'application/json')
         request.format = 'json'
@@ -141,7 +144,7 @@ class OrganisationControllerSpec extends Specification {
 
     def "all tabs are visible to fc admins"() {
         setup:
-         def testOrg = testOrganisation()
+        def testOrg = testOrganisation()
         organisationService.get(_,_) >> testOrg
         setupFcAdmin()
 
@@ -221,6 +224,7 @@ class OrganisationControllerSpec extends Specification {
         userService.userHasReadOnlyAccess() >> false
         userService.userIsAlaOrFcAdmin() >> false
         organisationService.getMembersOfOrganisation(_) >> [[userId:'1234', role:RoleService.PROJECT_ADMIN_ROLE]]
+        organisationService.isUserAdminForOrganisation(_) >> false
     }
 
     private void setupFcAdmin() {
@@ -228,6 +232,7 @@ class OrganisationControllerSpec extends Specification {
         userService.userHasReadOnlyAccess() >> false
         userService.userIsAlaOrFcAdmin() >> true
         organisationService.getMembersOfOrganisation(_) >> []
+        organisationService.isUserAdminForOrganisation(_) >> true
     }
 
     private void setupReadOnlyUser() {
@@ -235,6 +240,7 @@ class OrganisationControllerSpec extends Specification {
         userService.userHasReadOnlyAccess() >> true
         userService.userIsAlaOrFcAdmin() >> false
         organisationService.getMembersOfOrganisation(_) >> []
+        organisationService.isUserAdminForOrganisation(_) >> false
     }
 
     private void setupOrganisationAdmin() {
@@ -243,6 +249,7 @@ class OrganisationControllerSpec extends Specification {
         userService.userHasReadOnlyAccess() >> false
         userService.userIsAlaOrFcAdmin() >> false
         organisationService.getMembersOfOrganisation(_) >> [[userId:userId, role:RoleService.PROJECT_ADMIN_ROLE]]
+        organisationService.isUserAdminForOrganisation(_) >> true
     }
 
     private void setupOrganisationEditor() {
@@ -251,6 +258,7 @@ class OrganisationControllerSpec extends Specification {
         userService.userHasReadOnlyAccess() >> false
         userService.userIsAlaOrFcAdmin() >> false
         organisationService.getMembersOfOrganisation(_) >> [[userId:userId, role:RoleService.PROJECT_EDITOR_ROLE]]
+        organisationService.isUserAdminForOrganisation(_) >> false
     }
 
 
