@@ -684,7 +684,6 @@ function Sighting() {
                 record.multimedia.push(image);
             }
         });
-        console.log(JSON.stringify(record));
 
         return record;
     };

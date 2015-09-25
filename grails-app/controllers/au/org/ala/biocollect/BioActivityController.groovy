@@ -5,7 +5,7 @@ import org.codehaus.groovy.grails.web.json.JSONArray
 
 class BioActivityController {
 
-    def activityModel, projectService, metadataService, siteService, projectActivityService, userService, documentService, activityService
+    def activityModel, projectService, metadataService, siteService, projectActivityService, userService, documentService, activityService, bieService
 
     /**
      * Update Activity by activityId or
@@ -178,6 +178,20 @@ class BioActivityController {
         model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view:'brief']) : null
         model.mapFeatures = model.site ? siteService.getMapFeatures(model.site) : []
         model.project = projectId ? projectService.get(model.activity.projectId) : null
+
+        // Add the species lists that are relevant to this activity.
+        model.speciesLists = new JSONArray()
+        if (model.project) {
+            model.project.speciesLists?.each { list ->
+                if (list.purpose == activity.type) {
+                    model.speciesLists.add(list)
+                }
+            }
+            model.themes = metadataService.getThemesForProject(model.project)
+        }
+
+        model.speciesGroupsMap = bieService.getSpeciesGroupsMap()
+        model.user = userService.getUser()
 
         model
     }

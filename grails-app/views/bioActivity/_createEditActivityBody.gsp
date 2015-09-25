@@ -2,104 +2,100 @@
 
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <g:if test="${!printView}">
-            <ul class="breadcrumb">
-                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-                <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
-                <li class="active">
-                    <span>${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span>
-                </li>
-            </ul>
+<g:if test="${!printView}">
+    <ul class="breadcrumb">
+        <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
+        <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
+        <li class="active">
+            <span>${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span>
+        </li>
+    </ul>
+</g:if>
+
+<g:render template="header"></g:render>
+
+<!-- ko stopBinding: true -->
+<g:each in="${metaModel?.outputs}" var="outputName">
+    <g:if test="${outputName != 'Photo Points'}">
+        <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
+        <g:set var="model" value="${outputModels[outputName]}"/>
+        <g:set var="output" value="${activity.outputs.find { it.name == outputName }}"/>
+        <g:if test="${!output}">
+            <g:set var="output" value="[name: outputName]"/>
         </g:if>
 
-        <g:render template="header"></g:render>
+        <md:modelStyles model="${model}" edit="true"/>
 
-    <!-- ko stopBinding: true -->
-        <g:each in="${metaModel?.outputs}" var="outputName">
-            <g:if test="${outputName != 'Photo Points'}">
-                <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
-                <g:set var="model" value="${outputModels[outputName]}"/>
-                <g:set var="output" value="${activity.outputs.find { it.name == outputName }}"/>
-                <g:if test="${!output}">
-                    <g:set var="output" value="[name: outputName]"/>
-                </g:if>
+        <div class="output-block well" id="ko${blockId}">
 
-                <md:modelStyles model="${model}" edit="true"/>
+            <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h3>
 
-                <div class="output-block well" id="ko${blockId}">
+            <!-- add the dynamic components -->
 
-                    <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h3>
+            <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}"
+                          printable="${printView}"/>
 
-                    <!-- add the dynamic components -->
-
-                    <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}"
-                                  printable="${printView}"/>
-
-                    <r:script>
+            <r:script>
                     $(function(){
                         var viewModelName = "${blockId}ViewModel", viewModelInstance = viewModelName + "Instance";
 
                         // load dynamic models - usually objects in a list
-                        <md:jsModelObjects model="${model}" site="${site}" edit="true"
-                                           viewModelInstance="${blockId}ViewModelInstance"/>
+                <md:jsModelObjects model="${model}" site="${site}" edit="true"
+                                   viewModelInstance="${blockId}ViewModelInstance"/>
 
-                        this[viewModelName] = function () {
-                            var self = this;
-                            self.name = "${output.name}";
+                this[viewModelName] = function () {
+                    var self = this;
+                    self.name = "${output.name}";
                             self.outputId = "${output.outputId}";
                             self.data = {};
                             self.transients = {};
                             self.transients.dummy = ko.observable();
                             // add declarations for dynamic data
-                        <md:jsViewModel model="${model}" output="${output.name}" edit="true"
-                                        viewModelInstance="${blockId}ViewModelInstance"/>
-                        // this will be called when generating a savable model to remove transient properties
-                        self.removeBeforeSave = function (jsData) {
-                            // add code to remove any transients added by the dynamic tags
-                        <md:jsRemoveBeforeSave model="${model}"/>
-                        delete jsData.activityType;
-                        delete jsData.transients;
-                        return jsData;
-                    };
+                <md:jsViewModel model="${model}" output="${output.name}" edit="true"
+                                viewModelInstance="${blockId}ViewModelInstance"/>
+                // this will be called when generating a savable model to remove transient properties
+                self.removeBeforeSave = function (jsData) {
+                    // add code to remove any transients added by the dynamic tags
+                <md:jsRemoveBeforeSave model="${model}"/>
+                delete jsData.activityType;
+                delete jsData.transients;
+                return jsData;
+            };
 
-                    // this returns a JS object ready for saving
-                    self.modelForSaving = function () {
-                        // get model as a plain javascript object
-                        var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
+            // this returns a JS object ready for saving
+                <md:jsSaveModel model="${model}" output="${output}"/>
 
-                        // get rid of any transient observables
-                        return self.removeBeforeSave(jsData);
-                    };
-
-                    // this is a version of toJSON that just returns the model as it will be saved
-                    // it is used for detecting when the model is modified (in a way that should invoke a save)
-                    // the ko.toJSON conversion is preserved so we can use it to view the active model for debugging
-                    self.modelAsJSON = function () {
-                        return JSON.stringify(self.modelForSaving());
-                    };
-
-                    self.loadData = function (data) {
-                        // load dynamic data
-                        <md:jsLoadModel model="${model}"/>
-
-                        // if there is no data in tables then add an empty row for the user to add data
-                        if (typeof self.addRow === 'function' && self.rowCount() === 0) {
-                            self.addRow();
-                        }
-                        self.transients.dummy.notifySubscribers();
-                    };
+                // this is a version of toJSON that just returns the model as it will be saved
+                // it is used for detecting when the model is modified (in a way that should invoke a save)
+                // the ko.toJSON conversion is preserved so we can use it to view the active model for debugging
+                self.modelAsJSON = function () {
+                    return JSON.stringify(self.modelForSaving());
                 };
 
-                window[viewModelInstance] = new this[viewModelName](site);
+                self.loadData = function (data) {
+                    // load dynamic data
+                <md:jsLoadModel model="${model}"/>
 
-                var output = ${output.data ?: '{}'};
+                // if there is no data in tables then add an empty row for the user to add data
+                if (typeof self.addRow === 'function' && self.rowCount() === 0) {
+                    self.addRow();
+                }
+                self.transients.dummy.notifySubscribers();
+            };
+        };
 
+        window[viewModelInstance] = new this[viewModelName](site);
+
+        var output = ${output.data ?: '{}'};
+
+                if (Object.keys(output).length) {
                         window[viewModelInstance].loadData(output);
+                }
 
                         // dirtyFlag must be defined after data is loaded
-                        window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);
+                <md:jsDirtyFlag model="${model}"/>
 
-                        ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
+                ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
 
                         // this resets the baseline for detecting changes to the model
                         // - shouldn't be required if everything behaves itself but acts as a backup for
@@ -130,85 +126,84 @@
                             window[viewModelInstance].loadData(savedOutput);
                         }
                     });
-                    </r:script>
-                </div>
-            </g:if>
-        </g:each>
-    <!-- /ko -->
+            </r:script>
+        </div>
+    </g:if>
+</g:each>
+<!-- /ko -->
 
 
-        <g:if test="${metaModel.supportsSites?.toBoolean()}">
-            <div class="row-fluid">
+<g:if test="${metaModel.supportsSites?.toBoolean()}">
+    <div class="row-fluid">
 
-                <div class="span12 well">
-                    <h3>Site Details:</h3>
-                    <fc:select
-                            data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
-                            printable="${printView}"/>
-                    <div id="map" style="width:100%; height: 512px;"></div>
-                </div>
-
-            </div>
-        </g:if>
-
-        <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
-            <div class="output-block well" data-bind="with:transients.photoPointModel">
-                <h3>Photo Points</h3>
-                <g:render template="/site/photoPoints"></g:render>
-            </div>
-        </g:if>
-
-        <g:if test="${!printView}">
-            <div class="form-actions">
-                <button type="button" id="save" class="btn btn-primary">Submit</button>
-                <button type="button" id="cancel" class="btn">Cancel</button>
-            </div>
-        </g:if>
-
-        <g:if env="development" test="${!printView}">
-            <div class="expandable-debug">
-                <hr/>
-
-                <h3>Debug</h3>
-
-                <div>
-                    <h4>KO model</h4>
-                    <pre data-bind="text:ko.toJSON($root.modelForSaving(),null,2)"></pre>
-                    <h4>Activity</h4>
-                    <pre>${activity?.encodeAsHTML()}</pre>
-                    <h4>Site</h4>
-                    <pre>${site?.encodeAsHTML()}</pre>
-                    <h4>Sites</h4>
-                    <pre>${(sites as JSON).toString()}</pre>
-                    <h4>Project</h4>
-                    <pre>${project?.encodeAsHTML()}</pre>
-                    <h4>Activity model</h4>
-                    <pre>${metaModel}</pre>
-                    <h4>Output models</h4>
-                    <pre>${outputModels?.encodeAsHTML()}</pre>
-                    <h4>Map features</h4>
-                    <pre>${mapFeatures.toString()}</pre>
-                </div>
-            </div>
-        </g:if>
+        <div class="span12 well">
+            <h3>Site Details:</h3>
+            <fc:select
+                    data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
+                    printable="${printView}"/>
+            <div id="map" style="width:100%; height: 512px;"></div>
+        </div>
 
     </div>
+</g:if>
 
-    <div id="timeoutMessage" class="hide">
-
-        <span class='label label-important'>Important</span><h4>There was an error while trying to save your changes.</h4>
-
-        <p>This could be because your login has timed out or the internet is unavailable.</p>
-
-        <p>Your data has been saved on this computer but you may need to login again before the data can be sent to the server.</p>
-        <a href="${createLink(action: 'enterData', id: activity.activityId)}?returnTo=${returnTo}">Click here to refresh your login and reload this page.</a>
+<g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
+    <div class="output-block well" data-bind="with:transients.photoPointModel">
+        <h3>Photo Points</h3>
+        <g:render template="/site/photoPoints"></g:render>
     </div>
+</g:if>
+
+<g:if test="${!printView}">
+    <div class="form-actions">
+        <button type="button" id="save" class="btn btn-primary">Submit</button>
+        <button type="button" id="cancel" class="btn">Cancel</button>
+    </div>
+</g:if>
+
+<g:if env="development" test="${!printView}">
+    <div class="expandable-debug">
+        <hr/>
+
+        <h3>Debug</h3>
+
+        <div>
+            <h4>KO model</h4>
+            <pre data-bind="text:ko.toJSON($root.modelForSaving(),null,2)"></pre>
+            <h4>Activity</h4>
+            <pre>${activity?.encodeAsHTML()}</pre>
+            <h4>Site</h4>
+            <pre>${site?.encodeAsHTML()}</pre>
+            <h4>Sites</h4>
+            <pre>${(sites as JSON).toString()}</pre>
+            <h4>Project</h4>
+            <pre>${project?.encodeAsHTML()}</pre>
+            <h4>Activity model</h4>
+            <pre>${metaModel}</pre>
+            <h4>Output models</h4>
+            <pre>${outputModels?.encodeAsHTML()}</pre>
+            <h4>Map features</h4>
+            <pre>${mapFeatures.toString()}</pre>
+        </div>
+    </div>
+</g:if>
+
+</div>
+
+<div id="timeoutMessage" class="hide">
+
+    <span class='label label-important'>Important</span><h4>There was an error while trying to save your changes.</h4>
+
+    <p>This could be because your login has timed out or the internet is unavailable.</p>
+
+    <p>Your data has been saved on this computer but you may need to login again before the data can be sent to the server.</p>
+    <a href="${createLink(action: 'enterData', id: activity.activityId)}?returnTo=${returnTo}">Click here to refresh your login and reload this page.</a>
+</div>
 
 
-    <g:render template="/shared/imagerViewerModal" model="[readOnly: false]"></g:render>
+<g:render template="/shared/imagerViewerModal" model="[readOnly: false]"></g:render>
 
-    <r:script>
-
+<r:script>
         var returnTo = "${returnTo}";
 
         /* Master controller for page. This handles saving each model as required. */
@@ -223,7 +218,6 @@
                     get: getMethod,
                     isDirty: isDirtyMethod,
                     reset: resetMethod
-
                 });
             };
 
@@ -235,6 +229,35 @@
                 });
                 return dirty;
             };
+
+            /**
+             * Collect the activity form data into a single javascript object
+             * @returns JS object containing form data, or null if there is no data
+             */
+            this.collectData = function() {
+                var activityData, outputs = [], photoPoints;
+                $.each(this.subscribers, function(i, obj) {
+                    if (obj.isDirty()) {
+                        if (obj.model === 'activityModel') {
+                            activityData = obj.get();
+                        } else if (obj.model === 'photoPoints') {
+                            photoPoints = obj.get();
+                        }
+                        else {
+                            outputs.push(obj.get());
+                        }
+                    }
+                });
+                if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
+                    return null;
+                } else {
+                    if (activityData === undefined) { activityData = {}}
+                    activityData.outputs = outputs;
+
+                    return activityData;
+                }
+            };
+
             /**
              * Makes an ajax call to save any sections that have been modified. This includes the activity
              * itself and each output.
@@ -247,32 +270,19 @@
              * Validates the entire page before saving.
              */
             this.save = function () {
-
-                var activityData, outputs = [], photoPoints;
                 if ($('#validation-container').validationEngine('validate')) {
-                    $.each(this.subscribers, function(i, obj) {
-                        if (obj.isDirty()) {
-                            if (obj.model === 'activityModel') {
-                                activityData = obj.get();
-                            } else if (obj.model === 'photoPoints') {
-                                photoPoints = obj.get();
-                            }
-                            else {
-                                outputs.push(obj.get());
-                            }
-                        }
-                    });
-                    if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
+                    var toSave = this.collectData();
+
+                    if (!toSave) {
                         alert("Nothing to save.");
                         return;
                     }
+
+                    toSave = JSON.stringify(toSave);
+
                     // Don't allow another save to be initiated.
                     blockUIWithMessage("Saving activity data...");
 
-                    if (activityData === undefined) { activityData = {}}
-                    activityData.outputs = outputs;
-
-                    var toSave = JSON.stringify(activityData);
                     amplify.store('activity-${activity.activityId}', toSave);
                     var unblock = true;
                     $.ajax({
@@ -286,14 +296,14 @@
                                 errorText = "<span class='label label-important'>Important</span><h4>There was an error while trying to save your changes.</h4>";
                                 $.each(data.errors, function (i, error) {
                                     errorText += "<p>Saving <b>" +
-    (error.name === 'activity' ? 'the activity context' : error.name) +
-    "</b> threw the following error:<br><blockquote>" + error.error + "</blockquote></p>";
+                                    (error.name === 'activity' ? 'the activity context' : error.name) +
+                                    "</b> threw the following error:<br><blockquote>" + error.error + "</blockquote></p>";
                                 });
                                 errorText += "<p>Any other changes should have been saved.</p>";
                                 bootbox.alert(errorText);
                             } else {
                                 unblock = false; // We will be transitioning off this page.
-                                blockUIWithMessage("Successfully submitted the record.")
+                                blockUIWithMessage("Successfully submitted the record.");
                                 self.reset();
                                 self.saved();
                             }
@@ -319,11 +329,12 @@
                         }
                     });
                 }
-
             };
+
             this.saved = function () {
                 document.location.href = returnTo;
             };
+
             this.reset = function () {
                 $.each(this.subscribers, function(i, obj) {
                     if (obj.isDirty()) {
@@ -335,7 +346,7 @@
 
         var master = new Master();
 
-        $(function(){
+        $(function() {
 
             $('#validation-container').validationEngine('attach', {scroll: true});
 
@@ -365,14 +376,13 @@
                 self.projectId = act.projectId;
                 self.transients = {};
                 self.transients.pActivity = new pActivityInfo(pActivity);
-                self.transients.pActivitySites = pActivity.sites
+                self.transients.pActivitySites = pActivity.sites;
                 self.transients.site = ko.observable(site);
                 self.transients.project = project;
                 self.transients.outputs = [];
                 self.transients.metaModel = metaModel || {};
 
                 self.confirmSiteChange = function() {
-
                     if (self.transients.photoPointModel && self.transients.photoPointModel().isDirty()) {
                         return window.confirm(
                             "This activity has photos attached to photo points.\n  Changing the site will delete these photos.\n  This cannot be undone.  Are you sure?"
@@ -383,7 +393,6 @@
                 self.siteId = ko.vetoableObservable(act.siteId, self.confirmSiteChange);
 
                 self.siteId.subscribe(function(siteId) {
-
                     var matchingSite = $.grep(self.transients.pActivitySites, function(site) { return siteId == site.siteId})[0];
 
                     alaMap.clearFeatures();
@@ -391,67 +400,73 @@
                         alaMap.replaceAllFeatures([matchingSite.extent.geometry]);
                     }
                     self.transients.site(matchingSite);
-        <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
-            self.updatePhotoPointModel(matchingSite);
-        </g:if>
 
-        });
-        self.goToProject = function () {
-            if (self.projectId) {
-                document.location.href = fcConfig.projectViewUrl + self.projectId;
-            }
-        };
-        self.goToSite = function () {
-            if (self.siteId()) {
-                document.location.href = fcConfig.siteViewUrl + self.siteId();
-            }
-        };
+                    <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
+                        self.updatePhotoPointModel(matchingSite);
+                    </g:if>
+                });
 
-        <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
-            self.transients.photoPointModel = ko.observable(new PhotoPointViewModel(site, activity));
-            self.updatePhotoPointModel = function(site) {
-                self.transients.photoPointModel(new PhotoPointViewModel(site, activity));
-            };
-        </g:if>
+                self.goToProject = function () {
+                    if (self.projectId) {
+                        document.location.href = fcConfig.projectViewUrl + self.projectId;
+                    }
+                };
 
-        self.modelForSaving = function () {
-            // get model as a plain javascript object
-            var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
-        <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
-            jsData.photoPoints = self.transients.photoPointModel().modelForSaving();
-        </g:if>
+                self.goToSite = function () {
+                    if (self.siteId()) {
+                        document.location.href = fcConfig.siteViewUrl + self.siteId();
+                    }
+                };
 
-        // If we leave the site or theme undefined, it will be ignored during JSON serialisation and hence
-       // will not overwrite the current value on the server.
-       var possiblyUndefinedProperties = ['siteId', 'mainTheme'];
+                <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
+                    self.transients.photoPointModel = ko.observable(new PhotoPointViewModel(site, activity));
+                    self.updatePhotoPointModel = function(site) {
+                        self.transients.photoPointModel(new PhotoPointViewModel(site, activity));
+                    };
+                </g:if>
 
-       $.each(possiblyUndefinedProperties, function(i, propertyName) {
-           if (jsData[propertyName] === undefined) {
-               jsData[propertyName] = '';
-           }
-       });
-       return jsData;
-    };
-    self.modelAsJSON = function () {
-       return JSON.stringify(self.modelForSaving());
-    };
+                self.modelForSaving = function () {
+                    // get model as a plain javascript object
+                    var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
+                    <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
+                        jsData.photoPoints = self.transients.photoPointModel().modelForSaving();
+                    </g:if>
 
-    self.save = function (callback, key) {
-    };
-    self.removeActivity = function () {
-       bootbox.confirm("Delete this entire activity? Are you sure?", function(result) {
-           if (result) {
-               document.location.href = "${createLink(action: 'delete', id: activity.activityId,
-            params: [returnTo: grailsApplication.config.grails.serverURL + '/' + returnTo])}";
+                    // If we leave the site or theme undefined, it will be ignored during JSON serialisation and hence
+                   // will not overwrite the current value on the server.
+                   var possiblyUndefinedProperties = ['siteId', 'mainTheme'];
+
+                   $.each(possiblyUndefinedProperties, function(i, propertyName) {
+                       if (jsData[propertyName] === undefined) {
+                           jsData[propertyName] = '';
+                       }
+                   });
+
+                   return jsData;
+                 };
+
+                self.modelAsJSON = function () {
+                   return JSON.stringify(self.modelForSaving());
+                };
+
+                self.save = function (callback, key) {
+                };
+
+                self.removeActivity = function () {
+                   bootbox.confirm("Delete this entire activity? Are you sure?", function(result) {
+                       if (result) {
+                           document.location.href = "${createLink(action: 'delete', id: activity.activityId,
+                            params: [returnTo: grailsApplication.config.grails.serverURL + '/' + returnTo])}";
                         }
                     });
                 };
+
                 self.notImplemented = function () {
                     alert("Not implemented yet.")
                 };
-                self.dirtyFlag = ko.dirtyFlag(self, false);
 
-            };
+                self.dirtyFlag = ko.dirtyFlag(self, false);
+            }
 
             var activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
             var site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
@@ -460,12 +475,12 @@
             var viewModel = new ViewModel(
                 activity,
                 site,
-        ${project ? "JSON.parse('${project.toString().encodeAsJavaScript()}')" : 'null'},
-        ${metaModel ?: 'null'},
+                ${project ? "JSON.parse('${project.toString().encodeAsJavaScript()}')" : 'null'},
+                ${metaModel ?: 'null'},
                 pActivity);
 
-
             var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
+
             var mapOptions = {
                 zoomToBounds:true,
                 zoomLimit:16,
@@ -475,7 +490,7 @@
                 wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
             };
 
-            map = init_map_with_features({
+            init_map_with_features({
                     mapContainer: "map",
                     scrollwheel: false,
                     featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -489,5 +504,5 @@
             master.register('activityModel', viewModel.modelForSaving, viewModel.dirtyFlag.isDirty, viewModel.dirtyFlag.reset);
 
         });
-    </r:script>
+</r:script>
 </div>

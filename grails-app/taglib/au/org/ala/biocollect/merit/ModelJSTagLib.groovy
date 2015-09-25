@@ -813,7 +813,6 @@ class ModelJSTagLib {
                 };
 
                 self.saveItem = function() {
-                console.log("here")
                     if (\$('#validation-container').validationEngine('validate')) {
                         var data = self.detailView.sighting.getSightingsDataAsJS();
 
