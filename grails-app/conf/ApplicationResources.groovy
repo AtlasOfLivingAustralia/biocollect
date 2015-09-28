@@ -208,6 +208,11 @@ modules = {
         resource url: 'js/parser.js'
     }
 
+    pagination{
+        defaultBundle 'application'
+        resource url: 'js/pagination.js'
+    }
+
     jqueryGantt {
         resource url: 'vendor/jquery-gantt/css/style.css'
         resource url: 'css/gantt.css'

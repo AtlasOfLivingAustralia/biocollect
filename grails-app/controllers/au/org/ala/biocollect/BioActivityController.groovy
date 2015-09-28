@@ -135,14 +135,25 @@ class BioActivityController {
      * @param id activity id
      * @return
      */
-    def list(String filter){
+    def list(){
+        listUserActivities(params)
+    }
+
+    def ajaxList(){
+        render listUserActivities(params) as JSON
+    }
+
+    private listUserActivities(params){
         def model = [:]
-        def activities = activityService.activitiesForUser(userService.getCurrentUserId())
-        activities?.each{
+        def criteria = [max: params.max, rp: params.rp, term: params.term]
+        def results = activityService.activitiesForUser(userService.getCurrentUserId(), criteria)
+        results?.resp?.activities?.list?.each{
             it.pActivity = projectActivityService.get(it.projectActivityId)
         }
-        model.activities = activities
+        model.activities = results?.resp?.activities?.list
+        model.pagination = results?.resp?.pagination
         model.displayName = userService.getCurrentUserDisplayName()
+
         model
     }
 
