@@ -7,7 +7,7 @@ class OrganisationService {
 
     def get(String id, view = '') {
 
-        def url = "${grailsApplication.config.ecodata.service.url}organisation/$id?view=$view"
+        def url = "${grailsApplication.config.ecodata.service.url}/organisation/$id?view=$view"
         webService.getJson(url)
     }
 
@@ -27,7 +27,7 @@ class OrganisationService {
 
     def update(id, organisation) {
 
-        def url = "${grailsApplication.config.ecodata.service.url}organisation/$id"
+        def url = "${grailsApplication.config.ecodata.service.url}/organisation/$id"
         def result = webService.doPost(url, organisation)
         metadataService.clearOrganisationList()
         result

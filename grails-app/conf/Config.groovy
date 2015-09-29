@@ -102,6 +102,7 @@ app.http.header.userId = "X-ALA-userId"
 google.maps.url = "//maps.google.com/maps/api/js?sensor=false&language=en"
 google.geocode.url = "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&latlng="
 google.drawmaps.url = "//maps.google.com/maps/api/js?sensor=false&libraries=drawing,geometry"
+pdfgen.baseURL="http://pdfgen.ala.org.au/"
 
 app.view.nocache = false
 
@@ -117,7 +118,7 @@ accuracyValues=[0,10,50,100,500,1000,5000,10000]
 //flag.issues = ['Identification','Geocoding Issue','Suspected Outlier','Temporal Issue','Taxonomic Issue','Habitat Issue']
 flag.issues = ['IDENTIFICATION','GEOCODING_ISSUE','TEMPORAL_ISSUE','HABITAT_ISSUE','--','INAPPROPRIATE_IMAGE']
 showBiocacheLinks = false
-identify.subgroupFacet="names_and_lsid33"
+identify.subgroupFacet="names_and_lsid"
 identify.enabled = true
 // ----------------------------------
 

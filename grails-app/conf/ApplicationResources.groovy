@@ -4,19 +4,22 @@ modules = {
         dependsOn 'jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
         resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
         resource url: 'css/bootstrap-combobox.css'
+        resource url: 'css/common.css'
     }
 
     nrmSkin {
-        dependsOn 'application', 'bootstrap_nrm'
+        dependsOn 'application', 'bootstrap_nrm', 'font_awesome_44'
         resource url: [dir:'css/nrm/css', file:'screen.css'], attrs:[media:'screen,print']
         resource url: [dir:'css/', file:'capture.css'],  plugin: 'fieldcapture-plugin'
         resource url: [dir:'css/nrm/images/', file:'AustGovt_inline_white_on_transparent.png'],  plugin: 'fieldcapture-plugin'
+        resource url: 'css/common.css'
     }
 
     bootstrap_nrm {
         dependsOn 'app_bootstrap', 'jquery-ui'
         resource url: [dir:'css/nrm/less', file:'bootstrap.less'],attrs:[rel: "stylesheet/less", type:'css', media:'screen,print'], bundle:'bundle_app_bootstrap'
         resource url: 'css/empty.css'
+
     }
 
     app_bootstrap_responsive {
@@ -103,7 +106,7 @@ modules = {
     }
 
     app_bootstrap {
-        dependsOn 'application'
+        dependsOn 'application', 'font_awesome_44'
         resource url: 'vendor/bootstrap/js/bootstrap.min.js'
         // The less css resources plugin (1.3.3, resources plugin 1.2.14) is unable to resolve less files in a plugin so apps that use this plugin must supply their own bootstrap styles.
         // However, commenting this section
@@ -121,10 +124,18 @@ modules = {
         resource url: 'css/empty.css' // needed for less-resources plugin ?
     }
 
+    restoreTab{
+        defaultBundle true
+        dependsOn 'amplify'
+        resource url: 'js/restoreTab.js'
+    }
+
+
     amplify {
-        defaultBundle 'application'
+        defaultBundle true
         resource url: 'vendor/amplify/amplify.min.js'
     }
+
 
     jstimezonedetect {
         resource url: 'vendor/jstz/jstz.min.js'
@@ -203,6 +214,11 @@ modules = {
         dependsOn 'knockout'
         resource url: 'js/outputs.js'
         resource url: 'js/parser.js'
+    }
+
+    pagination{
+        defaultBundle 'application'
+        resource url: 'js/pagination.js'
     }
 
     jqueryGantt {
@@ -325,6 +341,15 @@ modules = {
         resource url: 'vendor/slider-pro-master/css/slider-pro.min.css'
         resource url: 'vendor/slider-pro-master/css/images/blank.gif'
 
+    }
+
+    leaflet {
+        resource url: 'vendor/leaflet/0.7.3/leaflet.js'
+        resource url: 'vendor/leaflet/0.7.3/leaflet.css'
+    }
+
+    font_awesome_44 {
+        resource url: 'vendor/font-awesome/4.4.0/css/font-awesome.min.css', attrs:[media:'all']
     }
     /** END - Fildcapture/Marite resources **/
     

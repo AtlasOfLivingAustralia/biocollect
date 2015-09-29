@@ -4,7 +4,7 @@
 <head>
     <meta name="layout" content="adminLayout"/>
     <title>Activity model - Admin - Data capture - Atlas of Living Australia</title>
-    <r:require modules="knockout,jquery_ui,knockout_sortable"/>
+    <r:require modules="knockout,jquery-ui,knockout_sortable"/>
 
 </head>
 

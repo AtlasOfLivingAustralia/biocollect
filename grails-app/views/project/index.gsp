@@ -35,7 +35,13 @@
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         documentUpdateUrl: "${g.createLink(controller:"proxy", action:"documentUpdate")}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
-        imageLocation:"${resource(dir:'/images/filetypes')}",
+        imageLocation:"${resource(dir:'/images')}",
+        pdfgenUrl: "${createLink(controller: 'resource', action: 'pdfUrl')}",
+        pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
+        imgViewer: "${createLink(controller: 'resource', action: 'imageviewer')}",
+        audioViewer: "${createLink(controller: 'resource', action: 'audioviewer')}",
+        videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
+        errorViewer: "${createLink(controller: 'resource', action: 'error')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}"
         },
         here = window.location.href;
@@ -292,7 +298,7 @@
                                 <h3>Project Documents</h3>
                                 <div class="row-fluid">
                                     <div class="span10">
-                                        <g:render template="/shared/listDocuments"
+                                        <g:render template="/shared/editDocuments"
                                                   model="[useExistingModel: true,editable:true,imageUrl:resource(dir:'/images/filetypes'),containerId:'adminDocumentList']"/>
                                     </div>
                                 </div>

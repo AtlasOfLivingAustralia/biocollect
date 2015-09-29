@@ -21,7 +21,6 @@
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
         activityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
-        imageLocation:"${resource(dir:'/images')}",
         siteCreateUrl: "${createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId])}",
         siteSelectUrl: "${createLink(controller: 'site', action: 'select', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
         siteUploadUrl: "${createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
@@ -44,8 +43,15 @@
         speciesSearchUrl: "${createLink(controller: 'search', action: 'species')}",
         imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
         bioActiviyCreateUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
-
         bieUrl: "${grailsApplication.config.bie.baseURL}",
+        documentUpdateUrl: "${createLink(controller:"proxy", action:"documentUpdate")}",
+        imageLocation:"${resource(dir:'/images')}",
+        pdfgenUrl: "${createLink(controller: 'resource', action: 'pdfUrl')}",
+        pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
+        imgViewer: "${createLink(controller: 'resource', action: 'imageviewer')}",
+        audioViewer: "${createLink(controller: 'resource', action: 'audioviewer')}",
+        videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
+        ßerrorViewer: "${createLink(controller: 'resource', action: 'error')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}"
         },
         here = window.location.href;
@@ -66,7 +72,7 @@
             }
         </style>
     <![endif]-->
-    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker,amplify, jqueryValidationEngine, projects, attachDocuments, wmd, sliderpro, projectActivity"/>
+    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, sliderpro, projectActivity, restoreTab"/>
 </head>
 <body>
 
@@ -89,7 +95,7 @@
     </div>
     <div class="row-fluid">
         <!-- content  -->
-        <ul class="nav nav-pills">
+        <ul id="ul-main-project" class="nav nav-pills">
         <fc:tabList tabs="${projectContent}"/>
     </div>
     <div class="pill-content">
@@ -167,6 +173,9 @@
         initialiseProjectActivitiesList(pActivitiesVM);
         initialiseProjectActivitiesData(pActivitiesVM);
 
+        //Main tab selection
+        new RestoreTab('ul-main-project', 'about-tab');
+
         <g:if test="${projectContent.admin.visible}">
             initialiseProjectActivitiesSettings(pActivitiesVM);
 
@@ -179,10 +188,17 @@
             ko.applyBindings(newsAndEventsViewModel, $('#editnewsAndEventsContent')[0]);
 
             populatePermissionsTable();
+
+            //Citizen- Science admin
+            new RestoreTab('ul-project-admin-citizen-science', 'project-settings-tab');
+            new RestoreTab('ul-survey-constraint-citizen-science', 'survey-info-tab');
         </g:if>
 
         $('.validationEngineContainer').validationEngine();
         $('.helphover').popover({animation: true, trigger:'hover'})    });
+
+
+
 </r:script>
 </body>
 </html>

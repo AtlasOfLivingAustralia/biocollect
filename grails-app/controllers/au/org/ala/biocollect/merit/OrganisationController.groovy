@@ -7,7 +7,9 @@ import grails.converters.JSON
  */
 class OrganisationController {
 
-    def organisationService, searchService, documentService, userService, roleService
+    static allowedMethods = [ajaxDelete: "POST", delete:"POST", ajaxUpdate: "POST"]
+
+    def organisationService, searchService, documentService, userService, roleService, commonService, webService
     def citizenScienceOrgId = null
 
     def list() {
@@ -68,7 +70,7 @@ class OrganisationController {
         def includeProjectList = organisation.projects?.size() > 0
 
         [about    : [label: 'About', visible: true, stopBinding: false, type:'tab', default:true, includeProjectList:includeProjectList],
-         sites    : [label: 'Sites', visible: hasViewAccess, stopBinding:true, type: 'tab', template:'/shared/sites', projectCount:organisation.projects?.size()?:0],
+         sites    : [label: 'Sites', visible: hasViewAccess, stopBinding:true, type: 'tab', projectCount:organisation.projects?.size()?:0, showShapefileDownload:hasAdminAccess],
          dashboard: [label: 'Dashboard', visible: hasViewAccess, stopBinding:true, type: 'tab', template:'/shared/dashboard', reports:dashboardReports],
          admin    : [label: 'Admin', visible: hasAdminAccess, type: 'tab']]
     }
@@ -89,15 +91,25 @@ class OrganisationController {
     }
 
     def delete(String id) {
-        organisationService.update(id, [status:'deleted'])
-
+        if (organisationService.isUserAdminForOrganisation(id)) {
+            organisationService.update(id, [status: 'deleted'])
+        }
+        else {
+            flash.message = 'You do not have permission to perform that action'
+        }
         redirect action: 'list'
     }
 
     def ajaxDelete(String id) {
-        def result = organisationService.update(id, [status:'deleted'])
 
-        respond result
+        if (organisationService.isUserAdminForOrganisation(id)) {
+            def result = organisationService.update(id, [status: 'deleted'])
+
+            respond result
+        }
+        else {
+            render status:403, text:'You do not have permission to perform that action'
+        }
     }
 
     def ajaxUpdate() {
@@ -125,6 +137,35 @@ class OrganisationController {
             render result as JSON
         } else {
             render result.resp as JSON
+        }
+    }
+
+    /**
+     * Responds with a download of a zipped shapefile containing all sites used by projects run
+     * by an organisation.
+     * @param id the organisationId of the organisation.
+     */
+    def downloadShapefile(String id) {
+
+        def userId = userService.getCurrentUserId()
+
+        if (id && userId) {
+            if (organisationService.isUserAdminForOrganisation(id) || organisationService.isUserGrantManagerForOrganisation(id)) {
+                def organisation = organisationService.get(id)
+                def params = [fq: 'organisationFacet:' + organisation.name, query :"docType:project"]
+
+                def url = grailsApplication.config.ecodata.service.url + '/search/downloadShapefile' + commonService.buildUrlParamsFromMap(params)
+                def resp = webService.proxyGetRequest(response, url, true, true,960000)
+                if (resp.status != 200) {
+                    render view:'/error', model:[error:resp.error]
+                }
+            }
+            else {
+                render status: 403, text: 'Permission denied'
+            }
+        }
+        else {
+            render status: 400, text: 'Missing parameter organisationId'
         }
     }
 

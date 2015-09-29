@@ -16,6 +16,7 @@
 package au.org.ala.biocollect.sightings
 
 import au.org.ala.biocollect.sightings.command.Question
+import au.org.ala.web.AuthService
 import grails.converters.JSON
 import org.codehaus.groovy.grails.web.json.JSONObject
 
@@ -24,13 +25,16 @@ import org.codehaus.groovy.grails.web.json.JSONObject
  * file upload in the background
  */
 class SightingAjaxController {
-    def imageService, ecodataService, authService, taxonOverflowService, webserviceService
+    ImageService imageService
+    EcodataService ecodataService
+    AuthService authService
+    TaxonOverflowService taxonOverflowService
+    WebserviceService webserviceService
 
     static allowedMethods = [upload:'POST', saveBookmarkLocation:'POST', createQuestion:'POST', bulkLookupQuestions:'POST', flagInappropriateImage:'POST']
 
     def upload = {
         try {
-
             File uploaded = imageService.createTemporaryFile(request.getFile("files[]"))
             InputStream inputStream = imageService.selectInputStream(request)
             imageService.uploadFile(inputStream, uploaded)
@@ -43,7 +47,6 @@ class SightingAjaxController {
                     url: "${g.createLink(uri:"/uploads/${uploaded.name}", absolute:true)}",
                     thumbnailUrl: "${g.createLink(uri:"/uploads/${thumbFile.name}", absolute:true)}",
                     exif: imageService.getExifForFile(uploaded)
-                    //url: "http://fielddata.ala.org.au/media/5477b4b53dff0a1e61d47514/0_P1010659.JPG" // TODO remove hardcoded value!!!
             ]
 
             return render (status: 200, text: output as JSON)

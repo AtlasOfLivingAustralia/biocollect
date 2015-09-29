@@ -401,6 +401,85 @@ if (typeof Object.create !== 'function') {
     };
 }
 
+/**
+ * Document preview modes to content type 'map'
+ * @type {{convert: string[], pdf: string[], image: string[], audio: string[], video: string[]}}
+ */
+var contentTypes = {
+    convert: [
+        'application/msword',
+        'application/ms-excel',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+        'application/vnd.ms-word.document.macroEnabled.12',
+        'application/vnd.ms-word.template.macroEnabled.12',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
+        'application/vnd.ms-excel.sheet.macroEnabled.12',
+        'application/vnd.ms-excel.template.macroEnabled.12',
+        'application/vnd.ms-excel.addin.macroEnabled.12',
+        'application/vnd.ms-excel.sheet.binary.macroEnabled.12',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'application/vnd.openxmlformats-officedocument.presentationml.template',
+        'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+        'application/vnd.ms-powerpoint.addin.macroEnabled.12',
+        'application/vnd.ms-powerpoint.presentation.macroEnabled.12',
+        'application/vnd.ms-powerpoint.template.macroEnabled.12',
+        'application/vnd.ms-powerpoint.slideshow.macroEnabled.12',
+        'application/vnd.oasis.opendocument.chart',
+        'application/vnd.oasis.opendocument.chart-template',
+        //'application/vnd.oasis.opendocument.database',
+        'application/vnd.oasis.opendocument.formula',
+        'application/vnd.oasis.opendocument.formula-template',
+        'application/vnd.oasis.opendocument.graphics',
+        'application/vnd.oasis.opendocument.graphics-template',
+        'application/vnd.oasis.opendocument.image',
+        'application/vnd.oasis.opendocument.image-template',
+        'application/vnd.oasis.opendocument.presentation',
+        'application/vnd.oasis.opendocument.presentation-template',
+        'application/vnd.oasis.opendocument.spreadsheet',
+        'application/vnd.oasis.opendocument.spreadsheet-template',
+        'application/vnd.oasis.opendocument.text',
+        'application/vnd.oasis.opendocument.text-master',
+        'application/vnd.oasis.opendocument.text-template',
+        'application/vnd.oasis.opendocument.text-web',
+        'text/html',
+        'text/plain',
+        'text/csv'
+    ],
+    pdf: [
+        'application/pdf',
+        'text/pdf'
+    ],
+    image: [
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+        'image/bmp'
+    ],
+    audio: [
+        'audio/webm',
+        'audio/ogg',
+        'audio/wave',
+        'audio/wav',
+        'audio/x-wav',
+        'audio/x-pn-wav',
+        'audio/mpeg',
+        'audio/mp3',
+        'audio/mp4'
+    ],
+    video: [
+        'video/webm',
+        'video/ogg',
+        'application/ogg',
+        'video/mp4'
+    ]
+};
+
 /** A function that works with documents.  Intended for inheritance by ViewModels */
 var mobileAppRoles = [
     { role: "android", name: "Android" },
@@ -424,6 +503,107 @@ var socialMediaRoles = [
 function Documents() {
     var self = this;
     self.documents = ko.observableArray();
+    self.documentFilter = ko.observable('');
+    self.documentFilterFieldOptions = [{ label: 'Name', fun: 'name'}, { label: 'Attribution', fun: 'attribution' }, { label: 'Type', fun: 'type' }];
+    self.documentFilterField = ko.observable(self.documentFilterFieldOptions[0]);
+
+    self.selectedDocument = ko.observable();
+
+    function listContains(list, value) {
+        return list.indexOf(value) > -1;
+    }
+
+    self.selectDocument = function(data) {
+        self.selectedDocument(data);
+        return true;
+    };
+
+    self.previewTemplate = ko.pureComputed(function() {
+        var selectedDoc = self.selectedDocument();
+
+        var val;
+        if (selectedDoc) {
+            var contentType = (selectedDoc.contentType() || 'application/octet-stream').toLowerCase().trim();
+            var embeddedVideo = selectedDoc.embeddedVideo();
+            if (embeddedVideo) {
+                val = "xssViewer";
+            } else if (listContains(contentTypes.convert.concat(contentTypes.audio, contentTypes.video, contentTypes.image, contentTypes.pdf), contentType)) {
+                val = "iframeViewer";
+            } else {
+                val = "noPreviewViewer";
+            }
+        } else {
+            val = "noViewer";
+        }
+        return val;
+    });
+
+    self.selectedDocumentFrameUrl = ko.computed(function() {
+        var selectedDoc = self.selectedDocument();
+
+        var val;
+        if (selectedDoc) {
+            var contentType = (selectedDoc.contentType() || 'application/octet-stream').toLowerCase().trim();
+            //return (selectedDoc && selectedDoc.url) ? "https://docs.google.com/viewer?url="+encodeURIComponent(selectedDoc.url)+"&embedded=true" : '';
+
+            if (listContains(contentTypes.pdf, contentType)) {
+                val = fcConfig.pdfViewer + '?file=' + encodeURIComponent(selectedDoc.url);
+            } else if (listContains(contentTypes.convert, contentType)) {
+
+              // jq promises are fundamentally broken, so...
+              val = $.Deferred(function(dfd) {
+                $.get(fcConfig.pdfgenUrl, {"file": selectedDoc.url }, $.noop, "json")
+                  .promise()
+                  .done(function(data) {
+                    dfd.resolve(fcConfig.pdfViewer + '?file=' + encodeURIComponent(data.location));
+                  })
+                  .fail(function(jqXHR, textStatus, errorThrown) {
+                    console.warn('get pdf failed', jqXHR, textStatus, errorThrown);
+                    dfd.resolve(fcConfig.errorViewer || '');
+                  })
+              }).promise();
+            } else if (listContains(contentTypes.image, contentType)) {
+                val = fcConfig.imgViewer + '?file=' + encodeURIComponent(selectedDoc.url);
+            } else if (listContains(contentTypes.video, contentType)) {
+                val = fcConfig.videoViewer + '?file=' + encodeURIComponent(selectedDoc.url);
+            } else if (listContains(contentTypes.audio, contentType)) {
+                val = fcConfig.audioViewer + '?file=' + encodeURIComponent(selectedDoc.url);
+            } else {
+                //val = fcConfig.noViewer + '?file='+encodeURIComponent(selectedDoc.url);
+                val = '';
+            }
+        } else {
+            val = '';
+        }
+        return val;
+    }).extend({async: ''});
+
+    self.filteredDocuments = ko.pureComputed(function() {
+        var lcFilter = self.documentFilter().trim().toLowerCase();
+        var field = self.documentFilterField();
+        return ko.utils.arrayFilter(self.documents(), function(doc) {
+            return (doc[field.fun]() || '').toLowerCase().indexOf(lcFilter) !== -1;
+        });
+    });
+
+    self.docViewerClass = ko.pureComputed(function() {
+        return self.selectedDocument() ? 'span6': 'hidden';
+    });
+
+    self.docListClass = ko.pureComputed(function() {
+        return self.selectedDocument() ? 'span6': 'span12';
+    });
+
+    self.showListItem = function(element, index, data) {
+        var $elem = $(element);
+        $elem.hide(); // element is visible after render, so hide it to animate it appearing.
+        $elem.show(100);
+    };
+
+    self.hideListItem = function(element, index, data) {
+        $(element).hide(100);
+    };
+
     self.findDocumentByRole = function(documents, roleToFind) {
         for (var i=0; i<documents.length; i++) {
             var role = ko.utils.unwrapObservable(documents[i].role);
@@ -461,7 +641,7 @@ function Documents() {
                     return;
                 }
         });
-    }
+    };
     function pushLinkUrl(urls, links, role) {
         var link = self.findLinkByRole(links, role.role);
         if (link) urls.push({
@@ -475,7 +655,7 @@ function Documents() {
                 return dir + "/" + role.role.toLowerCase() + ".png";
             }
         });
-    };
+    }
 
     self.transients = {};
 
@@ -581,9 +761,11 @@ function Documents() {
         }
     };
 
-    self.ignore = ['documents', 'links', 'logoUrl', 'bannerUrl', 'mainImageUrl', 'primaryImages', 'embeddedVideos', 'ignore', 'transients'];
+    self.ignore = ['documents', 'links', 'logoUrl', 'bannerUrl', 'mainImageUrl', 'primaryImages', 'embeddedVideos',
+        'ignore', 'transients', 'documentFilter', 'documentFilterFieldOptions', 'documentFilterField',
+        'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass'];
 
-};
+}
 
 /**
  * Wraps a list in a fuse search and exposes results and selection as knockout variables.

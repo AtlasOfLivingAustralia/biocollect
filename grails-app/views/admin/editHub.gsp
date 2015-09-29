@@ -219,22 +219,22 @@
             }
 
             self.loadSettings = function(settings) {
-               self.id(settings.id);
-               self.skin(settings.skin);
-               self.title(settings.title);
-               self.supportedPrograms(self.orEmptyArray(settings.supportedPrograms));
-               self.availableFacets(self.orEmptyArray(settings.availableFacets));
-               self.adminFacets(self.orEmptyArray(settings.adminFacets));
-               self.availableMapFacets(self.orEmptyArray(settings.availableMapFacets));
-               self.bannerUrl(self.orBlank(settings.bannerUrl));
-               self.logoUrl(self.orBlank(settings.logoUrl));
-               self.homePathPath(self.orBlank(settings.homePagePath));
-
-               if (settings.defaultFacetQuery && settings.defaultFacetQuery instanceof Array) {
-                   $.each(settings.defaultFacetQuery, function(i, obj) {
+                self.id(settings.id);
+                self.skin(settings.skin);
+                self.title(settings.title);
+                self.supportedPrograms(self.orEmptyArray(settings.supportedPrograms));
+                self.availableFacets(self.orEmptyArray(settings.availableFacets));
+                self.adminFacets(self.orEmptyArray(settings.adminFacets));
+                self.availableMapFacets(self.orEmptyArray(settings.availableMapFacets));
+                self.bannerUrl(self.orBlank(settings.bannerUrl));
+                self.logoUrl(self.orBlank(settings.logoUrl));
+                self.homePagePath(self.orBlank(settings.homePagePath));
+                self.defaultFacetQuery([]);
+                if (settings.defaultFacetQuery && settings.defaultFacetQuery instanceof Array) {
+                    $.each(settings.defaultFacetQuery, function(i, obj) {
                        self.defaultFacetQuery.push({query: ko.observable(obj)});
-                   });
-               }
+                    });
+                }
             };
 
             self.transients.selectedHub.subscribe(function(newValue) {

@@ -44,19 +44,22 @@
 
         <g:render template="header"></g:render>
 
-        <div class="row-fluid">
-            <div class="span12 well">
-                <h3>Site location: <span data-bind="text: transients.site.name"></span></h3>
-                <div id="map" style="width:100%; height: 300px;"></div>
+        <g:if test="${metaModel.supportsSites?.toBoolean()}">
+            <div class="row-fluid">
+                <div class="span12 well">
+                    <h3>Site location: <span data-bind="text: transients.site.name"></span></h3>
+                    <div id="map" style="width:100%; height: 300px;"></div>
+                </div>
             </div>
-        </div>
+        </g:if>
 
-        <div class="output-block well" data-bind="with:transients.photoPointModel">
-            <h3>Photo Points</h3>
-            <g:render template="/site/photoPoints" model="[readOnly:true]"></g:render>
-        </div>
-
-    </div>
+        <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
+            <div class="output-block well" data-bind="with:transients.photoPointModel">
+                    <h3>Photo Points</h3>
+                    <g:render template="/site/photoPoints" model="[readOnly:true]"></g:render>
+                </div>
+            </div>
+        </g:if>
 
     <g:each in="${metaModel?.outputs}" var="outputName">
         <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>

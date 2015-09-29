@@ -148,21 +148,9 @@ $(document).ready(function() {
         var node = $(data.context[0]);
         var index = node.data('index') + existingImagesIndex;
         var result = data.result; // ajax results
+
         if (result.success) {
-            var link = $('<a>')
-                .attr('target', '_blank')
-                .prop('href', result.url);
-            node.find('.preview').wrap(link);
-            // populate hidden input fields
-            node.find('.identifier').val(result.url).attr('name', 'multimedia['+ index + '].identifier');
-            node.find('.title').val(result.filename).attr('name', 'multimedia['+ index + '].title');
-            node.find('.format').val(result.mimeType).attr('name', 'multimedia['+ index + '].format');
-            node.find('.creator').val((GSP_VARS.user && GSP_VARS.user.userDisplayName) ? GSP_VARS.user.userDisplayName : 'ALA User').attr('name', 'multimedia['+ index + '].creator');
-            node.find('.license').val($('#imageLicense').val()).attr('name', 'multimedia['+ index + '].license');
-            if (result.exif && result.exif.date) {
-                node.find('.created').val(result.exif.date).attr('name', 'multimedia['+ index + '].created');
-            }
-            insertImageMetadata(node);
+            insertImage(node, result, index);
         } else if (data.error) {
             // in case an error still returns a 200 OK... (our service shouldn't)
             var error = $('<div class="alert alert-error"/>').text(data.error);
@@ -281,7 +269,8 @@ $(document).ready(function() {
 
     // species subgroup drop-down
     $('#speciesSubgroups').change(function(e) {
-        addTagLabel($(this).val(), 'subgroup');
+        var subgroup = $(this).val();
+        addTagLabel(subgroup, 'subgroup');
         //$(this).val(''); // reset
     });
 
@@ -303,14 +292,11 @@ $(document).ready(function() {
         }
     });
 
-    // autocomplete on species lookup
-    //$('#speciesLookup').alaAutocomplete({maxHits: 15}); // will trigger a change event on #taxonConceptID when item is selected
-
     // detect change on #taxonConceptID input (autocomplete selection) and load species details
     $(document.body).on('change', '#guid', function(e) {
         //console.log('#guid on change');
         //$('#speciesLookup').alaAutocomplete.reset();
-        $('#speciesLookup').val('');
+        //$('#speciesLookup').val('');
         var guid = $(this).val();
         setSpecies(guid);
     });
@@ -334,9 +320,6 @@ $(document).ready(function() {
         existingImagesIndex++;
     });
 
-    // init date picker
-    //$('#dateStr').datepicker({format: 'dd-mm-yyyy'});
-
     // clear validation errors red border on input blur
     $('.validationErrors').on('blur', function(e) {
         $(this).removeClass('validationErrors');
@@ -347,17 +330,6 @@ $(document).ready(function() {
         $('#guid').val(GSP_VARS.guid).change();
         $('#confident').trigger( "click" );
     }
-
-    // init qtip (tooltip)
-    //$('.tooltips').qtip({
-    //    style: {
-    //        classes: 'ui-tooltip-rounded ui-tooltip-shadow'
-    //    },
-    //    position: {
-    //        target: 'mouse',
-    //        adjust: { x: 6, y: 14 }
-    //    }
-    //});
 
     // trigger image assisted identification popup
     $('.identifyHelpTrigger').click(function(e) {
@@ -407,6 +379,25 @@ $(document).ready(function() {
     });
 
 }); // end of $(document).ready(function()
+
+function insertImage(node, image, index) {
+    var identifier = image.identifier ? image.identifier : image.url;
+    var link = $('<a>')
+        .attr('target', '_blank')
+        .prop('href', identifier);
+    node.find('.preview').wrap(link);
+    node.find('.preview').append($('<img/>').attr('src',image.identifier).addClass('serverLoaded'));
+    node.find('.filename').append(image.title);
+    node.find('.identifier').val(identifier).attr('name', 'multimedia['+ index + '].identifier');
+    node.find('.title').val(image.filename).attr('name', 'multimedia['+ index + '].title');
+    node.find('.format').val(image.mimeType).attr('name', 'multimedia['+ index + '].format');
+    node.find('.creator').val((GSP_VARS.user && GSP_VARS.user.userDisplayName) ? GSP_VARS.user.userDisplayName : 'ALA User').attr('name', 'multimedia['+ index + '].creator');
+    node.find('.license').val($('#imageLicense').val()).attr('name', 'multimedia['+ index + '].license');
+    if (image.exif && image.exif.date) {
+        node.find('.created').val(image.exif.date).attr('name', 'multimedia['+ index + '].created');
+    }
+    insertImageMetadata(node);
+}
 
 function insertImageMetadata(imageRow) {
     // imageRow is a jQuery object
@@ -592,6 +583,28 @@ function addServerImage(image, index) {
 }
 
 /**
+ * Used by the validation engine jquery plugin to validate the selection of a species name or species tags on the Record a Sighting form.
+ *
+ * This rule is defined on the #speciesLookup element.
+ *
+ */
+function validateSpeciesSelection(field, rules, i, options) {
+    var species = $("#taxonDetails .sciName").is(':visible');
+    var tags = $("#tagsBlock").children().length > 0;
+    var media = $("#files").children().length > 0;
+
+    if (!species && (!tags || !media)) {
+        // there is a bug with the funcCall option in JQuery Validation Engine where the rule is triggered but the
+        // message is not raised unless the 'required' rule is also present.
+        // The work-around for this is to manually add the 'required' rule when the message is raised.
+        // http://stackoverflow.com/questions/16182395/jquery-validation-engine-funccall-not-working-if-only-rule
+        rules.push('required');
+        return "Either species name is required OR one or more tags AND media files are both required"
+    }
+}
+
+
+/**
  * Returns true if tag is already present in page DOM
  *
  * @param tag
@@ -607,4 +620,141 @@ function isTagPresent(tag) {
     });
 
     return isTagPresent
+}
+
+
+
+function Sighting() {
+
+    var dirty = false;
+
+    $(":input").change(function() {
+        dirty = true;
+    });
+
+    this.getSightingsDataAsJS = function () {
+        var record = {};
+
+        var fields = ["guid",
+            "scientificName",
+            "commonName",
+            "kingdom",
+            "family",
+            "speciesLookup",
+            "speciesGroups",
+            "speciesSubgroups",
+            "imageLicense",
+            "decimalLatitude",
+            "decimalLongitude",
+            "coordinateUncertaintyInMeters",
+            "locality",
+            "locationRemark",
+            "dateStr",
+            "timeStr",
+            "userId",
+            "individualCount",
+            "eventDate",
+            "occurrenceRemarks"];
+
+        fields.forEach(function (field) {
+            var elem = $("#" + field)[0];
+            record[elem.id] = elem.value;
+        });
+
+        record.speciesTags = [];
+        $('.tags').each(function() {
+            var tag = {
+                name: $(this).val(),
+                type: $(this).attr('class').split(" ")[1]
+            };
+            record.speciesTags.push(tag)
+        });
+
+        record.multimedia = [];
+        $(".metadata.media").each(function (index, field) {
+            var image = {};
+
+            $(this).find("input[type=hidden]").each(function (index, field) {
+                if (field.name) {
+                    image[field.className] = field.value;
+                }
+            });
+
+            if (image.identifier) {
+                record.multimedia.push(image);
+            }
+        });
+
+        return record;
+    };
+
+    this.loadSightingData = function (data) {
+        for (var property in data) {
+            var elem = $('#' + property);
+            if (elem) {
+                elem.val(data[property]);
+                elem.change();
+            }
+        }
+
+        if (typeof data.speciesTags !== 'undefined') {
+            data.speciesTags.forEach(function (tag) {
+                addTagLabel(tag.name, tag.type);
+            });
+        }
+
+        if (data.guid) {
+            setSpecies(data.guid);
+        }
+
+        if (data.multimedia) {
+            var index = 0;
+            data.multimedia.forEach(function (media) {
+                var node = $('#uploadActionsTmpl').clone(true).removeAttr('id').removeClass('hide').appendTo('#files');
+
+                media.test = media.identifier;
+                insertImage(node, media, index);
+                index = index + 1;
+            });
+        }
+
+        dirty = false;
+    };
+
+    this.isDirty = function () {
+        return dirty;
+    };
+
+    this.resetDirtyFlag = function() {
+        dirty = false;
+    };
+
+    this.reset = function () {
+        $("#sighting :input").each(function (index, field) {
+            if (field.id) {
+                if (field.id === "individualCount") {
+                    field.value = "1";
+                } else {
+                    field.value = "";
+                }
+            }
+        });
+
+        clearTaxonDetails();
+        $('#taxonDetails').addClass('hide');
+        $('#noSpecies').removeClass('hide').show();
+
+        $('#tagsBlock').empty();
+
+        $(".metadata.media").each(function () {
+            var identifierElem = $(this).find(".identifier")[0];
+            if (identifierElem && identifierElem.value) {
+                $(this).parents('.imageRow').remove();
+            }
+        });
+
+        resetMap();
+
+        dirty = false;
+    };
 }

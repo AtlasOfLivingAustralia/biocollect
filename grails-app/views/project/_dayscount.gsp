@@ -21,7 +21,7 @@
     <h4>ENDED</h4>
 </div>
 <div class="dayscount" data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() < 0">
-    <img data-bind="attr:{src:fcConfig.imageLocation + '/infinity.png'}"/>
+    <r:img file="infinity.png" />
     <h4>PROJECT</h4>
     <h4>ONGOING</h4>
 </div>

@@ -3,6 +3,8 @@
         <!-- ko foreach: projectActivities -->
             <!-- ko if: current -->
 
+            <g:render template="/projectActivity/publish"/>
+
             <div class="row-fluid">
                 <h5>General information about the survey</h5>
             </div>
@@ -50,16 +52,7 @@
                 </div>
             </div>
 
-            <div class="row-fluid">
-                <div class="span3 text-right">
-                    <label class="control-label">Publish:</label>
-                </div>
-                <div class="span7">
-                    <div class="controls">
-                        <input type="checkbox" data-bind="checked: published" />
-                    </div>
-                </div>
-            </div>
+
 
             <div class="row-fluid">
                 <div class="span3 text-right">

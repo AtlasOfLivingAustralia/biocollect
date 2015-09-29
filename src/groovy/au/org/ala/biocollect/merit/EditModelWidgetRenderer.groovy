@@ -8,6 +8,12 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderReadonlyText(WidgetRenderContext context) {
+        context.databindAttrs.add 'value', context.source
+        context.writer << "<span ${context.attributes.toString()} data-bind='${context.databindAttrs.toString()}'></span>"
+    }
+
+    @Override
     void renderText(WidgetRenderContext context) {
         context.attributes.addClass context.getInputWidth()
         context.databindAttrs.add 'value', context.source
@@ -88,7 +94,7 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderEmbeddedImages(WidgetRenderContext context) {
-        // The file upload template has support for muliple images.
+        // The file upload template has support for multiple images.
         renderEmbeddedImage(context)
     }
 
@@ -123,6 +129,16 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderButtonGroup(WidgetRenderContext context) {
+        context.model.buttons.each {
+            context.writer << """
+            <a href="#" data-bind="${it.dataBind}" class="${it.class}" title="${it.title}"><span class="${it.iconClass}">&nbsp;</span>${it.title}</a>
+        """
+        }
+
+    }
+
+    @Override
     void renderDate(WidgetRenderContext context) {
         context.writer << "<div class=\"input-append\"><input data-bind=\"datepicker:${context.source}.date\" type=\"text\" size=\"12\"${context.validationAttr}/>"
         context.writer << "<span class=\"add-on open-datepicker\"><i class=\"icon-th\"></i></span></div>"
@@ -137,7 +153,6 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
         context.writer << """<div data-bind="ifnot:${context.source}()">"""
         context.writer << """    <button class="btn" id="doAttach" data-bind="click:function(target) {attachDocument(${context.source})}">Attach Document</button>"""
         context.writer << """</div>"""
-
-
     }
+
 }

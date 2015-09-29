@@ -28,7 +28,12 @@
                     <!-- ko  foreach: projectActivities -->
                         <li>
                             <a href="#" data-bind="click: $root.setCurrent" >
-                                <span data-bind="text: name"></span> <span data-bind="if: current"> <span class="badge badge-important">selected</span></span>
+                                <span data-bind="attr:{'class': published() ? 'badge badge-success' : 'badge badge-important'}">
+                                <span data-bind="if:published()"> <small>P</small></span>
+                                <span data-bind="if:!published()"> <small>X</small></span>
+                                </span>
+                                <span data-bind="text: name"></span>
+                                <span data-bind="if: current"> <span class="badge badge-info">selected</span></span>
                             </a>
                         </li>
                         </br>
@@ -45,6 +50,7 @@
 
         </div>
 
+        <div id="project-activities-publish-result-placeholder"></div>
 
         <!-- ko if: projectActivities().length > 0 -->
         <div class="row-fluid">
@@ -57,17 +63,17 @@
 
             <div class="span12">
 
-                <ul class="nav nav-pills">
-                    <li class="active"><a href="#survey-info" data-toggle="pill">Survey Info</a></li>
-                    <li><a href="#survey-species" data-toggle="pill">Species</a></li>
-                    <li><a href="#survey-form" data-toggle="pill">Surveys Form</a></li>
-                    <li><a href="#survey-locations" data-toggle="pill">Locations</a></li>
-                    <li><a href="#survey-visibility" data-toggle="pill">Visibility</a></li>
-                    <li><a href="#survey-alerts" data-toggle="pill">Alerts & Actions</a></li>
+                <ul id="ul-survey-constraint-citizen-science" class="nav nav-pills">
+                    <li><a href="#survey-info" id="survey-info-tab" data-toggle="tab">Survey Info</a></li>
+                    <li><a href="#survey-species" id="survey-species-tab" data-toggle="tab">Species</a></li>
+                    <li><a href="#survey-form" id="survey-form-tab" data-toggle="tab">Surveys Form</a></li>
+                    <li><a href="#survey-locations" id="survey-locations-tab" data-toggle="tab">Locations</a></li>
+                    <li><a href="#survey-visibility" id="survey-visibility-tab" data-toggle="tab">Visibility</a></li>
+                    <li><a href="#survey-alerts" id="survey-alerts-tab" data-toggle="tab">Alerts & Actions</a></li>
                 </ul>
 
                 <div class="pill-content">
-                    <div class="pill-pane active" id="survey-info">
+                    <div class="pill-pane" id="survey-info">
                         <span class="validationEngineContainer" id="project-activities-info-validation">
                             <div id="project-activities-info-result-placeholder"></div>
                             <g:render template="/projectActivity/info"/>
