@@ -136,7 +136,7 @@ class BioActivityController {
      * @return
      */
     def list(){
-        listUserActivities(params)
+
     }
 
     def ajaxList(){

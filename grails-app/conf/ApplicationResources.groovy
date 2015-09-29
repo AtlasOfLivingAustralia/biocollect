@@ -130,12 +130,22 @@ modules = {
         resource url: 'js/restoreTab.js'
     }
 
-
     amplify {
         defaultBundle true
         resource url: 'vendor/amplify/amplify.min.js'
     }
 
+    myActivity {
+        defaultBundle 'application'
+        dependsOn 'knockout, pagination'
+        resource url: 'js/activity.js'
+    }
+
+    records {
+        defaultBundle 'application'
+        dependsOn 'knockout, pagination'
+        resource url: 'js/records.js'
+    }
 
     jstimezonedetect {
         resource url: 'vendor/jstz/jstz.min.js'
