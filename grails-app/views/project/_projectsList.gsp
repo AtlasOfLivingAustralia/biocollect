@@ -32,9 +32,9 @@
 <div id="pt-selectors" class="well" style="display:none">
     <g:if test="${fc.userIsAlaOrFcAdmin()}">
         <div class="row-fluid">
-            <a href="${createLink(action:'citizenScience',params:[download:true])}" id="pt-downloadLink" class="btn btn-warning span2 pull-right"
+            <a href="${downloadLink}" id="pt-downloadLink" class="btn btn-warning span2 pull-right"
                title="${message(code:'project.download.tooltip')}">
-                <i class="icon-download"></i>&nbsp;<g:message code="g.download" /></a>
+                <i class="icon-download icon-white"></i>&nbsp;<g:message code="g.download" /></a>
         </div>
     </g:if>
     <div class="row-fluid">
@@ -42,7 +42,7 @@
         <div class="span8 input-append">
             <input class="span12" type="text" name="pt-search" id="pt-search" placeholder="${message(code:'g.search.placeHolder')}"/>
         </div>
-        <div class="span2">
+        <div class="pull-right">
             <a href="javascript:void(0);" title="${message(code:'project.search.term.tooltip')}" id="pt-search-link" class="btn"><g:message code="g.search" /></a>
             <a href="javascript:void(0);" title="${message(code:'g.resetSearch.tooltip')}" id="pt-reset" class="btn"><g:message code="g.resetSearch" /></a>
         </div>
