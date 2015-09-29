@@ -124,10 +124,18 @@ modules = {
         resource url: 'css/empty.css' // needed for less-resources plugin ?
     }
 
+    restoreTab{
+        defaultBundle true
+        dependsOn 'amplify'
+        resource url: 'js/restoreTab.js'
+    }
+
+
     amplify {
-        defaultBundle 'application'
+        defaultBundle true
         resource url: 'vendor/amplify/amplify.min.js'
     }
+
 
     jstimezonedetect {
         resource url: 'vendor/jstz/jstz.min.js'

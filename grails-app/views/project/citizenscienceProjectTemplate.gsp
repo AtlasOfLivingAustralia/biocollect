@@ -72,7 +72,7 @@
             }
         </style>
     <![endif]-->
-    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker,amplify, jqueryValidationEngine, projects, attachDocuments, wmd, sliderpro, projectActivity"/>
+    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, sliderpro, projectActivity, restoreTab"/>
 </head>
 <body>
 
@@ -95,7 +95,7 @@
     </div>
     <div class="row-fluid">
         <!-- content  -->
-        <ul class="nav nav-pills">
+        <ul id="ul-main-project" class="nav nav-pills">
         <fc:tabList tabs="${projectContent}"/>
     </div>
     <div class="pill-content">
@@ -173,6 +173,9 @@
         initialiseProjectActivitiesList(pActivitiesVM);
         initialiseProjectActivitiesData(pActivitiesVM);
 
+        //Main tab selection
+        new RestoreTab('ul-main-project', 'about-tab');
+
         <g:if test="${projectContent.admin.visible}">
             initialiseProjectActivitiesSettings(pActivitiesVM);
 
@@ -185,10 +188,17 @@
             ko.applyBindings(newsAndEventsViewModel, $('#editnewsAndEventsContent')[0]);
 
             populatePermissionsTable();
+
+            //Citizen- Science admin
+            new RestoreTab('ul-project-admin-citizen-science', 'project-settings-tab');
+            new RestoreTab('ul-survey-constraint-citizen-science', 'survey-info-tab');
         </g:if>
 
         $('.validationEngineContainer').validationEngine();
         $('.helphover').popover({animation: true, trigger:'hover'})    });
+
+
+
 </r:script>
 </body>
 </html>

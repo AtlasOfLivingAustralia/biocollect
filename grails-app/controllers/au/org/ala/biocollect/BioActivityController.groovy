@@ -143,7 +143,7 @@ class BioActivityController {
         render listUserActivities(params) as JSON
     }
 
-    private listUserActivities(params){
+    private def listUserActivities(params){
         def model = [:]
         def criteria = [max: params.max, rp: params.rp, term: params.term]
         def results = activityService.activitiesForUser(userService.getCurrentUserId(), criteria)

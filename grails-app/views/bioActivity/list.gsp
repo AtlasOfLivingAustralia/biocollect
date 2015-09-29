@@ -26,19 +26,19 @@
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout, projectActivityInfo, pagination"/>
+    <r:require modules="knockout, pagination, projectActivityInfo, jqueryValidationEngine, restoreTab"/>
 </head>
 <body>
 
 <div class="container-fluid">
-    <h2>Showing activities and records for <span data-bind="text: displayName"></span> </h2>
+    <h2>My activities and records</h2>
     <div class="row-fluid">
 
         <div class="span12">
 
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#survey-activities" data-toggle="pill">Activties</a></li>
-                <li><a href="#survey-records" data-toggle="pill">Records</a></li>
+            <ul class="nav nav-tabs" id="ul-survey-activities">
+                <li><a href="#survey-activities" id="survey-activities-tab" data-toggle="tab">Activties</a></li>
+                <li><a href="#survey-records" id= "survey-records-tab" data-toggle="tab">Records</a></li>
             </ul>
 
             <div class="tab-content">
@@ -52,7 +52,6 @@
                         </div>
                      </div>
                     </br>
-
                     <!-- ko foreach : activities -->
                     <div class="row-fluid">
                         <div class="span12">
@@ -81,7 +80,9 @@
                     </br>
                     <g:render template="../shared/pagination"/>
                 </div>
+
                 <div class="tab-pane" id="survey-records">
+
                 </div>
             </div>
 
@@ -97,7 +98,6 @@
         self.activities = ko.observableArray();
         self.displayName = ko.observable();
         self.pagination = new PaginationViewModel({},self);
-
 
         self.load = function(activities, displayName, pagination){
             self.activities([]);
@@ -152,7 +152,7 @@
     viewModel.load(activities, displayName, pagination);
 
     ko.applyBindings(viewModel);
-
+    new RestoreTab('ul-survey-activities', 'survey-activities-tab');
 </r:script>
 </body>
 </html>
