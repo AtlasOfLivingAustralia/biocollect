@@ -88,9 +88,7 @@
 
         var output = ${output.data ?: '{}'};
 
-                if (Object.keys(output).length) {
-                        window[viewModelInstance].loadData(output);
-                }
+                window[viewModelInstance].loadData(output);
 
                         // dirtyFlag must be defined after data is loaded
                 <md:jsDirtyFlag model="${model}"/>
