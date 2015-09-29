@@ -252,6 +252,51 @@ class ProjectController {
         }
     }
 
+    def myProjects() {
+        def today = DateUtils.now()
+        def user = userService.getUser()
+//        def userId = user?.userId
+        def userId = 8443
+        def projects = projectService.listMyProjects(userId)
+        if (params.download as boolean) {
+            response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
+            // This is returned to the browswer as a text response due to workaround the warning
+            // displayed by IE8/9 when JSON is returned from an iframe submit.
+            response.setContentType('text/plain;charset=UTF8')
+            def resultJson = projects as JSON
+            render resultJson.toString()
+        } else {
+            render( view: 'citizenScience', model: [
+                    user: user,
+                    showTag: params.tag,
+                    projects: projects.collect {
+                        [ // pass array instead of object to reduce JSON size
+                          it.projectId,
+                          it.aim,
+                          it.coverage,
+                          it.description,
+                          it.difficulty,
+                          it.endDate,
+                          it.hasParticipantCost,
+                          it.hasTeachingMaterials,
+                          it.isDIY,
+                          it.isExternal,
+                          it.isSuitableForChildren,
+                          it.keywords,
+                          it.links,
+                          it.name,
+                          it.organisationId,
+                          it.organisationName,
+                          it.scienceType,
+                          it.startDate,
+                          it.urlImage,
+                          it.urlWeb
+                        ]
+                    }
+            ])
+        }
+    }
+
     /**
      * Updates existing or creates new output.
      *
@@ -429,5 +474,11 @@ class ProjectController {
             def url = grailsApplication.config.ecodata.service.url + path
             webService.proxyGetRequest(response, url, true, true,120000)
         }
+    }
+
+    def getUserProjects(){
+        UserDetails user = userService.user;
+        JSON projects = projectService.userProjects(user);
+        render(text: projects);
     }
 }

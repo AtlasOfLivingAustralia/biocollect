@@ -50,19 +50,14 @@
                                 <button class="btn btn-small btn-fc btnProfile" title="profile page">
                                     <i class="icon-user"></i><span class="">&nbsp;<fc:currentUserDisplayName /></span>
                                 </button>
-                                <button class="btn btn-small btn-fc dropdown-toggle" data-toggle="dropdown">
-                                    <!--<i class="icon-star icon-white"></i>--> My projects&nbsp;&nbsp;<span class="caret"></span>
-                                </button>
-                                <div class="dropdown-menu pull-right">
-                                    <fc:userProjectList />
-                                </div>
-
-                                <button class="btn btn-small btn-fc btnNewProject" title="new project">
-                                    <i class="icon-plus"></i><span class="">&nbsp; New Project</span>
-                                </button>
-                                <button class="btn btn-small btn-fc btnMyData" title="new project">
-                                    <i class="icon-folder-open"></i><span class="">&nbsp; My Records</span>
-                                </button>
+                                <a class="btn btn-small btn-fc dropdown-toggle" data-toggle="dropdown">
+                                    More&nbsp;&nbsp;<span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a class="btnNewProject" href="#"><i class="icon-plus"></i> New project</a></li>
+                                    <li><a class="btnMyProjects" href="#"><i class="icon-folder-open"></i> My projects</a></li>
+                                    <li><a class="btnMyData" href="#"><i class="icon-folder-open"></i> My records</a></li>
+                                </ul>
                             </div>
                             <g:if test="${fc.userIsSiteAdmin()}">
                                 <div class="btn-group">
@@ -150,6 +145,9 @@
             window.location = "${createLink(controller: 'bioActivity', action: 'list')}";
         });
 
+        $(".btnMyProjects").click(function (e) {
+            window.location = "${createLink(controller: 'project', action: 'myProjects')}";
+        });
 
         $("#toggleFluid").click(function(el){
             var fluidNo = $('div.container-fluid').length;
