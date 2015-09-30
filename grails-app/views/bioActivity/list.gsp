@@ -21,7 +21,9 @@
             activityEditUrl: "${createLink(controller: 'bioActivity', action: 'edit')}",
             activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
             activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
-            activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}"
+            activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
+            recordListUrl: "${createLink(controller: 'record', action: 'ajaxList')}"
+
         },
         here = document.location.href;
     </r:script>

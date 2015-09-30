@@ -1,7 +1,4 @@
-package au.org.ala.biocollect.merit
-
-import grails.transaction.Transactional
-
+package au.org.ala.biocollect
 
 class ProjectActivityService {
 

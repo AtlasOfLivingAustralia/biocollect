@@ -5,25 +5,25 @@ var ActivityListsViewModel = function(){
     self.transients = {};
     self.transients.loading = ko.observable(true);
 
-    self.load = function(activities, displayName, pagination){
+    self.load = function(activities, rp, total){
         self.activities([]);
         var activities = $.map(activities ? activities : [] , function(activity, index){
             return new ActivityViewModel(activity);
         });
         self.activities(activities);
-        self.pagination.loadPagination(pagination);
+        self.pagination.loadPagination(rp, total);
     };
 
     self.refreshPage = function(rp){
         if(!rp) rp = 1;
-        var params = { rp:rp};
+        var params = { max: self.pagination.resultsPerPage(), offset:rp-1,  sort:'desc', order:'lastUpdated'};
         var url = fcConfig.activityListUrl + "?" +$.param( params );
         $.ajax({
             url: url,
             type: 'GET',
             contentType: 'application/json',
             success: function (data) {
-                self.load(data.activities, data.displayName, data.pagination);
+                self.load(data.activities, rp, data.total);
             },
             error: function (data) {
                 alert('An unhandled error occurred: ' + data);
