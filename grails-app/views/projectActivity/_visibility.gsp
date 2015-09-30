@@ -5,7 +5,7 @@
                 <g:render template="/projectActivity/warning"/>
                 <div class="row-fluid">
                     <div class="span12 text-left">
-                        <h5>Record Visibility</h5>
+                        <h4 >Record Visibility</h4>
                     </div>
                 </div>
 
