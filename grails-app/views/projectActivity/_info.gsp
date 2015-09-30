@@ -35,8 +35,9 @@
                     <label class="control-label"> Start date:</label>
                 </div>
                 <div class="span7">
-                    <div class="controls">
+                    <div class="controls input-append">
                         <input data-bind="datepicker:startDate.date" type="text"  data-validation-engine="validate[required]" />
+                        <span class="add-on  open-datepicker"><i class="icon-calendar"></i> </span>
                     </div>
                 </div>
             </div>
@@ -46,8 +47,9 @@
                     <label class="control-label"> End date:</label>
                 </div>
                 <div class="span7">
-                    <div class="controls">
+                    <div class="controls input-append">
                         <input data-bind="datepicker:endDate.date" type="text" />
+                        <span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
                     </div>
                 </div>
             </div>
