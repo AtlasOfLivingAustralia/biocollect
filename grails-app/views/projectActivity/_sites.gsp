@@ -24,10 +24,10 @@
         <div class="span6 text-left">
 
             <span data-bind="if: sites().length == 0">
-                <h5> No sites associated with this project.</h5>
+                <h4> No sites associated with this project.</h4>
             </span>
             <span data-bind="if: sites().length > 0">
-                <h5> Sites associated with this project:</h5>
+                <h4> Sites associated with this project:</h4>
             </span>
             <!-- ko foreach: sites -->
                 <div class="row-fluid">
@@ -53,7 +53,7 @@
         </div>
 
         <div class="span6 text-left">
-            <h5 class="text-right"> Sites associated with this survey:</h5>
+            <h4 class="text-right"> Sites associated with this survey:</h4>
             <!-- ko foreach: sites -->
             <span data-bind="if: added()">
                 <div class="row-fluid">
