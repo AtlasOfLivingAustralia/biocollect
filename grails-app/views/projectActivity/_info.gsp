@@ -1,3 +1,12 @@
+<style>
+.req-field:after {
+    content: "*";
+    color: red;
+    font-weight:bold;
+    font-size:1.5em;
+    white-space: nowrap;
+}
+</style>
 <div id="pActivityInfo" class="well">
 
         <!-- ko foreach: projectActivities -->
@@ -11,7 +20,7 @@
 
             <div class="row-fluid">
                 <div class="span3 text-right">
-                    <label class="control-label"> Name:</label>
+                    <label class="control-label"> Name: <span class="req-field"></span></label>
                 </div>
                 <div class="span7">
                     <div class="controls"><input type="text" data-bind="value: name" data-validation-engine="validate[required]"></div>
@@ -20,7 +29,7 @@
 
             <div class="row-fluid">
                 <div class="span3 text-right">
-                    <label class="control-label"> Description:</label>
+                    <label class="control-label"> Description: <span class="req-field"></span></label>
                 </div>
 
                 <div class="span7">
@@ -32,7 +41,7 @@
 
             <div class="row-fluid">
                 <div class="span3 text-right">
-                    <label class="control-label"> Start date:</label>
+                    <label class="control-label"> Start date: <span class="req-field"></span></label>
                 </div>
                 <div class="span7">
                     <div class="controls input-append">
