@@ -20,7 +20,9 @@
                         </label>
                         <label>
                             <input type="radio" value="EMBARGO" data-bind="checked: visibility.constraint" /> Embargo publishing all records until
-                            <input data-bind="datepicker: visibility.embargoDate.date" type="text"/>
+                            <div class="input-append">
+                                <input data-bind="datepicker: visibility.embargoDate.date" type="text"/><span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
+                            </div>
                         </label>
                    </div>
 
