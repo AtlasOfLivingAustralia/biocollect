@@ -2,12 +2,26 @@ var PaginationViewModel = function (o, caller) {
   var self = this;
   if (!o) o = {};
   if (!caller) caller = self;
-  self.resultsPerPage = ko.observable();
+  self.rppOptions = [10,25,30,50,100];
+  self.resultsPerPage = ko.observable(25);
   self.totalResults = ko.observable();
-  self.previousIndex = ko.observable();
   self.requestedPage = ko.observable();
   self.nextIndex = ko.observable();
   self.start = ko.observable();
+
+  self.previousIndex = ko.pureComputed(function(){
+    return self.requestedPage() <= 1 ? 1 : (self.requestedPage() - 1);
+  });
+  self.nextIndex  = ko.pureComputed(function(){
+    var lastPage = Math.floor((self.totalResults() / self.resultsPerPage()));
+    if (self.totalResults() % self.resultsPerPage()  != 0) {
+      lastPage += 1;
+    }
+    if (lastPage == 0) {
+      lastPage = 1;
+    }
+    return self.requestedPage() >= lastPage ? lastPage : (self.requestedPage() + 1);
+  });
 
   self.info = ko.computed(function () {
     if (self.totalResults() > 0) {
@@ -50,18 +64,17 @@ var PaginationViewModel = function (o, caller) {
     caller.refreshPage(Math.ceil((self.totalResults() / self.resultsPerPage())));
   };
 
+  self.rppChanged = function() {
+    caller.refreshPage(1);
+  };
+
   self.refreshPage = function(rp){
     // Do nothing.
   };
 
-  self.loadPagination = function(pagination){
-    self.requestedPage(pagination.requestedPage);
-    self.totalResults(pagination.totalResults);
-    self.previousIndex(pagination.previousIndex);
-    self.nextIndex(pagination.nextIndex);
-    self.resultsPerPage(pagination.resultsPerPage);
+  self.loadPagination = function(rp, total){
+    self.requestedPage(rp);
+    self.totalResults(total);
   };
-  self.transients = {};
 
-  self.loadPagination(o);
 };

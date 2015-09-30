@@ -136,7 +136,7 @@ class BioActivityController {
      * @return
      */
     def list(){
-        listUserActivities(params)
+
     }
 
     def ajaxList(){
@@ -145,18 +145,18 @@ class BioActivityController {
 
     private def listUserActivities(params){
         def model = [:]
-        def criteria = [max: params.max, rp: params.rp, term: params.term]
-        def results = activityService.activitiesForUser(userService.getCurrentUserId(), criteria)
-        results?.resp?.activities?.list?.each{
+        def query = [pageSize: params.max ?: 10,
+                     offset: params.offset ?: 0,
+                     sort: params.sort ?: 'lastUpdated',
+                     order: params.order ?: 'desc']
+        def results = activityService.activitiesForUser(userService.getCurrentUserId(), query)
+        results?.activities?.each{
             it.pActivity = projectActivityService.get(it.projectActivityId)
         }
-        model.activities = results?.resp?.activities?.list
-        model.pagination = results?.resp?.pagination
-        model.displayName = userService.getCurrentUserDisplayName()
-
+        model.activities = results?.activities
+        model.total = results?.total
         model
     }
-
 
     private def updatePhotoPoints(activityId, photoPoints) {
 

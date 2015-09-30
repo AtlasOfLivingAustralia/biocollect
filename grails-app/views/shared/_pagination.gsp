@@ -9,12 +9,12 @@
                 </div>
                 <div class="span4 text-center">
                     <p class="hidden-xs pull-center nomargin padding20">
-
+                        <select style="width:20%;" data-bind="options: pagination.rppOptions, value: pagination.resultsPerPage, event: {change: pagination.rppChanged()}" ></select>
                     </p>
                 </div>
                 <div class="span4 text-right">
 
-                    <span >
+                    <span>
                         <span data-bind="if: pagination.previousIndex() != pagination.requestedPage()"><a class="btn btn-small" href="#" data-bind="click:pagination.first"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a></span>
                         <span data-bind="if: pagination.previousIndex() != pagination.requestedPage()"><a class="btn btn-small" href="#" data-bind="click:pagination.previous"><i class="fa fa-chevron-left"></i></a></span>
                         <span data-bind="if: pagination.previousIndex() != pagination.requestedPage(), click:pagination.previous"><a href="#" class="btn btn-xs"><span data-bind="text:pagination.previousIndex()"></span></a></span>

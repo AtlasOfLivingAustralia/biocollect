@@ -1,4 +1,5 @@
 package au.org.ala.biocollect.merit
+import grails.converters.JSON
 
 class ProjectService {
 
@@ -9,6 +10,11 @@ class ProjectService {
         if (citizenScienceOnly) params += (brief ? '&' : '?') + 'citizenScienceOnly=true'
         def resp = webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + params, 30000)
         resp.list
+    }
+
+    def listMyProjects(userId) {
+        def resp = webService.getJson(grailsApplication.config.ecodata.service.url + '/permissions/getAllProjectsForUserId?id=' + userId , 30000)
+        resp
     }
 
     def get(id, levelOfDetail = "", includeDeleted = false) {
@@ -247,5 +253,15 @@ class ProjectService {
 
         allowedActivities
 
+    }
+
+    public JSON userProjects(UserDetails user){
+        if(user){
+            def projects = userService.getProjectsForUserId(8443)
+            def starredProjects = userService.getStarredProjectsForUserId(8443)
+            ['active':projects, 'starred':starredProjects] as JSON;
+        } else {
+            [:] as JSON
+        }
     }
 }
