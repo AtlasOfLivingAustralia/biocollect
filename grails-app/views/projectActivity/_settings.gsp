@@ -66,7 +66,7 @@
                 <ul id="ul-survey-constraint-citizen-science" class="nav nav-pills">
                     <li><a href="#survey-info" id="survey-info-tab" data-toggle="tab">Survey Info</a></li>
                     <li><a href="#survey-species" id="survey-species-tab" data-toggle="tab">Species</a></li>
-                    <li><a href="#survey-form" id="survey-form-tab" data-toggle="tab">Surveys Form</a></li>
+                    <li><a href="#survey-form" id="survey-form-tab" data-toggle="tab">Survey Form</a></li>
                     <li><a href="#survey-locations" id="survey-locations-tab" data-toggle="tab">Locations</a></li>
                     <li><a href="#survey-visibility" id="survey-visibility-tab" data-toggle="tab">Visibility</a></li>
                     <li><a href="#survey-alerts" id="survey-alerts-tab" data-toggle="tab">Alerts & Actions</a></li>
