@@ -47,6 +47,8 @@ describe("pActivityInfo Spec", function () {
         expect(projectActivity.startDate()).toEqual("");
         expect(projectActivity.endDate()).toEqual("");
         expect(projectActivity.commentsAllowed()).toEqual(false);
+        expect(projectActivity.publicAccess()).toEqual(false);
+        expect(projectActivity.allowPublicViewOfData()).toEqual(false);
         expect(projectActivity.published()).toEqual(false);
         expect(projectActivity.transients.status()).toEqual("Active, Not yet started");
         expect(projectActivity.transients.daysTotal()).toEqual(-1);
@@ -68,7 +70,6 @@ describe("pActivityInfo Spec", function () {
         expect(projectActivity.transients.daysSince()).toEqual(30);
         expect(projectActivity.transients.status()).toEqual("Inactive, Completed");
     });
-
 });
 
 

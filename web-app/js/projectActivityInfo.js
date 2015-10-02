@@ -10,6 +10,8 @@ var pActivityInfo = function(o, selected){
     self.endDate = ko.observable(o.endDate).extend({simpleDate:false});
     self.commentsAllowed = ko.observable(o.commentsAllowed ? o.commentsAllowed : false);
     self.published = ko.observable(o.published ? o.published : false);
+    self.publicAccess = ko.observable(o.publicAccess ? o.publicAccess : false);
+    self.allowPublicViewOfData = ko.observable(o.allowPublicViewOfData ? o.allowPublicViewOfData : false);
 
     self.current = ko.observable(selected);
 
@@ -20,13 +22,13 @@ var pActivityInfo = function(o, selected){
     self.transients = self.transients || {};
     self.transients.imageUploadUrl  = ko.observable(fcConfig.imageUploadUrl);
     self.transients.logoUrl = ko.pureComputed(function(){
-        var url = self.logoUrl() ? self.logoUrl() : fcConfig.imageLocation + "/no-image-2.png"
-        return url;
+        return self.logoUrl() ? self.logoUrl() : fcConfig.imageLocation + "/no-image-2.png";
     });
 
     var isBeforeToday = function(date) {
         return moment(date) < moment().startOf('day');
     };
+
     var calculateDurationInDays = function(startDate, endDate) {
         var start = moment(startDate);
         var end = moment(endDate);
@@ -46,9 +48,11 @@ var pActivityInfo = function(o, selected){
         var end = self.endDate();
         return end? isBeforeToday(end)? 0: calculateDurationInDays(undefined, end) + 1: -1;
     });
+
     self.transients.daysTotal = ko.pureComputed(function() {
         return self.startDate()? calculateDurationInDays(self.startDate(), self.endDate()): -1;
     });
+
     self.transients.status = ko.pureComputed(function(){
         var status = "";
         if(self.transients.daysSince() < 0 || (self.transients.daysSince() >= 0 && self.transients.daysRemaining() > 0)){
@@ -71,4 +75,13 @@ var pActivityInfo = function(o, selected){
             }
         });
     }
+
+    /**
+     * The allowPublicViewOfData is only applicable when publicAccess = false, so always clear the value when publicAccess is turned on.
+     */
+    self.togglePublicAccess = function () {
+        if (self.publicAccess()) {
+            self.allowPublicViewOfData(false);
+        }
+    };
 };
