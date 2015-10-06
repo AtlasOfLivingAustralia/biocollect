@@ -11,7 +11,6 @@
 
         <!-- ko foreach: projectActivities -->
             <!-- ko if: current -->
-
             <g:render template="/projectActivity/publish"/>
 
             <div class="row-fluid">
@@ -20,32 +19,37 @@
 
             <div class="row-fluid">
                 <div class="span3 text-right">
-                    <label class="control-label"> Name: <span class="req-field"></span></label>
-                </div>
-                <div class="span7">
-                    <div class="controls"><input type="text" data-bind="value: name" data-validation-engine="validate[required]"></div>
-                </div>
-            </div>
-
-            <div class="row-fluid">
-                <div class="span3 text-right">
-                    <label class="control-label"> Description: <span class="req-field"></span></label>
+                    <label class="control-label" for="name"> Name: <span class="req-field"></span></label>
                 </div>
 
                 <div class="span7">
                     <div class="controls">
-                        <textarea style="width: 97%;" rows="4"  class="input-xlarge"  data-bind="value: description" data-validation-engine="validate[required]"></textarea>
+                        <input id="name" type="text" data-bind="value: name" data-validation-engine="validate[required]">
                     </div>
                 </div>
             </div>
 
             <div class="row-fluid">
                 <div class="span3 text-right">
-                    <label class="control-label"> Start date: <span class="req-field"></span></label>
+                    <label class="control-label" for="description">Description: <span class="req-field"></span></label>
                 </div>
+
+                <div class="span7">
+                    <div class="controls">
+                        <textarea id="description" style="width: 97%;" rows="4" class="input-xlarge" data-bind="value: description"
+                                  data-validation-engine="validate[required]"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span3 text-right">
+                    <label class="control-label" for="startDate"> Start date: <span class="req-field"></span></label>
+                </div>
+
                 <div class="span7">
                     <div class="controls input-append">
-                        <input data-bind="datepicker:startDate.date" type="text"  data-validation-engine="validate[required]" />
+                        <input id="startDate" data-bind="datepicker:startDate.date" type="text"  data-validation-engine="validate[required]" />
                         <span class="add-on  open-datepicker"><i class="icon-calendar"></i> </span>
                     </div>
                 </div>
@@ -53,25 +57,50 @@
 
             <div class="row-fluid">
                 <div class="span3 text-right">
-                    <label class="control-label"> End date:</label>
+                    <label class="control-label" for="endDate">End date:</label>
                 </div>
+
                 <div class="span7">
                     <div class="controls input-append">
-                        <input data-bind="datepicker:endDate.date" type="text" />
+                        <input id="endDate" data-bind="datepicker:endDate.date" type="text" />
                         <span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
                     </div>
                 </div>
             </div>
 
+            <div class="row-fluid">
+                <div class="span3 text-right">
+                    <label class="control-label" for="publicAccess">Allow public users to enter data:</label>
+                </div>
 
+                <div class="span7">
+                    <div class="controls">
+                        <input id="publicAccess" type="checkbox"
+                               data-bind="checked: publicAccess, event: {change: togglePublicAccess}"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid" data-bind="visible: !publicAccess()">
+                <div class="span3 text-right">
+                    <label class="control-label" for="allowPublicViewOfData">Allow public view of data:</label>
+                </div>
+
+                <div class="span7">
+                    <div class="controls">
+                        <input id="allowPublicViewOfData" type="checkbox" data-bind="checked: allowPublicViewOfData"/>
+                    </div>
+                </div>
+            </div>
 
             <div class="row-fluid">
                 <div class="span3 text-right">
-                    <label class="control-label">Comments on records allowed:</label>
+                    <label class="control-label" for="allowComments">Comments on records allowed:</label>
                 </div>
+
                 <div class="span7">
                     <div class="controls">
-                        <input type="checkbox" data-bind="checked: commentsAllowed" />
+                        <input id="allowComments" type="checkbox" data-bind="checked: commentsAllowed"/>
                     </div>
                 </div>
             </div>
@@ -80,7 +109,6 @@
                 <div class="span3 text-right">
                     <label class="control-label">Attach logo</label>
                 </div>
-
 
                 <div class="span2 text-left">
                     <img  alt="No image" data-bind="attr:{src: transients.logoUrl()}">
@@ -92,26 +120,20 @@
                                 'data-owner-type': 'projectActivityId',
                                 'data-owner-id': projectActivityId()},
                             stagedImageUpload: documents,
-                            visible:!logoUrl()"
-
+                                     visible:!logoUrl()">
                             <i class="icon-plus"></i>
                             <input id="logo" type="file" name="files">
                             <span>Attach</span></span>
                     <button class="btn btn-small" data-bind="click:removeLogoImage, visible:logoUrl()"><i class="icon-minus"></i> Remove</button>
                 </div>
-
             </div>
-
     <!-- /ko -->
-
 <!-- /ko -->
 
-</br> </br>
+    <br/> <br/>
     <div class="row-fluid">
         <div class="span12">
             <button class="btn-primary btn block" data-bind="click: saveInfo"> Save </button>
         </div>
-
     </div>
-
 </div>

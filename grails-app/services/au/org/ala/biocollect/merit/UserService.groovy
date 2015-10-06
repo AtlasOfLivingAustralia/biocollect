@@ -90,6 +90,11 @@ class UserService {
         webService.getJson(url)
     }
 
+    Map isUserInRoleForProject(String userId, String projectId, String role) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserInRoleForProject?userId=${userId}&projectId=${projectId}&role=${role}"
+        webService.getJson(url)
+    }
+
     def addUserAsRoleToProject(String userId, String projectId, String role) {
         def url = grailsApplication.config.ecodata.service.url + "/permissions/addUserAsRoleToProject?userId=${userId}&projectId=${projectId}&role=${role}"
         webService.getJson(url)

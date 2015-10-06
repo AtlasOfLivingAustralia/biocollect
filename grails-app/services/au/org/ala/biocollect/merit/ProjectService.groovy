@@ -1,9 +1,19 @@
 package au.org.ala.biocollect.merit
+
+import au.org.ala.web.AuthService
 import grails.converters.JSON
 
 class ProjectService {
 
-    def webService, grailsApplication, siteService, activityService, authService, emailService, documentService, userService, metadataService, settingService
+    WebService webService
+    def grailsApplication
+    SiteService siteService
+    ActivityService activityService
+    AuthService authService
+    DocumentService documentService
+    UserService userService
+    MetadataService metadataService
+    SettingService settingService
 
     def list(brief = false, citizenScienceOnly = false) {
         def params = brief ? '?brief=true' : ''
@@ -13,7 +23,7 @@ class ProjectService {
     }
 
     def listMyProjects(userId) {
-        def resp = webService.getJson(grailsApplication.config.ecodata.service.url + '/permissions/getAllProjectsForUserId?id=' + userId , 30000)
+        def resp = webService.getJson(grailsApplication.config.ecodata.service.url + '/permissions/getAllProjectsForUserId?id=' + userId, 30000)
         resp
     }
 
@@ -94,12 +104,15 @@ class ProjectService {
 
         def scoresWithTargetsByOutput = [:]
         def scoresWithoutTargetsByOutputs = [:]
-        if (scores && scores instanceof List) {  // If there was an error, it would be returning a map containing the error.
+        if (scores && scores instanceof List) {
+            // If there was an error, it would be returning a map containing the error.
             // There are some targets that have been saved as Strings instead of numbers.
-            scoresWithTargetsByOutput = scores.grep{ it.target && it.target != "0" }.groupBy { it.score.outputName }
-            scoresWithoutTargetsByOutputs = scores.grep{ it.results && (!it.target || it.target == "0") }.groupBy { it.score.outputName }
+            scoresWithTargetsByOutput = scores.grep { it.target && it.target != "0" }.groupBy { it.score.outputName }
+            scoresWithoutTargetsByOutputs = scores.grep { it.results && (!it.target || it.target == "0") }.groupBy {
+                it.score.outputName
+            }
         }
-        [targets:scoresWithTargetsByOutput, other:scoresWithoutTargetsByOutputs]
+        [targets: scoresWithTargetsByOutput, other: scoresWithoutTargetsByOutputs]
     }
 
     def search(params) {
@@ -167,7 +180,7 @@ class ProjectService {
             userCanEdit = true
         } else {
             def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProject?projectId=${projectId}&userId=${userId}"
-            userCanEdit = webService.getJson(url)?.userIsEditor?:false
+            userCanEdit = webService.getJson(url)?.userIsEditor ?: false
         }
 
         // Merit projects are not allowed to be edited.
@@ -185,21 +198,19 @@ class ProjectService {
      * @param userId the user to test.
      * @param the activity to test.
      */
-    def canUserEditActivity(userId, activity){
-
-        def userCanEdit = false
-        if(userService.userIsSiteAdmin()){
+    def canUserEditActivity(String userId, Map activity) {
+        boolean userCanEdit = false
+        if (userService.userIsSiteAdmin()) {
             userCanEdit = true
         } else {
-            def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProject?projectId=${activity?.projectId}&userId=${userId}"
-            def result = webService.getJson(url)?.userIsEditor ?: false
-            if (result && activity?.userId == userId) {
+            String url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProject?projectId=${activity?.projectId}&userId=${userId}"
+            boolean userIsProjectEditor = webService.getJson(url)?.userIsEditor ?: false
+            if (userIsProjectEditor && activity?.userId == userId) {
                 userCanEdit = true
             }
         }
         userCanEdit
     }
-
 
     /**
      * Does the current user have permission to view details of the requested projectId?
@@ -211,8 +222,7 @@ class ProjectService {
         def userCanView
         if (userService.userIsSiteAdmin() || userService.userHasReadOnlyAccess()) {
             userCanView = true
-        }
-        else {
+        } else {
             userCanView = canUserEditProject(userId, projectId)
         }
         userCanView
@@ -245,7 +255,7 @@ class ProjectService {
                     }
                 }
                 if (matchingActivities) {
-                    allowedActivities << [name:category.name, list:matchingActivities]
+                    allowedActivities << [name: category.name, list: matchingActivities]
                 }
             }
 
@@ -255,11 +265,11 @@ class ProjectService {
 
     }
 
-    public JSON userProjects(UserDetails user){
-        if(user){
+    public JSON userProjects(UserDetails user) {
+        if (user) {
             def projects = userService.getProjectsForUserId(8443)
             def starredProjects = userService.getStarredProjectsForUserId(8443)
-            ['active':projects, 'starred':starredProjects] as JSON;
+            ['active': projects, 'starred': starredProjects] as JSON;
         } else {
             [:] as JSON
         }
