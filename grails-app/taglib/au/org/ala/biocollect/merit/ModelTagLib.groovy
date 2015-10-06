@@ -139,6 +139,7 @@ class ModelTagLib {
                 break
             case 'fusedAutoComplete':
                 renderer.renderFusedAutocomplete(renderContext)
+                break
             case 'photopoint':
                 renderer.renderPhotoPoint(renderContext)
                 break

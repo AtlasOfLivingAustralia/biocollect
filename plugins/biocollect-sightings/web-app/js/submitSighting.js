@@ -15,7 +15,7 @@
 
 /*  Global var GSP_VARS required to be set in calling page */
 
-$(document).ready(function() {
+$(document).ready(function () {
     if (typeof GSP_VARS == 'undefined') {
         alert('GSP_VARS not set in page - required for submit.js');
     }
@@ -48,7 +48,7 @@ $(document).ready(function() {
     }).on('fileuploadadd', function (e, data) {
         // load event triggered (start)
         // Disable the submit button while images are being uploaded to server in background
-        $('#formSubmit').attr('disabled','disabled').attr('title','image upload in progress').addClass('disabled');
+        $('#formSubmit').attr('disabled', 'disabled').attr('title', 'image upload in progress').addClass('disabled');
         $('#submitWrapper').attr('title', 'Image upload in progress... please wait').tooltip(tooltipVars).tooltip('show');
         // Clone the template and reference it via data.context
         data.context = $('#uploadActionsTmpl').clone(true).removeAttr('id').removeClass('hide').appendTo('#files');
@@ -83,10 +83,10 @@ $(document).ready(function() {
                 lng = lng.split(',');
                 var latRef = data.exif.getText('GPSLatitudeRef') || "N";
                 var lngRef = data.exif.getText('GPSLongitudeRef') || "W";
-                lat = ((Number(lat[0]) + Number(lat[1])/60 + Number(lat[2])/3600) * (latRef == "N" ? 1 : -1)).toFixed(10);
-                lng = ((Number(lng[0]) + Number(lng[1])/60 + Number(lng[2])/3600) * (lngRef == "W" ? -1 : 1)).toFixed(10);
+                lat = ((Number(lat[0]) + Number(lat[1]) / 60 + Number(lat[2]) / 3600) * (latRef == "N" ? 1 : -1)).toFixed(10);
+                lng = ((Number(lng[0]) + Number(lng[1]) / 60 + Number(lng[2]) / 3600) * (lngRef == "W" ? -1 : 1)).toFixed(10);
                 hasMetaData = true;
-                node.find('.imgCoords').empty().append(lat + ", " + lng).data('lat',lat).data('lng',lng);
+                node.find('.imgCoords').empty().append(lat + ", " + lng).data('lat', lat).data('lng', lng);
             }
 
             var dateTime = (data.exif.getText('DateTimeOriginal') != 'undefined') ? data.exif.getText('DateTimeOriginal') : null;// || data.exif.getText('DateTime');
@@ -97,8 +97,8 @@ $(document).ready(function() {
                 // determine local time offset from UTC
                 // by working out difference between DateTimeOriginal and GPSTimeStamp to get timezone (offset)
                 // gpsDate is not always set - if absent assume same date as 'DateTimeOriginal'
-                var date = gpsDate || dateTime.substring(0,10); //dateTime.substring(0,10)
-                date = date.replace(/:/g,'-') + ' ' + parseGpsTime(gpsTime); // comvert YYYY:MM:DD to YYYY-MM-DD
+                var date = gpsDate || dateTime.substring(0, 10); //dateTime.substring(0,10)
+                date = date.replace(/:/g, '-') + ' ' + parseGpsTime(gpsTime); // comvert YYYY:MM:DD to YYYY-MM-DD
                 var gpsMoment = moment(date);
                 var datetimeTemp = parseExifDateTime(dateTime, false);
                 var localMoment = moment(datetimeTemp);
@@ -114,21 +114,21 @@ $(document).ready(function() {
                 hasMetaData = true;
                 var isoDateStr = parseExifDateTime(dateTime, true) || dateTime;
                 node.find('.imgDate').html(isoDateStr);
-                if (! node.find('.imgDate').data('datetime')) {
+                if (!node.find('.imgDate').data('datetime')) {
                     node.find('.imgDate').data('datetime', isoDateStr);
                 }
             } else if (gpsDate) {
                 hasMetaData = true;
-                var isoDateStr = gpsDate.replace(/:/g,'-');
+                var isoDateStr = gpsDate.replace(/:/g, '-');
                 node.find('.imgDate').html(isoDateStr);
-                if (! node.find('.imgDate').data('datetime')) {
+                if (!node.find('.imgDate').data('datetime')) {
                     node.find('.imgDate').data('datetime', isoDateStr);
                 }
             }
 
             if (hasMetaData) {
                 // activate the button
-                node.find('.imageData').removeAttr('disabled').attr('title','Use image date/time & GPS coordinates for this sighting');
+                node.find('.imageData').removeAttr('disabled').attr('title', 'Use image date/time & GPS coordinates for this sighting');
             }
         }
         if (file.error) {
@@ -179,37 +179,37 @@ $(document).ready(function() {
         }
     }
 
-    var autocompleteUrl = 'http://bie.ala.org.au/ws/search/auto.jsonp';
-
-    if(typeof BIE_VARS != 'undefined' && BIE_VARS.autocompleteUrl){
-        autocompleteUrl = BIE_VARS.autocompleteUrl;
+    var datatype = "jsonp";
+    if (typeof GSP_VARS.autocompleteDataType !== 'undefined') {
+        datatype = GSP_VARS.autocompleteDataType;
     }
 
-    $("input#speciesLookup").autocomplete(autocompleteUrl, {
+    $("input#speciesLookup").autocomplete(GSP_VARS.autocompleteUrl, {
         extraParams: {limit: 100},
-        dataType: 'jsonp',
-        parse: function(data) {
+        dataType: datatype,
+        parse: function (data) {
             var rows = new Array();
             data = data.autoCompleteList;
-            for(var i=0; i<data.length; i++) {
+
+            for (var i = 0; i < data.length; i++) {
                 rows[i] = {
-                    data:data[i],
-                    value: data[i].matchedNames[0],
-                    result: data[i].matchedNames[0]
+                    data: data[i],
+                    value: data[i].matchedNames ? data[i].matchedNames[0] : data[i].scientificNameMatches[0],
+                    result: data[i].matchedNames ? data[i].matchedNames[0] : data[i].scientificNameMatches[0]
                 };
             }
             return rows;
         },
         matchSubset: false,
-        formatItem: function(row, i, n) {
-            return row.matchedNames[0];
+        formatItem: function (row, i, n) {
+            return row.matchedNames ? row.matchedNames[0] : row.scientificNameMatches[0];
         },
         cacheLength: 10,
         minChars: 3,
         scroll: false,
         max: 10,
         selectFirst: false
-    }).result(function(event, item) {
+    }).result(function (event, item) {
         // user has selected an autocomplete item
         //console.log("item", item);
         $('input#guid').val(item.guid).change();
@@ -223,44 +223,44 @@ $(document).ready(function() {
     $('#timeZoneOffset').val(prefix + ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2));
 
     // use image data button
-    $('#files').on('click', 'button.imageData', function() {
+    $('#files').on('click', 'button.imageData', function () {
         insertImageMetadata($(this).parents('.imageRow'));
         return false;
     });
 
     // remove image button
-    $('#files').on('click', 'button.imageRemove', function() {
+    $('#files').on('click', 'button.imageRemove', function () {
         $(this).parents('.imageRow').remove();
     });
 
     // image license drop-down
-    $('#imageLicense').change(function() {
+    $('#imageLicense').change(function () {
         $('input.license').val($(this).val());
     });
 
     // Clear the #dateStr field (extracted from photo EXIF data) if user changes either the date or time field
-    $('#dateStr, #timeStr').keyup(function() {
+    $('#dateStr, #timeStr').keyup(function () {
         $('#eventDate').val('');
     });
 
     // close button on bootstrap alert boxes
-    $("[data-hide]").on("click", function(){
+    $("[data-hide]").on("click", function () {
         $(this).closest("." + $(this).attr("data-hide")).hide();
         clearTaxonDetails();
     });
 
     // species group drop-down
     var speciesGroupsObj = GSP_VARS.speciesGroups;
-    $('#speciesGroups').change(function(e) {
+    $('#speciesGroups').change(function (e) {
         var group = $(this).val();
         var noSelectOpt = '-- Choose a sub group --';
-        $('#speciesSubgroups').empty().append($("<option/>").attr("value","").text(noSelectOpt));
+        $('#speciesSubgroups').empty().append($("<option/>").attr("value", "").text(noSelectOpt));
 
         if (group) {
-            $.each(speciesGroupsObj[group], function(i, el) {
+            $.each(speciesGroupsObj[group], function (i, el) {
                 $('#speciesSubgroups')
                     .append($("<option/>")
-                        .attr("value",el.common)
+                        .attr("value", el.common)
                         .text(el.common));
             });
             addTagLabel(group, 'group');
@@ -268,32 +268,32 @@ $(document).ready(function() {
     });
 
     // species subgroup drop-down
-    $('#speciesSubgroups').change(function(e) {
+    $('#speciesSubgroups').change(function (e) {
         var subgroup = $(this).val();
         addTagLabel(subgroup, 'subgroup');
         //$(this).val(''); // reset
     });
 
     // remove species/scientificName box
-    $('#species').on('click', 'a.removeTag', function(e) {
+    $('#species').on('click', 'a.removeTag', function (e) {
         e.preventDefault();
         $(this).parent().remove();
     });
 
-    $('#species').on('click', 'a.removeHide', function(e) {
+    $('#species').on('click', 'a.removeHide', function (e) {
         e.preventDefault();
         $(this).parent().hide();
     });
 
     // prevent enter key on autocomplete submitting form/sighting
-    $(document).on('keydown', '#speciesLookup', function(e) {
+    $(document).on('keydown', '#speciesLookup', function (e) {
         if (e.which == 13) {
             return false;
         }
     });
 
     // detect change on #taxonConceptID input (autocomplete selection) and load species details
-    $(document.body).on('change', '#guid', function(e) {
+    $(document.body).on('change', '#guid', function (e) {
         //console.log('#guid on change');
         //$('#speciesLookup').alaAutocomplete.reset();
         //$('#speciesLookup').val('');
@@ -308,31 +308,31 @@ $(document).ready(function() {
         // force tags to be Array type
         tags = new Array(tags);
     }
-    $.each(tags, function(i, t) {
+    $.each(tags, function (i, t) {
         addTagLabel(t);
     });
 
     // show images in edit mode
     var media = (GSP_VARS.sightingBean.multimedia) ? GSP_VARS.sightingBean.multimedia : [];
-    $.each(media, function(i, m) {
+    $.each(media, function (i, m) {
         //console.log("image", m);
         addServerImage(m, i);
         existingImagesIndex++;
     });
 
     // clear validation errors red border on input blur
-    $('.validationErrors').on('blur', function(e) {
+    $('.validationErrors').on('blur', function (e) {
         $(this).removeClass('validationErrors');
     });
 
     // load species info if id is in the URL
     if (GSP_VARS.guid) {
         $('#guid').val(GSP_VARS.guid).change();
-        $('#confident').trigger( "click" );
+        $('#confident').trigger("click");
     }
 
     // trigger image assisted identification popup
-    $('.identifyHelpTrigger').click(function(e) {
+    $('.identifyHelpTrigger').click(function (e) {
         e.preventDefault();
         var lat = $('#decimalLatitude').val();
         var lng = $('#decimalLongitude').val();
@@ -363,14 +363,14 @@ $(document).ready(function() {
     });
 
     // catch submit button and convert date & time to ISO string
-    $('#formSubmit').click(function(e) {
+    $('#formSubmit').click(function (e) {
         e.preventDefault();
         var date = $('#dateStr').val();
         var time = $('#timeStr').val() || '00:00';
         var timeZone = $('#timeZoneOffset').val() || '+10:00';
 
         if (date) {
-            var dateInput = date + " " + time  + " " +  timeZone
+            var dateInput = date + " " + time + " " + timeZone
             var mDateTime = moment(dateInput, "DD-MM-YYYY HH:mm Z"); // format("DD-MM-YYYY, HH:mm");
             $('#eventDate').val(mDateTime.format()); // default is ISO
         }
@@ -386,15 +386,15 @@ function insertImage(node, image, index) {
         .attr('target', '_blank')
         .prop('href', identifier);
     node.find('.preview').wrap(link);
-    node.find('.preview').append($('<img/>').attr('src',image.identifier).addClass('serverLoaded'));
+    node.find('.preview').append($('<img/>').attr('src', image.identifier).addClass('serverLoaded'));
     node.find('.filename').append(image.title);
-    node.find('.identifier').val(identifier).attr('name', 'multimedia['+ index + '].identifier');
-    node.find('.title').val(image.filename).attr('name', 'multimedia['+ index + '].title');
-    node.find('.format').val(image.mimeType).attr('name', 'multimedia['+ index + '].format');
-    node.find('.creator').val((GSP_VARS.user && GSP_VARS.user.userDisplayName) ? GSP_VARS.user.userDisplayName : 'ALA User').attr('name', 'multimedia['+ index + '].creator');
-    node.find('.license').val($('#imageLicense').val()).attr('name', 'multimedia['+ index + '].license');
+    node.find('.identifier').val(identifier).attr('name', 'multimedia[' + index + '].identifier');
+    node.find('.title').val(image.filename).attr('name', 'multimedia[' + index + '].title');
+    node.find('.format').val(image.mimeType).attr('name', 'multimedia[' + index + '].format');
+    node.find('.creator').val((GSP_VARS.user && GSP_VARS.user.userDisplayName) ? GSP_VARS.user.userDisplayName : 'ALA User').attr('name', 'multimedia[' + index + '].creator');
+    node.find('.license').val($('#imageLicense').val()).attr('name', 'multimedia[' + index + '].license');
     if (image.exif && image.exif.date) {
-        node.find('.created').val(image.exif.date).attr('name', 'multimedia['+ index + '].created');
+        node.find('.created').val(image.exif.date).attr('name', 'multimedia[' + index + '].created');
     }
     insertImageMetadata(node);
 }
@@ -405,7 +405,7 @@ function insertImageMetadata(imageRow) {
     if (dateTimeVal) {
         var dateTime = String(dateTimeVal);
         //$('#eventDateTime').val(dateTime);
-        $('#eventDate').val(isoToAusDate(dateTime.substring(0,10)));
+        $('#eventDate').val(isoToAusDate(dateTime.substring(0, 10)));
         //$('#eventTime').val(dateTime.substring(11,19));
         $('#timeZoneOffset').val(dateTime.substring(19));
         //console.log("dateTime 3.1", dateTime, dateTime instanceof String);
@@ -431,7 +431,7 @@ function setSpecies(guid) {
     //console.log('setSpecies', guid);
     if (guid) {
         $.getJSON(GSP_VARS.bieBaseUrl + "/ws/species/shortProfile/" + guid + ".json?callback=?")
-            .done(function(data) {
+            .done(function (data) {
                 if (data.scientificName) {
                     $('#taxonDetails').removeClass('hide').show();
                     $('#noSpecies').hide();
@@ -453,19 +453,19 @@ function setSpecies(guid) {
 
                 }
             })
-            .fail(function( jqXHR, textStatus, errorThrown ) {
+            .fail(function (jqXHR, textStatus, errorThrown) {
                 //console.log('error',jqXHR, textStatus, errorThrown);
                 alert("Error: " + textStatus + " - " + errorThrown);
             })
-            .always(function() {
+            .always(function () {
                 // clean-up & spinner deactivations, etc
             });
     }
 }
 
 function isoToAusDate(isoDate) {
-    var dateParts = isoDate.substring(0,10).split('-');
-    var ausDate = isoDate.substring(0,10); // fallback
+    var dateParts = isoDate.substring(0, 10).split('-');
+    var ausDate = isoDate.substring(0, 10); // fallback
 
     if (dateParts.length == 3) {
         ausDate = dateParts.reverse().join('-');
@@ -476,8 +476,8 @@ function isoToAusDate(isoDate) {
 
 function clearTaxonDetails() {
     $('#taxonDetails .commonName').html('');
-    $('#taxonDetails img').attr('src','');
-    $('#taxonDetails a').attr('href','').html('');
+    $('#taxonDetails img').attr('src', '');
+    $('#taxonDetails a').attr('href', '').html('');
     $('#taxonConceptID, #scientificName, #commonName').val('');
 }
 
@@ -505,15 +505,15 @@ function addTagLabel(group, type) {
  */
 function humanFileSize(bytes, si) {
     var thresh = si ? 1000 : 1024;
-    if(bytes < thresh) return bytes + ' B';
+    if (bytes < thresh) return bytes + ' B';
     //var units = si ? ['kB','MB','GB','TB','PB','EB','ZB','YB'] : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
-    var units =  ['kB','MB','GB','TB','PB','EB','ZB','YB'];
+    var units = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     var u = -1;
     do {
         bytes /= thresh;
         ++u;
-    } while(bytes >= thresh);
-    return bytes.toFixed(1)+' '+units[u];
+    } while (bytes >= thresh);
+    return bytes.toFixed(1) + ' ' + units[u];
 };
 
 /**
@@ -548,7 +548,7 @@ function parseExifDateTime(dataTimeStr, includeOffset) {
 function parseGpsTime(time) {
     // e.g. 15,5,8.01
     var bits = [];
-    $.each(time.split(','), function(i, it) {
+    $.each(time.split(','), function (i, it) {
         bits.push(('0' + parseInt(it)).slice(-2)); // zero pad
     });
     return bits.join(':');
@@ -562,22 +562,22 @@ function addServerImage(image, index) {
         .attr('target', '_blank')
         .prop('href', image.identifier);
     node.find('.preview').wrap(link);
-    node.find('.preview').append($('<img/>').attr('src',image.identifier).addClass('serverLoaded'));
+    node.find('.preview').append($('<img/>').attr('src', image.identifier).addClass('serverLoaded'));
     // populate hidden input fields
     //node.find('.media').val(result.url).attr('name', 'associatedMedia['+ index + ']');
-    node.find('.identifier').val(image.identifier).attr('name', 'multimedia['+ index + '].identifier');
-    node.find('.imageId').val(image.imageId).attr('name', 'multimedia['+ index + '].imageId');
-    node.find('.title').val(image.title).attr('name', 'multimedia['+ index + '].title');
-    node.find('.format').val(image.format).attr('name', 'multimedia['+ index + '].format');
-    node.find('.creator').val(image.creator).attr('name', 'multimedia['+ index + '].creator');
-    node.find('.created').val(image.created).attr('name', 'multimedia['+ index + '].created');
-    node.find('.license').val(image.license).attr('name', 'multimedia['+ index + '].license');
+    node.find('.identifier').val(image.identifier).attr('name', 'multimedia[' + index + '].identifier');
+    node.find('.imageId').val(image.imageId).attr('name', 'multimedia[' + index + '].imageId');
+    node.find('.title').val(image.title).attr('name', 'multimedia[' + index + '].title');
+    node.find('.format').val(image.format).attr('name', 'multimedia[' + index + '].format');
+    node.find('.creator').val(image.creator).attr('name', 'multimedia[' + index + '].creator');
+    node.find('.created').val(image.created).attr('name', 'multimedia[' + index + '].created');
+    node.find('.license').val(image.license).attr('name', 'multimedia[' + index + '].license');
 
     if (false) {
         //if (result.exif && result.exif.date) {
-        node.find('.created').val(result.exif.date).attr('name', 'multimedia['+ index + '].created');
+        node.find('.created').val(result.exif.date).attr('name', 'multimedia[' + index + '].created');
     }
-    
+
     $('#imageLicenseDiv').removeClass('hide'); // show the license options
     node.appendTo('#files');
 }
@@ -612,7 +612,7 @@ function validateSpeciesSelection(field, rules, i, options) {
  */
 function isTagPresent(tag) {
     var isTagPresent = false;
-    $('.tags').each(function() {
+    $('.tags').each(function () {
         if (tag == $(this).val()) {
             isTagPresent = true;
             return false;
@@ -623,12 +623,11 @@ function isTagPresent(tag) {
 }
 
 
-
 function Sighting() {
 
     var dirty = false;
 
-    $(":input").change(function() {
+    $(":input").change(function () {
         dirty = true;
     });
 
@@ -662,7 +661,7 @@ function Sighting() {
         });
 
         record.speciesTags = [];
-        $('.tags').each(function() {
+        $('.tags').each(function () {
             var tag = {
                 name: $(this).val(),
                 type: $(this).attr('class').split(" ")[1]
@@ -725,7 +724,7 @@ function Sighting() {
         return dirty;
     };
 
-    this.resetDirtyFlag = function() {
+    this.resetDirtyFlag = function () {
         dirty = false;
     };
 

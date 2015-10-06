@@ -69,8 +69,6 @@
                         <input type="hidden" name="commonName" id="commonName" value="${taxon?.commonName}"/>
                         <input type="hidden" name="kingdom" id="kingdom" value="${taxon?.kingdom}"/>
                         <input type="hidden" name="family" id="family" value="${taxon?.family}"/>
-                        %{--<input type="hidden" name="identificationVerificationStatus" id="identificationVerificationStatus" value="${taxon?.identificationVerificationStatus}"/>--}%
-                        %{--<a href="#" class="close removeHide" title="remove this item"><span aria-hidden="true">&times;</span></a>--}%
                     </div>
 
                     <div class="well well-small" id="noSpecies">
@@ -391,8 +389,6 @@
                 <div class="metadata">
                     GPS coordinates: <span class="imgCoords">not available</span>
                 </div>
-                %{--<button class="btn btn-small imageDate">Use image date</button>--}%
-                %{--<button class="btn btn-small imageLocation">Use image location</button>--}%
                 <button class="btn btn-sm btn-info imageData" title="No metadata found" disabled>Use image metadata</button>
                 <button class="btn btn-sm btn-danger imageRemove" title="remove this image">Remove image</button>
             </div>
@@ -401,8 +397,6 @@
         </div>
         <!-- Modal -->
         <div id="identifyHelpModal" class="modal hide fade">
-            %{--<div class="modal-dialog modal-lg">--}%
-            %{--<div class="modal-content">--}%
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>

@@ -549,11 +549,11 @@ class ModelJSTagLib {
     }
 
     def singleSightingViewModel(model, out, String container = "self.data") {
-        out << "\n" << INDENT*3 << "${container}.sighting = new Sighting();"
+        out << "\n" << INDENT*3 << "${container}.sighting = new Sighting();\n"
     }
 
     def masterDetailViewModel(model, out) {
-        out << "\n" << INDENT*3 << "self.data.masterDetail = new MasterDetail();"
+        out << "\n" << INDENT*3 << "self.data.masterDetail = new MasterDetail();\n"
 
         createDataModelJS([model: [dataModel: [model.detail]]], "self.data.masterDetail.detailView")
     }

@@ -4,6 +4,8 @@
 <r:script disposition="head">
         // global var to pass in GSP/Grails values into external JS files
         GSP_VARS = {
+            autocompleteUrl: "${autocompleteUrl ?: grailsApplication.config.bie.baseURL + '/ws/search/auto.jsonp'}",
+            autocompleteDataType: "${autocompleteUrl ? 'json' : 'jsonp'}",
             biocacheBaseUrl: "${grailsApplication.config.biocache.baseURL + "/ws"}",
             bieBaseUrl: "${(grailsApplication.config.bie.baseURL)}",
             uploadUrl: "${createLink(uri: "/sightingAjax/upload")}",
