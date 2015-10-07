@@ -53,7 +53,7 @@ class ModelTagLib {
                     photoPoints out, attrs, mod, index
                     break
                 case 'template':
-                    out << g.render(template:mod.source, plugin: "${mod.plugin ?: 'fieldcapture-plugin'}")
+                    out << g.render(template:mod.source, plugin: "${mod.plugin ?: 'fieldcapture-plugin'}", model: [config: mod.config ?: [:]])
                     break
                 case 'masterDetail':
                     masterDetail out, attrs, mod

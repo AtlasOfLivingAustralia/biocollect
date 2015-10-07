@@ -13,6 +13,7 @@ import org.codehaus.groovy.grails.web.json.JSONArray
 
 class BioActivityController {
 
+    public static final String BIOCOLLECT_SIGHTINGS_PLUGIN_NAME = "biocollectSightings"
     ProjectService projectService
     MetadataService metadataService
     SiteService siteService
@@ -54,8 +55,7 @@ class BioActivityController {
             flash.message = "Access denied: User has not been authenticated."
             response.status = 401
             result = [status: 401, error: flash.message]
-        }
-        else if (!activity && !pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
+        } else if (!activity && !pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
             flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
             response.status = 401
             result = [status: 401, error: flash.message]
@@ -144,10 +144,31 @@ class BioActivityController {
             model.pActivity = pActivity
             model.returnTo = g.createLink(controller: 'project', id: projectId)
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
+
             addOutputModel(model)
+            addConfigToOutputModels(pActivity, model)
         }
 
         model
+    }
+
+    /**
+     * Some view models can accept additional configuration options, based on the config of the Project Activity.
+     *
+     * For example, the Sightings model (from the {@value #BIOCOLLECT_SIGHTINGS_PLUGIN_NAME}) allows the map section to
+     * be configured based on the location constraints in the Project Activity.
+     *
+     */
+    private static addConfigToOutputModels(Map pActivity, Map model) {
+        model.outputModels.each { String name, Map outputModel ->
+            outputModel.viewModel?.each { Map viewModel ->
+                if (viewModel.plugin == BIOCOLLECT_SIGHTINGS_PLUGIN_NAME) {
+                    viewModel.config = [
+                            allowGeospatialSpeciesSuggestion: !(pActivity?.species?.speciesLists || pActivity?.species?.singleSpecies)
+                    ]
+                }
+            }
+        }
     }
 
     /**
