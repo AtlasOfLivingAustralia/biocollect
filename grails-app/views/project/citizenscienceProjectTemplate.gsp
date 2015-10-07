@@ -51,6 +51,8 @@
         imgViewer: "${createLink(controller: 'resource', action: 'imageviewer')}",
         audioViewer: "${createLink(controller: 'resource', action: 'audioviewer')}",
         videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
+        activityListUrl : "${createLink(controller: 'bioActivity', action: 'ajaxListForProject', params: [id:project.projectId])}",
+        recordListUrl: "${createLink(controller: 'record', action: 'ajaxListForProject', params: [id:project.projectId])}",
         ßerrorViewer: "${createLink(controller: 'resource', action: 'error')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}"
         },
@@ -72,7 +74,7 @@
             }
         </style>
     <![endif]-->
-    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, sliderpro, projectActivity, restoreTab"/>
+    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, sliderpro, projectActivity, restoreTab, myActivity, records"/>
 </head>
 <body>
 
@@ -106,7 +108,7 @@
 </div>
 <r:script>
     $(function() {
-
+        $(".main-content").show();
         var organisations = <fc:modelAsJavascript model="${organisations?:[]}"/>;
         var project = <fc:modelAsJavascript model="${project}"/>;
         var pActivities = <fc:modelAsJavascript model="${projectActivities}"/>;
@@ -151,12 +153,13 @@
         initialiseProjectArea();
         var pActivitiesVM = new ProjectActivitiesViewModel(pActivities, pActivityForms, project.projectId, project.sites, user);
         initialiseProjectActivitiesList(pActivitiesVM);
-        initialiseProjectActivitiesData(pActivitiesVM);
 
         //Main tab selection
         new RestoreTab('ul-main-project', 'about-tab');
 
         <g:if test="${projectContent.admin.visible}">
+            initialiseData();
+
             initialiseProjectActivitiesSettings(pActivitiesVM);
 
             var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';

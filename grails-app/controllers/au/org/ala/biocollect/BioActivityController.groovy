@@ -181,6 +181,22 @@ class BioActivityController {
         render listUserActivities(params) as JSON
     }
 
+    def ajaxListForProject(String id){
+
+        def model = [:]
+        def query = [pageSize: params.max ?: 10,
+                     offset: params.offset ?: 0,
+                     sort: params.sort ?: 'lastUpdated',
+                     order: params.order ?: 'desc']
+        def results = activityService.activitiesForProject(id, query)
+        results?.activities?.each{
+            it.pActivity = projectActivityService.get(it.projectActivityId)
+        }
+        model.activities = results?.activities
+        model.total = results?.total
+        render model as JSON
+    }
+
     private def listUserActivities(params) {
         Map model = [:]
         def query = [pageSize: params.max ?: 10,

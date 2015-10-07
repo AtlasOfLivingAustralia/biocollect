@@ -9,4 +9,9 @@ class RecordService {
         webService.getJson(grailsApplication.config.ecodata.service.url + '/record/listForUser/' + userId + params)
     }
 
+    def listProjectRecords(id, query){
+        def params = '?'+ query.collect { k,v -> "$k=$v" }.join('&')
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/record/listForProject/' + id + params)
+    }
+
 }

@@ -2,12 +2,13 @@ var PaginationViewModel = function (o, caller) {
   var self = this;
   if (!o) o = {};
   if (!caller) caller = self;
-  self.rppOptions = [10,25,30,50,100];
-  self.resultsPerPage = ko.observable(25);
+  self.rppOptions = [10,20,30,50,100];
+  self.resultsPerPage = ko.observable(self.rppOptions[0]);
   self.totalResults = ko.observable();
   self.requestedPage = ko.observable();
   self.nextIndex = ko.observable();
   self.start = ko.observable();
+
 
   self.previousIndex = ko.pureComputed(function(){
     return self.requestedPage() <= 1 ? 1 : (self.requestedPage() - 1);
@@ -64,9 +65,13 @@ var PaginationViewModel = function (o, caller) {
     caller.refreshPage(Math.ceil((self.totalResults() / self.resultsPerPage())));
   };
 
-  self.rppChanged = function() {
+  /*self.rppChanged = function() {
     caller.refreshPage(1);
-  };
+  };*/
+
+  self.resultsPerPage.subscribe(function() {
+    caller.refreshPage(1);
+  });
 
   self.refreshPage = function(rp){
     // Do nothing.
