@@ -1,11 +1,26 @@
 package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.ActivityService
+import au.org.ala.biocollect.merit.DocumentService
+import au.org.ala.biocollect.merit.MetadataService
+import au.org.ala.biocollect.merit.ProjectService
+import au.org.ala.biocollect.merit.SiteService
+import au.org.ala.biocollect.merit.UserService
+import au.org.ala.biocollect.sightings.BieService
 import grails.converters.JSON
+import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.json.JSONArray
 
 class BioActivityController {
 
-    def activityModel, projectService, metadataService, siteService, projectActivityService, userService, documentService, activityService, bieService
+    ProjectService projectService
+    MetadataService metadataService
+    SiteService siteService
+    ProjectActivityService projectActivityService
+    UserService userService
+    DocumentService documentService
+    ActivityService activityService
+    BieService bieService
 
     /**
      * Update Activity by activityId or
@@ -14,41 +29,64 @@ class BioActivityController {
      * @param pActivityId project activity Id
      * @return
      */
-    def ajaxUpdate(String id, String pActivityId){
+    def ajaxUpdate(String id, String pActivityId) {
         def postBody = request.JSON
-        def activity, pActivity, projectId
-        id = id?:''
+        def activity = null
+        def pActivity = null
+        String projectId = null
 
-        if(id){
+        id = id ?: ''
+
+        if (id) {
             activity = activityService.get(id)
             projectId = activity?.projectId
             pActivity = projectActivityService.get(activity?.projectActivityId)
-        }else if(pActivityId){
+        } else if (pActivityId) {
             pActivity = projectActivityService.get(pActivityId)
-            projectId = activity?.projectId
+            projectId = pActivity?.projectId
         }
 
+        Map result
+
         // Check user has admin/editor permission.
-        def userId = userService.getCurrentUserId()
-        def result = [:]
-        if (!activity && !projectService.canUserEditProject(userId, projectId, false)) {
+        String userId = userService.getCurrentUserId()
+        if (!userId) {
+            flash.message = "Access denied: User has not been authenticated."
+            response.status = 401
+            result = [status: 401, error: flash.message]
+        }
+        else if (!activity && !pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
             flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
             response.status = 401
-            result = [status:401, error: flash.message]
-        }else if(activity && !projectService.canUserEditActivity(userId, activity)){
+            result = [status: 401, error: flash.message]
+        } else if (activity && !pActivity.publicAccess && !projectService.canUserEditActivity(userId, activity)) {
             flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
             response.status = 401
-            result = [status:401, error: flash.message]
-        }else{
-            def photoPoints = postBody.remove('photoPoints')
-            postBody.projectActivityId = pActivity.projectActivityId
-            postBody.userId = userId
-            result = activityService.update(id, postBody)
-            def activityId = id ?: result?.resp?.activityId
-            if (photoPoints && activityId) {
-                updatePhotoPoints(activityId, photoPoints)
+            result = [status: 401, error: flash.message]
+        } else {
+            boolean projectEditor = projectService.canUserEditProject(userId, projectId, false)
+            Map userAlreadyInRole = userService.isUserInRoleForProject(userId, projectId, "projectParticipant")
+            if (!userAlreadyInRole.statusCode || userAlreadyInRole.statusCode == HttpStatus.SC_OK) {
+                if (!projectEditor && pActivity.publicAccess && !userAlreadyInRole.inRole.toBoolean()) {
+                    userService.addUserAsRoleToProject(userId, projectId, "projectParticipant")
+                }
+
+                def photoPoints = postBody.remove('photoPoints')
+                postBody.projectActivityId = pActivity.projectActivityId
+                postBody.userId = userId
+                result = activityService.update(id, postBody)
+
+                String activityId = id ?: result?.resp?.activityId
+                if (photoPoints && activityId) {
+                    updatePhotoPoints(activityId, photoPoints)
+                }
+            } else {
+                flash.message = userAlreadyInRole.error
+                response.status = userAlreadyInRole.statusCode
+                result = userAlreadyInRole
             }
         }
+
         render result as JSON
     }
 
@@ -58,24 +96,26 @@ class BioActivityController {
      * @param id activity id
      * @return
      */
-    def edit(String id){
+    def edit(String id) {
 
         def activity = activityService.get(id)
         def projectId = activity?.projectId
-        def model
+        def model = null
+
         if (!activity) {
             flash.message = "Invalid activity - ${id}"
-            redirect(controller:'project', action:'index', id: projectId)
-        }else if(!projectService.canUserEditActivity(userService.getCurrentUserId(), activity)){
+            redirect(controller: 'project', action: 'index', id: projectId)
+        } else if (!projectService.canUserEditActivity(userService.getCurrentUserId(), activity)) {
             flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
-            redirect(controller:'project', action:'index', id: projectId)
-        }else{
+            redirect(controller: 'project', action: 'index', id: projectId)
+        } else {
             def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
             model = activityAndOutputModel(activity, activity.projectId)
             model.pActivity = pActivity
             model.projectActivityId = pActivity.projectActivityId
             model.id = id
         }
+
         model
     }
 
@@ -86,24 +126,23 @@ class BioActivityController {
      * @return
      */
     def create(String id) {
+        String userId = userService.getCurrentUserId()
+        Map pActivity = projectActivityService.get(id, "all")
+        String projectId = pActivity?.projectId
+        String type = pActivity?.pActivityFormName
+        Map model = null
 
-        def userId = userService.getCurrentUserId()
-        def pActivity = projectActivityService.get(id, "all")
-        def projectId = pActivity?.projectId
-        def type = pActivity?.pActivityFormName
-        def model
-
-        if (!projectService.canUserEditProject(userId, projectId, false)) {
+        if (!pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
             flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
-            redirect(controller:'project', action:'index', id: projectId)
-        }else if(!type){
+            redirect(controller: 'project', action: 'index', id: projectId)
+        } else if (!type) {
             flash.message = "Invalid activity type"
-            redirect(controller:'project', action:'index', id: projectId)
-        }else{
-            def activity = [activityId: '', siteId: '', projectId: projectId, type: type]
+            redirect(controller: 'project', action: 'index', id: projectId)
+        } else {
+            Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
             model = activityModel(activity, projectId)
             model.pActivity = pActivity
-            model.returnTo = g.createLink(controller:'project', id:projectId)
+            model.returnTo = g.createLink(controller: 'project', id: projectId)
             addOutputModel(model)
         }
 
@@ -115,13 +154,12 @@ class BioActivityController {
      * @param id activity id
      * @return
      */
-    def index(String id){
-
+    def index(String id) {
         def activity = activityService.get(id)
-        def pActivity =  projectActivityService.get(activity?.projectActivityId, "all")
+        def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
 
         if (activity && pActivity) {
-            def model = activityAndOutputModel(activity, activity.projectId)
+            Map model = activityAndOutputModel(activity, activity.projectId)
             model.pActivity = pActivity
             model.id = pActivity.projectActivityId
             model
@@ -135,22 +173,38 @@ class BioActivityController {
      * @param id activity id
      * @return
      */
-    def list(){
+    def list() {
 
     }
 
-    def ajaxList(){
+    def ajaxList() {
         render listUserActivities(params) as JSON
     }
 
-    private def listUserActivities(params){
+    def ajaxListForProject(String id){
+
         def model = [:]
         def query = [pageSize: params.max ?: 10,
                      offset: params.offset ?: 0,
                      sort: params.sort ?: 'lastUpdated',
                      order: params.order ?: 'desc']
-        def results = activityService.activitiesForUser(userService.getCurrentUserId(), query)
+        def results = activityService.activitiesForProject(id, query)
         results?.activities?.each{
+            it.pActivity = projectActivityService.get(it.projectActivityId)
+        }
+        model.activities = results?.activities
+        model.total = results?.total
+        render model as JSON
+    }
+
+    private def listUserActivities(params) {
+        Map model = [:]
+        def query = [pageSize: params.max ?: 10,
+                     offset  : params.offset ?: 0,
+                     sort    : params.sort ?: 'lastUpdated',
+                     order   : params.order ?: 'desc']
+        def results = activityService.activitiesForUser(userService.getCurrentUserId(), query)
+        results?.activities?.each {
             it.pActivity = projectActivityService.get(it.projectActivityId)
         }
         model.activities = results?.activities
@@ -158,9 +212,9 @@ class BioActivityController {
         model
     }
 
-    private def updatePhotoPoints(activityId, photoPoints) {
 
-        def allPhotos = photoPoints.photos?:[]
+    private def updatePhotoPoints(activityId, photoPoints) {
+        List allPhotos = photoPoints.photos ?: []
 
         // If new photo points were defined, add them to the site.
         if (photoPoints.photoPoints) {
@@ -184,9 +238,8 @@ class BioActivityController {
     }
 
     private Map activityModel(activity, projectId) {
-
-        def model = [activity: activity, returnTo: params.returnTo]
-        model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view:'brief']) : null
+        Map model = [activity: activity, returnTo: params.returnTo]
+        model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view: 'brief']) : null
         model.mapFeatures = model.site ? siteService.getMapFeatures(model.site) : []
         model.project = projectId ? projectService.get(model.activity.projectId) : null
 
@@ -217,8 +270,7 @@ class BioActivityController {
     def addOutputModel(model) {
         model.metaModel = metadataService.getActivityModel(model.activity.type)
         model.outputModels = model.metaModel?.outputs?.collectEntries {
-            [ it, metadataService.getDataModelFromOutputName(it)]
+            [it, metadataService.getDataModelFromOutputName(it)]
         }
     }
-
 }

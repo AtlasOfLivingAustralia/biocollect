@@ -38,12 +38,12 @@
                     <div class="span2 text-right">
                         <span data-bind="if: added()">
                             <small>
-                                <a href="#" data-bind="click: removeSite" class="btn btn-small btn-danger">Remove</a>
+                                <a href="#" data-bind="click: removeSite" class="btn btn-small btn-danger" title="Remove">&lt;&lt;</a>
                             </small>
                         </span>
                         <span data-bind="if: !added()">
                             <small>
-                                <a href="#" data-bind="click: addSite" class="btn btn-small btn-success">Add</a>
+                                <a href="#" data-bind="click: addSite" class="btn btn-small btn-success" title="Add">&gt;&gt;</a>
                             </small>
                         </span>
                     </div>

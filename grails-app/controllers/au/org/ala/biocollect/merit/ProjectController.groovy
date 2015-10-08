@@ -82,11 +82,11 @@ class ProjectController {
 
     protected Map surveyProjectContent(project, user) {
 
-        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
+        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
          news:[label:'News', visible: true, type:'tab'],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
-         data:[label:'Data', visible:!project.isExternal, template:'/projectActivity/data', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
+         data:[label:'Data', visible:(user?.isAdmin || user?.isCaseManager), template:'/bioActivity/allData', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'], //TODO allow public to view data tab
          admin:[label:'Admin', template:'adminTabs', visible:(user?.isAdmin || user?.isCaseManager), type:'tab']]
     }
 

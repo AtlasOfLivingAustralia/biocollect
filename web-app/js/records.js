@@ -17,7 +17,7 @@ var RecordListsViewModel = function(){
   self.refreshPage = function(rp){
     if(!rp) rp = 1;
     var params = { max: self.pagination.resultsPerPage(), offset:rp-1,  sort:'desc', order:'lastUpdated'};
-    var url = fcConfig.recordListUrl + "?" +$.param( params );
+    var url = fcConfig.recordListUrl + ((fcConfig.recordListUrl.indexOf('?') > -1) ? '&' : '?') + $.param( params );
     $.ajax({
       url: url,
       type: 'GET',
@@ -43,6 +43,8 @@ var RecordViewModel = function(record){
   if(!record) record = {};
 
   self.recordId = ko.observable(record.recordId);
+  self.name = ko.observable(record.name);
+  self.guid = ko.observable(record.guid);
   self.activityId = ko.observable(record.activityId);
   self.projectActivityId = ko.observable(record.projectActivityId);
   self.lastUpdated = ko.observable(record.lastUpdated).extend({simpleDate: false});

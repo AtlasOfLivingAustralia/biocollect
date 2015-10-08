@@ -1,5 +1,5 @@
 <span data-bind="if: pagination.info()">
-    <span data-bind="if: pagination.totalResults() >= pagination.resultsPerPage()">
+    <span data-bind="if: pagination.totalResults() >= pagination.rppOptions[0]-1">
         <div class="row-fluid">
             <div class="span12">
                 <div class="span4 text-left">
@@ -9,7 +9,7 @@
                 </div>
                 <div class="span4 text-center">
                     <p class="hidden-xs pull-center nomargin padding20">
-                        <select style="width:20%;" data-bind="options: pagination.rppOptions, value: pagination.resultsPerPage, event: {change: pagination.rppChanged()}" ></select>
+                        <select style="width:20%;" data-bind="options: pagination.rppOptions, value: pagination.resultsPerPage" ></select>
                     </p>
                 </div>
                 <div class="span4 text-right">

@@ -18,14 +18,14 @@
         </div>
         <div class="span3">
             <!-- ko if: filter -->
-            <label class="muted"> Sort by:</label>
-            <select style="width:50%;" data-bind="options: sortOptions, optionsText:'name', optionsValue:'id', value: sortBy" ></select>
+            <label class="muted" for="sort"> Sort by:</label>
+            <select id="sort" style="width:50%;" data-bind="options: sortOptions, optionsText:'name', optionsValue:'id', value: sortBy" ></select>
             <!-- /ko -->
         </div>
         <div class="span3">
             <!-- ko if: filter -->
-            <label class="muted"> Sort order:</label>
-            <select style="width:50%;" data-bind="options: sortOrderOptions, optionsText:'name', optionsValue:'id', value: sortOrder" ></select>
+            <label class="muted" for="sortOrder"> Sort order:</label>
+            <select id="sortOrder" style="width:50%;" data-bind="options: sortOrderOptions, optionsText:'name', optionsValue:'id', value: sortOrder" ></select>
             <!-- /ko -->
         </div>
 
@@ -39,13 +39,13 @@
 
             <div class="span12">
                 <div class="span2 well">
-                    <img alt="No image" data-bind="attr:{title:name, src: transients.logoUrl()}"/>
+                    <img alt="No image" data-bind="attr:{title:name, src: transients.logoUrl()}" src=""/>
                 </div>
                 <div class="span6">
                     <a href="#" data-bind="onClickShowTab: $parent.setCurrent, tabId: '#data-tab'"><span data-bind="text:name" style="font-size:150%;font-weight:bold"></span></a>
-                </br></br>
+                    <br/><br/>
                     <div data-bind="text:description"></div>
-                </br>
+                    <br/>
                     <div data-bind="visible:transients.status()">
                         <span>Status: <span data-bind="text: transients.status"></span></span>
                     </div>
@@ -73,7 +73,7 @@
                 </div>
 
                 <div class="span2 text-right">
-                    <a href="#" class="btn btn-success btn-sm" data-bind="click: addActivity"> Add a record</a>
+                    <a href="#" class="btn btn-success btn-sm" data-bind="click: addActivity, visible: $parent.userCanEdit($data)"> Add a record</a>
                 </div>
             </div>
 
@@ -85,7 +85,7 @@
                             <div data-bind="style:{width: Math.floor(transients.daysRemaining()/transients.daysTotal() * 100) + '%'}"></div>
                         </div>
                         <div class="daysline-positive" data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() < 0">
-                            <div style="width:0%"></div>
+                            <div style="width:0"></div>
                         </div>
 
                         <div class="daysline-zero" data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() == 0"></div>
@@ -105,5 +105,5 @@
     function initialiseProjectActivitiesList(pActivitiesVM){
         var pActivitiesListVM = new ProjectActivitiesListViewModel(pActivitiesVM);
         ko.applyBindings(pActivitiesListVM, document.getElementById('pActivitiesList'));
-    };
+    }
 </r:script>

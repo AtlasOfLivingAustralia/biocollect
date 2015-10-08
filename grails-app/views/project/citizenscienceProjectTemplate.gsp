@@ -51,6 +51,8 @@
         imgViewer: "${createLink(controller: 'resource', action: 'imageviewer')}",
         audioViewer: "${createLink(controller: 'resource', action: 'audioviewer')}",
         videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
+        activityListUrl : "${createLink(controller: 'bioActivity', action: 'ajaxListForProject', params: [id:project.projectId])}",
+        recordListUrl: "${createLink(controller: 'record', action: 'ajaxListForProject', params: [id:project.projectId])}",
         ßerrorViewer: "${createLink(controller: 'resource', action: 'error')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}"
         },
@@ -72,7 +74,7 @@
             }
         </style>
     <![endif]-->
-    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, sliderpro, projectActivity, restoreTab"/>
+    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, sliderpro, projectActivity, restoreTab, myActivity, records"/>
 </head>
 <body>
 
@@ -99,27 +101,6 @@
         <fc:tabList tabs="${projectContent}"/>
     </div>
     <div class="pill-content">
-        %{--<div class="pill-pane active" id="about">--}%
-            %{--<g:render template="aboutCitizenScienceProject"/>--}%
-        %{--</div>--}%
-        %{--<div class="pill-pane" id="news">--}%
-            %{--<g:render template="news"/>--}%
-        %{--</div>--}%
-        %{--<div class="pill-pane" id="activities">--}%
-            %{--<g:render template="/shared/activitiesList"--}%
-                      %{--model="[activities:activities ?: [], sites:project.sites ?: [], showSites:true, wordForActivity:'survey']"/>--}%
-        %{--</div>--}%
-        %{--<div class="pill-pane" id="site">--}%
-            %{--<!-- ko stopBinding:true -->--}%
-            %{--<g:render template="/site/sitesList" model="[wordForSite:'location', editable:true]"/>--}%
-            %{--<!-- /ko -->--}%
-        %{--</div>--}%
-        %{--<div class="pill-pane" id="documents">--}%
-            %{--<g:render template="/shared/listDocuments" model="[useExistingModel: true,editable:false, imageUrl:resource(dir:'/images/filetypes'),containerId:'overviewDocumentList']"/>--}%
-        %{--</div>--}%
-        %{--<div class="pill-pane" id="admin">--}%
-            %{--<g:render template="admin"/>--}%
-        %{--</div>--}%
         <fc:tabContent tabs="${projectContent}" tabClass="pill-pane"/>
 
     </div>
@@ -127,12 +108,13 @@
 </div>
 <r:script>
     $(function() {
-
+        $(".main-content").show();
         var organisations = <fc:modelAsJavascript model="${organisations?:[]}"/>;
         var project = <fc:modelAsJavascript model="${project}"/>;
         var pActivities = <fc:modelAsJavascript model="${projectActivities}"/>;
         var pActivityForms = <fc:modelAsJavascript model="${pActivityForms}"/>;
         var projectViewModel = new ProjectViewModel(project, ${user?.isEditor?:false}, organisations);
+        var user = <fc:modelAsJavascript model="${user}"/>;
 
         var ViewModel = function() {
             var self = this;
@@ -169,14 +151,15 @@
         }
 
         initialiseProjectArea();
-        var pActivitiesVM = new ProjectActivitiesViewModel(pActivities, pActivityForms, project.projectId, project.sites);
+        var pActivitiesVM = new ProjectActivitiesViewModel(pActivities, pActivityForms, project.projectId, project.sites, user);
         initialiseProjectActivitiesList(pActivitiesVM);
-        initialiseProjectActivitiesData(pActivitiesVM);
 
         //Main tab selection
         new RestoreTab('ul-main-project', 'about-tab');
 
         <g:if test="${projectContent.admin.visible}">
+            initialiseData();
+
             initialiseProjectActivitiesSettings(pActivitiesVM);
 
             var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
