@@ -365,6 +365,7 @@ modules = {
 
     comments{
         dependsOn 'knockout'
+        resource url: 'css/comment.css'
         resource url: 'js/comment.js'
     }
 }

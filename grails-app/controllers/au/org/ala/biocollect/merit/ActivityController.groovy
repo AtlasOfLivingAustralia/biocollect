@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.sightings.BieService
 import grails.converters.JSON
 import org.apache.poi.ss.usermodel.Workbook
@@ -21,6 +22,8 @@ class ActivityController {
     SpeciesService speciesService
     DocumentService documentService
     BieService bieService
+    ProjectActivityService projectActivityService
+
 
     static ignore = ['action','controller','id']
 
@@ -55,6 +58,14 @@ class ActivityController {
     private Map activityAndOutputModel(activity, projectId) {
         def model = activityModel(activity, projectId)
         addOutputModel(model)
+        addProjectActivity(model,activity)
+        model
+    }
+
+    def addProjectActivity(model, activity){
+        if(activity.projectActivityId){
+            model.projectActivity = projectActivityService.get(activity.projectActivityId);
+        }
         model
     }
 

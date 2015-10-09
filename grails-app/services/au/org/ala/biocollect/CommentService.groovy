@@ -24,7 +24,11 @@ class CommentService {
     }
 
     def listComments(data) {
-        webService.doGet(grailsApplication.config.ecodata.service.url + "/comment", data)
+        def response = webService.doGet(grailsApplication.config.ecodata.service.url + "/comment", data)
+        if(response?.resp){
+            response.resp['userId'] = authService.getUserId()
+        }
+        response
     }
 
 }

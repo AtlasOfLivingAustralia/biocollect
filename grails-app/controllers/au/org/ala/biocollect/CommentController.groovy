@@ -54,7 +54,6 @@ class CommentController {
             response.sendError(400, 'Missing entityId and/or entityType')
         } else {
             def response = commentService.listComments(json)
-
             handle response
         }
     }

@@ -1,16 +1,35 @@
 /**
  * Created by Temi Varghese on 6/10/15.
  */
+
 function CommentViewModel(config) {
     var self = this;
+    // domain object fields
     self.id = ko.observable(config.id || null)
+    self.userId = ko.observable(config.userId || '')
+    self.displayName = ko.observable(config.displayName || '')
     self.text = ko.observable(config.text || '')
     self.parent = ko.observable(config.parent || null)
-    self.dateCreated = ko.observable(config.dateCreated || null)
+    self.dateCreated = ko.observable(config.dateCreated || null).extend({simpleDate: true})
+    //stores replies to a comment
     self.children = ko.observableArray(config.children || [])
+    // controls editing of a comment by an owner
     self.edit = ko.observable(config.edit || false)
+    // easy reference to parent node
     self.parentNode = config.parentNode;
+    // prevent display of long reply threads
+    self.showChildren = ko.observable(false);
+    // load function called after create/update operation. It synchronizes certain fields.
+    self.load = function(config){
+        self.id(config.id)
+        self.userId(config.userId)
+        self.displayName(config.displayName)
+        self.text(config.text)
+        self.parent(config.parent)
+        self.dateCreated(config.dateCreated)
+    }
 
+    // talk with server to create a comment, callback sent from listmodelview
     self.create = function (successCallback) {
         var url = fcConfig.createCommentUrl;
         $.ajax({
@@ -18,7 +37,7 @@ function CommentViewModel(config) {
             type: 'POST',
             data: JSON.parse(self.commentJSON(self)),
             success: function (result) {
-                self.id(result['id']);
+                self.load(result);
                 successCallback && successCallback();
             },
             error: function () {
@@ -27,6 +46,7 @@ function CommentViewModel(config) {
         })
     }
 
+    // talk with server to update a comment, callback sent from listmodelview
     self.update = function(successCallback){
         var url = fcConfig.updateCommentUrl + '/' + self.id();
         $.ajax({
@@ -34,6 +54,7 @@ function CommentViewModel(config) {
             type: 'POST',
             data: JSON.parse(self.commentJSON(self)),
             success: function (result) {
+                self.load(result);
                 self.edit(false);
                 successCallback && successCallback();
             },
@@ -43,8 +64,9 @@ function CommentViewModel(config) {
         })
     }
 
+    // talk with server to delete a comment, callback sent from listmodelview
     self.delete = function(successCallback){
-        var url = fcConfig.updateCommentUrl + '/' + self.id();
+        var url = fcConfig.deleteCommentUrl + '/' + self.id();
         $.ajax({
             url: url,
             type: 'DELETE',
@@ -57,14 +79,13 @@ function CommentViewModel(config) {
         })
     }
 
+    // model specific JSON converter since there are a lot of variable that need not sync with database
     self.commentJSON = function(){
         var json = ko.toJSON(self, function(k, value){
             if(k){
-                //for(var k in value){
-                    if(typeof value  === 'function' || k === 'parentNode'){
-                        return;
-                    }
-                //}
+                if(typeof value  === 'function' || k === 'parentNode'){
+                    return;
+                }
                 return value;
             } else if(value){
                 return value
@@ -72,6 +93,7 @@ function CommentViewModel(config) {
         });
         return json
     }
+
 }
 
 function CommentListViewModel() {
@@ -80,8 +102,11 @@ function CommentListViewModel() {
             this.text = config.text
             this.sort = config.value
         };
+    // a new comment posted is stored here before adding to comment list
     self.newComment = ko.observable(new CommentViewModel({}));
+    //list of comments shown
     self.comments = ko.observableArray();
+    // sort order options
     self.sortOptions = ko.observableArray([
         new SortOption({
             text: 'Latest first',
@@ -92,8 +117,14 @@ function CommentListViewModel() {
             value: 'oldestfirst'
         })
     ])
-
+    // current user id
+    self.userId = ko.observable();
+    // total comments in list
+    self.total = ko.observable(0)
+    // current sorting mechanism
     self.selectedSort = ko.observable(self.sortOptions()[0])
+    // controls load more button visibility
+    self.showLoadMore = ko.observable(true);
 
     self.sort = {
         field: ko.observable('dateCreated'),
@@ -118,15 +149,18 @@ function CommentListViewModel() {
         self.newComment().create(function () {
             self.comments.unshift(self.newComment())
             self.newComment(new CommentViewModel({}));
+            self.total(self.total() + 1)
         });
     }
 
+    // creates child comment. different from creating a comment.
     self.createChild = function (comment) {
         comment.create(function(){
             comment.edit(false);
         });
     }
 
+    // params for passing to list comments webservice
     self.getParams = function(){
         var params = {}, selection = self.selectedSort();
         switch (selection.sort) {
@@ -145,11 +179,13 @@ function CommentListViewModel() {
         return params;
     }
 
+    //called when sort order is changed
     self.removeComments = function(){
         self.firstPage();
         self.comments.removeAll()
     }
 
+    // webservice call to list comments
     self.list = function () {
         var url = fcConfig.commentListUrl,
             params;
@@ -163,11 +199,24 @@ function CommentListViewModel() {
             type: 'GET',
             data: params,
             success: function (result) {
-                self.addItems(result.items);
+                self.load(result);
             }
         })
     }
 
+    // initialise/load comments and other metadata
+    self.load = function(data){
+        self.addItems(data.items);
+        self.userId(data.userId);
+        self.total(data.total)
+        if(self.total() > (self.page.start + self.page.pageSize)){
+            self.showLoadMore(true)
+        } else {
+            self.showLoadMore(false)
+        }
+    }
+
+    //called to load the next set of comments
     self.more = function () {
         var url = fcConfig.commentListUrl,
             params;
@@ -181,13 +230,19 @@ function CommentListViewModel() {
             type: 'GET',
             data: params,
             success: function (result) {
-                self.addItems(result.items);
+                self.load(result);
             }
         })
     }
 
-    self.edit = function(comment){
+    self.edit = function(comment, e){
         comment && comment.edit(true);
+        self.focusTextArea(e.target)
+    }
+
+    // to make sure cursor is on text area box
+    self.focusTextArea = function(target){
+        $(target).parents('.media-body').find('textarea').focus()
     }
 
     self.update = function(comment){
@@ -200,12 +255,14 @@ function CommentListViewModel() {
                 comment.parentNode.children.remove(comment);
             } else {
                 self.comments.remove(comment);
+                self.total(self.total() - 1)
             }
             // if a comment is deleted and parent is null, start is adjusted so that when load more is run no comments are missed
             (comment.parent() == null) && (self.page.start -= 1)
         })
     }
 
+    // adds each comment from list
     self.addItems = function (items) {
         $.map(items, function (item) {
             var comment = new CommentViewModel(item)
@@ -214,6 +271,7 @@ function CommentListViewModel() {
         })
     }
 
+    // recursive function to create children comments
     self.createChildrenComment = function(item){
         var children = [];
         $.map(item.children(), function(child){
@@ -232,21 +290,40 @@ function CommentListViewModel() {
             if(comment.id()){
                 comment.edit(false);
             }  else {
-                comment.destroy()
+                comment.parentNode.children.remove(comment)
             }
         }
     }
 
-    self.reply = function(comment){
-        comment.children.push(new CommentViewModel({
+    self.reply = function(comment, e){
+        comment.children.unshift(new CommentViewModel({
             parent : comment.id(),
             edit: true,
             parentNode: comment
         }))
+        //otherwise, reply textarea will be hidden.
+        comment.showChildren(true);
+        self.focusTextArea(e.target)
     }
 
+    // delete a comment that user owns
     self.removeChild = function(comment, parent){
         parent.children.remove(comment);
+    }
+
+    // controls edit/delete button on a comment
+    self.isUserCommentOwner = function(comment){
+        return self.userId() == comment.userId()
+    }
+
+    // show children comment threads
+    self.viewChildren = function(comment){
+        comment.showChildren(true);
+    }
+
+    // hide children comment threads
+    self.hideChildren = function(comment){
+        comment.showChildren(false);
     }
 
     self.list();

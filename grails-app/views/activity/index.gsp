@@ -20,11 +20,15 @@
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
-        imageLocation:"${resource(dir:'/images')}"
+        imageLocation:"${resource(dir:'/images')}",
+        createCommentUrl : "${resource(dir:'/activity')}/${activity.activityId}/comment",
+        commentListUrl: "${resource(dir:'/activity')}/${activity.activityId}/comment",
+        updateCommentUrl: "${resource(dir:'/activity')}/${activity.activityId}/comment",
+        deleteCommentUrl: "${resource(dir:'/activity')}/${activity.activityId}/comment"
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,species,activity"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,species,activity,comments"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -175,6 +179,9 @@
         </div>
     </g:each>
 
+    <g:if test="${projectActivity.commentsAllowed}">
+        <g:render template="/comment/comment"></g:render>
+    </g:if>
     <div class="form-actions">
         <button type="button" id="cancel" class="btn">return</button>
     </div>
@@ -240,6 +247,8 @@
             ${metaModel ?: 'null'});
 
         ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
+
+        ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'))
 
         var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
         if(mapFeatures !=null && mapFeatures.features !== undefined && mapFeatures.features.length >0){
