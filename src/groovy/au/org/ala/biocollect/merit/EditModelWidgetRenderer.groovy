@@ -155,4 +155,11 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
         context.writer << """</div>"""
     }
 
+    @Override
+    void renderGeoMap(WidgetRenderContext context) {
+        context.writer << """<select data-bind='options: activityLevelData.pActivity.sites, optionsText: "name", optionsValue: "siteId", value:${context.source}, optionsCaption: "Choose a site..."'></select>"""
+
+        context.writer << """<div id="${context.model.source}Map" style="width:100%; height: 512px;"></div>"""
+    }
+
 }

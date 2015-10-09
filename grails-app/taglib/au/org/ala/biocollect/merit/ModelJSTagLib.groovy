@@ -30,11 +30,21 @@ class ModelJSTagLib {
         def site = attrs.site ? attrs.site.toString() : "{}"
         out << INDENT*2 << "var site = ${site};\n"
 
+        insertControllerScripts(attrs, attrs.model?.viewModel)
 
-        attrs.model?.viewModel?.each { view ->
+    }
+
+    private insertControllerScripts(Map attrs, List viewModel) {
+        viewModel?.each { view ->
             switch (view.type) {
                 case "masterDetail":
-                    masterDetailView(attrs, view, out)
+                    masterDetailController(attrs, view, out)
+                    break
+                case "geoMap":
+                    geoMapController(attrs, view, out)
+                    break
+                case "section":
+                    insertControllerScripts(attrs, view.items)
                     break
             }
         }
@@ -73,6 +83,8 @@ class ModelJSTagLib {
                 singleSightingViewModel(mod, out, container)
             } else if (mod.dataType == 'masterDetail') {
                 masterDetailViewModel(mod, out)
+            } else if (mod.dataType == "geoMap") {
+                geoMapViewModel(mod, out, container)
             }
         }
         out << INDENT*3 << "self.transients.site = site;"
@@ -118,6 +130,8 @@ class ModelJSTagLib {
                 out << INDENT*4 << "self.data.sighting.loadSightingData(data);\n"
             } else if (mod.dataType == 'masterDetail') {
                 out << INDENT*4 << "self.data.masterDetail.loadItems(data['${mod.name}']);\n"
+            } else if (mod.datType == "geoMap") {
+                out << INDENT*4 << "self.data.['${mod.name}'](data['${mod.name}']);\n"
             }
         }
     }
@@ -158,19 +172,23 @@ class ModelJSTagLib {
     }
 
     def jsDirtyFlag = { attrs ->
-        attrs.model?.dataModel?.each { mod ->
-            switch (mod.dataType) {
-                case "singleSighting":
-                    out << """
+        if (!attrs.model || !attrs.model.dataModel) {
+            out << "window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);"
+        } else {
+            attrs.model?.dataModel?.each { mod ->
+                switch (mod.dataType) {
+                    case "singleSighting":
+                        out << """
                         window[viewModelInstance].dirtyFlag = {
                             isDirty: window[viewModelInstance].data.sighting.isDirty,
                             reset: window[viewModelInstance].data.sighting.resetDirtyFlag
                         };
                     """
-                    break
-                default:
-                    out << "window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);"
-                    break
+                        break
+                    default:
+                        out << "window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);"
+                        break
+                }
             }
         }
     }
@@ -558,6 +576,46 @@ class ModelJSTagLib {
         createDataModelJS([model: [dataModel: [model.detail]]], "self.data.masterDetail.detailView")
     }
 
+    def geoMapViewModel(model, out, String container = "self.data") {
+        out << "\n" << INDENT*3 << """
+            ${container}.${model.name} = ko.observable();
+
+            ${container}.${model.name}.subscribe(master.maps['${model.name}Map'].updateForSiteFn);
+        """
+    }
+
+    def geoMapController(attrs, view, out) {
+        out << "\n" << INDENT*3 << """
+
+            var mapOptions = {
+                mapContainer: '${view.source}Map',
+                scrollwheel: false,
+                zoomToBounds: true,
+                zoomLimit: 16,
+                highlightOnHover: true,
+                features: [],
+                featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+            };
+
+            var ${view.source}Map = new MapWithFeatures(mapOptions);
+
+            var mapData = {
+                map: ${view.source}Map,
+                updateForSiteFn: function(siteId) {
+                    var matchingSite = \$.grep(activityLevelData.pActivity.sites, function(site) { return siteId == site.siteId})[0];
+                    var map = master.maps['${view.source}Map'].map;
+                    map.clearFeatures();
+                    if (matchingSite) {
+                        map.replaceAllFeatures([matchingSite.extent.geometry]);
+                    }
+                }
+            };
+
+            master.registerMap('${view.source}Map', mapData);\n
+        """
+    }
+
     def computedObservable(model, propertyContext, dependantContext, out) {
         out << INDENT*5 << "${propertyContext}.${model.name} = ko.computed(function () {\n"
         // must be at least one dependant
@@ -755,7 +813,7 @@ class ModelJSTagLib {
         }
     }
 
-    def masterDetailView(attrs, view, out) {
+    def masterDetailController(attrs, view, out) {
         out << """
             function MasterDetail() {
                 var self = this;
@@ -853,7 +911,10 @@ class ModelJSTagLib {
     }
 
     static constructDetailModelFromMasterDetail(Map masterDetailModel) {
-        [dataModel: masterDetailModel?.dataModel?.detail, viewModel: masterDetailModel?.viewModel?.detail]
+        List dataModels = masterDetailModel?.dataModel?.findAll { it.dataType == "masterDetail" }?.detail ?: []
+        List viewModels = masterDetailModel?.viewModel?.findAll { it.type == "masterDetail" }?.detail ?: []
+
+        [dataModel: dataModels, viewModel: viewModels]
     }
 
     /*------------ methods to look up attributes in the view model -------------*/

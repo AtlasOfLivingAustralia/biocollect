@@ -122,4 +122,9 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
     void renderButtonGroup(WidgetRenderContext context) {
 
     }
+
+    @Override
+    void renderGeoMap(WidgetRenderContext context) {
+        context.writer << """<div id="map" style="width:100%; height: 512px;"></div>"""
+    }
 }

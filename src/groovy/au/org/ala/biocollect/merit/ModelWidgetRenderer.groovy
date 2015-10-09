@@ -24,7 +24,7 @@ public interface ModelWidgetRenderer {
     void renderDate(WidgetRenderContext context)
     void renderDocument(WidgetRenderContext context)
     void renderButtonGroup(WidgetRenderContext context)
-
+    void renderGeoMap(WidgetRenderContext context)
 }
 
 
