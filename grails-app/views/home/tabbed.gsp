@@ -395,7 +395,7 @@
                 "features": features
             }
 
-            init_map_with_features({
+            window.alaMap = new MapWithFeatures({
                     mapContainer: "map",
                     zoomToBounds:true,
                     scrollwheel: false,

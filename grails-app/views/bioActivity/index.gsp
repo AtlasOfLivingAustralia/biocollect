@@ -195,15 +195,15 @@
 
         var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
         if(mapFeatures !=null && mapFeatures.features !== undefined && mapFeatures.features.length >0){
-            init_map_with_features({
-                    mapContainer: "map",
-                    zoomToBounds:true,
-                    zoomLimit:16,
-                    featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                    wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-                },
-                mapFeatures
-            );
+            var mapOptions = {
+                mapContainer: "map",
+                zoomToBounds:true,
+                zoomLimit:16,
+                featureService: "${createLink(controller: 'proxy', action:'feature')}",
+                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+            };
+
+            viewModel.siteMap = new MapWithFeatures(mapOptions, mapFeatures);
         }
     });
 </r:script>

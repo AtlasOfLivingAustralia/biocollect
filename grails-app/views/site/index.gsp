@@ -276,7 +276,7 @@
                 amplify.store('project-tab-state', tab);
                 // only init map when the tab is first shown
                 if (tab === '#site' && map === undefined) {
-                    init_map_with_features({
+                    window.alaMap = new MapWithFeatures({
                             featureService: "${createLink(controller: 'proxy', action:'feature')}",
                             wmsServer: "${grailsApplication.config.spatial.geoserverUrl}",
                             mapContainer: "map",
@@ -294,7 +294,7 @@
 
             var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
 
-            init_map_with_features({
+            window.alaMap = new MapWithFeatures({
                     mapContainer: "smallMap",
                     zoomToBounds:true,
                     zoomLimit:16,
