@@ -603,11 +603,13 @@ class ModelJSTagLib {
             var mapData = {
                 map: ${view.source}Map,
                 updateForSiteFn: function(siteId) {
-                    var matchingSite = \$.grep(activityLevelData.pActivity.sites, function(site) { return siteId == site.siteId})[0];
-                    var map = master.maps['${view.source}Map'].map;
-                    map.clearFeatures();
-                    if (matchingSite) {
-                        map.replaceAllFeatures([matchingSite.extent.geometry]);
+                    if (typeof siteId !== "undefined" && siteId) {
+                        var matchingSite = \$.grep(activityLevelData.pActivity.sites, function(site) { return siteId == site.siteId})[0];
+                        var map = master.maps['${view.source}Map'].map;
+                        map.clearFeatures();
+                        if (matchingSite) {
+                            map.replaceAllFeatures([matchingSite.extent.geometry]);
+                        }
                     }
                 }
             };
