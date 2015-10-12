@@ -106,7 +106,7 @@ function MapWithFeatures(options, features) {
 
         console.log('Creating map with container id = ' + self.containerId);
         self.map = new google.maps.Map(mapContainer, {
-            zoom: 3,
+            zoom: options.zoom ? options.zoom : 3,
             center: new google.maps.LatLng(-28.5, 133.5),
             panControl: false,
             streetViewControl: false,
@@ -154,26 +154,34 @@ function MapWithFeatures(options, features) {
     };
 
     self.mapSite = function (site) {
-        var loaded = self.loadFeature(site.extent.geometry);
-        if (loaded) {
+        var feature = self.loadFeature(site.extent.geometry);
+        if (feature != null) {
             self.allLocationsLoaded();
         }
     };
 
     self.loadFeature = function (loc, iw) {
         var feature;
-        var loaded = false;
+
         if (loc != null && loc.type != null) {
             if (loc.type.toLowerCase() === 'point') {
-                var ll = new google.maps.LatLng(Number(loc.coordinates[1]), Number(loc.coordinates[0]));
+                var point = null;
+                // assume the center of the map if no other coordinates have been provided
+                if (typeof loc.coordinates === "undefined") {
+                    point = self.map.getCenter();
+                } else {
+                    point = new google.maps.LatLng(Number(loc.coordinates[1]), Number(loc.coordinates[0]));
+                }
+
                 feature = new google.maps.Marker({
                     map: self.map,
-                    position: ll,
-                    title: loc.name
+                    position: point,
+                    title: loc.name,
+                    draggable: loc.draggable
                 });
-                self.featureBounds.extend(ll);
+
+                self.featureBounds.extend(point);
                 self.addFeature(feature, loc);
-                loaded = true;
             } else if (loc.type === 'dot') {
                 var marker = map.smallDotIcon;
 
@@ -202,7 +210,7 @@ function MapWithFeatures(options, features) {
 
                 self.featureBounds.extend(ll);
                 self.addFeature(feature, loc, iw);
-                loaded = true;
+
             } else if (loc.type.toLowerCase() === 'circle') {
                 var ll = new google.maps.LatLng(loc.coordinates[1], loc.coordinates[0]);
                 feature = new google.maps.Circle({
@@ -215,7 +223,7 @@ function MapWithFeatures(options, features) {
                 self.featureBounds.extend(feature.getBounds().getNorthEast());
                 self.featureBounds.extend(feature.getBounds().getSouthWest());
                 self.addFeature(feature, loc, iw);
-                loaded = true;
+
             } else if (loc.type.toLowerCase() === 'polygon') {
                 var points;
                 var paths = geojsonToPaths(loc.coordinates[0]);
@@ -233,7 +241,7 @@ function MapWithFeatures(options, features) {
                     self.featureBounds.extend(obj);
                 });
                 self.addFeature(feature, loc, iw);
-                loaded = true;
+
             } else if (loc.type.toLowerCase() === 'pid') {
                 //load the overlay instead
                 var pid = loc.pid;
@@ -261,12 +269,11 @@ function MapWithFeatures(options, features) {
 
                     self.addFeature(feature, loc);
                 });
-                loaded = true;
             } else {
                 // count the location as loaded even if we didn't
                 console.log('Feature type not supported: ' + loc.type);
             }
-            return loaded;
+            return feature;
         }
     };
 
@@ -527,6 +534,10 @@ function MapWithFeatures(options, features) {
         });
 
         self.reset();
+    };
+
+    self.getCenter = function () {
+        return self.map.getCenter();
     };
 
     function geojsonToPaths(obj) {

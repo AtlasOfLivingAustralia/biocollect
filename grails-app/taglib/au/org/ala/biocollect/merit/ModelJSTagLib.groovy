@@ -40,9 +40,6 @@ class ModelJSTagLib {
                 case "masterDetail":
                     masterDetailController(attrs, view, out)
                     break
-                case "geoMap":
-                    geoMapController(attrs, view, out)
-                    break
                 case "section":
                     insertControllerScripts(attrs, view.items)
                     break
@@ -579,44 +576,71 @@ class ModelJSTagLib {
     def geoMapViewModel(model, out, String container = "self.data") {
         out << "\n" << INDENT*3 << """
             ${container}.${model.name} = ko.observable();
-
-            ${container}.${model.name}.subscribe(master.maps['${model.name}Map'].updateForSiteFn);
-        """
-    }
-
-    def geoMapController(attrs, view, out) {
-        out << "\n" << INDENT*3 << """
+            ${container}.decimalLatitude = ko.observable();
+            ${container}.decimalLongitude = ko.observable();
 
             var mapOptions = {
-                mapContainer: '${view.source}Map',
+                mapContainer: '${model.name}Map',
                 scrollwheel: false,
                 zoomToBounds: true,
-                zoomLimit: 16,
+                zoomLimit: 10,
+                zoom: 4,
                 highlightOnHover: true,
                 features: [],
                 featureService: "${createLink(controller: 'proxy', action: 'feature')}",
                 wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
             };
 
-            var ${view.source}Map = new MapWithFeatures(mapOptions);
+            var ${model.name}Map = new MapWithFeatures(mapOptions);
+            var ${model.name}PointerMarker = addCenteredMarker();
 
-            var mapData = {
-                map: ${view.source}Map,
-                updateForSiteFn: function(siteId) {
-                    if (typeof siteId !== "undefined" && siteId) {
-                        var matchingSite = \$.grep(activityLevelData.pActivity.sites, function(site) { return siteId == site.siteId})[0];
-                        var map = master.maps['${view.source}Map'].map;
-                        map.clearFeatures();
-                        if (matchingSite) {
-                            map.replaceAllFeatures([matchingSite.extent.geometry]);
-                        }
+            ${container}.resetMap = function() {
+                ${model.name}Map.clearFeatures();
+                ${model.name}PointerMarker = addCenteredMarker();
+            };
+
+            function movePointer() {
+                var newPosition = new google.maps.LatLng(${container}.decimalLatitude(), ${container}.decimalLongitude());
+                ${model.name}PointerMarker.setPosition(newPosition);
+            };
+
+            function addCenteredMarker() {
+                var marker = ${model.name}Map.loadFeature({type: 'point', draggable: true}, null);
+                var mapCenter = ${model.name}Map.getCenter();
+                ${container}.decimalLatitude(mapCenter.lat());
+                ${container}.decimalLongitude(mapCenter.lng());
+
+                google.maps.event.addListener(marker, 'drag', function(event) {
+                    ${container}.decimalLatitude(event.latLng.lat());
+                    ${container}.decimalLongitude(event.latLng.lng());
+                });
+
+                return marker;
+            };
+
+            function moveMarker() {
+                var newPosition = new google.maps.LatLng(${container}.decimalLatitude(), ${container}.decimalLongitude());
+                ${model.name}PointerMarker.setPosition(newPosition);
+            };
+
+            function updateForSite(siteId) {
+                if (typeof siteId !== "undefined" && siteId) {
+                    var matchingSite = \$.grep(activityLevelData.pActivity.sites, function(site) { return siteId == site.siteId})[0];
+                    ${model.name}Map.clearFeatures();
+                    if (matchingSite) {
+                        ${model.name}Map.replaceAllFeatures([matchingSite.extent.geometry]);
+                        ${model.name}PointerMarker = addCenteredMarker();
                     }
                 }
             };
 
-            master.registerMap('${view.source}Map', mapData);\n
+            ${container}.${model.name}.subscribe(updateForSite);\n
+            ${container}.decimalLatitude.subscribe(movePointer);\n
+            ${container}.decimalLongitude.subscribe(movePointer);\n
+
         """
     }
+
 
     def computedObservable(model, propertyContext, dependantContext, out) {
         out << INDENT*5 << "${propertyContext}.${model.name} = ko.computed(function () {\n"
