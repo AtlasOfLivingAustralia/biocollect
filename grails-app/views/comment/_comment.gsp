@@ -5,7 +5,8 @@
         </div>
 
         <div class="comment-body">
-            <textarea class="boxsizingBorder" data-bind="value: newComment().text" placeholder="Write your comment here."></textarea>
+            <label for="commentMainTextarea">Write your comment below</label>
+            <textarea id="commentMainTextarea" class="boxsizingBorder" data-bind="value: newComment().text"></textarea>
         </div>
 
         <div class="comment-footer pull-right">
@@ -26,17 +27,17 @@
     </div>
     <div data-bind="visible: showLoadMore" class="row-fluid">
         <div class="span12">
-            <div class="btn span12" data-bind="click: more"><span class="h6">load more</span></div>
+            <button class="btn span12" data-bind="click: more">load more comments</button>
         </div>
     </div>
 </div>
 <script type="text/html" id="template-comment">
     <div class="comment-body">
         <div class="media" >
-            <div class="pull-left" href="#" style="width: 16px; height: 16px" data-bind="css: { hide: !$data.parent()}"></div>
+            <div class="pull-left comment-indent" data-bind="css: { hide: !$data.parent()}"></div>
             <div class="media-body" >
                 <b class="username media-heading" data-bind="text: displayName, visible: !!displayName"></b>
-                <span data-bind="visible: !!dateCreated()">commented at <span data-bind="text: dateCreated.formattedDate"></span></span>
+                <span data-bind="visible: !!dateCreated()">commented on <span data-bind="text: dateCreated.formattedDate"></span></span>
                 <div data-bind="visible: !edit()">
                     <pre class="media" data-bind="html: text">
                     </pre>
@@ -60,10 +61,10 @@
                     </div>
                     <ul class="breadcrumb margin-bottom-five">
                         <li data-bind="visible: !$data.id()">
-                            <a class="btn btn-small btn-primary" data-bind="click: $root.createChild">post</a> <!--<span class="divider">|</span>-->
+                            <a class="btn btn-small btn-primary" data-bind="click: $root.createChild">post</a>
                         </li>
                         <li data-bind="visible: !!$data.id()">
-                            <a class="btn btn-small btn-primary" data-bind="click: $root.update">update</a> <!--<span class="divider">|</span>-->
+                            <a class="btn btn-small btn-primary" data-bind="click: $root.update">update</a>
                         </li>
                         <li><a class="btn btn-small" data-bind="click: $root.cancel">cancel</a></li>
                     </ul>

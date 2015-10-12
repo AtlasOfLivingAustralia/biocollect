@@ -21,6 +21,11 @@
     background-color: #FEF7E7;
 }
 
+.comment-indent{
+    width: 16px;
+    height: 16px;
+}
+
 .username {
     font-size: 16px;
 }

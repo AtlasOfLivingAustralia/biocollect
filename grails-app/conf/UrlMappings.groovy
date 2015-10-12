@@ -9,11 +9,6 @@ class UrlMappings {
                 return settingsService.isValidHub(hub)
         }
 
-//        static getUserId(applicationContext){
-//                def userService = applicationContext.getBean(UserService)
-//                return userService.getCurrentUserId()
-//        }
-
         static mappings = { GrailsWebApplicationContext applicationContext ->
                 "/$hub/$controller/$action?/$id?"{
                         constraints {

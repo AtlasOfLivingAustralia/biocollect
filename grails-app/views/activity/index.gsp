@@ -10,6 +10,7 @@
         <meta name="layout" content="${hubConfig.skin}"/>
         <title>Edit | ${activity.type} | Field Capture</title>
     </g:else>
+    <g:set var="commentUrl" value="${resource(dir:'/activity')}/${activity.activityId}/comment"></g:set>
 
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
@@ -21,10 +22,10 @@
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         imageLocation:"${resource(dir:'/images')}",
-        createCommentUrl : "${resource(dir:'/activity')}/${activity.activityId}/comment",
-        commentListUrl: "${resource(dir:'/activity')}/${activity.activityId}/comment",
-        updateCommentUrl: "${resource(dir:'/activity')}/${activity.activityId}/comment",
-        deleteCommentUrl: "${resource(dir:'/activity')}/${activity.activityId}/comment"
+        createCommentUrl : "${commentUrl}",
+        commentListUrl:"${commentUrl}",
+        updateCommentUrl:"${commentUrl}",
+        deleteCommentUrl:"${commentUrl}"
         },
         here = document.location.href;
     </r:script>

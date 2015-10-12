@@ -278,7 +278,10 @@ class WebService {
             }
 
             String serialParam = params.join('&');
-            url = url + '?' + serialParam
+            if(params.size()){
+                url = url + '?' + serialParam
+            }
+
             conn = new URL(url).openConnection()
             conn.setDoOutput(true)
             conn.setRequestMethod("GET")
@@ -327,9 +330,15 @@ class WebService {
         }
     }
 
-    def deleteWrapper(url){
+    /**
+     * This function wraps the doDelete function. But it returns a Map to be consistent with other
+     * webservice calls.
+     * @param url
+     * @return
+     */
+    Map deleteWrapper(url){
         def statusCode = doDelete(url)
-        [resp: ['message':'webservice successfully completed'], statusCode: statusCode]
+        [resp: ['message':'delete webservice returned'], statusCode: statusCode]
     }
 
     /**

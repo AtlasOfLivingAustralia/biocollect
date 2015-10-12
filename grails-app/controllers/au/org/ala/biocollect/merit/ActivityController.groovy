@@ -62,11 +62,10 @@ class ActivityController {
         model
     }
 
-    def addProjectActivity(model, activity){
+    void addProjectActivity(model, activity){
         if(activity.projectActivityId){
             model.projectActivity = projectActivityService.get(activity.projectActivityId);
         }
-        model
     }
 
     def addOutputModel(model) {

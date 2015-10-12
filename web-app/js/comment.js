@@ -1,6 +1,28 @@
 /**
  * Created by Temi Varghese on 6/10/15.
  */
+/**
+ Bootstrap Alerts -
+ Function Name - showAlertOnTarget() = modified version of showAlert
+ Inputs - message,alerttype,DOM
+ Example - showalert("Invalid Login","alert-error", DOM)
+ Types of alerts -- "alert-error","alert-success","alert-info"
+ Required - You only need to add a alert_placeholder div in your html page wherever you want to display these alerts "<div id="alert_placeholder"></div>"
+ Written On - 14-Jun-2013
+ **/
+function showAlertOnTarget(message, alerttype, target) {
+
+    if(typeof target === 'string'){
+        $('#'+target).append('<div id="alertdiv" class="alert ' +  alerttype + '"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')
+    } else if(typeof target === 'object') {
+        $(target).append('<div id="alertdiv" class="alert ' +  alerttype + '"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')
+    }
+
+    setTimeout(function() { // this will automatically close the alert and remove this if the users doesnt close it in 5 secs
+        $("#alertdiv").remove();
+    }, 5000);
+}
+
 
 function CommentViewModel(config) {
     var self = this;
@@ -30,7 +52,7 @@ function CommentViewModel(config) {
     }
 
     // talk with server to create a comment, callback sent from listmodelview
-    self.create = function (successCallback) {
+    self.create = function (successCallback, errorCallback) {
         var url = fcConfig.createCommentUrl;
         $.ajax({
             url: url,
@@ -42,12 +64,13 @@ function CommentViewModel(config) {
             },
             error: function () {
                 console.log('failed creating comment');
+                errorCallback && errorCallback()
             }
         })
     }
 
     // talk with server to update a comment, callback sent from listmodelview
-    self.update = function(successCallback){
+    self.update = function(successCallback, errorCallback){
         var url = fcConfig.updateCommentUrl + '/' + self.id();
         $.ajax({
             url: url,
@@ -60,12 +83,13 @@ function CommentViewModel(config) {
             },
             error: function () {
                 console.log('failed updating comment');
+                errorCallback && errorCallback()
             }
         })
     }
 
     // talk with server to delete a comment, callback sent from listmodelview
-    self.delete = function(successCallback){
+    self.delete = function(successCallback, errorCallback){
         var url = fcConfig.deleteCommentUrl + '/' + self.id();
         $.ajax({
             url: url,
@@ -75,6 +99,7 @@ function CommentViewModel(config) {
             },
             error: function () {
                 console.log('failed deleting comment');
+                errorCallback && errorCallback()
             }
         })
     }
@@ -150,13 +175,17 @@ function CommentListViewModel() {
             self.comments.unshift(self.newComment())
             self.newComment(new CommentViewModel({}));
             self.total(self.total() + 1)
+        }, function(){
+            showAlertOnTarget('Could not create your comment. Are you logged in?','alert-error','postComment');
         });
     }
 
     // creates child comment. different from creating a comment.
-    self.createChild = function (comment) {
+    self.createChild = function (comment, event) {
         comment.create(function(){
             comment.edit(false);
+        }, function(){
+            showAlertOnTarget('Could not create your comment. Are you logged in?','alert-error',$(event.target).parents('div')[0]);
         });
     }
 
@@ -200,6 +229,9 @@ function CommentListViewModel() {
             data: params,
             success: function (result) {
                 self.load(result);
+            },
+            error: function(){
+                showAlertOnTarget('Could not load comments','alert-error','commentDisplay');
             }
         })
     }
@@ -231,6 +263,9 @@ function CommentListViewModel() {
             data: params,
             success: function (result) {
                 self.load(result);
+            },
+            error: function(){
+                showAlertOnTarget('Could not load more comments. An error occurred.','alert-error','commentDisplay');
             }
         })
     }
@@ -246,10 +281,12 @@ function CommentListViewModel() {
     }
 
     self.update = function(comment){
-        comment && comment.update();
+        comment && comment.update(null,function(){
+            showAlertOnTarget('Could not save your edit. An error occurred.','alert-error',$(event.target).parents('div')[0]);
+        });
     }
 
-    self.delete = function(comment){
+    self.delete = function(comment, event){
         comment && comment.delete(function(){
             if(comment.parentNode){
                 comment.parentNode.children.remove(comment);
@@ -259,6 +296,8 @@ function CommentListViewModel() {
             }
             // if a comment is deleted and parent is null, start is adjusted so that when load more is run no comments are missed
             (comment.parent() == null) && (self.page.start -= 1)
+        }, function(){
+            showAlertOnTarget('Could not delete comment. An error occurred.','alert-error',$(event.target).parents('div')[0]);
         })
     }
 

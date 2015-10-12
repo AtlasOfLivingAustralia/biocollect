@@ -1,14 +1,14 @@
 package au.org.ala.biocollect
-import grails.converters.JSON
+import au.org.ala.biocollect.merit.CommonService
+import au.org.ala.web.AuthService
 
-import static org.apache.http.HttpStatus.SC_OK
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST
 
-class CommentController {
+class CommentController extends BaseController {
 
-    def commonService
-    def commentService
-//    def userService
-    def authService
+    CommonService commonService
+    CommentService commentService
+    AuthService authService
 
     def index(){
         log.debug('testing')
@@ -18,7 +18,7 @@ class CommentController {
         Map json = commonService.parseParams(params)
         json['userId'] = authService.getUserId()
         if (!json.userId|| !json.entityId || !json.entityType || !json.text){
-            response.sendError(400, 'Missing userId, text, entityId and/or entityType')
+            response.sendError(SC_BAD_REQUEST, 'Missing userId, text, entityId and/or entityType')
         } else {
             def response = commentService.addComment(json)
             handle response
@@ -30,7 +30,7 @@ class CommentController {
         def json = commonService.parseParams(params);
         json['userId'] = authService.getUserId()
         if (!json.userId|| !json.entityId || !json.entityType || !json.text){
-            response.sendError(400, 'Missing userId, text, entityId and/or entityType')
+            response.sendError(SC_BAD_REQUEST, 'Missing userId, text, entityId and/or entityType')
         }  else if (json) {
             def response = commentService.updateComment(json)
             handle response
@@ -41,7 +41,7 @@ class CommentController {
         def json = commonService.parseParams(params);
         json['userId'] = authService.getUserId()
         if (!json.id){
-            response.sendError(400, 'Missing userId, text, entityId and/or entityType')
+            response.sendError(SC_BAD_REQUEST, 'Missing userId, text, entityId and/or entityType')
         }  else if (json) {
             def response = commentService.deleteComment(json)
             handle response
@@ -51,7 +51,7 @@ class CommentController {
     def list() {
         Map json = commonService.parseParams(params)
         if (!json.entityId || !json.entityId) {
-            response.sendError(400, 'Missing entityId and/or entityType')
+            response.sendError(SC_BAD_REQUEST, 'Missing entityId and/or entityType')
         } else {
             def response = commentService.listComments(json)
             handle response
@@ -61,26 +61,10 @@ class CommentController {
     def get(){
         Map json = commonService.parseParams(params);
         if (!json.id ){
-            response.sendError(400, "Missing id");
+            response.sendError(SC_BAD_REQUEST, "Missing id");
         } else {
             def response = commentService.getComment(json)
             handle response
-        }
-    }
-
-    def sendError = {int status, String msg = null ->
-        response.status = status
-        response.sendError(status, msg)
-    }
-
-    def handle (resp) {
-        if (resp.statusCode != SC_OK) {
-            log.debug "Response status ${resp.statusCode} returned from operation"
-            response.status = resp.statusCode
-            sendError(resp.statusCode, resp.error ?: "")
-        } else {
-            response.setContentType('application/json')
-            render resp.resp as JSON
         }
     }
 }
