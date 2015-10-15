@@ -212,6 +212,7 @@
 
             // client models register their name and methods to participate in saving
             self.register = function (modelInstanceName, getMethod, isDirtyMethod, resetMethod) {
+            alert(modelInstanceName)
                 self.subscribers.push({
                     model: modelInstanceName,
                     get: getMethod,
@@ -275,13 +276,13 @@
             this.save = function () {
                 if ($('#validation-container').validationEngine('validate')) {
                     var toSave = this.collectData();
-
                     if (!toSave) {
                         alert("Nothing to save.");
                         return;
                     }
 
                     toSave = JSON.stringify(toSave);
+                    console.log(toSave);
 
                     // Don't allow another save to be initiated.
                     blockUIWithMessage("Saving activity data...");
@@ -432,9 +433,9 @@
                 };
 
                 <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
-                    self.transients.photoPointModel = ko.observable(new PhotoPointViewModel(site, activity));
+                    self.transients.photoPointModel = ko.observable(new PhotoPointViewModel(site, activityLevelData.activity));
                     self.updatePhotoPointModel = function(site) {
-                        self.transients.photoPointModel(new PhotoPointViewModel(site, activity));
+                        self.transients.photoPointModel(new PhotoPointViewModel(site, activityLevelData.activity));
                     };
                 </g:if>
 

@@ -45,7 +45,7 @@ function MapWithFeatures(options, features) {
     //default center
     self.defaultCenter = new google.maps.LatLng(-28.5, 133.5);
     //default center
-    self.defaultZoom = 3;
+    self.defaultZoom = 4;
     // default overlay options
     self.overlayOptions = {
         strokeColor: '#BC2B03',
@@ -66,9 +66,9 @@ function MapWithFeatures(options, features) {
     // URL to red google marker icon
     self.redMarkerIcon = "http://www.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png";
     //spatial portal URL
-    self.featureService = "http://biocollect.ala.org.au/proxy/feature";
+    self.featureService = null;
     // WMS server for PID
-    self.wmsServer = "http://spatial-dev.ala.org.au/geoserver";
+    self.wmsServer = null;
     // Default size (in km2) below which a marker will be added to a polygon to increase it's visibility
     self.polygonMarkerAreaKm2 = 0.01;
 
@@ -106,7 +106,7 @@ function MapWithFeatures(options, features) {
 
         console.log('Creating map with container id = ' + self.containerId);
         self.map = new google.maps.Map(mapContainer, {
-            zoom: options.zoom ? options.zoom : 3,
+            zoom: options.zoom ? options.zoom : self.defaultZoom,
             center: new google.maps.LatLng(-28.5, 133.5),
             panControl: false,
             streetViewControl: false,

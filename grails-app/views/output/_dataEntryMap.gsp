@@ -20,28 +20,28 @@
     <div class="well">
         <div class="row-fluid">
             <div class="span3">
-                <label for="latitude">Latitude</label>
+                <label for="${source}Latitude">Latitude</label>
             </div>
 
             <div class="span9">
-                <input id="latitude" type="text" data-bind="value: data.decimalLatitude">
+                <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude">
             </div>
         </div>
 
         <div class="row-fluid">
             <div class="span3">
-                <label for="longitude">Longitude</label>
+                <label for="${source}Longitude">Longitude</label>
             </div>
 
             <div class="span9">
-                <input id="longitude" type="text" data-bind="value: data.decimalLongitude">
+                <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude">
             </div>
         </div>
     </div>
 
     <div class="row-fluid">
         <div class="span12">
-            <button class="btn btn-primary" data-bind="click: data.resetMap">Reset map</button>
+            <button class="btn btn-primary" data-bind="click: data.reset${source}Map">Reset map</button>
         </div>
     </div>
 </div>

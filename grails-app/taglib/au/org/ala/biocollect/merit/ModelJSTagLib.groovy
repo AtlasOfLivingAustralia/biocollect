@@ -134,38 +134,41 @@ class ModelJSTagLib {
     }
 
     def jsSaveModel = { attrs ->
+
+        out << INDENT*4 << "self.modelForSaving = function() {\n"
+        out << INDENT*8 << "var outputData = {};\n"
+
+        boolean genericClauseAdded = false
+
         attrs.model?.dataModel?.each { mod ->
             switch (mod.dataType) {
                 case "singleSighting":
-                    out << INDENT*4 << "self.modelForSaving = function() {\n"
-                    out << INDENT*8 << "var outputData = {\n"
+                    out << INDENT*8 << "ko.utils.extend(outputData, {\n"
                     out << INDENT*12 << "name: '${attrs.output.name}',\n"
                     out << INDENT*12 << "outputId: '${attrs.output.outputId}',\n"
                     out << INDENT*12 << "data: self.data.sighting.getSightingsDataAsJS()\n"
-                    out << INDENT*8 << "};\n"
-                    out << INDENT*8 << "return outputData;\n"
-                    out << INDENT*4 << "}\n"
+                    out << INDENT*8 << "});\n"
+
                     break
                 case "masterDetail":
-                    out << INDENT*4 << "self.modelForSaving = function() {\n"
-                    out << INDENT*8 << "var outputData = {\n"
+                    out << INDENT*8 << "ko.utils.extend(outputData, {\n"
                     out << INDENT*12 << "name: '${attrs.output.name}',\n"
                     out << INDENT*12 << "outputId: '${attrs.output.outputId}',\n"
                     out << INDENT*12 << "data: {${mod.name}: self.data.masterDetail.items()}\n"
-                    out << INDENT*8 << "};\n"
-                    out << INDENT*8 << "return outputData;\n"
-                    out << INDENT*4 << "}\n"
+                    out << INDENT*8 << "});\n"
                     break
                 default:
-                    out << INDENT*4 << "self.modelForSaving = function () {\n"
-                        // get model as a plain javascript object
-                    out << INDENT*8 << "var jsData = ko.mapping.toJS(self, {'ignore':['transients']});\n"
-                        // get rid of any transient observables
-                    out << INDENT*8 << "return self.removeBeforeSave(jsData);\n"
-                    out << INDENT*4 << "};\n\n"
+                    if (!genericClauseAdded) {
+                        out << INDENT*8 << "ko.utils.extend(outputData, ko.mapping.toJS(self, {'ignore':['transients']}));\n"
+                        genericClauseAdded = true
+                    }
                     break
             }
         }
+
+        out << INDENT*8 << "return outputData;\n"
+        out << INDENT*4 << "}\n"
+
     }
 
     def jsDirtyFlag = { attrs ->
@@ -576,8 +579,8 @@ class ModelJSTagLib {
     def geoMapViewModel(model, out, String container = "self.data") {
         out << "\n" << INDENT*3 << """
             ${container}.${model.name} = ko.observable();
-            ${container}.decimalLatitude = ko.observable();
-            ${container}.decimalLongitude = ko.observable();
+            ${container}.${model.name}Latitude = ko.observable();
+            ${container}.${model.name}Longitude = ko.observable();
 
             var mapOptions = {
                 mapContainer: '${model.name}Map',
@@ -585,6 +588,7 @@ class ModelJSTagLib {
                 zoomToBounds: true,
                 zoomLimit: 10,
                 zoom: 4,
+                defaultZoom: 4,
                 highlightOnHover: true,
                 features: [],
                 featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -592,51 +596,52 @@ class ModelJSTagLib {
             };
 
             var ${model.name}Map = new MapWithFeatures(mapOptions);
-            var ${model.name}PointerMarker = addCenteredMarker();
+            var ${model.name}PointerMarker = addCenteredMarkerTo${model.name}Map();
 
-            ${container}.resetMap = function() {
+            ${container}.reset${model.name}Map = function() {
+                ${container}.${model.name}(null);
                 ${model.name}Map.clearFeatures();
-                ${model.name}PointerMarker = addCenteredMarker();
+                ${model.name}PointerMarker = addCenteredMarkerTo${model.name}Map();
             };
 
-            function movePointer() {
-                var newPosition = new google.maps.LatLng(${container}.decimalLatitude(), ${container}.decimalLongitude());
+            function movePointerOn${model.name}Map() {
+                var newPosition = new google.maps.LatLng(${container}.${model.name}Latitude(), ${container}.${model.name}Longitude());
                 ${model.name}PointerMarker.setPosition(newPosition);
             };
 
-            function addCenteredMarker() {
+            function addCenteredMarkerTo${model.name}Map() {
                 var marker = ${model.name}Map.loadFeature({type: 'point', draggable: true}, null);
                 var mapCenter = ${model.name}Map.getCenter();
-                ${container}.decimalLatitude(mapCenter.lat());
-                ${container}.decimalLongitude(mapCenter.lng());
+                ${container}.${model.name}Latitude(mapCenter.lat());
+                ${container}.${model.name}Longitude(mapCenter.lng());
 
                 google.maps.event.addListener(marker, 'drag', function(event) {
-                    ${container}.decimalLatitude(event.latLng.lat());
-                    ${container}.decimalLongitude(event.latLng.lng());
+                    ${container}.${model.name}Latitude(event.latLng.lat());
+                    ${container}.${model.name}Longitude(event.latLng.lng());
                 });
 
                 return marker;
             };
 
-            function moveMarker() {
-                var newPosition = new google.maps.LatLng(${container}.decimalLatitude(), ${container}.decimalLongitude());
+            function moveMarkerOn${model.name}Map() {
+                var newPosition = new google.maps.LatLng(${container}.${model.name}Latitude(), ${container}.${model.name}Longitude());
                 ${model.name}PointerMarker.setPosition(newPosition);
             };
 
-            function updateForSite(siteId) {
+            function update${model.name}MapForSite(siteId) {
                 if (typeof siteId !== "undefined" && siteId) {
                     var matchingSite = \$.grep(activityLevelData.pActivity.sites, function(site) { return siteId == site.siteId})[0];
                     ${model.name}Map.clearFeatures();
                     if (matchingSite) {
                         ${model.name}Map.replaceAllFeatures([matchingSite.extent.geometry]);
-                        ${model.name}PointerMarker = addCenteredMarker();
+                        ${model.name}PointerMarker = addCenteredMarkerTo${model.name}Map();
                     }
                 }
             };
 
-            ${container}.${model.name}.subscribe(updateForSite);\n
-            ${container}.decimalLatitude.subscribe(movePointer);\n
-            ${container}.decimalLongitude.subscribe(movePointer);\n
+            ${container}.${model.name}.subscribe(update${model.name}MapForSite);\n
+            ${container}.${model.name}Latitude.subscribe(movePointerOn${model.name}Map);\n
+            ${container}.${model.name}Longitude.subscribe(movePointerOn${model.name}Map);\n
 
         """
     }
