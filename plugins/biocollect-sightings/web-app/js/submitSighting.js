@@ -657,7 +657,10 @@ function Sighting() {
 
         fields.forEach(function (field) {
             var elem = $("#" + field)[0];
-            record[elem.id] = elem.value;
+            // it is possible to hide sections of the sightings UI, so those elements will not be defined
+            if (typeof elem !== "undefined") {
+                record[elem.id] = elem.value;
+            }
         });
 
         record.speciesTags = [];

@@ -155,4 +155,9 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
         context.writer << """</div>"""
     }
 
+    @Override
+    void renderGeoMap(WidgetRenderContext context) {
+        context.writer << context.g.render(template: '/output/dataEntryMap', model: context.model)
+    }
+
 }

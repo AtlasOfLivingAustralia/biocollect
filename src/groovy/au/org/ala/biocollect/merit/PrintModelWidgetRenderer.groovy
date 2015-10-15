@@ -121,4 +121,9 @@ class PrintModelWidgetRenderer implements ModelWidgetRenderer {
             </ul>
         """
     }
+
+    @Override
+    void renderGeoMap(WidgetRenderContext context) {
+        context.writer << """<div id="map" style="width:100%; height: 512px;"></div>"""
+    }
 }

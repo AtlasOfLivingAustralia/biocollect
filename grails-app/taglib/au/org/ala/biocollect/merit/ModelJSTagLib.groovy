@@ -30,11 +30,18 @@ class ModelJSTagLib {
         def site = attrs.site ? attrs.site.toString() : "{}"
         out << INDENT*2 << "var site = ${site};\n"
 
+        insertControllerScripts(attrs, attrs.model?.viewModel)
 
-        attrs.model?.viewModel?.each { view ->
+    }
+
+    private insertControllerScripts(Map attrs, List viewModel) {
+        viewModel?.each { view ->
             switch (view.type) {
                 case "masterDetail":
-                    masterDetailView(attrs, view, out)
+                    masterDetailController(attrs, view, out)
+                    break
+                case "section":
+                    insertControllerScripts(attrs, view.items)
                     break
             }
         }
@@ -73,6 +80,8 @@ class ModelJSTagLib {
                 singleSightingViewModel(mod, out, container)
             } else if (mod.dataType == 'masterDetail') {
                 masterDetailViewModel(mod, out)
+            } else if (mod.dataType == "geoMap") {
+                geoMapViewModel(mod, out, container)
             }
         }
         out << INDENT*3 << "self.transients.site = site;"
@@ -118,59 +127,68 @@ class ModelJSTagLib {
                 out << INDENT*4 << "self.data.sighting.loadSightingData(data);\n"
             } else if (mod.dataType == 'masterDetail') {
                 out << INDENT*4 << "self.data.masterDetail.loadItems(data['${mod.name}']);\n"
+            } else if (mod.datType == "geoMap") {
+                out << INDENT*4 << "self.data.['${mod.name}'](data['${mod.name}']);\n"
             }
         }
     }
 
     def jsSaveModel = { attrs ->
+
+        out << INDENT*4 << "self.modelForSaving = function() {\n"
+        out << INDENT*8 << "var outputData = {};\n"
+
+        boolean genericClauseAdded = false
+
         attrs.model?.dataModel?.each { mod ->
             switch (mod.dataType) {
                 case "singleSighting":
-                    out << INDENT*4 << "self.modelForSaving = function() {\n"
-                    out << INDENT*8 << "var outputData = {\n"
+                    out << INDENT*8 << "ko.utils.extend(outputData, {\n"
                     out << INDENT*12 << "name: '${attrs.output.name}',\n"
                     out << INDENT*12 << "outputId: '${attrs.output.outputId}',\n"
                     out << INDENT*12 << "data: self.data.sighting.getSightingsDataAsJS()\n"
-                    out << INDENT*8 << "};\n"
-                    out << INDENT*8 << "return outputData;\n"
-                    out << INDENT*4 << "}\n"
+                    out << INDENT*8 << "});\n"
+
                     break
                 case "masterDetail":
-                    out << INDENT*4 << "self.modelForSaving = function() {\n"
-                    out << INDENT*8 << "var outputData = {\n"
+                    out << INDENT*8 << "ko.utils.extend(outputData, {\n"
                     out << INDENT*12 << "name: '${attrs.output.name}',\n"
                     out << INDENT*12 << "outputId: '${attrs.output.outputId}',\n"
                     out << INDENT*12 << "data: {${mod.name}: self.data.masterDetail.items()}\n"
-                    out << INDENT*8 << "};\n"
-                    out << INDENT*8 << "return outputData;\n"
-                    out << INDENT*4 << "}\n"
+                    out << INDENT*8 << "});\n"
                     break
                 default:
-                    out << INDENT*4 << "self.modelForSaving = function () {\n"
-                        // get model as a plain javascript object
-                    out << INDENT*8 << "var jsData = ko.mapping.toJS(self, {'ignore':['transients']});\n"
-                        // get rid of any transient observables
-                    out << INDENT*8 << "return self.removeBeforeSave(jsData);\n"
-                    out << INDENT*4 << "};\n\n"
+                    if (!genericClauseAdded) {
+                        out << INDENT*8 << "ko.utils.extend(outputData, ko.mapping.toJS(self, {'ignore':['transients']}));\n"
+                        genericClauseAdded = true
+                    }
                     break
             }
         }
+
+        out << INDENT*8 << "return outputData;\n"
+        out << INDENT*4 << "}\n"
+
     }
 
     def jsDirtyFlag = { attrs ->
-        attrs.model?.dataModel?.each { mod ->
-            switch (mod.dataType) {
-                case "singleSighting":
-                    out << """
+        if (!attrs.model || !attrs.model.dataModel) {
+            out << "window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);"
+        } else {
+            attrs.model?.dataModel?.each { mod ->
+                switch (mod.dataType) {
+                    case "singleSighting":
+                        out << """
                         window[viewModelInstance].dirtyFlag = {
                             isDirty: window[viewModelInstance].data.sighting.isDirty,
                             reset: window[viewModelInstance].data.sighting.resetDirtyFlag
                         };
                     """
-                    break
-                default:
-                    out << "window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);"
-                    break
+                        break
+                    default:
+                        out << "window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);"
+                        break
+                }
             }
         }
     }
@@ -558,6 +576,77 @@ class ModelJSTagLib {
         createDataModelJS([model: [dataModel: [model.detail]]], "self.data.masterDetail.detailView")
     }
 
+    def geoMapViewModel(model, out, String container = "self.data") {
+        out << "\n" << INDENT*3 << """
+            ${container}.${model.name} = ko.observable();
+            ${container}.${model.name}Latitude = ko.observable();
+            ${container}.${model.name}Longitude = ko.observable();
+
+            var mapOptions = {
+                mapContainer: '${model.name}Map',
+                scrollwheel: false,
+                zoomToBounds: true,
+                zoomLimit: 10,
+                zoom: 4,
+                defaultZoom: 4,
+                highlightOnHover: true,
+                features: [],
+                featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+            };
+
+            var ${model.name}Map = new MapWithFeatures(mapOptions);
+            var ${model.name}PointerMarker = addCenteredMarkerTo${model.name}Map();
+
+            ${container}.reset${model.name}Map = function() {
+                ${container}.${model.name}(null);
+                ${model.name}Map.clearFeatures();
+                ${model.name}PointerMarker = addCenteredMarkerTo${model.name}Map();
+            };
+
+            function movePointerOn${model.name}Map() {
+                var newPosition = new google.maps.LatLng(${container}.${model.name}Latitude(), ${container}.${model.name}Longitude());
+                ${model.name}PointerMarker.setPosition(newPosition);
+            };
+
+            function addCenteredMarkerTo${model.name}Map() {
+                var marker = ${model.name}Map.loadFeature({type: 'point', draggable: true}, null);
+                var mapCenter = ${model.name}Map.getCenter();
+                ${container}.${model.name}Latitude(mapCenter.lat());
+                ${container}.${model.name}Longitude(mapCenter.lng());
+
+                google.maps.event.addListener(marker, 'drag', function(event) {
+                    ${container}.${model.name}Latitude(event.latLng.lat());
+                    ${container}.${model.name}Longitude(event.latLng.lng());
+                });
+
+                return marker;
+            };
+
+            function moveMarkerOn${model.name}Map() {
+                var newPosition = new google.maps.LatLng(${container}.${model.name}Latitude(), ${container}.${model.name}Longitude());
+                ${model.name}PointerMarker.setPosition(newPosition);
+            };
+
+            function update${model.name}MapForSite(siteId) {
+                if (typeof siteId !== "undefined" && siteId) {
+                    var matchingSite = \$.grep(activityLevelData.pActivity.sites, function(site) { return siteId == site.siteId})[0];
+                    ${model.name}Map.clearFeatures();
+                    if (matchingSite) {
+                        ${model.name}Map.replaceAllFeatures([matchingSite.extent.geometry]);
+                        ${model.name}PointerMarker = addCenteredMarkerTo${model.name}Map();
+                    }
+                }
+            };
+
+            ${container}.${model.name}.subscribe(update${model.name}MapForSite);\n
+            ${container}.${model.name}Latitude.subscribe(movePointerOn${model.name}Map);\n
+            ${container}.${model.name}Longitude.subscribe(movePointerOn${model.name}Map);\n
+
+        """
+    }
+
+
     def computedObservable(model, propertyContext, dependantContext, out) {
         out << INDENT*5 << "${propertyContext}.${model.name} = ko.computed(function () {\n"
         // must be at least one dependant
@@ -755,7 +844,7 @@ class ModelJSTagLib {
         }
     }
 
-    def masterDetailView(attrs, view, out) {
+    def masterDetailController(attrs, view, out) {
         out << """
             function MasterDetail() {
                 var self = this;
@@ -853,7 +942,10 @@ class ModelJSTagLib {
     }
 
     static constructDetailModelFromMasterDetail(Map masterDetailModel) {
-        [dataModel: masterDetailModel?.dataModel?.detail, viewModel: masterDetailModel?.viewModel?.detail]
+        List dataModels = masterDetailModel?.dataModel?.findAll { it.dataType == "masterDetail" }?.detail ?: []
+        List viewModels = masterDetailModel?.viewModel?.findAll { it.type == "masterDetail" }?.detail ?: []
+
+        [dataModel: dataModels, viewModel: viewModels]
     }
 
     /*------------ methods to look up attributes in the view model -------------*/

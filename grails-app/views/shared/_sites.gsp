@@ -39,6 +39,9 @@
 
     function generateMap(facetList, markBy, mapOptions) {
 
+        var alaMap = null;
+
+
         markBy =  (markBy === undefined) || markBy == "-1" ? "" : "&markBy="+markBy;
 
         var url = "${createLink(controller:'nocas', action:'geoService')}?max=10000&geo=true"+markBy;
@@ -125,7 +128,7 @@
             }
 
             //To reduce memory footprint and leak, make sure to clear feature before loading new feature.
-            alaMap.map ? clearMap() : "";
+            this.alaMap.map ? clearMap() : "";
             $("#legend-table").fadeIn();
             $("#map-colorby-status").hide();
 
@@ -160,21 +163,21 @@
             mapData.features.push(layer);
         });
 
-        init_map_with_features({
-                    mapContainer: "map",
-                    zoomToBounds:true,
-                    scrollwheel: false,
-                    zoomLimit:16,
-                    featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                    wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-                },
-                mapData
-        );
+        var mapOptions = {
+            mapContainer: "map",
+            zoomToBounds:true,
+            scrollwheel: false,
+            zoomLimit:16,
+            featureService: "${createLink(controller: 'proxy', action:'feature')}",
+            wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+        };
+
+        this.alaMap = new MapWithFeatures(mapOptions, mapData);
 
         if (!bounds.isEmpty()) {
-            alaMap.map.fitBounds(bounds);
+        this.alaMap.map.fitBounds(bounds);
         } else {
-            alaMap.map.setZoom(4);
+            this.alaMap.map.setZoom(4);
         }
 
         // Create the DIV to hold the control and
@@ -184,13 +187,13 @@
         var homeControlDiv = document.createElement('div');
         var homeControl = new HomeControl(homeControlDiv, alaMap.map);
         homeControlDiv.index = 2;
-        alaMap.map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(homeControlDiv);
+        this.alaMap.map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(homeControlDiv);
 
         if (config.includeLegend) {
             var homeToggleControlDiv = document.createElement('div');
             var toggleControl = new HomeToggleControl(homeToggleControlDiv, alaMap.map);
             homeToggleControlDiv.index = 1;
-            alaMap.map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(homeToggleControlDiv);
+            this.alaMap.map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(homeToggleControlDiv);
         }
         var numSitesHtml = "";
         if(features.length > 0){
@@ -250,7 +253,7 @@
 
         // Setup the click event listeners
         google.maps.event.addDomListener(controlUI, 'click', function() {
-            alaMap.map.fitBounds(mapBounds);
+            this.alaMap.map.fitBounds(mapBounds);
         });
 
     }
@@ -320,7 +323,7 @@
         });
         $('input[type="checkbox"][class="legendSelection"]').change(function() {
             var map = $('#'+this.id).prop('checked') ? alaMap.map : null;
-            alaMap.toggleMarkerVisibility(this.value, map);
+            this.alaMap.toggleMarkerVisibility(this.value, map);
         });
     }
 

@@ -88,7 +88,7 @@
     function initialiseProjectArea() {
     <g:if test="${projectSite?.extent?.geometry}">
         var projectArea = <fc:modelAsJavascript model="${projectSite.extent.geometry}"/>;
-        var mapOptions = {
+        var mapFeatures = {
             zoomToBounds:true,
             zoomLimit:16,
             highlightOnHover:true,
@@ -97,14 +97,14 @@
             wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
         };
 
-        map = init_map_with_features({
-                mapContainer: "map",
-                scrollwheel: false,
-                featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-            },
-            mapOptions
-        );
+        var mapOptions = {
+            mapContainer: "map",
+            scrollwheel: false,
+            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+            wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+        };
+
+        map = new MapWithFeatures(mapOptions, mapFeatures);
 </g:if>
     }
 </r:script>

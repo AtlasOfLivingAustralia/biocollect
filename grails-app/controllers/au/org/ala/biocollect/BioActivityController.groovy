@@ -160,8 +160,8 @@ class BioActivityController {
      *
      */
     private static addConfigToOutputModels(Map pActivity, Map model) {
-        model.outputModels.each { String name, Map outputModel ->
-            outputModel.viewModel?.each { Map viewModel ->
+        model?.outputModels?.each { String name, Map outputModel ->
+            outputModel?.viewModel?.each { Map viewModel ->
                 if (viewModel.plugin == BIOCOLLECT_SIGHTINGS_PLUGIN_NAME) {
                     viewModel.config = [
                             allowGeospatialSpeciesSuggestion: !(pActivity?.species?.speciesLists || pActivity?.species?.singleSpecies)

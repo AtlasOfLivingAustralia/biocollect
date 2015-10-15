@@ -155,6 +155,9 @@ class ModelTagLib {
             case 'buttonGroup':
                 renderer.renderButtonGroup(renderContext)
                 break
+            case 'geoMap':
+                renderer.renderGeoMap(renderContext)
+                break
             default:
                 log.warn("Unhandled widget type: ${model.type}")
                 break
