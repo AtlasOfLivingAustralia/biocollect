@@ -55,12 +55,19 @@ class DateUtils {
      * @return a new Joda Time DateTime instance, with the UTC time zone.
      */
     static DateTime parse(String dateString) {
-        if (dateString =~ /\+[0-9]{4}/) {
-            // This is a java formatted time which is not ISO8901 compatible.
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ")
-            return new DateTime(dateFormat.parse(dateString)).withZone(DateTimeZone.UTC)
+        DateTime parsedDate = null
+
+        if (dateString) {
+            if (dateString =~ /\+[0-9]{4}/) {
+                // This is a java formatted time which is not ISO8901 compatible.
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ")
+                parsedDate = new DateTime(dateFormat.parse(dateString)).withZone(DateTimeZone.UTC)
+            } else {
+                parsedDate = DATE_PARSER.parseDateTime(dateString)
+            }
         }
-        return DATE_PARSER.parseDateTime(dateString)
+
+        parsedDate
     }
 
     static DateTime parseDisplayDate(String displayDateString) {
