@@ -212,7 +212,6 @@
 
             // client models register their name and methods to participate in saving
             self.register = function (modelInstanceName, getMethod, isDirtyMethod, resetMethod) {
-            alert(modelInstanceName)
                 self.subscribers.push({
                     model: modelInstanceName,
                     get: getMethod,
