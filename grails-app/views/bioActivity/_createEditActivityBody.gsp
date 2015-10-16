@@ -139,7 +139,7 @@
             <fc:select
                     data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
                     printable="${printView}"/>
-            <div id="map" style="width:100%; height: 512px;"></div>
+            <div id="siteMap" style="width:100%; height: 512px;"></div>
         </div>
 
     </div>
@@ -208,15 +208,20 @@
         var Master = function () {
             var self = this;
             this.subscribers = [];
+            this.maps = {};
 
             // client models register their name and methods to participate in saving
             self.register = function (modelInstanceName, getMethod, isDirtyMethod, resetMethod) {
-                this.subscribers.push({
+                self.subscribers.push({
                     model: modelInstanceName,
                     get: getMethod,
                     isDirty: isDirtyMethod,
                     reset: resetMethod
                 });
+            };
+
+            self.registerMap = function(uniqueId, map) {
+                self.maps[uniqueId] = map;
             };
 
             // master isDirty flag for the whole page - can control button enabling
@@ -270,7 +275,6 @@
             this.save = function () {
                 if ($('#validation-container').validationEngine('validate')) {
                     var toSave = this.collectData();
-
                     if (!toSave) {
                         alert("Nothing to save.");
                         return;
@@ -344,6 +348,15 @@
 
         var master = new Master();
 
+        function ActivityLevelData() {
+            var self = this;
+            self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
+            self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
+            self.pActivity = JSON.parse('${(pActivity as JSON).toString().encodeAsJavaScript()}');
+        }
+
+        var activityLevelData = new ActivityLevelData();
+
         $(function() {
 
             $('#validation-container').validationEngine('attach', {scroll: true});
@@ -391,11 +404,12 @@
                 self.siteId = ko.vetoableObservable(act.siteId, self.confirmSiteChange);
 
                 self.siteId.subscribe(function(siteId) {
+
                     var matchingSite = $.grep(self.transients.pActivitySites, function(site) { return siteId == site.siteId})[0];
 
-                    alaMap.clearFeatures();
+                    activityLevelData.siteMap.clearFeatures();
                     if (matchingSite) {
-                        alaMap.replaceAllFeatures([matchingSite.extent.geometry]);
+                        activityLevelData.siteMap.replaceAllFeatures([matchingSite.extent.geometry]);
                     }
                     self.transients.site(matchingSite);
 
@@ -417,9 +431,9 @@
                 };
 
                 <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
-                    self.transients.photoPointModel = ko.observable(new PhotoPointViewModel(site, activity));
+                    self.transients.photoPointModel = ko.observable(new PhotoPointViewModel(site, activityLevelData.activity));
                     self.updatePhotoPointModel = function(site) {
-                        self.transients.photoPointModel(new PhotoPointViewModel(site, activity));
+                        self.transients.photoPointModel(new PhotoPointViewModel(site, activityLevelData.activity));
                     };
                 </g:if>
 
@@ -466,41 +480,39 @@
                 self.dirtyFlag = ko.dirtyFlag(self, false);
             }
 
-            var activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
-            var site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
-            var pActivity = JSON.parse('${(pActivity as JSON).toString().encodeAsJavaScript()}');
-
             var viewModel = new ViewModel(
-                activity,
-                site,
+                activityLevelData.activity,
+                activityLevelData.site,
                 ${project ? "JSON.parse('${project.toString().encodeAsJavaScript()}')" : 'null'},
                 ${metaModel ?: 'null'},
-                pActivity);
+                activityLevelData.pActivity);
 
-            var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
+            <g:if test="${metaModel.supportsSites?.toBoolean()}">
+                var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
+                if (!mapFeatures) {
+                    mapFeatures = {zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []};
+                }
 
-            var mapOptions = {
-                zoomToBounds:true,
-                zoomLimit:16,
-                highlightOnHover:true,
-                features:[],
-                featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-            };
-
-            init_map_with_features({
-                    mapContainer: "map",
+                var mapOptions = {
+                    mapContainer: "siteMap",
                     scrollwheel: false,
+                    zoomToBounds:true,
+                    zoomLimit:16,
+                    highlightOnHover:true,
+                    features:[],
                     featureService: "${createLink(controller: 'proxy', action: 'feature')}",
                     wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-                },
-                mapOptions
-            );
+                };
+
+                activityLevelData.siteMap = new MapWithFeatures(mapOptions, mapFeatures);
+            </g:if>
 
             ko.applyBindings(viewModel);
 
             master.register('activityModel', viewModel.modelForSaving, viewModel.dirtyFlag.isDirty, viewModel.dirtyFlag.reset);
 
         });
+
+
 </r:script>
 </div>

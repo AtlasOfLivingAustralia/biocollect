@@ -18,6 +18,12 @@
 var sightingMap, geocoding, marker, circle, radius, initalBounds, bookmarks, geocoder;
 
 $(document).ready(function() {
+
+    if (!mapExists()) {
+        console.log("No map to initialise. Bailing out.")
+        return;
+    }
+
     if (typeof GSP_VARS == 'undefined') {
         alert('GSP_VARS not set in page - required for map widget JS');
     }
@@ -217,6 +223,10 @@ $(document).ready(function() {
 
 }); // end document load function
 
+function mapExists() {
+    return $('#sightingMap').length != 0
+}
+
 function loadBookmarks() {
     $.ajax({
         url: GSP_VARS.bookmarksUrl,
@@ -408,15 +418,24 @@ function reverseGeocodeGoogle(lat, lng) {
 }
 
 function resetMap() {
-    $("#markerIcon").css({left: "312px", top: "280px", position: "absolute", right: "auto", bottom: "auto", display: "block"});
+    if (mapExists()) {
+        $("#markerIcon").css({
+            left: "312px",
+            top: "280px",
+            position: "absolute",
+            right: "auto",
+            bottom: "auto",
+            display: "block"
+        });
 
-    sightingMap.removeLayer(marker);
-    sightingMap.removeLayer(circle);
-    sightingMap.setView([-28, 134], 3);
+        sightingMap.removeLayer(marker);
+        sightingMap.removeLayer(circle);
+        sightingMap.setView([-28, 134], 3);
 
-    $("#decimalLatitude").val("");
-    $("#decimalLongitude").val("");
-    $("#coordinateUncertaintyInMeters").val("");
-    $("#georeferenceProtocol").val("");
-    $("#locality").val("");
+        $("#decimalLatitude").val("");
+        $("#decimalLongitude").val("");
+        $("#coordinateUncertaintyInMeters").val("");
+        $("#georeferenceProtocol").val("");
+        $("#locality").val("");
+    }
 }

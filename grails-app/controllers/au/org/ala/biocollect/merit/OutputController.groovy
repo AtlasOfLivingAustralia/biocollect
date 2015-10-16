@@ -1,5 +1,7 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.AttributeMap
+import au.org.ala.biocollect.Databindings
 import grails.converters.JSON
 
 /**

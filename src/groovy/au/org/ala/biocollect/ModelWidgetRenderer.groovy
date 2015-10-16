@@ -1,4 +1,4 @@
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect
 
 import org.codehaus.groovy.grails.web.json.JSONObject
 import org.codehaus.groovy.grails.web.taglib.NamespacedTagDispatcher
@@ -24,7 +24,7 @@ public interface ModelWidgetRenderer {
     void renderDate(WidgetRenderContext context)
     void renderDocument(WidgetRenderContext context)
     void renderButtonGroup(WidgetRenderContext context)
-
+    void renderGeoMap(WidgetRenderContext context)
 }
 
 

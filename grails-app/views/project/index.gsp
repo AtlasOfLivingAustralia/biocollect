@@ -395,7 +395,7 @@
                         wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
                     };
 
-                    map = init_map_with_features({
+                    map = new MapWithFeatures({
                             mapContainer: "map",
                             scrollwheel: false,
                             featureService: "${createLink(controller: 'proxy', action:'feature')}",

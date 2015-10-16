@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.biocollect.merit.DateUtils" %>
+<%@ page import="au.org.ala.biocollect.DateUtils" %>
 <!doctype html>
 <html>
 	<head>

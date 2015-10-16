@@ -24,8 +24,8 @@
         here = document.location.href;
     </r:script>
     <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures"/>
-    <g:set var="formattedStartDate" value="${au.org.ala.biocollect.merit.DateUtils.isoToDisplayFormat(project.plannedStartDate)}"/>
-    <g:set var="formattedEndDate" value="${au.org.ala.biocollect.merit.DateUtils.isoToDisplayFormat(project.plannedEndDate)}"/>
+    <g:set var="formattedStartDate" value="${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(project.plannedStartDate)}"/>
+    <g:set var="formattedEndDate" value="${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(project.plannedEndDate)}"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -335,19 +335,22 @@
                 return result;
             });
 
+            self.siteMap = null;
             self.siteId = ko.observable(act.siteId);
 
             self.siteId.subscribe(function(siteId) {
+                if (!self.siteMap) {
+                    return;
+                }
 
                 var matchingSite = $.grep(self.transients.project.sites, function(site) { return siteId == site.siteId})[0];
 
                 if (matchingSite) {
-
-                    alaMap.clearFeatures();
-                    alaMap.replaceAllFeatures([matchingSite.extent.geometry]);
+                    self.siteMap.clearFeatures();
+                    self.siteMap.replaceAllFeatures([matchingSite.extent.geometry]);
                 }
                 else {
-                    alaMap.clearFeatures();
+                    self.siteMap.clearFeatures();
                 }
                 self.transients.site(matchingSite);
             });
@@ -401,15 +404,16 @@
             mapFeatures = {zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []};
         }
 
-        init_map_with_features({
-                mapContainer: "smallMap",
-                zoomToBounds:true,
-                zoomLimit:16,
-                featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-            },
-            mapFeatures
-        );
+        var mapOptions = {
+            mapContainer: "smallMap",
+            zoomToBounds:true,
+            zoomLimit:16,
+            featureService: "${createLink(controller: 'proxy', action:'feature')}",
+            wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+        };
+
+        viewModel.siteMap = new MapWithFeatures(mapOptions, mapFeatures);
+
 
         ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
 

@@ -1,4 +1,6 @@
 package au.org.ala.biocollect.merit
+
+import au.org.ala.biocollect.DateUtils
 import grails.converters.JSON
 import org.joda.time.DateTime
 

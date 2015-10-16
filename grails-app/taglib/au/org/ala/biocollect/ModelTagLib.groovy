@@ -1,4 +1,4 @@
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect
 
 import grails.converters.JSON
 
@@ -53,7 +53,7 @@ class ModelTagLib {
                     photoPoints out, attrs, mod, index
                     break
                 case 'template':
-                    out << g.render(template:mod.source, plugin: "${mod.plugin ?: 'fieldcapture-plugin'}")
+                    out << g.render(template:mod.source, plugin: "${mod.plugin ?: 'fieldcapture-plugin'}", model: [config: mod.config ?: [:]])
                     break
                 case 'masterDetail':
                     masterDetail out, attrs, mod
@@ -139,6 +139,7 @@ class ModelTagLib {
                 break
             case 'fusedAutoComplete':
                 renderer.renderFusedAutocomplete(renderContext)
+                break
             case 'photopoint':
                 renderer.renderPhotoPoint(renderContext)
                 break
@@ -153,6 +154,9 @@ class ModelTagLib {
                 break
             case 'buttonGroup':
                 renderer.renderButtonGroup(renderContext)
+                break
+            case 'geoMap':
+                renderer.renderGeoMap(renderContext)
                 break
             default:
                 log.warn("Unhandled widget type: ${model.type}")

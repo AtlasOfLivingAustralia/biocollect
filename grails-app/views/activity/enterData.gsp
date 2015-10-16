@@ -520,15 +520,19 @@
                 }
                 return true;
             };
+
+            self.siteMap = null;
             self.siteId = ko.vetoableObservable(act.siteId, self.confirmSiteChange);
 
             self.siteId.subscribe(function(siteId) {
-
+                if (!self.siteMap) {
+                    return;
+                }
                 var matchingSite = $.grep(self.transients.project.sites, function(site) { return siteId == site.siteId})[0];
 
-                alaMap.clearFeatures();
+                self.siteMap.clearFeatures();
                 if (matchingSite) {
-                    alaMap.replaceAllFeatures([matchingSite.extent.geometry]);
+                    self.siteMap.replaceAllFeatures([matchingSite.extent.geometry]);
                 }
                 self.transients.site(matchingSite);
                 self.updatePhotoPointModel(matchingSite);
@@ -604,15 +608,17 @@
         if (!mapFeatures) {
             mapFeatures = {zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []};
         }
-        init_map_with_features({
-                mapContainer: "smallMap",
-                zoomToBounds:true,
-                zoomLimit:16,
-                featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-            },
-            mapFeatures
-        );
+
+        var mapOptions = {
+            mapContainer: "smallMap",
+            zoomToBounds:true,
+            zoomLimit:16,
+            featureService: "${createLink(controller: 'proxy', action:'feature')}",
+            wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+        }
+
+        view.siteMap = new MapWithFeatures(mapOptions, mapFeatures);
+
         ko.applyBindings(viewModel);
 
         master.register('activityModel', viewModel.modelForSaving, viewModel.dirtyFlag.isDirty, viewModel.dirtyFlag.reset);

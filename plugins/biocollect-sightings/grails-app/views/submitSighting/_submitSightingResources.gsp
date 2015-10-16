@@ -4,6 +4,8 @@
 <r:script disposition="head">
         // global var to pass in GSP/Grails values into external JS files
         GSP_VARS = {
+            autocompleteUrl: "${autocompleteUrl ?: grailsApplication.config.bie.baseURL + '/ws/search/auto.jsonp'}",
+            autocompleteDataType: "${autocompleteUrl ? 'json' : 'jsonp'}",
             biocacheBaseUrl: "${grailsApplication.config.biocache.baseURL + "/ws"}",
             bieBaseUrl: "${(grailsApplication.config.bie.baseURL)}",
             uploadUrl: "${createLink(uri: "/sightingAjax/upload")}",
@@ -25,7 +27,13 @@
             expectedMinLat: ${grailsApplication.config.expectedMinLat ?: '-90'},
             expectedMinLng: ${grailsApplication.config.expectedMinLng ?: '0'},
             expectedMaxLat: ${grailsApplication.config.expectedMaxLat ?: '0'},
-            expectedMaxLng: ${grailsApplication.config.expectedMaxLng ?: '180'}
+            expectedMaxLng: ${grailsApplication.config.expectedMaxLng ?: '180'},
+            config: {
+                includeSpeciesSelection: ${config?.includeSpeciesSelection == null ? true : config?.includeSpeciesSelection},
+                includeMap: ${config?.includeMap == null ? true : config?.includeMap},
+                includeImages: ${config?.includeImages == null ? true : config?.includeImages},
+                allowGeospatialSpeciesSuggestion: ${config?.allowGeospatialSpeciesSuggestion == null ? true : config?.allowGeospatialSpeciesSuggestion}
+            }
     };
 
     function imgError(image){

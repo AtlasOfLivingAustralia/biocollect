@@ -1,5 +1,4 @@
-package au.org.ala.biocollect.merit
-
+package au.org.ala.biocollect
 /**
  * Created by baird on 16/10/13.
  */
@@ -121,5 +120,10 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
     @Override
     void renderButtonGroup(WidgetRenderContext context) {
 
+    }
+
+    @Override
+    void renderGeoMap(WidgetRenderContext context) {
+        context.writer << """<div id="map" style="width:100%; height: 512px;"></div>"""
     }
 }
