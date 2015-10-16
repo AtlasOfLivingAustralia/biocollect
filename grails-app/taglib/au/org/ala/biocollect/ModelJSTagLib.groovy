@@ -1,4 +1,4 @@
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect
 
 class ModelJSTagLib {
 

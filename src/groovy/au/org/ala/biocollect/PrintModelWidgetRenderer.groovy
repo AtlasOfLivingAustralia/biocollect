@@ -1,5 +1,4 @@
-package au.org.ala.biocollect.merit
-
+package au.org.ala.biocollect
 /**
  * Created by baird on 18/10/13.
  */

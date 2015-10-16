@@ -1,4 +1,4 @@
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect
 
 import org.codehaus.groovy.grails.web.json.JSONObject
 import org.codehaus.groovy.grails.web.taglib.NamespacedTagDispatcher

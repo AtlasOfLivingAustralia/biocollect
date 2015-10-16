@@ -1,4 +1,4 @@
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect
 
 import org.joda.time.DateTime
 import org.joda.time.DateTimeConstants

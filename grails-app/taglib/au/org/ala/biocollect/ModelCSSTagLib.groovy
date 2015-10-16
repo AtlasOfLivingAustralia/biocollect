@@ -1,4 +1,6 @@
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect
+
+import au.org.ala.biocollect.ModelTagLib
 
 class ModelCSSTagLib {
     static namespace = "md"

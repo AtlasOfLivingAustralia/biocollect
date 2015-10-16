@@ -281,7 +281,6 @@
                     }
 
                     toSave = JSON.stringify(toSave);
-                    console.log(toSave);
 
                     // Don't allow another save to be initiated.
                     blockUIWithMessage("Saving activity data...");
