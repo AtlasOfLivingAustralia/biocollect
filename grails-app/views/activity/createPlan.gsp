@@ -14,8 +14,8 @@
         here = document.location.href;
     </r:script>
     <r:require modules="knockout,jqueryValidationEngine,datepicker"/>
-    <g:set var="formattedStartDate" value="${au.org.ala.biocollect.merit.DateUtils.isoToDisplayFormat(project.plannedStartDate)}"/>
-    <g:set var="formattedEndDate" value="${au.org.ala.biocollect.merit.DateUtils.isoToDisplayFormat(project.plannedEndDate)}"/>
+    <g:set var="formattedStartDate" value="${DateUtils.isoToDisplayFormat(project.plannedStartDate)}"/>
+    <g:set var="formattedEndDate" value="${DateUtils.isoToDisplayFormat(project.plannedEndDate)}"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
