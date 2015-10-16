@@ -6,7 +6,7 @@
             <div class="span12">
                 <ul class="nav nav-tabs" id="ul-project-records-activities">
                     <li><a href="#survey-all-data-records" id='survey-all-data-records-tab' data-toggle="tab">Records</a></li>
-                    <li><a href="#survey-all-data-activities" id='survey-all-data-activities-tab' data-toggle="tab">Activities</a></li>
+                    <li><a href="#survey-all-data-activities" id='survey-all-data-activities-tab' data-toggle="tab">Surveys</a></li>
                 </ul>
 
                 <div class="tab-content clearfix">

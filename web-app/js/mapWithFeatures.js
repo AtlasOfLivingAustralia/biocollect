@@ -104,7 +104,6 @@ function MapWithFeatures(options, features) {
             return;
         }
 
-        console.log('Creating map with container id = ' + self.containerId);
         self.map = new google.maps.Map(mapContainer, {
             zoom: options.zoom ? options.zoom : self.defaultZoom,
             center: new google.maps.LatLng(-28.5, 133.5),

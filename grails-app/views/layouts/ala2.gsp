@@ -56,7 +56,7 @@
                                 <ul class="dropdown-menu pull-right">
                                     <li><a class="btnNewProject" href="#"><i class="icon-plus"></i> New project</a></li>
                                     <li><a class="btnMyProjects" href="#"><i class="icon-folder-open"></i> My projects</a></li>
-                                    <li><a class="btnMyData" href="#"><i class="icon-folder-open"></i> My records</a></li>
+                                    <li><a class="btnMyData" href="#"><i class="icon-folder-open"></i> My data</a></li>
                                 </ul>
                             </div>
                             <g:if test="${fc.userIsSiteAdmin()}">
