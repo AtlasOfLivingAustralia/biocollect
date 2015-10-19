@@ -121,7 +121,7 @@
         }
 
         initialiseProjectArea();
-        <g:if test="${isAdmin || fc.userIsAlaOrFcAdmin()}">
+        <g:if test="${user?.isAdmin || fc.userIsAlaOrFcAdmin()}">
             populatePermissionsTable();
             new RestoreTab('ul-cs-external-project', 'about-tab');
             initialiseExternalCSAdmin();
