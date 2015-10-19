@@ -246,7 +246,7 @@ function MapWithFeatures(options, features) {
                 var pid = loc.pid;
 
                 feature = new PIDLayer(pid, this.wmsServer, loc.style);
-                map.map.overlayMapTypes.push(feature);
+                self.map.overlayMapTypes.push(feature);
 
                 $.ajax({
                     url: this.featureService + '?featureId=' + pid,
