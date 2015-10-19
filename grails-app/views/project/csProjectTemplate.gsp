@@ -103,7 +103,6 @@
     <div class="pill-content">
         <fc:tabContent tabs="${projectContent}" tabClass="pill-pane"/>
     </div>
-
 </div>
 <r:script>
     $(function() {
@@ -130,26 +129,9 @@
                     }
                 });
             };
-
         };
         ko.applyBindings(new ViewModel());
 
-        if (projectViewModel.mainImageUrl()) {
-            $( '#carousel' ).sliderPro({
-                width: '100%',
-                height: 'auto',
-                autoHeight: true,
-                arrows: false, // at the moment we only support 1 image
-                buttons: false,
-                waitForLayers: true,
-                fade: true,
-                autoplay: false,
-                autoScaleLayers: false,
-                touchSwipe:false // at the moment we only support 1 image
-            });
-        }
-
-        initialiseProjectArea();
         var pActivitiesVM = new ProjectActivitiesViewModel(pActivities, pActivityForms, project.projectId, project.sites, user);
         initialiseProjectActivitiesList(pActivitiesVM);
         initialiseData();
@@ -174,6 +156,7 @@
 
         $('.validationEngineContainer').validationEngine();
         $('.helphover').popover({animation: true, trigger:'hover'})    });
+
 
 </r:script>
 </body>
