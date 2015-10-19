@@ -69,7 +69,6 @@
                     <li><a href="#survey-form" id="survey-form-tab" data-toggle="tab">Survey Form</a></li>
                     <li><a href="#survey-locations" id="survey-locations-tab" data-toggle="tab">Locations</a></li>
                     <li><a href="#survey-visibility" id="survey-visibility-tab" data-toggle="tab">Visibility</a></li>
-                    <li><a href="#survey-alerts" id="survey-alerts-tab" data-toggle="tab">Alerts & Actions</a></li>
                 </ul>
 
                 <div class="pill-content">
@@ -106,9 +105,6 @@
                         </span>
                     </div>
 
-                    <div class="pill-pane" id="survey-alerts">
-
-                    </div>
                 </div>
 
 
@@ -127,6 +123,7 @@
     function initialiseProjectActivitiesSettings(pActivitiesVM) {
         var pActivitiesVM = new ProjectActivitiesSettingsViewModel(pActivitiesVM);
         ko.applyBindings(pActivitiesVM, document.getElementById('pActivities'));
+        new RestoreTab('ul-survey-constraint-citizen-science', 'survey-info');
     };
 </r:script>
 

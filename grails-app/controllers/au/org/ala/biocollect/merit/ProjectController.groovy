@@ -77,9 +77,9 @@ class ProjectController {
 
     protected String projectView(project) {
         if (project.isExternal) {
-            return 'externalCitizenScienceProjectTemplate'
+            return 'externalCSProjectTemplate'
         }
-        return project.projectType == 'survey'?'citizenscienceProjectTemplate':'index'
+        return project.projectType == 'survey' ? 'csProjectTemplate' : 'index'
     }
 
     protected Map surveyProjectContent(project, user) {
@@ -88,9 +88,8 @@ class ProjectController {
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:true, template:'/bioActivity/allData', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
-         admin:[label:'Admin', template:'adminTabs', visible:(user?.isAdmin || user?.isCaseManager), type:'tab']]
+         admin:[label:'Admin', template:'internalCSAdmin', visible:(user?.isAdmin || user?.isCaseManager), type:'tab']]
     }
-
 
     protected Map worksProjectContent(project, user) {
         [overview:[label:'Overview', visible: true, default: true, type:'tab', projectSite:project.projectSite],

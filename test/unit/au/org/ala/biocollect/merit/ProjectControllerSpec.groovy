@@ -127,7 +127,7 @@ class ProjectControllerSpec extends Specification {
         controller.index(projectId)
 
         then:
-        view == '/project/externalCitizenScienceProjectTemplate'
+        view == '/project/externalCSProjectTemplate'
         model.projectContent.about.visible == true
         model.projectContent.documents.visible == false
         model.projectContent.activities.visible == false
@@ -148,7 +148,7 @@ class ProjectControllerSpec extends Specification {
         controller.index(projectId)
 
         then:
-        view == '/project/externalCitizenScienceProjectTemplate'
+        view == '/project/externalCSProjectTemplate'
         model.projectContent.about.visible == true
         model.projectContent.documents.visible == false
         model.projectContent.activities.visible == false
@@ -168,7 +168,7 @@ class ProjectControllerSpec extends Specification {
         controller.index(projectId)
 
         then:
-        view == '/project/citizenscienceProjectTemplate'
+        view == '/project/csProjectTemplate'
         model.projectContent.about.visible == true
         model.projectContent.documents.visible == true
         model.projectContent.activities.visible == true
@@ -188,7 +188,7 @@ class ProjectControllerSpec extends Specification {
         controller.index(projectId)
 
         then:
-        view == '/project/citizenscienceProjectTemplate'
+        view == '/project/csProjectTemplate'
         model.projectContent.about.visible == true
         model.projectContent.documents.visible == true
         model.projectContent.activities.visible == true
@@ -210,7 +210,7 @@ class ProjectControllerSpec extends Specification {
         controller.index(projectId)
 
         then:
-        view == '/project/citizenscienceProjectTemplate'
+        view == '/project/csProjectTemplate'
         model.projectContent.about.visible == true
         model.projectContent.documents.visible == true
         model.projectContent.activities.visible == true
@@ -251,7 +251,7 @@ class ProjectControllerSpec extends Specification {
         controller.index(projectId)
 
         then:
-        view == '/project/citizenscienceProjectTemplate'
+        view == '/project/csProjectTemplate'
 
         model.projectContent.activities.label == 'Surveys'
         model.projectContent.activities.wordForActivity == 'Survey'

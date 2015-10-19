@@ -32,7 +32,7 @@
     }
     </style>
 
-    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd, sliderpro"/>
+    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd, sliderpro, restoreTab"/>
 </head>
 <g:render template="banner"/>
 
@@ -55,20 +55,22 @@
     <div class="container-fluid">
         <div class="row-fluid">
             <!-- content  -->
-            <ul class="nav nav-pills">
-                <li class="active">
-                    <a href="#about" data-toggle="pill">About</a>
+            <ul id="ul-cs-external-project" class="nav nav-pills">
+                <li>
+                    <a href="#about" id="about-tab" data-toggle="tab">About</a>
                 </li>
-                <li><a href="#admin" data-toggle="pill">Admin</a></li>
+                <li>
+                    <a href="#admin" id="admin-tab" data-toggle="tab">Admin</a>
+                </li>
             </ul>
         </div>
 
         <div class="pill-content">
-            <div class="pill-pane active" id="about">
+            <div class="pill-pane" id="about">
                 <g:render template="aboutCitizenScienceProject" model="${projectContent.about}"/>
             </div>
             <div class="pill-pane" id="admin">
-                <g:render template="admin"/>
+                <g:render template="externalCSAdmin"/>
             </div>
         </div>
     </div>
@@ -117,10 +119,14 @@
                 touchSwipe:false // at the moment we only support 1 image
             });
         }
+
         initialiseProjectArea();
-    <g:if test="${isAdmin || fc.userIsAlaOrFcAdmin()}">
-        populatePermissionsTable();
-    </g:if>
+        <g:if test="${user?.isAdmin || fc.userIsAlaOrFcAdmin()}">
+            populatePermissionsTable();
+            new RestoreTab('ul-cs-external-project', 'about-tab');
+            initialiseExternalCSAdmin();
+        </g:if>
+
 });
 </r:script>
 </body>

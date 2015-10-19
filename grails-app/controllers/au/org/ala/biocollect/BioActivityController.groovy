@@ -163,9 +163,10 @@ class BioActivityController {
         model?.outputModels?.each { String name, Map outputModel ->
             outputModel?.viewModel?.each { Map viewModel ->
                 if (viewModel.plugin == BIOCOLLECT_SIGHTINGS_PLUGIN_NAME) {
-                    viewModel.config = [
-                            allowGeospatialSpeciesSuggestion: !(pActivity?.species?.speciesLists || pActivity?.species?.singleSpecies)
-                    ]
+                    if (!viewModel.config) {
+                        viewModel.config = [:]
+                    }
+                    viewModel.config.allowGeospatialSpeciesSuggestion = !(pActivity?.species?.speciesLists || pActivity?.species?.singleSpecies)
                 }
             }
         }
