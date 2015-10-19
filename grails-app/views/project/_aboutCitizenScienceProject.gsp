@@ -8,21 +8,15 @@
 }
 
 </style>
-<div id="carousel" class="row-fluid slider-pro" data-bind="visible:mainImageUrl()">
-    <div class="sp-slides">
-        <div class="sp-slide">
-            <img class="sp-image" data-bind="attr:{'data-src':mainImageUrl}"/>
-            <p class="sp-layer sp-white sp-padding"
-               data-position="topLeft" data-width="100%" data-bind="visible:urlWeb"
-               data-show-transition="down" data-show-delay="0" data-hide-transition="up">
-                <strong><g:message code="g.visitUsAt" /> <a data-bind="attr:{href:urlWeb}"><span data-bind="text:urlWeb"></span></a></strong>
-            </p>
-        </div>
+<div class="row-fluid" data-bind="visible:mainImageUrl">
+    <div class="span12 banner-image-container">
+        <img src="" data-bind="attr: {src: mainImageUrl}"/>
+        <div data-bind="visible:urlWeb" class="banner-image-caption"><strong><g:message code="g.visitUsAt" /> <a data-bind="attr:{href:urlWeb}"><span data-bind="text:urlWeb"></span></a></strong></div>
     </div>
 </div>
 
 <div id="weburl" data-bind="visible:!mainImageUrl()">
-    <div data-bind="visible:urlWeb()"><strong><g:message code="g.visitUsAt" /> <a data-bind="attr:{href:urlWeb}"><span data-bind="text:urlWeb"></span></a></strong></div>
+    <div data-bind="visible:urlWeb"><strong><g:message code="g.visitUsAt" /> <a data-bind="attr:{href:urlWeb}"><span data-bind="text:urlWeb"></span></a></strong></div>
 </div>
 
 <div class="container-fluid">
