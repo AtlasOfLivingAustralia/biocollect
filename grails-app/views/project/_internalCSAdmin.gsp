@@ -77,6 +77,6 @@
 
 <r:script>
     function initialiseInternalCSAdmin(){
-        new RestoreTab('ul-cs-internal-project-admin', 'survey-info-tab');
+        new RestoreTab('ul-cs-internal-project-admin', 'project-settings-tab');
     }
 </r:script>

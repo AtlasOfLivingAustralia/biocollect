@@ -169,8 +169,6 @@
 
             populatePermissionsTable();
 
-            //Citizen- Science admin
-            new RestoreTab('ul-project-admin-citizen-science', 'project-settings-tab');
             initialiseInternalCSAdmin();
         </g:if>
 
