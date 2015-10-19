@@ -137,8 +137,7 @@ class ModelJSTagLib {
 
         out << INDENT*4 << "self.modelForSaving = function() {\n"
         out << INDENT*8 << "var outputData = {};\n"
-
-        boolean genericClauseAdded = false
+        out << INDENT*8 << "ko.utils.extend(outputData, ko.mapping.toJS(self, {'ignore':['transients']}));\n"
 
         attrs.model?.dataModel?.each { mod ->
             switch (mod.dataType) {
@@ -146,22 +145,15 @@ class ModelJSTagLib {
                     out << INDENT*8 << "ko.utils.extend(outputData, {\n"
                     out << INDENT*12 << "name: '${attrs.output.name}',\n"
                     out << INDENT*12 << "outputId: '${attrs.output.outputId}',\n"
-                    out << INDENT*12 << "data: self.data.sighting.getSightingsDataAsJS()\n"
                     out << INDENT*8 << "});\n"
-
+                    out << INDENT*8 << "ko.utils.extend(outputData.data, self.data.sighting.getSightingsDataAsJS());\n"
                     break
                 case "masterDetail":
                     out << INDENT*8 << "ko.utils.extend(outputData, {\n"
                     out << INDENT*12 << "name: '${attrs.output.name}',\n"
                     out << INDENT*12 << "outputId: '${attrs.output.outputId}',\n"
-                    out << INDENT*12 << "data: {${mod.name}: self.data.masterDetail.items()}\n"
                     out << INDENT*8 << "});\n"
-                    break
-                default:
-                    if (!genericClauseAdded) {
-                        out << INDENT*8 << "ko.utils.extend(outputData, ko.mapping.toJS(self, {'ignore':['transients']}));\n"
-                        genericClauseAdded = true
-                    }
+                    out << INDENT*8 << "ko.utils.extend(outputData.data, {${mod.name}: self.data.masterDetail.items()});\n"
                     break
             }
         }
