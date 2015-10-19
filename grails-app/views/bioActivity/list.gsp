@@ -31,16 +31,16 @@
         <div class="span12">
 
             <ul class="nav nav-tabs" id="ul-survey-activities">
-                <li><a href="#survey-records" id= "survey-records-tab" data-toggle="tab">Records</a></li>
                 <li><a href="#survey-activities" id="survey-activities-tab" data-toggle="tab">Surveys</a></li>
+                <li><a href="#survey-records" id= "survey-records-tab" data-toggle="tab">Records</a></li>
             </ul>
 
             <div class="tab-content">
-                <div class="tab-pane" id="survey-records">
-                    <g:render template="allRecords" model="[show:true]"/>
-                </div>
                 <div class="tab-pane" id="survey-activities">
                     <g:render template="allActivities" model="[show:true]"/>
+                </div>
+                <div class="tab-pane" id="survey-records">
+                    <g:render template="allRecords" model="[show:true]"/>
                 </div>
             </div>
         </div>

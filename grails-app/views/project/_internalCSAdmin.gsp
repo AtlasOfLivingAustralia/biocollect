@@ -2,8 +2,8 @@
     <!-- ADMIN -->
     <div class="row-fluid">
         <div class="span2 large-space-before">
-            <ul id="ul-project-admin-citizen-science" class="nav nav-tabs nav-stacked ">
-                <li class='active'><a href="#project-settings" id="project-settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project info</a></li>
+            <ul id="ul-cs-internal-project-admin" class="nav nav-tabs nav-stacked ">
+                <li><a href="#project-settings" id="project-settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project info</a></li>
                 <li><a href="#project-activity" id="project-activity-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Survey settings</a></li>
                 <li><a href="#edit-news-and-events" id="edit-news-and-events-tab" data-toggle="tab"><i class="icon-chevron-right"></i> News and events</a></li>
                 <li><a href="#edit-project-stories" id="edit-project-stories-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project stories</a></li>
@@ -16,7 +16,7 @@
             <div class="pill-content">
 
                 <!-- PROJECT info -->
-                <div id="project-settings" class="pill-pane active">
+                <div id="project-settings" class="pill-pane">
                     <h4>Project info</h4>
 
                     <div class="row-fluid">
@@ -51,11 +51,6 @@
 
                 <!-- DOCUMENTS -->
                 <div id="edit-documents" class="pill-pane">
-                    %{--<h3>Project Documents</h3>--}%
-                    %{--<div class="row-fluid">--}%
-                        %{--<div class="span10">--}%
-                        %{--</div>--}%
-                    %{--</div>--}%
                     <h3>Project Resources</h3>
                     <div class="row-fluid">
                         <div class="span10">
@@ -63,15 +58,13 @@
                                     model="[useExistingModel: true,editable:true, filterBy: 'all', ignore: '', imageUrl:resource(dir:'/images/filetypes'),containerId:'adminDocumentList']"/>
                         </div>
                     </div>
-                    %{--The modal view containing the contents for a modal dialog used to attach a document--}%
                     <g:render template="/shared/attachDocument"/>
                     <div class="row-fluid attachDocumentModal">
                         <button class="btn" id="doAttach" data-bind="click:attachDocument">Attach Document</button>
                     </div>
                 </div>
 
-
-                <div id="permissions" class="pill-pane ${activeClass}">
+                <div id="permissions" class="pill-pane">
                     <h3>Members</h3>
                     <g:render template="/admin/addPermissions" model="[addUserUrl:g.createLink(controller:'user', action:'addUserAsRoleToProject'), entityId:project.projectId]"/>
                     <g:render template="/admin/permissionTable" model="[loadPermissionsUrl:g.createLink(controller:'project', action:'getMembersForProjectId', id:project.projectId), removeUserUrl:g.createLink(controller:'user', action:'removeUserWithRoleFromProject'), entityId:project.projectId, user:user]"/>
@@ -81,3 +74,9 @@
         </div>
     </div>
 </div>
+
+<r:script>
+    function initialiseInternalCSAdmin(){
+        new RestoreTab('ul-cs-internal-project-admin', 'project-settings-tab');
+    }
+</r:script>
