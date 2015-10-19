@@ -10,13 +10,9 @@ class CommentController extends BaseController {
     CommentService commentService
     AuthService authService
 
-    def index(){
-        log.debug('testing')
-    }
-
     def create() {
         Map json = commonService.parseParams(params)
-        json['userId'] = authService.getUserId()
+        json.userId = authService.getUserId()
         if (!json.userId|| !json.entityId || !json.entityType || !json.text){
             response.sendError(SC_BAD_REQUEST, 'Missing userId, text, entityId and/or entityType')
         } else {
@@ -28,7 +24,7 @@ class CommentController extends BaseController {
 
     def update() {
         def json = commonService.parseParams(params);
-        json['userId'] = authService.getUserId()
+        json.userId = authService.getUserId()
         if (!json.userId|| !json.entityId || !json.entityType || !json.text){
             response.sendError(SC_BAD_REQUEST, 'Missing userId, text, entityId and/or entityType')
         }  else if (json) {
@@ -39,9 +35,9 @@ class CommentController extends BaseController {
 
     def delete() {
         def json = commonService.parseParams(params);
-        json['userId'] = authService.getUserId()
-        if (!json.id){
-            response.sendError(SC_BAD_REQUEST, 'Missing userId, text, entityId and/or entityType')
+        json.userId = authService.getUserId()
+        if (!json.id || !json.userId){
+            response.sendError(SC_BAD_REQUEST, 'Missing userId and/or comment id')
         }  else if (json) {
             def response = commentService.deleteComment(json)
             handle response

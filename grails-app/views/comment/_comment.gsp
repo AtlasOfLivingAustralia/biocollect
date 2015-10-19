@@ -39,7 +39,7 @@
                 <b class="username media-heading" data-bind="text: displayName, visible: !!displayName"></b>
                 <span data-bind="visible: !!dateCreated()">commented on <span data-bind="text: dateCreated.formattedDate"></span></span>
                 <div data-bind="visible: !edit()">
-                    <pre class="media" data-bind="html: text">
+                    <pre class="media" data-bind="text: text">
                     </pre>
                     <ul class="breadcrumb margin-bottom-five">
                         <li data-bind="visible: $root.isUserCommentOwner($data)"><a class="btn-link" data-bind="click: $root.edit">edit</a> <span class="divider">|</span></li>
