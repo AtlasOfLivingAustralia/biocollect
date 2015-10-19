@@ -102,7 +102,6 @@
     </div>
     <div class="pill-content">
         <fc:tabContent tabs="${projectContent}" tabClass="pill-pane"/>
-
     </div>
 
 </div>
@@ -172,7 +171,7 @@
 
             //Citizen- Science admin
             new RestoreTab('ul-project-admin-citizen-science', 'project-settings-tab');
-            new RestoreTab('ul-survey-constraint-citizen-science', 'survey-info-tab');
+            initialiseInternalCSAdmin();
         </g:if>
 
         $('.validationEngineContainer').validationEngine();
