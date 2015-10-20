@@ -362,5 +362,10 @@ modules = {
         resource url: 'vendor/font-awesome/4.4.0/css/font-awesome.min.css', attrs:[media:'all']
     }
     /** END - Fildcapture/Marite resources **/
-    
+
+    comments{
+        dependsOn 'knockout'
+        resource url: 'css/comment.css'
+        resource url: 'js/comment.js'
+    }
 }

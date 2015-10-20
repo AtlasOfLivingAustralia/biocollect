@@ -94,11 +94,8 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM) {
 
     var self = $.extend(this, pActivitiesVM);
 
-    self.speciesOptions = [{id: 'ALL_SPECIES', name: 'All species'}, {
-        id: 'SINGLE_SPECIES',
-        name: 'Single species'
-    }, {id: 'GROUP_OF_SPECIES', name: 'A selection or group of species'}];
-    self.datesOptions = [60, 90, 120];
+    self.speciesOptions =  [{id: 'ALL_SPECIES', name:'All species'},{id:'SINGLE_SPECIES', name:'Single species'}, {id:'GROUP_OF_SPECIES',name:'A selection or group of species'}];
+    self.datesOptions = [60, 90, 120, 180];
     self.formNames = ko.observableArray($.map(self.pActivityForms ? self.pActivityForms : [], function (obj, i) {
         return obj.name;
     }));

@@ -1,8 +1,8 @@
 import au.org.ala.biocollect.merit.SettingService
-
 import org.codehaus.groovy.grails.commons.spring.GrailsWebApplicationContext
 
 class UrlMappings {
+
 
         static isHubValid(applicationContext, hub) {
                 def settingsService = applicationContext.getBean(SettingService)
@@ -29,6 +29,15 @@ class UrlMappings {
 
                 "/sightingAjax/saveBookmarkLocation" controller: "sightingAjax", action: [POST:"saveBookmarkLocation"]
                 "/uploads/$file**"(controller:"sightingImage", action:"index")
+
+                "/activity/$entityId/comment"(controller: "comment"){
+                        action = [GET: 'list', POST: 'create']
+                        entityType = 'au.org.ala.ecodata.Activity'
+                }
+                "/activity/$entityId/comment/$id"(controller: 'comment'){
+                        entityType = 'au.org.ala.ecodata.Activity'
+                        action = [GET: 'get', POST: 'update', PUT: 'update', DELETE: 'delete']
+                }
 
                 "/$controller/$id?"(parseRequest:true) {
 

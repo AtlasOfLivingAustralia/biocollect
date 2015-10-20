@@ -10,6 +10,8 @@ class CommonService {
 
     LinkGenerator grailsLinkGenerator
 
+    List ignores = ["action","controller"]
+
     def buildUrlParamsFromMap(map) {
         if (!map) return ''
         def params = '?'
@@ -39,5 +41,20 @@ class CommonService {
             featuresMap.features << site.extent?.geometry
         }
         return featuresMap as JSON
+    }
+
+    /**
+     * copies grails parameters but ignores a predefined list of keys
+     * @param params
+     * @return
+     */
+    Map parseParams(Map params){
+        Map result = [:]
+        params.each { key, value ->
+            if(!(key in ignores)){
+                result[key] = value;
+            }
+        }
+        result
     }
 }

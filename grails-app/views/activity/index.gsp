@@ -10,6 +10,7 @@
         <meta name="layout" content="${hubConfig.skin}"/>
         <title>Edit | ${activity.type} | Field Capture</title>
     </g:else>
+    <g:set var="commentUrl" value="${resource(dir:'/activity')}/${activity.activityId}/comment"></g:set>
 
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
@@ -20,11 +21,15 @@
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
-        imageLocation:"${resource(dir:'/images')}"
+        imageLocation:"${resource(dir:'/images')}",
+        createCommentUrl : "${commentUrl}",
+        commentListUrl:"${commentUrl}",
+        updateCommentUrl:"${commentUrl}",
+        deleteCommentUrl:"${commentUrl}"
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,species,activity"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,species,activity,comments"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -175,6 +180,9 @@
         </div>
     </g:each>
 
+    <g:if test="${projectActivity.commentsAllowed}">
+        <g:render template="/comment/comment"></g:render>
+    </g:if>
     <div class="form-actions">
         <button type="button" id="cancel" class="btn">return</button>
     </div>
@@ -240,6 +248,8 @@
             ${metaModel ?: 'null'});
 
         ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
+
+        ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'))
 
         var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
         if(mapFeatures !=null && mapFeatures.features !== undefined && mapFeatures.features.length >0){
