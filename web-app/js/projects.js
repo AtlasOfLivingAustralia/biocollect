@@ -679,7 +679,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             if (result) {
                 $.ajax({
                     url: fcConfig.projectDeleteUrl,
-                    type: 'GET',
+                    type: 'DELETE',
                     success: function (data) {
                         if (data.error) {
                             showAlert(data.error, "alert-error", self.transients.resultsHolder);
