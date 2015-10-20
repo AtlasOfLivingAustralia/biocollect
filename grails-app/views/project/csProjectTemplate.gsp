@@ -53,6 +53,7 @@
         videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
         activityListUrl : "${createLink(controller: 'bioActivity', action: 'ajaxListForProject', params: [id:project.projectId])}",
         recordListUrl: "${createLink(controller: 'record', action: 'ajaxListForProject', params: [id:project.projectId])}",
+        projectDeleteUrl:"${createLink(action:'delete', id:project.projectId)}",
         ßerrorViewer: "${createLink(controller: 'resource', action: 'error')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}"
         },
@@ -80,21 +81,22 @@
 
 <g:render template="banner"/>
 <div class="container-fluid">
-    <div class="row-fluid">
-        <div class="row-fluid">
-            <div class="clearfix">
-                <g:if test="${flash.errorMessage || flash.message}">
-                    <div class="span5">
-                        <div class="alert alert-error">
-                            <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-                            ${flash.errorMessage?:flash.message}
-                        </div>
-                    </div>
-                </g:if>
 
-            </div>
+    <div class="row-fluid">
+        <div id="project-results-placeholder"></div>
+        <div class="clearfix">
+            <g:if test="${flash.errorMessage || flash.message}">
+                <div class="span5">
+                    <div class="alert alert-error">
+                        <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
+                        ${flash.errorMessage?:flash.message}
+                    </div>
+                </div>
+            </g:if>
+
         </div>
     </div>
+
     <div class="row-fluid">
         <!-- content  -->
         <ul id="ul-main-project" class="nav nav-pills">
@@ -118,19 +120,8 @@
         var ViewModel = function() {
             var self = this;
             $.extend(this, projectViewModel);
-
-            self.editProject = function() {
-                window.location.href = fcConfig.projectEditUrl;
-            };
-            self.deleteProject = function() {
-                var message = "<span class='label label-important'>Important</span><p><b>This cannot be undone</b></p><p>Are you sure you want to delete this project?</p>";
-                bootbox.confirm(message, function(result) {
-                    if (result) {
-                        console.log("not implemented!");
-                    }
-                });
-            };
-
+            self.transients = self.transients || {};
+            self.transients.resultsHolder = 'project-results-placeholder';
         };
         ko.applyBindings(new ViewModel());
 
