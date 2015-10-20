@@ -146,6 +146,8 @@ function CommentListViewModel() {
     self.userId = ko.observable();
     // total comments in list
     self.total = ko.observable(0)
+    // flag giving admin privileges like delete / edit comments
+    self.admin = false;
     // current sorting mechanism
     self.selectedSort = ko.observable(self.sortOptions()[0])
     // controls load more button visibility
@@ -238,9 +240,10 @@ function CommentListViewModel() {
 
     // initialise/load comments and other metadata
     self.load = function(data){
-        self.addItems(data.items);
         self.userId(data.userId);
         self.total(data.total)
+        self.admin = data.admin;
+        self.addItems(data.items);
         if(self.total() > (self.page.start + self.page.pageSize)){
             self.showLoadMore(true)
         } else {
@@ -351,8 +354,8 @@ function CommentListViewModel() {
     }
 
     // controls edit/delete button on a comment
-    self.isUserCommentOwner = function(comment){
-        return self.userId() == comment.userId()
+    self.canModifyDeleteComment = function(comment){
+        return self.admin || (self.userId() == comment.userId())
     }
 
     // show children comment threads

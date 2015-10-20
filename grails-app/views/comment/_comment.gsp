@@ -42,8 +42,8 @@
                     <pre class="media" data-bind="text: text">
                     </pre>
                     <ul class="breadcrumb margin-bottom-five">
-                        <li data-bind="visible: $root.isUserCommentOwner($data)"><a class="btn-link" data-bind="click: $root.edit">edit</a> <span class="divider">|</span></li>
-                        <li data-bind="visible: $root.isUserCommentOwner($data)"><a class="btn-link" data-bind="click: $root.delete">delete</a> <span class="divider">|</span></li>
+                        <li data-bind="visible: $root.canModifyDeleteComment($data)"><a class="btn-link" data-bind="click: $root.edit">edit</a> <span class="divider">|</span></li>
+                        <li data-bind="visible: $root.canModifyDeleteComment($data)"><a class="btn-link" data-bind="click: $root.delete">delete</a> <span class="divider">|</span></li>
                         <li data-bind="visible: !showChildren() && children().length, click: $root.viewChildren" text="view replies"><a class="btn-link">
                             <i class="icon-comment"></i> show
                         </a><span class="divider">|</span></li>
