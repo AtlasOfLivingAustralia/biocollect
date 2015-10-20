@@ -65,10 +65,10 @@
 
                 <ul id="ul-survey-constraint-citizen-science" class="nav nav-pills">
                     <li><a href="#survey-info" id="survey-info-tab" data-toggle="tab">Survey Info</a></li>
+                    <li><a href="#survey-visibility" id="survey-visibility-tab" data-toggle="tab">Visibility</a></li>
                     <li><a href="#survey-species" id="survey-species-tab" data-toggle="tab">Species</a></li>
                     <li><a href="#survey-form" id="survey-form-tab" data-toggle="tab">Survey Form</a></li>
                     <li><a href="#survey-locations" id="survey-locations-tab" data-toggle="tab">Locations</a></li>
-                    <li><a href="#survey-visibility" id="survey-visibility-tab" data-toggle="tab">Visibility</a></li>
                 </ul>
 
                 <div class="pill-content">
@@ -76,6 +76,12 @@
                         <span class="validationEngineContainer" id="project-activities-info-validation">
                             <div id="project-activities-info-result-placeholder"></div>
                             <g:render template="/projectActivity/info"/>
+                        </span>
+                    </div>
+                    <div class="pill-pane" id="survey-visibility">
+                        <span class="validationEngineContainer" id="project-activities-visibility-validation">
+                            <div id="project-activities-visibility-result-placeholder"></div>
+                            <g:render template="/projectActivity/visibility"/>
                         </span>
                     </div>
                     <div class="pill-pane" id="survey-species">
@@ -93,21 +99,10 @@
                     <div class="pill-pane" id="survey-locations">
                         <span class="validationEngineContainer" id="project-activities-locations-validation">
                             <div id="project-activities-sites-result-placeholder"></div>
-                            <!-- Allow user to seelct the existing sites and preview those sites.-->
                             <g:render template="/projectActivity/sites"/>
                         </span>
                     </div>
-
-                    <div class="pill-pane" id="survey-visibility">
-                        <span class="validationEngineContainer" id="project-activities-visibility-validation">
-                            <div id="project-activities-visibility-result-placeholder"></div>
-                            <g:render template="/projectActivity/visibility"/>
-                        </span>
-                    </div>
-
                 </div>
-
-
             </div>
         </div>
 
