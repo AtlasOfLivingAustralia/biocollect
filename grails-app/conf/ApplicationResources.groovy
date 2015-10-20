@@ -87,6 +87,7 @@ modules = {
         resource url: 'js/knockout-custom-extenders.js'
         resource url: 'js/knockout-dates.js'
         resource url: 'js/outputs.js'
+        resource url: 'js/ko-components.js'
     }
 
     knockout_sortable {
