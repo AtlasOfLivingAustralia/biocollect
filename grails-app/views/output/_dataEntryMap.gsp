@@ -6,15 +6,19 @@
     <div class="well">
         <div class="row-fluid">
             <div class="span3">
-                <label for="siteLocation">Select a location</label>
+                <label for="siteLocation">${readonly ? 'Location:' : 'Select a location'}</label>
             </div>
 
             <div class="span9">
-                <select id="siteLocation"
-                        data-bind='options: activityLevelData.pActivity.sites, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Choose a site..."'></select>
+                <g:if test="${readonly}">
+                    <span class="output-text" data-bind="text: data.${source}Name() "></span>
+                </g:if>
+                <g:else>
+                    <select id="siteLocation"
+                            data-bind='options: activityLevelData.pActivity.sites, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Choose a site...", disable: ${readonly}'></select>
+                </g:else>
             </div>
         </div>
-
     </div>
 
     <div class="well">
@@ -24,7 +28,12 @@
             </div>
 
             <div class="span9">
-                <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude">
+                <g:if test="${readonly}">
+                    <span data-bind="text: data.${source}Latitude"></span>
+                </g:if>
+                <g:else>
+                    <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude">
+                </g:else>
             </div>
         </div>
 
@@ -34,14 +43,21 @@
             </div>
 
             <div class="span9">
-                <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude">
+                <g:if test="${readonly}">
+                    <span data-bind="text: data.${source}Longitude"></span>
+                </g:if>
+                <g:else>
+                    <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude">
+                </g:else>
             </div>
         </div>
     </div>
 
-    <div class="row-fluid">
-        <div class="span12">
-            <button class="btn btn-primary" data-bind="click: data.reset${source}Map">Reset map</button>
+    <g:if test="${!readonly}">
+        <div class="row-fluid">
+            <div class="span12">
+                <button class="btn btn-primary" data-bind="click: data.reset${source}Map">Reset map</button>
+            </div>
         </div>
-    </div>
+    </g:if>
 </div>

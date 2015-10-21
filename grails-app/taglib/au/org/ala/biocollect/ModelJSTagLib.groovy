@@ -81,7 +81,7 @@ class ModelJSTagLib {
             } else if (mod.dataType == 'masterDetail') {
                 masterDetailViewModel(mod, out)
             } else if (mod.dataType == "geoMap") {
-                geoMapViewModel(mod, out, container)
+                geoMapViewModel(mod, out, container, attrs.readonly?.toBoolean() ?: false)
             }
         }
         out << INDENT*3 << "self.transients.site = site;"
@@ -93,6 +93,8 @@ class ModelJSTagLib {
      * It loads the existing values (or default values) into the model.
      */
     def jsLoadModel = { attrs ->
+        boolean readonly = attrs.readonly?.toBoolean() ?: false
+
         attrs.model?.dataModel?.each { mod ->
             if (mod.dataType == 'list') {
                 out << INDENT*4 << "self.load${mod.name}(data.${mod.name});\n"
@@ -124,11 +126,26 @@ class ModelJSTagLib {
                 out << INDENT*8 << "self.data['${mod.name}'](new DocumentViewModel(doc));\n"
                 out << INDENT*4 << "}\n"
             } else if (mod.dataType == 'singleSighting') {
-                out << INDENT*4 << "self.data.sighting.loadSightingData(data);\n"
+                out << INDENT*4 << "self.data.sighting.loadSightingData(data, ${readonly});\n"
             } else if (mod.dataType == 'masterDetail') {
                 out << INDENT*4 << "self.data.masterDetail.loadItems(data['${mod.name}']);\n"
-            } else if (mod.datType == "geoMap") {
-                out << INDENT*4 << "self.data.['${mod.name}'](data['${mod.name}']);\n"
+            } else if (mod.dataType == "geoMap") {
+                out << INDENT*4 << """
+                    self.data.${mod.name}(data.${mod.name});
+                    self.data.${mod.name}Latitude(data.${mod.name}Latitude);
+                    self.data.${mod.name}Longitude(data.${mod.name}Longitude);
+                """
+                if (readonly) {
+                    out << INDENT * 4 << """
+                        var site = ko.utils.arrayFirst(activityLevelData.pActivity.sites, function (site) {
+                                return site.siteId == data.${mod.name};
+                        });
+
+                        if (typeof site !== 'undefined' && site) {
+                            self.data.${mod.name}Name(ko.observable(site.name));
+                        }
+                    """
+                }
             }
         }
     }
@@ -568,9 +585,10 @@ class ModelJSTagLib {
         createDataModelJS([model: [dataModel: [model.detail]]], "self.data.masterDetail.detailView")
     }
 
-    def geoMapViewModel(model, out, String container = "self.data") {
+    def geoMapViewModel(model, out, String container = "self.data", boolean readonly = false) {
         out << "\n" << INDENT*3 << """
             ${container}.${model.name} = ko.observable();
+            ${container}.${model.name}Name = ko.observable();
             ${container}.${model.name}Latitude = ko.observable();
             ${container}.${model.name}Longitude = ko.observable();
 
@@ -602,7 +620,7 @@ class ModelJSTagLib {
             };
 
             function addCenteredMarkerTo${model.name}Map() {
-                var marker = ${model.name}Map.loadFeature({type: 'point', draggable: true}, null);
+                var marker = ${model.name}Map.loadFeature({type: 'point', draggable: ${!readonly}}, null);
                 var mapCenter = ${model.name}Map.getCenter();
                 ${container}.${model.name}Latitude(mapCenter.lat());
                 ${container}.${model.name}Longitude(mapCenter.lng());
@@ -837,6 +855,8 @@ class ModelJSTagLib {
     }
 
     def masterDetailController(attrs, view, out) {
+        boolean readonly = attrs.readonly?.toBoolean() ?: false
+
         out << """
             function MasterDetail() {
                 var self = this;
@@ -875,7 +895,7 @@ class ModelJSTagLib {
                         self.selectedIndex(index);
 
                         self.reset();
-                        self.detailView.sighting.loadSightingData(self.items()[index]);
+                        self.detailView.sighting.loadSightingData(self.items()[index], ${readonly});
 
                         self.addOrEditMode(true);
 

@@ -97,3 +97,9 @@
     height: 450px;
     margin-bottom: 20px;
 }
+
+.text-output {
+    margin-top: 5px;
+    margin-left: 20px;
+    display: inline-block;
+}

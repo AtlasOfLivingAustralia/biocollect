@@ -157,6 +157,7 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderGeoMap(WidgetRenderContext context) {
+        context.model.readonly = false
         context.writer << context.g.render(template: '/output/dataEntryMap', model: context.model)
     }
 
