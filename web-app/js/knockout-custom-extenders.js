@@ -138,14 +138,13 @@ ko.extenders.async = function(computedDeferred, initialValue) {
  */
 ko.extenders.returnTo = function(target, returnToUrl) {
 
-    var encodedReturnToUrl = returnToUrl || fcConfig.returnTo ? encodeURIComponent(returnToUrl) : undefined;
+    var encodedReturnToUrl = returnToUrl ? encodeURIComponent(returnToUrl) : undefined;
 
     var result = ko.pureComputed({
         read: target,
         write: function (url) {
             if (encodedReturnToUrl) {
-                if (encodedReturnToUrl)
-                    var separator = '?';
+                var separator = '?';
                 if (url.indexOf('?') >= 0) {
                     separator = '&';
                 }
