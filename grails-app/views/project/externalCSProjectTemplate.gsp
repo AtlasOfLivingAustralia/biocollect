@@ -32,7 +32,7 @@
     }
     </style>
 
-    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd, sliderpro, restoreTab"/>
+    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd, restoreTab"/>
 </head>
 <g:render template="banner"/>
 
@@ -105,8 +105,6 @@
         var viewModel = new ViewModel();
         ko.applyBindings(viewModel);
 
-
-        //initialiseProjectArea();
         <g:if test="${user?.isAdmin || fc.userIsAlaOrFcAdmin()}">
             populatePermissionsTable();
             new RestoreTab('ul-cs-external-project', 'about-tab');

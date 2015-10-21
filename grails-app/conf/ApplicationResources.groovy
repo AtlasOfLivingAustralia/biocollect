@@ -87,7 +87,6 @@ modules = {
         resource url: 'js/knockout-custom-extenders.js'
         resource url: 'js/knockout-dates.js'
         resource url: 'js/outputs.js'
-        resource url: 'js/ko-components.js'
     }
 
     knockout_sortable {
@@ -344,14 +343,6 @@ modules = {
         resource url: 'vendor/prettytextdiff/jquery.pretty-text-diff.min.js'
         resource url: 'vendor/prettytextdiff/diff_match_patch.js'
         resource url: 'vendor/prettytextdiff/pretty_text_diff_basic.css'
-    }
-
-    sliderpro {
-        dependsOn 'jquery'
-        resource url: 'vendor/slider-pro-master/js/jquery.sliderPro.min.js'
-        resource url: 'vendor/slider-pro-master/css/slider-pro.min.css'
-        resource url: 'vendor/slider-pro-master/css/images/blank.gif'
-
     }
 
     leaflet {
