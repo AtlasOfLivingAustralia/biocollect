@@ -75,38 +75,39 @@
             }
         </style>
     <![endif]-->
-    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, sliderpro, projectActivity, restoreTab, myActivity, records"/>
+    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, records"/>
 </head>
 <body>
 
-<g:render template="banner"/>
-<div class="container-fluid">
+<bc:koLoading>
+    <g:render template="banner"/>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="row-fluid">
+                <div class="clearfix">
+                    <g:if test="${flash.errorMessage || flash.message}">
+                        <div class="span5">
+                            <div class="alert alert-error">
+                                <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
+                                ${flash.errorMessage?:flash.message}
+                            </div>
+                        </div>
+                    </g:if>
 
-    <div class="row-fluid">
-        <div id="project-results-placeholder"></div>
-        <div class="clearfix">
-            <g:if test="${flash.errorMessage || flash.message}">
-                <div class="span5">
-                    <div class="alert alert-error">
-                        <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-                        ${flash.errorMessage?:flash.message}
-                    </div>
                 </div>
-            </g:if>
-
+            </div>
+        </div>
+        <div class="row-fluid">
+            <!-- content  -->
+            <ul id="ul-main-project" class="nav nav-pills">
+                <fc:tabList tabs="${projectContent}"/>
+        </div>
+        <div class="pill-content">
+            <fc:tabContent tabs="${projectContent}" tabClass="pill-pane"/>
         </div>
     </div>
+</bc:koLoading>
 
-    <div class="row-fluid">
-        <!-- content  -->
-        <ul id="ul-main-project" class="nav nav-pills">
-        <fc:tabList tabs="${projectContent}"/>
-    </div>
-    <div class="pill-content">
-        <fc:tabContent tabs="${projectContent}" tabClass="pill-pane"/>
-    </div>
-
-</div>
 <r:script>
     $(function() {
         $(".main-content").show();
@@ -125,22 +126,6 @@
         };
         ko.applyBindings(new ViewModel());
 
-        if (projectViewModel.mainImageUrl()) {
-            $( '#carousel' ).sliderPro({
-                width: '100%',
-                height: 'auto',
-                autoHeight: true,
-                arrows: false, // at the moment we only support 1 image
-                buttons: false,
-                waitForLayers: true,
-                fade: true,
-                autoplay: false,
-                autoScaleLayers: false,
-                touchSwipe:false // at the moment we only support 1 image
-            });
-        }
-
-        initialiseProjectArea();
         var pActivitiesVM = new ProjectActivitiesViewModel(pActivities, pActivityForms, project.projectId, project.sites, user);
         initialiseProjectActivitiesList(pActivitiesVM);
         initialiseData();
@@ -165,6 +150,7 @@
 
         $('.validationEngineContainer').validationEngine();
         $('.helphover').popover({animation: true, trigger:'hover'})    });
+
 
 </r:script>
 </body>

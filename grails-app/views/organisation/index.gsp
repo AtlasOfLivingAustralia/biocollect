@@ -45,7 +45,7 @@
             margin: 5px 0;
         }
     </style>
-    <r:require modules="wmd,knockout,mapWithFeatures,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,sliderpro"/>
+    <r:require modules="wmd,knockout,mapWithFeatures,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid"/>
 </head>
 <body>
 
@@ -80,22 +80,6 @@
 
         ko.applyBindings(organisationViewModel);
         $('#loading').hide();
-        $('#organisationDetails').show({complete:function() {
-            if (organisationViewModel.mainImageUrl()) {
-            $( '#carousel' ).sliderPro({
-                width: '100%',
-                height: 'auto',
-                autoHeight: true,
-                arrows: false, // at the moment we only support 1 image
-                buttons: false,
-                waitForLayers: true,
-                fade: true,
-                autoplay: false,
-                autoScaleLayers: false,
-                touchSwipe:false // at the moment we only support 1 image
-            });
-        }
-        }});
 
         var SELECTED_REPORT_KEY = 'selectedOrganisationReport';
         var selectedReport = amplify.store(SELECTED_REPORT_KEY);
