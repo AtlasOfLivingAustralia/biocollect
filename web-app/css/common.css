@@ -97,3 +97,16 @@
     height: 450px;
     margin-bottom: 20px;
 }
+
+.banner-image-container {
+    position: relative;
+}
+
+.banner-image-caption {
+    position: absolute;
+    background: rgba(255,255,255,.7);
+    padding: 10px;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
