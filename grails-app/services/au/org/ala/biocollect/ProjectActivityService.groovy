@@ -23,4 +23,9 @@ class ProjectActivityService {
     def update(id, body) {
         webService.doPost(grailsApplication.config.ecodata.service.url + '/projectActivity/' + id, body)
     }
+
+    def delete(id) {
+        webService.doDelete(grailsApplication.config.ecodata.service.url + '/projectActivity/' + id)
+    }
+
 }

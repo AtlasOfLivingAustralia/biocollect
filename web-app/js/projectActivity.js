@@ -90,10 +90,10 @@ var ProjectActivitiesDataViewModel = function (pActivitiesVM) {
     var self = $.extend(this, pActivitiesVM);
 };
 
-var ProjectActivitiesSettingsViewModel = function (pActivitiesVM) {
+var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
     var self = $.extend(this, pActivitiesVM);
-
+    self.placeHolder = placeHolder;
     self.speciesOptions =  [{id: 'ALL_SPECIES', name:'All species'},{id:'SINGLE_SPECIES', name:'Single species'}, {id:'GROUP_OF_SPECIES',name:'A selection or group of species'}];
     self.datesOptions = [60, 90, 120, 180];
     self.formNames = ko.observableArray($.map(self.pActivityForms ? self.pActivityForms : [], function (obj, i) {
@@ -104,63 +104,57 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM) {
         self.reset();
         self.projectActivities.push(new ProjectActivity([], self.pActivityForms, self.projectId(), true, self.sites));
         initialiseValidator();
-        showAlert("Successfully added.", "alert-success", 'project-activities-result-placeholder');
+        showAlert("Successfully added.", "alert-success", self.placeHolder);
     };
 
 
-    self.publish = function () {
+    self.updateStatus = function () {
         var jsData = self.current().asJSAll();
-        var error;
+        var error = "";
+        var message = "Required fields are missing in";
         if (jsData.published) {
-            jsData = {};
-            jsData.published = false;
-            return self.genericUpdate(jsData, 'publish', "Successfully unpublished the survey");
-        } else if (!jsData.name && !jsData.description && !jsData.startDate) {
-            error = "Required fields are missing in 'Survey Info' tab";
-        } else if ((jsData.species && !jsData.species.type) || !jsData.species) {
-            error = "Required fields are missing in 'Species' tab";
-        } else if (!jsData.pActivityFormName) {
-            error = "Required fields are missing in 'Surveys Form' tab";
+            return self.unpublish();
         }
-        else if ((jsData.sites && jsData.sites.length == 0) || !jsData.sites) {
-            error = "Minimum one 'Location' must be selected";
+        if (!jsData.name && !jsData.description && !jsData.startDate) {
+            error = error + " 'Survey Info',";
+        }
+        if ((jsData.species && !jsData.species.type) || !jsData.species) {
+            error = error + "  'Species',";
+        }
+        if (!jsData.pActivityFormName) {
+            error = error + " 'Surveys Form',";
+        }
+        if ((jsData.sites && jsData.sites.length == 0) || !jsData.sites) {
+            error = error + " 'Location'";
         }
         if (!error) {
             jsData.published = true;
-            return self.genericUpdate(jsData, 'publish', "Successfully published the survey");
-
+            return self.publish(jsData);
         } else {
-            showAlert(error, "alert-error", 'project-activities-publish-result-placeholder');
+            message = message + error + ' tab';
+            showAlert(message, "alert-error", self.placeHolder);
         }
     };
 
-    self.saveAccess = function (access) {
-        var caller = "access";
-        return self.genericUpdate(self.current().asJS(caller), caller);
+    self.saveInfo = function () {
+        return self.genericUpdate("info");
+    };
+
+    self.saveVisibility = function () {
+        return self.genericUpdate("visibility");
     };
 
     self.saveForm = function () {
-        var caller = "form";
-        return self.genericUpdate(self.current().asJS(caller), caller);
-    };
-
-    self.saveInfo = function () {
-        var caller = "info";
-        return self.genericUpdate(self.current().asJS(caller), caller);
+        return self.genericUpdate("form");
     };
 
     self.saveSpecies = function () {
-        var caller = "species";
-        return self.genericUpdate(self.current().asJS(caller), caller);
+
+        return self.genericUpdate("species");
     };
 
     self.saveSites = function () {
-        var caller = "sites";
-        return self.genericUpdate(self.current().asJS(caller), caller);
-    };
-    self.saveVisibility = function () {
-        var caller = "visibility";
-        return self.genericUpdate(self.current().asJS(caller), caller);
+        return self.genericUpdate("sites");
     };
 
     self.deleteProjectActivity = function () {
@@ -181,103 +175,206 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM) {
                     if (self.projectActivities().length > 0) {
                         self.projectActivities()[0].current(true);
                     }
-                    showAlert("Successfully deleted.", "alert-success", 'project-activities-result-placeholder');
+                    showAlert("Successfully deleted.", "alert-success", self.placeHolder);
                 }
                 else {
-                    self.genericUpdate(self.current().asJS("info"), "info", "Successfully deleted.");
+                    self.delete();
                 }
             }
         });
-
     };
 
-    self.genericUpdate = function (model, caller, message) {
-        if (!$('#project-activities-' + caller + '-validation').validationEngine('validate')) {
-            return false;
-        }
-
-        var divId = 'project-activities-' + caller + '-result-placeholder';
-        if (caller != "publish" && model.published) {
-            showAlert("Unpublish before editing the survey", "alert-error", divId);
-            return;
-        }
-
-        message = typeof message !== 'undefined' ? message : 'Successfully updated';
-        var pActivity = self.current();
-        var url = pActivity.projectActivityId() ? fcConfig.projectActivityUpdateUrl + "&id=" +
-        pActivity.projectActivityId() : fcConfig.projectActivityCreateUrl;
-
+    // Once records are created, only info and visibility can be updated.
+    var canSave = function (pActivity, caller){
         if (caller != "info" && pActivity.projectActivityId() === undefined) {
-            showAlert("Please save 'Survey Info' details before applying other constraints.", "alert-error", divId);
-            return;
+            showAlert("Please save 'Survey Info' details before applying other constraints.", "alert-error", self.placeHolder);
+            return false;
+        } else if(caller == "info" || caller == "visibility"){
+            return true;
         }
-        var asJSON = JSON.stringify(model, function (key, value) {
-            return value === undefined ? "" : value;
-        });
 
+        return !isDataAvailable(pActivity);
+    };
+
+    var isDataAvailable = function(pActivity){
+        var result = true;
         $.ajax({
-            url: url,
-            type: 'POST',
-            data: asJSON,
-            contentType: 'application/json',
+            url: fcConfig.bioActiviyCountUrl + "/" + pActivity.projectActivityId(),
+            type: 'GET',
+            async: false,
+            timeout: 10000,
             success: function (data) {
-
-                if (data.error) {
-                    showAlert("Error :" + data.text, "alert-error", divId);
-                }
-                else if (data.resp && data.resp.projectActivityId) {
-                    $.each(self.projectActivities(), function (i, obj) {
-                        if (obj.current()) {
-                            obj.projectActivityId(data.resp.projectActivityId);
-                            obj.published(model.published);
-                        }
-                    });
-
-                    showAlert(message, "alert-success", divId);
-
-                }
-                else {
-                    if (pActivity.status() == "deleted") {
-                        self.projectActivities.remove(pActivity);
-                        if (self.projectActivities().length > 0) {
-                            self.projectActivities()[0].current(true);
-                        }
-                        showAlert(message, "alert-success", divId);
-                    } else {
-                        $.each(self.projectActivities(), function (i, obj) {
-                            if (obj.current()) {
-                                obj.published(model.published);
-                            }
-                        });
-                        showAlert(message, "alert-success", divId);
-                    }
-                }
-
-                // update document
-                if (!data.error) {
-                    var doc = data.doc;
-                    if (doc && doc.content && doc.content.documentId && doc.content.url) {
-                        $.each(self.projectActivities(), function (i, obj) {
-                            if (obj.current()) {
-                                var logoDocument = obj.findDocumentByRole(obj.documents(), 'logo');
-                                if (logoDocument) {
-                                    obj.removeLogoImage();
-                                    logoDocument.documentId = doc.content.documentId;
-                                    logoDocument.url = doc.content.url;
-                                    obj.documents.push(logoDocument);
-                                }
-                            }
-                        });
-                    }
+                if(data.total == 0){
+                    result = false;
+                } else {
+                    showAlert("Error: Survey settings cannot be changed because record(s) exist.", "alert-error", self.placeHolder);
                 }
             },
             error: function (data) {
-                var status = data.status;
-                showAlert("Error : An unhandled error occurred" + data.status, "alert-error", divId);
+                showAlert("Un handled error, please try again later.", "alert-error", self.placeHolder);
+            }
+        });
+        return result;
+    };
+
+    self.updateLogo = function (data){
+        var doc = data.doc;
+        if (doc && doc.content && doc.content.documentId && doc.content.url) {
+            $.each(self.projectActivities(), function (i, obj) {
+                if (obj.current()) {
+                    var logoDocument = obj.findDocumentByRole(obj.documents(), 'logo');
+                    if (logoDocument) {
+                        obj.removeLogoImage();
+                        logoDocument.documentId = doc.content.documentId;
+                        logoDocument.url = doc.content.url;
+                        obj.documents.push(logoDocument);
+                    }
+                }
+            });
+        }
+    };
+
+    self.create = function (pActivity, caller){
+        var pActivity = self.current();
+        var url = fcConfig.projectActivityCreateUrl;
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: JSON.stringify(pActivity.asJS(caller), function (key, value) {return value === undefined ? "" : value;}),
+            contentType: 'application/json',
+            success: function (data) {
+                var result = data.resp;
+                if (result && result.message == 'created') {
+                    $.each(self.projectActivities(), function (i, obj) {
+                        if (obj.current() && !obj.projectActivityId()) {
+                            obj.projectActivityId(result.projectActivityId);
+                        }
+                    });
+                    self.updateLogo(data);
+                    showAlert("Successfully created", "alert-success", self.placeHolder);
+                } else {
+                    showAlert(data.error ? data.error : "Error creating the survey", "alert-error", self.placeHolder);
+                }
+            },
+            error: function (data) {
+                showAlert("Error creating the survey -" + data.status, "alert-error", self.placeHolder);
             }
         });
     };
-}
+
+    self.update = function(pActivity, caller){
+        var url =  fcConfig.projectActivityUpdateUrl + "/" + pActivity.projectActivityId();
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: JSON.stringify(pActivity.asJS(caller), function (key, value) {return value === undefined ? "" : value;}),
+            contentType: 'application/json',
+            success: function (data) {
+               var result = data.resp;
+               if (result && result.message == 'updated') {
+                    self.updateLogo(data);
+                    showAlert("Successfully updated ", "alert-success", self.placeHolder);
+               } else {
+                    showAlert(data.error ? data.error : "Error updating the survey", "alert-error", self.placeHolder);
+               }
+            },
+            error: function (data) {
+                showAlert("Error updating the survey -" + data.status, "alert-error", self.placeHolder);
+            }
+        });
+    };
+
+    self.delete = function(){
+        var pActivity = self.current();
+        var url =  fcConfig.projectActivityDeleteUrl + "/" + pActivity.projectActivityId();
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            success: function (data) {
+                if (data.error) {
+                    showAlert("Error deleting the survey, please try again later.", "alert-error", self.placeHolder);
+                } else {
+                    self.projectActivities.remove(pActivity);
+                    if (self.projectActivities().length > 0) {
+                        self.projectActivities()[0].current(true);
+                    }
+                    showAlert("Successfully deleted.", "alert-success", self.placeHolder);
+                }
+            },
+            error: function (data) {
+                showAlert("Error deleting the survey -" + data.status, "alert-error", self.placeHolder);
+            }
+        });
+    };
+
+    self.publish = function(jsData){
+
+        var url =  jsData.projectActivityId ? fcConfig.projectActivityUpdateUrl + "/" + jsData.projectActivityId : fcConfig.projectActivityCreateUrl;
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: JSON.stringify(jsData, function (key, value) {return value === undefined ? "" : value;}),
+            contentType: 'application/json',
+            success: function (data) {
+                var result = data.resp;
+                if (result && result.message) {
+                    var pActivityId = jsData.projectActivityId ? jsData.projectActivityId : result.projectActivityId;
+                    var found = ko.utils.arrayFirst(self.projectActivities(), function(obj) {
+                        return obj.projectActivityId() == pActivityId;
+                    });
+                    found ? found.published(true) : '';
+                    showAlert("Successfully published", "alert-success", self.placeHolder);
+                } else{
+                    showAlert(data.error ? data.error : "Error publishing the survey", "alert-error", self.placeHolder);
+                }
+            },
+            error: function (data) {
+                showAlert("Error publishing the survey -" + data.status, "alert-error", self.placeHolder);
+            }
+        });
+    };
+
+    self.unpublish = function(){
+        var pActivity = self.current();
+
+        if(isDataAvailable(pActivity)){
+            return;
+        }
+        var url =  fcConfig.projectActivityUpdateUrl + "/" + pActivity.projectActivityId();
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {published: false},
+            contentType: 'application/json',
+            success: function (data) {
+                var result = data.resp;
+                if (result && result.message == 'updated') {
+                    var found = ko.utils.arrayFirst(self.projectActivities(), function(obj) {
+                        return obj.projectActivityId() == pActivity.projectActivityId();
+                    });
+                    found ? found.published(false) : '';
+                    showAlert("Successfully unpublished", "alert-success", self.placeHolder);
+                } else {
+                    showAlert(data.error ? data.error : "Error unpublished the survey", "alert-error", self.placeHolder);
+                }
+            },
+            error: function (data) {
+                showAlert("Error unpublished the survey -" + data.status, "alert-error", self.placeHolder);
+            }
+        });
+    };
+
+    self.genericUpdate = function (caller) {
+        if (!$('#project-activities-' + caller + '-validation').validationEngine('validate')) {
+            return false;
+        }
+        var pActivity = self.current();
+        if (!canSave(pActivity, caller)) {
+            return;
+        }
+        pActivity.projectActivityId() ? self.update(pActivity, caller) : self.create(pActivity, caller);
+    };
+};
 
 var ProjectActivity = function (o, pActivityForms, projectId, selected, sites) {
     if (!o) o = {};
@@ -520,7 +617,7 @@ var SpeciesConstraintViewModel = function (o) {
         var model = JSON.stringify(jsData, function (key, value) {
             return value === undefined ? "" : value;
         });
-        var divId = 'project-activities-species-result-placeholder';
+        var divId = 'project-activities-result-placeholder';
         $("#addNewSpecies-status").show();
         $.ajax({
             url: fcConfig.addNewSpeciesListsUrl,
@@ -592,6 +689,7 @@ var SpeciesListsViewModel = function (o) {
 
     self.loadAllSpeciesLists = function () {
         var url = fcConfig.speciesListUrl + "?sort=listName&offset=" + self.offset() + "&max=" + self.max();
+        var divId = 'project-activities-result-placeholder';
         $.ajax({
             url: url,
             type: 'GET',
