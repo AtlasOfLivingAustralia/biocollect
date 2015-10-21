@@ -130,3 +130,34 @@ ko.extenders.async = function(computedDeferred, initialValue) {
 
     return plainObservable;
 };
+
+/**
+ * Adds a request parameter named "returnTo" to the value of the target observable.
+ * @param target assumed to be an observable containing a URL.
+ * @param returnToUrl the value for the "returnTo" parameter in the URL.
+ */
+ko.extenders.returnTo = function(target, returnToUrl) {
+
+    var encodedReturnToUrl = returnToUrl || fcConfig.returnTo ? encodeURIComponent(returnToUrl) : undefined;
+
+    var result = ko.pureComputed({
+        read: target,
+        write: function (url) {
+            if (encodedReturnToUrl) {
+                if (encodedReturnToUrl)
+                    var separator = '?';
+                if (url.indexOf('?') >= 0) {
+                    separator = '&';
+                }
+
+                target(url + separator + 'returnTo=' + encodedReturnToUrl);
+            }
+            else {
+                target(url);
+            }
+        }
+    });
+    result(target());
+    return result;
+
+};
