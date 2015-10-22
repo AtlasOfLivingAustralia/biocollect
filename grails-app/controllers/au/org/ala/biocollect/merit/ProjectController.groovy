@@ -220,35 +220,43 @@ class ProjectController {
             def resultJson = projects as JSON
             render resultJson.toString()
         } else {
-            [
-                user: user,
-                showTag: params.tag,
-                downloadLink: createLink(action:'citizenScience',params:[download:true]),
-                projects: projects.collect {
-                    [ // pass array instead of object to reduce JSON size
-                      it.projectId,
-                      it.aim,
-                      it.coverage,
-                      it.description,
-                      it.difficulty,
-                      it.endDate,
-                      it.hasParticipantCost,
-                      it.hasTeachingMaterials,
-                      it.isDIY,
-                      it.isExternal,
-                      it.isSuitableForChildren,
-                      it.keywords,
-                      it.links,
-                      it.name,
-                      it.organisationId,
-                      it.organisationName,
-                      it.scienceType,
-                      it.startDate,
-                      it.urlImage,
-                      it.urlWeb
+            List projectTransformedToArray = projects.collect {
+                [ // pass array instead of object to reduce JSON size
+                  it.projectId,
+                  it.aim,
+                  it.coverage,
+                  it.description,
+                  it.difficulty,
+                  it.endDate,
+                  it.hasParticipantCost,
+                  it.hasTeachingMaterials,
+                  it.isDIY,
+                  it.isExternal,
+                  it.isSuitableForChildren,
+                  it.keywords,
+                  it.links,
+                  it.name,
+                  it.organisationId,
+                  it.organisationName,
+                  it.scienceType,
+                  it.startDate,
+                  it.urlImage,
+                  it.urlWeb
+                ]
+            }
+            withFormat {
+                defaultAction {
+                    [
+                            user: user,
+                            showTag: params.tag,
+                            downloadLink: createLink(action:'citizenScience',params:[download:true]),
+                            projects: projectTransformedToArray
                     ]
                 }
-            ]
+                json {
+                    render( text: [ projects: projectTransformedToArray ] as JSON, contentType: 'application/json' );
+                }
+            }
         }
     }
 
@@ -333,6 +341,23 @@ class ProjectController {
                     }
             ])
         }
+    }
+
+    def fields (){
+        params = [
+                'isSuitableForChildren', // child friendly
+                'difficulty', // difficulty level
+                'isDIY', // DIY
+                'status', 'endDate', // active check field status
+                'hasParticipantCost', // no cost
+                'hasTeachingMaterials', // teaching material
+                '', // mobile uses links to find it out
+                '', // page size
+                'asc','desc', // sort order
+                'name', 'aim','organisationName', // sort fields
+                'endDate' //'daysStatus' sort field has to use end data
+
+        ]
     }
 
     /**
@@ -443,6 +468,59 @@ class ProjectController {
         // will show a list of projects
         // but for now just go home
         forward(controller: 'home')
+    }
+
+    def getProjectList(){
+        List projects = projectService.list(false, true).collect {
+            def urlImage
+            it.documents.each { doc ->
+                if (doc.role == documentService.ROLE_LOGO)
+                    urlImage = doc.url
+                else if (!urlImage && doc.isPrimaryProjectImage)
+                    urlImage = doc.url
+            }
+            // no need to ship the whole link object down to browser
+            def trimmedLinks = it.links.collect {
+                [
+                        role: it.role,
+                        url: it.url
+                ]
+            }
+            def siteGeom = siteService.getRaw(it.projectSiteId)?.site?.extent?.geometry
+            [
+                    projectId  : it.projectId,
+                    aim        : it.aim,
+                    coverage   : siteGeom,
+                    description: it.description,
+                    difficulty : it.difficulty,
+                    endDate    : it.plannedEndDate,
+                    hasParticipantCost: it.hasParticipantCost && true, // force it to boolean
+                    hasTeachingMaterials: it.hasTeachingMaterials && true, // force it to boolean
+                    isDIY      : it.isDIY && true, // force it to boolean
+                    isExternal : it.isExternal && true, // force it to boolean
+                    isSuitableForChildren: it.isSuitableForChildren && true, // force it to boolean
+                    keywords   : it.keywords,
+                    links      : trimmedLinks,
+                    name       : it.name,
+                    organisationId  : it.organisationId,
+                    organisationName: it.organisationName ?: organisationService.getNameFromId(it.organisationId),
+                    scienceType: it.scienceType,
+                    startDate  : it.plannedStartDate,
+                    urlImage   : urlImage,
+                    urlWeb     : it.urlWeb
+            ]
+        }
+
+        if (params.download as boolean) {
+            response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
+            // This is returned to the browswer as a text response due to workaround the warning
+            // displayed by IE8/9 when JSON is returned from an iframe submit.
+            response.setContentType('text/plain;charset=UTF8')
+        } else {
+            response.setContentType('application/json')
+        }
+
+        render( text: projects as JSON );
     }
 
     def species(String id) {

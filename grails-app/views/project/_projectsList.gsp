@@ -153,6 +153,8 @@
 
 </div>
 <r:script>
+var paramsFuc;
+
 $(document).ready(function () {
     /* holds all projects */
     var allProjects = [];
@@ -180,6 +182,24 @@ $(document).ready(function () {
     var pageWindow = new pageVM();
     ko.applyBindings(pageWindow, document.getElementById('pt-table'));
 
+    function getParams(){
+        var params = {
+                'isSuitableForChildren': $('#pt-search-children').prop('checked'), // child friendly
+                'difficulty': $('#pt-search-difficulty').val(), // difficulty level
+                'isDIY': $('#pt-search-diy').prop('checked'), // DIY
+                'status': $('#pt-search-active').prop('checked'), // active check field status
+                'hasParticipantCost': $('#pt-search-noCost').prop('checked'), // no cost
+                'hasTeachingMaterials': $('#pt-search-teach').prop('checked'), // teaching material
+                'isMobile': $('#pt-search-mobile').prop('checked'), // mobile uses links to find it out
+                'pageSize': perPage, // page size
+                'sortOrder': sortOrder, // sort order
+                'sortBy': sortBy,
+                'searchTerm':$('#pt-search').val().toLowerCase()
+        }
+        return params;
+    }
+
+
     /*************************************************\
      *  Filter projects by search term
      \*************************************************/
@@ -203,6 +223,7 @@ $(document).ready(function () {
             if (showActiveOnly && item.daysStatus() != 'active') continue;
             if (showSuitableForChildrenOnly && !item.isSuitableForChildren()) continue;
             if (showDifficultyOnly && item.difficulty() != showDifficultyOnly) continue;
+            // not used in citizen science project finder.
             if (showProjectTypeOnly && showProjectTypeOnly.indexOf(item.transients.kindOfProject()) < 0) continue;
             if (showDIYOnly && !item.isDIY()) continue;
             if (showTeachOnly && !item.hasTeachingMaterials()) continue;
@@ -387,5 +408,6 @@ $(document).ready(function () {
     <g:if test="${controllerName != 'organisation'}">
         $('#pt-selectors').show();
     </g:if>
+    initialiseProjectFinder(getParams());
 });
 </r:script>

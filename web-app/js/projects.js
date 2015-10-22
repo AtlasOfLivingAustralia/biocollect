@@ -709,6 +709,25 @@ function CitizenScienceFinderProjectViewModel(props) {
     self.transients.state = props[2] && props[2].state;
 }
 
+function initialiseProjectFinder(params){
+    $.ajax({
+        url: fcConfig.projectListUrl,
+        data: params,
+        success: function(data){
+            var projectVMs = [];
+            var organisation = fcConfig.organisation || []
+            $.each(data, function(i, project) {
+                projectVMs.push(new ProjectViewModel(project, false, organisation));
+            });
+            window.pago.init(projectVMs);
+        },
+        error: function(){
+            console.error("Could not load project data.")
+            console.log(arguments)
+        }
+    })
+}
+
 /**
  * View model for use by the project create and edit pages.  Extends the ProjectViewModel to provide support
  * for organisation search and selection as well as saving project information.

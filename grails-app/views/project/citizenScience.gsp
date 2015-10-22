@@ -15,7 +15,8 @@
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         imageLocation:"${resource(dir:'/images')}",
         logoLocation:"${resource(dir:'/images/filetypes')}",
-        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}"
+        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
+        projectListUrl: "${createLink(controller: 'project', action: 'getProjectList')}"
     }
     </r:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
@@ -44,7 +45,7 @@ $(document).ready(function () {
     });
 
     window.pago.init([
-    <g:each var="p" in="${projects}">new CitizenScienceFinderProjectViewModel(${p as JSON}),</g:each>
+    %{--<g:each var="p" in="${projects}">new CitizenScienceFinderProjectViewModel(${p as JSON}),</g:each>--}%
     ]);
 });
 </r:script>
