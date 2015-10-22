@@ -189,7 +189,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     var isDataAvailable = function(pActivity){
         var result = true;
         $.ajax({
-            url: fcConfig.bioActiviyCountUrl + "/" + pActivity.projectActivityId(),
+            url: fcConfig.activiyCountUrl + "/" + pActivity.projectActivityId(),
             type: 'GET',
             async: false,
             timeout: 10000,
