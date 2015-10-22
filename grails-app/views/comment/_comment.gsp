@@ -37,13 +37,13 @@
             <div class="pull-left comment-indent" data-bind="css: { hide: !$data.parent()}"></div>
             <div class="media-body" >
                 <b class="username media-heading" data-bind="text: displayName, visible: !!displayName"></b>
-                <span data-bind="visible: !!dateCreated()">commented on <span data-bind="text: dateCreated.formattedDate"></span></span>
+                <span data-bind="visible: !!lastUpdated()">commented on <span data-bind="text: lastUpdated.formattedDate"></span></span>
                 <div data-bind="visible: !edit()">
                     <pre class="media" data-bind="text: text">
                     </pre>
                     <ul class="breadcrumb margin-bottom-five">
-                        <li data-bind="visible: $root.canModifyDeleteComment($data)"><a class="btn-link" data-bind="click: $root.edit">edit</a> <span class="divider">|</span></li>
-                        <li data-bind="visible: $root.canModifyDeleteComment($data)"><a class="btn-link" data-bind="click: $root.delete">delete</a> <span class="divider">|</span></li>
+                        <li data-bind="visible: $root.canModifyOrDeleteComment($data)"><a class="btn-link" data-bind="click: $root.edit">edit</a> <span class="divider">|</span></li>
+                        <li data-bind="visible: $root.canModifyOrDeleteComment($data)"><a class="btn-link" data-bind="click: $root.delete">delete</a> <span class="divider">|</span></li>
                         <li data-bind="visible: !showChildren() && children().length, click: $root.viewChildren" text="view replies"><a class="btn-link">
                             <i class="icon-comment"></i> show
                         </a><span class="divider">|</span></li>

@@ -10,6 +10,8 @@
         <meta name="layout" content="${hubConfig.skin}"/>
         <title>Edit | ${activity.type} | Bio Collect</title>
     </g:else>
+    %{-- this will ultimately follow through to the comment controller using url mapping --}%
+    <g:set var="commentUrl" value="${resource(dir:'/bioActivity')}/${activity.activityId}/comment"></g:set>
 
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
@@ -21,11 +23,15 @@
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
-        imageLocation:"${resource(dir:'/images/filetypes')}"
+        imageLocation:"${resource(dir:'/images/filetypes')}",
+        createCommentUrl : "${commentUrl}",
+        commentListUrl:"${commentUrl}",
+        updateCommentUrl:"${commentUrl}",
+        deleteCommentUrl:"${commentUrl}"
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,species,activity, projectActivityInfo, imageViewer"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,species,activity, projectActivityInfo, imageViewer, comments"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -124,6 +130,10 @@
         </div>
     </g:each>
 
+    <g:if test="${pActivity.commentsAllowed}">
+        <g:render template="/comment/comment"></g:render>
+    </g:if>
+
     <div class="form-actions">
         <button type="button" id="cancel" class="btn">return</button>
     </div>
@@ -192,6 +202,7 @@
             ${pActivity ?: 'null'});
 
         ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
+        ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'))
 
         var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
         if(mapFeatures !=null && mapFeatures.features !== undefined && mapFeatures.features.length >0){

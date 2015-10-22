@@ -32,7 +32,7 @@ function CommentViewModel(config) {
     self.displayName = ko.observable(config.displayName || '')
     self.text = ko.observable(config.text || '')
     self.parent = ko.observable(config.parent || null)
-    self.dateCreated = ko.observable(config.dateCreated || null).extend({simpleDate: true})
+    self.lastUpdated = ko.observable(config.lastUpdated || null).extend({simpleDate: true})
     //stores replies to a comment
     self.children = ko.observableArray(config.children || [])
     // controls editing of a comment by an owner
@@ -48,7 +48,7 @@ function CommentViewModel(config) {
         self.displayName(config.displayName)
         self.text(config.text)
         self.parent(config.parent)
-        self.dateCreated(config.dateCreated)
+        self.lastUpdated(config.lastUpdated)
     }
 
     // talk with server to create a comment, callback sent from listmodelview
@@ -154,7 +154,7 @@ function CommentListViewModel() {
     self.showLoadMore = ko.observable(true);
 
     self.sort = {
-        field: ko.observable('dateCreated'),
+        field: ko.observable('lastUpdated'),
         order: ko.observable('desc')
     }
 
@@ -196,11 +196,11 @@ function CommentListViewModel() {
         var params = {}, selection = self.selectedSort();
         switch (selection.sort) {
             case 'oldestfirst':
-                params.sort = 'dateCreated'
+                params.sort = 'lastUpdated'
                 params.order = 'asc'
                 break;
             case 'latestfirst':
-                params.sort = 'dateCreated'
+                params.sort = 'lastUpdated'
                 params.order = 'desc'
                 break;
         }
@@ -354,7 +354,7 @@ function CommentListViewModel() {
     }
 
     // controls edit/delete button on a comment
-    self.canModifyDeleteComment = function(comment){
+    self.canModifyOrDeleteComment = function(comment){
         return self.admin || (self.userId() == comment.userId())
     }
 
