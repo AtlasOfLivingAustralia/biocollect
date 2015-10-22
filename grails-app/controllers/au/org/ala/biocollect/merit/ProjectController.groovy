@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
 import grails.converters.JSON
+import org.apache.http.HttpStatus
 import org.joda.time.DateTime
 
 class ProjectController {
@@ -418,13 +419,9 @@ class ProjectController {
         if (result.error) {
             render result as JSON
         } else {
-            //println "json result is " + (result as JSON)
             render result.resp as JSON
         }
     }
-
-
-
 
     @PreAuthorise
     def update(String id) {
@@ -435,8 +432,15 @@ class ProjectController {
 
     @PreAuthorise(accessLevel = 'admin')
     def delete(String id) {
-        projectService.delete(id)
-        forward(controller: 'home')
+        def resp = projectService.delete(id)
+        if(resp == HttpStatus.SC_OK){
+            flash.message = 'Successfully deleted'
+            render status:resp, text: flash.message
+        } else {
+            response.status = resp
+            flash.errorMessage = 'Error deleting the project, please try again later.'
+            render status:resp, error: flash.errorMessage
+        }
     }
 
     def list() {

@@ -10,6 +10,7 @@
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         projectUpdateUrl: "${createLink(action: 'ajaxUpdate', id: project.projectId)}",
         projectEditUrl:"${createLink(action:'edit', id:project.projectId)}",
+        projectDeleteUrl:"${createLink(action:'delete', id:project.projectId)}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
         spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
         spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
@@ -36,21 +37,22 @@
 </head>
 <g:render template="banner"/>
 
-<div class="row-fluid">
-    <div class="row-fluid">
-        <div class="clearfix">
-            <g:if test="${flash.errorMessage || flash.message}">
-                <div class="span5">
-                    <div class="alert alert-error">
-                        <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-                        ${flash.errorMessage?:flash.message}
-                    </div>
-                </div>
-            </g:if>
 
-        </div>
+<div class="row-fluid">
+    <div class="clearfix">
+        <div id="project-results-placeholder"></div>
+        <g:if test="${flash.errorMessage || flash.message}">
+            <div class="span5">
+                <div class="alert alert-error">
+                    <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
+                    ${flash.errorMessage?:flash.message}
+                </div>
+            </div>
+        </g:if>
+
     </div>
 </div>
+
 <g:if test="${user?.isAdmin}">
     <div class="container-fluid">
         <div class="row-fluid">
@@ -88,19 +90,8 @@
         var ViewModel = function() {
             var self = this;
             $.extend(this, projectViewModel);
-
-            self.editProject = function() {
-                window.location.href = fcConfig.projectEditUrl;
-            };
-            self.deleteProject = function() {
-                var message = "<span class='label label-important'>Important</span><p><b>This cannot be undone</b></p><p>Are you sure you want to delete this project?</p>";
-                bootbox.confirm(message, function(result) {
-                    if (result) {
-                        console.log("not implemented!");
-                    }
-                });
-            };
-
+            self.transients = self.transients || {};
+            self.transients.resultsHolder = 'project-results-placeholder';
         };
         var viewModel = new ViewModel();
         ko.applyBindings(viewModel);

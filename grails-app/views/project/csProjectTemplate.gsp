@@ -53,6 +53,7 @@
         videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
         activityListUrl : "${createLink(controller: 'bioActivity', action: 'ajaxListForProject', params: [id:project.projectId])}",
         recordListUrl: "${createLink(controller: 'record', action: 'ajaxListForProject', params: [id:project.projectId])}",
+        projectDeleteUrl:"${createLink(action:'delete', id:project.projectId)}",
         ßerrorViewer: "${createLink(controller: 'resource', action: 'error')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}"
         },
@@ -99,13 +100,14 @@
         <div class="row-fluid">
             <!-- content  -->
             <ul id="ul-main-project" class="nav nav-pills">
-            <fc:tabList tabs="${projectContent}"/>
+                <fc:tabList tabs="${projectContent}"/>
         </div>
         <div class="pill-content">
             <fc:tabContent tabs="${projectContent}" tabClass="pill-pane"/>
         </div>
     </div>
 </bc:koLoading>
+
 <r:script>
     $(function() {
         $(".main-content").show();
@@ -119,18 +121,8 @@
         var ViewModel = function() {
             var self = this;
             $.extend(this, projectViewModel);
-
-            self.editProject = function() {
-                window.location.href = fcConfig.projectEditUrl;
-            };
-            self.deleteProject = function() {
-                var message = "<span class='label label-important'>Important</span><p><b>This cannot be undone</b></p><p>Are you sure you want to delete this project?</p>";
-                bootbox.confirm(message, function(result) {
-                    if (result) {
-                        console.log("not implemented!");
-                    }
-                });
-            };
+            self.transients = self.transients || {};
+            self.transients.resultsHolder = 'project-results-placeholder';
         };
         ko.applyBindings(new ViewModel());
 
