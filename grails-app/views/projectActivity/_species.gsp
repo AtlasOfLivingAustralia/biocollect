@@ -7,7 +7,7 @@
             <div class="well">
                 <g:render template="/projectActivity/warning"/>
 
-                <h5>You can constrain the species available for selection in this survey to:</h5>
+                <h5>You can constrain the species available for selection in this survey to: <span class="req-field"></span></h5>
 
                 <div class="row-fluid">
                     <div class="span4 text-left">

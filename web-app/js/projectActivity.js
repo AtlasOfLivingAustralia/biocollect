@@ -107,32 +107,22 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         showAlert("Successfully added.", "alert-success", self.placeHolder);
     };
 
-
     self.updateStatus = function () {
-        var jsData = self.current().asJSAll();
-        var error = "";
-        var message = "Required fields are missing in";
+        var current = self.current();
+        var jsData = current.asJSAll();
+
         if (jsData.published) {
             return self.unpublish();
         }
-        if (!jsData.name && !jsData.description && !jsData.startDate) {
-            error = error + " 'Survey Info',";
-        }
-        if ((jsData.species && !jsData.species.type) || !jsData.species) {
-            error = error + "  'Species',";
-        }
-        if (!jsData.pActivityFormName) {
-            error = error + " 'Surveys Form',";
-        }
-        if ((jsData.sites && jsData.sites.length == 0) || !jsData.sites) {
-            error = error + " 'Location'";
-        }
-        if (!error) {
+        if (jsData.name && jsData.description && jsData.startDate &&
+            current.species.isValid() &&
+            jsData.pActivityFormName &&
+            (jsData.sites && jsData.sites.length > 0)
+        ) {
             jsData.published = true;
             return self.publish(jsData);
         } else {
-            message = message + error + ' tab';
-            showAlert(message, "alert-error", self.placeHolder);
+            showAlert("Mandatory fields in 'Survey Info', 'Species', 'Survey Form' and 'Locations' tab must be completed before publishing the survey.", "alert-error", self.placeHolder);
         }
     };
 
@@ -586,6 +576,11 @@ var SpeciesConstraintViewModel = function (o) {
             jsData.speciesLists = ko.mapping.toJS(self.speciesLists, {ignore: ['listType', 'fullName', 'itemCount', 'description', 'listType', 'allSpecies', 'transients']});
         }
         return jsData;
+    };
+
+    self.isValid = function(){
+        return ((self.type() == "ALL_SPECIES") || (self.type() == "SINGLE_SPECIES" && self.singleSpecies.guid()) ||
+            (self.type() == "GROUP_OF_SPECIES" && self.speciesLists().length > 0))
     };
 
     self.saveNewSpeciesName = function () {

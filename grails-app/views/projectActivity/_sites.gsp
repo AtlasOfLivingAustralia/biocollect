@@ -53,7 +53,7 @@
         </div>
 
         <div class="span6 text-left">
-            <h4 class="text-right"> Sites associated with this survey:</h4>
+            <h4 class="text-right"> Sites associated with this survey: <span class="req-field"></span></h4>
             <!-- ko foreach: sites -->
             <span data-bind="if: added()">
                 <div class="row-fluid">
@@ -70,7 +70,8 @@
     </div>
 
     </br>
-
+    <!--
+    Not supported.
     <div class="row-fluid">
 
         <div class="span12">
@@ -80,6 +81,7 @@
         </div>
 
     </div>
+    -->
 
     <!-- /ko -->
     <!-- /ko -->
