@@ -10,7 +10,7 @@
 </style>
 <div class="row-fluid" data-bind="visible:mainImageUrl">
     <div class="span12 banner-image-container">
-        <img src="" data-bind="attr: {src: mainImageUrl}"/>
+        <img src="" data-bind="attr: {src: mainImageUrl}" class="banner-image"/>
         <div data-bind="visible:urlWeb" class="banner-image-caption"><strong><g:message code="g.visitUsAt" /> <a data-bind="attr:{href:urlWeb}"><span data-bind="text:urlWeb"></span></a></strong></div>
     </div>
 </div>
