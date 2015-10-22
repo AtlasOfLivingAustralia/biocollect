@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
 import grails.converters.JSON
+import org.apache.http.HttpStatus
 import org.joda.time.DateTime
 
 class ProjectController {
@@ -81,7 +82,7 @@ class ProjectController {
     }
 
     protected Map surveyProjectContent(project, user) {
-        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
+        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite, click: "initialiseProjectArea"],
          news:[label:'News', visible: true, type:'tab'],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
@@ -416,13 +417,9 @@ class ProjectController {
         if (result.error) {
             render result as JSON
         } else {
-            //println "json result is " + (result as JSON)
             render result.resp as JSON
         }
     }
-
-
-
 
     @PreAuthorise
     def update(String id) {
@@ -433,8 +430,15 @@ class ProjectController {
 
     @PreAuthorise(accessLevel = 'admin')
     def delete(String id) {
-        projectService.delete(id)
-        forward(controller: 'home')
+        def resp = projectService.delete(id)
+        if(resp == HttpStatus.SC_OK){
+            flash.message = 'Successfully deleted'
+            render status:resp, text: flash.message
+        } else {
+            response.status = resp
+            flash.errorMessage = 'Error deleting the project, please try again later.'
+            render status:resp, error: flash.errorMessage
+        }
     }
 
     def list() {

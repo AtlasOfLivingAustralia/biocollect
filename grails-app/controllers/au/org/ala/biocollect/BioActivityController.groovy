@@ -148,7 +148,7 @@ class BioActivityController {
             Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
             model = activityModel(activity, projectId)
             model.pActivity = pActivity
-            model.returnTo = g.createLink(controller: 'project', id: projectId)
+            model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', id: projectId)
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
 
             addOutputModel(model)

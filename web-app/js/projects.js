@@ -668,6 +668,34 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             self.addLink(link.role, link.url);
         });
     }
+
+    self.editProject = function() {
+        window.location.href = fcConfig.projectEditUrl;
+    };
+
+    self.deleteProject = function () {
+        var message = "<span class='label label-important'>Important</span><p><b>This cannot be undone</b></p><p>Are you sure you want to delete this project?</p>";
+        bootbox.confirm(message, function (result) {
+            if (result) {
+                $.ajax({
+                    url: fcConfig.projectDeleteUrl,
+                    type: 'DELETE',
+                    success: function (data) {
+                        if (data.error) {
+                            showAlert(data.error, "alert-error", self.transients.resultsHolder);
+                        } else {
+                            showAlert("Successfully deleted, redirecting to home page.", "alert-success", self.transients.resultsHolder);
+                            window.location.href = fcConfig.serverUrl;
+                        }
+                    },
+                    error: function (data) {
+                        showAlert("Error: Unhandled error", "alert-error", self.transients.resultsHolder);
+                    }
+                });
+            }
+        });
+    };
+
 };
 
 /**

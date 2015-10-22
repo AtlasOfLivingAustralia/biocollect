@@ -119,7 +119,7 @@
                                 'data-url': transients.imageUploadUrl(),
                                 'data-owner-type': 'projectActivityId',
                                 'data-owner-id': projectActivityId()},
-                            stagedImageUpload: documents,
+                                 stagedImageUpload: documents,
                                      visible:!logoUrl()">
                             <i class="icon-plus"></i>
                             <input id="logo" type="file" name="files">
