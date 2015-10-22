@@ -197,7 +197,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                 if(data.total == 0){
                     result = false;
                 } else {
-                    showAlert("Error: Survey settings cannot be changed because record(s) exist.", "alert-error", self.placeHolder);
+                    showAlert("Error: Survey cannot be edited because records exist - to edit the survey, delete all records.", "alert-error", self.placeHolder);
                 }
             },
             error: function (data) {
