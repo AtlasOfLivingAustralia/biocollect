@@ -674,7 +674,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     };
 
     self.deleteProject = function () {
-        var message = "<span class='label label-important'>Important</span><p><b>This cannot be undone</b></p><p>Are you sure you want to delete this project?</p>";
+        var message = "<span class='label label-important'>Important</span><p><b>This cannot be undone</b></p><p>Are you sure you want to delete this project? All associated data will also be deleted.</p>";
         bootbox.confirm(message, function (result) {
             if (result) {
                 $.ajax({
