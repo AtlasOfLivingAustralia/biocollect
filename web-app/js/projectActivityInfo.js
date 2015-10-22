@@ -16,7 +16,7 @@ var pActivityInfo = function(o, selected){
     self.current = ko.observable(selected);
 
     self.addActivity = function(){
-        window.location.href = fcConfig.bioActiviyCreateUrl + "/" + self.projectActivityId();
+        window.location.href = fcConfig.activityCreateUrl + "/" + self.projectActivityId();
     };
 
     self.transients = self.transients || {};
