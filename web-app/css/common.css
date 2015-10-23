@@ -116,3 +116,10 @@
     left: 0;
     width: 100%;
 }
+}
+
+.text-output {
+    margin-top: 5px;
+    margin-left: 20px;
+    display: inline-block;
+}

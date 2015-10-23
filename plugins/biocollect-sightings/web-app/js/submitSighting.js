@@ -653,7 +653,8 @@ function Sighting() {
             "userId",
             "individualCount",
             "eventDate",
-            "occurrenceRemarks"];
+            "occurrenceRemarks",
+            "identificationVerificationStatus"];
 
         fields.forEach(function (field) {
             var elem = $("#" + field)[0];
@@ -690,12 +691,19 @@ function Sighting() {
         return record;
     };
 
-    this.loadSightingData = function (data) {
+    this.loadSightingData = function (data, readonly) {
+        var suffix = readonly ? "View" : "";
+
         for (var property in data) {
-            var elem = $('#' + property);
+            var id = '#' + property + suffix;
+            var elem = $(id);
             if (elem) {
-                elem.val(data[property]);
-                elem.change();
+                if (readonly) {
+                    elem.text(data[property]);
+                } else {
+                    elem.val(data[property]);
+                    elem.change();
+                }
             }
         }
 
