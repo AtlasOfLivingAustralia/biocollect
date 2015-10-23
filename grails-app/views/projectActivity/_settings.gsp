@@ -64,7 +64,7 @@
             <div class="span12">
 
                 <ul id="ul-survey-constraint-citizen-science" class="nav nav-pills">
-                    <li><a href="#survey-info" id="survey-info-tab" data-toggle="tab">Survey Info</a></li>
+                    <li class="active"><a href="#survey-info" id="survey-info-tab" data-toggle="tab">Survey Info</a></li>
                     <li><a href="#survey-species" id="survey-species-tab" data-toggle="tab">Species</a></li>
                     <li><a href="#survey-form" id="survey-form-tab" data-toggle="tab">Survey Form</a></li>
                     <li><a href="#survey-locations" id="survey-locations-tab" data-toggle="tab">Locations</a></li>
@@ -72,7 +72,7 @@
                 </ul>
 
                 <div class="pill-content">
-                    <div class="pill-pane" id="survey-info">
+                    <div class="pill-pane active" id="survey-info">
                         <span class="validationEngineContainer" id="project-activities-info-validation">
                             <div id="project-activities-info-result-placeholder"></div>
                             <g:render template="/projectActivity/info"/>
