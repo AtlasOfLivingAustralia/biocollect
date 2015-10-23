@@ -132,8 +132,12 @@ class ModelJSTagLib {
             } else if (mod.dataType == "geoMap") {
                 out << INDENT*4 << """
                     self.data.${mod.name}(data.${mod.name});
-                    self.data.${mod.name}Latitude(data.${mod.name}Latitude);
-                    self.data.${mod.name}Longitude(data.${mod.name}Longitude);
+                    if (data.${mod.name}Latitude && typeof data.${mod.name}Latitude !== 'undefined') {
+                        self.data.${mod.name}Latitude(data.${mod.name}Latitude);
+                    }
+                    if (data.${mod.name}Longitude && typeof data.${mod.name}Longitude !== 'undefined') {
+                        self.data.${mod.name}Longitude(data.${mod.name}Longitude);
+                    }
                 """
                 if (readonly) {
                     out << INDENT * 4 << """
