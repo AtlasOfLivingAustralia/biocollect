@@ -16,7 +16,8 @@ var RecordListsViewModel = function(){
 
   self.refreshPage = function(rp){
     if(!rp) rp = 1;
-    var params = { max: self.pagination.resultsPerPage(), offset:rp-1,  sort:'desc', order:'lastUpdated'};
+    var params = { max: self.pagination.resultsPerPage(), offset:rp-1,  sort:'lastUpdated', order:'desc'};
+      console.log("record : " + $.param( params ))
     var url = fcConfig.recordListUrl + ((fcConfig.recordListUrl.indexOf('?') > -1) ? '&' : '?') + $.param( params );
     $.ajax({
       url: url,
