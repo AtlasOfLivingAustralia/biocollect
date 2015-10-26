@@ -59,6 +59,20 @@
             </div>
         </div>
 
+         <!-- ko foreach: projectActivities -->
+            <!-- ko if: current -->
+            <span data-bind="if: !transients.saveOrUnPublishAllowed()">
+                <div class="row-fluid">
+                    <div class="span12 text-left">
+                        <div id="warning-species" class="alert alert-warning">
+                            All records needs to be deleted before unpublishing the survey.
+                        </div>
+                    </div>
+                </div>
+            </span>
+            <!-- /ko -->
+         <!-- /ko -->
+
         <div id="project-activities-result-placeholder"></div>
 
         <div class="row-fluid">
