@@ -139,7 +139,6 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     };
 
     self.saveSpecies = function () {
-
         return self.genericUpdate("species");
     };
 
@@ -443,7 +442,8 @@ var ProjectActivity = function (o, pActivityForms, projectId, selected, sites) {
             jsData.pActivityFormName = self.pActivityFormName();
         }
         else if (by == "info") {
-            var ignore = self.ignore.concat(['current', 'pActivityForms', 'pActivityFormImages', 'access', 'species', 'sites', 'transients', 'endDate']);
+            var ignore = self.ignore.concat(['current', 'pActivityForms', 'pActivityFormImages',
+                'access', 'species', 'sites', 'transients', 'endDate','visibility','pActivityFormName', 'restrictRecordToSites']);
             ignore = $.grep(ignore, function (item, i) {
                 return item != "documents";
             });
