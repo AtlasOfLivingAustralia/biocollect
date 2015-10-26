@@ -16,7 +16,8 @@ var RecordListsViewModel = function(){
 
   self.refreshPage = function(rp){
     if(!rp) rp = 1;
-    var params = { max: self.pagination.resultsPerPage(), offset:rp-1,  sort:'desc', order:'lastUpdated'};
+    var params = { max: self.pagination.resultsPerPage(), offset:rp-1,  sort:'lastUpdated', order:'desc'};
+
     var url = fcConfig.recordListUrl + ((fcConfig.recordListUrl.indexOf('?') > -1) ? '&' : '?') + $.param( params );
     $.ajax({
       url: url,
@@ -49,9 +50,9 @@ var RecordViewModel = function(record){
   self.projectActivityId = ko.observable(record.projectActivityId);
   self.lastUpdated = ko.observable(record.lastUpdated).extend({simpleDate: false});
   self.transients = {};
-  self.transients.viewUrl = ko.observable(fcConfig.activityViewUrl + "/" + self.activityId());
-  self.transients.editUrl = ko.observable(fcConfig.activityEditUrl + "/" + self.activityId());
+  self.transients.viewUrl = ko.observable(fcConfig.activityViewUrl + "/" + self.activityId()).extend({returnTo:fcConfig.returnTo});
+  self.transients.editUrl = ko.observable(fcConfig.activityEditUrl + "/" + self.activityId()).extend({returnTo:fcConfig.returnTo});;
   self.transients.deleteUrl = ko.observable(fcConfig.activityDeleteUrl + "/" + self.activityId());
-  self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId());
+  self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo:fcConfig.returnTo});;
   self.transients.pActivity = new pActivityInfo(record.pActivity);
 };

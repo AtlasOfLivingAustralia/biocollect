@@ -207,8 +207,7 @@
         /* Master controller for page. This handles saving each model as required. */
         var Master = function () {
             var self = this;
-            this.subscribers = [];
-            this.maps = {};
+            self.subscribers = [];
 
             // client models register their name and methods to participate in saving
             self.register = function (modelInstanceName, getMethod, isDirtyMethod, resetMethod) {
@@ -218,10 +217,6 @@
                     isDirty: isDirtyMethod,
                     reset: resetMethod
                 });
-            };
-
-            self.registerMap = function(uniqueId, map) {
-                self.maps[uniqueId] = map;
             };
 
             // master isDirty flag for the whole page - can control button enabling
@@ -240,21 +235,21 @@
             this.collectData = function() {
                 var activityData, outputs = [], photoPoints;
                 $.each(this.subscribers, function(i, obj) {
-                    if (obj.isDirty()) {
-                        if (obj.model === 'activityModel') {
-                            activityData = obj.get();
-                        } else if (obj.model === 'photoPoints') {
-                            photoPoints = obj.get();
-                        }
-                        else {
-                            outputs.push(obj.get());
-                        }
+                    if (obj.model === 'activityModel') {
+                        activityData = obj.get();
+                    } else if (obj.model === 'photoPoints' && obj.isDirty()) {
+                        photoPoints = obj.get();
+                    }
+                    else if (obj.isDirty()) {
+                        outputs.push(obj.get());
                     }
                 });
                 if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
                     return null;
                 } else {
-                    if (activityData === undefined) { activityData = {}}
+                    if (activityData === undefined) {
+                        activityData = {}
+                    }
                     activityData.outputs = outputs;
 
                     return activityData;
@@ -416,19 +411,19 @@
                     <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
                         self.updatePhotoPointModel(matchingSite);
                     </g:if>
-                });
+              });
 
-                self.goToProject = function () {
-                    if (self.projectId) {
-                        document.location.href = fcConfig.projectViewUrl + self.projectId;
-                    }
-                };
+                 self.goToProject = function () {
+                     if (self.projectId) {
+                         document.location.href = fcConfig.projectViewUrl + self.projectId;
+                     }
+                 };
 
-                self.goToSite = function () {
-                    if (self.siteId()) {
-                        document.location.href = fcConfig.siteViewUrl + self.siteId();
-                    }
-                };
+                 self.goToSite = function () {
+                     if (self.siteId()) {
+                         document.location.href = fcConfig.siteViewUrl + self.siteId();
+                     }
+                 };
 
                 <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
                     self.transients.photoPointModel = ko.observable(new PhotoPointViewModel(site, activityLevelData.activity));

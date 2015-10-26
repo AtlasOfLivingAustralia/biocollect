@@ -351,14 +351,6 @@ modules = {
         resource url: 'vendor/prettytextdiff/pretty_text_diff_basic.css'
     }
 
-    sliderpro {
-        dependsOn 'jquery'
-        resource url: 'vendor/slider-pro-master/js/jquery.sliderPro.min.js'
-        resource url: 'vendor/slider-pro-master/css/slider-pro.min.css'
-        resource url: 'vendor/slider-pro-master/css/images/blank.gif'
-
-    }
-
     leaflet {
         resource url: 'vendor/leaflet/0.7.3/leaflet.js'
         resource url: 'vendor/leaflet/0.7.3/leaflet.css'
@@ -368,5 +360,10 @@ modules = {
         resource url: 'vendor/font-awesome/4.4.0/css/font-awesome.min.css', attrs:[media:'all']
     }
     /** END - Fildcapture/Marite resources **/
-    
+
+    comments{
+        dependsOn 'knockout'
+        resource url: 'css/comment.css'
+        resource url: 'js/comment.js'
+    }
 }

@@ -77,50 +77,52 @@
 </g:if>
 </div>
 <p/>
-<table class="table table-hover">
-    <tbody data-bind="foreach:pageProjects">
-    <tr style="border-bottom: 2px solid grey">
-        <td style="width:200px">
-            <div class="projectLogo well">
-                <img style="max-width:100%;max-height:100%" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name,src:transients.imageUrl}"/>
-            </div>
-        </td>
-        <td>
-            <a data-bind="attr:{href:transients.indexUrl}">
-                <span data-bind="text:name" style="font-size:150%;font-weight:bold"></span>
-            </a>
-            <div data-bind="visible:transients.orgUrl">
-                <span data-bind="visible:transients.daysSince() >= 0" style="font-size:80%;color:grey">Started <!--ko text:transients.since--><!--/ko-->&nbsp;</span>
-                <g:if test="${controllerName != 'organisation'}">
-                    <a data-bind="text:organisationName,attr:{href:transients.orgUrl}"></a>
-                </g:if>
-            </div>
-            <div data-bind="text:aim"></div>
-            <div style="padding: 4px">
-                <i class="icon-info-sign"></i>&nbsp;<span data-bind="html:transients.links"/>
-            </div>
-            <div style="line-height:2.2em">
-                TAGS:&nbsp;<g:render template="/project/tags"/>
-            </div>
-            <br/>
-            <div data-bind="visible:transients.daysSince() >= 0">
-                <b><g:message code="project.display.status" /></b>
-                <g:render template="/project/daysline"/>
-            </div>
-            <div data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() == 0">
-                <g:message code="project.display.concluded" /> <a data-bind="attr:{href:transients.indexUrl}">
-                <span style="font-weight:bold"><g:message code="project.display.view" /></span></a>
-            </div>
-        </td>
-        <td style="width:10em;text-align:center">
-            <g:render template="/project/dayscount"/>
-<g:if test="${controllerName == 'organisation'}">
-            <span class="projectType" data-bind="text:transients.kindOfProjectDisplay"></span>
-</g:if>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <bc:koLoading>
+        <table class="table table-hover">
+            <tbody data-bind="foreach:pageProjects">
+            <tr style="border-bottom: 2px solid grey">
+                <td style="width:200px">
+                    <div class="projectLogo well">
+                        <img style="max-width:100%;max-height:100%" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name,src:transients.imageUrl}"/>
+                    </div>
+                </td>
+                <td>
+                    <a data-bind="attr:{href:transients.indexUrl}">
+                        <span data-bind="text:name" style="font-size:150%;font-weight:bold"></span>
+                    </a>
+                    <div data-bind="visible:transients.orgUrl">
+                        <span data-bind="visible:transients.daysSince() >= 0" style="font-size:80%;color:grey">Started <!--ko text:transients.since--><!--/ko-->&nbsp;</span>
+                        <g:if test="${controllerName != 'organisation'}">
+                            <a data-bind="text:organisationName,attr:{href:transients.orgUrl}"></a>
+                        </g:if>
+                    </div>
+                    <div data-bind="text:aim"></div>
+                    <div style="padding: 4px">
+                        <i class="icon-info-sign"></i>&nbsp;<span data-bind="html:transients.links"/>
+                    </div>
+                    <div style="line-height:2.2em">
+                        TAGS:&nbsp;<g:render template="/project/tags"/>
+                    </div>
+                    <br/>
+                    <div data-bind="visible:transients.daysSince() >= 0">
+                        <b><g:message code="project.display.status" /></b>
+                        <g:render template="/project/daysline"/>
+                    </div>
+                    <div data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() == 0">
+                        <g:message code="project.display.concluded" /> <a data-bind="attr:{href:transients.indexUrl}">
+                        <span style="font-weight:bold"><g:message code="project.display.view" /></span></a>
+                    </div>
+                </td>
+                <td style="width:10em;text-align:center">
+                    <g:render template="/project/dayscount"/>
+        <g:if test="${controllerName == 'organisation'}">
+                    <span class="projectType" data-bind="text:transients.kindOfProjectDisplay"></span>
+        </g:if>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </bc:koLoading>
 
 <div id="pt-searchNavBar" class="clearfix">
     <div id="pt-navLinks"></div>

@@ -26,11 +26,11 @@
 </div>
 
 <g:if test="${sighting && !sighting?.error || !sighting}">
-        <input type="hidden" name="occurrenceID" id="occurrenceID" value="${sighting?.occurrenceID}"/>
-        <input type="hidden" name="userId" id="userId" value="${sighting?.userId ?: user?.userId}"/>
-        <input type="hidden" name="recordedBy" id="recordedBy" value="${sighting?.recordedBy ?: user?.displayName}"/>
+    <input type="hidden" name="occurrenceID" id="occurrenceID" value="${sighting?.occurrenceID}"/>
+    <input type="hidden" name="userId" id="userId" value="${sighting?.userId ?: user?.userId}"/>
+    <input type="hidden" name="recordedBy" id="recordedBy" value="${sighting?.recordedBy ?: user?.displayName}"/>
 
-        <!-- Species -->
+    <!-- Species -->
     <div id="sighting">
         <g:if test="${config?.includeSpeciesSelection == null ? true : config?.includeSpeciesSelection}">
             <div class="boxed-heading" id="species" data-content="Species">
@@ -43,10 +43,11 @@
                                              style="width:75px; height:75px;"/></td>
                                     <td>
                                         <div class="sciName">
-                                            <a href="" class="tooltips" title="view species page" target="BIE">species name</a>
+                                            <a href="" class="tooltips" title="view species page"
+                                               target="BIE">species name</a>
                                         </div>
 
-                                        <div class="commonName">common name</div>
+                                        <div class="commonName"></div>
                                     </td>
                                 </tr>
                             </table>
@@ -59,14 +60,16 @@
 
                                 <div class="span8">
                                     <div class="sciName">
-                                        <a href="" class="tooltips" title="view species page" target="BIE">species name</a>
+                                        <a href="" class="tooltips" title="view species page"
+                                           target="BIE">species name</a>
                                     </div>
 
-                                    <div class="commonName">common name</div>
+                                    <div class="commonName"></div>
                                 </div>
                             </div>
                             <input type="hidden" name="taxonConceptID" id="guid" value="${taxon?.taxonConceptID}"/>
-                            <input type="hidden" name="scientificName" id="scientificName" value="${taxon?.scientificName}"/>
+                            <input type="hidden" name="scientificName" id="scientificName"
+                                   value="${taxon?.scientificName}"/>
                             <input type="hidden" name="commonName" id="commonName" value="${taxon?.commonName}"/>
                             <input type="hidden" name="kingdom" id="kingdom" value="${taxon?.kingdom}"/>
                             <input type="hidden" name="family" id="family" value="${taxon?.family}"/>
@@ -87,110 +90,139 @@
                         <div id="tagsBlock"></div>
                     </div>
 
-                    <div class="span8">
-                        <div id="showConfident" class="control-group">
-                            <label class="control-label" for="speciesLookup">
-                                <div id="noTaxa"
-                                     style="display: inherit;">Type a scientific or common name into the box below and choose from the auto-complete list.</div>
-
-                                <div id="matchedTaxa"
-                                     style="display: none;">Not the right species? To change identification, type a scientific
-                                or common name into the box below and choose from the auto-complete list.</div>
-                            </label>
-                            <input class="span12 ${hasErrors(bean: sighting, field: 'scientificName', 'validationErrors')}"
-                                   data-validation-engine="validate[funcCall[validateSpeciesSelection]]"
-                                   id="speciesLookup" type="text" placeholder="Start typing a species name (common or latin)">
+                    <g:if test="${readonly}">
+                        <div class="span8">
+                            <h3><span id="speciesLookupView"></span></h3>
                         </div>
 
-                        <div id="showUncertain" class="control-group">
-                            <label>How confident are you with the species identification?
-                                <g:set var="confidenceGuess" value="${(taxon?.guid) ? 'confident' : 'uncertain'}"/>
-                                <g:radioGroup name="identificationVerificationStatus" labels="['Confident', 'Uncertain']"
-                                              values="['confident', 'uncertain']"
-                                              value="${sighting?.identificationVerificationStatus?.toLowerCase() ?: confidenceGuess}">
-                                    <span style="white-space:nowrap;">${it.radio}&nbsp;${it.label}</span>
-                                </g:radioGroup>
-                            </label>
+                        <div class="span8">
+                            <h4><span id="commonNameView"></span></h4>
                         </div>
 
-                        <div id="identificationChoice" class="form-group">
-                            <label for="speciesGroups"><strong>(Optional)</strong> Tag this sighting with species group and/or sub-group:
-                            </label>
+                        <div class="span8">
+                            <label class="control-label" for="speciesLookup">Confidence level:</label>
 
-                            <div class="row-fluid">
-                                <div class="span6">
-                                    <g:select name="tag" from="${speciesGroupsMap?.keySet()}" id="speciesGroups"
-                                              class="span12 input-sm ${hasErrors(bean: sighting, field: 'scientificName', 'validationErrors')}"
-                                              noSelection="['': '-- Species group --']"/>
-                                </div>
+                            <span class="text-output" id="identificationVerificationStatusView"></span>
+                        </div>
+                    </g:if>
+                    <g:else>
+                        <div class="span8">
+                            <div id="showConfident" class="control-group">
+                                <label class="control-label" for="speciesLookup">
+                                    <span id="noTaxa"
+                                          style="display: inherit;">Type a scientific or common name into the box below and choose from the auto-complete list.</span>
 
-                                <div class="span6">
-                                    <g:select name="tag" from="${[]}" id="speciesSubgroups" class="span12 input-sm"
-                                              noSelection="['': '-- Subgroup (select a group first) --']"/>
-                                </div>
+                                    <span id="matchedTaxa"
+                                          style="display: none;">Not the right species? To change identification, type a scientific
+                                    or common name into the box below and choose from the auto-complete list.</span>
+                                </label>
+                                <input class="span12 ${hasErrors(bean: sighting, field: 'scientificName', 'validationErrors')}"
+                                       data-validation-engine="validate[funcCall[validateSpeciesSelection]]"
+                                       id="speciesLookup" type="text"
+                                       placeholder="Start typing a species name (common or latin)">
                             </div>
-                        </div>
-                        <g:if test="${grailsApplication.config.include.taxonoverflow}">
-                            <div id="speciesMisc" class="hide">
-                                <label for="requireIdentification" class="checkbox">
-                                    <g:checkBox id="requireIdentification" name="requireIdentification"
-                                                value="${(sighting?.requireIdentification)}"/>
-                                    Ask the Taxon-Overflow community to assist with or confirm the identification (requires a photo of the sighting)
+
+                            <div id="showUncertain" class="control-group">
+                                <label>How confident are you with the species identification?
+                                    <g:set var="confidenceGuess" value="${(taxon?.guid) ? 'confident' : 'uncertain'}"/>
+                                    <g:radioGroup name="identificationVerificationStatus"
+                                                  labels="['Confident', 'Uncertain']"
+                                                  values="['confident', 'uncertain']"
+                                                  id="identificationVerificationStatus"
+                                                  value="${sighting?.identificationVerificationStatus?.toLowerCase() ?: confidenceGuess}">
+                                        <span style="white-space:nowrap;">${it.radio}&nbsp;${it.label}</span>
+                                    </g:radioGroup>
                                 </label>
                             </div>
+
+                            <div id="identificationChoice" class="form-group">
+                                <label for="speciesGroups"><strong>(Optional)</strong> Tag this sighting with species group and/or sub-group:
+                                </label>
+
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <g:select name="tag" from="${speciesGroupsMap?.keySet()}" id="speciesGroups"
+                                                  class="span12 input-sm ${hasErrors(bean: sighting, field: 'scientificName', 'validationErrors')}"
+                                                  noSelection="['': '-- Species group --']"/>
+                                    </div>
+
+                                    <div class="span6">
+                                        <g:select name="tag" from="${[]}" id="speciesSubgroups" class="span12 input-sm"
+                                                  noSelection="['': '-- Subgroup (select a group first) --']"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <g:if test="${grailsApplication.config.include.taxonoverflow}">
+                                <div id="speciesMisc" class="hide">
+                                    <label for="requireIdentification" class="checkbox">
+                                        <g:checkBox id="requireIdentification" name="requireIdentification"
+                                                    value="${(sighting?.requireIdentification)}"/>
+                                        Ask the Taxon-Overflow community to assist with or confirm the identification (requires a photo of the sighting)
+                                    </label>
+                                </div>
+                            </g:if>
+                        </div>
+
+                        <g:set var="mapIncluded" value="${config?.includeMap == null ? true : config?.includeMap}"/>
+                        <g:set var="allowSuggestions"
+                               value="${config?.allowGeospatialSpeciesSuggestion == null ? true : config?.allowGeospatialSpeciesSuggestion}"/>
+
+                        <g:if test="${grailsApplication.config.identify.enabled.toBoolean() && mapIncluded && allowSuggestions}">
+                            <div id="identifyHelpTrigger">Unsure of the species name? Try the location-based: <a
+                                    href="#identifyHelpModal" class="identifyHelpTrigger btn btn-primary btn-small"><i
+                                        class="fa fa-search"></i> Species Suggestion Tool</a></div>
                         </g:if>
-                    </div>
-
-                    <g:set var="mapIncluded" value="${config?.includeMap == null ? true : config?.includeMap}"/>
-                    <g:set var="allowSuggestions" value="${config?.allowGeospatialSpeciesSuggestion == null ? true : config?.allowGeospatialSpeciesSuggestion}"/>
-
-                    <g:if test="${grailsApplication.config.identify.enabled.toBoolean() && mapIncluded && allowSuggestions}">
-                        <div id="identifyHelpTrigger">Unsure of the species name? Try the location-based: <a
-                            href="#identifyHelpModal" class="identifyHelpTrigger btn btn-primary btn-small"><i
-                                class="fa fa-search"></i> Species Suggestion Tool</a></div>
-                    </g:if>
+                    </g:else>
                 </div>
             </div>
         </g:if>
 
-        <!-- Media -->
+    <!-- Media -->
         <g:if test="${config?.includeImages == null ? true : config?.includeImages}">
             <div class="boxed-heading" id="media" data-content="Images">
 
-                <div class="controls">
-                    <!-- The fileinput-button span is used to style the file input field as button -->
-                    <span class="btn btn-primary fileinput-button control-label"
-                          title="Select one or more photos to upload (you can also simply drag and drop files onto the page).">
-                        <i class="icon icon-white icon-plus"></i>
-                        <span>Add files...</span>
-                        <!-- The file input field used as target for the file upload widget -->
-                        <input id="fileupload" type="file" name="files[]" multiple>
-                    </span>
-                    <span style="display: inline-block;"><strong>(Optional)</strong> Add one or more images. Image metadata will be used to automatically set date and location fields (where available)
-                        <br><strong><i class="fa fa-info-circle"></i> Hint:
-                    </strong> you can drag and drop files onto this window</span>
-                    <br>
-                </div>
-                <br/>
+                <g:if test="${!readonly}">
+                    <div class="controls">
+                        <!-- The fileinput-button span is used to style the file input field as button -->
+                        <span class="btn btn-primary fileinput-button control-label"
+                              title="Select one or more photos to upload (you can also simply drag and drop files onto the page).">
+                            <i class="icon icon-white icon-plus"></i>
+                            <span>Add files...</span>
+                            <!-- The file input field used as target for the file upload widget -->
+                            <input id="fileupload" type="file" name="files[]" multiple>
+                        </span>
+                        <span style="display: inline-block;"><strong>(Optional)</strong> Add one or more images. Image metadata will be used to automatically set date and location fields (where available)
+                            <br><strong><i class="fa fa-info-circle"></i> Hint:
+                        </strong> you can drag and drop files onto this window</span>
+                        <br>
+                    </div>
+                </g:if>
 
-                <!-- The container for the uploaded files -->
+            <!-- The container for the uploaded files -->
                 <div id="files" class="files"></div>
+
 
                 <div id="imageLicenseDiv" class="form-horizontal">
                     <div class="control-group">
                         <label for="imageLicense" class="control-label">Licence:</label>
 
                         <div class="controls">
-                            <g:select from="${grailsApplication.config.sighting.licenses}" name="imageLicense" class="span5"
-                                      id="imageLicense"
-                                      value="${sighting?.multimedia ? sighting?.multimedia?.get(0)?.license : ''}"/>
+                            <g:if test="${readonly}">
+                                <span id="imageLicenseView" class="text-output"></span>
+                            </g:if>
+                            <g:else>
+                                <g:select from="${grailsApplication.config.sighting.licenses}" name="imageLicense"
+                                          class="span5"
+                                          id="imageLicense"
+                                          value="${sighting?.multimedia ? sighting?.multimedia?.get(0)?.license : ''}"/>
+                            </g:else>
                         </div>
                     </div>
                 </div>
             </div>
         </g:if>
 
-        <!-- Location -->
+    <!-- Location -->
         <g:if test="${config?.includeMap == null ? true : config?.includeMap}">
             <div class="boxed-heading" id="location" data-content="Location">
                 <div class="row-fluid">
@@ -213,9 +245,10 @@
                                     <input id="geocodeinput" class="span10" style="margin-left: 10px;" type="text"
                                            placeholder="Enter an address, location or lat/lng">
                                     <span class="input-group-btn">
-                                        <button id="geocodebutton" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                        <button id="geocodebutton" class="btn btn-default"><i class="fa fa-search"></i>
+                                        </button>
                                     </span>
-                                </div><!-- /input-group -->
+                                </div>
                             </div>
                         </div>
 
@@ -229,10 +262,9 @@
                                      alt="marker icon"/>
                             </div>
                         </div>
-
                     </div>
 
-                    <div class="span6 form-horizontal" style="margin-bottom: 0px;">
+                    <div class="span6 form-horizontal" style="margin-bottom: 0;">
                         <div class="control-group">
                             <label for="decimalLatitude" class="control-label">Latitude (decimal):</label>
 
@@ -262,7 +294,8 @@
                                         id="coordinateUncertaintyInMeters"
                                         class="form-control  ${hasErrors(bean: sighting, field: 'coordinateUncertaintyInMeters', 'validationErrors')}"
                                         name="coordinateUncertaintyInMeters"
-                                        value="${sighting?.coordinateUncertaintyInMeters ?: 50}" noSelection="['': '--']"/>
+                                        value="${sighting?.coordinateUncertaintyInMeters ?: 50}"
+                                        noSelection="['': '--']"/>
                             </div>
                         </div>
 
@@ -270,7 +303,8 @@
                             <label for="georeferenceProtocol" class="control-label">Source of coordinates:</label>
 
                             <div class="controls">
-                                <g:select from="${grailsApplication.config.coordinates.sources}" id="georeferenceProtocol" class="form-control "
+                                <g:select from="${grailsApplication.config.coordinates.sources}"
+                                          id="georeferenceProtocol" class="form-control "
                                           name="georeferenceProtocol" value="${sighting?.georeferenceProtocol}"/>
                             </div>
                         </div>
@@ -288,8 +322,8 @@
                             <label for="locationRemark" class="control-label">Location notes:</label>
 
                             <div class="controls">
-                                <textarea id="locationRemark" name="locationRemark" class="form-control" rows="3"
-                                          value="${sighting?.decimalLatitude}">${sighting?.locationRemark}</textarea>
+                                <textarea id="locationRemark" name="locationRemark" class="form-control"
+                                          rows="3">${sighting?.locationRemark}</textarea>
                             </div>
                         </div>
 
@@ -298,10 +332,12 @@
 
                             <div class="controls">
                                 <div class="input-append">
-                                    <g:select name="bookmarkedLocations" id="bookmarkedLocations" from="${[]}" optionKey=""
+                                    <g:select name="bookmarkedLocations" id="bookmarkedLocations" from="${[]}"
+                                              optionKey=""
                                               optionValue="" noSelection="['': '-- saved locations --']"/>
                                     <span class="input-group-btn">
-                                        <button id="bookmarkLocation" class="btn btn-primary disabled" disabled="disabled"
+                                        <button id="bookmarkLocation" class="btn btn-primary disabled"
+                                                disabled="disabled"
                                                 title="Save this location"><i class="fa fa-save"></i> Save</button>
                                     </span>
                                 </div>
@@ -312,47 +348,65 @@
             </div>
         </g:if>
 
-        <!-- Details -->
+    <!-- Details -->
         <div class="boxed-heading" id="details" data-content="Details">
             <div class="row-fluid">
                 <div class="span6 form-horizontal">
                     <div class="control-group">
                         <label for="dateStr" class="span2 control-label">Date:</label>
 
-                        <div class="controls span10">
-                            <div class="input-append date" id='datetimepicker1'>
-                                <input type="text" id="dateStr" name="dateStr"
-                                       class="${hasErrors(bean: sighting, field: 'eventDate', 'validationErrors')}"
-                                       placeholder="DD-MM-YYYY" data-validation-engine="validate[required]"
-                                       value="${si.getDateTimeValue(date: sighting?.eventDate, part: 'date')}"/>
-                                <span class="add-on"><i class="fa fa-calendar"></i></span>
+                        <g:if test="${readonly}">
+                            <div id="dateStrView" class="text-output"></div>
+                        </g:if>
+                        <g:else>
+                            <div class="controls span10">
+                                <div class="input-append date" id='datetimepicker1'>
+                                    <input type="text" id="dateStr" name="dateStr"
+                                           class="${hasErrors(bean: sighting, field: 'eventDate', 'validationErrors')}"
+                                           placeholder="DD-MM-YYYY" data-validation-engine="validate[required]"
+                                           value="${si.getDateTimeValue(date: sighting?.eventDate, part: 'date')}"/>
+                                    <span class="add-on"><i class="fa fa-calendar"></i></span>
+                                </div>
+                                <span class="helphint">Required</span>
                             </div>
-                            <span class="helphint">Required</span>
-                        </div>
+                        </g:else>
                     </div>
 
                     <div class="control-group">
                         <label for="timeStr" class="span2 control-label">Time:</label>
 
-                        <div class="controls span10">
-                            <div class='input-append date' id='datetimepicker2'>
-                                <input type='text' id="timeStr" name="timeStr" class="form-control" placeholder="HH:MM"
-                                       value="${si.getDateTimeValue(date: sighting?.eventDate, part: 'time')}"/>
-                                <span class="add-on"><i class="fa fa-clock-o"></i></span>
+                        <g:if test="${readonly}">
+                            <div id="timeStrView" class="text-output"></div>
+                        </g:if>
+                        <g:else>
+                            <div class="controls span10">
+                                <div class='input-append date' id='datetimepicker2'>
+                                    <input type='text' id="timeStr" name="timeStr" class="form-control"
+                                           placeholder="HH:MM"
+                                           value="${si.getDateTimeValue(date: sighting?.eventDate, part: 'time')}"/>
+                                    <span class="add-on"><i class="fa fa-clock-o"></i></span>
+                                </div>
+                                <span class="helphint">24 hour format</span>
                             </div>
-                            <span class="helphint">24 hour format</span>
-                        </div>
+                        </g:else>
                     </div>
 
                     <div class="control-group">
                         <label for="individualCount" class="span2 control-label">Individuals:</label>
 
-                        <div class="controls span10">
-                            <g:select from="${1..99}" name="individualCount" class="input-sm form-control smartspinner"
-                                      value="${sighting?.individualCount}"
-                                      data-validation-engine="validate[custom[integer], min[1]]" id="individualCount"/>
-                            <span class="helphint">How many did you see?</span>
-                        </div>
+                        <g:if test="${readonly}">
+                            <div id="individualCountView" class="text-output"></div>
+                        </g:if>
+                        <g:else>
+                            <div class="controls span10">
+                                <g:select from="${1..99}" name="individualCount"
+                                          class="input-sm form-control smartspinner"
+                                          value="${sighting?.individualCount}"
+                                          data-validation-engine="validate[custom[integer], min[1]]"
+                                          id="individualCount"/>
+                                <span class="helphint">How many did you see?</span>
+                            </div>
+                        </g:else>
                     </div>
                     <input type="hidden" name="timeZoneOffset" id="timeZoneOffset" value="${sighting?.timeZoneOffset}"/>
                     <input type="hidden" name="eventDate" id="eventDate" value="${sighting?.eventDate}"/>
@@ -363,10 +417,15 @@
                         <div class="control-group">
                             <label for="occurrenceRemarks" class="span2 control-label">Notes:</label>
 
-                            <div class="controls span10">
-                                <textarea name="occurrenceRemarks" rows="6" cols="90" class="form-control"
-                                          id="occurrenceRemarks">${sighting?.occurrenceRemarks}</textarea>
-                            </div>
+                            <g:if test="${readonly}">
+                                <div id="occurrenceRemarksView" class="text-output"></div>
+                            </g:if>
+                            <g:else>
+                                <div class="controls span10">
+                                    <textarea name="occurrenceRemarks" rows="6" cols="90" class="form-control"
+                                              id="occurrenceRemarks">${sighting?.occurrenceRemarks}</textarea>
+                                </div>
+                            </g:else>
                         </div>
                     </section>
                 </div>
@@ -398,8 +457,12 @@
                 <div class="metadata">
                     GPS coordinates: <span class="imgCoords">not available</span>
                 </div>
-                <button class="btn btn-sm btn-info imageData" title="No metadata found" disabled>Use image metadata</button>
-                <button class="btn btn-sm btn-danger imageRemove" title="remove this image">Remove image</button>
+
+                <g:if test="${!readonly}">
+                    <button class="btn btn-sm btn-info imageData" title="No metadata found"
+                            disabled>Use image metadata</button>
+                    <button class="btn btn-sm btn-danger imageRemove" title="remove this image">Remove image</button>
+                </g:if>
             </div>
 
             <div class="error hide"></div>

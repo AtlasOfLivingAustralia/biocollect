@@ -268,6 +268,46 @@ class WebService {
         }
     }
 
+    def doGet(String url, Map data) {
+        URLConnection conn = null
+        def charEncoding = 'utf-8'
+        try {
+            List params = []
+            data?.each{ key, value->
+                params.add("${key}=${URLEncoder.encode(value)}")
+            }
+
+            String serialParam = params.join('&');
+            if(params.size()){
+                url = url + '?' + serialParam
+            }
+
+            conn = new URL(url).openConnection()
+            conn.setDoOutput(true)
+            conn.setRequestMethod("GET")
+            conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}");
+            conn.setRequestProperty("Authorization", grailsApplication.config.api_key);
+
+            def user = getUserService().getUser()
+            if (user) {
+                conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId) // used by ecodata
+                conn.setRequestProperty("Cookie", "ALA-Auth="+java.net.URLEncoder.encode(user.userName, charEncoding)) // used by specieslist
+            }
+            def resp = conn.inputStream.text
+            return [resp: JSON.parse(resp?:"{}"), statusCode: conn.responseCode] // fail over to empty json object if empty response string otherwise JSON.parse fails
+        } catch (SocketTimeoutException e) {
+            def error = [error: "Timed out calling web service. URL= ${url}."]
+            log.error(error, e)
+            return error
+        } catch (Exception e) {
+            def error = [error: "Failed calling web service. ${e.getMessage()} URL= ${url}.",
+                         statusCode: conn?.responseCode?:"",
+                         detail: conn?.errorStream?.text]
+            log.error(error, e)
+            return error
+        }
+    }
+
     def doDelete(String url) {
         url += (url.indexOf('?') == -1 ? '?' : '&') + "api_key=${grailsApplication.config.api_key}"
         def conn = null
@@ -288,6 +328,17 @@ class WebService {
                 conn?.disconnect()
             }
         }
+    }
+
+    /**
+     * This function wraps the doDelete function. But it returns a Map to be consistent with other
+     * webservice calls.
+     * @param url
+     * @return
+     */
+    Map deleteWrapper(url){
+        def statusCode = doDelete(url)
+        [resp: ['message':'delete webservice returned'], statusCode: statusCode]
     }
 
     /**

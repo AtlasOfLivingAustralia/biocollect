@@ -620,6 +620,9 @@ class FCTagLib {
                 if (!details.disabled) {
                     linkAttributes << ["data-toggle":"tab"]
                 }
+                if (details.click) {
+                    linkAttributes << ["data-bind": "click: ${details.click}"]
+                }
 
                 mb.li(class:liClass) {
                     a(linkAttributes, details.label)

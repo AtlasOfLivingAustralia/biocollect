@@ -124,6 +124,7 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderGeoMap(WidgetRenderContext context) {
-        context.writer << """<div id="map" style="width:100%; height: 512px;"></div>"""
+        context.model.readonly = true
+        context.writer << context.g.render(template: '/output/dataEntryMap', model: context.model)
     }
 }

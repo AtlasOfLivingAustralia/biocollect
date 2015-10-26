@@ -5,7 +5,7 @@
             <label>Survey status: <span data-bind="attr:{'class': published() ? 'badge badge-success' : 'badge badge-important'}, text: published() ? 'Published' : 'Unpublished'"></span></label>
         </div>
         <div class="span6 text-right">
-            <button data-bind="attr:{'class': published() ? 'btn btn-primary' : 'btn btn-success'}, click: $root.publish, text: published() ? 'Unpublish' : 'Publish' "></button>
+            <button data-bind="attr:{'class': published() ? 'btn btn-primary' : 'btn btn-success'}, click: $root.updateStatus, text: published() ? 'Unpublish' : 'Publish',disable: !transients.saveOrUnPublishAllowed()"></button>
         </div>
     </div>
 

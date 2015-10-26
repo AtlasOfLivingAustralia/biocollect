@@ -66,6 +66,7 @@ class BioActivityController {
         } else {
             boolean projectEditor = projectService.canUserEditProject(userId, projectId, false)
             Map userAlreadyInRole = userService.isUserInRoleForProject(userId, projectId, "projectParticipant")
+
             if (!userAlreadyInRole.statusCode || userAlreadyInRole.statusCode == HttpStatus.SC_OK) {
                 if (!projectEditor && pActivity.publicAccess && !userAlreadyInRole.inRole.toBoolean()) {
                     userService.addUserAsRoleToProject(userId, projectId, "projectParticipant")
@@ -87,6 +88,11 @@ class BioActivityController {
             }
         }
 
+        render result as JSON
+    }
+
+    def getProjectActivityCount(String id){
+        def result = activityService.getProjectActivityCount(id)
         render result as JSON
     }
 
@@ -142,7 +148,7 @@ class BioActivityController {
             Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
             model = activityModel(activity, projectId)
             model.pActivity = pActivity
-            model.returnTo = g.createLink(controller: 'project', id: projectId)
+            model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', id: projectId)
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
 
             addOutputModel(model)

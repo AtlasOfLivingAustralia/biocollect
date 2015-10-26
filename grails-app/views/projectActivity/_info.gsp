@@ -1,12 +1,3 @@
-<style>
-.req-field:after {
-    content: "*";
-    color: red;
-    font-weight:bold;
-    font-size:1.5em;
-    white-space: nowrap;
-}
-</style>
 <div id="pActivityInfo" class="well">
 
         <!-- ko foreach: projectActivities -->
@@ -75,20 +66,7 @@
 
                 <div class="span7">
                     <div class="controls">
-                        <input id="publicAccess" type="checkbox"
-                               data-bind="checked: publicAccess, event: {change: togglePublicAccess}"/>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row-fluid" data-bind="visible: !publicAccess()">
-                <div class="span3 text-right">
-                    <label class="control-label" for="allowPublicViewOfData">Allow public view of data:</label>
-                </div>
-
-                <div class="span7">
-                    <div class="controls">
-                        <input id="allowPublicViewOfData" type="checkbox" data-bind="checked: allowPublicViewOfData"/>
+                        <input id="publicAccess" type="checkbox" data-bind="checked: publicAccess"/>
                     </div>
                 </div>
             </div>
@@ -119,7 +97,7 @@
                                 'data-url': transients.imageUploadUrl(),
                                 'data-owner-type': 'projectActivityId',
                                 'data-owner-id': projectActivityId()},
-                            stagedImageUpload: documents,
+                                 stagedImageUpload: documents,
                                      visible:!logoUrl()">
                             <i class="icon-plus"></i>
                             <input id="logo" type="file" name="files">

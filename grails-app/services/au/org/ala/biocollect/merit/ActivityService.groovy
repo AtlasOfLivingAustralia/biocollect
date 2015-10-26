@@ -47,6 +47,10 @@ class ActivityService {
         resp.list.collect(constructName)
     }
 
+    def getProjectActivityCount(id){
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/countByProjectActivity/'+ id)
+    }
+
     def get(id) {
         def activity = webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/' + id)
         activity

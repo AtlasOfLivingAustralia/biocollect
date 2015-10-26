@@ -8,21 +8,15 @@
 }
 
 </style>
-<div id="carousel" class="row-fluid slider-pro" data-bind="visible:mainImageUrl()">
-    <div class="sp-slides">
-        <div class="sp-slide">
-            <img class="sp-image" data-bind="attr:{'data-src':mainImageUrl}"/>
-            <p class="sp-layer sp-white sp-padding"
-               data-position="topLeft" data-width="100%" data-bind="visible:urlWeb"
-               data-show-transition="down" data-show-delay="0" data-hide-transition="up">
-                <strong><g:message code="g.visitUsAt" /> <a data-bind="attr:{href:urlWeb}"><span data-bind="text:urlWeb"></span></a></strong>
-            </p>
-        </div>
+<div class="row-fluid" data-bind="visible:mainImageUrl">
+    <div class="span12 banner-image-container">
+        <img src="" data-bind="attr: {src: mainImageUrl}" class="banner-image"/>
+        <div data-bind="visible:urlWeb" class="banner-image-caption"><strong><g:message code="g.visitUsAt" /> <a data-bind="attr:{href:urlWeb}"><span data-bind="text:urlWeb"></span></a></strong></div>
     </div>
 </div>
 
 <div id="weburl" data-bind="visible:!mainImageUrl()">
-    <div data-bind="visible:urlWeb()"><strong><g:message code="g.visitUsAt" /> <a data-bind="attr:{href:urlWeb}"><span data-bind="text:urlWeb"></span></a></strong></div>
+    <div data-bind="visible:urlWeb"><strong><g:message code="g.visitUsAt" /> <a data-bind="attr:{href:urlWeb}"><span data-bind="text:urlWeb"></span></a></strong></div>
 </div>
 
 <div class="container-fluid">
@@ -76,35 +70,46 @@
     </div>
     <g:if test="${projectSite?.extent?.geometry}">
     <div class="row-fluid">
-        <div class="span12 well">
+        <div class="span12 well" style="height: 100%; width: 100%">
             <div class="well-title"><g:message code="project.display.site" /></div>
-            <div id="map" style="width:100%; height: 512px;"></div>
+            <div id="projectSiteMap" style="width:100%; height: 512px;"></div>
         </div>
     </div>
     </g:if>
 </div>
 <r:script>
+    <!-- Only load the google map on page load if the containing div is visible. -->
+    <!-- This resolves issues with loading the map when the user is on a different tab (zoom problems with the map). -->
+    <!-- There is also a 'click' event listener for the About tab icon which will load the map when the user selects the About tab. -->
+    google.maps.event.addDomListener(window, 'load', function() {
+        if ($('#projectSiteMap').is(':visible')) {
+            initialiseProjectArea();
+        }
+    });
 
     function initialiseProjectArea() {
-    <g:if test="${projectSite?.extent?.geometry}">
-        var projectArea = <fc:modelAsJavascript model="${projectSite.extent.geometry}"/>;
-        var mapFeatures = {
-            zoomToBounds:true,
-            zoomLimit:16,
-            highlightOnHover:true,
-            features:[projectArea],
-            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-            wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-        };
+        <g:if test="${projectSite?.extent?.geometry}">
+        if ((typeof map === 'undefined' || Object.keys(map).length == 0)) {
+            var projectArea = <fc:modelAsJavascript model="${projectSite.extent.geometry}"/>;
 
-        var mapOptions = {
-            mapContainer: "map",
-            scrollwheel: false,
-            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-            wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-        };
+            var mapFeatures = {
+                zoomToBounds:true,
+                zoomLimit:16,
+                highlightOnHover:true,
+                features:[projectArea],
+                featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+            };
 
-        map = new MapWithFeatures(mapOptions, mapFeatures);
+            var mapOptions = {
+                mapContainer: "projectSiteMap",
+                scrollwheel: false,
+                featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+            };
+
+            map = new MapWithFeatures(mapOptions, mapFeatures);
+    }
 </g:if>
     }
 </r:script>
