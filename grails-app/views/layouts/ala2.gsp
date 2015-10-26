@@ -134,7 +134,7 @@
             window.location = "${createLink(controller: 'admin')}";
         });
         $('.btnNewProject').click(function(e) {
-            window.location = "${createLink(controller: 'project', action:'create')}"
+            window.location = "${createLink(controller: 'project', action:'create', params: [citizenScience:true])}"
         });
 
         $(".btnProfile").click(function (e) {
