@@ -249,6 +249,12 @@ modules = {
         resource url: 'vendor/moment/moment.min.js'
     }
 
+    projectFinder{
+        dependsOn('knockout','projects')
+        resource url: 'js/project-finder.js'
+        resource url: 'css/project-finder.css'
+    }
+
     jquery_cookie {
         defaultBundle 'application'
         dependsOn 'jquery'

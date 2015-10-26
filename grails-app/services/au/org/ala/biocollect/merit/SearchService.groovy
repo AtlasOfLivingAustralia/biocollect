@@ -70,6 +70,13 @@ class SearchService {
         webService.getJson(url)
     }
 
+    Map getCitizenScienceProjects(Map params, String q = null){
+        addDefaultFacetQuery(params)
+        String url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
+        log.debug "url = $url"
+        webService.getJson(url)
+    }
+
     def allProjectsWithSites(params, String searchTerm = null) {
         addDefaultFacetQuery(params)
         //params.max = 9999
