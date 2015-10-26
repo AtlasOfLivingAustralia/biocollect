@@ -11,7 +11,7 @@
         <div class="row-fluid">
 
             <div class="span12 text-left">
-                <div id="project-activities-result-placeholder"></div>
+
                 <!-- ko if: projectActivities().length > 0 -->
                  <span> <b> Select survey: </b></span>
                  <div class="btn-group">
@@ -50,7 +50,7 @@
 
         </div>
 
-        <div id="project-activities-publish-result-placeholder"></div>
+
 
         <!-- ko if: projectActivities().length > 0 -->
         <div class="row-fluid">
@@ -59,55 +59,61 @@
             </div>
         </div>
 
+         <!-- ko foreach: projectActivities -->
+            <!-- ko if: current -->
+            <span data-bind="if: !transients.saveOrUnPublishAllowed()">
+                <div class="row-fluid">
+                    <div class="span12 text-left">
+                        <div id="warning-species" class="alert alert-warning">
+                            All records needs to be deleted before unpublishing the survey.
+                        </div>
+                    </div>
+                </div>
+            </span>
+            <!-- /ko -->
+         <!-- /ko -->
+
+        <div id="project-activities-result-placeholder"></div>
+
         <div class="row-fluid">
 
             <div class="span12">
 
                 <ul id="ul-survey-constraint-citizen-science" class="nav nav-pills">
                     <li class="active"><a href="#survey-info" id="survey-info-tab" data-toggle="tab">Survey Info</a></li>
+                    <li><a href="#survey-visibility" id="survey-visibility-tab" data-toggle="tab">Visibility</a></li>
                     <li><a href="#survey-species" id="survey-species-tab" data-toggle="tab">Species</a></li>
                     <li><a href="#survey-form" id="survey-form-tab" data-toggle="tab">Survey Form</a></li>
                     <li><a href="#survey-locations" id="survey-locations-tab" data-toggle="tab">Locations</a></li>
-                    <li><a href="#survey-visibility" id="survey-visibility-tab" data-toggle="tab">Visibility</a></li>
                 </ul>
 
                 <div class="pill-content">
                     <div class="pill-pane active" id="survey-info">
                         <span class="validationEngineContainer" id="project-activities-info-validation">
-                            <div id="project-activities-info-result-placeholder"></div>
                             <g:render template="/projectActivity/info"/>
+                        </span>
+                    </div>
+                    <div class="pill-pane" id="survey-visibility">
+                        <span class="validationEngineContainer" id="project-activities-visibility-validation">
+                            <g:render template="/projectActivity/visibility"/>
                         </span>
                     </div>
                     <div class="pill-pane" id="survey-species">
                         <span class="validationEngineContainer" id="project-activities-species-validation">
-                            <div id="project-activities-species-result-placeholder"></div>
                             <g:render template="/projectActivity/species"/>
                         </span>
                     </div>
                     <div class="pill-pane" id="survey-form">
                         <span class="validationEngineContainer" id="project-activities-form-validation">
-                            <div id="project-activities-form-result-placeholder"></div>
                             <g:render template="/projectActivity/survey"/>
                         </span>
                     </div>
                     <div class="pill-pane" id="survey-locations">
                         <span class="validationEngineContainer" id="project-activities-locations-validation">
-                            <div id="project-activities-sites-result-placeholder"></div>
-                            <!-- Allow user to seelct the existing sites and preview those sites.-->
                             <g:render template="/projectActivity/sites"/>
                         </span>
                     </div>
-
-                    <div class="pill-pane" id="survey-visibility">
-                        <span class="validationEngineContainer" id="project-activities-visibility-validation">
-                            <div id="project-activities-visibility-result-placeholder"></div>
-                            <g:render template="/projectActivity/visibility"/>
-                        </span>
-                    </div>
-
                 </div>
-
-
             </div>
         </div>
 
@@ -121,7 +127,7 @@
 
 <r:script>
     function initialiseProjectActivitiesSettings(pActivitiesVM) {
-        var pActivitiesVM = new ProjectActivitiesSettingsViewModel(pActivitiesVM);
+        var pActivitiesVM = new ProjectActivitiesSettingsViewModel(pActivitiesVM, 'project-activities-result-placeholder');
         ko.applyBindings(pActivitiesVM, document.getElementById('pActivities'));
         new RestoreTab('ul-survey-constraint-citizen-science', 'survey-info');
     };

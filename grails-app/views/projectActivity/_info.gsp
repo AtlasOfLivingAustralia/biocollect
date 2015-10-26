@@ -1,12 +1,3 @@
-<style>
-.req-field:after {
-    content: "*";
-    color: red;
-    font-weight:bold;
-    font-size:1.5em;
-    white-space: nowrap;
-}
-</style>
 <div id="pActivityInfo" class="well">
 
         <!-- ko foreach: projectActivities -->

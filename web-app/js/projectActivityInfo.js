@@ -19,6 +19,10 @@ var pActivityInfo = function(o, selected){
     };
 
     self.transients = self.transients || {};
+
+    // Publish is allowed only when no data's are associated with the survey
+    // Survey Info & visibility can be saved regardless of the existence of the data.
+    self.transients.saveOrUnPublishAllowed = ko.observable(false);
     self.transients.imageUploadUrl  = ko.observable(fcConfig.imageUploadUrl);
     self.transients.logoUrl = ko.pureComputed(function(){
         return self.logoUrl() ? self.logoUrl() : fcConfig.imageLocation + "/no-image-2.png";

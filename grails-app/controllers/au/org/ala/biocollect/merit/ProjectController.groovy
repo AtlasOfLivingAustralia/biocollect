@@ -39,11 +39,9 @@ class ProjectController {
                 user.hasViewAccess = projectService.canUserViewProject(user.userId, id)?:false
             }
             def programs = projectService.programsModel()
-            def activities = activityService.activitiesForProject(id)
             def content = projectContent(project, user, programs)
 
             def model = [project: project,
-                activities: activities,
                 mapFeatures: commonService.getMapFeatures(project),
                 isProjectStarredByUser: userService.isProjectStarredByUser(user?.userId?:"0", project.projectId)?.isProjectStarredByUser,
                 user: user,

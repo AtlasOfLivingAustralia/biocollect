@@ -228,6 +228,7 @@ class ProjectService {
         userCanView
     }
 
+
     /**
      * Returns the programs model for use by a particular project.  At the moment, this method just delegates to the metadataservice,
      * however a per organisation programs model is something being discussed.
@@ -262,8 +263,8 @@ class ProjectService {
         }
 
         allowedActivities
-
     }
+
 
     public JSON userProjects(UserDetails user) {
         if (user) {
