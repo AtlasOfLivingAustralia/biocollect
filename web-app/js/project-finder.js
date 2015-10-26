@@ -24,7 +24,7 @@ function ProjectFinder() {
 
     this.sortKeys = [
         {name: 'Name', value: 'nameSort'},
-        {name: 'Organisation Name', value: 'organisationFacet'},
+        {name: 'Organisation Name', value: 'organisationSort'},
         {name: 'Status', value: 'status'}
     ]
 
