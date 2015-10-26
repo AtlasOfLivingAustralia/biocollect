@@ -83,17 +83,12 @@
     </div>
     -->
 
-    <!-- /ko -->
-    <!-- /ko -->
-
-    </br>
-
     <div class="row-fluid">
-
         <div class="span12">
-            <button class="btn-primary btn block" data-bind="click: saveSites"> Save </button>
+            <button class="btn-primary btn block" data-bind="click: $parent.saveSites, disable: !transients.saveOrUnPublishAllowed()"> Save </button>
         </div>
-
     </div>
 
+    <!-- /ko -->
+    <!-- /ko -->
 </div>

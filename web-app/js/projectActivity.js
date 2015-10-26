@@ -104,6 +104,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         self.reset();
         self.projectActivities.push(new ProjectActivity([], self.pActivityForms, self.projectId(), true, self.sites));
         initialiseValidator();
+        self.refreshSurveyStatus();
         showAlert("Successfully added.", "alert-success", self.placeHolder);
     };
 
@@ -363,6 +364,30 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         }
         pActivity.projectActivityId() ? self.update(pActivity, caller) : self.create(pActivity, caller);
     };
+
+    self.refreshSurveyStatus = function() {
+        $.each(self.projectActivities(), function (i, obj) {
+            var allowed = false;
+            $.ajax({
+                url: fcConfig.activiyCountUrl + "/" + obj.projectActivityId(),
+                type: 'GET',
+                async: false,
+                timeout: 10000,
+                success: function (data) {
+                    if(data.total == 0){
+                        allowed = true;
+                    }
+                },
+                error: function (data) {
+                    console.log("Error retrieving survey status.", "alert-error", self.placeHolder);
+                }
+            });
+            obj.transients.saveOrUnPublishAllowed(allowed);
+        });
+
+    };
+
+    self.refreshSurveyStatus();
 };
 
 var ProjectActivity = function (o, pActivityForms, projectId, selected, sites) {

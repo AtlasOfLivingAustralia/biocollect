@@ -28,6 +28,7 @@
             </div>
 
              <br/>
+
              <div class="row-fluid">
                 <div class="span2 text-right"></div>
                 <div class="span8 text-left">
@@ -41,16 +42,15 @@
                 </div>
              </div>
 
+            <div class="row-fluid">
+                <div class="span12">
+                    <button class="btn-primary btn block" data-bind="click: $parent.saveForm, disable: !transients.saveOrUnPublishAllowed()"> Save </button>
+                </div>
+            </div>
+
+
             <!-- /ko -->
         <!-- /ko -->
-
-    <br/>
-
-    <div class="row-fluid">
-        <div class="span12">
-            <button class="btn-primary btn block" data-bind="click: saveForm"> Save </button>
-        </div>
-    </div>
 </div>
 
 
