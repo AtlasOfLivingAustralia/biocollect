@@ -771,12 +771,13 @@ var ImagesViewModel = function (image) {
     self.url = ko.observable(image.url);
 };
 
-var SurveyVisibilityViewModel = function (o) {
+var SurveyVisibilityViewModel = function (visibility) {
     var self = this;
-    if (!o) o = {};
-    self.constraint = ko.observable(o.constraint ? o.constraint : 'PUBLIC');   // 'PUBLIC', 'PUBLIC_WITH_SET_DATE', 'EMBARGO'
-    self.setDate = ko.observable(o.setDate ? o.setDate : 60);     // 60, 90, 120 days
-    self.embargoDate = ko.observable(o.embargoDate).extend({simpleDate: false});
+    if (!visibility) visibility = {};
+    console.log(JSON.stringify(visibility))
+    self.embargoOption = ko.observable(visibility.embargoOption ? visibility.embargoOption.name : 'NONE');   // 'NONE', 'DAYS', 'DATE' -> See au.org.ala.ecodata.EmbargoOptions in Ecodata
+    self.embargoForDays = ko.observable(visibility.embargoForDays ? visibility.embargoForDays : 60);     // 60, 90, 120 days
+    self.embargoUntil = ko.observable(visibility.embargoUntil).extend({simpleDate: false});
 };
 
 function initialiseValidator() {

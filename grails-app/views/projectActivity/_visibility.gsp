@@ -13,15 +13,15 @@
 
                 <div class="row-fluid">
                    <div class="span12 text-left">
-                        <label><input type="radio" value="PUBLIC" data-bind="checked: visibility.constraint" /> Records publicly visible on submission</label>
+                        <label><input type="radio" value="NONE" data-bind="checked: visibility.embargoOption" /> Records publicly visible on submission</label>
                         <label>
-                            <input type="radio" value="PUBLIC_WITH_SET_DATE" data-bind="checked: visibility.constraint" /> Records publicly visible after
-                            <select style="width:10%;" data-validation-engine="validate[required]" data-bind="options: $root.datesOptions, value: visibility.setDate, optionsCaption: 'Please select'" ></select> days
+                            <input type="radio" value="DAYS" data-bind="checked: visibility.embargoOption" /> Records publicly visible after
+                            <select style="width:10%;" data-validation-engine="validate[required]" data-bind="options: $root.datesOptions, value: visibility.embargoForDays, optionsCaption: 'Please select'" ></select> days
                         </label>
                         <label>
-                            <input type="radio" value="EMBARGO" data-bind="checked: visibility.constraint" /> Embargo publishing all records until
+                            <input type="radio" value="DATE" data-bind="checked: visibility.embargoOption" /> Embargo publishing all records until
                             <div class="input-append">
-                                <input data-bind="datepicker: visibility.embargoDate.date" type="text"/><span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
+                                <input data-bind="datepicker: visibility.embargoUntil.date" type="text"/><span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
                             </div>
                         </label>
                    </div>
