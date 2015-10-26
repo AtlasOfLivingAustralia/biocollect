@@ -16,7 +16,8 @@ var ActivityListsViewModel = function(){
 
     self.refreshPage = function(rp){
         if(!rp) rp = 1;
-        var params = { max: self.pagination.resultsPerPage(), offset:rp-1,  sort:'desc', order:'lastUpdated'};
+        var params = { max: self.pagination.resultsPerPage(), offset:rp-1,  sort:'lastUpdated', order:'desc'};
+
         var url = fcConfig.activityListUrl + ((fcConfig.activityListUrl.indexOf('?') > -1) ? '&' : '?') + $.param( params );
         $.ajax({
             url: url,
