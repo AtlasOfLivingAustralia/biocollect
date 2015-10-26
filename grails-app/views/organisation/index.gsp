@@ -51,7 +51,7 @@
 
     <g:render template="banner" model="${[imageUrl:resource(dir:'/images/filetypes')]}"/>
 
-    <div id="organisationDetails" class="container-fluid" style="display:none;">
+    <div id="organisationDetails" class="container-fluid">
 
         <g:render template="/shared/flashScopeMessage"/>
 

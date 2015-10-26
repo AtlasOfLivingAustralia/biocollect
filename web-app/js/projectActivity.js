@@ -148,7 +148,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     };
 
     self.deleteProjectActivity = function () {
-        bootbox.confirm("Are you sure you want to delete the survey?", function (result) {
+        bootbox.confirm("Are you sure you want to delete the survey? Any survey forms that have been submitted will also be deleted.", function (result) {
             if (result) {
                 var that = this;
 

@@ -66,20 +66,7 @@
 
                 <div class="span7">
                     <div class="controls">
-                        <input id="publicAccess" type="checkbox"
-                               data-bind="checked: publicAccess, event: {change: togglePublicAccess}"/>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row-fluid" data-bind="visible: !publicAccess()">
-                <div class="span3 text-right">
-                    <label class="control-label" for="allowPublicViewOfData">Allow public view of data:</label>
-                </div>
-
-                <div class="span7">
-                    <div class="controls">
-                        <input id="allowPublicViewOfData" type="checkbox" data-bind="checked: allowPublicViewOfData"/>
+                        <input id="publicAccess" type="checkbox" data-bind="checked: publicAccess"/>
                     </div>
                 </div>
             </div>

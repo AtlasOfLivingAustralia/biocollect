@@ -148,7 +148,7 @@
             </tbody>
         </table>
     </bc:koLoading>
-</div>
+
 <div id="pt-searchNavBar" class="clearfix">
     <div id="pt-navLinks"></div>
 </div>
