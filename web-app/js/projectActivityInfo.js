@@ -11,7 +11,6 @@ var pActivityInfo = function(o, selected){
     self.commentsAllowed = ko.observable(o.commentsAllowed ? o.commentsAllowed : false);
     self.published = ko.observable(o.published ? o.published : false);
     self.publicAccess = ko.observable(o.publicAccess ? o.publicAccess : false);
-    self.allowPublicViewOfData = ko.observable(o.allowPublicViewOfData ? o.allowPublicViewOfData : false);
 
     self.current = ko.observable(selected);
 
@@ -75,13 +74,4 @@ var pActivityInfo = function(o, selected){
             }
         });
     }
-
-    /**
-     * The allowPublicViewOfData is only applicable when publicAccess = false, so always clear the value when publicAccess is turned on.
-     */
-    self.togglePublicAccess = function () {
-        if (self.publicAccess()) {
-            self.allowPublicViewOfData(false);
-        }
-    };
 };
