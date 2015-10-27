@@ -12,10 +12,11 @@
             activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
             activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
             activityEditUrl: "${createLink(controller: 'bioActivity', action: 'edit')}",
-            activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
+            activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'delete')}",
             activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
             recordListUrl: "${createLink(controller: 'record', action: 'ajaxList')}",
+            recordDeleteUrl: "${createLink(controller: 'record', action: 'delete')}",
             returnTo: "${createLink(controller: 'bioActivity', action:'list')}"
         },
         here = document.location.href;
@@ -26,6 +27,8 @@
 
 <div class="container-fluid">
     <h2>My Data</h2>
+
+    <g:render template="../shared/flashScopeMessage"/>
 
     <div class="row-fluid">
 

@@ -14,6 +14,34 @@ var ActivityListsViewModel = function(){
         self.pagination.loadPagination(rp, total);
     };
 
+    self.delete = function(activity){
+        bootbox.confirm("Are you sure you want to delete the survey and records?", function (result) {
+            if (result) {
+                var url = fcConfig.activityDeleteUrl + "/" + activity.activityId();
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.text == 'deleted') {
+                            location.reload(true);
+                        } else {
+                            bootbox.alert("Error deleting the survey, please try again later.");
+                        }
+                    },
+                    error: function (data) {
+                        if (data.status == 401) {
+                            var message = $.parseJSON(data.responseText);
+                            bootbox.alert(message.error);
+                        } else {
+                            alert('An unhandled error occurred: ' + data);
+                        }
+                    }
+                });
+            }
+        });
+    };
+
     self.refreshPage = function(rp){
         if(!rp) rp = 1;
         var params = { max: self.pagination.resultsPerPage(), offset:rp-1,  sort:'lastUpdated', order:'desc'};
@@ -48,9 +76,8 @@ var ActivityViewModel = function(activity){
     self.type = ko.observable(activity.type);
     self.lastUpdated = ko.observable(activity.lastUpdated).extend({simpleDate: false});
     self.transients = {};
-    self.transients.viewUrl = ko.observable(fcConfig.activityViewUrl + "/" + self.activityId()).extend({returnTo:fcConfig.returnTo})
+    self.transients.viewUrl = ko.observable(fcConfig.activityViewUrl + "/" + self.activityId()).extend({returnTo:fcConfig.returnTo});
     self.transients.editUrl = ko.observable(fcConfig.activityEditUrl + "/" + self.activityId()).extend({returnTo:fcConfig.returnTo});
-    self.transients.deleteUrl = ko.observable(fcConfig.activityDeleteUrl + "/" + self.activityId());
-    self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo:fcConfig.returnTo});;
+    self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo:fcConfig.returnTo});
     self.transients.pActivity = new pActivityInfo(activity.pActivity);
 };

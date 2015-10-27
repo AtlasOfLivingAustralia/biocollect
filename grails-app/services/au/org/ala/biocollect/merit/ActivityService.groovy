@@ -78,6 +78,11 @@ class ActivityService {
         webService.doDelete(grailsApplication.config.ecodata.service.url + '/activity/' + id)
     }
 
+    def isUserOwnerForActivity(userId, activityId) {
+        def params = '&activityId=' + activityId
+        webService.doDelete(grailsApplication.config.ecodata.service.url + '/activity/isUserOwnerForActivity/' + userId + params)
+    }
+
     /**
      * Returns a detailed list of all activities associated with a project.
      *

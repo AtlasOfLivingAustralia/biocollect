@@ -104,22 +104,26 @@ class BioActivityController {
      */
     def edit(String id) {
 
+        String userId = userService.getCurrentUserId()
         def activity = activityService.get(id)
         def projectId = activity?.projectId
         def model = null
 
-        if (!activity) {
+        if (!userId) {
+            flash.message = "Access denied: User has not been authenticated."
+            redirect(controller: 'project', action: 'index', id: projectId)
+        } else if (!activity) {
             flash.message = "Invalid activity - ${id}"
             redirect(controller: 'project', action: 'index', id: projectId)
-        } else if (!projectService.canUserEditActivity(userService.getCurrentUserId(), activity)) {
-            flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
-            redirect(controller: 'project', action: 'index', id: projectId)
-        } else {
+        } else if (projectService.isUserAdminForProject(userId, params.projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
             model = activityAndOutputModel(activity, activity.projectId)
             model.pActivity = pActivity
             model.projectActivityId = pActivity.projectActivityId
             model.id = id
+        } else {
+            flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
+            redirect(controller: 'project', action: 'index', id: projectId)
         }
 
         model
@@ -156,6 +160,37 @@ class BioActivityController {
         }
 
         model
+    }
+
+    /**
+     * Delete activity for the given activityId
+     * @param id activity identifier
+     * @return
+     */
+    def delete(String id) {
+        def activity = activityService.get(id)
+        String userId = userService.getCurrentUserId()
+
+        Map result
+
+        if (!userId) {
+            response.status = 401
+            result = [status: 401, error: "Access denied: User has not been authenticated."]
+        } else if(projectService.isUserAdminForProject(userId, params.projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+            def resp = activityService.delete(id)
+            if (resp == HttpStatus.SC_OK) {
+                flash.message = "Successfully deleted."
+                result = [status: resp, text: 'deleted']
+            } else {
+                response.status = resp
+                result = [status: resp, error: "Error deleting the survey, please try again later."]
+            }
+        } else{
+            response.status = 401
+            result = [status: 401, error: "Access denied: User is not an admin or owner of this activity - ${id}"]
+        }
+
+        render result as JSON
     }
 
     /**

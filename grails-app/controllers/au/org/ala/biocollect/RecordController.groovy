@@ -1,9 +1,10 @@
 package au.org.ala.biocollect
 
 import grails.converters.JSON
+import org.apache.http.HttpStatus
 
 class RecordController {
-    def userService, projectActivityService, recordService
+    def userService, projectActivityService, recordService, activityService, projectService
 
     def ajaxList(){
         render listUserRecords(params) as JSON
@@ -37,6 +38,36 @@ class RecordController {
         model.records = results?.list
         model.total = results?.total
         model
+    }
+
+    /**
+     * Delete record for the given recordId
+     * @param id recordId identifier
+     * @return
+     */
+    def delete(String id) {
+        def record = recordService.get(id)
+        String userId = userService.getCurrentUserId()
+
+        Map result
+        if (!userId) {
+            response.status = 401
+            result = [status: 401, error: "Access denied: User has not been authenticated."]
+        } else if (projectService.isUserAdminForProject(userId, params.projectId) || activityService.isUserOwnerForActivity(userId, record?.activityId)) {
+            def resp = recordService.delete(id)
+            if (resp == HttpStatus.SC_OK) {
+                flash.message = "Successfully deleted."
+                result = [status: resp, text: 'deleted']
+            } else {
+                response.status = resp
+                result = [status: resp, error: "Error deleting the survey, please try again later."]
+            }
+        } else {
+            response.status = 401
+            result = [status: 401, error: "Access denied: User is not an admin or owner of this record - ${id}"]
+        }
+
+        render result as JSON
     }
 
 }

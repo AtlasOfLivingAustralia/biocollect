@@ -31,7 +31,7 @@
                     <a data-bind="attr:{'href': transients.addUrl}"><small>add</small></a>
                     <a data-bind="attr:{'href': transients.viewUrl}"><small>view</small></a>
                     <a data-bind="attr:{'href': transients.editUrl}"><small>edit</small></a>
-                    <a data-bind="attr:{'href': transients.deleteUrl}"><small>delete</small></a>
+                    <a href="#" data-bind="click: $parent.delete"><small>delete</small></a>
                 </g:if>
             </div>
         </div>
