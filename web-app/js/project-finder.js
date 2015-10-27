@@ -24,6 +24,7 @@ function ProjectFinder() {
 
     this.sortKeys = [
         {name: 'Name', value: 'nameSort'},
+        {name: 'Relevance', value: '_score'},
         {name: 'Organisation Name', value: 'organisationSort'},
         {name: 'Status', value: 'status'}
     ]
@@ -217,6 +218,13 @@ function ProjectFinder() {
         return (va < vb ? -1 : (va > vb ? 1 : 0)) * sortOrder;
     }
 
+    this.setTextSearchSettings = function(){
+        sortBy = '_score'
+        $('#pt-sort').val('_score');
+        sortOrder = -1
+        $('#pt-dir').val(sortOrder);
+    }
+
     $('#pt-per-page').change(function () {
         perPage = $(this).val();
         offset = 0;
@@ -231,11 +239,13 @@ function ProjectFinder() {
         self.doSearch();
     });
     $('#pt-search-link').click(function () {
+        self.setTextSearchSettings();
         self.doSearch();
     });
     $('#pt-search').keypress(function (event) {
         if (event.which == 13) {
             event.preventDefault();
+            self.setTextSearchSettings();
             self.doSearch();
         }
     });
