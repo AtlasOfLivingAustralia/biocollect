@@ -54,7 +54,7 @@
 <g:if test="${controllerName != 'organisation'}">
     <div class="row-fluid">
         <div class="span4">
-            <label class="checkbox"><input id="pt-search-active" type="checkbox" checked /><g:message code="project.search.active" /></label>
+            <label class="checkbox"><input id="pt-search-active" type="checkbox" /><g:message code="project.search.active" /></label>
         </div>
         <div class="span4">
             <label class="checkbox"><input id="pt-search-diy" type="checkbox" /><g:message code="project.tag.diy" /></label>
