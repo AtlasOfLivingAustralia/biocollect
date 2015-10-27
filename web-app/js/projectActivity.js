@@ -772,9 +772,12 @@ var ImagesViewModel = function (image) {
 };
 
 var SurveyVisibilityViewModel = function (visibility) {
-    var self = this;
-    if (!visibility) visibility = {};
     console.log(JSON.stringify(visibility))
+    var self = this;
+    if (!visibility) {
+        visibility = {};
+    }
+
     self.embargoOption = ko.observable(visibility.embargoOption ? visibility.embargoOption.name : 'NONE');   // 'NONE', 'DAYS', 'DATE' -> See au.org.ala.ecodata.EmbargoOptions in Ecodata
     self.embargoForDays = ko.observable(visibility.embargoForDays ? visibility.embargoForDays : 60);     // 60, 90, 120 days
     self.embargoUntil = ko.observable(visibility.embargoUntil).extend({simpleDate: false});

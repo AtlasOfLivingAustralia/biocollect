@@ -18,10 +18,10 @@
                             <input type="radio" value="DAYS" data-bind="checked: visibility.embargoOption" /> Records publicly visible after
                             <select style="width:10%;" data-validation-engine="validate[required]" data-bind="options: $root.datesOptions, value: visibility.embargoForDays, optionsCaption: 'Please select'" ></select> days
                         </label>
-                        <label>
+                        <label class="inline">
                             <input type="radio" value="DATE" data-bind="checked: visibility.embargoOption" /> Embargo publishing all records until
                             <div class="input-append">
-                                <input data-bind="datepicker: visibility.embargoUntil.date" type="text"/><span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
+                                <input name="embargoUntilDate" data-bind="datepicker: visibility.embargoUntil.date, datePickerOptions: {endDate: '+12m', startDate: '+0d'}" type="text"/><span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
                             </div>
                         </label>
                    </div>
