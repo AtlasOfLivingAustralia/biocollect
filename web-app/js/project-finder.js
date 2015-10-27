@@ -197,7 +197,7 @@ function ProjectFinder() {
         vm.transients.searchText = (vm.name() + ' ' + vm.aim() + ' ' + vm.description() + ' ' + vm.keywords() + ' ' + vm.transients.scienceTypeDisplay() + ' ' + vm.transients.locality + ' ' + vm.transients.state + ' ' + vm.organisationName()).toLowerCase();
         vm.transients.indexUrl = fcConfig.projectIndexBaseUrl + vm.transients.projectId;
         vm.transients.orgUrl = vm.organisationId() && (fcConfig.organisationBaseUrl + vm.organisationId());
-        vm.transients.imageUrl = fcConfig.meritProjectLogo && vm.isMERIT() ? fcConfig.meritProjectLogo : vm.logoUrl();
+        vm.transients.imageUrl = fcConfig.meritProjectLogo && vm.isMERIT() ? fcConfig.meritProjectLogo : vm.imageUrl();
         if (!vm.transients.imageUrl) {
             x = vm.primaryImages();
             if (x && x.length > 0) vm.transients.imageUrl = x[0].url;
