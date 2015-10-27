@@ -161,19 +161,19 @@ class WebService {
             return error
         } catch (SocketTimeoutException e) {
             def error = [error: "Timed out getting json. URL= ${url}."]
-            println error
+            log.error error, e
             return error
         } catch (ConnectException ce) {
             log.info "Exception class = ${ce.getClass().name} - ${ce.getMessage()}"
             def error = [error: "ecodata service not available. URL= ${url}."]
-            println error
+            log.error error, ce
             return error
         } catch (Exception e) {
             log.info "Exception class = ${e.getClass().name} - ${e.getMessage()}"
             def error = [error: "Failed to get json from web service. ${e.getClass()} ${e.getMessage()} URL= ${url}.",
                          statusCode: conn?.responseCode?:"",
                          detail: conn?.errorStream?.text]
-            log.error error
+            log.error error, e
             return error
         }
     }
@@ -321,7 +321,7 @@ class WebService {
             }
             return conn.getResponseCode()
         } catch(Exception e){
-            println e.message
+            log.error e
             return 500
         } finally {
             if (conn != null){

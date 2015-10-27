@@ -353,6 +353,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.urlWeb = ko.observable(project.urlWeb).extend({url:true});
     self.contractStartDate = ko.observable(project.contractStartDate).extend({simpleDate: false});
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
+    self.imageUrl = ko.observable(project.urlImage);
 
     self.transients = self.transients || {};
 
@@ -668,6 +669,34 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             self.addLink(link.role, link.url);
         });
     }
+
+    self.editProject = function() {
+        window.location.href = fcConfig.projectEditUrl;
+    };
+
+    self.deleteProject = function () {
+        var message = "<span class='label label-important'>Important</span><p><b>This cannot be undone</b></p><p>Are you sure you want to delete this project? All associated data will also be deleted.</p>";
+        bootbox.confirm(message, function (result) {
+            if (result) {
+                $.ajax({
+                    url: fcConfig.projectDeleteUrl,
+                    type: 'DELETE',
+                    success: function (data) {
+                        if (data.error) {
+                            showAlert(data.error, "alert-error", self.transients.resultsHolder);
+                        } else {
+                            showAlert("Successfully deleted, redirecting to home page.", "alert-success", self.transients.resultsHolder);
+                            window.location.href = fcConfig.serverUrl;
+                        }
+                    },
+                    error: function (data) {
+                        showAlert("Error: Unhandled error", "alert-error", self.transients.resultsHolder);
+                    }
+                });
+            }
+        });
+    };
+
 };
 
 /**

@@ -1,4 +1,4 @@
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect
 
 public class EditModelWidgetRenderer implements ModelWidgetRenderer {
 
@@ -153,6 +153,12 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
         context.writer << """<div data-bind="ifnot:${context.source}()">"""
         context.writer << """    <button class="btn" id="doAttach" data-bind="click:function(target) {attachDocument(${context.source})}">Attach Document</button>"""
         context.writer << """</div>"""
+    }
+
+    @Override
+    void renderGeoMap(WidgetRenderContext context) {
+        context.model.readonly = false
+        context.writer << context.g.render(template: '/output/dataEntryMap', model: context.model)
     }
 
 }

@@ -48,7 +48,6 @@ describe("pActivityInfo Spec", function () {
         expect(projectActivity.endDate()).toEqual("");
         expect(projectActivity.commentsAllowed()).toEqual(false);
         expect(projectActivity.publicAccess()).toEqual(false);
-        expect(projectActivity.allowPublicViewOfData()).toEqual(false);
         expect(projectActivity.published()).toEqual(false);
         expect(projectActivity.transients.status()).toEqual("Active, Not yet started");
         expect(projectActivity.transients.daysTotal()).toEqual(-1);

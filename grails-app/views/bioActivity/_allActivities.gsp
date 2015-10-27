@@ -3,6 +3,10 @@
     <g:render template="../shared/loading"/>
     <!-- ko if: !transients.loading() -->
     <span class="main-content"  style="display: none;">
+        <!-- ko if: activities().length == 0 -->
+        <h4>Total results : 0</h4>
+        <!-- /ko -->
+
         <g:render template="../shared/pagination"/>
 
         <!-- ko foreach : activities -->

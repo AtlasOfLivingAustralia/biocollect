@@ -11,15 +11,18 @@ var pActivityInfo = function(o, selected){
     self.commentsAllowed = ko.observable(o.commentsAllowed ? o.commentsAllowed : false);
     self.published = ko.observable(o.published ? o.published : false);
     self.publicAccess = ko.observable(o.publicAccess ? o.publicAccess : false);
-    self.allowPublicViewOfData = ko.observable(o.allowPublicViewOfData ? o.allowPublicViewOfData : false);
 
     self.current = ko.observable(selected);
 
     self.addActivity = function(){
-        window.location.href = fcConfig.bioActiviyCreateUrl + "/" + self.projectActivityId();
+        window.location.href = fcConfig.activityCreateUrl + "/" + self.projectActivityId();
     };
 
     self.transients = self.transients || {};
+
+    // Publish is allowed only when no data's are associated with the survey
+    // Survey Info & visibility can be saved regardless of the existence of the data.
+    self.transients.saveOrUnPublishAllowed = ko.observable(false);
     self.transients.imageUploadUrl  = ko.observable(fcConfig.imageUploadUrl);
     self.transients.logoUrl = ko.pureComputed(function(){
         return self.logoUrl() ? self.logoUrl() : fcConfig.imageLocation + "/no-image-2.png";
@@ -75,13 +78,4 @@ var pActivityInfo = function(o, selected){
             }
         });
     }
-
-    /**
-     * The allowPublicViewOfData is only applicable when publicAccess = false, so always clear the value when publicAccess is turned on.
-     */
-    self.togglePublicAccess = function () {
-        if (self.publicAccess()) {
-            self.allowPublicViewOfData(false);
-        }
-    };
 };

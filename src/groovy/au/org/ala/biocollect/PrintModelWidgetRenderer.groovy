@@ -1,5 +1,4 @@
-package au.org.ala.biocollect.merit
-
+package au.org.ala.biocollect
 /**
  * Created by baird on 18/10/13.
  */
@@ -120,5 +119,11 @@ class PrintModelWidgetRenderer implements ModelWidgetRenderer {
                 </li>
             </ul>
         """
+    }
+
+    @Override
+    void renderGeoMap(WidgetRenderContext context) {
+        context.model.readonly = true
+        context.writer << context.g.render(template: '/output/dataEntryMap', model: context.model)
     }
 }

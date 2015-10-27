@@ -139,7 +139,7 @@
             <fc:select
                     data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
                     printable="${printView}"/>
-            <div id="map" style="width:100%; height: 512px;"></div>
+            <div id="siteMap" style="width:100%; height: 512px;"></div>
         </div>
 
     </div>
@@ -207,11 +207,11 @@
         /* Master controller for page. This handles saving each model as required. */
         var Master = function () {
             var self = this;
-            this.subscribers = [];
+            self.subscribers = [];
 
             // client models register their name and methods to participate in saving
             self.register = function (modelInstanceName, getMethod, isDirtyMethod, resetMethod) {
-                this.subscribers.push({
+                self.subscribers.push({
                     model: modelInstanceName,
                     get: getMethod,
                     isDirty: isDirtyMethod,
@@ -235,21 +235,21 @@
             this.collectData = function() {
                 var activityData, outputs = [], photoPoints;
                 $.each(this.subscribers, function(i, obj) {
-                    if (obj.isDirty()) {
-                        if (obj.model === 'activityModel') {
-                            activityData = obj.get();
-                        } else if (obj.model === 'photoPoints') {
-                            photoPoints = obj.get();
-                        }
-                        else {
-                            outputs.push(obj.get());
-                        }
+                    if (obj.model === 'activityModel') {
+                        activityData = obj.get();
+                    } else if (obj.model === 'photoPoints' && obj.isDirty()) {
+                        photoPoints = obj.get();
+                    }
+                    else if (obj.isDirty()) {
+                        outputs.push(obj.get());
                     }
                 });
                 if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
                     return null;
                 } else {
-                    if (activityData === undefined) { activityData = {}}
+                    if (activityData === undefined) {
+                        activityData = {}
+                    }
                     activityData.outputs = outputs;
 
                     return activityData;
@@ -270,7 +270,6 @@
             this.save = function () {
                 if ($('#validation-container').validationEngine('validate')) {
                     var toSave = this.collectData();
-
                     if (!toSave) {
                         alert("Nothing to save.");
                         return;
@@ -344,6 +343,15 @@
 
         var master = new Master();
 
+        function ActivityLevelData() {
+            var self = this;
+            self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
+            self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
+            self.pActivity = JSON.parse('${(pActivity as JSON).toString().encodeAsJavaScript()}');
+        }
+
+        var activityLevelData = new ActivityLevelData();
+
         $(function() {
 
             $('#validation-container').validationEngine('attach', {scroll: true});
@@ -391,35 +399,36 @@
                 self.siteId = ko.vetoableObservable(act.siteId, self.confirmSiteChange);
 
                 self.siteId.subscribe(function(siteId) {
+
                     var matchingSite = $.grep(self.transients.pActivitySites, function(site) { return siteId == site.siteId})[0];
 
-                    alaMap.clearFeatures();
+                    activityLevelData.siteMap.clearFeatures();
                     if (matchingSite) {
-                        alaMap.replaceAllFeatures([matchingSite.extent.geometry]);
+                        activityLevelData.siteMap.replaceAllFeatures([matchingSite.extent.geometry]);
                     }
                     self.transients.site(matchingSite);
 
                     <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
                         self.updatePhotoPointModel(matchingSite);
                     </g:if>
-                });
+              });
 
-                self.goToProject = function () {
-                    if (self.projectId) {
-                        document.location.href = fcConfig.projectViewUrl + self.projectId;
-                    }
-                };
+                 self.goToProject = function () {
+                     if (self.projectId) {
+                         document.location.href = fcConfig.projectViewUrl + self.projectId;
+                     }
+                 };
 
-                self.goToSite = function () {
-                    if (self.siteId()) {
-                        document.location.href = fcConfig.siteViewUrl + self.siteId();
-                    }
-                };
+                 self.goToSite = function () {
+                     if (self.siteId()) {
+                         document.location.href = fcConfig.siteViewUrl + self.siteId();
+                     }
+                 };
 
                 <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
-                    self.transients.photoPointModel = ko.observable(new PhotoPointViewModel(site, activity));
+                    self.transients.photoPointModel = ko.observable(new PhotoPointViewModel(site, activityLevelData.activity));
                     self.updatePhotoPointModel = function(site) {
-                        self.transients.photoPointModel(new PhotoPointViewModel(site, activity));
+                        self.transients.photoPointModel(new PhotoPointViewModel(site, activityLevelData.activity));
                     };
                 </g:if>
 
@@ -466,41 +475,39 @@
                 self.dirtyFlag = ko.dirtyFlag(self, false);
             }
 
-            var activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
-            var site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
-            var pActivity = JSON.parse('${(pActivity as JSON).toString().encodeAsJavaScript()}');
-
             var viewModel = new ViewModel(
-                activity,
-                site,
+                activityLevelData.activity,
+                activityLevelData.site,
                 ${project ? "JSON.parse('${project.toString().encodeAsJavaScript()}')" : 'null'},
                 ${metaModel ?: 'null'},
-                pActivity);
+                activityLevelData.pActivity);
 
-            var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
+            <g:if test="${metaModel.supportsSites?.toBoolean()}">
+                var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
+                if (!mapFeatures) {
+                    mapFeatures = {zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []};
+                }
 
-            var mapOptions = {
-                zoomToBounds:true,
-                zoomLimit:16,
-                highlightOnHover:true,
-                features:[],
-                featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-            };
-
-            init_map_with_features({
-                    mapContainer: "map",
+                var mapOptions = {
+                    mapContainer: "siteMap",
                     scrollwheel: false,
+                    zoomToBounds:true,
+                    zoomLimit:16,
+                    highlightOnHover:true,
+                    features:[],
                     featureService: "${createLink(controller: 'proxy', action: 'feature')}",
                     wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-                },
-                mapOptions
-            );
+                };
+
+                activityLevelData.siteMap = new MapWithFeatures(mapOptions, mapFeatures);
+            </g:if>
 
             ko.applyBindings(viewModel);
 
             master.register('activityModel', viewModel.modelForSaving, viewModel.dirtyFlag.isDirty, viewModel.dirtyFlag.reset);
 
         });
+
+
 </r:script>
 </div>

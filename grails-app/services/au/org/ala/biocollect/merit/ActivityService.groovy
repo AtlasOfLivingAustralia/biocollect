@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.DateUtils
 import org.joda.time.DateTime
 import org.joda.time.Period
 import org.joda.time.format.DateTimeFormat
@@ -44,6 +45,10 @@ class ActivityService {
         def resp = webService.getJson(grailsApplication.config.ecodata.service.url + '/assessment/')
         // inject constructed name
         resp.list.collect(constructName)
+    }
+
+    def getProjectActivityCount(id){
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/countByProjectActivity/'+ id)
     }
 
     def get(id) {

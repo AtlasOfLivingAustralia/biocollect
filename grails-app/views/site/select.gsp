@@ -300,7 +300,7 @@
             wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
         };
 
-        init_map_with_features({mapContainer:'map'}, mapOptions);
+        window.alaMap = new MapWithFeatures({mapContainer:'map'}, mapOptions);
 
         siteModel = new SiteSelectModel();
         ko.applyBindings(siteModel);

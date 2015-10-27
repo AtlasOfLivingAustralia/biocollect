@@ -249,6 +249,12 @@ modules = {
         resource url: 'vendor/moment/moment.min.js'
     }
 
+    projectFinder{
+        dependsOn('knockout','projects')
+        resource url: 'js/project-finder.js'
+        resource url: 'css/project-finder.css'
+    }
+
     jquery_cookie {
         defaultBundle 'application'
         dependsOn 'jquery'
@@ -343,14 +349,6 @@ modules = {
         resource url: 'vendor/prettytextdiff/jquery.pretty-text-diff.min.js'
         resource url: 'vendor/prettytextdiff/diff_match_patch.js'
         resource url: 'vendor/prettytextdiff/pretty_text_diff_basic.css'
-    }
-
-    sliderpro {
-        dependsOn 'jquery'
-        resource url: 'vendor/slider-pro-master/js/jquery.sliderPro.min.js'
-        resource url: 'vendor/slider-pro-master/css/slider-pro.min.css'
-        resource url: 'vendor/slider-pro-master/css/images/blank.gif'
-
     }
 
     leaflet {

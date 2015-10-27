@@ -7,7 +7,7 @@
             <div class="well">
                 <g:render template="/projectActivity/warning"/>
 
-                <h5>You can constrain the species available for selection in this survey to:</h5>
+                <h5>You can constrain the species available for selection in this survey to: <span class="req-field"></span></h5>
 
                 <div class="row-fluid">
                     <div class="span4 text-left">
@@ -74,26 +74,25 @@
             <span data-bind="visible: species.groupInfoVisible">
 
                 <span data-bind="if: species.groupInfoVisible">
-                    <g:render template="/projectActivity/addSpecies" />
+                    <g:render template="/projectActivity/addSpecies"/>
 
-                    <g:render template="/projectActivity/chooseSpecies" />
+                    <g:render template="/projectActivity/chooseSpecies"/>
                 </span>
 
             </span>
 
-        <!-- /ko -->
+            <div class="row-fluid">
+
+                <div class="span12">
+                    <button class="btn-primary btn block"
+                            data-bind="click: $parent.saveSpecies, disable: !transients.saveOrUnPublishAllowed()">Save</button>
+                </div>
+
+            </div>
 
         <!-- /ko -->
 
-    </br>
-    <div class="row-fluid">
-
-        <div class="span12">
-            <button class="btn-primary btn block" data-bind="click: saveSpecies"> Save </button>
-        </div>
-
-    </div>
-
+        <!-- /ko -->
 </div>
 
 

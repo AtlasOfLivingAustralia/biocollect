@@ -89,3 +89,44 @@
     color: #ddd;
 }
 /* End Documents */
+
+
+/* Data entry map styles */
+.data-entry-map-container {
+    width: 100%;
+    height: 450px;
+    margin-bottom: 20px;
+}
+
+.banner-image-container {
+    position: relative;
+    max-height: 450px;
+    overflow: hidden;
+}
+
+.banner-image {
+    width: 100%;
+}
+
+.banner-image-caption {
+    position: absolute;
+    background: rgba(255,255,255,.7);
+    padding: 10px;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.text-output {
+    margin-top: 5px;
+    margin-left: 20px;
+    display: inline-block;
+}
+
+.req-field:after {
+    content: "*";
+    color: red;
+    font-weight:bold;
+    font-size:1.5em;
+    white-space: nowrap;
+}

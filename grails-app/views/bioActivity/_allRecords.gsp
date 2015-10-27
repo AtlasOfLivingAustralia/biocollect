@@ -1,8 +1,13 @@
 <!-- ko stopBinding: true -->
 <div id="survey-all-records-content">
     <g:render template="../shared/loading"/>
+
     <!-- ko if: !transients.loading() -->
     <span class="main-content"  style="display: none;">
+        <!-- ko if: records().length == 0 -->
+        <h4>Total records : 0</h4>
+        <!-- /ko -->
+
         <g:render template="../shared/pagination"/>
 
         <!-- ko foreach : records -->
@@ -32,7 +37,7 @@
         </div>
         <!-- /ko -->
 
-    </br>
+        </br>
         <g:render template="../shared/pagination"/>
     </span>
     <!-- /ko -->

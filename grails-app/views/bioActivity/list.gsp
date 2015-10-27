@@ -2,15 +2,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <g:if test="${printView}">
-        <meta name="layout" content="nrmPrint"/>
-        <title>Print | My Records| Bio Collect</title>
-    </g:if>
-    <g:else>
-        <meta name="layout" content="${hubConfig.skin}"/>
-        <title>My Records | Bio Collect</title>
-    </g:else>
-
+    <meta name="layout" content="${hubConfig.skin}"/>
+    <title>My Data | Bio Collect</title>
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <r:script disposition="head">
@@ -22,8 +15,8 @@
             activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
             activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
-            recordListUrl: "${createLink(controller: 'record', action: 'ajaxList')}"
-
+            recordListUrl: "${createLink(controller: 'record', action: 'ajaxList')}",
+            returnTo: "${createLink(controller: 'bioActivity', action:'list')}"
         },
         here = document.location.href;
     </r:script>
@@ -32,23 +25,23 @@
 <body>
 
 <div class="container-fluid">
-    <h2>My activities and records</h2>
+    <h2>My Data</h2>
 
     <div class="row-fluid">
 
         <div class="span12">
 
             <ul class="nav nav-tabs" id="ul-survey-activities">
-                <li><a href="#survey-records" id= "survey-records-tab" data-toggle="tab">Records</a></li>
                 <li><a href="#survey-activities" id="survey-activities-tab" data-toggle="tab">Surveys</a></li>
+                <li><a href="#survey-records" id= "survey-records-tab" data-toggle="tab">Records</a></li>
             </ul>
 
             <div class="tab-content">
-                <div class="tab-pane" id="survey-records">
-                    <g:render template="allRecords" model="[show:true]"/>
-                </div>
                 <div class="tab-pane" id="survey-activities">
                     <g:render template="allActivities" model="[show:true]"/>
+                </div>
+                <div class="tab-pane" id="survey-records">
+                    <g:render template="allRecords" model="[show:true]"/>
                 </div>
             </div>
         </div>

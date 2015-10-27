@@ -16,14 +16,44 @@ The plugin can be found in this repo in the following directory:
   ./plugins/biocollect-sightings/
 ```
 
-The only bit of functionality that is partly functional at the moment is the sightings submission page. ATM this can be access in url: `http://<host>:<port>/biocollect/ala/submitSighting`
-
 The reason for having it in a plugin for the time being are the following:
 * Avoid conflicts in web client side resources (css, js, ...)
 * We need to identify the piece of functionality and code base associated that we really need to reuse.
 * In the future we might think we are better of using the sighting functionality as a service though the pigeonhole project and removing a plugin dependency is trivial.
 
-Once we know what we need, we might be able to promote the code base to the biocollect host app. Meanwhile the current arrangement should be enough to get by.
+The pigeonhole code has been modified to expose a javascript object to set and get the sightings information.
+
+```
+   var sighting = new Sighting();
+   ...
+   sighting.loadSightingData(data);
+   ...
+   var sightingData = sighting.getSightingsDataAsJS();
+```
+
+To use this:
+
+1) Include the following resource:
+
+```
+    submitSighting {
+        dependsOn 'moment, leaflet, bootbox, identify'
+        resource url: '/js/submitSighting.js', plugin: 'biocollect-sightings'
+        resource url: '/js/initLeafletMap.js', plugin: 'biocollect-sightings'
+    }
+```
+
+2) Render the submit sighting resources template:
+
+```
+    <g:render template="submitSightingResources"/>
+```
+
+3) Render the submit sighting UI template:
+
+```
+    <g:render template="submitSighting"/>
+```
 
 ## General Information
 

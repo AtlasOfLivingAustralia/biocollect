@@ -1,13 +1,20 @@
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect
 
-class Databindings /*extends AttributeMap*/ {
+class AttributeMap {
     protected final static String QUOTE = "\""
     protected final static String SPACE = " "
     protected final static String EQUALS = "="
     protected final static String COMMA = ","
     protected final static String COLON = ":"
     private map = [:]
-    protected separator = COMMA
+    protected separator = SPACE
+
+    AttributeMap(String separator) {
+        this.separator = separator
+    }
+
+    AttributeMap() {
+    }
 
     def getMap() { return map }
 
@@ -25,7 +32,21 @@ class Databindings /*extends AttributeMap*/ {
         }
     }
 
+    def addSpan(value) {
+        if (value && !this.classHasSpan()) {
+            add('class', value)
+        }
+    }
+
+    def classHasSpan() {
+        return map.containsKey('class') && map.class.tokenize(' ').any {it.startsWith('span')}
+    }
+
     String toString() {
-        map.collect({k,v -> k + COLON + v}).join ','
+        def strs = ['']
+        map.each { k, v ->
+            strs << k + EQUALS + QUOTE + v.encodeAsHTML() + QUOTE
+        }
+        strs.join separator
     }
 }

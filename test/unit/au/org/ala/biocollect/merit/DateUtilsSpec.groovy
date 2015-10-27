@@ -1,6 +1,6 @@
 package au.org.ala.biocollect.merit
 
-import au.org.ala.biocollect.merit.DateUtils
+import au.org.ala.biocollect.DateUtils
 import org.joda.time.DateTime
 import org.joda.time.DateTimeUtils
 import org.joda.time.DateTimeZone

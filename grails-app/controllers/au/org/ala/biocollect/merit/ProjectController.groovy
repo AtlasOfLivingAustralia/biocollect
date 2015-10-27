@@ -1,11 +1,19 @@
 package au.org.ala.biocollect.merit
+
+import au.org.ala.biocollect.DateUtils
 import grails.converters.JSON
+import org.apache.http.HttpStatus
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
+
+import java.text.SimpleDateFormat
 
 class ProjectController {
 
     def projectService, metadataService, organisationService, commonService, activityService, userService, webService, roleService, grailsApplication, projectActivityService
     def siteService, documentService
+    SearchService searchService
+
     static defaultAction = "index"
     static ignore = ['action','controller','id']
 
@@ -36,11 +44,9 @@ class ProjectController {
                 user.hasViewAccess = projectService.canUserViewProject(user.userId, id)?:false
             }
             def programs = projectService.programsModel()
-            def activities = activityService.activitiesForProject(id)
             def content = projectContent(project, user, programs)
 
             def model = [project: project,
-                activities: activities,
                 mapFeatures: commonService.getMapFeatures(project),
                 isProjectStarredByUser: userService.isProjectStarredByUser(user?.userId?:"0", project.projectId)?.isProjectStarredByUser,
                 user: user,
@@ -75,21 +81,19 @@ class ProjectController {
 
     protected String projectView(project) {
         if (project.isExternal) {
-            return 'externalCitizenScienceProjectTemplate'
+            return 'externalCSProjectTemplate'
         }
-        return project.projectType == 'survey'?'citizenscienceProjectTemplate':'index'
+        return project.projectType == 'survey' ? 'csProjectTemplate' : 'index'
     }
 
     protected Map surveyProjectContent(project, user) {
-
-        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
+        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite, click: "initialiseProjectArea"],
          news:[label:'News', visible: true, type:'tab'],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
-         data:[label:'Data', visible:(user?.isAdmin || user?.isCaseManager), template:'/bioActivity/allData', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'], //TODO allow public to view data tab
-         admin:[label:'Admin', template:'adminTabs', visible:(user?.isAdmin || user?.isCaseManager), type:'tab']]
+         data:[label:'Data', visible:true, template:'/bioActivity/allData', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
+         admin:[label:'Admin', template:'internalCSAdmin', visible:(user?.isAdmin || user?.isCaseManager), type:'tab']]
     }
-
 
     protected Map worksProjectContent(project, user) {
         [overview:[label:'Overview', visible: true, default: true, type:'tab', projectSite:project.projectSite],
@@ -98,7 +102,6 @@ class ProjectController {
          site:[label:'Sites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
          dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab'],
          admin:[label:'Admin', visible:(user?.isAdmin || user?.isCaseManager), type:'tab']]
-
     }
 
     @PreAuthorise
@@ -171,169 +174,32 @@ class ProjectController {
     }
 
     def citizenScience() {
-        def today = DateUtils.now()
-        def user = userService.getUser()
-        def userId = user?.userId
-        def projects = projectService.list(false, true).collect {
-            def urlImage
-            it.documents.each { doc ->
-                if (doc.role == documentService.ROLE_LOGO)
-                    urlImage = doc.url
-                else if (!urlImage && doc.isPrimaryProjectImage)
-                    urlImage = doc.url
-            }
-            // no need to ship the whole link object down to browser
-            def trimmedLinks = it.links.collect {
-                [
-                    role: it.role,
-                    url: it.url
-                ]
-            }
-            def siteGeom = siteService.getRaw(it.projectSiteId)?.site?.extent?.geometry
-            [
-                projectId  : it.projectId,
-                aim        : it.aim,
-                coverage   : siteGeom,
-                description: it.description,
-                difficulty : it.difficulty,
-                endDate    : it.plannedEndDate,
-                hasParticipantCost: it.hasParticipantCost && true, // force it to boolean
-                hasTeachingMaterials: it.hasTeachingMaterials && true, // force it to boolean
-                isDIY      : it.isDIY && true, // force it to boolean
-                isExternal : it.isExternal && true, // force it to boolean
-                isSuitableForChildren: it.isSuitableForChildren && true, // force it to boolean
-                keywords   : it.keywords,
-                links      : trimmedLinks,
-                name       : it.name,
-                organisationId  : it.organisationId,
-                organisationName: it.organisationName ?: organisationService.getNameFromId(it.organisationId),
-                scienceType: it.scienceType,
-                startDate  : it.plannedStartDate,
-                urlImage   : urlImage,
-                urlWeb     : it.urlWeb
-            ]
-        }
-        if (params.download as boolean) {
-            response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
-            // This is returned to the browswer as a text response due to workaround the warning
-            // displayed by IE8/9 when JSON is returned from an iframe submit.
-            response.setContentType('text/plain;charset=UTF8')
-            def resultJson = projects as JSON
-            render resultJson.toString()
-        } else {
-            [
-                user: user,
+        [
+                user: userService.getUser(),
                 showTag: params.tag,
-                downloadLink: createLink(action:'citizenScience',params:[download:true]),
-                projects: projects.collect {
-                    [ // pass array instead of object to reduce JSON size
-                      it.projectId,
-                      it.aim,
-                      it.coverage,
-                      it.description,
-                      it.difficulty,
-                      it.endDate,
-                      it.hasParticipantCost,
-                      it.hasTeachingMaterials,
-                      it.isDIY,
-                      it.isExternal,
-                      it.isSuitableForChildren,
-                      it.keywords,
-                      it.links,
-                      it.name,
-                      it.organisationId,
-                      it.organisationName,
-                      it.scienceType,
-                      it.startDate,
-                      it.urlImage,
-                      it.urlWeb
-                    ]
-                }
-            ]
-        }
+                downloadLink: createLink(controller: 'project', action: 'getProjectList', params: ['download' : true] )
+        ]
     }
 
     def myProjects() {
-        def today = DateUtils.now()
-        def user = userService.getUser()
-        def userId = user?.userId
-        def projects = projectService.listMyProjects(userId).collect {
-            def urlImage
-            it.documents.each { doc ->
-                if (doc.role == documentService.ROLE_LOGO)
-                    urlImage = doc.url
-                else if (!urlImage && doc.isPrimaryProjectImage)
-                    urlImage = doc.url
-            }
-            // no need to ship the whole link object down to browser
-            def trimmedLinks = it.links.collect {
-                [
-                        role: it.role,
-                        url: it.url
-                ]
-            }
-            def siteGeom = siteService.getRaw(it.projectSiteId)?.site?.extent?.geometry
-            [
-                    projectId  : it.projectId,
-                    aim        : it.aim,
-                    coverage   : siteGeom,
-                    description: it.description,
-                    difficulty : it.difficulty,
-                    endDate    : it.plannedEndDate,
-                    hasParticipantCost: it.hasParticipantCost && true, // force it to boolean
-                    hasTeachingMaterials: it.hasTeachingMaterials && true, // force it to boolean
-                    isDIY      : it.isDIY && true, // force it to boolean
-                    isExternal : it.isExternal && true, // force it to boolean
-                    isSuitableForChildren: it.isSuitableForChildren && true, // force it to boolean
-                    keywords   : it.keywords,
-                    links      : trimmedLinks,
-                    name       : it.name,
-                    organisationId  : it.organisationId,
-                    organisationName: it.organisationName ?: organisationService.getNameFromId(it.organisationId),
-                    scienceType: it.scienceType,
-                    startDate  : it.plannedStartDate,
-                    urlImage   : urlImage,
-                    urlWeb     : it.urlWeb
-            ]
-        }
-        if (params.download as boolean) {
-            response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
-            // This is returned to the browser as a text response due to workaround the warning
-            // displayed by IE8/9 when JSON is returned from an iframe submit.
-            response.setContentType('text/plain;charset=UTF8')
-            def resultJson = projects as JSON
-            render resultJson.toString()
-        } else {
-            render( view: 'myProjects', model: [
-                    user: user,
-                    showTag: params.tag,
-                    downloadLink: createLink(action:'myProjects',params:[download:true]),
-                    projects: projects.collect {
-                        [ // pass array instead of object to reduce JSON size
-                          it.projectId,
-                          it.aim,
-                          it.coverage,
-                          it.description,
-                          it.difficulty,
-                          it.endDate,
-                          it.hasParticipantCost,
-                          it.hasTeachingMaterials,
-                          it.isDIY,
-                          it.isExternal,
-                          it.isSuitableForChildren,
-                          it.keywords,
-                          it.links,
-                          it.name,
-                          it.organisationId,
-                          it.organisationName,
-                          it.scienceType,
-                          it.startDate,
-                          it.urlImage,
-                          it.urlWeb
-                        ]
-                    }
-            ])
-        }
+
+    }
+
+    def fields (){
+        params = [
+                'isSuitableForChildren', // child friendly
+                'difficulty', // difficulty level
+                'isDIY', // DIY
+                'status', 'endDate', // active check field status
+                'hasParticipantCost', // no cost
+                'hasTeachingMaterials', // teaching material
+                '', // mobile uses links to find it out
+                '', // page size
+                'asc','desc', // sort order
+                'name', 'aim','organisationName', // sort fields
+                'endDate' //'daysStatus' sort field has to use end data
+
+        ]
     }
 
     /**
@@ -419,13 +285,9 @@ class ProjectController {
         if (result.error) {
             render result as JSON
         } else {
-            //println "json result is " + (result as JSON)
             render result.resp as JSON
         }
     }
-
-
-
 
     @PreAuthorise
     def update(String id) {
@@ -436,14 +298,178 @@ class ProjectController {
 
     @PreAuthorise(accessLevel = 'admin')
     def delete(String id) {
-        projectService.delete(id)
-        forward(controller: 'home')
+        def resp = projectService.delete(id)
+        if(resp == HttpStatus.SC_OK){
+            flash.message = 'Successfully deleted'
+            render status:resp, text: flash.message
+        } else {
+            response.status = resp
+            flash.errorMessage = 'Error deleting the project, please try again later.'
+            render status:resp, error: flash.errorMessage
+        }
     }
 
     def list() {
         // will show a list of projects
         // but for now just go home
         forward(controller: 'home')
+    }
+
+    def getProjectList(){
+        String activeQuery
+        GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
+        Map trimmedParams = commonService.parseParams(params)
+        trimmedParams.status = params.boolean('status');
+        trimmedParams.isCitizenScience = params.boolean('isCitizenScience');
+        trimmedParams.isWorks = params.boolean('isWorks');
+        trimmedParams.isSurvey = params.boolean('isSurvey')
+        trimmedParams.query = "docType:project"
+        trimmedParams.isUserPage = params.boolean('isUserPage');
+        trimmedParams.hasParticipantCost = params.boolean('hasParticipantCost')
+        trimmedParams.isSuitableForChildren = params.boolean('isSuitableForChildren')
+        trimmedParams.isDIY = params.boolean('isDIY')
+        trimmedParams.hasTeachingMaterials = params.boolean('hasTeachingMaterials')
+        trimmedParams.isMobile = params.boolean('isMobile')
+
+        List fq = [], projectType = []
+        List immutableFq = params.list('fq')
+        immutableFq.each {
+            it? fq.push(it):null;
+        }
+        trimmedParams.fq = fq;
+
+        if(trimmedParams.isCitizenScience){
+            projectType.push('isCitizenScience:true')
+            trimmedParams.isCitizenScience = null
+        }
+
+        if(trimmedParams.isSurvey){
+            projectType.push('(projectType:survey AND isExternal:true)')
+            trimmedParams.isSurvey = null
+        }
+
+        if(trimmedParams.isWorks){
+            projectType.push('projectType:works')
+            trimmedParams.isWorks = null
+        }
+        // append projectType to query. this is used by organisation page.
+        trimmedParams.query += ' AND (' + projectType.join(' OR ') + ')'
+
+        // query construction
+        if(trimmedParams.q){
+            trimmedParams.query += " AND " + trimmedParams.q;
+            trimmedParams.q = null
+        }
+
+        if(trimmedParams.status){
+            SimpleDateFormat sdf = new SimpleDateFormat('yyyy-MM-dd');
+            activeQuery = "-(plannedEndDate:[* TO *] AND -plannedEndDate:>=${sdf.format( new Date())})";
+            trimmedParams.query += ' AND ' + activeQuery;
+            trimmedParams.status = null
+        }
+
+        if(trimmedParams.isUserPage){
+            fq.push('admins:' + userService.getUser()?.userId);
+            trimmedParams.isUserPage = null
+        }
+
+        if(trimmedParams.hasParticipantCost){
+            fq.push('hasParticipantCost:false');
+            trimmedParams.hasParticipantCost = null
+        }
+
+        if(trimmedParams.isSuitableForChildren){
+            fq.push('isSuitableForChildren:true');
+            trimmedParams.isSuitableForChildren = null
+        }
+
+        if(trimmedParams.isDIY){
+            fq.push('isDIY:true');
+            trimmedParams.isDIY = null
+        }
+
+        if(trimmedParams.hasTeachingMaterials){
+            fq.push('hasTeachingMaterials:true');
+            trimmedParams.hasTeachingMaterials = null
+        }
+
+        if(trimmedParams.isMobile){
+            fq.push('isMobileApp:true');
+            trimmedParams.isMobile = null
+        }
+
+        if(trimmedParams.difficulty){
+            fq.push('difficulty:'+trimmedParams.difficulty);
+            trimmedParams.difficulty = null
+        }
+
+        if(trimmedParams.organisationName){
+            fq.push('organisationFacet:'+trimmedParams.organisationName);
+            trimmedParams.organisationName = null
+        }
+
+        trimmedParams.each{ key, value ->
+            if(value != null && value){
+                queryParams.put(key, value)
+            }
+        }
+
+        Map searchResult = searchService.getCitizenScienceProjects(queryParams);
+        List projects = searchResult.hits?.hits;
+        projects = projects.collect {
+            Map doc = it._source;
+
+            // no need to ship the whole link object down to browser
+            def trimmedLinks = doc.links.collect {
+                [
+                        role: it.role,
+                        url: it.url
+                ]
+            }
+
+            Map siteGeom;
+            doc?.sites?.each{ site ->
+                if(doc?.projectSiteId == site.siteId){
+                    siteGeom = site.extent?.geometry;
+                }
+            }
+
+            [
+                    projectId  : doc.projectId,
+                    aim        : doc.aim,
+                    coverage   : siteGeom,
+                    description: doc.description,
+                    difficulty : doc.difficulty,
+                    endDate    : doc.plannedEndDate,
+                    hasParticipantCost: doc.hasParticipantCost && true, // force it to boolean
+                    hasTeachingMaterials: doc.hasTeachingMaterials && true, // force it to boolean
+                    isDIY      : doc.isDIY && true, // force it to boolean
+                    isExternal : doc.isExternal && true, // force it to boolean
+                    isSuitableForChildren: doc.isSuitableForChildren && true, // force it to boolean
+                    keywords   : doc.keywords,
+                    links      : trimmedLinks,
+                    name       : doc.name,
+                    organisationId  : doc.organisationId,
+                    organisationName: doc.organisationName ?: organisationService.getNameFromId(doc.organisationId),
+                    scienceType: doc.scienceType,
+                    startDate  : doc.plannedStartDate,
+                    urlImage   : doc.imageUrl,
+                    urlWeb     : doc.urlWeb,
+                    plannedStartDate: doc.plannedStartDate,
+                    plannedEndDate: doc.plannedEndDate
+            ]
+        }
+
+        if (params.download as boolean) {
+            response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
+            // This is returned to the browswer as a text response due to workaround the warning
+            // displayed by IE8/9 when JSON is returned from an iframe submit.
+            response.setContentType('text/plain;charset=UTF8')
+        } else {
+            response.setContentType('application/json')
+        }
+
+        render( text: [ projects:  projects, total: searchResult.hits?.total?:0 ] as JSON );
     }
 
     def species(String id) {

@@ -26,7 +26,6 @@ $(function () {
     });
 
     $('#speciesImages').on('inview', '#end', function (event, isInView, visiblePartX, visiblePartY) {
-        //console.log("inview", isInView, visiblePartX, visiblePartY);
         if (isInView) {
             //console.log("images bottom in view");
             var start = $('#speciesImages').data('start');
@@ -41,7 +40,6 @@ $(function () {
 
     $('#speciesImages').on('click', '.imgCon a', function () {
         var lsid = $(this).data('lsid');
-        //var name = $(this).find('.brief').html(); // TODO: store info in object and store object in 'data' attribute
         var displayname = $(this).data('displayname');
         loadSpeciesPopup(lsid, displayname);
         return false;
@@ -58,22 +56,21 @@ function loadSpeciesGroupImages(speciesGroup, start) {
     }
 
     var pageSize = 30;
-    var radius = $('#radius').val();
+    var radius = $('#radius').val() ? $('#radius').val() : 5;
     var latlng = $('#locationLatLng span').data('latlng');
     $('.spinner2').removeClass('hide');
     jQuery.ajaxSettings.traditional = true; // so multiple params with same key are formatted right
-    //var url = "http://biocache.ala.org.au/ws/occurrences/search?q=species_subgroup:Parrots&fq=geospatial_kosher%3Atrue&fq=multimedia:Image&facets=multimedia&lat=-35.2792511&lon=149.1113017&radius=5"
+
     $.ajax({
         url : GSP_VARS.biocacheBaseUrl + '/occurrences/search.json',
         dataType : 'jsonp',
         jsonp : 'callback',
         data : {
             'q' : '*:*',
-            'fq': [ speciesGroup,
+            'fq': [
+                speciesGroup,
                 'rank_id:[7000 TO *]' // remove higher taxa
-                //'geospatial_kosher:true'],
             ],
-            //'fq': speciesGroup,
             'facets': 'common_name_and_lsid',
             'flimit': pageSize,
             'foffset': start,
@@ -86,7 +83,6 @@ function loadSpeciesGroupImages(speciesGroup, start) {
     })
     .done(function(data){
         if (data.facetResults && data.facetResults.length > 0 && data.facetResults[0].fieldResult.length > 0) {
-            //console.log(speciesGroup + ': species count = ' + data.facetResults[0].fieldResult.length);
             var images = "<span id='imagesGrid'>";
             var newTotal = Number(start);
             $.each(data.facetResults[0].fieldResult, function(i, el){
