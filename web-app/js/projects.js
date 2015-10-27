@@ -353,7 +353,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.urlWeb = ko.observable(project.urlWeb).extend({url:true});
     self.contractStartDate = ko.observable(project.contractStartDate).extend({simpleDate: false});
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
-    self.imageUrl = ko.observable(project.imageUrl);
+    self.imageUrl = ko.observable(project.urlImage);
 
     self.transients = self.transients || {};
 
