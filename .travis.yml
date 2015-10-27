@@ -5,6 +5,7 @@ jdk:
 branches:
   only:
   - master
+  - dev
 before_install:
 - rm -rf ~/.sdkman
 - curl -s get.gvmtool.net > ~/install_sdkman.sh

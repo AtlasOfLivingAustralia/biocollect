@@ -39,6 +39,15 @@ class UrlMappings {
                         action = [GET: 'get', POST: 'update', PUT: 'update', DELETE: 'delete']
                 }
 
+                "/bioActivity/$entityId/comment"(controller: "comment"){
+                        action = [GET: 'list', POST: 'create']
+                        entityType = 'au.org.ala.ecodata.Activity'
+                }
+                "/bioActivity/$entityId/comment/$id"(controller: 'comment'){
+                        entityType = 'au.org.ala.ecodata.Activity'
+                        action = [GET: 'get', POST: 'update', PUT: 'update', DELETE: 'delete']
+                }
+
                 "/$controller/$id?"(parseRequest:true) {
 
                         action = [GET: "get", POST: "upload", PUT: "upload", DELETE: "delete"]

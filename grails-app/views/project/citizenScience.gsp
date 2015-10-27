@@ -15,11 +15,19 @@
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         imageLocation:"${resource(dir:'/images')}",
         logoLocation:"${resource(dir:'/images/filetypes')}",
-        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}"
+        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
+        projectListUrl: "${createLink(controller: 'project', action: 'getProjectList')}",
+        projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
+        organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
+        isCitizenScience: true,
+        isOrganisationPage: false
     }
+    <g:if test = "${grailsApplication.config.merit.projectLogo}" >
+        fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";
+    </g:if>
     </r:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <r:require modules="js_iso8601,projects"/>
+    <r:require modules="js_iso8601,projects,projectFinder"/>
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">
@@ -38,15 +46,11 @@
     </div>
 </div>
 <r:script>
-$(document).ready(function () {
     $("#newPortal").on("click", function() {
         document.location.href = "${createLink(controller:'project',action:'create',params:[citizenScience:true])}";
     });
 
-    window.pago.init([
-    <g:each var="p" in="${projects}">new CitizenScienceFinderProjectViewModel(${p as JSON}),</g:each>
-    ]);
-});
+    var projectFinder = new ProjectFinder();
 </r:script>
 </body>
 </html>

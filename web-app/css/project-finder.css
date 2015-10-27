@@ -1,0 +1,23 @@
+.projectLogo {
+    width: 200px;
+    height: 150px;
+    line-height: 146px;
+    overflow: hidden;
+    padding: 1px;
+    text-align: center;
+}
+.projectType {
+    padding-right: 10px;
+    padding-left: 10px;
+    background: grey;
+    color: white;
+    white-space: pre-line;
+    display: inline-block;
+    text-align: center;
+}
+input[type=checkbox] {
+    margin-right: 5px;
+}
+#pt-downloadLink {
+    margin-bottom: 10px;
+}
