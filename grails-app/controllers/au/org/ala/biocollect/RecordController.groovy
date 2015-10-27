@@ -1,10 +1,18 @@
 package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.ActivityService
+import au.org.ala.biocollect.merit.ProjectService
+import au.org.ala.biocollect.merit.UserService
 import grails.converters.JSON
 import org.apache.http.HttpStatus
 
 class RecordController {
-    def userService, projectActivityService, recordService, activityService, projectService
+
+    UserService userService
+    ProjectActivityService projectActivityService
+    RecordService recordService
+    ActivityService activityService
+    ProjectService projectService
 
     def ajaxList(){
         render listUserRecords(params) as JSON
