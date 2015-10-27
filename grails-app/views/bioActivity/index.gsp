@@ -133,12 +133,7 @@
             </div>
         </g:each>
         <!-- /ko -->
-
-        <div class="form-actions">
-            <button type="button" id="cancel" class="btn">return</button>
-        </div>
-<<<<<<< HEAD
-    </g:each>
+    </div>
 
     <g:if test="${pActivity.commentsAllowed}">
         <g:render template="/comment/comment"></g:render>
@@ -146,11 +141,8 @@
 
     <div class="form-actions">
         <button type="button" id="cancel" class="btn">return</button>
-=======
->>>>>>> dev
     </div>
 </div>
-
     <!-- templates -->
 
     <r:script>
@@ -213,32 +205,6 @@
                 }
             }
 
-<<<<<<< HEAD
-        var viewModel = new ViewModel(
-            ${(activity as JSON).toString()},
-            ${site ?: 'null'},
-            ${project ?: 'null'},
-            ${metaModel ?: 'null'},
-            ${pActivity ?: 'null'});
-
-        ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
-        ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'))
-
-        var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
-        if(mapFeatures !=null && mapFeatures.features !== undefined && mapFeatures.features.length >0){
-            init_map_with_features({
-                    mapContainer: "map",
-                    zoomToBounds:true,
-                    zoomLimit:16,
-                    featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                    wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-                },
-                mapFeatures
-            );
-        }
-    });
-</r:script>
-=======
             var viewModel = new ViewModel(
                 ${(activity as JSON).toString()},
                 ${site ?: 'null'},
@@ -247,6 +213,7 @@
                 ${pActivity ?: 'null'});
 
             ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
+            ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
 
             <g:if test="${metaModel?.supportsSites?.toBoolean()}">
                 var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
@@ -264,6 +231,5 @@
             </g:if>
         });
     </r:script>
->>>>>>> dev
 </body>
 </html>
