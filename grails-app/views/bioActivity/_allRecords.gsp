@@ -26,13 +26,14 @@
                 <small>Description: </small><small data-bind="text: transients.pActivity.description"></small>
                 </br>
                 <small>Submitted on: <span data-bind="text: lastUpdated.formattedDate"></span></small>
-                <g:if test="${show}">
+                <!-- ko if: $parent.showCrud -->
                     </br>
-                    <a data-bind="attr:{'href': transients.addUrl}"><small>add</small></a>
                     <a data-bind="attr:{'href': transients.viewUrl}"><small>view</small></a>
+                    <a data-bind="attr:{'href': transients.addUrl}"><small>add</small></a>
                     <a data-bind="attr:{'href': transients.editUrl}"><small>edit</small></a>
                     <a href="#" data-bind="click: $parent.delete"><small>delete</small></a>
-                </g:if>
+                <!-- /ko -->
+
             </div>
         </div>
         <!-- /ko -->

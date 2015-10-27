@@ -1,12 +1,14 @@
 var RecordListsViewModel = function(){
   var self = this;
   self.records = ko.observableArray();
+  self.showCrud = ko.observable(false);
   self.pagination = new PaginationViewModel({},self);
   self.transients = {};
   self.transients.loading = ko.observable(true);
 
-  self.load = function(records, rp, total){
+  self.load = function(records, rp, total, showCrud){
     self.records([]);
+    self.showCrud(showCrud);
     var list = $.map(records ? records : [] , function(record, index){
       return new RecordViewModel(record);
     });
@@ -25,7 +27,7 @@ var RecordListsViewModel = function(){
       contentType: 'application/json',
 
       success: function (data) {
-        self.load(data.records, rp, data.total);
+        self.load(data.records, rp, data.total, data.showCrud);
       },
       error: function (data) {
         alert('An unhandled error occurred: ' + data);

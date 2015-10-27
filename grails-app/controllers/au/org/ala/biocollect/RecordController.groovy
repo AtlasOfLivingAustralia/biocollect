@@ -22,6 +22,8 @@ class RecordController {
         }
         model.records = results?.list
         model.total = results?.total
+        String userId = userService.getCurrentUserId()
+        model.showCrud = userId && id ? projectService.isUserAdminForProject(userId, id) : false
         render model as JSON
     }
 
@@ -37,6 +39,7 @@ class RecordController {
         }
         model.records = results?.list
         model.total = results?.total
+        model.showCrud = true
         model
     }
 

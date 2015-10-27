@@ -258,6 +258,8 @@ class BioActivityController {
         }
         model.activities = results?.activities
         model.total = results?.total
+        String userId = userService.getCurrentUserId()
+        model.showCrud = userId ? projectService.isUserAdminForProject(userId, id) : false
         render model as JSON
     }
 
@@ -273,6 +275,7 @@ class BioActivityController {
         }
         model.activities = results?.activities
         model.total = results?.total
+        model.showCrud = true
         model
     }
 

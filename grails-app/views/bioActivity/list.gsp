@@ -41,10 +41,10 @@
 
             <div class="tab-content">
                 <div class="tab-pane" id="survey-activities">
-                    <g:render template="allActivities" model="[show:true]"/>
+                    <g:render template="allActivities"/>
                 </div>
                 <div class="tab-pane" id="survey-records">
-                    <g:render template="allRecords" model="[show:true]"/>
+                    <g:render template="allRecords"/>
                 </div>
             </div>
         </div>
