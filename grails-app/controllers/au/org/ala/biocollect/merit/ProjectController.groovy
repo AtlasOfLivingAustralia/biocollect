@@ -3,6 +3,7 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.DateUtils
 import grails.converters.JSON
 import org.apache.http.HttpStatus
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
 
 import java.text.SimpleDateFormat
@@ -316,7 +317,7 @@ class ProjectController {
 
     def getProjectList(){
         String activeQuery
-        Map queryParams = [:]
+        GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
         Map trimmedParams = commonService.parseParams(params)
         trimmedParams.status = params.boolean('status');
         trimmedParams.isCitizenScience = params.boolean('isCitizenScience');
@@ -409,7 +410,7 @@ class ProjectController {
 
         trimmedParams.each{ key, value ->
             if(value != null && value){
-                queryParams[key] = value
+                queryParams.put(key, value)
             }
         }
 

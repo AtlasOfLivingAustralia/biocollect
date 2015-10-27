@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 import groovy.json.JsonSlurper
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 import javax.annotation.PostConstruct
 /**
@@ -70,7 +71,7 @@ class SearchService {
         webService.getJson(url)
     }
 
-    Map getCitizenScienceProjects(Map params, String q = null){
+    Map getCitizenScienceProjects(GrailsParameterMap params, String q = null){
         addDefaultFacetQuery(params)
         String url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
