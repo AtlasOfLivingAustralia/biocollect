@@ -5,20 +5,13 @@
     </li>
     </ul>
 <div id="pt-selectors" class="well" style="display:none">
-    <g:if test="${fc.userIsAlaOrFcAdmin()}">
-        <div class="row-fluid">
-            <a href="${downloadLink}" id="pt-downloadLink" class="btn btn-warning span2 pull-right"
-               title="${message(code:'project.download.tooltip')}" data-bind="click: download">
-                <i class="icon-download icon-white"></i>&nbsp;<g:message code="g.download" /></a>
-        </div>
-    </g:if>
-    <div class="row-fluid">
-        <span class="span2" id="pt-resultsReturned"></span>
-        <div class="span8 input-append">
+    <h3>${message(code:'g.search.heading')}</h3>
+    <div class="row-fluid" id="pf-search">
+        <div class="span10 input-append">
             <input class="span12" type="text" name="pt-search" id="pt-search" placeholder="${message(code:'g.search.placeHolder')}"/>
         </div>
-        <div class="pull-right">
-            <a href="javascript:void(0);" title="${message(code:'project.search.term.tooltip')}" id="pt-search-link" class="btn btn-primary"><g:message code="g.search" /></a>
+        <div class="pull-right span2">
+            <a href="javascript:void(0);" title="${message(code:'project.search.term.tooltip')}" id="pt-search-link" class="btn btn-primary"><i class="icon-search icon-white"></i> <g:message code="g.search" /></a>
             <a href="javascript:void(0);" title="${message(code:'g.resetSearch.tooltip')}" id="pt-reset" class="btn"><g:message code="g.resetSearch" /></a>
         </div>
     </div>
@@ -75,6 +68,14 @@
         </div>
     </div>
 </g:if>
+</div>
+<div class="row-fluid">
+    <h3 class="pull-left" id="pt-resultsReturned"></h3>
+    <g:if test="${fc.userIsAlaOrFcAdmin()}">
+        <a href="${downloadLink}" id="pt-downloadLink" class="btn btn-warning span2 pull-right"
+           title="${message(code:'project.download.tooltip')}" data-bind="click: download">
+            <i class="icon-download icon-white"></i>&nbsp;<g:message code="g.download" /></a>
+    </g:if>
 </div>
 <p/>
     <bc:koLoading>

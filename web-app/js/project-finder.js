@@ -301,6 +301,6 @@ function ProjectFinder() {
         }
     }
 
-
+    $('#pt-search').focus()
     this.doSearch();
 }

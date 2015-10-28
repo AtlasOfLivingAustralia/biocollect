@@ -20,4 +20,19 @@ input[type=checkbox] {
 }
 #pt-downloadLink {
     margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+#pt-selectors {
+    background-color: #dfffcc;
+}
+
+#pf-search{
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+#pt-searchControls{
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
 }
