@@ -143,6 +143,29 @@ ko.bindingHandlers.onClickShowTab = {
 };
 
 
+/**
+ * Handles tab selection / redirect.
+ * If url param is set then initiates redirect
+ * If tabId is set initiates tab selection
+ * Example: data-bind="showTabOrRedirect: { url: '', tabId: '#activities-tab'}"
+ */
+ko.bindingHandlers.showTabOrRedirect = {
+  'init': function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+    var newValueAccesssor = function() {
+      return function () {
+        var options = ko.utils.unwrapObservable(valueAccessor());
+        if (options.url == '' && options.tabId) {
+          $(options.tabId).tab('show');
+        } else if (options.url != '') {
+          window.location.href = options.url;
+        }
+      }
+    };
+    ko.bindingHandlers.click.init(element, newValueAccesssor, allBindingsAccessor, viewModel, bindingContext);
+  }
+};
+
+
 ko.bindingHandlers.stagedImageUpload = {
   init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
 
