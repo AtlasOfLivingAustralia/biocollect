@@ -111,7 +111,7 @@
     <br/> <br/>
     <div class="row-fluid">
         <div class="span12">
-            <button class="btn-primary btn block" data-bind="click: saveInfo"> Save </button>
+            <button class="btn-primary btn btn-small block" data-bind="click: saveInfo"><i class="icon-white  icon-hdd" ></i>  Save </button>
         </div>
     </div>
 </div>

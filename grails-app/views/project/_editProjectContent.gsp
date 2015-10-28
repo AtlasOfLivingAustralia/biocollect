@@ -23,8 +23,8 @@
 </div>
 <div class="row-fluid">
     <span class="span3">
-        <button class="btn btn-primary" data-bind="click:save${attributeName}">Save changes</button>
-        <button class="btn" data-bind="click:cancelEdit${attributeName}">Cancel</button>
+        <button class="btn btn-primary btn-small" data-bind="click:save${attributeName}"><i class="icon-white icon-hdd"></i> Save changes</button>
+        <button class="btn  btn-small" data-bind="click:cancelEdit${attributeName}">Cancel</button>
 
     </span>
 </div>

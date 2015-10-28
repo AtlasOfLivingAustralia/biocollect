@@ -16,7 +16,7 @@
                  <span> <b> Select survey: </b></span>
                  <div class="btn-group">
 
-                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 <button type="button" class="btn btn-small btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <!-- ko  foreach: projectActivities -->
                         <span data-bind="if: current">
                            <span data-bind="text: name"></span> <span class="caret"></span>
@@ -43,7 +43,7 @@
                 <!-- /ko -->
 
                 <div class="btn-group btn-group-horizontal">
-                        <a class="btn btn-xs btn-default" data-bind="click: addProjectActivity"> <i class="icon-plus"></i> Add Survey</a>
+                        <a class="btn btn-small btn-default" data-bind="click: addProjectActivity"> <i class="icon-plus"></i> Add Survey</a>
                 </div>
 
              </div>
@@ -52,12 +52,12 @@
 
 
 
-        <!-- ko if: projectActivities().length > 0 -->
-        <div class="row-fluid">
-            <div class="span12 text-right">
-                <a class="btn btn-sm btn-default" data-bind="click: deleteProjectActivity"> <i class="icon-minus-sign"></i> Delete</a>
+            <!-- ko if: projectActivities().length > 0 -->
+            <div class="row-fluid">
+                <div class="span12 text-right">
+                    <a class="btn btn-small btn-danger" data-bind="click: deleteProjectActivity"> <i class="icon-remove icon-white"></i> Delete</a>
+                </div>
             </div>
-        </div>
 
          <!-- ko foreach: projectActivities -->
             <!-- ko if: current -->

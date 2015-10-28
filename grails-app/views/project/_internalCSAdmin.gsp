@@ -27,7 +27,7 @@
                     </div>
 
                     <div class="row-fluid">
-                        <div class="span12 text-right" >
+                        <div class="span12 text-left" >
                             <g:if test="${fc.userIsAlaOrFcAdmin()}">
                                 <p>
                                     <button class="admin-action btn btn-small btn-danger" data-bind="click:deleteProject"> <i class="icon-remove icon-white"></i> Delete Project</button>
@@ -60,7 +60,7 @@
                     </div>
                     <g:render template="/shared/attachDocument"/>
                     <div class="row-fluid attachDocumentModal">
-                        <button class="btn" id="doAttach" data-bind="click:attachDocument">Attach Document</button>
+                        <button class="btn btn-small btn-primary" id="doAttach" data-bind="click:attachDocument"><i class="icon-white icon-plus"></i> Attach Document</button>
                     </div>
                 </div>
 

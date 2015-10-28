@@ -85,7 +85,7 @@
 
     <div class="row-fluid">
         <div class="span12">
-            <button class="btn-primary btn block" data-bind="click: $parent.saveSites, disable: !transients.saveOrUnPublishAllowed()"> Save </button>
+            <button class="btn-primary btn btn-small block" data-bind="click: $parent.saveSites, disable: !transients.saveOrUnPublishAllowed()"><i class="icon-white  icon-hdd" ></i>  Save </button>
         </div>
     </div>
 
