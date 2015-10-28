@@ -772,7 +772,6 @@ var ImagesViewModel = function (image) {
 };
 
 var SurveyVisibilityViewModel = function (visibility) {
-    console.log(JSON.stringify(visibility))
     var self = this;
     if (!visibility) {
         visibility = {};
