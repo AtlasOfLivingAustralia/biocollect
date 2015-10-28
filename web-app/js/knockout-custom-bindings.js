@@ -145,8 +145,9 @@ ko.bindingHandlers.onClickShowTab = {
 
 /**
  * Handles tab selection / redirect.
- * If url param is set then initiates redirect
- * If tabId is set initiates tab selection
+ * If url is empty & tabId is set then initiates tab selection
+ * If url is set then initiates redirect
+ *
  * Example: data-bind="showTabOrRedirect: { url: '', tabId: '#activities-tab'}"
  */
 ko.bindingHandlers.showTabOrRedirect = {
