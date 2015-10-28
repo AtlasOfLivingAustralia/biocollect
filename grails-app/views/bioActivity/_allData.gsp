@@ -11,12 +11,12 @@
                 <div class="tab-content clearfix">
                     <div class="tab-pane" id="survey-all-data-activities">
                         <h5>
-                            <g:render template="../bioActivity/allActivities" model="[show:false]"/>
+                            <g:render template="../bioActivity/allActivities"/>
                         </h5>
                     </div>
                     <div class="tab-pane" id="survey-all-data-records">
                         <h5>
-                            <g:render template="../bioActivity/allRecords" model="[show:false]"/>
+                            <g:render template="../bioActivity/allRecords"/>
                         </h5>
                     </div>
                 </div>
