@@ -59,7 +59,7 @@
             <!-- content  -->
             <ul id="ul-cs-external-project" class="nav nav-pills">
                 <li>
-                    <a href="#about" id="about-tab" data-toggle="tab">About</a>
+                    <a href="#about" id="about-tab" data-toggle="tab" data-bind="click: initialiseProjectArea">About</a>
                 </li>
                 <li>
                     <a href="#admin" id="admin-tab" data-toggle="tab">Admin</a>
@@ -78,7 +78,7 @@
     </div>
 </g:if>
 <g:else>
-    <g:render template="aboutCitizenScienceProject"/>
+    <g:render template="aboutCitizenScienceProject" model="${projectContent.about}"/>
 </g:else>
 
 <r:script>

@@ -1,12 +1,14 @@
 var RecordListsViewModel = function(){
   var self = this;
   self.records = ko.observableArray();
+  self.showCrud = ko.observable(false);
   self.pagination = new PaginationViewModel({},self);
   self.transients = {};
   self.transients.loading = ko.observable(true);
 
-  self.load = function(records, rp, total){
+  self.load = function(records, rp, total, showCrud){
     self.records([]);
+    self.showCrud(showCrud);
     var list = $.map(records ? records : [] , function(record, index){
       return new RecordViewModel(record);
     });
@@ -25,7 +27,7 @@ var RecordListsViewModel = function(){
       contentType: 'application/json',
 
       success: function (data) {
-        self.load(data.records, rp, data.total);
+        self.load(data.records, rp, data.total, data.showCrud);
       },
       error: function (data) {
         alert('An unhandled error occurred: ' + data);
@@ -36,14 +38,42 @@ var RecordListsViewModel = function(){
     });
   };
 
+  self.delete = function (record) {
+    bootbox.confirm("Are you sure you want to delete the records?", function (result) {
+      if (result) {
+        var url = fcConfig.recordDeleteUrl + "/" + record.occurrenceID();
+        $.ajax({
+          url: url,
+          type: 'DELETE',
+          contentType: 'application/json',
+          success: function (data) {
+            if (data.text == 'deleted') {
+              location.reload(true);
+            } else {
+              bootbox.alert("Error deleting the record, please try again later.");
+            }
+          },
+          error: function (data) {
+            if (data.status == 401) {
+              var message = $.parseJSON(data.responseText);
+              bootbox.alert(message.error);
+            } else {
+              alert('An unhandled error occurred: ' + data);
+            }
+          }
+        });
+      }
+    });
+  };
+
+
   self.refreshPage();
 };
 
 var RecordViewModel = function(record){
   var self = this;
   if(!record) record = {};
-
-  self.recordId = ko.observable(record.recordId);
+  self.occurrenceID = ko.observable(record.occurrenceID);
   self.name = ko.observable(record.name);
   self.guid = ko.observable(record.guid);
   self.activityId = ko.observable(record.activityId);
@@ -52,7 +82,6 @@ var RecordViewModel = function(record){
   self.transients = {};
   self.transients.viewUrl = ko.observable(fcConfig.activityViewUrl + "/" + self.activityId()).extend({returnTo:fcConfig.returnTo});
   self.transients.editUrl = ko.observable(fcConfig.activityEditUrl + "/" + self.activityId()).extend({returnTo:fcConfig.returnTo});;
-  self.transients.deleteUrl = ko.observable(fcConfig.activityDeleteUrl + "/" + self.activityId());
   self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo:fcConfig.returnTo});;
   self.transients.pActivity = new pActivityInfo(record.pActivity);
 };

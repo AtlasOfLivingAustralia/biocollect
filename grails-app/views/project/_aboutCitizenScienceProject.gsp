@@ -57,7 +57,7 @@
             </div>
             <hr/>
             <div id="surveyLink" class="row-fluid" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb())">
-                <a class="btn pull-right" data-bind="attr:{href:isExternal()?urlWeb:'${createLink(action:'survey',id:project.projectId)}'}"><g:message code="project.display.join" /></a>
+                <a class="btn pull-right" data-bind="showTabOrRedirect: { url: isExternal() ? urlWeb() : '', tabId: '#activities-tab'}"><g:message code="project.display.join" /></a>
                 <p class="clearfix"/>
             </div>
             <g:render template="/shared/listDocumentLinks"
