@@ -25,13 +25,16 @@ class RecordController {
                      sort: params.sort ?: 'lastUpdated',
                      order: params.order ?: 'desc']
         def results = recordService.listProjectRecords(id, query)
+        String userId = userService.getCurrentUserId()
+        boolean isAdmin = userId ? projectService.isUserAdminForProject(userId, id) : false
+
         results?.list?.each{
             it.pActivity = projectActivityService.get(it.projectActivityId)
+            it.showCrud = isAdmin ?: (userId == it.userId)
         }
         model.records = results?.list
         model.total = results?.total
-        String userId = userService.getCurrentUserId()
-        model.showCrud = userId && id ? projectService.isUserAdminForProject(userId, id) : false
+
         render model as JSON
     }
 
@@ -44,10 +47,11 @@ class RecordController {
         def results = recordService.listUserRecords(userService.getCurrentUserId(), query)
         results?.list?.each{
             it.pActivity = projectActivityService.get(it.projectActivityId)
+            it.showCrud = true
         }
         model.records = results?.list
         model.total = results?.total
-        model.showCrud = true
+
         model
     }
 
@@ -67,7 +71,6 @@ class RecordController {
         } else if (projectService.isUserAdminForProject(userId, params.projectId) || activityService.isUserOwnerForActivity(userId, record?.activityId)) {
             def resp = recordService.delete(id)
             if (resp == HttpStatus.SC_OK) {
-                flash.message = "Successfully deleted."
                 result = [status: resp, text: 'deleted']
             } else {
                 response.status = resp
