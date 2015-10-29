@@ -5,7 +5,7 @@
 <g:if test="${!printView}">
     <ul class="breadcrumb">
         <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-        <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
+        <li><a data-bind="click:goToProject" href="#" class="clickable">Project</a> <span class="divider">/</span></li>
         <li class="active">
             <span>${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span>
         </li>
