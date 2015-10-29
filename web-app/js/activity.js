@@ -1,17 +1,48 @@
-var ActivityListsViewModel = function(){
+var ActivityListsViewModel = function(placeHolder){
     var self = this;
     self.activities = ko.observableArray();
     self.pagination = new PaginationViewModel({},self);
     self.transients = {};
     self.transients.loading = ko.observable(true);
+    self.transients.placeHolder = placeHolder;
 
     self.load = function(activities, rp, total){
         self.activities([]);
+
         var activities = $.map(activities ? activities : [] , function(activity, index){
             return new ActivityViewModel(activity);
         });
         self.activities(activities);
         self.pagination.loadPagination(rp, total);
+    };
+
+    self.delete = function(activity){
+        bootbox.confirm("Are you sure you want to delete the survey and records?", function (result) {
+            if (result) {
+                var url = fcConfig.activityDeleteUrl + "/" + activity.activityId();
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.text == 'deleted') {
+                            showAlert("Successfully deleted.", "alert-success", self.transients.placeHolder);
+                            self.refreshPage();
+                        } else {
+                            showAlert("Error deleting the survey, please try again later.", "alert-error", self.transients.placeHolder);
+                        }
+                    },
+                    error: function (data) {
+                        if (data.status == 401) {
+                            var message = $.parseJSON(data.responseText);
+                            bootbox.alert(message.error);
+                        } else {
+                            alert('An unhandled error occurred: ' + data);
+                        }
+                    }
+                });
+            }
+        });
     };
 
     self.refreshPage = function(rp){
@@ -43,14 +74,14 @@ var ActivityViewModel = function(activity){
     if(!activity) activity = {};
 
     self.activityId = ko.observable(activity.activityId);
+    self.showCrud = ko.observable(activity.showCrud);
     self.projectActivityId = ko.observable(activity.projectActivityId);
     self.name = ko.observable();
     self.type = ko.observable(activity.type);
     self.lastUpdated = ko.observable(activity.lastUpdated).extend({simpleDate: false});
     self.transients = {};
-    self.transients.viewUrl = ko.observable(fcConfig.activityViewUrl + "/" + self.activityId()).extend({returnTo:fcConfig.returnTo})
+    self.transients.viewUrl = ko.observable(fcConfig.activityViewUrl + "/" + self.activityId()).extend({returnTo:fcConfig.returnTo});
     self.transients.editUrl = ko.observable(fcConfig.activityEditUrl + "/" + self.activityId()).extend({returnTo:fcConfig.returnTo});
-    self.transients.deleteUrl = ko.observable(fcConfig.activityDeleteUrl + "/" + self.activityId());
-    self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo:fcConfig.returnTo});;
+    self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo:fcConfig.returnTo});
     self.transients.pActivity = new pActivityInfo(activity.pActivity);
 };

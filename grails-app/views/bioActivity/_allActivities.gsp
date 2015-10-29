@@ -22,13 +22,14 @@
                         </label>
                         <small>Description: <span data-bind="text: transients.pActivity.description"></span></small></br>
                         <small>Submitted on: <span data-bind="text: lastUpdated.formattedDate"></span></small>
-                        <g:if test="${show}">
+                        <!-- ko if: showCrud -->
                             </br>
-                            <a data-bind="attr:{'href': transients.addUrl}"><small>add</small></a>
-                            <a data-bind="attr:{'href': transients.viewUrl}"><small>view</small></a>
-                            <a data-bind="attr:{'href': transients.editUrl}"><small>edit</small></a>
-                            <a data-bind="attr:{'href': transients.deleteUrl}"><small>delete</small></a>
-                        </g:if>
+                            <a data-bind="attr:{'href': transients.viewUrl}">view</a>
+                            <a data-bind="attr:{'href': transients.addUrl}">add</a>
+                            <a data-bind="attr:{'href': transients.editUrl}">edit</a>
+                            <a href="#" data-bind="click: $parent.delete">delete</a>
+                            </br></br>
+                        <!-- /ko -->
                     </div>
                 </div>
             </div>
@@ -42,7 +43,9 @@
 <!-- /ko -->
 
 <r:script>
-    function initialiseActivities(){
-        ko.applyBindings(new ActivityListsViewModel(), document.getElementById('survey-all-activities-content'));
+    function initialiseActivities(placeHolder){
+        var viewModel = new ActivityListsViewModel(placeHolder);
+        ko.applyBindings(viewModel, document.getElementById('survey-all-activities-content'));
+        return viewModel;
     }
 </r:script>
