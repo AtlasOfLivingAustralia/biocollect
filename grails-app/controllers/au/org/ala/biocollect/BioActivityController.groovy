@@ -179,7 +179,6 @@ class BioActivityController {
         } else if(projectService.isUserAdminForProject(userId, params.projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             def resp = activityService.delete(id)
             if (resp == HttpStatus.SC_OK) {
-                flash.message = "Successfully deleted."
                 result = [status: resp, text: 'deleted']
             } else {
                 response.status = resp
@@ -249,17 +248,19 @@ class BioActivityController {
 
         def model = [:]
         def query = [pageSize: params.max ?: 10,
-                     offset: params.offset ?: 0,
-                     sort: params.sort ?: 'lastUpdated',
-                     order: params.order ?: 'desc']
+                     offset  : params.offset ?: 0,
+                     sort    : params.sort ?: 'lastUpdated',
+                     order   : params.order ?: 'desc']
         def results = activityService.activitiesForProject(id, query)
-        results?.activities?.each{
+        String userId = userService.getCurrentUserId()
+        boolean isAdmin = userId ? projectService.isUserAdminForProject(userId, id) : false
+        results?.activities?.each {
             it.pActivity = projectActivityService.get(it.projectActivityId)
+            it.showCrud = isAdmin ?: (userId == it.userId)
         }
         model.activities = results?.activities
         model.total = results?.total
-        String userId = userService.getCurrentUserId()
-        model.showCrud = userId ? projectService.isUserAdminForProject(userId, id) : false
+
         render model as JSON
     }
 
@@ -270,12 +271,13 @@ class BioActivityController {
                      sort    : params.sort ?: 'lastUpdated',
                      order   : params.order ?: 'desc']
         def results = activityService.activitiesForUser(userService.getCurrentUserId(), query)
+        String userId = userService.getCurrentUserId()
         results?.activities?.each {
             it.pActivity = projectActivityService.get(it.projectActivityId)
+            it.showCrud = true
         }
         model.activities = results?.activities
         model.total = results?.total
-        model.showCrud = true
         model
     }
 

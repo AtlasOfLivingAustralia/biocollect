@@ -80,7 +80,7 @@ class ActivityService {
 
     def isUserOwnerForActivity(userId, activityId) {
         def params = '&activityId=' + activityId
-        webService.doDelete(grailsApplication.config.ecodata.service.url + '/activity/isUserOwnerForActivity/' + userId + params)
+        webService.doGet(grailsApplication.config.ecodata.service.url + '/activity/isUserOwnerForActivity/' + userId + params)
     }
 
     /**

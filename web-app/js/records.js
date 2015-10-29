@@ -1,14 +1,13 @@
-var RecordListsViewModel = function(){
+var RecordListsViewModel = function(placeHolder){
   var self = this;
   self.records = ko.observableArray();
-  self.showCrud = ko.observable(false);
   self.pagination = new PaginationViewModel({},self);
   self.transients = {};
   self.transients.loading = ko.observable(true);
+  self.transients.placeHolder = placeHolder;
 
-  self.load = function(records, rp, total, showCrud){
+  self.load = function(records, rp, total){
     self.records([]);
-    self.showCrud(showCrud);
     var list = $.map(records ? records : [] , function(record, index){
       return new RecordViewModel(record);
     });
@@ -27,7 +26,7 @@ var RecordListsViewModel = function(){
       contentType: 'application/json',
 
       success: function (data) {
-        self.load(data.records, rp, data.total, data.showCrud);
+        self.load(data.records, rp, data.total);
       },
       error: function (data) {
         alert('An unhandled error occurred: ' + data);
@@ -39,7 +38,7 @@ var RecordListsViewModel = function(){
   };
 
   self.delete = function (record) {
-    bootbox.confirm("Are you sure you want to delete the records?", function (result) {
+    bootbox.confirm("Are you sure you want to delete this record?", function (result) {
       if (result) {
         var url = fcConfig.recordDeleteUrl + "/" + record.occurrenceID();
         $.ajax({
@@ -48,9 +47,10 @@ var RecordListsViewModel = function(){
           contentType: 'application/json',
           success: function (data) {
             if (data.text == 'deleted') {
-              location.reload(true);
+              showAlert("Successfully deleted.", "alert-success", self.transients.placeHolder);
+              self.refreshPage();
             } else {
-              bootbox.alert("Error deleting the record, please try again later.");
+              showAlert("Error deleting the record, please try again later.", "alert-error", self.transients.placeHolder);
             }
           },
           error: function (data) {
@@ -74,6 +74,7 @@ var RecordViewModel = function(record){
   var self = this;
   if(!record) record = {};
   self.occurrenceID = ko.observable(record.occurrenceID);
+  self.showCrud = ko.observable(record.showCrud);
   self.name = ko.observable(record.name);
   self.guid = ko.observable(record.guid);
   self.activityId = ko.observable(record.activityId);

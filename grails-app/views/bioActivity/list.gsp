@@ -28,7 +28,7 @@
 <div class="container-fluid">
     <h2>My Data</h2>
 
-    <g:render template="../shared/flashScopeMessage"/>
+    <div id="data-result-placeholder"></div>
 
     <div class="row-fluid">
 
@@ -55,9 +55,17 @@
 <r:script>
     $(window).load(function () {
         $(".main-content").show();
-        initialiseActivities();
-        initialiseRecords();
+        var recordVM = initialiseRecords('data-result-placeholder');
+        var activityVM = initialiseActivities('data-result-placeholder');
         new RestoreTab('ul-survey-activities', 'survey-records-tab');
+
+        $('#ul-survey-activities a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if ('#survey-records' == e.currentTarget.hash) {
+                recordVM.refreshPage();
+            } else if ('#survey-activities' == e.currentTarget.hash) {
+                activityVM.refreshPage();
+            }
+        });
     });
 </r:script>
 

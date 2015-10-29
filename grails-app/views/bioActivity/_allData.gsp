@@ -1,5 +1,7 @@
 <div id="project-all-data">
 
+    <div id="data-result-placeholder"></div>
+
     <div class="row-fluid">
         <div class="span12">
 
@@ -27,8 +29,16 @@
 
 <r:script>
     function initialiseData(){
-        initialiseActivities();
-        initialiseRecords();
+        var recordVM = initialiseRecords('data-result-placeholder');
+        var activityVM = initialiseActivities('data-result-placeholder');
         new RestoreTab('ul-project-records-activities', 'survey-all-data-records-tab');
+
+        $('#ul-project-records-activities a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if ('#survey-all-data-records' == e.currentTarget.hash) {
+                recordVM.refreshPage();
+            } else if ('#survey-all-data-activities' == e.currentTarget.hash) {
+                activityVM.refreshPage();
+            }
+        });
     };
 </r:script>

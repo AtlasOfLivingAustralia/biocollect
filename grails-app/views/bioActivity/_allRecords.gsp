@@ -26,14 +26,14 @@
                 <small>Description: </small><small data-bind="text: transients.pActivity.description"></small>
                 </br>
                 <small>Submitted on: <span data-bind="text: lastUpdated.formattedDate"></span></small>
-                <!-- ko if: $parent.showCrud -->
+                <!-- ko if: showCrud -->
                     </br>
-                    <a data-bind="attr:{'href': transients.viewUrl}"><small>view</small></a>
-                    <a data-bind="attr:{'href': transients.addUrl}"><small>add</small></a>
-                    <a data-bind="attr:{'href': transients.editUrl}"><small>edit</small></a>
-                    <a href="#" data-bind="click: $parent.delete"><small>delete</small></a>
+                    <a data-bind="attr:{'href': transients.viewUrl}">view</a>
+                    <a data-bind="attr:{'href': transients.addUrl}">add</a>
+                    <a data-bind="attr:{'href': transients.editUrl}">edit</a>
+                    <a href="#" data-bind="click: $parent.delete">delete</a>
+                    </br></br>
                 <!-- /ko -->
-
             </div>
         </div>
         <!-- /ko -->
@@ -46,7 +46,9 @@
 <!-- /ko -->
 
 <r:script>
-    function initialiseRecords(){
-        ko.applyBindings(new RecordListsViewModel(), document.getElementById('survey-all-records-content'));
+    function initialiseRecords(placeHolder){
+        var viewModel = new RecordListsViewModel(placeHolder)
+        ko.applyBindings(viewModel, document.getElementById('survey-all-records-content'));
+        return viewModel;
     }
 </r:script>

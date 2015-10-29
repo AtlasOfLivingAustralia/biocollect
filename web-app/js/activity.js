@@ -1,14 +1,14 @@
-var ActivityListsViewModel = function(){
+var ActivityListsViewModel = function(placeHolder){
     var self = this;
     self.activities = ko.observableArray();
-    self.showCrud = ko.observable(false);
     self.pagination = new PaginationViewModel({},self);
     self.transients = {};
     self.transients.loading = ko.observable(true);
+    self.transients.placeHolder = placeHolder;
 
-    self.load = function(activities, rp, total, showCrud){
+    self.load = function(activities, rp, total){
         self.activities([]);
-        self.showCrud(showCrud);
+
         var activities = $.map(activities ? activities : [] , function(activity, index){
             return new ActivityViewModel(activity);
         });
@@ -26,9 +26,10 @@ var ActivityListsViewModel = function(){
                     contentType: 'application/json',
                     success: function (data) {
                         if (data.text == 'deleted') {
-                            location.reload(true);
+                            showAlert("Successfully deleted.", "alert-success", self.transients.placeHolder);
+                            self.refreshPage();
                         } else {
-                            bootbox.alert("Error deleting the survey, please try again later.");
+                            showAlert("Error deleting the survey, please try again later.", "alert-error", self.transients.placeHolder);
                         }
                     },
                     error: function (data) {
@@ -54,7 +55,7 @@ var ActivityListsViewModel = function(){
             type: 'GET',
             contentType: 'application/json',
             success: function (data) {
-                self.load(data.activities, rp, data.total, data.showCrud);
+                self.load(data.activities, rp, data.total);
             },
             error: function (data) {
                 alert('An unhandled error occurred: ' + data);
@@ -73,6 +74,7 @@ var ActivityViewModel = function(activity){
     if(!activity) activity = {};
 
     self.activityId = ko.observable(activity.activityId);
+    self.showCrud = ko.observable(activity.showCrud);
     self.projectActivityId = ko.observable(activity.projectActivityId);
     self.name = ko.observable();
     self.type = ko.observable(activity.type);
