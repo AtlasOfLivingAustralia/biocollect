@@ -145,45 +145,76 @@
                         <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.associatedOrgs"/>:<fc:iconHelp><g:message code="project.details.associatedOrgs.help"/></fc:iconHelp></label>
                         <div class="span6" id="associatedOrgList">
                             <!-- ko foreach: associatedOrgs -->
-                            <div class="span12 margin-left-0">
+                            <div class="span12 margin-left-0 margin-bottom-1">
                                 <div class="span5 margin-left-0" data-bind="text: name"></div>
                                 <div class="span5"><img src="" data-bind="visible: logo, attr: {src: logo}" alt="Organisation logo" class="small-logo"></div>
-                                <div class="span2"><a href="#" data-bind="click: $parent.removeAssociatedOrganisation, attr: {'data-value': organisationId}"><i class="fa fa-remove">&nbsp;</i><g:message code="project.details.associatedOrgs.remove"/></a></div>
+                                <div class="span2"><a href="#" data-bind="click: $parent.removeAssociatedOrganisation, attr: {'data-value': id}"><i class="fa fa-remove">&nbsp;</i><g:message code="project.details.associatedOrgs.remove"/></a></div>
                             </div>
                             <!-- /ko -->
                         </div>
                     </div>
                 </div>
-                <div class="row-fluid" data-bind="with: associatedOrganisationSearch">
+                <div data-bind="with: associatedOrganisationSearch">
                     <div id="addAssociatedOrgPanel" class="span12">
-                        <div class="span3"></div>
-                        <div class="span9">
-                            <div class="input-append">
-                                <input id="associatedOrgName" class="input-xxlarge" type="text" placeholder="Start typing a name here" data-bind="value:term, valueUpdate:'afterkeydown'"><button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
+                        <div class="row-fluid">
+                            <div class="span3"></div>
+                            <div class="span9">
+                                <div class="input-append">
+                                    <input id="associatedOrgName" class="input-xxlarge" type="text" placeholder="Start typing a name here" data-bind="value:term, valueUpdate:'afterkeydown'"><button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
+                                </div>
                             </div>
                         </div>
+                        <div class="organisation-search">
+                            <div class="row-fluid">
+                                <div class="span3"></div>
+                                <div class="span8">
+                                    <div class="control-label span12">
+                                        <label for="associatedOrgNotPresent">My organisation is not on the list &nbsp;<input type="checkbox" id="associatedOrgNotPresent" value="organisationNotOnList" data-bind="checked: $parent.transients.associatedOrgNotInList, disable: !term"></label>
+                                    </div>
+                                    <div data-bind="visible: !$parent.transients.associatedOrgNotInList()">
+                                        <div ><b>Organisation Search Results</b> (Click an organisation to select it)</div>
+                                        <div class="organisation-list" data-bind="event:{scroll:scrolled}">
+                                            <ul id="associated-org-list" class="nav nav-list">
+                                                <li class="nav-header" style="display:none;" data-bind="visible:userOrganisationResults().length">Your organisations</li>
+                                                <!-- ko foreach:userOrganisationResults -->
+                                                <li data-bind="css:{active:$parent.isSelected($data)}"><a data-bind="click:$parent.select, text:name"></a></li>
+                                                <!-- /ko -->
+                                                <li class="nav-header" style="display:none;" data-bind="visible:userOrganisationResults().length && otherResults().length">Other organisations</li>
+                                                <!-- ko foreach:otherResults -->
+                                                <li data-bind="css:{active:$parent.isSelected($data)}"><a data-bind="click:$parent.select, text:name"></a></li>
+                                                <!-- /ko -->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" data-bind="visible: $parent.transients.associatedOrgNotInList()">
+                                <div class="span3"></div>
 
-                        <div class="span3"></div>
-                        <div class="span8 organisation-search">
-                            <div ><b>Organisation Search Results</b> (Click an organisation to select it)</div>
-                            <div class="organisation-list" data-bind="event:{scroll:scrolled}">
-                                <ul id="associated-org-list" class="nav nav-list">
-                                    <li class="nav-header" style="display:none;" data-bind="visible:userOrganisationResults().length">Your organisations</li>
-                                    <!-- ko foreach:userOrganisationResults -->
-                                    <li data-bind="css:{active:$parent.isSelected($data)}"><a data-bind="click:$parent.select, text:name"></a></li>
-                                    <!-- /ko -->
-                                    <li class="nav-header" style="display:none;" data-bind="visible:userOrganisationResults().length && otherResults().length">Other organisations</li>
-                                    <!-- ko foreach:otherResults -->
-                                    <li data-bind="css:{active:$parent.isSelected($data)}"><a data-bind="click:$parent.select, text:name"></a></li>
-                                    <!-- /ko -->
-                                </ul>
+                                <div class="span9">
+                                    <div class="clearfix control-group">
+                                        <label class="control-label span3" for="associatedOrgUrl"><g:message code="project.details.associatedOrgs.url"/></label>
+
+                                        <div class="controls span9">
+                                            <input id="associatedOrgUrl" class="input-xxlarge" type="text" data-bind="value: $parent.transients.associatedOrgUrl">
+                                        </div>
+                                    </div>
+                                    <div class="clearfix control-group">
+                                        <label class="control-label span3" for="associatedOrgLogo"><g:message code="project.details.associatedOrgs.logo"/></label>
+
+                                        <div class="controls span9">
+                                            <input id="associatedOrgLogo" class="input-xxlarge" type="text" data-bind="value: $parent.transients.associatedOrgLogoUrl">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="row-fluid">
                         <div class="span3"></div>
                         <div class="span9">
-                            <a href="#" data-bind="click: addSelectedOrganisation, visible: selection" class="margin-top-2"><i class="fa fa-check">&nbsp;</i><g:message code="project.details.associatedOrgs.add"/></a>
+                            <a href="#" data-bind="click: addSelectedOrganisation, visible: term" class="margin-top-2"><i class="fa fa-check">&nbsp;</i><g:message code="project.details.associatedOrgs.add"/></a>
                         </div>
                     </div>
                 </div>

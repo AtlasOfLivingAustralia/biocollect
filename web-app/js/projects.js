@@ -768,6 +768,9 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     });
     self.organisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId);
     self.associatedOrganisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId);
+    self.transients.associatedOrgNotInList = ko.observable(false);
+    self.transients.associatedOrgUrl = ko.observable();
+    self.transients.associatedOrgLogoUrl = ko.observable();
 
     self.organisationSearch.createOrganisation = function() {
         var projectData = self.modelAsJSON();
@@ -783,24 +786,32 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     });
 
     self.associatedOrganisationSearch.addSelectedOrganisation = function() {
-        var logoDocument = ko.utils.arrayFirst(self.associatedOrganisationSearch.selection().documents, function(document) {
-            return document.role === "logo"
-        });
+        var org = { id: self.associatedOrgs().length };
 
-        var logoUrl = logoDocument && logoDocument.thumbnailUrl ? logoDocument.thumbnailUrl : null;
+        if (self.transients.associatedOrgNotInList()) {
+            org.name = self.associatedOrganisationSearch.term();
+            org.url = self.transients.associatedOrgUrl() || null;
+            org.logo = self.transients.associatedOrgLogoUrl() || null;
+        } else {
+            var logoDocument = ko.utils.arrayFirst(self.associatedOrganisationSearch.selection().documents, function(document) {
+                return document.role === "logo"
+            });
 
-        var org = {
-            organisationId: self.associatedOrganisationSearch.selection().organisationId || "",
-            name: self.associatedOrganisationSearch.selection().name || "",
-            url: self.associatedOrganisationSearch.selection().url || "",
-            logo: logoUrl
-        };
+            org.organisationId = self.associatedOrganisationSearch.selection().organisationId || "";
+            org.name = self.associatedOrganisationSearch.selection().name;
+            org.url = self.associatedOrganisationSearch.selection().url || null;
+            org.logo = logoDocument && logoDocument.thumbnailUrl ? logoDocument.thumbnailUrl : null;
+        }
+
         self.associatedOrgs.push(org);
         self.associatedOrganisationSearch.clearSelection();
+        self.transients.associatedOrgLogoUrl(false);
+        self.transients.associatedOrgUrl(null);
+        self.transients.associatedOrgLogoUrl(null);
     };
 
     self.removeAssociatedOrganisation = function(data, event) {
-        // org id is stored in the data-value attribute of the button to work around the Knockout limitation of not being
+        // the id is stored in the data-value attribute of the button to work around the Knockout limitation of not being
         // able to pass parameters to click event handlers.
         var target = null;
         if (event.target) {
@@ -809,9 +820,10 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
             target = event.srcElement;
         }
 
-        var organisationId = $(target).attr("data-value");
+        var id = $(target).attr("data-value");
+
         var org = ko.utils.arrayFirst(self.associatedOrgs(), function(item) {
-            return item.organisationId === organisationId;
+            return item.id == id;
         });
 
         self.associatedOrgs.remove(org);

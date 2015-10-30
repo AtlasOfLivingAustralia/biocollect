@@ -34,12 +34,12 @@
                 <span data-bind="html:description.markdownToHtml()"></span>
             </div>
             <div data-bind="visible: associatedOrgs().length > 0">
-                <div class="text-small-heading"><g:message code="project.details.associatedOrgs"/></div>
+                <div class="text-small-heading"><g:message code="project.display.associatedOrgs"/></div>
                 <!-- ko foreach: associatedOrgs -->
-                <div class="span12">
-                    <div class="span5 margin-left-0" data-bind="visible: url"><a data-bind="attr: {href: url}" target="_blank"><span data-bind="text: name"></span>&nbsp;<i class="fa fa-external-link"></i></a></div>
-                    <div class="span5 margin-left-0" data-bind="visible: !url"><span data-bind="text: name"></span></div>
-                    <div class="span5 margin-left-0" data-bind="visible:logo"><img src="" data-bind="attr: {src: logo}" alt="Organisation logo" class="small-logo"></div>
+                <div class="span12 margin-top-1">
+                    <div class="span9 margin-left-0" data-bind="visible: url"><a data-bind="attr: {href: url}" target="_blank"><span data-bind="text: name"></span>&nbsp;<i class="fa fa-external-link"></i></a></div>
+                    <div class="span9 margin-left-0" data-bind="visible: !url"><span data-bind="text: name"></span></div>
+                    <div class="span3 margin-left-0" data-bind="visible:logo"><img src="" data-bind="attr: {src: logo}" alt="Organisation logo" class="small-logo"></div>
                 </div>
                 <!-- /ko -->
             </div>
