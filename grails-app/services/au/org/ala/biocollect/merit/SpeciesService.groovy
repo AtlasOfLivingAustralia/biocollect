@@ -41,6 +41,19 @@ class SpeciesService {
     }
 
     /**
+     * Searches each result supplied list to find a name that matches (in a case insensitive manner) the supplied name.
+     * This method expects the format of each result to be as returned from the BIE species autocomplete function.
+     * @param speciesSearchResults the list of results.
+     * @param name the name to match.
+     * @return the result that matches the supplied name, or null if no match is found.
+     */
+    Map findMatch(Map speciesSearchResults, String name) {
+        speciesSearchResults?.autoCompleteList?.find { result ->
+            (result.name == name || result.matchedNames?.find { matchedName -> name.equalsIgnoreCase(matchedName) })
+        }
+    }
+
+    /**
      * Searches the "name" returned by the Species List service for the supplied search term and reformats the
      * results to match those returned by the bie.
      * @param query the term to search for.

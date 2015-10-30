@@ -126,7 +126,7 @@ class ProxyController {
      * Returns an excel template that can be used to populate a table of data in an output form.
      */
     def excelOutputTemplate() {
-        String url =  "${grailsApplication.config.ecodata.service.url}metadata/excelOutputTemplate?type=${params.type?.encodeAsURL()}&listName=${params.listName?.encodeAsURL()}"
+        String url =  "${grailsApplication.config.ecodata.service.url}/metadata/excelOutputTemplate?type=${params.type?.encodeAsURL()}&listName=${params.listName?.encodeAsURL()}"
 
         webService.proxyGetRequest(response, url)
         return null
@@ -137,7 +137,7 @@ class ProxyController {
      */
     def excelBulkActivityTemplate() {
 
-        String url =  "${grailsApplication.config.ecodata.service.url}metadata/excelBulkActivityTemplate"
+        String url =  "${grailsApplication.config.ecodata.service.url}/metadata/excelBulkActivityTemplate"
 
         webService.proxyPostRequest(response, url, params)
         return null
@@ -145,7 +145,7 @@ class ProxyController {
 
     /** Proxies the ALA image service as the development server doesn't support SSL. */
     def getImageInfo(String id) {
-        def detailsUrl = "${grailsApplication.config.images.baseURL}ws/getImageInfo?id=${id}"
+        def detailsUrl = "${grailsApplication.config.images.baseURL}/ws/getImageInfo?id=${id}"
         def result = webService.getJson(detailsUrl) as JSON
 
         if (params.callback) {
