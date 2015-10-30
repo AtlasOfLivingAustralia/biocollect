@@ -63,6 +63,7 @@
             <label for="shapefile">Attach shape file (zip format)</label>
             <input id="shapefile" type="file" accept="application/zip" name="shapefile"/>
             <button id="uploadShapeFile" type="button" class="btn btn-success" onclick="$(this).parent().submit();">Upload Shapefile</button>
+            <button id="cancel" type="button" class="btn btn-default">Cancel</button>
         </g:uploadForm>
     </g:if>
     <g:else>
@@ -331,6 +332,9 @@ ko.applyBindings(new SiteUploadViewModel());
         }
 
     }).trigger('change');
+    $('#cancel').click(function(){
+        document.location.href = returnTo;
+    })
 </g:else>
 </r:script>
 

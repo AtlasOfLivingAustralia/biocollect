@@ -109,7 +109,9 @@
         $('#cancel').click(function () {
             if(siteViewModel.saved()){
                 document.location.href = fcConfig.sitePageUrl;
-            } else {
+            } if(fcConfig.projectUrl){
+                document.location.href = fcConfig.projectUrl;
+            }else {
                 document.location.href = fcConfig.homePageUrl;
             }
         });
