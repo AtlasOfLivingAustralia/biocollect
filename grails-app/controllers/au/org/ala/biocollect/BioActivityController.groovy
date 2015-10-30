@@ -8,7 +8,7 @@ import au.org.ala.biocollect.merit.SiteService
 import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.sightings.BieService
 import grails.converters.JSON
-import org.apache.http.HttpStatus
+import static org.apache.http.HttpStatus.*
 import org.codehaus.groovy.grails.web.json.JSONArray
 
 class BioActivityController {
@@ -67,7 +67,7 @@ class BioActivityController {
             boolean projectEditor = projectService.canUserEditProject(userId, projectId, false)
             Map userAlreadyInRole = userService.isUserInRoleForProject(userId, projectId, "projectParticipant")
 
-            if (!userAlreadyInRole.statusCode || userAlreadyInRole.statusCode == HttpStatus.SC_OK) {
+            if (!userAlreadyInRole.statusCode || userAlreadyInRole.statusCode == SC_OK) {
                 if (!projectEditor && pActivity.publicAccess && !userAlreadyInRole.inRole.toBoolean()) {
                     userService.addUserAsRoleToProject(userId, projectId, "projectParticipant")
                 }
@@ -300,6 +300,41 @@ class BioActivityController {
         model.metaModel = metadataService.getActivityModel(model.activity.type)
         model.outputModels = model.metaModel?.outputs?.collectEntries {
             [it, metadataService.getDataModelFromOutputName(it)]
+        }
+    }
+
+    def extractDataFromExcelTemplate() {
+
+        def result
+        if (request.respondsTo('getFile')) {
+            def file = request.getFile('data')
+            if (file) {
+                def data = metadataService.extractOutputDataFromExcelOutputTemplate(params, file)
+
+                if (data && !data.error) {
+                    activityService.lookupSpeciesInOutputData(params.pActivityId, params.type, params.listName, data.data)
+                    result = [status:SC_OK, data:data.data]
+                }
+                else {
+                    result = data
+                }
+
+                // This is returned to the browswer as a text response due to workaround the warning
+                // displayed by IE8/9 when JSON is returned from an iframe submit.
+                response.setContentType('text/plain;charset=UTF8')
+                def resultJson = result as JSON
+                render resultJson.toString()
+            }
+        }
+        else {
+            response.status = SC_BAD_REQUEST
+            result = [status: SC_BAD_REQUEST, error:'No file attachment found']
+            // This is returned to the browswer as a text response due to workaround the warning
+            // displayed by IE8/9 when JSON is returned from an iframe submit.
+
+            response.setContentType('text/plain;charset=UTF8')
+            def resultJson = result as JSON
+            render resultJson.toString()
         }
     }
 }

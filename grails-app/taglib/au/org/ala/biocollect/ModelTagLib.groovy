@@ -292,6 +292,9 @@ class ModelTagLib {
             }
         }
 
+        if (dataModel?.dataType == 'species') {
+            criteria << 'funcCall[validateSpeciesLookup]'
+        }
 
         return criteria
     }
