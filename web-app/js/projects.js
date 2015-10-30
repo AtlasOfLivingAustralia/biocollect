@@ -355,11 +355,13 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
     self.imageUrl = ko.observable(project.urlImage);
 
+    self.associatedOrgs = ko.observableArray(project.associatedOrgs);
+
     self.transients = self.transients || {};
 
     var isBeforeToday = function(date) {
         return moment(date) < moment().startOf('day');
-    }
+    };
     var calculateDurationInDays = function(startDate, endDate) {
         var start = moment(startDate);
         var end = moment(endDate);
@@ -696,7 +698,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             }
         });
     };
-
 };
 
 /**
@@ -766,6 +767,7 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         return 'Project area for '+self.name();
     });
     self.organisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId);
+    self.associatedOrganisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId);
 
     self.organisationSearch.createOrganisation = function() {
         var projectData = self.modelAsJSON();
@@ -773,13 +775,49 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         var here = document.location.href;
         document.location.href = config.organisationCreateUrl+'?returnTo='+here+'&returning=true';
     };
+
     self.organisationSearch.selection.subscribe(function(newSelection) {
         if (newSelection) {
             self.organisationId(newSelection.organisationId);
         }
     });
 
-    self.ignore = self.ignore.concat(['organisationSearch']);
+    self.associatedOrganisationSearch.addSelectedOrganisation = function() {
+        var logoDocument = ko.utils.arrayFirst(self.associatedOrganisationSearch.selection().documents, function(document) {
+            return document.role === "logo"
+        });
+
+        var logoUrl = logoDocument && logoDocument.thumbnailUrl ? logoDocument.thumbnailUrl : null;
+
+        var org = {
+            organisationId: self.associatedOrganisationSearch.selection().organisationId || "",
+            name: self.associatedOrganisationSearch.selection().name || "",
+            url: self.associatedOrganisationSearch.selection().url || "",
+            logo: logoUrl
+        };
+        self.associatedOrgs.push(org);
+        self.associatedOrganisationSearch.clearSelection();
+    };
+
+    self.removeAssociatedOrganisation = function(data, event) {
+        // org id is stored in the data-value attribute of the button to work around the Knockout limitation of not being
+        // able to pass parameters to click event handlers.
+        var target = null;
+        if (event.target) {
+            target = event.target;
+        } else {
+            target = event.srcElement;
+        }
+
+        var organisationId = $(target).attr("data-value");
+        var org = ko.utils.arrayFirst(self.associatedOrgs(), function(item) {
+            return item.organisationId === organisationId;
+        });
+
+        self.associatedOrgs.remove(org);
+    };
+
+    self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch']);
     self.transients.existingLinks = project.links;
 
     self.modelAsJSON = function() {
