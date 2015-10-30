@@ -1,5 +1,7 @@
 /**
+ * This code is dependent on knockout js v3.3, jquery and other libraries.
  * Created by Temi Varghese on 6/10/15.
+ *
  */
 /**
  Bootstrap Alerts -
