@@ -767,7 +767,7 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         return 'Project area for '+self.name();
     });
     self.organisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId);
-    self.associatedOrganisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId);
+    self.associatedOrganisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations);
     self.transients.associatedOrgNotInList = ko.observable(false);
     self.transients.associatedOrgUrl = ko.observable();
     self.transients.associatedOrgLogoUrl = ko.observable();

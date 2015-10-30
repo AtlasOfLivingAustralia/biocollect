@@ -159,8 +159,12 @@
                         <div class="row-fluid">
                             <div class="span3"></div>
                             <div class="span9">
-                                <div class="input-append">
-                                    <input id="associatedOrgName" class="input-xxlarge" type="text" placeholder="Start typing a name here" data-bind="value:term, valueUpdate:'afterkeydown'"><button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
+                                <div class="clearfix control-group">
+                                    <label class="control-label left-aligned-label span3" for="associatedOrgName"><g:message code="project.details.associatedOrgs.name"/><i class="req-field"></i></label>
+
+                                    <div class="controls span12 margin-left-0">
+                                        <input id="associatedOrgName" class="input-xxlarge" type="text" placeholder="Start typing a name here" data-bind="value:term, valueUpdate:'afterkeydown'"><button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -172,7 +176,7 @@
                                         <label for="associatedOrgNotPresent">My organisation is not on the list &nbsp;<input type="checkbox" id="associatedOrgNotPresent" value="organisationNotOnList" data-bind="checked: $parent.transients.associatedOrgNotInList, disable: !term"></label>
                                     </div>
                                     <div data-bind="visible: !$parent.transients.associatedOrgNotInList()">
-                                        <div ><b>Organisation Search Results</b> (Click an organisation to select it)</div>
+                                        <div><b>Organisation Search Results</b> (Click an organisation to select it)</div>
                                         <div class="organisation-list" data-bind="event:{scroll:scrolled}">
                                             <ul id="associated-org-list" class="nav nav-list">
                                                 <li class="nav-header" style="display:none;" data-bind="visible:userOrganisationResults().length">Your organisations</li>
@@ -193,16 +197,16 @@
 
                                 <div class="span9">
                                     <div class="clearfix control-group">
-                                        <label class="control-label span3" for="associatedOrgUrl"><g:message code="project.details.associatedOrgs.url"/></label>
+                                        <label class="control-label left-aligned-label span3" for="associatedOrgUrl"><g:message code="project.details.associatedOrgs.url"/></label>
 
-                                        <div class="controls span9">
+                                        <div class="controls span12 margin-left-0">
                                             <input id="associatedOrgUrl" class="input-xxlarge" type="text" data-bind="value: $parent.transients.associatedOrgUrl">
                                         </div>
                                     </div>
                                     <div class="clearfix control-group">
-                                        <label class="control-label span3" for="associatedOrgLogo"><g:message code="project.details.associatedOrgs.logo"/></label>
+                                        <label class="control-label left-aligned-label span3" for="associatedOrgLogo"><g:message code="project.details.associatedOrgs.logo"/></label>
 
-                                        <div class="controls span9">
+                                        <div class="controls span12 margin-left-0">
                                             <input id="associatedOrgLogo" class="input-xxlarge" type="text" data-bind="value: $parent.transients.associatedOrgLogoUrl">
                                         </div>
                                     </div>

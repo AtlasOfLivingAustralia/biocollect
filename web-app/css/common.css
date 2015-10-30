@@ -180,3 +180,8 @@
     text-decoration: underline;
     padding-bottom: 5px;
 }
+
+.left-aligned-label {
+    margin-left: 0 !important;
+    text-align: left !important;
+}
