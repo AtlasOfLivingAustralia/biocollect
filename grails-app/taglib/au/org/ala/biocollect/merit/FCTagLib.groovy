@@ -108,7 +108,7 @@ class FCTagLib {
      */
     def datePicker = { attrs ->
         /**
-            <div class="controls input-append">
+            <div class="input-append">
                 <input data-bind="datepicker:startDate.date" name="startDate" id="startDate" type="text" size="16"
                     data-validation-engine="validate[required]" class="input-xlarge"/>
                 <span class="add-on open-datepicker"><i class="icon-calendar"></i></span>
@@ -119,7 +119,7 @@ class FCTagLib {
 
         if (!attrs.printable) {
             Map inputAppend = [
-                class: 'controls input-append'
+                class: 'input-append'
             ]
 
             def inputAttrs = [
