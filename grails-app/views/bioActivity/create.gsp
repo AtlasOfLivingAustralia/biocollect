@@ -24,7 +24,8 @@
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         imageLocation:"${resource(dir: '/images')}",
         speciesSearch: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10])}",
-        bioActivityUpdate: "${createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId])}"
+        bioActivityUpdate: "${createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId])}",
+        activityDataTableUploadUrl: "${createLink(controller:'bioActivity', action:'extractDataFromExcelTemplate', params:[pActivityId:pActivity.projectActivityId])}"
         },
         here = document.location.href;
     </r:script>

@@ -30,25 +30,8 @@ class SearchController {
 
     //Search species by project activity species constraint.
     def searchSpecies(String id, String q, Integer limit){
-        def pActivity = projectActivityService.get(id)
-        def result
-        switch(pActivity?.species?.type){
-            case 'SINGLE_SPECIES':
-                result = speciesService.searchForSpecies(pActivity?.species?.singleSpecies?.name, 1)
-                break
 
-            case 'ALL_SPECIES':
-                result = speciesService.searchForSpecies(q, limit)
-                break
-
-            case 'GROUP_OF_SPECIES':
-                def lists = pActivity?.species?.speciesLists
-                result = speciesService.searchSpeciesInLists(q, lists, limit)
-                break
-            default:
-                result = [autoCompleteList: []]
-                break
-        }
+        def result = projectActivityService.searchSpecies(id, q, limit)
         render result as JSON
     }
 

@@ -15,7 +15,7 @@ class ProjectService {
     MetadataService metadataService
     SettingService settingService
 
-    def list(brief = false, citizenScienceOnly = false) {
+    def list(brief = false, citizenScienceOnly = false, filterP = null) {
         def params = brief ? '?brief=true' : ''
         if (citizenScienceOnly) params += (brief ? '&' : '?') + 'citizenScienceOnly=true'
         def resp = webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + params, 30000)

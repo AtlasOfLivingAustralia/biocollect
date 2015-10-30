@@ -31,8 +31,14 @@
             approveReportUrl: '${g.createLink( action:'ajaxApproveReport', id:"${organisation.organisationId}")}',
             rejectReportUrl: '${g.createLink( action:'ajaxRejectReport', id:"${organisation.organisationId}")}',
             returnTo: '${g.createLink(action:'index', id:"${organisation.organisationId}")}',
-            projects : <fc:modelAsJavascript model="${organisation.projects}"/>
-            };
+            projects : <fc:modelAsJavascript model="${organisation.projects}"/>,
+            projectListUrl: "${createLink(controller: 'project', action: 'getProjectList')}",
+            projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
+            organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
+            organisation : <fc:modelAsJavascript model="${organisation}"/>,
+            organisationName : "${organisation.name}",
+            isOrganisationPage: true
+        };
     </r:script>
     <style type="text/css">
         #projectList th {
@@ -45,7 +51,7 @@
             margin: 5px 0;
         }
     </style>
-    <r:require modules="wmd,knockout,mapWithFeatures,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid"/>
+    <r:require modules="wmd,knockout,mapWithFeatures,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder"/>
 </head>
 <body>
 
