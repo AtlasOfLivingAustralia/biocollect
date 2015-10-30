@@ -173,7 +173,7 @@
                                 <div class="span3"></div>
                                 <div class="span8">
                                     <div class="control-label span12">
-                                        <label for="associatedOrgNotPresent">My organisation is not on the list &nbsp;<input type="checkbox" id="associatedOrgNotPresent" value="organisationNotOnList" data-bind="checked: $parent.transients.associatedOrgNotInList, disable: !term"></label>
+                                        <label for="associatedOrgNotPresent"><g:message code="project.details.associatedOrgs.notInList"/>&nbsp;<input type="checkbox" id="associatedOrgNotPresent" value="organisationNotOnList" data-bind="checked: $parent.transients.associatedOrgNotInList, disable: !term"></label>
                                     </div>
                                     <div data-bind="visible: !$parent.transients.associatedOrgNotInList()">
                                         <div><b>Organisation Search Results</b> (Click an organisation to select it)</div>
