@@ -2,18 +2,25 @@
 
         <!-- ko foreach: projectActivities -->
             <!-- ko if: current -->
-            <g:render template="/projectActivity/publish"/>
-
             <div class="row-fluid">
-                <h5>General information about the survey</h5>
+                <div class="span10">
+                    <h2 class="strong">Step 1 of 6 - Describe the survey</h2>
+                </div>
+                <div class="span2 text-right">
+                    <g:render template="../projectActivity/status"/>
+                </div>
             </div>
 
             <div class="row-fluid">
-                <div class="span3 text-right">
-                    <label class="control-label" for="name"> Name: <span class="req-field"></span></label>
+                <div class="span4 text-right">
+                    <label class="control-label" for="name"> Name:
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.name"/>', content:'<g:message code="project.survey.info.name.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="req-field"></span></label>
                 </div>
 
-                <div class="span7">
+                <div class="span8">
                     <div class="controls">
                         <input id="name" type="text" data-bind="value: name" data-validation-engine="validate[required]">
                     </div>
@@ -21,11 +28,16 @@
             </div>
 
             <div class="row-fluid">
-                <div class="span3 text-right">
-                    <label class="control-label" for="description">Description: <span class="req-field"></span></label>
+                <div class="span4 text-right">
+                    <label class="control-label" for="description">Description:
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.description"/>', content:'<g:message code="project.survey.info.description.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="req-field"></span>
+                    </label>
                 </div>
 
-                <div class="span7">
+                <div class="span8">
                     <div class="controls">
                         <textarea id="description" style="width: 97%;" rows="4" class="input-xlarge" data-bind="value: description"
                                   data-validation-engine="validate[required]"></textarea>
@@ -34,11 +46,15 @@
             </div>
 
             <div class="row-fluid">
-                <div class="span3 text-right">
-                    <label class="control-label" for="startDate"> Start date: <span class="req-field"></span></label>
+                <div class="span4 text-right">
+                    <label class="control-label" for="startDate"> Start date:
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.startDate"/>', content:'<g:message code="project.survey.info.startDate.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="req-field"></span></label>
                 </div>
 
-                <div class="span7">
+                <div class="span8">
                     <div class="controls input-append">
                         <input id="startDate" data-bind="datepicker:startDate.date" type="text"  data-validation-engine="validate[required]" />
                         <span class="add-on  open-datepicker"><i class="icon-calendar"></i> </span>
@@ -47,24 +63,34 @@
             </div>
 
             <div class="row-fluid">
-                <div class="span3 text-right">
-                    <label class="control-label" for="endDate">End date:</label>
+                <div class="span4 text-right">
+                    <label class="control-label" for="endDate">End date:
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.endDate"/>', content:'<g:message code="project.survey.info.endDate.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
                 </div>
 
-                <div class="span7">
+                <div class="span8">
                     <div class="controls input-append">
-                        <input id="endDate" data-bind="datepicker:endDate.date" type="text" />
+                        <input id="endDate" data-bind="datepicker:endDate.date" type="text"/>
                         <span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
                     </div>
                 </div>
             </div>
 
             <div class="row-fluid">
-                <div class="span3 text-right">
-                    <label class="control-label" for="publicAccess">Allow public users to enter data:</label>
+                <div class="span4 text-right">
+                    <label class="control-label" for="publicAccess">Allow public users to enter data:
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.publicData"/>', content:'<g:message code="project.survey.info.publicData.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
                 </div>
 
-                <div class="span7">
+                <div class="span8">
                     <div class="controls">
                         <input id="publicAccess" type="checkbox" data-bind="checked: publicAccess"/>
                     </div>
@@ -72,11 +98,16 @@
             </div>
 
             <div class="row-fluid">
-                <div class="span3 text-right">
-                    <label class="control-label" for="allowComments">Comments on records allowed:</label>
+                <div class="span4 text-right">
+                    <label class="control-label" for="allowComments">Comments on records allowed:
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.comments"/>', content:'<g:message code="project.survey.info.comments.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
                 </div>
 
-                <div class="span7">
+                <div class="span8">
                     <div class="controls">
                         <input id="allowComments" type="checkbox" data-bind="checked: commentsAllowed"/>
                     </div>
@@ -84,8 +115,13 @@
             </div>
 
             <div class="row-fluid">
-                <div class="span3 text-right">
-                    <label class="control-label">Attach logo</label>
+                <div class="span4 text-right">
+                    <label class="control-label">Attach logo:
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.logo"/>', content:'<g:message code="project.survey.info.logo.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
                 </div>
 
                 <div class="span2 text-left">
@@ -112,6 +148,7 @@
     <div class="row-fluid">
         <div class="span12">
             <button class="btn-primary btn btn-small block" data-bind="click: saveInfo"><i class="icon-white  icon-hdd" ></i>  Save </button>
+            <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-visibility-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
         </div>
     </div>
 </div>

@@ -4,8 +4,19 @@
             <!-- ko if: current -->
                 <g:render template="/projectActivity/warning"/>
                 <div class="row-fluid">
+                    <div class="span10 text-left">
+                        <h2 class="strong">Step 2 of 6 - Set visibility constraints on survey data</h2>
+                    </div>
+                    <div class="span2 text-right">
+                        <g:render template="../projectActivity/status"/>
+                    </div>
+                </div>
+
+                <div class="row-fluid">
                     <div class="span12 text-left">
-                        <h4 >Record Visibility</h4>
+                        <p>Setting visibility constraints will withhold data from public view for the specified period. These can be changed,
+                        but once data has been published to the public domain it cannot be withdrawn via this tool.
+                        Please contact <a href="mailto:support@ala.org.au?subject=BioCollect enquiry - data">support@ala.org.au</a> if you have further questions.</p>
                     </div>
                 </div>
 
@@ -36,6 +47,8 @@
 
             <div class="span12">
                 <button class="btn-primary btn btn-small block" data-bind="click: saveVisibility"><i class="icon-white  icon-hdd" ></i> Save </button>
+                <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-info-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
+                <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
             </div>
 
         </div>

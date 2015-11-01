@@ -50,28 +50,12 @@
 
         </div>
 
-
-
-            <!-- ko if: projectActivities().length > 0 -->
-            <div class="row-fluid">
-                <div class="span12 text-right">
-                    <a class="btn btn-small btn-danger" data-bind="click: deleteProjectActivity"> <i class="icon-remove icon-white"></i> Delete</a>
-                </div>
+        <!-- ko if: projectActivities().length > 0 -->
+        <div class="row-fluid">
+            <div class="span12 text-right">
+                <a class="btn btn-small btn-danger" data-bind="click: deleteProjectActivity"> <i class="icon-remove icon-white"></i> Delete</a>
             </div>
-
-         <!-- ko foreach: projectActivities -->
-            <!-- ko if: current -->
-            <span data-bind="if: !transients.saveOrUnPublishAllowed()">
-                <div class="row-fluid">
-                    <div class="span12 text-left">
-                        <div id="warning-species" class="alert alert-warning">
-                            All records needs to be deleted before unpublishing the survey.
-                        </div>
-                    </div>
-                </div>
-            </span>
-            <!-- /ko -->
-         <!-- /ko -->
+        </div>
 
         <div id="project-activities-result-placeholder"></div>
 
@@ -85,6 +69,7 @@
                     <li><a href="#survey-species" id="survey-species-tab" data-toggle="tab">Species</a></li>
                     <li><a href="#survey-form" id="survey-form-tab" data-toggle="tab">Survey Form</a></li>
                     <li><a href="#survey-locations" id="survey-locations-tab" data-toggle="tab">Locations</a></li>
+                    <li><a href="#survey-publish" id="survey-publish-tab" data-toggle="tab">Publish</a></li>
                 </ul>
 
                 <div class="pill-content">
@@ -112,6 +97,9 @@
                         <span class="validationEngineContainer" id="project-activities-locations-validation">
                             <g:render template="/projectActivity/sites"/>
                         </span>
+                    </div>
+                    <div class="pill-pane" id="survey-publish">
+                        <g:render template="/projectActivity/publish"/>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-var pActivityInfo = function(o, selected){
+var pActivityInfo = function(o, selected, startDate){
     var self = $.extend(this, new Documents());
     if(!o) o = {};
     if(!selected) selected = false;
@@ -6,7 +6,7 @@ var pActivityInfo = function(o, selected){
     self.name = ko.observable(o.name ? o.name : "Survey name");
     self.description = ko.observable(o.description);
     self.status = ko.observable(o.status ? o.status : "active");
-    self.startDate = ko.observable(o.startDate).extend({simpleDate:false});
+    self.startDate = ko.observable(o.startDate ? o.startDate :  startDate).extend({simpleDate:false});
     self.endDate = ko.observable(o.endDate).extend({simpleDate:false});
     self.commentsAllowed = ko.observable(o.commentsAllowed ? o.commentsAllowed : false);
     self.published = ko.observable(o.published ? o.published : false);
@@ -78,4 +78,14 @@ var pActivityInfo = function(o, selected){
             }
         });
     }
+
+    self.isInfoValid = function () {
+        return self.name() && self.description() && self.startDate() && self.isEndDateAfterStartDate();
+    };
+
+    self.isEndDateAfterStartDate = function () {
+        var start = moment(self.startDate());
+        var end = moment(self.endDate());
+        return end >= start;
+    };
 };
