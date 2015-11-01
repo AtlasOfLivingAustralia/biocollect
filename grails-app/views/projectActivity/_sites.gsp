@@ -2,8 +2,25 @@
 
     <!-- ko foreach: projectActivities -->
     <!-- ko if: current -->
+    <div class="row-fluid">
+        <div class="span10 text-left">
+            <h2 class="strong">Step 5 of 6 - Specify the area or places where the survey will be undertaken</h2>
+        </div>
+        <div class="span2 text-right">
+            <g:render template="../projectActivity/status"/>
+        </div>
+    </div>
 
     <g:render template="/projectActivity/warning"/>
+
+    <g:render template="/projectActivity/unpublishWarning"/>
+
+    <div class="row-fluid">
+        <div class="span12 text-left">
+            <p>You can constrain the survey to a particular geographic area and/or to particular pre-determined sites.</p>
+        </div>
+    </div>
+    </br>
 
     <div class="row-fluid">
 
@@ -86,6 +103,8 @@
     <div class="row-fluid">
         <div class="span12">
             <button class="btn-primary btn btn-small block" data-bind="click: $parent.saveSites, disable: !transients.saveOrUnPublishAllowed()"><i class="icon-white  icon-hdd" ></i>  Save </button>
+            <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-form-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
+            <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-publish-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
         </div>
     </div>
 
