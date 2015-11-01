@@ -156,14 +156,15 @@ OrganisationSelectionViewModel = function(organisations, userOrganisations, init
     self.otherResults = otherOrgList.results;
 
     self.clearSelection = function() {
-
         userOrgList.clearSelection();
         otherOrgList.clearSelection();
         self.term('');
     };
+
     self.isSelected = function(value) {
         return userOrgList.isSelected(value) || otherOrgList.isSelected(value);
     };
+
     self.select = function(value) {
         self.term(value['name']);
 
@@ -224,6 +225,12 @@ OrganisationSelectionViewModel = function(organisations, userOrganisations, init
         }
     }
 
+    self.transients = {};
+    self.transients.showOrganisationSearchPanel = ko.observable(true);
+
+    self.toggleShowOrganisationSearchPanel = function() {
+        self.transients.showOrganisationSearchPanel(!self.transients.showOrganisationSearchPanel());
+    }
 };
 
 var OrganisationsViewModel = function(organisations, userOrgIds) {

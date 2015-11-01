@@ -21,19 +21,18 @@
     margin-right: -9px;
 }
 
-
 /* Allow divs to masquerade as a in nav lists */
 .nav-list > li > div {
     padding: 3px 15px;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
-.nav>li>div:hover {
+.nav > li > div:hover {
     text-decoration: none;
     background-color: #dcdcdc;
 }
 
-.nav-list>.active>div, .nav-list>.active>div:hover, .nav-list>.active>div:focus {
+.nav-list > .active > div, .nav-list > .active > div:hover, .nav-list > .active > div:focus {
     color: #fff;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
 }
@@ -77,19 +76,20 @@
     cursor: pointer;
 }
 
-.nav-list>.active>a>div.media-body>a,
-.nav-list>.active>div>div.media-body>a {
+.nav-list > .active > a > div.media-body > a,
+.nav-list > .active > div > div.media-body > a {
     color: #fff;
-    text-shadow: 0 -1px 0 rgba(0,0,0,0.2);
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
 }
-.nav-list>.active>a>div.media-body>a:hover,
-.nav-list>.active>a>div.media-body>a:focus,
-.nav-list>.active>div>div.media-body>a:hover,
-.nav-list>.active>div>div.media-body>a:focus{
+
+.nav-list > .active > a > div.media-body > a:hover,
+.nav-list > .active > a > div.media-body > a:focus,
+.nav-list > .active > div > div.media-body > a:hover,
+.nav-list > .active > div > div.media-body > a:focus {
     color: #ddd;
 }
-/* End Documents */
 
+/* End Documents */
 
 /* Data entry map styles */
 .data-entry-map-container {
@@ -110,7 +110,7 @@
 
 .banner-image-caption {
     position: absolute;
-    background: rgba(255,255,255,.7);
+    background: rgba(255, 255, 255, .7);
     padding: 10px;
     top: 0;
     left: 0;
@@ -123,13 +123,68 @@
     display: inline-block;
 }
 
+.block-header {
+    position: relative;
+    top: -19px;
+    left: -5px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid lightgrey;
+}
+
 .req-field:after {
     content: "*";
     color: red;
-    font-weight:bold;
-    font-size:1.5em;
+    font-weight: bold;
+    font-size: 1.5em;
     white-space: nowrap;
 }
 .right-padding{
     padding-right : 8px
+}
+
+.organisation-search {
+    margin-left: 0 !important;
+    margin-top: 10px;
+}
+
+.organisation-list {
+    background: white;
+    border: 1px solid lightgrey;
+    border-radius: 4px;
+    height: 8em;
+    overflow-y: scroll
+}
+
+.margin-left-0 {
+    margin-left: 0 !important;
+}
+
+.margin-bottom-1 {
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.margin-top-1 {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.margin-top-2 {
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.small-logo {
+    max-width: 100px;
+}
+
+.text-small-heading {
+    font-weight: bold;
+    text-decoration: underline;
+    padding-bottom: 5px;
+}
+
+.left-aligned-label {
+    margin-left: 0 !important;
+    text-align: left !important;
 }

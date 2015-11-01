@@ -25,13 +25,23 @@
         <div class="span6 well">
             <div class="well-title"><g:message code="project.display.about" /></div>
             <div data-bind="visible:aim">
-                <b style="text-decoration: underline;"><g:message code="project.display.aim" /></b><br/>
+                <div class="text-small-heading"><g:message code="project.display.aim" /></div>
                 <span data-bind="text:aim"></span>
                 <p/>
             </div>
             <div data-bind="visible:description">
-                <b style="text-decoration: underline;"><g:message code="project.display.description" /></b><br/>
+                <div class="text-small-heading"><g:message code="project.display.description" /></div>
                 <span data-bind="html:description.markdownToHtml()"></span>
+            </div>
+            <div data-bind="visible: associatedOrgs().length > 0">
+                <div class="text-small-heading"><g:message code="project.display.associatedOrgs"/></div>
+                <!-- ko foreach: associatedOrgs -->
+                <div class="span12 margin-top-1">
+                    <div class="span9 margin-left-0" data-bind="visible: url"><a data-bind="attr: {href: url}" target="_blank"><span data-bind="text: name"></span>&nbsp;<i class="fa fa-external-link"></i></a></div>
+                    <div class="span9 margin-left-0" data-bind="visible: !url"><span data-bind="text: name"></span></div>
+                    <div class="span3 margin-left-0" data-bind="visible:logo"><img src="" data-bind="attr: {src: logo}" alt="Organisation logo" class="small-logo"></div>
+                </div>
+                <!-- /ko -->
             </div>
         </div>
         <div class="span6 well">
@@ -41,17 +51,17 @@
                 <p/>
             </div>
             <div data-bind="visible:manager">
-                <b style="text-decoration: underline;"><g:message code="project.display.contact" /></b><br/>
+                <div class="text-small-heading"><g:message code="project.display.contact" /></div>
                 <a data-bind="attr:{href:'mailto:' + manager()}"><span data-bind="text:manager"></span></a>
                 <p/>
             </div>
             <div data-bind="visible:gear">
-                <b style="text-decoration: underline;"><g:message code="project.display.gear" /></b><br/>
+                <div class="text-small-heading"><g:message code="project.display.gear" /></div>
                 <span data-bind="text:gear"></span>
                 <p/>
             </div>
             <div data-bind="visible:task">
-                <b style="text-decoration: underline;"><g:message code="project.display.task" /></b><br/>
+                <div class="text-small-heading"><g:message code="project.display.task" /></div>
                 <span data-bind="text:task"></span>
                 <p/>
             </div>

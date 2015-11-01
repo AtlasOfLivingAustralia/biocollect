@@ -9,25 +9,25 @@ modules = {
 
     nrmSkin {
         dependsOn 'application', 'bootstrap_nrm', 'font_awesome_44'
-        resource url: [dir:'css/nrm/css', file:'screen.css'], attrs:[media:'screen,print']
-        resource url: [dir:'css/', file:'capture.css'],  plugin: 'fieldcapture-plugin'
-        resource url: [dir:'css/nrm/images/', file:'AustGovt_inline_white_on_transparent.png'],  plugin: 'fieldcapture-plugin'
+        resource url: [dir: 'css/nrm/css', file: 'screen.css'], attrs: [media: 'screen,print']
+        resource url: [dir: 'css/', file: 'capture.css'], plugin: 'fieldcapture-plugin'
+        resource url: [dir: 'css/nrm/images/', file: 'AustGovt_inline_white_on_transparent.png'], plugin: 'fieldcapture-plugin'
         resource url: 'css/common.css'
     }
 
     bootstrap_nrm {
         dependsOn 'app_bootstrap', 'jquery-ui'
-        resource url: [dir:'css/nrm/less', file:'bootstrap.less'],attrs:[rel: "stylesheet/less", type:'css', media:'screen,print'], bundle:'bundle_app_bootstrap'
+        resource url: [dir: 'css/nrm/less', file: 'bootstrap.less'], attrs: [rel: "stylesheet/less", type: 'css', media: 'screen,print'], bundle: 'bundle_app_bootstrap'
         resource url: 'css/empty.css'
 
     }
 
     app_bootstrap_responsive {
         dependsOn 'app_bootstrap'
-        resource url: 'css/nrm/less/responsive.less' ,attrs:[rel: "stylesheet/less", type:'css', media:'screen,print'], bundle:'bundle_app_bootstrap_responsive'
+        resource url: 'css/nrm/less/responsive.less', attrs: [rel: "stylesheet/less", type: 'css', media: 'screen,print'], bundle: 'bundle_app_bootstrap_responsive'
         resource url: 'css/empty.css' // needed for less-resources plugin ?
     }
-    
+
     /** BEGIN - Fildcapture/Marite resources **/
     application {
         dependsOn 'jquery', 'knockout', 'bootbox'
@@ -38,6 +38,7 @@ modules = {
         resource url: 'vendor/jquery.shorten/jquery.shorten.js'
         resource url: 'vendor/jquery.columnizer/jquery.columnizer.js'
         resource url: 'vendor/jquery.blockUI/jquery.blockUI.js'
+        resource url: 'css/common.css'
     }
 
     defaultSkin {
@@ -124,7 +125,7 @@ modules = {
         resource url: 'css/empty.css' // needed for less-resources plugin ?
     }
 
-    restoreTab{
+    restoreTab {
         defaultBundle true
         dependsOn 'amplify'
         resource url: 'js/restoreTab.js'
@@ -159,7 +160,7 @@ modules = {
         dependsOn 'jquery'
 
         resource url: '/vendor/jquery-ui/jquery-ui-1.11.2-no-autocomplete.js'
-        resource url: '/vendor/jquery-ui/themes/smoothness/jquery-ui.css', attrs:[media:'all']
+        resource url: '/vendor/jquery-ui/themes/smoothness/jquery-ui.css', attrs: [media: 'all']
         resource url: 'vendor/jquery.appear/jquery.appear.js'
     }
 
@@ -226,7 +227,7 @@ modules = {
         resource url: 'js/parser.js'
     }
 
-    pagination{
+    pagination {
         defaultBundle 'application'
         resource url: 'js/pagination.js'
     }
@@ -247,10 +248,11 @@ modules = {
         resource url: 'js/projects.js'
         resource url: 'js/sites.js'
         resource url: 'vendor/moment/moment.min.js'
+        resource url: 'css/common.css'
     }
 
-    projectFinder{
-        dependsOn('knockout','projects')
+    projectFinder {
+        dependsOn('knockout', 'projects')
         resource url: 'js/project-finder.js'
         resource url: 'css/project-finder.css'
     }
@@ -267,7 +269,7 @@ modules = {
         resource url: 'js/projectActivity.js'
     }
 
-    projectActivityInfo{
+    projectActivityInfo {
         defaultBundle 'application'
         dependsOn 'knockout'
         resource url: 'js/projectActivityInfo.js'
@@ -357,11 +359,11 @@ modules = {
     }
 
     font_awesome_44 {
-        resource url: 'vendor/font-awesome/4.4.0/css/font-awesome.min.css', attrs:[media:'all']
+        resource url: 'vendor/font-awesome/4.4.0/css/font-awesome.min.css', attrs: [media: 'all']
     }
     /** END - Fildcapture/Marite resources **/
 
-    comments{
+    comments {
         dependsOn 'knockout'
         resource url: 'css/comment.css'
         resource url: 'js/comment.js'
