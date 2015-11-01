@@ -146,9 +146,9 @@
                         <div class="span6" id="associatedOrgList">
                             <!-- ko foreach: associatedOrgs -->
                             <div class="span12 margin-left-0 margin-bottom-1">
-                                <div class="span5 margin-left-0" data-bind="text: name"></div>
-                                <div class="span5"><img src="" data-bind="visible: logo, attr: {src: logo}" alt="Organisation logo" class="small-logo"></div>
-                                <div class="span2"><a href="#" data-bind="click: $parent.removeAssociatedOrganisation, attr: {'data-value': id}"><i class="fa fa-remove">&nbsp;</i><g:message code="project.details.associatedOrgs.remove"/></a></div>
+                                <div class="span6 margin-left-0" data-bind="text: name"></div>
+                                <div class="span3"><img src="" data-bind="visible: logo, attr: {src: logo}" alt="Organisation logo" class="small-logo"></div>
+                                <div class="span3"><a href="#" data-bind="click: $parent.removeAssociatedOrganisation" class="btn btn-primary"><i class="fa fa-remove">&nbsp;</i><g:message code="project.details.associatedOrgs.remove"/></a></div>
                             </div>
                             <!-- /ko -->
                         </div>
@@ -172,8 +172,8 @@
                             <div class="row-fluid">
                                 <div class="span3"></div>
                                 <div class="span8">
-                                    <div class="control-label span12">
-                                        <label for="associatedOrgNotPresent"><g:message code="project.details.associatedOrgs.notInList"/>&nbsp;<input type="checkbox" id="associatedOrgNotPresent" value="organisationNotOnList" data-bind="checked: $parent.transients.associatedOrgNotInList, disable: !term"></label>
+                                    <div class="span12">
+                                        <label class="pull-right" for="associatedOrgNotPresent"><g:message code="project.details.associatedOrgs.notInList"/>&nbsp;<input type="checkbox" id="associatedOrgNotPresent" value="organisationNotOnList" data-bind="checked: $parent.transients.associatedOrgNotInList, disable: !term"></label>
                                     </div>
                                     <div data-bind="visible: !$parent.transients.associatedOrgNotInList()">
                                         <div><b>Organisation Search Results</b> (Click an organisation to select it)</div>
@@ -218,7 +218,7 @@
                     <div class="row-fluid">
                         <div class="span3"></div>
                         <div class="span9">
-                            <a href="#" data-bind="click: addSelectedOrganisation, visible: term" class="margin-top-2"><i class="fa fa-check">&nbsp;</i><g:message code="project.details.associatedOrgs.add"/></a>
+                            <a href="#" data-bind="click: addSelectedOrganisation, visible: term" class="margin-top-2 btn btn-primary"><i class="fa fa-check">&nbsp;</i><g:message code="project.details.associatedOrgs.add"/></a>
                         </div>
                     </div>
                 </div>

@@ -810,22 +810,7 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         self.transients.associatedOrgLogoUrl(null);
     };
 
-    self.removeAssociatedOrganisation = function(data, event) {
-        // the id is stored in the data-value attribute of the button to work around the Knockout limitation of not being
-        // able to pass parameters to click event handlers.
-        var target = null;
-        if (event.target) {
-            target = event.target;
-        } else {
-            target = event.srcElement;
-        }
-
-        var id = $(target).attr("data-value");
-
-        var org = ko.utils.arrayFirst(self.associatedOrgs(), function(item) {
-            return item.id == id;
-        });
-
+    self.removeAssociatedOrganisation = function(org, event) {
         self.associatedOrgs.remove(org);
     };
 
