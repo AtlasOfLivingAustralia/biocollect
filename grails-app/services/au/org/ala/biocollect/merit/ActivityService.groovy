@@ -1,13 +1,19 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
+import au.org.ala.biocollect.ProjectActivityService
+import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.joda.time.DateTime
 import org.joda.time.Period
 import org.joda.time.format.DateTimeFormat
 
 class ActivityService {
 
-    def webService, grailsApplication, metadataService
+    GrailsApplication grailsApplication
+    WebService webService
+    MetadataService metadataService
+    SpeciesService speciesService
+    ProjectActivityService projectActivityService
 
     private static def PROGRESS = ['planned', 'started', 'finished', 'cancelled', 'deferred']
 
@@ -172,6 +178,41 @@ class ActivityService {
         }
         "${activity.type} (${description})"
 
+    }
+
+    /**
+     * Identifies species typed data in an output model and converts String values into species data via
+     * a species lookup operation.  The values are changed inline in the supplied outputData Map.
+     *
+     * @param outputName the output for which the data has been recorded.
+     * @param listName (optional), if present identifies a list within the output model for which the data has been recorded
+     * @param outputData the output data to look for species data types.
+     * @return
+     */
+    void lookupSpeciesInOutputData(String projectActivityId, String outputName, String listName, List outputData) {
+
+        def model = metadataService.annotatedOutputDataModel(outputName)
+        if (listName) {
+            model = model.find { it.name == listName }?.columns
+        }
+
+        // Do species lookup
+        def speciesField = model.find {it.dataType == 'species'}
+        if (speciesField) {
+            outputData.each { row ->
+                String name = row[speciesField.name]
+
+                Map speciesSearchResults = projectActivityService.searchSpecies(projectActivityId, name, 10)
+                Map species = speciesService.findMatch(speciesSearchResults, name)
+                if (species) {
+                    row[speciesField.name] = [name:species.name, listId:species.listId, guid:species.guid]
+                }
+                else {
+                    row[speciesField.name] = [name:name, listId:'unmatched', guid:null]
+                }
+
+            }
+        }
     }
 
 }

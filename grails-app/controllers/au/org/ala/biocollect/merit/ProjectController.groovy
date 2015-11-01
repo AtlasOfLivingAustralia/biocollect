@@ -185,23 +185,6 @@ class ProjectController {
 
     }
 
-    def fields (){
-        params = [
-                'isSuitableForChildren', // child friendly
-                'difficulty', // difficulty level
-                'isDIY', // DIY
-                'status', 'endDate', // active check field status
-                'hasParticipantCost', // no cost
-                'hasTeachingMaterials', // teaching material
-                '', // mobile uses links to find it out
-                '', // page size
-                'asc','desc', // sort order
-                'name', 'aim','organisationName', // sort fields
-                'endDate' //'daysStatus' sort field has to use end data
-
-        ]
-    }
-
     /**
      * Updates existing or creates new output.
      *

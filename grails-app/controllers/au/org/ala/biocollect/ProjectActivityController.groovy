@@ -2,6 +2,7 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.ActivityService
 import au.org.ala.biocollect.merit.DocumentService
+import au.org.ala.biocollect.merit.MetadataService
 import au.org.ala.biocollect.merit.PreAuthorise
 import au.org.ala.biocollect.merit.ProjectService
 import au.org.ala.biocollect.merit.SpeciesService

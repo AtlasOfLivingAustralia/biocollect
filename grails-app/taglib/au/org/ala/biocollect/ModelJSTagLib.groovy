@@ -746,7 +746,7 @@ class ModelJSTagLib {
             };
 
             self.${model.name}TableDataUploadOptions = {
-                    url:'${createLink([controller: 'activity', action: 'ajaxUpload'])}',
+                    url:fcConfig.activityDataTableUploadUrl,
                     done:function(e, data) {
                         if (data.result.error) {
                             self.uploadFailed(data.result.error);

@@ -36,7 +36,7 @@
         <div class="media" >
             <div class="pull-left comment-indent" data-bind="css: { hide: !$data.parent()}"></div>
             <div class="media-body" >
-                <b class="username media-heading" data-bind="text: displayName, visible: !!displayName"></b>
+                <b class="comment-username media-heading" data-bind="text: displayName, visible: !!displayName"></b>
                 <span data-bind="visible: !!lastUpdated()">commented on <span data-bind="text: lastUpdated.formattedDate"></span></span>
                 <div data-bind="visible: !edit()">
                     <pre class="media" data-bind="text: text">
