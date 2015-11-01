@@ -799,8 +799,8 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
 
             org.organisationId = self.associatedOrganisationSearch.selection().organisationId || "";
             org.name = self.associatedOrganisationSearch.selection().name;
-            org.url = self.associatedOrganisationSearch.selection().url || null;
-            org.logo = logoDocument && logoDocument.thumbnailUrl ? logoDocument.thumbnailUrl : null;
+            org.url = self.associatedOrganisationSearch.selection().url || "";
+            org.logo = logoDocument && logoDocument.thumbnailUrl ? logoDocument.thumbnailUrl : "";
         }
 
         self.associatedOrgs.push(org);
