@@ -84,8 +84,12 @@ var pActivityInfo = function(o, selected, startDate){
     };
 
     self.isEndDateAfterStartDate = function () {
-        var start = moment(self.startDate());
-        var end = moment(self.endDate());
-        return end >= start;
+        if (self.endDate()) {
+            var start = moment(self.startDate());
+            var end = moment(self.endDate());
+            return end >= start;
+        } else {
+            return true;
+        }
     };
 };

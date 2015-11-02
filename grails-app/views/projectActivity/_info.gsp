@@ -13,7 +13,7 @@
 
             <div class="row-fluid">
                 <div class="span4 text-right">
-                    <label class="control-label" for="name"> Name:
+                    <label class="control-label" for="name"><g:message code="project.survey.info.name"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.name"/>', content:'<g:message code="project.survey.info.name.content"/>'}">
                             <i class="icon-question-sign"></i>
                         </a>
@@ -29,7 +29,7 @@
 
             <div class="row-fluid">
                 <div class="span4 text-right">
-                    <label class="control-label" for="description">Description:
+                    <label class="control-label" for="description"><g:message code="project.survey.info.description"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.description"/>', content:'<g:message code="project.survey.info.description.content"/>'}">
                             <i class="icon-question-sign"></i>
                         </a>
@@ -47,7 +47,7 @@
 
             <div class="row-fluid">
                 <div class="span4 text-right">
-                    <label class="control-label" for="startDate"> Start date:
+                    <label class="control-label" for="startDate"> <g:message code="project.survey.info.startDate"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.startDate"/>', content:'<g:message code="project.survey.info.startDate.content"/>'}">
                             <i class="icon-question-sign"></i>
                         </a>
@@ -64,7 +64,7 @@
 
             <div class="row-fluid">
                 <div class="span4 text-right">
-                    <label class="control-label" for="endDate">End date:
+                    <label class="control-label" for="endDate"><g:message code="project.survey.info.endDate"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.endDate"/>', content:'<g:message code="project.survey.info.endDate.content"/>'}">
                             <i class="icon-question-sign"></i>
                         </a>
@@ -82,7 +82,7 @@
 
             <div class="row-fluid">
                 <div class="span4 text-right">
-                    <label class="control-label" for="publicAccess">Allow public users to enter data:
+                    <label class="control-label" for="publicAccess"><g:message code="project.survey.info.publicData"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.publicData"/>', content:'<g:message code="project.survey.info.publicData.content"/>'}">
                             <i class="icon-question-sign"></i>
                         </a>
@@ -99,7 +99,7 @@
 
             <div class="row-fluid">
                 <div class="span4 text-right">
-                    <label class="control-label" for="allowComments">Comments on records allowed:
+                    <label class="control-label" for="allowComments"><g:message code="project.survey.info.comments"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.comments"/>', content:'<g:message code="project.survey.info.comments.content"/>'}">
                             <i class="icon-question-sign"></i>
                         </a>
@@ -116,7 +116,7 @@
 
             <div class="row-fluid">
                 <div class="span4 text-right">
-                    <label class="control-label">Attach logo:
+                    <label class="control-label"><g:message code="project.survey.info.logo"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.logo"/>', content:'<g:message code="project.survey.info.logo.content"/>'}">
                             <i class="icon-question-sign"></i>
                         </a>
@@ -144,11 +144,11 @@
     <!-- /ko -->
 <!-- /ko -->
 
-    <br/> <br/>
-    <div class="row-fluid">
-        <div class="span12">
-            <button class="btn-primary btn btn-small block" data-bind="click: saveInfo"><i class="icon-white  icon-hdd" ></i>  Save </button>
-            <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-visibility-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
-        </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <button class="btn-primary btn btn-small block" data-bind="click: saveInfo"><i class="icon-white  icon-hdd" ></i>  Save </button>
+        <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-visibility-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
     </div>
 </div>

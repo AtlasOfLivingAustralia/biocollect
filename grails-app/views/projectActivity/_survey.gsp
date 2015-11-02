@@ -60,18 +60,18 @@
 
                 </div>
              </div>
-
-            <div class="row-fluid">
-                <div class="span12">
-                    <button class="btn-primary btn block btn-small" data-bind="click: $parent.saveForm, disable: !transients.saveOrUnPublishAllowed()"><i class="icon-white  icon-hdd" ></i>  Save </button>
-                    <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
-                    <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-locations-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
-                </div>
-            </div>
-
-
             <!-- /ko -->
         <!-- /ko -->
 </div>
 
-
+<!-- ko foreach: projectActivities -->
+    <!-- ko if: current -->
+    <div class="row-fluid">
+        <div class="span12">
+            <button class="btn-primary btn block btn-small" data-bind="click: $parent.saveForm, disable: !transients.saveOrUnPublishAllowed()"><i class="icon-white  icon-hdd" ></i>  Save </button>
+            <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
+            <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-locations-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
+        </div>
+    </div>
+    <!-- /ko -->
+<!-- /ko -->
