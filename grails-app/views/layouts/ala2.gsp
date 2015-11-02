@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="au.org.ala.biocollect.merit.SettingPageType" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
    <meta name="app.version" content="${g.meta(name:'app.version')}"/>
@@ -27,49 +27,46 @@
             ${fc.announcementContent()}
         </div>
     </g:if>
-    <div id="nav-site" class="clearfix">
-
-        <div class="navbar navbar-inner container-fluid ">
-            %{--<a href="${g.createLink(uri:"/")}" class="brand">MERI data capture prototype</a>--}%
-            <ul class="nav">
-                <li><a href="/fieldcapture/" class="active hidden-desktop"><i class="icon-home">&nbsp;</i>&nbsp;Home</a></li>
-            </ul>
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </a>
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <fc:navbar active="${pageProperty(name: 'page.topLevelNav')}"/>
-                </ul>
-                <div class="navbar-form pull-right nav-collapse collapse">
-                    <span id="buttonBar">
-                        <g:if test="${fc.currentUserDisplayName()}">
-                            <div class="btn-group">
-                                <button class="btn btn-small btn-fc btnProfile" title="profile page">
-                                    <i class="icon-user"></i><span class="">&nbsp;<fc:currentUserDisplayName /></span>
-                                </button>
-                                <a class="btn btn-small btn-fc dropdown-toggle" data-toggle="dropdown">
-                                    More&nbsp;&nbsp;<span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu pull-right">
-                                    <li><a class="btnNewProject" href="#"><i class="icon-plus"></i> New project</a></li>
-                                    <li><a class="btnMyProjects" href="#"><i class="icon-folder-open"></i> My projects</a></li>
-                                    <li><a class="btnMyData" href="#"><i class="icon-folder-open"></i> My data</a></li>
-                                </ul>
-                            </div>
-                            <g:if test="${fc.userIsSiteAdmin()}">
-                                <div class="btn-group">
-                                    <button class="btn btn-warning btn-small btnAdministration"><i class="icon-cog icon-white"></i><span class="">&nbsp;Administration</span></button>
-                                </div>
-                            </g:if>
-                        </g:if>
-                        <g:pageProperty name="page.buttonBar"/>
-                    </span>
+    <div id="nav-site" class="navbar navbar-inverse" class="clearfix">
+        <div class="navbar-inner">
+            <div class="container-fluid ">
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                        <fc:navbar active="${pageProperty(name: 'page.topLevelNav')}"/>
+                    </ul>
+                    <ul class="nav pull-right">
+                        <li>
+                            <span id="buttonBar">
+                                <g:if test="${fc.currentUserDisplayName()}">
+                                    <div class="btn-group">
+                                        <button class="btn btn-small btn-fc btnProfile" title="profile page">
+                                            <i class="icon-user"></i><span class="">&nbsp;<fc:currentUserDisplayName /></span>
+                                        </button>
+                                        <a class="btn btn-small btn-fc dropdown-toggle" data-toggle="dropdown">
+                                            More&nbsp;&nbsp;<span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu pull-right">
+                                            <li><a class="btnNewProject" href="#"><i class="icon-plus"></i> New project</a></li>
+                                            <li><a class="btnMyProjects" href="#"><i class="icon-folder-open"></i> My projects</a></li>
+                                            <li><a class="btnMyData" href="#"><i class="icon-folder-open"></i> My data</a></li>
+                                            <g:if test="${fc.userIsSiteAdmin()}">
+                                                <li><a class="btnAdministration" href="#"><i class="icon-cog"></i> Administration</a></li>
+                                            </g:if>
+                                        </ul>
+                                    </div>
+                                </g:if>
+                                <g:pageProperty name="page.buttonBar"/>
+                            </span>
+                        </li>
+                    </ul>
                 </div>
-            </div>
-        </div><!-- /.navbar-inner -->
+                %{--<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">--}%
+                %{--<span class="icon-bar"></span>--}%
+                %{--<span class="icon-bar"></span>--}%
+                %{--<span class="icon-bar"></span>--}%
+                %{--</a>--}%
+            </div><!-- /.navbar-inner -->
+        </div>
     </div>
 
     <div class="container" id="main-content">

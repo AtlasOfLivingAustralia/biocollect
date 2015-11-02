@@ -211,26 +211,28 @@ class FCTagLib {
                         icon:"icon-home",
                         link:createLink(controller: 'home'),
                         cssClass:'visible-desktop',
-                        label:'Home'
-                ],
-                about:[
-                        icon:"icon-info-sign",
-                        link:createLink(controller: 'home', action: 'about'),
-                        label:'About'
-                ],
-                help:[
-                        icon:"icon-question-sign",
-                        link:createLink(controller: 'home', action: "help"),
-                        label:'Help'
-                ],
-                contacts:[
-                        icon:"icon-envelope",
-                        link:createLink(controller: 'home', action: 'contacts'),
-                        label:'Contacts'
+                        label:'BioCollect Home'
                 ]
+//                ,
+//                about:[
+//                        icon:"icon-info-sign",
+//                        link:createLink(controller: 'home', action: 'about'),
+//                        label:'About'
+//                ],
+//                help:[
+//                        icon:"icon-question-sign",
+//                        link:createLink(controller: 'home', action: "help"),
+//                        label:'Help'
+//                ],
+//                contacts:[
+//                        icon:"icon-envelope",
+//                        link:createLink(controller: 'home', action: 'contacts'),
+//                        label:'Contacts'
+//                ]
         ]
 
-        def navDefaults = ['home', 'about', 'help', 'contacts']
+//        def navDefaults = ['home', 'about', 'help', 'contacts']
+        def navDefaults = ['home']
         def navItems = attrs.items ?: navDefaults
 
         def mb = new MarkupBuilder(out)
