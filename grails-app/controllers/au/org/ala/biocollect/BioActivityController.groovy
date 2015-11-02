@@ -178,7 +178,7 @@ class BioActivityController {
             result = [status: 401, error: "Access denied: User has not been authenticated."]
         } else if(projectService.isUserAdminForProject(userId, params.projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             def resp = activityService.delete(id)
-            if (resp == HttpStatus.SC_OK) {
+            if (resp == SC_OK) {
                 result = [status: resp, text: 'deleted']
             } else {
                 response.status = resp
