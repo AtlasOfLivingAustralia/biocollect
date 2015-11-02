@@ -29,7 +29,7 @@
                 <!-- ko if: showCrud -->
                     </br>
                     <a data-bind="attr:{'href': transients.viewUrl}">view</a>
-                    <a data-bind="attr:{'href': transients.addUrl}">add</a>
+                    <a data-bind="visible: showAdd, attr:{'href': transients.addUrl}">add</a>
                     <a data-bind="attr:{'href': transients.editUrl}">edit</a>
                     <a href="#" data-bind="click: $parent.delete">delete</a>
                     </br></br>
