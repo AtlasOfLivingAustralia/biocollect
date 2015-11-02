@@ -791,13 +791,47 @@ var ImagesViewModel = function (image) {
     self.url = ko.observable(image.url);
 };
 
-var SurveyVisibilityViewModel = function (o) {
+var SurveyVisibilityViewModel = function (visibility) {
     var self = this;
-    if (!o) o = {};
-    self.constraint = ko.observable(o.constraint ? o.constraint : 'PUBLIC');   // 'PUBLIC', 'PUBLIC_WITH_SET_DATE', 'EMBARGO'
-    self.setDate = ko.observable(o.setDate ? o.setDate : 60);     // 60, 90, 120 days
-    self.embargoDate = ko.observable(o.embargoDate).extend({simpleDate: false});
+    if (!visibility) {
+        visibility = {};
+    }
+
+    self.embargoOption = ko.observable(visibility.embargoOption ? visibility.embargoOption : 'NONE');   // 'NONE', 'DAYS', 'DATE' -> See au.org.ala.ecodata.EmbargoOptions in Ecodata
+
+    self.embargoForDays = ko.observable(visibility.embargoForDays ? visibility.embargoForDays : 60);     // 60, 90, 120 days
+    self.embargoUntil = ko.observable(visibility.embargoUntil).extend({simpleDate: true});
+
+    self.embargoOption.subscribe(function (option) {
+        if (option === 'DATE') {
+            self.embargoForDays(60)
+        } else if (option == 'DAYS') {
+            self.embargoUntil(null);
+        } else {
+            self.embargoUntil(0);
+            self.embargoForDays(60)
+        }
+    });
 };
+
+/**
+ * Custom validation function (used by the jquery-validation-engine), defined on the embargoUntil date field on the
+ * survey admin visibility form
+ */
+function isEmbargoDateRequired(field, rules, i, options) {
+    if ($('#embargoOptionDate:checked').val()) {
+        if ($('#embargoUntilDate').val() == "") {
+            rules.push('required');
+        } else {
+            var date = convertToIsoDate($('#embargoUntilDate').val(), 'dd-MM-yyyy');
+            if (moment(date).isBefore(moment())) {
+                return "The date must be in the future";
+            } else if (moment(date).isAfter(new Date().setMonth(new Date().getMonth() + 12))) {
+                return "The date cannot be more than 12 months in the future";
+            }
+        }
+    }
+}
 
 function initialiseValidator() {
     var tabs = ['info', 'species', 'form', 'access', 'visibility'];
