@@ -75,6 +75,11 @@ var ActivityViewModel = function(activity){
 
     self.activityId = ko.observable(activity.activityId);
     self.showCrud = ko.observable(activity.showCrud);
+    var projectActivityOpen = true;
+    if (activity.pActivity.endDate) {
+        projectActivityOpen = moment(activity.pActivity.endDate).isAfter(moment());
+    }
+    self.showAdd = ko.observable(projectActivityOpen);
     self.projectActivityId = ko.observable(activity.projectActivityId);
     self.name = ko.observable();
     self.type = ko.observable(activity.type);

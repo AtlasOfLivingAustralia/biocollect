@@ -70,19 +70,24 @@ var RecordListsViewModel = function(placeHolder){
   self.refreshPage();
 };
 
-var RecordViewModel = function(record){
-  var self = this;
-  if(!record) record = {};
-  self.occurrenceID = ko.observable(record.occurrenceID);
-  self.showCrud = ko.observable(record.showCrud);
-  self.name = ko.observable(record.name);
-  self.guid = ko.observable(record.guid);
-  self.activityId = ko.observable(record.activityId);
-  self.projectActivityId = ko.observable(record.projectActivityId);
-  self.lastUpdated = ko.observable(record.lastUpdated).extend({simpleDate: false});
-  self.transients = {};
-  self.transients.viewUrl = ko.observable(fcConfig.activityViewUrl + "/" + self.activityId()).extend({returnTo:fcConfig.returnTo});
-  self.transients.editUrl = ko.observable(fcConfig.activityEditUrl + "/" + self.activityId()).extend({returnTo:fcConfig.returnTo});;
-  self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo:fcConfig.returnTo});;
-  self.transients.pActivity = new pActivityInfo(record.pActivity);
+var RecordViewModel = function (record) {
+    var self = this;
+    if (!record) record = {};
+    self.occurrenceID = ko.observable(record.occurrenceID);
+    self.showCrud = ko.observable(record.showCrud);
+    var projectActivityOpen = true;
+    if (record.pActivity.endDate) {
+        projectActivityOpen = moment(record.pActivity.endDate).isAfter(moment());
+    }
+    self.showAdd = ko.observable(projectActivityOpen);
+    self.name = ko.observable(record.name);
+    self.guid = ko.observable(record.guid);
+    self.activityId = ko.observable(record.activityId);
+    self.projectActivityId = ko.observable(record.projectActivityId);
+    self.lastUpdated = ko.observable(record.lastUpdated).extend({simpleDate: false});
+    self.transients = {};
+    self.transients.viewUrl = ko.observable(fcConfig.activityViewUrl + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
+    self.transients.editUrl = ko.observable(fcConfig.activityEditUrl + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
+    self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo: fcConfig.returnTo});
+    self.transients.pActivity = new pActivityInfo(record.pActivity);
 };
