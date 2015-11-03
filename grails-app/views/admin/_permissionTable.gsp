@@ -58,13 +58,18 @@
                             $clone.find('.memUserRole select').val(el.role);
                             $clone.find('.memUserRole select').attr("id", el.userId);
                             $clone.find('.memUserRole span').text(decodeCamelCase(el.role).replace('Case','Grant')); // TODO: i18n this
+                           if (el.role == "admin") {
+                                numberOfAdmins++;
+                                $clone.find('.memRemoveRole').addClass('admin')
+                            }
+
                             $('.membersTbody').append($clone);
                         });
 
                         if (numberOfAdmins == 1) {
-                            $('.memRemoveRole').css("display", "none");
+                            $('.memRemoveRole.admin').css("display", "none");
                         } else {
-                            $('.memRemoveRole:hidden').css("display", "inline-block");
+                            $('.memRemoveRole.admin:hidden').css("display", "inline-block");
                         }
                     } else {
                         $("#messageRow").show();
