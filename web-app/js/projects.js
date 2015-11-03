@@ -354,6 +354,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.contractStartDate = ko.observable(project.contractStartDate).extend({simpleDate: false});
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
     self.imageUrl = ko.observable(project.urlImage);
+    self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted);
 
     self.associatedOrgs = ko.observableArray(project.associatedOrgs);
 
@@ -771,6 +772,13 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     self.transients.associatedOrgNotInList = ko.observable(false);
     self.transients.associatedOrgUrl = ko.observable();
     self.transients.associatedOrgLogoUrl = ko.observable();
+
+    self.transients.termsOfUseClicked = ko.observable(false);
+
+    self.clickTermsOfUse = function(data, event) {
+        self.transients.termsOfUseClicked(true);
+        return true;
+    };
 
     self.organisationSearch.createOrganisation = function() {
         var projectData = self.modelAsJSON();
