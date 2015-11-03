@@ -45,9 +45,6 @@
                     if (data.length > 0) {
                         $("#messageRow").hide();
                         $.each(data, function(i, el) {
-                            if (el.role == "admin") {
-                                numberOfAdmins++;
-                            }
                             var $clone = $('.membersTbody tr.hide').clone();
                             $clone.removeClass("hide");
                             $clone.addClass("cloned");
@@ -58,7 +55,7 @@
                             $clone.find('.memUserRole select').val(el.role);
                             $clone.find('.memUserRole select').attr("id", el.userId);
                             $clone.find('.memUserRole span').text(decodeCamelCase(el.role).replace('Case','Grant')); // TODO: i18n this
-                           if (el.role == "admin") {
+                            if (el.role == "admin") {
                                 numberOfAdmins++;
                                 $clone.find('.memRemoveRole').addClass('admin')
                             }
