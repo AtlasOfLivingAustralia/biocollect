@@ -35,30 +35,31 @@
     <p>
     Please tell us about your project by completing the form below.  Questions marked with a * are mandatory.
     </p>
-    <form id="projectDetails" class="form-horizontal">
-        <g:render template="details" model="${pageScope.variables}"/>
+    <div id="projectDetails">
+        <form id="projectDetailsForm" class="form-horizontal">
+            <g:render template="details" model="${pageScope.variables}"/>
 
-        <g:if test="${grailsApplication.config.termsOfUseUrl}">
-            <div class="row-fluid">
-                <div class="well">
-                    <h4 class="block-header"><g:message code="project.details.termsOfUseAgreement"/></h4>
+            <g:if test="${grailsApplication.config.termsOfUseUrl}">
+                <div class="row-fluid">
+                    <div class="well">
+                        <h4 class="block-header"><g:message code="project.details.termsOfUseAgreement"/></h4>
 
-                    <div class="clearfix">
-                        <label class="control-label span3" for="termsOfUseAgreement"><g:message code="project.details.termsOfUseAgreement"/><fc:iconHelp><g:message code="project.details.termsOfUseAgreement.help"/></fc:iconHelp></label>
-                        <div class="controls span9">
-                            <input data-bind="checked:isMetadataSharing, disable: !transients.termsOfUseClicked()" type="checkbox" id="termsOfUseAgreement" data-validation-engine="validate[required]"/>
-                            I confirm that have read and accept the <a href="${grailsApplication.config.termsOfUseUrl}" data-bind="click: clickTermsOfUse" target="_blank">Terms of Use</a>.
+                        <div class="clearfix">
+                            <label class="control-label span3" for="termsOfUseAgreement"><g:message code="project.details.termsOfUseAgreement"/><fc:iconHelp><g:message code="project.details.termsOfUseAgreement.help"/></fc:iconHelp></label>
+                            <div class="controls span9">
+                                <input data-bind="checked:termsOfUseAccepted, disable: !transients.termsOfUseClicked()" type="checkbox" id="termsOfUseAgreement" name="termsOfUseAgreement" data-validation-engine="validate[required]"/>
+                                I confirm that have read and accept the <a href="${grailsApplication.config.termsOfUseUrl}" data-bind="click: clickTermsOfUse" target="_blank">Terms of Use</a>.
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </g:if>
-    </form>
-    <div class="form-actions">
-        <button type="button" id="save" class="btn btn-primary"><g:message code="g.save"/></button>
-        <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
+            </g:if>
+        </form>
+        <div class="form-actions">
+            <button type="button" id="save" class="btn btn-primary" data-bind="disable: !termsOfUseAccepted()"><g:message code="g.save"/></button>
+            <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
+        </div>
     </div>
-
 </div>
 <r:script>
 $(function(){
