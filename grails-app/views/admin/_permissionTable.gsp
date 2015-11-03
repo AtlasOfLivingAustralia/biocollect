@@ -8,8 +8,8 @@
                 <td class="memUserId"></td>
                 <td class="memUserName"></td>
                 <td class="memUserRole"><span style="white-space: nowrap">&nbsp;</span><g:render template="/admin/userRolesSelect" model="[roles:roles, selectClass:'hide']"/></td>
-                <td class="clickable memEditRole"><i class="icon-edit tooltips" title="edit this user and role combination"></i></td>
-                <td class="clickable memRemoveRole"><i class="icon-remove tooltips" title="remove this user and role combination"></i></td>
+                <td><a class="memEditRole icon-edit tooltips" href="" title="edit this user and role combination"></a></td>
+                <td><a class="memRemoveRole icon-remove tooltips" href="" title="remove this user and role combination"></a></td>
             </tr>
             <tr id="spinnerRow"><td colspan="5">loading data... <g:img dir="images" file="spinner.gif" id="spinner2" class="spinner" alt="spinner icon"/></td></tr>
             <tr id="messageRow" class="hide"><td colspan="5">No project members set</td></tr>
@@ -26,6 +26,7 @@
 
 <r:script>
 
+
             /**
             * This populates the "Project Members" table via an AJAX call
             * It uses the jQuery clone pattern to generate HTML using a plain
@@ -33,6 +34,7 @@
             * See: http://stackoverflow.com/a/1091493/249327
             */
             function populatePermissionsTable() {
+                var numberOfAdmins = 0;
                 $("#spinnerRow").show();
                 $('.membersTbody tr.cloned').remove();
                 $.ajax({
@@ -43,6 +45,9 @@
                     if (data.length > 0) {
                         $("#messageRow").hide();
                         $.each(data, function(i, el) {
+                            if (el.role == "admin") {
+                                numberOfAdmins++;
+                            }
                             var $clone = $('.membersTbody tr.hide').clone();
                             $clone.removeClass("hide");
                             $clone.addClass("cloned");
@@ -53,14 +58,27 @@
                             $clone.find('.memUserRole select').val(el.role);
                             $clone.find('.memUserRole select').attr("id", el.userId);
                             $clone.find('.memUserRole span').text(decodeCamelCase(el.role).replace('Case','Grant')); // TODO: i18n this
+                           if (el.role == "admin") {
+                                numberOfAdmins++;
+                                $clone.find('.memRemoveRole').addClass('admin')
+                            }
+
                             $('.membersTbody').append($clone);
                         });
+
+                        if (numberOfAdmins == 1) {
+                            $('.memRemoveRole.admin').css("display", "none");
+                        } else {
+                            $('.memRemoveRole.admin:hidden').css("display", "inline-block");
+                        }
                     } else {
                         $("#messageRow").show();
                     }
-                 })
-                .fail(function(jqXHR, textStatus, errorThrown) { alert(jqXHR.responseText); })
-                .always(function() { $("#spinnerRow").hide(); });
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR.responseText);
+                }).always(function() {
+                    $("#spinnerRow").hide();
+                });
             }
 
             function updateStatusMessage2(msg) {
@@ -77,21 +95,33 @@
             function removeUserRole(userId, role) {
                 $.ajax( {
                     url: '${removeUserUrl}',
-                    data: {userId: userId, role: role, entityId: "${entityId}" }
+                    data: {
+                        userId: userId,
+                        role: role,
+                        entityId: "${entityId}"
+                    }
                 })
-                .done(function(result) { updateStatusMessage2("user was removed."); })
-                .fail(function(jqXHR, textStatus, errorThrown) { alert(jqXHR.responseText); })
+                .done(function(result) {
+                    updateStatusMessage2("user was removed.");
+                    }
+                )
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR.responseText);
+                    }
+                )
                 .always(function(result) {
                     $("#spinner1").hide();
                     populatePermissionsTable(); // reload table
                 });
             }
+
             $(function() {
             // click event on the "remove" button on Project Members table
-                $('.membersTbody').on("click", "td.memRemoveRole", function(e) {
+                $('.membersTbody').on("click", ".memRemoveRole", function(e) {
+                    e.preventDefault();
                     var $this = this;
-                    var userId = $($this).parent().data("userid");
-                    var role = $($this).parent().data("role");
+                    var userId = $($this).parent().parent().data("userid");
+                    var role = $($this).parent().parent().data("role");
 
                     var message;
                     if (userId == ${user?.userId}) {
@@ -112,13 +142,14 @@
                 });
 
                 // hide/show the role select for editting role
-                $('.membersTbody').on("click", "td.memEditRole", function(e) {
-                    if ($(this).parent().find("span").is(':visible')) {
-                        $(this).parent().find("span").hide();
-                        $(this).parent().find("select").fadeIn();
+                $('.membersTbody').on("click", ".memEditRole", function(e) {
+                    e.preventDefault();
+                    if ($(this).parent().parent().find("span").is(':visible')) {
+                        $(this).parent().parent().find("span").hide();
+                        $(this).parent().parent().find("select").fadeIn();
                     } else {
-                        $(this).parent().find("span").fadeIn();
-                        $(this).parent().find("select").hide();
+                        $(this).parent().parent().find("span").fadeIn();
+                        $(this).parent().parent().find("select").hide();
                     }
                 });
 
