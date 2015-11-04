@@ -3,7 +3,7 @@
     <img class="media-object img-rounded span1" data-bind="attr:{src:thumbnailUrl}, alt:name" style="width:32px;height:32px;" width="32" height="32" alt="image preview icon">
 </span>
 <div class="media-body">
-    <a class="pull-right" data-bind="attr:{href:url}, clickBubble: false" target="_blank">
+    <a class="btn btn-mini pull-right" data-bind="attr:{href:url}, clickBubble: false" target="_blank">
         <i class="fa fa-download"></i>
     </a>
     <span>
@@ -20,7 +20,7 @@
     <img class="media-object" data-bind="attr:{src:filetypeImg(), alt:name}" alt="document icon">
 </span>
 <div class="media-body">
-    <a class="pull-right" data-bind="attr:{href:url}, clickBubble: false" target="_blank">
+    <a class="btn btn-mini pull-right" data-bind="attr:{href:url}, clickBubble: false" target="_blank">
         <i class="fa fa-download"></i>
     </a>
     <span>
@@ -56,7 +56,7 @@
 
 <script id="docMediaBody" type="text/html">
 <div class="media-body">
-    <a class="pull-right" data-bind="attr:{href:url}" target="_blank">
+    <a class="btn btn-mini pull-right" data-bind="attr:{href:url}" target="_blank">
         <i class="fa fa-download"></i>
     </a>
     <a data-bind="attr:{href:url}">
@@ -70,7 +70,7 @@
 
 <script id="imgMediaBody" type="text/html">
 <div class="media-body">
-    <a class="pull-right" data-bind="attr:{href:url}" target="_blank">
+    <a class="btn btn-mini pull-right" data-bind="attr:{href:url}" target="_blank">
         <i class="fa fa-download"></i>
     </a>
     <a data-bind="attr:{href:url}" target="_blank">

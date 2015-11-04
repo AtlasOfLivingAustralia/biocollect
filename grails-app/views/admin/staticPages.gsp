@@ -38,12 +38,13 @@
                             ${setting.key}
                         </td>
                         <td>
-                            <a href="${createLink(controller: 'home', action: 'staticPage', id: setting.name)}" class="btn btn-small">
-                                <i class="icon-file"></i>&nbsp;View</a>
+                            <a href="${setting.editLink}/${setting.name}?editMode=false" class="btn btn-small">
+                                <i class="icon-file"></i>&nbsp;View
+                            </a>
                         </td>
                         <td style="max-width:500px;overflow-wrap:break-word;">
                             <g:if test="${setting.editLink}">
-                                <a href="${setting.editLink}/${setting.name}" class="btn btn-small">
+                                <a href="${setting.editLink}/${setting.name}?editMode=true" class="btn btn-small">
                                     <i class="icon-edit"></i>&nbsp;Edit
                                 </a>
                             </g:if>

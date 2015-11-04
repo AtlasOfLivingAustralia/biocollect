@@ -1,5 +1,8 @@
 package au.org.ala.biocollect.merit
 
+import org.springframework.web.multipart.MultipartFile
+import static org.apache.commons.httpclient.HttpStatus.*
+
 class MetadataService {
 
     def grailsApplication, webService, cacheService, settingService
@@ -215,7 +218,7 @@ class MetadataService {
 
     def getAccessLevels() {
         return cacheService.get('accessLevels',{
-            webService.getJson(grailsApplication.config.ecodata.service.url +  "/permissions/getAllAccessLevels")
+            webService.getJson(grailsApplication.config.ecodata.service.url +  "/permissions/getAllAccessLevels?baseLevel="+RoleService.PROJECT_PARTICIPANT_ROLE)
         })
     }
 
@@ -263,6 +266,25 @@ class MetadataService {
 
             results
         })
+    }
+
+    /**
+     * Delegates to the ecodata extractOutputDataFromExcelOutputTemplate service to convert an excel workbook into
+     * a Map of output data property value pairs.
+     * @return returns a map with [status:statusCode, error:errorMessage (if there was an error), data:the data (if there was no error)]
+     */
+    Map extractOutputDataFromExcelOutputTemplate(Map params, MultipartFile file) {
+        def url = grailsApplication.config.ecodata.service.url + '/metadata/extractOutputDataFromExcelOutputTemplate'
+        def data = webService.postMultipart(url, params, file, 'data')
+
+        def result
+        if (data.error || data.status != SC_OK) {
+            result = [status:data.status, error:data.error?:'No data was found that matched the columns in this table, please check the template you used to upload the data. ']
+        }
+        else {
+            result = [status:SC_OK, data:data.content.data]
+        }
+        result
     }
 
 

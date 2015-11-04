@@ -12,10 +12,11 @@
             activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
             activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
             activityEditUrl: "${createLink(controller: 'bioActivity', action: 'edit')}",
-            activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
+            activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'delete')}",
             activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
             recordListUrl: "${createLink(controller: 'record', action: 'ajaxList')}",
+            recordDeleteUrl: "${createLink(controller: 'record', action: 'delete')}",
             returnTo: "${createLink(controller: 'bioActivity', action:'list')}"
         },
         here = document.location.href;
@@ -26,6 +27,8 @@
 
 <div class="container-fluid">
     <h2>My Data</h2>
+
+    <div id="data-result-placeholder"></div>
 
     <div class="row-fluid">
 
@@ -38,10 +41,10 @@
 
             <div class="tab-content">
                 <div class="tab-pane" id="survey-activities">
-                    <g:render template="allActivities" model="[show:true]"/>
+                    <g:render template="allActivities"/>
                 </div>
                 <div class="tab-pane" id="survey-records">
-                    <g:render template="allRecords" model="[show:true]"/>
+                    <g:render template="allRecords"/>
                 </div>
             </div>
         </div>
@@ -52,9 +55,17 @@
 <r:script>
     $(window).load(function () {
         $(".main-content").show();
-        initialiseActivities();
-        initialiseRecords();
+        var recordVM = initialiseRecords('data-result-placeholder');
+        var activityVM = initialiseActivities('data-result-placeholder');
         new RestoreTab('ul-survey-activities', 'survey-records-tab');
+
+        $('#ul-survey-activities a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if ('#survey-records' == e.currentTarget.hash) {
+                recordVM.refreshPage();
+            } else if ('#survey-activities' == e.currentTarget.hash) {
+                activityVM.refreshPage();
+            }
+        });
     });
 </r:script>
 

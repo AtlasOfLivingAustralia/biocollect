@@ -1,6 +1,8 @@
 package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.ActivityService
 import au.org.ala.biocollect.merit.DocumentService
+import au.org.ala.biocollect.merit.MetadataService
 import au.org.ala.biocollect.merit.PreAuthorise
 import au.org.ala.biocollect.merit.ProjectService
 import au.org.ala.biocollect.merit.SpeciesService
@@ -14,6 +16,7 @@ class ProjectActivityController {
     DocumentService documentService
     ProjectService projectService
     UserService userService
+    ActivityService activityService
 
     static ignore = ['action', 'controller', 'id']
 
@@ -62,6 +65,40 @@ class ProjectActivityController {
         render result as JSON
     }
 
+    /**
+     * Delete activities and records by project activityId
+     * @param id projact activity id
+     * @return
+     */
+
+    def unpublish(String id) {
+        def pActivity = projectActivityService.get(params.id)
+        def project = projectService.get(pActivity?.projectId)
+        String userId = userService.getCurrentUserId()
+
+        Map result
+        if (!userId) {
+            response.status = 401
+            result = [status: 401, error: "Access denied: User has not been authenticated."]
+        } else if (!projectService.isUserAdminForProject(userId, params.projectId)) {
+            response.status = 401
+            result = [status: 401, error: "Access denied: User is not an admin of this project - ${project?.projectId}"]
+        } else if (pActivity) {
+            def code = activityService.deleteByProjectActivity(pActivity.projectActivityId)
+            if (code == HttpStatus.SC_OK) {
+                flash.message = "Successfully unpublished the survey."
+                result = projectActivityService.update(id, [published: false])
+            } else {
+                response.status = code
+                result = [status: code, error: "Error unpublishing the project activity ${pActivity.projectActivityId}"]
+            }
+        } else {
+            response.status = 400
+            result = [status: 400, error: "Invalid project activity id ${params.id}"]
+        }
+
+        render result as JSON
+    }
 
     def delete() {
         def pActivity = projectActivityService.get(params.id)

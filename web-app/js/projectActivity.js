@@ -1,8 +1,14 @@
-var ProjectActivitiesViewModel = function (pActivities, pActivityForms, projectId, sites, user) {
+var ProjectActivitiesViewModel = function (params) {
     var self = this;
+    var pActivities = params.pActivities;
+    var pActivityForms = params.pActivityForms;
+    var projectId = params.projectId;
+    var sites = params.sites;
+    var user = params.user;
+
     self.pActivityForms = pActivityForms;
     self.sites = sites;
-
+    self.projectStartDate = params.projectStartDate;
     self.projectId = ko.observable();
     self.projectActivities = ko.observableArray();
 
@@ -65,7 +71,9 @@ var ProjectActivitiesViewModel = function (pActivities, pActivityForms, projectI
     };
 
     self.userCanEdit = function (pActivity) {
-        return pActivity.publicAccess() || (user && Object.keys(user).length > 0 && (user.isEditor || user.isAdmin));
+        var projectActive = !pActivity.endDate() || moment(pActivity.endDate()).isAfter(moment());
+        var userIsEditorOrAdmin = user && Object.keys(user).length > 0 && (user.isEditor || user.isAdmin);
+        return projectActive && (pActivity.publicAccess() || userIsEditorOrAdmin);
     };
 
     self.loadProjectActivitiesVM(pActivities, pActivityForms, projectId, sites);
@@ -102,7 +110,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
     self.addProjectActivity = function () {
         self.reset();
-        self.projectActivities.push(new ProjectActivity([], self.pActivityForms, self.projectId(), true, self.sites));
+        self.projectActivities.push(new ProjectActivity([], self.pActivityForms, self.projectId(), true, self.sites, self.projectStartDate));
         initialiseValidator();
         self.refreshSurveyStatus();
         showAlert("Successfully added.", "alert-success", self.placeHolder);
@@ -115,7 +123,11 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         if (jsData.published) {
             return self.unpublish();
         }
-        if (jsData.name && jsData.description && jsData.startDate &&
+
+        if(!current.isEndDateAfterStartDate()) {
+            showAlert("Survey end date must be after start date", "alert-error", self.placeHolder);
+            $('#survey-info-tab').tab('show');
+        } else if (current.isInfoValid() &&
             current.species.isValid() &&
             jsData.pActivityFormName &&
             (jsData.sites && jsData.sites.length > 0)
@@ -148,7 +160,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     };
 
     self.deleteProjectActivity = function () {
-        bootbox.confirm("Are you sure you want to delete the survey? Any survey forms that have been submitted will also be deleted.", function (result) {
+        bootbox.confirm("Are you sure you want to delete this survey? Any survey forms that have been submitted will also be deleted.", function (result) {
             if (result) {
                 var that = this;
 
@@ -178,6 +190,9 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     var canSave = function (pActivity, caller){
         if (caller != "info" && pActivity.projectActivityId() === undefined) {
             showAlert("Please save 'Survey Info' details before applying other constraints.", "alert-error", self.placeHolder);
+            return false;
+        } else if (caller == "info" && !pActivity.isEndDateAfterStartDate()){
+            showAlert("Survey end date must be after start date", "alert-error", self.placeHolder);
             return false;
         } else if(caller == "info" || caller == "visibility"){
             return true;
@@ -313,7 +328,11 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                         return obj.projectActivityId() == pActivityId;
                     });
                     found ? found.published(true) : '';
-                    showAlert("Successfully published", "alert-success", self.placeHolder);
+                    showAlert("Successfully published, redirecting to survey list page.", "alert-success", self.placeHolder);
+                    setTimeout(function() {
+                        $('#activities-tab').tab('show');
+                    }, 3000);
+
                 } else{
                     showAlert(data.error ? data.error : "Error publishing the survey", "alert-error", self.placeHolder);
                 }
@@ -324,32 +343,35 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         });
     };
 
+
     self.unpublish = function(){
         var pActivity = self.current();
 
-        if(isDataAvailable(pActivity)){
-            return;
-        }
-        var url =  fcConfig.projectActivityUpdateUrl + "/" + pActivity.projectActivityId();
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {published: false},
-            contentType: 'application/json',
-            success: function (data) {
-                var result = data.resp;
-                if (result && result.message == 'updated') {
-                    var found = ko.utils.arrayFirst(self.projectActivities(), function(obj) {
-                        return obj.projectActivityId() == pActivity.projectActivityId();
-                    });
-                    found ? found.published(false) : '';
-                    showAlert("Successfully unpublished", "alert-success", self.placeHolder);
-                } else {
-                    showAlert(data.error ? data.error : "Error unpublished the survey", "alert-error", self.placeHolder);
-                }
-            },
-            error: function (data) {
-                showAlert("Error unpublished the survey -" + data.status, "alert-error", self.placeHolder);
+        var url =  fcConfig.projectActivityUnpublishUrl + "/" + pActivity.projectActivityId();
+
+        bootbox.confirm("Are you sure you want to unpublish this survey? All data associated with this survey will be lost.", function (result) {
+            if (result) {
+                blockUIWithMessage("Unpublishing the survey");
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {published: false},
+                    contentType: 'application/json',
+                    success: function (data) {
+                        var result = data.resp;
+                        if (result && result.message == 'updated') {
+                            location.reload();
+                        } else {
+                            showAlert(data.error ? data.error : "Error unpublishing the survey", "alert-error", self.placeHolder);
+                        }
+                    },
+                    error: function (data) {
+                        showAlert("Error unpublishing the survey -" + data.status, "alert-error", self.placeHolder);
+                    },
+                    complete: function(){
+                        $.unblockUI();
+                    }
+                });
             }
         });
     };
@@ -390,14 +412,14 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     self.refreshSurveyStatus();
 };
 
-var ProjectActivity = function (o, pActivityForms, projectId, selected, sites) {
+var ProjectActivity = function (o, pActivityForms, projectId, selected, sites, startDate) {
     if (!o) o = {};
     if (!pActivityForms) pActivityForms = [];
     if (!projectId) projectId = "";
     if (!selected) selected = false;
     if (!sites) sites = [];
 
-    var self = $.extend(this, new pActivityInfo(o, selected));
+    var self = $.extend(this, new pActivityInfo(o, selected, startDate));
     self.projectId = ko.observable(o.projectId ? o.projectId : projectId);
     self.restrictRecordToSites = ko.observable(o.restrictRecordToSites);
     self.pActivityFormName = ko.observable(o.pActivityFormName);
@@ -771,13 +793,47 @@ var ImagesViewModel = function (image) {
     self.url = ko.observable(image.url);
 };
 
-var SurveyVisibilityViewModel = function (o) {
+var SurveyVisibilityViewModel = function (visibility) {
     var self = this;
-    if (!o) o = {};
-    self.constraint = ko.observable(o.constraint ? o.constraint : 'PUBLIC');   // 'PUBLIC', 'PUBLIC_WITH_SET_DATE', 'EMBARGO'
-    self.setDate = ko.observable(o.setDate ? o.setDate : 60);     // 60, 90, 120 days
-    self.embargoDate = ko.observable(o.embargoDate).extend({simpleDate: false});
+    if (!visibility) {
+        visibility = {};
+    }
+
+    self.embargoOption = ko.observable(visibility.embargoOption ? visibility.embargoOption : 'NONE');   // 'NONE', 'DAYS', 'DATE' -> See au.org.ala.ecodata.EmbargoOptions in Ecodata
+
+    self.embargoForDays = ko.observable(visibility.embargoForDays ? visibility.embargoForDays : 60);     // 60, 90, 120 days
+    self.embargoUntil = ko.observable(visibility.embargoUntil).extend({simpleDate: true});
+
+    self.embargoOption.subscribe(function (option) {
+        if (option === 'DATE') {
+            self.embargoForDays(60)
+        } else if (option == 'DAYS') {
+            self.embargoUntil(null);
+        } else {
+            self.embargoUntil(0);
+            self.embargoForDays(60)
+        }
+    });
 };
+
+/**
+ * Custom validation function (used by the jquery-validation-engine), defined on the embargoUntil date field on the
+ * survey admin visibility form
+ */
+function isEmbargoDateRequired(field, rules, i, options) {
+    if ($('#embargoOptionDate:checked').val()) {
+        if ($('#embargoUntilDate').val() == "") {
+            rules.push('required');
+        } else {
+            var date = convertToIsoDate($('#embargoUntilDate').val(), 'dd-MM-yyyy');
+            if (moment(date).isBefore(moment())) {
+                return "The date must be in the future";
+            } else if (moment(date).isAfter(new Date().setMonth(new Date().getMonth() + 12))) {
+                return "The date cannot be more than 12 months in the future";
+            }
+        }
+    }
+}
 
 function initialiseValidator() {
     var tabs = ['info', 'species', 'form', 'access', 'visibility'];

@@ -353,12 +353,16 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.urlWeb = ko.observable(project.urlWeb).extend({url:true});
     self.contractStartDate = ko.observable(project.contractStartDate).extend({simpleDate: false});
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
+    self.imageUrl = ko.observable(project.urlImage);
+    self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
+
+    self.associatedOrgs = ko.observableArray(project.associatedOrgs);
 
     self.transients = self.transients || {};
 
     var isBeforeToday = function(date) {
         return moment(date) < moment().startOf('day');
-    }
+    };
     var calculateDurationInDays = function(startDate, endDate) {
         var start = moment(startDate);
         var end = moment(endDate);
@@ -695,7 +699,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             }
         });
     };
-
 };
 
 /**
@@ -765,6 +768,17 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         return 'Project area for '+self.name();
     });
     self.organisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId);
+    self.associatedOrganisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations);
+    self.transients.associatedOrgNotInList = ko.observable(false);
+    self.transients.associatedOrgUrl = ko.observable();
+    self.transients.associatedOrgLogoUrl = ko.observable();
+
+    self.transients.termsOfUseClicked = ko.observable(false);
+
+    self.clickTermsOfUse = function() {
+        self.transients.termsOfUseClicked(true);
+        return true;
+    };
 
     self.organisationSearch.createOrganisation = function() {
         var projectData = self.modelAsJSON();
@@ -772,13 +786,43 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         var here = document.location.href;
         document.location.href = config.organisationCreateUrl+'?returnTo='+here+'&returning=true';
     };
+
     self.organisationSearch.selection.subscribe(function(newSelection) {
         if (newSelection) {
             self.organisationId(newSelection.organisationId);
         }
     });
 
-    self.ignore = self.ignore.concat(['organisationSearch']);
+    self.associatedOrganisationSearch.addSelectedOrganisation = function() {
+        var org = { id: self.associatedOrgs().length };
+
+        if (self.transients.associatedOrgNotInList()) {
+            org.name = self.associatedOrganisationSearch.term();
+            org.url = self.transients.associatedOrgUrl() || null;
+            org.logo = self.transients.associatedOrgLogoUrl() || null;
+        } else {
+            var logoDocument = ko.utils.arrayFirst(self.associatedOrganisationSearch.selection().documents, function(document) {
+                return document.role === "logo"
+            });
+
+            org.organisationId = self.associatedOrganisationSearch.selection().organisationId || "";
+            org.name = self.associatedOrganisationSearch.selection().name;
+            org.url = self.associatedOrganisationSearch.selection().url || "";
+            org.logo = logoDocument && logoDocument.thumbnailUrl ? logoDocument.thumbnailUrl : "";
+        }
+
+        self.associatedOrgs.push(org);
+        self.associatedOrganisationSearch.clearSelection();
+        self.transients.associatedOrgLogoUrl(false);
+        self.transients.associatedOrgUrl(null);
+        self.transients.associatedOrgLogoUrl(null);
+    };
+
+    self.removeAssociatedOrganisation = function(org, event) {
+        self.associatedOrgs.remove(org);
+    };
+
+    self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch']);
     self.transients.existingLinks = project.links;
 
     self.modelAsJSON = function() {

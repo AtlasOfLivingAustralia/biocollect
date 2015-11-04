@@ -1,13 +1,10 @@
 package au.org.ala.biocollect.merit
-
 import au.org.ala.cas.util.AuthenticationCookieUtils
 import grails.converters.JSON
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.json.JSONObject
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
-
-import static org.github.bootstrap.Attribute.outputAttributes
 
 class FCTagLib {
 
@@ -111,14 +108,20 @@ class FCTagLib {
      */
     def datePicker = { attrs ->
         /**
-            <input data-bind="datepicker:startDate.date" name="startDate" id="startDate" type="text" size="16"
-                data-validation-engine="validate[required]" class="input-xlarge"/>
-            <span class="add-on open-datepicker"><i class="icon-th"></i></span>
+            <div class="input-append">
+                <input data-bind="datepicker:startDate.date" name="startDate" id="startDate" type="text" size="16"
+                    data-validation-engine="validate[required]" class="input-xlarge"/>
+                <span class="add-on open-datepicker"><i class="icon-calendar"></i></span>
+            <div>
          */
 
         def mb = new MarkupBuilder(out)
 
         if (!attrs.printable) {
+            Map inputAppend = [
+                class: 'input-append'
+            ]
+
             def inputAttrs = [
                 "data-bind":"datepicker:${attrs.targetField}",
                 name:"${attrs.name}",
@@ -138,15 +141,16 @@ class FCTagLib {
             if (attrs.required) {
                 inputAttrs["data-validation-engine"] = "validate[required]"
             }
-
-            mb.input(inputAttrs) {
-            }
-
-            mb.span(class:'add-on open-datepicker') {
-                mb.i(class:'icon-th') {
-                    mkp.yieldUnescaped("&nbsp;")
+            mb.div(inputAppend){
+                mb.input(inputAttrs) {
                 }
-            }
+
+                mb.span(class:'add-on open-datepicker') {
+                    mb.i(class:'icon-calendar') {
+                        mkp.yieldUnescaped("&nbsp;")
+                    }
+                }
+            };
         } else {
             def inputAttrs = [
                 name:"${attrs.name}",

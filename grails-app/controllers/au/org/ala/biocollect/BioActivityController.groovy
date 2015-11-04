@@ -8,7 +8,7 @@ import au.org.ala.biocollect.merit.SiteService
 import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.sightings.BieService
 import grails.converters.JSON
-import org.apache.http.HttpStatus
+import static org.apache.http.HttpStatus.*
 import org.codehaus.groovy.grails.web.json.JSONArray
 
 class BioActivityController {
@@ -59,6 +59,10 @@ class BioActivityController {
             flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
             response.status = 401
             result = [status: 401, error: flash.message]
+        } else if (!activity && isProjectActivityClosed(pActivity)) {
+            flash.message = "Access denied: This survey is closed."
+            response.status = 401
+            result = [status: 401, error: flash.message]
         } else if (activity && !pActivity.publicAccess && !projectService.canUserEditActivity(userId, activity)) {
             flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
             response.status = 401
@@ -67,7 +71,7 @@ class BioActivityController {
             boolean projectEditor = projectService.canUserEditProject(userId, projectId, false)
             Map userAlreadyInRole = userService.isUserInRoleForProject(userId, projectId, "projectParticipant")
 
-            if (!userAlreadyInRole.statusCode || userAlreadyInRole.statusCode == HttpStatus.SC_OK) {
+            if (!userAlreadyInRole.statusCode || userAlreadyInRole.statusCode == SC_OK) {
                 if (!projectEditor && pActivity.publicAccess && !userAlreadyInRole.inRole.toBoolean()) {
                     userService.addUserAsRoleToProject(userId, projectId, "projectParticipant")
                 }
@@ -104,22 +108,26 @@ class BioActivityController {
      */
     def edit(String id) {
 
+        String userId = userService.getCurrentUserId()
         def activity = activityService.get(id)
         def projectId = activity?.projectId
         def model = null
 
-        if (!activity) {
+        if (!userId) {
+            flash.message = "Access denied: User has not been authenticated."
+            redirect(controller: 'project', action: 'index', id: projectId)
+        } else if (!activity) {
             flash.message = "Invalid activity - ${id}"
             redirect(controller: 'project', action: 'index', id: projectId)
-        } else if (!projectService.canUserEditActivity(userService.getCurrentUserId(), activity)) {
-            flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
-            redirect(controller: 'project', action: 'index', id: projectId)
-        } else {
+        } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
             model = activityAndOutputModel(activity, activity.projectId)
             model.pActivity = pActivity
             model.projectActivityId = pActivity.projectActivityId
             model.id = id
+        } else {
+            flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
+            redirect(controller: 'project', action: 'index', id: projectId)
         }
 
         model
@@ -144,6 +152,9 @@ class BioActivityController {
         } else if (!type) {
             flash.message = "Invalid activity type"
             redirect(controller: 'project', action: 'index', id: projectId)
+        } else if (isProjectActivityClosed(pActivity)) {
+            flash.message = "Access denied: This survey is closed."
+            redirect(controller: 'project', action: 'index', id: projectId)
         } else {
             Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
             model = activityModel(activity, projectId)
@@ -156,6 +167,36 @@ class BioActivityController {
         }
 
         model
+    }
+
+    /**
+     * Delete activity for the given activityId
+     * @param id activity identifier
+     * @return
+     */
+    def delete(String id) {
+        def activity = activityService.get(id)
+        String userId = userService.getCurrentUserId()
+
+        Map result
+
+        if (!userId) {
+            response.status = 401
+            result = [status: 401, error: "Access denied: User has not been authenticated."]
+        } else if(projectService.isUserAdminForProject(userId, activity?.projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+            def resp = activityService.delete(id)
+            if (resp == SC_OK) {
+                result = [status: resp, text: 'deleted']
+            } else {
+                response.status = resp
+                result = [status: resp, error: "Error deleting the survey, please try again later."]
+            }
+        } else{
+            response.status = 401
+            result = [status: 401, error: "Access denied: User is not an admin or owner of this activity - ${id}"]
+        }
+
+        render result as JSON
     }
 
     /**
@@ -214,15 +255,19 @@ class BioActivityController {
 
         def model = [:]
         def query = [pageSize: params.max ?: 10,
-                     offset: params.offset ?: 0,
-                     sort: params.sort ?: 'lastUpdated',
-                     order: params.order ?: 'desc']
+                     offset  : params.offset ?: 0,
+                     sort    : params.sort ?: 'lastUpdated',
+                     order   : params.order ?: 'desc']
         def results = activityService.activitiesForProject(id, query)
-        results?.activities?.each{
+        String userId = userService.getCurrentUserId()
+        boolean isAdmin = userId ? projectService.isUserAdminForProject(userId, id) : false
+        results?.activities?.each {
             it.pActivity = projectActivityService.get(it.projectActivityId)
+            it.showCrud = isAdmin ?: (userId == it.userId)
         }
         model.activities = results?.activities
         model.total = results?.total
+
         render model as JSON
     }
 
@@ -233,8 +278,10 @@ class BioActivityController {
                      sort    : params.sort ?: 'lastUpdated',
                      order   : params.order ?: 'desc']
         def results = activityService.activitiesForUser(userService.getCurrentUserId(), query)
+        String userId = userService.getCurrentUserId()
         results?.activities?.each {
             it.pActivity = projectActivityService.get(it.projectActivityId)
+            it.showCrud = true
         }
         model.activities = results?.activities
         model.total = results?.total
@@ -301,5 +348,44 @@ class BioActivityController {
         model.outputModels = model.metaModel?.outputs?.collectEntries {
             [it, metadataService.getDataModelFromOutputName(it)]
         }
+    }
+
+    def extractDataFromExcelTemplate() {
+
+        def result
+        if (request.respondsTo('getFile')) {
+            def file = request.getFile('data')
+            if (file) {
+                def data = metadataService.extractOutputDataFromExcelOutputTemplate(params, file)
+
+                if (data && !data.error) {
+                    activityService.lookupSpeciesInOutputData(params.pActivityId, params.type, params.listName, data.data)
+                    result = [status:SC_OK, data:data.data]
+                }
+                else {
+                    result = data
+                }
+
+                // This is returned to the browswer as a text response due to workaround the warning
+                // displayed by IE8/9 when JSON is returned from an iframe submit.
+                response.setContentType('text/plain;charset=UTF8')
+                def resultJson = result as JSON
+                render resultJson.toString()
+            }
+        }
+        else {
+            response.status = SC_BAD_REQUEST
+            result = [status: SC_BAD_REQUEST, error:'No file attachment found']
+            // This is returned to the browswer as a text response due to workaround the warning
+            // displayed by IE8/9 when JSON is returned from an iframe submit.
+
+            response.setContentType('text/plain;charset=UTF8')
+            def resultJson = result as JSON
+            render resultJson.toString()
+        }
+    }
+
+    private static boolean isProjectActivityClosed(Map projectActivity) {
+        projectActivity?.endDate && Date.parse("yyyy-MM-dd", projectActivity?.endDate)?.before(new Date())
     }
 }

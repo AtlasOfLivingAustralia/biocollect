@@ -14,4 +14,11 @@ class RecordService {
         webService.getJson(grailsApplication.config.ecodata.service.url + '/record/listForProject/' + id + params)
     }
 
+    def get(id) {
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/record/' + id)
+    }
+
+    def delete(id) {
+        webService.doDelete(grailsApplication.config.ecodata.service.url + '/record/' + id)
+    }
 }

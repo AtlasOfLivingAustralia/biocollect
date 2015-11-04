@@ -157,17 +157,17 @@ describe("SurveyVisibilityViewModel Spec", function () {
 
     it("should be able to be initialised from an object literal", function () {
         var visibility = new SurveyVisibilityViewModel();
-        expect(visibility.setDate()).not.toEqual(0);
-        expect(visibility.constraint()).not.toEqual("");
+        expect(visibility.embargoForDays()).not.toEqual(0);
+        expect(visibility.embargoOption()).not.toEqual("");
     });
 
     it("default visibility should be public", function () {
         var visibility = new SurveyVisibilityViewModel();
-        expect(visibility.constraint()).toEqual("PUBLIC");
+        expect(visibility.embargoOption()).toEqual("NONE");
     });
     it("default set date should be 60", function () {
         var visibility = new SurveyVisibilityViewModel();
-        expect(visibility.setDate()).toEqual(60);
+        expect(visibility.embargoForDays()).toEqual(60);
     });
 
 });

@@ -32,7 +32,7 @@
         <div class="navbar navbar-inner container-fluid ">
             %{--<a href="${g.createLink(uri:"/")}" class="brand">MERI data capture prototype</a>--}%
             <ul class="nav">
-                <li><a href="/fieldcapture/" class="active hidden-desktop"><i class="icon-home">&nbsp;</i>&nbsp;Home</a></li>
+                <li><a href="${request.contextPath}" class="active hidden-desktop"><i class="icon-home">&nbsp;</i>&nbsp;Home</a></li>
             </ul>
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <span class="icon-bar"></span>

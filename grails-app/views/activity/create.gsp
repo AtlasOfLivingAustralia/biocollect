@@ -21,7 +21,7 @@
         <ul class="breadcrumb">
             <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
             <g:if test="${project}">
-                <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
+                <li><a href="#" data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
             </g:if>
             <g:elseif test="${site}">
                 <li><a data-bind="click:goToSite" class="clickable">Site</a> <span class="divider">/</span></li>

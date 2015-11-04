@@ -16,7 +16,8 @@
         removeSiteUrl: "${createLink(controller: 'site', action: '')}",
         activityEditUrl: "${createLink(controller: 'bioActivity', action: 'edit')}",
         activityCreateUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
-        activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'ajaxDelete')}",
+        activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
+        activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'delete')}",
         activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
         activityListUrl : "${createLink(controller: 'bioActivity', action: 'ajaxListForProject', params: [id:project.projectId])}",
         activiyCountUrl: "${createLink(controller: 'bioActivity', action: 'getProjectActivityCount')}",
@@ -36,6 +37,7 @@
         projectActivityCreateUrl: "${createLink(controller: 'projectActivity', action: 'ajaxCreate', params: [projectId:project.projectId])}",
         projectActivityUpdateUrl: "${createLink(controller: 'projectActivity', action: 'ajaxUpdate')}",
         projectActivityDeleteUrl: "${createLink(controller: 'projectActivity', action: 'delete')}",
+        projectActivityUnpublishUrl: "${createLink(controller: 'projectActivity', action: 'unpublish')}",
         addNewSpeciesListsUrl: "${createLink(controller: 'projectActivity', action: 'ajaxAddNewSpeciesLists', params: [projectId:project.projectId])}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         speciesListUrl: "${createLink(controller: 'search', action: 'searchSpeciesList')}",
@@ -52,6 +54,7 @@
         audioViewer: "${createLink(controller: 'resource', action: 'audioviewer')}",
         videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
         recordListUrl: "${createLink(controller: 'record', action: 'ajaxListForProject', params: [id:project.projectId])}",
+        recordDeleteUrl:"${createLink(controller: 'record', action: 'delete')}",
         projectDeleteUrl:"${createLink(action:'delete', id:project.projectId)}",
         ßerrorViewer: "${createLink(controller: 'resource', action: 'error')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}"
@@ -81,21 +84,7 @@
 <bc:koLoading>
     <g:render template="banner"/>
     <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="row-fluid">
-                <div class="clearfix">
-                    <g:if test="${flash.errorMessage || flash.message}">
-                        <div class="span5">
-                            <div class="alert alert-error">
-                                <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-                                ${flash.errorMessage?:flash.message}
-                            </div>
-                        </div>
-                    </g:if>
-
-                </div>
-            </div>
-        </div>
+        <g:render template="../shared/flashScopeMessage"/>
         <div class="row-fluid">
             <!-- content  -->
             <ul id="ul-main-project" class="nav nav-pills">
@@ -125,7 +114,15 @@
         };
         ko.applyBindings(new ViewModel());
 
-        var pActivitiesVM = new ProjectActivitiesViewModel(pActivities, pActivityForms, project.projectId, project.sites, user);
+        var params = {};
+        params.projectId = project.projectId;
+        params.sites = project.sites;
+        params.pActivities = pActivities;
+        params.user = user;
+        params.projectStartDate = project.plannedStartDate;
+        params.pActivityForms = pActivityForms
+
+        var pActivitiesVM = new ProjectActivitiesViewModel(params);
         initialiseProjectActivitiesList(pActivitiesVM);
         initialiseData();
 

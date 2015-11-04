@@ -28,11 +28,12 @@ import org.springframework.web.multipart.MultipartFile
 
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
+import java.nio.charset.StandardCharsets
 /**
  * Helper class for invoking ecodata (and other Atlas) web services.
  */
 class WebService {
-
+    private static APPLICATION_JSON = 'application/json'
     // Used to avoid a circular dependency during initialisation
     def getUserService() {
         return grailsApplication.mainContext.userService
@@ -268,13 +269,13 @@ class WebService {
         }
     }
 
-    def doGet(String url, Map data) {
+    Map doGet(String url, Map data) {
         URLConnection conn = null
-        def charEncoding = 'utf-8'
+
         try {
             List params = []
             data?.each{ key, value->
-                params.add("${key}=${URLEncoder.encode(value)}")
+                params.add("${key}=${URLEncoder.encode(value, StandardCharsets.UTF_8.toString())}")
             }
 
             String serialParam = params.join('&');
@@ -285,13 +286,13 @@ class WebService {
             conn = new URL(url).openConnection()
             conn.setDoOutput(true)
             conn.setRequestMethod("GET")
-            conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}");
+            conn.setRequestProperty("Content-Type", "${APPLICATION_JSON};charset=${StandardCharsets.UTF_8.toString()}");
             conn.setRequestProperty("Authorization", grailsApplication.config.api_key);
 
             def user = getUserService().getUser()
             if (user) {
                 conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId) // used by ecodata
-                conn.setRequestProperty("Cookie", "ALA-Auth="+java.net.URLEncoder.encode(user.userName, charEncoding)) // used by specieslist
+                conn.setRequestProperty("Cookie", "ALA-Auth="+java.net.URLEncoder.encode(user.userName, StandardCharsets.UTF_8.toString())) // used by specieslist
             }
             def resp = conn.inputStream.text
             return [resp: JSON.parse(resp?:"{}"), statusCode: conn.responseCode] // fail over to empty json object if empty response string otherwise JSON.parse fails

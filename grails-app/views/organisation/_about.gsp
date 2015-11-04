@@ -29,13 +29,7 @@
 
     <r:script>
         $(function() {
-
-            var organisation =<fc:modelAsJavascript model="${organisation}"/>;
-            var projectVMs = [];
-            $.each(organisation.projects, function(i, project) {
-                projectVMs.push(new ProjectViewModel(project, false, organisation));
-            });
-            window.pago.init(projectVMs);
+            var projectFinder = new ProjectFinder();
         });
     </r:script>
 </g:if>
