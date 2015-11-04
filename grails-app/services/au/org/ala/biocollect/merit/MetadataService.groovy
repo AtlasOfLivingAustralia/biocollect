@@ -1,9 +1,6 @@
 package au.org.ala.biocollect.merit
 
 import org.springframework.web.multipart.MultipartFile
-
-import java.security.Permission
-
 import static org.apache.commons.httpclient.HttpStatus.*
 
 class MetadataService {
