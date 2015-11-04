@@ -387,6 +387,6 @@ class BioActivityController {
 
 
     private static boolean isProjectActivityClosed(Map projectActivity) {
-        Date.parse("yyyy-MM-dd", projectActivity?.endDate)?.before(new Date())
+        projectActivity?.endDate && Date.parse("yyyy-MM-dd", projectActivity?.endDate)?.before(new Date())
     }
 }
