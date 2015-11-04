@@ -59,6 +59,10 @@ class BioActivityController {
             flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
             response.status = 401
             result = [status: 401, error: flash.message]
+        } else if (!activity && isProjectActivityClosed(pActivity)) {
+            flash.message = "Access denied: This survey is closed."
+            response.status = 401
+            result = [status: 401, error: flash.message]
         } else if (activity && !pActivity.publicAccess && !projectService.canUserEditActivity(userId, activity)) {
             flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
             response.status = 401
@@ -147,6 +151,9 @@ class BioActivityController {
             redirect(controller: 'project', action: 'index', id: projectId)
         } else if (!type) {
             flash.message = "Invalid activity type"
+            redirect(controller: 'project', action: 'index', id: projectId)
+        } else if (isProjectActivityClosed(pActivity)) {
+            flash.message = "Access denied: This survey is closed."
             redirect(controller: 'project', action: 'index', id: projectId)
         } else {
             Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
@@ -376,5 +383,9 @@ class BioActivityController {
             def resultJson = result as JSON
             render resultJson.toString()
         }
+    }
+
+    private static boolean isProjectActivityClosed(Map projectActivity) {
+        projectActivity?.endDate && Date.parse("yyyy-MM-dd", projectActivity?.endDate)?.before(new Date())
     }
 }
