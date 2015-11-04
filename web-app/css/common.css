@@ -175,7 +175,7 @@
 }
 
 .small-logo {
-    max-width: 100px;
+    width: 100%;
 }
 
 .text-small-heading {
@@ -187,4 +187,29 @@
 .left-aligned-label {
     margin-left: 0 !important;
     text-align: left !important;
+}
+
+.associated-org {
+    margin: 10px 10px 10px 0px;
+}
+
+.associated-org-no-logo {
+    width: 100%;
+    min-height: 135px;
+    max-height: 300px;
+    overflow: hidden;
+    font-size: 18px;
+    font-weight: bold;
+    font-style: italic;
+    text-align: center;
+    position: relative;
+    background: white;
+}
+
+.associated-org-no-logo span {
+    display: inline-block;
+    vertical-align: middle;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
