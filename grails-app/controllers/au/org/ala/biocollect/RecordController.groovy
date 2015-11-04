@@ -68,7 +68,7 @@ class RecordController {
         if (!userId) {
             response.status = 401
             result = [status: 401, error: "Access denied: User has not been authenticated."]
-        } else if (projectService.isUserAdminForProject(userId, params.projectId) || activityService.isUserOwnerForActivity(userId, record?.activityId)) {
+        } else if (projectService.isUserAdminForProject(userId, record?.projectId) || activityService.isUserOwnerForActivity(userId, record?.activityId)) {
             def resp = recordService.delete(id)
             if (resp == HttpStatus.SC_OK) {
                 result = [status: resp, text: 'deleted']

@@ -119,7 +119,7 @@ class BioActivityController {
         } else if (!activity) {
             flash.message = "Invalid activity - ${id}"
             redirect(controller: 'project', action: 'index', id: projectId)
-        } else if (projectService.isUserAdminForProject(userId, params.projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+        } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
             model = activityAndOutputModel(activity, activity.projectId)
             model.pActivity = pActivity
@@ -183,7 +183,7 @@ class BioActivityController {
         if (!userId) {
             response.status = 401
             result = [status: 401, error: "Access denied: User has not been authenticated."]
-        } else if(projectService.isUserAdminForProject(userId, params.projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+        } else if(projectService.isUserAdminForProject(userId, activity?.projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             def resp = activityService.delete(id)
             if (resp == SC_OK) {
                 result = [status: resp, text: 'deleted']
