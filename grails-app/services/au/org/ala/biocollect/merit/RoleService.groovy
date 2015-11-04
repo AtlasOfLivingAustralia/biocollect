@@ -28,14 +28,13 @@ class RoleService {
     }
 
     public List getRoles() {
-        def allRoles = roles() // cached
-
+        List<String> allRoles = roles() // cached
         if (allRoles.size() <= 1) {
             // possible empty list or value, due to previous WS call timing out
             allRoles = roles(true) // reload with cleared cache
         }
 
-        return allRoles
+        allRoles.findAll { it == PROJECT_ADMIN_ROLE || it == PROJECT_EDITOR_ROLE }
     }
 
     public List getAugmentedRoles() {
