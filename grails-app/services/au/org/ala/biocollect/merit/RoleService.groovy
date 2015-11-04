@@ -8,7 +8,7 @@ class RoleService {
     public static final String GRANT_MANAGER_ROLE = 'caseManager'
     public static final String PROJECT_ADMIN_ROLE = 'admin'
     public static final String PROJECT_EDITOR_ROLE = 'editor'
-
+    public static final String PROJECT_PARTICIPANT_ROLE = 'projectParticipant'
 
     private List roles(Boolean clearCache = false) {
         if (clearCache) {
@@ -34,7 +34,7 @@ class RoleService {
             allRoles = roles(true) // reload with cleared cache
         }
 
-        allRoles.findAll { it == PROJECT_ADMIN_ROLE || it == PROJECT_EDITOR_ROLE }
+        allRoles.findAll { it == PROJECT_ADMIN_ROLE || it == PROJECT_EDITOR_ROLE || it == PROJECT_PARTICIPANT_ROLE}
     }
 
     public List getAugmentedRoles() {
