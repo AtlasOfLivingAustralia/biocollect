@@ -15,21 +15,12 @@ function DocumentViewModel (doc, owner, settings) {
 
     var defaults = {
         //Information is the default option.
-        roles:  [{id: 'information', name: 'Information'}, {id:'embeddedVideo', name:'Embedded Video'}, {id: 'programmeLogic', name: 'Programme Logic'}],
-        stages:[],
+        roles:  [{id: 'information', name: 'Information'}, {id:'embeddedVideo', name:'Embedded Video'}],
         showSettings: true,
         thirdPartyDeclarationTextSelector:'#thirdPartyDeclarationText',
         imageLocation: fcConfig.imageLocation
     };
     this.settings = $.extend({}, defaults, settings);
-
-    //Associate project document to stages.
-    this.maxStages = doc.maxStages;
-    for(i = 0; i < this.maxStages; i++){
-        this.settings.stages.push((i+1))
-    }
-    this.stage = ko.observable(doc ? doc.stage : 0);
-    this.stages = this.settings.stages;
 
     // NOTE that attaching a file is optional, ie you can have a document record without a physical file
     this.filename = ko.observable(doc ? doc.filename : '');
@@ -217,7 +208,7 @@ function DocumentViewModel (doc, owner, settings) {
     };
 
     this.modelForSaving = function() {
-        return ko.mapping.toJS(self, {'ignore':['embeddedVideoVisible','iframe','helper', 'progress', 'hasPreview', 'error', 'fileLabel', 'file', 'complete', 'fileButtonText', 'roles', 'stages','maxStages', 'settings', 'thirdPartyConsentDeclarationRequired', 'saveEnabled', 'saveHelp', 'fileReady']});
+        return ko.mapping.toJS(self, {'ignore':['embeddedVideoVisible','iframe','helper', 'progress', 'hasPreview', 'error', 'fileLabel', 'file', 'complete', 'fileButtonText', 'roles', 'settings', 'thirdPartyConsentDeclarationRequired', 'saveEnabled', 'saveHelp', 'fileReady']});
     };
 
 }
@@ -251,7 +242,7 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
         if (data.files[0].preview) {
             documentViewModel.filePreviewAvailable(data.files[0]);
             if (previewElementSelector !== undefined) {
-                $(uiSelector).find(previewElementSelector).append(data.files[0].preview);
+                $(uiSelector).find(previewElementSelector).html(data.files[0].preview);
             }
 
         }
