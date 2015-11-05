@@ -3,10 +3,11 @@
  * Manages the species data type in the output model.
  * Allows species information to be searched for and displayed.
  */
-var SpeciesViewModel = function(o, lists){
+var SpeciesViewModel = function(o, lists, populate){
     var self = this;
     if(!o) o = {};
     if(!lists) lists = {};
+    if(!populate) populate = false;
     self.name = ko.observable(o.name);
     self.guid = ko.observable(o.guid);
 
@@ -28,6 +29,29 @@ var SpeciesViewModel = function(o, lists){
         self.name(self.transients.name());
         self.guid(self.transients.guid());
     });
+
+    self.populateSingleSpecies = function (populate){
+        if(!self.name() && !self.guid() && fcConfig.getSingleSpeciesUrl && populate){
+            $.ajax({
+                url: fcConfig.getSingleSpeciesUrl,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data) {
+                    if(data.name && data.guid){
+                        self.name(data.name );
+                        self.guid(data.guid);
+                        self.transients.name(data.name);
+                        self.transients.guid(data.guid);
+                    }
+                },
+                error: function (data) {
+                    console.log('Error retrieving single species')
+                }
+            });
+        }
+    };
+
+    self.populateSingleSpecies(populate);
 };
 
 function validateSpeciesLookup(element) {
