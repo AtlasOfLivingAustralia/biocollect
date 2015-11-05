@@ -30,9 +30,9 @@
                         </label>
                         <label class="inline">
                             <input type="radio" value="DATE" data-bind="checked: visibility.embargoOption" name="embargoOptionDate" id="embargoOptionDate" /> Embargo publishing all records until
-                            <div class="input-append" >
+                            <span class="input-append" >
                                 <input name="embargoUntilDate" id="embargoUntilDate" data-bind="datepicker: visibility.embargoUntil.date, datePickerOptions: {endDate: '+12m', startDate: '+1d'}" data-validation-engine="validate[funcCall[isEmbargoDateRequired]]" type="text"/><span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
-                            </div>
+                            </span>
                         </label>
                    </div>
 

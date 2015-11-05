@@ -805,12 +805,7 @@ var SurveyVisibilityViewModel = function (visibility) {
     self.embargoUntil = ko.observable(visibility.embargoUntil).extend({simpleDate: true});
 
     self.embargoOption.subscribe(function (option) {
-        if (option === 'DATE') {
-            self.embargoForDays(60)
-        } else if (option == 'DAYS') {
-            self.embargoUntil(null);
-        } else {
-            self.embargoUntil(0);
+        if (option !== 'DAYS') {
             self.embargoForDays(60)
         }
     });
