@@ -30,9 +30,9 @@
                         </label>
                         <label class="inline">
                             <input type="radio" value="DATE" data-bind="checked: visibility.embargoOption" name="embargoOptionDate" id="embargoOptionDate" /> Embargo publishing all records until
-                            <div class="input-append" >
+                            <span class="input-append" >
                                 <input name="embargoUntilDate" id="embargoUntilDate" data-bind="datepicker: visibility.embargoUntil.date, datePickerOptions: {endDate: '+12m', startDate: '+1d'}" data-validation-engine="validate[funcCall[isEmbargoDateRequired]]" type="text"/><span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
-                            </div>
+                            </span>
                         </label>
                    </div>
 
@@ -40,18 +40,14 @@
 
             <!-- /ko -->
         <!-- /ko -->
+</div>
 
-        </br>
-        <div class="row-fluid">
-
-            <div class="span12">
-                <button class="btn-primary btn btn-small block" data-bind="click: saveVisibility"><i class="icon-white  icon-hdd" ></i> Save </button>
-                <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-info-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
-                <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
-            </div>
-
-        </div>
-
+<div class="row-fluid">
+    <div class="span12">
+        <button class="btn-primary btn btn-small block" data-bind="click: saveVisibility"><i class="icon-white  icon-hdd" ></i> Save </button>
+        <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-info-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
+        <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
+    </div>
 </div>
 
 

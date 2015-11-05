@@ -533,7 +533,7 @@ class ModelJSTagLib {
                         out << INDENT*3 << "}\n"
                         break;
                     case 'species':
-                        out << INDENT*3 << "this.${col.name} =  new SpeciesViewModel(data['${col.name}'], speciesLists);\n"
+                        out << INDENT*3 << "this.${col.name} =  new SpeciesViewModel(data['${col.name}'], speciesLists, ${col.validate == 'required'});\n"
                         break
                     case 'stringList':
                         out << INDENT*3 << "this.${col.name}=ko.observableArray(orEmptyArray(data['${col.name}']));\n";

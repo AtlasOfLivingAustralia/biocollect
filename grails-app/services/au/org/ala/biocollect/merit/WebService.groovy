@@ -275,7 +275,7 @@ class WebService {
         try {
             List params = []
             data?.each{ key, value->
-                params.add("${key}=${URLEncoder.encode(value, StandardCharsets.UTF_8.toString())}")
+                params.add("${key}=${URLEncoder.encode(value ?: "", StandardCharsets.UTF_8.toString())}")
             }
 
             String serialParam = params.join('&');

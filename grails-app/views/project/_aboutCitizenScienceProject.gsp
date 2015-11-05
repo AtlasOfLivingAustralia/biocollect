@@ -21,61 +21,59 @@
 
 <div class="container-fluid">
     <hr/>
-    <div class="row-fluid">
-        <div class="span6 well">
-            <div class="well-title"><g:message code="project.display.about" /></div>
-            <div data-bind="visible:aim">
-                <div class="text-small-heading"><g:message code="project.display.aim" /></div>
-                <span data-bind="text:aim"></span>
-                <p/>
-            </div>
-            <div data-bind="visible:description">
-                <div class="text-small-heading"><g:message code="project.display.description" /></div>
-                <span data-bind="html:description.markdownToHtml()"></span>
-            </div>
-            <div data-bind="visible: associatedOrgs().length > 0">
-                <div class="text-small-heading"><g:message code="project.display.associatedOrgs"/></div>
-                <!-- ko foreach: associatedOrgs -->
-                <div class="span12 margin-top-1">
-                    <div class="span9 margin-left-0" data-bind="visible: url"><a data-bind="attr: {href: url}" target="_blank"><span data-bind="text: name"></span>&nbsp;<i class="fa fa-external-link"></i></a></div>
-                    <div class="span9 margin-left-0" data-bind="visible: !url"><span data-bind="text: name"></span></div>
-                    <div class="span3 margin-left-0" data-bind="visible:logo"><img src="" data-bind="attr: {src: logo}" alt="Organisation logo" class="small-logo"></div>
+
+    <div class="row-fluid" data-bind="">
+        <div class="span6" id="column1">
+            <div class="well span12">
+                <div class="well-title"><g:message code="project.display.about" /></div>
+                <div data-bind="visible:aim">
+                    <div class="text-small-heading"><g:message code="project.display.aim" /></div>
+                    <span data-bind="text:aim"></span>
+                    <p/>
                 </div>
-                <!-- /ko -->
+                <div data-bind="visible:description">
+                    <div class="text-small-heading"><g:message code="project.display.description" /></div>
+                    <span data-bind="html:description.markdownToHtml()"></span>
+                </div>
             </div>
         </div>
-        <div class="span6 well">
-            <div class="well-title"><g:message code="project.display.involved" /></div>
-            <div data-bind="visible:getInvolved">
-                <div data-bind="html:getInvolved.markdownToHtml()"></div>
+        <div class="span6" id="column2">
+            <div class="well">
+                <div class="well-title"><g:message code="project.display.involved" /></div>
+                <div data-bind="visible:getInvolved">
+                    <div data-bind="html:getInvolved.markdownToHtml()"></div>
+                    <p/>
+                </div>
+                <div data-bind="visible:manager">
+                    <div class="text-small-heading"><g:message code="project.display.contact" /></div>
+                    <a data-bind="attr:{href:'mailto:' + manager()}"><span data-bind="text:manager"></span></a>
+                    <p/>
+                </div>
+                <div data-bind="visible:gear">
+                    <div class="text-small-heading"><g:message code="project.display.gear" /></div>
+                    <span data-bind="text:gear"></span>
+                    <p/>
+                </div>
+                <div data-bind="visible:task">
+                    <div class="text-small-heading"><g:message code="project.display.task" /></div>
+                    <span data-bind="text:task"></span>
+                    <p/>
+                </div>
+                <hr/>
+                <div id="surveyLink" class="row-fluid" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb())">
+                    <a class="btn pull-right" data-bind="showTabOrRedirect: { url: isExternal() ? urlWeb() : '', tabId: '#activities-tab'}"><g:message code="project.display.join" /></a>
+                    <p class="clearfix"/>
+                </div>
+                <g:render template="/shared/listDocumentLinks"
+                          model="${[transients:transients,imageUrl:resource(dir:'/images/filetypes')]}"/>
                 <p/>
+                <div style="line-height:2.2em">
+                    <g:render template="tags"/>
+                </div>
             </div>
-            <div data-bind="visible:manager">
-                <div class="text-small-heading"><g:message code="project.display.contact" /></div>
-                <a data-bind="attr:{href:'mailto:' + manager()}"><span data-bind="text:manager"></span></a>
-                <p/>
-            </div>
-            <div data-bind="visible:gear">
-                <div class="text-small-heading"><g:message code="project.display.gear" /></div>
-                <span data-bind="text:gear"></span>
-                <p/>
-            </div>
-            <div data-bind="visible:task">
-                <div class="text-small-heading"><g:message code="project.display.task" /></div>
-                <span data-bind="text:task"></span>
-                <p/>
-            </div>
-            <hr/>
-            <div id="surveyLink" class="row-fluid" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb())">
-                <a class="btn pull-right" data-bind="showTabOrRedirect: { url: isExternal() ? urlWeb() : '', tabId: '#activities-tab'}"><g:message code="project.display.join" /></a>
-                <p class="clearfix"/>
-            </div>
-            <g:render template="/shared/listDocumentLinks"
-                      model="${[transients:transients,imageUrl:resource(dir:'/images/filetypes')]}"/>
-            <p/>
-            <div style="line-height:2.2em">
-                <g:render template="tags"/>
-            </div>
+        </div>
+        <div style="display: none">
+            <div data-bind="template:{name:'associated-orgs'}"></div>
         </div>
     </div>
     <g:if test="${projectSite?.extent?.geometry}">
@@ -119,7 +117,49 @@
             };
 
             map = new MapWithFeatures(mapOptions, mapFeatures);
+        }
+        </g:if>
     }
-</g:if>
+
+    // make sure the list of associated organisations are below the shorter of the two columns.
+    function placeAssociatedOrgs() {
+        if ($("#column1").height() > $("#column2").height()) {
+            $("#column2").append($("#associatedOrgs"));
+        } else {
+            $("#column1").append($("#associatedOrgs"));
+        }
     }
+
+    setTimeout(placeAssociatedOrgs, 2000);
 </r:script>
+
+
+
+<script type="text/html" id="associated-orgs">
+<div class="well span12 margin-left-0" id="associatedOrgs" data-bind="visible: associatedOrgs().length > 0">
+    <div class="well-title"><g:message code="project.display.associatedOrgs"/></div>
+
+    <!-- ko foreach: associatedOrgs -->
+    <div class="span5 associated-org thumbnail">
+        <div data-bind="visible: url" class=" clearfix">
+            <a href="#" data-bind="attr: {href: url}" target="_blank">
+                <div data-bind="visible: logo"><img src="" data-bind="attr: {src: logo, title: name}"
+                                                    alt="Organisation logo" class="small-logo"></div>
+
+                <div data-bind="visible: !logo" class="associated-org-no-logo"><span data-bind="text: name"></span>
+                </div>
+            </a>
+        </div>
+
+        <div data-bind="visible: !url">
+            <div data-bind="visible: logo"><img src="" data-bind="attr: {src: logo, title: name}"
+                                                alt="Organisation logo" class="small-logo"></div>
+
+            <div data-bind="visible: !logo" class="associated-org-no-logo"><span data-bind="text: name"></span></div>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+    <!-- /ko -->
+</div>
+</script>

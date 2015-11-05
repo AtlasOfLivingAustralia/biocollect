@@ -143,6 +143,7 @@
                 <div class="row-fluid">
                     <div class="clearfix control-group">
                         <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.associatedOrgs"/>:<fc:iconHelp><g:message code="project.details.associatedOrgs.help"/></fc:iconHelp></label>
+                        <div class="span9"><g:message code="project.details.associatedOrgs.extra"/></div>
                         <div class="span6" id="associatedOrgList">
                             <!-- ko foreach: associatedOrgs -->
                             <div class="span12 margin-left-0 margin-bottom-1">
@@ -196,6 +197,10 @@
                                 <div class="span3"></div>
 
                                 <div class="span9">
+                                    <div class="margin-bottom-1">
+                                        <g:message code="project.details.associatedOrgs.notInList.extra"/>
+                                    </div>
+
                                     <div class="clearfix control-group">
                                         <label class="control-label left-aligned-label span3" for="associatedOrgUrl"><g:message code="project.details.associatedOrgs.url"/></label>
 

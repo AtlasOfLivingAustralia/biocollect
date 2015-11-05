@@ -1,7 +1,6 @@
 package au.org.ala.biocollect.merit
 
 import org.springframework.web.multipart.MultipartFile
-
 import static org.apache.commons.httpclient.HttpStatus.*
 
 class MetadataService {
@@ -219,7 +218,7 @@ class MetadataService {
 
     def getAccessLevels() {
         return cacheService.get('accessLevels',{
-            webService.getJson(grailsApplication.config.ecodata.service.url +  "/permissions/getAllAccessLevels")
+            webService.getJson(grailsApplication.config.ecodata.service.url +  "/permissions/getAllAccessLevels?baseLevel="+RoleService.PROJECT_PARTICIPANT_ROLE)
         })
     }
 

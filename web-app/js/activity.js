@@ -6,14 +6,18 @@ var ActivityListsViewModel = function(placeHolder){
     self.transients.loading = ko.observable(true);
     self.transients.placeHolder = placeHolder;
 
-    self.load = function(activities, rp, total){
+    self.load = function(activities, page, total){
         self.activities([]);
 
         var activities = $.map(activities ? activities : [] , function(activity, index){
             return new ActivityViewModel(activity);
         });
         self.activities(activities);
-        self.pagination.loadPagination(rp, total);
+
+        // only initialise the pagination if we are on the first page load
+        if (page == 0) {
+            self.pagination.loadPagination(page, total);
+        }
     };
 
     self.delete = function(activity){
@@ -27,7 +31,7 @@ var ActivityListsViewModel = function(placeHolder){
                     success: function (data) {
                         if (data.text == 'deleted') {
                             showAlert("Successfully deleted.", "alert-success", self.transients.placeHolder);
-                            self.refreshPage();
+                            self.refreshPage(0);
                         } else {
                             showAlert("Error deleting the survey, please try again later.", "alert-error", self.transients.placeHolder);
                         }
@@ -45,9 +49,11 @@ var ActivityListsViewModel = function(placeHolder){
         });
     };
 
-    self.refreshPage = function(rp){
-        if(!rp) rp = 1;
-        var params = { max: self.pagination.resultsPerPage(), offset:rp-1,  sort:'lastUpdated', order:'desc'};
+    self.refreshPage = function(offset){
+        if (!offset) {
+            offset = 0;
+        }
+        var params = { max: self.pagination.resultsPerPage(), offset: offset,  sort:'lastUpdated', order:'desc'};
 
         var url = fcConfig.activityListUrl + ((fcConfig.activityListUrl.indexOf('?') > -1) ? '&' : '?') + $.param( params );
         $.ajax({
@@ -55,7 +61,7 @@ var ActivityListsViewModel = function(placeHolder){
             type: 'GET',
             contentType: 'application/json',
             success: function (data) {
-                self.load(data.activities, rp, data.total);
+                self.load(data.activities, Math.ceil(offset / self.pagination.resultsPerPage()), data.total);
             },
             error: function (data) {
                 alert('An unhandled error occurred: ' + data);
@@ -66,7 +72,7 @@ var ActivityListsViewModel = function(placeHolder){
         });
     };
 
-    self.refreshPage();
+    self.refreshPage(0);
 };
 
 var ActivityViewModel = function(activity){
@@ -75,6 +81,11 @@ var ActivityViewModel = function(activity){
 
     self.activityId = ko.observable(activity.activityId);
     self.showCrud = ko.observable(activity.showCrud);
+    var projectActivityOpen = true;
+    if (activity.pActivity.endDate) {
+        projectActivityOpen = moment(activity.pActivity.endDate).isAfter(moment());
+    }
+    self.showAdd = ko.observable(projectActivityOpen);
     self.projectActivityId = ko.observable(activity.projectActivityId);
     self.name = ko.observable();
     self.type = ko.observable(activity.type);

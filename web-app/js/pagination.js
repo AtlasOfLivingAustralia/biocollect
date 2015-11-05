@@ -1,85 +1,63 @@
 var PaginationViewModel = function (o, caller) {
-  var self = this;
-  if (!o) o = {};
-  if (!caller) caller = self;
-  self.rppOptions = [10,20,30,50,100];
-  self.resultsPerPage = ko.observable(self.rppOptions[0]);
-  self.totalResults = ko.observable();
-  self.requestedPage = ko.observable();
-  self.nextIndex = ko.observable();
-  self.start = ko.observable();
+    var self = this;
+    if (!o) o = {};
+    if (!caller) caller = self;
+    self.rppOptions = [10, 20, 30, 50, 100];
+    self.resultsPerPage = ko.observable(self.rppOptions[0]);
+    self.totalResults = ko.observable();
+    self.currentPage = ko.observable();
+    self.start = ko.observable();
 
+    self.lastPage = ko.pureComputed(function() {
+        return Math.ceil((self.totalResults() / self.resultsPerPage()));
+    });
 
-  self.previousIndex = ko.pureComputed(function(){
-    return self.requestedPage() <= 1 ? 1 : (self.requestedPage() - 1);
-  });
-  self.nextIndex  = ko.pureComputed(function(){
-    var lastPage = Math.floor((self.totalResults() / self.resultsPerPage()));
-    if (self.totalResults() % self.resultsPerPage()  != 0) {
-      lastPage += 1;
-    }
-    if (lastPage == 0) {
-      lastPage = 1;
-    }
-    return self.requestedPage() >= lastPage ? lastPage : (self.requestedPage() + 1);
-  });
+    self.info = ko.computed(function () {
+        if (self.totalResults() > 0) {
+            self.start(self.calculatePageOffset(self.currentPage()) + 1);
+            var end = Math.min(self.totalResults(), self.start() + self.resultsPerPage() - 1);
+            return "Showing " + self.start() + " to " + end + " of " + self.totalResults();
+        }
+    });
 
-  self.info = ko.computed(function () {
-    if (self.totalResults() > 0) {
-      var start = 0;
-      var message = "";
+    self.showPagination = ko.computed(function () {
+        return self.totalResults() > 0
+    }, this);
 
-      //Start of the page
-      if (self.requestedPage() == 1) {
-        self.start(1);
-        message = "Showing 1 to " + ((self.resultsPerPage() >= self.totalResults()) ? self.totalResults() : self.resultsPerPage()) + " of " + self.totalResults() + " results";
-      }
-      else if (self.requestedPage() > 0 && self.requestedPage() * self.resultsPerPage() >= self.totalResults()) {
-        self.start(((self.totalResults() - self.resultsPerPage()) + 1));
-        message = "Showing " + ((self.totalResults() - self.resultsPerPage()) + 1) + " to " + self.totalResults() + " of " + self.totalResults() + " results";
-      }
-      else if (self.requestedPage() > 0 && self.requestedPage() > 1) {
-        self.start((((self.requestedPage() - 1) * self.resultsPerPage()) + 1));
-        message =  "Showing " + (((self.requestedPage() - 1) * self.resultsPerPage()) + 1) + " to " +
-        ((self.resultsPerPage() * self.requestedPage()) >= self.totalResults() ? self.totalResults() : (self.resultsPerPage() * self.requestedPage())) + " of " + self.totalResults() + " results";
-      }
-      return message;
-    }
-  });
+    self.calculatePageOffset = function (currentPage) {
+        return currentPage < 1 ? 0 : (currentPage - 1) * self.resultsPerPage();
+    };
 
+    self.next = function () {
+        caller.refreshPage(self.calculatePageOffset(self.currentPage() + 1));
+        self.currentPage(self.currentPage() + 1);
+    };
 
-  self.showPagination = ko.computed(function () {
-    return self.totalResults() > 0
-  }, this);
+    self.previous = function () {
+        caller.refreshPage(self.calculatePageOffset(self.currentPage() - 1));
+        self.currentPage(self.currentPage() - 1);
+    };
 
-  self.next = function () {
-    caller.refreshPage((self.requestedPage() + 1));
-  };
-  self.previous = function () {
-    caller.refreshPage((self.requestedPage() == 1 ? self.requestedPage() : (self.requestedPage() - 1) ));
-  };
-  self.first = function () {
-    caller.refreshPage(1);
-  };
-  self.last = function () {
-    caller.refreshPage(Math.ceil((self.totalResults() / self.resultsPerPage())));
-  };
+    self.first = function () {
+        caller.refreshPage(0);
+        self.currentPage(0)
+    };
 
-  /*self.rppChanged = function() {
-    caller.refreshPage(1);
-  };*/
+    self.last = function () {
+        caller.refreshPage(self.calculatePageOffset(Math.ceil((self.totalResults() / self.resultsPerPage()))));
+        self.currentPage(self.lastPage());
+    };
 
-  self.resultsPerPage.subscribe(function() {
-    caller.refreshPage(1);
-  });
+    self.resultsPerPage.subscribe(function () {
+        caller.refreshPage(0);
+    });
 
-  self.refreshPage = function(rp){
-    // Do nothing.
-  };
+    self.refreshPage = function (rp) {
+        // Do nothing.
+    };
 
-  self.loadPagination = function(rp, total){
-    self.requestedPage(rp);
-    self.totalResults(total);
-  };
-
+    self.loadPagination = function (page, total) {
+        self.totalResults(total);
+        self.currentPage(page < 1 ? 1 : page);
+    };
 };

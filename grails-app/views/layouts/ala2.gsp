@@ -25,11 +25,11 @@
             ${fc.announcementContent()}
         </div>
     </g:if>
+    
     <g:render template="/project/biocollectBanner" model="${[fc:fc, hf: hf]}"></g:render>
     <g:if test="${showCitizenScienceBanner}">
         <g:render template="/shared/bannerCitizenScience"/>
     </g:if>
-
 
     <div class="container-fluid" id="main-content">
         <g:layoutBody />

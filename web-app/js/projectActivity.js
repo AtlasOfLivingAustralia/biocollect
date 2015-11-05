@@ -71,7 +71,9 @@ var ProjectActivitiesViewModel = function (params) {
     };
 
     self.userCanEdit = function (pActivity) {
-        return pActivity.publicAccess() || (user && Object.keys(user).length > 0 && (user.isEditor || user.isAdmin));
+        var projectActive = !pActivity.endDate() || moment(pActivity.endDate()).isAfter(moment());
+        var userIsEditorOrAdmin = user && Object.keys(user).length > 0 && (user.isEditor || user.isAdmin);
+        return projectActive && (pActivity.publicAccess() || userIsEditorOrAdmin);
     };
 
     self.loadProjectActivitiesVM(pActivities, pActivityForms, projectId, sites);
@@ -803,12 +805,7 @@ var SurveyVisibilityViewModel = function (visibility) {
     self.embargoUntil = ko.observable(visibility.embargoUntil).extend({simpleDate: true});
 
     self.embargoOption.subscribe(function (option) {
-        if (option === 'DATE') {
-            self.embargoForDays(60)
-        } else if (option == 'DAYS') {
-            self.embargoUntil(null);
-        } else {
-            self.embargoUntil(0);
+        if (option !== 'DAYS') {
             self.embargoForDays(60)
         }
     });
