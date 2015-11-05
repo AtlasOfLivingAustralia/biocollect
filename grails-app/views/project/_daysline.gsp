@@ -17,4 +17,5 @@
 <div class="daysline-positive" data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() > 0">
     <div data-bind="style:{width:Math.floor(transients.daysRemaining()/transients.daysTotal() * 100) + '%'}"></div>
 </div>
+<b data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() == 0"><g:message code="project.display.status" /></b>
 <div class="daysline-zero" data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() == 0"></div>

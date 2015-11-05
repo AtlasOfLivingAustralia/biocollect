@@ -16,20 +16,3 @@
         <span data-bind="html:description.markdownToHtml()"></span>
     </div>
 </div>
-
-<g:if test="${includeProjectList}">
-
-    <div class="well-header"><h2>Projects</h2></div>
-
-    <!-- ko stopBinding: true -->
-    <div id="pt-root" class="row-fluid">
-        <g:render template="/project/projectsList"/>
-    </div>
-    <!-- /ko -->
-
-    <r:script>
-        $(function() {
-            var projectFinder = new ProjectFinder();
-        });
-    </r:script>
-</g:if>

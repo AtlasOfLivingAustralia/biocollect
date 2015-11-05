@@ -31,19 +31,15 @@
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">
+    <div id="pt-root" class="row-fluid">
+        <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
+    </div>
     <div class="row-fluid">
-        <div class="span6" id="heading">
+        <div class="span12" id="heading">
             <h1 class="pull-left"><g:message code="project.citizenScience.heading"/></h1>
         </div>
-        <g:if test="${user}">
-            <button id="newPortal" type="button" class="pull-right btn"><g:message
-                    code="project.citizenScience.portalLink"/></button>
-        </g:if>
     </div>
-
-    <div id="pt-root" class="row-fluid">
-        <g:render template="projectsList"/>
-    </div>
+    <g:render template="/shared/projectFinderResultPanel"></g:render>
 </div>
 <r:script>
     $("#newPortal").on("click", function() {

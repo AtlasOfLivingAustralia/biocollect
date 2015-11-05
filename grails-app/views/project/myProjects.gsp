@@ -43,7 +43,7 @@
     </div>
 
     <div id="pt-root" class="row-fluid">
-        <g:render template="projectsList"/>
+        <g:render template="/shared/projectFinder"/>
     </div>
 </div>
 <r:script>

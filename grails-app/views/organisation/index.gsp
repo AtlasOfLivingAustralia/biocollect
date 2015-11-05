@@ -135,7 +135,9 @@
         populatePermissionsTable(fcConfig.organisationMembersUrl);
         </g:if>
     });
-
+    $(function() {
+        var projectFinder = new ProjectFinder();
+    });
 </r:script>
 
 </body>

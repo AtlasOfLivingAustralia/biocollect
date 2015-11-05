@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="au.org.ala.biocollect.merit.SettingPageType" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
    <meta name="app.version" content="${g.meta(name:'app.version')}"/>
@@ -16,63 +16,22 @@
     <r:layoutResources/>
     <g:layoutHead />
 </head>
-<body class="${pageProperty(name:'body.class')?:'nav-getinvolved'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}" style="padding-top:50px;">
+<body class="${pageProperty(name:'body.class')?:'nav-getinvolved'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}">
 <g:set var="introText"><fc:getSettingContent settingType="${SettingPageType.INTRO}"/></g:set>
 <g:set var="userLoggedIn"><fc:userIsLoggedIn/></g:set>
 <div id="body-wrapper">
-    <hf:banner logoutUrl="${g.createLink(controller:"logout", action:"logout", absolute: true)}"/>
-
     <g:if test="${fc.announcementContent()}">
         <div id="announcement">
             ${fc.announcementContent()}
         </div>
     </g:if>
-    <div id="nav-site" class="clearfix">
+    <g:render template="/project/biocollectBanner" model="${[fc:fc, hf: hf]}"></g:render>
+    <g:if test="${showCitizenScienceBanner}">
+        <g:render template="/shared/bannerCitizenScience"/>
+    </g:if>
 
-        <div class="navbar navbar-inner container-fluid ">
-            %{--<a href="${g.createLink(uri:"/")}" class="brand">MERI data capture prototype</a>--}%
-            <ul class="nav">
-                <li><a href="/fieldcapture/" class="active hidden-desktop"><i class="icon-home">&nbsp;</i>&nbsp;Home</a></li>
-            </ul>
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </a>
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <fc:navbar active="${pageProperty(name: 'page.topLevelNav')}"/>
-                </ul>
-                <div class="navbar-form pull-right nav-collapse collapse">
-                    <span id="buttonBar">
-                        <g:if test="${fc.currentUserDisplayName()}">
-                            <div class="btn-group">
-                                <button class="btn btn-small btn-fc btnProfile" title="profile page">
-                                    <i class="icon-user"></i><span class="">&nbsp;<fc:currentUserDisplayName /></span>
-                                </button>
-                                <a class="btn btn-small btn-fc dropdown-toggle" data-toggle="dropdown">
-                                    More&nbsp;&nbsp;<span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu pull-right">
-                                    <li><a class="btnNewProject" href="#"><i class="icon-plus"></i> New project</a></li>
-                                    <li><a class="btnMyProjects" href="#"><i class="icon-folder-open"></i> My projects</a></li>
-                                    <li><a class="btnMyData" href="#"><i class="icon-folder-open"></i> My data</a></li>
-                                </ul>
-                            </div>
-                            <g:if test="${fc.userIsSiteAdmin()}">
-                                <div class="btn-group">
-                                    <button class="btn btn-warning btn-small btnAdministration"><i class="icon-cog icon-white"></i><span class="">&nbsp;Administration</span></button>
-                                </div>
-                            </g:if>
-                        </g:if>
-                        <g:pageProperty name="page.buttonBar"/>
-                    </span>
-                </div>
-            </div>
-        </div><!-- /.navbar-inner -->
-    </div>
 
-    <div class="container" id="main-content">
+    <div class="container-fluid" id="main-content">
         <g:layoutBody />
     </div><!--/.container-->
 
@@ -149,6 +108,10 @@
             window.location = "${createLink(controller: 'project', action: 'myProjects')}";
         });
 
+        $(".btnSearch").click(function(e){
+             window.location = "${createLink(controller: 'project', action: 'citizenScience')}";
+        })
+
         $("#toggleFluid").click(function(el){
             var fluidNo = $('div.container-fluid').length;
             var fixNo = $('div.container').length;
@@ -219,7 +182,38 @@
                     ' Many functions will still work but layout and image transparency will be disrupted.</div>'));
         }
     </r:script>
+<r:script>
+    function calcWidth() {
+        var navwidth = 0;
+        var morewidth = $('#main .more').outerWidth(true);
+        $('#main > li:not(.more)').each(function() {
+            navwidth += $(this).outerWidth( true );
+        });
+        var availablespace = $('nav').outerWidth(true) - morewidth;
 
+        if (navwidth > availablespace) {
+            var lastItem = $('#main > li:not(.more)').last();
+            lastItem.attr('data-width', lastItem.outerWidth(true));
+            lastItem.prependTo($('#main .more ul'));
+            calcWidth();
+        } else {
+            var firstMoreElement = $('#main li.more li').first();
+            if (navwidth + firstMoreElement.data('width') < availablespace) {
+                firstMoreElement.insertBefore($('#main .more'));
+            }
+        }
+
+        if ($('.more li').length > 0) {
+            $('.more').css('display','inline-block');
+        } else {
+            $('.more').css('display','none');
+        }
+    }
+    $(window).on('resize',function(){
+        calcWidth();
+    });
+    calcWidth();
+</r:script>
     <!-- JS resources-->
     <r:layoutResources/>
 </body>

@@ -1,10 +1,11 @@
 modules = {
 
     ala2Skin {
-        dependsOn 'jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
+        dependsOn 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
         resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
         resource url: 'css/bootstrap-combobox.css'
         resource url: 'css/common.css'
+        resource url: 'css/biocollect-banner.css'
     }
 
     nrmSkin {
@@ -16,7 +17,7 @@ modules = {
     }
 
     bootstrap_nrm {
-        dependsOn 'app_bootstrap', 'jquery-ui'
+        dependsOn 'app_bootstrap', 'a-jquery-ui'
         resource url: [dir: 'css/nrm/less', file: 'bootstrap.less'], attrs: [rel: "stylesheet/less", type: 'css', media: 'screen,print'], bundle: 'bundle_app_bootstrap'
         resource url: 'css/empty.css'
 
@@ -38,7 +39,7 @@ modules = {
         resource url: 'vendor/jquery.shorten/jquery.shorten.js'
         resource url: 'vendor/jquery.columnizer/jquery.columnizer.js'
         resource url: 'vendor/jquery.blockUI/jquery.blockUI.js'
-        resource url: 'css/common.css'
+//        resource url: 'css/common.css'
     }
 
     defaultSkin {
@@ -156,12 +157,14 @@ modules = {
         resource url: 'vendor/js-iso8601/js-iso8601.min.js'
     }
 
-    'jquery-ui' {
+    // name changed since jquery-ui js file should load before bootstrap js file. Otherwise, bootstrap functionality
+    // like button toggle does not work. It seems resource plugin is loading resources in alphabetic order.
+    'a-jquery-ui' {
         dependsOn 'jquery'
 
-        resource url: '/vendor/jquery-ui/jquery-ui-1.11.2-no-autocomplete.js'
-        resource url: '/vendor/jquery-ui/themes/smoothness/jquery-ui.css', attrs: [media: 'all']
-        resource url: 'vendor/jquery.appear/jquery.appear.js'
+        resource url: '/vendor/jquery-ui/jquery-ui-1.11.2-no-autocomplete.js', disposition: 'head'
+        resource url: '/vendor/jquery-ui/themes/smoothness/jquery-ui.css', attrs: [media: 'all'], disposition: 'head'
+        resource url: 'vendor/jquery.appear/jquery.appear.js', disposition: 'head'
     }
 
     jquery_bootstrap_datatable {
@@ -186,7 +189,7 @@ modules = {
     }
 
     jQueryFileUpload {
-        dependsOn 'jquery-ui'
+        dependsOn 'a-jquery-ui'
         resource url: 'css/jquery.fileupload-ui.css', disposition: 'head'
 
         resource url: 'vendor/fileupload-9.0.0/load-image.min.js'
@@ -248,11 +251,11 @@ modules = {
         resource url: 'js/projects.js'
         resource url: 'js/sites.js'
         resource url: 'vendor/moment/moment.min.js'
-        resource url: 'css/common.css'
     }
 
     projectFinder {
-        dependsOn('knockout', 'projects')
+        dependsOn('knockout', 'projects','bootstrap')
+        resource url: 'js/button-toggle-events.js'
         resource url: 'js/project-finder.js'
         resource url: 'css/project-finder.css'
     }
@@ -317,7 +320,7 @@ modules = {
     }
 
     slickgrid {
-        dependsOn 'jquery', 'jquery-ui'
+        dependsOn 'jquery', 'a-jquery-ui'
         resource url: 'vendor/slickgrid/slick.grid.css'
         //resource 'slickgrid/slick-default-theme.css'
         //resource 'slickgrid/css/smoothness/jquery-ui-1.8.16.custom.css'
