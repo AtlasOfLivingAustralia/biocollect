@@ -159,9 +159,18 @@ function MapWithFeatures(options, features) {
         }
     };
 
-    self.loadFeature = function (loc, iw) {
+    /**
+     *
+     * @param loc description (type, coordinates/parameters) of the feature to load.
+     * @param iw a google.map.InfoWindow (optional)
+     * @param deferred (optional) because some features (e.g WMS based ones) initialise asynchronously, this parameter provides
+     * a mechanism for the caller to be notified when the initialisation is complete.  This should be a jQuery.Deferred object
+     * that will be resolved when the feature is fully loaded.
+     * @returns the feature to be loaded
+     */
+    self.loadFeature = function (loc, iw, deferred) {
         var feature;
-
+        var resolveDeferred = deferred?true:false;
         if (loc != null && loc.type != null) {
             if (loc.type.toLowerCase() === 'point') {
                 var point = null;
@@ -247,11 +256,12 @@ function MapWithFeatures(options, features) {
 
                 feature = new PIDLayer(pid, this.wmsServer, loc.style);
                 self.map.overlayMapTypes.push(feature);
-
+                resolveDeferred = false;
                 $.ajax({
                     url: this.featureService + '?featureId=' + pid,
                     dataType: 'json'
                 }).done(function (data) {
+
                     if (data !== undefined && data !== null && data.bbox !== undefined && !loc.excludeBounds) {
                         var coords = data.bbox.replace(/POLYGON|LINESTRING/g, "").replace(/[\\(|\\)]/g, "");
                         var pointArray = coords.split(",");
@@ -267,10 +277,16 @@ function MapWithFeatures(options, features) {
                     }
 
                     self.addFeature(feature, loc);
+                    if (deferred) {
+                        deferred.resolve();
+                    }
                 });
             } else {
                 // count the location as loaded even if we didn't
                 console.log('Feature type not supported: ' + loc.type);
+            }
+            if (resolveDeferred) {
+                deferred.resolve();
             }
             return feature;
         }
@@ -284,13 +300,19 @@ function MapWithFeatures(options, features) {
 
         var iw = new google.maps.InfoWindow({maxWidth: 360});
 
+        var loadCallbacks = [];
         $.each(features, function (i, loc) {
+            var deferred = $.Deferred();
+            loadCallbacks.push(deferred);
             if (loc != null) {
-                self.loadFeature(loc, iw);
+                self.loadFeature(loc, iw, deferred);
             }
         });
 
-        self.allLocationsLoaded();
+        $.when.apply(undefined, loadCallbacks).done(function() {
+            self.allLocationsLoaded();
+        });
+
     };
 
     self.addFeature = function (feature, loc, iw) {
