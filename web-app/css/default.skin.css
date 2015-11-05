@@ -25,6 +25,7 @@ body {
 
 #main-content {
     padding-bottom: 20px; /* matches .content bottom padding in merit */
+    padding-top: 20px;
 }
 
 #fixed-footer-wrapper {  /*FIXED FOOTER*/
@@ -105,7 +106,7 @@ footer img {
 }
 
 .logo-small {
-    width: 1.2em;
+    width: 25px;
     margin: 0 2px;
 }
 

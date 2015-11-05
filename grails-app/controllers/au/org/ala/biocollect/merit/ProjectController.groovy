@@ -177,7 +177,8 @@ class ProjectController {
         [
                 user: userService.getUser(),
                 showTag: params.tag,
-                downloadLink: createLink(controller: 'project', action: 'getProjectList', params: ['download' : true] )
+                downloadLink: createLink(controller: 'project', action: 'getProjectList', params: ['download' : true] ),
+                showCitizenScienceBanner: true
         ]
     }
 
@@ -301,8 +302,9 @@ class ProjectController {
     def getProjectList(){
         String activeQuery
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
+        List difficulty = [], status =[]
         Map trimmedParams = commonService.parseParams(params)
-        trimmedParams.status = params.boolean('status');
+        trimmedParams.status = params.list('status');
         trimmedParams.isCitizenScience = params.boolean('isCitizenScience');
         trimmedParams.isWorks = params.boolean('isWorks');
         trimmedParams.isSurvey = params.boolean('isSurvey')
@@ -313,6 +315,7 @@ class ProjectController {
         trimmedParams.isDIY = params.boolean('isDIY')
         trimmedParams.hasTeachingMaterials = params.boolean('hasTeachingMaterials')
         trimmedParams.isMobile = params.boolean('isMobile')
+        trimmedParams.difficulty = params.list('difficulty')
 
         List fq = [], projectType = []
         List immutableFq = params.list('fq')
@@ -320,6 +323,16 @@ class ProjectController {
             it? fq.push(it):null;
         }
         trimmedParams.fq = fq;
+
+        switch (trimmedParams.sort){
+            case 'organisationSort':
+            case 'nameSort':
+                trimmedParams.order = 'ASC';
+                break;
+            case '_score':
+                trimmedParams.order = 'DESC';
+                break;
+        }
 
         if(trimmedParams.isCitizenScience){
             projectType.push('isCitizenScience:true')
@@ -335,6 +348,15 @@ class ProjectController {
             projectType.push('projectType:works')
             trimmedParams.isWorks = null
         }
+
+        if(trimmedParams.difficulty){
+            trimmedParams.difficulty.each{
+                difficulty.push("difficulty:${it}")
+            }
+            trimmedParams.query += " AND (${difficulty.join(' OR ')})"
+            trimmedParams.difficulty = null
+        }
+
         // append projectType to query. this is used by organisation page.
         trimmedParams.query += ' AND (' + projectType.join(' OR ') + ')'
 
@@ -346,8 +368,20 @@ class ProjectController {
 
         if(trimmedParams.status){
             SimpleDateFormat sdf = new SimpleDateFormat('yyyy-MM-dd');
-            activeQuery = "-(plannedEndDate:[* TO *] AND -plannedEndDate:>=${sdf.format( new Date())})";
-            trimmedParams.query += ' AND ' + activeQuery;
+            // do not run if both active and completed is pressed
+            if(trimmedParams.status.size()<2){
+                trimmedParams.status.each{
+                    switch (it){
+                        case 'active':
+                            status.push("-(plannedEndDate:[* TO *] AND -plannedEndDate:>=${sdf.format( new Date())})");
+                            break;
+                        case 'completed':
+                            status.push("(plannedEndDate:<${sdf.format( new Date())})");
+                            break;
+                    }
+                }
+                trimmedParams.query += " AND (${status.join(' OR ')})";
+            }
             trimmedParams.status = null
         }
 
@@ -379,11 +413,6 @@ class ProjectController {
         if(trimmedParams.isMobile){
             fq.push('isMobileApp:true');
             trimmedParams.isMobile = null
-        }
-
-        if(trimmedParams.difficulty){
-            fq.push('difficulty:'+trimmedParams.difficulty);
-            trimmedParams.difficulty = null
         }
 
         if(trimmedParams.organisationName){

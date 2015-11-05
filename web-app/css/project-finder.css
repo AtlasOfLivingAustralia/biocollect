@@ -23,8 +23,8 @@ input[type=checkbox] {
     margin-top: 10px;
 }
 
-#pt-selectors {
-    background-color: #dfffcc;
+#pt-tags button {
+    margin-top: 5px;
 }
 
 #pf-search{
@@ -33,6 +33,55 @@ input[type=checkbox] {
 }
 
 #pt-searchControls{
-    padding-top: 20px;
-    border-top: 1px solid #ddd;
+    padding-top: 0px;
+}
+
+#pt-selectors{
+    display: none;
+    padding:10px;
+}
+
+#pt-search-link, #pt-filter{
+    padding: 14px;
+}
+
+#pt-search{
+    min-width: 100px;
+    max-width: 300px;
+    padding: 14px;
+}
+
+#pt-reset{
+    margin-top:5px;
+}
+
+.padding5{
+    padding-top:5px;
+    padding-bottom:5px;
+}
+
+.pf-project-image{
+    min-width:200px
+}
+.pf-project-text{
+
+}
+.pf-project-status{
+    min-width:10em;
+    text-align:center
+}
+/**
+ * for showing selected buttons
+*/
+#pt-selectors .btn-info.active{
+    background-color:#fbaf44;
+    color: #fff;
+}
+
+.toggleIndicator{
+    display: none;
+}
+
+.active .toggleIndicator{
+    display: inherit;
 }

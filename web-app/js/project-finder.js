@@ -16,9 +16,8 @@ function ProjectFinder() {
     var total = 0;
 
     var searchTerm = '', perPage = 20, sortBy = 'nameSort', sortOrder = 1;
-
-    // flag to check if program/sub program sort fields are added to drop down list
-    this.programAdded = false;
+    // variable to not scroll to result when result is loaded for the first time.
+    var firstTimeLoad = true;
 
     this.availableProjectTypes = new ProjectViewModel({}, false, []).transients.availableProjectTypes;
 
@@ -47,27 +46,76 @@ function ProjectFinder() {
         }
     }
 
+    /**
+     * check if button has active flag
+     * @param $button
+     * @returns {boolean}
+     */
+    function isButtonChecked($button){
+        return $button.hasClass('active')?true:false
+    }
+
+    /**
+     * get values of data-value attribute for all active buttons
+     * @param $button
+     * @returns {Array}
+     */
+    function getActiveButtonValues($button){
+        var result = [];
+        $button.find('.active').each(function(index, it){
+            result.push($(it).attr('data-value'));
+        });
+        return result
+    }
+
+    function uncheckButton($button){
+        $button.removeClass('active');
+        // if button group
+        $button.find('.active').removeClass('active');
+        return $button;
+    }
+
+    function checkButton($button, value, attribute){
+        var attr = 'data-value' || attribute;
+        $button.removeClass('active').find('button.active').removeClass('active');
+        if($button.attr(attr)===value)
+            $button.addClass('active')
+        $button.find('['+attr+'='+value+']').addClass('active')
+    }
+
+    /**
+     * bring the selected element to view by animation.
+     * @param selector
+     */
+    function scrollToView(selector){
+        $("html, body").animate({
+            scrollTop: $(selector).offset().top
+        })
+    }
+
     var pageWindow = new pageVM();
     ko.applyBindings(pageWindow, document.getElementById('pt-table'));
 
     this.getParams = function () {
         var fq = [];
-        var isSuitableForChildren = $('#pt-search-children').prop('checked');
-        var isDIY = $('#pt-search-diy').prop('checked')
-        var status = $('#pt-search-active').prop('checked') // active check field status
-        var hasParticipantCost = $('#pt-search-noCost').prop('checked') // no cost
-        var hasTeachingMaterials = $('#pt-search-teach').prop('checked') // teaching material
-        var isMobile = $('#pt-search-mobile').prop('checked') // mobile uses links to find it out
-        var difficulty = $('#pt-search-difficulty').val()
-        var sortOrderCode = sortOrder > 0 ? 'ASC' : 'DESC';
+        var isSuitableForChildren = isButtonChecked($('#pt-search-children'));
+        var isDIY = isButtonChecked($('#pt-search-diy'))
+        var status = getActiveButtonValues($('#pt-status')) // active check field status
+        var hasParticipantCost = isButtonChecked($('#pt-search-noCost')) // no cost
+        var hasTeachingMaterials = isButtonChecked($('#pt-search-teach')) // teaching material
+        var isMobile = isButtonChecked($('#pt-search-mobile')) // mobile uses links to find it out
+        var difficulty = getActiveButtonValues($('#pt-search-difficulty'))
         var isCitizenScience = fcConfig.isCitizenScience,
             isWorks = false,
             isSurvey = false;
         var isUserPage = fcConfig.isUserPage || false;
         var organisationName = fcConfig.organisationName;
 
+        sortBy = getActiveButtonValues($("#pt-sort"))
+        perPage = getActiveButtonValues($("#pt-per-page"))
+
         if (fcConfig.isOrganisationPage) {
-            var values = pageWindow.projectTypes();
+            var values = getActiveButtonValues($('#pt-search-projecttype'));
             for (var i in values) {
                 switch (values[i]) {
                     case 'citizenScience':
@@ -91,7 +139,6 @@ function ProjectFinder() {
             isWorks: isWorks,
             isSurvey: isSurvey,
             isUserPage: isUserPage,
-
             hasParticipantCost: hasParticipantCost,
             isSuitableForChildren: isSuitableForChildren,
             isDIY: isDIY,
@@ -99,10 +146,8 @@ function ProjectFinder() {
             isMobile: isMobile,
             difficulty: difficulty,
             organisationName: organisationName,
-
             max: perPage, // page size
             sort: sortBy,
-            order: sortOrderCode, // sort order
             q: $('#pt-search').val().toLowerCase()
         }
 
@@ -114,7 +159,8 @@ function ProjectFinder() {
      */
     this.doSearch = function () {
         var params = self.getParams();
-        $.ajax({
+        window.location.hash = params.q;
+        return $.ajax({
             url: fcConfig.projectListUrl,
             data: params,
             traditional: true,
@@ -136,6 +182,7 @@ function ProjectFinder() {
 
     this.searchAndShowFirstPage = function () {
         self.pago.firstPage();
+        return true
     }
 
     /*************************************************\
@@ -219,25 +266,15 @@ function ProjectFinder() {
     }
 
     this.setTextSearchSettings = function(){
-        sortBy = '_score'
-        $('#pt-sort').val('_score');
-        sortOrder = -1
-        $('#pt-dir').val(sortOrder);
+        checkButton($('#pt-sort '),'_score')
     }
-
-    $('#pt-per-page').change(function () {
-        perPage = $(this).val();
-        offset = 0;
-        self.doSearch();
-    });
-    $('#pt-sort').change(function () {
-        sortBy = $(this).val();
-        self.doSearch();
-    });
-    $('#pt-dir').change(function () {
-        sortOrder = $(this).val();
-        self.doSearch();
-    });
+    $("#pt-filter").on('statechange',function(){
+        if($('#pt-filter').hasClass('active')){
+            $('#pt-selectors').slideDown(400)
+        } else {
+            $('#pt-selectors').slideUp(400)
+        }
+    })
     $('#pt-search-link').click(function () {
         self.setTextSearchSettings();
         self.doSearch();
@@ -250,21 +287,16 @@ function ProjectFinder() {
         }
     });
     $('#pt-reset').click(function () {
+        uncheckButton($('#pt-tags'));
+        uncheckButton($('#pt-status'));
+        uncheckButton($('#pt-search-difficulty'));
+        checkButton($('#pt-sort'),'nameSort');
+        checkButton($('#pt-per-page'),'20');
         $('#pt-search').val('');
         self.pago.firstPage();
     });
-    $('#pt-search-active').on('change', self.searchAndShowFirstPage);
-    $('#pt-search-children').on('change', self.searchAndShowFirstPage);
-    $('#pt-search-difficulty').change(self.searchAndShowFirstPage);
-    $('#pt-search-projecttype').change(self.searchAndShowFirstPage);
-    $('#pt-search-diy').on('change', self.searchAndShowFirstPage);
-    $('#pt-search-noCost').on('change', self.searchAndShowFirstPage);
-    $('#pt-search-teach').on('change', self.searchAndShowFirstPage);
-    $('#pt-search-mobile').on('change', self.searchAndShowFirstPage);
-
-    if (!fcConfig.isOrganisationPage) {
-        $('#pt-selectors').show();
-    }
+    // check for statechange event on all buttons in filter panel.
+    $('#pt-searchControls button').on('statechange', self.searchAndShowFirstPage);
 
     pago = this.pago = {
         init: function (projs) {
@@ -281,26 +313,30 @@ function ProjectFinder() {
         },
         gotoPage: function (pageNum) {
             offset = (pageNum - 1) * perPage;
-            self.doSearch();
-            $('html,body').scrollTop(0);
+            self.doSearch().done(function(){
+                scrollToView("#pt-table");
+            });
         },
         prevPage: function () {
             offset -= perPage;
-            self.doSearch();
-            $('html,body').scrollTop(0);
+            self.doSearch().done(function(){
+                scrollToView("#pt-table");
+            });;
         },
         nextPage: function () {
             offset += perPage;
-            self.doSearch();
-            $('html,body').scrollTop(0);
+            self.doSearch().done(function(){
+                scrollToView("#pt-table");
+            });;
         },
         firstPage: function () {
             offset = 0;
-            self.doSearch();
-            $('html,body').scrollTop(0);
+            self.doSearch().done(function(){
+                scrollToView("#pt-table");
+            });;
         }
     }
 
-    $('#pt-search').focus()
+    $('#pt-search').val(window.location.hash.replace('#','')).focus()
     this.doSearch();
 }

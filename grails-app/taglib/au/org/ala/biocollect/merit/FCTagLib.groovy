@@ -208,30 +208,13 @@ class FCTagLib {
 
         def navbarConfig = [
                 home:[
-                        icon:"icon-home",
+                        icon:"icon-home icon-white",
                         link:createLink(controller: 'home'),
                         cssClass:'visible-desktop',
-                        label:'BioCollect Home'
+                        label:'Biocollect'
                 ]
-//                ,
-//                about:[
-//                        icon:"icon-info-sign",
-//                        link:createLink(controller: 'home', action: 'about'),
-//                        label:'About'
-//                ],
-//                help:[
-//                        icon:"icon-question-sign",
-//                        link:createLink(controller: 'home', action: "help"),
-//                        label:'Help'
-//                ],
-//                contacts:[
-//                        icon:"icon-envelope",
-//                        link:createLink(controller: 'home', action: 'contacts'),
-//                        label:'Contacts'
-//                ]
         ]
 
-//        def navDefaults = ['home', 'about', 'help', 'contacts']
         def navDefaults = ['home']
         def navItems = attrs.items ?: navDefaults
 
@@ -429,16 +412,19 @@ class FCTagLib {
         def casLogoutUrl = attrs.casLogoutUrl ?: grailsApplication.config.security.cas.logoutUrl ?: "https://auth.ala.org.au/cas/logout"
         def cssClass = attrs.cssClass?:"btn btn-small btn-inverse btn-login"
         def output
+        def iconClass = attrs.iconClass?:("icon-off ${(cssClass.contains("btn-login")) ? "icon-white" : ""}")
+        def iconLogin = attrs.iconLogin?:iconClass;
+        def iconLogout = attrs.iconLogout?:iconClass;
 
         def username = userService.currentUserDisplayName
         if (username) {
             output = "<a id='logout-btn' href='${logoutUrl}" +
                     "?casUrl=${casLogoutUrl}" +
                     "&appUrl=${logoutReturnToUrl}' " +
-                    "class='${cssClass}'><i class='icon-off ${(cssClass.contains("btn-login")) ? "icon-white" : ""}'></i> Logout</a>"
+                    "class='${cssClass}'><i class='${iconLogout}'></i> Logout</a>"
         } else {
             // currently logged out
-            output =  "<a href='${casLoginUrl}?service=${loginReturnToUrl}' class='${cssClass}'><span><i class='icon-off ${(cssClass.contains("btn-login")) ? "icon-white" : ""}'></i> Log in</span></a>"
+            output =  "<a href='${casLoginUrl}?service=${loginReturnToUrl}' class='${cssClass}'><span><i class='${iconLogin}'></i> Log in</span></a>"
         }
         out << output
     }
