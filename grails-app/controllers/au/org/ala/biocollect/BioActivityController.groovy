@@ -110,7 +110,7 @@ class BioActivityController {
 
         String userId = userService.getCurrentUserId()
         def activity = activityService.get(id)
-        def projectId = activity?.projectId
+        String projectId = activity?.projectId
         def model = null
 
         if (!userId) {
