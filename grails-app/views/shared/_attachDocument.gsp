@@ -35,13 +35,6 @@
                         </div>
                     </div>
 
-                    <div class="control-group" >
-                        <label class="control-label" for="documentStage">Associate to Stage</label>
-                        <div class="controls">
-                            <select id="documentStage" style="width: 35%;" data-bind="options:stages, optionsCaption: 'Please select', value:stage"></select>
-                        </div>
-                    </div>
-
                     <div class="control-group">
                         <label class="control-label" for="documentLicense">License</label>
 
@@ -66,7 +59,7 @@
                         <div class="controls">
                             <label class="checkbox" for="public">
                                 <input id="public" type="checkbox" data-bind="checked:public, disable: role() =='programmeLogic'"/>
-                                make this document public on the project documents tab
+                                make this document public on the project "Resources" tab
                             </label>
                         </div>
 
