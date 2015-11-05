@@ -123,7 +123,6 @@
 
     // make sure the list of associated organisations are below the shorter of the two columns.
     function placeAssociatedOrgs() {
-        console.log("col1 = " + $("#column1").height() + "; col2 = " + $("#column2").height())
         if ($("#column1").height() > $("#column2").height()) {
             $("#column2").append($("#associatedOrgs"));
         } else {
@@ -137,7 +136,7 @@
 
 
 <script type="text/html" id="associated-orgs">
-<div class="well span12 margin-left-0" id="associatedOrgs">
+<div class="well span12 margin-left-0" id="associatedOrgs" data-bind="visible: associatedOrgs().length > 0">
     <div class="well-title"><g:message code="project.display.associatedOrgs"/></div>
 
     <!-- ko foreach: associatedOrgs -->
