@@ -228,11 +228,23 @@ class BioActivityController {
         def activity = activityService.get(id)
         def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
 
+        String userId = userService.getCurrentUserId()
+
+        boolean embargoed = projectActivityService.isEmbargoed(pActivity)
+        boolean userIsOwner = userId && activityService.isUserOwnerForActivity(userId, id)
+        boolean userIsAdmin = userId && projectService.isUserAdminForProject(userId, id)
+        boolean userIsAlaAdmin = userService.userIsAlaOrFcAdmin()
+
         if (activity && pActivity) {
-            Map model = activityAndOutputModel(activity, activity.projectId)
-            model.pActivity = pActivity
-            model.id = pActivity.projectActivityId
-            model
+            if (embargoed && !userIsAdmin && !userIsOwner && !userIsAlaAdmin) {
+                flash.message = "Access denied: You do not have permission to access the requested resource."
+                redirect(controller: 'project', action: 'index', id: activity.projectId)
+            } else {
+                Map model = activityAndOutputModel(activity, activity.projectId)
+                model.pActivity = pActivity
+                model.id = pActivity.projectActivityId
+                model
+            }
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }

@@ -89,7 +89,7 @@ class ActivityService {
     }
 
     def isUserOwnerForActivity(userId, id) {
-        webService.doGet(grailsApplication.config.ecodata.service.url + '/activity/isUserOwnerForActivity/'+id, [userId: userId])
+        webService.doGet(grailsApplication.config.ecodata.service.url + '/activity/isUserOwnerForActivity/'+id, [userId: userId])?.resp?.userIsOwner
     }
 
     /**

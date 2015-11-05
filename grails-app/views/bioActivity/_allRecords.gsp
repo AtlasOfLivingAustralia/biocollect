@@ -13,14 +13,13 @@
         <!-- ko foreach : records -->
         <div class="row-fluid">
             <div class="span12">
-                <label>
-                    <a data-bind="attr:{'href': transients.viewUrl}">
-                        <strong>Species: </strong>
-                        <a data-bind="attr:{'href': transients.viewUrl}">
-                            <span data-bind="text: name"></span>
-                        </a>
+                <div>
+                    <strong>Species: </strong>
+                    <a data-bind="visible: showCrud(), attr:{'href': transients.viewUrl}">
+                        <span data-bind="text: name"></span>
                     </a>
-                </label>
+                    <span data-bind="visible: !showCrud(), text: name"></span>
+                </div>
                 <small>Survey name: </small><small data-bind="text: transients.pActivity.name"></small>
                 </br>
                 <small>Description: </small><small data-bind="text: transients.pActivity.description"></small>
@@ -32,8 +31,8 @@
                     <a data-bind="visible: showAdd, attr:{'href': transients.addUrl}">add</a>
                     <a data-bind="attr:{'href': transients.editUrl}">edit</a>
                     <a href="#" data-bind="click: $parent.delete">delete</a>
-                    </br></br>
                 <!-- /ko -->
+            </br></br>
             </div>
         </div>
         <!-- /ko -->
