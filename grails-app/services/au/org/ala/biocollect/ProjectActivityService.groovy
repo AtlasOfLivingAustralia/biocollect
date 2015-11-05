@@ -63,4 +63,7 @@ class ProjectActivityService {
         result
     }
 
+    boolean isEmbargoed(Map projectActivity) {
+        projectActivity?.visibility?.embargoUntil && Date.parse("yyyy-MM-dd", projectActivity.visibility.embargoUntil).after(new Date())
+    }
 }

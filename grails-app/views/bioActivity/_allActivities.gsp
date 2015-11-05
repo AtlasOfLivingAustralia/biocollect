@@ -14,12 +14,13 @@
                 <div class="span12">
                     <div class="span12 text-left">
 
-                        <label>
+                        <div>
                             <strong>Survey name: </strong>
-                            <a data-bind="attr:{'href': transients.viewUrl}">
+                            <a data-bind="visible: showCrud(), attr:{'href': transients.viewUrl}">
                                 <span data-bind="text: transients.pActivity.name"></span>
                             </a>
-                        </label>
+                            <span data-bind="visible: !showCrud(), text: transients.pActivity.name"></span>
+                        </div>
                         <small>Description: <span data-bind="text: transients.pActivity.description"></span></small></br>
                         <small>Submitted on: <span data-bind="text: lastUpdated.formattedDate"></span></small>
                         <!-- ko if: showCrud -->
@@ -28,8 +29,8 @@
                             <a data-bind="visible: showAdd(), attr:{'href': transients.addUrl}">add</a>
                             <a data-bind="attr:{'href': transients.editUrl}">edit</a>
                             <a href="#" data-bind="click: $parent.delete">delete</a>
-                            </br></br>
                         <!-- /ko -->
+                    </br></br>
                     </div>
                 </div>
             </div>
