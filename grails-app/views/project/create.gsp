@@ -35,32 +35,30 @@
     <p>
     Please tell us about your project by completing the form below.  Questions marked with a * are mandatory.
     </p>
-    <div id="projectDetails">
-        <form id="projectDetailsForm" class="form-horizontal">
-            <g:render template="details" model="${pageScope.variables}"/>
+    <form id="projectDetails" class="form-horizontal">
+        <g:render template="details" model="${pageScope.variables}"/>
 
-            <g:if test="${grailsApplication.config.termsOfUseUrl}">
-                <div class="row-fluid" style="display: none" data-bind="visible: true"><!-- hide the panel until knockout has finished. Needs to use an inline style for this to work. -->
-                    <div class="well">
-                        <h4 class="block-header"><g:message code="project.details.termsOfUseAgreement"/></h4>
+        <g:if test="${grailsApplication.config.termsOfUseUrl}">
+            <div class="row-fluid" style="display: none" data-bind="visible: true"><!-- hide the panel until knockout has finished. Needs to use an inline style for this to work. -->
+                <div class="well">
+                    <h4 class="block-header"><g:message code="project.details.termsOfUseAgreement"/></h4>
 
-                        <div class="clearfix">
-                            <label class="control-label span3" for="termsOfUseAgreement"><g:message code="project.details.termsOfUseAgreement"/><fc:iconHelp><g:message code="project.details.termsOfUseAgreement.help"/></fc:iconHelp></label>
-                            <div class="controls span9">
-                                <input data-bind="checked:termsOfUseAccepted, disable: !transients.termsOfUseClicked()" type="checkbox" id="termsOfUseAgreement" name="termsOfUseAgreement" data-validation-engine="validate[required]" title="<g:message code="project.details.termsOfUseAgreement.checkboxTip"/>"/>
-                                I confirm that have read and accept the <a href="${grailsApplication.config.termsOfUseUrl}" data-bind="click: clickTermsOfUse" target="_blank">Terms of Use</a>.
-                            </div>
+                    <div class="clearfix">
+                        <label class="control-label span3" for="termsOfUseAgreement"><g:message code="project.details.termsOfUseAgreement"/><fc:iconHelp><g:message code="project.details.termsOfUseAgreement.help"/></fc:iconHelp></label>
+                        <div class="controls span9">
+                            <input data-bind="checked:termsOfUseAccepted, disable: !transients.termsOfUseClicked()" type="checkbox" id="termsOfUseAgreement" name="termsOfUseAgreement" data-validation-engine="validate[required]" title="<g:message code="project.details.termsOfUseAgreement.checkboxTip"/>"/>
+                            I confirm that have read and accept the <a href="${grailsApplication.config.termsOfUseUrl}" data-bind="click: clickTermsOfUse" target="_blank">Terms of Use</a>.
                         </div>
                     </div>
                 </div>
-            </g:if>
-        </form>
-        <div class="form-actions" style="display: none" data-bind="visible: true"> <!-- hide the panel until knockout has finished. Needs to use an inline style for this to work. -->
+            </div>
+        </g:if>
+        <div class="well" style="display: none" data-bind="visible: true"> <!-- hide the panel until knockout has finished. Needs to use an inline style for this to work. -->
             <div class="alert warning" data-bind="visible: !termsOfUseAccepted()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
             <button type="button" id="save" class="btn btn-primary" data-bind="disable: !termsOfUseAccepted()"><g:message code="g.save"/></button>
             <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
         </div>
-    </div>
+    </form>
 </div>
 <r:script>
 $(function(){
