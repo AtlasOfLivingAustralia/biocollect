@@ -156,19 +156,9 @@ class ProjectActivityController {
      * @return
      */
     def getSingleSpecies(String id) {
-        def pActivity = projectActivityService.get(id)
-        def species = pActivity?.species
-        Map result
-        switch (species?.type) {
-            case 'SINGLE_SPECIES':
-                if(species?.singleSpecies?.name && species?.singleSpecies?.guid){
-                    result = [name: species?.singleSpecies?.name, guid: species?.singleSpecies?.guid]
-                } else {
-                    result = [message: 'Invalid species']
-                }
-                break
-            default:
-                result = [message: 'Not available']
+        Map result = activityService.getSingleSpecies(id)
+        if(!result.isSingle){
+            result = [message: 'Not available']
         }
 
         render result as JSON

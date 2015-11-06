@@ -190,28 +190,53 @@ class ActivityService {
      */
     void lookupSpeciesInOutputData(String projectActivityId, String outputName, String listName, List outputData) {
 
+        Map singleSpecies = getSingleSpecies(projectActivityId)
         def model = metadataService.annotatedOutputDataModel(outputName)
         if (listName) {
             model = model.find { it.name == listName }?.columns
         }
 
         // Do species lookup
-        def speciesField = model.find {it.dataType == 'species'}
+        def speciesField = model.find { it.dataType == 'species' }
         if (speciesField) {
             outputData.each { row ->
                 String name = row[speciesField.name]
 
-                Map speciesSearchResults = projectActivityService.searchSpecies(projectActivityId, name, 10)
-                Map species = speciesService.findMatch(speciesSearchResults, name)
-                if (species) {
-                    row[speciesField.name] = [name:species.name, listId:species.listId, guid:species.guid]
+                if (singleSpecies.isSingle && (speciesField.validate == 'required' || row[speciesField.name])) {
+                    row[speciesField.name] = [name: singleSpecies.name, listId: "not applicable", guid: singleSpecies.guid]
+                } else if (!singleSpecies.isSingle) {
+                    Map speciesSearchResults = projectActivityService.searchSpecies(projectActivityId, name, 10)
+                    Map species = speciesService.findMatch(speciesSearchResults, name)
+                    if (species) {
+                        row[speciesField.name] = [name: species.name, listId: species.listId, guid: species.guid]
+                    } else {
+                        row[speciesField.name] = [name: name, listId: 'unmatched', guid: null]
+                    }
                 }
-                else {
-                    row[speciesField.name] = [name:name, listId:'unmatched', guid:null]
-                }
-
             }
         }
+    }
+
+   /*
+    *  Look for SINGLE_SPECIES for the given project activity
+    *  @param projectActivityId project activity identifier
+    *  @return map containing species name, guid and isSingle field to indicate whether it's of a 'SINGLE_SPECIES' category.
+    */
+
+    Map getSingleSpecies(String projectActivityId) {
+        def pActivity = projectActivityService.get(projectActivityId)
+        Map result = [isSingle: false]
+        switch (pActivity?.species?.type) {
+            case 'SINGLE_SPECIES':
+                result.isSingle = true
+                if (pActivity?.species?.singleSpecies?.name && pActivity?.species?.singleSpecies?.guid) {
+                    result.name = pActivity?.species?.singleSpecies?.name
+                    result.guid = pActivity?.species?.singleSpecies?.guid
+                }
+                break
+        }
+
+        result
     }
 
 }

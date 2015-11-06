@@ -76,7 +76,7 @@ class SpeciesService {
         if (!limit) {
             limit = 10
         }
-        def encodedQuery = URLEncoder.encode(searchTerm, "UTF-8")
+        def encodedQuery = URLEncoder.encode(searchTerm ?: '', "UTF-8")
         def url = "${grailsApplication.config.bie.baseURL}/ws/search/auto.jsonp?q=${encodedQuery}&limit=${limit}&idxType=TAXON"
 
         webService.getJson(url)
