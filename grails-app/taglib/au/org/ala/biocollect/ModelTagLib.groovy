@@ -789,7 +789,7 @@ class ModelTagLib {
                 if (containsSpecies) {
                     out << """
                 <div class="text-error text-left">
-                    Note: Only valid exact scientific names will be matched and populated from the database (indicated by a green tick). Unmatched species will load, but will be indicated by a green <b>?</b>. Please check your uploaded data and correct as required.
+                    Note: Only valid exact scientific names will be matched and populated from the database (indicated by a <i class="icon-info-sign"></i> button). Unmatched species will load, but will not show <i class="icon-info-sign"></i> button. Please check your uploaded data and correct as required.
                 </div>"""
                 }
                 out << """<div class="text-left" style="margin:5px">

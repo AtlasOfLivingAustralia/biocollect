@@ -2,17 +2,17 @@
  * Manages the species data type in the output model.
  * Allows species information to be searched for and displayed.
  */
-var SpeciesViewModel = function (o, lists, populate) {
+var SpeciesViewModel = function (species, lists, populate) {
     var self = this;
-    if (!o) o = {};
+    if (!species) species = {};
     if (!lists) lists = {};
     if (!populate) populate = false;
-    self.name = ko.observable(o.name);
-    self.guid = ko.observable(o.guid);
+    self.name = ko.observable(species.name);
+    self.guid = ko.observable(species.guid);
 
     self.transients = {};
-    self.transients.name = ko.observable(o.name);
-    self.transients.guid = ko.observable(o.guid);
+    self.transients.name = ko.observable(species.name);
+    self.transients.guid = ko.observable(species.guid);
     self.transients.source = ko.observable(fcConfig.speciesSearch);
 
     self.transients.bioProfileUrl = ko.computed(function () {

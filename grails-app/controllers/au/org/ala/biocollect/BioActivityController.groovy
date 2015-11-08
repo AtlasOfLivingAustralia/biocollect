@@ -14,6 +14,7 @@ import org.codehaus.groovy.grails.web.json.JSONArray
 class BioActivityController {
 
     public static final String BIOCOLLECT_SIGHTINGS_PLUGIN_NAME = "biocollectSightings"
+    public static final String SINGLE_SIGHTINGS_DATA_TYPE = "singleSighting"
     ProjectService projectService
     MetadataService metadataService
     SiteService siteService
@@ -164,11 +165,31 @@ class BioActivityController {
 
             addOutputModel(model)
             addConfigToOutputModels(pActivity, model)
+            addDefaultActivityData(model)
         }
 
         model
     }
 
+    /**
+     * Assign default data for new activity
+     * @param model model value.
+     * @return
+     */
+    private void addDefaultActivityData(model) {
+        if (!model.activity?.activityId) {
+            model?.outputModels?.each { String name, Map outputModel ->
+                outputModel?.dataModel?.each { Map dataModel ->
+                    if (dataModel.dataType == SINGLE_SIGHTINGS_DATA_TYPE) {
+                        Map species = projectActivityService.getSingleSpecies(model.pActivity?.projectActivityId)
+                        if (species.isSingle) {
+                            model.defaultData = [type: SINGLE_SIGHTINGS_DATA_TYPE, name: species.name, guid: species.guid]
+                        }
+                    }
+                }
+            }
+        }
+    }
     /**
      * Delete activity for the given activityId
      * @param id activity identifier
