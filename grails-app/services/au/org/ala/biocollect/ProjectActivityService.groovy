@@ -63,6 +63,28 @@ class ProjectActivityService {
         result
     }
 
+    /*
+     *  Look for SINGLE_SPECIES for the given project activity
+     *  @param projectActivityId project activity identifier
+     *  @return map containing species name, guid and isSingle field to indicate whether it's of a 'SINGLE_SPECIES' category.
+     */
+
+    Map getSingleSpecies(String projectActivityId) {
+        def pActivity = get(projectActivityId)
+        Map result = [isSingle: false]
+        switch (pActivity?.species?.type) {
+            case 'SINGLE_SPECIES':
+                result.isSingle = true
+                if (pActivity?.species?.singleSpecies?.name && pActivity?.species?.singleSpecies?.guid) {
+                    result.name = pActivity?.species?.singleSpecies?.name
+                    result.guid = pActivity?.species?.singleSpecies?.guid
+                }
+                break
+        }
+
+        result
+    }
+
     boolean isEmbargoed(Map projectActivity) {
         projectActivity?.visibility?.embargoUntil && Date.parse("yyyy-MM-dd", projectActivity.visibility.embargoUntil).after(new Date())
     }

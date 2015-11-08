@@ -74,7 +74,7 @@
 
                 self.loadData = function (data) {
                     // load dynamic data
-                <md:jsLoadModel model="${model}"/>
+                <md:jsLoadModel model="${model}" defaultData="${defaultData}"/>
 
                 // if there is no data in tables then add an empty row for the user to add data
                 if (typeof self.addRow === 'function' && self.rowCount() === 0) {

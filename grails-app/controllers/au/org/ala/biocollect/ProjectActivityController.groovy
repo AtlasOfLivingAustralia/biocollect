@@ -156,7 +156,7 @@ class ProjectActivityController {
      * @return
      */
     def getSingleSpecies(String id) {
-        Map result = activityService.getSingleSpecies(id)
+        Map result = projectActivityService.getSingleSpecies(id)
         if(!result.isSingle){
             result = [message: 'Not available']
         }
