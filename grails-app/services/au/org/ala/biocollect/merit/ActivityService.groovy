@@ -190,28 +190,32 @@ class ActivityService {
      */
     void lookupSpeciesInOutputData(String projectActivityId, String outputName, String listName, List outputData) {
 
+        Map singleSpecies = projectActivityService.getSingleSpecies(projectActivityId)
         def model = metadataService.annotatedOutputDataModel(outputName)
         if (listName) {
             model = model.find { it.name == listName }?.columns
         }
 
         // Do species lookup
-        def speciesField = model.find {it.dataType == 'species'}
+        def speciesField = model.find { it.dataType == 'species' }
         if (speciesField) {
             outputData.each { row ->
                 String name = row[speciesField.name]
 
-                Map speciesSearchResults = projectActivityService.searchSpecies(projectActivityId, name, 10)
-                Map species = speciesService.findMatch(speciesSearchResults, name)
-                if (species) {
-                    row[speciesField.name] = [name:species.name, listId:species.listId, guid:species.guid]
+                if (singleSpecies.isSingle && (speciesField.validate == 'required' || row[speciesField.name])) {
+                    row[speciesField.name] = [name: singleSpecies.name, listId: "not applicable", guid: singleSpecies.guid]
+                } else if (!singleSpecies.isSingle) {
+                    Map speciesSearchResults = projectActivityService.searchSpecies(projectActivityId, name, 10)
+                    Map species = speciesService.findMatch(speciesSearchResults, name)
+                    if (species) {
+                        row[speciesField.name] = [name: species.name, listId: species.listId, guid: species.guid]
+                    } else {
+                        row[speciesField.name] = [name: name, listId: 'unmatched', guid: null]
+                    }
                 }
-                else {
-                    row[speciesField.name] = [name:name, listId:'unmatched', guid:null]
-                }
-
             }
         }
     }
+
 
 }

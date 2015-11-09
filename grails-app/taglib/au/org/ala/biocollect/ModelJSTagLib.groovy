@@ -1,5 +1,7 @@
 package au.org.ala.biocollect
 
+import grails.converters.JSON
+
 class ModelJSTagLib {
 
     static namespace = "md"
@@ -126,6 +128,10 @@ class ModelJSTagLib {
                 out << INDENT*8 << "self.data['${mod.name}'](new DocumentViewModel(doc));\n"
                 out << INDENT*4 << "}\n"
             } else if (mod.dataType == 'singleSighting') {
+                if(attrs?.defaultData?.type == 'singleSighting'){
+                    Map defaultData = [speciesLookup: attrs.defaultData.name, guid: attrs.defaultData.guid]
+                    out << INDENT*4 << "data = ${defaultData as JSON};\n"
+                }
                 out << INDENT*4 << "self.data.sighting.loadSightingData(data, ${readonly});\n"
             } else if (mod.dataType == 'masterDetail') {
                 out << INDENT*4 << "self.data.masterDetail.loadItems(data['${mod.name}']);\n"
