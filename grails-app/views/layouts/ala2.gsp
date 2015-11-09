@@ -209,7 +209,7 @@
             $('.more').css('display','none');
         }
     }
-    $(window).on('resize',function(){
+    $(window).on('resize load',function(){
         calcWidth();
     });
     calcWidth();

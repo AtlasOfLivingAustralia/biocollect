@@ -21,8 +21,9 @@ nav#biocollectNav > ul > li.hidden {
     display: none;
 }
 nav#biocollectNav > ul > li > a {
-    border-right: 1px dashed #d1f5d6;
+    border-right: 1px dashed white;
 }
+
 nav#biocollectNav > ul > li a {
     font-size: 1rem;
     display: block;
@@ -30,7 +31,7 @@ nav#biocollectNav > ul > li a {
     color: #FFF;
     text-align: center;
     text-decoration: none;
-    padding: 10px 20px;
+    padding: 10px 20px 5px 20px;
 }
 nav#biocollectNav > ul > li a .fa {
     font-size: 20px;
@@ -72,22 +73,26 @@ nav#biocollectNav > ul > li:hover ul {
     content: url(http://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico)
 }
 
-#main > li:nth-child(1) > a{
-    padding-top:40px; !important;
+nav#biocollectNav ul#main > li > a.ala-link{
+    padding-top:25px; !important;
     padding-bottom: 10px;!important;
     color:white;
+    font-size: large;
+    border-right: 0px dashed #d1f5d6;
 }
-#main > li:nth-child(1) > a:hover{
-    color:rgb(217,27,0);
+
+nav#biocollectNav ul#main li a.ala-link:hover{
+    color: rgb(217,27,0);
+    background: rgb(43, 123, 117);
 }
 
 .ala-header{
     background: url(https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/species-by-location-phyllopteryx-taeniolatus.jpg) no-repeat center top;
-    height: 300px;
+    height: 225px;
     background-size: cover;
     background-position-y: -54px;
 }
 
 .ala-header .input-append{
-    margin-top: 100px ;
+    margin-top: 75px ;
 }

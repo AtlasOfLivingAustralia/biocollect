@@ -1,7 +1,7 @@
 <div id="pt-table">
     <div class="row-fluid">
-        <div class="span12">
-            <h3 class="inline span4" id="pt-resultsReturned"></h3>
+        <div class="">
+            <h3 class="inline span10" id="pt-resultsReturned"></h3>
             <g:if test="${fc.userIsAlaOrFcAdmin()}">
                 <a href="${downloadLink}" id="pt-downloadLink" class="btn btn-warning span2 inline pull-right"
                    title="${message(code:'project.download.tooltip')}" data-bind="click: download">
@@ -12,13 +12,13 @@
     <p/>
     <bc:koLoading>
             <div data-bind="foreach:pageProjects">
-            <div class="row padding5" style="border-bottom: 2px solid grey">
-                <div class="span3 padding5 pf-project-image">
-                    <div class="projectLogo well">
-                        <img style="max-width:100%;max-height:100%" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name,src:transients.imageUrl}"/>
+            <div class="row-fluid padding5" style="border-bottom: 2px solid grey">
+                <div class="span2 padding5">
+                    <div class="projectLogo row-fluid">
+                        <img class="image-logo img-polaroid span12" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name,src:transients.imageUrl}"/>
                     </div>
                 </div>
-                <div class="span6 padding5 pf-project-text">
+                <div class="span8 padding5 pf-project-text">
                     <a data-bind="attr:{href:transients.indexUrl}">
                         <span data-bind="text:name" style="font-size:150%;font-weight:bold"></span>
                     </a>
@@ -44,7 +44,7 @@
                         <span style="font-weight:bold"><g:message code="project.display.view" /></span></a>
                     </div>
                 </div>
-                <div class="span2 padding5 pf-project-status pull-right">
+                <div class="span2 padding5 pf-project-status">
                     <g:render template="/project/dayscount"/>
                     <g:if test="${controllerName == 'organisation'}">
                         <span class="projectType" data-bind="text:transients.kindOfProjectDisplay"></span>
