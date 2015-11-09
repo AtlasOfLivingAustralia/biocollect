@@ -1,9 +1,4 @@
-.projectLogo {
-    width: 200px;
-    height: 150px;
-    line-height: 146px;
-    overflow: hidden;
-    padding: 1px;
+.projectLogo{
     text-align: center;
 }
 .projectType {
@@ -46,8 +41,9 @@ input[type=checkbox] {
 }
 
 #pt-search{
-    min-width: 100px;
-    max-width: 300px;
+    min-width: 60px;
+    width: 50%;
+    max-width: 500px;
     padding: 14px;
 }
 
@@ -60,12 +56,6 @@ input[type=checkbox] {
     padding-bottom:5px;
 }
 
-.pf-project-image{
-    min-width:200px
-}
-.pf-project-text{
-
-}
 .pf-project-status{
     min-width:10em;
     text-align:center
@@ -84,4 +74,30 @@ input[type=checkbox] {
 
 .active .toggleIndicator{
     display: inherit;
+}
+
+#pt-selectors{
+    background-color: #E6F3F2;
+}
+
+/**
+ * hide green background
+ */
+#pf-search .input-append .active, .input-prepend .active {
+    border-color: #f15a3b;
+}
+
+/*chevron logic*/
+#pf-search #pt-filter.active .icon-chevron-down{
+    display: none;
+}
+
+#pf-search #pt-filter.active .icon-chevron-up{
+    display: inherit;
+}
+
+/*image display size on project finder*/
+.image-logo{
+    max-width: 140px;
+    max-height: 140px;
 }
