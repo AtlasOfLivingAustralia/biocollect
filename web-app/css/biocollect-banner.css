@@ -38,6 +38,11 @@ nav#biocollectNav > ul > li a .fa {
     display: block;
     margin-bottom: 10px;
 }
+
+nav#biocollectNav ul>li.active>a {
+    background-color:#444d58;
+}
+
 nav#biocollectNav > ul > li a + ul {
     display: none;
     position: absolute;
