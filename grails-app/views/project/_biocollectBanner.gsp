@@ -2,8 +2,7 @@
     <ul id='main'>
         <g:set var="path" value="${request.getServletPath()}"/>
         <li>
-            <!-- TODO: Biocollect home page should point to ala wordpress site -->
-            <a href="#"><span class="fa fa-home"></span>Biocollect</a>
+            <a href="${grailsApplication.config.biocollect.homepageUrl}"><span class="fa fa-home"></span>Biocollect</a>
         </li>
         <li class="${(path ==~ /.*project\/citizenScience.*/) ? 'active' : ''}">
             <a href="#" class="btnSearch"><span class="fa fa-search"></span>Search</a>
