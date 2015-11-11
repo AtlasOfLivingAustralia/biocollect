@@ -46,6 +46,12 @@
                 </div>
                 <div class="span2 padding5 pf-project-status">
                     <g:render template="/project/dayscount"/>
+                    <span data-bind="visible:plannedStartDate">
+                        <small data-bind="text:'Start date: ' + moment(plannedStartDate()).format('DD MMMM, YYYY')"></small>
+                    </span>
+                    <span data-bind="visible:plannedEndDate">
+                        <br/><small data-bind="text:'End date: ' + moment(plannedEndDate()).format('DD MMMM, YYYY')"></small>
+                    </span>
                     <g:if test="${controllerName == 'organisation'}">
                         <span class="projectType" data-bind="text:transients.kindOfProjectDisplay"></span>
                     </g:if>
