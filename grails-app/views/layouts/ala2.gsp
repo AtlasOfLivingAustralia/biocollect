@@ -198,8 +198,9 @@
             calcWidth();
         } else {
             var firstMoreElement = $('#main li.more li').first();
-            if (navwidth + firstMoreElement.data('width') < availablespace) {
+            while ((navwidth = navwidth + firstMoreElement.data('width')) < availablespace) {
                 firstMoreElement.insertBefore($('#main .more'));
+                firstMoreElement = $('#main li.more li').first();
             }
         }
 
@@ -209,7 +210,7 @@
             $('.more').css('display','none');
         }
     }
-    $(window).on('resize load',function(){
+    $(window).on('resize',function(){
         calcWidth();
     });
     calcWidth();
