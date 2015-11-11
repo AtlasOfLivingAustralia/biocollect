@@ -12,13 +12,13 @@
     <p/>
     <bc:koLoading>
             <div data-bind="foreach:pageProjects">
-            <div class="row-fluid padding5" style="border-bottom: 2px solid grey">
-                <div class="span2 padding5">
-                    <div class="projectLogo row-fluid">
-                        <img class="image-logo img-polaroid span12" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name,src:transients.imageUrl}"/>
+            <div class="row padding5" style="border-bottom: 2px solid grey;">
+                <div class="span padding5">
+                    <div class="projectLogo span" style="display: table-cell;">
+                        <img class="image-logo" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name,src:transients.imageUrl}"/>
                     </div>
                 </div>
-                <div class="span8 padding5 pf-project-text">
+                <div class="span10 padding5 pf-project-text" style="display: table-cell;">
                     <a data-bind="attr:{href:transients.indexUrl}">
                         <span data-bind="text:name" style="font-size:150%;font-weight:bold"></span>
                     </a>
@@ -44,7 +44,7 @@
                         <span style="font-weight:bold"><g:message code="project.display.view" /></span></a>
                     </div>
                 </div>
-                <div class="span2 padding5 pf-project-status">
+                <div class="span padding5 pf-project-status" style="display: table-cell;">
                     <g:render template="/project/dayscount"/>
                     <span data-bind="visible:plannedStartDate">
                         <small data-bind="text:'Start date: ' + moment(plannedStartDate()).format('DD MMMM, YYYY')"></small>
