@@ -102,12 +102,12 @@ class ProjectService {
      * @return the returned status
      */
     def delete(id) {
+        webService.doDelete(grailsApplication.config.ecodata.service.url + '/project/' + id)
+
         String projectName = get(id, "brief")?.name
         String subject = "Project ${projectName ?: id} was deleted by ${userService.currentUserDisplayName}"
         String emailBody = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) has deleted project ${projectName ?: id}"
         emailService.sendEmail(subject, emailBody, ["${grailsApplication.config.biocollect.support.email.address}"])
-
-        webService.doDelete(grailsApplication.config.ecodata.service.url + '/project/' + id)
     }
 
     /**
