@@ -14,8 +14,8 @@
             <div data-bind="foreach:pageProjects">
             <div class="row-fluid padding5" style="border-bottom: 2px solid grey">
                 <div class="span2 padding5">
-                    <div class="projectLogo row-fluid">
-                        <img class="image-logo img-polaroid span12" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name,src:transients.imageUrl}"/>
+                    <div class="projectLogo">
+                        <img class="image-logo thumbnail" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name,src:transients.imageUrl}"/>
                     </div>
                 </div>
                 <div class="span8 padding5 pf-project-text">
