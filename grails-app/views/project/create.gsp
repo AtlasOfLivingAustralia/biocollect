@@ -39,7 +39,7 @@
         <g:render template="details" model="${pageScope.variables}"/>
 
         <g:if test="${grailsApplication.config.termsOfUseUrl}">
-            <div class="row-fluid" style="display: none" data-bind="visible: true"><!-- hide the panel until knockout has finished. Needs to use an inline style for this to work. -->
+            <div class="row-fluid" style="display: none" data-bind="visible: !isExternal()">
                 <div class="well">
                     <h4 class="block-header"><g:message code="project.details.termsOfUseAgreement"/></h4>
 
@@ -54,8 +54,8 @@
             </div>
         </g:if>
         <div class="well" style="display: none" data-bind="visible: true"> <!-- hide the panel until knockout has finished. Needs to use an inline style for this to work. -->
-            <div class="alert warning" data-bind="visible: !termsOfUseAccepted()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
-            <button type="button" id="save" class="btn btn-primary" data-bind="disable: !termsOfUseAccepted()"><g:message code="g.save"/></button>
+            <div class="alert warning" data-bind="visible: !termsOfUseAccepted() && !isExternal()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
+            <button type="button" id="save" class="btn btn-primary" data-bind="disable: !termsOfUseAccepted() && !isExternal()"><g:message code="g.save"/></button>
             <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
         </div>
     </form>
