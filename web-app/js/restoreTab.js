@@ -1,26 +1,20 @@
 /**
  * Created by sat01a on 28/09/15.
  */
-var RestoreTab = function(tabId, defaultHrefTab, forceDefault){
-    if (forceDefault === undefined) {
-        forceDefault = false;
-    }
+var RestoreTab = function (tabId, defaultHrefTab) {
 
-    //Restore
-    var storedTab = amplify.store(tabId+'-state');
-    if(forceDefault){
-        $('#'+defaultHrefTab).tab('show');
-    }
-    else if(storedTab){
+    //Restore tab reference if available else show default tab.
+    var storedTab = amplify.store(tabId + '-state');
+    if (storedTab && $(storedTab).length > 0) {
         $(storedTab + "-tab").tab('show');
-    } else{
-        $('#'+defaultHrefTab).tab('show');
+    } else {
+        $('#' + defaultHrefTab).tab('show');
     }
 
-    //Store
-    $('#'+tabId+' a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    //Store tab reference
+    $('#' + tabId + ' a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         var tab = e.currentTarget.hash;
-        amplify.store(tabId +'-state', tab);
+        amplify.store(tabId + '-state', tab);
     });
 
 };
