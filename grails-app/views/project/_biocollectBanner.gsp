@@ -28,7 +28,7 @@
         </g:if>
         <li><fc:loginLogoutButton logoutUrl="${grailsApplication.config.grails.serverURL}/logout/logout"
                                   iconLogin="fa fa-sign-in" iconLogout="fa fa-sign-out" cssClass="nothing"/></li>
-        <li class="more hide" data-width="80">
+        <li class="more" data-width="80" style="display: none">
             <a href="#"><span class="fa fa-ellipsis-h"></span>More</a>
             <ul></ul>
         </li>

@@ -429,6 +429,16 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     });
     var updatingDurations = false; // Flag to prevent endless loops during change of end date / duration.
     self.transients.plannedDuration = ko.observable(calculateDuration(self.plannedStartDate(), self.plannedEndDate()));
+    /**
+     * fired when logo image is loaded. fn used to stretch small image to height or width of parent container.
+     * @param data
+     * @param e
+     */
+    self.transients.findLogoScalingClass = function(data, e){
+        var $elem = $(e.target);
+        var className = $elem.width()/$elem.height() > 1 ? 'wide':'tall';
+        $elem.addClass(className);
+    };
     self.transients.plannedDuration.subscribe(function(newDuration) {
         if (updatingDurations) {
             return;

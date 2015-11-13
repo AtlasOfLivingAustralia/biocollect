@@ -254,10 +254,16 @@ modules = {
     }
 
     projectFinder {
-        dependsOn('knockout', 'projects','bootstrap')
+        dependsOn('knockout', 'projects','bootstrap', 'responsiveTable')
         resource url: 'js/button-toggle-events.js'
         resource url: 'js/project-finder.js'
         resource url: 'css/project-finder.css'
+    }
+
+    responsiveTable{
+        resource url: 'vendor/responsive/js/responsive.core.js'
+        resource url: 'vendor/responsive/js/responsive.tablelist.js'
+        resource url: 'vendor/responsive/css/responsive.tablelist.css'
     }
 
     jquery_cookie {

@@ -9,6 +9,24 @@
     background-color: white;
 }
 
+table.table-list.project-finder-table td{
+    vertical-align: top;
+}
+
+table.table-list.project-finder-table tr{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid grey;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.project-row-layout{
+    margin-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .projectType {
     padding-right: 10px;
     padding-left: 10px;
@@ -108,3 +126,17 @@ input[type=checkbox] {
     max-width: 100%;
     max-height: 100%;
 }
+
+.wide {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: auto;
+}
+
+.tall {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: 100%;
+}​
