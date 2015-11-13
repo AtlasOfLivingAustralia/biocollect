@@ -213,8 +213,9 @@
                 ${pActivity ?: 'null'});
 
             ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
-            ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
-
+            <g:if test="${pActivity.commentsAllowed}">
+                ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
+            </g:if>
             <g:if test="${metaModel?.supportsSites?.toBoolean()}">
                 var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
                 if(mapFeatures !=null && mapFeatures.features !== undefined && mapFeatures.features.length >0){
