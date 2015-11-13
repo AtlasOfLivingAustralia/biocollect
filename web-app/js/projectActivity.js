@@ -434,7 +434,16 @@ var ProjectActivity = function (o, pActivityForms, projectId, selected, sites, s
     self.transients.warning = ko.computed(function () {
         return self.projectActivityId() === undefined ? true : false;
     });
-
+    /**
+     * fired when logo image is loaded. fn used to stretch small image to height or width of parent container.
+     * @param data
+     * @param e
+     */
+    self.transients.findLogoScalingClass = function(data, e){
+        var $elem = $(e.target);
+        var className = $elem.width()/$elem.height() > 1 ? 'wide':'tall';
+        $elem.addClass(className);
+    };
 
     self.sites = ko.observableArray();
     self.loadSites = function (projectSites, surveySites) {

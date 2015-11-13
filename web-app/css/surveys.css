@@ -1,0 +1,52 @@
+.survey-logo {
+    width: 200px;
+    height: 150px;
+    line-height: 146px;
+    overflow: hidden;
+    padding: 3px;
+    text-align: center;
+    border: 1px solid #e3e3e3;
+    background-color: white;
+}
+
+table.table-list.survey-finder-table td{
+    vertical-align: top;
+}
+
+table.table-list.survey-finder-table tr{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid grey;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.survey-row-layout{
+    margin-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.survey-add-record{
+    width: 120px;
+}
+
+
+.image-logo{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.wide {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: auto;
+}
+
+.tall {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: 100%;
+}​
