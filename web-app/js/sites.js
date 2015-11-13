@@ -5,7 +5,6 @@ var SiteViewModel = function (site, feature) {
     self.siteId = site.siteId;
     self.name = ko.observable(site.name);
     self.externalId = ko.observable(site.externalId);
-    self.context = ko.observable(site.context);
     self.type = ko.observable(site.type);
     self.area = ko.observable(site.area);
     self.description = ko.observable(site.description);

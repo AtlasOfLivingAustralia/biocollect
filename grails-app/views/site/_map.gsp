@@ -1,5 +1,5 @@
 <!-- ko stopBinding: true -->
-<div id="sitemap">
+<div id="sitemap" class="well">
             <script type="text/javascript" src="${grailsApplication.config.google.drawmaps.url}"></script>
             <div class="row-fluid">
                 <g:hiddenField name="id" value="${site?.siteId}"/>
@@ -32,18 +32,8 @@
                               data-bind="value: type"
                               class="span12"
                               name='type'
-                              from="['Works Area','Project Extent']"
-                              keys="['worksArea','projectArea']"/>
-                </div>
-                <div class="span3">
-                    <label for="siteContext">Context</label>
-                    %{--<input data-bind="value: context" id="siteContext" type="text" class="span12"/>--}%
-                    <g:select id="siteContext"
-                              data-bind="value: context"
-                              class="span12"
-                              name='context'
-                              from="['choose site context','Pastoral','Industrial','Urban','Coastal', 'Reserve', 'Private land']"
-                              keys="['none','Pastoral','Industrial','Urban','Coastal','Reserve', 'Private land']"/>
+                              from="['Survey Area', 'Monitoring Point', 'Works Area']"
+                              keys="['surveyArea', 'monitoringPoint', 'worksArea']"/>
                 </div>
                 <div class="span3">
                     <label for="siteArea">Area (decimal hectares)
