@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.EmailService
 import au.org.ala.web.AuthService
 import grails.converters.JSON
 
@@ -14,6 +15,7 @@ class ProjectService {
     UserService userService
     MetadataService metadataService
     SettingService settingService
+    EmailService emailService
 
     def list(brief = false, citizenScienceOnly = false) {
         def params = brief ? '?brief=true' : ''
@@ -54,25 +56,44 @@ class ProjectService {
      * Creates a new project and adds the user as a project admin.
      */
     def create(props) {
-
         def activities = props.remove('selectedActivities')
 
         // create a project in ecodata
-        def result = webService.doPost(grailsApplication.config.ecodata.service.url + '/project/', props)
+        Map result = webService.doPost(grailsApplication.config.ecodata.service.url + '/project/', props)
+
+        String subject
+        String body
         if (result?.resp?.projectId) {
-            def projectId = result.resp.projectId
+            String projectId = result.resp.projectId
             // Add the user who created the project as an admin of the project
             userService.addUserAsRoleToProject(userService.getUser().userId, projectId, RoleService.PROJECT_ADMIN_ROLE)
             if (activities) {
                 settingService.updateProjectSettings(projectId, [allowedActivities: activities])
             }
+
+            subject = "New project ${props.name} was created by ${userService.currentUserDisplayName}"
+            body = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) has successfully created a new project ${props.name} with id ${projectId}"
+        } else {
+            subject = "An error occurred while creating a new project"
+            body = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) attempted to create a new project ${props.name}, but an error occurred during creation: ${result.error}."
         }
+
+        emailService.sendEmail(subject, body, ["${grailsApplication.config.biocollect.support.email.address}"])
 
         result
     }
 
-    def update(id, body) {
-        webService.doPost(grailsApplication.config.ecodata.service.url + '/project/' + id, body)
+    def update(id, body, boolean skipEmailNotification = false) {
+        def result = webService.doPost(grailsApplication.config.ecodata.service.url + '/project/' + id, body)
+
+        if (!skipEmailNotification) {
+            String projectName = get(id, "brief")?.name
+            String subject = "Project ${projectName ?: id} was updated by ${userService.currentUserDisplayName}"
+            String emailBody = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) has updated project ${projectName ?: id}"
+            emailService.sendEmail(subject, emailBody, ["${grailsApplication.config.biocollect.support.email.address}"])
+        }
+
+        result
     }
 
     /**
@@ -82,6 +103,11 @@ class ProjectService {
      */
     def delete(id) {
         webService.doDelete(grailsApplication.config.ecodata.service.url + '/project/' + id)
+
+        String projectName = get(id, "brief")?.name
+        String subject = "Project ${projectName ?: id} was deleted by ${userService.currentUserDisplayName}"
+        String emailBody = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) has deleted project ${projectName ?: id}"
+        emailService.sendEmail(subject, emailBody, ["${grailsApplication.config.biocollect.support.email.address}"])
     }
 
     /**
@@ -90,6 +116,10 @@ class ProjectService {
      * @return the returned status
      */
     def destroy(id) {
+        String subject = "Project ${id} was hard-deleted by ${userService.currentUserDisplayName}"
+        String emailBody = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) has hard-deleted project ${id}"
+        emailService.sendEmail(subject, emailBody, ["${grailsApplication.config.biocollect.support.email.address}"])
+
         webService.doDelete(grailsApplication.config.ecodata.service.url + '/project/' + id + '?destroy=true')
     }
 

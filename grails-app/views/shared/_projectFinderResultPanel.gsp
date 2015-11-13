@@ -11,7 +11,6 @@
                                 <i class="icon-download icon-white"></i>&nbsp;<g:message code="g.download" /></a>
                         </div>
                     </g:if>
-
                 </td>
             </tr>
         </tbody>

@@ -262,7 +262,7 @@ class ProjectController {
             if (siteResult.status == 'error')
                 result = [error:'SiteService failed']
             else if (siteResult.status == 'created') {
-                def updateResult = projectService.update(id, [projectSiteId: siteResult.id])
+                def updateResult = projectService.update(id, [projectSiteId: siteResult.id], true)
                 if (updateResult.error) result = updateResult
             }
         }
