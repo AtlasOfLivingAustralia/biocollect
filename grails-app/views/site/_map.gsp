@@ -2,9 +2,18 @@
 <div id="sitemap" class="well">
             <script type="text/javascript" src="${grailsApplication.config.google.drawmaps.url}"></script>
             <div class="row-fluid">
+                <h2>Create or edit Site</h2>
+                <p class="media-heading">
+                    A site should represent the smallest area which contains all of the data collected in a single activity or survey event.
+                    To create or edit a site, please complete at least all mandatory fields (shown with <span class="req-field"></span> ).
+                </p>
+            </div>
+            <div class="row-fluid">
                 <g:hiddenField name="id" value="${site?.siteId}"/>
                 <div>
-                    <label for="name">Site name</label>
+                    <label for="name">Site name <fc:iconHelp title="Site name">The name of the site at which a survey or activity is undertaken. This should be short and uniquely identifiable.</fc:iconHelp>
+                        <span class="req-field"></span>
+                    </label>
                     <h1>
                         <input data-bind="value: name" data-validation-engine="validate[required]"
                                class="span8" id="name" type="text" value="${site?.name?.encodeAsHTML()}"
@@ -26,7 +35,7 @@
                     <input data-bind="value:externalId" id="externalId" type="text" class="span12"/>
                 </div>
                 <div class="span3">
-                    <label for="siteType">Type</label>
+                    <label for="siteType">Type <fc:iconHelp title="Type">A categorisation for the type of site being mapped.</fc:iconHelp> </label>
                     %{--<input data-bind="value: type" id="siteType" type="text" class="span12"/>--}%
                     <g:select id="siteType"
                               data-bind="value: type"
@@ -44,14 +53,16 @@
 
             <div class="row-fluid">
                 <div class="span6">
-                    <fc:textArea data-bind="value: description" id="description" label="Description" class="span12" rows="3" cols="50"/>
+                    <g:set var="helpDesc" value="${fc.iconHelp(title: 'Description', {'A long description of the site. This may include distance and bearing relative to a fixed known location, size, shape, distinctive characteristics, etc.'})}"></g:set>
+                    <fc:textArea data-bind="value: description" id="description" label="Description ${helpDesc}" class="span12" rows="3" cols="50"/>
                 </div>
                 <div class="span6">
-                    <fc:textArea data-bind="value: notes" id="notes" label="Notes" class="span12" rows="3" cols="50"/>
+                    <g:set var="helpNotes" value="${fc.iconHelp(title: 'Notes', {'Additional notes about the site such as setting/surroundings, aspect, special/notable features, boundary/corner markers, etc.'})}"></g:set>
+                    <fc:textArea data-bind="value: notes" id="notes" label="Notes ${helpNotes}" class="span12" rows="3" cols="50"/>
                 </div>
             </div>
 
-            <h2>Extent of site</h2>
+            <h2>Create a spatial representation of this site</h2>
             <fc:iconHelp title="Extent of the site">The extent of the site can be represented by
                 a polygon, radius or point. KML, WKT and shape files are supported for uploading polygons.
                 As are PID's of existing features in the Atlas Spatial Portal.</fc:iconHelp>
@@ -67,7 +78,7 @@
                     <div class="well well-small">
 
                         <div>
-                            <h4>Define extent using:
+                            <h4>Define extent using: <fc:iconHelp title="Define extent using">Select the method you want to use to define the area of the site</fc:iconHelp> <span class="req-field"></span>
                             <g:select class="input-medium" data-bind="value: extentSource" data-validation-engine="validate[funcCall[validateSiteExtent]]"
                                       name='extentSource'
                                       from="['choose type','point','known shape','draw a shape']"
