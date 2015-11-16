@@ -2,7 +2,7 @@
 <div id="sitemap" class="well">
             <script type="text/javascript" src="${grailsApplication.config.google.drawmaps.url}"></script>
             <div class="row-fluid">
-                <h2>Create or edit Site</h2>
+                <h2>Site create/edit</h2>
                 <p class="media-heading">
                     A site should represent the smallest area which contains all of the data collected in a single activity or survey event.
                     To create or edit a site, please complete at least all mandatory fields (shown with <span class="req-field"></span> ).
