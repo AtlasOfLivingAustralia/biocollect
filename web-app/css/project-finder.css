@@ -9,6 +9,10 @@
     background-color: white;
 }
 
+.project-finder-table{
+    width: 100%;
+}
+
 table.table-list.project-finder-table td{
     vertical-align: top;
 }
@@ -25,6 +29,10 @@ table.table-list.project-finder-table tr{
     margin-left: 20px;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.project-row-status{
+    width: 200px;
 }
 
 .projectType {
@@ -97,7 +105,7 @@ input[type=checkbox] {
     display: none;
 }
 
-.active .toggleIndicator{
+.active > .toggleIndicator{
     display: inherit;
 }
 

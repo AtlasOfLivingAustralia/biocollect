@@ -1,11 +1,11 @@
-<div id="pt-table">
+<div id="pt-table" class="row-fluid">
     <table data-table-list>
         <tbody>
             <tr>
                 <td><h3 id="pt-resultsReturned"></h3></td>
                 <td>
                     <g:if test="${fc.userIsAlaOrFcAdmin()}">
-                        <div class="span2">
+                        <div>
                             <a href="${downloadLink}" id="pt-downloadLink" class="btn btn-warning"
                                title="${message(code:'project.download.tooltip')}" data-bind="click: download">
                                 <i class="icon-download icon-white"></i>&nbsp;<g:message code="g.download" /></a>
@@ -45,7 +45,7 @@
                         </div>
                     </td>
                     <td class="span2">
-                        <div class="project-row-layout">
+                        <div class="project-row-layout project-row-status">
                             <g:render template="/project/dayscount"/>
                             <span data-bind="visible:plannedStartDate">
                                 <small data-bind="text:'Start date: ' + moment(plannedStartDate()).format('DD MMMM, YYYY')"></small>

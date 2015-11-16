@@ -436,7 +436,17 @@ function ProjectViewModel(project, isUserEditor, organisations) {
      */
     self.transients.findLogoScalingClass = function(data, e){
         var $elem = $(e.target);
-        var className = $elem.width()/$elem.height() > 1 ? 'wide':'tall';
+        var className,
+            height = $elem.height(),
+            width = $elem.width(),
+            ratio = width/height,
+            max = 1.05,
+            min = 0.95;
+        if(ratio >= min && ratio <= max){
+            className = width/height > 1 ? 'tall':'wide';
+        } else {
+            className = width/height > 1 ? 'wide':'tall';
+        }
         $elem.addClass(className);
     };
     self.transients.plannedDuration.subscribe(function(newDuration) {
