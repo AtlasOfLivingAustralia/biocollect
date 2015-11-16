@@ -24,8 +24,8 @@ class SearchController {
         render speciesService.searchForSpecies(q, limit, params.listId) as JSON
     }
 
-    def searchSpeciesList(String sort, Integer max, Integer offset){
-        render speciesService.searchSpeciesList(sort, max, offset) as JSON
+    def searchSpeciesList(String sort, Integer max, Integer offset, String guid){
+        render speciesService.searchSpeciesList(sort, max, offset, guid) as JSON
     }
 
     //Search species by project activity species constraint.
