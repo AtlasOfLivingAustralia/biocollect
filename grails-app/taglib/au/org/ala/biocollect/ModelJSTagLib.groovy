@@ -194,20 +194,17 @@ class ModelJSTagLib {
         if (!attrs.model || !attrs.model.dataModel) {
             out << "window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);"
         } else {
-            attrs.model?.dataModel?.each { mod ->
-                switch (mod.dataType) {
-                    case "singleSighting":
-                        out << """
+            boolean isSingleSighting = attrs.model.dataModel.find { it.dataType == "singleSighting" }
+
+            if (isSingleSighting) {
+                out << """
                         window[viewModelInstance].dirtyFlag = {
                             isDirty: window[viewModelInstance].data.sighting.isDirty,
                             reset: window[viewModelInstance].data.sighting.resetDirtyFlag
                         };
                     """
-                        break
-                    default:
-                        out << "window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);"
-                        break
-                }
+            } else {
+                out << "window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);"
             }
         }
     }
