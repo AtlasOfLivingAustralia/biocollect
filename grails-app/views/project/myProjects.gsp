@@ -42,9 +42,7 @@
         </g:if>
     </div>
 
-    <div id="pt-root" class="row-fluid">
-        <g:render template="/shared/projectFinder"/>
-    </div>
+    <g:render template="/shared/projectFinder"/>
 </div>
 <r:script>
     $("#newPortal").on("click", function() {

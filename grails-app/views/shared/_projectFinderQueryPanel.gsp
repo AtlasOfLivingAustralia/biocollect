@@ -1,7 +1,10 @@
-<div>
-    <g:if test="${showSearch}">
+
+<g:if test="${showSearch}">
+    <div class="row-fluid">
         <g:render template="/shared/projectFinderQueryInput"/>
-    </g:if>
+    </div>
+</g:if>
+<div class="row-fluid">
     <div id="pt-selectors" class="well" style="display:none">
         <div id="filters-hidden">
             <div id="pt-searchControls" class="row-fluid">

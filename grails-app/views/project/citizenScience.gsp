@@ -31,9 +31,7 @@
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">
-    <div id="pt-root" class="row-fluid">
-        <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
-    </div>
+    <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
     <div class="row-fluid">
         <div class="span12" id="heading">
             <h1 class="pull-left"><g:message code="project.citizenScience.heading"/></h1>
