@@ -599,13 +599,19 @@ var SpeciesConstraintViewModel = function (o) {
 
     self.transients.showAddSpeciesLists = ko.observable(false);
     self.transients.showExistingSpeciesLists = ko.observable(false);
+
     self.transients.toggleShowAddSpeciesLists = function () {
         self.transients.showAddSpeciesLists(!self.transients.showAddSpeciesLists());
+        if (self.transients.showAddSpeciesLists()) {
+            self.transients.showExistingSpeciesLists(false);
+        }
     };
+
     self.transients.toggleShowExistingSpeciesLists = function () {
         self.transients.showExistingSpeciesLists(!self.transients.showExistingSpeciesLists());
         if (self.transients.showExistingSpeciesLists()) {
             self.allSpeciesLists.loadAllSpeciesLists();
+            self.transients.showAddSpeciesLists(false);
         }
     };
 
@@ -613,15 +619,19 @@ var SpeciesConstraintViewModel = function (o) {
         lists.transients.check(true);
         self.speciesLists.push(lists);
     };
+
     self.removeSpeciesLists = function (lists) {
         self.speciesLists.remove(lists);
     };
+
     self.groupInfoVisible = ko.computed(function () {
         return (self.type() == "GROUP_OF_SPECIES");
     });
+
     self.singleInfoVisible = ko.computed(function () {
         return (self.type() == "SINGLE_SPECIES");
     });
+
     self.type.subscribe(function (type) {
         if (self.type() == "SINGLE_SPECIES") {
         } else if (self.type() == "GROUP_OF_SPECIES") {
@@ -711,6 +721,9 @@ var SpeciesListsViewModel = function (o) {
     var self = this;
     if (!o) o = {};
 
+    self.searchGuid = ko.observable();
+    self.searchName = ko.observable();
+
     self.allSpeciesListsToSelect = ko.observableArray();
     self.offset = ko.observable(0);
     self.max = ko.observable(100);
@@ -750,6 +763,10 @@ var SpeciesListsViewModel = function (o) {
 
     self.loadAllSpeciesLists = function () {
         var url = fcConfig.speciesListUrl + "?sort=listName&offset=" + self.offset() + "&max=" + self.max();
+        if (self.searchGuid()) {
+            url += "&guid=" + self.searchGuid();
+        }
+
         var divId = 'project-activities-result-placeholder';
         $.ajax({
             url: url,
@@ -774,6 +791,12 @@ var SpeciesListsViewModel = function (o) {
         });
     };
 
+    self.clearSearch = function() {
+        self.searchGuid(null);
+        self.searchName(null);
+
+        self.loadAllSpeciesLists();
+    }
 };
 
 var SpeciesList = function (o) {
