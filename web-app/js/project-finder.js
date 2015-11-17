@@ -387,7 +387,6 @@ function ProjectFinder() {
             }
         }
 
-        checkButton($('#pt-search-children'), params.isSuitableForChildren);
         toggleButton($('#pt-search-diy'), params.isDIY);
         setActiveButtonValues($('#pt-status'), params.status);
         toggleButton($('#pt-search-noCost'), params.hasParticipantCost);
