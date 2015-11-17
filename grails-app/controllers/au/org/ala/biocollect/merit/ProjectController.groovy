@@ -1,6 +1,7 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
+import au.org.ala.biocollect.ProjectActivityService
 import grails.converters.JSON
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
@@ -10,9 +11,21 @@ import java.text.SimpleDateFormat
 
 class ProjectController {
 
-    def projectService, metadataService, organisationService, commonService, activityService, userService, webService, roleService, grailsApplication, projectActivityService
-    def siteService, documentService
+    ProjectService projectService
+    MetadataService metadataService
+    OrganisationService organisationService
+    CommonService commonService
+    ActivityService activityService
+    UserService userService
+    WebService webService
+    RoleService roleService
+    ProjectActivityService projectActivityService
+    SiteService siteService
+    DocumentService documentService
+    SettingService settingService
     SearchService searchService
+
+    def grailsApplication
 
     static defaultAction = "index"
     static ignore = ['action','controller','id']
@@ -123,6 +136,17 @@ class ProjectController {
              userOrganisations: groupedOrganisations.user ?: [],
              organisations: groupedOrganisations.other ?: [],
              programs: metadataService.programsModel()]
+        } else {
+            forward(action: 'list', model: [error: 'no such id'])
+        }
+    }
+
+    @PreAuthorise
+    def newProjectIntro(String id) {
+        Map project = projectService.get(id, 'brief')
+
+        if (project) {
+            [project: project, text: settingService.getSettingText(SettingPageType.NEW_CITIZEN_SCIENCE_PROJECT_INTRO)]
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }

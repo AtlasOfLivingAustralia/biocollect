@@ -98,7 +98,12 @@ $(function(){
 
             viewModel.saveWithErrorDetection(function(data) {
                 var projectId = "${project?.projectId}" || data.projectId;
+            <g:if test="${citizenScience}">
+                document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
+            </g:if>
+            <g:else>
                 document.location.href = "${createLink(action: 'index')}/" + projectId;
+            </g:else>
             });
         }
     });
