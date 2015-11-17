@@ -15,24 +15,27 @@
             <div class="span12">
                 <div>
                     <strong>Species: </strong>
-                    <a data-bind="visible: showCrud(), attr:{'href': transients.viewUrl}">
+                    <a data-bind="attr:{'href': transients.viewUrl}">
                         <span data-bind="text: name"></span>
                     </a>
-                    <span data-bind="visible: !showCrud(), text: name"></span>
                 </div>
-                <small>Survey name: </small><small data-bind="text: transients.pActivity.name"></small>
-                </br>
-                <small>Description: </small><small data-bind="text: transients.pActivity.description"></small>
-                </br>
-                <small>Submitted on: <span data-bind="text: lastUpdated.formattedDate"></span></small>
+                <div>
+                    <small>Survey name: </small><small data-bind="text: transients.pActivity.name"></small>
+                </div>
+                <div>
+                    <small>Description: </small><small data-bind="text: transients.pActivity.description"></small>
+                </div>
+                <div>
+                    <small>Submitted on: <span data-bind="text: lastUpdated.formattedDate"></span></small>
+                </div>
+                <div class="margin-bottom-2">
+                <a data-bind="attr:{'href': transients.viewUrl}">view</a>
                 <!-- ko if: showCrud -->
-                    </br>
-                    <a data-bind="attr:{'href': transients.viewUrl}">view</a>
                     <a data-bind="visible: showAdd, attr:{'href': transients.addUrl}">add</a>
                     <a data-bind="attr:{'href': transients.editUrl}">edit</a>
                     <a href="#" data-bind="click: $parent.delete">delete</a>
                 <!-- /ko -->
-            </br></br>
+            </div>
             </div>
         </div>
         <!-- /ko -->
