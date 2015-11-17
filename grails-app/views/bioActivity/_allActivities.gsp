@@ -15,22 +15,29 @@
                     <div class="span12 text-left">
 
                         <div>
-                            <strong>Survey name: </strong>
-                            <a data-bind="visible: showCrud(), attr:{'href': transients.viewUrl}">
+                            <strong>Survey name:</strong>
+                            <a data-bind="attr:{'href': transients.viewUrl}">
                                 <span data-bind="text: transients.pActivity.name"></span>
                             </a>
-                            <span data-bind="visible: !showCrud(), text: transients.pActivity.name"></span>
                         </div>
-                        <small>Description: <span data-bind="text: transients.pActivity.description"></span></small></br>
-                        <small>Submitted on: <span data-bind="text: lastUpdated.formattedDate"></span></small>
-                        <!-- ko if: showCrud -->
-                            </br>
+
+                        <div>
+                            <small>Description: <span data-bind="text: transients.pActivity.description"></span>
+                            </small>
+                        </div>
+
+                        <div>
+                            <small>Submitted on: <span data-bind="text: lastUpdated.formattedDate"></span></small>
+                        </div>
+
+                        <div class="margin-bottom-2">
                             <a data-bind="attr:{'href': transients.viewUrl}">view</a>
+                            <!-- ko if: showCrud -->
                             <a data-bind="visible: showAdd(), attr:{'href': transients.addUrl}">add</a>
                             <a data-bind="attr:{'href': transients.editUrl}">edit</a>
                             <a href="#" data-bind="click: $parent.delete">delete</a>
-                        <!-- /ko -->
-                    </br></br>
+                            <!-- /ko -->
+                        </div>
                     </div>
                 </div>
             </div>
