@@ -96,7 +96,6 @@ function ProjectFinder() {
 
     function checkButton($button, value, attribute) {
         var attr = attribute || 'data-value';
-        console.log(attr)
         $button.removeClass('active').find('button.active').removeClass('active');
         if (value && $button.attr(attr) === value) {
             $button.addClass('active');
