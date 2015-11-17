@@ -371,11 +371,11 @@ function ProjectFinder() {
             }
         }
 
-        return hash.join("&");
+        return encodeURIComponent(hash.join("&"));
     }
 
     function parseHash() {
-        var hash = window.location.hash.substr(1).split("&");
+        var hash = decodeURIComponent(window.location.hash.substr(1)).split("&");
 
         var params = {};
         for (var i = 0; i < hash.length; i++) {
@@ -387,18 +387,22 @@ function ProjectFinder() {
             }
         }
 
-        toggleButton($('#pt-search-diy'), params.isDIY);
+        toggleButton($('#pt-search-diy'), toBoolean(params.isDIY));
         setActiveButtonValues($('#pt-status'), params.status);
-        toggleButton($('#pt-search-noCost'), params.hasParticipantCost);
-        toggleButton($('#pt-search-teach'), params.hasTeachingMaterials);
-        toggleButton($('#pt-search-mobile'), params.isMobile);
-        toggleButton($('#pt-search-children'), params.isSuitableForChildren);
+        toggleButton($('#pt-search-noCost'), toBoolean(params.hasParticipantCost));
+        toggleButton($('#pt-search-teach'), toBoolean(params.hasTeachingMaterials));
+        toggleButton($('#pt-search-mobile'), toBoolean(params.isMobile));
+        toggleButton($('#pt-search-children'), toBoolean(params.isSuitableForChildren));
         setActiveButtonValues($('#pt-search-difficulty'), params.difficulty);
 
         checkButton($("#pt-sort"), params.sort || 'nameSort');
         checkButton($("#pt-per-page"), params.max || '20');
 
         $('#pt-search').val(params.q).focus()
+    }
+
+    function toBoolean(str) {
+        return str && str.toLowerCase() === 'true';
     }
 
     parseHash();
