@@ -98,7 +98,12 @@ $(function(){
 
             viewModel.saveWithErrorDetection(function(data) {
                 var projectId = "${project?.projectId}" || data.projectId;
-                document.location.href = "${createLink(action: 'index')}/" + projectId;
+
+                if (viewModel.isExternal()) {
+                    document.location.href = "${createLink(action: 'index')}/" + projectId;
+                } else {
+                    document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
+                }
             });
         }
     });
