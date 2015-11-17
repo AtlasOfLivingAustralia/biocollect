@@ -13,6 +13,7 @@ class ProjectController {
     def projectService, metadataService, organisationService, commonService, activityService, userService, webService, roleService, grailsApplication, projectActivityService
     def siteService, documentService
     SearchService searchService
+    AuditService auditService
 
     static defaultAction = "index"
     static ignore = ['action','controller','id']
@@ -45,6 +46,7 @@ class ProjectController {
             }
             def programs = projectService.programsModel()
             def content = projectContent(project, user, programs)
+            def messages = auditService.getAuditMessagesForProject(id)
 
             def model = [project: project,
                 mapFeatures: commonService.getMapFeatures(project),
@@ -59,7 +61,10 @@ class ProjectController {
                 programs: programs,
                 today:DateUtils.format(new DateTime()),
                 themes:metadataService.getThemesForProject(project),
-                projectContent:content.model
+                projectContent:content.model,
+                messages: messages?.messages,
+                userMap: messages?.userMap,
+                hideBackButton: true
             ]
 
             if(project.projectType == 'survey'){
@@ -557,5 +562,17 @@ class ProjectController {
         UserDetails user = userService.user;
         JSON projects = projectService.userProjects(user);
         render(text: projects);
+    }
+
+    def auditMessageDetails() {
+        def results = auditService.getAuditMessage(params.id as String)
+        def userDetails = [:]
+        def compare
+        if (results?.message) {
+            userDetails = auditService.getUserDetails(results?.message?.userId)
+            compare = auditService.getAuditMessage(params.compareId as String)
+        }
+        String skin = SettingService.getHubConfig().skin
+        render view: '/admin/auditMessageDetails', model: [ message: results?.message, compare: compare?.message, userDetails: userDetails.user, layoutContent: skin, backToProject: true]
     }
 }
