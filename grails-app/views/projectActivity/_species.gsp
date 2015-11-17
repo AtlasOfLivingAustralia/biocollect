@@ -30,7 +30,9 @@
                 <div class="row-fluid">
                     <div class="span4 text-left">
                         <div class="controls">
-                            <select style="width:98%;" data-validation-engine="validate[required]" data-bind="options: $root.speciesOptions, optionsText:'name', optionsValue:'id', value: species.type, optionsCaption: 'Please select'" ></select>
+                            <span class="req-field">
+                                <select data-validation-engine="validate[required]" data-bind="options: $root.speciesOptions, optionsText:'name', optionsValue:'id', value: species.type, optionsCaption: 'Please select'" ></select>
+                            </span>
                         </div>
                     </div>
 
