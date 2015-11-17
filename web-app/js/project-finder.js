@@ -26,11 +26,12 @@ function ProjectFinder() {
         {name: 'Relevance', value: '_score'},
         {name: 'Organisation Name', value: 'organisationSort'},
         {name: 'Status', value: 'status'}
-    ]
+    ];
 
     /* window into current page */
-    function pageVM() {
+    function PageVM() {
         this.pageProjects = ko.observableArray();
+
         this.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
         this.projectTypes = ko.observable(['citizenScience','works','survey']);
         this.sortKeys = ko.observableArray(self.sortKeys);
@@ -40,8 +41,8 @@ function ProjectFinder() {
         this.download = function (obj, e) {
             var params = $.param(self.getParams(), true);
             var href = $(e.target).attr('href');
-            var domain = href.slice(0, href.indexOf('?'))
-            $(e.target).attr('href', domain + '?' + 'download=true&' + params)
+            var domain = href.slice(0, href.indexOf('?'));
+            $(e.target).attr('href', domain + '?' + 'download=true&' + params);
             return true;
         }
     }
@@ -51,8 +52,8 @@ function ProjectFinder() {
      * @param $button
      * @returns {boolean}
      */
-    function isButtonChecked($button){
-        return $button.hasClass('active')?true:false
+    function isButtonChecked($button) {
+        return $button.hasClass('active') ? true : false
     }
 
     /**
@@ -60,59 +61,79 @@ function ProjectFinder() {
      * @param $button
      * @returns {Array}
      */
-    function getActiveButtonValues($button){
+    function getActiveButtonValues($button) {
         var result = [];
-        $button.find('.active').each(function(index, it){
+        $button.find('.active').each(function (index, it) {
             result.push($(it).attr('data-value'));
         });
         return result
     }
 
-    function uncheckButton($button){
+    function setActiveButtonValues($button, values) {
+        $button.children('button').each(function (index, child) {
+            if (values && values.indexOf($(child).attr('data-value')) > -1) {
+                $(child).addClass('active');
+            } else {
+                $(child).removeClass('active');
+            }
+        });
+    }
+
+    function uncheckButton($button) {
         $button.removeClass('active');
         // if button group
         $button.find('.active').removeClass('active');
         return $button;
     }
 
-    function checkButton($button, value, attribute){
-        var attr = 'data-value' || attribute;
+    function toggleButton($button, on) {
+        if (on) {
+            checkButton($button, 'button', 'data-toggle');
+        } else {
+            $button.removeClass('active');
+        }
+    }
+
+    function checkButton($button, value, attribute) {
+        var attr = attribute || 'data-value';
+        console.log(attr)
         $button.removeClass('active').find('button.active').removeClass('active');
-        if($button.attr(attr)===value)
-            $button.addClass('active')
-        $button.find('['+attr+'='+value+']').addClass('active')
+        if (value && $button.attr(attr) === value) {
+            $button.addClass('active');
+        }
+        $button.find('[' + attr + '=' + value + ']').addClass('active')
     }
 
     /**
      * bring the selected element to view by animation.
      * @param selector
      */
-    function scrollToView(selector){
+    function scrollToView(selector) {
         $("html, body").animate({
             scrollTop: $(selector).offset().top
         })
     }
 
-    var pageWindow = new pageVM();
+    var pageWindow = new PageVM();
     ko.applyBindings(pageWindow, document.getElementById('pt-table'));
 
     this.getParams = function () {
         var fq = [];
         var isSuitableForChildren = isButtonChecked($('#pt-search-children'));
-        var isDIY = isButtonChecked($('#pt-search-diy'))
-        var status = getActiveButtonValues($('#pt-status')) // active check field status
-        var hasParticipantCost = isButtonChecked($('#pt-search-noCost')) // no cost
-        var hasTeachingMaterials = isButtonChecked($('#pt-search-teach')) // teaching material
-        var isMobile = isButtonChecked($('#pt-search-mobile')) // mobile uses links to find it out
-        var difficulty = getActiveButtonValues($('#pt-search-difficulty'))
-        var isCitizenScience = fcConfig.isCitizenScience,
-            isWorks = false,
-            isSurvey = false;
+        var isDIY = isButtonChecked($('#pt-search-diy'));
+        var status = getActiveButtonValues($('#pt-status')); // active check field status
+        var hasParticipantCost = isButtonChecked($('#pt-search-noCost')); // no cost
+        var hasTeachingMaterials = isButtonChecked($('#pt-search-teach')); // teaching material
+        var isMobile = isButtonChecked($('#pt-search-mobile')); // mobile uses links to find it out
+        var difficulty = getActiveButtonValues($('#pt-search-difficulty'));
         var isUserPage = fcConfig.isUserPage || false;
         var organisationName = fcConfig.organisationName;
+        var isCitizenScience = fcConfig.isCitizenScience;
+        var isWorks = false;
+        var isSurvey = false;
 
-        sortBy = getActiveButtonValues($("#pt-sort"))
-        perPage = getActiveButtonValues($("#pt-per-page"))
+        sortBy = getActiveButtonValues($("#pt-sort"));
+        perPage = getActiveButtonValues($("#pt-per-page"));
 
         if (fcConfig.isOrganisationPage) {
             var values = getActiveButtonValues($('#pt-search-projecttype'));
@@ -131,7 +152,7 @@ function ProjectFinder() {
             }
         }
 
-        var params = {
+        return  {
             fq: fq,
             offset: offset,
             status: status,
@@ -149,24 +170,24 @@ function ProjectFinder() {
             max: perPage, // page size
             sort: sortBy,
             q: $('#pt-search').val().toLowerCase()
-        }
-
-        return params;
-    }
+        };
+    };
 
     /**
      * this is the function calling server with the latest query.
      */
     this.doSearch = function () {
         var params = self.getParams();
-        window.location.hash = params.q;
+
+        window.location.hash = constructHash();
+
         return $.ajax({
             url: fcConfig.projectListUrl,
             data: params,
             traditional: true,
             success: function (data) {
                 var projectVMs = [];
-                var organisation = fcConfig.organisation || []
+                var organisation = fcConfig.organisation || [];
                 total = data.total;
                 $.each(data.projects, function (i, project) {
                     projectVMs.push(new ProjectViewModel(project, false, organisation));
@@ -174,16 +195,16 @@ function ProjectFinder() {
                 self.pago.init(projectVMs);
             },
             error: function () {
-                console.error("Could not load project data.")
+                console.error("Could not load project data.");
                 console.log(arguments)
             }
         })
-    }
+    };
 
     this.searchAndShowFirstPage = function () {
         self.pago.firstPage();
         return true
-    }
+    };
 
     /*************************************************\
      *  Show filtered projects on current page
@@ -192,12 +213,12 @@ function ProjectFinder() {
         pageWindow.pageProjects(projects);
         pageWindow.pageProjects.valueHasMutated();
         self.showPaginator();
-    }
+    };
 
     /** display the current size of the filtered list **/
     this.updateTotal = function () {
         $('#pt-resultsReturned').html("Found <strong>" + total + "</strong> " + (total == 1 ? 'project.' : 'projects.'));
-    }
+    };
 
     /*************************************************\
      *  Pagination
@@ -230,7 +251,7 @@ function ProjectFinder() {
         var $pago = $("<div class='pagination'></div>");
         $pago.append($ul);
         $('div#pt-navLinks').html($pago);
-    }
+    };
 
     this.augmentVM = function (vm) {
         var x, urls = [];
@@ -251,7 +272,7 @@ function ProjectFinder() {
             if (x && x.length > 0) vm.transients.imageUrl = x[0].url;
         }
         return vm;
-    }
+    };
 
     /* comparator for data projects */
     function comparator(a, b) {
@@ -265,20 +286,23 @@ function ProjectFinder() {
         return (va < vb ? -1 : (va > vb ? 1 : 0)) * sortOrder;
     }
 
-    this.setTextSearchSettings = function(){
-        checkButton($('#pt-sort '),'_score')
-    }
-    $("#pt-filter").on('statechange',function(){
-        if($('#pt-filter').hasClass('active')){
+    this.setTextSearchSettings = function () {
+        checkButton($('#pt-sort '), '_score')
+    };
+
+    $("#pt-filter").on('statechange', function () {
+        if ($('#pt-filter').hasClass('active')) {
             $('#pt-selectors').slideDown(400)
         } else {
             $('#pt-selectors').slideUp(400)
         }
-    })
+    });
+
     $('#pt-search-link').click(function () {
         self.setTextSearchSettings();
         self.doSearch();
     });
+
     $('#pt-search').keypress(function (event) {
         if (event.which == 13) {
             event.preventDefault();
@@ -286,12 +310,13 @@ function ProjectFinder() {
             self.doSearch();
         }
     });
+
     $('#pt-reset').click(function () {
         uncheckButton($('#pt-tags'));
         uncheckButton($('#pt-status'));
         uncheckButton($('#pt-search-difficulty'));
-        checkButton($('#pt-sort'),'nameSort');
-        checkButton($('#pt-per-page'),'20');
+        checkButton($('#pt-sort'), 'nameSort');
+        checkButton($('#pt-per-page'), '20');
         $('#pt-search').val('');
         self.pago.firstPage();
     });
@@ -313,30 +338,71 @@ function ProjectFinder() {
         },
         gotoPage: function (pageNum) {
             offset = (pageNum - 1) * perPage;
-            self.doSearch().done(function(){
+            self.doSearch().done(function () {
                 scrollToView("#pt-table");
             });
         },
         prevPage: function () {
             offset -= perPage;
-            self.doSearch().done(function(){
+            self.doSearch().done(function () {
                 scrollToView("#pt-table");
-            });;
+            });
         },
         nextPage: function () {
             offset += perPage;
-            self.doSearch().done(function(){
+            self.doSearch().done(function () {
                 scrollToView("#pt-table");
-            });;
+            });
         },
         firstPage: function () {
             offset = 0;
-            self.doSearch().done(function(){
+            self.doSearch().done(function () {
                 scrollToView("#pt-table");
-            });;
+            });
         }
+    };
+
+    function constructHash() {
+        var params = self.getParams();
+
+        var hash = [];
+        for (var param in params) {
+            if (params.hasOwnProperty(param) && params[param] && params[param] != '') {
+                hash.push(param + "=" + params[param]);
+            }
+        }
+
+        return hash.join("&");
     }
 
-    $('#pt-search').val(window.location.hash.replace('#','')).focus()
+    function parseHash() {
+        var hash = window.location.hash.substr(1).split("&");
+
+        var params = {};
+        for (var i = 0; i < hash.length; i++) {
+            var keyAndValue = hash[i].split("=");
+            if (keyAndValue.indexOf(",") > -1) {
+                params[keyAndValue[0]] = keyAndValue.split(",");
+            } else {
+                params[keyAndValue[0]] = keyAndValue[1];
+            }
+        }
+
+        checkButton($('#pt-search-children'), params.isSuitableForChildren);
+        toggleButton($('#pt-search-diy'), params.isDIY);
+        setActiveButtonValues($('#pt-status'), params.status);
+        toggleButton($('#pt-search-noCost'), params.hasParticipantCost);
+        toggleButton($('#pt-search-teach'), params.hasTeachingMaterials);
+        toggleButton($('#pt-search-mobile'), params.isMobile);
+        toggleButton($('#pt-search-children'), params.isSuitableForChildren);
+        setActiveButtonValues($('#pt-search-difficulty'), params.difficulty);
+
+        checkButton($("#pt-sort"), params.sort || 'nameSort');
+        checkButton($("#pt-per-page"), params.max || '20');
+
+        $('#pt-search').val(params.q).focus()
+    }
+
+    parseHash();
     this.doSearch();
 }
