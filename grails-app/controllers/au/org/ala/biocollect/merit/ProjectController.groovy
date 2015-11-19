@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.ProjectActivityService
+import au.org.ala.web.AuthService
 import grails.converters.JSON
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
@@ -25,6 +26,7 @@ class ProjectController {
     SettingService settingService
     SearchService searchService
     AuditService auditService
+    AuthService authService
 
     def grailsApplication
 
@@ -589,14 +591,22 @@ class ProjectController {
     }
 
     def auditMessageDetails() {
-        def results = auditService.getAuditMessage(params.id as String)
-        def userDetails = [:]
-        def compare
-        if (results?.message) {
-            userDetails = auditService.getUserDetails(results?.message?.userId)
-            compare = auditService.getAuditMessage(params.compareId as String)
+        String userId = authService.getUserId()
+        String projectId = params.projectId
+
+        Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
+        if(isAdmin) {
+            def results = auditService.getAuditMessage(params.id as String)
+            def userDetails = [:]
+            def compare
+            if (results?.message) {
+                userDetails = auditService.getUserDetails(results?.message?.userId)
+                compare = auditService.getAuditMessage(params.compareId as String)
+            }
+            String skin = SettingService.getHubConfig().skin
+            render view: '/admin/auditMessageDetails', model: [message: results?.message, compare: compare?.message, userDetails: userDetails.user, layoutContent: skin, backToProject: true]
+        } else {
+            response.sendError(403, 'You are not authorized to view this page')
         }
-        String skin = SettingService.getHubConfig().skin
-        render view: '/admin/auditMessageDetails', model: [ message: results?.message, compare: compare?.message, userDetails: userDetails.user, layoutContent: skin, backToProject: true]
     }
 }

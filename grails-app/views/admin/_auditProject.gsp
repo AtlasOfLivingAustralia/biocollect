@@ -59,7 +59,19 @@
             "aoColumnDefs": [{ "sType": "date-uk", "aTargets": [0] }],
             "oLanguage": {
                 "sSearch": "Search: "
-            }
+            },
+            "ajax":"${createLink(controller: 'project', action: 'auditMessages')}/${project.projectId}",
+            "columns": [{
+                data: 'Date'
+            },{
+                data: 'Action'
+            },{
+                data: 'Type'
+            },{
+                data: 'Name'
+            },{
+                data: 'User'
+            }]
         });
         $('.dataTables_filter input').attr("placeholder", "Date, Action, Type, Name, User");
     });
