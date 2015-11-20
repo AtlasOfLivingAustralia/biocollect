@@ -83,7 +83,20 @@
                         </div>
                     </g:elseif>
                 </div>
-            </div><!--drop downs-->
+            </div>
+
+            <h5><g:message code="project.search.geoFilter" /></h5>
+            <div class="row-fluid">
+                <button id="pt-map-filter" type="button" class="btn btn-small btn-info margin-bottom-2" data-toggle="button"><g:message code="project.search.mapToggle"/></button>
+
+                <div id="pt-map-filter-panel" class="hide">
+                    <g:set var="mapHeight" value="400px"/>
+                    <g:set var="siteOptions" value="'{zoomToPoint: false, showSatelliteOnPoint: false}'"/>
+                    <g:render template="/site/simpleSite" model="${pageScope.variables}"/>
+                </div>
+            </div>
+
+
             <div class="row-fluid">
                 <button class="btn btn-primary pull-right" id="pt-reset"><i class="icon-white icon-remove"></i> <g:message code="g.resetSearch" /></button>
             </div>

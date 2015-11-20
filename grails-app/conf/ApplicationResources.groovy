@@ -39,7 +39,7 @@ modules = {
         resource url: 'vendor/jquery.shorten/jquery.shorten.js'
         resource url: 'vendor/jquery.columnizer/jquery.columnizer.js'
         resource url: 'vendor/jquery.blockUI/jquery.blockUI.js'
-//        resource url: 'css/common.css'
+        resource url: 'vendor/underscore/underscore-1.8.3.min.js'
     }
 
     defaultSkin {

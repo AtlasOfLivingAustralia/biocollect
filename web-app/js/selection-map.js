@@ -96,7 +96,6 @@ map = {
         this.drawingManager.setMap(this.gmap);
 
         google.maps.event.addListener(this.gmap, 'mouseover', function (e) {
-            //console.log('mouseover - ' + this.scrollwheel + " - " + this.draggableCursor);
             if (that.mode === 'pointer') {
                 that.gmap.setOptions({draggableCursor:'pointer'});
             } else {
@@ -487,6 +486,8 @@ function init (options) {
 
     // init controls
     controls.init(config.baseUrl);
+
+    return map;
 }
 function showOnMap(arg1, arg2, arg3, arg4) {
     if (arg1 === 'wktFromPid') {

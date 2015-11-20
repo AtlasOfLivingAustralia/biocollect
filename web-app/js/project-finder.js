@@ -15,9 +15,19 @@ function ProjectFinder() {
     /* size of current filtered list */
     var total = 0;
 
+    /* The map must only be initialised once, so keep track of when that has happened */
+    var mapInitialised = false;
+
+    var geoSearch = {};
+
     var searchTerm = '', perPage = 20, sortBy = 'nameSort', sortOrder = 1;
     // variable to not scroll to result when result is loaded for the first time.
     var firstTimeLoad = true;
+
+    var siteViewModel = initSiteViewModel({type:'projectArea'});
+    siteViewModel.name = ko.computed(function() {
+        return 'Enter or select a region to search across';
+    });
 
     this.availableProjectTypes = new ProjectViewModel({}, false, []).transients.availableProjectTypes;
 
@@ -37,7 +47,7 @@ function ProjectFinder() {
         this.sortKeys = ko.observableArray(self.sortKeys);
         this.hideshow = function () {
             $("#pt-selectors").toggle();
-        }
+        };
         this.download = function (obj, e) {
             var params = $.param(self.getParams(), true);
             var href = $(e.target).attr('href');
@@ -168,6 +178,7 @@ function ProjectFinder() {
             organisationName: organisationName,
             max: perPage, // page size
             sort: sortBy,
+            geoSearchJSON: JSON.stringify(geoSearch),
             q: $('#pt-search').val().toLowerCase()
         };
     };
@@ -297,6 +308,25 @@ function ProjectFinder() {
         }
     });
 
+    $("#pt-map-filter").on('statechange', function() {
+        if ($('#pt-map-filter').hasClass('active')) {
+            $('#pt-map-filter-panel').slideDown(400);
+            if (!mapInitialised) {
+                siteViewModel.initialiseMap(fcConfig);
+
+                // listen for changes to bounding regions (for known shapes and drawn shapes)
+                siteViewModel.transients.map.gmap.addListener("bounds_changed", geoSearchChanged);
+                // listen to changes in the geometry (for changes to point locations)
+                siteViewModel.extentGeometryWatcher.subscribe(geoSearchChanged);
+
+                mapInitialised = true;
+            }
+
+        } else {
+            $('#pt-map-filter-panel').slideUp(400);
+        }
+    });
+
     $('#pt-search-link').click(function () {
         self.setTextSearchSettings();
         self.doSearch();
@@ -318,6 +348,8 @@ function ProjectFinder() {
         checkButton($('#pt-per-page'), '20');
         $('#pt-search').val('');
         self.pago.firstPage();
+
+        geoSearch = {};
     });
     // check for statechange event on all buttons in filter panel.
     $('#pt-searchControls button').on('statechange', self.searchAndShowFirstPage);
@@ -403,6 +435,50 @@ function ProjectFinder() {
 
     function toBoolean(str) {
         return str && str.toLowerCase() === 'true';
+    }
+
+    function geoSearchChanged() {
+        var site = siteViewModel.toJS();
+        if (site && site.geoIndex) {
+            var geoCriteriaChanged = false;
+
+            if (!_.isEqual(geoSearch, site.geoIndex)) {
+                // if the user has selected a point, we need to convert it into a circle query to find all sites close to that point
+                if (site.geoIndex.type === 'Point') {
+                    var circleSearch = {
+                        type: "Circle",
+                        radius: fcConfig.defaultSearchRadiusMetersForPoint,
+                        coordinates: site.geoIndex.coordinates
+                    };
+
+                    if (!_.isEqual(geoSearch, circleSearch)) {
+                        geoSearch = circleSearch;
+                        geoCriteriaChanged = true;
+                    }
+                } else {
+                    geoSearch = site.geoIndex;
+                    geoCriteriaChanged = true;
+                }
+            }
+
+            if (geoCriteriaChanged && validSearchGeometry(geoSearch)) {
+                self.doSearch();
+            }
+        }
+    }
+
+    function validSearchGeometry(geometry) {
+        var valid = false;
+
+        if (geometry.type === "Polygon") {
+            valid = geometry.coordinates && geometry.coordinates.length == 1 && geometry.coordinates[0].length > 1
+        } else if (geometry.type == "Circle") {
+            valid = geometry.coordinates && geometry.coordinates.length == 2 && geometry.radius
+        } else if (geometry.type == "Point") {
+            valid = geometry.coordinates && geometry.coordinates.length == 2
+        }
+
+        return valid
     }
 
     parseHash();

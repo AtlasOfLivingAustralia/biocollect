@@ -7,12 +7,20 @@
     <r:script disposition="head">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
+        spatialService: '${createLink(controller:'proxy',action:'feature')}',
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        geocodeUrl: "${grailsApplication.config.google.geocode.url}",
+        siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
         spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
         spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
+        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "50km"}",
         imageLocation:"${resource(dir:'/images')}",
         logoLocation:"${resource(dir:'/images/filetypes')}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
@@ -27,7 +35,7 @@
     </g:if>
     </r:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <r:require modules="js_iso8601,projects,projectFinder"/>
+    <r:require modules="js_iso8601,knockout,jqueryValidationEngine,drawmap,projects,projectFinder"/>
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">
@@ -45,6 +53,7 @@
     });
 
     var projectFinder = new ProjectFinder();
+
 </r:script>
 </body>
 </html>

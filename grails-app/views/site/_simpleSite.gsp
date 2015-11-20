@@ -276,7 +276,7 @@ function initSiteViewModel() {
         area : "${site?.area}",
         description : "${site?.description?.encodeAsJavaScript()}",
         notes : "${site?.notes?.encodeAsJavaScript()}",
-        documents : JSON.parse('${(siteDocuments?:documents).encodeAsJavaScript()}'),
+        documents : JSON.parse('${(siteDocuments?:documents).encodeAsJavaScript() ?: '{}'}'),
     <g:if test="${project}">
         projects : ['${project.projectId}'],
     </g:if>
@@ -289,18 +289,14 @@ function initSiteViewModel() {
     (function(){
 
         //retrieve serialised model
-        siteViewModel = new SiteViewModelWithMapIntegration(savedSiteData);
-        window.validateSiteExtent = siteViewModel.attachExtentValidation()
+        siteViewModel = new SiteViewModelWithMapIntegration(savedSiteData, ${siteOptions ?: '{}'});
+        window.validateSiteExtent = siteViewModel.attachExtentValidation();
 
         ko.applyBindings(siteViewModel, document.getElementById("sitemap"));
 
-        init_map({
-            spatialService: SERVER_CONF.spatialService,
-            spatialWms: SERVER_CONF.spatialWms,
-            mapContainer: 'mapForExtent'
-        });
-
-        siteViewModel.mapInitialised(window);
+        <g:if test="${loadMapOnDocumentReady}">
+            siteViewModel.initialiseMap(SERVER_CONF);
+        </g:if>
 
     }());
 

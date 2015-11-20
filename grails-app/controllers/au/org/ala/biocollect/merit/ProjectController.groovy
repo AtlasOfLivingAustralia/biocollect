@@ -455,6 +455,8 @@ class ProjectController {
             }
         }
 
+        queryParams.put("geoSearchJSON", params.geoSearchJSON)
+
         Map searchResult = searchService.getCitizenScienceProjects(queryParams);
         List projects = searchResult.hits?.hits;
         projects = projects.collect {
