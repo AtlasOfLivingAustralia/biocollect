@@ -1,6 +1,7 @@
-var ActivitiesAndRecordsViewModel = function (placeHolder, caller) {
+var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
     var self = this;
-    self.caller = caller ? caller : 'allrecords';
+    self.view = view ? view : 'allrecords';
+
     self.sortOptions = [
         {id: 'lastUpdated', name: 'Date'},
         {id: 'name', name: 'Survey name'},
@@ -102,7 +103,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, caller) {
             order: self.order(),
             searchTerm: self.searchTerm(),
             flimit: 20,
-            caller: self.caller
+            view: self.view
         };
         var url = fcConfig.searchProjectActivitiesUrl;
         url = url + ((fcConfig.searchProjectActivitiesUrl.indexOf('?') > -1) ? '&' : '?') + $.param(params);
@@ -141,7 +142,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, caller) {
                     contentType: 'application/json',
                     success: function (data) {
                         if (data.text == 'deleted') {
-                            showAlert("Successfully deleted. Indexing is in process, search result will be updated in few minutes", "alert-success", self.transients.placeHolder);
+                            showAlert("Successfully deleted. Indexing is in process, search result will be updated in few minutes.", "alert-success", self.transients.placeHolder);
                             setTimeout(function () {
                                 location.reload();
                             }, 3000);
@@ -159,7 +160,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, caller) {
                                 location.reload();
                             }, 3000);
                         } else {
-
                             alert('An unhandled error occurred: ' + data);
                         }
                     }

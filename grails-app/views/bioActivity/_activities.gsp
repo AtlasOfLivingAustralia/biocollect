@@ -92,7 +92,7 @@
 <!-- /ko -->
 
 <r:script>
-    function initialiseData(caller) {
-        ko.applyBindings(new ActivitiesAndRecordsViewModel('data-result-placeholder', caller), document.getElementById('survey-all-activities-and-records-content'));
+    function initialiseData(view) {
+        ko.applyBindings(new ActivitiesAndRecordsViewModel('data-result-placeholder', view), document.getElementById('survey-all-activities-and-records-content'));
     }
 </r:script>

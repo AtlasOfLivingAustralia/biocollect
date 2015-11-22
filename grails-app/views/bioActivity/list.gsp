@@ -37,7 +37,6 @@
     </div>
 </div>
 
-
 <r:script>
     $(function() {
         initialiseData(fcConfig.view == 'allrecords' ? fcConfig.view : 'myrecords');
