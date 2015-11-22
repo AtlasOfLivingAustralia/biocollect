@@ -15,57 +15,32 @@
             activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'delete')}",
             activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
+            searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
             recordListUrl: "${createLink(controller: 'record', action: 'ajaxList')}",
             recordDeleteUrl: "${createLink(controller: 'record', action: 'delete')}",
-            returnTo: "${createLink(controller: 'bioActivity', action:'list')}"
+            projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
+            siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
+            bieUrl: "${grailsApplication.config.bie.baseURL}",
+            view: "${view}",
+            returnTo: "${view == 'allrecords' ? createLink(controller: 'bioActivity', action:'allRecords') : createLink(controller: 'bioActivity', action:'list') }"
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout, projectActivityInfo, jqueryValidationEngine, restoreTab, myActivity, records"/>
+    <r:require modules="knockout, projectActivityInfo, jqueryValidationEngine, restoreTab, myActivity"/>
 </head>
 <body>
 
 <div class="container-fluid">
-    <h2>My Data</h2>
-
-    <div id="data-result-placeholder"></div>
-
-    <div class="row-fluid">
-
-        <div class="span12">
-
-            <ul class="nav nav-tabs" id="ul-survey-activities">
-                <li><a href="#survey-activities" id="survey-activities-tab" data-toggle="tab">Surveys</a></li>
-                <li><a href="#survey-records" id= "survey-records-tab" data-toggle="tab">Records</a></li>
-            </ul>
-
-            <div class="tab-content">
-                <div class="tab-pane" id="survey-activities">
-                    <g:render template="allActivities"/>
-                </div>
-                <div class="tab-pane" id="survey-records">
-                    <g:render template="allRecords"/>
-                </div>
-            </div>
-        </div>
+    <h2>${view == 'allrecords' ? 'All Records' : 'My Records'}</h2>
+    <div class="main-content" style="display:none;">
+        <g:render template="../bioActivity/activities"/>
     </div>
 </div>
 
 
 <r:script>
-    $(window).load(function () {
-        $(".main-content").show();
-        var recordVM = initialiseRecords('data-result-placeholder');
-        var activityVM = initialiseActivities('data-result-placeholder');
-        new RestoreTab('ul-survey-activities', 'survey-records-tab');
-
-        $('#ul-survey-activities a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            if ('#survey-records' == e.currentTarget.hash) {
-                recordVM.refreshPage();
-            } else if ('#survey-activities' == e.currentTarget.hash) {
-                activityVM.refreshPage();
-            }
-        });
+    $(function() {
+        initialiseData(fcConfig.view == 'allrecords' ? fcConfig.view : 'myrecords');
     });
 </r:script>
 
