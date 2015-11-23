@@ -7,6 +7,7 @@
     <r:script disposition="head">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
+        projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         projectUpdateUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
         projectEditUrl:"${createLink(action:'edit', id:project.projectId)}",
         sitesDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDeleteSitesFromProject', id:project.projectId)}",
@@ -21,6 +22,7 @@
         activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
         activityListUrl : "${createLink(controller: 'bioActivity', action: 'ajaxListForProject', params: [id:project.projectId])}",
         activiyCountUrl: "${createLink(controller: 'bioActivity', action: 'getProjectActivityCount')}",
+        searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities',params: [projectId:project.projectId])}",
         siteCreateUrl: "${createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId])}",
         siteSelectUrl: "${createLink(controller: 'site', action: 'select', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
         siteUploadUrl: "${createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
@@ -77,7 +79,7 @@
             }
         </style>
     <![endif]-->
-    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, records"/>
+    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity"/>
 </head>
 <body>
 
@@ -120,11 +122,11 @@
         params.pActivities = pActivities;
         params.user = user;
         params.projectStartDate = project.plannedStartDate;
-        params.pActivityForms = pActivityForms
+        params.pActivityForms = pActivityForms;
 
         var pActivitiesVM = new ProjectActivitiesViewModel(params);
         initialiseProjectActivitiesList(pActivitiesVM);
-        initialiseData();
+        initialiseData('project');
 
         //Main tab selection
         new RestoreTab('ul-main-project', 'about-tab');

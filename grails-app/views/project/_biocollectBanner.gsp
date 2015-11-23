@@ -7,6 +7,9 @@
         <li class="${(path ==~ /.*project\/citizenScience.*/) ? 'active' : ''}">
             <a href="#" class="btnSearch"><span class="fa fa-search"></span>Search</a>
         </li>
+        <li class="${(path ==~ /.*bioActivity\/allRecords.*/) ? 'active' : ''}">
+            <a href="#" class="btnAllData"><span class="fa fa-database"></span>All Records</a>
+        </li>
         <li class="${(path ==~ /.*project\/create.*/) ? 'active' : ''}">
             <a href="#" class="btnNewProject"><span class="fa fa-plus"></span>New Project</a>
         </li>

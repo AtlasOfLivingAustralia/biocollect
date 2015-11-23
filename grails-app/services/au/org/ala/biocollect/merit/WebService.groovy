@@ -150,10 +150,13 @@ class WebService {
         return get(url, true)
     }
 
-    def getJson(String url, Integer timeout = null) {
+    def getJson(String url, Integer timeout = null, boolean includeApiKey = false) {
         def conn = null
         try {
             conn = configureConnection(url, true, timeout)
+            if (includeApiKey) {
+                conn.setRequestProperty("Authorization", grailsApplication.config.api_key);
+            }
             def json = responseText(conn)
             return JSON.parse(json)
         } catch (ConverterException e) {
