@@ -383,8 +383,8 @@ class AdminController {
         if (id) {
             def project = projectService.get(id)
             if (project) {
-                def messages = auditService.getAuditMessagesForProject(id)
-                [project: project, messages: messages?.messages, userMap: messages?.userMap]
+                render view:'/admin/auditProject', model: [project: project]
+
             } else {
                 flash.message = "Specified project id does not exist!"
                 redirect(action:'audit')

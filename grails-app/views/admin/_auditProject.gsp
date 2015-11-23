@@ -67,20 +67,23 @@
                     return data && data.substr(data.lastIndexOf('.') + 1)
                 }
             },{
-                //data: 'entityId',
+                data:'entity.name',
                 render: function(data, type, row){
                     var name = (row.entity && row.entity.name) || '',
                      type = (row.entity && row.entity.type) || '',
                      id = row.entityId;
                     return name + ' ' + type + ' <small>(' + id + ')</small>'
-                }
+                },
+                bSortable : false
             },{
-                data: 'userName'
+                data: 'userName',
+                bSortable : false
             },{
                 render: function(data, type , row){
                     return '<a class="btn btn-small" href="'+ fcConfig.auditMessageUrl +'&id=' + row.id+'&searchTerm=${searchTerm}"><i class="icon-search"></i></a>';
 
-                }
+                },
+                bSortable : false
             }]
         });
         $('.dataTables_filter input').attr("placeholder", "Action, Type, Name");
