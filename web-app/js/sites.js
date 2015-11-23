@@ -18,7 +18,6 @@ var SiteViewModel = function (site, feature) {
         }
     };
 
-
     self.updateExtent = function(source){
         switch (source) {
             case 'point':
@@ -219,7 +218,7 @@ var SiteViewModel = function (site, feature) {
 
         //do the google geocode lookup
         $.ajax({
-            url: fcConfig.geocodeUrl + lat + "," + lng,
+            url: fcConfig.geocodeUrl + "latlng=" + lat + "," + lng,
             async: false
         }).done(function (data) {
             if (data.results.length > 0) {
@@ -312,6 +311,9 @@ var EmptyLocation = function () {
 };
 var PointLocation = function (l) {
     var self = this;
+    self.transients = {};
+    self.transients.geocodeAddress = ko.observable();
+
     self.source = ko.observable('point');
     self.geometry = ko.observable({
         type: "Point",
@@ -378,6 +380,38 @@ var PointLocation = function (l) {
             js.geometry.coordinates = [js.geometry.decimalLongitude, js.geometry.decimalLatitude];
         }
         return js;
+    };
+
+    self.useMyLocation = function() {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            self.geometry().decimalLatitude(position.coords.latitude);
+            self.geometry().decimalLongitude(position.coords.longitude);
+        });
+    };
+
+    self.geocodeAddress = function() {
+        $.ajax({
+            url: fcConfig.geocodeUrl,
+            data: {
+                'address': self.transients.geocodeAddress(),
+                'bounds': getMapBounds
+            }
+        }).done(function (data) {
+            if (data.results.length > 0) {
+                var res = data.results[0];
+
+                if (res.geometry) {
+                    self.geometry().decimalLatitude(res.geometry.location.lat);
+                    self.geometry().decimalLongitude(res.geometry.location.lng);
+                } else {
+                    bootbox.alert("Location coordinates were found, please try a different address");
+                }
+            } else {
+                bootbox.alert('location was not found, try a different address or place name');
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            bootbox.alert("Error: " + textStatus + " - " + errorThrown);
+        })
     };
 };
 
@@ -554,6 +588,7 @@ function SiteViewModelWithMapIntegration (siteData, options) {
             addMarker(self.poi()[i].geometry().decimalLatitude(), self.poi()[i].geometry().decimalLongitude(), self.poi()[i].name(), self.poi()[i].dragEvent)
         }
     };
+
     self.newPOI = function(){
         //get the center of the map
         var lngLat = getMapCentre();
@@ -563,6 +598,7 @@ function SiteViewModelWithMapIntegration (siteData, options) {
         self.watchPOIGeometryChanges(poi);
 
     };
+
     self.notImplemented = function () {
         alert("Not implemented yet.")
     };
@@ -571,7 +607,9 @@ function SiteViewModelWithMapIntegration (siteData, options) {
         poi.geometry().decimalLatitude.subscribe(self.renderPOIs);
         poi.geometry().decimalLongitude.subscribe(self.renderPOIs);
     };
+
     self.poi.subscribe(self.renderPOIs);
+
     $.each(self.poi(), function(i, poi) {
         self.watchPOIGeometryChanges(poi);
     });

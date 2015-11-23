@@ -212,6 +212,8 @@ class ProjectController {
                                            showSatelliteOnPoint: false,
                                            showUncertainty: false,
                                            showSiteSummary: false,
+                                           showMyLocationPointOption: true,
+                                           showMyGeocodeAddressPointOption: true,
                                            additionalPointText: "Within a ${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"} radius of:"]
         ]
     }

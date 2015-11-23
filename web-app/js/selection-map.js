@@ -581,6 +581,10 @@
         map.resetViewport();
     }
 
+    function getMapBounds() {
+        return map.gmap.getBounds().toUrlValue();
+    }
+
     function showObjectOnMap(pid) {
         var pidLayer = new PIDLayer(pid, config.spatialWmsUrl);
         if (map.gmap.overlayMapTypes.length > 0) {
@@ -652,6 +656,7 @@
     windows.getCurrentShape = getCurrentShape;
     windows.setCurrentShapeCallback = setCurrentShapeCallback;
     windows.resetMap = resetMap;
+    windows.getMapBounds = getMapBounds;
 
 }(this));
 

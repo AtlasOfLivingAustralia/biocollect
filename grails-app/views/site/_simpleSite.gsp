@@ -90,9 +90,10 @@
         <div class="span12">
             <g:if test="${siteOptions?.additionalPointText}">
                 <div class="margin-bottom-1">
-                    ${siteOptions.additionalPointText}
+                    ${siteOptions.additionalPointText}&nbsp;&nbsp;
                 </div>
             </g:if>
+
             <div class="row-fluid controls-row">
                 <fc:textField data-bind="value:geometry().decimalLatitude" data-validation-engine="validate[required,custom[number],min[-90],max[0]]" outerClass="span6" label="Latitude" labelClass="left-aligned"/>
                 <fc:textField data-bind="value:geometry().decimalLongitude" data-validation-engine="validate[required,custom[number],min[-180],max[180]]" data-prompt-position="topRight:-150" outerClass="span6" label="Longitude" labelClass="left-aligned"/>
@@ -103,6 +104,28 @@
                     <fc:textField data-bind="value:geometry().precision, enable: hasCoordinate()" outerClass="span4" label="Precision" labelClass="left-aligned"/>
                     %{-- CG - only supporting WGS84 at the moment --}%
                     <fc:textField data-bind="value:geometry().datum, enable: hasCoordinate()" outerClass="span4" label="Datum" placeholder="WGS84" readonly="readonly" labelClass="left-aligned"/>
+                </div>
+            </g:if>
+            <g:if test="${siteOptions?.showMyLocationPointOption}">
+                <div class="row-fluid margin-bottom-1">
+                    <div class="badge margin-bottom-1">OR</div>
+                    <div>
+                        <a id="useMyLocation" title="Use my current location." href="javascript:void(0);" class="btn btn-default btn-small" data-bind="click: useMyLocation">
+                            <span class="fa fa-location-arrow">&nbsp;</span>Use my location
+                        </a>
+                    </div>
+                </div>
+            </g:if>
+            <g:if test="${siteOptions?.showMyGeocodeAddressPointOption}">
+                <div class="row-fluid margin-bottom-1">
+                    <div class="badge margin-bottom-1">OR</div>
+                    <label for="geocodeAddress" class="left-aligned">Search for an address or location</label>
+                    <div class="input-group">
+                        <input type="text" id="geocodeAddress" class="input-xlarge" data-bind="value: transients.geocodeAddress"/>
+                        <div class="input-append">
+                            <button id="geocodeButton" class="btn btn-default" data-bind="click: geocodeAddress"><span class="fa fa-search"></span></button>
+                        </div>
+                    </div>
                 </div>
             </g:if>
         </div>
