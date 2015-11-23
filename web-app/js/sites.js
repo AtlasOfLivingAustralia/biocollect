@@ -760,7 +760,7 @@ function SiteViewModelWithMapIntegration (siteData, options) {
         self.transients.map = map;
     };
 
-    self.initialiseMap = function(SERVER_CONF) {
+    self.initialiseMap = function(SERVER_CONF, displayOptions) {
         var map = init_map({
             spatialService: SERVER_CONF.spatialService,
             spatialWms: SERVER_CONF.spatialWms,

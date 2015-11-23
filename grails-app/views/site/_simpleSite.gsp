@@ -1,14 +1,15 @@
+<%@ page import="grails.converters.JSON" %>
 <!-- ko stopBinding: true -->
 <div id="sitemap">
     <script type="text/javascript" src="${grailsApplication.config.google.drawmaps.url}"></script>
 
     <div class="row-fluid">
 
-        <div class="span6">
+        <div class="span7">
             <div id="mapForExtent" class="smallMap span6" style="width:100%;height:${mapHeight?:'600px'};"></div>
         </div>
 
-        <div class="span6">
+        <div class="span5">
 
             <div class="well well-small">
 
@@ -58,12 +59,6 @@
                                 <span class="drawButtonLabel">Clear</span>
                             </a>
                         </li>
-                        <li id="reset" title="Zoom and centre on Australia.">
-                            <a href="javascript:void(0);" class="btn draw-tool-btn">
-                                <img src="${resource(dir:'images',file:'reset.png')}" alt="reset map"/>
-                                <span class="drawButtonLabel">Reset</span>
-                            </a>
-                        </li>
                         <li id="zoomToExtent" title="Zoom to extent of drawn shape.">
                             <a href="javascript:zoomToShapeBounds();" class="btn draw-tool-btn">
                                 <img src="${resource(dir:'images',file:'glyphicons_186_move.png')}" alt="zoom to extent of drawn shape"/>
@@ -76,7 +71,12 @@
                 <div style="padding-top:10px;" data-bind="template: { name: extent().source, data: extent }"></div>
             </div>
 
-
+            <div data-bind="visible: extentSource() != 'none'">
+                <a id="reset" title="Zoom and centre on Australia." href="javascript:void(0);" class="btn draw-tool-btn">
+                    <img src="${resource(dir:'images',file:'reset.png')}" alt="reset map"/>
+                    <span class="drawButtonLabel">Reset</span>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -89,15 +89,17 @@
     <div class="drawLocationDiv row-fluid">
         <div class="span12">
             <div class="row-fluid controls-row">
-                <fc:textField data-bind="value:geometry().decimalLatitude" data-validation-engine="validate[required,custom[number],min[-90],max[0]]" outerClass="span6" label="Latitude"/>
-                <fc:textField data-bind="value:geometry().decimalLongitude" data-validation-engine="validate[required,custom[number],min[-180],max[180]]" data-prompt-position="topRight:-150" outerClass="span6" label="Longitude"/>
+                <fc:textField data-bind="value:geometry().decimalLatitude" data-validation-engine="validate[required,custom[number],min[-90],max[0]]" outerClass="span6" label="Latitude" labelClass="left-aligned"/>
+                <fc:textField data-bind="value:geometry().decimalLongitude" data-validation-engine="validate[required,custom[number],min[-180],max[180]]" data-prompt-position="topRight:-150" outerClass="span6" label="Longitude" labelClass="left-aligned"/>
             </div>
-            <div class="row-fluid controls-row">
-                <fc:textField data-bind="value:geometry().uncertainty, enable: hasCoordinate()" outerClass="span4" label="Uncertainty"/>
-                <fc:textField data-bind="value:geometry().precision, enable: hasCoordinate()" outerClass="span4" label="Precision"/>
-                %{-- CG - only supporting WGS84 at the moment --}%
-                <fc:textField data-bind="value:geometry().datum, enable: hasCoordinate()" outerClass="span4" label="Datum" placeholder="WGS84" readonly="readonly"/>
-            </div>
+            <g:if test="${siteOptions ? siteOptions.showUncertainty : true}">
+                <div class="row-fluid controls-row margin-top-1">
+                    <fc:textField data-bind="value:geometry().uncertainty, enable: hasCoordinate()" outerClass="span4" label="Uncertainty" labelClass="left-aligned"/>
+                    <fc:textField data-bind="value:geometry().precision, enable: hasCoordinate()" outerClass="span4" label="Precision" labelClass="left-aligned"/>
+                    %{-- CG - only supporting WGS84 at the moment --}%
+                    <fc:textField data-bind="value:geometry().datum, enable: hasCoordinate()" outerClass="span4" label="Datum" placeholder="WGS84" readonly="readonly" labelClass="left-aligned"/>
+                </div>
+            </g:if>
         </div>
         <div class="row-fluid controls-row gazProperties">
             <span class="label label-success">State/territory</span> <span data-bind="text:geometry().state"></span>
@@ -245,7 +247,6 @@
                 <span class="label label-success">Longitude (NE)</span> <span data-bind="text:geometry().maxLon"></span>
             </div>
         </div>
-        %{--<div class="smallMap span8" style="width:500px;height:300px;"></div>--}%
     </div>
     </script>
 </div>
@@ -289,7 +290,7 @@ function initSiteViewModel() {
     (function(){
 
         //retrieve serialised model
-        siteViewModel = new SiteViewModelWithMapIntegration(savedSiteData, ${siteOptions ?: '{}'});
+        siteViewModel = new SiteViewModelWithMapIntegration(savedSiteData, ${siteOptions as grails.converters.JSON ?: '{}'});
         window.validateSiteExtent = siteViewModel.attachExtentValidation();
 
         ko.applyBindings(siteViewModel, document.getElementById("sitemap"));

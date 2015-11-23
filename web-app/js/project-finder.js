@@ -312,7 +312,10 @@ function ProjectFinder() {
         if ($('#pt-map-filter').hasClass('active')) {
             $('#pt-map-filter-panel').slideDown(400);
             if (!mapInitialised) {
-                siteViewModel.initialiseMap(fcConfig);
+                var displayOptions = {
+                    showUncertainty: false
+                };
+                siteViewModel.initialiseMap(fcConfig, displayOptions);
 
                 // listen for changes to bounding regions (for known shapes and drawn shapes)
                 siteViewModel.transients.map.gmap.addListener("bounds_changed", geoSearchChanged);
@@ -324,6 +327,9 @@ function ProjectFinder() {
 
         } else {
             $('#pt-map-filter-panel').slideUp(400);
+
+            geoSearch = {};
+            siteViewModel.transients.map.clearObjectsAndShapes();
         }
     });
 
@@ -347,10 +353,13 @@ function ProjectFinder() {
         checkButton($('#pt-sort'), 'nameSort');
         checkButton($('#pt-per-page'), '20');
         $('#pt-search').val('');
-        self.pago.firstPage();
-
         geoSearch = {};
+        resetMap();
+        siteViewModel.updateExtent();
+
+        self.pago.firstPage();
     });
+
     // check for statechange event on all buttons in filter panel.
     $('#pt-searchControls button').on('statechange', self.searchAndShowFirstPage);
 
