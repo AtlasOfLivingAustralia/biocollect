@@ -360,7 +360,7 @@ function initSiteViewModel() {
         area : "${site?.area}",
         description : "${site?.description?.encodeAsJavaScript()}",
         notes : "${site?.notes?.encodeAsJavaScript()}",
-        documents : JSON.parse('${(siteDocuments?:documents).encodeAsJavaScript()}'),
+        documents : JSON.parse('${(siteDocuments?:documents).encodeAsJavaScript() ?: '{}'}'),
     <g:if test="${project}">
         projects : ['${project.projectId}'],
     </g:if>

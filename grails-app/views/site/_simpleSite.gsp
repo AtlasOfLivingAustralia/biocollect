@@ -1,14 +1,15 @@
+<%@ page import="grails.converters.JSON" %>
 <!-- ko stopBinding: true -->
 <div id="sitemap">
     <script type="text/javascript" src="${grailsApplication.config.google.drawmaps.url}"></script>
 
     <div class="row-fluid">
 
-        <div class="span6">
+        <div class="span7">
             <div id="mapForExtent" class="smallMap span6" style="width:100%;height:${mapHeight?:'600px'};"></div>
         </div>
 
-        <div class="span6">
+        <div class="span5">
 
             <div class="well well-small">
 
@@ -58,12 +59,6 @@
                                 <span class="drawButtonLabel">Clear</span>
                             </a>
                         </li>
-                        <li id="reset" title="Zoom and centre on Australia.">
-                            <a href="javascript:void(0);" class="btn draw-tool-btn">
-                                <img src="${resource(dir:'images',file:'reset.png')}" alt="reset map"/>
-                                <span class="drawButtonLabel">Reset</span>
-                            </a>
-                        </li>
                         <li id="zoomToExtent" title="Zoom to extent of drawn shape.">
                             <a href="javascript:zoomToShapeBounds();" class="btn draw-tool-btn">
                                 <img src="${resource(dir:'images',file:'glyphicons_186_move.png')}" alt="zoom to extent of drawn shape"/>
@@ -76,7 +71,12 @@
                 <div style="padding-top:10px;" data-bind="template: { name: extent().source, data: extent }"></div>
             </div>
 
-
+            <div data-bind="visible: extentSource() != 'none'">
+                <a id="reset" title="Zoom and centre on Australia." href="javascript:void(0);" class="btn draw-tool-btn">
+                    <img src="${resource(dir:'images',file:'reset.png')}" alt="reset map"/>
+                    <span class="drawButtonLabel">Reset</span>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -88,36 +88,68 @@
     <script type="text/html" id="point">
     <div class="drawLocationDiv row-fluid">
         <div class="span12">
-            <div class="row-fluid controls-row">
-                <fc:textField data-bind="value:geometry().decimalLatitude" data-validation-engine="validate[required,custom[number],min[-90],max[0]]" outerClass="span6" label="Latitude"/>
-                <fc:textField data-bind="value:geometry().decimalLongitude" data-validation-engine="validate[required,custom[number],min[-180],max[180]]" data-prompt-position="topRight:-150" outerClass="span6" label="Longitude"/>
-            </div>
-            <div class="row-fluid controls-row">
-                <fc:textField data-bind="value:geometry().uncertainty, enable: hasCoordinate()" outerClass="span4" label="Uncertainty"/>
-                <fc:textField data-bind="value:geometry().precision, enable: hasCoordinate()" outerClass="span4" label="Precision"/>
-                %{-- CG - only supporting WGS84 at the moment --}%
-                <fc:textField data-bind="value:geometry().datum, enable: hasCoordinate()" outerClass="span4" label="Datum" placeholder="WGS84" readonly="readonly"/>
-            </div>
-        </div>
-        <div class="row-fluid controls-row gazProperties">
-            <span class="label label-success">State/territory</span> <span data-bind="text:geometry().state"></span>
-        </div>
-        <div class="row-fluid controls-row gazProperties">
-            <span class="label label-success">Local Gov. Area</span> <span data-bind="text:geometry().lga"></span>
-        </div>
-        <div class="row-fluid controls-row gazProperties">
-            <span class="label label-success">NRM</span> <span data-bind="text:geometry().nrm"></span>
-        </div>
-        <div class="row-fluid controls-row gazProperties">
-            <span class="label label-success">Locality</span> <span data-bind="text:geometry().locality"></span>
-        </div>
-        <div class="row-fluid controls-row gazProperties">
-            <span class="label label-success">NVIS major vegetation group:</span> <span data-bind="text:geometry().mvg"></span>
-        </div>
+            <g:if test="${siteOptions?.additionalPointText}">
+                <div class="margin-bottom-1">
+                    ${siteOptions.additionalPointText}&nbsp;&nbsp;
+                </div>
+            </g:if>
 
-        <div class="row-fluid controls-row gazProperties">
-            <span class="label label-success">NVIS major vegetation subgroup:</span> <span data-bind="text:geometry().mvs"></span>
+            <div class="row-fluid controls-row">
+                <fc:textField data-bind="value:geometry().decimalLatitude" data-validation-engine="validate[required,custom[number],min[-90],max[0]]" outerClass="span6" label="Latitude" labelClass="left-aligned"/>
+                <fc:textField data-bind="value:geometry().decimalLongitude" data-validation-engine="validate[required,custom[number],min[-180],max[180]]" data-prompt-position="topRight:-150" outerClass="span6" label="Longitude" labelClass="left-aligned"/>
+            </div>
+            <g:if test="${siteOptions ? siteOptions.showUncertainty : true}">
+                <div class="row-fluid controls-row margin-top-1">
+                    <fc:textField data-bind="value:geometry().uncertainty, enable: hasCoordinate()" outerClass="span4" label="Uncertainty" labelClass="left-aligned"/>
+                    <fc:textField data-bind="value:geometry().precision, enable: hasCoordinate()" outerClass="span4" label="Precision" labelClass="left-aligned"/>
+                    %{-- CG - only supporting WGS84 at the moment --}%
+                    <fc:textField data-bind="value:geometry().datum, enable: hasCoordinate()" outerClass="span4" label="Datum" placeholder="WGS84" readonly="readonly" labelClass="left-aligned"/>
+                </div>
+            </g:if>
+            <g:if test="${siteOptions?.showMyLocationPointOption}">
+                <div class="row-fluid margin-bottom-1">
+                    <div class="badge margin-bottom-1">OR</div>
+                    <div>
+                        <a id="useMyLocation" title="Use my current location." href="javascript:void(0);" class="btn btn-default btn-small" data-bind="click: useMyLocation">
+                            <span class="fa fa-location-arrow">&nbsp;</span>Use my location
+                        </a>
+                    </div>
+                </div>
+            </g:if>
+            <g:if test="${siteOptions?.showMyGeocodeAddressPointOption}">
+                <div class="row-fluid margin-bottom-1">
+                    <div class="badge margin-bottom-1">OR</div>
+                    <label for="geocodeAddress" class="left-aligned">Search for an address or location</label>
+                    <div class="input-group">
+                        <input type="text" id="geocodeAddress" class="input-xlarge" data-bind="value: transients.geocodeAddress"/>
+                        <div class="input-append">
+                            <button id="geocodeButton" class="btn btn-default" data-bind="click: geocodeAddress"><span class="fa fa-search"></span></button>
+                        </div>
+                    </div>
+                </div>
+            </g:if>
         </div>
+        <g:if test="${siteOptions ? siteOptions.showSiteSummary : true}">
+            <div class="row-fluid controls-row gazProperties">
+                <span class="label label-success">State/territory</span> <span data-bind="text:geometry().state"></span>
+            </div>
+            <div class="row-fluid controls-row gazProperties">
+                <span class="label label-success">Local Gov. Area</span> <span data-bind="text:geometry().lga"></span>
+            </div>
+            <div class="row-fluid controls-row gazProperties">
+                <span class="label label-success">NRM</span> <span data-bind="text:geometry().nrm"></span>
+            </div>
+            <div class="row-fluid controls-row gazProperties">
+                <span class="label label-success">Locality</span> <span data-bind="text:geometry().locality"></span>
+            </div>
+            <div class="row-fluid controls-row gazProperties">
+                <span class="label label-success">NVIS major vegetation group:</span> <span data-bind="text:geometry().mvg"></span>
+            </div>
+
+            <div class="row-fluid controls-row gazProperties">
+                <span class="label label-success">NVIS major vegetation subgroup:</span> <span data-bind="text:geometry().mvs"></span>
+            </div>
+        </g:if>
     </div>
     </script>
 
@@ -167,21 +199,24 @@
             optionsCaption:'Choose shape ...',
             optionsValue: 'pid',
             optionsText:'name', value: layerObject"></select>
-            <div class="row-fluid controls-row" style="display:none;">
-                <span class="label label-success">PID</span> <span data-bind="text:geometry().pid"></span>
-            </div>
-            <div class="row-fluid controls-row">
-                <span class="label label-success">Name</span> <span data-bind="text:geometry().name"></span>
-            </div>
-            <div class="row-fluid controls-row" style="display:none;">
-                <span class="label label-success">LayerID</span> <span data-bind="text:geometry().fid"></span>
-            </div>
-            <div class="row-fluid controls-row">
-                <span class="label label-success">Layer</span> <span data-bind="text:geometry().layerName"></span>
-            </div>
-            <div class="row-fluid controls-row">
-                <span class="label label-success">Area (km&sup2;)</span> <span data-bind="text:geometry().area"></span>
-            </div>
+
+            <g:if test="${siteOptions ? siteOptions.showSiteSummary : true}">
+                <div class="row-fluid controls-row" style="display:none;">
+                    <span class="label label-success">PID</span> <span data-bind="text:geometry().pid"></span>
+                </div>
+                <div class="row-fluid controls-row">
+                    <span class="label label-success">Name</span> <span data-bind="text:geometry().name"></span>
+                </div>
+                <div class="row-fluid controls-row" style="display:none;">
+                    <span class="label label-success">LayerID</span> <span data-bind="text:geometry().fid"></span>
+                </div>
+                <div class="row-fluid controls-row">
+                    <span class="label label-success">Layer</span> <span data-bind="text:geometry().layerName"></span>
+                </div>
+                <div class="row-fluid controls-row">
+                    <span class="label label-success">Area (km&sup2;)</span> <span data-bind="text:geometry().area"></span>
+                </div>
+            </g:if>
         </div>
     </div>
     </script>
@@ -191,67 +226,70 @@
     </script>
 
     <script type="text/html" id="drawn">
-    <div id="drawnLocationDiv" class="drawLocationDiv row-fluid">
-        <div class="span12">
+    <g:if test="${siteOptions ? siteOptions.showSiteSummary : true}">
+        <div id="drawnLocationDiv" class="drawLocationDiv row-fluid">
+            <div class="span12">
 
-            <div class="row-fluid controls-row" style="display:none;">
-                <span class="label label-success">Type</span> <span data-bind="text:geometry().type"></span>
-            </div>
-            <div class="row-fluid controls-row" data-bind="visible: geometry!=null && geometry().areaKmSq!=null && geometry().areaKmSq != '' ">
-                <span class="label label-success">Area (km&sup2;)</span> <span data-bind="text:geometry().areaKmSq"></span>
-            </div>
+                <div class="row-fluid controls-row" style="display:none;">
+                    <span class="label label-success">Type</span> <span data-bind="text:geometry().type"></span>
+                </div>
+                <div class="row-fluid controls-row" data-bind="visible: geometry!=null && geometry().areaKmSq!=null && geometry().areaKmSq != '' ">
+                    <span class="label label-success">Area (km&sup2;)</span> <span data-bind="text:geometry().areaKmSq"></span>
+                </div>
 
-            <div class="row-fluid controls-row gazProperties" data-bind="visible: geometry!=null && geometry().state!=null && geometry().state!=''">
-                <span class="label label-success">State/territory</span> <span data-bind="text:geometry().state"></span>
-            </div>
+                <div class="row-fluid controls-row gazProperties" data-bind="visible: geometry!=null && geometry().state!=null && geometry().state!=''">
+                    <span class="label label-success">State/territory</span> <span data-bind="text:geometry().state"></span>
+                </div>
 
-            <div class="row-fluid controls-row gazProperties" data-bind="visible: geometry!=null && geometry().lga!=null && geometry().lga!=''">
-                <span class="label label-success">Local Gov. Area</span> <span data-bind="text:geometry().lga"></span>
-            </div>
+                <div class="row-fluid controls-row gazProperties" data-bind="visible: geometry!=null && geometry().lga!=null && geometry().lga!=''">
+                    <span class="label label-success">Local Gov. Area</span> <span data-bind="text:geometry().lga"></span>
+                </div>
 
-            <div class="row-fluid controls-row gazProperties">
-                <span class="label label-success">NRM</span> <span data-bind="text:geometry().nrm"></span>
-            </div>
+                <div class="row-fluid controls-row gazProperties">
+                    <span class="label label-success">NRM</span> <span data-bind="text:geometry().nrm"></span>
+                </div>
 
-            <div class="row-fluid controls-row gazProperties">
-                <span class="label label-success">Locality</span> <span data-bind="text:geometry().locality"></span>
-            </div>
+                <div class="row-fluid controls-row gazProperties">
+                    <span class="label label-success">Locality</span> <span data-bind="text:geometry().locality"></span>
+                </div>
 
-            <div class="row-fluid controls-row gazProperties">
-                <span class="label label-success">NVIS major vegetation group:</span> <span data-bind="text:geometry().mvg"></span>
-            </div>
+                <div class="row-fluid controls-row gazProperties">
+                    <span class="label label-success">NVIS major vegetation group:</span> <span data-bind="text:geometry().mvg"></span>
+                </div>
 
-            <div class="row-fluid controls-row gazProperties">
-                <span class="label label-success">NVIS major vegetation subgroup:</span> <span data-bind="text:geometry().mvs"></span>
-            </div>
+                <div class="row-fluid controls-row gazProperties">
+                    <span class="label label-success">NVIS major vegetation subgroup:</span> <span data-bind="text:geometry().mvs"></span>
+                </div>
 
-            <div style="display:none;" class="row-fluid controls-row">
-                <span class="label label-success">Center</span> <span data-bind="text:geometry().centre"></span>
-            </div>
-            <div class="row-fluid controls-row circleProperties propertyGroup">
-                <span class="label label-success">Radius (m)</span> <span data-bind="text:geometry().radius"></span>
-            </div>
+                <div style="display:none;" class="row-fluid controls-row">
+                    <span class="label label-success">Center</span> <span data-bind="text:geometry().centre"></span>
+                </div>
+                <div class="row-fluid controls-row circleProperties propertyGroup">
+                    <span class="label label-success">Radius (m)</span> <span data-bind="text:geometry().radius"></span>
+                </div>
 
-            <div style="display:none;" class="row-fluid controls-row  propertyGroup">
-                <span class="label">GeoJSON</span> <span data-bind="text:ko.toJSON(geometry())"></span>
-            </div>
+                <div style="display:none;" class="row-fluid controls-row  propertyGroup">
+                    <span class="label">GeoJSON</span> <span data-bind="text:ko.toJSON(geometry())"></span>
+                </div>
 
-            <div class="row-fluid controls-row rectangleProperties propertyGroup">
-                <span class="label label-success">Latitude (SW)</span> <span data-bind="text:geometry().minLat"></span>
-                <span class="label label-success">Longitude (SW)</span> <span data-bind="text:geometry().minLon"></span>
-            </div>
-            <div class="row-fluid controls-row rectangleProperties propertyGroup">
-                <span class="label label-success">Latitude (NE)</span> <span data-bind="text:geometry().maxLat"></span>
-                <span class="label label-success">Longitude (NE)</span> <span data-bind="text:geometry().maxLon"></span>
+                <div class="row-fluid controls-row rectangleProperties propertyGroup">
+                    <span class="label label-success">Latitude (SW)</span> <span data-bind="text:geometry().minLat"></span>
+                    <span class="label label-success">Longitude (SW)</span> <span data-bind="text:geometry().minLon"></span>
+                </div>
+                <div class="row-fluid controls-row rectangleProperties propertyGroup">
+                    <span class="label label-success">Latitude (NE)</span> <span data-bind="text:geometry().maxLat"></span>
+                    <span class="label label-success">Longitude (NE)</span> <span data-bind="text:geometry().maxLon"></span>
+                </div>
             </div>
         </div>
-        %{--<div class="smallMap span8" style="width:500px;height:300px;"></div>--}%
-    </div>
+    </g:if>
     </script>
 </div>
 <!-- /ko -->
 
 <r:script>
+var siteOptions = ${siteOptions as grails.converters.JSON ?: '{}'};
+
 function initSiteViewModel() {
     var siteViewModel;
 
@@ -276,7 +314,7 @@ function initSiteViewModel() {
         area : "${site?.area}",
         description : "${site?.description?.encodeAsJavaScript()}",
         notes : "${site?.notes?.encodeAsJavaScript()}",
-        documents : JSON.parse('${(siteDocuments?:documents).encodeAsJavaScript()}'),
+        documents : JSON.parse('${(siteDocuments?:documents).encodeAsJavaScript() ?: '{}'}'),
     <g:if test="${project}">
         projects : ['${project.projectId}'],
     </g:if>
@@ -288,19 +326,15 @@ function initSiteViewModel() {
 
     (function(){
 
-        //retrieve serialised model
-        siteViewModel = new SiteViewModelWithMapIntegration(savedSiteData);
-        window.validateSiteExtent = siteViewModel.attachExtentValidation()
+        <g:if test="${loadMapOnDocumentReady}">
+            //retrieve serialised model
+            siteViewModel = new SiteViewModelWithMapIntegration(savedSiteData, ${siteOptions as grails.converters.JSON ?: '{}'});
+            window.validateSiteExtent = siteViewModel.attachExtentValidation();
 
-        ko.applyBindings(siteViewModel, document.getElementById("sitemap"));
+            ko.applyBindings(siteViewModel, document.getElementById("sitemap"));
 
-        init_map({
-            spatialService: SERVER_CONF.spatialService,
-            spatialWms: SERVER_CONF.spatialWms,
-            mapContainer: 'mapForExtent'
-        });
-
-        siteViewModel.mapInitialised(window);
+            siteViewModel.initialiseMap(SERVER_CONF);
+        </g:if>
 
     }());
 

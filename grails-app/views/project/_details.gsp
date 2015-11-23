@@ -504,7 +504,8 @@
     <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.site"/></h4>
-            <g:set var="mapHeight" value="400px"/>
+            <g:set var="mapHeight" value="500px"/>
+            <g:set var="loadMapOnDocumentReady" value="true"/>
             <g:render template="/site/simpleSite" model="${pageScope.variables}"/>
         </div>
     </div>

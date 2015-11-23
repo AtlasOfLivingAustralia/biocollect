@@ -16,6 +16,8 @@ class FCTagLib {
 
     def textField = { attrs ->
         def outerClass = attrs.remove 'outerClass'
+        String labelClass = attrs.remove 'labelClass'
+
         if (outerClass) {
             out << """<div class="${outerClass}">"""
         }
@@ -23,7 +25,7 @@ class FCTagLib {
         def forAttr = id ? " for='${id}'" : ''
         def label = attrs.remove 'label'
         if (label) {
-            out << """<label class="control-label" ${forAttr}>${label}</label>"""
+            out << """<label class="${labelClass ?: 'control-label'}" ${forAttr}>${label}</label>"""
         }
         def value = attrs.remove 'value'
         //println "${id}: ${value?.toString()}: ${value?.getClass()}"

@@ -2,90 +2,11 @@
 var SiteViewModel = function (site, feature) {
     var self = $.extend(this, new Documents());
 
-    self.siteId = site.siteId;
-    self.name = ko.observable(site.name);
-    self.externalId = ko.observable(site.externalId);
-    self.type = ko.observable(site.type);
-    self.area = ko.observable(site.area);
-    self.description = ko.observable(site.description);
-    self.notes = ko.observable(site.notes);
-    self.extent = ko.observable(new EmptyLocation());
-    self.state = ko.observable('');
-    self.nrm = ko.observable('');
-    self.address = ko.observable("");
-    self.feature = feature;
-    self.projects = site.projects || [];
-    self.extentSource = ko.pureComputed({
-        read: function() {
-            if (self.extent()) {
-                return self.extent().source();
-            }
-            return 'none'
-        },
-        write: function(value) {
-            self.updateExtent(value);
-        }
-    });
+    self.site = null;
 
-    self.setAddress = function (address) {
-        if (address.indexOf(', Australia') === address.length - 11) {
-            address = address.substr(0, address.length - 11);
-        }
-        self.address(address);
-    };
-    self.poi = ko.observableArray();
-
-    self.addPOI = function(poi) {
-        self.poi.push(poi);
-
-    };
-    self.removePOI = function(poi){
-        if (poi.hasPhotoPointDocuments) {
-            return;
-        }
-        self.poi.remove(poi);
-    };
-    self.toJS = function(){
-        var js = ko.mapping.toJS(self, {ignore:self.ignore});
-        js.extent = self.extent().toJS();
-        delete js.extentSource;
-        delete js.extentGeometryWatcher;
-        delete js.isValid;
-        return js;
-    };
-
-    self.modelAsJSON = function() {
-        var js = self.toJS();
-        return JSON.stringify(js);
-    }
-    /** Check if the supplied POI has any photos attached to it */
-    self.hasPhotoPointDocuments = function(poi) {
-        if (!site.documents) {
-            return;
-        }
-        var hasDoc = false;
-        $.each(site.documents, function(i, doc) {
-            if (doc.poiId === poi.poiId) {
-                hasDoc = true;
-                return false;
-            }
-        });
-        return hasDoc;
-    };
-    self.saved = function(){
-        return self.siteId;
-    };
-    self.loadPOI = function (pois) {
-        if (!pois) {
-            return;
-        }
-        $.each(pois, function (i, poi) {
-            self.poi.push(new POI(poi, self.hasPhotoPointDocuments(poi)));
-        });
-    };
     self.loadExtent = function(){
-        if(site && site.extent) {
-            var extent = site.extent;
+        if(self.site && self.site.extent) {
+            var extent = self.site.extent;
             switch (extent.source) {
                 case 'point':   self.extent(new PointLocation(extent.geometry)); break;
                 case 'pid':     self.extent(new PidLocation(extent.geometry)); break;
@@ -96,7 +17,6 @@ var SiteViewModel = function (site, feature) {
             self.extent(new EmptyLocation());
         }
     };
-
 
     self.updateExtent = function(source){
         switch (source) {
@@ -121,6 +41,149 @@ var SiteViewModel = function (site, feature) {
                 break;
             default: self.extent(new EmptyLocation());
         }
+    };
+
+    self.loadSite = function(site) {
+        self.site = site;
+        self.siteId = site.siteId;
+        self.name = ko.observable(site.name);
+        self.externalId = ko.observable(site.externalId);
+        self.type = ko.observable(site.type);
+        self.area = ko.observable(site.area);
+        self.description = ko.observable(site.description);
+        self.notes = ko.observable(site.notes);
+        self.extent = ko.observable(new EmptyLocation());
+        self.state = ko.observable('');
+        self.nrm = ko.observable('');
+        self.address = ko.observable("");
+        self.feature = feature;
+        self.projects = site.projects || [];
+        self.extentSource = ko.computed({
+            read: function() {
+                if (self.extent()) {
+                    return self.extent().source();
+                }
+                return 'none'
+            },
+            write: function(value) {
+                self.updateExtent(value);
+            }
+        });
+        if (site && site.extent) {
+            self.extentSource(site.extent.source);
+        }
+    };
+
+    self.loadSite(site);
+
+    self.setAddress = function (address) {
+        if (address.indexOf(', Australia') === address.length - 11) {
+            address = address.substr(0, address.length - 11);
+        }
+        self.address(address);
+    };
+    self.poi = ko.observableArray();
+
+    self.addPOI = function(poi) {
+        self.poi.push(poi);
+
+    };
+    self.removePOI = function(poi){
+        if (poi.hasPhotoPointDocuments) {
+            return;
+        }
+        self.poi.remove(poi);
+    };
+    self.toJS = function(){
+        var js = ko.mapping.toJS(self, {ignore:self.ignore});
+        js.extent = self.extent().toJS();
+        js.geoIndex = constructGeoIndexObject(js);
+
+        delete js.extentSource;
+        delete js.extentGeometryWatcher;
+        delete js.isValid;
+        return js;
+    };
+
+    // This object is used specifically to create a geospatial index to allow searching by geographic points/regions/bounding boxes.
+    // Known regions (e.g. states/territories, etc) are treated as Polygons for the purposes of searching.
+    // The structure of the resulting 'geoIndex' object is designed to suit Elastic Search's geo_shape mappings.
+    // See https://www.elastic.co/guide/en/elasticsearch/reference/1.7/mapping-geo-shape-type.html for more info
+    function constructGeoIndexObject(site) {
+        var geoIndex = {};
+
+        if (site && site.extent && site.extent && site.extent.geometry) {
+            var geometry = site.extent.geometry;
+
+            if (geometry.type == "Point") {
+                geoIndex = {
+                    type: geometry.type,
+                    coordinates: [geometry.decimalLongitude, geometry.decimalLatitude]
+                };
+            } else if (geometry.type == "Circle") {
+                geoIndex = {
+                    type: geometry.type,
+                    coordinates: geometry.coordinates,
+                    radius: geometry.radius
+                };
+            } else if (geometry.type == "pid" || geometry.type == "Polygon") {
+                geoIndex = {
+                    type: "Polygon",
+                    coordinates: geometry.type == "pid" ? regionToCoordinatesArray(geometry.bbox) : geometry.coordinates
+                };
+            }
+        }
+
+        return geoIndex;
+    }
+
+    function regionToCoordinatesArray(boundingBox) {
+
+        var coordinates = [];
+
+        var pairs = boundingBox.replace(/POLYGON|LINESTRING/g,"").replace(/[\\(|\\)]/g, "").split(",");
+
+        for (var i = 0; i < pairs.length; i++) {
+            coordinates.push(pairs[i].split(" "))
+        }
+
+        // A polygon is a list of coordinates (i.e. a list of 2 dimensional arrays].
+        // The elastic search index requires an array of polygons, so we need an array of arrays of coordinates.
+        // e.g.[ [ [ lat1, lon1 ], [ lat2, lon2 ], ... ] ]
+        return [coordinates];
+    }
+
+    self.modelAsJSON = function() {
+        var js = self.toJS();
+        return JSON.stringify(js);
+    };
+
+    /** Check if the supplied POI has any photos attached to it */
+    self.hasPhotoPointDocuments = function(poi) {
+        if (!self.site.documents) {
+            return;
+        }
+        var hasDoc = false;
+        $.each(self.site.documents, function(i, doc) {
+            if (doc.poiId === poi.poiId) {
+                hasDoc = true;
+                return false;
+            }
+        });
+        return hasDoc;
+    };
+
+    self.saved = function(){
+        return self.siteId;
+    };
+
+    self.loadPOI = function (pois) {
+        if (!pois) {
+            return;
+        }
+        $.each(pois, function (i, poi) {
+            self.poi.push(new POI(poi, self.hasPhotoPointDocuments(poi)));
+        });
     };
 
     self.refreshGazInfo = function() {
@@ -155,7 +218,7 @@ var SiteViewModel = function (site, feature) {
 
         //do the google geocode lookup
         $.ajax({
-            url: fcConfig.geocodeUrl + lat + "," + lng,
+            url: fcConfig.geocodeUrl + "latlng=" + lat + "," + lng,
             async: false
         }).done(function (data) {
             if (data.results.length > 0) {
@@ -163,12 +226,14 @@ var SiteViewModel = function (site, feature) {
             }
         });
     };
+
     self.isValid = ko.pureComputed(function() {
         return self.extent() && self.extent().isValid();
     });
-    self.loadPOI(site.poi);
-    self.loadExtent(site.extent);
 
+    self.loadPOI(site.poi);
+
+    self.loadExtent(site.extent);
 
     // Watch for changes to the extent content and notify subscribers when they do.
     self.extentGeometryWatcher = ko.pureComputed(function() {
@@ -183,10 +248,9 @@ var SiteViewModel = function (site, feature) {
                 if (geom.pid) result.pid = ko.utils.unwrapObservable(geom.pid);
                 if (geom.fid) result.fid = ko.utils.unwrapObservable(geom.fid);
             }
-
         }
-        return result;
 
+        return result;
     });
 };
 
@@ -247,6 +311,9 @@ var EmptyLocation = function () {
 };
 var PointLocation = function (l) {
     var self = this;
+    self.transients = {};
+    self.transients.geocodeAddress = ko.observable();
+
     self.source = ko.observable('point');
     self.geometry = ko.observable({
         type: "Point",
@@ -262,6 +329,7 @@ var PointLocation = function (l) {
         mvg: ko.observable(exists(l,'mvg')),
         mvs: ko.observable(exists(l,'mvs'))
     });
+
     self.hasCoordinate = function () {
         var hasCoordinate = self.geometry().decimalLatitude() !== undefined
             && self.geometry().decimalLatitude() !== ''
@@ -307,11 +375,44 @@ var PointLocation = function (l) {
         if(js.geometry.decimalLatitude !== undefined
             && js.geometry.decimalLatitude !== ''
             && js.geometry.decimalLongitude !== undefined
-            && js.geometry.decimalLongitude !== ''){
-            js.geometry.centre = [js.geometry.decimalLongitude, js.geometry.decimalLatitude]
-            js.geometry.coordinates = [js.geometry.decimalLongitude, js.geometry.decimalLatitude]
+            && js.geometry.decimalLongitude !== '') {
+            js.geometry.centre = [js.geometry.decimalLongitude, js.geometry.decimalLatitude];
+            js.geometry.coordinates = [js.geometry.decimalLongitude, js.geometry.decimalLatitude];
         }
         return js;
+    };
+
+    self.useMyLocation = function() {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            self.geometry().decimalLatitude(position.coords.latitude);
+            self.geometry().decimalLongitude(position.coords.longitude);
+            self.transients.geocodeAddress(null);
+        });
+    };
+
+    self.geocodeAddress = function() {
+        $.ajax({
+            url: fcConfig.geocodeUrl,
+            data: {
+                'address': self.transients.geocodeAddress(),
+                'bounds': getMapBounds
+            }
+        }).done(function (data) {
+            if (data.results.length > 0) {
+                var res = data.results[0];
+
+                if (res.geometry) {
+                    self.geometry().decimalLatitude(res.geometry.location.lat);
+                    self.geometry().decimalLongitude(res.geometry.location.lng);
+                } else {
+                    bootbox.alert("Location coordinates were found, please try a different address");
+                }
+            } else {
+                bootbox.alert('location was not found, try a different address or place name');
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            bootbox.alert("Error: " + textStatus + " - " + errorThrown);
+        })
     };
 };
 
@@ -329,7 +430,8 @@ var DrawnLocation = function (l) {
         mvg: ko.observable(exists(l,'mvg')),
         mvs: ko.observable(exists(l,'mvs')),
         areaKmSq: ko.observable(exists(l,'areaKmSq')),
-        coordinates: ko.observable(exists(l,'coordinates'))
+        coordinates: ko.observable(exists(l,'coordinates')),
+        bbox: ko.observable(exists(l,'bbox'))
     });
     self.updateGeom = function(l){
         self.geometry().type(exists(l,'type'));
@@ -343,10 +445,10 @@ var DrawnLocation = function (l) {
         self.geometry().mvs(exists(l,'mvs'));
         self.geometry().areaKmSq(exists(l,'areaKmSq'));
         self.geometry().coordinates(exists(l,'coordinates'));
+        self.geometry().bbox(exists(l,'bbox'));
     };
     self.toJS= function() {
-        var js = ko.toJS(self);
-        return js;
+        return ko.toJS(self);
     };
     self.isValid = function() {
         return self.geometry().coordinates();
@@ -354,11 +456,9 @@ var DrawnLocation = function (l) {
 };
 
 var PidLocation = function (l) {
-
     // These layers are treated specially.
     var USER_UPLOAD_FID = 'c11083';
     var OLD_NRM_LAYER_FID = 'cl916';
-
     var self = this;
     self.source = ko.observable('pid');
     self.geometry = ko.observable({
@@ -372,11 +472,13 @@ var PidLocation = function (l) {
         state: ko.observable(exists(l,'state')),
         lga: ko.observable(exists(l,'lga')),
         locality: ko.observable(exists(l,'locality')),
+        bbox: ko.observable(exists(l, 'bbox')),
         centre:[]
     });
     self.refreshObjectList = function(){
         self.layerObjects([]);
         self.layerObject(undefined);
+
         if(self.chosenLayer() !== undefined){
             if (self.chosenLayer() != USER_UPLOAD_FID) {
                 $.ajax({
@@ -429,8 +531,9 @@ var PidLocation = function (l) {
                 url: fcConfig.featureService + '?featureId=' + self.layerObject(),
                 dataType:'json'
             }).done(function(data) {
-                self.geometry().name(data.name)
-                self.geometry().layerName(data.fieldname)
+                self.geometry().name(data.name);
+                self.geometry().layerName(data.fieldname);
+                self.geometry().bbox(data.bbox);
                 if(data.area_km !== undefined){
                     self.geometry().area(data.area_km)
                 }
@@ -471,9 +574,14 @@ var PidLocation = function (l) {
     }
 };
 
-function SiteViewModelWithMapIntegration (siteData) {
+function SiteViewModelWithMapIntegration (siteData, options) {
+    options = populateMissingOptions(options);
+
     var self = this;
     SiteViewModel.apply(self, [siteData]);
+    self.transients = {
+        map: null
+    };
 
     self.renderPOIs = function(){
         removeMarkers();
@@ -481,6 +589,7 @@ function SiteViewModelWithMapIntegration (siteData) {
             addMarker(self.poi()[i].geometry().decimalLatitude(), self.poi()[i].geometry().decimalLongitude(), self.poi()[i].name(), self.poi()[i].dragEvent)
         }
     };
+
     self.newPOI = function(){
         //get the center of the map
         var lngLat = getMapCentre();
@@ -490,6 +599,7 @@ function SiteViewModelWithMapIntegration (siteData) {
         self.watchPOIGeometryChanges(poi);
 
     };
+
     self.notImplemented = function () {
         alert("Not implemented yet.")
     };
@@ -498,7 +608,9 @@ function SiteViewModelWithMapIntegration (siteData) {
         poi.geometry().decimalLatitude.subscribe(self.renderPOIs);
         poi.geometry().decimalLongitude.subscribe(self.renderPOIs);
     };
+
     self.poi.subscribe(self.renderPOIs);
+
     $.each(self.poi(), function(i, poi) {
         self.watchPOIGeometryChanges(poi);
     });
@@ -526,8 +638,12 @@ function SiteViewModelWithMapIntegration (siteData) {
                 //self.extent().setCurrentPID();
             } else if(currentDrawnShape.type == 'Point'){
                 showOnMap('point', currentDrawnShape.decimalLatitude, currentDrawnShape.decimalLongitude,'site name');
-                zoomToShapeBounds();
-                showSatellite();
+                if (options.zoomToPoint) {
+                    zoomToShapeBounds();
+                }
+                if (options.showSatelliteOnPoint) {
+                    showSatellite();
+                }
             }
         }
     };
@@ -549,7 +665,9 @@ function SiteViewModelWithMapIntegration (siteData) {
                     self.extent(new PidLocation({}));
                 }
                 break;
-            case 'upload': self.extent(new UploadLocation({})); break;
+            case 'upload':
+                self.extent(new UploadLocation({}));
+                break;
             case 'drawn':
                 if (siteData && siteData.extent && siteData.extent.source == source) {
 
@@ -620,7 +738,7 @@ function SiteViewModelWithMapIntegration (siteData) {
                         bbox:[sw.lat(),sw.lng(),ne.lat(),ne.lng()],
                         areaKmSq:calcAreaKm,
                         centre: [centreX,centreY]
-                    }
+                    };
                     break;
                 case google.maps.drawing.OverlayType.POLYGON:
                     /*
@@ -664,10 +782,13 @@ function SiteViewModelWithMapIntegration (siteData) {
                     var centreX = minLng + ((maxLng - minLng) / 2);
                     var centreY = minLat + ((maxLat - minLat) / 2);
 
+                    var polygonCoords = polygonToGeoJson(path);
+
                     drawnShape = {
                         type:'Polygon',
                         userDrawn: 'Polygon',
-                        coordinates: polygonToGeoJson(path),
+                        coordinates: polygonCoords,
+                        bbox: polygonCoords,
                         areaKmSq: calcAreaKm,
                         centre: [centreX,centreY]
                     };
@@ -690,8 +811,20 @@ function SiteViewModelWithMapIntegration (siteData) {
             self.refreshGazInfo();
         }
     };
-    self.mapInitialised = function(map) {
+
+    self.setMap = function(map) {
+        self.transients.map = map;
+    };
+
+    self.initialiseMap = function(SERVER_CONF) {
+        var map = init_map({
+            spatialService: SERVER_CONF.spatialService,
+            spatialWms: SERVER_CONF.spatialWms,
+            mapContainer: 'mapForExtent'
+        });
+
         var updating = false;
+        self.setMap(map);
         self.renderPOIs();
         self.renderOnMap();
         var clearAndRedraw = function() {
@@ -703,7 +836,7 @@ function SiteViewModelWithMapIntegration (siteData) {
                     updating = false;
                 }, 500);
             }
-        }
+        };
         setCurrentShapeCallback(self.shapeDrawn);
         self.extent.subscribe(function(newExtent) {
             clearAndRedraw();
@@ -711,6 +844,7 @@ function SiteViewModelWithMapIntegration (siteData) {
         self.extentGeometryWatcher.subscribe(function() {
             clearAndRedraw();
         });
+
     };
 
     /**
@@ -731,6 +865,24 @@ function SiteViewModelWithMapIntegration (siteData) {
         return validateSiteExtent;
     };
 
+    function populateMissingOptions(options) {
+        if (!options) {
+            options = {
+                zoomToPoint: true,
+                showSatelliteOnPoint: true
+            };
+        }
+
+        if (typeof options.showSatelliteOnPoint === 'undefined') {
+            options.showSatelliteOnPoint = true;
+        }
+
+        if (typeof options.zoomToPoint === 'undefined') {
+            options.zoomToPoint = true;
+        }
+
+        return options;
+    }
 };
 
 

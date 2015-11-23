@@ -206,11 +206,18 @@ class ProjectController {
     }
 
     def citizenScience() {
-            [
-                user: userService.getUser(),
-                showTag: params.tag,
-                downloadLink: createLink(controller: 'project', action: 'getProjectList', params: ['download' : true] ),
-                showCitizenScienceBanner: true
+        [
+                user                    : userService.getUser(),
+                showTag                 : params.tag,
+                downloadLink            : createLink(controller: 'project', action: 'getProjectList', params: ['download': true]),
+                showCitizenScienceBanner: true,
+                siteOptions             : [zoomToPoint: false,
+                                           showSatelliteOnPoint: false,
+                                           showUncertainty: false,
+                                           showSiteSummary: false,
+                                           showMyLocationPointOption: true,
+                                           showMyGeocodeAddressPointOption: true,
+                                           additionalPointText: "Within a ${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"} radius of:"]
         ]
     }
 
@@ -457,6 +464,8 @@ class ProjectController {
                 queryParams.put(key, value)
             }
         }
+
+        queryParams.put("geoSearchJSON", params.geoSearchJSON)
 
         Map searchResult = searchService.getCitizenScienceProjects(queryParams);
         List projects = searchResult.hits?.hits;
