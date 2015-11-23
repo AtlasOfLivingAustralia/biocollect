@@ -91,7 +91,6 @@
 
                 <div id="pt-map-filter-panel" class="hide">
                     <g:set var="mapHeight" value="600px"/>
-                    <g:set var="siteOptions" value="[zoomToPoint: false, showSatelliteOnPoint: false, showUncertainty: false]"/>
                     <g:render template="/site/simpleSite" model="${pageScope.variables}"/>
                 </div>
             </div>

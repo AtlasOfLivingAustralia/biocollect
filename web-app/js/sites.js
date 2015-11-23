@@ -2,30 +2,80 @@
 var SiteViewModel = function (site, feature) {
     var self = $.extend(this, new Documents());
 
-    self.siteId = site.siteId;
-    self.name = ko.observable(site.name);
-    self.externalId = ko.observable(site.externalId);
-    self.type = ko.observable(site.type);
-    self.area = ko.observable(site.area);
-    self.description = ko.observable(site.description);
-    self.notes = ko.observable(site.notes);
-    self.extent = ko.observable(new EmptyLocation());
-    self.state = ko.observable('');
-    self.nrm = ko.observable('');
-    self.address = ko.observable("");
-    self.feature = feature;
-    self.projects = site.projects || [];
-    self.extentSource = ko.pureComputed({
-        read: function() {
-            if (self.extent()) {
-                return self.extent().source();
+    self.site = null;
+
+    self.loadExtent = function(){
+        if(self.site && self.site.extent) {
+            var extent = self.site.extent;
+            switch (extent.source) {
+                case 'point':   self.extent(new PointLocation(extent.geometry)); break;
+                case 'pid':     self.extent(new PidLocation(extent.geometry)); break;
+                case 'upload':  self.extent(new UploadLocation()); break;
+                case 'drawn':   self.extent(new DrawnLocation(extent.geometry)); break;
             }
-            return 'none'
-        },
-        write: function(value) {
-            self.updateExtent(value);
+        } else {
+            self.extent(new EmptyLocation());
         }
-    });
+    };
+
+
+    self.updateExtent = function(source){
+        switch (source) {
+            case 'point':
+                if(site && site.extent) {
+                    self.extent(new PointLocation(site.extent.geometry));
+                } else {
+                    self.extent(new PointLocation({}));
+                }
+                break;
+            case 'pid':
+                if(site && site.extent) {
+                    self.extent(new PidLocation(site.extent.geometry));
+                } else {
+                    self.extent(new PidLocation({}));
+                }
+                break;
+            case 'upload': self.extent(new UploadLocation({})); break;
+            case 'drawn':
+                //breaks the edits....
+                self.extent(new DrawnLocation({}));
+                break;
+            default: self.extent(new EmptyLocation());
+        }
+    };
+
+    self.loadSite = function(site) {
+        self.site = site;
+        self.siteId = site.siteId;
+        self.name = ko.observable(site.name);
+        self.externalId = ko.observable(site.externalId);
+        self.type = ko.observable(site.type);
+        self.area = ko.observable(site.area);
+        self.description = ko.observable(site.description);
+        self.notes = ko.observable(site.notes);
+        self.extent = ko.observable(new EmptyLocation());
+        self.state = ko.observable('');
+        self.nrm = ko.observable('');
+        self.address = ko.observable("");
+        self.feature = feature;
+        self.projects = site.projects || [];
+        self.extentSource = ko.computed({
+            read: function() {
+                if (self.extent()) {
+                    return self.extent().source();
+                }
+                return 'none'
+            },
+            write: function(value) {
+                self.updateExtent(value);
+            }
+        });
+        if (site && site.extent) {
+            self.extentSource(site.extent.source);
+        }
+    };
+
+    self.loadSite(site);
 
     self.setAddress = function (address) {
         if (address.indexOf(', Australia') === address.length - 11) {
@@ -108,13 +158,14 @@ var SiteViewModel = function (site, feature) {
         var js = self.toJS();
         return JSON.stringify(js);
     };
+
     /** Check if the supplied POI has any photos attached to it */
     self.hasPhotoPointDocuments = function(poi) {
-        if (!site.documents) {
+        if (!self.site.documents) {
             return;
         }
         var hasDoc = false;
-        $.each(site.documents, function(i, doc) {
+        $.each(self.site.documents, function(i, doc) {
             if (doc.poiId === poi.poiId) {
                 hasDoc = true;
                 return false;
@@ -122,9 +173,11 @@ var SiteViewModel = function (site, feature) {
         });
         return hasDoc;
     };
+
     self.saved = function(){
         return self.siteId;
     };
+
     self.loadPOI = function (pois) {
         if (!pois) {
             return;
@@ -132,45 +185,6 @@ var SiteViewModel = function (site, feature) {
         $.each(pois, function (i, poi) {
             self.poi.push(new POI(poi, self.hasPhotoPointDocuments(poi)));
         });
-    };
-    self.loadExtent = function(){
-        if(site && site.extent) {
-            var extent = site.extent;
-            switch (extent.source) {
-                case 'point':   self.extent(new PointLocation(extent.geometry)); break;
-                case 'pid':     self.extent(new PidLocation(extent.geometry)); break;
-                case 'upload':  self.extent(new UploadLocation()); break;
-                case 'drawn':   self.extent(new DrawnLocation(extent.geometry)); break;
-            }
-        } else {
-            self.extent(new EmptyLocation());
-        }
-    };
-
-
-    self.updateExtent = function(source){
-        switch (source) {
-            case 'point':
-                if(site && site.extent) {
-                    self.extent(new PointLocation(site.extent.geometry));
-                } else {
-                    self.extent(new PointLocation({}));
-                }
-                break;
-            case 'pid':
-                if(site && site.extent) {
-                    self.extent(new PidLocation(site.extent.geometry));
-                } else {
-                    self.extent(new PidLocation({}));
-                }
-                break;
-            case 'upload': self.extent(new UploadLocation({})); break;
-            case 'drawn':
-                //breaks the edits....
-                self.extent(new DrawnLocation({}));
-                break;
-            default: self.extent(new EmptyLocation());
-        }
     };
 
     self.refreshGazInfo = function() {
@@ -213,12 +227,14 @@ var SiteViewModel = function (site, feature) {
             }
         });
     };
+
     self.isValid = ko.pureComputed(function() {
         return self.extent() && self.extent().isValid();
     });
-    self.loadPOI(site.poi);
-    self.loadExtent(site.extent);
 
+    self.loadPOI(site.poi);
+
+    self.loadExtent(site.extent);
 
     // Watch for changes to the extent content and notify subscribers when they do.
     self.extentGeometryWatcher = ko.pureComputed(function() {
@@ -311,6 +327,7 @@ var PointLocation = function (l) {
         mvg: ko.observable(exists(l,'mvg')),
         mvs: ko.observable(exists(l,'mvs'))
     });
+
     self.hasCoordinate = function () {
         var hasCoordinate = self.geometry().decimalLatitude() !== undefined
             && self.geometry().decimalLatitude() !== ''
@@ -760,7 +777,7 @@ function SiteViewModelWithMapIntegration (siteData, options) {
         self.transients.map = map;
     };
 
-    self.initialiseMap = function(SERVER_CONF, displayOptions) {
+    self.initialiseMap = function(SERVER_CONF) {
         var map = init_map({
             spatialService: SERVER_CONF.spatialService,
             spatialWms: SERVER_CONF.spatialWms,
@@ -827,7 +844,6 @@ function SiteViewModelWithMapIntegration (siteData, options) {
 
         return options;
     }
-
 };
 
 

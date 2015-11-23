@@ -378,4 +378,8 @@ modules = {
         resource url: 'css/comment.css'
         resource url: 'js/comment.js'
     }
+
+    zip {
+        resource url: "vendor/lz-string-1.4.4/lz-string.min.js"
+    }
 }

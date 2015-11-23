@@ -24,10 +24,7 @@ function ProjectFinder() {
     // variable to not scroll to result when result is loaded for the first time.
     var firstTimeLoad = true;
 
-    var siteViewModel = initSiteViewModel({type:'projectArea'});
-    siteViewModel.name = ko.computed(function() {
-        return 'Enter or select a region to search across';
-    });
+    var siteViewModel = null;//initSiteViewModel({type:'projectArea'});
 
     this.availableProjectTypes = new ProjectViewModel({}, false, []).transients.availableProjectTypes;
 
@@ -101,6 +98,39 @@ function ProjectFinder() {
             checkButton($button, 'button', 'data-toggle');
         } else {
             $button.removeClass('active');
+        }
+    }
+
+    function toggleFilterPanel() {
+        if ($('#pt-filter').hasClass('active')) {
+            $('#pt-selectors').slideDown(400)
+        } else {
+            $('#pt-selectors').slideUp(400)
+        }
+    }
+
+    function toggleMapFilterPanel() {
+        if ($('#pt-map-filter').hasClass('active')) {
+            $('#pt-map-filter-panel').slideDown(400);
+            if (!mapInitialised) {
+                var displayOptions = {
+                    showUncertainty: false
+                };
+                siteViewModel.initialiseMap(fcConfig, displayOptions);
+
+                // listen for changes to bounding regions (for known shapes and drawn shapes)
+                siteViewModel.transients.map.gmap.addListener("bounds_changed", geoSearchChanged);
+                // listen to changes in the geometry (for changes to point locations)
+                siteViewModel.extentGeometryWatcher.subscribe(geoSearchChanged);
+
+                mapInitialised = true;
+            }
+
+        } else {
+            $('#pt-map-filter-panel').slideUp(400);
+
+            geoSearch = {};
+            siteViewModel.transients.map.clearObjectsAndShapes();
         }
     }
 
@@ -301,36 +331,12 @@ function ProjectFinder() {
     };
 
     $("#pt-filter").on('statechange', function () {
-        if ($('#pt-filter').hasClass('active')) {
-            $('#pt-selectors').slideDown(400)
-        } else {
-            $('#pt-selectors').slideUp(400)
-        }
+        toggleFilterPanel();
+
     });
 
     $("#pt-map-filter").on('statechange', function() {
-        if ($('#pt-map-filter').hasClass('active')) {
-            $('#pt-map-filter-panel').slideDown(400);
-            if (!mapInitialised) {
-                var displayOptions = {
-                    showUncertainty: false
-                };
-                siteViewModel.initialiseMap(fcConfig, displayOptions);
-
-                // listen for changes to bounding regions (for known shapes and drawn shapes)
-                siteViewModel.transients.map.gmap.addListener("bounds_changed", geoSearchChanged);
-                // listen to changes in the geometry (for changes to point locations)
-                siteViewModel.extentGeometryWatcher.subscribe(geoSearchChanged);
-
-                mapInitialised = true;
-            }
-
-        } else {
-            $('#pt-map-filter-panel').slideUp(400);
-
-            geoSearch = {};
-            siteViewModel.transients.map.clearObjectsAndShapes();
-        }
+        toggleMapFilterPanel();
     });
 
     $('#pt-search-link').click(function () {
@@ -408,8 +414,31 @@ function ProjectFinder() {
         var hash = [];
         for (var param in params) {
             if (params.hasOwnProperty(param) && params[param] && params[param] != '') {
-                hash.push(param + "=" + params[param]);
+                if (param != 'geoSearchJSON') {
+                    hash.push(param + "=" + params[param]);
+                }
             }
+        }
+
+        if (!_.isEmpty(geoSearch)) {
+            var fullSite = siteViewModel.toJS();
+            var siteToSave = {
+                extent: {
+                    source: fullSite.extent.source,
+                    geometry: {
+                        type: fullSite.extent.geometry.type,
+                        coordinates: fullSite.extent.geometry.coordinates,
+                        decimalLongitude: fullSite.extent.geometry.decimalLongitude,
+                        decimalLatitude: fullSite.extent.geometry.decimalLatitude,
+                        pid: fullSite.extent.geometry.pid,
+                        fid: fullSite.extent.geometry.fid,
+                        radius: fullSite.extent.geometry.radius,
+                        centre: fullSite.extent.geometry.centre
+                    }
+                }
+            };
+
+            hash.push('geoSearch=' + LZString.compressToBase64(JSON.stringify(siteToSave)));
         }
 
         return encodeURIComponent(hash.join("&"));
@@ -428,6 +457,8 @@ function ProjectFinder() {
             }
         }
 
+        toggleButton($('#pt-filter'), true);
+        toggleFilterPanel();
         toggleButton($('#pt-search-diy'), toBoolean(params.isDIY));
         setActiveButtonValues($('#pt-status'), params.status);
         toggleButton($('#pt-search-noCost'), toBoolean(params.hasParticipantCost));
@@ -435,11 +466,26 @@ function ProjectFinder() {
         toggleButton($('#pt-search-mobile'), toBoolean(params.isMobile));
         toggleButton($('#pt-search-children'), toBoolean(params.isSuitableForChildren));
         setActiveButtonValues($('#pt-search-difficulty'), params.difficulty);
+        setGeoSearch(params.geoSearch);
 
         checkButton($("#pt-sort"), params.sort || 'nameSort');
         checkButton($("#pt-per-page"), params.max || '20');
 
         $('#pt-search').val(params.q).focus()
+    }
+
+    function setGeoSearch(geoSearch) {
+        if (geoSearch && !(typeof geoSearch === 'undefined')) {
+            var site = JSON.parse(LZString.decompressFromBase64(geoSearch));
+            toggleButton($('#pt-map-filter'), true);
+
+            siteViewModel = new SiteViewModelWithMapIntegration(site, siteOptions);
+            toggleMapFilterPanel();
+        } else {
+            siteViewModel = new SiteViewModelWithMapIntegration({}, siteOptions);
+        }
+
+        ko.applyBindings(siteViewModel, document.getElementById("sitemap"));
     }
 
     function toBoolean(str) {

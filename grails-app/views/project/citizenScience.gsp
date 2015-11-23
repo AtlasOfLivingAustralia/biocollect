@@ -20,7 +20,7 @@
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
-        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "50km"}",
+        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
         imageLocation:"${resource(dir:'/images')}",
         logoLocation:"${resource(dir:'/images/filetypes')}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
@@ -35,7 +35,7 @@
     </g:if>
     </r:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <r:require modules="js_iso8601,knockout,jqueryValidationEngine,drawmap,projects,projectFinder"/>
+    <r:require modules="js_iso8601,knockout,jqueryValidationEngine,drawmap,projects,projectFinder,zip"/>
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">
