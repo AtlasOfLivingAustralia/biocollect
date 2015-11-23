@@ -143,12 +143,6 @@ modules = {
         resource url: 'js/activity.js'
     }
 
-    records {
-        defaultBundle 'application'
-        dependsOn 'knockout, pagination'
-        resource url: 'js/records.js'
-    }
-
     jstimezonedetect {
         resource url: 'vendor/jstz/jstz.min.js'
     }

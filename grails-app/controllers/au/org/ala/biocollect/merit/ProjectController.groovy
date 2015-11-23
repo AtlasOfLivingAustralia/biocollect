@@ -112,7 +112,7 @@ class ProjectController {
          news:[label:'News', visible: true, type:'tab'],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
-         data:[label:'Data', visible:true, template:'/bioActivity/allData', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
+         data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
          admin:[label:'Admin', template:'internalCSAdmin', visible:(user?.isAdmin || user?.isCaseManager), type:'tab']]
     }
 
@@ -206,7 +206,7 @@ class ProjectController {
     }
 
     def citizenScience() {
-        [
+            [
                 user: userService.getUser(),
                 showTag: params.tag,
                 downloadLink: createLink(controller: 'project', action: 'getProjectList', params: ['download' : true] ),

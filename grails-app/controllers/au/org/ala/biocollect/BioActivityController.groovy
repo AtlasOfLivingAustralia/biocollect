@@ -1,13 +1,17 @@
 package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.ActivityService
+import au.org.ala.biocollect.merit.CommonService
 import au.org.ala.biocollect.merit.DocumentService
 import au.org.ala.biocollect.merit.MetadataService
 import au.org.ala.biocollect.merit.ProjectService
+import au.org.ala.biocollect.merit.SearchService
 import au.org.ala.biocollect.merit.SiteService
 import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.sightings.BieService
 import grails.converters.JSON
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+
 import static org.apache.http.HttpStatus.*
 import org.codehaus.groovy.grails.web.json.JSONArray
 
@@ -23,6 +27,8 @@ class BioActivityController {
     DocumentService documentService
     ActivityService activityService
     BieService bieService
+    CommonService commonService
+    SearchService searchService
 
     /**
      * Update Activity by activityId or
@@ -277,11 +283,65 @@ class BioActivityController {
      * @return
      */
     def list() {
+    }
 
+    def allRecords (){
+        render(view: 'list', model: [view: 'allrecords'])
     }
 
     def ajaxList() {
         render listUserActivities(params) as JSON
+    }
+
+   /*
+    * Search project activities and records
+    */
+    def searchProjectActivities() {
+        GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
+        Map parsed = commonService.parseParams(params)
+        parsed.userId = userService.getCurrentUserId()
+        parsed.each{ key, value ->
+            if(value != null && value){
+                queryParams.put(key, value)
+            }
+        }
+
+        Map searchResult = searchService.searchProjectActivity(queryParams)
+
+        List activities = searchResult?.hits?.hits
+        List facets = []
+        activities = activities?.collect {
+            Map doc = it._source
+            [
+                    activityId       : doc.activityId,
+                    projectActivityId: doc.projectActivityId,
+                    type             : doc.type,
+                    status           : doc.status,
+                    lastUpdated      : doc.lastUpdated,
+                    userId           : doc.userId,
+                    siteId           : doc.siteId,
+                    name             : doc.projectActivity.name,
+                    projectName      : doc.projectActivity?.projectName,
+                    activityOwnerName: doc.projectActivity?.activityOwnerName,
+                    embargoed        : doc.projectActivity?.embargoed,
+                    embargoUntil     : doc.projectActivity?.embargoUntil,
+                    records          : doc.projectActivity?.records,
+                    endDate          : doc.projectActivity?.endDate,
+                    projectName      : doc.projectActivity?.projectName,
+                    projectId        : doc.projectActivity?.projectId,
+                    access           : ((parsed.userId && doc.projectId && projectService.canUserEditProject(parsed.userId, doc.projectId, false) || (doc.userId == parsed.userId)))
+            ]
+        }
+
+        searchResult?.facets?.each { k, v ->
+            Map facet = [:]
+            facet.name = k
+            facet.total = v.total
+            facet.terms = v.terms
+            facets << facet
+        }
+
+        render([activities: activities, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
     }
 
     def ajaxListForProject(String id){

@@ -100,6 +100,10 @@
             window.location = "${createLink(controller: 'myProfile')}";
         });
 
+        $(".btnAllData").click(function (e) {
+            window.location = "${createLink(controller: 'bioActivity', action: 'allRecords')}";
+        });
+
         $(".btnMyData").click(function (e) {
             window.location = "${createLink(controller: 'bioActivity', action: 'list')}";
         });
