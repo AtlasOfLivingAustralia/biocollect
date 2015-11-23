@@ -386,6 +386,7 @@ var PointLocation = function (l) {
         navigator.geolocation.getCurrentPosition(function(position) {
             self.geometry().decimalLatitude(position.coords.latitude);
             self.geometry().decimalLongitude(position.coords.longitude);
+            self.transients.geocodeAddress(null);
         });
     };
 
