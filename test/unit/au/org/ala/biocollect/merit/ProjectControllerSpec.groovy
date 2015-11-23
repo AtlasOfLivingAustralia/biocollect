@@ -16,6 +16,7 @@ class ProjectControllerSpec extends Specification {
     def roleServiceStub = Stub(RoleService)
     def activityServiceStub = Stub(ActivityService)
     def commonServiceStub = Stub(CommonService)
+    def auditServiceStub = Stub(AuditService)
 
     void setup() {
         controller.userService = userServiceStub
@@ -25,6 +26,8 @@ class ProjectControllerSpec extends Specification {
         controller.roleService = roleServiceStub
         controller.activityService = activityServiceStub
         controller.commonService = commonServiceStub
+        controller.auditService = auditServiceStub
+        auditServiceStub.getAuditMessagesForProject(_) >> []
         metadataServiceStub.organisationList() >> [list:[buildOrganisation(), buildOrganisation(), buildOrganisation()]]
         metadataServiceStub.activitiesModel() >> [activities: []]
         userServiceStub.getOrganisationIdsForUserId(_) >> ['1']

@@ -7,6 +7,11 @@
 		</style>
 	</head>
 	<body>
+	<r:script>
+		var fcConfig = {
+        	auditMessageUrl: "${createLink( controller: 'admin', action:'auditMessageDetails', params:[projectId: project.projectId])}"
+		}
+	</r:script>
         <g:render template="auditProject"></g:render>
     </body>
 </html>

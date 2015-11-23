@@ -594,20 +594,28 @@ class ProjectController {
     def auditMessageDetails() {
         String userId = authService.getUserId()
         String projectId = params.projectId
+        String compareId= params.compareId
+        String skin
 
         Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
         if(isAdmin) {
             def results = auditService.getAuditMessage(params.id as String)
             def userDetails = [:]
-            def compare
+            Map compare
             if (results?.message) {
                 userDetails = auditService.getUserDetails(results?.message?.userId)
-                compare = auditService.getAuditMessage(params.compareId as String)
             }
-            String skin = SettingService.getHubConfig().skin
+
+            if(compareId){
+                compare = auditService.getAuditMessage(params.compareId as String)
+            } else {
+                compare = auditService.getAutoCompareAuditMessage(params.id)
+            }
+
+            skin = SettingService.getHubConfig().skin
             render view: '/admin/auditMessageDetails', model: [message: results?.message, compare: compare?.message, userDetails: userDetails.user, layoutContent: skin, backToProject: true]
         } else {
-            response.sendError(403, 'You are not authorized to view this page')
+            response.sendError(SC_FORBIDDEN, 'You are not authorized to view this page')
         }
     }
 
@@ -623,6 +631,9 @@ class ProjectController {
             String q = params.q
 
             def results = auditService.getAuditMessagesForProjectPerPage(projectId,start,size,sort,orderBy,q)
+            results.data.each{ msg ->
+                msg['date'] = DateUtils.displayFormatWithTime(msg['date']);
+            }
             asJson results;
         } else {
             response.sendError(SC_FORBIDDEN, 'You are not authorized to view this page')

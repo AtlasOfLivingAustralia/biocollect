@@ -78,7 +78,7 @@
                 data: 'userName'
             },{
                 render: function(data, type , row){
-                    return '<a class="btn btn-small" href="' + fcConfig.auditMessageUrl +'&id=' + row.id+'&compareId=' + row.entity.compareId+'"><i class="icon-search"></i></a>';
+                    return '<a class="btn btn-small" href="'+ fcConfig.auditMessageUrl +'&id=' + row.id+'&searchTerm=${searchTerm}"><i class="icon-search"></i></a>';
 
                 }
             }]

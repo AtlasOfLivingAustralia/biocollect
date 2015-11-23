@@ -397,12 +397,19 @@ class AdminController {
 
     def auditMessageDetails() {
         def results = auditService.getAuditMessage(params.id as String)
+        String compareId = params.compareId
         def userDetails = [:]
         def compare
         if (results?.message) {
             userDetails = auditService.getUserDetails(results?.message?.userId)
-            compare = auditService.getAuditMessage(params.compareId as String)
         }
+
+        if(compareId){
+            compare = auditService.getAuditMessage(params.compareId as String)
+        } else {
+            compare = auditService.getAutoCompareAuditMessage(params.id)
+        }
+
         [message: results?.message, compare: compare?.message, userDetails: userDetails.user, layoutContent: 'adminLayout']
     }
 
