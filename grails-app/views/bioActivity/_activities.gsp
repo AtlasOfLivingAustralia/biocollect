@@ -17,7 +17,7 @@
                     <div class="row-fluid">
                         <div class="span12">
                             <div data-bind="attr:{class: embargoed() ? 'searchResultSection locked' : 'searchResultSection'}">
-                                <div class="span12 text-left ">
+                                <div class="span10 text-left ">
                                     <div>
                                         <h4>
                                             <!-- ko if: embargoed() -->
@@ -32,7 +32,6 @@
                                             </a>
                                         </h4>
                                     </div>
-
                                     <div>
                                         <small>Project name: <a data-bind="attr:{'href': projectUrl()}"><span
                                                 data-bind="text: projectName"></span></a></small>
@@ -47,22 +46,25 @@
                                                 <span data-bind="text: $index()+1"></span>. <span
                                                     data-bind="text: name"></span>
                                             </a>
+                                            <b>|</b>
                                             <!-- /ko -->
                                         </small>
-
                                     </div>
                                     <!-- /ko -->
                                     <div>
                                         <small>Submitted by: <span data-bind="text: ownerName"></span> on <span
                                                 data-bind="text: lastUpdated.formattedDate"></span></small>
                                     </div>
-                                    <a data-bind="attr:{'href': transients.viewUrl}">view</a>
+                                </div>
+                                <div class="span2 text-right">
+                                    <!-- looks awkward to show view eye icon by itself. Users can view the survey by clicking the survey title.-->
                                     <span data-bind="if: access()">
+                                        <a data-bind="attr:{'href': transients.viewUrl}"><i class="icon-eye-open" title="View survey"></i></a>
                                         <span data-bind="visible: showAdd()">
-                                            <a data-bind="attr:{'href': transients.addUrl}">add</a>
+                                            <a data-bind="attr:{'href': transients.addUrl}"><i class="icon-plus" title="Add survey"></i></a>
                                         </span>
-                                        <a data-bind="attr:{'href': transients.editUrl}">edit</a>
-                                        <a href="#" data-bind="click: $parent.delete">delete</a>
+                                        <a data-bind="attr:{'href': transients.editUrl}"><i class="icon-edit" title="Edit survey"></i></a>
+                                        <a href="#" data-bind="click: $parent.delete"><i class="icon-remove" title="Delete survey"></i></a>
                                     </span>
                                 </div>
                             </div>

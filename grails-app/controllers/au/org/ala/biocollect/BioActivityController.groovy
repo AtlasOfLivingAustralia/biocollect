@@ -306,8 +306,15 @@ class BioActivityController {
             }
         }
 
-        Map searchResult = searchService.searchProjectActivity(queryParams)
+        queryParams.max = queryParams.max ?: 10
+        queryParams.offset = queryParams.offset ?: 0
+        queryParams.flimit = queryParams.flimit ?: 20
+        queryParams.sort = queryParams.sort ?: 'lastUpdated'
+        queryParams.order = queryParams.order ?: 'DESC'
+        queryParams.fq = queryParams.fq ?: ''
+        queryParams.searchTerm = queryParams.searchTerm ?: ''
 
+        Map searchResult = searchService.searchProjectActivity(queryParams)
         List activities = searchResult?.hits?.hits
         List facets = []
         activities = activities?.collect {
