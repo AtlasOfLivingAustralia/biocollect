@@ -130,7 +130,9 @@ function ProjectFinder() {
             $('#pt-map-filter-panel').slideUp(400);
 
             geoSearch = {};
-            siteViewModel.transients.map.clearObjectsAndShapes();
+            resetMap();
+            siteViewModel.updateExtent();
+            self.doSearch();
         }
     }
 
