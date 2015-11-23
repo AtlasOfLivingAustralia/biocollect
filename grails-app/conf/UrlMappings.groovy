@@ -29,6 +29,7 @@ class UrlMappings {
 
                 "/sightingAjax/saveBookmarkLocation" controller: "sightingAjax", action: [POST:"saveBookmarkLocation"]
                 "/uploads/$file**"(controller:"sightingImage", action:"index")
+                "/project/getAuditMessagesForProject/$id"(controller: "project", action: 'getAuditMessagesForProject')
 
                 "/activity/$entityId/comment"(controller: "comment"){
                         action = [GET: 'list', POST: 'create']

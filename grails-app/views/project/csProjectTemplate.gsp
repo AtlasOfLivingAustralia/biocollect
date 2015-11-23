@@ -56,8 +56,9 @@
         recordListUrl: "${createLink(controller: 'record', action: 'ajaxListForProject', params: [id:project.projectId])}",
         recordDeleteUrl:"${createLink(controller: 'record', action: 'delete')}",
         projectDeleteUrl:"${createLink(action:'delete', id:project.projectId)}",
-        ßerrorViewer: "${createLink(controller: 'resource', action: 'error')}",
-        returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}"
+        errorViewer: "${createLink(controller: 'resource', action: 'error')}",
+        returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}",
+        auditMessageUrl: "${createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId])}"
         },
         here = window.location.href;
 

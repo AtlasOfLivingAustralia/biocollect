@@ -17,7 +17,6 @@
 </g:if>
 
 <div class="row well well-small">
-    <g:if test="${messages}">
         <table style="width: 95%;" class="table table-striped table-bordered table-hover" id="project-list">
             <thead>
             <th>Date</th>
@@ -25,31 +24,11 @@
             <th>Type</th>
             <th>Name</th>
             <th>User</th>
-            <th></th>
+            <th>Details</th>
             </thead>
             <tbody>
-            <g:set var="project" value="${project}"/>
-            <g:each in="${messages}" var="message">
-                <tr>
-                    <td><!-- ${DateUtils.displayFormatWithTimeNoSpace(message?.date)} --> ${DateUtils.displayFormatWithTime(message?.date)}</td>
-                    <td>${message.eventType}</td>
-                    <td>${message.entityType?.substring(message.entityType?.lastIndexOf('.')+1)}</td>
-                    <td>${message.entity?.name} ${message.entity?.type} <small>(${message.entityId})</small></td>
-                    <g:set var="displayName" value="${userMap[message.userId] ?: message.userId }" />
-                    <td><g:encodeAs codec="HTML">${displayName}</g:encodeAs></td>
-                    <td><a class="btn btn-small" href="${createLink( action:'auditMessageDetails', params:[projectId: project.projectId, id:message.id, compareId: message.entity.compareId, searchTerm: searchTerm])}">
-                        <i class="icon-search"></i>
-                    </a>
-                    </td>
-                </tr>
-            </g:each>
             </tbody>
         </table>
-
-    </g:if>
-    <g:else>
-        <div>No messages found!</div>
-    </g:else>
 </div>
 
 <r:script type="text/javascript">
@@ -60,19 +39,50 @@
             "oLanguage": {
                 "sSearch": "Search: "
             },
-            "ajax":"${createLink(controller: 'project', action: 'auditMessages')}/${project.projectId}",
+            "processing": true,
+            "serverSide": true,
+            "ajax":{
+               url: "${createLink(controller: 'project', action: 'getAuditMessagesForProject')}/${project.projectId}",
+               data: function(options){
+                    var col, order
+                    for(var i in options.order){
+                        order = options.order[i];
+                        col = options.columns[order.column];
+                        break;
+                    }
+                    options.sort = col.data;
+                    options.orderBy = order.dir
+                    options.q = (options.search && options.search.value) || ''
+               }
+            },
             "columns": [{
-                data: 'Date'
+                data: 'date',
+                name: 'date'
             },{
-                data: 'Action'
+                data: 'eventType',
+                name: 'eventType'
             },{
-                data: 'Type'
+                data: 'entityType',
+                render: function(data, type, row){
+                    return data && data.substr(data.lastIndexOf('.') + 1)
+                }
             },{
-                data: 'Name'
+                //data: 'entityId',
+                render: function(data, type, row){
+                    var name = (row.entity && row.entity.name) || '',
+                     type = (row.entity && row.entity.type) || '',
+                     id = row.entityId;
+                    return name + ' ' + type + ' <small>(' + id + ')</small>'
+                }
             },{
-                data: 'User'
+                data: 'userName'
+            },{
+                render: function(data, type , row){
+                    return '<a class="btn btn-small" href="' + fcConfig.auditMessageUrl +'&id=' + row.id+'&compareId=' + row.entity.compareId+'"><i class="icon-search"></i></a>';
+
+                }
             }]
         });
-        $('.dataTables_filter input').attr("placeholder", "Date, Action, Type, Name, User");
+        $('.dataTables_filter input').attr("placeholder", "Action, Type, Name");
     });
 </r:script>

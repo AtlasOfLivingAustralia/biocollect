@@ -42,7 +42,8 @@
         audioViewer: "${createLink(controller: 'resource', action: 'audioviewer')}",
         videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
         errorViewer: "${createLink(controller: 'resource', action: 'error')}",
-        returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}"
+        returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}",
+        auditMessageUrl: "${createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId])}"
         },
         here = window.location.href;
 

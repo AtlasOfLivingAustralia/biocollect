@@ -7,6 +7,7 @@ import grails.converters.JSON
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
+import static org.apache.http.HttpStatus.SC_FORBIDDEN
 
 import java.text.SimpleDateFormat
 
@@ -608,5 +609,27 @@ class ProjectController {
         } else {
             response.sendError(403, 'You are not authorized to view this page')
         }
+    }
+
+    def getAuditMessagesForProject(){
+        String userId = authService.getUserId()
+        String projectId = params.id
+        Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
+        if(isAdmin) {
+            String sort = params.sort?:''
+            String orderBy = params.orderBy?:''
+            Integer start = params.int('start')
+            Integer size = params.int('length')
+            String q = params.q
+
+            def results = auditService.getAuditMessagesForProjectPerPage(projectId,start,size,sort,orderBy,q)
+            asJson results;
+        } else {
+            response.sendError(SC_FORBIDDEN, 'You are not authorized to view this page')
+        }
+    }
+
+    def asJson(json) {
+        render(contentType: 'application/json', text: json as JSON)
     }
 }
