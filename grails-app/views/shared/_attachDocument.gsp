@@ -77,17 +77,6 @@
 
 
                     <div data-bind="visible: !embeddedVideoVisible()">
-                        <div class="control-group"  data-bind="visible:settings.showSettings">
-                            <label class="control-label" for="documentFile">Image settings</label>
-                            <div class="controls">
-                                <label class="checkbox" for="documentRole">
-                                    <input id="documentRole" type="checkbox" data-bind="enable:type() == 'image' && public() && role() =='information', checked: isPrimaryProjectImage"/>
-                                    use as the main project image
-                                </label>
-                            </div>
-                        </div>
-
-
                         <div class="control-group">
                             <label class="control-label" for="documentFile">File</label>
 

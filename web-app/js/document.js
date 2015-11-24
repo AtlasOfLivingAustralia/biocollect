@@ -53,11 +53,9 @@ function DocumentViewModel (doc, owner, settings) {
     this.onRoleChange = function(val) {
         if(this.role() == 'programmeLogic'){
             this.public(false);
-            this.isPrimaryProjectImage(false);
         }
     };
 
-    this.isPrimaryProjectImage = ko.observable(doc.isPrimaryProjectImage);
     this.thirdPartyConsentDeclarationMade = ko.observable(doc.thirdPartyConsentDeclarationMade);
     this.thirdPartyConsentDeclarationText = null;
     this.embeddedVideo = ko.observable(doc.embeddedVideo);
