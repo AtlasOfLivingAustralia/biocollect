@@ -2,6 +2,10 @@
  * Created by Temi Varghese on 22/10/15.
  */
 function ProjectFinder() {
+    /* the default filter selections: used to determine whether to display the filter panel on load */
+    /* i.e. if the filter details from the URL hash are different to the default, then the filter panel will be opened */
+    var DEFAULT_CITIZEN_SCIENCE_FILTER = {isCitizenScience: "true", max: "20", sort: "nameSort"};
+
     var self = this;
     /* holds all projects */
     var allProjects = [];
@@ -459,8 +463,10 @@ function ProjectFinder() {
             }
         }
 
-        toggleButton($('#pt-filter'), true);
-        toggleFilterPanel();
+        if (!_.isEqual(params, DEFAULT_CITIZEN_SCIENCE_FILTER)) {
+            toggleButton($('#pt-filter'), true);
+            toggleFilterPanel();
+        }
         toggleButton($('#pt-search-diy'), toBoolean(params.isDIY));
         setActiveButtonValues($('#pt-status'), params.status);
         toggleButton($('#pt-search-noCost'), toBoolean(params.hasParticipantCost));
