@@ -30,6 +30,7 @@
             submitReportUrl: '${g.createLink( action:'ajaxSubmitReport', id:"${organisation.organisationId}")}',
             approveReportUrl: '${g.createLink( action:'ajaxApproveReport', id:"${organisation.organisationId}")}',
             rejectReportUrl: '${g.createLink( action:'ajaxRejectReport', id:"${organisation.organisationId}")}',
+            defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
             returnTo: '${g.createLink(action:'index', id:"${organisation.organisationId}")}',
             projects : <fc:modelAsJavascript model="${organisation.projects}"/>,
             projectListUrl: "${createLink(controller: 'project', action: 'getProjectList')}",

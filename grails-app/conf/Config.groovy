@@ -101,7 +101,7 @@ app.http.header.userId = "X-ALA-userId"
 
 google.maps.url = "//maps.google.com/maps/api/js?sensor=false&language=en"
 google.geocode.url = "https://maps.googleapis.com/maps/api/geocode/json?"
-google.drawmaps.url = "//maps.google.com/maps/api/js?sensor=false&libraries=drawing,geometry"
+google.drawmaps.url = "//maps.google.com/maps/api/js?libraries=drawing,geometry"
 pdfgen.baseURL="http://pdfgen.ala.org.au/"
 
 app.view.nocache = false

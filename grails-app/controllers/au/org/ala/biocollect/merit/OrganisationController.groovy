@@ -7,7 +7,7 @@ import grails.converters.JSON
  */
 class OrganisationController {
 
-    static allowedMethods = [ajaxDelete: "POST", delete:"POST", ajaxUpdate: "POST"]
+    static allowedMethods = [ajaxDelete: "POST", delete: "POST", ajaxUpdate: "POST"]
 
     def organisationService, searchService, documentService, userService, roleService, commonService, webService
     def citizenScienceOrgId = null
@@ -15,7 +15,7 @@ class OrganisationController {
     def list() {
         if (params.createCitizenScienceProject as boolean) { // came from CS Hub page
             if (citizenScienceOrgId == null) {
-                def orgName = grailsApplication.config.citizenScienceOrgName?:"ALA"
+                def orgName = grailsApplication.config.citizenScienceOrgName ?: "ALA"
                 citizenScienceOrgId = organisationService.getByName(orgName)?.organisationId
             }
             // this session attribute indicates user's desire to create a citizen science project
@@ -24,11 +24,11 @@ class OrganisationController {
         }
         def organisations = organisationService.list()
         def user = userService.getUser()
-        def userOrgIds = user? userService.getOrganisationIdsForUserId(user.userId): []
-        [organisations:organisations.list?:[],
-         user:user,
-         userOrgIds: userOrgIds,
-         citizenScienceOrgId: session.getAttribute('citizenScienceOrgId')?:''
+        def userOrgIds = user ? userService.getOrganisationIdsForUserId(user.userId) : []
+        [organisations      : organisations.list ?: [],
+         user               : user,
+         userOrgIds         : userOrgIds,
+         citizenScienceOrgId: session.getAttribute('citizenScienceOrgId') ?: ''
         ]
     }
 
@@ -37,8 +37,7 @@ class OrganisationController {
 
         if (!organisation || organisation.error) {
             organisationNotFound(id, organisation)
-        }
-        else {
+        } else {
             def roles = roleService.getRoles()
             // Get dashboard information for the response.
             def dashboard = searchService.dashboardReport([fq: 'organisationFacet:' + organisation.name])
@@ -46,15 +45,22 @@ class OrganisationController {
             def user = userService.getUser()
             def userId = user?.userId
 
-            def orgRole = members.find{it.userId == userId}
+            def orgRole = members.find { it.userId == userId }
 
-            [organisation: organisation,
-             dashboard: dashboard,
-             roles:roles,
-             user:user,
-             isAdmin:orgRole?.role == RoleService.PROJECT_ADMIN_ROLE,
-             isGrantManager:orgRole?.role == RoleService.GRANT_MANAGER_ROLE,
-             content:content(organisation)]
+            [organisation  : organisation,
+             dashboard     : dashboard,
+             roles         : roles,
+             user          : user,
+             isAdmin       : orgRole?.role == RoleService.PROJECT_ADMIN_ROLE,
+             isGrantManager: orgRole?.role == RoleService.GRANT_MANAGER_ROLE,
+             content       : content(organisation),
+             siteOptions   : [zoomToPoint                    : false,
+                              showSatelliteOnPoint           : false,
+                              showUncertainty                : false,
+                              showSiteSummary                : false,
+                              showMyLocationPointOption      : true,
+                              showMyGeocodeAddressPointOption: true,
+                              additionalPointText            : "Within a ${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"} radius of:"]]
         }
     }
 
@@ -66,18 +72,18 @@ class OrganisationController {
         def hasAdminAccess = userService.userIsAlaOrFcAdmin() || orgRole.role == RoleService.PROJECT_ADMIN_ROLE
 
         def hasViewAccess = hasAdminAccess || userService.userHasReadOnlyAccess() || orgRole.role == RoleService.PROJECT_EDITOR_ROLE
-        def dashboardReports = [[name:'dashboard', label:'Activity Outputs']]
+        def dashboardReports = [[name: 'dashboard', label: 'Activity Outputs']]
         def includeProjectList = organisation.projects?.size() > 0
 
-        [about    : [label: 'About', visible: true, stopBinding: false, type:'tab', default:true, includeProjectList:includeProjectList],
-         projects    : [label: 'Projects', visible: true, stopBinding:true, type: 'tab',template: '/shared/projectFinder'],
-         sites    : [label: 'Sites', visible: hasViewAccess, stopBinding:true, type: 'tab', projectCount:organisation.projects?.size()?:0, showShapefileDownload:hasAdminAccess],
-         dashboard: [label: 'Dashboard', visible: hasViewAccess, stopBinding:true, type: 'tab', template:'/shared/dashboard', reports:dashboardReports],
+        [about    : [label: 'About', visible: true, stopBinding: false, type: 'tab', default: true, includeProjectList: includeProjectList],
+         projects : [label: 'Projects', visible: true, stopBinding: true, type: 'tab', template: '/shared/projectFinder', model: [allowGeographicFilter: false]],
+         sites    : [label: 'Sites', visible: hasViewAccess, stopBinding: true, type: 'tab', projectCount: organisation.projects?.size() ?: 0, showShapefileDownload: hasAdminAccess],
+         dashboard: [label: 'Dashboard', visible: hasViewAccess, stopBinding: true, type: 'tab', template: '/shared/dashboard', reports: dashboardReports],
          admin    : [label: 'Admin', visible: hasAdminAccess, type: 'tab']]
     }
 
     def create() {
-        [organisation:[:]]
+        [organisation: [:]]
     }
 
     def edit(String id) {
@@ -85,8 +91,7 @@ class OrganisationController {
 
         if (!organisation || organisation.error) {
             organisationNotFound(id, organisation)
-        }
-        else {
+        } else {
             [organisation: organisation]
         }
     }
@@ -94,8 +99,7 @@ class OrganisationController {
     def delete(String id) {
         if (organisationService.isUserAdminForOrganisation(id)) {
             organisationService.update(id, [status: 'deleted'])
-        }
-        else {
+        } else {
             flash.message = 'You do not have permission to perform that action'
         }
         redirect action: 'list'
@@ -107,9 +111,8 @@ class OrganisationController {
             def result = organisationService.update(id, [status: 'deleted'])
 
             respond result
-        }
-        else {
-            render status:403, text:'You do not have permission to perform that action'
+        } else {
+            render status: 403, text: 'You do not have permission to perform that action'
         }
     }
 
@@ -118,9 +121,9 @@ class OrganisationController {
 
         def documents = organisationDetails.remove('documents')
         def links = organisationDetails.remove('links')
-        def result = organisationService.update(organisationDetails.organisationId?:'', organisationDetails)
+        def result = organisationService.update(organisationDetails.organisationId ?: '', organisationDetails)
 
-        def organisationId = organisationDetails.organisationId?:result.resp?.organisationId
+        def organisationId = organisationDetails.organisationId ?: result.resp?.organisationId
         if (documents && !result.error) {
             documents.each { doc ->
                 doc.organisationId = organisationId
@@ -153,19 +156,17 @@ class OrganisationController {
         if (id && userId) {
             if (organisationService.isUserAdminForOrganisation(id) || organisationService.isUserGrantManagerForOrganisation(id)) {
                 def organisation = organisationService.get(id)
-                def params = [fq: 'organisationFacet:' + organisation.name, query :"docType:project"]
+                def params = [fq: 'organisationFacet:' + organisation.name, query: "docType:project"]
 
                 def url = grailsApplication.config.ecodata.service.url + '/search/downloadShapefile' + commonService.buildUrlParamsFromMap(params)
-                def resp = webService.proxyGetRequest(response, url, true, true,960000)
+                def resp = webService.proxyGetRequest(response, url, true, true, 960000)
                 if (resp.status != 200) {
-                    render view:'/error', model:[error:resp.error]
+                    render view: '/error', model: [error: resp.error]
                 }
-            }
-            else {
+            } else {
                 render status: 403, text: 'Permission denied'
             }
-        }
-        else {
+        } else {
             render status: 400, text: 'Missing parameter organisationId'
         }
     }
@@ -177,14 +178,14 @@ class OrganisationController {
             if (organisationService.isUserAdminForOrganisation(id) || organisationService.isUserGrantManagerForOrganisation(id)) {
                 render organisationService.getMembersOfOrganisation(id) as JSON
             } else {
-                render status:403, text: 'Permission denied'
+                render status: 403, text: 'Permission denied'
             }
         } else if (adminUserId) {
-            render status:400, text: 'Required params not provided: id'
+            render status: 400, text: 'Required params not provided: id'
         } else if (id) {
-            render status:403, text: 'User not logged-in or does not have permission'
+            render status: 403, text: 'User not logged-in or does not have permission'
         } else {
-            render status:500, text: 'Unexpected error'
+            render status: 500, text: 'Unexpected error'
         }
     }
 
@@ -196,14 +197,14 @@ class OrganisationController {
 
         if (adminUser && userId && organisationId && role) {
             if (role == 'caseManager' && !userService.userIsSiteAdmin()) {
-                render status:403, text: 'Permission denied - ADMIN role required'
+                render status: 403, text: 'Permission denied - ADMIN role required'
             } else if (organisationService.isUserAdminForOrganisation(organisationId)) {
                 render organisationService.addUserAsRoleToOrganisation(userId, organisationId, role) as JSON
             } else {
-                render status:403, text: 'Permission denied'
+                render status: 403, text: 'Permission denied'
             }
         } else {
-            render status:400, text: 'Required params not provided: userId, role, projectId'
+            render status: 400, text: 'Required params not provided: userId, role, projectId'
         }
     }
 
@@ -217,10 +218,10 @@ class OrganisationController {
             if (organisationService.isUserAdminForOrganisation(organisationId)) {
                 render organisationService.removeUserWithRoleFromOrganisation(userId, organisationId, role) as JSON
             } else {
-                render status:403, text: 'Permission denied'
+                render status: 403, text: 'Permission denied'
             }
         } else {
-            render status:400, text: 'Required params not provided: userId, organisationId, role'
+            render status: 400, text: 'Required params not provided: userId, organisationId, role'
         }
     }
 

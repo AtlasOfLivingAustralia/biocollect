@@ -39,7 +39,6 @@ modules = {
         resource url: 'vendor/jquery.shorten/jquery.shorten.js'
         resource url: 'vendor/jquery.columnizer/jquery.columnizer.js'
         resource url: 'vendor/jquery.blockUI/jquery.blockUI.js'
-        resource url: 'vendor/underscore/underscore-1.8.3.min.js'
     }
 
     defaultSkin {
@@ -177,6 +176,7 @@ modules = {
 
     drawmap {
         defaultBundle true
+        resource url: "http://maps.google.com/maps/api/js?libraries=drawing,geometry", attrs: [type: 'js']
         resource url: 'vendor/keydragzoom/keydragzoom.js'
         resource url: 'js/wms.js'
         resource url: 'js/selection-map.js'
@@ -249,7 +249,7 @@ modules = {
     }
 
     projectFinder {
-        dependsOn('knockout', 'projects','bootstrap', 'responsiveTable')
+        dependsOn('knockout', 'projects','bootstrap', 'responsiveTable', 'zip', 'drawmap', 'underscore')
         resource url: 'js/button-toggle-events.js'
         resource url: 'js/project-finder.js'
         resource url: 'css/project-finder.css'
@@ -375,5 +375,9 @@ modules = {
 
     zip {
         resource url: "vendor/lz-string-1.4.4/lz-string.min.js"
+    }
+
+    underscore {
+        resource url: "vendor/underscore/underscore-1.8.3.min.js"
     }
 }
