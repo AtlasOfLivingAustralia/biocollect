@@ -221,7 +221,7 @@ var SiteViewModel = function (site, feature) {
             url: fcConfig.geocodeUrl + "latlng=" + lat + "," + lng,
             async: false
         }).done(function (data) {
-            if (data.results.length > 0) {
+            if (data && data.results && data.results.length > 0) {
                 self.extent().geometry().locality(data.results[0].formatted_address);
             }
         });
