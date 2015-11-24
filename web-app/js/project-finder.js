@@ -5,6 +5,8 @@ function ProjectFinder() {
     /* the default filter selections: used to determine whether to display the filter panel on load */
     /* i.e. if the filter details from the URL hash are different to the default, then the filter panel will be opened */
     var DEFAULT_CITIZEN_SCIENCE_FILTER = {isCitizenScience: "true", max: "20", sort: "nameSort"};
+    var DEFAULT_USER_PROJECT_FILTER = {isCitizenScience: "true", max: "20", sort: "nameSort", isUserPage: "true"};
+    var DEFAULT_ORGANISATION_PROJECT_FILTER = {isCitizenScience: "true", isWorks: "true", isSurvey: "true", max: "20", sort: "nameSort"};
 
     var self = this;
     /* holds all projects */
@@ -463,7 +465,7 @@ function ProjectFinder() {
             }
         }
 
-        if (!_.isEqual(params, DEFAULT_CITIZEN_SCIENCE_FILTER)) {
+        if (!isDefaultFilter(params)) {
             toggleButton($('#pt-filter'), true);
             toggleFilterPanel();
         }
@@ -480,6 +482,19 @@ function ProjectFinder() {
         checkButton($("#pt-per-page"), params.max || '20');
 
         $('#pt-search').val(params.q).focus()
+    }
+
+    function isDefaultFilter(params) {
+        var defaultFilter = false;
+        if (params.isUserPage) {
+            defaultFilter = _.isEqual(params, DEFAULT_USER_PROJECT_FILTER)
+        } else if (params.organisationName) {
+            defaultFilter = _.isEqual(_.omit(params, "organisationName"), DEFAULT_ORGANISATION_PROJECT_FILTER);
+        } else {
+            defaultFilter = _.isEqual(params, DEFAULT_CITIZEN_SCIENCE_FILTER);
+        }
+
+        return defaultFilter;
     }
 
     function setGeoSearch(geoSearch) {
