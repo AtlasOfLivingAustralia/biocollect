@@ -176,7 +176,6 @@ modules = {
 
     drawmap {
         defaultBundle true
-        resource url: "http://maps.google.com/maps/api/js?libraries=drawing,geometry", attrs: [type: 'js']
         resource url: 'vendor/keydragzoom/keydragzoom.js'
         resource url: 'js/wms.js'
         resource url: 'js/selection-map.js'

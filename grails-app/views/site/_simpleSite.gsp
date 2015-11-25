@@ -1,6 +1,7 @@
 <%@ page import="grails.converters.JSON" %>
 <!-- ko stopBinding: true -->
 <div id="sitemap">
+    <script type="text/javascript" src="${grailsApplication.config.google.drawmaps.url}"></script>
     <div class="row-fluid">
 
         <div class="span7">
