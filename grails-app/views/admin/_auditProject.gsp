@@ -4,8 +4,6 @@
 
 <div class="row">
     <h3>Project Audit - ${project.name}</h3>
-    <h4>Grant Id : ${project.grantId}</h4>
-    <h4>External Id : ${project.externalId}</h4>
 </div>
 
 <g:if test="${!hideBackButton}">
