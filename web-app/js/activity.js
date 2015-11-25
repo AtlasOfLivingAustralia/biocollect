@@ -176,7 +176,7 @@ var ActivityRecordViewModel = function (activity) {
     if (!activity) activity = {};
 
     self.activityId = ko.observable(activity.activityId);
-    self.access = ko.observable(activity.access);
+    self.showCrud = ko.observable(activity.showCrud);
     self.projectActivityId = ko.observable(activity.projectActivityId);
     self.name = ko.observable(activity.name);
     self.type = ko.observable(activity.type);

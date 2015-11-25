@@ -31,7 +31,10 @@
             <div class="panel-body">
                 <!-- ko foreach : terms -->
                 <div class="margin-left-1">
-                    <small><a href="#" data-bind="click: $root.addUserSelectedFacet,text: displayText"></a>
+                    <small>
+                        <b>
+                            <a href="#" data-bind="click: $root.addUserSelectedFacet,text: displayText"></a>
+                        </b>
                     </small> </br>
                 </div>
                 <!-- /ko -->

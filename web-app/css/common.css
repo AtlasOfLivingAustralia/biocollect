@@ -227,7 +227,9 @@
     top: 50%;
     transform: translate(-50%, -50%);
 }
-
+.padding-top-0 {
+    padding-top: 10px;
+}
 .searchResultSection {
     padding-left: 20px;
 }

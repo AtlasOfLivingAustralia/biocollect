@@ -327,7 +327,7 @@ class BioActivityController {
                     lastUpdated      : doc.lastUpdated,
                     userId           : doc.userId,
                     siteId           : doc.siteId,
-                    name             : doc.projectActivity.name,
+                    name             : doc.projectActivity?.name,
                     projectName      : doc.projectActivity?.projectName,
                     activityOwnerName: doc.projectActivity?.activityOwnerName,
                     embargoed        : doc.projectActivity?.embargoed,
@@ -336,7 +336,7 @@ class BioActivityController {
                     endDate          : doc.projectActivity?.endDate,
                     projectName      : doc.projectActivity?.projectName,
                     projectId        : doc.projectActivity?.projectId,
-                    access           : ((parsed.userId && doc.projectId && projectService.canUserEditProject(parsed.userId, doc.projectId, false) || (doc.userId == parsed.userId)))
+                    showCrud         : ((parsed.userId && doc.projectId && projectService.canUserEditProject(parsed.userId, doc.projectId, false) || (doc.userId == parsed.userId)))
             ]
         }
 
