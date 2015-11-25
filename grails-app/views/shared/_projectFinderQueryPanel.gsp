@@ -87,7 +87,7 @@
 
             <h5><g:message code="project.search.geoFilter" /></h5>
             <div class="row-fluid">
-                <button id="pt-map-filter" type="button" class="btn btn-small btn-info margin-bottom-2" data-toggle="button"><g:message code="project.search.mapToggle"/></button>
+                <button id="pt-map-filter" type="button" class="btn btn-small btn-info margin-bottom-2" data-toggle="button"><g:message code="project.search.mapToggle"/><i class="toggleIndicator icon-remove icon-white"></i></button>
 
                 <div id="pt-map-filter-panel" class="hide">
                     <g:set var="mapHeight" value="600px"/>

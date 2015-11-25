@@ -103,6 +103,7 @@ input[type=checkbox] {
 
 .toggleIndicator{
     display: none;
+    margin-left: 5px;
 }
 
 .active > .toggleIndicator{

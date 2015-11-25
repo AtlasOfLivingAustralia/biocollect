@@ -73,7 +73,7 @@
             <div data-bind="visible: extentSource() != 'none'">
                 <a id="reset" title="Zoom and centre on Australia." href="javascript:void(0);" class="btn draw-tool-btn">
                     <img src="${resource(dir:'images',file:'reset.png')}" alt="reset map"/>
-                    <span class="drawButtonLabel">Reset</span>
+                    <span class="drawButtonLabel">Reset map</span>
                 </a>
             </div>
         </div>
