@@ -13,7 +13,7 @@
                                                 guid: species.allSpeciesLists.searchGuid
                                             }">
                 <div class="input-append">
-                    <button id="search" class="btn btn-default" data-bind="click: species.allSpeciesLists.loadAllSpeciesLists">Search</button>
+                    <button id="search" class="btn btn-primary" data-bind="click: species.allSpeciesLists.loadAllSpeciesLists">Search</button>
                 </div>
                 <div class="input-append">
                     <button id="clear" class="btn btn-default" data-bind="click: species.allSpeciesLists.clearSearch">Clear</button>
