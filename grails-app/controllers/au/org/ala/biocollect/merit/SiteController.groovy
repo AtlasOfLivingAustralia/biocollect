@@ -40,8 +40,9 @@ class SiteController {
     }
 
     def index(String id) {
-        //log.debug(id)
-        def site = siteService.get(id, [view: 'scores'])
+
+        // Include activities only when biocollect starts supporting NRM based projects.
+        def site = siteService.get(id, [view: 'projects'])
         if (site) {
             // permissions check - can't use annotation as we have to know the projectId in order to lookup access right
             if (!isUserMemberOfSiteProjects(site)) {
@@ -50,7 +51,8 @@ class SiteController {
             }
 
             // inject the metadata model for each activity
-            site.activities.each {
+            site.activities = site.activities ?: []
+            site.activities?.each {
                 it.model = metadataService.getActivityModel(it.type)
             }
             //siteService.injectLocationMetadata(site)
