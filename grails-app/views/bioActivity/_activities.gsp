@@ -33,33 +33,42 @@
                                             </a>
                                         </h4>
                                     </div>
-                                    <!-- ko if : records().length > 0 -->
-                                    <div>
-                                        <h6>
-                                            Species :
-                                            <!-- ko foreach : records -->
-                                            <a target="_blank"
-                                               data-bind="attr:{href: $root.transients.bieUrl + '/species/' + guid()}">
-                                                <span data-bind="text: $index()+1"></span>. <span
-                                                    data-bind="text: name"></span>
-                                            </a>
-                                            <span data-bind="if: $parent.records().length != $index()+1">
-                                                <b>|</b>
-                                            </span>
-                                            <!-- /ko -->
-                                        </h6>
-                                    </div>
-                                    <!-- /ko -->
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <div class="span7">
+                                                <div>
+                                                    <h6>Project name: <a data-bind="attr:{'href': projectUrl()}"><span
+                                                            data-bind="text: projectName"></span></a></h6>
+                                                </div>
 
-                                    <div>
-                                        <h6>Project name: <a data-bind="attr:{'href': projectUrl()}"><span
-                                                data-bind="text: projectName"></span></a></h6>
-                                    </div>
+                                                <div>
+                                                    <h6>Submitted by: <span data-bind="text: ownerName"></span> on <span
+                                                            data-bind="text: lastUpdated.formattedDate"></span>
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                            <div class="span5">
+                                                <!-- ko if : records().length > 0 -->
+                                                <div>
+                                                    <h6>
+                                                        Species :
+                                                        <!-- ko foreach : records -->
+                                                        <a target="_blank"
+                                                           data-bind="attr:{href: $root.transients.bieUrl + '/species/' + guid()}">
+                                                            <span data-bind="text: $index()+1"></span>. <span
+                                                                data-bind="text: name"></span>
+                                                        </a>
+                                                        <span data-bind="if: $parent.records().length != $index()+1">
+                                                            <b>|</b>
+                                                        </span>
+                                                        <!-- /ko -->
+                                                    </h6>
+                                                </div>
+                                                <!-- /ko -->
 
-                                    <div>
-                                        <h6>Submitted by: <span data-bind="text: ownerName"></span> on <span
-                                                data-bind="text: lastUpdated.formattedDate"></span>
-                                        </h6>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
 

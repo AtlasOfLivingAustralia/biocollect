@@ -3,9 +3,14 @@
 <div class="row-fluid">
     <div class="span12">
         Results refined by:
+        <ul>
         <!-- ko foreach : selectedFilters -->
-        <small data-bind="text: facetDisplayName"></small>:<small data-bind="text: term"></small>,
+            <li>
+                <span data-bind="text: facetDisplayName"></span>: <span data-bind="text: term"></span>
+                <a data-bind="click: $parent.removeFilter" class="btn btn-inverse btn-mini tooltips" title="remove filter">X</a>
+            </li>
         <!-- /ko -->
+        </ul>
     </div>
 </div>
 
@@ -31,11 +36,9 @@
             <div class="panel-body">
                 <!-- ko foreach : terms -->
                 <div class="margin-left-1">
-                    <small>
-                        <b>
-                            <a href="#" data-bind="click: $root.addUserSelectedFacet,text: displayText"></a>
-                        </b>
-                    </small> </br>
+                    <span>
+                        <a href="#" data-bind="click: $root.addUserSelectedFacet,text: displayText"></a>
+                    </span> </br>
                 </div>
                 <!-- /ko -->
             </div>
