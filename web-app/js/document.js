@@ -50,11 +50,6 @@ function DocumentViewModel (doc, owner, settings) {
     this.fileButtonText = ko.computed(function() {
         return (self.filename() ? "Change file" : "Attach file");
     });
-    this.onRoleChange = function(val) {
-        if(this.role() == 'programmeLogic'){
-            this.public(false);
-        }
-    };
 
     this.thirdPartyConsentDeclarationMade = ko.observable(doc.thirdPartyConsentDeclarationMade);
     this.thirdPartyConsentDeclarationText = null;
