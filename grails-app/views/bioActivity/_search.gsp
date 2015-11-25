@@ -30,7 +30,7 @@
                             <button id="pt-filter" data-bind="click: toggleFilter" class="btn btn-primary"
                                     data-toggle="button">
                                 <i data-bind="attr:{class: filter() ? 'icon-chevron-up icon-white' : 'icon-chevron-down icon-white'}"></i> Filter</button>
-                            <span id="search-spinner" class="spinner"><i class='fa fa-spin fa-spinner'></i></span>
+                            <span id="search-spinner" class="spinner margin-left-1"> <i class='fa fa-spin fa-spinner'></i> Searching..</span>
                         </div>
                     </div>
 
@@ -42,14 +42,14 @@
                     <div class="span8 text-left"></div>
 
                     <div class="span2 text-right">
-                        <label>Sort by:</label>
-                        <select class="input-small"
+                        <label for="results-sort-by">Sort by:</label>
+                        <select id="results-sort-by" class="input-small"
                                 data-bind="value:sort, options:sortOptions, optionsText:'name', optionsValue:'id'"></select>
                     </div>
 
                     <div class="span2 text-right">
-                        <label>Sort order:</label>
-                        <select class="input-small"
+                        <label for="results-order">Sort order:</label>
+                        <select id="results-order" class="input-small"
                                 data-bind="value:order, options:orderOptions, optionsText:'name', optionsValue:'id'"></select>
                     </div>
                 </div>

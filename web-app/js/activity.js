@@ -65,6 +65,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
         self.selectedFilters.removeAll();
         self.refreshPage();
     };
+    self.removeFilter = function (filter) {
+        self.selectedFilters.remove(filter);
+        self.refreshPage();
+    };
     self.load = function (data, page) {
         var activities = data.activities;
         var facets = data.facets;
