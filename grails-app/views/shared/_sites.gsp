@@ -128,11 +128,10 @@
             }
 
             //To reduce memory footprint and leak, make sure to clear feature before loading new feature.
-            this.alaMap.map ? clearMap() : "";
+            initialiseMap(features, bounds, mapOptions);
             $("#legend-table").fadeIn();
             $("#map-colorby-status").hide();
 
-            initialiseMap(features, bounds, mapOptions);
             mapBounds = bounds;
             features.length > 0 ? showLegends(legends) : "";
 
@@ -173,6 +172,8 @@
         };
 
         this.alaMap = new MapWithFeatures(mapOptions, mapData);
+
+        this.alaMap ? clearMap() : "";
 
         if (!bounds.isEmpty()) {
         this.alaMap.map.fitBounds(bounds);

@@ -52,7 +52,7 @@
             margin: 5px 0;
         }
     </style>
-    <r:require modules="wmd,knockout,mapWithFeatures,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder"/>
+    <r:require modules="wmd,knockout,mapWithFeatures,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder,map"/>
 </head>
 <body>
 

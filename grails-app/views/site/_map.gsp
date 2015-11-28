@@ -378,13 +378,11 @@ function initSiteViewModel() {
 
         ko.applyBindings(siteViewModel, document.getElementById("sitemap"));
 
-        init_map({
+        siteViewModel.initialiseMap({
             spatialService: SERVER_CONF.spatialService,
             spatialWms: SERVER_CONF.spatialWms,
             mapContainer: 'mapForExtent'
         });
-
-        siteViewModel.mapInitialised(window);
 
     }());
 

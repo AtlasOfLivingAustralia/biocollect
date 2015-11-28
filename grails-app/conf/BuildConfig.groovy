@@ -118,4 +118,6 @@ grails.project.dependency.resolution = {
         }
 
     }
+
+    grails.plugin.location."ala-map" = "/Users/cha693/projects/ala/ala-map-plugin"
 }

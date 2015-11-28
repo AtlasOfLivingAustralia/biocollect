@@ -6,7 +6,13 @@ function ProjectFinder() {
     /* i.e. if the filter details from the URL hash are different to the default, then the filter panel will be opened */
     var DEFAULT_CITIZEN_SCIENCE_FILTER = {isCitizenScience: "true", max: "20", sort: "nameSort"};
     var DEFAULT_USER_PROJECT_FILTER = {isCitizenScience: "true", max: "20", sort: "nameSort", isUserPage: "true"};
-    var DEFAULT_ORGANISATION_PROJECT_FILTER = {isCitizenScience: "true", isWorks: "true", isSurvey: "true", max: "20", sort: "nameSort"};
+    var DEFAULT_ORGANISATION_PROJECT_FILTER = {
+        isCitizenScience: "true",
+        isWorks: "true",
+        isSurvey: "true",
+        max: "20",
+        sort: "nameSort"
+    };
 
     var self = this;
     /* holds all projects */
@@ -23,6 +29,7 @@ function ProjectFinder() {
 
     /* The map must only be initialised once, so keep track of when that has happened */
     var mapInitialised = false;
+    var spatialFilter = null;
 
     var geoSearch = {};
 
@@ -46,7 +53,7 @@ function ProjectFinder() {
         this.pageProjects = ko.observableArray();
 
         this.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
-        this.projectTypes = ko.observable(['citizenScience','works','survey']);
+        this.projectTypes = ko.observable(['citizenScience', 'works', 'survey']);
         this.sortKeys = ko.observableArray(self.sortKeys);
         this.hideshow = function () {
             $("#pt-selectors").toggle();
@@ -119,25 +126,54 @@ function ProjectFinder() {
         if ($('#pt-map-filter').hasClass('active')) {
             $('#pt-map-filter-panel').slideDown(400);
             if (!mapInitialised) {
-                var displayOptions = {
-                    showUncertainty: false
-                };
-                siteViewModel.initialiseMap(fcConfig, displayOptions);
+                spatialFilter = new ALA.Map("mapFilter", {
+                    wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
+                    wmsFeatureUrl: fcConfig.featureService + "?featureId=",
+                    myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location"
+                });
 
-                // listen for changes to bounding regions (for known shapes and drawn shapes)
-                siteViewModel.transients.map.gmap.addListener("bounds_changed", geoSearchChanged);
-                // listen to changes in the geometry (for changes to point locations)
-                siteViewModel.extentGeometryWatcher.subscribe(geoSearchChanged);
+                var regionOptions = {
+                    id: "regionSelection",
+                    title: "Select a known shape",
+                    firstStepPlaceholder: "Choose a layer...",
+                    secondStepPlaceholder: "Choose a shape...",
+                    firstStepItems: [
+                        {key: 'cl2111', value: 'NRM'},
+                        {key: 'cl1048', value: 'IBRA 7 Regions'},
+                        {key: 'cl1049', value: 'IBRA 7 Subregions'},
+                        {key: 'cl22', value: 'Australian states'},
+                        {key: 'cl959', value: 'Local Gov. Areas'}
+                    ],
+                    secondStepItemLookup: function (selectedLayerKey, populateStep2Callback) {
+                        $.ajax({
+                            url: fcConfig.featuresService + '?layerId=' + selectedLayerKey,
+                            dataType: 'json'
+                        }).done(function (data) {
+                            var layers = [];
+                            data.forEach(function (layer) {
+                                layers.push({key: layer.pid, value: layer.name});
+                            });
+
+                            layers = _.sortBy(layers, "value");
+                            populateStep2Callback(layers);
+                        });
+                    },
+                    selectionAction: function (selectedValue) {
+                        spatialFilter.addWmsLayer(selectedValue)
+                    }
+                };
+                var regionSelector = new L.Control.TwoStepSelector(regionOptions);
+
+                spatialFilter.addControl(regionSelector);
+
+                spatialFilter.subscribe(geoSearchChanged);
 
                 mapInitialised = true;
             }
-
         } else {
             $('#pt-map-filter-panel').slideUp(400);
 
             geoSearch = {};
-            resetMap();
-            siteViewModel.updateExtent();
             self.doSearch();
         }
     }
@@ -199,7 +235,7 @@ function ProjectFinder() {
             }
         }
 
-        return  {
+        return {
             fq: fq,
             offset: offset,
             status: status,
@@ -244,7 +280,7 @@ function ProjectFinder() {
             },
             error: function () {
                 console.error("Could not load project data.");
-                console.log(arguments)
+                console.error(arguments)
             }
         })
     };
@@ -343,7 +379,7 @@ function ProjectFinder() {
 
     });
 
-    $("#pt-map-filter").on('statechange', function() {
+    $("#pt-map-filter").on('statechange', function () {
         toggleMapFilterPanel();
     });
 
@@ -367,9 +403,10 @@ function ProjectFinder() {
         checkButton($('#pt-sort'), 'nameSort');
         checkButton($('#pt-per-page'), '20');
         $('#pt-search').val('');
+        spatialFilter.resetMap();
         geoSearch = {};
-        resetMap();
-        siteViewModel.updateExtent();
+        toggleMapFilterPanel();
+        toggleFilterPanel();
 
         self.pago.firstPage();
     });
@@ -429,24 +466,7 @@ function ProjectFinder() {
         }
 
         if (!_.isEmpty(geoSearch)) {
-            var fullSite = siteViewModel.toJS();
-            var siteToSave = {
-                extent: {
-                    source: fullSite.extent.source,
-                    geometry: {
-                        type: fullSite.extent.geometry.type,
-                        coordinates: fullSite.extent.geometry.coordinates,
-                        decimalLongitude: fullSite.extent.geometry.decimalLongitude,
-                        decimalLatitude: fullSite.extent.geometry.decimalLatitude,
-                        pid: fullSite.extent.geometry.pid,
-                        fid: fullSite.extent.geometry.fid,
-                        radius: fullSite.extent.geometry.radius,
-                        centre: fullSite.extent.geometry.centre
-                    }
-                }
-            };
-
-            hash.push('geoSearch=' + LZString.compressToBase64(JSON.stringify(siteToSave)));
+            hash.push('geoSearch=' + LZString.compressToBase64(JSON.stringify(geoSearch)));
         }
 
         return encodeURIComponent(hash.join("&"));
@@ -497,18 +517,28 @@ function ProjectFinder() {
         return defaultFilter;
     }
 
-    function setGeoSearch(geoSearch) {
-        if (geoSearch && !(typeof geoSearch === 'undefined')) {
-            var site = JSON.parse(LZString.decompressFromBase64(geoSearch));
+    function setGeoSearch(geoSearchHash) {
+        if (geoSearchHash && typeof geoSearchHash !== 'undefined') {
+            geoSearch = JSON.parse(LZString.decompressFromBase64(geoSearchHash));
+
             toggleButton($('#pt-map-filter'), true);
 
-            siteViewModel = new SiteViewModelWithMapIntegration(site, siteOptions);
             toggleMapFilterPanel();
-        } else {
-            siteViewModel = new SiteViewModelWithMapIntegration({}, siteOptions);
-        }
 
-        ko.applyBindings(siteViewModel, document.getElementById("sitemap"));
+            var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geoSearch);
+            geoJson = ALA.MapUtils.getStandardGeoJSONForCircleGeometry(geoJson);
+            if (geoSearch.pointSearch) {
+                geoJson.features[0].properties = {};
+                delete geoJson.features[0].geometry.pointSearch;
+            } else if (geoSearch.pid) {
+                // Special case for WMS layers: need to move the PID attribute to the properties object in the GeoJSON
+                // The pid was stored in the geometry in the url hash, but that is not valid GeoJSON, so it needs to be
+                // moved. The ALA Map's setGeoJSON method will look for a pid in the properties and create a WMS layer.
+                geoJson.features[0].properties.pid = geoSearch.pid;
+            }
+
+            spatialFilter.setGeoJSON(geoJson);
+        }
     }
 
     function toBoolean(str) {
@@ -516,32 +546,42 @@ function ProjectFinder() {
     }
 
     function geoSearchChanged() {
-        var site = siteViewModel.toJS();
-        if (site && site.geoIndex) {
+        var geoJSON = ALA.MapUtils.getGeometryWithCirclesFromGeoJSON(spatialFilter.getGeoJSON());
+
+        if (geoJSON && geoJSON.features.length == 1) {
             var geoCriteriaChanged = false;
 
-            if (!_.isEqual(geoSearch, site.geoIndex)) {
-                // if the user has selected a point, we need to convert it into a circle query to find all sites close to that point
-                if (site.geoIndex.type === 'Point') {
-                    var circleSearch = {
-                        type: "Circle",
-                        radius: fcConfig.defaultSearchRadiusMetersForPoint,
-                        coordinates: site.geoIndex.coordinates
-                    };
+            var geometry = geoJSON.features[0].geometry;
 
-                    if (!_.isEqual(geoSearch, circleSearch)) {
-                        geoSearch = circleSearch;
-                        geoCriteriaChanged = true;
-                    }
-                } else {
-                    geoSearch = site.geoIndex;
+            // if the user has selected a point, we need to convert it into a circle query to find all sites close to that point
+            if (geometry.type === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
+                var circleSearch = {
+                    type: ALA.MapConstants.DRAW_TYPE.CIRCLE_TYPE,
+                    radius: fcConfig.defaultSearchRadiusMetersForPoint,
+                    coordinates: geometry.coordinates,
+                    pointSearch: true
+                };
+
+                if (!_.isEqual(geoSearch, circleSearch)) {
+                    geoSearch = circleSearch;
                     geoCriteriaChanged = true;
                 }
+            } else {
+                // store the pid of a wms layer in the geometry object that is saved in the url has so it can be used
+                // to rebuild a WMS layer on the map.
+                if (geoJSON.features[0].properties.pid) {
+                    geometry.pid = geoJSON.features[0].properties.pid;
+                }
+                geoSearch = geometry;
+                geoCriteriaChanged = true;
             }
 
             if (geoCriteriaChanged && validSearchGeometry(geoSearch)) {
                 self.doSearch();
             }
+        } else if (geoJSON.features.length == 0 && geoSearch) {
+            geoSearch = {};
+            self.doSearch();
         }
     }
 
@@ -562,3 +602,4 @@ function ProjectFinder() {
     parseHash();
     this.doSearch();
 }
+
