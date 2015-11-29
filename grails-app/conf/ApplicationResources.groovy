@@ -73,7 +73,7 @@ modules = {
     projectsMap {
         resource url: 'js/projects-map.js'
         resource url: 'js/wms.js'
-        resource url: 'vendor/keydragzoom/keydragzoom.js'
+//        resource url: 'vendor/keydragzoom/keydragzoom.js'
     }
 
     mapWithFeatures {
@@ -175,8 +175,7 @@ modules = {
     }
 
     drawmap {
-        defaultBundle true
-        resource url: 'vendor/keydragzoom/keydragzoom.js'
+//        resource url: 'vendor/keydragzoom/keydragzoom.js'
         resource url: 'js/wms.js'
         resource url: 'js/selection-map.js'
     }

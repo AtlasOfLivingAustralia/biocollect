@@ -605,7 +605,7 @@ class ModelJSTagLib {
                 draggableMarkers: ${!readonly},
                 drawControl: ${!readonly},
                 showReset: ${!readonly},
-                singleDraw: false,
+                singleDraw: true,
                 singleMarker: true,
                 useMyLocation: ${!readonly},
                 allowSearchByAddress: ${!readonly},
