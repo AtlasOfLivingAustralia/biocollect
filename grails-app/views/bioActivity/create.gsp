@@ -31,7 +31,7 @@
         here = document.location.href;
     </r:script>
     <r:require
-            modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,activity,attachDocuments,amplify,imageViewer,projectActivityInfo,species"/>
+            modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,activity,attachDocuments,amplify,imageViewer,projectActivityInfo,species,map"/>
 </head>
 
 <body>
