@@ -607,6 +607,7 @@ class ModelJSTagLib {
                 showReset: ${!readonly},
                 singleDraw: true,
                 singleMarker: true,
+                markerOrShapeNotBoth: false,
                 useMyLocation: ${!readonly},
                 allowSearchByAddress: ${!readonly},
                 drawOptions: {
