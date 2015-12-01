@@ -191,13 +191,13 @@ function MapWithFeatures(options, features) {
                 self.featureBounds.extend(point);
                 self.addFeature(feature, loc);
             } else if (loc.type === 'dot') {
-                var marker = map.smallDotIcon;
+                var marker
 
                 if (loc.color != "-1") {
                     // strokeColor is resource hungry. google maps performs well with encoded image data.
                     marker = {
                         url: "data:image/gif;base64,R0lGODlhAQABAPAAA" + encodeHex(loc.color) + "///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
-                        scaledSize: new google.maps.Size(5, 5)
+                        scaledSize: new google.maps.Size(10, 10)
                     };
                 }
 

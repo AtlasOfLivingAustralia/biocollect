@@ -77,6 +77,7 @@ modules = {
     }
 
     mapWithFeatures {
+        resource url: 'css/map.css'
         resource url: 'js/wms.js'
         resource url: 'js/mapWithFeatures.js'
     }

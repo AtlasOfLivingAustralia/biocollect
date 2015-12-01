@@ -1,0 +1,9 @@
+.mapControl .btn-info.active{
+    background-color:#fbaf44;
+    color: #fff;
+}
+
+#recordOrActivityMap {
+    height: 500px;
+    width: 100%;
+}

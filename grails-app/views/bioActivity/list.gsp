@@ -16,17 +16,19 @@
             activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
             searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
+            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping')}",
             recordListUrl: "${createLink(controller: 'record', action: 'ajaxList')}",
             recordDeleteUrl: "${createLink(controller: 'record', action: 'delete')}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
+            speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
             view: "${view}",
             returnTo: "${view == 'allrecords' ? createLink(controller: 'bioActivity', action:'allRecords') : createLink(controller: 'bioActivity', action:'list') }"
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout, projectActivityInfo, jqueryValidationEngine, restoreTab, myActivity"/>
+    <r:require modules="knockout, projectActivityInfo, jqueryValidationEngine, restoreTab, myActivity, mapWithFeatures"/>
 </head>
 <body>
 

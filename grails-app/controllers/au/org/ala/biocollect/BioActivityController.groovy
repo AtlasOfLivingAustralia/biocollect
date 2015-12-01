@@ -351,6 +351,55 @@ class BioActivityController {
         render([activities: activities, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
     }
 
+    /**
+     * map points are generated from this function. It requires some client side code to convert the output of this
+     * function to points.
+     */
+    def getProjectActivitiesRecordsForMapping(){
+        GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
+        Map parsed = commonService.parseParams(params)
+        parsed.userId = userService.getCurrentUserId()
+        parsed.each{ key, value ->
+            if(value != null && value){
+                queryParams.put(key, value)
+            }
+        }
+
+        queryParams.max = queryParams.max ?: 10
+        queryParams.offset = queryParams.offset ?: 0
+        queryParams.flimit = queryParams.flimit ?: 20
+        queryParams.sort = queryParams.sort ?: 'lastUpdated'
+        queryParams.order = queryParams.order ?: 'DESC'
+        queryParams.fq = queryParams.fq ?: ''
+        queryParams.searchTerm = queryParams.searchTerm ?: ''
+
+        Map searchResult = searchService.searchProjectActivity(queryParams)
+        List activities = searchResult?.hits?.hits
+        List facets = []
+        activities = activities?.collect {
+            Map doc = it._source
+            Map result = [
+                    activityId       : doc.activityId,
+                    projectActivityId: doc.projectActivityId,
+                    type             : doc.type,
+                    name             : doc.projectActivity?.name,
+                    activityOwnerName: doc.projectActivity?.activityOwnerName,
+                    records          : doc.projectActivity?.records,
+                    projectName      : doc.projectActivity?.projectName,
+                    projectId        : doc.projectActivity?.projectId,
+                    sites            : doc.sites
+            ]
+
+            if(doc.sites && doc.sites.size() > 0){
+                result.coordinates = doc.sites[0]?.extent?.geometry?.centre
+            }
+
+            result
+        }
+
+        render([activities: activities, total: searchResult.hits?.total ?: 0] as JSON)
+    }
+
     def ajaxListForProject(String id){
 
         def model = [:]
