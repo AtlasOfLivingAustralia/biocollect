@@ -173,8 +173,6 @@
 
         this.alaMap = new MapWithFeatures(mapOptions, mapData);
 
-        this.alaMap ? clearMap() : "";
-
         if (!bounds.isEmpty()) {
         this.alaMap.map.fitBounds(bounds);
         } else {

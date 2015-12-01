@@ -403,7 +403,9 @@ function ProjectFinder() {
         checkButton($('#pt-sort'), 'nameSort');
         checkButton($('#pt-per-page'), '20');
         $('#pt-search').val('');
-        spatialFilter.resetMap();
+        if (spatialFilter) {
+            spatialFilter.resetMap();
+        }
         geoSearch = {};
         toggleMapFilterPanel();
         toggleFilterPanel();
