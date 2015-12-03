@@ -242,6 +242,7 @@ modules = {
         dependsOn 'knockout', 'attachDocuments', 'wmd', 'responsiveTable'
         resource url: 'js/projects.js'
         resource url: 'js/sites.js'
+        resource url: 'js/sites_new.js'
         resource url: 'vendor/moment/moment.min.js'
         resource url: 'css/surveys.css'
     }
@@ -377,5 +378,11 @@ modules = {
 
     underscore {
         resource url: "vendor/underscore/underscore-1.8.3.min.js"
+    }
+
+    mapUtils {
+        dependsOn 'map' // from the ala-map plugin
+        defaultBundle 'application'
+        resource url: 'js/MapUtilities.js'
     }
 }

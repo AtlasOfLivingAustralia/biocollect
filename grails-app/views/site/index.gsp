@@ -4,13 +4,15 @@
 <head>
   <meta name="layout" content="${hubConfig.skin}"/>
   <title>${site?.name?.encodeAsHTML()} | Field Capture</title>
-  <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <r:script disposition="head">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             activityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
+            featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
             spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
             spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
             spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
@@ -19,7 +21,7 @@
             },
             here = "${createLink(controller:'site', action:'index', id:site.siteId)}";
     </r:script>
-  <r:require modules="knockout,mapWithFeatures,amplify"/>
+  <r:require modules="knockout,amplify,map"/>
 </head>
 <body>
     <div class="container-fluid">
@@ -108,7 +110,7 @@
             <div id="siteNotDefined" class="hide pull-right">
                 <span class="label label-important">This site does not have a geoference associated with it.</span>
             </div>
-            <div id="smallMap" style="width:100%;height:500px;"></div>
+            <m:map id="smallMap" width="100%" height="500px"/>
             <g:if test="${site?.extent?.geometry?.pid}">
                 <div style="margin-top:20px;" class="pull-right">
                     <a href="${grailsApplication.config.spatial.layersUrl}/shape/shp/${site.extent.geometry.pid}" class="btn">
@@ -270,39 +272,23 @@
 
             ko. applyBindings(viewModel);
 
-            // retain tab state for future re-visits
-            $('a[data-toggle="tab"]').on('shown', function (e) {
-                var tab = e.currentTarget.hash;
-                amplify.store('project-tab-state', tab);
-                // only init map when the tab is first shown
-                if (tab === '#site' && map === undefined) {
-                    window.alaMap = new MapWithFeatures({
-                            featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                            wmsServer: "${grailsApplication.config.spatial.geoserverUrl}",
-                            mapContainer: "map",
-                            scrollwheel: false
-                        },
-                        $.parseJSON('${mapFeatures?.encodeAsJavaScript()}')
-                    );
-                }
-            });
-
-            // re-establish the previous tab state
-            if (amplify.store('project-tab-state') === '#site') {
-                $('#site-tab').tab('show');
-            }
-
             var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
 
-            window.alaMap = new MapWithFeatures({
-                    mapContainer: "smallMap",
-                    zoomToBounds:true,
-                    zoomLimit:16,
-                    featureService: "${createLink(controller:'proxy', action:'feature')}",
-                    wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-                },
-                mapFeatures
-            );
+            var mapOptions = {
+                drawControl: false,
+                singleMarker: false,
+                useMyLocation: false,
+                allowSearchByAddress: false,
+                draggableMarkers: false,
+                showReset: false,
+                maxZoom: 7,
+                wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
+                wmsFeatureUrl: fcConfig.featureService + "?featureId="
+            };
+            var smallMap = new ALA.Map("smallMap", mapOptions);
+
+            var geoJson = Biocollect.MapUtilities.featureToValidGeoJson(mapFeatures.features[0]);
+            smallMap.setGeoJSON(geoJson);
 
             if(mapFeatures.features === undefined || mapFeatures.features.length == 0){
                 $('#siteNotDefined').show();
