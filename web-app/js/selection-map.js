@@ -81,7 +81,6 @@
             // create map
             this.gmap = new google.maps.Map(document.getElementById(this.containerId), options);
             this.gmap.fitBounds(this.initialBounds);
-            this.gmap.enableKeyDragZoom();
 
             // create manager for user drawing
             this.drawingManager = new google.maps.drawing.DrawingManager({

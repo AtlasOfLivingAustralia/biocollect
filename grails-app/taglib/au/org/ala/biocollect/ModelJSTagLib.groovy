@@ -83,7 +83,7 @@ class ModelJSTagLib {
             } else if (mod.dataType == 'masterDetail') {
                 masterDetailViewModel(mod, out)
             } else if (mod.dataType == "geoMap") {
-                geoMapViewModel(mod, out, container, attrs.readonly?.toBoolean() ?: false)
+                geoMapViewModel(mod, out, container, attrs.readonly?.toBoolean() ?: false, attrs.edit?.toBoolean() ?: false)
             }
         }
         out << INDENT*3 << "self.transients.site = site;"
@@ -592,7 +592,7 @@ class ModelJSTagLib {
         createDataModelJS([model: [dataModel: [model.detail]]], "self.data.masterDetail.detailView")
     }
 
-    def geoMapViewModel(model, out, String container = "self.data", boolean readonly = false) {
+    def geoMapViewModel(model, out, String container = "self.data", boolean readonly = false, boolean edit = false) {
         out << "\n" << INDENT*3 << """
             ${container}.${model.name} = ko.observable();
             ${container}.${model.name}Name = ko.observable();
@@ -600,66 +600,74 @@ class ModelJSTagLib {
             ${container}.${model.name}Longitude = ko.observable();
 
             var mapOptions = {
-                mapContainer: '${model.name}Map',
-                scrollwheel: false,
-                zoomToBounds: true,
-                zoomLimit: 10,
-                zoom: 4,
-                defaultZoom: 4,
-                highlightOnHover: true,
-                features: [],
-                featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+                wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
+                wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?",
+                draggableMarkers: ${!readonly},
+                drawControl: ${!readonly},
+                showReset: ${!readonly},
+                singleDraw: true,
+                singleMarker: true,
+                markerOrShapeNotBoth: false,
+                useMyLocation: ${!readonly},
+                allowSearchByAddress: ${!readonly},
+                drawOptions: {
+                    polyline: false,
+                    polygon: false,
+                    circle: false,
+                    rectangle: false,
+                    edit: false
+                }
             };
 
-            var ${model.name}Map = new MapWithFeatures(mapOptions);
-            var ${model.name}PointerMarker = addCenteredMarkerTo${model.name}Map();
+            var ${model.name}Map = new ALA.Map('${model.name}Map', mapOptions);
 
             ${container}.reset${model.name}Map = function() {
+                ${model.name}Map.resetMap();
                 ${container}.${model.name}(null);
-                ${model.name}Map.clearFeatures();
-                ${model.name}PointerMarker = addCenteredMarkerTo${model.name}Map();
             };
 
-            function movePointerOn${model.name}Map() {
-                var newPosition = new google.maps.LatLng(${container}.${model.name}Latitude(), ${container}.${model.name}Longitude());
-                ${model.name}PointerMarker.setPosition(newPosition);
-            };
+            function updateFieldsFor${model.name}Map() {
+                var markerLocation = ${model.name}Map.getMarkerLocations();
+                if (markerLocation && markerLocation.length > 0) {
+                    markerLocation = markerLocation[0];
+                }
 
-            function addCenteredMarkerTo${model.name}Map() {
-                var marker = ${model.name}Map.loadFeature({type: 'point', draggable: ${!readonly}}, null);
-                var mapCenter = ${model.name}Map.getCenter();
-                ${container}.${model.name}Latitude(mapCenter.lat());
-                ${container}.${model.name}Longitude(mapCenter.lng());
-
-                google.maps.event.addListener(marker, 'drag', function(event) {
-                    ${container}.${model.name}Latitude(event.latLng.lat());
-                    ${container}.${model.name}Longitude(event.latLng.lng());
-                });
-
-                return marker;
-            };
-
-            function moveMarkerOn${model.name}Map() {
-                var newPosition = new google.maps.LatLng(${container}.${model.name}Latitude(), ${container}.${model.name}Longitude());
-                ${model.name}PointerMarker.setPosition(newPosition);
+                if (markerLocation) {
+                    ${container}.${model.name}Latitude(markerLocation.lat);
+                    ${container}.${model.name}Longitude(markerLocation.lng);
+                } else {
+                    ${container}.${model.name}Latitude(null);
+                    ${container}.${model.name}Longitude(null);
+                }
             };
 
             function update${model.name}MapForSite(siteId) {
                 if (typeof siteId !== "undefined" && siteId) {
                     var matchingSite = \$.grep(activityLevelData.pActivity.sites, function(site) { return siteId == site.siteId})[0];
-                    ${model.name}Map.clearFeatures();
+                    ${model.name}Map.resetMap();
                     if (matchingSite) {
-                        ${model.name}Map.replaceAllFeatures([matchingSite.extent.geometry]);
-                        ${model.name}PointerMarker = addCenteredMarkerTo${model.name}Map();
+                        if (matchingSite.extent.geometry.pid) {
+                            ${model.name}Map.addWmsLayer(matchingSite.extent.geometry.pid);
+                        } else {
+                            ${model.name}Map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
+                        }
                     }
                 }
             };
 
-            ${container}.${model.name}.subscribe(update${model.name}MapForSite);\n
-            ${container}.${model.name}Latitude.subscribe(movePointerOn${model.name}Map);\n
-            ${container}.${model.name}Longitude.subscribe(movePointerOn${model.name}Map);\n
+            function update${model.name}MarkerPosition() {
+                if (${container}.${model.name}Latitude() && ${container}.${model.name}Longitude()) {
+                    ${model.name}Map.addMarker(${container}.${model.name}Latitude(), ${container}.${model.name}Longitude());
+                }
+            }
 
+            ${container}.${model.name}.subscribe(update${model.name}MapForSite);
+            ${model.name}Map.subscribe(updateFieldsFor${model.name}Map);
+            if (${!edit && !readonly}) {
+                ${model.name}Map.markMyLocation();
+            }
+            ${container}.${model.name}Latitude.subscribe(update${model.name}MarkerPosition);
+            ${container}.${model.name}Longitude.subscribe(update${model.name}MarkerPosition);
         """
     }
 

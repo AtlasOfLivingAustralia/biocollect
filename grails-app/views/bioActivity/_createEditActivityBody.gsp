@@ -139,7 +139,7 @@
             <fc:select
                     data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
                     printable="${printView}"/>
-            <div id="siteMap" style="width:100%; height: 512px;"></div>
+            <m:map id="activitySiteMap" width="100%" height="512px"/>
         </div>
 
     </div>
@@ -402,9 +402,15 @@
 
                     var matchingSite = $.grep(self.transients.pActivitySites, function(site) { return siteId == site.siteId})[0];
 
-                    activityLevelData.siteMap.clearFeatures();
-                    if (matchingSite) {
-                        activityLevelData.siteMap.replaceAllFeatures([matchingSite.extent.geometry]);
+                    activityLevelData.siteMap.resetMap();
+                    if (matchingSite && matchingSite.extent && matchingSite.extent.geometry) {
+                        var geometry = matchingSite.extent.geometry;
+                        if (geometry.pid) {
+                            activityLevelData.siteMap.addWmsLayer(geometry.pid);
+                        } else {
+                            var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                            activityLevelData.siteMap.setGeoJSON(geoJson);
+                        }
                     }
                     self.transients.site(matchingSite);
 
@@ -484,22 +490,28 @@
 
             <g:if test="${metaModel.supportsSites?.toBoolean()}">
                 var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
-                if (!mapFeatures) {
-                    mapFeatures = {zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []};
-                }
 
                 var mapOptions = {
-                    mapContainer: "siteMap",
-                    scrollwheel: false,
-                    zoomToBounds:true,
-                    zoomLimit:16,
-                    highlightOnHover:true,
-                    features:[],
-                    featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-                    wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-                };
+                    drawControl: false,
+                    showReset: true,
+                    draggableMarkers: false,
+                    useMyLocation: false,
+                    allowSearchByAddress: false,
+                    wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
+                    wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
+                }
 
-                activityLevelData.siteMap = new MapWithFeatures(mapOptions, mapFeatures);
+                activityLevelData.siteMap = new ALA.Map("activitySiteMap", mapOptions);
+
+                if (mapFeatures && mapFeatures.features && mapFeatures.features.length > 0) {
+                    if (mapFeatures.features[0].pid) {
+                        activityLevelData.siteMap.addWmsLayer(mapFeatures.features[0].pid);
+                    } else {
+                        var geometry = _.pick(mapFeatures.features[0], "type", "coordinates");
+                        var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                        activityLevelData.siteMap.setGeoJSON(geoJson);
+                    }
+                }
             </g:if>
 
             ko.applyBindings(viewModel);
