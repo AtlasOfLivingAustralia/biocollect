@@ -122,6 +122,10 @@ function ProjectFinder() {
         }
     }
 
+    function collapseFilterPanel(){
+        $('#pt-filter').click();
+    }
+
     function toggleMapFilterPanel() {
         if ($('#pt-map-filter').hasClass('active')) {
             $('#pt-map-filter-panel').slideDown(400);
@@ -412,6 +416,8 @@ function ProjectFinder() {
 
         self.pago.firstPage();
     });
+
+    $("#pt-collapse").click(collapseFilterPanel);
 
     // check for statechange event on all buttons in filter panel.
     $('#pt-searchControls button').on('statechange', self.searchAndShowFirstPage);
