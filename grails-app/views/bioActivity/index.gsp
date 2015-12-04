@@ -10,10 +10,9 @@
         <meta name="layout" content="${hubConfig.skin}"/>
         <title>View | ${activity.type} | Bio Collect</title>
     </g:else>
-    %{-- this will ultimately follow through to the comment controller using url mapping --}%
+%{-- this will ultimately follow through to the comment controller using url mapping --}%
     <g:set var="commentUrl" value="${resource(dir:'/bioActivity')}/${activity.activityId}/comment"></g:set>
 
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <r:script disposition="head">
     var fcConfig = {
@@ -31,7 +30,7 @@
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,species,activity, projectActivityInfo, imageViewer, comments"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,species,activity, projectActivityInfo, imageViewer, comments, map"/>
 </head>
 
 <body>
@@ -56,7 +55,7 @@
                 <div class="span12 well">
                     <h3>Site location: <span data-bind="text: transients.site.name"></span></h3>
 
-                    <div id="map" style="width:100%; height: 300px;"></div>
+                    <m:map id="activitySiteMap" width="100%" height="300px"/>
                 </div>
             </div>
         </g:if>
@@ -68,7 +67,7 @@
             </div>
         </g:if>
 
-        <!-- ko stopBinding:true -->
+    <!-- ko stopBinding:true -->
         <g:each in="${metaModel?.outputs}" var="outputName">
             <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
             <g:set var="model" value="${outputModels[outputName]}"/>
@@ -87,12 +86,12 @@
                         var viewModelInstance = viewModelName + "Instance";
 
                         // load dynamic models - usually objects in a list
-                        <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}"
-                                           viewModelInstance="${blockId}ViewModelInstance"/>
+                    <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}"
+                                       viewModelInstance="${blockId}ViewModelInstance"/>
 
-                        this[viewModelName] = function (site) {
-                            var self = this;
-                            self.name = "${output.name}";
+                    this[viewModelName] = function (site) {
+                        var self = this;
+                        self.name = "${output.name}";
                             self.outputId = "${output.outputId}";
                             self.data = {};
                             self.transients = {};
@@ -100,39 +99,39 @@
                             self.transients.dummy = ko.observable();
 
                             // add declarations for dynamic data
-                            <md:jsViewModel model="${model}" output="${output.name}"
-                                            viewModelInstance="${blockId}ViewModelInstance" readonly="true"/>
+                    <md:jsViewModel model="${model}" output="${output.name}"
+                                    viewModelInstance="${blockId}ViewModelInstance" readonly="true"/>
 
-                            // this will be called when generating a savable model to remove transient properties
-                            self.removeBeforeSave = function (jsData) {
-                                // add code to remove any transients added by the dynamic tags
-                                <md:jsRemoveBeforeSave model="${model}"/>
-                                delete jsData.activityType;
-                                delete jsData.transients;
-                                return jsData;
-                            };
+                    // this will be called when generating a savable model to remove transient properties
+                    self.removeBeforeSave = function (jsData) {
+                        // add code to remove any transients added by the dynamic tags
+                    <md:jsRemoveBeforeSave model="${model}"/>
+                    delete jsData.activityType;
+                    delete jsData.transients;
+                    return jsData;
+                };
 
-                            self.loadData = function (data) {
-                                    // load dynamic data
-                                <md:jsLoadModel model="${model}" readonly="true"/>
+                self.loadData = function (data) {
+                        // load dynamic data
+                    <md:jsLoadModel model="${model}" readonly="true"/>
 
-                                // if there is no data in tables then add an empty row for the user to add data
-                                if (typeof self.addRow === 'function' && self.rowCount() === 0) {
-                                    self.addRow();
-                                }
-                                self.transients.dummy.notifySubscribers();
-                            };
-                        };
+                    // if there is no data in tables then add an empty row for the user to add data
+                    if (typeof self.addRow === 'function' && self.rowCount() === 0) {
+                        self.addRow();
+                    }
+                    self.transients.dummy.notifySubscribers();
+                };
+            };
 
-                        window[viewModelInstance] = new this[viewModelName](site);
-                        window[viewModelInstance].loadData(${output.data ?: '{}'});
+            window[viewModelInstance] = new this[viewModelName](site);
+            window[viewModelInstance].loadData(${output.data ?: '{}'});
 
                         ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
                     });
                 </r:script>
             </div>
         </g:each>
-        <!-- /ko -->
+    <!-- /ko -->
     </div>
 
     <g:if test="${pActivity.commentsAllowed}">
@@ -143,9 +142,9 @@
         <button type="button" id="cancel" class="btn">return</button>
     </div>
 </div>
-    <!-- templates -->
+<!-- templates -->
 
-    <r:script>
+<r:script>
         var returnTo = "${returnTo}";
 
         function ActivityLevelData() {
@@ -206,31 +205,42 @@
             }
 
             var viewModel = new ViewModel(
-                ${(activity as JSON).toString()},
-                ${site ?: 'null'},
-                ${project ?: 'null'},
-                ${metaModel ?: 'null'},
-                ${pActivity ?: 'null'});
+    ${(activity as JSON).toString()},
+    ${site ?: 'null'},
+    ${project ?: 'null'},
+    ${metaModel ?: 'null'},
+    ${pActivity ?: 'null'});
 
             ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
-            <g:if test="${pActivity.commentsAllowed}">
-                ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
-            </g:if>
-            <g:if test="${metaModel?.supportsSites?.toBoolean()}">
-                var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
-                if(mapFeatures !=null && mapFeatures.features !== undefined && mapFeatures.features.length >0){
-                    var mapOptions = {
-                        mapContainer: "map",
-                        zoomToBounds:true,
-                        zoomLimit:16,
-                        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-                        wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-                    };
+    <g:if test="${pActivity.commentsAllowed}">
+        ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
+    </g:if>
+    <g:if test="${metaModel?.supportsSites?.toBoolean()}">
+        var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
 
-                    viewModel.siteMap = new MapWithFeatures(mapOptions, mapFeatures);
-                }
-            </g:if>
-        });
-    </r:script>
+        if (mapFeatures && mapFeatures.features) {
+            var mapOptions = {
+                drawControl: false,
+                showReset: false,
+                draggableMarkers: false,
+                useMyLocation: false,
+                allowSearchByAddress: false,
+                wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
+                wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
+            }
+
+            viewModel.siteMap = new ALA.Map("activitySiteMap", mapOptions);
+
+            if (mapFeatures.features[0].pid) {
+                viewModel.siteMap.addWmsLayer(mapFeatures.features[0].pid);
+            } else {
+                var geometry = _.pick(mapFeatures.features[0], "type", "coordinates");
+                var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                viewModel.siteMap.setGeoJSON(geoJson);
+            }
+        }
+    </g:if>
+    });
+</r:script>
 </body>
 </html>

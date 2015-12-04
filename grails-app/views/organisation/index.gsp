@@ -4,8 +4,6 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${organisation.name.encodeAsHTML()} | Field Capture</title>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
-    <script type="text/javascript" src="//www.google.com/jsapi"></script>
     <g:set var="loadPermissionsUrl" value="${createLink(controller: 'organisation', action: 'getMembersForOrganisation', id:organisation.organisationId)}"/>
 
     <r:script disposition="head">
@@ -20,6 +18,8 @@
             organisationListUrl: '${g.createLink(action:"list")}',
             organisationViewUrl: '${g.createLink(action:"index", id:"${organisation.organisationId}")}',
             organisationMembersUrl: "${loadPermissionsUrl}",
+            featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
             imageLocation:"${resource(dir:'/images')}",
             logoLocation:"${resource(dir:'/images/filetypes')}",
             adHocReportsUrl: '${g.createLink(action:"getAdHocReportTypes")}',
@@ -29,6 +29,9 @@
             reportCreateUrl: '${g.createLink( action:'createAdHocReport')}',
             submitReportUrl: '${g.createLink( action:'ajaxSubmitReport', id:"${organisation.organisationId}")}',
             approveReportUrl: '${g.createLink( action:'ajaxApproveReport', id:"${organisation.organisationId}")}',
+            spatialService: '${createLink(controller:'proxy',action:'feature')}',
+            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
             rejectReportUrl: '${g.createLink( action:'ajaxRejectReport', id:"${organisation.organisationId}")}',
             defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
             returnTo: '${g.createLink(action:'index', id:"${organisation.organisationId}")}',
@@ -52,7 +55,7 @@
             margin: 5px 0;
         }
     </style>
-    <r:require modules="wmd,knockout,mapWithFeatures,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder"/>
+    <r:require modules="wmd,knockout,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder,map"/>
 </head>
 <body>
 
@@ -120,8 +123,8 @@
         $('a[data-toggle="tab"]').on('shown', function (e) {
             var tab = e.currentTarget.hash;
             amplify.store(organisationTabStorageKey, tab);
-            if (!initialisedSites && tab == '#sites') { // Google maps doesn't initialise well unless it is visible.
-                generateMap(['organisationFacet:'+organisation.name], false, {includeLegend:false});
+            if (!initialisedSites && tab == '#sites') {
+                generateMap(['organisationFacet:'+organisation.name]);
                 initialisedSites = true;
             }
         });

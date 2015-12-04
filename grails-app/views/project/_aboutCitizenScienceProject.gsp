@@ -80,46 +80,40 @@
     <div class="row-fluid">
         <div class="span12 well" style="height: 100%; width: 100%">
             <div class="well-title"><g:message code="project.display.site" /></div>
-            <div id="projectSiteMap" style="width:100%; height: 512px;"></div>
+            <m:map id="projectSiteMap" width="100%" height="512px"/>
         </div>
     </div>
     </g:if>
 </div>
 <r:script>
-    <!-- Only load the google map on page load if the containing div is visible. -->
-    <!-- This resolves issues with loading the map when the user is on a different tab (zoom problems with the map). -->
-    <!-- There is also a 'click' event listener for the About tab icon which will load the map when the user selects the About tab. -->
-    google.maps.event.addDomListener(window, 'load', function() {
-        if ($('#projectSiteMap').is(':visible')) {
-            initialiseProjectArea();
-        }
-    });
 
-    function initialiseProjectArea() {
-        <g:if test="${projectSite?.extent?.geometry}">
-        if ((typeof map === 'undefined' || Object.keys(map).length == 0)) {
-            var projectArea = <fc:modelAsJavascript model="${projectSite.extent.geometry}"/>;
+    <g:if test="${projectSite?.extent?.geometry}">
+    if ((typeof map === 'undefined' || Object.keys(map).length == 0)) {
+        var projectArea = <fc:modelAsJavascript model="${projectSite.extent.geometry}"/>;
 
-            var mapFeatures = {
-                zoomToBounds:true,
-                zoomLimit:16,
-                highlightOnHover:true,
-                features:[projectArea],
-                featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-            };
-
+        if (projectArea) {
             var mapOptions = {
-                mapContainer: "projectSiteMap",
-                scrollwheel: false,
-                featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-            };
+                drawControl: false,
+                showReset: false,
+                draggableMarkers: false,
+                useMyLocation: false,
+                allowSearchByAddress: false,
+                wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
+                wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
+            }
 
-            map = new MapWithFeatures(mapOptions, mapFeatures);
+            map = new ALA.Map("projectSiteMap", mapOptions);
+
+            if (projectArea.pid) {
+                map.addWmsLayer(projectArea.pid);
+            } else {
+                var geometry = _.pick(projectArea, "type", "coordinates");
+                var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                map.setGeoJSON(geoJson);
+            }
         }
-        </g:if>
     }
+    </g:if>
 
     // make sure the list of associated organisations are below the shorter of the two columns.
     function placeAssociatedOrgs() {
