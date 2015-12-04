@@ -96,6 +96,7 @@
 
             <div class="row-fluid">
                 <button class="btn btn-primary pull-right" id="pt-reset"><i class="icon-white icon-remove"></i> <g:message code="g.resetSearch" /></button>
+                <button class="btn btn-default pull-right" id="pt-collapse"><i class="icon-white icon-arrow-up"></i> <g:message code="g.collapseFilter" /></button>
             </div>
         </div>
     </div>
