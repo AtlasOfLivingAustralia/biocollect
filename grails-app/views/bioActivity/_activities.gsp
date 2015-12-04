@@ -1,3 +1,4 @@
+<r:require modules="map"></r:require>
 <!-- ko stopBinding: true -->
 <div id="survey-all-activities-and-records-content">
     <div id="data-result-placeholder"></div>
@@ -131,9 +132,7 @@
                     </div>
 
                     <div class="tab-pane" id="mapVis">
-                        <div id="recordOrActivityMap">
-
-                        </div>
+                        <m:map id="recordOrActivityMap" width="100%"/>
                     </div>
                 </div>
             </div>
@@ -169,31 +168,21 @@
             counter++;
         }
     }
-    function generatePopup(projectLinkPrefix, projectId, projectName, orgName, siteLinkPrefix, siteId, siteName){
+
+    function generatePopup(projectLinkPrefix, projectId, projectName, activityUrl, surveyName, speciesName){
         var html = "<div class='projectInfoWindow'>";
 
-        if (projectId && projectName) {
+        if (activityUrl && surveyName) {
             html += "<div><i class='icon-home'></i> <a target='_blank' href='" +
-                        projectLinkPrefix + projectId + "'>" +projectName + "</a></div>";
+                        activityUrl + "'>" +surveyName + "</a></div>";
         }
 
-        if(orgName !== undefined && orgName != ''){
-            html += "<div><i class='icon-user'></i> Org name:" +orgName + "</div>";
-        }
-
-        html+= "<div><i class='icon-map-marker'></i> Site: <a target='_blank' href='" +siteLinkPrefix + siteId + "'>" + siteName + "</a></div>";
-        return html;
-    }
-    function generateRecordPopup(projectLinkPrefix, projectId, projectName, speciesName, bieUrl){
-        var html = "<div class='projectInfoWindow'>";
-
-        if (projectId && projectName) {
-            html += "<div><i class='icon-home'></i> <a target='_blank' href='" +
-                        projectLinkPrefix + projectId + "'>" +projectName + "</a></div>";
+        if(projectName){
+            html += "<div><a target='_blank' href="+projectLinkPrefix+projectId+"><i class='icon-map-marker'></i>&nbsp;" +projectName + "</a></div>";
         }
 
         if(speciesName){
-            html += "<div><a target='_blank' href="+bieUrl+"><i class='icon-map-marker'></i>" +speciesName + "</a></div>";
+            html += "<div><i class='icon-camera'></i>&nbsp;"+ speciesName + "</div>";
         }
 
         return html;
@@ -210,6 +199,12 @@
         var view = activitiesAndRecordsViewModel.view;
         var url =fcConfig.getRecordsForMapping + '?max=10000&searchTerm='+ searchTerm+'&view=' + view;
         var facetFilters = []
+        plotOnMap(null);
+
+        if(fcConfig.projectId){
+            url += '&projectId=' + fcConfig.projectId;
+        }
+
         ko.utils.arrayForEach(activitiesAndRecordsViewModel.selectedFilters(), function (term) {
             facetFilters.push(term.facetName() + ':' + term.term());
         });
@@ -229,7 +224,6 @@
     function generateDotsFromResult(data){
             features = [];
             var projectIdMap = {};
-            bounds = new google.maps.LatLngBounds();
             var geoPoints = data;
 
             if (geoPoints.activities) {
@@ -239,7 +233,9 @@
                 $.each(geoPoints.activities, function(index, activity) {
                     var projectId = activity.projectId
                     var projectName = activity.name
-                    var siteName;
+                    var siteName,
+                        activityUrl = fcConfig.activityViewUrl+'/'+activity.activityId;
+
                     if(activity.sites && activity.sites.length){
                         siteName = activity.sites[0].name;
                     }
@@ -248,72 +244,70 @@
                         case 'record':
                         if (activity.records && activity.records.length > 0) {
                             $.each(activity.records, function(k, el) {
-                                var point = {
-                                    type: "dot",
-                                    id: projectId,
-                                    name: projectName,
-                                    popup: generateRecordPopup(projectLinkPrefix,projectId,projectName,el.name, fcConfig.speciesPage + el.guid),
-                                    latitude: el.coordinates[1],
-                                    longitude: el.coordinates[0],
-                                    color: '#BC2B03'
+                                if(el.coordinates && el.coordinates.length){
+                                    features.push({
+                                        lat: el.coordinates[1],
+                                        lng: el.coordinates[0],
+                                        popup: generatePopup(projectLinkPrefix,projectId,projectName, activityUrl, activity.name, el.name)
+                                    });
                                 }
-
-                                features.push(point);
-                                bounds.extend(new google.maps.LatLng(point.latitude,point.longitude));
                             });
                         }
                         break;
                         case 'activity':
-                            var point = {
-                                    type: "dot",
-                                    id: projectId,
-                                    name: projectName,
-                                    popup: generatePopup(projectLinkPrefix,projectId,projectName,undefined,siteLinkPrefix, activity.siteId, siteName),
-                                    latitude: activity.coordinates[1],
-                                    longitude: activity.coordinates[0],
-                                    color: '#BC2B03'
-                                }
-
-                                features.push(point);
-                                bounds.extend(new google.maps.LatLng(point.latitude,point.longitude));
+                        if(activity.coordinates && activity.coordinates.length){
+                            features.push({
+                                lat: activity.coordinates[1],
+                                lng: activity.coordinates[0],
+                                popup: generatePopup(projectLinkPrefix,projectId,projectName, activityUrl, activity.name)
+                            });
+                        }
                         break;
                     }
                 });
-
                 plotOnMap(features, bounds);
             }
     }
 
-    function plotOnMap(features, bounds){
+    function plotOnMap(features){
         if (!$(mapId).is(':visible')) {
             return
         }
+        var radio;
 
-        var mapData = {
-            "zoomToBounds": true,
-            "zoomLimit": 12,
-            "highlightOnHover": false,
-            "features": features
+        var mapOptions = {
+            drawControl: false,
+            showReset: false,
+            draggableMarkers: false,
+            useMyLocation: false,
+            allowSearchByAddress: false,
+            wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
+            wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
         }
+
 
         if(!alaMap){
-            alaMap = new MapWithFeatures({
-                    mapContainer: "recordOrActivityMap",
-                    zoomToBounds:true,
-                    scrollwheel: false,
-                    zoomLimit:16,
-                    featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-                    wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-                },
-                mapData
-            );
-            createControls();
+            alaMap = new ALA.Map("recordOrActivityMap", mapOptions);
+            radio = new L.Control.Radio({
+                name: 'activityOrRecrodsTEST',
+                potion: 'topright',
+                radioButtons:[{
+                    displayName: 'Records',
+                    value: 'record',
+                    checked: true
+                },{
+                    displayName: 'Activity',
+                    value: 'activity'
+                }],
+                onClick: getActivityOrRecords
+            })
+            alaMap.addControl(radio);
         } else {
-            alaMap.clearFeatures();
-            alaMap.load(features);
+            alaMap.clearMarkers();
+            alaMap.clearLayers();
         }
 
-        bounds && alaMap.map.fitBounds(bounds);
+        features && features.length && alaMap.addClusteredPoints(features)
     }
 
     function createControls(){
@@ -339,11 +333,11 @@
         })
     }
 
-    function getActivityOrRecords(e){
-        var target = e.target;
-        featureType = $(target).data('value');
+    function getActivityOrRecords(value){
+        featureType = value;
         generateDotsFromResult(results);
     }
+
 </r:script>
 <script language="text/html" id="controlRecordsOrActivity">
 <div class="btn-group mapControl" data-toggle="buttons-radio">
