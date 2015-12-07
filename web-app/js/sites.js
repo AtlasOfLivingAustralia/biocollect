@@ -11,6 +11,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     self.site = null;
     self.pointsOfInterest = ko.observableArray();
     self.showPointAttributes = ko.observable(false);
+    self.allowPointsOfInterest = ko.observable(mapOptions.allowPointsOfInterest || false);
 
     self.loadSite = function (site) {
         self.site = ko.observable({
@@ -149,7 +150,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         self.renderPointsOfInterest();
     };
 
-    self.modelAsJSON = function () {
+    self.toJS = function() {
         var js = ko.toJS(self.site);
 
         // the ALA Map plugin uses GeoJSON, which species coords in lng/lat rather than lat/lng.
@@ -163,7 +164,11 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         });
         js.geoIndex = Biocollect.MapUtilities.constructGeoIndexObject(js);
 
-        return JSON.stringify(js);
+        return js;
+    };
+
+    self.modelAsJSON = function () {
+        return JSON.stringify(self.toJS());
     };
 
     self.saved = function () {

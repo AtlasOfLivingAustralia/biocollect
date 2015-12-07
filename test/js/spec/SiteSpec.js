@@ -15,7 +15,7 @@ describe("SiteViewModelWithMapIntegration Spec", function () {
     });
 
     it("should be able to convert a drawn rectangle into geojson", function() {
-        var model = new SiteViewModelWithMapIntegration({});
+        var model = new SiteViewModel({});
         var bounds = new Bounds([-150, 32], [-160, 34]);
 
         var shape = { getBounds: function() { return bounds; } };

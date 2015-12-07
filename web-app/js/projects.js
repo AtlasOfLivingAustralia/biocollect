@@ -783,7 +783,7 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     var self = this;
 
     // Automatically create the site of type "Project Area" with a name of "Project area for ..."
-    var siteViewModel = initSiteViewModel({type:'projectArea'});
+    var siteViewModel = initSiteViewModel(false);
     siteViewModel.name = ko.computed(function() {
         return 'Project area for '+self.name();
     });

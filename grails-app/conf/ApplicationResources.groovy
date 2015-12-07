@@ -70,12 +70,6 @@ modules = {
         resource url: 'vendor/gmap3/gmap3.min.js'
     }
 
-    projectsMap {
-        resource url: 'js/projects-map.js'
-        resource url: 'js/wms.js'
-//        resource url: 'vendor/keydragzoom/keydragzoom.js'
-    }
-
     mapWithFeatures {
         resource url: 'js/wms.js'
         resource url: 'js/mapWithFeatures.js'
@@ -172,12 +166,6 @@ modules = {
         resource url: 'images/sort_desc.png'
         resource url: 'images/sort_desc_disabled.png'
 
-    }
-
-    drawmap {
-//        resource url: 'vendor/keydragzoom/keydragzoom.js'
-        resource url: 'js/wms.js'
-        resource url: 'js/selection-map.js'
     }
 
     jQueryFileUpload {
