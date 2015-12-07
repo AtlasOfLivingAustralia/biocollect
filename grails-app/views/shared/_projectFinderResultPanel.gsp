@@ -21,7 +21,7 @@
                 <tr>
                     <td class="projectLogoTd">
                         <div class="projectLogo project-row-layout">
-                            %{--<img class="image-logo" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name,src:transients.imageUrl}, event: { load: transients.findLogoScalingClass}"/>--}%
+                            <img class="image-logo" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name,src:transients.imageUrl}, event: { load: transients.findLogoScalingClass}"/>
                         </div>
                     </td>
                     <td>
