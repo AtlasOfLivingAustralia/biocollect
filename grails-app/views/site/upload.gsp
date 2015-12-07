@@ -2,10 +2,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title> Upload | Sites | Field Capture</title>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <r:script disposition="head">
             var fcConfig = {
                 serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -20,7 +18,7 @@
             },
             returnTo = "${params.returnTo}";
     </r:script>
-    <r:require modules="knockout,mapWithFeatures,amplify,jqueryValidationEngine"/>
+    <r:require modules="knockout,amplify,jqueryValidationEngine"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">

@@ -4,7 +4,6 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Home | Field Capture</title>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <r:script disposition="head">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
@@ -17,7 +16,7 @@
     }
     </r:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <r:require modules="knockout,mapWithFeatures,jquery_bootstrap_datatable,js_iso8601,amplify"/>
+    <r:require modules="knockout,jquery_bootstrap_datatable,js_iso8601,amplify"/>
 </head>
 <body>
 <div id="wrapper" class="container-fluid">

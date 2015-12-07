@@ -33,7 +33,7 @@
     }
     </style>
 
-    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd, restoreTab"/>
+    <r:require modules="knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd, restoreTab"/>
 </head>
 <g:render template="banner"/>
 

@@ -116,7 +116,7 @@ class SiteService {
 
     def updateRaw(id, values) {
         //if its a drawn shape, save and get a PID
-        if(values?.extent?.source == 'drawn'){
+        if(values?.extent?.source?.toLowerCase() == 'drawn'){
             def shapePid = persistSiteExtent(values.name, values.extent.geometry)
             values.extent.geometry.pid = shapePid.resp?.id
         }
@@ -296,7 +296,7 @@ class SiteService {
      */
     def getMapFeatures(site) {
         def featuresMap = [zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []]
-        switch (site.extent?.source) {
+        switch (site.extent?.source?.toLowerCase()) {
             case 'point':
                 featuresMap.features << site.extent.geometry
                 break

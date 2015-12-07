@@ -46,7 +46,7 @@
         here = window.location.href;
 
     </r:script>
-  <r:require modules="knockout, jqueryValidationEngine, amplify, drawmap, projects"/>
+    <r:require modules="knockout, jqueryValidationEngine, amplify, projects, map"/>
 </head>
 <body>
     <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -105,7 +105,7 @@
 
         $('.helphover').popover({animation: true, trigger:'hover'});
 
-        var siteViewModel = initSiteViewModel();
+        var siteViewModel = initSiteViewModel(true);
         $('#cancel').click(function () {
             if(siteViewModel.saved()){
                 document.location.href = fcConfig.sitePageUrl;
@@ -119,6 +119,7 @@
         $('#save').click(function () {
             if ($('#validation-container').validationEngine('validate')) {
                 var json = siteViewModel.modelAsJSON();
+
                 $.ajax({
                     url: fcConfig.ajaxUpdateUrl,
                     type: 'POST',

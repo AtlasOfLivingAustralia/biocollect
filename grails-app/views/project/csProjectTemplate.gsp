@@ -83,7 +83,7 @@
             }
         </style>
     <![endif]-->
-    <r:require modules="gmap3,knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, map"/>
+    <r:require modules="knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, map"/>
 </head>
 <body>
 

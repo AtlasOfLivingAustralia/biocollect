@@ -1,4 +1,3 @@
-<script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
 
 <style type="text/css">
 #surveyLink a {
