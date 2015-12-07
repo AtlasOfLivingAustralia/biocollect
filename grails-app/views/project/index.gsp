@@ -59,7 +59,7 @@
             }
         </style>
     <![endif]-->
-    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd"/>
+    <r:require modules="map, knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd"/>
 </head>
 <body>
 <div class="container-fluid">
@@ -396,14 +396,7 @@
                         wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
                     };
 
-                    map = new MapWithFeatures({
-                            mapContainer: "map",
-                            scrollwheel: false,
-                            featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                            wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-                        },
-                        mapOptions
-                    );
+                    map = new ALA.Map("map", {});
                     var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
                     var sitesViewModel = new SitesViewModel(project.sites, map, mapFeatures, ${user?.isEditor?:false});
                     ko.applyBindings(sitesViewModel, document.getElementById('sitesList'));

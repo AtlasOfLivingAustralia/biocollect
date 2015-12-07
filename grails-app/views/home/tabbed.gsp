@@ -4,7 +4,6 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Home | Field Capture</title>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <r:script disposition="head">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
@@ -15,7 +14,7 @@
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
     }
     </r:script>
-    <r:require modules="knockout,mapWithFeatures,jquery_bootstrap_datatable,js_iso8601"/>
+    <r:require modules="knockout,map,jquery_bootstrap_datatable,js_iso8601"/>
 </head>
 <body>
 <div id="wrapper" class="container-fluid">
@@ -395,16 +394,7 @@
                 "features": features
             }
 
-            window.alaMap = new MapWithFeatures({
-                    mapContainer: "map",
-                    zoomToBounds:true,
-                    scrollwheel: false,
-                    zoomLimit:16,
-                    featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                    wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-                },
-                mapData
-            );
+            window.alaMap = new new ALA.Map("map", {});
 
             alaMap.map.fitBounds(bounds);
 

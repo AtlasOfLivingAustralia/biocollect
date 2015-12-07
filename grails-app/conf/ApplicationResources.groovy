@@ -66,15 +66,6 @@ modules = {
         resource url: 'css/print.css', attrs: [media: 'screen,print']
     }
 
-    gmap3 {
-        resource url: 'vendor/gmap3/gmap3.min.js'
-    }
-
-    mapWithFeatures {
-        resource url: 'js/wms.js'
-        resource url: 'js/mapWithFeatures.js'
-    }
-
     knockout {
         resource url: 'vendor/knockout.js/knockout-3.3.0.debug.js'
         resource url: 'vendor/knockout.js/knockout.mapping-latest.js'
