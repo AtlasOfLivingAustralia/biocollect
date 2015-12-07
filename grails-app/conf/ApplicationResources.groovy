@@ -242,7 +242,6 @@ modules = {
         dependsOn 'knockout', 'attachDocuments', 'wmd', 'responsiveTable'
         resource url: 'js/projects.js'
         resource url: 'js/sites.js'
-        resource url: 'js/sites_new.js'
         resource url: 'vendor/moment/moment.min.js'
         resource url: 'css/surveys.css'
     }

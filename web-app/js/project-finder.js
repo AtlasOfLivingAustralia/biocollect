@@ -132,37 +132,7 @@ function ProjectFinder() {
                     myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location"
                 });
 
-                var regionOptions = {
-                    id: "regionSelection",
-                    title: "Select a known shape",
-                    firstStepPlaceholder: "Choose a layer...",
-                    secondStepPlaceholder: "Choose a shape...",
-                    firstStepItems: [
-                        {key: 'cl2111', value: 'NRM'},
-                        {key: 'cl1048', value: 'IBRA 7 Regions'},
-                        {key: 'cl1049', value: 'IBRA 7 Subregions'},
-                        {key: 'cl22', value: 'Australian states'},
-                        {key: 'cl959', value: 'Local Gov. Areas'}
-                    ],
-                    secondStepItemLookup: function (selectedLayerKey, populateStep2Callback) {
-                        $.ajax({
-                            url: fcConfig.featuresService + '?layerId=' + selectedLayerKey,
-                            dataType: 'json'
-                        }).done(function (data) {
-                            var layers = [];
-                            data.forEach(function (layer) {
-                                layers.push({key: layer.pid, value: layer.name});
-                            });
-
-                            layers = _.sortBy(layers, "value");
-                            populateStep2Callback(layers);
-                        });
-                    },
-                    selectionAction: function (selectedValue) {
-                        spatialFilter.addWmsLayer(selectedValue)
-                    }
-                };
-                var regionSelector = new L.Control.TwoStepSelector(regionOptions);
+                var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService);
 
                 spatialFilter.addControl(regionSelector);
 
