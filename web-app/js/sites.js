@@ -20,7 +20,8 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             type: ko.observable(exists(site, "type")),
             area: ko.observable(exists(site, "area")),
             description: ko.observable(exists(site, "description")),
-            notes: ko.observable(exists(site, "notes"))
+            notes: ko.observable(exists(site, "notes")),
+            projects: ko.observableArray(site.projects || [])
         });
 
         if (site.extent) {
