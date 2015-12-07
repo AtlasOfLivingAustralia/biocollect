@@ -372,4 +372,8 @@ modules = {
         defaultBundle 'application'
         resource url: 'js/MapUtilities.js'
     }
+
+    siteSelection {
+        resource url: "js/siteSelection.js"
+    }
 }
