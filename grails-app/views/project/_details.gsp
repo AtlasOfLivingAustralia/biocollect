@@ -161,7 +161,7 @@
                             <div class="span3"></div>
                             <div class="span9">
                                 <div class="clearfix control-group">
-                                    <label class="control-label left-aligned-label span3" for="associatedOrgName"><g:message code="project.details.associatedOrgs.name"/><i class="req-field"></i></label>
+                                    <label class="control-label left-aligned-label span3" for="associatedOrgName"><g:message code="project.details.associatedOrgs.name"/><i class="req-field" data-bind="visible: $parent.transients.associatedOrgNotInList()"></i></label>
 
                                     <div class="controls span12 margin-left-0">
                                         <input id="associatedOrgName" class="input-xxlarge" type="text" placeholder="Start typing a name here" data-bind="value:term, valueUpdate:'afterkeydown'"><button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
