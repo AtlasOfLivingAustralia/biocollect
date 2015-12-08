@@ -895,10 +895,10 @@ function imageError(imageElement, alternateImage) {
 
 /**
  * fired when logo image is loaded. fn used to stretch small image to height or width of parent container.
- * @param e
+ * @param imageElement the img element
  */
-function findLogoScalingClass(e){
-    var $elem = $(e);
+function findLogoScalingClass(imageElement) {
+    var $elem = $(imageElement);
     var parentHeight = $elem.parent().height();
     var parentWidth = $elem.parent().width();
     var height = $elem.height();
@@ -906,13 +906,11 @@ function findLogoScalingClass(e){
 
     var wide = width > height;
 
-    if (wide) {
-        if (width < parentWidth) {
-            $elem.addClass('wide')
-        }
-    } else {
-        if (height < parentHeight) {
-            $elem.addClass('tall');
-        }
+    var ratio = width / height;
+
+    if (ratio > 1.05 && width < parentWidth) {
+        $elem.addClass('wide')
+    } else if (ratio < 0.95 && height < parentHeight) {
+        $elem.addClass('tall');
     }
 }
