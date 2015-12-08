@@ -41,7 +41,7 @@
                 <tr>
                     <td>
                         <div class="survey-logo survey-row-layout">
-                            <img alt="No image" class="image-logo" data-bind="attr:{title:name, src: transients.logoUrl()}" src="" onload="findLogoScalingClass(this)" onerror="imageError(this, '${noImageUrl}');"/>
+                            <img alt="No image" class="image-logo" data-bind="attr:{title:name, src: transients.logoUrl()}" src="" onload="findLogoScalingClass(this)"/>
                         </div>
                     </td>
                     <td>
