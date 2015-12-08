@@ -32,6 +32,7 @@
     </div>
     <br><br>
     <!-- /ko -->
+    <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
 
     <table data-table-list class="survey-finder-table">
         <tbody>
@@ -40,7 +41,7 @@
                 <tr>
                     <td>
                         <div class="survey-logo survey-row-layout">
-                            <img alt="No image" class="image-logo" data-bind="attr:{title:name, src: transients.logoUrl()}, event: { load: transients.findLogoScalingClass}" src=""/>
+                            <img alt="No image" class="image-logo" data-bind="attr:{title:name, src: transients.logoUrl()}" src="" onload="findLogoScalingClass(this)" onerror="imageError(this, '${noImageUrl}');"/>
                         </div>
                     </td>
                     <td>

@@ -16,12 +16,13 @@
         </tbody>
     </table>
     <bc:koLoading>
+        <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
         <table data-table-list class="project-finder-table">
             <tbody data-bind="foreach:pageProjects">
                 <tr>
                     <td class="projectLogoTd">
                         <div class="projectLogo project-row-layout">
-                            <img class="image-logo" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name,src:transients.imageUrl}, event: { load: transients.findLogoScalingClass}"/>
+                            <img class="image-logo" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name, src:transients.imageUrl || '${noImageUrl}'}" onload="findLogoScalingClass(this)" onerror="imageError(this, '${noImageUrl}');"/>
                         </div>
                     </td>
                     <td>
