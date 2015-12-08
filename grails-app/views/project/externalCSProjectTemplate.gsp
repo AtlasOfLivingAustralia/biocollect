@@ -33,7 +33,7 @@
     }
     </style>
 
-    <r:require modules="knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd, restoreTab"/>
+    <r:require modules="knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd, restoreTab, map"/>
 </head>
 <g:render template="banner"/>
 
@@ -59,7 +59,7 @@
             <!-- content  -->
             <ul id="ul-cs-external-project" class="nav nav-pills">
                 <li>
-                    <a href="#about" id="about-tab" data-toggle="tab" data-bind="click: initialiseProjectArea">About</a>
+                    <a href="#about" id="about-tab" data-toggle="tab">About</a>
                 </li>
                 <li>
                     <a href="#admin" id="admin-tab" data-toggle="tab">Admin</a>
