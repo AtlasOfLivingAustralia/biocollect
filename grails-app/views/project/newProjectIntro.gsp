@@ -37,7 +37,7 @@
 
     <div class="row-fluid well">
         <g:link controller="project" action="index" params="[id: project.projectId]"
-                class="btn btn-primary" onclick="amplify.store('ul-main-project-state', '#activities')">
+                class="btn btn-primary" onclick="amplify.store('ul-main-project-state', '#admin'); amplify.store('ul-cs-internal-project-admin-state', '#project-activity')">
             <g:message code="g.continue"/>
         </g:link>
     </div>
