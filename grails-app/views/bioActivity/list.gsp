@@ -27,12 +27,12 @@
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout, projectActivityInfo, jqueryValidationEngine, restoreTab, myActivity, mapWithFeatures"/>
+    <r:require modules="knockout, projectActivityInfo, jqueryValidationEngine, restoreTab, myActivity, map"/>
 </head>
 <body>
 
 <div class="container-fluid">
-    <h2>${view == 'allrecords' ? 'All Records' : 'My Records'}</h2>
+    <h2>${view == 'allrecords' ? 'All Records' : 'My Data'}</h2>
     <div class="main-content" style="display:none;">
         <g:render template="../bioActivity/activities"/>
     </div>
