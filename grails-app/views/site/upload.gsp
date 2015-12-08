@@ -46,15 +46,6 @@
             </div>
         </g:if>
 
-        <div class="row-fluid">
-            <div class="span5">
-                <div class="alert">
-                    <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-                    MERIT no longer requires that shapefiles use the WGS84 CRS.  This feature is currently experimental, so please let us know if you encounter issues when uploading your shapefile.
-                </div>
-            </div>
-        </div>
-
         <g:uploadForm id="shapeFileUpload" class="loadPlanData" controller="site" action="uploadShapeFile">
             <input type="hidden" name="returnTo" value="${returnTo}">
             <input type="hidden" name="projectId" value="${projectId}">
