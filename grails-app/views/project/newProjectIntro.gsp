@@ -5,7 +5,7 @@
     <title>${project?.name?.encodeAsHTML()} | <g:message code="g.projects"/> | <g:message
             code="g.fieldCapture"/></title>
 
-    <r:require module="application"></r:require>
+    <r:require modules="application, amplify"></r:require>
 </head>
 
 <body>
@@ -37,7 +37,9 @@
 
     <div class="row-fluid well">
         <g:link controller="project" action="index" params="[id: project.projectId]"
-                class="btn btn-primary"><g:message code="g.continue"/></g:link>
+                class="btn btn-primary" onclick="amplify.store('ul-main-project-state', '#activities')">
+            <g:message code="g.continue"/>
+        </g:link>
     </div>
 
 </div>
