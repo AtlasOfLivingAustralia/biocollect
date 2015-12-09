@@ -94,7 +94,6 @@
                 map.setGeoJSON(geometry, options);
             }
         });
-        map.fitBounds();
 
         var numSitesHtml = "";
         if(features.length > 0){
