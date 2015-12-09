@@ -908,9 +908,9 @@ function findLogoScalingClass(imageElement) {
 
     var ratio = width / height;
 
-    if (ratio > 1.05 && width < parentWidth) {
+    if (ratio > 1.2 && width < parentWidth) {
         $elem.addClass('wide')
-    } else if (ratio < 0.95 && height < parentHeight) {
+    } else if (ratio < 0.80 && height < parentHeight) {
         $elem.addClass('tall');
     }
 }
