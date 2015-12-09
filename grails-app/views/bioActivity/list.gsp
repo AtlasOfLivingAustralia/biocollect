@@ -28,7 +28,7 @@
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout, projectActivityInfo, jqueryValidationEngine, restoreTab, myActivity, mapWithFeatures"/>
+    <r:require modules="knockout, projectActivityInfo, jqueryValidationEngine, restoreTab, myActivity"/>
 </head>
 <body>
 

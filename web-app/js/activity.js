@@ -1,5 +1,6 @@
 var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
     var self = this;
+    var features, featureType = 'record', alaMap, results;
     self.view = view ? view : 'allrecords';
 
     self.sortOptions = [
@@ -171,6 +172,180 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
             }
         });
     };
+
+    /**
+     * creates popup on the map
+     * @param projectLinkPrefix
+     * @param projectId
+     * @param projectName
+     * @param activityUrl
+     * @param surveyName
+     * @param speciesName
+     * @returns {string}
+     */
+    self.generatePopup = function (projectLinkPrefix, projectId, projectName, activityUrl, surveyName, speciesName){
+        var html = "<div class='projectInfoWindow'>";
+
+        if (activityUrl && surveyName) {
+            html += "<div><i class='icon-home'></i> <a target='_blank' href='" +
+                activityUrl + "'>" +surveyName + "</a></div>";
+        }
+
+        if(projectName){
+            html += "<div><a target='_blank' href="+projectLinkPrefix+projectId+"><i class='icon-map-marker'></i>&nbsp;" +projectName + "</a></div>";
+        }
+
+        if(speciesName){
+            html += "<div><i class='icon-camera'></i>&nbsp;"+ speciesName + "</div>";
+        }
+
+        return html;
+    }
+    /**
+     * function used to create map and plot the fetched points
+     */
+    self.getDataAndShowOnMap = function () {
+        var searchTerm = activitiesAndRecordsViewModel.searchTerm() || '';
+        var view = activitiesAndRecordsViewModel.view;
+        var url =fcConfig.getRecordsForMapping + '?max=10000&searchTerm='+ searchTerm+'&view=' + view;
+        var facetFilters = []
+        self.plotOnMap(null);
+
+        if(fcConfig.projectId){
+            url += '&projectId=' + fcConfig.projectId;
+        }
+
+        ko.utils.arrayForEach(activitiesAndRecordsViewModel.selectedFilters(), function (term) {
+            facetFilters.push(term.facetName() + ':' + term.term());
+        });
+
+        if (facetFilters && facetFilters.length > 0) {
+            url += "&fq=" + facetFilters.join("&fq=");
+        }
+        alaMap.startLoading();
+        $.getJSON(url, function(data) {
+            results = data;
+            self.generateDotsFromResult(data)
+            alaMap.finishLoading();
+        }).error(function (request, status, error) {
+            console.error("AJAX error", status, error);
+            alaMap.finishLoading();
+        });
+    }
+
+    /**
+     * converts ajax data to activities or records according to selection.
+     * @param data
+     */
+    self.generateDotsFromResult = function (data){
+        features = [];
+        var projectIdMap = {};
+        var geoPoints = data;
+
+        if (geoPoints.activities) {
+            var projectLinkPrefix = "${createLink(controller: 'project')}/";
+            var siteLinkPrefix = "${createLink(controller: 'site')}/";
+
+            $.each(geoPoints.activities, function(index, activity) {
+                var projectId = activity.projectId
+                var projectName = activity.name
+                var siteName,
+                    activityUrl = fcConfig.activityViewUrl+'/'+activity.activityId;
+
+                if(activity.sites && activity.sites.length){
+                    siteName = activity.sites[0].name;
+                }
+
+                switch (featureType){
+                    case 'record':
+                        if (activity.records && activity.records.length > 0) {
+                            $.each(activity.records, function(k, el) {
+                                if(el.coordinates && el.coordinates.length){
+                                    features.push({
+                                        lat: el.coordinates[1],
+                                        lng: el.coordinates[0],
+                                        popup: self.generatePopup(projectLinkPrefix,projectId,projectName, activityUrl, activity.name, el.name)
+                                    });
+                                }
+                            });
+                        }
+                        break;
+                    case 'activity':
+                        if(activity.coordinates && activity.coordinates.length){
+                            features.push({
+                                lat: activity.coordinates[1],
+                                lng: activity.coordinates[0],
+                                popup: self.generatePopup(projectLinkPrefix,projectId,projectName, activityUrl, activity.name)
+                            });
+                        }
+                        break;
+                }
+            });
+            self.plotOnMap(features);
+        }
+    }
+
+    /**
+     * creates the map and plots the points on map
+     * @param features
+     */
+    self.plotOnMap = function (features){
+        var radio;
+
+        var mapOptions = {
+            drawControl: false,
+            showReset: false,
+            draggableMarkers: false,
+            useMyLocation: false,
+            allowSearchByAddress: false,
+            wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
+            wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
+        }
+
+
+        if(!alaMap){
+            alaMap = new ALA.Map("recordOrActivityMap", mapOptions);
+            radio = new L.Control.Radio({
+                name: 'activityOrRecrodsTEST',
+                potion: 'topright',
+                radioButtons:[{
+                    displayName: 'Records',
+                    value: 'record',
+                    checked: true
+                },{
+                    displayName: 'Activity',
+                    value: 'activity'
+                }],
+                onClick: self.getActivityOrRecords
+            })
+            alaMap.addControl(radio);
+        } else {
+            alaMap.resetMap();
+        }
+
+        features && features.length && alaMap.addClusteredPoints(features)
+    }
+
+    /**
+     * function called when  radio button selection changes.
+     * @param value
+     */
+    self.getActivityOrRecords = function(value){
+        featureType = value;
+        self.generateDotsFromResult(results);
+    }
+
+    /**
+     * when map is updated on invisible, this function is used to redraw the map.
+     */
+    self.invalidateSize = function(){
+        alaMap.getMapImpl().invalidateSize();
+    }
+
+
+    // listen to facet change event so that map can be updated.
+    self.selectedFilters.subscribe(self.getDataAndShowOnMap)
+    self.searchTerm.subscribe(self.getDataAndShowOnMap)
 
     self.refreshPage();
 };
