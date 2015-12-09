@@ -8,8 +8,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
 
     self.instances = [
         {name:'records', displayName: 'Records'},
-        {name:'activities', displayName: 'Activities'},
-        {name:'works', displayName:'Works'}
+        {name:'activities', displayName: 'Activities'}
     ]
     self.selectedInstance = ko.observable('records')
 
