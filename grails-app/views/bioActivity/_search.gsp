@@ -31,9 +31,9 @@
                                 <div class="pull-right">
                                     <label >Show -
                                         <div class="btn-group" data-toggle="buttons-radio">
-                                            <button class="btn btn-info  active">Records</button>
-                                            <button class="btn btn-info ">Activity</button>
-                                            <button class="btn btn-info ">Works</button>
+                                            <!-- ko foreach:instances -->
+                                            <button class="btn btn-info" data-bind="html:displayName, click: $root.setSelectedInstance, css:{active:$data.name == $root.selectedInstance()}"></button>
+                                            <!-- /ko -->
                                         </div>
                                     </label>
                                     &nbsp;&nbsp;&nbsp;&nbsp;

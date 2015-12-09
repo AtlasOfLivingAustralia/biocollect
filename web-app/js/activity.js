@@ -6,6 +6,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
         {id: 'lastUpdated', name: 'Date', order: 'DESC'},
         {id: 'activityOwnerName', name: 'Owner name', order: 'ASC'}];
 
+    self.instances = [
+        {name:'records', displayName: 'Records'},
+        {name:'activities', displayName: 'Activities'},
+        {name:'works', displayName:'Works'}
+    ]
+    self.selectedInstance = ko.observable('records')
+
     var index = 0;
     self.availableFacets = [
         {name: 'projectNameFacet', displayName: 'Project', order: index++},
@@ -176,6 +183,14 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
         // sort is set.
         self.order(data.order);
         self.sort(data.id);
+    }
+
+    /**
+     * stores state of current instance type.
+     * @param data
+     */
+    self.setSelectedInstance = function(data){
+        self.selectedInstance(data.name);
     }
 
     self.refreshPage();
