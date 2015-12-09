@@ -385,4 +385,8 @@ modules = {
         defaultBundle 'application'
         resource url: 'js/MapUtilities.js'
     }
+
+    activities{
+        resource url: 'css/activities.css'
+    }
 }

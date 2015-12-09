@@ -3,9 +3,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
     self.view = view ? view : 'allrecords';
 
     self.sortOptions = [
-        {id: 'lastUpdated', name: 'Date'},
-        {id: 'name', name: 'Survey name'},
-        {id: 'activityOwnerName', name: 'Owner name'}];
+        {id: 'lastUpdated', name: 'Date', order: 'DESC'},
+        {id: 'activityOwnerName', name: 'Owner name', order: 'ASC'}];
 
     var index = 0;
     self.availableFacets = [
@@ -42,9 +41,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
     self.sort.subscribe(function (newValue) {
         self.refreshPage();
     });
-    self.order.subscribe(function (newValue) {
-        self.refreshPage();
-    });
+    //self.order.subscribe(function (newValue) {
+    //    self.refreshPage();
+    //});
     self.searchTerm.subscribe(function (newValue) {
         self.refreshPage();
     });
@@ -171,6 +170,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
             }
         });
     };
+
+    self.sortButtonClick = function(data){
+        // remove subscribe event on order so that we can set it and page will not refresh. will only refresh when
+        // sort is set.
+        self.order(data.order);
+        self.sort(data.id);
+    }
 
     self.refreshPage();
 };
