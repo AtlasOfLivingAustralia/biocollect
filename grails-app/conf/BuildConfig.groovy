@@ -31,6 +31,9 @@ if (Environment.current == Environment.DEVELOPMENT) {
 
     grails.plugin.location.'biocollect-sightings' = './plugins/biocollect-sightings'
     println('Using inline biocollect-sightings plugin...')
+    grails.plugin.location.'ala-map' = '../ala-map-plugin'
+    println('Using inline ala-map plugin...')
+
 }
 
 grails.project.dependency.resolver = "maven"
@@ -115,6 +118,7 @@ grails.project.dependency.resolution = {
 
         if (Environment.current != Environment.DEVELOPMENT) {
             compile ":biocollect-sightings:1.0-SNAPSHOT"
+            compile ":ala-map:0.1-SNAPSHOT"
         }
 
     }
