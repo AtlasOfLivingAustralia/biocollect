@@ -429,26 +429,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     });
     var updatingDurations = false; // Flag to prevent endless loops during change of end date / duration.
     self.transients.plannedDuration = ko.observable(calculateDuration(self.plannedStartDate(), self.plannedEndDate()));
-    /**
-     * fired when logo image is loaded. fn used to stretch small image to height or width of parent container.
-     * @param data
-     * @param e
-     */
-    self.transients.findLogoScalingClass = function(data, e){
-        var $elem = $(e.target);
-        var className,
-            height = $elem.height(),
-            width = $elem.width(),
-            ratio = width/height,
-            max = 1.05,
-            min = 0.95;
-        if(ratio >= min && ratio <= max){
-            className = width/height > 1 ? 'tall':'wide';
-        } else {
-            className = width/height > 1 ? 'wide':'tall';
-        }
-        $elem.addClass(className);
-    };
+
     self.transients.plannedDuration.subscribe(function(newDuration) {
         if (updatingDurations) {
             return;
@@ -783,7 +764,7 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     var self = this;
 
     // Automatically create the site of type "Project Area" with a name of "Project area for ..."
-    var siteViewModel = initSiteViewModel({type:'projectArea'});
+    var siteViewModel = initSiteViewModel(false);
     siteViewModel.name = ko.computed(function() {
         return 'Project area for '+self.name();
     });

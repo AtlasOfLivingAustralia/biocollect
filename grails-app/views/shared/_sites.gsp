@@ -10,8 +10,6 @@
 <r:script>
 
     function generateMap(facetList) {
-        var alaMap = null;
-
         var url = "${createLink(controller: 'nocas', action: 'geoService')}?max=10000&geo=true";
 
         if (facetList && facetList.length > 0) {
@@ -39,8 +37,10 @@
                             if (project.geo && project.geo.length > 0) {
                                 $.each(project.geo, function(k, el) {
                                     var point = {
+                                        siteId: el.siteId,
                                         lat: parseFloat(el.loc.lat),
                                         lng: parseFloat(el.loc.lon),
+                                        geometry: el.geometry,
                                         popup: generatePopup(projectLinkPrefix, projectId, projectName, project.org, siteLinkPrefix, el.siteId, el.siteName)
                                     }
 
@@ -71,15 +71,29 @@
             useMyLocation: false,
             allowSearchByAddress: false,
             draggableMarkers: false,
-            showReset: false
+            showReset: false,
+            zoomToObject: false,
+            wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
+            wmsFeatureUrl: fcConfig.featureService + "?featureId=",
         };
         var map = new ALA.Map("siteMap", mapOptions);
+        var layers = {};
+
         map.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", map.fitBounds, "bottomleft");
 
         features.forEach(function (feature) {
-            map.addMarker(feature.lat, feature.lng, feature.popup);
+            if (feature.geometry) {
+                var geometry = Biocollect.MapUtilities.featureToValidGeoJson(feature.geometry);
+
+                var options = {
+                    markerWithMouseOver: true,
+                    markerLocation: [feature.lat, feature.lng],
+                    popup: feature.popup
+                }
+
+                map.setGeoJSON(geometry, options);
+            }
         });
-        map.fitBounds();
 
         var numSitesHtml = "";
         if(features.length > 0){

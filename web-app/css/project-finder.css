@@ -137,15 +137,11 @@ input[type=checkbox] {
 }
 
 .wide {
-    max-width: 100%;
-    max-height: 100%;
     width: 100%;
     height: auto;
 }
 
 .tall {
-    max-height: 100%;
-    max-width: 100%;
     width: auto;
     height: 100%;
 }​

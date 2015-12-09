@@ -17,7 +17,7 @@
             <a href="#" class="btnMyProjects"><span class="fa fa-folder"></span>My Projects</a>
         </li>
         <li class="${(path ==~ /.*bioActivity\/list.*/) ? 'active' : ''}">
-            <a href="#" class="btnMyData"><span class="fa fa-database"></span>My Records</a>
+            <a href="#" class="btnMyData"><span class="fa fa-database"></span>My Data</a>
         </li>
         <g:if test="${fc.userIsSiteAdmin()}">
             <li class="${(path ==~ /.*admin\/index.*/) ? 'active' : ''}">

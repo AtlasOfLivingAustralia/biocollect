@@ -35,7 +35,7 @@
         defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}"
   }
     </r:script>
-    <r:require modules="js_iso8601,projects,projectFinder"/>
+    <r:require modules="js_iso8601,projects,projectFinder,map"/>
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">

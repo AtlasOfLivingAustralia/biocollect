@@ -11,7 +11,6 @@
         <title>Edit | ${activity.type} | Field Capture</title>
     </g:else>
 
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <r:script disposition="head">
     var fcConfig = {
@@ -23,7 +22,7 @@
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,map"/>
     <g:set var="formattedStartDate" value="${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(project.plannedStartDate)}"/>
     <g:set var="formattedEndDate" value="${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(project.plannedEndDate)}"/>
 </head>
@@ -412,7 +411,7 @@
             wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
         };
 
-        viewModel.siteMap = new MapWithFeatures(mapOptions, mapFeatures);
+        viewModel.siteMap = new ALA.Map("smallMap", {});
 
 
         ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));

@@ -4,7 +4,6 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Organisations | Field Capture</title>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <r:script disposition="head">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -12,7 +11,7 @@
             viewOrganisationUrl: "${createLink(controller: 'organisation', action: 'index')}"
             };
     </r:script>
-    <r:require modules="knockout,mapWithFeatures,amplify,organisation,fuseSearch"/>
+    <r:require modules="knockout,amplify,organisation,fuseSearch"/>
     <style type="text/css">
 .organisation-logo {
     width: 200px;

@@ -66,22 +66,6 @@ modules = {
         resource url: 'css/print.css', attrs: [media: 'screen,print']
     }
 
-    gmap3 {
-        resource url: 'vendor/gmap3/gmap3.min.js'
-    }
-
-    projectsMap {
-        resource url: 'js/projects-map.js'
-        resource url: 'js/wms.js'
-//        resource url: 'vendor/keydragzoom/keydragzoom.js'
-    }
-
-    mapWithFeatures {
-        resource url: 'css/map.css'
-        resource url: 'js/wms.js'
-        resource url: 'js/mapWithFeatures.js'
-    }
-
     knockout {
         resource url: 'vendor/knockout.js/knockout-3.3.0.debug.js'
         resource url: 'vendor/knockout.js/knockout.mapping-latest.js'
@@ -173,12 +157,6 @@ modules = {
         resource url: 'images/sort_desc.png'
         resource url: 'images/sort_desc_disabled.png'
 
-    }
-
-    drawmap {
-//        resource url: 'vendor/keydragzoom/keydragzoom.js'
-        resource url: 'js/wms.js'
-        resource url: 'js/selection-map.js'
     }
 
     jQueryFileUpload {
@@ -384,5 +362,9 @@ modules = {
         dependsOn 'map' // from the ala-map plugin
         defaultBundle 'application'
         resource url: 'js/MapUtilities.js'
+    }
+
+    siteSelection {
+        resource url: "js/siteSelection.js"
     }
 }

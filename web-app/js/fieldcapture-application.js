@@ -886,3 +886,31 @@ function siteExtentToValidGeoJSON(siteExtent) {
 
     return geoJson;
 }
+
+function imageError(imageElement, alternateImage) {
+    imageElement.onerror = "";
+    imageElement.src = alternateImage;//"/static/images/no-image-2.png";
+    return true;
+}
+
+/**
+ * fired when logo image is loaded. fn used to stretch small image to height or width of parent container.
+ * @param imageElement the img element
+ */
+function findLogoScalingClass(imageElement) {
+    var $elem = $(imageElement);
+    var parentHeight = $elem.parent().height();
+    var parentWidth = $elem.parent().width();
+    var height = $elem.height();
+    var width = $elem.width();
+
+    var wide = width > height;
+
+    var ratio = width / height;
+
+    if (ratio > 1.2 && width < parentWidth) {
+        $elem.addClass('wide')
+    } else if (ratio < 0.80 && height < parentHeight) {
+        $elem.addClass('tall');
+    }
+}

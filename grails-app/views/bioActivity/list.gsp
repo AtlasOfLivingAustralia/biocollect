@@ -4,7 +4,6 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>My Data | Bio Collect</title>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <r:script disposition="head">
     var fcConfig = {
@@ -33,7 +32,7 @@
 <body>
 
 <div class="container-fluid">
-    <h2>${view == 'allrecords' ? 'All Records' : 'My Records'}</h2>
+    <h2>${view == 'allrecords' ? 'All Records' : 'My Data'}</h2>
     <div class="main-content" style="display:none;">
         <g:render template="../bioActivity/activities"/>
     </div>
