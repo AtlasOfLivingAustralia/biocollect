@@ -65,7 +65,6 @@ class OrganisationController {
         def hasAdminAccess = userService.userIsAlaOrFcAdmin() || orgRole.role == RoleService.PROJECT_ADMIN_ROLE
 
         def hasViewAccess = hasAdminAccess || userService.userHasReadOnlyAccess() || orgRole.role == RoleService.PROJECT_EDITOR_ROLE
-        def dashboardReports = [[name: 'dashboard', label: 'Activity Outputs']]
         def includeProjectList = organisation.projects?.size() > 0
 
         [about    : [label: 'About', visible: true, stopBinding: false, type: 'tab', default: true, includeProjectList: includeProjectList],
