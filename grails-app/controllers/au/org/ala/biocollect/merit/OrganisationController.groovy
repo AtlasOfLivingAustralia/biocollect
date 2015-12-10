@@ -65,13 +65,11 @@ class OrganisationController {
         def hasAdminAccess = userService.userIsAlaOrFcAdmin() || orgRole.role == RoleService.PROJECT_ADMIN_ROLE
 
         def hasViewAccess = hasAdminAccess || userService.userHasReadOnlyAccess() || orgRole.role == RoleService.PROJECT_EDITOR_ROLE
-        def dashboardReports = [[name: 'dashboard', label: 'Activity Outputs']]
         def includeProjectList = organisation.projects?.size() > 0
 
         [about    : [label: 'About', visible: true, stopBinding: false, type: 'tab', default: true, includeProjectList: includeProjectList],
          projects : [label: 'Projects', visible: true, stopBinding: true, type: 'tab', template: '/shared/projectFinder', model: [allowGeographicFilter: false]],
          sites    : [label: 'Sites', visible: hasViewAccess, stopBinding: true, type: 'tab', projectCount: organisation.projects?.size() ?: 0, showShapefileDownload: hasAdminAccess],
-         dashboard: [label: 'Dashboard', visible: hasViewAccess, stopBinding: true, type: 'tab', template: '/shared/dashboard', reports: dashboardReports],
          admin    : [label: 'Admin', visible: hasAdminAccess, type: 'tab']]
     }
 
