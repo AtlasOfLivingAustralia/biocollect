@@ -63,7 +63,8 @@
         errorViewer: "${createLink(controller: 'resource', action: 'error')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}",
         auditMessageUrl: "${createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId])}",
-        projectId: "${project.projectId}"
+        projectId: "${project.projectId}",
+        projectLinkPrefix: "${createLink(controller: 'project')}/"
         },
         here = window.location.href;
 

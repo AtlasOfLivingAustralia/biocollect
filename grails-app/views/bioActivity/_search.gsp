@@ -22,39 +22,29 @@
                             </span></h5>
                             <input data-bind="value: searchTerm, valueUpdate: 'input'" type="text"
                                    class="input-block-level" placeholder="Search survey records"/>
+                            <div class="form-inline">
                             <button data-bind="click: search" title="Only show surveys which contain the search term"
                                     id="pt-search-link" class="btn btn-primary"><i
                                     class="icon-search icon-white"></i> Search</button>
-                            <button data-bind="click: reset" id="pt-search-reset" class="btn btn-primary"><i
-                                    class="icon-remove-circle icon-white"></i> Reset</button>
-                            <button id="pt-filter" data-bind="click: toggleFilter" class="btn btn-primary"
-                                    data-toggle="button">
-                                <i data-bind="attr:{class: filter() ? 'icon-chevron-up icon-white' : 'icon-chevron-down icon-white'}"></i> Filter</button>
+                            <button data-bind="click: reset" id="pt-search-reset" class="btn btn-default"><i
+                                    class="icon-remove-circle"></i> Reset</button>
+                                <div class="pull-right">
+                                    <label>Sort by -
+                                        <div class="btn-group" data-toggle="buttons-radio">
+                                            <!-- ko foreach:sortOptions -->
+                                            <button class="btn btn-info " data-bind="html:name, click: $root.sortButtonClick, css:{active:$root.sort()==id}"></button>
+                                            <!-- /ko -->
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
                             <span id="search-spinner" class="spinner margin-left-1"> <i class='fa fa-spin fa-spinner'></i> Searching..</span>
                         </div>
                     </div>
 
                 </div>
             </div>
-            <!-- ko if: filter() -->
-            <div class="row-fluid">
-                <div class="span12 pull-right">
-                    <div class="span8 text-left"></div>
 
-                    <div class="span2 text-right">
-                        <label for="results-sort-by">Sort by:</label>
-                        <select id="results-sort-by" class="input-small"
-                                data-bind="value:sort, options:sortOptions, optionsText:'name', optionsValue:'id'"></select>
-                    </div>
-
-                    <div class="span2 text-right">
-                        <label for="results-order">Sort order:</label>
-                        <select id="results-order" class="input-small"
-                                data-bind="value:order, options:orderOptions, optionsText:'name', optionsValue:'id'"></select>
-                    </div>
-                </div>
-            </div>
-            <!-- /ko -->
         </div>
 </div>
 <!-- /ko -->

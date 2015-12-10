@@ -4,9 +4,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
     self.view = view ? view : 'allrecords';
 
     self.sortOptions = [
-        {id: 'lastUpdated', name: 'Date'},
-        {id: 'name', name: 'Survey name'},
-        {id: 'activityOwnerName', name: 'Owner name'}];
+        {id: 'lastUpdated', name: 'Date', order: 'DESC'},
+        {id: 'activityOwnerName', name: 'Owner name', order: 'ASC'}];
 
     var index = 0;
     self.availableFacets = [
@@ -43,9 +42,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
     self.sort.subscribe(function (newValue) {
         self.refreshPage();
     });
-    self.order.subscribe(function (newValue) {
-        self.refreshPage();
-    });
+    
     self.searchTerm.subscribe(function (newValue) {
         self.refreshPage();
     });
@@ -57,6 +54,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
         self.order('DESC');
         self.sort('lastUpdated');
         self.refreshPage();
+        alaMap.fitBounds()
     };
     self.addUserSelectedFacet = function (facet) {
         self.selectedFilters.push(facet);
@@ -172,7 +170,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
             }
         });
     };
-
     /**
      * creates popup on the map
      * @param projectLinkPrefix
@@ -239,43 +236,34 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
      */
     self.generateDotsFromResult = function (data){
         features = [];
-        var projectIdMap = {};
         var geoPoints = data;
 
         if (geoPoints.activities) {
-            var projectLinkPrefix = "${createLink(controller: 'project')}/";
-            var siteLinkPrefix = "${createLink(controller: 'site')}/";
-
             $.each(geoPoints.activities, function(index, activity) {
                 var projectId = activity.projectId
                 var projectName = activity.name
-                var siteName,
-                    activityUrl = fcConfig.activityViewUrl+'/'+activity.activityId;
-
-                if(activity.sites && activity.sites.length){
-                    siteName = activity.sites[0].name;
-                }
+                var activityUrl = fcConfig.activityViewUrl+'/'+activity.activityId;
 
                 switch (featureType){
                     case 'record':
                         if (activity.records && activity.records.length > 0) {
                             $.each(activity.records, function(k, el) {
-                                if(el.coordinates && el.coordinates.length){
+                                if(el.coordinates && el.coordinates.length && !isNaN(el.coordinates[1]) && !isNaN(el.coordinates[0])){
                                     features.push({
                                         lat: el.coordinates[1],
                                         lng: el.coordinates[0],
-                                        popup: self.generatePopup(projectLinkPrefix,projectId,projectName, activityUrl, activity.name, el.name)
+                                        popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, el.name)
                                     });
                                 }
                             });
                         }
                         break;
                     case 'activity':
-                        if(activity.coordinates && activity.coordinates.length){
+                        if(activity.coordinates && activity.coordinates.length && !isNaN(activity.coordinates[1]) && !isNaN(activity.coordinates[0])){
                             features.push({
                                 lat: activity.coordinates[1],
                                 lng: activity.coordinates[0],
-                                popup: self.generatePopup(projectLinkPrefix,projectId,projectName, activityUrl, activity.name)
+                                popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name)
                             });
                         }
                         break;
@@ -297,14 +285,12 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
             showReset: false,
             draggableMarkers: false,
             useMyLocation: false,
-            allowSearchByAddress: false,
-            wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
-            wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
+            allowSearchByAddress: false
         }
 
 
         if(!alaMap){
-            alaMap = new ALA.Map("recordOrActivityMap", mapOptions);
+            self.transients.alaMap = alaMap = new ALA.Map("recordOrActivityMap", mapOptions);
             radio = new L.Control.Radio({
                 name: 'activityOrRecrodsTEST',
                 potion: 'topright',
@@ -319,11 +305,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
                 onClick: self.getActivityOrRecords
             })
             alaMap.addControl(radio);
-        } else {
-            alaMap.resetMap();
+            alaMap.addButton("<span class='fa fa-refresh' title='Reset zoom'></span>", alaMap.fitBounds, "bottomleft");
         }
 
-        features && features.length && alaMap.addClusteredPoints(features)
+        features && features.length && alaMap.addClusteredPoints(features);
     }
 
     /**
@@ -346,6 +331,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
     // listen to facet change event so that map can be updated.
     self.selectedFilters.subscribe(self.getDataAndShowOnMap)
     self.searchTerm.subscribe(self.getDataAndShowOnMap)
+
+    self.sortButtonClick = function(data){
+        // remove subscribe event on order so that we can set it and page will not refresh. will only refresh when
+        // sort is set.
+        self.order(data.order);
+        self.sort(data.id);
+    }
 
     self.refreshPage();
 };

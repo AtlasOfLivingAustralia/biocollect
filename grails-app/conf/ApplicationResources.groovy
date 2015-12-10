@@ -367,4 +367,8 @@ modules = {
     siteSelection {
         resource url: "js/siteSelection.js"
     }
+    
+    activities{
+        resource url: 'css/activities.css'
+    }
 }
