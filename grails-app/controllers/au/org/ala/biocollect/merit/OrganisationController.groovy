@@ -71,7 +71,6 @@ class OrganisationController {
         [about    : [label: 'About', visible: true, stopBinding: false, type: 'tab', default: true, includeProjectList: includeProjectList],
          projects : [label: 'Projects', visible: true, stopBinding: true, type: 'tab', template: '/shared/projectFinder', model: [allowGeographicFilter: false]],
          sites    : [label: 'Sites', visible: hasViewAccess, stopBinding: true, type: 'tab', projectCount: organisation.projects?.size() ?: 0, showShapefileDownload: hasAdminAccess],
-         dashboard: [label: 'Dashboard', visible: hasViewAccess, stopBinding: true, type: 'tab', template: '/shared/dashboard', reports: dashboardReports],
          admin    : [label: 'Admin', visible: hasAdminAccess, type: 'tab']]
     }
 
