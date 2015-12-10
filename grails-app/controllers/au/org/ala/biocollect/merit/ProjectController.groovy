@@ -108,7 +108,7 @@ class ProjectController {
     }
 
     protected Map surveyProjectContent(project, user) {
-        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite, click: "initialiseProjectArea"],
+        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
          news:[label:'News', visible: true, type:'tab'],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
@@ -210,28 +210,12 @@ class ProjectController {
                 user                    : userService.getUser(),
                 showTag                 : params.tag,
                 downloadLink            : createLink(controller: 'project', action: 'getProjectList', params: ['download': true]),
-                showCitizenScienceBanner: true,
-                siteOptions             : [zoomToPoint: false,
-                                           showSatelliteOnPoint: false,
-                                           showUncertainty: false,
-                                           showSiteSummary: false,
-                                           showMyLocationPointOption: true,
-                                           showMyGeocodeAddressPointOption: true,
-                                           additionalPointText: "Within a ${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"} radius of:"]
+                showCitizenScienceBanner: true
         ]
     }
 
     def myProjects() {
-        [
-                user                    : userService.getUser(),
-                siteOptions             : [zoomToPoint: false,
-                                           showSatelliteOnPoint: false,
-                                           showUncertainty: false,
-                                           showSiteSummary: false,
-                                           showMyLocationPointOption: true,
-                                           showMyGeocodeAddressPointOption: true,
-                                           additionalPointText: "Within a ${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"} radius of:"]
-        ]
+        [user: userService.getUser()]
     }
 
     /**

@@ -73,7 +73,7 @@ modules = {
     projectsMap {
         resource url: 'js/projects-map.js'
         resource url: 'js/wms.js'
-        resource url: 'vendor/keydragzoom/keydragzoom.js'
+//        resource url: 'vendor/keydragzoom/keydragzoom.js'
     }
 
     mapWithFeatures {
@@ -176,8 +176,7 @@ modules = {
     }
 
     drawmap {
-        defaultBundle true
-        resource url: 'vendor/keydragzoom/keydragzoom.js'
+//        resource url: 'vendor/keydragzoom/keydragzoom.js'
         resource url: 'js/wms.js'
         resource url: 'js/selection-map.js'
     }
@@ -249,7 +248,7 @@ modules = {
     }
 
     projectFinder {
-        dependsOn('knockout', 'projects','bootstrap', 'responsiveTable', 'zip', 'drawmap', 'underscore')
+        dependsOn('knockout', 'projects','bootstrap', 'responsiveTable', 'zip', 'underscore')
         resource url: 'js/button-toggle-events.js'
         resource url: 'js/project-finder.js'
         resource url: 'css/project-finder.css'
@@ -379,5 +378,15 @@ modules = {
 
     underscore {
         resource url: "vendor/underscore/underscore-1.8.3.min.js"
+    }
+
+    mapUtils {
+        dependsOn 'map' // from the ala-map plugin
+        defaultBundle 'application'
+        resource url: 'js/MapUtilities.js'
+    }
+
+    activities{
+        resource url: 'css/activities.css'
     }
 }

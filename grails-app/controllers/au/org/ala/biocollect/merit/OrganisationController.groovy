@@ -53,14 +53,7 @@ class OrganisationController {
              user          : user,
              isAdmin       : orgRole?.role == RoleService.PROJECT_ADMIN_ROLE,
              isGrantManager: orgRole?.role == RoleService.GRANT_MANAGER_ROLE,
-             content       : content(organisation),
-             siteOptions   : [zoomToPoint                    : false,
-                              showSatelliteOnPoint           : false,
-                              showUncertainty                : false,
-                              showSiteSummary                : false,
-                              showMyLocationPointOption      : true,
-                              showMyGeocodeAddressPointOption: true,
-                              additionalPointText            : "Within a ${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"} radius of:"]]
+             content       : content(organisation)]
         }
     }
 

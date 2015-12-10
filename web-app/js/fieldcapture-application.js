@@ -873,3 +873,16 @@ function showFloatingMessage(message, alertType) {
     }
     messageContainer.slideDown(400);
 }
+
+function siteExtentToValidGeoJSON(siteExtent) {
+    var geoJson = null;
+
+    if (siteExtent.geometry) {
+        var geometry = _.pick(siteExtent.geometry, "type", "coordinates");
+        var properties = _.extend(_.extend({}, siteExtent.properties), siteExtent.geometry);
+        geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+        geoJson.properties = properties;
+    }
+
+    return geoJson;
+}

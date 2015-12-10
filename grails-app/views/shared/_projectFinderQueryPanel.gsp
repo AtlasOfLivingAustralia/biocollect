@@ -1,4 +1,3 @@
-
 <g:if test="${showSearch}">
     <div class="row-fluid">
         <g:render template="/shared/projectFinderQueryInput"/>
@@ -90,14 +89,16 @@
                 <button id="pt-map-filter" type="button" class="btn btn-small btn-info margin-bottom-2" data-toggle="button"><g:message code="project.search.mapToggle"/><i class="toggleIndicator icon-remove icon-white"></i></button>
 
                 <div id="pt-map-filter-panel" class="hide">
-                    <g:set var="mapHeight" value="600px"/>
-                    <g:render template="/site/simpleSite" model="${pageScope.variables}"/>
+                    <m:map id="mapFilter" width="100%"/>
                 </div>
             </div>
 
 
             <div class="row-fluid">
-                <button class="btn btn-primary pull-right" id="pt-reset"><i class="icon-white icon-remove"></i> <g:message code="g.resetSearch" /></button>
+                <div class="pull-right" id="pt-control-buttons">
+                    <button class="btn btn-primary" id="pt-reset"><i class="icon-white icon-remove"></i> <g:message code="g.resetSearch" /></button>
+                    <button class="btn btn-default" id="pt-collapse"><i class="icon-arrow-up"></i> <g:message code="g.collapseFilter" /></button>
+                </div>
             </div>
         </div>
     </div>

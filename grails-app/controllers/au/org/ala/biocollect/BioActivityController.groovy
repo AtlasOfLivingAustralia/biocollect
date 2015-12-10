@@ -387,7 +387,8 @@ class BioActivityController {
                     records          : doc.projectActivity?.records,
                     projectName      : doc.projectActivity?.projectName,
                     projectId        : doc.projectActivity?.projectId,
-                    sites            : doc.sites
+                    sites            : doc.sites,
+                    coordinates      : doc.coordinates
             ]
 
             if(doc.sites && doc.sites.size() > 0){

@@ -1,5 +1,5 @@
 <div class="span6">
-    <div id="${source}Map" class="data-entry-map-container"></div>
+    <m:map id="${source}Map" />
 </div>
 
 <div class="span6">
@@ -32,7 +32,7 @@
                     <span data-bind="text: data.${source}Latitude"></span>
                 </g:if>
                 <g:else>
-                    <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude">
+                    <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude" data-validation-engine="validate[required]">
                 </g:else>
             </div>
         </div>
@@ -47,7 +47,7 @@
                     <span data-bind="text: data.${source}Longitude"></span>
                 </g:if>
                 <g:else>
-                    <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude">
+                    <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude" data-validation-engine="validate[required]">
                 </g:else>
             </div>
         </div>

@@ -10,7 +10,6 @@
                 <g:render template="../bioActivity/facets"/>
                 <!-- /ko -->
             </div>
-
             <div class="span9 text-left">
                 <ul class="nav nav-tabs" id="tabDifferentViews">
                     <li class="active"><a href="#recordVis" data-toggle="tab">List</a></li>

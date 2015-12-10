@@ -35,7 +35,7 @@
     </g:if>
     </r:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <r:require modules="js_iso8601,knockout,jqueryValidationEngine,projects,projectFinder"/>
+    <r:require modules="js_iso8601,knockout,jqueryValidationEngine,projects,projectFinder,map"/>
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">
@@ -45,6 +45,7 @@
             <h1 class="pull-left"><g:message code="project.citizenScience.heading"/></h1>
         </div>
     </div>
+
     <g:render template="/shared/projectFinderResultPanel"></g:render>
 </div>
 <r:script>
