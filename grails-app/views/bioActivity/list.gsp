@@ -24,7 +24,8 @@
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
             view: "${view}",
-            returnTo: "${view == 'allrecords' ? createLink(controller: 'bioActivity', action:'allRecords') : createLink(controller: 'bioActivity', action:'list') }"
+            returnTo: "${view == 'allrecords' ? createLink(controller: 'bioActivity', action:'allRecords') : createLink(controller: 'bioActivity', action:'list') }",
+            projectLinkPrefix: "${createLink(controller: 'project')}/"
         },
         here = document.location.href;
     </r:script>

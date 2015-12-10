@@ -13,7 +13,7 @@
 
             <div class="span9 text-left">
                 <ul class="nav nav-tabs" id="tabDifferentViews">
-                    <li class="active"><a href="#recordVis" data-toggle="tab">Records</a></li>
+                    <li class="active"><a href="#recordVis" data-toggle="tab">List</a></li>
                     <li class=""><a href="#mapVis" id="dataMapTab" data-toggle="tab">Map</a></li>
                 </ul>
                 <div class="tab-content">
@@ -145,7 +145,7 @@
         activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view)
         ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('survey-all-activities-and-records-content'));
         $('#dataMapTab').on('shown',function(){
-            activitiesAndRecordsViewModel.invalidateSize();
+            activitiesAndRecordsViewModel.transients.alaMap.redraw();
         })
         activitiesAndRecordsViewModel.getDataAndShowOnMap();
     }
