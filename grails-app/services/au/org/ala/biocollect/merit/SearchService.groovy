@@ -28,8 +28,10 @@ class SearchService {
         }
     }
 
-    def fulltextSearch(params) {
-        addDefaultFacetQuery(params)
+    def fulltextSearch(params, skipDefaultFacetQuery = false) {
+        if(!skipDefaultFacetQuery){
+            addDefaultFacetQuery(params)
+        }
         params.offset = params.offset?:0
         params.max = params.max?:10
         params.query = params.query?:"*:*"
