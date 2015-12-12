@@ -20,25 +20,10 @@
             <p>You can constrain the survey to a particular geographic area and/or to particular pre-determined sites.</p>
         </div>
     </div>
-
+    <h3>Add sites to this survey from list on right column</h3>
     <div class="row-fluid">
-
-        <div class="span12 text-left">
-            <div class="btn-group btn-group-justified">
-                <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteCreateUrl}">Add new site</a>
-                <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteSelectUrl}">Choose existing sites</a>
-                <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteUploadUrl}">Upload locations from shapefile</a>
-            </div>
-        </div>
-
-    </div>
-
-    </br>
-
-    <div class="row-fluid">
-
         <div class="span6">
-            <table class="table table-bordered" style="background-color: white">
+            <table class="table table-bordered white-background">
                 <thead>
                 <tr>
                     <th class="text-left">Sites associated with this survey: <span class="req-field"></span></th>
@@ -57,13 +42,20 @@
                     </td>
                 </tr>
                 <!-- /ko -->
+                <!-- ko if: getNumberOfSitesForSurvey() == 0 -->
+                <tr>
+                    <td>
+                        <i>Add sites to survey from the column on right using the <span class="icon-plus"></span> button.</i>
+                    </td>
+                </tr>
+                <!-- /ko -->
                 </tbody>
 
             </table>
         </div>
 
         <div class="span6">
-            <table class="table table-bordered" style="background-color: white">
+            <table class="table table-bordered white-background">
                 <thead>
                 <tr>
                     <th>Sites associated with this project:</th>
@@ -81,14 +73,29 @@
                     </td>
                 </tr>
                 <!-- /ko -->
+                <!-- ko if:sites().length == 0 -->
+                <tr>
+                    <td>
+                        No sites found in this project. Please use the above actions to add sites to this project.
+                    </td>
+                </tr>
+                <!-- /ko -->
                 </tbody>
 
             </table>
         </div>
 
     </div>
-
-    </br>
+<div class="row-fluid">
+    <h3>Or, add custom site using the below options</h3>
+    <div class="span12 text-left">
+        <div class="btn-group btn-group-justified">
+            <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteCreateUrl}"><i class="icon-plus"></i> Add new site</a>
+            <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteSelectUrl}"><i class="icon-folder-open"></i> Choose existing sites</a>
+            <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteUploadUrl}"><i class="icon-arrow-up"></i> Upload locations from shapefile</a>
+        </div>
+    </div>
+</div>
     <!--
     Not supported.
     <div class="row-fluid">

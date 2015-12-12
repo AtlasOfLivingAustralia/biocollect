@@ -469,6 +469,21 @@ var ProjectActivity = function (o, pActivityForms, projectId, selected, sites, s
         });
     });
 
+    /**
+     * get number of sites selected for a survey
+     * @returns {number}
+     */
+    self.getNumberOfSitesForSurvey = function () {
+        var count = 0;
+        var sites = self.sites();
+        sites.forEach(function(site){
+            if(site.added()){
+                count ++;
+            }
+        });
+        return count;
+    }
+
     self.asJSAll = function () {
         var jsData = $.extend({},
             self.asJS("info"),
