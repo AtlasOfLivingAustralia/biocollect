@@ -1,10 +1,14 @@
-<div class="span6">
-    <m:map id="${source}Map" />
-</div>
+<g:set var="orientation" value="${orientation ?: 'horizontal'}"/>
 
-<div class="span6">
+<g:if test="${orientation == 'horizontal'}">
+    <div class="span6">
+        <m:map id="${source}Map" width="100%"/>
+    </div>
+</g:if>
+
+<div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}">
     <div class="well">
-        <div class="row-fluid">
+        <div class="span12">
             <div class="span3">
                 <label for="siteLocation">${readonly ? 'Location:' : 'Select a location'}</label>
             </div>
@@ -20,7 +24,15 @@
             </div>
         </div>
     </div>
+</div>
 
+<g:if test="${orientation == 'vertical'}">
+    <div class="row-fluid margin-bottom-1">
+        <m:map id="${source}Map" width="100%"/>
+    </div>
+</g:if>
+
+<div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}">
     <div class="well">
         <div class="row-fluid">
             <div class="span3">
@@ -32,7 +44,8 @@
                     <span data-bind="text: data.${source}Latitude"></span>
                 </g:if>
                 <g:else>
-                    <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude" data-validation-engine="validate[required]">
+                    <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude"
+                           data-validation-engine="validate[required]">
                 </g:else>
             </div>
         </div>
@@ -47,7 +60,8 @@
                     <span data-bind="text: data.${source}Longitude"></span>
                 </g:if>
                 <g:else>
-                    <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude" data-validation-engine="validate[required]">
+                    <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude"
+                           data-validation-engine="validate[required]">
                 </g:else>
             </div>
         </div>
