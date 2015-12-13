@@ -1,6 +1,5 @@
 package au.org.ala.biocollect.merit
 import grails.converters.JSON
-import org.codehaus.groovy.grails.web.json.JSONArray
 
 class SiteController {
 
@@ -12,7 +11,7 @@ class SiteController {
 
     def search = {
         params.fq = "docType:site"
-        def results = searchService.fulltextSearch(params)
+        def results = searchService.fulltextSearch(params, true)
         render results as JSON
     }
 

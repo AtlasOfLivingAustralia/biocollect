@@ -21,15 +21,15 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
         allowSearchByAddress: false,
         draggableMarkers: false,
         showReset: false,
-        maxZoom: 10,
-        wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
-        wmsFeatureUrl: fcConfig.featureService + "?featureId="
+        maxZoom: 100,
+        wmsLayerUrl: config.spatialWms + "/wms/reflect?",
+        wmsFeatureUrl: config.featureService + "?featureId="
     };
 
     self.map = new ALA.Map("siteMap", mapOptions);
 
     self.cancelUpdate = function () {
-        document.location.href = "${params.returnTo}";
+        document.location.href = config.returnTo;
     };
 
     self.sitesToAdd = ko.observableArray([]);
@@ -141,7 +141,7 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
         //debug
         $('#offset').html(newOffset);
 
-        queryForSites(config, query, max, newOffset, function (data) {
+        queryForSites(query, max, newOffset, function (data) {
             if (newOffset > 0) {
                 $('#paginateTable .prev').removeClass("disabled");
             }

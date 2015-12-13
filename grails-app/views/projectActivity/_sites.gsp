@@ -20,73 +20,82 @@
             <p>You can constrain the survey to a particular geographic area and/or to particular pre-determined sites.</p>
         </div>
     </div>
-    </br>
-
+    <h3>Add sites to this survey from list on right column</h3>
     <div class="row-fluid">
+        <div class="span6">
+            <table class="table table-bordered white-background">
+                <thead>
+                <tr>
+                    <th class="text-left">Sites associated with this survey: <span class="req-field"></span></th>
+                </tr>
+                </thead>
 
-        <div class="span12 text-left">
-            <div class="btn-group btn-group-justified">
-                <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteCreateUrl}">Add new site</a>
-                <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteSelectUrl}">Choose existing sites</a>
-                <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteUploadUrl}">Upload locations from shapefile</a>
-            </div>
+                <tbody>
+                <!-- ko foreach: sites -->
+                <tr data-bind="visible: added()">
+                    <td>
+                        <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
+                        <button class="btn-link pull-right" data-bind="click: removeSite"  title="Remove this site from survey">
+                            <span class="icon-remove"></span>
+                        </button>
+
+                    </td>
+                </tr>
+                <!-- /ko -->
+                <!-- ko if: getNumberOfSitesForSurvey() == 0 -->
+                <tr>
+                    <td>
+                        <i>Add sites to survey from the column on right using the <span class="icon-plus"></span> button.</i>
+                    </td>
+                </tr>
+                <!-- /ko -->
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="span6">
+            <table class="table table-bordered white-background">
+                <thead>
+                <tr>
+                    <th>Sites associated with this project:</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <!-- ko foreach: sites -->
+                <tr data-bind="visible: !added()">
+                    <td>
+                        <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
+                        <button class="btn-link pull-right" data-bind="click: addSite" title="Add this site to survey">
+                            <span class="icon-plus"></span>
+                        </button>
+                    </td>
+                </tr>
+                <!-- /ko -->
+                <!-- ko if:sites().length == 0 -->
+                <tr>
+                    <td>
+                        No sites found in this project. Please use the above actions to add sites to this project.
+                    </td>
+                </tr>
+                <!-- /ko -->
+                </tbody>
+
+            </table>
         </div>
 
     </div>
-
-    </br>
-
-    <div class="row-fluid">
-
-        <div class="span6 text-left">
-
-            <span data-bind="if: sites().length == 0">
-                <h4> No sites associated with this project.</h4>
-            </span>
-            <span data-bind="if: sites().length > 0">
-                <h4> Sites associated with this project:</h4>
-            </span>
-            <!-- ko foreach: sites -->
-                <div class="row-fluid">
-                    <div class="span10 text-left">
-                        <a target="_blank" data-bind="attr:{href: siteUrl}"><span data-bind="text: name"> </span></a>
-                    </div>
-
-                    <div class="span2 text-right">
-                        <span data-bind="if: added()">
-                            <small>
-                                <a href="#" data-bind="click: removeSite" class="btn btn-small btn-danger" title="Remove">&lt;&lt;</a>
-                            </small>
-                        </span>
-                        <span data-bind="if: !added()">
-                            <small>
-                                <a href="#" data-bind="click: addSite" class="btn btn-small btn-success" title="Add">&gt;&gt;</a>
-                            </small>
-                        </span>
-                    </div>
-
-                </div>
-            <!-- /ko -->
+<div class="row-fluid">
+    <h3>Or, add custom site using the below options</h3>
+    <div class="span12 text-left">
+        <div class="btn-group btn-group-justified">
+            <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteCreateUrl}"><i class="icon-plus"></i> Add new site</a>
+            <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteSelectUrl}"><i class="icon-folder-open"></i> Choose existing sites</a>
+            <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteUploadUrl}"><i class="icon-arrow-up"></i> Upload locations from shapefile</a>
         </div>
-
-        <div class="span6 text-left">
-            <h4 class="text-right"> Sites associated with this survey: <span class="req-field"></span></h4>
-            <!-- ko foreach: sites -->
-            <span data-bind="if: added()">
-                <div class="row-fluid">
-                    <div class="span12 text-right">
-                        <i class="icon-check"> </i>
-                        <a target="_blank" data-bind="attr:{href: siteUrl}"><span data-bind="text: name"> </span></a>
-                    </div>
-                </div>
-            </span>
-            <!-- /ko -->
-
-        </div>
-
     </div>
-
-    </br>
+</div>
     <!--
     Not supported.
     <div class="row-fluid">

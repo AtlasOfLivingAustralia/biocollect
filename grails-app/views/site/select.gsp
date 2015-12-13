@@ -132,6 +132,8 @@
         var config = {
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+            wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}",
+            wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}",
             spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
             updateSitesUrl: "${createLink(controller: 'site', action: 'ajaxUpdateProjects')}",
             returnTo: "${params.returnTo}",

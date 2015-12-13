@@ -49,4 +49,8 @@ table.table-list.survey-finder-table tr{
     max-width: 100%;
     width: auto;
     height: 100%;
-}​
+}
+
+.white-background{
+     background-color: white
+}
