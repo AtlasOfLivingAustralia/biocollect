@@ -54,3 +54,15 @@ table.table-list.survey-finder-table tr{
 .white-background{
      background-color: white
 }
+
+.table-custom-border{
+    border: 1px solid #ddd;
+}
+
+.table-custom-border.borderless td{
+    border: none;
+}
+
+.table-custom-border.borderless th{
+    border-bottom: 1px solid #ddd;
+}

@@ -20,10 +20,10 @@
             <p>You can constrain the survey to a particular geographic area and/or to particular pre-determined sites.</p>
         </div>
     </div>
-    <h3>Add sites to this survey from list on right column</h3>
+    <h3>Add or remove sites to the survey</h3>
     <div class="row-fluid">
-        <div class="span6">
-            <table class="table table-bordered white-background">
+        <div class="span6 ">
+            <table class="table white-background table-custom-border borderless">
                 <thead>
                 <tr>
                     <th class="text-left">Sites associated with this survey: <span class="req-field"></span></th>
@@ -35,8 +35,8 @@
                 <tr data-bind="visible: added()">
                     <td>
                         <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
-                        <button class="btn-link pull-right" data-bind="click: removeSite"  title="Remove this site from survey">
-                            <span class="icon-remove"></span>
+                        <button class="btn btn-mini pull-right btn-default" data-bind="click: removeSite"  title="Remove this site from survey">
+                            <span class="icon-arrow-right"></span>
                         </button>
 
                     </td>
@@ -45,7 +45,7 @@
                 <!-- ko if: getNumberOfSitesForSurvey() == 0 -->
                 <tr>
                     <td>
-                        <i>Add sites to survey from the column on right using the <span class="icon-plus"></span> button.</i>
+                        <i>Add sites to survey from the column on right using the <span class="icon-arrow-left"></span> button.</i>
                     </td>
                 </tr>
                 <!-- /ko -->
@@ -55,7 +55,7 @@
         </div>
 
         <div class="span6">
-            <table class="table table-bordered white-background">
+            <table class="table table-custom-border borderless white-background">
                 <thead>
                 <tr>
                     <th>Sites associated with this project:</th>
@@ -66,10 +66,10 @@
                 <!-- ko foreach: sites -->
                 <tr data-bind="visible: !added()">
                     <td>
-                        <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
-                        <button class="btn-link pull-right" data-bind="click: addSite" title="Add this site to survey">
-                            <span class="icon-plus"></span>
+                        <button class="btn btn-mini btn-primary" data-bind="click: addSite" title="Add this site to survey">
+                            <span class="icon-arrow-left icon-white"></span>
                         </button>
+                        <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
                     </td>
                 </tr>
                 <!-- /ko -->
@@ -88,7 +88,7 @@
     </div>
 <div class="row-fluid">
     <h3>Or, add custom site using the below options</h3>
-    <div class="span12 text-left">
+    <div class="">
         <div class="btn-group btn-group-justified">
             <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteCreateUrl}"><i class="icon-plus"></i> Add new site</a>
             <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteSelectUrl}"><i class="icon-folder-open"></i> Choose existing sites</a>
