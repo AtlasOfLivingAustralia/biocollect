@@ -55,7 +55,7 @@
             margin: 5px 0;
         }
     </style>
-    <r:require modules="wmd,knockout,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder,map"/>
+    <r:require modules="wmd,knockout,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder,map,siteDisplay"/>
 </head>
 <body>
 

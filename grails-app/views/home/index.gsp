@@ -16,7 +16,7 @@
     }
     </r:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <r:require modules="knockout,jquery_bootstrap_datatable,js_iso8601,amplify"/>
+    <r:require modules="knockout,jquery_bootstrap_datatable,js_iso8601,amplify,siteDisplay"/>
 </head>
 <body>
 <div id="wrapper" class="container-fluid">
@@ -146,10 +146,7 @@
             </div>
         </div>
         <div class="span8">
-			%{--<g:if test="${promotionalProjects?.size() > 1 }">--}%
-				%{--<g:render template="carousel" model="[promotionalProjects:promotionalProjects]"/>--}%
-			%{--</g:if>--}%
-			
+
             <div class="tabbable">
                 <ul class="nav nav-tabs" data-tabs="tabs">
                     <li class=""><a id="mapView-tab" href="#mapView" data-toggle="tab">Map</a></li>
