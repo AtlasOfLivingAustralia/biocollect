@@ -103,7 +103,7 @@ Biocollect.MapUtilities = {
             } else if (geometry.type == "pid" || geometry.type == "Polygon") {
                 geoIndex = {
                     type: "Polygon",
-                    coordinates: geometry.type == "pid" ? ALA.MapUtils.bboxToPointArray(geometry.bbox, true) : geometry.coordinates
+                    coordinates: geometry.type == "pid" ? [ALA.MapUtils.bboxToPointArray(geometry.bbox, true)] : geometry.coordinates
                 };
             }
         }
