@@ -17,10 +17,17 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
+
                         <!-- ko if: activities().length > 0 -->
                         <div class="well">
-                            <h3 class="text-left">Found <span data-bind="text: total()"></span> record<span
-                                    data-bind="if: total() >= 2">s</span></h3>
+                            <div class="span9">
+                                <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record<span
+                                        data-bind="if: total() >= 2">s</span></h3>
+                            </div>
+                            <div class="span3 padding-top-0 margin-bottom-2">
+                                <button data-bind="click: download" class="btn btn-primary pull-right padding-top-1"><span class="fa fa-download">&nbsp;</span>Download</button>
+                            </div>
+
                             <g:render template="../shared/pagination"/>
                             <!-- ko foreach : activities -->
                             <div class="row-fluid">

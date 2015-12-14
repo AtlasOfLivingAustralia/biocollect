@@ -3,6 +3,8 @@ import groovy.json.JsonSlurper
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 import javax.annotation.PostConstruct
+import javax.servlet.http.HttpServletResponse
+
 /**
  * Service for ElasticSearch running on ecodata
  */
@@ -78,6 +80,10 @@ class SearchService {
         String url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url)
+    }
+
+    def downloadProjectData(HttpServletResponse response, Map params) {
+        webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/search/downloadAllData${commonService.buildUrlParamsFromMap(params)}", true, true)
     }
 
     Map searchProjectActivity(GrailsParameterMap params, String q = null){
