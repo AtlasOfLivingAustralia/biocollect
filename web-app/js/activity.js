@@ -105,7 +105,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
             sort: self.sort(),
             order: self.order(),
             searchTerm: self.searchTerm(),
-            flimit: 20,
+            flimit: 1000,
             view: self.view
         };
         var url = fcConfig.searchProjectActivitiesUrl;
@@ -392,6 +392,7 @@ var RecordVM = function (record) {
 
 var DataFacetsVM = function (facet, availableFacets) {
     var self = this;
+    var LIMIT = 15;
     if (!facet) facet = {};
 
     self.name = ko.observable(facet.name);
@@ -407,6 +408,36 @@ var DataFacetsVM = function (facet, availableFacets) {
     self.order = ko.pureComputed(function () {
         return getFacetOrder(self.name());
     });
+    self.searchTerm = ko.observable('');
+    /**
+     * search for a token and show terms matching the token.
+     */
+    self.search = function(){
+        var terms = self.terms(), text, regex;
+        regex = new RegExp(self.searchTerm(), 'i');
+        terms.forEach(function(term){
+            text = term.displayText();
+            if(text && text.match(regex, 'i')){
+                term.showTerm() || term.showTerm(true);
+            } else {
+                term.showTerm(false);
+            }
+        });
+    }
+
+    self.searchTerm.subscribe(self.search);
+
+    /**
+     * show filter input box only when facet terms are more than the specified limit.
+     * @returns {boolean}
+     */
+    self.showFilter = function(){
+        if(self.terms().length > LIMIT){
+            return true;
+        }
+
+        return false;
+    }
 
     var getFacetName = function (name) {
         var found = $.grep(availableFacets, function (obj, i) {
@@ -440,6 +471,7 @@ var TermFacetVM = function (term) {
     self.facetDisplayName = ko.observable(term.facetDisplayName);
     self.count = ko.observable(term.count);
     self.term = ko.observable(term.term);
+    self.showTerm = ko.observable(term.showTerm || true);
     self.displayText = ko.pureComputed(function () {
         return self.term() + " (" + self.count() + ")";
     });

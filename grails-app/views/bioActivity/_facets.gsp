@@ -33,9 +33,12 @@
         </div>
 
         <div data-bind="attr:{id: 'facets_accordion_' + $index()+1}" class="panel-collapse collapse">
-            <div class="panel-body">
+            <div class="margin-left-1 input-append" data-bind="visible: showFilter()">
+                <input type="text" placeholder="Filter facets" data-bind="value: searchTerm"/><button class="btn"><i class="icon-filter"></i></button>
+            </div>
+            <div class="panel-body facet-block">
                 <!-- ko foreach : terms -->
-                <div class="margin-left-1">
+                <div class="margin-left-1" data-bind="visible: showTerm">
                     <span>
                         <a href="#" data-bind="click: $root.addUserSelectedFacet,text: displayText"></a>
                     </span> </br>
