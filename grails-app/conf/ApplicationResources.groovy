@@ -371,4 +371,8 @@ modules = {
     activities{
         resource url: 'css/activities.css'
     }
+
+    largeCheckbox{
+        resource url: 'vendor/large-checkbox/large-checkbox.css'
+    }
 }
