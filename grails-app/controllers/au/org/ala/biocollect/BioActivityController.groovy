@@ -10,6 +10,7 @@ import au.org.ala.biocollect.merit.SiteService
 import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.sightings.BieService
 import grails.converters.JSON
+import groovyx.net.http.ContentType
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 import static org.apache.http.HttpStatus.*
@@ -293,10 +294,15 @@ class BioActivityController {
         render listUserActivities(params) as JSON
     }
 
-   /*
-    * Search project activities and records
-    */
-    def searchProjectActivities() {
+    def downloadProjectData() {
+        response.setContentType(ContentType.BINARY.toString())
+        response.setHeader('Content-Disposition', 'Attachment;Filename="data.zip"')
+        Map queryParams = constructDefaultSearchParams(params)
+        queryParams.isMerit = false
+        searchService.downloadProjectData(response, queryParams)
+    }
+
+    private GrailsParameterMap constructDefaultSearchParams(Map params) {
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
         Map parsed = commonService.parseParams(params)
         parsed.userId = userService.getCurrentUserId()
@@ -313,6 +319,15 @@ class BioActivityController {
         queryParams.order = queryParams.order ?: 'DESC'
         queryParams.fq = queryParams.fq ?: ''
         queryParams.searchTerm = queryParams.searchTerm ?: ''
+
+        queryParams
+    }
+
+   /*
+    * Search project activities and records
+    */
+    def searchProjectActivities() {
+        GrailsParameterMap queryParams = constructDefaultSearchParams(params)
 
         Map searchResult = searchService.searchProjectActivity(queryParams)
         List activities = searchResult?.hits?.hits
@@ -336,7 +351,7 @@ class BioActivityController {
                     endDate          : doc.projectActivity?.endDate,
                     projectName      : doc.projectActivity?.projectName,
                     projectId        : doc.projectActivity?.projectId,
-                    showCrud         : ((parsed.userId && doc.projectId && projectService.canUserEditProject(parsed.userId, doc.projectId, false) || (doc.userId == parsed.userId)))
+                    showCrud         : ((queryParams.userId && doc.projectId && projectService.canUserEditProject(queryParams.userId, doc.projectId, false) || (doc.userId == queryParams.userId)))
             ]
         }
 

@@ -29,7 +29,7 @@
                             <button data-bind="click: reset" id="pt-search-reset" class="btn btn-default"><i
                                     class="icon-remove-circle"></i> Reset</button>
                                 <div class="pull-right">
-                                    <label>Sort by -
+                                    <label>Sort by:
                                         <div class="btn-group" data-toggle="buttons-radio">
                                             <!-- ko foreach:sortOptions -->
                                             <button class="btn btn-info " data-bind="html:name, click: $root.sortButtonClick, css:{active:$root.sort()==id}"></button>
@@ -38,7 +38,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <span id="search-spinner" class="spinner margin-left-1"> <i class='fa fa-spin fa-spinner'></i> Searching..</span>
+                            <span id="search-spinner" class="spinner margin-left-1"> <i class='fa fa-spin fa-spinner'></i> Searching...</span>
                         </div>
                     </div>
 

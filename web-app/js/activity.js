@@ -23,14 +23,18 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
     self.facets = ko.observableArray();
     self.total = ko.observable(0);
     self.filter = ko.observable(false);
+
     self.toggleFilter = function () {
         self.filter(!self.filter())
     };
+
     self.searchView = ko.observable(true);
+
     self.toggleSearchView = function () {
-        self.searchView(!self.searchView())
+        self.searchView(!self.searchView());
         $('#search-spinner').hide();
     };
+
     self.searchTerm = ko.observable();
     self.order = ko.observable('DESC');
     self.sort = ko.observable('lastUpdated');
@@ -46,9 +50,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
     self.searchTerm.subscribe(function (newValue) {
         self.refreshPage();
     });
+
     self.search = function () {
         self.refreshPage();
     };
+
     self.reset = function () {
         self.searchTerm('');
         self.order('DESC');
@@ -56,18 +62,22 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
         self.refreshPage();
         alaMap.fitBounds()
     };
+
     self.addUserSelectedFacet = function (facet) {
         self.selectedFilters.push(facet);
         self.refreshPage();
     };
+
     self.removeUserSelectedFacet = function () {
         self.selectedFilters.removeAll();
         self.refreshPage();
     };
+
     self.removeFilter = function (filter) {
         self.selectedFilters.remove(filter);
         self.refreshPage();
     };
+
     self.load = function (data, page) {
         var activities = data.activities;
         var facets = data.facets;
@@ -75,12 +85,12 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
 
         self.activities([]);
 
-        var activities = $.map(activities ? activities : [], function (activity, index) {
+        activities = $.map(activities ? activities : [], function (activity, index) {
             return new ActivityRecordViewModel(activity);
         });
         self.activities(activities);
 
-        var facets = $.map(facets ? facets : [], function (facet, index) {
+        facets = $.map(facets ? facets : [], function (facet, index) {
             return new DataFacetsVM(facet, self.availableFacets);
         });
         self.facets(facets);
@@ -96,25 +106,17 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
 
         self.total(total);
     };
-    self.refreshPage = function (offset) {
-        if (!offset) offset = 0;
 
-        var params = {
-            max: self.pagination.resultsPerPage(),
-            offset: offset,
-            sort: self.sort(),
-            order: self.order(),
-            searchTerm: self.searchTerm(),
-            flimit: 20,
-            view: self.view
-        };
-        var url = fcConfig.searchProjectActivitiesUrl;
-        url = url + ((fcConfig.searchProjectActivitiesUrl.indexOf('?') > -1) ? '&' : '?') + $.param(params);
-        var filters = '';
-        ko.utils.arrayForEach(self.selectedFilters(), function (term) {
-            filters = filters + '&fq=' + term.facetName() + ':' + term.term();
-        });
-        url = url + filters;
+    self.download = function() {
+        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0);
+
+
+        // TODO implement a better way to do this: this is just to test
+        window.location.href = url;
+    };
+
+    self.refreshPage = function (offset) {
+        var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, offset);
 
         $.ajax({
             url: url,
@@ -135,6 +137,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
             }
         });
     };
+
     self.delete = function (activity) {
         bootbox.confirm("Are you sure you want to delete the survey and records?", function (result) {
             if (result) {
@@ -170,6 +173,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
             }
         });
     };
+
     /**
      * creates popup on the map
      * @param projectLinkPrefix
@@ -197,7 +201,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
         }
 
         return html;
-    }
+    };
+
     /**
      * function used to create map and plot the fetched points
      */
@@ -205,7 +210,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
         var searchTerm = activitiesAndRecordsViewModel.searchTerm() || '';
         var view = activitiesAndRecordsViewModel.view;
         var url =fcConfig.getRecordsForMapping + '?max=10000&searchTerm='+ searchTerm+'&view=' + view;
-        var facetFilters = []
+        var facetFilters = [];
         self.plotOnMap(null);
 
         if(fcConfig.projectId){
@@ -222,13 +227,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
         alaMap.startLoading();
         $.getJSON(url, function(data) {
             results = data;
-            self.generateDotsFromResult(data)
+            self.generateDotsFromResult(data);
             alaMap.finishLoading();
         }).error(function (request, status, error) {
             console.error("AJAX error", status, error);
             alaMap.finishLoading();
         });
-    }
+    };
 
     /**
      * converts ajax data to activities or records according to selection.
@@ -240,8 +245,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
 
         if (geoPoints.activities) {
             $.each(geoPoints.activities, function(index, activity) {
-                var projectId = activity.projectId
-                var projectName = activity.name
+                var projectId = activity.projectId;
+                var projectName = activity.name;
                 var activityUrl = fcConfig.activityViewUrl+'/'+activity.activityId;
 
                 switch (featureType){
@@ -271,7 +276,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
             });
             self.plotOnMap(features);
         }
-    }
+    };
 
     /**
      * creates the map and plots the points on map
@@ -286,8 +291,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
             draggableMarkers: false,
             useMyLocation: false,
             allowSearchByAddress: false
-        }
-
+        };
 
         if(!alaMap){
             self.transients.alaMap = alaMap = new ALA.Map("recordOrActivityMap", mapOptions);
@@ -303,13 +307,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
                     value: 'activity'
                 }],
                 onClick: self.getActivityOrRecords
-            })
+            });
             alaMap.addControl(radio);
             alaMap.addButton("<span class='fa fa-refresh' title='Reset zoom'></span>", alaMap.fitBounds, "bottomleft");
         }
 
         features && features.length && alaMap.addClusteredPoints(features);
-    }
+    };
 
     /**
      * function called when  radio button selection changes.
@@ -318,26 +322,47 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
     self.getActivityOrRecords = function(value){
         featureType = value;
         self.generateDotsFromResult(results);
-    }
+    };
 
     /**
      * when map is updated on invisible, this function is used to redraw the map.
      */
     self.invalidateSize = function(){
         alaMap.getMapImpl().invalidateSize();
+    };
+
+    function constructQueryUrl(prefix, offset) {
+        if (!offset) offset = 0;
+
+        var params = {
+            max: self.pagination.resultsPerPage(),
+            offset: offset,
+            sort: self.sort(),
+            order: self.order(),
+            searchTerm: self.searchTerm(),
+            flimit: 20,
+            view: self.view
+        };
+
+        url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
+        var filters = '';
+        ko.utils.arrayForEach(self.selectedFilters(), function (term) {
+            filters = filters + '&fq=' + term.facetName() + ':' + term.term();
+        });
+
+        return url + filters;
     }
 
-
     // listen to facet change event so that map can be updated.
-    self.selectedFilters.subscribe(self.getDataAndShowOnMap)
-    self.searchTerm.subscribe(self.getDataAndShowOnMap)
+    self.selectedFilters.subscribe(self.getDataAndShowOnMap);
+    self.searchTerm.subscribe(self.getDataAndShowOnMap);
 
     self.sortButtonClick = function(data){
         // remove subscribe event on order so that we can set it and page will not refresh. will only refresh when
         // sort is set.
         self.order(data.order);
         self.sort(data.id);
-    }
+    };
 
     self.refreshPage();
 };
