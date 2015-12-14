@@ -20,7 +20,7 @@
         here = window.location.href;
 
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,amplify,jQueryFileUpload,projects,organisation,fuseSearch,map"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,amplify,jQueryFileUpload,projects,organisation,fuseSearch,map,largeCheckbox"/>
 </head>
 
 <body>
@@ -45,9 +45,9 @@
 
                     <div class="clearfix">
                         <label class="control-label span3" for="termsOfUseAgreement"><g:message code="project.details.termsOfUseAgreement"/><fc:iconHelp><g:message code="project.details.termsOfUseAgreement.help"/></fc:iconHelp></label>
-                        <div class="controls span9">
+                        <div class="controls span9 large-checkbox">
                             <input data-bind="checked:termsOfUseAccepted, disable: !transients.termsOfUseClicked()" type="checkbox" id="termsOfUseAgreement" name="termsOfUseAgreement" data-validation-engine="validate[required]" title="<g:message code="project.details.termsOfUseAgreement.checkboxTip"/>"/>
-                            I confirm that have read and accept the <a href="${grailsApplication.config.termsOfUseUrl}" data-bind="click: clickTermsOfUse" target="_blank">Terms of Use</a>.
+                            <label for="termsOfUseAgreement"><span></span> I confirm that have read and accept the <a href="${grailsApplication.config.termsOfUseUrl}" data-bind="click: clickTermsOfUse" target="_blank">Terms of Use</a>.</label>
                         </div>
                     </div>
                 </div>

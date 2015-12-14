@@ -38,8 +38,8 @@
             <div class="row-fluid" data-bind="slideVisible:!selection()">
                 <div class="span3"></div>
                 <div class="span9">
-                    <div class="control-label span12" style="display:none;" data-bind="visible:!selection() && allViewed()">
-                        <label for="organisationNotPresent">My organisation is not on the list &nbsp;<input type="checkbox" id="organisationNotPresent" value="organisationNotOnList" data-bind="checked:organisationNotPresent"></label>
+                    <div class="control-label span12 large-checkbox" style="display:none;" data-bind="visible:!selection() && allViewed()">
+                        <input type="checkbox" id="organisationNotPresent" value="organisationNotOnList" data-bind="checked:organisationNotPresent"><label for="organisationNotPresent"><span></span> My organisation is not on the list &nbsp;</label>
                     </div>
                     <div style="display:none;" data-bind="visible:!selection() && allViewed() && organisationNotPresent()">
                         <button class="btn btn-success" id="registerOrganisation" style="float:right" data-bind="click:function() {createOrganisation();}">Register my organisation</button>
@@ -69,9 +69,9 @@
             <p/>
             <div class="control-group">
                 <label class="control-label span3" for="isMetadataSharing"><g:message code="project.details.isMetadataSharing"/><fc:iconHelp><g:message code="project.details.isMetadataSharing.help"/></fc:iconHelp></label>
-                <div class="controls span9">
+                <div class="controls span9 large-checkbox">
                     <input data-bind="checked:isMetadataSharing" type="checkbox" id="isMetadataSharing"/>
-                    <g:message code="project.details.isMetadataSharing.extra"/>
+                    <label for="isMetadataSharing"> <span></span> <g:message code="project.details.isMetadataSharing.extra"/> </label>
                 </div>
             </div>
         </div>
@@ -173,8 +173,8 @@
                             <div class="row-fluid">
                                 <div class="span3"></div>
                                 <div class="span8">
-                                    <div class="span12">
-                                        <label class="pull-right" for="associatedOrgNotPresent"><g:message code="project.details.associatedOrgs.notInList"/>&nbsp;<input type="checkbox" id="associatedOrgNotPresent" value="organisationNotOnList" data-bind="checked: $parent.transients.associatedOrgNotInList, disable: !term"></label>
+                                    <div class="span12 large-checkbox">
+                                        <input type="checkbox" id="associatedOrgNotPresent" value="organisationNotOnList" data-bind="checked: $parent.transients.associatedOrgNotInList, disable: !term"><label class="pull-right" for="associatedOrgNotPresent"><span></span> <g:message code="project.details.associatedOrgs.notInList"/>&nbsp;</label>
                                     </div>
                                     <div data-bind="visible: !$parent.transients.associatedOrgNotInList()">
                                         <div><b>Organisation Search Results</b> (Click an organisation to select it)</div>
