@@ -43,6 +43,10 @@
     <div class="row-fluid">
         <div class="span12" id="heading">
             <h1 class="pull-left"><g:message code="project.citizenScience.heading"/></h1>
+            <div class="pull-right">
+                <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</a>
+                <a class="btn btn-info" href="${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</a>
+            </div>
         </div>
     </div>
 

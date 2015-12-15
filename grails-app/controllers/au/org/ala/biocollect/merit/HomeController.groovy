@@ -126,6 +126,14 @@ class HomeController {
         renderStaticPage(SettingPageType.CONTACTS, false)
     }
 
+    def gettingStarted(){
+        renderStaticPage(SettingPageType.CITIZEN_SCIENCE_GETTING_STARTED, false)
+    }
+
+    def whatIsThis(){
+        renderStaticPage(SettingPageType.CITIZEN_SCIENCE_WHAT_IS_THIS, false)
+    }
+
     def close() {
         response.setContentType("text/html")
         render """<html><head><script type="text/javascript">window.close();</script></head><body/></html>"""
