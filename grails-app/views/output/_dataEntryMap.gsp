@@ -66,12 +66,4 @@
             </div>
         </div>
     </div>
-
-    <g:if test="${!readonly}">
-        <div class="row-fluid">
-            <div class="span12">
-                <button class="btn btn-primary" data-bind="click: data.reset${source}Map">Reset map</button>
-            </div>
-        </div>
-    </g:if>
 </div>
