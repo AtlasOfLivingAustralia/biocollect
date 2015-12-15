@@ -93,7 +93,6 @@ modules = {
 
     app_bootstrap {
         dependsOn 'application', 'font_awesome_44'
-        resource url: 'vendor/bootstrap/js/bootstrap.min.js'
         // The less css resources plugin (1.3.3, resources plugin 1.2.14) is unable to resolve less files in a plugin so apps that use this plugin must supply their own bootstrap styles.
         // However, commenting this section
         resource url: 'vendor/bootstrap/less/bootstrap.less', attrs: [rel: "stylesheet/less", type: 'css', media: 'screen,print'], bundle: 'bundle_app_bootstrap'
