@@ -1,3 +1,4 @@
+<%@ page import="grails.converters.JSON" %>
 <r:require modules="map"></r:require>
 <!-- ko stopBinding: true -->
 <div id="survey-all-activities-and-records-content">
@@ -20,12 +21,31 @@
 
                         <!-- ko if: activities().length > 0 -->
                         <div class="well">
-                            <div class="span9">
-                                <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record<span
-                                        data-bind="if: total() >= 2">s</span></h3>
+                            <div class="row-fluid">
+                                <div class="span9">
+                                    <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record<span
+                                            data-bind="if: total() >= 2">s</span></h3>
+                                </div>
+                                <div class="span3 padding-top-0 margin-bottom-2">
+                                    <button data-bind="click: download, disable: transients.loading" data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}" class="btn btn-primary pull-right padding-top-1"><span class="fa fa-download">&nbsp;</span>Download</button>
+                                </div>
                             </div>
-                            <div class="span3 padding-top-0 margin-bottom-2">
-                                <button data-bind="click: download" class="btn btn-primary pull-right padding-top-1"><span class="fa fa-download">&nbsp;</span>Download</button>
+                            <div class="row-fluid" data-bind="visible: transients.showEmailDownloadPrompt()">
+                                <div class="well info-panel">
+                                    <div class="margin-bottom-2">
+                                        <span class="fa fa-info-circle">&nbsp;&nbsp;</span>This download may take several minutes. Please provide your email address, and we will notify you by email when the download is ready.
+                                    </div>
+
+                                    <div class="clearfix control-group">
+                                        <label class="control-label span2" for="email">Email address</label>
+
+                                        <div class="controls span10">
+                                            <g:textField class="input-xxlarge" type="email" data-bind="value: transients.downloadEmail" name="email"/>
+                                        </div>
+                                    </div>
+
+                                    <button data-bind="click: asyncDownload" class="btn btn-primary padding-top-1"><span class="fa fa-download">&nbsp;</span>Download</button>
+                                </div>
                             </div>
 
                             <g:render template="../shared/pagination"/>
@@ -148,7 +168,13 @@
 <r:script>
     var activitiesAndRecordsViewModel, alaMap, results;
     function initialiseData(view) {
-        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view)
+        var user = '${user as grails.converters.JSON}'
+        if (user) {
+            user = JSON.parse(user);
+        } else {
+            user = null;
+        }
+        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user)
         ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('survey-all-activities-and-records-content'));
         $('#dataMapTab').on('shown',function(){
             activitiesAndRecordsViewModel.transients.alaMap.redraw();

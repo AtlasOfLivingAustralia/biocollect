@@ -245,3 +245,7 @@
 .searchResultSection.spinner{
     display: none;
 }
+
+.info-panel {
+    background-color: white
+}

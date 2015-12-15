@@ -1,7 +1,9 @@
-var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
+var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
     var self = this;
+
     var features, featureType = 'record', alaMap, results;
     self.view = view ? view : 'allrecords';
+    var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500;
 
     self.sortOptions = [
         {id: 'lastUpdated', name: 'Date', order: 'DESC'},
@@ -42,6 +44,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
     self.transients = {};
     self.transients.placeHolder = placeHolder;
     self.transients.bieUrl = fcConfig.bieUrl;
+    self.transients.showEmailDownloadPrompt = ko.observable(false);
+    self.transients.downloadEmail = ko.observable(user ? user.userName : null);
+    self.transients.loading = ko.observable(false);
 
     self.sort.subscribe(function (newValue) {
         self.refreshPage();
@@ -107,17 +112,42 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
         self.total(total);
     };
 
-    self.download = function() {
+    self.download = function(data, event) {
+        var elem = event.target ? event.target : event.srcElement;
+        var asyncDownloadThreshold = DEFAULT_EMAIL_DOWNLOAD_THRESHOLD;
+        if (elem) {
+            asyncDownloadThreshold = $(elem).attr("data-email-threshold");
+        }
+
         var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0);
 
+        if (self.total() > asyncDownloadThreshold) {
+            self.transients.showEmailDownloadPrompt(!self.transients.showEmailDownloadPrompt());
+        } else {
+            window.location.href = url;
+        }
+    };
 
-        // TODO implement a better way to do this: this is just to test
-        window.location.href = url;
+    self.asyncDownload = function() {
+        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0);
+
+        url += "&async=true&email=" + self.transients.downloadEmail();
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            complete: function() {
+                self.transients.showEmailDownloadPrompt(false);
+
+                bootbox.alert("Your download has been requested. You will receive an email when the download is ready.");
+            }
+        })
     };
 
     self.refreshPage = function (offset) {
         var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, offset);
 
+        self.transients.loading(true);
         $.ajax({
             url: url,
             type: 'GET',
@@ -134,6 +164,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view) {
             complete: function () {
                 $('#search-spinner').hide();
                 $('.main-content').show();
+                self.transients.loading(false);
             }
         });
     };

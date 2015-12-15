@@ -93,6 +93,7 @@ class UrlMappings {
                 "/admin/user/$id"(controller: "user", action: "show") {
 
                 }
+                "/download/$id"(controller: "download", action: [GET: "downloadProjectDataFile"])
                 "500"(controller:'error', action:'response500')
                 "404"(controller:'error', action:'response404')
                 "/$hub?/$controller/ws/$action/$id" {

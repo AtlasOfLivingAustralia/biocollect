@@ -287,7 +287,7 @@ class BioActivityController {
     }
 
     def allRecords (){
-        render(view: 'list', model: [view: 'allrecords'])
+        render(view: 'list', model: [view: 'allrecords', user: userService.user])
     }
 
     def ajaxList() {
@@ -297,6 +297,7 @@ class BioActivityController {
     def downloadProjectData() {
         response.setContentType(ContentType.BINARY.toString())
         response.setHeader('Content-Disposition', 'Attachment;Filename="data.zip"')
+
         Map queryParams = constructDefaultSearchParams(params)
         queryParams.isMerit = false
         searchService.downloadProjectData(response, queryParams)
