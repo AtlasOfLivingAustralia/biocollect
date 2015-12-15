@@ -27,79 +27,74 @@
     <h1>Add sites to <a href="${params.returnTo}">${project.name}</a></h1>
 
     <div class="row-fluid">
+        <bc:koLoading>
+            <div class="well span6">
 
-        <div class="well span6">
-
-            <div class="row-fluid margin-bottom-2">
-                <div class="span5">
-                    <form class="form-search" data-bind="submit: searchSites">
-                        <div class="input-append">
-                            <input type="text" class="search-query" data-bind="value: currentSearch"
-                                   placeholder="Filter..."/>
-                            <button type="submit" class="btn btn-primary">Search</button>
-                        </div>
-                        <div><span data-bind="text: matchingSiteCount()" class="margin-top-1"></span> matching sites.</div>
-                    </form>
-                </div>
-            </div>
-
-            <ul data-bind="foreach: sites" style="margin: 0px;">
-                <li style="list-style: none;">
-                    <div class="row-fluid margin-bottom-1">
-                        <span class="span8">
-                            <strong>
-                                <span data-bind="text:name"></span>
-                            </strong>
-                            <br/>
-                            <div data-bind="visible:$data.extent === undefined">No georeference information available</div>
-                            <div data-bind="visible:$data.extent !== undefined && extent.geometry != null && extent.geometry.state != null">
-                                State:&nbsp;<span data-bind="text:$data.extent !== undefined && extent.geometry != null ? extent.geometry.state : ''"></span>
+                <div class="row-fluid margin-bottom-2">
+                    <div class="span5">
+                        <form class="form-search" data-bind="submit: searchSites">
+                            <div class="input-append">
+                                <input type="text" class="search-query" data-bind="value: currentSearch"
+                                       placeholder="Filter..."/>
+                                <button type="submit" class="btn btn-primary">Search</button>
                             </div>
-                            <div data-bind="visible:$data.extent !== undefined && extent.geometry != null && extent.geometry.lga != null">
-                                LGA:&nbsp;<span data-bind="text:$data.extent !== undefined && extent.geometry != null ? extent.geometry.lga : ''"></span>
-                            </div>
-                        </span>
-                        <span class="span2">
-                            <button class="viewOnMap btn btn-small"
-                                    data-bind="click: $parent.mapSite, disable:$data.extent === undefined">
-                                <i class="icon-eye-open"></i>
-                                Preview
-                            </button>
-                        </span>
-                        <span class="span2 ">
-                            <button class="addSite btn btn-success btn-small pull-right"
-                                    data-bind="click: $parent.addSite, visible: !isProjectSite()">
-                                <i class="icon-plus icon-white"></i>
-                                Add
-                            </button>
-                            <button class="removeSite btn btn-danger btn-small pull-right"
-                                    data-bind="click: $parent.removeSite, visible: isProjectSite() ">
-                                <i class="icon-minus  icon-white"></i>
-                                Remove
-                            </button>
-                        </span>
+
+                            <div><span data-bind="text: matchingSiteCount()"
+                                       class="margin-top-1"></span> matching sites.</div>
+                        </form>
                     </div>
-                </li>
-            </ul>
-
-            <div id="paginateTable" class="hide" style="text-align:center;">
-                <span id="paginationInfo" style="display:inline-block;float:left;margin-top:4px;"></span>
-
-                <div class="btn-group">
-                    <button class="btn btn-small prev"><i class="icon-chevron-left"></i>&nbsp;previous</button>
-                    <button class="btn btn-small next">next&nbsp;<i class="icon-chevron-right"></i></button>
                 </div>
-                <g:if env="development">
-                    total: <span id="total"></span>
-                    offset: <span id="offset"></span>
-                </g:if>
-            </div>
 
-            <div class="row-fluid margin-top-2">
-                <button class="btn btn-primary" data-bind="click: useSelectedSites">Update sites</button>
-                <button class="btn" data-bind="click: cancelUpdate">Cancel</button>
+                <ul data-bind="foreach: sites" style="margin: 0px;">
+                    <li style="list-style: none;">
+                        <div class="row-fluid margin-bottom-1">
+                            <span class="span8">
+                                <strong>
+                                    <span data-bind="text:name"></span>
+                                </strong>
+                                <br/>
+
+                                <div data-bind="visible:$data.extent === undefined">No georeference information available</div>
+
+                                <div data-bind="visible:$data.extent !== undefined && extent.geometry != null && extent.geometry.state != null">
+                                    State:&nbsp;<span
+                                        data-bind="text:$data.extent !== undefined && extent.geometry != null ? extent.geometry.state : ''"></span>
+                                </div>
+
+                                <div data-bind="visible:$data.extent !== undefined && extent.geometry != null && extent.geometry.lga != null">
+                                    LGA:&nbsp;<span
+                                        data-bind="text:$data.extent !== undefined && extent.geometry != null ? extent.geometry.lga : ''"></span>
+                                </div>
+                            </span>
+                            <span class="span2">
+                                <button class="viewOnMap btn btn-small"
+                                        data-bind="click: $parent.mapSite, disable:$data.extent === undefined">
+                                    <i class="icon-eye-open"></i>
+                                    Preview
+                                </button>
+                            </span>
+                            <span class="span2 ">
+                                <button class="addSite btn btn-success btn-small pull-right"
+                                        data-bind="click: $parent.addSite, visible: !isProjectSite()">
+                                    <i class="icon-plus icon-white"></i>
+                                    Add
+                                </button>
+                                <button class="removeSite btn btn-danger btn-small pull-right"
+                                        data-bind="click: $parent.removeSite, visible: isProjectSite() ">
+                                    <i class="icon-minus  icon-white"></i>
+                                    Remove
+                                </button>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+                <g:render template="../shared/pagination"/>
+                <div class="row-fluid margin-top-2">
+                    <button class="btn btn-primary" data-bind="click: useSelectedSites">Update sites</button>
+                    <button class="btn" data-bind="click: cancelUpdate">Cancel</button>
+                </div>
             </div>
-        </div>
+        </bc:koLoading>
 
         <div class="span6">
             <m:map id="siteMap"/>
@@ -127,7 +122,7 @@
     $(function(){
 
         var existingSites = <fc:modelAsJavascript model="${project?.sites?.collect { "${it.siteId}" } ?: []}"/>;
-        var projectId = "${project.projectId?:'1'}"
+        var projectId = "${project.projectId ?: '1'}"
 
         var config = {
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
