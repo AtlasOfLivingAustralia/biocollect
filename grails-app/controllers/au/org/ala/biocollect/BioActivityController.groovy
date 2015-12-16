@@ -105,18 +105,21 @@ class BioActivityController {
                             // e.g. http://biocollect-test.ala.org.au/.../image_12354.jpg
                             filename = it.identifier.substring(it.identifier.lastIndexOf("/") + 1)
                         }
-                        Map document = [
-                                activityId: activityId,
-                                projectId: projectId,
-                                projectActivityId: pActivityId,
-                                contentType: it.format,
-                                filename: filename,
-                                name: it.title,
-                                type: "image",
-                                role: "image",
-                                license: it.license
-                        ]
-                        documentService.saveStagedImageDocument(document)
+
+                        if (filename) {
+                            Map document = [
+                                    activityId       : activityId,
+                                    projectId        : projectId,
+                                    projectActivityId: pActivityId,
+                                    contentType      : it.format,
+                                    filename         : filename,
+                                    name             : it.title,
+                                    type             : "image",
+                                    role             : "image",
+                                    license          : it.license
+                            ]
+                            documentService.saveStagedImageDocument(document)
+                        }
                     }
 
                 }
