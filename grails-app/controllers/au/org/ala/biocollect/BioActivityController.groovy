@@ -93,6 +93,33 @@ class BioActivityController {
                 if (photoPoints && activityId) {
                     updatePhotoPoints(activityId, photoPoints)
                 }
+
+                postBody.outputs?.each {
+                    it.data?.multimedia?.each {
+                        String filename
+                        if (it.filename) {
+                            filename = it.filename
+                        } else if (it.identifier) {
+                            // the sightings plugin puts the image into the media.uploadDir directory, and
+                            // includes and 'identifier' parameter which is a URL ending with the filename
+                            // e.g. http://biocollect-test.ala.org.au/.../image_12354.jpg
+                            filename = it.identifier.substring(it.identifier.lastIndexOf("/") + 1)
+                        }
+                        Map document = [
+                                activityId: activityId,
+                                projectId: projectId,
+                                projectActivityId: pActivityId,
+                                contentType: it.format,
+                                filename: filename,
+                                name: it.title,
+                                type: "image",
+                                role: "image",
+                                license: it.license
+                        ]
+                        documentService.saveStagedImageDocument(document)
+                    }
+
+                }
             } else {
                 flash.message = userAlreadyInRole.error
                 response.status = userAlreadyInRole.statusCode
