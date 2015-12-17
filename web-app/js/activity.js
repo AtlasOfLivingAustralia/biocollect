@@ -284,7 +284,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                     case 'record':
                         if (activity.records && activity.records.length > 0) {
                             $.each(activity.records, function(k, el) {
-                                if(el.coordinates && el.coordinates.length && !isNaN(el.coordinates[1]) && !isNaN(el.coordinates[0])){
+                                if(el.coordinates && el.coordinates.length && el.coordinates[1] && !isNaN(el.coordinates[1]) && el.coordinates[0] && !isNaN(el.coordinates[0])){
                                     features.push({
                                         lat: el.coordinates[1],
                                         lng: el.coordinates[0],
@@ -295,7 +295,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                         }
                         break;
                     case 'activity':
-                        if(activity.coordinates && activity.coordinates.length && !isNaN(activity.coordinates[1]) && !isNaN(activity.coordinates[0])){
+                        if(activity.coordinates && activity.coordinates.length && activity.coordinates[1] && !isNaN(activity.coordinates[1]) && el.coordinates[0] && !isNaN(activity.coordinates[0])){
                             features.push({
                                 lat: activity.coordinates[1],
                                 lng: activity.coordinates[0],
