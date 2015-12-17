@@ -120,7 +120,7 @@ class ModelJSTagLib {
                 out << INDENT*4 << "self.load${mod.name}(data['${mod.name}']);\n"
             }
             else if (mod.dataType == 'species') {
-                out << INDENT*4 << "self.data['${mod.name}'].loadData(data['${mod.name}']);\n"
+                out << INDENT*4 << "self.data['${mod.name}'] = new SpeciesViewModel(data['${mod.name}'], speciesLists, ${mod.validate == 'required'});\n"
             }
             else if (mod.dataType == 'document') {
                 out << INDENT*4 << "var doc = findDocumentById(documents, data['${mod.name}']);\n"
