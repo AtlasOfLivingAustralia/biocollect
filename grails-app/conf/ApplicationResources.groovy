@@ -378,4 +378,8 @@ modules = {
     largeCheckbox{
         resource url: 'vendor/large-checkbox/large-checkbox.css'
     }
+
+    imageDataType{
+        resource url: 'js/images.js'
+    }
 }

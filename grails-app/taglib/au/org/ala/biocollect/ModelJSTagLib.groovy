@@ -840,7 +840,7 @@ class ModelJSTagLib {
         self.load${model.name} = function (data) {
             if (data !== undefined) {
                 \$.each(data, function (i, obj) {
-                    self.data.${model.name}.push(image(obj));
+                    self.data.${model.name}.push( new ImageViewModel(obj));
                 });
         }};
         """

@@ -591,3 +591,17 @@ ko.bindingHandlers.sortIcon = {
     $icon.removeClass('icon-chevron-down').removeClass('icon-chevron-up').removeClass('icon-blank').addClass(className);
   }
 };
+
+/**
+ * custom binding to remove data from observable array.
+ * @type {{init: Function}}
+ */
+ko.bindingHandlers.removeFromArray = {
+  init: function(element, valueAccessor, allBindings, viewModel, bindingContext){
+    $(element).click(function(){
+      var array = valueAccessor();
+      array.remove && array.remove(bindingContext.$data);
+      bindingContext.$data.remove && bindingContext.$data.remove();
+    })
+  }
+}

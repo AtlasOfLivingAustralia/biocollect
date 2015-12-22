@@ -4,6 +4,7 @@ import au.org.ala.biocollect.merit.ActivityService
 import au.org.ala.biocollect.merit.CommonService
 import au.org.ala.biocollect.merit.DocumentService
 import au.org.ala.biocollect.merit.MetadataService
+import au.org.ala.biocollect.merit.OutputService
 import au.org.ala.biocollect.merit.ProjectService
 import au.org.ala.biocollect.merit.SearchService
 import au.org.ala.biocollect.merit.SiteService
@@ -30,6 +31,7 @@ class BioActivityController {
     BieService bieService
     CommonService commonService
     SearchService searchService
+    OutputService outputService
 
     /**
      * Update Activity by activityId or
@@ -87,12 +89,21 @@ class BioActivityController {
                 def photoPoints = postBody.remove('photoPoints')
                 postBody.projectActivityId = pActivity.projectActivityId
                 postBody.userId = userId
-                result = activityService.update(id, postBody)
+                // if activity is not created then create it now to get id
+                if(!id){
+                    result = activityService.update(id, postBody)
+                }
 
                 String activityId = id ?: result?.resp?.activityId
                 if (photoPoints && activityId) {
                     updatePhotoPoints(activityId, photoPoints)
                 }
+
+                // save images as documents
+                postBody.outputs = outputService.updateImages(activityId, postBody.outputs);
+
+                // save the activity again
+                result = activityService.update(activityId, postBody)
             } else {
                 flash.message = userAlreadyInRole.error
                 response.status = userAlreadyInRole.statusCode
