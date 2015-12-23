@@ -249,3 +249,17 @@
 .info-panel {
     background-color: white
 }
+
+.checkbox-list {
+    list-style-type: none;
+    display: inline-block;
+    margin-left: 0px;
+}
+.checkbox-list input[type=checkbox] {
+    margin-bottom: 6px;
+    margin-right: 10px;
+}
+.checkbox-list-label.label  {
+    vertical-align: top;
+    margin-top: 1em;
+}
