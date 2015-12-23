@@ -504,7 +504,7 @@
     <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.site"/></h4>
-            <g:render template="/site/map"/>
+            <g:render template="/site/map" model="[hideSiteMetadata: true, initialiseSiteName: true]"/>
         </div>
     </div>
 </bc:koLoading>

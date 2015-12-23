@@ -765,9 +765,15 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
 
     // Automatically create the site of type "Project Area" with a name of "Project area for ..."
     var siteViewModel = initSiteViewModel(false);
-    siteViewModel.name = ko.computed(function() {
-        return 'Project area for '+self.name();
+    self.name.subscribe(function(newValue){
+        var oldValue = siteViewModel.site().name();
+        var projectName =  newValue
+        var prefix = "Project area for ";
+        if(oldValue.indexOf(prefix) >= 0 || !oldValue){
+            siteViewModel.site().name(prefix+projectName);
+        }
     });
+
     self.organisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId);
     self.associatedOrganisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations);
     self.transients.associatedOrgNotInList = ko.observable(false);

@@ -30,51 +30,55 @@
         </div>
     </g:if>
 
-    <div class="row-fluid">
-        <div class="span3">
-            <label for="externalId">External Id
-            <fc:iconHelp title="External id">Identifier code for the site - used in external documents.</fc:iconHelp>
-            </label>
-            <input data-bind="value: site().externalId" id="externalId" type="text" class="span12"/>
+    <g:if test="${hideSiteMetadata != true}">
+
+        <div class="row-fluid">
+            <div class="span3">
+                <label for="externalId">External Id
+                <fc:iconHelp title="External id">Identifier code for the site - used in external documents.</fc:iconHelp>
+                </label>
+                <input data-bind="value: site().externalId" id="externalId" type="text" class="span12"/>
+            </div>
+
+            <div class="span3">
+                <label for="siteType">Type <fc:iconHelp
+                        title="Type">A categorisation for the type of site being mapped.</fc:iconHelp></label>
+                <g:select id="siteType"
+                          data-bind="value: site().type"
+                          class="span12"
+                          name='type'
+                          from="['Survey Area', 'Monitoring Point', 'Works Area']"
+                          keys="['surveyArea', 'monitoringPoint', 'worksArea']"/>
+            </div>
+
+            <div class="span3">
+                <label for="siteArea">Area (decimal hectares)
+                    <fc:iconHelp
+                            title="Area of site">The area in decimal hectares (4dp) enclosed within the boundary of the shape file.</fc:iconHelp></label>
+                <input data-bind="value: site().area" id="siteArea" type="text" class="span12"/>
+            </div>
         </div>
 
-        <div class="span3">
-            <label for="siteType">Type <fc:iconHelp
-                    title="Type">A categorisation for the type of site being mapped.</fc:iconHelp></label>
-            <g:select id="siteType"
-                      data-bind="value: site().type"
-                      class="span12"
-                      name='type'
-                      from="['Survey Area', 'Monitoring Point', 'Works Area']"
-                      keys="['surveyArea', 'monitoringPoint', 'worksArea']"/>
+        <div class="row-fluid">
+            <div class="span6">
+                <g:set var="helpDesc" value="${fc.iconHelp(title: 'Description', {
+                    'A long description of the site. This may include distance and bearing relative to a fixed known location, size, shape, distinctive characteristics, etc.'
+                })}"/>
+                <fc:textArea data-bind="value: site().description" id="description" label="Description ${helpDesc}"
+                             class="span12"
+                             rows="3" cols="50"/>
+            </div>
+
+            <div class="span6">
+                <g:set var="helpNotes" value="${fc.iconHelp(title: 'Notes', {
+                    'Additional notes about the site such as setting/surroundings, aspect, special/notable features, boundary/corner markers, etc.'
+                })}"/>
+                <fc:textArea data-bind="value: site().notes" id="notes" label="Notes ${helpNotes}" class="span12" rows="3"
+                             cols="50"/>
+            </div>
         </div>
 
-        <div class="span3">
-            <label for="siteArea">Area (decimal hectares)
-                <fc:iconHelp
-                        title="Area of site">The area in decimal hectares (4dp) enclosed within the boundary of the shape file.</fc:iconHelp></label>
-            <input data-bind="value: site().area" id="siteArea" type="text" class="span12"/>
-        </div>
-    </div>
-
-    <div class="row-fluid">
-        <div class="span6">
-            <g:set var="helpDesc" value="${fc.iconHelp(title: 'Description', {
-                'A long description of the site. This may include distance and bearing relative to a fixed known location, size, shape, distinctive characteristics, etc.'
-            })}"/>
-            <fc:textArea data-bind="value: site().description" id="description" label="Description ${helpDesc}"
-                         class="span12"
-                         rows="3" cols="50"/>
-        </div>
-
-        <div class="span6">
-            <g:set var="helpNotes" value="${fc.iconHelp(title: 'Notes', {
-                'Additional notes about the site such as setting/surroundings, aspect, special/notable features, boundary/corner markers, etc.'
-            })}"/>
-            <fc:textArea data-bind="value: site().notes" id="notes" label="Notes ${helpNotes}" class="span12" rows="3"
-                         cols="50"/>
-        </div>
-    </div>
+    </g:if>
 
     <h2>Create a spatial representation of this site</h2>
     <fc:iconHelp title="Extent of the site">The extent of the site can be represented by
