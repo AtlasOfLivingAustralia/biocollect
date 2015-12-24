@@ -14,7 +14,7 @@
                 <th style="width:20%">Photo point location:</th>
                 <th style="width:70%">Photo(s)</th>
             </tr>
-
+            </thead>
             <tbody data-bind="foreach:photoPoints">
             <tr>
                 <td data-bind="template:{name:template}">
@@ -94,7 +94,6 @@
                 </tr>
                 </tfoot>
             </g:if>
-        </thead>
 
         </table>
     </div>

@@ -177,7 +177,9 @@ class ImageController {
                         url: encodeImageURL(grailsApplication.config.upload.images.url,filename),
                         thumbnail_url: encodeImageURL(grailsApplication.config.upload.images.url, thumbFilename),
                         delete_url: encodeImageURL(grailsApplication.config.grails.serverURL+"/image/delete?filename=", filename),
-                        delete_type: 'DELETE']
+                        delete_type: 'DELETE',
+                        attribution: ''
+                ]
                 result = [files:[md]]
             }
         }
