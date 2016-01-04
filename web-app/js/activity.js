@@ -146,6 +146,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
 
     self.refreshPage = function (offset) {
         var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, offset);
+        // initialise offset
+        offset = offset || 0;
 
         self.transients.loading(true);
         $.ajax({
