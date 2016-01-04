@@ -608,7 +608,7 @@ class ModelJSTagLib {
                 wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?",
                 draggableMarkers: ${!readonly},
                 drawControl: ${!readonly},
-                showReset: ${!readonly},
+                showReset: false,
                 singleDraw: true,
                 singleMarker: true,
                 markerOrShapeNotBoth: false,
@@ -624,11 +624,6 @@ class ModelJSTagLib {
             };
 
             var ${model.name}Map = new ALA.Map('${model.name}Map', mapOptions);
-
-            ${container}.reset${model.name}Map = function() {
-                ${model.name}Map.resetMap();
-                ${container}.${model.name}(null);
-            };
 
             function updateFieldsFor${model.name}Map() {
                 var markerLocation = ${model.name}Map.getMarkerLocations();
@@ -674,6 +669,15 @@ class ModelJSTagLib {
             }
             ${container}.${model.name}Latitude.subscribe(update${model.name}MarkerPosition);
             ${container}.${model.name}Longitude.subscribe(update${model.name}MarkerPosition);
+
+            if (!${readonly}) {
+                ${model.name}Map.addButton("<span class='fa fa-refresh reset-map' title='Reset map'></span>", function () {
+                    ${model.name}Map.resetMap();
+                    if (activityLevelData.pActivity.sites.length == 1) {
+                        update${model.name}MapForSite(activityLevelData.pActivity.sites[0].siteId);
+                    }
+                }, "bottomleft");
+            }
         """
     }
 
