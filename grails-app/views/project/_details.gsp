@@ -504,7 +504,12 @@
     <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.site"/></h4>
-            <g:render template="/site/map" model="[hideSiteMetadata: true, initialiseSiteName: true]"/>
+            <p>
+                A project area should represent the smallest area which contains all of the data collected in a single activity or survey event.
+            </p>
+            <!-- ko stopBinding: true -->
+            <g:render template="/site/siteDefinition" />
+            <!-- /ko -->
         </div>
     </div>
 </bc:koLoading>

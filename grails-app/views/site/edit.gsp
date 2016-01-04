@@ -68,7 +68,7 @@
         </ul>
 
         <bs:form action="update" inline="true">
-            <g:render template="map" />
+            <g:render template="siteDetails" />
             <div class="row-fluid">
                 <div class="form-actions span12">
                     <button type="button" id="save" class="btn btn-primary">Save changes</button>

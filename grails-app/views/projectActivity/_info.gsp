@@ -141,9 +141,11 @@
                     <button class="btn btn-small" data-bind="click:removeLogoImage, visible:logoUrl()"><i class="icon-minus"></i> Remove</button>
                 </div>
             </div>
+
+            <g:render template="../projectActivity/indexingNote"/>
+
     <!-- /ko -->
 <!-- /ko -->
-
 </div>
 
 <div class="row-fluid">
