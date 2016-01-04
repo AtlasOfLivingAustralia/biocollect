@@ -85,6 +85,6 @@
                 a polygon, radius or point. KML, WKT and shape files are supported for uploading polygons.
                 As are PID's of existing features in the Atlas Spatial Portal.</fc:iconHelp>
 
-    <g:render template="/site/siteMap"/>
+    <g:render template="/site/siteDefinition"/>
 </div>
 <!-- /ko -->
