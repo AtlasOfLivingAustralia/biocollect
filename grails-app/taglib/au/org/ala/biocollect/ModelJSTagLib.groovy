@@ -137,12 +137,16 @@ class ModelJSTagLib {
                 out << INDENT*4 << "self.data.masterDetail.loadItems(data['${mod.name}']);\n"
             } else if (mod.dataType == "geoMap") {
                 out << INDENT*4 << """
-                    self.data.${mod.name}(data.${mod.name});
-                    if (data.${mod.name}Latitude && typeof data.${mod.name}Latitude !== 'undefined') {
-                        self.data.${mod.name}Latitude(data.${mod.name}Latitude);
-                    }
-                    if (data.${mod.name}Longitude && typeof data.${mod.name}Longitude !== 'undefined') {
-                        self.data.${mod.name}Longitude(data.${mod.name}Longitude);
+                    if (data.${mod.name}) {
+                        self.data.${mod.name}(data.${mod.name});
+                        if (data.${mod.name}Latitude && typeof data.${mod.name}Latitude !== 'undefined') {
+                            self.data.${mod.name}Latitude(data.${mod.name}Latitude);
+                        }
+                        if (data.${mod.name}Longitude && typeof data.${mod.name}Longitude !== 'undefined') {
+                            self.data.${mod.name}Longitude(data.${mod.name}Longitude);
+                        }
+                    } else if (activityLevelData.pActivity.sites.length == 1) {
+                        self.data.${mod.name}(activityLevelData.pActivity.sites[0].siteId);
                     }
                 """
                 if (readonly) {
@@ -662,6 +666,8 @@ class ModelJSTagLib {
             }
 
             ${container}.${model.name}.subscribe(update${model.name}MapForSite);
+            // make sure the lat/lng fields are cleared when the marker is removed by cancelling a new marker
+            ${model.name}Map.registerListener("layerremove", updateFieldsFor${model.name}Map);
             ${model.name}Map.subscribe(updateFieldsFor${model.name}Map);
             if (${!edit && !readonly}) {
                 ${model.name}Map.markMyLocation();

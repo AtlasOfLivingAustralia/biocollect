@@ -6,7 +6,7 @@
     </div>
 </g:if>
 
-<div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}">
+<div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}" data-bind="visible: activityLevelData.pActivity.sites.length > 1">
     <div class="well">
         <div class="span12">
             <div class="span3">
