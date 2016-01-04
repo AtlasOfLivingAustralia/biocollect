@@ -37,7 +37,7 @@
                    </div>
 
                 </div>
-
+                <g:render template="../projectActivity/indexingNote"/>
             <!-- /ko -->
         <!-- /ko -->
 </div>
