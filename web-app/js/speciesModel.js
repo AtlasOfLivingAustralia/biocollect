@@ -55,12 +55,4 @@ var SpeciesViewModel = function (species, lists, populate) {
 
 function validateSpeciesLookup(element) {
 
-    // Only perform the validation if there is data in the field
-    if (element.val()) {
-        var speciesModel = ko.dataFor(element[0]);
-        if (!speciesModel.guid()) {
-            return 'Unable to find a matching species for this name'
-        }
-    }
-
 }
