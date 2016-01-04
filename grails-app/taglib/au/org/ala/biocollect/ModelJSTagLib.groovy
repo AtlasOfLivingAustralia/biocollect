@@ -662,6 +662,8 @@ class ModelJSTagLib {
             }
 
             ${container}.${model.name}.subscribe(update${model.name}MapForSite);
+            // make sure the lat/lng fields are cleared when the marker is removed by cancelling a new marker
+            ${model.name}Map.registerListener("layerremove", updateFieldsFor${model.name}Map);
             ${model.name}Map.subscribe(updateFieldsFor${model.name}Map);
             if (${!edit && !readonly}) {
                 ${model.name}Map.markMyLocation();
