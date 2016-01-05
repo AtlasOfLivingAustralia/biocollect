@@ -108,7 +108,7 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
         def source = context.g.createLink(controller: 'search', action:'species', absolute:'true')
         newAttrs.add "value", "name"
         newAttrs.add "event", "{focusout:focusLost}"
-        newAttrs.add "fusedAutocomplete", "{source:transients.source, name:transients.name, guid:transients.guid}"
+        newAttrs.add "fusedAutocomplete", "{source:transients.source, name:transients.name, guid:transients.guid, matchUnknown: true}"
         context.writer << context.g.render(template: '/output/speciesTemplate', plugin:'fieldcapture-plugin', model:[source: context.source, databindAttrs: newAttrs.toString(), validationAttrs:context.validationAttr])
     }
 

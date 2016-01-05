@@ -94,10 +94,14 @@
                                                                 Species :
                                                                 <!-- ko foreach : records -->
                                                                 <a target="_blank"
-                                                                   data-bind="attr:{href: $root.transients.bieUrl + '/species/' + guid()}">
+                                                                   data-bind="visible: guid, attr:{href: $root.transients.bieUrl + '/species/' + guid()}">
                                                                     <span data-bind="text: $index()+1"></span>. <span
                                                                         data-bind="text: name"></span>
                                                                 </a>
+                                                                <span data-bind="visible: !guid()">
+                                                                    <span data-bind="text: $index()+1"></span>. <span
+                                                                        data-bind="text: name"></span>
+                                                                </span>
                                                                 <span data-bind="if: $parent.records().length != $index()+1">
                                                                     <b>|</b>
                                                                 </span>

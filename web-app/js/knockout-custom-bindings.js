@@ -319,7 +319,11 @@ ko.bindingHandlers.fusedAutocomplete = {
 
     if(!$(element).autocomplete(options).data("ui-autocomplete")){
       // Fall back mechanism to handle deprecated version of autocomplete.
-      var options = {};
+      var options = {}, unknown = {
+        guid: '',
+        name: 'Unknown species',
+        value: element.value
+      };
       options.source = url;
       options.matchSubset = false;
       options.formatItem = function(row, i, n) {
@@ -328,20 +332,33 @@ ko.bindingHandlers.fusedAutocomplete = {
       options.highlight = false;
       options.parse = function(data) {
         var rows = new Array();
+        if(params.matchUnknown){
+          unknown.value = element.value;
+          rows.push({
+              data: unknown,
+              value: unknown,
+              result: unknown.value
+          })
+        }
+
         data = data.autoCompleteList;
         for(var i=0; i < data.length; i++) {
-          rows[i] = {
+          rows.push({
             data: data[i],
             value: data[i],
             result: data[i].name
-          };
+          });
         }
         return rows;
       };
 
       $(element).autocomplete(options.source, options).result(function(event, data, formatted) {
         if (data) {
-          params.name(data.name);
+          if(data.name == unknown.name){
+            params.name(data.value);
+          } else {
+            params.name(data.name);
+          }
           params.guid(data.guid);
         }
       });
