@@ -51,7 +51,7 @@
         <g:render template="header"/>
 
         <g:if test="${metaModel?.supportsSites?.toBoolean()}">
-            <div class="row-fluid">
+            <div class="row-fluid" data-bind="if: transients.site">
                 <div class="span12 well">
                     <h3>Site location: <span data-bind="text: transients.site.name"></span></h3>
 
