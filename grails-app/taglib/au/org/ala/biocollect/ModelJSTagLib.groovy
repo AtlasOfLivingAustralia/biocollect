@@ -625,7 +625,13 @@ class ModelJSTagLib {
 
             var ${model.name}Map = new ALA.Map('${model.name}Map', mapOptions);
 
+            var ${model.name}LatSubscriber = ${container}.${model.name}Latitude.subscribe(update${model.name}MarkerPosition);
+            var ${model.name}LngSubscriber = ${container}.${model.name}Longitude.subscribe(update${model.name}MarkerPosition);
+
             function updateFieldsFor${model.name}Map() {
+                ${model.name}LatSubscriber.dispose();
+                ${model.name}LngSubscriber.dispose();
+
                 var markerLocation = ${model.name}Map.getMarkerLocations();
                 if (markerLocation && markerLocation.length > 0) {
                     markerLocation = markerLocation[0];
@@ -638,6 +644,9 @@ class ModelJSTagLib {
                     ${container}.${model.name}Latitude(null);
                     ${container}.${model.name}Longitude(null);
                 }
+
+                ${model.name}LatSubscriber = ${container}.${model.name}Latitude.subscribe(update${model.name}MarkerPosition);
+                ${model.name}LngSubscriber = ${container}.${model.name}Longitude.subscribe(update${model.name}MarkerPosition);
             };
 
             function update${model.name}MapForSite(siteId) {
@@ -667,8 +676,6 @@ class ModelJSTagLib {
             if (${!edit && !readonly}) {
                 ${model.name}Map.markMyLocation();
             }
-            ${container}.${model.name}Latitude.subscribe(update${model.name}MarkerPosition);
-            ${container}.${model.name}Longitude.subscribe(update${model.name}MarkerPosition);
 
             if (!${readonly}) {
                 ${model.name}Map.addButton("<span class='fa fa-refresh reset-map' title='Reset map'></span>", function () {
