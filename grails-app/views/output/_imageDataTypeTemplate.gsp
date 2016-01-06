@@ -7,13 +7,13 @@
 <script id="imageEditTemplate" type="text/html">
 <table class="table">
     <tbody>
-    <!-- ko foreach: data.imageList -->
+    <!-- ko foreach: ${name} -->
     <tr data-bind="visible: $data.status() != 'deleted'">
-        <td style="width:40%;">
-            <a data-bind="attr:{href:url, alt:name, title:'[click to expand] '+name}"
-               target="_photo" rel="gallery"><img data-bind="attr:{src:thumbnailUrl}"></a>
+        <td class="images-image-width">
+            <a data-bind="attr:{href:url, title:'[click to expand] '+name()}"
+               target="_photo" rel="gallery"><img data-bind="attr:{src:thumbnailUrl,  alt:name}"></a>
         </td>
-        <td style="width:45%;">
+        <td class="images-form-width">
             <div class="form-horizontal">
                 <div class="control-group required">
                     <label class="control-label">Title:</label>
@@ -48,19 +48,19 @@
                 <div class="control-group readonly">
                     <label class="control-label">File Name:</label>
 
-                    <div class="controls"><label style="padding-top:5px;" data-bind="text:filename"/></div>
+                    <div class="controls"><label class="padding-top-5" data-bind="text:filename"/></div>
                 </div>
 
                 <div class="control-group readonly">
                     <label class="control-label">File Size:</label>
 
-                    <div class="controls"><label style="padding-top:5px;" data-bind="text:formattedSize"/></div>
+                    <div class="controls"><label class="padding-top-5" data-bind="text:formattedSize"/></div>
                 </div>
             </div>
         </td>
-        <td style="text-align: right; width:15%">
+        <td class="images-action-btns">
             <g:if test="${!readOnly}">
-                <a class="btn" data-bind="click: remove.bind($data,$parent.data.imageList)"><i
+                <a class="btn" data-bind="click: remove.bind($data,$parent.${name})"><i
                         class="icon-remove"></i> Remove</a>
             </g:if>
         </td>
@@ -70,7 +70,7 @@
     <g:if test="${!readOnly}">
         <tfoot data-bind="${databindAttrs}" data-url="<g:createLink controller='image' action='upload'/>">
         <tr data-bind="visible:!complete()">
-            <td style="border-bottom: 0px;">
+            <td class="images-preview-width">
                 <span class="preview"></span>
 
             </td>
@@ -135,15 +135,15 @@
 </script>
 
 <script id="imageViewTemplate1" type="text/html">
-<div id="${carouselName}" class="carousel slide" style="height: 400px;width: 400px">
+<div id="${carouselName}" class="carousel slide images-carousel-size" >
     <ol class="carousel-indicators">
-        <!-- ko foreach: data.imageList -->
+        <!-- ko foreach: ${name} -->
         <li data-target="#${carouselName}" data-bind="attr:{'data-slide-to':$index}"></li>
         <!-- /ko -->
     </ol>
     <!-- Carousel items -->
-    <div class="carousel-inner">
-        <!-- ko foreach: data.imageList -->
+    <div class="carousel-inner text-center">
+        <!-- ko foreach: ${name} -->
         <div class="item" data-bind="css:{active:$index()==0}">
             <img data-bind="attr:{src:url}">
             <div class="carousel-caption">
