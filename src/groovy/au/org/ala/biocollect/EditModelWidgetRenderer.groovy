@@ -47,6 +47,19 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderTime(WidgetRenderContext context) {
+        context.attributes.addClass context.getInputWidth()
+        context.attributes.add 'style','text-align:center'
+        context.databindAttrs.add 'value', context.source
+
+        context.writer << """
+<div class="timefield input-append">
+    <input${context.attributes.toString()} id="${context.model.source}TimeField" data-bind='${context.databindAttrs.toString()}'${context.validationAttr} type='text' class='input-mini timepicker'/>
+</div>
+"""
+    }
+
+    @Override
     void renderSelectOne(WidgetRenderContext context) {
         context.databindAttrs.add 'value', context.source
         // Select one or many view types require that the data model has defined a set of valid options
