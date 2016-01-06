@@ -14,7 +14,7 @@
                 </div>
                 <!-- /ko -->
             </div>
-            <div class="span9 text-left">
+            <div class="span9 text-left well">
                 <ul class="nav nav-tabs" id="tabDifferentViews">
                     <li class="active"><a href="#recordVis" data-toggle="tab">List</a></li>
                     <li class=""><a href="#mapVis" id="dataMapTab" data-toggle="tab">Map</a></li>
@@ -22,15 +22,13 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
                         <!-- ko if: activities().length == 0 -->
-                        <div class="well">
                             <div class="row-fluid">
-                                <h3 class="text-left margin-bottom-2">Found 0 record</h3>
+                                <h3 class="text-left margin-bottom-five">No results</h3>
                             </div>
-                        </div>
                         <!-- /ko -->
 
                         <!-- ko if: activities().length > 0 -->
-                        <div class="well">
+
                             <div class="alert alert-info hide" id="downloadStartedMsg"><i class="fa fa-spin fa-spinner">&nbsp;&nbsp;</i>Preparing download, please wait...</div>
 
                             <div class="row-fluid">
@@ -168,7 +166,6 @@
                                 </div>
                             </div>
                             <!-- /ko -->
-                        </div>
                         <!-- /ko -->
                     </div>
 
