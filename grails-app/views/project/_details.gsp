@@ -415,44 +415,6 @@
         </div>
     </div>
 
-    <div data-bind="visible:!isExternal()" class="row-fluid">
-        <div class="well">
-            <h4 class="block-header"><g:message code="project.details.access"/></h4>
-
-            <div class="control-group">
-                <label class="control-label span3" for="projectPrivacy"><g:message
-                        code="project.details.projectPrivacy"/><i class="req-field"></i></label>
-
-                <div class="controls span9">
-                    <select class="span12" id="projectPrivacy"
-                            data-bind="value:projectPrivacy,options:['Open','Closed'],optionsCaption: 'Choose...'"
-                            data-validation-engine="validate[required]"></select>
-                </div>
-            </div>
-
-            <div class="clearfix control-group">
-                <label class="control-label span3" for="dataSharing"><g:message
-                        code="project.details.dataSharing"/><i class="req-field"></i></label>
-
-                <div class="controls span9">
-                    <select class="span12" id="dataSharing"
-                            data-bind="value:dataSharing,options:['Enabled','Disabled'],optionsCaption: 'Choose...'"
-                            data-validation-engine="validate[required]"></select>
-                </div>
-            </div>
-
-            <div class="clearfix control-group">
-                <label class="control-label span3" for="dataSharingLicense"><g:message
-                        code="project.details.dataSharingLicense"/></label>
-
-                <div class="controls span9">
-                    <select class="span12" id="dataSharingLicense"
-                            data-bind="value:dataSharingLicense,options:transients.dataSharingLicenses,optionsText:'name',optionsValue:'lic',optionsCaption: 'Choose if applicable...'"></select>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.image"/></h4>

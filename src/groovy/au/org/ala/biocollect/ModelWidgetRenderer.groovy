@@ -22,6 +22,7 @@ public interface ModelWidgetRenderer {
     void renderPhotoPoint(WidgetRenderContext context)
     void renderLink(WidgetRenderContext context)
     void renderDate(WidgetRenderContext context)
+    void renderTime(WidgetRenderContext context)
     void renderDocument(WidgetRenderContext context)
     void renderButtonGroup(WidgetRenderContext context)
     void renderGeoMap(WidgetRenderContext context)

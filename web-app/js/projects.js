@@ -330,9 +330,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.associatedSubProgram = ko.observable(project.associatedSubProgram);
     self.newsAndEvents = ko.observable(project.newsAndEvents).extend({markdown:true});
     self.projectStories = ko.observable(project.projectStories).extend({markdown:true});
-
-    self.dataSharing = ko.observable(project.isDataSharing? "Enabled": "Disabled");
-    self.dataSharingLicense = ko.observable(project.dataSharingLicense);
     self.difficulty = ko.observable(project.difficulty);
     self.gear = ko.observable(project.gear);
     self.getInvolved = ko.observable(project.getInvolved).extend({markdown:true});
@@ -345,7 +342,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.isMetadataSharing = ko.observable(project.isMetadataSharing);
     self.isSuitableForChildren = ko.observable(project.isSuitableForChildren);
     self.keywords = ko.observable(project.keywords);
-    self.projectPrivacy = ko.observable(project.projectPrivacy);
     self.projectSiteId = project.projectSiteId;
     self.projectType = ko.observable(project.projectType);
     self.scienceType = ko.observable(project.scienceType);
@@ -556,12 +552,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.transients.subprogramsToDisplay = ko.computed(function () {
         return self.transients.subprograms[self.associatedProgram()];
     });
-    self.transients.dataSharingLicenses = [
-            {lic:'CC BY', name:'Creative Commons Attribution'},
-            {lic:'CC BY-NC', name:'Creative Commons Attribution-NonCommercial'},
-            {lic:'CC BY-SA', name:'Creative Commons Attribution-ShareAlike'},
-            {lic:'CC BY-NC-SA', name:'Creative Commons Attribution-NonCommercial-ShareAlike'}
-        ];
     self.transients.organisations = organisations;
 
     self.transients.difficultyLevels = [ "Easy", "Medium", "Hard" ];

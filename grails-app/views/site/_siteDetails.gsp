@@ -4,27 +4,25 @@
         <h2>Site create/edit</h2>
 
         <p class="media-heading">
-            A site should represent the smallest area which contains all of the data collected in a single activity or survey event.
-            To create or edit a site, please complete at least all mandatory fields (shown with <span
-                class="req-field"></span> ).
+            <g:message code="site.details.help"/>
         </p>
     </div>
 
     <div class="row-fluid">
         <div>
-            <label for="name">Site name <fc:iconHelp
-                    title="Site name">The name of the site at which a survey or activity is undertaken. This should be short and uniquely identifiable.</fc:iconHelp>
+            <label for="name"><g:message code="site.details.siteName"/> <fc:iconHelp
+                    title="Site name"><g:message code="site.details.siteName.help"/></fc:iconHelp>
                 <span class="req-field"></span>
             </label>
             <input data-bind="value: site().name" data-validation-engine="validate[required]"
                    class="span8" id="name" type="text" value="${site?.name?.encodeAsHTML()}"
-                   placeholder="Enter a name for the new site"/>
+                   placeholder="${message(code: 'site.details.siteName.placeholder')}"/>
         </div>
     </div>
 
     <g:if test="${project && controllerName.equals('site')}">
         <div class="row-fluid" style="padding-bottom:15px;">
-            <span>Project name:</span>
+            <span><g:message code="site.details.projectName"/></span>
             <g:link controller="project" action="index"
                     id="${project?.projectId}">${project?.name?.encodeAsHTML()}</g:link>
         </div>
@@ -34,15 +32,15 @@
 
         <div class="row-fluid">
             <div class="span3">
-                <label for="externalId">External Id
-                <fc:iconHelp title="External id">Identifier code for the site - used in external documents.</fc:iconHelp>
+                <label for="externalId"><g:message code="site.details.externalId"/>
+                <fc:iconHelp title="${message(code: 'site.details.externalId')}"><g:message code="site.details.externalId.help"/></fc:iconHelp>
                 </label>
                 <input data-bind="value: site().externalId" id="externalId" type="text" class="span12"/>
             </div>
 
             <div class="span3">
-                <label for="siteType">Type <fc:iconHelp
-                        title="Type">A categorisation for the type of site being mapped.</fc:iconHelp></label>
+                <label for="siteType"><g:message code="site.details.type"/> <fc:iconHelp
+                        title="${message(code: 'site.details.type')}"><g:message code="site.details.type.help"/></fc:iconHelp></label>
                 <g:select id="siteType"
                           data-bind="value: site().type"
                           class="span12"
@@ -52,38 +50,36 @@
             </div>
 
             <div class="span3">
-                <label for="siteArea">Area (decimal hectares)
+                <label for="siteArea"><g:message code="site.details.area"/>
                     <fc:iconHelp
-                            title="Area of site">The area in decimal hectares (4dp) enclosed within the boundary of the shape file.</fc:iconHelp></label>
+                            title="${message(code: 'site.details.area')}"><g:message code="site.details.area.help"/></fc:iconHelp></label>
                 <input data-bind="value: site().area" id="siteArea" type="text" class="span12"/>
             </div>
         </div>
 
         <div class="row-fluid">
             <div class="span6">
-                <g:set var="helpDesc" value="${fc.iconHelp(title: 'Description', {
-                    'A long description of the site. This may include distance and bearing relative to a fixed known location, size, shape, distinctive characteristics, etc.'
+                <g:set var="helpDesc" value="${fc.iconHelp(title: message(code: 'site.details.description'), {
+                    message(code: 'site.details.description.help')
                 })}"/>
-                <fc:textArea data-bind="value: site().description" id="description" label="Description ${helpDesc}"
+                <fc:textArea data-bind="value: site().description" id="description" label="${message(code: 'site.details.description')} ${helpDesc}"
                              class="span12"
                              rows="3" cols="50"/>
             </div>
 
             <div class="span6">
-                <g:set var="helpNotes" value="${fc.iconHelp(title: 'Notes', {
-                    'Additional notes about the site such as setting/surroundings, aspect, special/notable features, boundary/corner markers, etc.'
+                <g:set var="helpNotes" value="${fc.iconHelp(title: message(code: 'site.details.notes'), {
+                    message(code: 'site.details.notes.help')
                 })}"/>
-                <fc:textArea data-bind="value: site().notes" id="notes" label="Notes ${helpNotes}" class="span12" rows="3"
+                <fc:textArea data-bind="value: site().notes" id="notes" label="${message(code: 'site.details.notes')} ${helpNotes}" class="span12" rows="3"
                              cols="50"/>
             </div>
         </div>
 
     </g:if>
 
-    <h2>Create a spatial representation of this site</h2>
-    <fc:iconHelp title="Extent of the site">The extent of the site can be represented by
-                a polygon, radius or point. KML, WKT and shape files are supported for uploading polygons.
-                As are PID's of existing features in the Atlas Spatial Portal.</fc:iconHelp>
+    <h2><g:message code="site.details.extent.heading"/></h2>
+    <fc:iconHelp title="Extent of the site"><g:message code="site.details.extent.help"/></fc:iconHelp>
 
     <g:render template="/site/siteDefinition"/>
 </div>

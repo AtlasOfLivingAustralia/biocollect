@@ -91,6 +91,12 @@ modules = {
         resource url: 'vendor/bootstrap-datepicker/css/datepicker.css'
     }
 
+    timepicker {
+        resource url: "vendor/jquery.timeentry.package-2.0.1/jquery.plugin.min.js"
+        resource url: "vendor/jquery.timeentry.package-2.0.1/jquery.timeentry.min.js"
+        resource url: "vendor/jquery.timeentry.package-2.0.1/jquery.timeentry.css"
+    }
+
     app_bootstrap {
         dependsOn 'application', 'font_awesome_44'
         // The less css resources plugin (1.3.3, resources plugin 1.2.14) is unable to resolve less files in a plugin so apps that use this plugin must supply their own bootstrap styles.
