@@ -20,6 +20,11 @@ class PrintModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderTime(WidgetRenderContext context) {
+        defaultRender(context)
+    }
+
+    @Override
     void renderNumber(WidgetRenderContext context) {
         defaultRender(context)
     }

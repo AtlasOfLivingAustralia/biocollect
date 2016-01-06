@@ -16,6 +16,12 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderTime(WidgetRenderContext context) {
+        context.databindAttrs.add 'text', context.source
+        context.writer << "<span ${context.attributes.toString()} data-bind='${context.databindAttrs.toString()}'></span>"
+    }
+
+    @Override
     void renderReadonlyText(WidgetRenderContext context) {
         context.databindAttrs.add 'value', context.source
         context.writer << "<span ${context.attributes.toString()} data-bind='${context.databindAttrs.toString()}'></span>"

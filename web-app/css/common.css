@@ -263,3 +263,13 @@
     vertical-align: top;
     margin-top: 1em;
 }
+
+.timefield {
+    max-width: 100px;
+    width: 100px;
+}
+
+.timeEntry-control {
+    margin-left: 5px;
+    margin-top: 5px;
+}

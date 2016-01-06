@@ -149,6 +149,9 @@ class ModelTagLib {
             case 'date':
                 renderer.renderDate(renderContext)
                 break
+            case 'time':
+                renderer.renderTime(renderContext)
+                break
             case 'document':
                 renderer.renderDocument(renderContext)
                 break

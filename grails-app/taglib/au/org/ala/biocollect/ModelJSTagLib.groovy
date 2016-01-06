@@ -76,6 +76,8 @@ class ModelJSTagLib {
                 speciesModel(attrs, mod, out)
             } else if (mod.dataType == 'date') {
                 dateViewModel(mod, out)
+            } else if (mod.dataType == 'time') {
+                timeViewModel(mod, out)
             } else if (mod.dataType == 'document') {
                 documentViewModel(mod, out)
             } else if (mod.dataType == 'singleSighting') {
@@ -115,6 +117,9 @@ class ModelJSTagLib {
             }
             else if (mod.dataType == 'number' && !mod.computed) {
                 out << INDENT*4 << "self.data['${mod.name}'](orZero(data['${mod.name}']));\n"
+            }
+            else if (mod.dataType == 'time' && !mod.computed) {
+                out << INDENT*4 << "self.data['${mod.name}'](data['${mod.name}']);\n"
             }
             else if (mod.dataType in ['stringList', 'image', 'photoPoints'] && !mod.computed) {
                 out << INDENT*4 << "self.load${mod.name}(data['${mod.name}']);\n"
@@ -570,6 +575,17 @@ class ModelJSTagLib {
 
     def textViewModel(model, out) {
         out << "\n" << INDENT*3 << "self.data.${model.name} = ko.observable();\n"
+        modelConstraints(model, out)
+    }
+
+    def timeViewModel(model, out) {
+        // see http://keith-wood.name/timeEntry.html for details
+
+        String spinnerLocation = "${resource(file: '/vendor/jquery.timeentry.package-2.0.1/spinnerOrange.png')}"
+        String spinnerBigLocation = "${resource(file: '/vendor/jquery.timeentry.package-2.0.1/spinnerOrangeBig.png')}"
+
+        out << "\n" << INDENT*3 << "self.data.${model.name} = ko.observable();\n"
+        out << "\n" << INDENT*3 << "\$('#${model.name}TimeField').timeEntry({ampmPrefix: ' ', spinnerImage: '${spinnerLocation}', spinnerBigImage: '${spinnerBigLocation}', spinnerSize: [20, 20, 8], spinnerBigSize: [40, 40, 16]});"
         modelConstraints(model, out)
     }
 
