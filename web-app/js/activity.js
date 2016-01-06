@@ -124,6 +124,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         if (self.total() > asyncDownloadThreshold) {
             self.transients.showEmailDownloadPrompt(!self.transients.showEmailDownloadPrompt());
         } else {
+            $('#downloadStartedMsg').removeClass('hide');
+            window.setTimeout(function(){
+                $('#downloadStartedMsg').addClass('hide');
+            }, 5000);
             window.location.href = url;
         }
     };

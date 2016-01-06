@@ -89,10 +89,8 @@ class BioActivityController {
                 def photoPoints = postBody.remove('photoPoints')
                 postBody.projectActivityId = pActivity.projectActivityId
                 postBody.userId = userId
-                // if activity is not created then create it now to get id
-                if(!id){
-                    result = activityService.update(id, postBody)
-                }
+
+                result = activityService.update(id, postBody)
 
                 String activityId = id ?: result?.resp?.activityId
                 if (photoPoints && activityId) {
@@ -129,11 +127,6 @@ class BioActivityController {
 
                 }
 
-                // save images as documents
-                postBody.outputs = outputService.updateImages(activityId, postBody.outputs);
-
-                // save the activity again
-                result = activityService.update(activityId, postBody)
             } else {
                 flash.message = userAlreadyInRole.error
                 response.status = userAlreadyInRole.statusCode
@@ -141,7 +134,7 @@ class BioActivityController {
             }
         }
 
-        render result as JSON
+            render result as JSON
     }
 
     def getProjectActivityCount(String id){

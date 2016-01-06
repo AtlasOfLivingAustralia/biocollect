@@ -31,6 +31,8 @@
 
                         <!-- ko if: activities().length > 0 -->
                         <div class="well">
+                            <div class="alert alert-info hide" id="downloadStartedMsg"><i class="fa fa-spin fa-spinner">&nbsp;&nbsp;</i>Preparing download, please wait...</div>
+
                             <div class="row-fluid">
                                 <div class="span9">
                                     <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record<span
