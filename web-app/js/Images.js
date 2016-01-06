@@ -5,7 +5,9 @@ function ImageViewModel(prop){
     var documents = activityLevelData.activity.documents;
     // dereferencing the document using documentId
     documents && documents.forEach(function(doc){
-        if(doc.documentId === prop){
+        // newer implementation is passing document object.
+        var docId = prop.documentId || prop;
+        if(doc.documentId === docId){
             prop = doc;
         }
     });
@@ -15,19 +17,19 @@ function ImageViewModel(prop){
         return;
     }
 
-    self["dateTaken"] = ko.observable(prop.dateTaken || (new Date()).toISOStringNoMillis()).extend({simpleDate:false});
-    self["contentType"] = ko.observable(prop.contentType);
-    self['url'] = prop.url;
-    self['filesize'] = prop.filesize;
-    self["thumbnailUrl"] = prop.thumbnailUrl;
-    self["filename"] = prop.filename;
-    self["attribution"] = ko.observable(prop.attribution);
-    self["notes"] = ko.observable(prop.notes || '');
-    self["name"] = ko.observable(prop.name);
-    self["formattedSize"] = formatBytes(prop.filesize);
-    self['staged'] = prop.staged || false;
-    self['documentId'] = prop.documentId || '';
-    self['status'] = ko.observable(prop.status || 'active')
+    self.dateTaken = ko.observable(prop.dateTaken || (new Date()).toISOStringNoMillis()).extend({simpleDate:false});
+    self.contentType = ko.observable(prop.contentType);
+    self.url = prop.url;
+    self.filesize = prop.filesize;
+    self.thumbnailUrl = prop.thumbnailUrl;
+    self.filename = prop.filename;
+    self.attribution = ko.observable(prop.attribution);
+    self.notes = ko.observable(prop.notes || '');
+    self.name = ko.observable(prop.name);
+    self.formattedSize = formatBytes(prop.filesize);
+    self.staged = prop.staged || false;
+    self.documentId = prop.documentId || '';
+    self.status = ko.observable(prop.status || 'active')
 
     self.remove = function(images, data, event){
         if(data.documentId){
@@ -39,6 +41,14 @@ function ImageViewModel(prop){
     }
 
     self.summary = function(){
-        return "<p>" + self.notes() + '</p><i>Picture by ' + self.attribution() + ' on ' + self.dateTaken.formattedDate() +'</i>';
+        var picBy = 'Picture by ' + self.attribution() + '. ';
+        var takenOn = 'Taken on ' + self.dateTaken.formattedDate() +'.';
+        var message = '';
+        if(self.attribution()){
+            message += picBy;
+        }
+
+        message += takenOn;
+        return "<p>" + self.notes() + '</p><i>' + message + '</i>';
     }
 }

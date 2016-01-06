@@ -381,5 +381,6 @@ modules = {
 
     imageDataType{
         resource url: 'js/images.js'
+        resource url: 'css/images.css'
     }
 }

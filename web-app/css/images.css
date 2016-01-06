@@ -1,0 +1,33 @@
+.images-image-width{
+    width:40%;
+}
+
+.images-form-width{
+    width:45%;
+}
+
+.padding-top-5{
+    padding-top:5px;
+}
+
+.images-action-btns{
+    text-align: right;
+    width:15%;
+}
+
+.images-preview-width{
+    border-bottom: 0px;
+}
+
+.images-carousel-size{
+    height: 400px;
+    width: 400px;
+}
+
+.carousel-inner > .item > img {
+    margin: 0 auto;
+}
+
+.carousel-caption {
+    position: relative;
+}

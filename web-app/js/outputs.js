@@ -214,17 +214,13 @@ ko.bindingHandlers.imageUpload = {
         config = $.extend({}, config, defaultConfig);
 
         var target = config.target;
-
-        target
-
         var uploadProperties = {
-
             size: size,
             progress: progress,
             error:error,
             complete:complete
-
         };
+
         var innerContext = bindingContext.createChildContext(bindingContext);
         ko.utils.extend(innerContext, uploadProperties);
 
