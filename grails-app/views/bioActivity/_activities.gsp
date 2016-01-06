@@ -4,11 +4,14 @@
 <div id="survey-all-activities-and-records-content">
     <div id="data-result-placeholder"></div>
     <g:render template="../bioActivity/search"/>
+
     <div class="row-fluid">
         <div class="span12">
-            <div class="span3 text-left well">
+            <div class="span3 text-left">
                 <!-- ko if: activities().length > 0 -->
-                <g:render template="../bioActivity/facets"/>
+                <div class="well">
+                    <g:render template="../bioActivity/facets"/>
+                </div>
                 <!-- /ko -->
             </div>
             <div class="span9 text-left">
@@ -18,6 +21,13 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
+                        <!-- ko if: activities().length == 0 -->
+                        <div class="well">
+                            <div class="row-fluid">
+                                <h3 class="text-left margin-bottom-2">Found 0 record</h3>
+                            </div>
+                        </div>
+                        <!-- /ko -->
 
                         <!-- ko if: activities().length > 0 -->
                         <div class="well">
