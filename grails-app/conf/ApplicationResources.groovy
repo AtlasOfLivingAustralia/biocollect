@@ -41,6 +41,10 @@ modules = {
         resource url: 'vendor/jquery.blockUI/jquery.blockUI.js'
     }
 
+    bootbox {
+        resource url: "vendor/bootbox/bootbox.min.js"
+    }
+
     defaultSkin {
         dependsOn 'application'
         resource url: 'css/default.skin.css'

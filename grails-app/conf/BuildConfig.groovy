@@ -28,12 +28,6 @@ grails.project.fork = [
 if (Environment.current == Environment.DEVELOPMENT) {
     // Enable hot swap reloading for Grails 2.3+
     grails.reload.enabled = true
-
-    grails.plugin.location.'biocollect-sightings' = './plugins/biocollect-sightings'
-    println('Using inline biocollect-sightings plugin...')
-    grails.plugin.location.'ala-map' = '../ala-map-plugin'
-    println('Using inline ala-map plugin...')
-
 }
 
 grails.project.dependency.resolver = "maven"
@@ -116,11 +110,6 @@ grails.project.dependency.resolution = {
             exclude "ala-web-theme"
         }
         compile ':cookie:1.4'
-
-        if (Environment.current != Environment.DEVELOPMENT) {
-            compile ":biocollect-sightings:1.0-SNAPSHOT"
-            compile ":ala-map:0.1-SNAPSHOT"
-        }
 
     }
 }
