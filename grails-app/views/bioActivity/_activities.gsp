@@ -8,11 +8,11 @@
     <div class="row-fluid">
         <div class="span12">
             <div class="span3 text-left">
-                <!-- ko if: activities().length > 0 -->
+
                 <div class="well">
                     <g:render template="../bioActivity/facets"/>
                 </div>
-                <!-- /ko -->
+
             </div>
             <div class="span9 text-left well">
                 <ul class="nav nav-tabs" id="tabDifferentViews">
@@ -23,7 +23,14 @@
                     <div class="tab-pane active" id="recordVis">
                         <!-- ko if: activities().length == 0 -->
                             <div class="row-fluid">
-                                <h3 class="text-left margin-bottom-five">No results</h3>
+                                <h3 class="text-left margin-bottom-five">
+                                    <!-- ko if: $root.searchTerm() == "" -->
+                                        No data has been recorded for this project yet
+                                    <!-- /ko -->
+                                    <!-- ko if: $root.searchTerm() != "" -->
+                                        No results
+                                    <!-- /ko -->
+                                </h3>
                             </div>
                         <!-- /ko -->
 

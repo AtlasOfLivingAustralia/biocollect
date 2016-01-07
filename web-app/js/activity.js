@@ -37,7 +37,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         $('#search-spinner').hide();
     };
 
-    self.searchTerm = ko.observable();
+    self.searchTerm = ko.observable('');
     self.order = ko.observable('DESC');
     self.sort = ko.observable('lastUpdated');
     self.selectedFilters = ko.observableArray(); // User selected facet filters.
@@ -376,7 +376,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             offset: offset,
             sort: self.sort(),
             order: self.order(),
-            searchTerm: self.searchTerm(),
+            searchTerm: self.searchTerm().trim(),
             flimit: 1000,
             view: self.view
         };
