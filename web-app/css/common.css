@@ -265,11 +265,16 @@
 }
 
 .timefield {
-    max-width: 100px;
-    width: 100px;
+    max-width: 100px !important;
+    width: 100px !important;
+}
+
+.timefield input {
+    max-width: 85px !important;
+    width: 85px !important;
 }
 
 .timeEntry-control {
-    margin-left: 5px;
-    margin-top: 5px;
+    margin-left: 10px !important;;
+    margin-top: 5px !important;;
 }
