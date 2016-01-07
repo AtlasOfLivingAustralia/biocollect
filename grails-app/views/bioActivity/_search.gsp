@@ -17,7 +17,7 @@
                 <div class="span12 ">
                     <div class="span12 text-left">
                         <div class="searchResultSection">
-                            <h5>Found <span data-bind="text: total()"></span> record<span data-bind="if: total() >= 2">s</span>
+                            <h5>Found <span data-bind="text: total()"></span> record(s)</span>
                                 <span data-bind="if: searchTerm()">matching '<span data-bind="text: searchTerm()"></span>'
                             </span></h5>
                             <input data-bind="value: searchTerm, valueUpdate: 'input'" type="text"

@@ -17,7 +17,7 @@
             <div class="span9 text-left well">
                 <ul class="nav nav-tabs" id="tabDifferentViews">
                     <li class="active"><a href="#recordVis" data-toggle="tab">List</a></li>
-                    <li class=""><a href="#mapVis" id="dataMapTab" data-toggle="tab">Map</a></li>
+                    <li class=""><a href="#mapVis" id="dataMapTab" data-bind="attr:{'data-toggle': activities().length > 0 ? 'tab' : ''}">Map</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
@@ -33,8 +33,7 @@
 
                             <div class="row-fluid">
                                 <div class="span9">
-                                    <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record<span
-                                            data-bind="if: total() >= 2">s</span></h3>
+                                    <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record(s)</h3>
                                 </div>
                                 <div class="span3 padding-top-0 margin-bottom-2">
                                     <button data-bind="click: download, disable: transients.loading" data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}" class="btn btn-primary pull-right padding-top-1"><span class="fa fa-download">&nbsp;</span>Download</button>
