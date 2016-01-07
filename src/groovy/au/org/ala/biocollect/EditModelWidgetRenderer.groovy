@@ -53,10 +53,10 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
         context.databindAttrs.add 'value', context.source
 
         context.writer << """
-<div class="timefield input-append">
-    <input${context.attributes.toString()} id="${context.model.source}TimeField" data-bind='${context.databindAttrs.toString()}'${context.validationAttr} type='text' class='input-mini timepicker'/>
-</div>
-"""
+            <div class="timefield input-append">
+                <input${context.attributes.toString()} id="${context.model.source}TimeField" data-bind='${context.databindAttrs.toString()}'${context.validationAttr} type='text' class='input-mini timepicker'/>
+            </div>
+        """
     }
 
     @Override
