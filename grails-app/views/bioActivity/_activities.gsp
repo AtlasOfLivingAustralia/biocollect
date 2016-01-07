@@ -4,23 +4,31 @@
 <div id="survey-all-activities-and-records-content">
     <div id="data-result-placeholder"></div>
     <g:render template="../bioActivity/search"/>
+
     <div class="row-fluid">
         <div class="span12">
-            <div class="span3 text-left well">
+            <div class="span3 text-left">
                 <!-- ko if: activities().length > 0 -->
-                <g:render template="../bioActivity/facets"/>
+                <div class="well">
+                    <g:render template="../bioActivity/facets"/>
+                </div>
                 <!-- /ko -->
             </div>
-            <div class="span9 text-left">
+            <div class="span9 text-left well">
                 <ul class="nav nav-tabs" id="tabDifferentViews">
                     <li class="active"><a href="#recordVis" data-toggle="tab">List</a></li>
                     <li class=""><a href="#mapVis" id="dataMapTab" data-toggle="tab">Map</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
+                        <!-- ko if: activities().length == 0 -->
+                            <div class="row-fluid">
+                                <h3 class="text-left margin-bottom-five">No results</h3>
+                            </div>
+                        <!-- /ko -->
 
                         <!-- ko if: activities().length > 0 -->
-                        <div class="well">
+
                             <div class="alert alert-info hide" id="downloadStartedMsg"><i class="fa fa-spin fa-spinner">&nbsp;&nbsp;</i>Preparing download, please wait...</div>
 
                             <div class="row-fluid">
@@ -158,7 +166,6 @@
                                 </div>
                             </div>
                             <!-- /ko -->
-                        </div>
                         <!-- /ko -->
                     </div>
 
