@@ -36,7 +36,7 @@
     <div class="well">
         <div class="row-fluid">
             <div class="span3">
-                <label for="${source}Latitude">Latitude</label>
+                <label for="${source}Latitude">Latitude<g:if test="${validation?.contains('required')}"><i class="req-field"></i></g:if></label>
             </div>
 
             <div class="span9">
@@ -45,14 +45,14 @@
                 </g:if>
                 <g:else>
                     <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude"
-                           data-validation-engine="validate[required]">
+                           ${validation}>
                 </g:else>
             </div>
         </div>
 
         <div class="row-fluid">
             <div class="span3">
-                <label for="${source}Longitude">Longitude</label>
+                <label for="${source}Longitude">Longitude<g:if test="${validation?.contains('required')}"><i class="req-field"></i></g:if></label>
             </div>
 
             <div class="span9">
@@ -61,7 +61,7 @@
                 </g:if>
                 <g:else>
                     <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude"
-                           data-validation-engine="validate[required]">
+                           ${validation}>
                 </g:else>
             </div>
         </div>

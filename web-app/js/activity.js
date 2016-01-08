@@ -346,7 +346,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                 onClick: self.getActivityOrRecords
             });
             alaMap.addControl(radio);
-            alaMap.addButton("<span class='fa fa-refresh' title='Reset zoom'></span>", alaMap.fitBounds, "bottomleft");
+            alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomleft");
         }
 
         features && features.length && alaMap.addClusteredPoints(features);
