@@ -465,7 +465,7 @@
 
     <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
         <div class="well">
-            <h4 class="block-header"><g:message code="project.details.site"/></h4>
+            <h4 class="block-header"><g:message code="project.details.site"/><i class="req-field"></i></h4>
             <p>
                 A project area should represent the smallest area which contains all of the data collected in a single activity or survey event.
             </p>

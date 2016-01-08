@@ -175,6 +175,17 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         return self.site().siteId();
     };
 
+    self.isValid = function(mandatory) {
+        var valid = true;
+
+        if (mandatory) {
+            var js = self.toJS();
+            valid = js && js.extent && js.extent.geometry && js.extent.geometry.type && js.extent.geometry.type != null && js.extent.geometry.type != "";
+        }
+
+        return valid;
+    };
+
     function initialiseViewModel() {
         self.map = new ALA.Map(mapContainerId, {
             maxZoom: 9,
@@ -190,6 +201,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             pointOfInterestMarkers.clearLayers();
             self.pointsOfInterest([]);
             self.loadGeometry({});
+            self.loadSite(site || {});
         }, "bottomleft");
 
         self.map.addControl(regionSelector);
