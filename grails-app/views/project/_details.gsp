@@ -464,14 +464,14 @@
     </div>
 
     <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
-        <div class="well">
+        <!-- ko stopBinding: true -->
+        <div class="well" id="sitemap">
             <h4 class="block-header"><g:message code="project.details.site"/><i class="req-field"></i></h4>
             <p>
                 A project area should represent the smallest area which contains all of the data collected in a single activity or survey event.
             </p>
-            <!-- ko stopBinding: true -->
             <g:render template="/site/siteDefinition" />
-            <!-- /ko -->
         </div>
+        <!-- /ko -->
     </div>
 </bc:koLoading>

@@ -1,4 +1,4 @@
-<div id="sitemap" class="row-fluid">
+<div id="sitedef" class="row-fluid">
     <div class="span7">
         <m:map id="mapForExtent" width="100%"/>
     </div>
