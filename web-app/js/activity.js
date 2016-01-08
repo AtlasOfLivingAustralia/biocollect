@@ -301,7 +301,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                         }
                         break;
                     case 'activity':
-                        if(activity.coordinates && activity.coordinates.length && activity.coordinates[1] && !isNaN(activity.coordinates[1]) && el.coordinates[0] && !isNaN(activity.coordinates[0])){
+                        if(activity.coordinates && activity.coordinates.length && activity.coordinates[1] && !isNaN(activity.coordinates[1]) && activity.coordinates[0] && !isNaN(activity.coordinates[0])){
                             features.push({
                                 lat: activity.coordinates[1],
                                 lng: activity.coordinates[0],
