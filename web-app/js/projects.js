@@ -634,7 +634,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.attachDocument = function() {
         showDocumentAttachInModal(fcConfig.documentUpdateUrl, new DocumentViewModel({role:'information', maxStages: maxStages},{key:'projectId', value:project.projectId}), '#attachDocument')
             .done(function(result){
-                self.documents.push(new DocumentViewModel(result))}
+                    window.location.href = here;
+                }
             );
     };
     self.editDocumentMetadata = function(document) {
