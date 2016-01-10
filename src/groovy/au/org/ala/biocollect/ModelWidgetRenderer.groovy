@@ -15,6 +15,7 @@ public interface ModelWidgetRenderer {
     void renderSelectOne(WidgetRenderContext context)
     void renderSelectMany(WidgetRenderContext context)
     void renderImage(WidgetRenderContext context)
+    void renderImageDialog(WidgetRenderContext context)
     void renderEmbeddedImage(WidgetRenderContext context)
     void renderEmbeddedImages(WidgetRenderContext context)
     void renderAutocomplete(WidgetRenderContext context)

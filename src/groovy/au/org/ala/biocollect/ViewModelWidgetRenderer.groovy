@@ -65,9 +65,14 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderImage(WidgetRenderContext context) {
-        context.addDeferredTemplate('/output/fileUploadTemplate')
         context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"
-        context.writer << context.g.render(template: '/output/imageDataTypeTemplate', model: [databindAttrs:context.databindAttrs.toString(), source: context.source, readOnly: true, name: context.source])
+        context.writer << context.g.render(template: '/output/imageDataTypeViewModelTemplate',
+                model: [databindAttrs:context.databindAttrs.toString(), name: context.source])
+    }
+
+    @Override
+    void renderImageDialog(WidgetRenderContext context) {
+        renderImage(context);
     }
 
     @Override
