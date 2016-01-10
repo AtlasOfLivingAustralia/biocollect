@@ -292,8 +292,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                             $.each(activity.records, function(k, el) {
                                 if(el.coordinates && el.coordinates.length && el.coordinates[1] && !isNaN(el.coordinates[1]) && el.coordinates[0] && !isNaN(el.coordinates[0])){
                                     features.push({
-                                        lat: el.coordinates[1],
-                                        lng: el.coordinates[0],
+                                        // the ES index always returns the coordinate array in [lat, lng] order
+                                        lat: el.coordinates[0],
+                                        lng: el.coordinates[1],
                                         popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, el.name)
                                     });
                                 }
@@ -303,8 +304,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                     case 'activity':
                         if(activity.coordinates && activity.coordinates.length && activity.coordinates[1] && !isNaN(activity.coordinates[1]) && activity.coordinates[0] && !isNaN(activity.coordinates[0])){
                             features.push({
-                                lat: activity.coordinates[1],
-                                lng: activity.coordinates[0],
+                                // the ES index always returns the coordinate array in [lat, lng] order
+                                lat: activity.coordinates[0],
+                                lng: activity.coordinates[1],
                                 popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name)
                             });
                         }

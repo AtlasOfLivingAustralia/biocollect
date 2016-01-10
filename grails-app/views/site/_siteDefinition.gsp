@@ -7,6 +7,8 @@
         <div data-bind="visible: showPointAttributes(), template: { name: 'point'}"></div>
 
         <div class="well well-small" data-bind="visible: site().extent().geometry().type">
+            <div data-bind="if: transients.loadingGazette()"><span class="fa fa-spin fa-spinner"></span></div>
+
             <!-- ko if:site().extent().geometry().type() == 'pid' -->
             <div class="row-fluid controls-row">
                 <span class="label label-success"><g:message code="site.metadata.name"/> </span> <span

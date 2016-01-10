@@ -156,7 +156,12 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     };
 
     self.saveSites = function () {
-        return self.genericUpdate("sites");
+        var jsData = self.current().asJS("sites");
+        if (jsData.sites && jsData.sites.length > 0) {
+            self.genericUpdate("sites");
+        } else {
+            showAlert("No site associated with this survey", "alert-error", self.placeHolder);
+        }
     };
 
     self.deleteProjectActivity = function () {

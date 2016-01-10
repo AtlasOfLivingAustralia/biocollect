@@ -20,12 +20,12 @@ Biocollect.MapUtilities = {
             geoJson.properties.pid = feature.pid;
         } else if (feature.type.toLowerCase() == "circle") {
             geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
-            geoJson.geometry.coordinates = feature.centre;
+            geoJson.geometry.coordinates = feature.coordinates;
             geoJson.properties.point_type = ALA.MapConstants.DRAW_TYPE.CIRCLE_TYPE;
             geoJson.properties.radius = feature.radius;
         } else if (feature.type.toLowerCase() == "point") {
             geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
-            geoJson.geometry.coordinates = feature.centre;
+            geoJson.geometry.coordinates = feature.coordinates;
         } else if (feature.type.toLowerCase() == "polygon") {
             geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
             geoJson.geometry.coordinates = feature.coordinates;

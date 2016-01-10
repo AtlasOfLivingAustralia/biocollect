@@ -8,6 +8,9 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     var latSubscriber = null;
     var lngSubscriber = null;
 
+    self.transients = {
+        loadingGazette: ko.observable(false)
+    };
     self.site = null;
     self.pointsOfInterest = ko.observableArray();
     self.showPointAttributes = ko.observable(false);
@@ -59,7 +62,6 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     };
 
     self.loadGeometry = function (geometry) {
-
         var geometryObservable = ko.observable({
             decimalLatitude: ko.observable(exists(geometry, 'decimalLatitude')),
             decimalLongitude: ko.observable(exists(geometry, 'decimalLongitude')),
@@ -86,6 +88,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             fid: ko.observable(exists(geometry, 'fid')),
             layerName: ko.observable(exists(geometry, 'layerName'))
         });
+
         latSubscriber = geometryObservable().decimalLatitude.subscribe(updateSiteMarkerPosition);
         lngSubscriber = geometryObservable().decimalLongitude.subscribe(updateSiteMarkerPosition);
 
@@ -94,6 +97,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             self.map.setGeoJSON(validGeoJson);
             self.showPointAttributes(geometry.type == "Point");
         }
+        loadGazetteInformation(geometryObservable().decimalLatitude(), geometryObservable().decimalLongitude());
 
         return geometryObservable;
     };
@@ -153,11 +157,6 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     self.toJS = function() {
         var js = ko.toJS(self.site);
 
-        // the ALA Map plugin uses GeoJSON, which species coords in lng/lat rather than lat/lng.
-        // Biocollect & Ecodata use lat/lng, so we need to flip the order for Points & circles before we save it.
-        if (js.extent.geometry.type == "Point" || js.extent.geometry.type == "Circle") {
-            js.extent.geometry.coordinates = js.extent.geometry.coordinates.reverse();
-        }
         js.poi = [];
         self.pointsOfInterest().forEach(function (poi) {
             js.poi.push(poi.toJSON())
@@ -264,6 +263,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         if (siteMarker && geometry.decimalLatitude() && geometry.decimalLongitude()) {
             siteMarker.setLatLng(new L.LatLng(geometry.decimalLatitude(), geometry.decimalLongitude()));
             self.map.fitBounds();
+            loadGazetteInformation(geometry.decimalLatitude(), geometry.decimalLongitude());
         }
     }
 
@@ -274,12 +274,17 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             var feature = geoJson.features[0];
             var geometryType = feature.geometry.type;
             var latLng = null;
+            var lat;
+            var lng;
             var bounds = self.map.getBounds();
             if (geometryType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
-                latLng = feature.geometry.coordinates.reverse();
+                // the ALA Map plugin uses valid GeoJSON, which specifies coordinates as [lng, lat]
+                lat = feature.geometry.coordinates[1];
+                lng = feature.geometry.coordinates[0];
                 self.site().extent().geometry().centre(latLng);
             } else if (bounds) {
-                latLng = [bounds.getCenter().lat, bounds.getCenter().lng];
+                lat = bounds.getCenter().lat;
+                lng = bounds.getCenter().lng;
             }
 
             var geoType = determineExtentType(feature);
@@ -301,15 +306,16 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             self.site().extent().geometry().fid(exists(feature.properties, 'fid'));
             self.site().extent().geometry().layerName(exists(feature.properties, 'fieldname'));
 
-            loadGazetteInformation(latLng);
+            loadGazetteInformation(lat, lng);
         } else {
             self.loadGeometry({});
         }
     }
 
-    function loadGazetteInformation(latLng) {
+    function loadGazetteInformation(lat, lng) {
+        self.transients.loadingGazette(true);
         $.ajax({
-            url: fcConfig.siteMetaDataUrl + "?lat=" + latLng[0] + "&lon=" + latLng[1],
+            url: fcConfig.siteMetaDataUrl + "?lat=" + lat + "&lon=" + lng,
             dataType: "json"
         }).done(function (data) {
             self.site().extent().geometry().nrm(exists(data, 'nrm'));
@@ -318,6 +324,8 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             self.site().extent().geometry().locality(exists(data, 'locality'));
             self.site().extent().geometry().mvg(exists(data, 'mvg'));
             self.site().extent().geometry().mvs(exists(data, 'mvs'));
+        }).always(function (data) {
+            self.transients.loadingGazette(false);
         });
     }
 
@@ -387,7 +395,7 @@ var PointOfInterest = function (data, hasDocuments) {
         };
 
         if (self.hasCoordinate()) {
-            js.geometry.coordinates = [js.geometry.decimalLongitude, js.geometry.decimalLatitude];
+            js.geometry.coordinates = [js.geometry.decimalLatitude, js.geometry.decimalLongitude];
         }
         return js;
     };
