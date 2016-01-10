@@ -45,74 +45,81 @@
 </div>
 
 <script id="viewActivityTmpl" type="text/html">
-    <div>Type: <span data-bind="text:type"></span></div>
-    <div>Category: <span data-bind="text:category"></span></div>
-    <div>Enabled: <span data-bind="text:enabled"></span></div>
-    <div>GMS ID: <span data-bind="text:gmsId"></span></div>
-    <div>Supports Sites: <span data-bind="text:supportsSites"></span></div>
-    <div>Supports Photo Points: <span data-bind="text:supportsPhotoPoints"></span></div>
+<div>Type: <span data-bind="text:type"></span></div>
+<div>Category: <span data-bind="text:category"></span></div>
+<div>Enabled: <span data-bind="text:enabled"></span></div>
+<div>GMS ID: <span data-bind="text:gmsId"></span></div>
+<div>Supports Sites: <span data-bind="text:supportsSites"></span></div>
+<div>Supports Photo Points: <span data-bind="text:supportsPhotoPoints"></span></div>
 
 
-    <div>Outputs: <ul data-bind="foreach:outputs">
-        <li data-bind="text:$data"></li>
-    </ul></div>
-    <button data-bind="click:$root.removeActivity" type="button" class="btn btn-mini pull-right">Remove</button>
-    <button data-bind="click:edit" type="button" class="btn btn-mini pull-right">Edit</button>
+<div>Outputs: <ul data-bind="foreach:outputs">
+    <li><span data-bind="text:$data"></span><span data-bind="visible:$parent.outputConfigByName()[$data].optional()"> (optional)</span></li>
+</ul></div>
+<button data-bind="click:$root.removeActivity" type="button" class="btn btn-mini pull-right">Remove</button>
+<button data-bind="click:edit" type="button" class="btn btn-mini pull-right">Edit</button>
 </script>
 
 <script id="editActivityTmpl" type="text/html">
-    <div style="margin-top:4px"><span class="span2">Name:</span> <input type="text" class="input-large pull-right" data-bind="value:name"></div>
-    <div class="clearfix"><span class="span2">Type:</span> <select data-bind="options:['Activity','Assessment','Report'],value:type" class="pull-right"></select></div>
-    <div class="clearfix"><span class="span2">Category:</span> <input type="text" class="input-large pull-right" data-bind="value:category"></div>
-    <div class="clearfix"><span class="span2">Enabled:</span><input type="checkbox" class="pull-right" data-bind="checked:enabled"></div>
-    <div class="clearfix"><span class="span2">GMS ID:</span> <input type="text" class="input-large pull-right" data-bind="value:gmsId"></div>
-    <div class="clearfix"><span class="span2">Sites?:</span><input type="checkbox" class="pull-right" data-bind="checked:supportsSites,enable:type()!='Report'"></div>
-    <div class="clearfix"><span class="span2">Photo points?:</span><input type="checkbox" class="pull-right" data-bind="checked:supportsPhotoPoints,enable:type()!='Report'"></div>
+<div style="margin-top:4px"><span class="span2">Name:</span> <input type="text" class="input-large pull-right" data-bind="value:name"></div>
+<div class="clearfix"><span class="span2">Type:</span> <select data-bind="options:['Activity','Assessment','Report'],value:type" class="pull-right"></select></div>
+<div class="clearfix"><span class="span2">Category:</span> <input type="text" class="input-large pull-right" data-bind="value:category"></div>
+<div class="clearfix"><span class="span2">Enabled:</span><input type="checkbox" class="pull-right" data-bind="checked:enabled"></div>
+<div class="clearfix"><span class="span2">GMS ID:</span> <input type="text" class="input-large pull-right" data-bind="value:gmsId"></div>
+<div class="clearfix"><span class="span2">Sites?:</span><input type="checkbox" class="pull-right" data-bind="checked:supportsSites,enable:type()!='Report'"></div>
+<div class="clearfix"><span class="span2">Photo points?:</span><input type="checkbox" class="pull-right" data-bind="checked:supportsPhotoPoints,enable:type()!='Report'"></div>
 
-    <div>Outputs: <ul data-bind="sortable:{data:outputs}" class="output-drop-target sortableList small">
-        <li>
-            <span data-bind="text:$data"></span>
-            <span class="pull-right"><i data-bind="click:$parent.removeOutput" class="icon-remove"></i></span>
-        </li>
-    </ul></div>
-    <button data-bind="click:done" type="button" class="btn btn-mini pull-right">Done</button>
+<div>Outputs: <ul data-bind="sortable:{data:outputs}" class="output-drop-target sortableList small">
+    <li>
+        <span data-bind="text:$data"></span>
+        <span class="pull-right"><i data-bind="click:$parent.removeOutput" class="icon-remove"></i></span>
+        <div data-bind="with:$parent.outputConfigByName()[$data]">
+            <label class="checkbox">Optional? <input type="checkbox" class="pull-right" data-bind="checked:optional"></label>
+
+            <label class="checkbox">Collapsed? <input type="checkbox" class="pull-right" data-bind="checked:collapsedByDefault"></label>
+            <label>Question text if optional:</label>
+            <input type="text" class="input-xlarge" data-bind="value:optionalQuestionText, disable:!optional()">
+        </div>
+    </li>
+</ul></div>
+<button data-bind="click:done" type="button" class="btn btn-mini pull-right">Done</button>
 </script>
 
 <script id="viewOutputTmpl" type="text/html">
-    <div>Template: <span data-bind="text:template"></span></div>
-    <div>Scores: <ul data-bind="foreach:scores">
-        <li><span data-bind="text:label"></span> (<span data-bind="text:category"></span>), <span data-bind="text:aggregationType"></span></li>
-    </ul></div>
-    <button data-bind="click:$root.removeOutput" type="button" class="btn btn-mini pull-right">Remove</button>
-    <button data-bind="click:edit" type="button" class="btn btn-mini pull-right">Edit</button>
+<div>Template: <span data-bind="text:template"></span></div>
+<div>Scores: <ul data-bind="foreach:scores">
+    <li><span data-bind="text:label"></span> (<span data-bind="text:category"></span>), <span data-bind="text:aggregationType"></span></li>
+</ul></div>
+<button data-bind="click:$root.removeOutput" type="button" class="btn btn-mini pull-right">Remove</button>
+<button data-bind="click:edit" type="button" class="btn btn-mini pull-right">Edit</button>
 </script>
 
 <script id="editOutputTmpl" type="text/html">
-    <div style="margin-top:4px"><span class="span3">Name:</span> <input type="text" class="input pull-right" data-bind="value:name"></div>
-    <div class="clearfix"><span class="span3">Template:</span> <input type="text" class="input pull-right" data-bind="value:template"></div>
-    <div>Scores: <ul data-bind="sortable:{data:scores}" class="sortableList small">
-        <li>
-            <div style="text-align:left;">
+<div style="margin-top:4px"><span class="span3">Name:</span> <input type="text" class="input pull-right" data-bind="value:name"></div>
+<div class="clearfix"><span class="span3">Template:</span> <input type="text" class="input pull-right" data-bind="value:template"></div>
+<div>Scores: <ul data-bind="sortable:{data:scores}" class="sortableList small">
+    <li>
+        <div style="text-align:left;">
             Name: <select data-bind="value:compoundName,options:nameOptions"/>
             <span class="pull-right"><i data-bind="click:$parent.removeScore" class="icon-remove"></i></span>
-            </div>
-            <div style="text-align:left;">
+        </div>
+        <div style="text-align:left;">
             Label: <input type="text" data-bind="value:label"/>
-            </div>
-            <div style="text-align: left;">
+        </div>
+        <div style="text-align: left;">
             Description: <input type="text" data-bind="value:description"/>
-            </div>
-            <div style="text-align:left;">
+        </div>
+        <div style="text-align:left;">
             Category: <input type="text" data-bind="value:category"/>
-            </div>
-            <div style="text-align:left;">
+        </div>
+        <div style="text-align:left;">
             Units: <input type="text" data-bind="value:units"/>
-            </div>
-            <div style="text-align:left;">
+        </div>
+        <div style="text-align:left;">
             GMS ID: <input type="text" data-bind="value:gmsId"/>
-            </div>
+        </div>
 
-            <div style="text-align:left;">
+        <div style="text-align:left;">
             Aggregation:
             <select data-bind="value:aggregationType, style: { color: aggregationTypeValid() ? 'black':'red' }">
                 <option value="SUM">summed</option>
@@ -121,47 +128,32 @@
                 <option value="HISTOGRAM">count by value</option>
                 <option value="SET">list of distinct values</option>
             </select>
-            </div>
-            <div style="text-align:left;">
-                Grouping: <input type="text" data-bind="value:groupBy"/>
-            </div>
-            <div style="text-align:left;">
-                Filtering: <input type="text" data-bind="value:filterBy"/>
-            </div>
+        </div>
+        <div style="text-align:left;">
+            Grouping: <input type="text" data-bind="value:groupBy"/>
+        </div>
+        <div style="text-align:left;">
+            Filtering: <input type="text" data-bind="value:filterBy"/>
+        </div>
 
-            <div style="text-align:left;">
-                Display type: <select data-bind="value:displayType">
-                <option value=""></option>
-                <option value="piechart">Pie chart</option>
-                <option value="barchart">Bar chart</option>
-                </select>
-            </div>
+        <div style="text-align:left;">
+            Display type: <select data-bind="value:displayType">
+            <option value=""></option>
+            <option value="piechart">Pie chart</option>
+            <option value="barchart">Bar chart</option>
+        </select>
+        </div>
 
-            <div style="text-align:left;">
+        <div style="text-align:left;">
             Use as output target:
             <input type="checkbox" data-bind="checked:isOutputTarget"/>
-            </div>
-        </li>
-    </ul><span data-bind="click:addScore" class="clickable"><i class="icon-plus"></i> Add new</span>
-    </div>
-    <button data-bind="click:done" type="button" class="btn btn-mini pull-right">Done</button>
+        </div>
+    </li>
+</ul><span data-bind="click:addScore" class="clickable"><i class="icon-plus"></i> Add new</span>
+</div>
+<button data-bind="click:done" type="button" class="btn btn-mini pull-right">Done</button>
 </script>
 
-
-%{--<div class="expandable-debug clearfix">--}%
-    %{--<hr />--}%
-    %{--<h3>Debug</h3>--}%
-    %{--<div>--}%
-        %{--<h4>KO model</h4>--}%
-        %{--<pre data-bind="text:ko.toJSON($root,null,2)"></pre>--}%
-        %{--<h4>Input model</h4>--}%
-        %{--<pre>${activitiesModel}</pre>--}%
-        %{--<h4>Activities</h4>--}%
-        %{--<pre data-bind="text:ko.toJSON(activities,null,2)"></pre>--}%
-        %{--<h4>Outputs</h4>--}%
-        %{--<pre data-bind="text:ko.toJSON(outputs,null,2)"></pre>--}%
-    %{--</div>--}%
-%{--</div>--}%
 
 <r:script>
     $(function(){
@@ -171,6 +163,10 @@
             this.name = ko.observable(act.name);
             this.type = ko.observable(act.type);
             this.outputs = ko.observableArray(act.outputs || []);
+            this.outputConfig = ko.observableArray($.map(act.outputConfig || [], function(outputConfig) {
+                return new OutputConfig(outputConfig);
+            }));
+
             this.expanded = ko.observable(false);
             this.category = ko.observable(act.category);
             this.enabled = ko.observable(!act.status || act.status == 'active');
@@ -179,6 +175,26 @@
             this.supportsSites = ko.observable(act.supportsSites);
             this.supportsPhotoPoints = ko.observable(act.supportsPhotoPoints);
 
+            this.outputConfigByName = ko.computed(function() {
+                var outputConfigByName = {};
+                for (var i=0; i<self.outputs().length; i++) {
+                    var outputName = self.outputs()[i];
+                    var found = false;
+                    for (var j=0; j<self.outputConfig().length; j++) {
+                        if (outputName == self.outputConfig()[j].outputName()) {
+
+                            outputConfigByName[outputName] = self.outputConfig()[j];
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                return outputConfigByName;
+            });
+
+            this.outputs.subscribe(function() {
+                self.initialiseOutputConfig();
+            })
             this.enabled.subscribe(function (enabled) {
                 if (enabled) {
                     self.status('active');
@@ -215,15 +231,48 @@
             };
             this.removeOutput = function (data) {
                 self.outputs.remove(data);
+                self.outputConfig.remove(function(outputConfig) {
+                    return outputConfig.outputName == data;
+                });
+            };
+            this.initialiseOutputConfig = function() {
+                for (var i=0; i<self.outputs().length; i++) {
+                    var outputName = self.outputs()[i];
+                    var found = false;
+                    for (var j=0; j<self.outputConfig().length; j++) {
+                        if (outputName == self.outputConfig()[j].outputName()) {
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        self.outputConfig.push(new OutputConfig({outputName:outputName, optional:false, collapsedByDefault:false}));
+                    }
+                }
             };
             this.toJSON = function() {
                 var js = ko.toJS(this);
                 delete js.expanded;
                 delete js.editing;
                 delete js.enabled;
+                delete js.outputConfigByName;
                 return js;
             }
+            self.initialiseOutputConfig();
         };
+
+        var OutputConfig = function(outputConfig) {
+            var self = this;
+            this.outputName = ko.observable(outputConfig.outputName);
+            this.optionalQuestionText = ko.observable(outputConfig.optionalQuestionText);
+            this.optional = ko.observable(outputConfig.optional);
+            this.collapsedByDefault = ko.observable(outputConfig.collapsedByDefault);
+
+            this.optional.subscribe(function(val) {
+                if (!val) {
+                    self.collapsedByDefault(false);
+                }
+            });
+        }
 
         var ScoreModel = function (template, score) {
             var self = this;
@@ -259,133 +308,133 @@
             self.nameOptions = ko.observableArray([self.compoundName()]);
 
             %{-- True if this score can/should be assigned a target for project planning purposes. --}%
-            self.isOutputTarget = ko.observable(score.isOutputTarget)
+    self.isOutputTarget = ko.observable(score.isOutputTarget)
 
-            self.template = ko.observable();
-            self.template.subscribe(function(template) {
-                $.each(template.dataModel, function(i, obj) {
-                    if (obj.dataType == 'list') {
-                        $.each(obj.columns, function(i, nested) {
-                            self.nameOptions.push(obj.name + '.' + nested.name);
-                        });
-                    }
-                    self.nameOptions.push(obj.name);
+    self.template = ko.observable();
+    self.template.subscribe(function(template) {
+        $.each(template.dataModel, function(i, obj) {
+            if (obj.dataType == 'list') {
+                $.each(obj.columns, function(i, nested) {
+                    self.nameOptions.push(obj.name + '.' + nested.name);
                 });
-            });
-
-            self.template(template);
-
-
-            self.aggregationTypeValid = ko.computed(function() {
-                if (!self.template()) {
-                    return true;
-                }
-                $.each(self.template().dataModel, function(i, obj) {
-                    if (self.name() == obj.name) {
-                        if (obj.dataType == 'number') {
-                            return self.aggregationType() == "SUM" ||  self.aggregationType() == "AVERAGE";
-                        }
-                        else {
-                            return !(self.aggregationType() == "SUM" ||  self.aggregationType() == "AVERAGE");
-                        }
-
-                    }
-                });
-                return true;
-            });
-
-            this.toJSON = function() {
-                var js = ko.toJS(this);
-                delete js.template;
-                delete js.compoundName;
-                delete js.nameOptions;
-                delete js.aggregationTypeValid;
-
-                return js;
             }
-        };
+            self.nameOptions.push(obj.name);
+        });
+    });
 
-        var OutputModel = function (out, model) {
-            var self = this;
-            this.name = ko.observable(out.name);
-            this.template = ko.observable(out.template);
-            this.templateDetail = ko.observable();
+    self.template(template);
 
-            this.scores = ko.observableArray($.map(out.scores || [], function (obj,i) {
-                return new ScoreModel(self.templateDetail(), obj);
-            }));
 
-            this.templateDetail.subscribe(function (template) {
-                $.each(self.scores(), function(i, score) {
-                    score.template(template);
-                });
-
-            });
-
-            this.expanded = ko.observable(false);
-            this.toggle = function (data, event) {
-                if (!self.expanded()) {
-                    $.each(viewModel.outputs(), function (i, obj) {
-                        obj.expanded(false); // close all
-                        obj.done(); // exit editing mode
-                    });
-                    self.expanded(true);
-                } else {
-                    self.expanded(false);
-                    self.done(); // in case we were editing
+    self.aggregationTypeValid = ko.computed(function() {
+        if (!self.template()) {
+            return true;
+        }
+        $.each(self.template().dataModel, function(i, obj) {
+            if (self.name() == obj.name) {
+                if (obj.dataType == 'number') {
+                    return self.aggregationType() == "SUM" ||  self.aggregationType() == "AVERAGE";
                 }
-            };
-            this.editing = ko.observable(false);
-            this.edit = function () {
-                self.editing(true);
-                self.getOutputModelTemplate();
-            };
-            this.done = function () { self.editing(false) };
-            this.displayMode = function () {
-                return self.editing() ? 'editOutputTmpl' : 'viewOutputTmpl';
-            };
-            this.addScore = function () {
-                self.scores.push(new ScoreModel(self.templateDetail(), {}));
-            };
-            this.removeScore = function (data) {
-                self.scores.remove(data);
-            };
-            this.isReferenced = ko.computed(function () {
-                var current = model.selectedActivity(),
-                    referenced = false;
-                if (current === undefined) { return false; }
-                $.each(current.outputs(), function (k, out) {
-                    if (out === self.name()) {
-                        referenced = true;
-                    }
-                });
-                return referenced;
-            });
-            this.isAddable = ko.computed(function () {
-                if (model.selectedActivity() === undefined) {
-                    return false;
+                else {
+                    return !(self.aggregationType() == "SUM" ||  self.aggregationType() == "AVERAGE");
                 }
-                return !self.isReferenced();
-            });
-            this.addToCurrentActivity = function (data) {
-                model.selectedActivity().outputs.push(data.name());
-            };
-            this.toJSON = function() {
-                var js = ko.toJS(this);
-                delete js.expanded;
-                delete js.editing;
-                delete js.isReferenced;
-                delete js.isAddable;
-                delete js.templateDetail;
 
-                js.scores = []
-                $.each(self.scores(), function(i, score) {
-                    js.scores.push(score.toJSON());
-                });
-                return js;
             }
-            this.getOutputModelTemplate = function() {
-                $.getJSON("${createLink(action: 'getOutputDataModel')}/" + self.template(), function (data) {
+        });
+        return true;
+    });
+
+    this.toJSON = function() {
+        var js = ko.toJS(this);
+        delete js.template;
+        delete js.compoundName;
+        delete js.nameOptions;
+        delete js.aggregationTypeValid;
+
+        return js;
+    }
+};
+
+var OutputModel = function (out, model) {
+    var self = this;
+    this.name = ko.observable(out.name);
+    this.template = ko.observable(out.template);
+    this.templateDetail = ko.observable();
+
+    this.scores = ko.observableArray($.map(out.scores || [], function (obj,i) {
+        return new ScoreModel(self.templateDetail(), obj);
+    }));
+
+    this.templateDetail.subscribe(function (template) {
+        $.each(self.scores(), function(i, score) {
+            score.template(template);
+        });
+
+    });
+
+    this.expanded = ko.observable(false);
+    this.toggle = function (data, event) {
+        if (!self.expanded()) {
+            $.each(viewModel.outputs(), function (i, obj) {
+                obj.expanded(false); // close all
+                obj.done(); // exit editing mode
+            });
+            self.expanded(true);
+        } else {
+            self.expanded(false);
+            self.done(); // in case we were editing
+        }
+    };
+    this.editing = ko.observable(false);
+    this.edit = function () {
+        self.editing(true);
+        self.getOutputModelTemplate();
+    };
+    this.done = function () { self.editing(false) };
+    this.displayMode = function () {
+        return self.editing() ? 'editOutputTmpl' : 'viewOutputTmpl';
+    };
+    this.addScore = function () {
+        self.scores.push(new ScoreModel(self.templateDetail(), {}));
+    };
+    this.removeScore = function (data) {
+        self.scores.remove(data);
+    };
+    this.isReferenced = ko.computed(function () {
+        var current = model.selectedActivity(),
+            referenced = false;
+        if (current === undefined) { return false; }
+        $.each(current.outputs(), function (k, out) {
+            if (out === self.name()) {
+                referenced = true;
+            }
+        });
+        return referenced;
+    });
+    this.isAddable = ko.computed(function () {
+        if (model.selectedActivity() === undefined) {
+            return false;
+        }
+        return !self.isReferenced();
+    });
+    this.addToCurrentActivity = function (data) {
+        model.selectedActivity().outputs.push(data.name());
+    };
+    this.toJSON = function() {
+        var js = ko.toJS(this);
+        delete js.expanded;
+        delete js.editing;
+        delete js.isReferenced;
+        delete js.isAddable;
+        delete js.templateDetail;
+
+        js.scores = []
+        $.each(self.scores(), function(i, score) {
+            js.scores.push(score.toJSON());
+        });
+        return js;
+    }
+    this.getOutputModelTemplate = function() {
+        $.getJSON("${createLink(action: 'getOutputDataModel')}/" + self.template(), function (data) {
                     if (data.error) {
                         bootbox.alert('Unable to get output definition for '+output);
 
