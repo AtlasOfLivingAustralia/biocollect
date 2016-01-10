@@ -1,5 +1,6 @@
 <div class="row-fluid" id="${containerId}">
     <div data-bind="span12">
+        <!-- ko if: documents().length > 0 -->
         <div class="well">
             <div data-bind="foreach: { data: documents, afterAdd: showListItem, beforeRemove: hideListItem }">
                 <div data-bind="{ if: (role() == '${filterBy}' || 'all' == '${filterBy}') && role() != '${ignore}' && role() != 'variation' }">
@@ -7,6 +8,7 @@
                 </div>
             </div>
         </div>
+        <!-- /ko -->
     </div>
 </div>
 

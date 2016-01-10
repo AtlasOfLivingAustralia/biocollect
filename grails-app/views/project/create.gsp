@@ -95,16 +95,19 @@ $(function(){
     </g:else>
     $('#save').click(function () {
         if ($('#projectDetails').validationEngine('validate')) {
+            if (viewModel.transients.siteViewModel.isValid(true)) {
+                viewModel.saveWithErrorDetection(function(data) {
+                    var projectId = "${project?.projectId}" || data.projectId;
 
-            viewModel.saveWithErrorDetection(function(data) {
-                var projectId = "${project?.projectId}" || data.projectId;
-
-                if (viewModel.isExternal()) {
-                    document.location.href = "${createLink(action: 'index')}/" + projectId;
-                } else {
-                    document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
-                }
-            });
+                    if (viewModel.isExternal()) {
+                        document.location.href = "${createLink(action: 'index')}/" + projectId;
+                    } else {
+                        document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
+                    }
+                });
+            } else {
+                bootbox.alert("You must define the spatial extent of the project area");
+            }
         }
     });
 

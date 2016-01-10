@@ -634,7 +634,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.attachDocument = function() {
         showDocumentAttachInModal(fcConfig.documentUpdateUrl, new DocumentViewModel({role:'information', maxStages: maxStages},{key:'projectId', value:project.projectId}), '#attachDocument')
             .done(function(result){
-                self.documents.push(new DocumentViewModel(result))}
+                    window.location.href = here;
+                }
             );
     };
     self.editDocumentMetadata = function(document) {
@@ -754,13 +755,13 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     var self = this;
 
     // Automatically create the site of type "Project Area" with a name of "Project area for ..."
-    var siteViewModel = initSiteViewModel(false);
+    self.transients.siteViewModel = initSiteViewModel(false);
     self.name.subscribe(function(newValue){
-        var oldValue = siteViewModel.site().name();
+        var oldValue = self.transients.siteViewModel.site().name();
         var projectName =  newValue
         var prefix = "Project area for ";
         if(oldValue.indexOf(prefix) >= 0 || !oldValue){
-            siteViewModel.site().name(prefix+projectName);
+            self.transients.siteViewModel.site().name(prefix+projectName);
         }
     });
 
@@ -825,7 +826,7 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     self.modelAsJSON = function() {
         var projectData = self.toJS();
 
-        var siteData = siteViewModel.toJS();
+        var siteData = self.transients.siteViewModel.toJS();
         var documents = ko.mapping.toJS(self.documents());
         self.fixLinkDocumentIds(self.transients.existingLinks);
         var links = ko.mapping.toJS(self.links());

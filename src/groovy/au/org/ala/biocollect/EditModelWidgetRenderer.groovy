@@ -174,8 +174,11 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderGeoMap(WidgetRenderContext context) {
-        context.model.readonly = false
-        context.writer << context.g.render(template: '/output/dataEntryMap', model: context.model)
+        Map model = [:]
+        model.putAll(context.model)
+        model.readonly = false
+        model.validation = context.validationAttr
+        context.writer << context.g.render(template: '/output/dataEntryMap', model: model)
     }
 
 }

@@ -301,7 +301,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                         }
                         break;
                     case 'activity':
-                        if(activity.coordinates && activity.coordinates.length && activity.coordinates[1] && !isNaN(activity.coordinates[1]) && el.coordinates[0] && !isNaN(activity.coordinates[0])){
+                        if(activity.coordinates && activity.coordinates.length && activity.coordinates[1] && !isNaN(activity.coordinates[1]) && activity.coordinates[0] && !isNaN(activity.coordinates[0])){
                             features.push({
                                 lat: activity.coordinates[1],
                                 lng: activity.coordinates[0],
@@ -346,7 +346,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                 onClick: self.getActivityOrRecords
             });
             alaMap.addControl(radio);
-            alaMap.addButton("<span class='fa fa-refresh' title='Reset zoom'></span>", alaMap.fitBounds, "bottomleft");
+            alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomleft");
         }
 
         features && features.length && alaMap.addClusteredPoints(features);

@@ -1,5 +1,5 @@
 <!-- ko stopBinding: true -->
-<div class="well">
+<div class="well" id="sitemap">
     <div class="row-fluid">
         <h2>Site create/edit</h2>
 
