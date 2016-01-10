@@ -31,3 +31,8 @@
 .carousel-caption {
     position: relative;
 }
+
+.modal.large {
+    width: 80%; /* respsonsive width */
+    margin-left:-40%; /* width/2) */
+}

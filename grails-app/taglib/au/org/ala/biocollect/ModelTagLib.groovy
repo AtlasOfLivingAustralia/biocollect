@@ -128,6 +128,9 @@ class ModelTagLib {
             case 'image':
                 renderer.renderImage(renderContext)
                 break
+            case 'imageDialog':
+                renderer.renderImageDialog(renderContext)
+                break
             case 'embeddedImage':
                 renderer.renderEmbeddedImage(renderContext)
                 break

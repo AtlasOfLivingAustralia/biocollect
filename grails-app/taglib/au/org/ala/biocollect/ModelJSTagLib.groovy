@@ -550,6 +550,17 @@ class ModelJSTagLib {
                     case 'stringList':
                         out << INDENT*3 << "this.${col.name}=ko.observableArray(orEmptyArray(data['${col.name}']));\n";
                         break
+                    case 'image':
+                        out << INDENT*3 << "this.${col.name}=ko.observableArray();\n";
+                        out << INDENT*4 << """
+                            (function (data) {
+                                if (data !== undefined) {
+                                    \$.each(data, function (i, obj) {
+                                        self.${col.name}.push( new ImageViewModel(obj));
+                                    });
+                            }})(data['${col.name}']);
+                            """
+                        break;
 
                 }
                 modelConstraints(col, out)
