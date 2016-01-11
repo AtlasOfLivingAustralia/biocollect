@@ -901,8 +901,8 @@ function findLogoScalingClass(imageElement) {
     var $elem = $(imageElement);
     var parentHeight = $elem.parent().height();
     var parentWidth = $elem.parent().width();
-    var height = $elem.height();
-    var width = $elem.width();
+    var height = imageElement.height;
+    var width = imageElement.width;
 
     var wide = width > height;
 
@@ -914,3 +914,8 @@ function findLogoScalingClass(imageElement) {
         $elem.addClass('tall');
     }
 }
+
+function initCarouselImages(image){
+    $(image).parent().fancybox({nextEffect:'fade', preload:0, 'prevEffect':'fade'});
+    findLogoScalingClass(image)
+};
