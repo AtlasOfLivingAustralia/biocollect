@@ -389,4 +389,8 @@ modules = {
         resource url: 'js/images.js'
         resource url: 'css/images.css'
     }
+
+    admin {
+        resource url: 'js/activityModel.js'
+    }
 }
