@@ -193,7 +193,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             showReset: false
         });
 
-        var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(self.map, mapOptions.featuresService);
+        var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(self.map, mapOptions.featuresService, mapOptions.regionListUrl);
 
         self.map.addButton("<span class='fa fa-refresh reset-map' title='Reset map'></span>", function () {
             self.map.resetMap();
