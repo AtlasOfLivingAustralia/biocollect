@@ -1,8 +1,10 @@
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect
 
 class OrganisationService {
 
-    def grailsApplication, webService, metadataService, projectService, userService
+    private static final String ORGANISATION_DOCUMENT_FILTER = "className:au.org.ala.ecodata.Organisation"
+
+    def grailsApplication, webService, metadataService, projectService, userService, searchService
 
 
     def get(String id, view = '') {
@@ -106,6 +108,22 @@ class OrganisationService {
         organisation.projects.each {
             userService.removeUserWithRole(it.projectId, userId, role)
         }
+    }
+
+    def search(Integer offset = 0, Integer max = 100, String searchTerm = null, String sort = null) {
+        Map params = [
+                offset:offset,
+                max:max,
+                query:searchTerm,
+                fq:ORGANISATION_DOCUMENT_FILTER
+        ]
+        if (sort) {
+            params.sort = sort
+        }
+        def results = searchService.fulltextSearch(
+                params, true // Don't use the default facet query because organisations won't match it
+        )
+        results
     }
 
 }
