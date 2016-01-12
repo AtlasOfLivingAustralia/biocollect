@@ -53,9 +53,9 @@ Biocollect.SiteDisplay = function() {
             allowSearchByAddress: false,
             draggableMarkers: false,
             showReset: false,
-            zoomToObject: false,
+            zoomToObject: true,
             wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
-            wmsFeatureUrl: fcConfig.featureService + "?featureId=",
+            wmsFeatureUrl: fcConfig.featureService + "?featureId="
         };
         var map = new ALA.Map("siteMap", mapOptions);
 
