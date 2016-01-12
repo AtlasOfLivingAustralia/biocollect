@@ -680,8 +680,10 @@ function ProjectViewModel(project, isUserEditor, organisations) {
                         if (data.error) {
                             showAlert(data.error, "alert-error", self.transients.resultsHolder);
                         } else {
-                            showAlert("Successfully deleted, redirecting to home page.", "alert-success", self.transients.resultsHolder);
-                            window.location.href = fcConfig.serverUrl;
+                            showAlert("Successfully deleted. Indexing is in process, search result will be updated in few minutes. Redirecting to search page...", "alert-success", self.transients.resultsHolder);
+                            setTimeout(function () {
+                                window.location.href = fcConfig.serverUrl;
+                            }, 3000);
                         }
                     },
                     error: function (data) {
