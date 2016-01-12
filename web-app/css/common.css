@@ -278,3 +278,27 @@
     margin-left: 10px !important;;
     margin-top: 5px !important;;
 }
+
+
+
+.organisation-logo {
+    width: 200px;
+    height: 150px;
+    margin-right: 10px;
+    overflow: hidden;
+    padding: 1px;
+    float:left;
+}
+.organisation-logo img {
+    vertical-align: top;
+}
+
+.organisation-text {
+    margin-left: 220px;
+    margin-top: 5px;
+}
+
+.organisation-text h4 {
+    clear: none;
+    margin-top: 0;
+}

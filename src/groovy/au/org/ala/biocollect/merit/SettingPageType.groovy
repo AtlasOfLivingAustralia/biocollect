@@ -52,7 +52,9 @@ enum SettingPageType {
     THIRD_PARTY_PHOTO_CONSENT_DECLARATION('thirdPartyPhotoConsent', 'Declaration text for consent from third parties who appear in images', 'fielddata.thirdPartyConsent.text'),
     NEW_CITIZEN_SCIENCE_PROJECT_INTRO('newCitizenScienceProjectIntro', 'Introductory text following the creation of a new Citizen Science Project', 'fielddata.citizenScience.newProjectIntro'),
     CITIZEN_SCIENCE_GETTING_STARTED('citizenScienceGettingStarted', 'How to use project finder?', 'fielddata.citizenScience.gettingStarted'),
-    CITIZEN_SCIENCE_WHAT_IS_THIS('citizenScienceWhatIsThis', 'What is project finder?', 'fielddata.citizenScience.whatIsThis')
+    CITIZEN_SCIENCE_WHAT_IS_THIS('citizenScienceWhatIsThis', 'What is project finder?', 'fielddata.citizenScience.whatIsThis'),
+    ORGANISATION_LIST_PAGE_HEADER('organisationListHeader', 'Header content for the organisation list page', 'fielddata.organisationListHeader')
+
     String name
     String title
     String key
