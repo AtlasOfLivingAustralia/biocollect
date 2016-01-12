@@ -40,21 +40,24 @@ Biocollect.MapUtilities = {
      *
      * @param map The map the control will be placed in
      * @param featuresServiceUrl The URL for the WMS features service
+     * @param regionListUrl The URL to retrieve the list of available regions
      * @returns {*} L.Control.TwoStepSelector
      */
-    createKnownShapeMapControl: function(map, featuresServiceUrl) {
+    createKnownShapeMapControl: function(map, featuresServiceUrl, regionListUrl) {
         var regionOptions = {
             id: "regionSelection",
             title: "Select a known shape",
             firstStepPlaceholder: "Choose a layer...",
             secondStepPlaceholder: "Choose a shape...",
-            firstStepItems: [
-                {key: 'cl2111', value: 'NRM'},
-                {key: 'cl1048', value: 'IBRA 7 Regions'},
-                {key: 'cl1049', value: 'IBRA 7 Subregions'},
-                {key: 'cl22', value: 'Australian states'},
-                {key: 'cl959', value: 'Local Gov. Areas'}
-            ],
+            firstStepItemLookup: function (populateStep1Callback) {
+                $.ajax({
+                    url: regionListUrl,
+                    dataType: 'json'
+                }).done(function (data) {
+                    var regions = _.sortBy(data.regions, "value");
+                    populateStep1Callback(regions);
+                });
+            },
             secondStepItemLookup: function (selectedLayerKey, populateStep2Callback) {
                 $.ajax({
                     url: featuresServiceUrl + '?layerId=' + selectedLayerKey,

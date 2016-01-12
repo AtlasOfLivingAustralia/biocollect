@@ -108,7 +108,7 @@ grails.project.dependency.resolution = {
         compile ":mail:1.0.7"
         compile ":excel-export:0.2.0"
         compile ":excel-import:1.0.1"
-        compile ":ala-map:1.0"
+        compile ":ala-map:1.1-SNAPSHOT"
 
         compile (":images-client-plugin:0.2.3") {
             exclude "ala-web-theme"
@@ -117,8 +117,6 @@ grails.project.dependency.resolution = {
 
         if (Environment.current != Environment.DEVELOPMENT) {
             compile ":biocollect-sightings:1.0-SNAPSHOT"
-            compile ":ala-map:0.1-SNAPSHOT"
         }
-
     }
 }

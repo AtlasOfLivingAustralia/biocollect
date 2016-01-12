@@ -18,6 +18,7 @@
             organisationListUrl: '${g.createLink(action:"list")}',
             organisationViewUrl: '${g.createLink(action:"index", id:"${organisation.organisationId}")}',
             organisationMembersUrl: "${loadPermissionsUrl}",
+            regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
             imageLocation:"${resource(dir:'/images')}",
