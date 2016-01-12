@@ -1,6 +1,7 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
+import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.web.AuthService
 import grails.converters.JSON
