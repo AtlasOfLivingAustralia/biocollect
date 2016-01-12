@@ -16,7 +16,7 @@
             </div>
             <div class="span9 text-left well">
                 <ul class="nav nav-tabs" id="tabDifferentViews">
-                    <li class="active"><a href="#recordVis" data-toggle="tab">List</a></li>
+                    <li class="active"><a id="recordVis-tab" href="#recordVis" data-toggle="tab" >List</a></li>
                     <li class=""><a href="#mapVis" id="dataMapTab" data-bind="attr:{'data-toggle': activities().length > 0 ? 'tab' : ''}">Map</a></li>
                 </ul>
                 <div class="tab-content">

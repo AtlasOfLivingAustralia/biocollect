@@ -163,6 +163,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             },
             success: function (data) {
                 self.load(data, Math.ceil(offset / self.pagination.resultsPerPage()));
+                if(self.activities().length == 0) {
+                   $('#recordVis-tab').tab('show');
+                }
             },
             error: function (data) {
                 alert('An unhandled error occurred: ' + data);
