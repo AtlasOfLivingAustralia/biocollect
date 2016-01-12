@@ -117,7 +117,6 @@ grails.project.dependency.resolution = {
 
         if (Environment.current != Environment.DEVELOPMENT) {
             compile ":biocollect-sightings:1.0-SNAPSHOT"
-            compile ":ala-map:0.1-SNAPSHOT"
         }
     }
 }
