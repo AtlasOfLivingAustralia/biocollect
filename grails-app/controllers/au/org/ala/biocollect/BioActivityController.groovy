@@ -518,6 +518,7 @@ class BioActivityController {
         model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view: 'brief']) : null
         model.mapFeatures = model.site ? siteService.getMapFeatures(model.site) : []
         model.project = projectId ? projectService.get(model.activity.projectId) : null
+        model.projectSite = model.project.sites?.find{it.siteId == model.project.projectSiteId}
 
         // Add the species lists that are relevant to this activity.
         model.speciesLists = new JSONArray()
