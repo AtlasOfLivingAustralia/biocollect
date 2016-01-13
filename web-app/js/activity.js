@@ -518,7 +518,7 @@ var DataFacetsVM = function (facet, availableFacets) {
         var match = null;
 
         self.terms().forEach(function(term) {
-            if (term.term() === termName) {
+            if (term.term() == termName) {
                 match = term;
             }
         });
