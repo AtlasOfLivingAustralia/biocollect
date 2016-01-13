@@ -311,3 +311,11 @@
     clear: none;
     margin-top: 0;
 }
+
+a[href^="http"]:not([href*="biocollect.ala.org.au"]):not([href*="biocollect-dev.ala.org.au"]):not([href*="biocollect-test.ala.org.au"]):not([href*="devt.ala.org.au"]):not(.do-not-mark-external)::after {
+    content: '\f08e';
+    font-family: FontAwesome;
+    padding-left: 5px;
+    font-size: 10px;
+    vertical-align: super;
+}
