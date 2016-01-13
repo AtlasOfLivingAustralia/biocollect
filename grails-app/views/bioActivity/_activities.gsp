@@ -17,7 +17,7 @@
             <div class="span9 text-left well">
                 <ul class="nav nav-tabs" id="tabDifferentViews">
                     <li class="active"><a id="recordVis-tab" href="#recordVis" data-toggle="tab" >List</a></li>
-                    <li class=""><a href="#mapVis" id="dataMapTab" data-bind="attr:{'data-toggle': activities().length > 0 ? 'tab' : ''}">Map</a></li>
+                    <li class=""><a href="#mapVis" id="dataMapTab" data-toggle="tab">Map</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
@@ -176,7 +176,12 @@
                     </div>
 
                     <div class="tab-pane" id="mapVis">
-                        <m:map id="recordOrActivityMap" width="100%"/>
+                        <span data-bind="visible: transients.totalPoints() == 0">
+                            <h3 class="text-left margin-bottom-five">No results</h3>
+                        </span>
+                        <span data-bind="visible: transients.totalPoints() > 0">
+                            <m:map id="recordOrActivityMap" width="100%"/>
+                        </span>
                     </div>
                 </div>
             </div>

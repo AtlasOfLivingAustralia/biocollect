@@ -42,6 +42,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
     self.sort = ko.observable('lastUpdated');
     self.selectedFilters = ko.observableArray(); // User selected facet filters.
     self.transients = {};
+    self.transients.totalPoints = ko.observable(0);
     self.transients.placeHolder = placeHolder;
     self.transients.bieUrl = fcConfig.bieUrl;
     self.transients.showEmailDownloadPrompt = ko.observable(false);
@@ -163,9 +164,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             },
             success: function (data) {
                 self.load(data, Math.ceil(offset / self.pagination.resultsPerPage()));
-                if(self.activities().length == 0) {
-                   $('#recordVis-tab').tab('show');
-                }
             },
             error: function (data) {
                 alert('An unhandled error occurred: ' + data);
@@ -308,8 +306,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                         if(activity.coordinates && activity.coordinates.length && activity.coordinates[1] && !isNaN(activity.coordinates[1]) && activity.coordinates[0] && !isNaN(activity.coordinates[0])){
                             features.push({
                                 // the ES index always returns the coordinate array in [lat, lng] order
-                                lat: activity.coordinates[0],
-                                lng: activity.coordinates[1],
+                                lng: activity.coordinates[0],
+                                lat: activity.coordinates[1],
                                 popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name)
                             });
                         }
@@ -354,6 +352,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomleft");
         }
 
+        self.transients.totalPoints(features && features.length ? features.length : 0);
         features && features.length && alaMap.addClusteredPoints(features);
     };
 
