@@ -184,6 +184,15 @@
     margin-top: 20px;
 }
 
+.logo-icon {
+    width: 16px;
+    max-width: 16px;
+    height: 16px;
+    max-height: 16px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
 .small-logo {
     width: 100%;
 }

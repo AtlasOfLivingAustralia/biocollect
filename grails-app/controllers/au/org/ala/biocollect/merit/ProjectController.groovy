@@ -482,28 +482,29 @@ class ProjectController {
             }
 
             [
-                    projectId  : doc.projectId,
-                    aim        : doc.aim,
-                    coverage   : siteGeom,
-                    description: doc.description,
-                    difficulty : doc.difficulty,
-                    endDate    : doc.plannedEndDate,
-                    hasParticipantCost: doc.hasParticipantCost && true, // force it to boolean
-                    hasTeachingMaterials: doc.hasTeachingMaterials && true, // force it to boolean
-                    isDIY      : doc.isDIY && true, // force it to boolean
-                    isExternal : doc.isExternal && true, // force it to boolean
-                    isSuitableForChildren: doc.isSuitableForChildren && true, // force it to boolean
-                    keywords   : doc.keywords,
-                    links      : trimmedLinks,
-                    name       : doc.name,
-                    organisationId  : doc.organisationId,
-                    organisationName: doc.organisationName ?: organisationService.getNameFromId(doc.organisationId),
-                    scienceType: doc.scienceType,
-                    startDate  : doc.plannedStartDate,
-                    urlImage   : doc.imageUrl,
-                    urlWeb     : doc.urlWeb,
-                    plannedStartDate: doc.plannedStartDate,
-                    plannedEndDate: doc.plannedEndDate
+                    projectId              : doc.projectId,
+                    aim                    : doc.aim,
+                    coverage               : siteGeom,
+                    description            : doc.description,
+                    difficulty             : doc.difficulty,
+                    endDate                : doc.plannedEndDate,
+                    hasParticipantCost     : doc.hasParticipantCost?.toBoolean(),
+                    hasTeachingMaterials   : doc.hasTeachingMaterials?.toBoolean(),
+                    isDIY                  : doc.isDIY?.toBoolean(),
+                    isContributingDataToAla: doc.isContributingDataToAla?.toBoolean(),
+                    isExternal             : doc.isExternal?.toBoolean(),
+                    isSuitableForChildren  : doc.isSuitableForChildren?.toBoolean(),
+                    keywords               : doc.keywords,
+                    links                  : trimmedLinks,
+                    name                   : doc.name,
+                    organisationId         : doc.organisationId,
+                    organisationName       : doc.organisationName ?: organisationService.getNameFromId(doc.organisationId),
+                    scienceType            : doc.scienceType,
+                    startDate              : doc.plannedStartDate,
+                    urlImage               : doc.imageUrl,
+                    urlWeb                 : doc.urlWeb,
+                    plannedStartDate       : doc.plannedStartDate,
+                    plannedEndDate         : doc.plannedEndDate
             ]
         }
 

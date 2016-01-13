@@ -75,6 +75,15 @@
                 </div>
             </div>
         </div>
+        <div class="row-fluid">
+            <div class="control-group">
+                <label class="control-label span3" for="isContributingToAla"><g:message code="project.details.isContributingToAla"/><fc:iconHelp><g:message code="project.details.isContributingToAla.help"/></fc:iconHelp></label>
+                <div class="controls span9 large-checkbox">
+                    <input data-bind="checked:isContributingDataToAla" type="checkbox" id="isContributingToAla"/>
+                    <label for="isContributingToAla"> <span></span> <g:message code="project.details.isContributingToAla.extra"/> </label>
+                </div>
+            </div>
+        </div>
 
     </div>
 
