@@ -46,7 +46,12 @@
                     </td>
                     <td>
                         <div class="survey-row-layout">
+                            <!-- ko if: $parent.userCanEdit($data) -->
                             <a href="#" data-bind="click: addActivity" title="Click to add a record for this survey"><span data-bind="text:name" class="survey-listing-title"></span></a>
+                            <!-- /ko -->
+                            <!-- ko if: !$parent.userCanEdit($data) -->
+                            <span data-bind="text:name" class="survey-listing-title"></span>
+                            <!-- /ko -->
                             <br/><br/>
                             <div data-bind="text:description"></div>
                             <br/>

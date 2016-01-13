@@ -320,5 +320,6 @@ a[href^="http"]:not([href*="biocollect.ala.org.au"]):not([href*="biocollect-dev.
 
 .survey-listing-title {
     font-size: 150%;
-    font-weight: bold
+    font-weight: bold;
+    color: #C44D34;
 }
