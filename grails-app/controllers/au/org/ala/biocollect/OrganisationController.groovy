@@ -11,8 +11,8 @@ class OrganisationController {
     static allowedMethods = [ajaxDelete: "POST", delete: "POST", ajaxUpdate: "POST"]
 
     def organisationService, searchService, documentService, userService, roleService, commonService, webService
-    def citizenScienceOrgId = null
 
+    // Simply forwards to the list view
     def list() {}
 
     def index(String id) {

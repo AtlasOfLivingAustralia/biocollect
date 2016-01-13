@@ -11,7 +11,7 @@
             createOrganisationUrl: "${createLink(controller: 'organisation', action: 'create')}",
             viewOrganisationUrl: "${createLink(controller: 'organisation', action: 'index')}",
             organisationSearchUrl: "${createLink(controller: 'organisation', action: 'search')}",
-            noLogoImageUrl: "${r.resource(dir:'images', file:'no-image-2.png', plugin:'fieldcapture-plugin')}"
+            noLogoImageUrl: "${r.resource(dir:'images', file:'no-image-2.png')}"
             };
     </r:script>
     <r:require modules="knockout,amplify,organisation"/>
