@@ -18,6 +18,14 @@ var pActivityInfo = function(o, selected, startDate){
         window.location.href = fcConfig.activityCreateUrl + "/" + self.projectActivityId();
     };
 
+    self.listActivityRecords = function() {
+        $('#data-tab').tab('show');
+        if (!_.isUndefined(activitiesAndRecordsViewModel)) {
+            activitiesAndRecordsViewModel.reset();
+            activitiesAndRecordsViewModel.selectFacetTerm(self.name(), "Survey");
+        }
+    };
+
     self.transients = self.transients || {};
 
     // Publish is allowed only when no data's are associated with the survey

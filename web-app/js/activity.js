@@ -61,11 +61,34 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
     };
 
     self.reset = function () {
+        self.selectedFilters([]);
         self.searchTerm('');
         self.order('DESC');
         self.sort('lastUpdated');
         self.refreshPage();
-        alaMap.fitBounds()
+        alaMap.resetMap();
+    };
+
+    self.selectFacetTerm = function (term, facetGroup) {
+        var selectedFacet = null;
+        self.facets().forEach(function (facet) {
+            var match = facet.findTerm(term);
+
+            if (match != null) {
+                selectedFacet = match;
+            }
+        });
+
+        if (selectedFacet == null) {
+            selectedFacet = new TermFacetVM({
+                term: term,
+                facetName: facetGroup,
+                facetDisplayName: facetGroup
+            })
+        }
+
+        self.selectedFilters.push(selectedFacet);
+        self.refreshPage();
     };
 
     self.addUserSelectedFacet = function (facet) {
@@ -247,8 +270,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
      * function used to create map and plot the fetched points
      */
     self.getDataAndShowOnMap = function () {
-        var searchTerm = activitiesAndRecordsViewModel.searchTerm() || '';
-        var view = activitiesAndRecordsViewModel.view;
+        var searchTerm = self.searchTerm() || '';
+        var view = self.view;
         var url =fcConfig.getRecordsForMapping + '?max=10000&searchTerm='+ searchTerm+'&view=' + view;
         var facetFilters = [];
         self.plotOnMap(null);
@@ -257,7 +280,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             url += '&projectId=' + fcConfig.projectId;
         }
 
-        ko.utils.arrayForEach(activitiesAndRecordsViewModel.selectedFilters(), function (term) {
+        ko.utils.arrayForEach(self.selectedFilters(), function (term) {
             facetFilters.push(term.facetName() + ':' + term.term());
         });
 
@@ -490,7 +513,19 @@ var DataFacetsVM = function (facet, availableFacets) {
                 term.showTerm(false);
             }
         });
-    }
+    };
+
+    self.findTerm = function(termName) {
+        var match = null;
+
+        self.terms().forEach(function(term) {
+            if (term.term() === termName) {
+                match = term;
+            }
+        });
+
+        return match;
+    };
 
     self.searchTerm.subscribe(self.search);
 

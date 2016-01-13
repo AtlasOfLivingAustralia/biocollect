@@ -24,10 +24,10 @@
                         <!-- ko if: activities().length == 0 -->
                             <div class="row-fluid">
                                 <h3 class="text-left margin-bottom-five">
-                                    <!-- ko if: $root.searchTerm() == "" -->
+                                    <!-- ko if: $root.searchTerm() == "" && $root.selectedFilters().length == 0 -->
                                         No data has been recorded for this project yet
                                     <!-- /ko -->
-                                    <!-- ko if: $root.searchTerm() != "" -->
+                                    <!-- ko if: $root.searchTerm() != "" || $root.selectedFilters().length > 0 -->
                                         No results
                                     <!-- /ko -->
                                 </h3>

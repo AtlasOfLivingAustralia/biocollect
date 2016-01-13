@@ -41,12 +41,12 @@
                 <tr>
                     <td>
                         <div class="survey-logo survey-row-layout">
-                            <img alt="No image" class="image-logo" data-bind="attr:{title:name, src: transients.logoUrl()}" src="" onload="findLogoScalingClass(this)"/>
+                            <img alt="No image" class="image-logo" data-bind="attr:{alt:name, src: transients.logoUrl()}" src="" onload="findLogoScalingClass(this)"/>
                         </div>
                     </td>
                     <td>
                         <div class="survey-row-layout">
-                            <a href="#" data-bind="onClickShowTab: $parent.setCurrent, tabId: '#data-tab'"><span data-bind="text:name" style="font-size:150%;font-weight:bold"></span></a>
+                            <a href="#" data-bind="click: addActivity" title="Click to add a record for this survey"><span data-bind="text:name" class="survey-listing-title"></span></a>
                             <br/><br/>
                             <div data-bind="text:description"></div>
                             <br/>
@@ -79,7 +79,8 @@
                     </td>
                     <td>
                         <div class="survey-row-layout survey-add-record">
-                            <a href="#" class="btn btn-success btn-sm" data-bind="click: addActivity, visible: $parent.userCanEdit($data)"> Add a record</a>
+                            <div><a href="#" class="btn btn-success btn-sm" data-bind="click: addActivity, visible: $parent.userCanEdit($data)" title="Click to add a record to this survey"> Add a record</a></div>
+                            <div class="margin-top-1"><a href="#" class="btn btn-info btn-sm" data-bind="click: listActivityRecords" title="Click to view existing records from this survey"> View records</a></div>
                         </div>
                     </td>
                 </tr>
