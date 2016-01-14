@@ -109,7 +109,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
 
     self.load = function (data, page) {
         var activities = data.activities;
-        var facets = data.facets;
         var total = data.total;
 
         self.activities([]);
@@ -119,14 +118,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         });
         self.activities(activities);
 
-        facets = $.map(facets ? facets : [], function (facet, index) {
-            return new DataFacetsVM(facet, self.availableFacets);
-        });
-        self.facets(facets);
-
-        self.facets.sort(function (left, right) {
-            return left.order() == right.order() ? 0 : (left.order() < right.order() ? -1 : 1)
-        });
 
         // only initialise the pagination if we are on the first page load
         if (page == 0) {
@@ -143,7 +134,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             asyncDownloadThreshold = $(elem).attr("data-email-threshold");
         }
 
-        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0);
+        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
 
         if (self.total() > asyncDownloadThreshold) {
             self.transients.showEmailDownloadPrompt(!self.transients.showEmailDownloadPrompt());
@@ -157,7 +148,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
     };
 
     self.asyncDownload = function() {
-        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0);
+        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
 
         url += "&async=true&email=" + self.transients.downloadEmail();
 
@@ -173,7 +164,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
     };
 
     self.refreshPage = function (offset) {
-        var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, offset);
+        var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, offset, false);
         // initialise offset
         offset = offset || 0;
 
@@ -187,6 +178,53 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             },
             success: function (data) {
                 self.load(data, Math.ceil(offset / self.pagination.resultsPerPage()));
+            },
+            error: function (data) {
+                alert('An unhandled error occurred: ' + data);
+            },
+            complete: function () {
+                $('#search-spinner').hide();
+                $('.main-content').show();
+                self.transients.loading(false);
+            }
+        });
+
+        self.getFacets();
+    };
+
+    self.getFacets = function() {
+        var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, 0, true);
+
+        self.transients.loading(true);
+        $.ajax({
+            url: url,
+            type: 'GET',
+            contentType: 'application/json',
+            beforeSend: function () {
+                $('#search-spinner').show();
+            },
+            success: function (data) {
+                var facets = data.facets;
+
+                facets = $.map(facets ? facets : [], function (facet, index) {
+                    return new DataFacetsVM(facet, self.availableFacets);
+                });
+                facets.sort(function (left, right) {
+                    return left.order() == right.order() ? 0 : (left.order() < right.order() ? -1 : 1)
+                });
+
+                var newFacetStr = ko.toJSON(facets).replace(/"filter":((false)|(true))?/g, "");
+                var oldFacetStr = ko.toJSON(self.facets()).replace(/"filter":((false)|(true))?/g, "");
+
+                // Only update the facet list if the contents have changed (e.g. new a activity has resulted in a new
+                // option in one of the facet groups.
+                // This prevent the facet list from 'flashing' as it is redrawn after items are selected, and keeps any
+                // expanded groups open.
+                if (newFacetStr != oldFacetStr) {
+                    self.facets(facets);
+
+
+                }
             },
             error: function (data) {
                 alert('An unhandled error occurred: ' + data);
@@ -395,7 +433,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         alaMap.getMapImpl().invalidateSize();
     };
 
-    function constructQueryUrl(prefix, offset) {
+    function constructQueryUrl(prefix, offset, facetOnly) {
         if (!offset) offset = 0;
 
         var params = {
@@ -403,16 +441,20 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             offset: offset,
             sort: self.sort(),
             order: self.order(),
-            searchTerm: self.searchTerm().trim(),
             flimit: 1000,
             view: self.view
         };
 
-        url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
         var filters = '';
-        ko.utils.arrayForEach(self.selectedFilters(), function (term) {
-            filters = filters + '&fq=' + term.facetName() + ':' + term.term();
-        });
+        if (_.isUndefined(facetOnly) || !facetOnly) {
+            params.searchTerm = self.searchTerm().trim();
+
+            ko.utils.arrayForEach(self.selectedFilters(), function (term) {
+                filters = filters + '&fq=' + term.facetName() + ':' + term.term();
+            });
+        }
+
+        url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
 
         return url + filters;
     }
@@ -488,15 +530,19 @@ var DataFacetsVM = function (facet, availableFacets) {
     self.total = ko.observable(facet.total);
     self.terms = ko.observableArray();
     self.filter = ko.observable(false);
+
     self.toggleFilter = function () {
         self.filter(!self.filter())
     };
+
     self.displayText = ko.pureComputed(function () {
         return getFacetName(self.name()) + " (" + self.total() + ")";
     });
+
     self.order = ko.pureComputed(function () {
         return getFacetOrder(self.name());
     });
+
     self.searchTerm = ko.observable('');
     /**
      * search for a token and show terms matching the token.
@@ -538,7 +584,7 @@ var DataFacetsVM = function (facet, availableFacets) {
         }
 
         return false;
-    }
+    };
 
     var getFacetName = function (name) {
         var found = $.grep(availableFacets, function (obj, i) {
