@@ -40,7 +40,7 @@
                             <div data-bind="if: transients.links.length > 0">
                                 <i class="icon-info-sign"></i>&nbsp;<span data-bind="html:transients.links"/>
                             </div>
-                            <div style="line-height:2.2em">
+                            <div style="line-height:2.2em" data-bind="visible:!isMERIT()">
                                 TAGS:&nbsp;<g:render template="/project/tags"/>
                             </div>
                             <div data-bind="if: isContributingDataToAla()">
