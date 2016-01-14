@@ -48,6 +48,9 @@
                         <div class="controls span9 large-checkbox">
                             <input data-bind="checked:termsOfUseAccepted, disable: !transients.termsOfUseClicked()" type="checkbox" id="termsOfUseAgreement" name="termsOfUseAgreement" data-validation-engine="validate[required]" title="<g:message code="project.details.termsOfUseAgreement.checkboxTip"/>"/>
                             <label for="termsOfUseAgreement"><span></span> I confirm that have read and accept the <a href="${grailsApplication.config.termsOfUseUrl}" data-bind="click: clickTermsOfUse" target="_blank">Terms of Use</a>.</label>
+                            <div class="margin-bottom-1"></div>
+                            <p><g:message code="project.details.termsOfUseAgreement.help"/></p>
+                            <p><img src="${request.contextPath}/images/cc.png" alt="Creative Commons Attribution 3.0"></p>
                         </div>
                     </div>
                 </div>
