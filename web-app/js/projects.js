@@ -355,6 +355,12 @@ function ProjectViewModel(project, isUserEditor, organisations) {
 
     self.associatedOrgs = ko.observableArray(project.associatedOrgs);
 
+    self.isExternal.subscribe(function (newVal) {
+        if (!newVal) {
+            self.isContributingDataToAla(true)
+        }
+    });
+
     self.transients = self.transients || {};
 
     var isBeforeToday = function(date) {
