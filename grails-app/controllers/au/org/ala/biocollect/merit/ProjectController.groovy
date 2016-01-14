@@ -347,7 +347,8 @@ class ProjectController {
         trimmedParams.status = params.list('status');
         trimmedParams.isCitizenScience = params.boolean('isCitizenScience');
         trimmedParams.isWorks = params.boolean('isWorks');
-        trimmedParams.isSurvey = params.boolean('isSurvey')
+        trimmedParams.isBiologicalScience = params.boolean('isBiologicalScience')
+        trimmedParams.isMERIT = params.boolean('isMERIT')
         trimmedParams.query = "docType:project"
         trimmedParams.isUserPage = params.boolean('isUserPage');
         trimmedParams.hasParticipantCost = params.boolean('hasParticipantCost')
@@ -385,7 +386,7 @@ class ProjectController {
         }
 
         if(trimmedParams.isWorks){
-            projectType.push('projectType:works')
+            projectType.push('(projectType:works AND isMERIT:false)')
             trimmedParams.isWorks = null
         }
 
@@ -402,9 +403,10 @@ class ProjectController {
             trimmedParams.difficulty = null
         }
 
-        // append projectType to query. this is used by organisation page.
-        trimmedParams.query += ' AND (' + projectType.join(' OR ') + ')'
-
+        if (projectType) {
+            // append projectType to query. this is used by organisation page.
+            trimmedParams.query += ' AND (' + projectType.join(' OR ') + ')'
+        }
         // query construction
         if(trimmedParams.q){
             trimmedParams.query += " AND " + trimmedParams.q;
