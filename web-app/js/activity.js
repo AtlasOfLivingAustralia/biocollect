@@ -61,17 +61,22 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         self.refreshPage();
     };
 
-    self.reset = function () {
-        self.selectedFilters([]);
+    self.clearData = function() {
         self.searchTerm('');
         self.order('DESC');
         self.sort('lastUpdated');
-        self.refreshPage();
         alaMap.resetMap();
     };
 
-    self.selectFacetTerm = function (term, facetGroup) {
+    self.reset = function () {
+        self.clearData();
+        self.selectedFilters([]);
+        self.refreshPage();
+    };
+
+    self.selectFacetTerm = function (term, facetGroup, clearFirst) {
         var selectedFacet = null;
+
         self.facets().forEach(function (facet) {
             var match = facet.findTerm(term);
 
@@ -88,7 +93,12 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             })
         }
 
-        self.selectedFilters.push(selectedFacet);
+        if (clearFirst) {
+            self.clearData();
+            self.selectedFilters([selectedFacet]);
+        } else {
+            self.selectedFilters.push(selectedFacet);
+        }
         self.refreshPage();
     };
 

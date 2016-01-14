@@ -21,8 +21,7 @@ var pActivityInfo = function(o, selected, startDate){
     self.listActivityRecords = function() {
         $('#data-tab').tab('show');
         if (!_.isUndefined(activitiesAndRecordsViewModel)) {
-            activitiesAndRecordsViewModel.reset();
-            activitiesAndRecordsViewModel.selectFacetTerm(self.name(), "Survey");
+            activitiesAndRecordsViewModel.selectFacetTerm(self.name(), "Survey", true);
         }
     };
 
