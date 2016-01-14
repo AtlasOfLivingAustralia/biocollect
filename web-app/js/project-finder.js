@@ -53,7 +53,7 @@ function ProjectFinder() {
         this.pageProjects = ko.observableArray();
 
         this.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
-        this.projectTypes = ko.observable(['citizenScience', 'works', 'survey']);
+        this.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
         this.sortKeys = ko.observableArray(self.sortKeys);
         this.hideshow = function () {
             $("#pt-selectors").toggle();
@@ -187,20 +187,24 @@ function ProjectFinder() {
         var organisationName = fcConfig.organisationName;
         var isCitizenScience = fcConfig.isCitizenScience;
         var isWorks = false;
-        var isSurvey = false;
+        var isBiologicalScience = false;
+        var isMERIT = false;
 
         sortBy = getActiveButtonValues($("#pt-sort"));
         perPage = getActiveButtonValues($("#pt-per-page"));
 
-        if (fcConfig.isOrganisationPage) {
+        if (fcConfig.showAllProjects) {
             var values = getActiveButtonValues($('#pt-search-projecttype'));
             for (var i in values) {
                 switch (values[i]) {
                     case 'citizenScience':
                         isCitizenScience = true;
                         break;
-                    case "survey":
-                        isSurvey = true;
+                    case "biologicalScience":
+                        isBiologicalScience = true;
+                        break;
+                    case 'merit':
+                        isMERIT = true;
                         break;
                     case 'works':
                         isWorks = true;
@@ -215,7 +219,8 @@ function ProjectFinder() {
             status: status,
             isCitizenScience: isCitizenScience,
             isWorks: isWorks,
-            isSurvey: isSurvey,
+            isBiologicalScience: isBiologicalScience,
+            isMERIT: isMERIT,
             isUserPage: isUserPage,
             hasParticipantCost: hasParticipantCost,
             isSuitableForChildren: isSuitableForChildren,
@@ -227,6 +232,7 @@ function ProjectFinder() {
             max: perPage, // page size
             sort: sortBy,
             geoSearchJSON: JSON.stringify(geoSearch),
+            skipDefaultFilters:fcConfig.showAllProjects,
             q: $('#pt-search').val().toLowerCase()
         };
     };
@@ -322,7 +328,7 @@ function ProjectFinder() {
         if (x) urls.push("Social Media&nbsp;" + x);
         vm.transients.links = urls.join('&nbsp;&nbsp;|&nbsp;&nbsp;') || '';
         vm.transients.searchText = (vm.name() + ' ' + vm.aim() + ' ' + vm.description() + ' ' + vm.keywords() + ' ' + vm.transients.scienceTypeDisplay() + ' ' + vm.transients.locality + ' ' + vm.transients.state + ' ' + vm.organisationName()).toLowerCase();
-        vm.transients.indexUrl = fcConfig.projectIndexBaseUrl + vm.transients.projectId;
+        vm.transients.indexUrl = vm.isMERIT() ? fcConfig.meritProjectUrl + '/' + vm.transients.projectId : fcConfig.projectIndexBaseUrl + vm.transients.projectId;
         vm.transients.orgUrl = vm.organisationId() && (fcConfig.organisationBaseUrl + vm.organisationId());
         vm.transients.imageUrl = fcConfig.meritProjectLogo && vm.isMERIT() ? fcConfig.meritProjectLogo : vm.imageUrl();
         if (!vm.transients.imageUrl) {

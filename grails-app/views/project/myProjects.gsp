@@ -33,7 +33,11 @@
         isCitizenScience: true,
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
-        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}"
+        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
+        showAllProjects: true,
+        meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
+        meritProjectUrl: "${grailsApplication.config.merit.project.url}",
+        isCitizenScience: false
   }
     </r:script>
     <r:require modules="js_iso8601,projects,projectFinder,map"/>

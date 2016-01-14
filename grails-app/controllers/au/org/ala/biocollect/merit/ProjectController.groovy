@@ -46,7 +46,13 @@ class ProjectController {
                 log.warn project.error
             }
             redirect(controller: 'home', model: [error: flash.message])
-        } else {
+        }
+        else if (project.isMERIT) {
+            // MERIT projects have different security / access rules to BioCollect so it's best to simply
+            // redirect to MERIT to view the project.
+            redirect(uri:grailsApplication.config.merit.project.url+'/'+id)
+        }
+        else {
             project.sites?.sort {it.name}
             project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
 
@@ -105,6 +111,7 @@ class ProjectController {
         if (project.isExternal) {
             return 'externalCSProjectTemplate'
         }
+
         return project.projectType == 'survey' ? 'csProjectTemplate' : 'index'
     }
 
@@ -340,7 +347,8 @@ class ProjectController {
         trimmedParams.status = params.list('status');
         trimmedParams.isCitizenScience = params.boolean('isCitizenScience');
         trimmedParams.isWorks = params.boolean('isWorks');
-        trimmedParams.isSurvey = params.boolean('isSurvey')
+        trimmedParams.isBiologicalScience = params.boolean('isBiologicalScience')
+        trimmedParams.isMERIT = params.boolean('isMERIT')
         trimmedParams.query = "docType:project"
         trimmedParams.isUserPage = params.boolean('isUserPage');
         trimmedParams.hasParticipantCost = params.boolean('hasParticipantCost')
@@ -372,14 +380,19 @@ class ProjectController {
             trimmedParams.isCitizenScience = null
         }
 
-        if(trimmedParams.isSurvey){
-            projectType.push('(projectType:survey AND isExternal:true)')
+        if(trimmedParams.isBiologicalScience){
+            projectType.push('(projectType:survey AND isCitizenScience:false)')
             trimmedParams.isSurvey = null
         }
 
         if(trimmedParams.isWorks){
-            projectType.push('projectType:works')
+            projectType.push('(projectType:works AND isMERIT:false)')
             trimmedParams.isWorks = null
+        }
+
+        if (trimmedParams.isMERIT) {
+            projectType.push('isMERIT:true')
+            trimmedParams.isMERIT = null
         }
 
         if(trimmedParams.difficulty){
@@ -390,9 +403,10 @@ class ProjectController {
             trimmedParams.difficulty = null
         }
 
-        // append projectType to query. this is used by organisation page.
-        trimmedParams.query += ' AND (' + projectType.join(' OR ') + ')'
-
+        if (projectType) {
+            // append projectType to query. this is used by organisation page.
+            trimmedParams.query += ' AND (' + projectType.join(' OR ') + ')'
+        }
         // query construction
         if(trimmedParams.q){
             trimmedParams.query += " AND " + trimmedParams.q;
@@ -461,7 +475,8 @@ class ProjectController {
 
         queryParams.put("geoSearchJSON", params.geoSearchJSON)
 
-        Map searchResult = searchService.getCitizenScienceProjects(queryParams);
+        boolean skipDefaultFilters = params.getBoolean('skipDefaultFilters', false)
+        Map searchResult = searchService.findProjects(queryParams, skipDefaultFilters);
         List projects = searchResult.hits?.hits;
         projects = projects.collect {
             Map doc = it._source;
@@ -504,7 +519,8 @@ class ProjectController {
                     urlImage               : doc.imageUrl,
                     urlWeb                 : doc.urlWeb,
                     plannedStartDate       : doc.plannedStartDate,
-                    plannedEndDate         : doc.plannedEndDate
+                    plannedEndDate         : doc.plannedEndDate,
+                    isMERIT                : doc.isMERIT
             ]
         }
 
