@@ -53,7 +53,10 @@ enum SettingPageType {
     NEW_CITIZEN_SCIENCE_PROJECT_INTRO('newCitizenScienceProjectIntro', 'Introductory text following the creation of a new Citizen Science Project', 'fielddata.citizenScience.newProjectIntro'),
     CITIZEN_SCIENCE_GETTING_STARTED('citizenScienceGettingStarted', 'How to use project finder?', 'fielddata.citizenScience.gettingStarted'),
     CITIZEN_SCIENCE_WHAT_IS_THIS('citizenScienceWhatIsThis', 'What is project finder?', 'fielddata.citizenScience.whatIsThis'),
-    ORGANISATION_LIST_PAGE_HEADER('organisationListHeader', 'Header content for the organisation list page', 'fielddata.organisationListHeader')
+    ORGANISATION_LIST_PAGE_HEADER('organisationListHeader', 'Header content for the organisation list page', 'fielddata.organisationListHeader'),
+    SURVEY_SPECIES_ALL("surveySpeciesAll", "Descriptive text for the 'all species' option on the Survey configuration's Species tab", "fielddata.survey.species.all"),
+    SURVEY_SPECIES_SINGLE("surveySpeciesSingle", "Descriptive text for the 'single species' option on the Survey configuration's Species tab", "fielddata.survey.species.single"),
+    SURVEY_SPECIES_GROUP("surveySpeciesGroup", "Descriptive text for the 'selection or group' option on the Survey configuration's Species tab", "fielddata.survey.species.group")
 
     String name
     String title
