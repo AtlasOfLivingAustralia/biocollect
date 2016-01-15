@@ -232,8 +232,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                 // expanded groups open.
                 if (newFacetStr != oldFacetStr) {
                     self.facets(facets);
-
-
                 }
             },
             error: function (data) {

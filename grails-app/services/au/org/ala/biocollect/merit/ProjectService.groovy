@@ -1,7 +1,6 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.EmailService
-import au.org.ala.web.AuthService
 import grails.converters.JSON
 
 class ProjectService {
@@ -10,12 +9,24 @@ class ProjectService {
     def grailsApplication
     SiteService siteService
     ActivityService activityService
-    AuthService authService
     DocumentService documentService
     UserService userService
     MetadataService metadataService
     SettingService settingService
     EmailService emailService
+
+    /**
+     * Check if a project already exists with the specified name.
+     *
+     * @param projectName The name to check
+     * @param id The ID of the project being edited, to exclude it from the check. Leave null if creating a new project
+     * @return True if no other active project exists with the same name
+     */
+    boolean checkProjectName(String projectName, String id) {
+        def results = webService.getJson("${grailsApplication.config.ecodata.service.url}/project/findByName?projectName=${projectName}", 30000, true)
+
+        results?.isEmpty() || (results?.size() == 1 && id == results[0]?.projectId)
+    }
 
     def list(brief = false, citizenScienceOnly = false) {
         def params = brief ? '?brief=true' : ''

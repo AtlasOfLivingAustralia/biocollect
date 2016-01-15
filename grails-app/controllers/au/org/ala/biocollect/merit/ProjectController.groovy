@@ -8,6 +8,8 @@ import grails.converters.JSON
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
+
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST
 import static org.apache.http.HttpStatus.SC_FORBIDDEN
 
 import java.text.SimpleDateFormat
@@ -231,86 +233,96 @@ class ProjectController {
         def postBody = request.JSON
         log.debug "Body: ${postBody}"
         log.debug "Params: ${params}"
-        def values = [:]
-        // filter params to remove keys in the ignore list
-        postBody.each { k, v ->
-            if (!(k in ignore)) {
-                values[k] = v
-            }
-        }
 
-        // The rule currently is that anyone is allowed to create a project so we only do these checks for
-        // existing projects.
-        def userId = userService.getUser()?.userId
-        if (id) {
-            if (!projectService.canUserEditProject(userId, id)) {
-                render status:401, text: "User ${userId} does not have edit permissions for project ${id}"
-                log.debug "user not caseManager"
-                return
-            }
-
-            if (values.containsKey("planStatus") && values.planStatus =~ /approved/) {
-                // check to see if user has caseManager permissions
-                if (!projectService.isUserCaseManagerForProject(userId, id)) {
-                    render status:401, text: "User does not have caseManager permissions for project"
-                    log.warn "User ${userId} who is not a caseManager attempting to change planStatus for project ${id}"
-                    return
+        boolean validName = projectService.checkProjectName(postBody.name, id)
+        if (!validName) {
+            render status: 400, text: "Another project already exists with the name ${params.projectName}"
+        } else {
+            def values = [:]
+            // filter params to remove keys in the ignore list
+            postBody.each { k, v ->
+                if (!(k in ignore)) {
+                    values[k] = v
                 }
             }
-        } else if (!userId) {
-            render status: 401, text: 'You do not have permission to create a project'
-        }
+
+            // The rule currently is that anyone is allowed to create a project so we only do these checks for
+            // existing projects.
+            def userId = userService.getUser()?.userId
+            if (id) {
+                if (!projectService.canUserEditProject(userId, id)) {
+                    render status:401, text: "User ${userId} does not have edit permissions for project ${id}"
+                    log.debug "user not caseManager"
+                    return
+                }
+
+                if (values.containsKey("planStatus") && values.planStatus =~ /approved/) {
+                    // check to see if user has caseManager permissions
+                    if (!projectService.isUserCaseManagerForProject(userId, id)) {
+                        render status:401, text: "User does not have caseManager permissions for project"
+                        log.warn "User ${userId} who is not a caseManager attempting to change planStatus for project ${id}"
+                        return
+                    }
+                }
+            } else if (!userId) {
+                render status: 401, text: 'You do not have permission to create a project'
+            }
 
 
-        log.debug "json=" + (values as JSON).toString()
-        log.debug "id=${id} class=${id?.getClass()}"
-        def projectSite = values.remove("projectSite")
-        def documents = values.remove('documents')
-        def links = values.remove('links')
-        def result = id? projectService.update(id, values): projectService.create(values)
-        log.debug "result is " + result
-        if (documents && !result.error) {
-            if (!id) id = result.resp.projectId
-            documents.each { doc ->
-                doc.projectId = id
-                doc.isPrimaryProjectImage = doc.role == 'mainImage'
-                if (doc.isPrimaryProjectImage || doc.role == documentService.ROLE_LOGO) doc.public = true
-                documentService.saveStagedImageDocument(doc)
+            log.debug "json=" + (values as JSON).toString()
+            log.debug "id=${id} class=${id?.getClass()}"
+            def projectSite = values.remove("projectSite")
+            def documents = values.remove('documents')
+            def links = values.remove('links')
+            def result = id? projectService.update(id, values): projectService.create(values)
+            log.debug "result is " + result
+            if (documents && !result.error) {
+                if (!id) id = result.resp.projectId
+                documents.each { doc ->
+                    doc.projectId = id
+                    doc.isPrimaryProjectImage = doc.role == 'mainImage'
+                    if (doc.isPrimaryProjectImage || doc.role == documentService.ROLE_LOGO) doc.public = true
+                    documentService.saveStagedImageDocument(doc)
+                }
             }
-        }
-        if (links && !result.error) {
-            if (!id) id = result.resp.projectId
-            links.each { link ->
-                link.projectId = id
-                documentService.saveLink(link)
+            if (links && !result.error) {
+                if (!id) id = result.resp.projectId
+                links.each { link ->
+                    link.projectId = id
+                    documentService.saveLink(link)
+                }
             }
-        }
-        if (projectSite && !result.error) {
-            if (!id) id = result.resp.projectId
-            if (!projectSite.projects)
-                projectSite.projects = [id]
-            else if (!projectSite.projects.contains(id))
-                projectSite.projects += id
-            def siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
-            if (siteResult.status == 'error')
-                result = [error:'SiteService failed']
-            else if (siteResult.status == 'created') {
-                def updateResult = projectService.update(id, [projectSiteId: siteResult.id], true)
-                if (updateResult.error) result = updateResult
+            if (projectSite && !result.error) {
+                if (!id) id = result.resp.projectId
+                if (!projectSite.projects)
+                    projectSite.projects = [id]
+                else if (!projectSite.projects.contains(id))
+                    projectSite.projects += id
+                def siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
+                if (siteResult.status == 'error')
+                    result = [error:'SiteService failed']
+                else if (siteResult.status == 'created') {
+                    def updateResult = projectService.update(id, [projectSiteId: siteResult.id], true)
+                    if (updateResult.error) result = updateResult
+                }
             }
-        }
-        if (result.error) {
-            render result as JSON
-        } else {
-            render result.resp as JSON
+            if (result.error) {
+                render result as JSON
+            } else {
+                render result.resp as JSON
+            }
         }
     }
 
     @PreAuthorise
     def update(String id) {
-        //params.each { println it }
-        projectService.update(id, params)
-        chain action: 'index', id: id
+        boolean validName = projectService.checkProjectName(params.projectName, params.id)
+        if (!validName) {
+            render status: 400, text: "Another project already exists with the name ${params.projectName}"
+        } else {
+            projectService.update(id, params)
+            chain action: 'index', id: id
+        }
     }
 
     @PreAuthorise(accessLevel = 'admin')
@@ -626,5 +638,15 @@ class ProjectController {
 
     def asJson(json) {
         render(contentType: 'application/json', text: json as JSON)
+    }
+
+    def checkProjectName() {
+        if (!params.projectName) {
+            render status: SC_BAD_REQUEST, text: 'projectName is a required parameter'
+        } else {
+            boolean validName = projectService.checkProjectName(params.projectName, params.id)
+
+            render ([validName: validName] as JSON)
+        }
     }
 }
