@@ -130,6 +130,7 @@
         params.user = user;
         params.projectStartDate = project.plannedStartDate;
         params.pActivityForms = pActivityForms;
+        params.organisationName = project.organisationName
 
         var pActivitiesVM = new ProjectActivitiesViewModel(params);
         initialiseProjectActivitiesList(pActivitiesVM);

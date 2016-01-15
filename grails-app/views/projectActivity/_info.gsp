@@ -22,7 +22,7 @@
 
                 <div class="span8">
                     <div class="controls">
-                        <input id="name" type="text" data-bind="value: name" data-validation-engine="validate[required]">
+                        <input id="name" type="text" data-bind="valueUpdate: 'input',value: name" data-validation-engine="validate[required]">
                     </div>
                 </div>
             </div>
@@ -40,6 +40,24 @@
                 <div class="span8">
                     <div class="controls">
                         <textarea id="description" style="width: 97%;" rows="4" class="input-xlarge" data-bind="value: description"
+                                  data-validation-engine="validate[required]"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="attribution"><g:message code="project.survey.info.attribution"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.attribution"/>', content:'<g:message code="project.survey.info.attribution.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="req-field"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <textarea id="attribution" rows="4" class="input-xlarge" data-bind="value: attribution"
                                   data-validation-engine="validate[required]"></textarea>
                     </div>
                 </div>
