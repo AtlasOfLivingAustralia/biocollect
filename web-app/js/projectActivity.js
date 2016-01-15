@@ -434,6 +434,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 };
 
 var ProjectActivity = function (params) {
+    if(!params) params = {};
     var pActivity = params.pActivity ? params.pActivity : {};
     var pActivityForms = params.pActivityForms ? params.pActivityForms : [];
     var projectId = params.projectId ? params.projectId : "";
