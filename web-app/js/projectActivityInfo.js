@@ -1,7 +1,13 @@
-var pActivityInfo = function(o, selected, startDate){
+var pActivityInfo = function(o, selected, startDate, organisationName){
     var self = $.extend(this, new Documents());
     if(!o) o = {};
     if(!selected) selected = false;
+    if(!organisationName) organisationName = "";
+
+    self.formatAttribution = function(organisationName, surveyName) {
+        return organisationName + (surveyName ? (", " + surveyName) : "");
+    };
+
     self.projectActivityId = ko.observable(o.projectActivityId);
     self.name = ko.observable(o.name ? o.name : "Survey name");
     self.description = ko.observable(o.description);
@@ -11,6 +17,7 @@ var pActivityInfo = function(o, selected, startDate){
     self.commentsAllowed = ko.observable(o.commentsAllowed ? o.commentsAllowed : false);
     self.published = ko.observable(o.published ? o.published : false);
     self.publicAccess = ko.observable(o.publicAccess ? o.publicAccess : false);
+    self.attribution = ko.observable(o.attribution ? o.attribution : self.formatAttribution(organisationName, self.name()));
 
     self.current = ko.observable(selected);
 
@@ -26,6 +33,8 @@ var pActivityInfo = function(o, selected, startDate){
     };
 
     self.transients = self.transients || {};
+    self.transients.organisationName = ko.observable(organisationName);
+    self.transients.oldName = ko.observable(self.name());
 
     // Publish is allowed only when no data's are associated with the survey
     // Survey Info & visibility can be saved regardless of the existence of the data.
@@ -99,4 +108,13 @@ var pActivityInfo = function(o, selected, startDate){
             return true;
         }
     };
+
+    self.name.subscribe(function(newValue) {
+        var initial = self.formatAttribution(self.transients.organisationName(), self.transients.oldName());
+        if(initial == self.attribution()){
+            self.attribution(self.formatAttribution(self.transients.organisationName(),newValue));
+            self.transients.oldName(self.name());
+        }
+    });
+
 };
