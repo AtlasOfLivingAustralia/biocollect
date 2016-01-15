@@ -643,6 +643,10 @@ var SpeciesConstraintViewModel = function (o) {
         self.speciesLists.remove(lists);
     };
 
+    self.allSpeciesInfoVisible = ko.computed(function () {
+        return (self.type() == "ALL_SPECIES");
+    });
+
     self.groupInfoVisible = ko.computed(function () {
         return (self.type() == "GROUP_OF_SPECIES");
     });
