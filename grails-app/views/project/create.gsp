@@ -6,6 +6,7 @@
     <r:script disposition="head">
     var fcConfig = {
         projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
+        checkProjectNameUrl: "${createLink(controller: 'project', action:'checkProjectName')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
@@ -58,7 +59,7 @@
         </g:if>
         <div class="well" style="display: none" data-bind="visible: true"> <!-- hide the panel until knockout has finished. Needs to use an inline style for this to work. -->
             <div class="alert warning" data-bind="visible: !termsOfUseAccepted() && !isExternal()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
-            <button type="button" id="save" class="btn btn-primary" data-bind="disable: !termsOfUseAccepted() && !isExternal()"><g:message code="g.save"/></button>
+            <button type="button" id="save" class="btn btn-primary" data-bind="disable: (!termsOfUseAccepted() && !isExternal()) || !transients.validProjectName()"><g:message code="g.save"/></button>
             <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
         </div>
     </form>
@@ -97,7 +98,7 @@ $(function(){
     });
     </g:else>
     $('#save').click(function () {
-        if ($('#projectDetails').validationEngine('validate')) {
+        if ($('#projectDetails').validationEngine('validate') && viewModel.transients.validProjectName()) {
             if (viewModel.transients.siteViewModel.isValid(true)) {
                 viewModel.saveWithErrorDetection(function(data) {
                     var projectId = "${project?.projectId}" || data.projectId;
