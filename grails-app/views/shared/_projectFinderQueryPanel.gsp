@@ -76,7 +76,8 @@
                                 <div class="btn-group span6" data-toggle="buttons-checkbox" id="pt-search-projecttype">
                                     <button type="button" class="btn  btn-small btn-info active" data-value="citizenScience">Citizen Science <i class="toggleIndicator icon-remove icon-white"></i></button>
                                     <button type="button" class="btn  btn-small btn-info active" data-value="works">NRM <i class="toggleIndicator icon-remove icon-white"></i></button>
-                                    <button type="button" class="btn  btn-small btn-info active" data-value="survey">MERIT <i class="toggleIndicator icon-remove icon-white"></i></button>
+                                    <button type="button" class="btn  btn-small btn-info active" data-value="biologicalScience">Biological Science <i class="toggleIndicator icon-remove icon-white"></i></button>
+                                    <button type="button" class="btn  btn-small btn-info active" data-value="merit">MERIT <i class="toggleIndicator icon-remove icon-white"></i></button>
                                 </div>
                             </div>
                         </div>

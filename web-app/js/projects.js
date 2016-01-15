@@ -763,15 +763,10 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
 
     var self = this;
 
-    // Automatically create the site of type "Project Area" with a name of "Project area for ..."
     self.transients.siteViewModel = initSiteViewModel(false);
-    self.name.subscribe(function(newValue){
-        var oldValue = self.transients.siteViewModel.site().name();
-        var projectName =  newValue
-        var prefix = "Project area for ";
-        if(oldValue.indexOf(prefix) >= 0 || !oldValue){
-            self.transients.siteViewModel.site().name(prefix+projectName);
-        }
+
+    self.name.subscribe(function(projectName) {
+        checkProjectName(projectName);
     });
 
     self.organisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId);
@@ -781,6 +776,22 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     self.transients.associatedOrgLogoUrl = ko.observable();
 
     self.transients.termsOfUseClicked = ko.observable(false);
+
+    self.transients.validProjectName = ko.observable(true);
+
+    function checkProjectName(projectName) {
+        if (!_.isUndefined(projectName) && projectName) {
+            $.ajax({
+                url: fcConfig.checkProjectNameUrl,
+                type: 'GET',
+                data: {projectName: projectName, id: project.projectId},
+                contentType: 'application/json',
+                success: function (data) {
+                    self.transients.validProjectName(data.validName);
+                }
+            });
+        }
+    }
 
     self.clickTermsOfUse = function() {
         self.transients.termsOfUseClicked(true);
