@@ -1,0 +1,65 @@
+/**
+ horizontal scrolling widget
+
+    <div class="list-parent">
+        <ul class="cards-list" data-bind="style:{width: width() + 'px'}">
+            <li>
+                <ul class="thumbnails">
+                    <li class="span4">
+                        <div class="thumbnail">
+                            <img src="...">
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            ....
+        </ul>
+    </div>
+ */
+
+.cards-list {
+    overflow: hidden;
+    padding-left: 10px;
+}
+.cards-list {
+    margin: 30px 0 0;
+    padding: 0;
+}
+
+.cards-list li {
+    margin-right: 5px;
+    float: left;
+}
+.cards-list li {
+    margin-right: 1%;
+    height: auto;
+    display: inline-block;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    vertical-align: top;
+    position: relative;
+    background: #fff;
+}
+.list-parent{
+    overflow: auto;
+}
+.cards-list li .thumbnail {
+    height: 150px;
+    width: 200px;
+}
+.cards-list li .thumbnail img{
+    max-height: 100%;
+    max-width: 100%;
+    vertical-align: middle;
+    text-align: center;
+
+}
+.cards-list li .thumbnail img.wide {
+    width: 100%;
+    height: auto;
+}
+
+.cards-list li .thumbnail img.tall {
+    width: auto;
+    height: 100%;
+}​

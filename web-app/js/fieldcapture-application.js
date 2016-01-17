@@ -919,3 +919,8 @@ function initCarouselImages(image){
     $(image).parent().fancybox({nextEffect:'fade', preload:0, 'prevEffect':'fade'});
     findLogoScalingClass(image)
 };
+
+function initialiseImageGallery(config){
+    var vm = new ImageGalleryViewModel(config);
+    ko.applyBindings(vm, config.element);
+}

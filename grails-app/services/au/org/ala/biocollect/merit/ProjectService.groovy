@@ -1,5 +1,4 @@
 package au.org.ala.biocollect.merit
-
 import au.org.ala.biocollect.EmailService
 import au.org.ala.web.AuthService
 import grails.converters.JSON
@@ -16,6 +15,9 @@ class ProjectService {
     MetadataService metadataService
     SettingService settingService
     EmailService emailService
+
+    public static IMAGE_TYPE = 'image'
+    public  static IMAGE_RECORDS = ['surveyImage']
 
     def list(brief = false, citizenScienceOnly = false) {
         def params = brief ? '?brief=true' : ''
@@ -306,5 +308,18 @@ class ProjectService {
         } else {
             [:] as JSON
         }
+    }
+
+    /**
+     * get image documents from ecodata
+     * @param projectId
+     * @param payload
+     * @return
+     */
+    Map listImages(Map payload){
+        payload.type = IMAGE_TYPE;
+        payload.role = IMAGE_RECORDS
+        String url = grailsApplication.config.ecodata.service.url + '/document/listImages'
+        webService.doPost(url, payload)?.resp
     }
 }

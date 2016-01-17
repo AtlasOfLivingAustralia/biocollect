@@ -1,16 +1,20 @@
-function ImageViewModel(prop){
+function ImageViewModel(prop, skipFindingDocument){
     var self = this, document;
+    var documents
 
-    // activityLevelData is a global variable
-    var documents = activityLevelData.activity.documents;
-    // dereferencing the document using documentId
-    documents && documents.forEach(function(doc){
-        // newer implementation is passing document object.
-        var docId = prop.documentId || prop;
-        if(doc.documentId === docId){
-            prop = doc;
-        }
-    });
+    // used by image gallery plugin. document is passed to the function.
+    if(!skipFindingDocument){
+        // activityLevelData is a global variable
+        documents = activityLevelData.activity.documents;
+        // dereferencing the document using documentId
+        documents && documents.forEach(function(doc){
+            // newer implementation is passing document object.
+            var docId = prop.documentId || prop;
+            if(doc.documentId === docId){
+                prop = doc;
+            }
+        });
+    }
 
     if(typeof prop !== 'object'){
         console.error('Could not find the required document.')
@@ -31,6 +35,9 @@ function ImageViewModel(prop){
     self.documentId = prop.documentId || '';
     self.status = ko.observable(prop.status || 'active')
 
+    self.content = ko.computed(function(){
+        return $('#popoverContent0').html();
+    });
     self.remove = function(images, data, event){
         if(data.documentId){
             // change status when image is already in ecodata

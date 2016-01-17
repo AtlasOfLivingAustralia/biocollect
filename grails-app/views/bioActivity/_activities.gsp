@@ -18,6 +18,7 @@
                 <ul class="nav nav-tabs" id="tabDifferentViews">
                     <li class="active"><a id="recordVis-tab" href="#recordVis" data-toggle="tab" >List</a></li>
                     <li class=""><a href="#mapVis" id="dataMapTab" data-bind="attr:{'data-toggle': activities().length > 0 ? 'tab' : ''}">Map</a></li>
+                    <li class=""><a href="#imageGallery" data-toggle="tab">Images</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
@@ -178,6 +179,11 @@
                     <div class="tab-pane" id="mapVis">
                         <m:map id="recordOrActivityMap" width="100%"/>
                     </div>
+                    <!-- ko stopBinding:true -->
+                    <div class="tab-pane" id="imageGallery">
+                        <g:render template="/shared/imageGallery"></g:render>
+                    </div>
+                    <!-- /ko -->
                 </div>
             </div>
         </div>
@@ -187,7 +193,8 @@
 <r:script>
     var activitiesAndRecordsViewModel, alaMap, results;
     function initialiseData(view) {
-        var user = '${user as grails.converters.JSON}'
+        var user = '${user as grails.converters.JSON}',
+            configImageGallery;
         if (user) {
             user = JSON.parse(user);
         } else {
@@ -199,6 +206,22 @@
             activitiesAndRecordsViewModel.transients.alaMap.redraw();
         })
         activitiesAndRecordsViewModel.getDataAndShowOnMap();
+
+        configImageGallery = {
+            recordUrl: fcConfig.recordImageListUrl,
+            poiUrl: fcConfig.poiImageListUrl,
+            method: 'POST',
+            element: document.getElementById('imageGallery'),
+            data: {
+                view: fcConfig.view,
+                fq: [],
+                searchTerm: '',
+                projectId: fcConfig.projectId || ''
+            },
+            viewModel: activitiesAndRecordsViewModel
+        }
+
+        initialiseImageGallery(configImageGallery);
     }
 
 

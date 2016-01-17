@@ -622,3 +622,24 @@ ko.bindingHandlers.removeFromArray = {
     })
   }
 }
+
+/**
+ * custom handler for fancybox plugin.
+ * @type {{init: Function}}
+ * config to fancybox plugin can be passed to custom binding using knockout syntax.
+ * eg:  <a href="fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade'}"></a>
+ */
+ko.bindingHandlers.fancybox = {
+  init: function(element, valueAccessor, allBindings, viewModel, bindingContext){
+    var config = valueAccessor()
+    // suppress auto scroll on clicking image to view in fancybox
+    config = $.extend({
+      helpers: {
+        overlay: {
+          locked: false
+        }
+      }
+    }, config);
+    $(element).fancybox(config);
+  }
+}

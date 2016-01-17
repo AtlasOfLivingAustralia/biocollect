@@ -1,0 +1,10 @@
+.image-window{
+    height: 150px;
+    width: 200px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.thumbnail{
+    background-color: white;
+}

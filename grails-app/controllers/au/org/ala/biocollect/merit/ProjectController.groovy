@@ -1,5 +1,4 @@
 package au.org.ala.biocollect.merit
-
 import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.web.AuthService
@@ -7,9 +6,10 @@ import grails.converters.JSON
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
-import static org.apache.http.HttpStatus.SC_FORBIDDEN
 
 import java.text.SimpleDateFormat
+
+import static org.apache.http.HttpStatus.SC_FORBIDDEN
 
 class ProjectController {
 
@@ -33,6 +33,7 @@ class ProjectController {
 
     static defaultAction = "index"
     static ignore = ['action','controller','id']
+    static allowedMethods = [listRecordImages: "POST"]
 
     def index(String id) {
         def project = projectService.get(id, 'brief')
@@ -624,5 +625,22 @@ class ProjectController {
 
     def asJson(json) {
         render(contentType: 'application/json', text: json as JSON)
+    }
+
+    /**
+     * list images in the context of a project, all records or my records
+     * payload.view parameter is used to differentiate these context
+     */
+    def listRecordImages(){
+        Map payload = request.JSON
+        payload.max = payload.max?: 10;
+        payload.offset = payload.offset?: 0;
+        payload.userId = authService.getUserId()
+        payload.order = payload.order?:'DESC';
+        payload.sort = payload.sort?:'lastUpdated';
+        payload.fq = payload.fq?:[]
+        payload.fq.push('surveyImage:true');
+        Map result = projectService.listImages(payload);
+        render contentType: 'application/json', text: result as JSON
     }
 }

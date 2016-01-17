@@ -373,6 +373,17 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         alaMap.getMapImpl().invalidateSize();
     };
 
+    /**
+     * gets the list of selected filters to a format easy enough to construct an URL.
+     */
+    self.urlFacetParameter = function(){
+        var facetFilters = [];
+        ko.utils.arrayForEach(activitiesAndRecordsViewModel.selectedFilters(), function (term) {
+            facetFilters.push(term.facetName() + ':' + term.term());
+        });
+        return facetFilters;
+    }
+
     function constructQueryUrl(prefix, offset) {
         if (!offset) offset = 0;
 
