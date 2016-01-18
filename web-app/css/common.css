@@ -331,6 +331,11 @@ a[href^="http"]:not([href*="ala.org.au"]):not(.do-not-mark-external)::after {
 /*
  * font weight is bold for popover text shown on children of th element. This will remove the weight.
  */
-th .popover{
+th .popover {
     font-weight: normal !important;
+}
+
+.image-attribution-panel {
+    float: right;
+    font-style: italic;
 }

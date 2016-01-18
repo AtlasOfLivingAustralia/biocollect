@@ -22,7 +22,7 @@ class ProjectService {
      * @return True if no other active project exists with the same name
      */
     boolean checkProjectName(String projectName, String id) {
-        def results = webService.getJson("${grailsApplication.config.ecodata.service.url}/project/findByName?projectName=${projectName}", 30000, true)
+        def results = webService.getJson("${grailsApplication.config.ecodata.service.url}/project/findByName?projectName=${URLEncoder.encode(projectName, "utf-8")}", 30000, true)
 
         results?.isEmpty() || (results?.size() == 1 && id == results[0]?.projectId)
     }

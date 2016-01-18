@@ -450,6 +450,12 @@
                     <button class="btn main-image-button" data-bind="click:removeLogoImage, visible:logoUrl()"><i class="icon-minus"></i> Remove</button>
                 </span>
             </div>
+            <div class="control-group" data-bind="visible: logoUrl()">
+                <label class="control-label span3" for="logoCredit"><g:message code="project.details.logo.attribution"/><fc:iconHelp><g:message code="project.details.logo.attribution.help"/></fc:iconHelp></label>
+                <div class="controls span9">
+                    <g:textField class="input-xxlarge" name="logoCredit" data-bind="value:logoAttribution"/>
+                </div>
+            </div>
 
             <div class="control-group">
                 <label class="control-label span3" for="mainImage"><g:message code="project.details.mainImage"/><fc:iconHelp><g:message code="project.details.mainImage.help"/></fc:iconHelp></label>
@@ -470,6 +476,12 @@
 
                     <button class="btn main-image-button" data-bind="click:removeMainImage,  visible:mainImageUrl()"><i class="icon-minus"></i> Remove</button>
                 </span>
+            </div>
+            <div class="control-group" data-bind="visible: mainImageUrl()">
+                <label class="control-label span3" for="mainImageCredit"><g:message code="project.details.mainImage.attribution"/><fc:iconHelp><g:message code="project.details.mainImage.attribution.help"/></fc:iconHelp></label>
+                <div class="controls span9">
+                    <g:textField class="input-xxlarge" name="mainImageCredit" data-bind="value:mainImageAttribution"/>
+                </div>
             </div>
         </div>
     </div>
