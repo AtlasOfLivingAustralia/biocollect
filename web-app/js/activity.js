@@ -71,35 +71,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
     self.reset = function () {
         self.clearData();
         self.selectedFilters([]);
-        self.refreshPage();
+        self.refreshPage(0);
     };
 
-    self.selectFacetTerm = function (term, facetGroup, clearFirst) {
-        var selectedFacet = null;
-
-        self.facets().forEach(function (facet) {
-            var match = facet.findTerm(term);
-
-            if (match != null) {
-                selectedFacet = match;
-            }
-        });
-
-        if (selectedFacet == null) {
-            selectedFacet = new TermFacetVM({
-                term: term,
-                facetName: facetGroup,
-                facetDisplayName: facetGroup
-            })
-        }
-
-        if (clearFirst) {
-            self.clearData();
-            self.selectedFilters([selectedFacet]);
-        } else {
-            self.selectedFilters.push(selectedFacet);
-        }
-        self.refreshPage();
+    self.selectFacetTerm = function (term, facetGroup) {
+        self.resetFacetsAndSelect(term, facetGroup);
     };
 
     self.addUserSelectedFacet = function (facet) {
@@ -109,7 +85,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
 
     self.removeUserSelectedFacet = function () {
         self.selectedFilters.removeAll();
-        self.refreshPage();
+        self.refreshPage(0);
     };
 
     self.removeFilter = function (filter) {
@@ -119,6 +95,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
 
     self.load = function (data, page) {
         var activities = data.activities;
+        var facets = data.facets;
         var total = data.total;
 
         self.activities([]);
@@ -128,6 +105,14 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         });
         self.activities(activities);
 
+        facets = $.map(facets ? facets : [], function (facet, index) {
+            return new DataFacetsVM(facet, self.availableFacets);
+        });
+        self.facets(facets);
+
+        self.facets.sort(function (left, right) {
+            return left.order() == right.order() ? 0 : (left.order() < right.order() ? -1 : 1)
+        });
 
         // only initialise the pagination if we are on the first page load
         if (page == 0) {
@@ -198,11 +183,29 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                 self.transients.loading(false);
             }
         });
-
-        self.getFacets();
     };
 
-    self.getFacets = function() {
+    self.refineSearch = function() {
+        var terms = getSelectedTermsForRefinement();
+        terms.forEach(function (term) {
+            self.selectedFilters.push(term);
+        });
+        self.refreshPage();
+    };
+
+    function getSelectedTermsForRefinement() {
+        return $.map(self.facets(), function (facet) {
+            return $.map(facet.terms(), function (term) {
+                return term.selected() ? term : null;
+            });
+        });
+    }
+
+    self.refinementSelected = function() {
+        return getSelectedTermsForRefinement().length > 0;
+    };
+
+    self.resetFacetsAndSelect = function(term, facetGroup) {
         var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, 0, true);
 
         self.transients.loading(true);
@@ -223,16 +226,29 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                     return left.order() == right.order() ? 0 : (left.order() < right.order() ? -1 : 1)
                 });
 
-                var newFacetStr = ko.toJSON(facets).replace(/"filter":((false)|(true))?/g, "");
-                var oldFacetStr = ko.toJSON(self.facets()).replace(/"filter":((false)|(true))?/g, "");
+                self.facets(facets);
 
-                // Only update the facet list if the contents have changed (e.g. new a activity has resulted in a new
-                // option in one of the facet groups.
-                // This prevent the facet list from 'flashing' as it is redrawn after items are selected, and keeps any
-                // expanded groups open.
-                if (newFacetStr != oldFacetStr) {
-                    self.facets(facets);
+                var selectedFacet = null;
+
+                self.facets().forEach(function (facet) {
+                    var match = facet.findTerm(term);
+
+                    if (match != null) {
+                        selectedFacet = match;
+                    }
+                });
+
+                if (selectedFacet == null) {
+                    selectedFacet = new TermFacetVM({
+                        term: term,
+                        facetName: facetGroup,
+                        facetDisplayName: facetGroup
+                    })
                 }
+
+                self.selectedFilters([selectedFacet]);
+
+                self.refreshPage();
             },
             error: function (data) {
                 alert('An unhandled error occurred: ' + data);
@@ -634,6 +650,8 @@ var TermFacetVM = function (term) {
     var self = this;
     if (!term) term = {};
 
+    self.id = ko.observable(generateTermId(term));
+    self.selected = ko.observable(false);
     self.facetName = ko.observable(term.facetName);
     self.facetDisplayName = ko.observable(term.facetDisplayName);
     self.count = ko.observable(term.count);
@@ -643,3 +661,11 @@ var TermFacetVM = function (term) {
         return self.term() + " (" + self.count() + ")";
     });
 };
+
+function generateTermId(term) {
+    if (_.isFunction(term.facetName)) {
+        return term.facetName().replace(/[^a-zA-Z0-9]/g, "") + term.term().replace(/[^a-zA-Z0-9]/g, "")
+    } else {
+        return term.facetName.replace(/[^a-zA-Z0-9]/g, "") + term.term.replace(/[^a-zA-Z0-9]/g, "")
+    }
+}

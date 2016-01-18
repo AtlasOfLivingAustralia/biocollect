@@ -13,13 +13,14 @@
         </ul>
     </div>
 </div>
+<!-- /ko -->
 
-<div class="row-fluid">
+<div class="row-fluid" data-bind="if: refinementSelected() || selectedFilters().length > 0">
     <div class="span12">
-        <button class="button btn-sm btn-default" data-bind="click: removeUserSelectedFacet">Reset</button>
+        <button class="button btn-sm btn-default" data-bind="click: refineSearch, visible: refinementSelected()"><i class="fa fa-filter">&nbsp;</i>Refine</button>
+        <button class="button btn-sm btn-default" data-bind="click: removeUserSelectedFacet, visible: selectedFilters().length > 0"><i class="fa fa-times-circle-o">&nbsp;</i>Reset</button>
     </div>
 </div>
-<!-- /ko -->
 
 <div class="panel-group" id="facet-accordion">
     <!-- ko foreach: facets -->
@@ -40,6 +41,7 @@
                 <!-- ko foreach : terms -->
                 <div class="margin-left-1" data-bind="visible: showTerm">
                     <span>
+                        <input type="checkbox" data-bind="attr: {id: term}, checked: selected">
                         <a href="#" data-bind="click: $root.addUserSelectedFacet,text: displayText"></a>
                     </span> </br>
                 </div>
