@@ -26,7 +26,10 @@
             <table class="table white-background table-custom-border borderless">
                 <thead>
                 <tr>
-                    <th class="text-left">Sites associated with this survey: <span class="req-field"></span></th>
+                    <th class="text-left">Sites associated with this survey:
+                        <span class="req-field"></span>
+                        <a href="#" data-bind="popover: {content:'Sites listed here will be selectable on the data collection form. If you don\'t want a particular site to be available for selection in this survey, click the arrow to move it into the \'Sites associated with the project\' column. Note that the survey must have at least one site associated with it.'}"><i  class="icon-question-sign"></i></a>
+                    </th>
                 </tr>
                 </thead>
 
@@ -58,7 +61,9 @@
             <table class="table table-custom-border borderless white-background">
                 <thead>
                 <tr>
-                    <th>Sites associated with this project:</th>
+                    <th>Sites associated with this project:
+                        <a href="#" data-bind="popover: {content:'Sites listed here are associated with the project, but are not used by this particular survey. If you want a particular site to be available for selection in this survey, click on the arrow to move it into the \'Sites associated with the survey\' column.'}"><i  class="icon-question-sign"></i></a>
+                    </th>
                 </tr>
                 </thead>
 
