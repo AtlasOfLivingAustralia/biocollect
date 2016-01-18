@@ -25,10 +25,15 @@
         </ul>
         <button class="btn margin-left-30" data-bind="click: nextPage, visible: isLoadMore">Load more</button>
 
-        <!-- ko if: recordImages().length == 0 -->
+        <!-- ko if: recordImages().length == 0 && !error() -->
         <h3>
-            No record images found.
+            No images found.
         </h3>
+        <!-- /ko -->
+
+        <!-- ko if: error() -->
+        <div class="alert alert-error" data-bind="text: error">
+        </div>
         <!-- /ko -->
     </div>
 </bc:koLoading>

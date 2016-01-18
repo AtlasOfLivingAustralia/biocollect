@@ -11,6 +11,8 @@ import java.text.SimpleDateFormat
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST
 import static org.apache.http.HttpStatus.SC_FORBIDDEN
+import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR
+import static org.apache.http.HttpStatus.SC_REQUEST_TIMEOUT
 
 class ProjectController {
 
@@ -660,16 +662,22 @@ class ProjectController {
      * payload.view parameter is used to differentiate these context
      */
     def listRecordImages() {
-        Map payload = request.JSON
-        payload.max = payload.max ?: 10;
-        payload.offset = payload.offset ?: 0;
-        payload.userId = authService.getUserId()
-        payload.order = payload.order ?: 'DESC';
-        payload.sort = payload.sort ?: 'lastUpdated';
-        payload.fq = payload.fq ?: []
-        payload.fq.push('surveyImage:true');
-        Map result = projectService.listImages(payload) ?: [:];
-        render contentType: 'application/json', text: result as JSON
+        try{
+            Map payload = request.JSON
+            payload.max = payload.max ?: 10;
+            payload.offset = payload.offset ?: 0;
+            payload.userId = authService.getUserId()
+            payload.order = payload.order ?: 'DESC';
+            payload.sort = payload.sort ?: 'lastUpdated';
+            payload.fq = payload.fq ?: []
+            payload.fq.push('surveyImage:true');
+            Map result = projectService.listImages(payload) ?: [:];
+            render contentType: 'application/json', text: result as JSON
+        } catch (SocketTimeoutException sTimeout){
+            render(status: SC_REQUEST_TIMEOUT, text: sTimeout.message)
+        } catch( Exception e){
+            render(status: SC_INTERNAL_SERVER_ERROR, text: e.message)
+        }
     }
 
     def checkProjectName() {

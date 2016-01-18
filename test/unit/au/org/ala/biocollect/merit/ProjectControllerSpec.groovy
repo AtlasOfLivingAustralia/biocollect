@@ -5,6 +5,8 @@ import grails.test.mixin.TestFor
 import spock.lang.Specification
 
 import static org.apache.http.HttpStatus.SC_OK
+import static org.apache.http.HttpStatus.SC_REQUEST_TIMEOUT
+
 /**
  * Specification for the ProjectController
  */
@@ -286,6 +288,26 @@ class ProjectControllerSpec extends Specification {
         response.json.count == 1
         response.json.documents[0].documentId == '124'
 
+    }
+
+    void "list all images during timeout exception"(){
+        given:
+        Map payload = [:]
+        payload.max = 10;
+        payload.offset = 0;
+        payload.userId = ''
+        payload.order = 'DESC';
+        payload.sort = 'lastUpdated';
+        payload.fq = ['surveyImage:true']
+        payload.projectId = 'abs'
+        projectServiceStub.listImages(payload) >> {throw new SocketTimeoutException('timed out')}
+        when:
+        request.method = "POST"
+        request.json = '{"projectId":"abs"}'
+        controller.listRecordImages()
+        then:
+        response.status == SC_REQUEST_TIMEOUT;
+        response.text == 'timed out';
     }
 
     int orgCount = 0;

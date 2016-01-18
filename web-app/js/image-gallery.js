@@ -14,6 +14,7 @@ function ImageGalleryViewModel(config){
     self.pagesize = 10;
     self.offset = ko.observable(0);
     self.max = ko.observable(self.pagesize)
+    self.error = ko.observable('');
     self.isLoadMore = ko.computed(function(){
         return self.total() > self.max();
     });
@@ -35,6 +36,7 @@ function ImageGalleryViewModel(config){
     self.fetchRecordImages = function(){
         // update post parameters eg. max and offset
         self.getUrlParameter();
+        self.error('');
         $.ajax({
             url: prop.recordUrl,
             type: prop.method,
@@ -43,8 +45,11 @@ function ImageGalleryViewModel(config){
             success: function(data){
                 if(data.documents){
                     self.addImages(data.documents);
-                    self.total(data.count);
+                    self.total(data.total);
                 }
+            },
+            error: function(jxhr, status, message){
+                self.error(jxhr.responseText);
             }
         })
     }

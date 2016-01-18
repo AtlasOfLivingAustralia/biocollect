@@ -14,9 +14,6 @@ class ProjectService {
     SettingService settingService
     EmailService emailService
 
-    public static IMAGE_TYPE = 'image'
-    public  static IMAGE_RECORDS = ['surveyImage']
-
     /**
      * Check if a project already exists with the specified name.
      *
@@ -327,10 +324,20 @@ class ProjectService {
      * @param payload
      * @return
      */
-    Map listImages(Map payload){
-        payload.type = IMAGE_TYPE;
-        payload.role = IMAGE_RECORDS
+    Map listImages(Map payload) throws SocketTimeoutException, Exception{
+        Map response
+        payload.type = 'image';
+        payload.role = ['surveyImage']
         String url = grailsApplication.config.ecodata.service.url + '/document/listImages'
-        webService.doPost(url, payload)?.resp
+        response = webService.doPost(url, payload)
+        if(response.resp){
+            return response.resp;
+        } else  if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw  new Exception(response.error);
+            }
+        }
     }
 }
