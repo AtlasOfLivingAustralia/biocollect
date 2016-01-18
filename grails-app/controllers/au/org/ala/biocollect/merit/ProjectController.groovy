@@ -668,7 +668,7 @@ class ProjectController {
         payload.sort = payload.sort ?: 'lastUpdated';
         payload.fq = payload.fq ?: []
         payload.fq.push('surveyImage:true');
-        Map result = projectService.listImages(payload);
+        Map result = projectService.listImages(payload) ?: [:];
         render contentType: 'application/json', text: result as JSON
     }
 
