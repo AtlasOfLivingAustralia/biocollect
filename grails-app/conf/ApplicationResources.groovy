@@ -393,4 +393,14 @@ modules = {
     admin {
         resource url: 'js/activityModel.js'
     }
+
+    imageGallery{
+        dependsOn('imageViewer')
+        resource url: 'js/knockout-custom-bindings.js'
+        resource url: 'js/knockout-dates.js'
+        resource url: 'js/fieldcapture-application.js'
+        resource url: 'js/images.js'
+        resource url: 'js/image-gallery.js'
+        resource url: 'css/image-gallery.css'
+    }
 }

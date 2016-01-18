@@ -65,7 +65,9 @@
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}",
         auditMessageUrl: "${createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId])}",
         projectId: "${project.projectId}",
-        projectLinkPrefix: "${createLink(controller: 'project')}/"
+        projectLinkPrefix: "${createLink(controller: 'project')}/",
+        recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
+        view: 'project'
         },
         here = window.location.href;
 

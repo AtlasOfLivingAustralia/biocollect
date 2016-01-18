@@ -23,9 +23,10 @@
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
-            view: "${view}",
+            view: "${view == 'allrecords' ? view : 'myrecords'}",
             returnTo: "${view == 'allrecords' ? createLink(controller: 'bioActivity', action:'allRecords') : createLink(controller: 'bioActivity', action:'list') }",
-            projectLinkPrefix: "${createLink(controller: 'project')}/"
+            projectLinkPrefix: "${createLink(controller: 'project')}/",
+            recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}'
         },
         here = document.location.href;
     </r:script>

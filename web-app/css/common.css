@@ -284,8 +284,12 @@
 }
 
 .timeEntry-control {
-    margin-left: 10px !important;
-    margin-top: 5px !important;
+    margin-left: 10px !important;;
+    margin-top: 5px !important;;
+}
+
+.margin-left-30{
+    margin-left: 30px;
 }
 
 .organisation-logo {

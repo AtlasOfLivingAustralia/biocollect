@@ -1,8 +1,10 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.web.AuthService
 import grails.test.mixin.TestFor
 import spock.lang.Specification
 
+import static org.apache.http.HttpStatus.SC_OK
 /**
  * Specification for the ProjectController
  */
@@ -17,6 +19,7 @@ class ProjectControllerSpec extends Specification {
     def activityServiceStub = Stub(ActivityService)
     def commonServiceStub = Stub(CommonService)
     def auditServiceStub = Stub(AuditService)
+    def authServiceStub = Stub(AuthService)
 
     void setup() {
         controller.userService = userServiceStub
@@ -27,6 +30,7 @@ class ProjectControllerSpec extends Specification {
         controller.activityService = activityServiceStub
         controller.commonService = commonServiceStub
         controller.auditService = auditServiceStub
+        controller.authService = authServiceStub
         auditServiceStub.getAuditMessagesForProject(_) >> []
         metadataServiceStub.organisationList() >> [list:[buildOrganisation(), buildOrganisation(), buildOrganisation()]]
         metadataServiceStub.activitiesModel() >> [activities: []]
@@ -36,6 +40,7 @@ class ProjectControllerSpec extends Specification {
         userServiceStub.getOrganisationIdsForUserId(_) >> []
         userServiceStub.isProjectStarredByUser(_, _) >> [isProjectStarredByUser:true]
         roleServiceStub.getRoles() >> []
+        authServiceStub.getUserId() >> ''
     }
 
     void "creating a citizen science project should pre-populate the citizen science project type"() {
@@ -258,6 +263,29 @@ class ProjectControllerSpec extends Specification {
 
         model.projectContent.activities.label == 'Surveys'
         model.projectContent.activities.wordForActivity == 'Survey'
+    }
+
+    void "list all images for a project"(){
+        given:
+        Map payload = [:]
+        payload.max = 10;
+        payload.offset = 0;
+        payload.userId = ''
+        payload.order = 'DESC';
+        payload.sort = 'lastUpdated';
+        payload.fq = ['surveyImage:true']
+        payload.projectId = 'abs'
+        projectServiceStub.listImages(payload) >> [count:1,documents:[[documentId:'124']]]
+        when:
+        request.method = "POST"
+        request.json = '{"projectId":"abs"}'
+        controller.listRecordImages()
+        then:
+        response.status == SC_OK;
+        response.json.documents.size() == 1
+        response.json.count == 1
+        response.json.documents[0].documentId == '124'
+
     }
 
     int orgCount = 0;
