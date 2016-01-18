@@ -642,4 +642,4 @@ ko.bindingHandlers.fancybox = {
     }, config);
     $(element).fancybox(config);
   }
-}
+};
