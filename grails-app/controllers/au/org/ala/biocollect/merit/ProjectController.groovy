@@ -280,14 +280,24 @@ class ProjectController {
             def projectSite = values.remove("projectSite")
             def documents = values.remove('documents')
             def links = values.remove('links')
+
+            String mainImageAttribution = values.remove("mainImageAttribution")
+            String logoAttribution = values.remove("logoAttribution")
+
             def result = id? projectService.update(id, values): projectService.create(values)
             log.debug "result is " + result
             if (documents && !result.error) {
                 if (!id) id = result.resp.projectId
                 documents.each { doc ->
                     doc.projectId = id
-                    doc.isPrimaryProjectImage = doc.role == 'mainImage'
-                    if (doc.isPrimaryProjectImage || doc.role == documentService.ROLE_LOGO) doc.public = true
+                    if (doc.role == "mainImage") {
+                        doc.isPrimaryProjectImage = true
+                        doc.attribution = mainImageAttribution
+                        doc.public = true
+                    } else if (doc.role == documentService.ROLE_LOGO) {
+                        doc.public = true
+                        doc.attribution = logoAttribution
+                    }
                     documentService.saveStagedImageDocument(doc)
                 }
             }

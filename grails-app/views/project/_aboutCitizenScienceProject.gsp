@@ -87,6 +87,11 @@
         </div>
     </div>
     </g:if>
+
+    <div class="image-attribution-panel" data-bind="visible: logoAttributionText() || mainImageAttributionText()">
+        <strong>Image credits</strong>: <span data-bind="visible: logoAttributionText()">Logo: <span data-bind="text: logoAttributionText()"></span>;&nbsp;</span>
+        <span data-bind="visible: mainImageAttributionText()">Feature image: <span data-bind="text: mainImageAttributionText()"></span></span>
+    </div>
 </div>
 <r:script>
 

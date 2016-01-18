@@ -664,6 +664,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             self.addDocument(doc);
         });
     }
+    self.mainImageAttribution = ko.observable(self.mainImageAttributionText());
+    self.logoAttribution = ko.observable(self.logoAttributionText());
 
     // links
     if (project.links) {

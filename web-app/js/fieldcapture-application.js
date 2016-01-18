@@ -698,6 +698,12 @@ function Documents() {
         var logoDocument = self.findDocumentByRole(self.documents(), 'logo');
         return logoDocument ? logoDocument.url : null;
     });
+
+    self.logoAttributionText = ko.pureComputed(function() {
+        var logoDocument = self.findDocumentByRole(self.documents(), 'logo');
+        return logoDocument && logoDocument.attribution ? logoDocument.attribution() : null;
+    });
+
     self.bannerUrl = ko.pureComputed(function() {
         var bannerDocument = self.findDocumentByRole(self.documents(), 'banner');
         return bannerDocument ? bannerDocument.url : null;
@@ -710,6 +716,11 @@ function Documents() {
     self.mainImageUrl = ko.pureComputed(function() {
         var mainImageDocument = self.findDocumentByRole(self.documents(), 'mainImage');
         return mainImageDocument ? mainImageDocument.url : null;
+    });
+
+    self.mainImageAttributionText = ko.pureComputed(function() {
+        var mainImageDocument = self.findDocumentByRole(self.documents(), 'mainImage');
+        return mainImageDocument && mainImageDocument.attribution ? mainImageDocument.attribution() : null;
     });
 
     self.removeBannerImage = function() {
@@ -763,7 +774,8 @@ function Documents() {
 
     self.ignore = ['documents', 'links', 'logoUrl', 'bannerUrl', 'mainImageUrl', 'primaryImages', 'embeddedVideos',
         'ignore', 'transients', 'documentFilter', 'documentFilterFieldOptions', 'documentFilterField',
-        'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass'];
+        'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass',
+        'mainImageAttributionText', 'logoAttributionText'];
 
 }
 

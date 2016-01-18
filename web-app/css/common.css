@@ -327,3 +327,8 @@ a[href^="http"]:not([href*="ala.org.au"]):not(.do-not-mark-external)::after {
     font-weight: bold;
     color: #C44D34;
 }
+
+.image-attribution-panel {
+    float: right;
+    font-style: italic;
+}
