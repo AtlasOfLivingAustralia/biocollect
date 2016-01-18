@@ -454,6 +454,7 @@
             <div class="control-group">
                 <label class="control-label span3" for="mainImage"><g:message code="project.details.mainImage"/><fc:iconHelp><g:message code="project.details.mainImage.help"/></fc:iconHelp></label>
                 <div class="span6" style="text-align:center;background:white">
+                    <g:message code="project.details.mainImage.extra"/><br/>
                     <div class="well" style="padding:0;max-height:512px;display:inline-block;overflow:hidden">
                         <img style="width:100%" alt="No image provided" data-bind="attr:{src:mainImageUrl}">
                     </div>
