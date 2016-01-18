@@ -37,11 +37,14 @@
                                 </g:if>
                             </div>
                             <div data-bind="text:aim"></div>
-                            <div style="padding: 4px">
+                            <div data-bind="if: transients.links.length > 0">
                                 <i class="icon-info-sign"></i>&nbsp;<span data-bind="html:transients.links"/>
                             </div>
-                            <div style="line-height:2.2em">
+                            <div style="line-height:2.2em" data-bind="visible:!isMERIT()">
                                 TAGS:&nbsp;<g:render template="/project/tags"/>
+                            </div>
+                            <div data-bind="if: isContributingDataToAla()">
+                                <img src="${resource([dir: "images", file: "ala-logo-small.png"])}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
                             </div>
                         </div>
                     </td>

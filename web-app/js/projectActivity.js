@@ -1,15 +1,14 @@
 var ProjectActivitiesViewModel = function (params) {
     var self = this;
     var pActivities = params.pActivities;
-    var pActivityForms = params.pActivityForms;
-    var projectId = params.projectId;
-    var sites = params.sites;
     var user = params.user;
 
-    self.pActivityForms = pActivityForms;
-    self.sites = sites;
+    self.organisationName = params.organisationName;
+    self.pActivityForms = params.pActivityForms;
+    self.sites = params.sites;
     self.projectStartDate = params.projectStartDate;
-    self.projectId = ko.observable();
+
+    self.projectId = ko.observable(params.projectId);
     self.projectActivities = ko.observableArray();
 
     self.user = user ? user : {isEditor: false, isAdmin: false};
@@ -59,12 +58,20 @@ var ProjectActivitiesViewModel = function (params) {
         pActivity.current(true);
     };
 
-    self.loadProjectActivitiesVM = function (pActivities, pActivityForms, projectId, sites) {
-        self.projectId(projectId);
+    self.loadProjectActivities = function (pActivities) {
         self.sortBy("name");
         self.sortOrder("asc");
         $.map(pActivities, function (pActivity, i) {
-            return self.projectActivities.push(new ProjectActivity(pActivity, pActivityForms, projectId, (i == 0), sites));
+            var args = {
+                pActivity: pActivity,
+                pActivityForms: self.pActivityForms,
+                projectId: self.projectId(),
+                selected: (i == 0),
+                sites: self.sites,
+                organisationName: self.organisationName,
+                startDate: self.projectStartDate
+            };
+            return self.projectActivities.push(new ProjectActivity(args));
         });
 
         self.sort();
@@ -76,7 +83,7 @@ var ProjectActivitiesViewModel = function (params) {
         return projectActive && (pActivity.publicAccess() || userIsEditorOrAdmin);
     };
 
-    self.loadProjectActivitiesVM(pActivities, pActivityForms, projectId, sites);
+    self.loadProjectActivities(pActivities);
 
 };
 
@@ -110,7 +117,16 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
     self.addProjectActivity = function () {
         self.reset();
-        self.projectActivities.push(new ProjectActivity([], self.pActivityForms, self.projectId(), true, self.sites, self.projectStartDate));
+        var args = {
+            pActivity: [],
+            pActivityForms: self.pActivityForms,
+            projectId: self.projectId(),
+            selected: true,
+            sites: self.sites,
+            organisationName: self.organisationName,
+            startDate: self.projectStartDate
+        };
+        self.projectActivities.push(new ProjectActivity(args));
         initialiseValidator();
         self.refreshSurveyStatus();
         showAlert("Successfully added.", "alert-success", self.placeHolder);
@@ -417,19 +433,22 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     self.refreshSurveyStatus();
 };
 
-var ProjectActivity = function (o, pActivityForms, projectId, selected, sites, startDate) {
-    if (!o) o = {};
-    if (!pActivityForms) pActivityForms = [];
-    if (!projectId) projectId = "";
-    if (!selected) selected = false;
-    if (!sites) sites = [];
+var ProjectActivity = function (params) {
+    if(!params) params = {};
+    var pActivity = params.pActivity ? params.pActivity : {};
+    var pActivityForms = params.pActivityForms ? params.pActivityForms : [];
+    var projectId = params.projectId ? params.projectId : "";
+    var selected = params.selected ? params.selected : false;
+    var sites = params.sites ? params.sites : [];
+    var startDate = params.startDate ? params.startDate : "";
+    var organisationName = params.organisationName ? params.organisationName : "";
 
-    var self = $.extend(this, new pActivityInfo(o, selected, startDate));
-    self.projectId = ko.observable(o.projectId ? o.projectId : projectId);
-    self.restrictRecordToSites = ko.observable(o.restrictRecordToSites);
-    self.pActivityFormName = ko.observable(o.pActivityFormName);
-    self.species = new SpeciesConstraintViewModel(o.species);
-    self.visibility = new SurveyVisibilityViewModel(o.visibility);
+    var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
+    self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
+    self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
+    self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
+    self.species = new SpeciesConstraintViewModel(pActivity.species);
+    self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
 
     self.transients = self.transients || {};
     self.transients.siteSelectUrl = ko.observable(fcConfig.siteSelectUrl);
@@ -448,7 +467,7 @@ var ProjectActivity = function (o, pActivityForms, projectId, selected, sites, s
             self.sites.push(new SiteList(obj, defaultSites));
         });
     };
-    self.loadSites(sites, o.sites);
+    self.loadSites(sites, pActivity.sites);
 
     var images = [];
     $.each(pActivityForms, function (index, form) {
@@ -623,6 +642,10 @@ var SpeciesConstraintViewModel = function (o) {
     self.removeSpeciesLists = function (lists) {
         self.speciesLists.remove(lists);
     };
+
+    self.allSpeciesInfoVisible = ko.computed(function () {
+        return (self.type() == "ALL_SPECIES");
+    });
 
     self.groupInfoVisible = ko.computed(function () {
         return (self.type() == "GROUP_OF_SPECIES");

@@ -22,11 +22,17 @@ class SearchService {
         def defaultFacetQuery = SettingService.getHubConfig().defaultFacetQuery
         if (defaultFacetQuery) {
             def fq = new HashSet(defaultFacetQuery)
-            if (params.fq) {
-                fq.addAll(params.list('fq'))
+            def paramFq = params.fq
+
+            if (paramFq) {
+                if (paramFq instanceof List) {
+                    fq.addAll(paramFq)
+                }
+                else {
+                    fq.add(paramFq)
+                }
             }
             params.fq = fq.asList()
-
         }
     }
 
@@ -75,8 +81,16 @@ class SearchService {
         webService.getJson(url)
     }
 
-    Map getCitizenScienceProjects(GrailsParameterMap params, String q = null){
-        addDefaultFacetQuery(params)
+    /**
+     * Queries the homepage index for projects.
+     * @param params the query parameters
+     * @param skipDefaultFacetQuery true if the default query filters defined by the hub should be ommitted.
+     * @return a map containing the search results.
+     */
+    Map findProjects(GrailsParameterMap params, boolean skipDefaultFacetQuery = false){
+        if (!skipDefaultFacetQuery) {
+            addDefaultFacetQuery(params)
+        }
         String url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url)

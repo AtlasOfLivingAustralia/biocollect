@@ -25,10 +25,10 @@
                         <!-- ko if: activities().length == 0 -->
                             <div class="row-fluid">
                                 <h3 class="text-left margin-bottom-five">
-                                    <!-- ko if: $root.searchTerm() == "" -->
+                                    <!-- ko if: $root.searchTerm() == "" && $root.selectedFilters().length == 0 -->
                                         No data has been recorded for this project yet
                                     <!-- /ko -->
-                                    <!-- ko if: $root.searchTerm() != "" -->
+                                    <!-- ko if: $root.searchTerm() != "" || $root.selectedFilters().length > 0 -->
                                         No results
                                     <!-- /ko -->
                                 </h3>
@@ -177,7 +177,12 @@
                     </div>
 
                     <div class="tab-pane" id="mapVis">
-                        <m:map id="recordOrActivityMap" width="100%"/>
+                        <span data-bind="visible: transients.totalPoints() == 0">
+                            <h3 class="text-left margin-bottom-five">No results</h3>
+                        </span>
+                        <span data-bind="visible: transients.totalPoints() > 0">
+                            <m:map id="recordOrActivityMap" width="100%"/>
+                        </span>
                     </div>
                     <!-- ko stopBinding:true -->
                     <div class="tab-pane" id="imageGallery">

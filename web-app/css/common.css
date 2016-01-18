@@ -184,6 +184,15 @@
     margin-top: 20px;
 }
 
+.logo-icon {
+    width: 16px;
+    max-width: 16px;
+    height: 16px;
+    max-height: 16px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
 .small-logo {
     width: 100%;
 }
@@ -281,4 +290,40 @@
 
 .margin-left-30{
     margin-left: 30px;
+}
+
+.organisation-logo {
+    width: 200px;
+    height: 150px;
+    margin-right: 10px;
+    overflow: hidden;
+    padding: 1px;
+    float:left;
+}
+.organisation-logo img {
+    vertical-align: top;
+}
+
+.organisation-text {
+    margin-left: 220px;
+    margin-top: 5px;
+}
+
+.organisation-text h4 {
+    clear: none;
+    margin-top: 0;
+}
+
+a[href^="http"]:not([href*="ala.org.au"]):not(.do-not-mark-external)::after {
+    content: '\f08e';
+    font-family: FontAwesome;
+    padding-left: 5px;
+    font-size: 10px;
+    vertical-align: super;
+}
+
+.survey-listing-title {
+    font-size: 150%;
+    font-weight: bold;
+    color: #C44D34;
 }

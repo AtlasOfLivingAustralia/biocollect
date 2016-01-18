@@ -1,5 +1,6 @@
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.RoleService
 import grails.converters.JSON
 
 /**
@@ -10,27 +11,9 @@ class OrganisationController {
     static allowedMethods = [ajaxDelete: "POST", delete: "POST", ajaxUpdate: "POST"]
 
     def organisationService, searchService, documentService, userService, roleService, commonService, webService
-    def citizenScienceOrgId = null
 
-    def list() {
-        if (params.createCitizenScienceProject as boolean) { // came from CS Hub page
-            if (citizenScienceOrgId == null) {
-                def orgName = grailsApplication.config.citizenScienceOrgName ?: "ALA"
-                citizenScienceOrgId = organisationService.getByName(orgName)?.organisationId
-            }
-            // this session attribute indicates user's desire to create a citizen science project
-            // this attribute is cleared on any project indez/edit/create action
-            session.setAttribute('citizenScienceOrgId', citizenScienceOrgId)
-        }
-        def organisations = organisationService.list()
-        def user = userService.getUser()
-        def userOrgIds = user ? userService.getOrganisationIdsForUserId(user.userId) : []
-        [organisations      : organisations.list ?: [],
-         user               : user,
-         userOrgIds         : userOrgIds,
-         citizenScienceOrgId: session.getAttribute('citizenScienceOrgId') ?: ''
-        ]
-    }
+    // Simply forwards to the list view
+    def list() {}
 
     def index(String id) {
         def organisation = organisationService.get(id, 'all')
@@ -226,5 +209,9 @@ class OrganisationController {
             flash.message += "<br/>${response.error}"
         }
         redirect(controller: 'home', model: [error: flash.message])
+    }
+
+    def search(Integer offset, Integer max, String searchTerm, String sort) {
+        render organisationService.search(offset, max, searchTerm, sort) as JSON
     }
 }

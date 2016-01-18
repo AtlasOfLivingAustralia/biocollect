@@ -2,7 +2,7 @@
     <ul id='main'>
         <g:set var="path" value="${request.getServletPath()}"/>
         <li>
-            <a href="${grailsApplication.config.biocollect.homepageUrl}"><span class="fa fa-home"></span>Biocollect</a>
+            <a href="${grailsApplication.config.biocollect.homepageUrl}" class="do-not-mark-external"><span class="fa fa-home"></span>Biocollect</a>
         </li>
         <li class="${(path ==~ /.*project\/citizenScience.*/) ? 'active' : ''}">
             <a href="#" class="btnSearch"><span class="fa fa-search"></span>Search</a>
@@ -35,7 +35,7 @@
             <a href="#"><span class="fa fa-ellipsis-h"></span>More</a>
             <ul></ul>
         </li>
-        <li class="pull-right"><a href="http://www.ala.org.au" class="ala-link"><span
-                class="ala-icon"></span>Atlas of Living Australia</a></li>
+        <li class="pull-right"><a href="http://www.ala.org.au" class="ala-link do-not-mark-external"><span
+                class="ala-icon">&nbsp;</span>Atlas of Living Australia</a></li>
     </ul>
 </nav>

@@ -1,41 +1,55 @@
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect
+
+import au.org.ala.biocollect.merit.MetadataService
+import au.org.ala.biocollect.merit.ProjectService
+import au.org.ala.biocollect.merit.SearchService
+import au.org.ala.biocollect.merit.UserService
+import au.org.ala.biocollect.merit.WebService
+import org.codehaus.groovy.grails.commons.GrailsApplication
 
 class OrganisationService {
 
-    def grailsApplication, webService, metadataService, projectService, userService
+    private static final String ORGANISATION_DOCUMENT_FILTER = "className:au.org.ala.ecodata.Organisation"
+
+    GrailsApplication grailsApplication
+    WebService webService
+    MetadataService metadataService
+    ProjectService projectService
+    UserService userService
+    SearchService searchService
 
 
-    def get(String id, view = '') {
+    Map get(String id, view = '') {
 
         def url = "${grailsApplication.config.ecodata.service.url}/organisation/$id?view=$view"
         webService.getJson(url)
     }
 
-    def getByName(orgName) {
+    Map getByName(orgName) {
         // The result of the service call will be a JSONArray if it's successful
         return list().list.find({ it.name == orgName })
     }
 
-    def getNameFromId(orgId) {
+    String getNameFromId(orgId) {
         // The result of the service call will be a JSONArray if it's successful
         return orgId ? list().list.find({ it.organisationId == orgId })?.name : ''
     }
 
-    def list() {
+    List list() {
         metadataService.organisationList()
     }
 
-    def update(id, organisation) {
+    Map update(id, organisation) {
 
-        def url = "${grailsApplication.config.ecodata.service.url}/organisation/$id"
-        def result = webService.doPost(url, organisation)
+        String url = "${grailsApplication.config.ecodata.service.url}/organisation/$id"
+        Map result = webService.doPost(url, organisation)
         metadataService.clearOrganisationList()
         result
 
     }
 
-    def isUserAdminForOrganisation(organisationId) {
-        def userIsAdmin
+    boolean isUserAdminForOrganisation(organisationId) {
+        boolean userIsAdmin
 
         if (!userService.user) {
             return false
@@ -49,28 +63,13 @@ class OrganisationService {
         userIsAdmin
     }
 
-    def isUserGrantManagerForOrganisation(organisationId) {
-        def userIsAdmin
-
-        if (!userService.user) {
-            return false
-        }
-        if (userService.userIsSiteAdmin()) {
-            userIsAdmin = true
-        } else {
-            userIsAdmin = userService.isUserGrantManagerForOrganisation(userService.user.userId, organisationId)
-        }
-
-        userIsAdmin
-    }
-
     /**
      * Get the list of users (members) who have any level of permission for the requested organisationId
      *
      * @param organisationId the organisationId of interest.
      */
-    def getMembersOfOrganisation(organisationId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForOrganisation/${organisationId}"
+    List getMembersOfOrganisation(organisationId) {
+        String url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForOrganisation/${organisationId}"
         webService.getJson(url)
     }
 
@@ -82,10 +81,10 @@ class OrganisationService {
      * @param organisationId the organisation to add permissions for.
      * @param role the role to assign to the user.
      */
-    def addUserAsRoleToOrganisation(String userId, String organisationId, String role) {
+    Map addUserAsRoleToOrganisation(String userId, String organisationId, String role) {
 
-        def organisation = get(organisationId, 'flat')
-        def resp = userService.addUserAsRoleToOrganisation(userId, organisationId, role)
+        Map organisation = get(organisationId, 'flat')
+        Map resp = userService.addUserAsRoleToOrganisation(userId, organisationId, role)
         organisation.projects.each {
             userService.addUserAsRoleToProject(userId, it.projectId, role)
         }
@@ -101,11 +100,28 @@ class OrganisationService {
 
      */
     def removeUserWithRoleFromOrganisation(String userId, String organisationId, String role) {
-        def organisation = get(organisationId, 'flat')
-        userService.removeUserWithRoleFromOrganisation(userId, organisationId, role)
+        Map organisation = get(organisationId, 'flat')
+        Map result = userService.removeUserWithRoleFromOrganisation(userId, organisationId, role)
         organisation.projects.each {
             userService.removeUserWithRole(it.projectId, userId, role)
         }
+        result
+    }
+
+    Map search(Integer offset = 0, Integer max = 100, String searchTerm = null, String sort = null) {
+        Map params = [
+                offset:offset,
+                max:max,
+                query:searchTerm,
+                fq:ORGANISATION_DOCUMENT_FILTER
+        ]
+        if (sort) {
+            params.sort = sort
+        }
+        Map results = searchService.fulltextSearch(
+                params, true // Don't use the default facet query because organisations won't match it
+        )
+        results
     }
 
 }

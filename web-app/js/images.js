@@ -34,10 +34,7 @@ function ImageViewModel(prop, skipFindingDocument){
     self.staged = prop.staged || false;
     self.documentId = prop.documentId || '';
     self.status = ko.observable(prop.status || 'active')
-
-    self.content = ko.computed(function(){
-        return $('#popoverContent0').html();
-    });
+    
     self.remove = function(images, data, event){
         if(data.documentId){
             // change status when image is already in ecodata

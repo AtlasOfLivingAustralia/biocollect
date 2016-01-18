@@ -29,7 +29,8 @@
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
         isCitizenScience: true,
-        isOrganisationPage: false
+        showAllProjects: false,
+        meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}"
     }
     <g:if test = "${grailsApplication.config.merit.projectLogo}" >
         fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";

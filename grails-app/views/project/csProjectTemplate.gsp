@@ -94,6 +94,7 @@
 <bc:koLoading>
     <g:render template="banner"/>
     <div class="container-fluid">
+        <div id="project-results-placeholder"></div>
         <g:render template="../shared/flashScopeMessage"/>
         <div class="row-fluid">
             <!-- content  -->
@@ -131,6 +132,7 @@
         params.user = user;
         params.projectStartDate = project.plannedStartDate;
         params.pActivityForms = pActivityForms;
+        params.organisationName = project.organisationName
 
         var pActivitiesVM = new ProjectActivitiesViewModel(params);
         initialiseProjectActivitiesList(pActivitiesVM);

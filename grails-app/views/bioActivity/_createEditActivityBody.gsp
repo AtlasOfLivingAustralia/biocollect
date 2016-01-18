@@ -348,6 +348,7 @@
             self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
             self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
             self.pActivity = JSON.parse('${(pActivity as JSON).toString().encodeAsJavaScript()}');
+            self.projectSite = JSON.parse('${(projectSite as JSON).toString().encodeAsJavaScript()}');
         }
 
         var activityLevelData = new ActivityLevelData();
@@ -402,7 +403,6 @@
 
                     var matchingSite = $.grep(self.transients.pActivitySites, function(site) { return siteId == site.siteId})[0];
 
-                    activityLevelData.siteMap.resetMap();
                     if (matchingSite && matchingSite.extent && matchingSite.extent.geometry) {
                         var geometry = matchingSite.extent.geometry;
                         if (geometry.pid) {
@@ -511,6 +511,10 @@
                         var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
                         activityLevelData.siteMap.setGeoJSON(geoJson);
                     }
+                } else if (activityLevelData.pActivity.sites.length == 1) {
+                    viewModel.siteId(activityLevelData.pActivity.sites[0].siteId);
+                } else if (activityLevelData.projectSite && activityLevelData.projectSite.extent) {
+                    activityLevelData.siteMap.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(activityLevelData.projectSite.extent.geometry));
                 }
             </g:if>
 

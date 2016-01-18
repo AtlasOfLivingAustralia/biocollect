@@ -193,7 +193,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             showReset: false
         });
 
-        var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(self.map, mapOptions.featuresService);
+        var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(self.map, mapOptions.featuresService, mapOptions.regionListUrl);
 
         self.map.addButton("<span class='fa fa-refresh reset-map' title='Reset map'></span>", function () {
             self.map.resetMap();
@@ -250,10 +250,12 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     function updatePointLatLng(lat, lng) {
         latSubscriber.dispose();
         lngSubscriber.dispose();
-        self.site().extent().geometry().decimalLatitude(lat);
-        self.site().extent().geometry().decimalLongitude(lng);
-        latSubscriber = self.site().extent().geometry().decimalLatitude.subscribe(updateSiteMarkerPosition);
-        lngSubscriber = self.site().extent().geometry().decimalLongitude.subscribe(updateSiteMarkerPosition);
+        if (self.site() && self.site().extent) {
+            self.site().extent().geometry().decimalLatitude(lat);
+            self.site().extent().geometry().decimalLongitude(lng);
+            latSubscriber = self.site().extent().geometry().decimalLatitude.subscribe(updateSiteMarkerPosition);
+            lngSubscriber = self.site().extent().geometry().decimalLongitude.subscribe(updateSiteMarkerPosition);
+        }
     }
 
     function updateSiteMarkerPosition() {
@@ -313,20 +315,22 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     }
 
     function loadGazetteInformation(lat, lng) {
-        self.transients.loadingGazette(true);
-        $.ajax({
-            url: fcConfig.siteMetaDataUrl + "?lat=" + lat + "&lon=" + lng,
-            dataType: "json"
-        }).done(function (data) {
-            self.site().extent().geometry().nrm(exists(data, 'nrm'));
-            self.site().extent().geometry().state(exists(data, 'state'));
-            self.site().extent().geometry().lga(exists(data, 'lga'));
-            self.site().extent().geometry().locality(exists(data, 'locality'));
-            self.site().extent().geometry().mvg(exists(data, 'mvg'));
-            self.site().extent().geometry().mvs(exists(data, 'mvs'));
-        }).always(function (data) {
-            self.transients.loadingGazette(false);
-        });
+        if (!_.isUndefined(lat) && lat && !_.isUndefined(lng) && lng) {
+            self.transients.loadingGazette(true);
+            $.ajax({
+                url: fcConfig.siteMetaDataUrl + "?lat=" + lat + "&lon=" + lng,
+                dataType: "json"
+            }).done(function (data) {
+                self.site().extent().geometry().nrm(exists(data, 'nrm'));
+                self.site().extent().geometry().state(exists(data, 'state'));
+                self.site().extent().geometry().lga(exists(data, 'lga'));
+                self.site().extent().geometry().locality(exists(data, 'locality'));
+                self.site().extent().geometry().mvg(exists(data, 'mvg'));
+                self.site().extent().geometry().mvs(exists(data, 'mvs'));
+            }).always(function (data) {
+                self.transients.loadingGazette(false);
+            });
+        }
     }
 
     function determineExtentType(geoJsonFeature) {

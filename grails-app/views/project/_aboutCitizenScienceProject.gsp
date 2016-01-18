@@ -34,6 +34,10 @@
                     <div class="text-small-heading"><g:message code="project.display.description" /></div>
                     <span data-bind="html:description.markdownToHtml()"></span>
                 </div>
+                <div data-bind="visible:isContributingDataToAla" class="margin-top-1 margin-bottom-1">
+                    <img src="${resource([dir: "images", file: "ala-logo-small.png"])}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
+
+                </div>
             </div>
         </div>
         <div class="span6" id="column2">
@@ -135,7 +139,7 @@
     <!-- ko foreach: associatedOrgs -->
     <div class="span5 associated-org thumbnail">
         <div data-bind="visible: url" class=" clearfix">
-            <a href="#" data-bind="attr: {href: url}" target="_blank">
+            <a href="#" data-bind="attr: {href: url}" target="_blank" class="do-not-mark-external">
                 <div data-bind="visible: logo"><img src="" data-bind="attr: {src: logo, title: name}"
                                                     alt="Organisation logo" class="small-logo"></div>
 

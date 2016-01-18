@@ -187,6 +187,7 @@ function initSiteViewModel(allowPointsOfInterest) {
     var SERVER_CONF = {
         siteData: ${site ?: [] as grails.converters.JSON},
         spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
+        regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: '${grailsApplication.config.spatial.geoserverUrl}',

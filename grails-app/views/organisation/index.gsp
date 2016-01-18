@@ -42,7 +42,9 @@
             organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
             organisation : <fc:modelAsJavascript model="${organisation}"/>,
             organisationName : "${organisation.name}",
-            isOrganisationPage: true
+            showAllProjects: true,
+            meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
+            meritProjectUrl: "${grailsApplication.config.merit.project.url}"
         };
     </r:script>
     <style type="text/css">

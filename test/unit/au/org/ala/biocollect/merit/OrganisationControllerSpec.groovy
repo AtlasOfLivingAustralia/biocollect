@@ -1,5 +1,7 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.OrganisationController
+import au.org.ala.biocollect.OrganisationService
 import grails.converters.JSON
 import grails.test.mixin.TestFor
 import spock.lang.Specification
