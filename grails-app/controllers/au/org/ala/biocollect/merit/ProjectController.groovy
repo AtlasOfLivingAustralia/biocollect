@@ -379,6 +379,7 @@ class ProjectController {
         trimmedParams.isDIY = params.boolean('isDIY')
         trimmedParams.hasTeachingMaterials = params.boolean('hasTeachingMaterials')
         trimmedParams.isMobile = params.boolean('isMobile')
+        trimmedParams.isContributingDataToAla = params.boolean('isContributingDataToAla')
         trimmedParams.difficulty = params.list('difficulty')
 
         List fq = [], projectType = []
@@ -483,6 +484,11 @@ class ProjectController {
         if(trimmedParams.isMobile){
             fq.push('isMobileApp:true');
             trimmedParams.isMobile = null
+        }
+
+        if(trimmedParams.isContributingDataToAla){
+            fq.push('isContributingDataToAla:true');
+            trimmedParams.isContributingDataToAla = null
         }
 
         if(trimmedParams.organisationName){
