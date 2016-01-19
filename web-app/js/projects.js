@@ -869,3 +869,20 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
 
     autoSaveModel(self, config.projectSaveUrl, {blockUIOnSave:config.blockUIOnSave, blockUISaveMessage:"Saving project...", storageKey:config.storageKey});
 };
+
+/**
+ * Used by the validation engine jquery plugin to validate the selection of an organisation from a picklist.
+ */
+function validateOrganisationSelection(field, rules, i, options) {
+    var organisationSelectionViewModel = ko.dataFor(field[0]);
+
+    var selectedOrg = organisationSelectionViewModel.selection();
+    if (!selectedOrg || selectedOrg == null || _.isUndefined(selectedOrg)) {
+        // there is a bug with the funcCall option in JQuery Validation Engine where the rule is triggered but the
+        // message is not raised unless the 'required' rule is also present.
+        // The work-around for this is to manually add the 'required' rule when the message is raised.
+        // http://stackoverflow.com/questions/16182395/jquery-validation-engine-funccall-not-working-if-only-rule
+        rules.push('required');
+        return "You must select an organisation from the list"
+    }
+}
