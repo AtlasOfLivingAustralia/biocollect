@@ -769,6 +769,12 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
 
     self.name.subscribe(function(projectName) {
         checkProjectName(projectName);
+
+        var oldValue = self.transients.siteViewModel.site().name();
+        var prefix = "Project area for ";
+        if(oldValue.indexOf(prefix) >= 0 || !oldValue){
+            self.transients.siteViewModel.site().name(prefix+projectName);
+        }
     });
 
     self.organisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId);
