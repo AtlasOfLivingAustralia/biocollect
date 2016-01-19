@@ -182,6 +182,7 @@ function ProjectFinder() {
         var hasParticipantCost = isButtonChecked($('#pt-search-noCost')); // no cost
         var hasTeachingMaterials = isButtonChecked($('#pt-search-teach')); // teaching material
         var isMobile = isButtonChecked($('#pt-search-mobile')); // mobile uses links to find it out
+        var isContributingDataToAla = isButtonChecked($('#pt-search-dataToAla')); // the project contributes data to the ALA
         var difficulty = getActiveButtonValues($('#pt-search-difficulty'));
         var isUserPage = fcConfig.isUserPage || false;
         var organisationName = fcConfig.organisationName;
@@ -227,6 +228,7 @@ function ProjectFinder() {
             isDIY: isDIY,
             hasTeachingMaterials: hasTeachingMaterials,
             isMobile: isMobile,
+            isContributingDataToAla: isContributingDataToAla,
             difficulty: difficulty,
             organisationName: organisationName,
             max: perPage, // page size
@@ -478,6 +480,7 @@ function ProjectFinder() {
         toggleButton($('#pt-search-noCost'), toBoolean(params.hasParticipantCost));
         toggleButton($('#pt-search-teach'), toBoolean(params.hasTeachingMaterials));
         toggleButton($('#pt-search-mobile'), toBoolean(params.isMobile));
+        toggleButton($('#pt-search-dataToAla'), toBoolean(params.isContributingDataToAla));
         toggleButton($('#pt-search-children'), toBoolean(params.isSuitableForChildren));
         setActiveButtonValues($('#pt-search-difficulty'), params.difficulty);
         setGeoSearch(params.geoSearch);

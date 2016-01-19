@@ -66,6 +66,7 @@
                                 <button id="pt-search-teach" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="project.tag.teach" /> <i class="toggleIndicator icon-remove icon-white"></i></button>
                                 <button id="pt-search-children" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="project.tag.children" /> <i class="toggleIndicator icon-remove icon-white"></i></button>
                                 <button id="pt-search-mobile" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="g.mobileApps" /> <i class="toggleIndicator icon-remove icon-white"></i></button>
+                                <button id="pt-search-dataToAla" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="g.dataToAla" /> <i class="toggleIndicator icon-remove icon-white"></i></button>
                             </div>
                         </div>
                     </g:if>
