@@ -909,21 +909,18 @@ function imageError(imageElement, alternateImage) {
  * fired when logo image is loaded. fn used to stretch small image to height or width of parent container.
  * @param imageElement the img element
  */
-function findLogoScalingClass(imageElement) {
+function findLogoScalingClass(imageElement, givenWidth, givenHeight) {
     var $elem = $(imageElement);
-    var parentHeight = $elem.parent().height();
-    var parentWidth = $elem.parent().width();
+    var parentHeight = givenHeight || $elem.parent().height();
+    var parentWidth = givenWidth || $elem.parent().width();
     var height = imageElement.height;
     var width = imageElement.width;
 
-    var wide = width > height;
-
-    var ratio = width / height;
-
-    if (ratio > 1.2 && width < parentWidth) {
+    var ratio = parentWidth/parentHeight;
+    if( ratio * height > width){
+        $elem.addClass('tall')
+    } else {
         $elem.addClass('wide')
-    } else if (ratio < 0.80 && height < parentHeight) {
-        $elem.addClass('tall');
     }
 }
 

@@ -634,7 +634,24 @@ ko.bindingHandlers.fancybox = {
     var config = valueAccessor()
     // suppress auto scroll on clicking image to view in fancybox
     config = $.extend({
+      autoSize: false,
+      width: 500,
+      height: 700,
+      maxWidth: 400,
+      maxHeight: 600,
+      minWidth: 300,
+      minHeight: 400,
+      autoHeight: true,
+      aspectRatio: true,
+      // fix for bringing the modal dialog to focus to make it accessible via keyboard.
+      afterShow: function(){
+        $('.fancybox-wrap').focus();
+      },
       helpers: {
+        title: {
+          type : 'inside',
+          position : 'bottom'
+        },
         overlay: {
           locked: false
         }
