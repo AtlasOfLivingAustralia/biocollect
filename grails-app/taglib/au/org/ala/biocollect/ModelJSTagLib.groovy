@@ -634,7 +634,7 @@ class ModelJSTagLib {
                 showReset: false,
                 singleDraw: true,
                 singleMarker: true,
-                markerOrShapeNotBoth: false,
+                markerOrShapeNotBoth: ${model.options ? !model.options.allowMarkerAndRegion : false},
                 useMyLocation: ${!readonly},
                 allowSearchByAddress: ${!readonly},
                 drawOptions: {
