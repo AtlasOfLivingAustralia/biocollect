@@ -16,7 +16,7 @@
                 </div>
                 <div class="projectLogo" data-toggle="popover" data-trigger="hover" data-title="Photo metadata" data-bind="popover: {placement:'top', content: function(){ return $('#popoverContent' + $index()).html()} }">
                     <a href=""
-                       data-bind="attr:{href:url}, fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade', title: function(){ return $('#projectActivityLinks' + $index()).html()}}"
+                       data-bind="attr:{href:getImageViewerUrl()}, fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade', type: 'iframe', title: function(){ return $('#projectActivityLinks' + $index()).html()}}"
                        data-target="_photo" class="">
                         <img class="image-logo image-window" data-bind="attr:{title:name, src:thumbnailUrl}" onload="findLogoScalingClass(this, 200, 150)">
                     </a>

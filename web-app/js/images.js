@@ -56,6 +56,10 @@ function ImageViewModel(prop, skipFindingDocument){
         return fcConfig.projectIndexUrl + '/' + self.projectId;
     }
 
+    self.getImageViewerUrl = function(){
+        return fcConfig.imageLeafletViewer + '?file=' + encodeURIComponent(self.url);
+    }
+
     self.summary = function(){
         var picBy = 'Picture by ' + self.attribution() + '. ';
         var takenOn = 'Taken on ' + self.dateTaken.formattedDate() +'.';

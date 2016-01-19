@@ -26,7 +26,8 @@
             view: "${view == 'allrecords' ? view : 'myrecords'}",
             returnTo: "${view == 'allrecords' ? createLink(controller: 'bioActivity', action:'allRecords') : createLink(controller: 'bioActivity', action:'list') }",
             projectLinkPrefix: "${createLink(controller: 'project')}/",
-            recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}'
+            recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
+            imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}'
         },
         here = document.location.href;
     </r:script>

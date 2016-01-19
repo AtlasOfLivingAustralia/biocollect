@@ -67,7 +67,8 @@
         projectId: "${project.projectId}",
         projectLinkPrefix: "${createLink(controller: 'project')}/",
         recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
-        view: 'project'
+        view: 'project',
+        imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}'
         },
         here = window.location.href;
 
