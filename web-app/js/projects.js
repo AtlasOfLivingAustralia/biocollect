@@ -772,8 +772,8 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
 
         var oldValue = self.transients.siteViewModel.site().name();
         var prefix = "Project area for ";
-        if(oldValue.indexOf(prefix) >= 0 || !oldValue){
-            self.transients.siteViewModel.site().name(prefix+projectName);
+        if (oldValue.indexOf(prefix) >= 0 || !oldValue) {
+            self.transients.siteViewModel.site().name(prefix + projectName);
         }
     });
 
