@@ -20,6 +20,7 @@
         <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
         <g:set var="model" value="${outputModels[outputName]}"/>
         <g:set var="output" value="${activity.outputs.find { it.name == outputName }}"/>
+        <g:set var="documents" value="${activity.documents}"/>
         <g:if test="${!output}">
             <g:set var="output" value="[name: outputName]"/>
         </g:if>
@@ -36,95 +37,116 @@
                           printable="${printView}"/>
 
             <r:script>
-                    $(function(){
-                        var viewModelName = "${blockId}ViewModel", viewModelInstance = viewModelName + "Instance";
+                $(function(){
+                    var viewModelName = "${blockId}ViewModel", viewModelInstance = viewModelName + "Instance";
 
-                        // load dynamic models - usually objects in a list
-                <md:jsModelObjects model="${model}" site="${site}" edit="true"
-                                   viewModelInstance="${blockId}ViewModelInstance"/>
+                    // load dynamic models - usually objects in a list
+                    <md:jsModelObjects model="${model}" site="${site}" edit="true"
+                                       viewModelInstance="${blockId}ViewModelInstance"/>
 
-                this[viewModelName] = function () {
-                    var self = this;
-                    self.name = "${output.name}";
-                            self.outputId = "${output.outputId}";
-                            self.data = {};
-                            self.transients = {};
-                            self.transients.dummy = ko.observable();
-                            // add declarations for dynamic data
-                <md:jsViewModel model="${model}" output="${output.name}" edit="true"
-                                viewModelInstance="${blockId}ViewModelInstance"/>
-                // this will be called when generating a savable model to remove transient properties
-                self.removeBeforeSave = function (jsData) {
-                    // add code to remove any transients added by the dynamic tags
-                <md:jsRemoveBeforeSave model="${model}"/>
-                delete jsData.activityType;
-                delete jsData.transients;
-                return jsData;
-            };
+                    this[viewModelName] = function () {
+                        var self = this;
+                        self.name = "${output.name}";
+                                self.outputId = "${output.outputId}";
+                                self.data = {};
+                                self.transients = {};
+                                self.transients.dummy = ko.observable();
+                                // add declarations for dynamic data
+                    <md:jsViewModel model="${model}" output="${output.name}" edit="true"
+                                    viewModelInstance="${blockId}ViewModelInstance"/>
+                    // this will be called when generating a savable model to remove transient properties
+                    self.removeBeforeSave = function (jsData) {
+                            // add code to remove any transients added by the dynamic tags
+                        <md:jsRemoveBeforeSave model="${model}"/>
+                        delete jsData.activityType;
+                        delete jsData.transients;
+                        return jsData;
+                    };
 
-            // this returns a JS object ready for saving
-                <md:jsSaveModel model="${model}" output="${output}"/>
+                    // this returns a JS object ready for saving
+                    <md:jsSaveModel model="${model}" output="${output}"/>
 
-                // this is a version of toJSON that just returns the model as it will be saved
-                // it is used for detecting when the model is modified (in a way that should invoke a save)
-                // the ko.toJSON conversion is preserved so we can use it to view the active model for debugging
-                self.modelAsJSON = function () {
-                    return JSON.stringify(self.modelForSaving());
+                    // this is a version of toJSON that just returns the model as it will be saved
+                    // it is used for detecting when the model is modified (in a way that should invoke a save)
+                    // the ko.toJSON conversion is preserved so we can use it to view the active model for debugging
+                    self.modelAsJSON = function () {
+                        return JSON.stringify(self.modelForSaving());
+                    };
+
+                    self.loadData = function (data, documents) {
+                        // load dynamic data
+                        <md:jsLoadModel model="${model}" defaultData="${defaultData}"/>
+
+                        // if there is no data in tables then add an empty row for the user to add data
+                        if (typeof self.addRow === 'function' && self.rowCount() === 0) {
+                            self.addRow();
+                        }
+                        self.transients.dummy.notifySubscribers();
+                    };
+
+                    self.attachDocument = function(target) {
+                        var url = fcConfig.documentUpdateUrl;
+                        var documentViewModel = new DocumentViewModel({role:'information'},{key:'activityId', value:'${activity.activityId}'});
+                        showDocumentAttachInModal(url, documentViewModel, '#attachDocument').done(
+                            function(result){
+                                target(new DocumentViewModel(result))
+                            });
+                    };
+
+                    self.editDocumentMetadata = function(document) {
+                        var url = fcConfig.documentUpdateUrl + "/" + document.documentId;
+                        showDocumentAttachInModal(url, document, '#attachDocument');
+                    };
+
+                    self.deleteDocument = function(document) {
+                        document.status('deleted');
+                        var url = fcConfig.documentDeleteUrl + '/' + document.documentId;
+                        $.post(url, {}, function() {});
+                    };
                 };
 
-                self.loadData = function (data) {
-                    // load dynamic data
-                <md:jsLoadModel model="${model}" defaultData="${defaultData}"/>
+                window[viewModelInstance] = new this[viewModelName](site);
 
-                // if there is no data in tables then add an empty row for the user to add data
-                if (typeof self.addRow === 'function' && self.rowCount() === 0) {
-                    self.addRow();
-                }
-                self.transients.dummy.notifySubscribers();
-            };
-        };
+                var output = ${output.data ?: '{}'};
+                var documents = ${documents ?: '{}'};
 
-        window[viewModelInstance] = new this[viewModelName](site);
-
-        var output = ${output.data ?: '{}'};
-
-                window[viewModelInstance].loadData(output);
+                window[viewModelInstance].loadData(output, documents);
 
                         // dirtyFlag must be defined after data is loaded
                 <md:jsDirtyFlag model="${model}"/>
 
                 ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
 
-                        // this resets the baseline for detecting changes to the model
-                        // - shouldn't be required if everything behaves itself but acts as a backup for
-                        //   any binding side-effects
-                        // - note that it is not foolproof as applying the bindings happens asynchronously and there
-                        //   is no easy way to detect its completion
-                        window[viewModelInstance].dirtyFlag.reset();
+                // this resets the baseline for detecting changes to the model
+                // - shouldn't be required if everything behaves itself but acts as a backup for
+                //   any binding side-effects
+                // - note that it is not foolproof as applying the bindings happens asynchronously and there
+                //   is no easy way to detect its completion
+                window[viewModelInstance].dirtyFlag.reset();
 
-                        // register with the master controller so this model can participate in the save cycle
-                        master.register(window[viewModelInstance], window[viewModelInstance].modelForSaving,
-                            window[viewModelInstance].dirtyFlag.isDirty, window[viewModelInstance].dirtyFlag.reset);
+                // register with the master controller so this model can participate in the save cycle
+                master.register(window[viewModelInstance], window[viewModelInstance].modelForSaving,
+                    window[viewModelInstance].dirtyFlag.isDirty, window[viewModelInstance].dirtyFlag.reset);
 
-                        // Check for locally saved data for this output - this will happen in the event of a session timeout
-                        // for example.
-                        var savedData = amplify.store('activity-${activity.activityId}');
-                        var savedOutput = null;
-                        if (savedData) {
-                            var outputData = $.parseJSON(savedData);
-                            $.each(outputData.outputs, function(i, tmpOutput) {
-                                if (tmpOutput.name === '${output.name}') {
-                                    if (tmpOutput.data) {
-                                        savedOutput = tmpOutput.data;
-                                    }
-                                }
-                            });
-                        }
-                        if (savedOutput) {
-                            window[viewModelInstance].loadData(savedOutput);
+                // Check for locally saved data for this output - this will happen in the event of a session timeout
+                // for example.
+                var savedData = amplify.store('activity-${activity.activityId}');
+                var savedOutput = null;
+                if (savedData) {
+                    var outputData = $.parseJSON(savedData);
+                    $.each(outputData.outputs, function(i, tmpOutput) {
+                        if (tmpOutput.name === '${output.name}') {
+                            if (tmpOutput.data) {
+                                savedOutput = tmpOutput.data;
+                            }
                         }
                     });
-            </r:script>
+                }
+                if (savedOutput) {
+                    window[viewModelInstance].loadData(savedOutput);
+                }
+            });
+        </r:script>
         </div>
     </g:if>
 </g:each>
@@ -199,7 +221,9 @@
 </div>
 
 
-<g:render template="/shared/imagerViewerModal" model="[readOnly: false]"></g:render>
+<g:render template="/shared/imagerViewerModal" model="[readOnly: false]"/>
+<g:render template="/shared/attachDocument"/>
+<g:render template="/shared/documentTemplate"/>
 
 <r:script>
         var returnTo = "${returnTo}";

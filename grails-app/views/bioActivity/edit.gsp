@@ -17,6 +17,8 @@
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
+        documentUpdateUrl: "${g.createLink(controller:"proxy", action:"documentUpdate")}",
+        documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
