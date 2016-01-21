@@ -78,8 +78,13 @@
 
             <div class="output-block well" id="ko${blockId}">
                 <h3>${outputName}</h3>
-                <!-- add the dynamic components -->
-                <md:modelView model="${model}" site="${site}" readonly="true"/>
+                <div data-bind="if:outputNotCompleted">
+                    <label class="checkbox" ><input type="checkbox" disabled="disabled" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>
+                </div>
+                <g:if test="${!output.outputNotCompleted}">
+                    <!-- add the dynamic components -->
+                    <md:modelView model="${model}" site="${site}" readonly="true"/>
+                </g:if>
                 <r:script>
                     $(function(){
                         var viewModelName = "${blockId}ViewModel";
@@ -89,13 +94,20 @@
                     <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}"
                                        viewModelInstance="${blockId}ViewModelInstance"/>
 
-                    this[viewModelName] = function (site) {
+                    this[viewModelName] = function (site, config, outputNotCompleted) {
                         var self = this;
                         self.name = "${output.name}";
                             self.outputId = "${output.outputId}";
                             self.data = {};
                             self.transients = {};
                             self.transients.selectedSite = ko.observable(site);
+                            var notCompleted = outputNotCompleted;
+                            if (notCompleted === undefined) {
+                                notCompleted = config.collapsedByDefault;
+                            }
+                            self.outputNotCompleted = ko.observable(notCompleted);
+                            self.transients.optional = config.optional || false;
+                            self.transients.questionText = config.optionalQuestionText || 'No '+self.name+' was completed during this activity';
                             self.transients.dummy = ko.observable();
 
                             // add declarations for dynamic data
@@ -123,7 +135,10 @@
                 };
             };
 
-            window[viewModelInstance] = new this[viewModelName](site);
+            var config = ${fc.modelAsJavascript(model:metaModel.outputConfig?.find{it.outputName == outputName}, default:'{}')};
+            var outputNotCompleted = ${output.outputNotCompleted?:'undefined'};
+
+            window[viewModelInstance] = new this[viewModelName](site, config, outputNotCompleted);
             window[viewModelInstance].loadData(${output.data ?: '{}'});
 
                         ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));

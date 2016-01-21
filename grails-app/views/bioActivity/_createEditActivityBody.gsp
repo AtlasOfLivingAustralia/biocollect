@@ -30,11 +30,15 @@
 
             <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h3>
 
-            <!-- add the dynamic components -->
+            <div data-bind="if:transients.optional || outputNotCompleted()">
+                <label class="checkbox" ><input type="checkbox" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>
+            </div>
+            <div id="${blockId}-content" data-bind="visible:!outputNotCompleted()">
+                <!-- add the dynamic components -->
 
-            <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}"
+                <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}"
                           printable="${printView}"/>
-
+            </div>
             <r:script>
                     $(function(){
                         var viewModelName = "${blockId}ViewModel", viewModelInstance = viewModelName + "Instance";
@@ -43,13 +47,21 @@
                 <md:jsModelObjects model="${model}" site="${site}" edit="true"
                                    viewModelInstance="${blockId}ViewModelInstance"/>
 
-                this[viewModelName] = function () {
+                this[viewModelName] = function (config, outputNotCompleted) {
                     var self = this;
                     self.name = "${output.name}";
-                            self.outputId = "${output.outputId}";
-                            self.data = {};
-                            self.transients = {};
-                            self.transients.dummy = ko.observable();
+                    self.outputId = "${output.outputId}";
+                    self.data = {};
+                    self.transients = {};
+
+                    var notCompleted = outputNotCompleted;
+                    if (notCompleted === undefined) {
+                        notCompleted = config.collapsedByDefault;
+                    }
+                    self.outputNotCompleted = ko.observable(notCompleted);
+                    self.transients.optional = config.optional || false;
+                    self.transients.questionText = config.optionalQuestionText || 'Not applicable';
+                    self.transients.dummy = ko.observable();
                             // add declarations for dynamic data
                 <md:jsViewModel model="${model}" output="${output.name}" edit="true"
                                 viewModelInstance="${blockId}ViewModelInstance"/>
@@ -84,11 +96,13 @@
             };
         };
 
-        window[viewModelInstance] = new this[viewModelName](site);
+        var config = ${fc.modelAsJavascript(model:metaModel.outputConfig?.find{it.outputName == outputName}, default:'{}')};
+        var outputNotCompleted = ${output.outputNotCompleted?:'undefined'};
+
+        window[viewModelInstance] = new this[viewModelName](config, outputNotCompleted);
 
         var output = ${output.data ?: '{}'};
-
-                window[viewModelInstance].loadData(output);
+        window[viewModelInstance].loadData(output);
 
                         // dirtyFlag must be defined after data is loaded
                 <md:jsDirtyFlag model="${model}"/>
