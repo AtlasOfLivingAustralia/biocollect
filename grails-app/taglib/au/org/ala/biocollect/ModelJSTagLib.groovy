@@ -638,7 +638,7 @@ class ModelJSTagLib {
                 showReset: false,
                 singleDraw: true,
                 singleMarker: true,
-                markerOrShapeNotBoth: ${model.options ? !model.options.allowMarkerAndRegion : false},
+                markerOrShapeNotBoth: ${model.options ? !model.options.allowMarkerAndRegion : true},
                 useMyLocation: ${!readonly},
                 allowSearchByAddress: ${!readonly},
                 drawOptions: {
@@ -677,9 +677,9 @@ class ModelJSTagLib {
             };
 
             function update${model.name}MapForSite(siteId) {
+                ${model.name}Map.resetMap();
                 if (typeof siteId !== "undefined" && siteId) {
                     var matchingSite = \$.grep(activityLevelData.pActivity.sites, function(site) { return siteId == site.siteId})[0];
-                    ${model.name}Map.resetMap();
                     if (matchingSite) {
                         if (matchingSite.extent.geometry.pid) {
                             ${model.name}Map.addWmsLayer(matchingSite.extent.geometry.pid);
