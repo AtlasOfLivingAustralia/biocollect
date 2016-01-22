@@ -187,7 +187,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
 
     function initialiseViewModel() {
         self.map = new ALA.Map(mapContainerId, {
-            maxZoom: 9,
+            maxZoom: 20,
             wmsLayerUrl: mapOptions.spatialWms + "/wms/reflect?",
             wmsFeatureUrl: mapOptions.featureService + "?featureId=",
             showReset: false
