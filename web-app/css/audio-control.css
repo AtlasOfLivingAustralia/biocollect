@@ -1,0 +1,54 @@
+.audio-thumbnail {
+    border: 1px solid white;
+    min-width: 350px;
+    max-width: 350px;
+    width: 350px;
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    vertical-align: top;
+}
+
+.audio-thumbnail audio {
+    padding-left: 25px;
+}
+
+.audio-thumbnail .download {
+    float: right;
+}
+
+.output-label {
+    float: left;
+    width: 100px;
+    text-align: right;
+    font-weight: bold;
+    padding-right: 10px;
+}
+
+table .audio-input-panel .span3, table .audio-input-panel .span2, table .audio-input-panel .span7 {
+    width: 100%;
+}
+
+table .audio-input-panel .btn {
+    float: right;
+    margin-right: 20px;
+}
+
+table audio {
+    margin-left: 20px;
+}
+
+table .download {
+    margin-left: 20px;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.audio-input-panel .control-label {
+    width: 85px !important;
+}
+
+.audio-input-panel .controls {
+    margin-left: 100px !important;
+}

@@ -9,7 +9,7 @@
                     </audio>
 
                     <div>
-                        <a href="" data-bind="attr: {href: transients.downloadUrl()}"><i class="fa fa-download">&nbsp;</i>Download</a>
+                        <a href="" data-bind="attr: {href: transients.downloadUrl()}" class="download"><i class="fa fa-download">&nbsp;</i>Download</a>
                     </div>
                 </div>
 
@@ -30,7 +30,7 @@
                             </label>
 
                             <div class="controls">
-                                <input id="attribution" class="input-xxlarge" type="text" data-bind="value: attribution">
+                                <input id="attribution" class="input-xlarge" type="text" data-bind="value: attribution">
                             </div>
                         </div>
 
@@ -38,7 +38,8 @@
                             <label class="control-label" for="notes">Notes:</label>
 
                             <div class="controls">
-                                <input id="notes"  class="input-xxlarge"type="text" data-bind="value: notes">
+                                <textarea rows="4" class="input-xlarge" id="notes"  data-bind="value: notes"></textarea>
+                                %{--<input id="notes"  class="input-xxlarge"type="text" data-bind="value: notes">--}%
                             </div>
                         </div>
 
@@ -71,7 +72,7 @@
         </div>
     </div>
 
-    <div id="recordingControls" data-bind="visible: ${name}.transients.html5AudioSupport()" class="inline-block">
+    <div id="recordingControls" data-bind="visible: ${name}.transients.html5AudioSupport()" class="inline-block" style="display: none">
         <span data-bind="click: ${name}.startRecording, visible: !${name}.transients.recording()" class="btn"><span
                 class="fa fa-circle red">&nbsp;</span>Start recording</span>
         <span data-bind="click: ${name}.stopRecording, visible: ${name}.transients.recording()" class="btn"><span

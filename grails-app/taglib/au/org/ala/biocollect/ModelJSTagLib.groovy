@@ -559,6 +559,8 @@ class ModelJSTagLib {
                             }})(data['${col.name}']);
                             """
                         break;
+                    case 'audio':
+                        out << INDENT*3 << "this.${col.name} = new AudioViewModel({downloadUrl: '${grailsApplication.config.grails.serverURL}/download/file?filename='}, data['${col.name}'])\n";
 
                 }
                 modelConstraints(col, out)
@@ -916,7 +918,7 @@ class ModelJSTagLib {
     }
 
     def audioModel(model, out) {
-        out << INDENT*4 << "self.data.${model.name}= new AudioViewModel();\n"
+        out << INDENT*4 << "self.data.${model.name}= new AudioViewModel({downloadUrl: '${grailsApplication.config.grails.serverURL}/download/file?filename='});\n"
         populateAudioList(model, out)
     }
 

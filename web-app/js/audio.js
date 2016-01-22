@@ -1,4 +1,4 @@
-function AudioViewModel() {
+function AudioViewModel(config, files) {
     var self = this;
 
     var recorder = null;
@@ -6,6 +6,15 @@ function AudioViewModel() {
     self.transients = {};
     self.transients.recording = ko.observable(false);
     self.files = ko.observableArray();
+
+    if (!_.isUndefined(files) && !_.isEmpty(files)) {
+        files.forEach(function (file) {
+            if (_.isUndefined(file.url)) {
+                file.url = config.downloadUrl + file.filename;
+            }
+            self.files.push(new AudioItem(file));
+        });
+    }
 
     self.transients.html5AudioSupport = ko.pureComputed(function () {
         var supported = false;
