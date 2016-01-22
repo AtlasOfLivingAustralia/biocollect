@@ -1,4 +1,4 @@
-<r:require modules="imageDataType"></r:require>
+<r:require modules="imageDataType"/>
 <div id="" class="fileupload-buttonbar">
     <table class="table">
         <tbody>
@@ -11,9 +11,9 @@
             <td class="images-form-width">
                 <div class="form-horizontal">
                     <div class="control-group required">
-                        <label class="control-label">Title:</label>
+                        <label class="control-label" for="name">Title:</label>
 
-                        <div class="controls"><input type="text" data-bind="value:name"
+                        <div class="controls"><input id="name" type="text" data-bind="value:name"
                                                      data-validation-engine="validate[required]">
                         </div>
                     </div>
@@ -29,29 +29,37 @@
                     </div>
 
                     <div class="control-group">
-                        <label class="control-label">Attribution <i class="icon-question-sign"
-                                                                    data-bind="popover:{content:'The name of the photographer', placement:'top'}">&nbsp;</i>:
+                        <label class="control-label" for="attribution">
+                            Attribution <i class="icon-question-sign" data-bind="popover:{content:'The name of the photographer', placement:'top'}">&nbsp;</i>:
                         </label>
 
-                        <div class="controls"><input type="text" data-bind="value:attribution"></div>
+                        <div class="controls">
+                            <input id="attribution" type="text" data-bind="value:attribution">
+                        </div>
                     </div>
 
                     <div class="control-group">
-                        <label class="control-label">Notes:</label>
+                        <label class="control-label" for="notes">Notes:</label>
 
-                        <div class="controls"><input type="text" data-bind="value:notes"></div>
+                        <div class="controls">
+                            <input id="notes" type="text" data-bind="value:notes">
+                        </div>
                     </div>
 
                     <div class="control-group readonly">
                         <label class="control-label">File Name:</label>
 
-                        <div class="controls"><label class="padding-top-5" data-bind="text:filename"/></div>
+                        <div class="controls">
+                            <span class="padding-top-5" data-bind="text:filename"></span>
+                        </div>
                     </div>
 
                     <div class="control-group readonly">
                         <label class="control-label">File Size:</label>
 
-                        <div class="controls"><label class="padding-top-5" data-bind="text:formattedSize"/></div>
+                        <div class="controls">
+                            <span class="padding-top-5" data-bind="text:formattedSize"></span>
+                        </div>
                     </div>
                 </div>
             </td>
@@ -90,7 +98,7 @@
 
         <tr>
             <td colspan="3">
-                <span class="btn fileinput-button"><i class="icon-plus"></i> <input type="file"
+                <span class="btn fileinput-button"><i class="icon-plus"></i> <input type="file" accept="image/*"
                                                                                     name="files"><span>Attach Photo</span>
                 </span>
 

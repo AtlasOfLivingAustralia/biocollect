@@ -95,6 +95,7 @@ security.cas.adminRole = "ROLE_FC_ADMIN"
 security.cas.readOnlyOfficerRole = "ROLE_FC_READ_ONLY"
 
 upload.images.path = "/data/${appName}/images/"
+upload.path = "/data/${appName}/"
 upload.extensions.blacklist = ['exe','js','php','asp','aspx','com','bat']
 
 app.http.header.userId = "X-ALA-userId"

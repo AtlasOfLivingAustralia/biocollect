@@ -385,6 +385,17 @@ modules = {
         resource url: 'vendor/large-checkbox/large-checkbox.css'
     }
 
+    audio {
+        dependsOn "modernizr"
+        resource url: 'js/audio.js'
+        resource url: 'vendor/recorderjs/recorder.js'
+//        resource url: 'vendor/libmp3lame/libmp3lame.min.js'
+    }
+
+    modernizr {
+        resource url: "vendor/modernizr/modernizr-custom.js"
+    }
+
     imageDataType{
         resource url: 'js/images.js'
         resource url: 'css/images.css'

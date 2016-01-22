@@ -1,7 +1,5 @@
 package au.org.ala.biocollect
-/**
- * Created by baird on 16/10/13.
- */
+
 class ViewModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
@@ -61,6 +59,12 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
     void renderSelectMany(WidgetRenderContext context) {
         context.databindAttrs.add 'text', context.source
         context.writer << "<span ${context.attributes.toString()} data-bind='${context.databindAttrs.toString()}'></span>"
+    }
+
+    @Override
+    void renderAudio(WidgetRenderContext context) {
+        context.writer << context.g.render(template: '/output/audioDataTypeViewModelTemplate',
+                model: [databindAttrs:context.databindAttrs.toString(), name: context.source, index: "''", hideFile: false])
     }
 
     @Override

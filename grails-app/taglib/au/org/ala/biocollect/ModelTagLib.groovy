@@ -125,6 +125,9 @@ class ModelTagLib {
             case 'selectMany':
                 renderer.renderSelectMany(renderContext)
                 break
+            case 'audio':
+                renderer.renderAudio(renderContext)
+                break
             case 'image':
                 renderer.renderImage(renderContext)
                 break
