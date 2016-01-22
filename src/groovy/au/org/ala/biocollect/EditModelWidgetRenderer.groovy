@@ -91,6 +91,12 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderAudio(WidgetRenderContext context) {
+        context.databindAttrs.add 'fileUploadWithProgress', "{target:${context.source}.files, config:{}}"
+        context.writer << context.g.render(template: '/output/audioDataTypeEditModelTemplate', model: [databindAttrs:context.databindAttrs.toString(), name: context.source])
+    }
+
+    @Override
     void renderImage(WidgetRenderContext context) {
         context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"
         context.writer << context.g.render(template: '/output/imageDataTypeEditModelTemplate', model: [databindAttrs:context.databindAttrs.toString(), name: context.source])

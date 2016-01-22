@@ -283,6 +283,100 @@ ko.bindingHandlers.imageUpload = {
     }
 };
 
+ko.bindingHandlers.fileUploadWithProgress = {
+    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        var defaultConfig = {
+            maxWidth: 300,
+            minWidth: 150,
+            minHeight: 150,
+            maxHeight: 300
+        };
+        var size = ko.observable();
+        var progress = ko.observable();
+        var error = ko.observable();
+        var complete = ko.observable(true);
+
+        var config = valueAccessor();
+        config = $.extend({}, config, defaultConfig);
+
+        var target = config.target;
+        var uploadProperties = {
+            size: size,
+            progress: progress,
+            error: error,
+            complete: complete
+        };
+
+        var innerContext = bindingContext.createChildContext(bindingContext);
+        ko.utils.extend(innerContext, uploadProperties);
+
+// Expected to be a ko.observableArray
+        $(element).fileupload({
+            url: config.url,
+            autoUpload: true,
+            forceIframeTransport: true
+        }).on('fileuploadadd', function (e, data) {
+            complete(false);
+            progress(1);
+        }).on('fileuploadprocessalways', function (e, data) {
+            if (data.files[0].preview) {
+                if (config.previewSelector !== undefined) {
+                    var previewElem = $(element).parent().find(config.previewSelector);
+                    previewElem.append(data.files[0].preview);
+                }
+            }
+        }).on('fileuploadprogressall', function (e, data) {
+            progress(Math.floor(data.loaded / data.total * 100));
+            size(data.total);
+        }).on('fileuploaddone', function (e, data) {
+            var result = data.result;
+            if (!result) {
+                result = {};
+                error('No response from server');
+            }
+
+            if (result.files[0]) {
+                result.files.forEach(function (f) {
+                    var data = {
+                        thumbnailUrl: f.thumbnail_url,
+                        url: f.url,
+                        contentType: f.contentType,
+                        filename: f.name,
+                        name: f.name,
+                        filesize: f.size,
+                        dateTaken: f.isoDate,
+                        staged: true,
+                        attribution: f.attribution,
+                        notes: f.notes,
+                        status: f.status
+                    };
+
+                    if (f.contentType.indexOf("image") > -1) {
+                        target.push(new ImageViewModel(data));
+                    } else if (f.contentType.indexOf("audio") > -1) {
+                        target.push(new AudioItem(data));
+                    } else {
+                        target.push(new DocumentViewModel(data));
+                    }
+                });
+
+                complete(true);
+            }
+            else {
+                error(result.error);
+            }
+
+        }).on('fileuploadfail', function (e, data) {
+            error(data.errorThrown);
+        });
+
+        ko.applyBindingsToDescendants(innerContext, element);
+
+        return {controlsDescendantBindings: true};
+    }
+};
+
+
 ko.bindingHandlers.editDocument = {
     init:function(element, valueAccessor) {
         if (ko.isObservable(valueAccessor())) {

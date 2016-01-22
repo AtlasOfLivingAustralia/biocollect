@@ -70,6 +70,8 @@ class ModelJSTagLib {
                 stringListModel(mod, out)
             } else if (mod.dataType == 'image') {
                 imageModel(mod, out)
+            } else if (mod.dataType == 'audio') {
+                audioModel(mod, out)
             } else if (mod.dataType == 'photoPoints') {
                 photoPointModel(attrs, mod, out)
             } else if (mod.dataType == 'species') {
@@ -121,7 +123,7 @@ class ModelJSTagLib {
             else if (mod.dataType == 'time' && !mod.computed) {
                 out << INDENT*4 << "self.data['${mod.name}'](data['${mod.name}']);\n"
             }
-            else if (mod.dataType in ['stringList', 'image', 'photoPoints'] && !mod.computed) {
+            else if (mod.dataType in ['stringList', 'image', 'photoPoints', 'audio'] && !mod.computed) {
                 out << INDENT*4 << "self.load${mod.name}(data['${mod.name}']);\n"
             }
             else if (mod.dataType == 'species') {
@@ -557,6 +559,8 @@ class ModelJSTagLib {
                             }})(data['${col.name}']);
                             """
                         break;
+                    case 'audio':
+                        out << INDENT*3 << "this.${col.name} = new AudioViewModel({downloadUrl: '${grailsApplication.config.grails.serverURL}/download/file?filename='}, data['${col.name}'])\n";
 
                 }
                 modelConstraints(col, out)
@@ -893,9 +897,29 @@ class ModelJSTagLib {
         """
     }
 
+    def populateAudioList(model, out) {
+        out << INDENT*4 << """
+        self.load${model.name} = function (data) {
+            if (data !== undefined) {
+                \$.each(data, function (i, obj) {
+                    if (_.isUndefined(obj.url)) {
+                        obj.url = "${grailsApplication.config.grails.serverURL}/download/file?filename=" + obj.filename;
+                    }
+                    self.data.${model.name}.files.push(new AudioItem(obj));
+                });
+            }
+        };
+        """
+    }
+
     def imageModel(model, out) {
         out << INDENT*4 << "self.data.${model.name}=ko.observableArray([]);\n"
         populateImageList(model, out)
+    }
+
+    def audioModel(model, out) {
+        out << INDENT*4 << "self.data.${model.name}= new AudioViewModel({downloadUrl: '${grailsApplication.config.grails.serverURL}/download/file?filename='});\n"
+        populateAudioList(model, out)
     }
 
     def photoPointModel(attrs, model, out) {

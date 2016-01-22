@@ -236,6 +236,11 @@
     top: 50%;
     transform: translate(-50%, -50%);
 }
+
+.padding-top-none {
+    padding-top: 0 !important;
+}
+
 .padding-top-0 {
     padding-top: 10px;
 }
@@ -338,4 +343,21 @@ th .popover {
 .image-attribution-panel {
     float: right;
     font-style: italic;
+}
+
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
+}
+
+.float-none {
+    float: none;
+}
+
+.vertical-button-divider {
+    padding-top: 10px;
+    padding-bottom: 5px;
 }
