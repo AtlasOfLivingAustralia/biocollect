@@ -415,7 +415,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             showReset: false,
             draggableMarkers: false,
             useMyLocation: false,
-            allowSearchByAddress: false
+            allowSearchLocationByAddress: false,
+            allowSearchRegionByAddress: false,
         };
 
         if(!alaMap){
