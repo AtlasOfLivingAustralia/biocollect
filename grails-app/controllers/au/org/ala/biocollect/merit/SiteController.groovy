@@ -1,9 +1,14 @@
 package au.org.ala.biocollect.merit
+
+import au.org.ala.web.AuthService
 import grails.converters.JSON
+import org.apache.http.HttpStatus
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 class SiteController {
 
     def siteService, projectService, activityService, metadataService, userService, searchService, importService, webService
+    AuthService authService
 
     static defaultAction = "index"
 
@@ -43,12 +48,6 @@ class SiteController {
         // Include activities only when biocollect starts supporting NRM based projects.
         def site = siteService.get(id, [view: 'projects'])
         if (site) {
-            // permissions check - can't use annotation as we have to know the projectId in order to lookup access right
-            if (!isUserMemberOfSiteProjects(site)) {
-                flash.message = "Access denied: User does not have permission to view site: ${id}"
-                redirect(controller:'home', action:'index')
-            }
-
             // inject the metadata model for each activity
             site.activities = site.activities ?: []
             site.activities?.each {
@@ -460,6 +459,48 @@ class SiteController {
         } else {
             render 'no such site'
         }
+    }
+
+
+    def getImages(){
+        List results
+        if(params.id){
+            removeGrailsParameters(params)
+            params.userId = authService.getUserId()
+            try{
+                results = siteService.getImages(params)
+                render(text: results as JSON, contentType: 'application/json')
+            } catch (SocketTimeoutException sTimeout){
+                render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
+            } catch (Exception e){
+                render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            render( status: HttpStatus.SC_BAD_REQUEST, text: 'Parameter id not found')
+        }
+    }
+
+    def getPoiImages(){
+        Map results
+        if(params.siteId && params.poiId){
+            removeGrailsParameters(params)
+            params.userId = authService.getUserId()
+            try {
+                results = siteService.getPoiImages(params)
+                render(text: results as JSON, contentType: 'application/json')
+            } catch (SocketTimeoutException sTimeout){
+                render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
+            } catch (Exception e){
+                render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            render( status: HttpStatus.SC_BAD_REQUEST, text: 'Parameters siteId or poiId not found')
+        }
+    }
+
+    private removeGrailsParameters(GrailsParameterMap gParam){
+        gParam.remove('controller')
+        gParam.remove('action')
     }
 
     /**

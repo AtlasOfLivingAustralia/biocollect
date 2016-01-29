@@ -1,9 +1,14 @@
-var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
+var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, autoInit) {
     var self = this;
 
     var features, featureType = 'record', alaMap, results;
     self.view = view ? view : 'allrecords';
     var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500;
+
+    // These parameters are used when activity is instantiated from sites page.
+    // It is used to disable certain aspects like map and auto load feature
+    ignoreMap = ignoreMap || false;
+    autoInit = autoInit || true;
 
     self.sortOptions = [
         {id: 'lastUpdated', name: 'Date', order: 'DESC'},
@@ -330,6 +335,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
      * function used to create map and plot the fetched points
      */
     self.getDataAndShowOnMap = function () {
+        // do not execute code if ignoreMap is set. helpful in situations where map is not included
+        if(ignoreMap){
+            return;
+        }
+
         var searchTerm = self.searchTerm() || '';
         var view = self.view;
         var url =fcConfig.getRecordsForMapping + '?max=10000&searchTerm='+ searchTerm+'&view=' + view;
@@ -506,7 +516,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         self.sort(data.id);
     };
 
-    self.refreshPage();
+    autoInit && self.refreshPage();
 };
 
 var ActivityRecordViewModel = function (activity) {
