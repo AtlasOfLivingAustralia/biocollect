@@ -180,6 +180,26 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         }
     };
 
+    self.saveSitesBeforeRedirect = function(redirectUrl) {
+        var jsData = self.current().asJS("sites");
+        if (jsData.sites && jsData.sites.length > 0) {
+            self.genericUpdate("sites");
+        }
+        window.location.href = redirectUrl;
+    };
+
+    self.redirectToCreate = function(){
+        self.saveSitesBeforeRedirect(fcConfig.siteCreateUrl);
+    };
+
+    self.redirectToSelect = function(){
+        self.saveSitesBeforeRedirect(fcConfig.siteSelectUrl);
+    };
+
+    self.redirectToUpload = function(){
+        self.saveSitesBeforeRedirect(fcConfig.siteUploadUrl);
+    };
+
     self.deleteProjectActivity = function () {
         bootbox.confirm("Are you sure you want to delete this survey? Any survey forms that have been submitted will also be deleted.", function (result) {
             if (result) {
@@ -451,10 +471,6 @@ var ProjectActivity = function (params) {
     self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
 
     self.transients = self.transients || {};
-    self.transients.siteSelectUrl = ko.observable(fcConfig.siteSelectUrl);
-    self.transients.siteCreateUrl = ko.observable(fcConfig.siteCreateUrl);
-    self.transients.siteUploadUrl = ko.observable(fcConfig.siteUploadUrl);
-
     self.transients.warning = ko.computed(function () {
         return self.projectActivityId() === undefined ? true : false;
     });

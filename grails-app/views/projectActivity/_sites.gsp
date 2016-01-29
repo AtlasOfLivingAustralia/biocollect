@@ -95,9 +95,9 @@
     <h3>Or, add custom site using the below options</h3>
     <div class="">
         <div class="btn-group btn-group-justified">
-            <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteCreateUrl}"><i class="icon-plus"></i> Add new site</a>
-            <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteSelectUrl}"><i class="icon-folder-open"></i> Choose existing sites</a>
-            <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteUploadUrl}"><i class="icon-arrow-up"></i> Upload locations from shapefile</a>
+            <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToCreate, disable: !transients.saveOrUnPublishAllowed()"><i class="icon-plus"></i> Add new site </button>
+            <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToSelect, disable: !transients.saveOrUnPublishAllowed()"><i class="icon-folder-open"></i> Choose existing sites </button>
+            <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToUpload, disable: !transients.saveOrUnPublishAllowed()"><i class="icon-arrow-up"></i> Upload locations from shapefile </button>
         </div>
     </div>
 </div>
