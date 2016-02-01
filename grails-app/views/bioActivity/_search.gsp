@@ -24,7 +24,7 @@
                                    class="input-block-level" placeholder="Search survey records"/>
                             <div class="form-inline">
                                 <button data-bind="click: search" title="Only show surveys which contain the search term"
-                                    id="pt-search-link" class="btn btn-primary"><i
+                                    class="btn btn-primary"><i
                                     class="icon-search icon-white"></i> Search</button>
                                 <button data-bind="click: reset" id="pt-search-reset" class="btn btn-default"><i
                                     class="icon-remove-circle"></i> Reset</button>

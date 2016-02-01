@@ -12,6 +12,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
     var index = 0;
     self.availableFacets = [
         {name: 'projectNameFacet', displayName: 'Project', order: index++},
+        {name: 'organisationNameFacet', displayName: 'Organisation', order: index++},
         {name: 'projectActivityNameFacet', displayName: 'Survey', order: index++},
         {name: 'recordNameFacet', displayName: 'Species', order: index++},
         {name: 'activityOwnerNameFacet', displayName: 'Owner', order: index++},
@@ -507,7 +508,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         self.sort(data.id);
     };
 
-    self.refreshPage();
+    if(fcConfig.organisationName) {
+        self.resetFacetsAndSelect(fcConfig.organisationName,"Organisation");
+    } else {
+        self.refreshPage();
+    }
 };
 
 var ActivityRecordViewModel = function (activity) {
