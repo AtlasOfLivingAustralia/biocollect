@@ -17,10 +17,10 @@
     <div class="list-parent" data-bind="slideVisible: showPoi">
         <ul class="cards-list padding-bottom-20 margin-top-10 unstyled"  data-bind="style:{width:getWidth}">
             <!-- ko foreach: documents -->
-            <li>
+            <li data-bind="fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade', type:'iframe', title: function(){ return this.next().html() }}">
             <div class="projectLogo">
                 <!-- ko if: !isEmbargoed -->
-                    <a href="#" data-bind="attr:{href:getImageViewerUrl()}, fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade', type:'iframe', title: function(){ return this.next().html() }}" target="fancybox">
+                    <a href="#" data-bind="attr:{href:getImageViewerUrl(),rel:'group'+$parent.poiId()}" target="fancybox">
                         <img data-bind="attr:{ src: thumbnailUrl }" onload="findLogoScalingClass(this,200,150)" class="image-logo image-window">
                     </a>
                     <div class="hide metadata">

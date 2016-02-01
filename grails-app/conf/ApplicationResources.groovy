@@ -415,4 +415,8 @@ modules = {
         resource url: 'js/images.js'
         resource url: 'js/poi-gallery.js'
     }
+
+    siteSearch{
+        resource url: 'js/sites-list.js'
+    }
 }

@@ -9,6 +9,7 @@ class SiteController {
 
     def siteService, projectService, activityService, metadataService, userService, searchService, importService, webService
     AuthService authService
+    CommonService commonService
 
     static defaultAction = "index"
 
@@ -58,7 +59,7 @@ class SiteController {
              //activities: activityService.activitiesForProject(id),
              mapFeatures: siteService.getMapFeatures(site)]
         } else {
-            //forward(action: 'list', model: [error: 'no such id'])
+            //forward(action: 'search', model: [error: 'no such id'])
             render 'no such site'
         }
     }
@@ -146,7 +147,7 @@ class SiteController {
         //todo: need to detect 'cleared' values which will be missing from the params
         def values = [:]
         // filter params to remove:
-        //  1. keys in the ignore list; &
+        //  1. keys in the ignore search; &
         //  2. keys with dot notation - the controller will automatically marshall these into maps &
         //  3. keys in nested maps with dot notation
         removeKeysWithDotNotation(params).each { k, v ->
@@ -289,7 +290,7 @@ class SiteController {
         //todo: need to detect 'cleared' values which will be missing from the params - implement _destroy
         def values = [:]
         // filter params to remove:
-        //  1. keys in the ignore list; &
+        //  1. keys in the ignore search; &
         //  2. keys with dot notation - the controller will automatically marshall these into maps &
         //  3. keys in nested maps with dot notation
         postBody.each { k, v ->
@@ -315,7 +316,7 @@ class SiteController {
         //todo: need to detect 'cleared' values which will be missing from the params - implement _destroy
         def values = [:]
         // filter params to remove:
-        //  1. keys in the ignore list; &
+        //  1. keys in the ignore search; &
         //  2. keys with dot notation - the controller will automatically marshall these into maps &
         //  3. keys in nested maps with dot notation
         postBody.each { k, v ->
@@ -403,7 +404,7 @@ class SiteController {
      *  [[name:'shape1',pid:'23'],[name:'shape2',pid:'24']]
      *
      * We indicate that we want this style of marshalling (the other is also valid) by adding a hidden
-     * field data-marshalling='list'.
+     * field data-marshalling='search'.
      *
      * @param value the map to re-marshall
      * @return re-marshalled map
@@ -465,6 +466,7 @@ class SiteController {
     def getImages(){
         List results
         if(params.id){
+            //TODO: replace this with commonService.parseParams(params)
             removeGrailsParameters(params)
             params.userId = authService.getUserId()
             try{
@@ -483,6 +485,7 @@ class SiteController {
     def getPoiImages(){
         Map results
         if(params.siteId && params.poiId){
+            //TODO: replace this with commonService.parseParams(params)
             removeGrailsParameters(params)
             params.userId = authService.getUserId()
             try {
@@ -498,6 +501,33 @@ class SiteController {
         }
     }
 
+    def search(){
+        GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userService.getCurrentUserId())
+        queryParams.query = 'className:au.org.ala.ecodata.Site'
+        Map searchResult = searchService.searchForSites(queryParams)
+        List sites = searchResult?.hits?.hits
+        List facets = []
+        sites = sites?.collect {
+            Map doc = it._source
+            [
+                    siteId       : doc.siteId,
+                    name         : doc.name,
+                    lastUpdated  : doc.lastUpdated
+            ]
+        }
+
+        searchResult?.facets?.each { k, v ->
+            Map facet = [:]
+            facet.name = k
+            facet.total = v.total
+            facet.terms = v.terms
+            facets << facet
+        }
+
+        render([sites: sites, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
+    }
+
+    //TODO: replace this with commonService.parseParams(params)
     private removeGrailsParameters(GrailsParameterMap gParam){
         gParam.remove('controller')
         gParam.remove('action')
