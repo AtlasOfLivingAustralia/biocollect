@@ -59,7 +59,7 @@ class SiteController {
              //activities: activityService.activitiesForProject(id),
              mapFeatures: siteService.getMapFeatures(site)]
         } else {
-            //forward(action: 'search', model: [error: 'no such id'])
+            //forward(action: 'list', model: [error: 'no such id'])
             render 'no such site'
         }
     }
@@ -147,7 +147,7 @@ class SiteController {
         //todo: need to detect 'cleared' values which will be missing from the params
         def values = [:]
         // filter params to remove:
-        //  1. keys in the ignore search; &
+        //  1. keys in the ignore list; &
         //  2. keys with dot notation - the controller will automatically marshall these into maps &
         //  3. keys in nested maps with dot notation
         removeKeysWithDotNotation(params).each { k, v ->
@@ -290,7 +290,7 @@ class SiteController {
         //todo: need to detect 'cleared' values which will be missing from the params - implement _destroy
         def values = [:]
         // filter params to remove:
-        //  1. keys in the ignore search; &
+        //  1. keys in the ignore list; &
         //  2. keys with dot notation - the controller will automatically marshall these into maps &
         //  3. keys in nested maps with dot notation
         postBody.each { k, v ->
@@ -316,7 +316,7 @@ class SiteController {
         //todo: need to detect 'cleared' values which will be missing from the params - implement _destroy
         def values = [:]
         // filter params to remove:
-        //  1. keys in the ignore search; &
+        //  1. keys in the ignore list; &
         //  2. keys with dot notation - the controller will automatically marshall these into maps &
         //  3. keys in nested maps with dot notation
         postBody.each { k, v ->
@@ -404,7 +404,7 @@ class SiteController {
      *  [[name:'shape1',pid:'23'],[name:'shape2',pid:'24']]
      *
      * We indicate that we want this style of marshalling (the other is also valid) by adding a hidden
-     * field data-marshalling='search'.
+     * field data-marshalling='list'.
      *
      * @param value the map to re-marshall
      * @return re-marshalled map
@@ -501,7 +501,7 @@ class SiteController {
         }
     }
 
-    def search(){
+    def list(){
         GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userService.getCurrentUserId())
         queryParams.query = 'className:au.org.ala.ecodata.Site'
         Map searchResult = searchService.searchForSites(queryParams)
