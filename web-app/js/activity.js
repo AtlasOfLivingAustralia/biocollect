@@ -77,7 +77,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
     };
 
     var facetsLocalStorageHandler = function (cmd) {
-        var key = 'DATA_PAGE_FACET_KEY';
+        var key = self.view.toUpperCase() + '_DATA_PAGE_FACET_KEY';
         switch (cmd) {
             case 'store':
                 var facets = [];
