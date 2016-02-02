@@ -77,7 +77,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
     };
 
     var facetsLocalStorageHandler = function (cmd) {
-        var key = self.view.toUpperCase() + '_DATA_PAGE_FACET_KEY';
+        var key = fcConfig.organisationName ? 'ORG_' : '';
+        key = key + self.view.toUpperCase() + '_DATA_PAGE_FACET_KEY';
         switch (cmd) {
             case 'store':
                 var facets = [];
@@ -85,6 +86,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                     var value = {};
                     value.term = filter.term();
                     value.facetDisplayName = filter.facetDisplayName();
+                    value.facetName = filter.facetName();
                     facets.push(value);
                 });
                 amplify.store(key, facets);
@@ -530,20 +532,19 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         self.sort(data.id);
     };
 
-    if(fcConfig.organisationName) {
+    var restored = facetsLocalStorageHandler("restore");
+    if(restored) {
+        $.each(restored, function( index, value ) {
+            self.selectedFilters.push(new TermFacetVM({
+                term: value.term ? value.term : '',
+                facetName: value.facetName ? value.facetName : '',
+                facetDisplayName: value.facetDisplayName ? value.facetDisplayName : ''
+            }));
+        });
+        self.refreshPage();
+    } else if(fcConfig.organisationName) {
         self.resetFacetsAndSelect(fcConfig.organisationName,"Organisation");
     } else {
-        //Restored stored facets.
-        var restored = facetsLocalStorageHandler("restore");
-        if(restored) {
-            $.each(restored, function( index, value ) {
-                self.selectedFilters.push(new TermFacetVM({
-                    term: value.term,
-                    facetName: value.facetDisplayName,
-                    facetDisplayName: value.facetDisplayName
-                }));
-            });
-        }
         self.refreshPage();
     }
 };
