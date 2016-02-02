@@ -10,6 +10,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         {id: 'activityOwnerName', name: 'Owner name', order: 'ASC'}];
 
     var index = 0;
+
     self.availableFacets = [
         {name: 'projectNameFacet', displayName: 'Project', order: index++},
         {name: 'organisationNameFacet', displayName: 'Organisation', order: index++},
@@ -73,6 +74,26 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         self.clearData();
         self.selectedFilters([]);
         self.refreshPage(0);
+    };
+
+    var facetsLocalStorageHandler = function (cmd) {
+        var key = 'DATA_PAGE_FACET_KEY';
+        switch (cmd) {
+            case 'store':
+                var facets = [];
+                ko.utils.arrayForEach(self.selectedFilters(), function (filter) {
+                    var value = {};
+                    value.term = filter.term();
+                    value.facetDisplayName = filter.facetDisplayName();
+                    facets.push(value);
+                });
+                amplify.store(key, facets);
+                break;
+
+            case 'restore':
+            default:
+                return amplify.store(key);
+        }
     };
 
     self.selectFacetTerm = function (term, facetGroup) {
@@ -174,6 +195,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             },
             success: function (data) {
                 self.load(data, Math.ceil(offset / self.pagination.resultsPerPage()));
+                facetsLocalStorageHandler('store');
             },
             error: function (data) {
                 alert('An unhandled error occurred: ' + data);
@@ -469,7 +491,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             facetFilters.push(term.facetName() + ':' + term.term());
         });
         return facetFilters;
-    }
+    };
 
     function constructQueryUrl(prefix, offset, facetOnly) {
         if (!offset) offset = 0;
@@ -511,6 +533,17 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
     if(fcConfig.organisationName) {
         self.resetFacetsAndSelect(fcConfig.organisationName,"Organisation");
     } else {
+        //Restored stored facets.
+        var restored = facetsLocalStorageHandler("restore");
+        if(restored) {
+            $.each(restored, function( index, value ) {
+                self.selectedFilters.push(new TermFacetVM({
+                    term: value.term,
+                    facetName: value.facetDisplayName,
+                    facetDisplayName: value.facetDisplayName
+                }));
+            });
+        }
         self.refreshPage();
     }
 };
