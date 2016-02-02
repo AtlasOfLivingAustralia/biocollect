@@ -118,8 +118,10 @@
 
             <div class="row-fluid controls-row">
                 <fc:textField data-bind="value: site().extent().geometry().uncertainty" outerClass="span4"
+                              data-validation-engine="validate[min[0],custom[integer]]"
                               label="${message(code:'site.point.uncertainty')}"/>
                 <fc:textField data-bind="value: site().extent().geometry().precision" outerClass="span4"
+                              data-validation-engine="validate[min[0],custom[number]]"
                               label="${message(code:'site.point.precision')}"/>
                 %{-- CG - only supporting WGS84 at the moment --}%
                 <fc:textField data-bind="value: site().extent().geometry().datum" outerClass="span4" label="${message(code:'site.point.datum')}"
