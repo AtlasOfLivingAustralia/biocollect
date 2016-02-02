@@ -213,7 +213,9 @@
 </div>
 
 
-<g:render template="/shared/imagerViewerModal" model="[readOnly: false]"></g:render>
+<g:render template="/shared/imagerViewerModal" model="[readOnly: false]"/>
+<g:render template="/shared/attachDocument"/>
+<g:render template="/shared/documentTemplate"/>
 
 <r:script>
         var returnTo = "${returnTo}";
@@ -510,7 +512,8 @@
                     showReset: true,
                     draggableMarkers: false,
                     useMyLocation: false,
-                    allowSearchByAddress: false,
+                    allowSearchLocationByAddress: false,
+                    allowSearchRegionByAddress: false,
                     wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
                     wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
                 }

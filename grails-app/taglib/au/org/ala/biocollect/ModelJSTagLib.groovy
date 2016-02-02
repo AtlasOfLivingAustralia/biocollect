@@ -640,7 +640,8 @@ class ModelJSTagLib {
                 singleMarker: true,
                 markerOrShapeNotBoth: ${model.options ? !model.options.allowMarkerAndRegion : true},
                 useMyLocation: ${!readonly},
-                allowSearchByAddress: ${!readonly},
+                allowSearchLocationByAddress: ${!readonly},
+                allowSearchRegionByAddress: false,
                 drawOptions: {
                     polyline: false,
                     polygon: false,

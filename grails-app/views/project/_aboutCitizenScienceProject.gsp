@@ -105,7 +105,8 @@
                 showReset: false,
                 draggableMarkers: false,
                 useMyLocation: false,
-                allowSearchByAddress: false,
+                allowSearchLocationByAddress: false,
+                allowSearchRegionByAddress: false,
                 wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
                 wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
             }
