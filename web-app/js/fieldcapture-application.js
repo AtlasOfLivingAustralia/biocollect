@@ -696,7 +696,7 @@ function Documents() {
 
     self.logoUrl = ko.pureComputed(function() {
         var logoDocument = self.findDocumentByRole(self.documents(), 'logo');
-        return logoDocument ? logoDocument.url : null;
+        return logoDocument ? (logoDocument.thumbnailUrl ? logoDocument.thumbnailUrl : logoDocument.url) : null;
     });
 
     self.logoAttributionText = ko.pureComputed(function() {

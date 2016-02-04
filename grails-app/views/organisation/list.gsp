@@ -55,7 +55,7 @@
 
     <!-- ko foreach : organisations -->
     <div class="row-fluid organisation">
-        <div class="organisation-logo"><img class="logo" data-bind="attr:{'src':logoUrl()?logoUrl():fcConfig.noLogoImageUrl}"></div>
+        <div class="organisation-logo"><img class="logo" data-bind="attr:{'src': logoUrl() ? logoUrl():fcConfig.noLogoImageUrl}"></div>
         <div class="organisation-text">
             <h4>
                 <a data-bind="visible:organisationId,attr:{href:fcConfig.viewOrganisationUrl+'/'+organisationId}"><span

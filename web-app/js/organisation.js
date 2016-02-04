@@ -257,7 +257,8 @@ var OrganisationsViewModel = function() {
                     if (hit._source.logoUrl) {
                         hit._source.documents = [{
                             role:'logo',
-                            url: hit._source.logoUrl
+                            status:'active',
+                            thumbnailUrl: hit._source.logoUrl
                         }]
                     }
                     return new OrganisationViewModel(hit._source);

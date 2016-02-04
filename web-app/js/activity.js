@@ -15,8 +15,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         {id: 'activityOwnerName', name: 'Owner name', order: 'ASC'}];
 
     var index = 0;
+
     self.availableFacets = [
         {name: 'projectNameFacet', displayName: 'Project', order: index++},
+        {name: 'organisationNameFacet', displayName: 'Organisation', order: index++},
         {name: 'projectActivityNameFacet', displayName: 'Survey', order: index++},
         {name: 'recordNameFacet', displayName: 'Species', order: index++},
         {name: 'activityOwnerNameFacet', displayName: 'Owner', order: index++},
@@ -77,6 +79,28 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         self.clearData();
         self.selectedFilters([]);
         self.refreshPage(0);
+    };
+
+    var facetsLocalStorageHandler = function (cmd) {
+        var key = fcConfig.organisationName ? 'ORG_' : '';
+        key = key + self.view.toUpperCase() + '_DATA_PAGE_FACET_KEY';
+        switch (cmd) {
+            case 'store':
+                var facets = [];
+                ko.utils.arrayForEach(self.selectedFilters(), function (filter) {
+                    var value = {};
+                    value.term = filter.term();
+                    value.facetDisplayName = filter.facetDisplayName();
+                    value.facetName = filter.facetName();
+                    facets.push(value);
+                });
+                amplify.store(key, facets);
+                break;
+
+            case 'restore':
+            default:
+                return amplify.store(key);
+        }
     };
 
     self.selectFacetTerm = function (term, facetGroup) {
@@ -178,6 +202,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             },
             success: function (data) {
                 self.load(data, Math.ceil(offset / self.pagination.resultsPerPage()));
+                facetsLocalStorageHandler('store');
             },
             error: function (data) {
                 alert('An unhandled error occurred: ' + data);
@@ -478,7 +503,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             facetFilters.push(term.facetName() + ':' + term.term());
         });
         return facetFilters;
-    }
+    };
 
     function constructQueryUrl(prefix, offset, facetOnly) {
         if (!offset) offset = 0;
@@ -517,7 +542,21 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         self.sort(data.id);
     };
 
-    autoInit && self.refreshPage();
+    var restored = facetsLocalStorageHandler("restore");
+    if(restored) {
+        $.each(restored, function( index, value ) {
+            self.selectedFilters.push(new TermFacetVM({
+                term: value.term ? value.term : '',
+                facetName: value.facetName ? value.facetName : '',
+                facetDisplayName: value.facetDisplayName ? value.facetDisplayName : ''
+            }));
+        });
+        self.refreshPage();
+    } else if(fcConfig.organisationName) {
+        self.resetFacetsAndSelect(fcConfig.organisationName,"Organisation");
+    } else {
+        autoInit && self.refreshPage();
+    }
 };
 
 var ActivityRecordViewModel = function (activity) {
