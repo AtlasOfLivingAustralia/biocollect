@@ -355,7 +355,7 @@
             }
 
 
-            var activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', null, null, true, false)
+            var activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', null, null, true, true)
             activitiesAndRecordsViewModel.searchTerm('siteId:${site.siteId}')
             ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('siteActivities'));
             var params = {

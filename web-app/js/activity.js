@@ -1,4 +1,4 @@
-var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, autoInit) {
+var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit) {
     var self = this;
 
     var features, featureType = 'record', alaMap, results;
@@ -8,7 +8,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     // These parameters are used when activity is instantiated from sites page.
     // It is used to disable certain aspects like map and auto load feature
     ignoreMap = !!ignoreMap;
-    autoInit = !!autoInit;
+    doNotInit = !!doNotInit;
 
     self.sortOptions = [
         {id: 'lastUpdated', name: 'Date', order: 'DESC'},
@@ -551,11 +551,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 facetDisplayName: value.facetDisplayName ? value.facetDisplayName : ''
             }));
         });
-        self.refreshPage();
+        !doNotInit && self.refreshPage();
     } else if(fcConfig.organisationName) {
         self.resetFacetsAndSelect(fcConfig.organisationName,"Organisation");
     } else {
-        autoInit && self.refreshPage();
+        !doNotInit && self.refreshPage();
     }
 };
 
