@@ -543,7 +543,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     };
 
     var restored = facetsLocalStorageHandler("restore");
-    if(restored) {
+    if(restored && restored.length > 0) {
         $.each(restored, function( index, value ) {
             self.selectedFilters.push(new TermFacetVM({
                 term: value.term ? value.term : '',
