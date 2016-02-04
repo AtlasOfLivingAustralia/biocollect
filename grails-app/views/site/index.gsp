@@ -48,7 +48,7 @@
         <li>
             <g:link controller="home">Home</g:link> <span class="divider">/</span>
         </li>
-        <li class="active">Sites <span class="divider">/</span></li>
+        <li class="active"> <a href="${createLink(controller: 'site', action: 'list')}">Sites</a> <span class="divider">/</span></li>
         <li class="active">${site.name?.encodeAsHTML()}</li>
         <li class="pull-right">
             <g:link action="edit" id="${site.siteId}" class="btn btn-small"><i class="icon-edit"></i> Edit site</g:link>
@@ -355,11 +355,15 @@
             }
 
 
-        var activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', null, null, true, false)
-        activitiesAndRecordsViewModel.searchTerm('siteId:${site.siteId}')
-        activitiesAndRecordsViewModel.refreshPage();
-        ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('siteActivities'));
-
+            var activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', null, null, true, false)
+            activitiesAndRecordsViewModel.searchTerm('siteId:${site.siteId}')
+            ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('siteActivities'));
+            var params = {
+                params: {
+                    id: '${site.siteId}'
+                }
+            }
+            initPoiGallery(params,'sitePhotopoints');
         });
     </r:script>
 </body>

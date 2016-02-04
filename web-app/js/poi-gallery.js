@@ -24,30 +24,59 @@ function SitesGalleryViewModel(props) {
               id: ''
             },
             sites:[],
-            error:''
+            error:'',
+            loadOnInit: true
         },props);
 
-    this.sites = ko.observableArray(config.sites);
-    this.error = ko.observable(config.error);
+    self.sites = ko.observableArray(config.sites);
+    self.error = ko.observable(config.error);
+    self.loading = ko.observable(false);
+
+    self.isSitesEmpty =ko.computed(function() {
+        // to prevent no photo point message from appearing
+        if(self.loading()){
+            return false;
+        }
+
+        var sites = self.sites();
+        for(var i = 0; i < sites.length; i++){
+            if(!sites[i].isPhotoPointsEmpty()){
+                return false;
+            }
+        }
+
+        return true;
+    });
 
     self.loadGallery = function(){
+        self.sites.removeAll()
         self.error('')
+        self.loading(true);
         $.ajax({
             url: fcConfig.poiGalleryUrl,
             data: config.params,
             success: function(data){
+                var results = []
                 data && data.forEach(function(site){
-                    self.sites.push( new SiteGalleryViewModel(site))
+                    results.push( new SiteGalleryViewModel(site))
                 })
-                console.log(sites.sites()[0].isPhotoPointsEmpty())
+                self.sites(results);
+                self.loading(false);
             },
-            failure: function(xhr){
+            error: function(xhr){
                 self.error(xhr.responseText);
+                self.loading(false);
             }
         })
     }
 
-    self.loadGallery()
+    self.setParams = function(params){
+        for(var key in params){
+            config.params[key] = params[key];
+        }
+    }
+
+    config.loadOnInit && self.loadGallery()
 }
 /**
  * site model. a site can have a number of Point of interests.
@@ -56,23 +85,26 @@ function SitesGalleryViewModel(props) {
  */
 function SiteGalleryViewModel(props){
     var self = this;
-    this.name = ko.observable(props.name);
-    this.siteId = ko.observable(props.siteId);
-    this.poi = ko.observableArray();
+    var pois = [], test;
+    self.name = ko.observable(props.name);
+    self.siteId = ko.observable(props.siteId);
+    self.poi = ko.observableArray();
     props.poi && props.poi.forEach(function(poi){
-        self.poi.push(new PoiViewModel(poi, self.siteId()));
+        pois.push(new PoiViewModel(poi, self.siteId()))
     })
 
+    self.poi(pois);
+
     self.isPhotoPointsEmpty = ko.computed(function(){
-        var empty = true;
-        self.poi().forEach(function(poi){
-            if(!poi.isEmpty()){
-                empty = false;
+        var poi = self.poi();
+        for(var i = 0; i < poi.length; i++){
+            if(!poi[i].isEmpty()){
+                return false;
             }
-        })
-        return empty;
+        }
+
+        return true;
     });
-    console.log(this.isPhotoPointsEmpty())
 }
 
 /**
@@ -89,23 +121,24 @@ function PoiViewModel(props, siteId){
             siteId: siteId,
             poiId: props.poiId
         },
-        size = props.docs.documents && props.docs.documents.length;
+        size = props.docs.documents && props.docs.documents.length,
+        docs = [];
 
-    this.width = props.width || 215;
-    this.name = ko.observable(props.name);
-    this.poiId = ko.observable(props.poiId);
-    this.type = ko.observable(props.type);
-    this.pagesize = 5;
-    this.offset = ko.observable(0);
-    this.max = ko.observable(size);
-    this.total = ko.observable(props.docs.count || 0);
-    this.error = ko.observable('')
-    this.documents = ko.observableArray();
-    this.showPoi = ko.observable(true);
-    this.hasNextPage = ko.computed(function(){
-        return self.total() > self.max();
+    self.width = props.width || 215;
+    self.name = ko.observable(props.name);
+    self.poiId = ko.observable(props.poiId);
+    self.type = ko.observable(props.type);
+    self.pagesize = 5;
+    self.offset = ko.observable(0);
+    self.max = ko.observable(size);
+    self.total = ko.observable(props.docs.count || 0);
+    self.error = ko.observable('')
+    self.documents = ko.observableArray();
+    self.showPoi = ko.observable(true);
+    self.hasNextPage = ko.computed(function(){
+        return self.total() > (self.offset()+self.max());
     });
-    this.getWidth = ko.computed(function(){
+    self.getWidth = ko.computed(function(){
         // load more box appears only if more images are present
         var loadMore = self.hasNextPage()?1:0;
         return self.width * (self.documents().length +loadMore)+ 'px';
@@ -135,8 +168,7 @@ function PoiViewModel(props, siteId){
     }
 
     self.nextPage = function(){
-        self.offset(self.max());
-        self.max(self.max() + self.pagesize);
+        self.offset(self.offset()+self.pagesize);
         self.loadNextPage();
     }
 
@@ -161,7 +193,7 @@ function PoiViewModel(props, siteId){
                     self.documents.push(new ImageViewModel(doc, true))
                 });
             },
-            failure: function(xhr){
+            error: function(xhr){
                 self.error(xhr.responseText);
             }
         })
@@ -176,6 +208,7 @@ function PoiViewModel(props, siteId){
 
     // initialise data
     props.docs.documents && props.docs.documents.forEach(function(doc){
-        self.documents.push(new ImageViewModel(doc, true));
+        docs.push(new ImageViewModel(doc, true))
     })
+    self.documents(docs);
 }

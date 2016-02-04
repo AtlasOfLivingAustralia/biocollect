@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.web.AuthService
 import grails.test.mixin.TestFor
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
@@ -15,9 +16,12 @@ import spock.lang.Specification
 class SiteControllerSpec extends Specification {
 
     SiteService siteService = Stub(SiteService);
+    AuthService authService = Stub(AuthService)
 
     def setup() {
         controller.siteService = siteService
+        controller.authService = authService
+        authService.getUserId() >> '1'
     }
 
     def cleanup() {
@@ -32,7 +36,7 @@ class SiteControllerSpec extends Specification {
 
     void "getImages: when no image is returned"() {
         given:
-        siteService.getImages(new GrailsParameterMap([id:'1'], request)) >> []
+        siteService.getImages(new GrailsParameterMap([id:'1', userId: '1'], request)) >> []
         params.id = '1'
         when:
         controller.getImages();
@@ -43,7 +47,7 @@ class SiteControllerSpec extends Specification {
 
     void "getImages: when webservice throws exception"() {
         given:
-        siteService.getImages(new GrailsParameterMap([id: '1', max:5, offset:0], request)) >> {throw new SocketTimeoutException('Timed out!')}
+        siteService.getImages(new GrailsParameterMap([id: '1', max:5, offset:0, userId: '1'], request)) >> {throw new SocketTimeoutException('Timed out!')}
         params.max = 5
         params.offset= 0
         params.id = '1'
@@ -56,7 +60,7 @@ class SiteControllerSpec extends Specification {
 
     void "getImages: when working perfectly"() {
         given:
-        siteService.getImages(new GrailsParameterMap([id: '1', max:5, offset:0], request)) >> [["siteId": "1", "name": "Rubicon Sanctuary, Port Sorell, Tasmania",
+        siteService.getImages(new GrailsParameterMap([id: '1', max:5, offset:0, userId: '1'], request)) >> [["siteId": "1", "name": "Rubicon Sanctuary, Port Sorell, Tasmania",
                                                                       "poi": [[poiId:'2',docs:[documents:[[role:'photoPoint',type:'image']],count:1]]]
                                                                      ]]
         params.max = 5

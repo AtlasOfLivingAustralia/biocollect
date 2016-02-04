@@ -417,6 +417,9 @@ modules = {
     }
 
     siteSearch{
+        dependsOn('mapUtils','map')
+        resource url: 'css/sites-list.css'
+        resource url: 'js/pagination.js'
         resource url: 'js/sites-list.js'
     }
 }

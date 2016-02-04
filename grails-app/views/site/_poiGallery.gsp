@@ -2,6 +2,7 @@
 <bc:koLoading>
 <div>
 <!-- ko foreach: sites -->
+    <h3 data-bind="text:name, visible: !isPhotoPointsEmpty()"></h3>
     <!-- ko foreach: poi -->
     <ul class="breadcrumb margin-bottom-5 margin-top-5">
         <li>
@@ -50,21 +51,19 @@
         </ul>
     </div>
     <!-- /ko -->
-    <div data-bind="visible: isPhotoPointsEmpty">
-        <p class="lead"> No photo points found</p>
-    </div>
 <!-- /ko -->
+    <div data-bind="visible: isSitesEmpty">
+        <h4> No photo points found</h4>
+    </div>
+    <div data-bind="visible: loading">
+        <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
+    </div>
 </div>
 </bc:koLoading>
 <script>
-    var sites
-    $(document).ready(function () {
-         sites = new SitesGalleryViewModel({
-            params:{
-                id: '${siteId}',
-                max:5
-            }
-        });
-        ko.applyBindings(sites, $('#${siteElementId}')[0])
-    })
+    function initPoiGallery( params, id ){
+        var sites = new SitesGalleryViewModel(params);
+        ko.applyBindings(sites, $('#'+id)[0])
+        return sites;
+    }
 </script>

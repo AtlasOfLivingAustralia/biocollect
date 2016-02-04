@@ -106,10 +106,20 @@ class SearchService {
         webService.getJson(url, null, true)
     }
 
-    Map searchForSites(GrailsParameterMap params){
+    Map searchForSites(GrailsParameterMap params) throws SocketTimeoutException, Exception{
         String url = grailsApplication.config.ecodata.service.url + '/search/elastic' + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
-        webService.getJson(url, null, true)
+        Map response = webService.getJson(url, null, true)
+        if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw  new Exception(response.error);
+            }
+
+        }
+
+        response
     }
 
     def allProjectsWithSites(params, String searchTerm = null) {

@@ -462,15 +462,18 @@ class SiteController {
         }
     }
 
-
+    /**
+     * this function will get a list of siteId and return photo points for them
+     * @param id - required - eg. 123,345
+     * @return
+     */
     def getImages(){
         List results
         if(params.id){
-            //TODO: replace this with commonService.parseParams(params)
-            removeGrailsParameters(params)
-            params.userId = authService.getUserId()
+            GrailsParameterMap mParam = new GrailsParameterMap(commonService.parseParams(params), request);
+            mParam.userId = authService.getUserId()
             try{
-                results = siteService.getImages(params)
+                results = siteService.getImages(mParam)
                 render(text: results as JSON, contentType: 'application/json')
             } catch (SocketTimeoutException sTimeout){
                 render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
@@ -482,14 +485,19 @@ class SiteController {
         }
     }
 
+    /**
+     * this function will get all documents / images for a point of interest. Max and offset are supported.
+     * @param siteId - required
+     * @param poiId - required
+     * @return
+     */
     def getPoiImages(){
         Map results
         if(params.siteId && params.poiId){
-            //TODO: replace this with commonService.parseParams(params)
-            removeGrailsParameters(params)
-            params.userId = authService.getUserId()
+            GrailsParameterMap mParam = new GrailsParameterMap(commonService.parseParams(params), request);
+            mParam.userId = authService.getUserId()
             try {
-                results = siteService.getPoiImages(params)
+                results = siteService.getPoiImages(mParam)
                 render(text: results as JSON, contentType: 'application/json')
             } catch (SocketTimeoutException sTimeout){
                 render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
@@ -502,35 +510,56 @@ class SiteController {
     }
 
     def list(){
-        GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userService.getCurrentUserId())
-        queryParams.query = 'className:au.org.ala.ecodata.Site'
-        Map searchResult = searchService.searchForSites(queryParams)
-        List sites = searchResult?.hits?.hits
-        List facets = []
-        sites = sites?.collect {
-            Map doc = it._source
-            [
-                    siteId       : doc.siteId,
-                    name         : doc.name,
-                    lastUpdated  : doc.lastUpdated
-            ]
-        }
 
-        searchResult?.facets?.each { k, v ->
-            Map facet = [:]
-            facet.name = k
-            facet.total = v.total
-            facet.terms = v.terms
-            facets << facet
-        }
-
-        render([sites: sites, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
     }
 
-    //TODO: replace this with commonService.parseParams(params)
-    private removeGrailsParameters(GrailsParameterMap gParam){
-        gParam.remove('controller')
-        gParam.remove('action')
+    /**
+     * This function does an elastic search for sites. All elastic search parameters are supported like fq, max etc.
+     * @return
+     */
+    def search(){
+        try{
+            List query = ['className:au.org.ala.ecodata.Site']
+            GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userService.getCurrentUserId())
+            if(!queryParams.facets){
+                queryParams.facets="typeFacet,className,organisationFacet,stateFacet,lgaFacet,nrmFacet,siteSurveyNameFacet,siteProjectNameFacet,photoType"
+            }
+            if(queryParams.query){
+                query.push(queryParams.query);
+            }
+
+            queryParams.query = query.join(' AND ')
+            Map searchResult = searchService.searchForSites(queryParams)
+            List sites = searchResult?.hits?.hits
+            List facets = []
+            sites = sites?.collect {
+                Map doc = it._source
+                [
+                        siteId           : doc.siteId,
+                        name             : doc.name,
+                        description      : doc.description,
+                        numberOfPoi      : doc.poi?.size(),
+                        numberOfProjects : doc.projects?.size(),
+                        lastUpdated      : doc.lastUpdated,
+                        type             : doc.type,
+                        extent           : doc.extent
+                ]
+            }
+
+            searchResult?.facets?.each { k, v ->
+                Map facet = [:]
+                facet.name = k
+                facet.total = v.total
+                facet.terms = v.terms
+                facets << facet
+            }
+
+            render([sites: sites, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
+        } catch (SocketTimeoutException sTimeout){
+            render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
+        } catch (Exception e){
+            render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**

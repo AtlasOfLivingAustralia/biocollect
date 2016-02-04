@@ -1,0 +1,20 @@
+#siteSearch .tab-pane{
+    height: 650px;
+    overflow: auto;
+}
+
+.facet-window{
+    max-height: 110px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#map.tab-pane{
+    overflow: hidden;
+}
+
+.leaflet-map-impl{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}

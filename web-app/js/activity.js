@@ -7,8 +7,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     // These parameters are used when activity is instantiated from sites page.
     // It is used to disable certain aspects like map and auto load feature
-    ignoreMap = ignoreMap || false;
-    autoInit = autoInit || true;
+    ignoreMap = !!ignoreMap;
+    autoInit = !!autoInit;
 
     self.sortOptions = [
         {id: 'lastUpdated', name: 'Date', order: 'DESC'},

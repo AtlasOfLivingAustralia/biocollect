@@ -15,7 +15,7 @@ Biocollect.MapUtilities = {
         };
 
         if (feature.type.toLowerCase() == 'pid') {
-            geoJson.geometry.type = "Polygon";
+            geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
             geoJson.geometry.coordinates = [];
             geoJson.properties.pid = feature.pid;
         } else if (feature.type.toLowerCase() == "circle") {
