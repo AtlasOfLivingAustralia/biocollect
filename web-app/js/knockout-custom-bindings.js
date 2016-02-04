@@ -641,29 +641,43 @@ ko.bindingHandlers.removeFromArray = {
  * custom handler for fancybox plugin.
  * @type {{init: Function}}
  * config to fancybox plugin can be passed to custom binding using knockout syntax.
- * eg:  <a href="fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade'}"></a>
+ * eg:
+ * <a href="" data-bind="fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade'}"></a>
+ *
+ * or
+ *
+ * <div data-bind="fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade'}">
+ *     <a href="..." target="fancybox">...</a>
+ *     <a href="..." target="fancybox">...</a>
+ * </div>
  */
 ko.bindingHandlers.fancybox = {
-    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-        var config = valueAccessor()
-        // suppress auto scroll on clicking image to view in fancybox
-        config = $.extend({
-            width: 700,
-            height: 500,
-            // fix for bringing the modal dialog to focus to make it accessible via keyboard.
-            afterShow: function () {
-                $('.fancybox-wrap').focus();
-            },
-            helpers: {
-                title: {
-                    type: 'inside',
-                    position: 'bottom'
-                },
-                overlay: {
-                    locked: false
-                }
-            }
-        }, config);
-        $(element).fancybox(config);
+  init: function(element, valueAccessor, allBindings, viewModel, bindingContext){
+    var config = valueAccessor(),
+        $elem = $(element);
+    // suppress auto scroll on clicking image to view in fancybox
+    config = $.extend({
+      width: 700,
+      height: 500,
+      // fix for bringing the modal dialog to focus to make it accessible via keyboard.
+      afterShow: function(){
+        $('.fancybox-wrap').focus();
+      },
+      helpers: {
+        title: {
+          type : 'inside',
+          position : 'bottom'
+        },
+        overlay: {
+          locked: false
+        }
+      }
+    }, config);
+
+    if($elem.attr('target') == 'fancybox'){
+      $elem.fancybox(config);
+    }else{
+      $elem.find('a[target=fancybox]').fancybox(config);
     }
+  }
 };

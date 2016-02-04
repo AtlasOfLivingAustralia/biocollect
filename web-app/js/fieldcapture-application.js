@@ -908,6 +908,8 @@ function imageError(imageElement, alternateImage) {
 /**
  * fired when logo image is loaded. fn used to stretch small image to height or width of parent container.
  * @param imageElement the img element
+ * givenWidth - (optional) width of the bounding box containing the image. If nothing is passed parent width is used.
+ * givenHeight - (optional) height of the bounding box containing the image. If nothing is passed parent height is used.
  */
 function findLogoScalingClass(imageElement, givenWidth, givenHeight) {
     var $elem = $(imageElement);

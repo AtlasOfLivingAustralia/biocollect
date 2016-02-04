@@ -6,6 +6,7 @@ import com.vividsolutions.jts.io.WKTReader
 import grails.converters.JSON
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.geotools.kml.v22.KMLConfiguration
 import org.geotools.xml.Parser
 import org.opengis.feature.simple.SimpleFeature
@@ -315,6 +316,41 @@ class SiteService {
         log.debug asJSON
 
         asJSON
+    }
+
+    /**
+     * Get images for a list of sites. Number of images returned can be limited by max and offset parameters.
+     */
+    List getImages( GrailsParameterMap params) throws SocketTimeoutException, Exception{
+        String url = grailsApplication.config.ecodata.service.url + '/site/getImages';
+        Map response = webService.doGet(url, params);
+        if(response.resp){
+            return response.resp;
+        } else  if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw  new Exception(response.error);
+            }
+        }
+    }
+
+
+    /**
+     * Get images for a point of interest id. Number of images returned can be limited by max and offset parameters.
+     */
+    Map getPoiImages( GrailsParameterMap params) throws SocketTimeoutException, Exception{
+        String url = grailsApplication.config.ecodata.service.url + '/site/getPoiImages';
+        Map response = webService.doGet(url, params);
+        if(response.resp){
+            return response.resp;
+        } else  if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw  new Exception(response.error);
+            }
+        }
     }
 
     static metaModel() {

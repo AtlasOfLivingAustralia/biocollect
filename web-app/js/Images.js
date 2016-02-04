@@ -34,7 +34,12 @@ function ImageViewModel(prop, skipFindingDocument){
     self.staged = prop.staged || false;
     self.documentId = prop.documentId || '';
     self.status = ko.observable(prop.status || 'active')
-    
+    self.projectName = prop.projectName
+    self.projectId = prop.projectId
+    self.activityName = prop.activityName
+    self.activityId = prop.activityId
+    self.isEmbargoed = prop.isEmbargoed
+
     self.remove = function(images, data, event){
         if(data.documentId){
             // change status when image is already in ecodata
@@ -42,6 +47,18 @@ function ImageViewModel(prop, skipFindingDocument){
         } else {
             images.remove(data);
         }
+    }
+
+    self.getActivityLink = function(){
+        return fcConfig.activityViewUrl + '/' + self.activityId;
+    }
+
+    self.getProjectLink = function(){
+        return fcConfig.projectIndexUrl + '/' + self.projectId;
+    }
+
+    self.getImageViewerUrl = function(){
+        return fcConfig.imageLeafletViewer + '?file=' + encodeURIComponent(self.url);
     }
 
     self.summary = function(){

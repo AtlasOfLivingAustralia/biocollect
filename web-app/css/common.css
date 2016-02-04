@@ -361,3 +361,27 @@ th .popover {
     padding-top: 10px;
     padding-bottom: 5px;
 }
+
+.margin-bottom-10{
+    margin-bottom: 10px;
+}
+
+.margin-bottom-5{
+    margin-bottom: 5px;
+}
+
+.margin-top-10{
+    margin-top: 10px;
+}
+
+.padding-bottom-20{
+    padding-bottom: 20px;
+}
+
+.margin-top-5{
+    margin-top: 5px;
+}
+
+.margin-left-20{
+    margin-left: 20px;
+}

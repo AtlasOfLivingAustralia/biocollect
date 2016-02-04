@@ -116,6 +116,10 @@
              window.location = "${createLink(controller: 'project', action: 'citizenScience')}";
         })
 
+        $(".btnSite").click(function(e){
+             window.location = "${createLink(controller: 'site', action: 'list')}";
+        })
+
         $("#toggleFluid").click(function(el){
             var fluidNo = $('div.container-fluid').length;
             var fixNo = $('div.container').length;

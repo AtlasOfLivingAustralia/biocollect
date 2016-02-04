@@ -38,6 +38,7 @@ function ImageViewModel(prop, skipFindingDocument){
     self.projectId = prop.projectId
     self.activityName = prop.activityName
     self.activityId = prop.activityId
+    self.isEmbargoed = prop.isEmbargoed
 
     self.remove = function(images, data, event){
         if(data.documentId){

@@ -1,9 +1,15 @@
 package au.org.ala.biocollect.merit
+
+import au.org.ala.web.AuthService
 import grails.converters.JSON
+import org.apache.http.HttpStatus
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 class SiteController {
 
     def siteService, projectService, activityService, metadataService, userService, searchService, importService, webService
+    AuthService authService
+    CommonService commonService
 
     static defaultAction = "index"
 
@@ -43,12 +49,6 @@ class SiteController {
         // Include activities only when biocollect starts supporting NRM based projects.
         def site = siteService.get(id, [view: 'projects'])
         if (site) {
-            // permissions check - can't use annotation as we have to know the projectId in order to lookup access right
-            if (!isUserMemberOfSiteProjects(site)) {
-                flash.message = "Access denied: User does not have permission to view site: ${id}"
-                redirect(controller:'home', action:'index')
-            }
-
             // inject the metadata model for each activity
             site.activities = site.activities ?: []
             site.activities?.each {
@@ -459,6 +459,106 @@ class SiteController {
             render siteService.getMapFeatures(site)
         } else {
             render 'no such site'
+        }
+    }
+
+    /**
+     * this function will get a list of siteId and return photo points for them
+     * @param id - required - eg. 123,345
+     * @return
+     */
+    def getImages(){
+        List results
+        if(params.id){
+            GrailsParameterMap mParam = new GrailsParameterMap(commonService.parseParams(params), request);
+            mParam.userId = authService.getUserId()
+            try{
+                results = siteService.getImages(mParam)
+                render(text: results as JSON, contentType: 'application/json')
+            } catch (SocketTimeoutException sTimeout){
+                render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
+            } catch (Exception e){
+                render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            render( status: HttpStatus.SC_BAD_REQUEST, text: 'Parameter id not found')
+        }
+    }
+
+    /**
+     * this function will get all documents / images for a point of interest. Max and offset are supported.
+     * @param siteId - required
+     * @param poiId - required
+     * @return
+     */
+    def getPoiImages(){
+        Map results
+        if(params.siteId && params.poiId){
+            GrailsParameterMap mParam = new GrailsParameterMap(commonService.parseParams(params), request);
+            mParam.userId = authService.getUserId()
+            try {
+                results = siteService.getPoiImages(mParam)
+                render(text: results as JSON, contentType: 'application/json')
+            } catch (SocketTimeoutException sTimeout){
+                render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
+            } catch (Exception e){
+                render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            render( status: HttpStatus.SC_BAD_REQUEST, text: 'Parameters siteId or poiId not found')
+        }
+    }
+
+    def list(){
+
+    }
+
+    /**
+     * This function does an elastic search for sites. All elastic search parameters are supported like fq, max etc.
+     * @return
+     */
+    def search(){
+        try{
+            List query = ['className:au.org.ala.ecodata.Site']
+            GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userService.getCurrentUserId())
+            if(!queryParams.facets){
+                queryParams.facets="typeFacet,className,organisationFacet,stateFacet,lgaFacet,nrmFacet,siteSurveyNameFacet,siteProjectNameFacet,photoType"
+            }
+            if(queryParams.query){
+                query.push(queryParams.query);
+            }
+
+            queryParams.query = query.join(' AND ')
+            Map searchResult = searchService.searchForSites(queryParams)
+            List sites = searchResult?.hits?.hits
+            List facets = []
+            sites = sites?.collect {
+                Map doc = it._source
+                [
+                        siteId           : doc.siteId,
+                        name             : doc.name,
+                        description      : doc.description,
+                        numberOfPoi      : doc.poi?.size(),
+                        numberOfProjects : doc.projects?.size(),
+                        lastUpdated      : doc.lastUpdated,
+                        type             : doc.type,
+                        extent           : doc.extent
+                ]
+            }
+
+            searchResult?.facets?.each { k, v ->
+                Map facet = [:]
+                facet.name = k
+                facet.total = v.total
+                facet.terms = v.terms
+                facets << facet
+            }
+
+            render([sites: sites, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
+        } catch (SocketTimeoutException sTimeout){
+            render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
+        } catch (Exception e){
+            render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
