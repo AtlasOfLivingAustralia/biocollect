@@ -14,7 +14,7 @@
             <a href="#" class="btnNewProject"><span class="fa fa-plus"></span>New Project</a>
         </li>
         <li class="${(path ==~ /.*site\/.*/) ? 'active' : ''}">
-            <a href="#" class="btnNewProject"><span class="fa fa-map-marker"></span>Sites</a>
+            <a href="#" class="btnSite"><span class="fa fa-map-marker"></span>Sites</a>
         </li>
         <li class="${(path ==~ /.*project\/myProjects.*/) ? 'active' : ''}">
             <a href="#" class="btnMyProjects"><span class="fa fa-folder"></span>My Projects</a>
