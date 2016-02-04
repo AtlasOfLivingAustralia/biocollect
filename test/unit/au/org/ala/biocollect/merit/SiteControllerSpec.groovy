@@ -15,12 +15,14 @@ import spock.lang.Specification
 @TestFor(SiteController)
 class SiteControllerSpec extends Specification {
 
-    SiteService siteService = Stub(SiteService);
+    SiteService siteService = Stub(SiteService)
     AuthService authService = Stub(AuthService)
+    CommonService commonService = Stub(CommonService)
 
     def setup() {
         controller.siteService = siteService
         controller.authService = authService
+        controller.commonService = commonService
         authService.getUserId() >> '1'
     }
 
@@ -36,6 +38,7 @@ class SiteControllerSpec extends Specification {
 
     void "getImages: when no image is returned"() {
         given:
+        commonService.parseParams(params) >> [id:'1', userId: '1']
         siteService.getImages(new GrailsParameterMap([id:'1', userId: '1'], request)) >> []
         params.id = '1'
         when:
@@ -47,10 +50,11 @@ class SiteControllerSpec extends Specification {
 
     void "getImages: when webservice throws exception"() {
         given:
-        siteService.getImages(new GrailsParameterMap([id: '1', max:5, offset:0, userId: '1'], request)) >> {throw new SocketTimeoutException('Timed out!')}
         params.max = 5
         params.offset= 0
         params.id = '1'
+        commonService.parseParams(params) >> [id: '1', max:5, offset:0, userId: '1']
+        siteService.getImages(new GrailsParameterMap([id: '1', max:5, offset:0, userId: '1'], request)) >> {throw new SocketTimeoutException('Timed out!')}
         when:
         controller.getImages();
         then:
@@ -60,12 +64,13 @@ class SiteControllerSpec extends Specification {
 
     void "getImages: when working perfectly"() {
         given:
-        siteService.getImages(new GrailsParameterMap([id: '1', max:5, offset:0, userId: '1'], request)) >> [["siteId": "1", "name": "Rubicon Sanctuary, Port Sorell, Tasmania",
-                                                                      "poi": [[poiId:'2',docs:[documents:[[role:'photoPoint',type:'image']],count:1]]]
-                                                                     ]]
         params.max = 5
         params.offset= 0
         params.id = '1'
+        commonService.parseParams(params) >> [id: '1', max:5, offset:0, userId: '1']
+        siteService.getImages(new GrailsParameterMap([id: '1', max:5, offset:0, userId: '1'], request)) >> [["siteId": "1", "name": "Rubicon Sanctuary, Port Sorell, Tasmania",
+                                                                                                             "poi": [[poiId:'2',docs:[documents:[[role:'photoPoint',type:'image']],count:1]]]
+                                                                                                            ]]
         when:
         controller.getImages();
         then:
