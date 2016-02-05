@@ -517,7 +517,7 @@ class SiteController {
      * This function does an elastic search for sites. All elastic search parameters are supported like fq, max etc.
      * @return
      */
-    def search(){
+    def elasticsearch(){
         try{
             List query = ['className:au.org.ala.ecodata.Site']
             GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userService.getCurrentUserId())
