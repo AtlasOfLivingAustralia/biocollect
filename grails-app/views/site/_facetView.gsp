@@ -7,7 +7,7 @@
                 <h5><strong  data-bind="text: metadata.displayName"></strong></h5>
                 <ul class="unstyled facet-window">
                     <!-- ko foreach: terms -->
-                    <li data-bind="visible:count, click: $root.addFacetTerm"><a href="#"> <span data-bind="text:displayName"></span> (<span
+                    <li data-bind="visible:count, click: $root.addFacetTerm, attr:{title:displayName}"><a href="#" class="inline-flex"> <span class="label-ellipsis" data-bind="text:displayName"></span>&nbsp;(<span
                             data-bind="text:count"></span>)</a></li>
                     <!-- /ko -->
                 </ul>
