@@ -385,3 +385,7 @@ th .popover {
 .margin-left-20{
     margin-left: 20px;
 }
+
+input.padding-14, .padding-14{
+    padding: 14px;
+}

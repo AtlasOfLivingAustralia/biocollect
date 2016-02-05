@@ -18,3 +18,19 @@
     width: 100%;
     overflow: hidden;
 }
+
+.search-sites-input{
+    width: 80%;
+}
+
+.label-ellipsis{
+    max-width: 200px;
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.inline-flex{
+    display: inline-flex;
+}

@@ -39,12 +39,12 @@
 <div id="siteSearch" class="container-fluid">
     <div class="row-fluid">
         <div class="span3">
-            <g:render template="/site/searchSite"></g:render>
+            <g:render template="/site/resultStats"></g:render>
             <g:render template="/site/facetView"></g:render>
         </div>
 
         <div class="span9">
-            <g:render template="/site/resultStats"></g:render>
+            <g:render template="/site/searchSite"></g:render>
             <bc:koLoading>
                 <div class="alert alert-block hide" data-bind="slideVisible: error() != ''">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
