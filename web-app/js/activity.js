@@ -82,8 +82,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     };
 
     var facetsLocalStorageHandler = function (cmd) {
-        var key = fcConfig.organisationName ? 'ORG_' : '';
-        key = key + self.view.toUpperCase() + '_DATA_PAGE_FACET_KEY';
+        var key = self.view.toUpperCase() + '_DATA_PAGE_FACET_KEY';
         switch (cmd) {
             case 'store':
                 var facets = [];
@@ -544,23 +543,25 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     var restored = facetsLocalStorageHandler("restore");
     var orgTerm = fcConfig.organisationName;
-    if(restored && restored.length > 0) {
-        $.each(restored, function( index, value ) {
-            self.selectedFilters.push(new TermFacetVM({
-                term: value.term ? value.term : '',
-                facetName: value.facetName ? value.facetName : '',
-                facetDisplayName: value.facetDisplayName ? value.facetDisplayName : ''
-            }));
-        });
-        !doNotInit && self.refreshPage();
-    } else if(orgTerm) {
+    if (orgTerm) {
         self.selectedFilters.push(new TermFacetVM({
             term: orgTerm,
             facetName: "organisationNameFacet",
             facetDisplayName: 'Organisation'
         }));
         self.refreshPage();
-    } else {
+    } else if (restored && restored.length > 0) {
+        $.each(restored, function (index, value) {
+            self.selectedFilters.push(new TermFacetVM({
+                term: value.term ? value.term : '',
+                facetName: value.facetName ? value.facetName : '',
+                facetDisplayName: value.facetDisplayName ? value.facetDisplayName : ''
+            }));
+        });
+
+        !doNotInit && self.refreshPage();
+    }
+    else {
         !doNotInit && self.refreshPage();
     }
 };
