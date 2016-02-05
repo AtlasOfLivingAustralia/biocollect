@@ -23,7 +23,7 @@
     <meta name="layout" content="${hubConfig.skin}"/>
     <script>
         var fcConfig = {
-            listSitesUrl: '${createLink(controller: 'site', action: 'search')}',
+            listSitesUrl: '${createLink(controller: 'site', action: 'elasticsearch')}',
             viewSiteUrl: '${createLink(controller: 'site', action: 'index')}',
             poiGalleryUrl: "${createLink(controller: 'site', action: 'getImages')}",
             imagesForPoiUrl: "${createLink(controller: 'site', action: 'getPoiImages')}",
