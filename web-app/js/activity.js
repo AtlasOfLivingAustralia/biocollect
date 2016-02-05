@@ -543,6 +543,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     };
 
     var restored = facetsLocalStorageHandler("restore");
+    var orgTerm = fcConfig.organisationName;
     if(restored && restored.length > 0) {
         $.each(restored, function( index, value ) {
             self.selectedFilters.push(new TermFacetVM({
@@ -552,8 +553,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             }));
         });
         !doNotInit && self.refreshPage();
-    } else if(fcConfig.organisationName) {
-        self.resetFacetsAndSelect(fcConfig.organisationName,"Organisation");
+    } else if(orgTerm) {
+        self.selectedFilters.push(new TermFacetVM({
+            term: orgTerm,
+            facetName: "organisationNameFacet",
+            facetDisplayName: 'Organisation'
+        }));
+        self.refreshPage();
     } else {
         !doNotInit && self.refreshPage();
     }
