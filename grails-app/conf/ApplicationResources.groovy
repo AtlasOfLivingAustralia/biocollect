@@ -300,6 +300,7 @@ modules = {
         defaultBundle 'application'
         dependsOn 'jquery', 'knockout', 'wmd'
         resource url: 'js/organisation.js'
+        resource url: 'css/organisation.css'
     }
 
     slickgrid {

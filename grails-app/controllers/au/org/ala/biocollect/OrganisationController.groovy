@@ -1,6 +1,7 @@
 package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.RoleService
+import au.org.ala.web.AuthService
 import grails.converters.JSON
 
 /**
@@ -11,6 +12,7 @@ class OrganisationController {
     static allowedMethods = [ajaxDelete: "POST", delete: "POST", ajaxUpdate: "POST"]
 
     def organisationService, searchService, documentService, userService, roleService, commonService, webService
+    AuthService authService
 
     // Simply forwards to the list view
     def list() {}
@@ -214,5 +216,25 @@ class OrganisationController {
 
     def search(Integer offset, Integer max, String searchTerm, String sort) {
         render organisationService.search(offset, max, searchTerm, sort) as JSON
+    }
+
+    /**
+     * similar to search action above but adds user id to get organisations for current user.
+     * @param offset
+     * @param max
+     * @param searchTerm
+     * @param sort
+     * @return
+     */
+    def searchMyOrg(Integer offset, Integer max, String searchTerm, String sort) {
+        String userId = authService.getUserId()
+        render organisationService.search(offset, max, searchTerm, sort, userId) as JSON
+    }
+
+    /**
+     * render my organisation page
+     */
+    def myOrganisations(){
+
     }
 }

@@ -79,6 +79,12 @@ nav#biocollectNav > ul > li:hover > a {
 nav#biocollectNav > ul > li:hover ul {
     display: block;
 }
+
+nav#biocollectNav > ul > li.more > ul.more-ul > li > ul{
+    display: block;
+    position: relative;
+}
+
 .ala-icon:before {
     content: url(http://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico)
 }

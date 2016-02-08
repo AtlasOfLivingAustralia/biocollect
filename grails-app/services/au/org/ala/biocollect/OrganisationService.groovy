@@ -108,13 +108,24 @@ class OrganisationService {
         result
     }
 
-    Map search(Integer offset = 0, Integer max = 100, String searchTerm = null, String sort = null) {
+    Map search(Integer offset = 0, Integer max = 100, String searchTerm = null, String sort = null, String user = null) {
         Map params = [
                 offset:offset,
                 max:max,
                 query:searchTerm,
                 fq:ORGANISATION_DOCUMENT_FILTER
         ]
+
+        if(user){
+            if(params.fq){
+                params.fq = [ params.fq ]
+            } else {
+                params.fq = []
+            }
+
+            params.fq.push("users:${user}")
+        }
+
         if (sort) {
             params.sort = sort
         }

@@ -112,6 +112,10 @@
             window.location = "${createLink(controller: 'project', action: 'myProjects')}";
         });
 
+        $(".btnMyOrganisation").click(function (e) {
+            window.location = "${createLink(controller: 'organisation', action: 'myOrganisations')}";
+        });
+
         $(".btnSearch").click(function(e){
              window.location = "${createLink(controller: 'project', action: 'citizenScience')}";
         })
@@ -202,7 +206,7 @@
         if (navwidth > availablespace) {
             var lastItem = $('#main > li:not(.more)').last();
             lastItem.attr('data-width', lastItem.outerWidth(true));
-            lastItem.prependTo($('#main .more ul'));
+            lastItem.prependTo($('#main .more ul.more-ul'));
             calcWidth();
         } else {
             var firstMoreElement = $('#main li.more li').first();
