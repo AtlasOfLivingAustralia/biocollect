@@ -21,16 +21,19 @@ function SitesGalleryViewModel(props) {
     var self = this,
         config = $.extend({
             params:{
-              id: ''
+              id: '',
+              order: null
             },
             sites:[],
             error:'',
-            loadOnInit: true
+            loadOnInit: true,
+            order: 'desc'
         },props);
 
     self.sites = ko.observableArray(config.sites);
     self.error = ko.observable(config.error);
     self.loading = ko.observable(false);
+    self.sortDirection = ko.observable(config.order)
 
     self.isSitesEmpty =ko.computed(function() {
         // to prevent no photo point message from appearing
@@ -49,6 +52,7 @@ function SitesGalleryViewModel(props) {
     });
 
     self.loadGallery = function(){
+        self.setParams();
         self.sites.removeAll()
         self.error('')
         self.loading(true);
@@ -58,6 +62,7 @@ function SitesGalleryViewModel(props) {
             success: function(data){
                 var results = []
                 data && data.forEach(function(site){
+                    site.gallery = self;
                     results.push( new SiteGalleryViewModel(site))
                 })
                 self.sites(results);
@@ -74,7 +79,19 @@ function SitesGalleryViewModel(props) {
         for(var key in params){
             config.params[key] = params[key];
         }
+
+        config.params.order = self.getSortDirection();
     }
+
+    self.getSortDirection = function(){
+        return self.sortDirection();
+    }
+
+    self.setSortDirection = function(viewmodel, event){
+        self.sortDirection($(event.target).attr('data-value'))
+    }
+
+    self.sortDirection.subscribe(self.loadGallery)
 
     config.loadOnInit && self.loadGallery()
 }
@@ -89,7 +106,9 @@ function SiteGalleryViewModel(props){
     self.name = ko.observable(props.name);
     self.siteId = ko.observable(props.siteId);
     self.poi = ko.observableArray();
+    self.gallery = props.gallery
     props.poi && props.poi.forEach(function(poi){
+        poi.site = self;
         pois.push(new PoiViewModel(poi, self.siteId()))
     })
 
@@ -138,6 +157,7 @@ function PoiViewModel(props, siteId){
     self.hasNextPage = ko.computed(function(){
         return self.total() > (self.offset()+self.max());
     });
+    self.site = props.site
     self.getWidth = ko.computed(function(){
         // load more box appears only if more images are present
         var loadMore = self.hasNextPage()?1:0;
@@ -150,6 +170,7 @@ function PoiViewModel(props, siteId){
     self.updateUrlParameter = function(){
         params.max = self.max();
         params.offset = self.offset()
+        params.order = self.site.gallery.getSortDirection();
     }
 
     /**

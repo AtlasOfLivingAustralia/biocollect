@@ -28,7 +28,7 @@
                     <li><a href="#" class="btnMyData"><span class="fa fa-dashboard"></span>My Dashboard</a></li>
                     <li><a href="#" class="btnMyData"><span class="fa fa-database"></span>My Data</a></li>
                     <li><a href="#" class="btnMyProjects"><span class="fa fa-folder"></span>My Projects</a></li>
-                    <li><a href="#" class="btnMyOrganisation"><span class="fa fa-build"></span>My Organisation</a></li>
+                    <li><a href="#" class="btnMyOrganisation"><span class="fa fa-building"></span>My Organisation</a></li>
                 </ul>
             </li>
         </g:if>

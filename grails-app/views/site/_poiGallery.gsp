@@ -1,12 +1,23 @@
 <r:require modules="sites"></r:require>
 <bc:koLoading>
 <div>
+    <div class="pull-right">
+        <h4 class="inline">Image sort order :
+        <div class="btn-group" data-toggle="buttons-radio">
+            <button class="btn btn-small" data-value="asc" data-bind="event:{click: setSortDirection}">ascending</button>
+            <button class="btn btn-small active" data-value="desc" data-bind="event:{click: setSortDirection}">descending</button>
+        </div>
+        </h4>
+    </div>
 <!-- ko foreach: sites -->
     <h3 data-bind="text:name, visible: !isPhotoPointsEmpty()"></h3>
     <!-- ko foreach: poi -->
     <ul class="breadcrumb margin-bottom-5 margin-top-5">
         <li>
-            <span><strong data-bind="text:name"></strong> (<span  data-bind="text: total"></span>)</span><br>
+            <span><strong data-bind="text:name"></strong> (<span  data-bind="text: total"></span>)</span>
+        </li>
+        <li>
+            | <span data-bind="text: $parent.name"></span>
         </li>
         <li data-bind="visible: showPoi() == true" title="Click to hide images for this point of interest">
             | <a class="btn-link" data-bind="click: toggleVisibility"> hide</a>
@@ -50,6 +61,9 @@
             <!-- /ko -->
         </ul>
     </div>
+    <!-- /ko -->
+    <!-- ko if: !$data.isPhotoPointsEmpty() -->
+    <hr/>
     <!-- /ko -->
 <!-- /ko -->
     <div data-bind="visible: isSitesEmpty">

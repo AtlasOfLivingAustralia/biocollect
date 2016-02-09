@@ -158,6 +158,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <hr/>
                             <!-- /ko -->
                             <div class="margin-top-2"></div>
                             <g:render template="../shared/pagination"/>

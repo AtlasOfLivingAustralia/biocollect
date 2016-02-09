@@ -131,13 +131,10 @@
     <div id="detailsLinkedToSite">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a href="#sitePhotopoints" data-toggle="tab">Photo points</a></li>
-            <g:if test="${site.poi}">
-            <li><a href="#sitePOI" data-toggle="tab">Points of Interest</a></li>
-            </g:if>
             <g:if test="${site.projects}">
             <li><a href="#siteProjects" data-toggle="tab">Projects</a></li>
             </g:if>
-            <li><a href="#siteActivities" data-toggle="tab">Activities</a></li>
+            <li><a href="#siteActivities" data-toggle="tab">Records</a></li>
         </ul>
 
         <div class="tab-content">
@@ -146,18 +143,6 @@
                 <g:render template="poiGallery" model="${[siteId:site.siteId, siteElementId:'sitePhotopoints']}"></g:render>
             </div>
             <!-- /ko -->
-            <g:if test="${site.poi}">
-            <div class="tab-pane" id="sitePOI">
-                    <div>
-                        <p>Points of interest</p>
-                        <ol>
-                            <g:each in="${site.poi}" var="poi">
-                                <li>${poi.name?.encodeAsHTML()}</li>
-                            </g:each>
-                        </ol>
-                    </div>
-            </div>
-            </g:if>
             <div class="tab-pane" id="siteProjects">
                 <g:if test="${site.projects}">
                     <div>
@@ -285,6 +270,7 @@
                         </div>
                     </div>
                 </div>
+                <hr/>
                 <!-- /ko -->
                 <div class="margin-top-2"></div>
                 <g:render template="../shared/pagination"/>
