@@ -41,7 +41,12 @@ class SiteController {
             flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${params.projectId}"
             redirect(controller:'project', action:'index', id: params.projectId)
         }
-        render view: 'edit', model: [create:true, project:project, documents:[]]
+
+        project.sites?.sort {it.name}
+        project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
+
+
+        render view: 'edit', model: [create:true, project:project, documents:[], projectSite:project.projectSite]
     }
 
     def index(String id) {
