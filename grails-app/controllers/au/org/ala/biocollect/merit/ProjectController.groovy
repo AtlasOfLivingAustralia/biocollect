@@ -1,7 +1,8 @@
 package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.DateUtils
-import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.ProjectActivityService
+import au.org.ala.biocollect.projectresult.Builder
+import au.org.ala.biocollect.projectresult.Initiator
 import au.org.ala.web.AuthService
 import grails.converters.JSON
 import org.apache.http.HttpStatus
@@ -18,7 +19,6 @@ class ProjectController {
 
     ProjectService projectService
     MetadataService metadataService
-    OrganisationService organisationService
     CommonService commonService
     ActivityService activityService
     UserService userService
@@ -220,7 +220,7 @@ class ProjectController {
         [
                 user                    : userService.getUser(),
                 showTag                 : params.tag,
-                downloadLink            : createLink(controller: 'project', action: 'getProjectList', params: ['download': true]),
+                downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
                 showCitizenScienceBanner: true
         ]
     }
@@ -362,11 +362,36 @@ class ProjectController {
         forward(controller: 'home')
     }
 
-    def getProjectList(){
-        String activeQuery
-        GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
+    /**
+     * Search project data and customize the result set based on initiator (ala, scistarter and biocollect).
+     */
+    def search() {
+
+        GrailsParameterMap queryParams = buildProjectSearch(params)
+        boolean skipDefaultFilters = params.getBoolean('skipDefaultFilters', false)
+        Map searchResult = searchService.findProjects(queryParams, skipDefaultFilters);
+        List projects = Builder.build(params, searchResult.hits?.hits)
+
+        if (params.download as boolean) {
+            response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
+            // This is returned to the browswer as a text response due to workaround the warning
+            // displayed by IE8/9 when JSON is returned from an iframe submit.
+            response.setContentType('text/plain;charset=UTF8')
+        } else {
+            response.setContentType('application/json')
+        }
+
+        render( text: [ projects:  projects, total: searchResult.hits?.total?:0 ] as JSON );
+    }
+
+
+    private GrailsParameterMap buildProjectSearch(GrailsParameterMap params){
+        Builder.override(params)
+
         List difficulty = [], status =[]
         Map trimmedParams = commonService.parseParams(params)
+        trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
+        trimmedParams.offset = params.offset && params.offset.isNumber() ? params.offset : 0
         trimmedParams.status = params.list('status');
         trimmedParams.isCitizenScience = params.boolean('isCitizenScience');
         trimmedParams.isWorks = params.boolean('isWorks');
@@ -496,74 +521,21 @@ class ProjectController {
             trimmedParams.organisationName = null
         }
 
-        trimmedParams.each{ key, value ->
-            if(value != null && value){
+
+        GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
+        trimmedParams.each { key, value ->
+            if (value != null && value) {
                 queryParams.put(key, value)
             }
         }
 
         queryParams.put("geoSearchJSON", params.geoSearchJSON)
 
-        boolean skipDefaultFilters = params.getBoolean('skipDefaultFilters', false)
-        Map searchResult = searchService.findProjects(queryParams, skipDefaultFilters);
-        List projects = searchResult.hits?.hits;
-        projects = projects.collect {
-            Map doc = it._source;
-
-            // no need to ship the whole link object down to browser
-            def trimmedLinks = doc.links.collect {
-                [
-                        role: it.role,
-                        url: it.url
-                ]
-            }
-
-            Map siteGeom;
-            doc?.sites?.each{ site ->
-                if(doc?.projectSiteId == site.siteId){
-                    siteGeom = site.extent?.geometry;
-                }
-            }
-
-            [
-                    projectId              : doc.projectId,
-                    aim                    : doc.aim,
-                    coverage               : siteGeom,
-                    description            : doc.description,
-                    difficulty             : doc.difficulty,
-                    endDate                : doc.plannedEndDate,
-                    hasParticipantCost     : doc.hasParticipantCost?.toBoolean(),
-                    hasTeachingMaterials   : doc.hasTeachingMaterials?.toBoolean(),
-                    isDIY                  : doc.isDIY?.toBoolean(),
-                    isContributingDataToAla: doc.isContributingDataToAla?.toBoolean(),
-                    isExternal             : doc.isExternal?.toBoolean(),
-                    isSuitableForChildren  : doc.isSuitableForChildren?.toBoolean(),
-                    keywords               : doc.keywords,
-                    links                  : trimmedLinks,
-                    name                   : doc.name,
-                    organisationId         : doc.organisationId,
-                    organisationName       : doc.organisationName ?: organisationService.getNameFromId(doc.organisationId),
-                    scienceType            : doc.scienceType,
-                    startDate              : doc.plannedStartDate,
-                    urlImage               : doc.imageUrl,
-                    urlWeb                 : doc.urlWeb,
-                    plannedStartDate       : doc.plannedStartDate,
-                    plannedEndDate         : doc.plannedEndDate,
-                    isMERIT                : doc.isMERIT
-            ]
-        }
-
-        if (params.download as boolean) {
-            response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
-            // This is returned to the browswer as a text response due to workaround the warning
-            // displayed by IE8/9 when JSON is returned from an iframe submit.
-            response.setContentType('text/plain;charset=UTF8')
-        } else {
-            response.setContentType('application/json')
-        }
-
-        render( text: [ projects:  projects, total: searchResult.hits?.total?:0 ] as JSON );
+        params.url = grailsApplication.config.grails.serverURL
+        queryParams
     }
+
+
 
     def species(String id) {
         def project = projectService.get(id, 'brief')

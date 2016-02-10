@@ -25,7 +25,7 @@
         imageLocation:"${resource(dir:'/images')}",
         logoLocation:"${resource(dir:'/images/filetypes')}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
-        projectListUrl: "${createLink(controller: 'project', action: 'getProjectList')}",
+        projectListUrl: "${createLink(controller: 'project', action: 'search', params:[initiator:'biocollect'])}",
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
         isCitizenScience: true,

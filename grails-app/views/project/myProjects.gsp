@@ -29,7 +29,7 @@
         logoLocation:"${resource(dir:'/images/filetypes')}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
         isUserPage: true,
-        projectListUrl: "${createLink(controller: 'project', action: 'getProjectList')}",
+        projectListUrl: "${createLink(controller: 'project', action: 'search', params:[initiator:'biocollect'])}",
         isCitizenScience: true,
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
