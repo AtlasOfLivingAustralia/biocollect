@@ -84,6 +84,7 @@ class UrlMappings {
                 "/myProfile"(controller: 'home', action: 'myProfile') {
 
                 }
+                "/ws/project/search"(controller: "project", action: 'search')
 
                 "/$hub/admin/user/$id"(controller: "user", action: "show") {
                         constraints {

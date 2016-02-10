@@ -20,7 +20,12 @@
 }
 
 .search-sites-input{
-    width: 80%;
+    width: 100%;
+}
+
+.site-input{
+    display:block;
+    overflow:hidden;
 }
 
 .label-ellipsis{

@@ -82,23 +82,26 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     };
 
     var facetsLocalStorageHandler = function (cmd) {
-        var key = self.view.toUpperCase() + '_DATA_PAGE_FACET_KEY';
-        switch (cmd) {
-            case 'store':
-                var facets = [];
-                ko.utils.arrayForEach(self.selectedFilters(), function (filter) {
-                    var value = {};
-                    value.term = filter.term();
-                    value.facetDisplayName = filter.facetDisplayName();
-                    value.facetName = filter.facetName();
-                    facets.push(value);
-                });
-                amplify.store(key, facets);
-                break;
+        var orgTerm = fcConfig.organisationName;
+        if (!orgTerm) {
+            var key = self.view.toUpperCase() + '_DATA_PAGE_FACET_KEY';
+            switch (cmd) {
+                case 'store':
+                    var facets = [];
+                    ko.utils.arrayForEach(self.selectedFilters(), function (filter) {
+                        var value = {};
+                        value.term = filter.term();
+                        value.facetDisplayName = filter.facetDisplayName();
+                        value.facetName = filter.facetName();
+                        facets.push(value);
+                    });
+                    amplify.store(key, facets);
+                    break;
 
-            case 'restore':
-            default:
-                return amplify.store(key);
+                case 'restore':
+                default:
+                    return amplify.store(key);
+            }
         }
     };
 

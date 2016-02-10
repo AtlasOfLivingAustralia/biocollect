@@ -9,7 +9,6 @@
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
-            activityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
             spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
@@ -160,11 +159,11 @@
             <div class="tab-pane" id="siteActivities">
                 <!-- ko if: activities().length == 0 -->
                 <div class="row-fluid">
-                    <h3 class="text-left margin-bottom-five">
+                    <h4 class="text-left margin-bottom-five">
                         <!-- ko if: $root.searchTerm() != "" || $root.selectedFilters().length > 0 -->
                         No results
                         <!-- /ko -->
-                    </h3>
+                    </h4>
                 </div>
                 <!-- /ko -->
 

@@ -19,11 +19,12 @@
 
 .list-parent{
     overflow: auto;
+    margin-bottom: 20px;
 }
 
 .cards-list {
     overflow: auto;
-    margin: 30px 0 0;
+    margin: 10px 0 0;
     padding: 0;
 }
 

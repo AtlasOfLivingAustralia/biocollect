@@ -25,7 +25,7 @@
             <li class="${(path ==~ /.*user\/index.*/) || (path ==~ /.*bioActivity\/list.*/) || (path ==~ /.*project\/myProjects.*/) ? 'active' : ''} dropdown-submenu pull-left" role="menu">
                 <a href="#" ><span class="fa fa-user"></span><fc:currentUserDisplayName/></a>
                 <ul>
-                    <li><a href="#" class="btnMyData"><span class="fa fa-dashboard"></span>My Dashboard</a></li>
+                    <li><a href="#" class="btnMyDashboard"><span class="fa fa-dashboard"></span>My Dashboard</a></li>
                     <li><a href="#" class="btnMyData"><span class="fa fa-database"></span>My Data</a></li>
                     <li><a href="#" class="btnMyProjects"><span class="fa fa-folder"></span>My Projects</a></li>
                     <li><a href="#" class="btnMyOrganisation"><span class="fa fa-building"></span>My Organisation</a></li>
