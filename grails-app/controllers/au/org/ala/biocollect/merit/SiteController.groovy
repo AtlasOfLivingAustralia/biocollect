@@ -470,10 +470,10 @@ class SiteController {
     def getImages(){
         List results
         if(params.id){
-            GrailsParameterMap mParam = new GrailsParameterMap(commonService.parseParams(params), request);
-            mParam.userId = authService.getUserId()
+            GrailsParameterMap mParams = new GrailsParameterMap(commonService.parseParams(params), request);
+            mParams.userId = authService.getUserId()
             try{
-                results = siteService.getImages(mParam)
+                results = siteService.getImages(mParams)
                 render(text: results as JSON, contentType: 'application/json')
             } catch (SocketTimeoutException sTimeout){
                 render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
@@ -494,10 +494,10 @@ class SiteController {
     def getPoiImages(){
         Map results
         if(params.siteId && params.poiId){
-            GrailsParameterMap mParam = new GrailsParameterMap(commonService.parseParams(params), request);
-            mParam.userId = authService.getUserId()
+            GrailsParameterMap mParams = new GrailsParameterMap(commonService.parseParams(params), request);
+            mParams.userId = authService.getUserId()
             try {
-                results = siteService.getPoiImages(mParam)
+                results = siteService.getPoiImages(mParams)
                 render(text: results as JSON, contentType: 'application/json')
             } catch (SocketTimeoutException sTimeout){
                 render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
