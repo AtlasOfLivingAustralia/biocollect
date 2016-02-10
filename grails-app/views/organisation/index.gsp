@@ -35,7 +35,7 @@
             defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
             returnTo: '${g.createLink(action:'index', id:"${organisation.organisationId}")}',
             projects : <fc:modelAsJavascript model="${organisation.projects}"/>,
-            projectListUrl: "${createLink(controller: 'project', action: 'getProjectList')}",
+            projectListUrl: "${createLink(controller: 'project', action: 'search',params:[initiator:'biocollect'])}",
             projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
             organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
             organisation : <fc:modelAsJavascript model="${organisation}"/>,
