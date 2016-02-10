@@ -94,7 +94,7 @@
 <script>
     var SITES_TAB_AMPLIFY_VAR = 'site-list-result-tab'
     $(document).ready(function () {
-        RestoreTab('siteListResultTab','list')
+        RestoreTab('siteListResultTab','list-tab')
 
         var sites = new SitesListViewModel();
         var params = {
@@ -140,7 +140,6 @@
                         markerLocation: [lat, lng],
                         popup: $('#popup'+site.siteId()).html()
                     };
-                    console.log(geometry, options);
                     map.setGeoJSON(geometry, options);
                 }
             });
