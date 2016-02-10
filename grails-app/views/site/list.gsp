@@ -29,65 +29,73 @@
             imagesForPoiUrl: "${createLink(controller: 'site', action: 'getPoiImages')}",
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
-            featureService: "${createLink(controller: 'proxy', action: 'feature')}"
+            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+            activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}"
         }
     </script>
-    <r:require modules="siteSearch"></r:require>
+    <r:require modules="restoreTab,siteSearch"></r:require>
 </head>
 
 <body>
 <div id="siteSearch" class="container-fluid">
     <div class="row-fluid">
-        <div class="span3">
-            <g:render template="/site/resultStats"></g:render>
-            <g:render template="/site/facetView"></g:render>
+        <div class="span3 well">
+            <bc:koLoading>
+                <g:render template="/site/resultStats"></g:render>
+                <g:render template="/site/facetView"></g:render>
+            </bc:koLoading>
         </div>
 
         <div class="span9">
-            <g:render template="/site/searchSite"></g:render>
             <bc:koLoading>
-                <div class="alert alert-block hide" data-bind="slideVisible: error() != ''">
+                <g:render template="/site/searchSite"></g:render>
+                <div class="alert alert-block hide well" data-bind="slideVisible: error() != ''">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                     <h4>Error!</h4>
                     <span data-bind="text: error"></span>
                 </div>
-            </bc:koLoading>
-            <div class="row-fluid">
-                <div class="span12 margin-top-10">
-                    <ul class="nav nav-tabs" id="myTab">
-                        <li class="active"><a href="#list" data-toggle="tab">List</a></li>
-                        <li><a href="#map" data-toggle="tab" id="mapTab">Map</a></li>
-                        <li><a href="#images" data-toggle="tab">Images</a></li>
-                    </ul>
+                <div class="row-fluid">
+                    <div class="well">
+                        <div class="span12 margin-top-10">
+                            <ul class="nav nav-tabs" id="siteListResultTab">
+                                <li><a href="#list" id="list-tab" data-toggle="tab">List</a></li>
+                                <li><a href="#map" id="map-tab" data-toggle="tab">Map</a></li>
+                                <li><a href="#images" id="images-tab" data-toggle="tab">Images</a></li>
+                            </ul>
 
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="list">
-                            <g:render template="/site/listView"></g:render>
+                            <div class="tab-content">
+                                <div class="tab-pane" id="list">
+                                    <g:render template="/site/listView"></g:render>
+                                </div>
+
+                                <div class="tab-pane" id="map">
+                                    <g:render template="siteMap" model="${[id:'leafletMap']}"></g:render>
+                                </div>
+
+                                <!-- ko stopBinding: true -->
+                                <div class="tab-pane" id="images">
+                                    <g:render template="poiGallery" ></g:render>
+                                </div>
+                                <!-- /ko -->
+
+                            </div>
                         </div>
-
-                        <div class="tab-pane" id="map">
-                            <g:render template="siteMap" model="${[id:'leafletMap']}"></g:render>
+                        <div class="row-fluid">
+                            <div class="span12 text-center margin-top-10">
+                                <g:render template="/shared/pagination"></g:render>
+                            </div>
                         </div>
-
-                        <!-- ko stopBinding: true -->
-                        <div class="tab-pane" id="images">
-                            <g:render template="poiGallery" ></g:render>
-                        </div>
-                        <!-- /ko -->
-
                     </div>
                 </div>
-            </div>
-            <div class="row-fluid">
-                <div class="span12 text-center margin-top-10">
-                    <g:render template="/shared/pagination"></g:render>
-                </div>
-            </div>
+            </bc:koLoading>
         </div>
     </div>
 </div>
 <script>
+    var SITES_TAB_AMPLIFY_VAR = 'site-list-result-tab'
     $(document).ready(function () {
+        RestoreTab('siteListResultTab','list')
+
         var sites = new SitesListViewModel();
         var params = {
             loadOnInit: false
@@ -104,7 +112,7 @@
 
         var map = initMap({},'leafletMap')
 
-        $("body").on("shown.bs.tab", "#mapTab", function() {
+        $("body").on("shown.bs.tab", "#map-tab", function() {
             map.getMapImpl().invalidateSize();
             map.fitBounds()
         });

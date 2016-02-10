@@ -1,16 +1,20 @@
 <r:require modules="sites"></r:require>
 <bc:koLoading>
-<div>
-    <div class="pull-right">
-        <h4 class="inline">Image sort order :
+<!-- ko if: !isSitesEmpty() -->
+<div class="inline">
+    <div class="text-right">Image sort order :
         <div class="btn-group" data-toggle="buttons-radio">
             <button class="btn btn-small" data-value="asc" data-bind="event:{click: setSortDirection}">ascending</button>
             <button class="btn btn-small active" data-value="desc" data-bind="event:{click: setSortDirection}">descending</button>
         </div>
-        </h4>
     </div>
+</div>
+<hr>
+<!-- /ko -->
+<div>
 <!-- ko foreach: sites -->
-    <h3 data-bind="text:name, visible: !isPhotoPointsEmpty()"></h3>
+    <!-- ko if: !isPhotoPointsEmpty() -->
+    <h3 data-bind="text:name"></h3>
     <!-- ko foreach: poi -->
     <ul class="breadcrumb margin-bottom-5 margin-top-5">
         <li>
@@ -60,10 +64,14 @@
             </li>
             <!-- /ko -->
         </ul>
+        <div data-bind="visible: isEmpty">
+            <h4> No photos found</h4>
+        </div>
     </div>
     <!-- /ko -->
     <!-- ko if: !$data.isPhotoPointsEmpty() -->
     <hr/>
+    <!-- /ko -->
     <!-- /ko -->
 <!-- /ko -->
     <div data-bind="visible: isSitesEmpty">

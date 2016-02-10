@@ -8,6 +8,10 @@
             <div data-bind="visible: numberOfPoi() != undefined"><span>Number of POI:</span> <span data-bind="text: numberOfPoi"></span><br></div>
             <div data-bind="visible: numberOfProjects() != undefined"><span>Number of associated projects:</span> <span data-bind="text: numberOfProjects"></span></div>
         </div>
+        <hr>
     </div>
+    <!-- /ko -->
+    <!-- ko if: sites().length == 0 -->
+    <h4>No sites found</h4>
     <!-- /ko -->
 </bc:koLoading>

@@ -104,6 +104,10 @@
             window.location = "${createLink(controller: 'bioActivity', action: 'allRecords')}";
         });
 
+        $(".btnMyDashboard").click(function (e) {
+            window.location = "${createLink(controller: 'user', action: 'index')}";
+        });
+
         $(".btnMyData").click(function (e) {
             window.location = "${createLink(controller: 'bioActivity', action: 'list')}";
         });

@@ -44,6 +44,7 @@ function SitesListViewModel(params) {
     self.searchTerm = ko.observable('')
     self.pagination = new PaginationViewModel(null,self)
     self.doNotLoad = ko.observable(false)
+    self.refineList = ko.observableArray();
 
 
     /**
@@ -106,6 +107,7 @@ function SitesListViewModel(params) {
         var results = []
 
         facets = $.map(facets, function (facet) {
+            facet.sites = self;
             return new FacetViewModel(facet);
         })
 
@@ -174,6 +176,10 @@ function SitesListViewModel(params) {
         self.loadSites(offset);
     }
 
+    self.removeAllSelectedFacets = function(){
+        self.selectedFacets.removeAll()
+    }
+
     self.addFacetTerm = function(term){
         self.selectedFacets.push(term)
     }
@@ -191,6 +197,38 @@ function SitesListViewModel(params) {
             var delay = config.delay || 5000;
             setTimeout(self.clearError, delay)
         }
+    }
+
+
+    /**
+     * add a facet to refine list when checked
+     * @param FacetTermViewModel
+     */
+    self.addToRefineList = function(model){
+        model.checked(true);
+        self.refineList.push(model);
+    }
+
+    /**
+     * remove a facet from refine list when unchecked
+     * @param FacetTermViewModel
+     */
+    self.removeFromRefineList = function(model){
+        self.refineList.remove(model);
+    }
+
+
+    /**
+     * add refined list to selected facets
+     */
+    self.addRefineListToSelected = function(){
+        var selected = self.selectedFacets();
+        var refine = self.refineList.removeAll()
+        refine && refine.forEach(function(fq){
+            fq.checked(false);
+            selected.push(fq);
+        });
+        self.selectedFacets(selected);
     }
 
     self.selectedFacets.subscribe(self.pagination.first);
@@ -228,6 +266,10 @@ function FacetViewModel(facet) {
     self.total = ko.observable(facet.total);
     self.terms = ko.observableArray();
     self.filter = ko.observable(false);
+    // controls the visibility of facet
+    self.show = ko.observable(false);
+
+    self.sites = facet.sites;
 
     var terms = $.map(facet.terms ? facet.terms : [], function (term, index) {
         term.facet = self;
@@ -235,6 +277,13 @@ function FacetViewModel(facet) {
     });
 
     self.terms(terms);
+
+    /**
+     * toggles visibility of facet
+     */
+    self.toggle = function(){
+        self.show(!self.show())
+    }
 };
 
 function FacetTermViewModel(term) {
@@ -250,6 +299,7 @@ function FacetTermViewModel(term) {
     });
     self.showTerm = ko.observable(term.showTerm || true);
     self.id = ko.observable(generateTermId(self));
+    self.checked = ko.observable(false);
 
     /**
      * constructs a facet term so that it can be passed as fq value.
@@ -258,6 +308,17 @@ function FacetTermViewModel(term) {
     self.getQueryText = function(){
         return self.facet.name() +':'+ self.term();
     }
+
+    /**
+     * when refine result is clicked, add t
+     */
+    self.checked.subscribe(function(value){
+        if(self.checked()){
+            self.facet.sites.addToRefineList(self);
+        } else {
+            self.facet.sites.removeFromRefineList(self);
+        }
+    })
 };
 
 function generateTermId(term) {
