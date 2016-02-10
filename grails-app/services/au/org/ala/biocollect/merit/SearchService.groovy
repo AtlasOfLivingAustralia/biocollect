@@ -106,6 +106,13 @@ class SearchService {
         webService.getJson(url, null, true)
     }
 
+    /**
+     * Execute elastic search for site with given parameters.
+     * @param params
+     * @return
+     * @throws SocketTimeoutException
+     * @throws Exception
+     */
     Map searchForSites(GrailsParameterMap params) throws SocketTimeoutException, Exception{
         String url = grailsApplication.config.ecodata.service.url + '/search/elastic' + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
