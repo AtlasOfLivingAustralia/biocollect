@@ -397,6 +397,7 @@ class ProjectController {
         trimmedParams.isWorks = params.boolean('isWorks');
         trimmedParams.isBiologicalScience = params.boolean('isBiologicalScience')
         trimmedParams.isMERIT = params.boolean('isMERIT')
+        trimmedParams.isMetadataSharing = params.boolean("isMetadataSharing")
         trimmedParams.query = "docType:project"
         trimmedParams.isUserPage = params.boolean('isUserPage');
         trimmedParams.hasParticipantCost = params.boolean('hasParticipantCost')
@@ -456,6 +457,12 @@ class ProjectController {
             // append projectType to query. this is used by organisation page.
             trimmedParams.query += ' AND (' + projectType.join(' OR ') + ')'
         }
+
+        if(trimmedParams.isMetadataSharing){
+            trimmedParams.query += " AND (isMetadataSharing:true)"
+            trimmedParams.isMetadataSharing = null
+        }
+
         // query construction
         if(trimmedParams.q){
             trimmedParams.query += " AND " + trimmedParams.q;
