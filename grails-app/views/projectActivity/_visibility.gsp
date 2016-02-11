@@ -6,7 +6,7 @@
                 <g:render template="/projectActivity/warning"/>
                 <div class="row-fluid">
                     <div class="span10 text-left">
-                        <h2 class="strong">Step 2 of 6 - Set visibility constraints on survey data</h2>
+                        <h2 class="strong">Step 2 of 7 - Set visibility constraints on survey data</h2>
                     </div>
                     <div class="span2 text-right">
                         <g:render template="../projectActivity/status"/>

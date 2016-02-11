@@ -7,7 +7,7 @@
             <div class="well">
                 <div class="row-fluid">
                     <div class="span10 text-left">
-                        <h2 class="strong">Step 3 of 6 - Set the range of species applicable for the survey</h2>
+                        <h2 class="strong">Step 3 of 7 - Set the range of species applicable for the survey</h2>
                     </div>
                     <div class="span2 text-right">
                         <g:render template="../projectActivity/status"/>

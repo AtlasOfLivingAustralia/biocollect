@@ -5,7 +5,7 @@
 
             <div class="row-fluid">
                 <div class="span10 text-left">
-                    <h2 class="strong">Step 4 of 6 - Choose a data entry form template for the survey</h2>
+                    <h2 class="strong">Step 4 of 7 - Choose a data entry form template for the survey</h2>
                 </div>
                 <div class="span2 text-right">
                     <g:render template="../projectActivity/status"/>

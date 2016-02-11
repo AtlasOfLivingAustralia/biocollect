@@ -469,6 +469,7 @@ var ProjectActivity = function (params) {
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
     self.species = new SpeciesConstraintViewModel(pActivity.species);
     self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
+    self.alert = new AlertViewModel(pActivity.alert);
 
     self.transients = self.transients || {};
     self.transients.warning = ko.computed(function () {
@@ -890,6 +891,34 @@ var SurveyVisibilityViewModel = function (visibility) {
             self.embargoForDays(60)
         }
     });
+};
+
+var AlertViewModel = function (alert) {
+    var self = this;
+    if (!alert) alert = {};
+
+    self.allSpecies = ko.observableArray();
+    self.add = function () {
+        var species = {};
+        species.name = self.transients.species.name();
+        species.guid = self.transients.species.guid();
+        self.allSpecies.push(species);
+    };
+    self.delete = function (species) {
+        self.allSpecies.remove(species);
+    };
+
+    self.transients = {};
+    self.transients.species = new SpeciesViewModel();
+    self.transients.bioSearch = ko.observable(fcConfig.speciesSearchUrl);
+    self.loadAlert = function (alert) {
+        self.allSpecies($.map(alert.allSpecies ? alert.allSpecies : [], function (obj, i) {
+                return new SpeciesViewModel(obj);
+            })
+        );
+    };
+
+    self.loadAlert(alert);
 };
 
 /**
