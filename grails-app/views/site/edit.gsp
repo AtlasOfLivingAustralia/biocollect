@@ -118,12 +118,19 @@
 
         $('#save').click(function () {
             if ($('#validation-container').validationEngine('validate')) {
-                var json = siteViewModel.modelAsJSON();
+                var json = siteViewModel.toJS();
+                var data = {
+                    site: json
+                    <g:if test="${pActivityId}">
+                        ,
+                        pActivityId: '${pActivityId.encodeAsHTML()}'
+                    </g:if>
+                };
 
                 $.ajax({
                     url: fcConfig.ajaxUpdateUrl,
                     type: 'POST',
-                    data: json,
+                    data: JSON.stringify(data),
                     contentType: 'application/json',
                     success: function (data) {
                         if(data.status == 'created'){

@@ -189,7 +189,9 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     };
 
     self.redirectToCreate = function(){
-        self.saveSitesBeforeRedirect(fcConfig.siteCreateUrl);
+        var pActivity = self.current();
+        // There must be a better way to construct the one below just as the original fcConfig.siteCreateUrl was built
+        self.saveSitesBeforeRedirect(fcConfig.siteCreateUrl + '&pActivityId=' + pActivity.projectActivityId());
     };
 
     self.redirectToSelect = function(){

@@ -7,7 +7,9 @@ import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 class SiteController {
 
-    def siteService, projectService, activityService, metadataService, userService, searchService, importService, webService
+    def siteService, projectService, projectActivityService, activityService, metadataService, userService,
+            searchService, importService, webService
+
     AuthService authService
     CommonService commonService
 
@@ -46,7 +48,8 @@ class SiteController {
         project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
 
 
-        render view: 'edit', model: [create:true, project:project, documents:[], projectSite:project.projectSite]
+        render view: 'edit', model: [create:true, project:project, documents:[], projectSite:project.projectSite,
+                                     pActivityId: params?.pActivityId]
     }
 
     def index(String id) {
@@ -324,7 +327,7 @@ class SiteController {
         //  1. keys in the ignore list; &
         //  2. keys with dot notation - the controller will automatically marshall these into maps &
         //  3. keys in nested maps with dot notation
-        postBody.each { k, v ->
+        postBody.site.each { k, v ->
             if (!(k in ignore)) {
                 values[k] = v //reMarshallRepeatingObjects(v);
             }
@@ -343,8 +346,15 @@ class SiteController {
             }
         }
 
-        if (!result)
+        if (!result) {
             result = siteService.updateRaw(id, values)
+            if(postBody.pActivityId){
+                def pActivity = projectActivityService.get(postBody.pActivityId)
+                pActivity.sites.add(result.id)
+                projectActivityService.update(postBody.pActivityId, pActivity)
+            }
+        }
+
         render result as JSON
     }
 
