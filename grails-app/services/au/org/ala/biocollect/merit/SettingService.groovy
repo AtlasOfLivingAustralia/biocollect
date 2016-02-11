@@ -70,14 +70,14 @@ class SettingService {
     }
 
     def getSettingText(SettingPageType type) {
-        def key = localHubConfig.get().id + type.key
+        def key = localHubConfig.get().urlPath + type.key
 
         get(key)
 
     }
 
     def setSettingText(SettingPageType type, String content) {
-        def key = localHubConfig.get().id + type.key
+        def key = localHubConfig.get().urlPath + type.key
 
         set(key, content)
     }
@@ -127,22 +127,26 @@ class SettingService {
         set(key, (settings as JSON).toString())
     }
 
-    private def hubSettingsKey(hub) {
-        if (!hub) {
-            throw new IllegalArgumentException("the hub parameter must not be null")
-        }
-        return hub+HUB_CONFIG_KEY_SUFFIX
+
+    HubSettings getHubSettings(String urlPath) {
+
+        String url = grailsApplication.config.ecodata.service.url+'/hub/findByUrlPath/'+urlPath
+        Map json = webService.getJson(url, null, true)
+
+        json.hubId ? new HubSettings(new HashMap(json)) : null
     }
 
-    HubSettings getHubSettings(hub) {
+    void updateHubSettings(HubSettings settings) {
 
-        def json = getJson(hubSettingsKey(hub))
-
-        json.id ? new HubSettings(new HashMap(json)) : null
+        String url = grailsApplication.config.ecodata.service.url+'/hub/'+(settings.hubId?:'')
+        webService.doPost(url, settings)
     }
 
-    def updateHubSettings(HubSettings settings) {
-        set(hubSettingsKey(settings.id), (settings as JSON).toString())
+    List listHubs() {
+        String url = grailsApplication.config.ecodata.service.url+'/hub/'
+        Map resp = webService.getJson(url, null, true)
+        resp.list
     }
+
 
 }
