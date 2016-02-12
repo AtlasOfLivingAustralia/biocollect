@@ -48,7 +48,7 @@ class SiteController {
 
         // Include activities only when biocollect starts supporting NRM based projects.
         def site = siteService.get(id, [view: 'projects'])
-        if (site) {
+        if (site && site.status != 'deleted') {
             // inject the metadata model for each activity
             site.activities = site.activities ?: []
             site.activities?.each {
@@ -60,7 +60,8 @@ class SiteController {
              mapFeatures: siteService.getMapFeatures(site)]
         } else {
             //forward(action: 'list', model: [error: 'no such id'])
-            render 'no such site'
+            flash.message = "Site not found."
+            redirect(controller: 'site', action: 'list')
         }
     }
 
@@ -117,24 +118,34 @@ class SiteController {
     }
 
     def ajaxDelete(String id) {
-        // permissions check
-        // rule ala admin can only delete a site on condition,
-        // 1. site is not assoicated with an acitivity(s)
-        if(!userService.userIsAlaAdmin()){
-            render status:HttpStatus.SC_UNAUTHORIZED, text: "Access denied: User not authorised to delete"
-            return
-        } else if(userService.userIsAlaAdmin() && siteService.isSiteAssociatedWithActivity(id)){
-            render status: HttpStatus.SC_BAD_REQUEST, text: "Site ${id} has activities associated with it. The site cannot be deleted."
-            return
-        }
+        try{
+            // permissions check
+            // rule ala admin can only delete a site on condition,
+            // 1. site is not assoicated with an acitivity(s)
+            if(!userService.userIsAlaAdmin()){
+                render status:HttpStatus.SC_UNAUTHORIZED, text: "Access denied: User not authorised to delete"
+                return
+            } else if(userService.userIsAlaAdmin() && (siteService.isSiteAssociatedWithProject(id) || siteService.isSiteAssociatedWithActivity(id))){
+                render status: HttpStatus.SC_BAD_REQUEST, text: "Site ${id} has projects or activities associated with it. The site cannot be deleted."
+                return
+            }
 
-        def status = siteService.delete(id)
-        if (status < 400) {
-            def result = [status: 'deleted']
-            render result as JSON
-        } else {
-            def result = [status: status]
-            render result as JSON
+            def status = siteService.delete(id)
+            if (status < 400) {
+                def result = [status: 'deleted']
+                render result as JSON
+            } else {
+                def result = [status: status]
+                render result as JSON
+            }
+        } catch (SocketTimeoutException sTimeout){
+            log.error(sTimeout.message)
+            log.error(sTimeout.stackTrace)
+            render(text: 'Webserive call timed out', status: HttpStatus.SC_REQUEST_TIMEOUT);
+        } catch (Exception e){
+            log.error(e.message)
+            log.error(e.stackTrace)
+            render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -526,7 +537,7 @@ class SiteController {
         try{
             List query = ['className:au.org.ala.ecodata.Site']
             String userId = userService.getCurrentUserId()
-            Boolean canDelete = userService.userIsAlaOrFcAdmin()
+            Boolean canDelete = userService.userIsAlaAdmin()
             GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userId)
             if(!queryParams.facets){
                 queryParams.facets="typeFacet,className,organisationFacet,stateFacet,lgaFacet,nrmFacet,siteSurveyNameFacet,siteProjectNameFacet,photoType"
@@ -561,7 +572,8 @@ class SiteController {
                         canEdit          : doc.projects.inject(false){flag, id ->
                                                flag || !!permissions[id]
                                            },
-                        canDelete        : canDelete
+                        // only sites with no projects can be deleted
+                        canDelete        : canDelete && (doc.projects?.size() == 0)
                 ]
             }
 

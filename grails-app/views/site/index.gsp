@@ -63,8 +63,8 @@
                 </a>
                 <a href="${grailsApplication.config.spatial.baseURL}/?pid=${site.extent.geometry.pid}" class="btn btn-small"><i class="fa fa-map"></i> View in Spatial Portal</a>
             </g:if>
-            <g:if test="${fc.userIsAlaOrFcAdmin()}">
-                <a href="#" class="btn btn-small btn-danger" onclick="deleteSite()"><i class="fa fa-remove"></i> Delete site</a>
+            <g:if test="${fc.userIsAlaAdmin()}">
+                <div class="btn btn-small btn-danger" onclick="deleteSite()"><i class="fa fa-remove"></i> Delete site</div>
             </g:if>
         </li>
     </ul>
@@ -78,7 +78,6 @@
                     </div>
                 </div>
             </g:if>
-
             <div>
                 <div class="clearfix">
                     <h1 class="pull-left"><strong>${site?.name?.encodeAsHTML()}</strong></h1>

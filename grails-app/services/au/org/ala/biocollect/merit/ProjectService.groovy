@@ -248,7 +248,7 @@ class ProjectService {
         def isAdmin
         Map permissions = [:], response
 
-        if (userService.userIsAlaOrFcAdmin()) {
+        if (userService.userIsAlaAdmin()) {
             isAdmin = true
         }
 

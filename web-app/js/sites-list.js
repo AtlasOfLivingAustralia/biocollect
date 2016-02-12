@@ -273,6 +273,7 @@ function SiteListViewModel(prop) {
         $.ajax({
             url: fcConfig.siteDeleteUrl + '/' + self.siteId(),
             success: function(data){
+                self.sites.error('Successfully deleted site!!')
                 self.sites.sites.remove(self);
             },
             error: function(xhr){

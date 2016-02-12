@@ -53,9 +53,14 @@
                 <g:render template="/site/searchSite"></g:render>
                 <div class="alert alert-block hide well" data-bind="slideVisible: error() != ''">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <h4>Error!</h4>
                     <span data-bind="text: error"></span>
                 </div>
+                <g:if test="${flash.errorMessage || flash.message}">
+                    <div class="alert alert-error">
+                        <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
+                        ${flash.errorMessage?:flash.message}
+                    </div>
+                </g:if>
                 <div class="row-fluid">
                     <div class="well">
                         <div class="span12 margin-top-10">
