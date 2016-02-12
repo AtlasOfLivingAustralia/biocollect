@@ -17,7 +17,7 @@ class HubSettings extends JSONObject {
     }
 
     public boolean overridesHomePage() {
-        return get('homePagePath') as boolean
+        return optString('homePagePath', null) as boolean
     }
 
     /**
@@ -27,7 +27,7 @@ class HubSettings extends JSONObject {
     public Map getHomePageControllerAndAction() {
         if (overridesHomePage()) {
             def regexp = "\\/(.*)\\/(.*)"
-            def matcher = (get('homePagePath') =~ regexp)
+            def matcher = (optString('homePagePath', '') =~ regexp)
             if (matcher.matches()) {
                 def controller = matcher[0][1]
                 def action = matcher[0][2]
