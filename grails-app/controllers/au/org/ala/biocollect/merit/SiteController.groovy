@@ -327,7 +327,7 @@ class SiteController {
         //  1. keys in the ignore list; &
         //  2. keys with dot notation - the controller will automatically marshall these into maps &
         //  3. keys in nested maps with dot notation
-        postBody.site.each { k, v ->
+        postBody.site?.each { k, v ->
             if (!(k in ignore)) {
                 values[k] = v //reMarshallRepeatingObjects(v);
             }
@@ -350,11 +350,15 @@ class SiteController {
             result = siteService.updateRaw(id, values)
             if(postBody.pActivityId){
                 def pActivity = projectActivityService.get(postBody.pActivityId)
-                pActivity.sites.add(result.id)
-                projectActivityService.update(postBody.pActivityId, pActivity)
+                if(!projectService.canUserEditProject(userId, pActivity.projectId)){
+                    flash.message = "Error: access denied: User does not have <b>editor</b> permission for pActivitityId ${postBody.pActivityId}"
+                    result = [status: 'error']
+                } else {
+                    pActivity.sites.add(result.id)
+                    projectActivityService.update(postBody.pActivityId, pActivity)
+                }
             }
         }
-
         render result as JSON
     }
 
