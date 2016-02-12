@@ -348,9 +348,9 @@ class SiteController {
 
         if (!result) {
             result = siteService.updateRaw(id, values)
-            if(postBody.pActivityId){
+            if(postBody?.pActivityId){
                 def pActivity = projectActivityService.get(postBody.pActivityId)
-                if(!projectService.canUserEditProject(userId, pActivity.projectId)){
+                if(!projectService.canUserEditProject(userId, pActivity?.projectId)){
                     flash.message = "Error: access denied: User does not have <b>editor</b> permission for pActivitityId ${postBody.pActivityId}"
                     result = [status: 'error']
                 } else {

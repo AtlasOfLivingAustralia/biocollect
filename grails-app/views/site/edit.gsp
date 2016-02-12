@@ -141,11 +141,11 @@
                             document.location.href = fcConfig.sitePageUrl + '/' + json.siteId;
                         </g:else>
                         } else {
-                            alert('There was a problem saving this site');
+                            bootbox.alert('There was a problem saving this site', function() {location.reload();});
                         }
                     },
                     error: function (data) {
-                        alert('There was a problem saving this site');
+                        bootbox.alert('There was a problem saving this site', function() {location.reload();});
                     }
                 });
             }
