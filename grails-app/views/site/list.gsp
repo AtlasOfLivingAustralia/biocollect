@@ -25,12 +25,14 @@
         var fcConfig = {
             listSitesUrl: '${createLink(controller: 'site', action: 'elasticsearch')}',
             viewSiteUrl: '${createLink(controller: 'site', action: 'index')}',
+            editSiteUrl: '${createLink(controller: 'site', action: 'edit')}',
             poiGalleryUrl: "${createLink(controller: 'site', action: 'getImages')}",
             imagesForPoiUrl: "${createLink(controller: 'site', action: 'getPoiImages')}",
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-            activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}"
+            activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
+            siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}"
         }
     </script>
     <r:require modules="restoreTab,siteSearch"></r:require>

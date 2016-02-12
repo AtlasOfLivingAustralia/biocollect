@@ -105,7 +105,7 @@
 
         $('.helphover').popover({animation: true, trigger:'hover'});
 
-        var siteViewModel = initSiteViewModel(true);
+        var siteViewModel = initSiteViewModel(true, ${!(create == true)});
         $('#cancel').click(function () {
             if(siteViewModel.saved()){
                 document.location.href = fcConfig.sitePageUrl;

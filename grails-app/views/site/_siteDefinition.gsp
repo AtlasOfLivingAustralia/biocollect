@@ -183,7 +183,7 @@
 
 
 <r:script>
-function initSiteViewModel(allowPointsOfInterest) {
+function initSiteViewModel(allowPointsOfInterest, edit) {
 
     // server side generated paths & properties
     var SERVER_CONF = {
@@ -193,7 +193,8 @@ function initSiteViewModel(allowPointsOfInterest) {
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: '${grailsApplication.config.spatial.geoserverUrl}',
-        allowPointsOfInterest: allowPointsOfInterest
+        allowPointsOfInterest: allowPointsOfInterest,
+        readonly: edit? true : false
     };
 
     var savedSiteData = {

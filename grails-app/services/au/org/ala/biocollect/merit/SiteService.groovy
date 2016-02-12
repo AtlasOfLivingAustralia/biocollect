@@ -15,6 +15,7 @@ class SiteService {
 
     def webService, grailsApplication, commonService, metadataService, userService
     def documentService
+    ActivityService activityService
     LinkGenerator grailsLinkGenerator
 
     def list() {
@@ -424,5 +425,32 @@ class SiteService {
                         ],
                 ]
             ]
+    }
+
+    /**
+     * Checks if a siteId is linked to one or more activity.
+     * @param siteId
+     * @return Boolean - true if more than one activity is associated with a site
+     */
+    Boolean isSiteAssociatedWithActivity(String siteId) throws SocketTimeoutException, Exception{
+        Map siteCriteria = new HashMap();
+        siteCriteria.put('siteId', siteId);
+        Map response = activityService.search(siteCriteria);
+        List activities
+
+        if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw new Exception(response.error)
+            }
+        }
+
+        activities = response.resp?.activities;
+        if(activities?.size()){
+            return true
+        }
+
+        return false
     }
 }

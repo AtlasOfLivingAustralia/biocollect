@@ -9,6 +9,7 @@
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
+            siteListUrl: "${createLink(controller: 'site', action: 'list')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
             spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
@@ -43,6 +44,10 @@
 </head>
 <body>
     <div class="container-fluid">
+        <div class="alert alert-block hide well" data-bind="slideVisible: message" id="message">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <span data-bind="text: message"></span>
+        </div>
     <ul class="breadcrumb">
         <li>
             <g:link controller="home">Home</g:link> <span class="divider">/</span>
@@ -57,6 +62,9 @@
                     Download ShapeFile
                 </a>
                 <a href="${grailsApplication.config.spatial.baseURL}/?pid=${site.extent.geometry.pid}" class="btn btn-small"><i class="fa fa-map"></i> View in Spatial Portal</a>
+            </g:if>
+            <g:if test="${fc.userIsAlaOrFcAdmin()}">
+                <a href="#" class="btn btn-small btn-danger" onclick="deleteSite()"><i class="fa fa-remove"></i> Delete site</a>
             </g:if>
         </li>
     </ul>
@@ -350,6 +358,32 @@
             }
             initPoiGallery(params,'sitePhotopoints');
         });
+        function Message (){
+            var self = this;
+            self.message = ko.observable();
+            self.clear = function(){
+                self.message('')
+            }
+
+            self.message.subscribe(function(){
+                setTimeout(self.clear, 3000);
+            })
+        }
+        var msg = new Message();
+        ko.applyBindings(msg, document.getElementById('message'))
+        function deleteSite(){
+            var url = fcConfig.siteDeleteUrl + '/' + "${site.siteId}"
+            $.ajax({
+                url: url,
+                success: function(){
+                    msg.message('Successfully deleted site. Redirecting in 3 seconds.');
+                    setTimeout(function(){ window.location = fcConfig.siteListUrl}, 3000);
+                },
+                error: function(xhr){
+                    msg.message(xhr.responseText);
+                }
+            })
+        }
     </r:script>
 </body>
 </html>

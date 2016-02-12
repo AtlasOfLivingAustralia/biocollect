@@ -118,8 +118,13 @@ class SiteController {
 
     def ajaxDelete(String id) {
         // permissions check
-        if (!isUserMemberOfSiteProjects(siteService.get(id))) {
-            render status:403, text: "Access denied: User does not have permission to edit site: ${id}"
+        // rule ala admin can only delete a site on condition,
+        // 1. site is not assoicated with an acitivity(s)
+        if(!userService.userIsAlaAdmin()){
+            render status:HttpStatus.SC_UNAUTHORIZED, text: "Access denied: User not authorised to delete"
+            return
+        } else if(userService.userIsAlaAdmin() && siteService.isSiteAssociatedWithActivity(id)){
+            render status: HttpStatus.SC_BAD_REQUEST, text: "Site ${id} has activities associated with it. The site cannot be deleted."
             return
         }
 
@@ -520,7 +525,9 @@ class SiteController {
     def elasticsearch(){
         try{
             List query = ['className:au.org.ala.ecodata.Site']
-            GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userService.getCurrentUserId())
+            String userId = userService.getCurrentUserId()
+            Boolean canDelete = userService.userIsAlaOrFcAdmin()
+            GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userId)
             if(!queryParams.facets){
                 queryParams.facets="typeFacet,className,organisationFacet,stateFacet,lgaFacet,nrmFacet,siteSurveyNameFacet,siteProjectNameFacet,photoType"
             }
@@ -532,6 +539,13 @@ class SiteController {
             Map searchResult = searchService.searchForSites(queryParams)
             List sites = searchResult?.hits?.hits
             List facets = []
+
+            List projectIds = sites?.collect{
+                it._source?.projects?.join(',')
+            }
+            // replace done because double quotes are inserted in the above join method.
+            String pIds = projectIds.join(',')?.replace('"','')
+            Map permissions = projectService.canUserEditProjects(userId, pIds)
             sites = sites?.collect {
                 Map doc = it._source
                 [
@@ -542,7 +556,12 @@ class SiteController {
                         numberOfProjects : doc.projects?.size(),
                         lastUpdated      : doc.lastUpdated,
                         type             : doc.type,
-                        extent           : doc.extent
+                        extent           : doc.extent,
+                        // does a logical OR reduce operation on permissions for each projects
+                        canEdit          : doc.projects.inject(false){flag, id ->
+                                               flag || !!permissions[id]
+                                           },
+                        canDelete        : canDelete
                 ]
             }
 

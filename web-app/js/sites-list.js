@@ -62,6 +62,7 @@ function SitesListViewModel(params) {
                 success: function (data) {
                     if(data.sites){
                         data.sites = $.map(data.sites, function (site) {
+                            site.sites = self;
                             return new SiteListViewModel(site)
                         });
                         self.sites(data.sites);
@@ -247,7 +248,10 @@ function SiteListViewModel(prop) {
     self.numberOfProjects = ko.observable(prop.numberOfProjects);
     self.numberOfPoi = ko.observable(prop.numberOfPoi);
     self.type = ko.observable(prop.type);
+    self.canEdit = ko.observable(prop.canEdit);
+    self.canDelete = ko.observable(prop.canDelete);
     self.extent = prop.extent;
+    self.sites = prop.sites
 
     /**
      * constructs url to site
@@ -256,6 +260,27 @@ function SiteListViewModel(prop) {
     self.getSiteUrl = function () {
         return fcConfig.viewSiteUrl + '/' + self.siteId();
     }
+
+    /**
+     * constructs url to edit site
+     * @returns {string}
+     */
+    self.getSiteEditUrl = function () {
+        return fcConfig.editSiteUrl + '/' + self.siteId();
+    }
+
+    self.deleteSite = function () {
+        $.ajax({
+            url: fcConfig.siteDeleteUrl + '/' + self.siteId(),
+            success: function(data){
+                self.sites.sites.remove(self);
+            },
+            error: function(xhr){
+                self.sites.error(xhr.responseText);
+            }
+        })
+    }
+
 }
 
 function FacetViewModel(facet) {
