@@ -141,7 +141,7 @@
                             document.location.href = fcConfig.sitePageUrl + '/' + json.siteId;
                         </g:else>
                         } else {
-                            document.location.href = fcConfig.sitePageUrl;
+                            alert('There was a problem saving this site');
                         }
                     },
                     error: function (data) {
