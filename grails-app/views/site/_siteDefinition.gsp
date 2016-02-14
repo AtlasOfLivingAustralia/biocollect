@@ -218,6 +218,15 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
     };
 
     var siteViewModel = new SiteViewModel("mapForExtent", savedSiteData, SERVER_CONF)
+    var map = siteViewModel.map;
+
+    <g:if  test="${project?.projectSite?.extent?.geometry}">
+        var projectArea = <fc:modelAsJavascript model="${project.projectSite.extent.geometry}"/>;
+        var geometry = _.pick(projectArea, "type", "coordinates");
+        var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+        map.setGeoJSON(geoJson);
+    </g:if>
+
 
     ko.applyBindings(siteViewModel, document.getElementById("sitemap"));
 
