@@ -186,14 +186,34 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     };
 
     function initialiseViewModel() {
-        self.map = new ALA.Map(mapContainerId, {
+        var options =  {
             maxZoom: 20,
             wmsLayerUrl: mapOptions.spatialWms + "/wms/reflect?",
             wmsFeatureUrl: mapOptions.featureService + "?featureId=",
             showReset: false
-        });
+        };
 
-        var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(self.map, mapOptions.featuresService, mapOptions.regionListUrl);
+        if(mapOptions.readonly){
+            var readonlyProps = {
+                drawControl: false,
+                singleMarker: false,
+                useMyLocation: false,
+                allowSearchLocationByAddress: false,
+                allowSearchRegionByAddress: false,
+                draggableMarkers: false,
+                showReset: false
+            };
+            for(var prop in readonlyProps){
+                options[prop] = readonlyProps[prop]
+            }
+        }
+
+        self.map = new ALA.Map(mapContainerId, options);
+
+        if(!mapOptions.readonly){
+            var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(self.map, mapOptions.featuresService, mapOptions.regionListUrl);
+            self.map.addControl(regionSelector);
+        }
 
         self.map.addButton("<span class='fa fa-refresh reset-map' title='Reset map'></span>", function () {
             self.map.resetMap();
@@ -203,7 +223,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             self.loadSite(site || {});
         }, "bottomleft");
 
-        self.map.addControl(regionSelector);
+
 
         self.map.registerListener("draw:created", function (event) {
             if (event.layerType == ALA.MapConstants.LAYER_TYPE.MARKER) {

@@ -25,12 +25,14 @@
         var fcConfig = {
             listSitesUrl: '${createLink(controller: 'site', action: 'elasticsearch')}',
             viewSiteUrl: '${createLink(controller: 'site', action: 'index')}',
+            editSiteUrl: '${createLink(controller: 'site', action: 'edit')}',
             poiGalleryUrl: "${createLink(controller: 'site', action: 'getImages')}",
             imagesForPoiUrl: "${createLink(controller: 'site', action: 'getPoiImages')}",
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-            activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}"
+            activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
+            siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}"
         }
     </script>
     <r:require modules="restoreTab,siteSearch"></r:require>
@@ -51,9 +53,14 @@
                 <g:render template="/site/searchSite"></g:render>
                 <div class="alert alert-block hide well" data-bind="slideVisible: error() != ''">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <h4>Error!</h4>
                     <span data-bind="text: error"></span>
                 </div>
+                <g:if test="${flash.errorMessage || flash.message}">
+                    <div class="alert alert-error">
+                        <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
+                        ${flash.errorMessage?:flash.message}
+                    </div>
+                </g:if>
                 <div class="row-fluid">
                     <div class="well">
                         <div class="span12 margin-top-10">
@@ -94,7 +101,7 @@
 <script>
     var SITES_TAB_AMPLIFY_VAR = 'site-list-result-tab'
     $(document).ready(function () {
-        RestoreTab('siteListResultTab','list')
+        RestoreTab('siteListResultTab','list-tab')
 
         var sites = new SitesListViewModel();
         var params = {
@@ -140,7 +147,6 @@
                         markerLocation: [lat, lng],
                         popup: $('#popup'+site.siteId()).html()
                     };
-                    console.log(geometry, options);
                     map.setGeoJSON(geometry, options);
                 }
             });

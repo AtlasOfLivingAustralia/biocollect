@@ -183,7 +183,7 @@
 
 
 <r:script>
-function initSiteViewModel(allowPointsOfInterest) {
+function initSiteViewModel(allowPointsOfInterest, edit) {
 
     // server side generated paths & properties
     var SERVER_CONF = {
@@ -193,7 +193,8 @@ function initSiteViewModel(allowPointsOfInterest) {
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: '${grailsApplication.config.spatial.geoserverUrl}',
-        allowPointsOfInterest: allowPointsOfInterest
+        allowPointsOfInterest: allowPointsOfInterest,
+        readonly: edit? true : false
     };
 
     var savedSiteData = {
@@ -217,6 +218,15 @@ function initSiteViewModel(allowPointsOfInterest) {
     };
 
     var siteViewModel = new SiteViewModel("mapForExtent", savedSiteData, SERVER_CONF)
+    var map = siteViewModel.map;
+
+    <g:if  test="${project?.projectSite?.extent?.geometry}">
+        var projectArea = <fc:modelAsJavascript model="${project.projectSite.extent.geometry}"/>;
+        var geometry = _.pick(projectArea, "type", "coordinates");
+        var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+        map.setGeoJSON(geoJson);
+    </g:if>
+
 
     ko.applyBindings(siteViewModel, document.getElementById("sitemap"));
 

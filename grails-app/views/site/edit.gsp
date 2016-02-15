@@ -105,7 +105,7 @@
 
         $('.helphover').popover({animation: true, trigger:'hover'});
 
-        var siteViewModel = initSiteViewModel(true);
+        var siteViewModel = initSiteViewModel(true, ${!(create == true)});
         $('#cancel').click(function () {
             if(siteViewModel.saved()){
                 document.location.href = fcConfig.sitePageUrl;
@@ -118,12 +118,19 @@
 
         $('#save').click(function () {
             if ($('#validation-container').validationEngine('validate')) {
-                var json = siteViewModel.modelAsJSON();
+                var json = siteViewModel.toJS();
+                var data = {
+                    site: json
+                    <g:if test="${pActivityId}">
+                        ,
+                        pActivityId: '${pActivityId.encodeAsHTML()}'
+                    </g:if>
+                };
 
                 $.ajax({
                     url: fcConfig.ajaxUpdateUrl,
                     type: 'POST',
-                    data: json,
+                    data: JSON.stringify(data),
                     contentType: 'application/json',
                     success: function (data) {
                         if(data.status == 'created'){
@@ -134,11 +141,11 @@
                             document.location.href = fcConfig.sitePageUrl + '/' + json.siteId;
                         </g:else>
                         } else {
-                            document.location.href = fcConfig.sitePageUrl;
+                            bootbox.alert('There was a problem saving this site', function() {location.reload();});
                         }
                     },
                     error: function (data) {
-                        alert('There was a problem saving this site');
+                        bootbox.alert('There was a problem saving this site', function() {location.reload();});
                     }
                 });
             }

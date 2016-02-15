@@ -236,6 +236,50 @@ class ProjectService {
     }
 
     /**
+     * Does the current user have permission to edit the requested projectId?
+     * Checks for the ADMIN role in CAS and then checks the UserPermission
+     * lookup in ecodata.
+     *
+     * @param userId
+     * @param projectId
+     * @return boolean
+     */
+    Map canUserEditProjects(String userId, String projectId) throws SocketTimeoutException, Exception {
+        def isAdmin
+        Map permissions = [:], response
+
+        if (userService.userIsAlaAdmin()) {
+            isAdmin = true
+        }
+
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProjects"
+        Map params = [projectIds:projectId,userId:userId]
+        response = webService.doPostWithParams(url, params)
+
+        if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw new Exception(response.error)
+            }
+        }
+
+        if(isAdmin){
+            response?.resp?.each{ key, value ->
+                if(value != null){
+                    permissions[key] = true
+                } else {
+                    permissions[key] = null;
+                }
+            }
+        } else {
+            permissions = response.resp;
+        }
+
+        permissions
+    }
+
+    /**
      * Can user edit bio collect activity
      * @param userId the user to test.
      * @param the activity to test.

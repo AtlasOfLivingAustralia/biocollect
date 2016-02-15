@@ -7,7 +7,9 @@ import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 class SiteController {
 
-    def siteService, projectService, activityService, metadataService, userService, searchService, importService, webService
+    def siteService, projectService, projectActivityService, activityService, metadataService, userService,
+            searchService, importService, webService
+
     AuthService authService
     CommonService commonService
 
@@ -41,14 +43,20 @@ class SiteController {
             flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${params.projectId}"
             redirect(controller:'project', action:'index', id: params.projectId)
         }
-        render view: 'edit', model: [create:true, project:project, documents:[]]
+
+        project.sites?.sort {it.name}
+        project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
+
+
+        render view: 'edit', model: [create:true, project:project, documents:[], projectSite:project.projectSite,
+                                     pActivityId: params?.pActivityId]
     }
 
     def index(String id) {
 
         // Include activities only when biocollect starts supporting NRM based projects.
         def site = siteService.get(id, [view: 'projects'])
-        if (site) {
+        if (site && site.status != 'deleted') {
             // inject the metadata model for each activity
             site.activities = site.activities ?: []
             site.activities?.each {
@@ -60,7 +68,8 @@ class SiteController {
              mapFeatures: siteService.getMapFeatures(site)]
         } else {
             //forward(action: 'list', model: [error: 'no such id'])
-            render 'no such site'
+            flash.message = "Site not found."
+            redirect(controller: 'site', action: 'list')
         }
     }
 
@@ -117,19 +126,34 @@ class SiteController {
     }
 
     def ajaxDelete(String id) {
-        // permissions check
-        if (!isUserMemberOfSiteProjects(siteService.get(id))) {
-            render status:403, text: "Access denied: User does not have permission to edit site: ${id}"
-            return
-        }
+        try{
+            // permissions check
+            // rule ala admin can only delete a site on condition,
+            // 1. site is not assoicated with an acitivity(s)
+            if(!userService.userIsAlaAdmin()){
+                render status:HttpStatus.SC_UNAUTHORIZED, text: "Access denied: User not authorised to delete"
+                return
+            } else if(userService.userIsAlaAdmin() && (siteService.isSiteAssociatedWithProject(id) || siteService.isSiteAssociatedWithActivity(id))){
+                render status: HttpStatus.SC_BAD_REQUEST, text: "Site ${id} has projects or activities associated with it. The site cannot be deleted."
+                return
+            }
 
-        def status = siteService.delete(id)
-        if (status < 400) {
-            def result = [status: 'deleted']
-            render result as JSON
-        } else {
-            def result = [status: status]
-            render result as JSON
+            def status = siteService.delete(id)
+            if (status < 400) {
+                def result = [status: 'deleted']
+                render result as JSON
+            } else {
+                def result = [status: status]
+                render result as JSON
+            }
+        } catch (SocketTimeoutException sTimeout){
+            log.error(sTimeout.message)
+            log.error(sTimeout.stackTrace)
+            render(text: 'Webserive call timed out', status: HttpStatus.SC_REQUEST_TIMEOUT);
+        } catch (Exception e){
+            log.error(e.message)
+            log.error(e.stackTrace)
+            render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -319,7 +343,7 @@ class SiteController {
         //  1. keys in the ignore list; &
         //  2. keys with dot notation - the controller will automatically marshall these into maps &
         //  3. keys in nested maps with dot notation
-        postBody.each { k, v ->
+        postBody.site?.each { k, v ->
             if (!(k in ignore)) {
                 values[k] = v //reMarshallRepeatingObjects(v);
             }
@@ -338,8 +362,19 @@ class SiteController {
             }
         }
 
-        if (!result)
+        if (!result) {
             result = siteService.updateRaw(id, values)
+            if(postBody?.pActivityId){
+                def pActivity = projectActivityService.get(postBody.pActivityId)
+                if(!projectService.canUserEditProject(userId, pActivity?.projectId)){
+                    flash.message = "Error: access denied: User does not have <b>editor</b> permission for pActivitityId ${postBody.pActivityId}"
+                    result = [status: 'error']
+                } else {
+                    pActivity.sites.add(result.id)
+                    projectActivityService.update(postBody.pActivityId, pActivity)
+                }
+            }
+        }
         render result as JSON
     }
 
@@ -520,7 +555,9 @@ class SiteController {
     def elasticsearch(){
         try{
             List query = ['className:au.org.ala.ecodata.Site']
-            GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userService.getCurrentUserId())
+            String userId = userService.getCurrentUserId()
+            Boolean canDelete = userService.userIsAlaAdmin()
+            GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userId)
             if(!queryParams.facets){
                 queryParams.facets="typeFacet,className,organisationFacet,stateFacet,lgaFacet,nrmFacet,siteSurveyNameFacet,siteProjectNameFacet,photoType"
             }
@@ -532,6 +569,13 @@ class SiteController {
             Map searchResult = searchService.searchForSites(queryParams)
             List sites = searchResult?.hits?.hits
             List facets = []
+
+            List projectIds = sites?.collect{
+                it._source?.projects?.join(',')
+            }
+            // replace done because double quotes are inserted in the above join method.
+            String pIds = projectIds.join(',')?.replace('"','')
+            Map permissions = projectService.canUserEditProjects(userId, pIds)
             sites = sites?.collect {
                 Map doc = it._source
                 [
@@ -542,7 +586,13 @@ class SiteController {
                         numberOfProjects : doc.projects?.size(),
                         lastUpdated      : doc.lastUpdated,
                         type             : doc.type,
-                        extent           : doc.extent
+                        extent           : doc.extent,
+                        // does a logical OR reduce operation on permissions for each projects
+                        canEdit          : doc.projects.inject(false){flag, id ->
+                                               flag || !!permissions[id]
+                                           },
+                        // only sites with no projects can be deleted
+                        canDelete        : canDelete && (doc.projects?.size() == 0)
                 ]
             }
 
