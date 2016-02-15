@@ -50,6 +50,13 @@ var SpeciesViewModel = function (species, lists, populate) {
         }
     };
 
+    self.reset = function () {
+        self.name("");
+        self.guid("");
+        self.transients.name("");
+        self.transients.guid("");
+    };
+
     self.populateSingleSpecies(populate);
 };
 

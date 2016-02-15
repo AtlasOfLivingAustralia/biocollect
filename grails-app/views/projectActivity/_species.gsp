@@ -7,7 +7,7 @@
             <div class="well">
                 <div class="row-fluid">
                     <div class="span10 text-left">
-                        <h2 class="strong">Step 3 of 7 - Set the range of species applicable for the survey</h2>
+                        <h2 class="strong">Step 4 of 7 - Set the range of species applicable for the survey</h2>
                     </div>
                     <div class="span2 text-right">
                         <g:render template="../projectActivity/status"/>
@@ -117,7 +117,7 @@
                 <div class="span12">
                     <button class="btn-primary btn block btn-small"
                             data-bind="click: $parent.saveSpecies, disable: !transients.saveOrUnPublishAllowed()"><i class="icon-white  icon-hdd" ></i>  Save</button>
-                    <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-visibility-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
+                    <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-alert-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
                     <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-form-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
                 </div>
 

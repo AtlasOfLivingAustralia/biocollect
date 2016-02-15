@@ -4,7 +4,7 @@
         <!-- ko if: current -->
             <div class="row-fluid">
                 <div class="span10 text-left">
-                    <h2 class="strong">Step 6 of 7 - Set Alert</h2>
+                    <h2 class="strong">Step 3 of 7 - Set Alert</h2>
                 </div>
 
                 <div class="span2 text-right">
@@ -13,44 +13,31 @@
 
             </div>
 
+            <g:render template="/projectActivity/warning"/>
+
             <div class="row-fluid">
                 <div class="span12 text-left">
-                    <p>You can set an species alert by adding the species name.</p>
+                    <g:render template="../projectActivity/speciesAlert"/>
+                </div>
+             </div>
+
+            <div class="row-fluid">
+                <div class="span12 text-left">
+                    <g:render template="../projectActivity/emailList"/>
                 </div>
             </div>
 
             <div class="row-fluid">
-                <div class="span12 text-left">
-                    <div class="controls block">
-                        <input class="input-xlarge" type="text" placeholder="Search species"
-                               data-bind="value:alert.transients.species.name,
-                                        event:{focusout: alert.transients.species.focusLost},
-                                        fusedAutocomplete:{
-                                            source: alert.transients.bioSearch,
-                                            name: alert.transients.species.transients.name,
-                                            guid: alert.transients.species.transients.guid
-                                        }" data-validation-engine="validate[required]">
-                    </div>
-                </div>
-            </div>
 
-            <div class="row-fluid">
-                <div class="span12 text-left">
+                <div class="span12">
                     <button class="btn-primary btn block btn-small"
-                            data-bind="click: alert.add"><i class="icon-white  icon-plus" ></i>  Add</button>
+                            data-bind="click: $parent.saveAlert"><i class="icon-white icon-hdd" ></i>  Save</button>
+                    <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-visibility-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
+                    <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
                 </div>
+
             </div>
-
-            <div class="margin-bottom-2"></div>
-
-            <!-- ko foreach: alert.allSpecies -->
-                <div class="span12 text-left">
-                    <a href="#"><span data-bind="text: name"></span></a>
-                </div>
-            <!-- /ko -->
 
         <!-- /ko -->
     <!-- /ko -->
-
-
 </div>
