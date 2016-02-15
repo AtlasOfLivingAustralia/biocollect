@@ -4,7 +4,7 @@
             <!-- ko if: current -->
             <div class="row-fluid">
                 <div class="span10">
-                    <h2 class="strong">Step 1 of 6 - Describe the survey</h2>
+                    <h2 class="strong">Step 1 of 7 - Describe the survey</h2>
                 </div>
                 <div class="span2 text-right">
                     <g:render template="../projectActivity/status"/>
