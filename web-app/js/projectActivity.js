@@ -194,7 +194,6 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
     self.redirectToCreate = function(){
         var pActivity = self.current();
-        // There must be a better way to construct the one below just as the original fcConfig.siteCreateUrl was built
         self.saveSitesBeforeRedirect(fcConfig.siteCreateUrl + '&pActivityId=' + pActivity.projectActivityId());
     };
 
@@ -920,11 +919,11 @@ var AlertViewModel = function (alert) {
         species.guid = self.transients.species.guid();
 
         var match = ko.utils.arrayFirst(self.allSpecies(), function(item) {
-            return species.guid === item.guid;
+            return species.guid === item.guid();
         });
 
         if (!match) {
-            self.allSpecies.push(species);
+            self.allSpecies.push(new SpeciesViewModel(species));
         }
         self.transients.species.reset();
     };
@@ -950,7 +949,7 @@ var AlertViewModel = function (alert) {
         } else {
             $.each(emails, function (index, email) {
                 if (self.emailAddresses.indexOf(email) < 0) {
-                    self.allSpecies.push(email);
+                    self.emailAddresses.push(email);
                 }
             });
             self.transients.emailAddress('');
@@ -978,9 +977,7 @@ var AlertViewModel = function (alert) {
         return expression.test(email);
     };
 
-    self.transients.bioProfileUrl = ko.computed(function () {
-        return fcConfig.bieUrl + '/species/' + self.transients.species.guid();
-    });
+    self.transients.bioProfileUrl = fcConfig.bieUrl + '/species/';
     self.transients.bioSearch = ko.observable(fcConfig.speciesSearchUrl);
     self.loadAlert = function (alert) {
         self.allSpecies($.map(alert.allSpecies ? alert.allSpecies : [], function (obj, i) {

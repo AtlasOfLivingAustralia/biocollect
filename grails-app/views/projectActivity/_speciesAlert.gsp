@@ -1,6 +1,6 @@
 <div class="row-fluid">
     <div class="span12 text-left">
-        <h4>a. Add a species name and get notified when the species is found.</h4>
+        <h4>a. Add species name and get notified when the species is recorded.</h4>
     </div>
 </div>
 
@@ -22,7 +22,7 @@
                                             name: alert.transients.species.transients.name,
                                             guid: alert.transients.species.transients.guid
                                         }" >
-        </br>
+         <div class="margin-bottom-5"></div>
          <button class="btn-default btn block btn-small" data-toggle="tooltip" title="Enter valid species name"
                     data-bind="click: alert.add, disable: alert.transients.disableSpeciesAdd"><i class="icon-plus" ></i>  Add</button>
         </div>
@@ -34,7 +34,7 @@
         <!-- ko foreach: alert.allSpecies -->
         <div class="span10 text-left">
             <div class="span6 text-left">
-                <a data-bind="attr:{href: $parent.alert.transients.bioProfileUrl}" target="_blank">
+                <a data-bind="attr:{ 'href': $parent.alert.transients.bioProfileUrl + guid()}" target="_blank">
                     <span data-bind="text: $index()+1">.</span>
                     <span data-bind="text: name"></span>
                 </a>
