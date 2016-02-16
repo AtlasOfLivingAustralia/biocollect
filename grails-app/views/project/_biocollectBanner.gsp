@@ -10,11 +10,11 @@
         <li class="${(path ==~ /.*bioActivity\/allRecords.*/) ? 'active' : ''}">
             <a href="#" class="btnAllData"><span class="fa fa-database"></span>All Records</a>
         </li>
-        <li class="${(path ==~ /.*project\/create.*/) ? 'active' : ''}">
-            <a href="#" class="btnNewProject"><span class="fa fa-plus"></span>New Project</a>
-        </li>
         <li class="${(path ==~ /.*site\/.*/) ? 'active' : ''}">
             <a href="#" class="btnSite"><span class="fa fa-map-marker"></span>Sites</a>
+        </li>
+        <li class="${(path ==~ /.*project\/create.*/) ? 'active' : ''}">
+            <a href="#" class="btnNewProject"><span class="fa fa-plus"></span>New Project</a>
         </li>
         <g:if test="${fc.userIsSiteAdmin()}">
             <li class="${(path ==~ /.*admin\/index.*/) ? 'active' : ''}">
