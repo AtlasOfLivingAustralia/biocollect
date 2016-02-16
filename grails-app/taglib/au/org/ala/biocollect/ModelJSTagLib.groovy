@@ -642,6 +642,7 @@ class ModelJSTagLib {
                 useMyLocation: ${!readonly},
                 allowSearchLocationByAddress: ${!readonly},
                 allowSearchRegionByAddress: false,
+                zoomToObject: true,
                 drawOptions: {
                     polyline: false,
                     polygon: false,
@@ -682,8 +683,9 @@ class ModelJSTagLib {
                 if (typeof siteId !== "undefined" && siteId) {
                     var matchingSite = \$.grep(activityLevelData.pActivity.sites, function(site) { return siteId == site.siteId})[0];
                     if (matchingSite) {
+                        ${model.name}Map.clearBoundLimits()
                         if (matchingSite.extent.geometry.pid) {
-                            ${model.name}Map.addWmsLayer(matchingSite.extent.geometry.pid);
+                            ${model.name}Map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(matchingSite.extent.geometry));
                         } else {
                             ${model.name}Map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
                         }

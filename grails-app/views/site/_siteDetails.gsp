@@ -53,7 +53,7 @@
                 <label for="siteArea"><g:message code="site.details.area"/>
                     <fc:iconHelp
                             title="${message(code: 'site.details.area')}"><g:message code="site.details.area.help"/></fc:iconHelp></label>
-                <input data-bind="value: site().area" id="siteArea" type="text" class="span12"/>
+                    <label readonly data-bind="html: displayAreaInReadableFormat" id="siteArea" type="text" class="span12"/>
             </div>
         </div>
 

@@ -1,7 +1,7 @@
 <r:require modules="imageDataType,imageViewer,imageGallery"></r:require>
 <bc:koLoading>
-    <div class="image-gallery" data-bind="visible: ${name}().length">
-        <ul class="thumbnails">
+    <div class="image-gallery">
+        <ul class="thumbnails" data-bind="visible: ${name}().length">
             <!-- ko foreach: ${name} -->
             <li>
                 <div class="projectLogo" data-toggle="popover" data-trigger="hover" data-title="Photo metadata" data-bind="popover: {placement:'top', content: function(){ return $(this).find('.metadata').html()} }">
@@ -25,10 +25,10 @@
             <!-- /ko -->
         </ul>
 
-        <!-- ko if: ${name}().length == 0 && !error() -->
-        <h3>
+        <!-- ko if: ${name}().length == 0 -->
+        <p>
             No images found.
-        </h3>
+        </p>
         <!-- /ko -->
     </div>
 </bc:koLoading>

@@ -11,33 +11,75 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     self.transients = {
         loadingGazette: ko.observable(false)
     };
-    self.site = null;
+    self.site = ko.observable({
+        name: ko.observable(),
+        siteId: ko.observable(),
+        externalId: ko.observable(),
+        type: ko.observable(),
+        area: ko.observable(),
+        description: ko.observable(),
+        notes: ko.observable(),
+        projects: ko.observableArray(),
+        extent: ko.observable({
+            source: ko.observable(),
+            geometry:  ko.observable({
+                decimalLatitude: ko.observable(),
+                decimalLongitude: ko.observable(),
+                uncertainty: ko.observable(),
+                precision: ko.observable(),
+                datum: ko.observable(),
+
+                type: ko.observable(),
+                nrm: ko.observable(),
+                state: ko.observable(),
+                lga: ko.observable(),
+                locality: ko.observable(),
+                mvg: ko.observable(),
+                mvs: ko.observable(),
+
+                radius: ko.observable(),
+                areaKmSq: ko.observable(),
+                coordinates: ko.observable(),
+                centre: ko.observable(),
+
+                bbox: ko.observable(),
+                pid: ko.observable(),
+                name: ko.observable(),
+                fid: ko.observable(),
+                layerName: ko.observable()
+            })
+        })
+    });
     self.pointsOfInterest = ko.observableArray();
     self.showPointAttributes = ko.observable(false);
     self.allowPointsOfInterest = ko.observable(mapOptions.allowPointsOfInterest || false);
+    self.displayAreaInReadableFormat = null
+
+    self.site().extent().geometry().areaKmSq.subscribe(function(val){
+        self.site().area(val)
+    })
 
     self.loadSite = function (site) {
-        self.site = ko.observable({
-            name: ko.observable(exists(site, "name")),
-            siteId: ko.observable(exists(site, "siteId")),
-            externalId: ko.observable(exists(site, "externalId")),
-            type: ko.observable(exists(site, "type")),
-            area: ko.observable(exists(site, "area")),
-            description: ko.observable(exists(site, "description")),
-            notes: ko.observable(exists(site, "notes")),
-            projects: ko.observableArray(site.projects || [])
-        });
+        var siteModel = self.site();
+        siteModel.name(exists(site, "name"));
+        siteModel.siteId(exists(site, "siteId"));
+        siteModel.externalId(exists(site, "externalId"));
+        siteModel.type(exists(site, "type"));
+        siteModel.area(exists(site, "area"));
+        siteModel.description(exists(site, "description"));
+        siteModel.notes(exists(site, "notes"));
+        siteModel.projects(site.projects || [])
 
         if (site.extent) {
-            self.site().extent = ko.observable({
-                source: ko.observable(exists(site.extent, "source")),
-                geometry: self.loadGeometry(site.extent.geometry || {})
-            });
+            self.site().extent().source(exists(site.extent, "source"));
+            self.loadGeometry(site.extent.geometry || {});
         } else {
-            self.site().extent = ko.observable({
-                source: ko.observable(),
-                geometry: self.loadGeometry({})
-            });
+            self.site().extent().source('');
+            self.loadGeometry({});
+        }
+
+        if(self.site().extent().geometry().areaKmSq()){
+            self.site().area(self.site().extent().geometry().areaKmSq())
         }
 
         if (!_.isEmpty(site.poi)) {
@@ -45,6 +87,12 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
                 createPointOfInterest(poi, self.hasPhotoPointDocuments(poi))
             });
         }
+
+        self.displayAreaInReadableFormat = ko.computed(function(){
+            if(self.site().area()){
+                return convertKMSqToReadableUnit(self.site().area())
+            }
+        });
     };
 
     self.hasPhotoPointDocuments = function (poi) {
@@ -62,42 +110,38 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     };
 
     self.loadGeometry = function (geometry) {
-        var geometryObservable = ko.observable({
-            decimalLatitude: ko.observable(exists(geometry, 'decimalLatitude')),
-            decimalLongitude: ko.observable(exists(geometry, 'decimalLongitude')),
-            uncertainty: ko.observable(exists(geometry, 'uncertainty')),
-            precision: ko.observable(exists(geometry, 'precision')),
-            datum: ko.observable(exists(geometry, 'datum')),
+        var geometryObservable = self.site().extent().geometry();
+        geometryObservable.decimalLatitude(exists(geometry, 'decimalLatitude')),
+        geometryObservable.decimalLongitude(exists(geometry, 'decimalLongitude')),
+        geometryObservable.uncertainty(exists(geometry, 'uncertainty')),
+        geometryObservable.precision(exists(geometry, 'precision')),
+        geometryObservable.datum(exists(geometry, 'datum')),
+        geometryObservable.type(exists(geometry, 'type')),
+        geometryObservable.nrm(exists(geometry, 'nrm')),
+        geometryObservable.state(exists(geometry, 'state')),
+        geometryObservable.lga(exists(geometry, 'lga')),
+        geometryObservable.locality(exists(geometry, 'locality')),
+        geometryObservable.mvg(exists(geometry, 'mvg')),
+        geometryObservable.mvs(exists(geometry, 'mvs')),
+        geometryObservable.radius(exists(geometry, 'radius')),
+        geometryObservable.areaKmSq(exists(geometry, 'areaKmSq')),
+        geometryObservable.coordinates(exists(geometry, 'coordinates')),
+        geometryObservable.centre(exists(geometry, 'centre')),
+        geometryObservable.bbox(exists(geometry, 'bbox')),
+        geometryObservable.pid(exists(geometry, 'pid')),
+        geometryObservable.name(exists(geometry, 'name')),
+        geometryObservable.fid(exists(geometry, 'fid')),
+        geometryObservable.layerName(exists(geometry, 'layerName'))
 
-            type: ko.observable(exists(geometry, 'type')),
-            nrm: ko.observable(exists(geometry, 'nrm')),
-            state: ko.observable(exists(geometry, 'state')),
-            lga: ko.observable(exists(geometry, 'lga')),
-            locality: ko.observable(exists(geometry, 'locality')),
-            mvg: ko.observable(exists(geometry, 'mvg')),
-            mvs: ko.observable(exists(geometry, 'mvs')),
-
-            radius: ko.observable(exists(geometry, 'radius')),
-            areaKmSq: ko.observable(exists(geometry, 'areaKmSq')),
-            coordinates: ko.observable(exists(geometry, 'coordinates')),
-            centre: ko.observable(exists(geometry, 'centre')),
-
-            bbox: ko.observable(exists(geometry, 'bbox')),
-            pid: ko.observable(exists(geometry, 'pid')),
-            name: ko.observable(exists(geometry, 'name')),
-            fid: ko.observable(exists(geometry, 'fid')),
-            layerName: ko.observable(exists(geometry, 'layerName'))
-        });
-
-        latSubscriber = geometryObservable().decimalLatitude.subscribe(updateSiteMarkerPosition);
-        lngSubscriber = geometryObservable().decimalLongitude.subscribe(updateSiteMarkerPosition);
+        latSubscriber = geometryObservable.decimalLatitude.subscribe(updateSiteMarkerPosition);
+        lngSubscriber = geometryObservable.decimalLongitude.subscribe(updateSiteMarkerPosition);
 
         if (!_.isEmpty(geometry)) {
             var validGeoJson = Biocollect.MapUtilities.featureToValidGeoJson(geometry);
             self.map.setGeoJSON(validGeoJson);
             self.showPointAttributes(geometry.type == "Point");
         }
-        loadGazetteInformation(geometryObservable().decimalLatitude(), geometryObservable().decimalLongitude());
+        loadGazetteInformation(geometryObservable.decimalLatitude(), geometryObservable.decimalLongitude());
 
         return geometryObservable;
     };

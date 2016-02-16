@@ -935,3 +935,22 @@ function initialiseImageGallery(config){
     var vm = new ImageGalleryViewModel(config);
     ko.applyBindings(vm, config.element);
 }
+
+/**
+ * Converts kilometer square area to an appropriate human readable unit
+ * supported units - km square, hectare, meter square
+ * @param kmSq {number}
+ * @returns {string}
+ */
+function convertKMSqToReadableUnit(kmSq){
+    if(kmSq != undefined){
+        if(kmSq > 1){
+            return neat_number(kmSq,4) + ' km&sup2;'
+        }
+        if(kmSq > 0.001){
+            return neat_number(kmSq*100,4) + ' hectare'
+        }
+
+        return neat_number(kmSq*1000000,4) + ' m&sup2;'
+    }
+}
