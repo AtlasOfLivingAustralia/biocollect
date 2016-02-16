@@ -4,7 +4,7 @@
     <!-- ko if: current -->
     <div class="row-fluid">
         <div class="span10 text-left">
-            <h2 class="strong">Step 5 of 6 - Specify the area or places where the survey will be undertaken</h2>
+            <h2 class="strong">Step 6 of 7 - Specify the area or places where the survey will be undertaken</h2>
         </div>
         <div class="span2 text-right">
             <g:render template="../projectActivity/status"/>

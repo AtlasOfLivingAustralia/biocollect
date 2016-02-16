@@ -4,7 +4,7 @@
             <span data-bind="if: !published()">
             <div class="row-fluid">
                 <div class="span10 text-left">
-                    <h2 class="strong">Step 6 of 6 - Publish the survey to enter data</h2>
+                    <h2 class="strong">Step 7 of 7 - Publish the survey to enter data</h2>
                 </div>
 
                 <div class="span2 text-right">

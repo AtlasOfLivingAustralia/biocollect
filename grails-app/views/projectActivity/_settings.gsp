@@ -66,6 +66,7 @@
                 <ul id="ul-survey-constraint-citizen-science" class="nav nav-pills">
                     <li class="active"><a href="#survey-info" id="survey-info-tab" data-toggle="tab">Survey Info</a></li>
                     <li><a href="#survey-visibility" id="survey-visibility-tab" data-toggle="tab">Visibility</a></li>
+                    <li><a href="#survey-alert" id="survey-alert-tab" data-toggle="tab">Alert</a></li>
                     <li><a href="#survey-species" id="survey-species-tab" data-toggle="tab">Species</a></li>
                     <li><a href="#survey-form" id="survey-form-tab" data-toggle="tab">Survey Form</a></li>
                     <li><a href="#survey-locations" id="survey-locations-tab" data-toggle="tab">Locations</a></li>
@@ -78,26 +79,37 @@
                             <g:render template="/projectActivity/info"/>
                         </span>
                     </div>
+
                     <div class="pill-pane" id="survey-visibility">
                         <span class="validationEngineContainer" id="project-activities-visibility-validation">
                             <g:render template="/projectActivity/visibility"/>
                         </span>
                     </div>
+
+                    <div class="pill-pane" id="survey-alert">
+                        <span class="validationEngineContainer" id="project-activities-alert-validation">
+                            <g:render template="/projectActivity/surveyAlert"/>
+                        </span>
+                    </div>
+
                     <div class="pill-pane" id="survey-species">
                         <span class="validationEngineContainer" id="project-activities-species-validation">
                             <g:render template="/projectActivity/species"/>
                         </span>
                     </div>
+
                     <div class="pill-pane" id="survey-form">
                         <span class="validationEngineContainer" id="project-activities-form-validation">
                             <g:render template="/projectActivity/survey"/>
                         </span>
                     </div>
+
                     <div class="pill-pane" id="survey-locations">
                         <span class="validationEngineContainer" id="project-activities-locations-validation">
                             <g:render template="/projectActivity/sites"/>
                         </span>
                     </div>
+
                     <div class="pill-pane" id="survey-publish">
                         <g:render template="/projectActivity/publish"/>
                     </div>

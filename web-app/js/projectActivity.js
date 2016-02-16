@@ -171,6 +171,10 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         return self.genericUpdate("species");
     };
 
+    self.saveAlert = function () {
+        return self.genericUpdate("alert");
+    };
+
     self.saveSites = function () {
         var jsData = self.current().asJS("sites");
         if (jsData.sites && jsData.sites.length > 0) {
@@ -190,7 +194,6 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
     self.redirectToCreate = function(){
         var pActivity = self.current();
-        // There must be a better way to construct the one below just as the original fcConfig.siteCreateUrl was built
         self.saveSitesBeforeRedirect(fcConfig.siteCreateUrl + '&pActivityId=' + pActivity.projectActivityId());
     };
 
@@ -237,7 +240,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         } else if (caller == "info" && !pActivity.isEndDateAfterStartDate()){
             showAlert("Survey end date must be after start date", "alert-error", self.placeHolder);
             return false;
-        } else if(caller == "info" || caller == "visibility"){
+        } else if(caller == "info" || caller == "visibility" || caller == "alert"){
             return true;
         }
 
@@ -420,7 +423,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     };
 
     self.genericUpdate = function (caller) {
-        if (!$('#project-activities-' + caller + '-validation').validationEngine('validate')) {
+        if (caller != 'alert' && !$('#project-activities-' + caller + '-validation').validationEngine('validate')) {
             return false;
         }
         var pActivity = self.current();
@@ -471,6 +474,7 @@ var ProjectActivity = function (params) {
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
     self.species = new SpeciesConstraintViewModel(pActivity.species);
     self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
+    self.alert = new AlertViewModel(pActivity.alert);
 
     self.transients = self.transients || {};
     self.transients.warning = ko.computed(function () {
@@ -533,6 +537,7 @@ var ProjectActivity = function (params) {
             self.asJS("form"),
             self.asJS("species"),
             self.asJS("visibility"),
+            self.asJS("alert"),
             self.asJS("sites"));
         return jsData;
     };
@@ -572,6 +577,11 @@ var ProjectActivity = function (params) {
             jsData = {};
             var ignore = self.ignore.concat(['transients']);
             jsData.visibility = ko.mapping.toJS(self.visibility, {ignore: ignore});
+        }
+        else if (by == "alert") {
+            jsData = {};
+            var ignore = self.ignore.concat(['transients']);
+            jsData.alert = ko.mapping.toJS(self.alert, {ignore: ignore});
         }
 
         return jsData;
@@ -894,6 +904,96 @@ var SurveyVisibilityViewModel = function (visibility) {
     });
 };
 
+var AlertViewModel = function (alert) {
+    var self = this;
+    if (!alert) alert = {};
+    self.allSpecies = ko.observableArray();
+    self.emailAddresses = ko.observableArray();
+
+    self.add = function () {
+        if (!$('#project-activities-alert-validation').validationEngine('validate')) {
+            return;
+        }
+        var species = {};
+        species.name = self.transients.species.name();
+        species.guid = self.transients.species.guid();
+
+        var match = ko.utils.arrayFirst(self.allSpecies(), function(item) {
+            return species.guid === item.guid();
+        });
+
+        if (!match) {
+            self.allSpecies.push(new SpeciesViewModel(species));
+        }
+        self.transients.species.reset();
+    };
+    self.delete = function (species) {
+        self.allSpecies.remove(species);
+    };
+
+    self.addEmail = function () {
+        var emails = [];
+        emails = self.transients.emailAddress().split(",");
+        var invalidEmail = false;
+        var message = "";
+        $.each(emails, function (index, email) {
+            if (!self.validateEmail(email)) {
+                invalidEmail = true;
+                message = email;
+                return false;
+            }
+        });
+
+        if (invalidEmail) {
+            showAlert("Invalid email address (" + message + ")", "alert-error", "project-activities-result-placeholder");
+        } else {
+            $.each(emails, function (index, email) {
+                if (self.emailAddresses.indexOf(email) < 0) {
+                    self.emailAddresses.push(email);
+                }
+            });
+            self.transients.emailAddress('');
+        }
+    };
+
+    self.deleteEmail = function (email) {
+        self.emailAddresses.remove(email);
+    };
+
+    self.transients = {};
+    self.transients.species = new SpeciesViewModel();
+    self.transients.emailAddress = ko.observable();
+    self.transients.disableSpeciesAdd  = ko.observable(true);
+    self.transients.disableAddEmail  = ko.observable(true);
+    self.transients.emailAddress.subscribe(function(email) {
+        return email ? self.transients.disableAddEmail(false): self.transients.disableAddEmail(true);
+    });
+    self.transients.species.guid.subscribe(function(guid) {
+        return guid ? self.transients.disableSpeciesAdd(false) : self.transients.disableSpeciesAdd(true);
+    });
+
+    self.validateEmail = function(email){
+        var expression = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        return expression.test(email);
+    };
+
+    self.transients.bioProfileUrl = fcConfig.bieUrl + '/species/';
+    self.transients.bioSearch = ko.observable(fcConfig.speciesSearchUrl);
+    self.loadAlert = function (alert) {
+        self.allSpecies($.map(alert.allSpecies ? alert.allSpecies : [], function (obj, i) {
+                return new SpeciesViewModel(obj);
+            })
+        );
+
+        self.emailAddresses($.map(alert.emailAddresses ? alert.emailAddresses : [], function (obj, i) {
+                return obj;
+            })
+        );
+    };
+
+    self.loadAlert(alert);
+};
+
 /**
  * Custom validation function (used by the jquery-validation-engine), defined on the embargoUntil date field on the
  * survey admin visibility form
@@ -914,7 +1014,7 @@ function isEmbargoDateRequired(field, rules, i, options) {
 }
 
 function initialiseValidator() {
-    var tabs = ['info', 'species', 'form', 'access', 'visibility'];
+    var tabs = ['info', 'species', 'form', 'access', 'visibility', 'alert'];
     $.each(tabs, function (index, label) {
         $('#project-activities-' + label + '-validation').validationEngine();
     });
