@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 import grails.converters.JSON
+import org.apache.commons.lang.StringUtils
 
 class SearchController {
     def searchService, webService, speciesService, grailsApplication, commonService, projectActivityService
@@ -10,7 +11,7 @@ class SearchController {
      * @return resp
      */
     def index(String query) {
-        params.facets = SettingService.getHubConfig().availableFacets.join(',')+',className'
+        params.facets = StringUtils.join(SettingService.getHubConfig().availableFacets,',')+',className'
         [facetsList: params.facets.tokenize(","), results: searchService.fulltextSearch(params)]
     }
 

@@ -46,6 +46,10 @@ var HubSettingsViewModel = function(programsModel, options) {
             self.selectedHubUrlPath(config.currentHub);
         }
     }, 'json');
+
+    self.selectedHubUrlPath.subscribe(function() {
+        self.selectedHub(undefined);
+    });
 };
 
 var HubSettings = function(settings, config) {
