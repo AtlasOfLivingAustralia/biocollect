@@ -34,7 +34,7 @@
             <tbody>
                 <g:each var="setting" in="${settings}">
                     <tr>
-                        <td >
+                        <td>
                             ${setting.key}
                         </td>
                         <td>

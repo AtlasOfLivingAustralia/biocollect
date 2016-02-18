@@ -118,3 +118,12 @@ footer img {
 .nav-list>.active>div, .nav-list>.active>div:hover, .nav-list>.active>div:focus {
     background-color: #c44d34;
 }
+
+@media only screen and (max-width: 768px) {
+    #organisationSearchControls {
+        display: flex;
+    }
+    .input-append #organisationName  {
+        width: 90%;
+    }
+}
