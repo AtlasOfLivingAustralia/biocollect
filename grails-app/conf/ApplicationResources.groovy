@@ -58,7 +58,7 @@ modules = {
         resource url: 'vendor/wmd/showdown.js'
         resource url: 'vendor/wmd/wmd.js'
         resource url: 'vendor/wmd/wmd-buttons.png'
-
+        resource url: 'css/wmd-editor.css'
     }
 
     nrmPrintSkin {
