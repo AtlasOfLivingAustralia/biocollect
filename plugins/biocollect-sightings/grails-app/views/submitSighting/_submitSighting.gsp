@@ -27,6 +27,7 @@
 
 <g:if test="${sighting && !sighting?.error || !sighting}">
     <input type="hidden" name="occurrenceID" id="occurrenceID" value="${sighting?.occurrenceID}"/>
+    <input type="hidden" name="outputSpeciesId" id="outputSpeciesId" value="${sighting?.outputSpeciesId}"/>
     <input type="hidden" name="userId" id="userId" value="${sighting?.userId ?: user?.userId}"/>
     <input type="hidden" name="recordedBy" id="recordedBy" value="${sighting?.recordedBy ?: user?.displayName}"/>
 
