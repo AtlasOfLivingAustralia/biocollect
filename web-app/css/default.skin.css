@@ -126,4 +126,23 @@ footer img {
     .input-append #organisationName  {
         width: 90%;
     }
+
+    .padding10-small-screen {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
 }
+#pt-search-group {
+    white-space: normal;
+}
+
+@media only screen and (max-width: 480px) {
+    #pt-search-group {
+        margin-top: 0px ;
+    }
+}
+
+footer, .ftr-primary, .ftr-secondary, .ftr-social {
+    background-color: #F2F2F2;
+}
+

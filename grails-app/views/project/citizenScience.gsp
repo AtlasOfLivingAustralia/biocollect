@@ -43,7 +43,7 @@
 <div id="wrapper" class="content container-fluid">
     <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
     <div class="row-fluid">
-        <div class="span12" id="heading">
+        <div class="span12 padding10-small-screen" id="heading">
             <h1 class="pull-left"><g:message code="project.citizenScience.heading"/></h1>
             <div class="pull-right">
                 <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</a>

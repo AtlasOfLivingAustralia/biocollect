@@ -1,7 +1,7 @@
 <div id="pt-table" class="row-fluid">
     <table data-table-list>
         <tbody>
-            <tr>
+            <tr class="padding10-small-screen">
                 <td><h3 id="pt-resultsReturned"></h3></td>
                 <td>
                     <g:if test="${fc.userIsAlaOrFcAdmin()}">
