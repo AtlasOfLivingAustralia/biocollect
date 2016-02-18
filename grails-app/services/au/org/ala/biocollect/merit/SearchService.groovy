@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 import groovy.json.JsonSlurper
+import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 import javax.annotation.PostConstruct
@@ -167,7 +168,7 @@ class SearchService {
         params.fsort = "term"
         //params.offset = 0
         params.query = "docType:project"
-        params.facets = params.facets ?: SettingService.getHubConfig().availableFacets.join(',')
+        params.facets = params.facets ?: StringUtils.join(SettingService.getHubConfig().availableFacets,',')
 
         addDefaultFacetQuery(params)
 

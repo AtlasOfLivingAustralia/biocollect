@@ -333,7 +333,7 @@
                 allowSearchByAddress: false,
                 draggableMarkers: false,
                 showReset: false,
-                maxZoom: 7,
+                maxZoom: 20,
                 wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
                 wmsFeatureUrl: fcConfig.featureService + "?featureId="
             };

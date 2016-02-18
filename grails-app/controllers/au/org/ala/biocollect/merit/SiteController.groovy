@@ -1,7 +1,7 @@
 package au.org.ala.biocollect.merit
-
 import au.org.ala.web.AuthService
 import grails.converters.JSON
+import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
@@ -133,7 +133,7 @@ class SiteController {
             if(!userService.userIsAlaAdmin()){
                 render status:HttpStatus.SC_UNAUTHORIZED, text: "Access denied: User not authorised to delete"
                 return
-            } else if(userService.userIsAlaAdmin() && (siteService.isSiteAssociatedWithProject(id) || siteService.isSiteAssociatedWithActivity(id))){
+            } else if(siteService.isSiteAssociatedWithProject(id) || siteService.isSiteAssociatedWithActivity(id)){
                 render status: HttpStatus.SC_BAD_REQUEST, text: "Site ${id} has projects or activities associated with it. The site cannot be deleted."
                 return
             }
@@ -571,10 +571,10 @@ class SiteController {
             List facets = []
 
             List projectIds = sites?.collect{
-                it._source?.projects?.join(',')
+                StringUtils.join(it._source?.projects,',')
             }
-            // replace done because double quotes are inserted in the above join method.
-            String pIds = projectIds.join(',')?.replace('"','')
+            // JSON Array join is inserting quotes around each array element. Hence using StringUtil.join method.
+            String pIds = StringUtils.join(projectIds,',')
             Map permissions = projectService.canUserEditProjects(userId, pIds)
             sites = sites?.collect {
                 Map doc = it._source
