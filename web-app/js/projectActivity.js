@@ -480,6 +480,13 @@ var ProjectActivity = function (params) {
     self.transients.warning = ko.computed(function () {
         return self.projectActivityId() === undefined ? true : false;
     });
+    self.transients.disableEmbargoUntil = ko.computed(function () {
+        if(self.visibility.embargoOption() != 'DATE'){
+            return true;
+        }
+
+        return false;
+    });
 
     self.sites = ko.observableArray();
     self.loadSites = function (projectSites, surveySites) {
@@ -894,14 +901,8 @@ var SurveyVisibilityViewModel = function (visibility) {
 
     self.embargoOption = ko.observable(visibility.embargoOption ? visibility.embargoOption : 'NONE');   // 'NONE', 'DAYS', 'DATE' -> See au.org.ala.ecodata.EmbargoOptions in Ecodata
 
-    self.embargoForDays = ko.observable(visibility.embargoForDays ? visibility.embargoForDays : 60);     // 60, 90, 120 days
+    self.embargoForDays = ko.observable(visibility.embargoForDays ? visibility.embargoForDays : 10).extend({numeric:0});     // 1 - 180 days
     self.embargoUntil = ko.observable(visibility.embargoUntil).extend({simpleDate: true});
-
-    self.embargoOption.subscribe(function (option) {
-        if (option !== 'DAYS') {
-            self.embargoForDays(60)
-        }
-    });
 };
 
 var AlertViewModel = function (alert) {

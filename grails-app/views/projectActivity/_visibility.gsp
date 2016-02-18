@@ -26,12 +26,12 @@
                         <label><input type="radio" value="NONE" data-bind="checked: visibility.embargoOption" name="embargoOptionNone" /> Records publicly visible on submission</label>
                         <label>
                             <input type="radio" value="DAYS" data-bind="checked: visibility.embargoOption" name="embargoOptionDays" /> Records publicly visible after
-                            <select style="width:10%;" data-validation-engine="validate[required]" data-bind="options: $root.datesOptions, value: visibility.embargoForDays, optionsCaption: 'Please select'" ></select> days
+                            <input class="input-small" data-bind="value:visibility.embargoForDays" data-validation-engine="validate[custom[number],min[1],max[180]]" type="number"> days. Choose between 1 and 180.
                         </label>
                         <label class="inline">
                             <input type="radio" value="DATE" data-bind="checked: visibility.embargoOption" name="embargoOptionDate" id="embargoOptionDate" /> Embargo publishing all records until
-                            <span class="input-append" >
-                                <input name="embargoUntilDate" id="embargoUntilDate" data-bind="datepicker: visibility.embargoUntil.date, datePickerOptions: {endDate: '+12m', startDate: '+1d'}" data-validation-engine="validate[funcCall[isEmbargoDateRequired]]" type="text"/><span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
+                            <span class="input-append">
+                                <input name="embargoUntilDate" id="embargoUntilDate" data-bind="datepicker: visibility.embargoUntil.date, datePickerOptions: {endDate: '+12m', startDate: '+1d'}, disable: transients.disableEmbargoUntil" data-validation-engine="validate[funcCall[isEmbargoDateRequired]]" type="text"/><span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
                             </span>
                         </label>
                    </div>
