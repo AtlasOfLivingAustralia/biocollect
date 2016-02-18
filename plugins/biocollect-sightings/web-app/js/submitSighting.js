@@ -635,6 +635,7 @@ function Sighting() {
         var record = {};
 
         var fields = ["guid",
+            "outputSpeciesId",
             "scientificName",
             "commonName",
             "kingdom",
