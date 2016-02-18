@@ -27,4 +27,12 @@ class OutputService {
         webService.getJson(grailsApplication.config.ecodata.service.url + "/output?activityId=${activityId}")
     }
 
+    /**
+     * Get Output Species Identifier
+     *
+     * @return output species identifier.
+     */
+    def getOutputSpeciesId() {
+        webService.getJson(grailsApplication.config.ecodata.service.url + "/output/getOutputSpeciesUUID")
+    }
 }

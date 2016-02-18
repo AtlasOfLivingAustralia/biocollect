@@ -29,7 +29,7 @@
 
                     <label class="control-label span3" for="organisationName"><g:message code="project.details.organisationNameSearch"/><fc:iconHelp><g:message code="project.details.organisationName.help"/></fc:iconHelp><i class="req-field"></i></label>
                     <div class="span6 controls">
-                        <div class="input-append">
+                        <div id="organisationSearchControls" class="input-append">
                             <input id="organisationName" class="input-xxlarge" type="text" placeholder="Start typing a name here" data-bind="value:term, valueUpdate:'afterkeydown', disable:selection" data-validation-engine="validate[funcCall[validateOrganisationSelection]]"><button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
                         </div>
                     </div>

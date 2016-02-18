@@ -31,14 +31,6 @@ class ALA {
         projects.collect {
             Map doc = it._source;
 
-
-            Map siteGeom;
-            doc?.sites?.each { site ->
-                if (doc?.projectSiteId == site.siteId) {
-                    siteGeom = site.extent?.geometry;
-                }
-            }
-
             [
                 name       : doc.name,
                 projectId  : doc.projectId,

@@ -225,9 +225,12 @@ class BioActivityController {
                 outputModel?.dataModel?.each { Map dataModel ->
                     if (dataModel.dataType == SINGLE_SIGHTINGS_DATA_TYPE) {
                         Map species = projectActivityService.getSingleSpecies(model.pActivity?.projectActivityId)
+                        model.defaultData = [:]
                         if (species.isSingle) {
-                            model.defaultData = [type: SINGLE_SIGHTINGS_DATA_TYPE, name: species.name, guid: species.guid]
+                            model.defaultData = [name: species.name, guid: species.guid]
                         }
+                        model.defaultData.type = SINGLE_SIGHTINGS_DATA_TYPE
+                        model.defaultData.outputSpeciesId  = outputService.getOutputSpeciesId()?.outputSpceciesId
                     }
                 }
             }

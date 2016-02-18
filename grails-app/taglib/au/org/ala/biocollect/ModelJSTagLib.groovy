@@ -136,7 +136,10 @@ class ModelJSTagLib {
                 out << INDENT*4 << "}\n"
             } else if (mod.dataType == 'singleSighting') {
                 if(attrs?.defaultData?.type == 'singleSighting'){
-                    Map defaultData = [speciesLookup: attrs.defaultData.name, guid: attrs.defaultData.guid]
+                    Map defaultData = [:]
+                    defaultData.speciesLookup = attrs.defaultData.name
+                    defaultData.guid = attrs.defaultData.guid
+                    defaultData.outputSpeciesId = attrs.defaultData.outputSpeciesId
                     out << INDENT*4 << "data = ${defaultData as JSON};\n"
                 }
                 out << INDENT*4 << "self.data.sighting.loadSightingData(data, ${readonly});\n"

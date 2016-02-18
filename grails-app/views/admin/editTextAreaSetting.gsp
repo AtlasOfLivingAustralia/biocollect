@@ -21,7 +21,7 @@
                 });
         </r:script>
         <content tag="pageTitle">Static pages</content>
-        <div id="wrapper" class="container-fluid">
+        <div id="wrapper" class="container-fluid" style="padding: 10px">
             <div class="row-fluid">
                 <div class="span12" id="">
                     <a href="${returnUrl}" class="btn"><i class="icon-hand-left"></i> back to ${returnLabel}</a>
@@ -35,8 +35,8 @@
                             <g:hiddenField name="returnUrl" value="${returnUrl}" />
                             <div class="row-fluid">
                                 <div class="${spanN}">
-                                    <div id="notes-button-bar" style="width:100%;background-color: white;"></div>
-                                    <div style="padding-right:12px;">
+                                    <div class="row-fluid" id="notes-button-bar" style="width:100%;background-color: white;"></div>
+                                    <div class="row-fluid" style="padding-right:12px;">
                                         <g:textArea name="textValue" id="textValue" value="${textValue?:''.trim()}" rows="${!ajax ? 16 : 8}"
                                                     cols="120" style="width:100%;margin:0;"></g:textArea>
                                     </div>
