@@ -21,7 +21,7 @@
                 });
         </r:script>
         <content tag="pageTitle">Static pages</content>
-        <div id="wrapper" class="container-fluid" style="padding: 10px">
+        <div id="wrapper" class="container-fluid padding10-small-screen">
             <div class="row-fluid">
                 <div class="span12" id="">
                     <a href="${returnUrl}" class="btn"><i class="icon-hand-left"></i> back to ${returnLabel}</a>

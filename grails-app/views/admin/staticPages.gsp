@@ -23,12 +23,12 @@
 
     <body>
         <content tag="pageTitle">Static pages</content>
-        <table class="table table-bordered table-striped" style="word-break:break-all;">
+        <table class="table table-bordered table-striped word-break-all">
             <thead>
                 <tr>
                     <th>Page Id</th>
-                    <th style="min-width: 68px">View</th>
-                    <th style="min-width: 68px">Edit</th>
+                    <th class="min-width-68">View</th>
+                    <th class="min-width-68">Edit</th>
                 </tr>
             </thead>
             <tbody>

@@ -10,7 +10,7 @@
     <r:require module="jqueryValidationEngine"/>
     <content tag="pageTitle">Users</content>
 
-    <div class="container-fluid" style="padding: 20px">
+    <div class="container-fluid padding20">
         <div class="well">Logged in user is <b class="tooltips" title="${user}">${user.userDisplayName}</b></div>
 
         <div class="row-fluid">

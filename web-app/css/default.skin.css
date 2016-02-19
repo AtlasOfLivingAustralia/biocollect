@@ -146,3 +146,19 @@ footer, .ftr-primary, .ftr-secondary, .ftr-social {
     background-color: #F2F2F2;
 }
 
+.nowrap {
+    white-space: nowrap;
+}
+
+.padding20 {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.min-width-68 {
+    min-width: 68px;
+}
+
+.word-break-all {
+    word-break:break-all;
+}
