@@ -62,10 +62,10 @@ var SpeciesViewModel = function (species, lists, populate) {
 
 
     self.loadOutputSpeciesId = function(species) {
-
-        if(species.outputSpeciesId) {
+        var idRequired = fcConfig.getOutputSpeciesIdUrl;
+        if (species.outputSpeciesId) {
             self.outputSpeciesId(species.outputSpeciesId);
-        } else {
+        } else if (idRequired) {
             $.ajax({
                 url: fcConfig.getOutputSpeciesIdUrl,
                 type: 'GET',
