@@ -230,7 +230,7 @@ class BioActivityController {
                             model.defaultData = [name: species.name, guid: species.guid]
                         }
                         model.defaultData.type = SINGLE_SIGHTINGS_DATA_TYPE
-                        model.defaultData.outputSpeciesId  = outputService.getOutputSpeciesId()?.outputSpceciesId
+                        model.defaultData.outputSpeciesId  = outputService.getOutputSpeciesId()?.outputSpeciesId
                     }
                 }
             }
