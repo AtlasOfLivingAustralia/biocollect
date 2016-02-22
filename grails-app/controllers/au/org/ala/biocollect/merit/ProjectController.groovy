@@ -63,7 +63,7 @@ class ProjectController {
             def members = projectService.getMembersForProjectId(id)
             def admins = members.findAll{ it.role == "admin" }.collect{ it.userName }.join(",") // comma separated list of user email addresses
             String requestUrl = request.getHeader('referer');
-            Boolean isRequestFromCSProjectFinder = requestUrl?.contains(createLink(controller: 'project', action: 'citizenScience'))?:false
+            Boolean isRequestFromCSProjectFinder = isUrlCSProjectFinder(requestUrl);
 
             if (user) {
                 user = user.properties
@@ -692,6 +692,19 @@ class ProjectController {
             boolean validName = projectService.checkProjectName(params.projectName, params.id)
 
             render ([validName: validName] as JSON)
+        }
+    }
+
+    protected boolean  isUrlCSProjectFinder(String url){
+        List projectFinderUrl = [
+                createLink(controller: 'project', action: 'citizenScience', absolute: true),
+                createLink(controller: 'project', action: 'myProjects', absolute: true),
+                createLink(controller: 'organisation', action: 'index', absolute: true),
+                grailsApplication.config.grails.serverURL
+        ]
+
+        projectFinderUrl.inject(false) { result, cSUrl ->
+            result || url.startsWith(cSUrl);
         }
     }
 }
