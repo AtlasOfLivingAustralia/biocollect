@@ -15,6 +15,10 @@
             <div class="row-fluid">
                 <div class="span12 text-left">
                     <p>The survey must be published to be accessible on the survey list for data entry.</p>
+                    <p><strong>Note:</strong> If the survey is published and you wish to change anything on the &quot;species&quot;,
+                    &quot;Survey form&quot; or &quot;Locations&quot; tabs, you must first &quot;Unpublish&quot; the survey.
+                    All data already recorded for this survey will be lost if you do this. To retain existing data, end-date
+                    the current survey and create a new one with the same details and changed configuration settings.</p>
                     <button class="btn btn-success btn-small" data-bind="click: $root.updateStatus">Publish</button>
                 </div>
             </div>
