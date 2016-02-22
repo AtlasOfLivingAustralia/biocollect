@@ -242,7 +242,14 @@ class ProjectController {
         log.debug "Body: ${postBody}"
         log.debug "Params: ${params}"
 
-        boolean validName = projectService.checkProjectName(postBody.name, id)
+        Map project
+        String name = postBody.name
+        if (id && !name) {
+            project = projectService.get(id, 'brief')
+            name = project?.name
+        }
+
+        boolean validName = projectService.checkProjectName(name, id)
         if (!validName) {
             render status: 400, text: "Another project already exists with the name ${params.projectName}"
         } else {
