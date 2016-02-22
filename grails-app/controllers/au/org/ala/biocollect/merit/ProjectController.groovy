@@ -704,7 +704,7 @@ class ProjectController {
         ]
 
         projectFinderUrl.inject(false) { result, cSUrl ->
-            result || url.startsWith(cSUrl);
+            result || url?.startsWith(cSUrl);
         }
     }
 }
