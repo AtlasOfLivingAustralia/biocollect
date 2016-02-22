@@ -62,6 +62,8 @@ class ProjectController {
             def user = userService.getUser()
             def members = projectService.getMembersForProjectId(id)
             def admins = members.findAll{ it.role == "admin" }.collect{ it.userName }.join(",") // comma separated list of user email addresses
+            String requestUrl = request.getHeader('referer');
+            Boolean isRequestFromCSProjectFinder = requestUrl?.contains(createLink(controller: 'project', action: 'citizenScience'))?:false
 
             if (user) {
                 user = user.properties
@@ -90,7 +92,8 @@ class ProjectController {
                 projectContent:content.model,
                 messages: messages?.messages,
                 userMap: messages?.userMap,
-                hideBackButton: true
+                hideBackButton: true,
+                isRequestFromCSProjectFinder: isRequestFromCSProjectFinder
             ]
 
             if(project.projectType == 'survey'){
