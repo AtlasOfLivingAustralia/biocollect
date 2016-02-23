@@ -12,10 +12,28 @@
                 </div>
             </div>
 
+            <div class="alert alert-danger" data-bind="visible: !$root.isSurveyPublishable()">
+                <span>Validation failed</span>
+                <ol>
+                    <li data-bind="visible:!isInfoValid()">
+                        All mandatory fields in survey info tab needs to be filled. <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-info-tab'}">Fill survey info</div>
+                    </li>
+                    <li data-bind="visible: !species.isValid()">
+                        Survey species constrain not set. <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}">Set species</div>
+                    </li>
+                    <li data-bind="visible: !$root.isPActivityFormNameFilled()">
+                        Survey data entry template not set.  <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-form-tab'}">Set template</div>
+                    </li>
+                    <li data-bind="visible: !$root.isSiteSelected()">
+                        Site not selected for this survey <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-locations-tab'}">Choose survey site(s)</div>
+                    </li>
+                </ol>
+            </div>
+
             <div class="row-fluid">
                 <div class="span12 text-left">
                     <p>The survey must be published to be accessible on the survey list for data entry.</p>
-                    <button class="btn btn-success btn-small" data-bind="click: $root.updateStatus">Publish</button>
+                    <button class="btn btn-success btn-small" data-bind="click: $root.updateStatus, disable: !$root.isSurveyPublishable()">Publish</button>
                 </div>
             </div>
             </span>

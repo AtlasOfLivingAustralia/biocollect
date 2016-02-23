@@ -65,12 +65,12 @@
 
                 <ul id="ul-survey-constraint-citizen-science" class="nav nav-pills">
                     <li class="active"><a href="#survey-info" id="survey-info-tab" data-toggle="tab">Survey Info</a></li>
-                    <li><a href="#survey-visibility" id="survey-visibility-tab" data-toggle="tab">Visibility</a></li>
-                    <li><a href="#survey-alert" id="survey-alert-tab" data-toggle="tab">Alert</a></li>
-                    <li><a href="#survey-species" id="survey-species-tab" data-toggle="tab">Species</a></li>
-                    <li><a href="#survey-form" id="survey-form-tab" data-toggle="tab">Survey Form</a></li>
-                    <li><a href="#survey-locations" id="survey-locations-tab" data-toggle="tab">Locations</a></li>
-                    <li><a href="#survey-publish" id="survey-publish-tab" data-toggle="tab">Publish</a></li>
+                    <li><a href="#survey-visibility" id="survey-visibility-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}, css:{disabled: !isSurveyInfoFormFilled()}">Visibility</a></li>
+                    <li><a href="#survey-alert" id="survey-alert-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}, css:{disabled: !isSurveyInfoFormFilled()}">Alert</a></li>
+                    <li><a href="#survey-species" id="survey-species-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}, css:{disabled: !isSurveyInfoFormFilled()}">Species</a></li>
+                    <li><a href="#survey-form" id="survey-form-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}, css:{disabled: !isSurveyInfoFormFilled()}">Survey Form</a></li>
+                    <li><a href="#survey-locations" id="survey-locations-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}, css:{disabled: !isSurveyInfoFormFilled()}">Locations</a></li>
+                    <li><a href="#survey-publish" id="survey-publish-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}, css:{disabled: !isSurveyInfoFormFilled()}">Publish</a></li>
                 </ul>
 
                 <div class="pill-content">

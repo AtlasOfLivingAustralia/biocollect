@@ -108,6 +108,7 @@ var ProjectActivitiesDataViewModel = function (pActivitiesVM) {
 var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
     var self = $.extend(this, pActivitiesVM);
+    var surveyInfoTab = '#survey-info-tab';
     self.placeHolder = placeHolder;
     self.speciesOptions =  [{id: 'ALL_SPECIES', name:'All species'},{id:'SINGLE_SPECIES', name:'Single species'}, {id:'GROUP_OF_SPECIES',name:'A selection or group of species'}];
     self.datesOptions = [60, 90, 120, 180];
@@ -129,6 +130,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         self.projectActivities.push(new ProjectActivity(args));
         initialiseValidator();
         self.refreshSurveyStatus();
+        $(surveyInfoTab).tab('show');
         showAlert("Successfully added.", "alert-success", self.placeHolder);
     };
 
@@ -454,6 +456,69 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         });
 
     };
+
+    /**
+     * checks if selected survey has survey info tab filled.
+     * @returns {boolean}
+     */
+    self.isSurveyInfoFormFilled = ko.computed(function(){
+        return !!(self.current() && self.current().isInfoValid())
+    })
+
+    /**
+     * This function checks if the survey info tab is valid and returns an appropriate string to fill data-toggle
+     * attribute on the anchor tag. This logic is used to disable all tabs except survey info tab. It helps to force
+     * users to fill the survey info tab before moving to other tabs.
+     * @returns {string} 'tab' or ''
+     */
+    self.dataToggleVal = function(){
+        if(self.isSurveyInfoFormFilled()){
+            return 'tab'
+        } else {
+            return ''
+        }
+    }
+
+    /**
+     * Checks if all mandatory survey fields are filled for survey to be published.
+     * @returns {boolean}
+     */
+    self.isSurveyPublishable = function(){
+        var current = self.current();
+        var sites = current.sites();
+
+        return (current.isInfoValid() &&
+        current.species.isValid() &&
+        current.pActivityFormName() &&
+        (sites && sites.length > 0))
+    }
+
+    /**
+     * Checks if survey data entry template is selected
+     * @returns {boolean}
+     */
+    self.isPActivityFormNameFilled = function(){
+        var current = self.current();
+        return !!current.pActivityFormName();
+    }
+
+    /**
+     * Checks if one or more sites are added to the survey
+     * @returns {boolean}
+     */
+    self.isSiteSelected = function(){
+        var sites = self.current().sites();
+        return sites && sites.length > 0
+    }
+
+    /**
+     * Auto save when all mandatory survey info fields are filled
+     */
+    self.isSurveyInfoFormFilled.subscribe(function(){
+        if(self.isSurveyInfoFormFilled()){
+            self.saveInfo();
+        }
+    })
 
     self.refreshSurveyStatus();
 };
