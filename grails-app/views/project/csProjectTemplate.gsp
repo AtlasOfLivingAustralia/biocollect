@@ -68,8 +68,7 @@
         projectLinkPrefix: "${createLink(controller: 'project')}/",
         recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
         view: 'project',
-        imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
-        aboutTabOverride: ${isRequestFromCSProjectFinder}
+        imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}'
         },
         here = window.location.href;
 
@@ -141,9 +140,6 @@
         initialiseData('project');
 
         //Main tab selection
-        if(fcConfig.aboutTabOverride){
-            amplify.store( 'ul-main-project-state', 'about-tab');
-        }
         new RestoreTab('ul-main-project', 'about-tab');
         <g:if test="${projectContent.admin.visible}">
             initialiseProjectActivitiesSettings(pActivitiesVM);
