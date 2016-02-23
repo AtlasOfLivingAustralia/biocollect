@@ -65,6 +65,17 @@ function ProjectFinder() {
             $(e.target).attr('href', domain + '?' + 'download=true&' + params);
             return true;
         }
+        /**
+         * this function is used to tell project/index or citizenscience page that the traffic is coming from
+         * project finder page. This flag is used to decide if about page of the project should be shown.
+         * @returns {boolean}
+         */
+        this.setTrafficFromProjectFinderFlag = function(){
+            amplify.store('traffic-from-project-finder-page',true);
+            // to execute default action of anchor tag, true must be returned.
+            return true;
+        }
+
     }
 
     /**

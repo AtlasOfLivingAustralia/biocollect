@@ -27,7 +27,7 @@
                     </td>
                     <td>
                         <div class="project-row-layout pf-project-text">
-                            <a data-bind="attr:{href:transients.indexUrl}">
+                            <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
                                 <span data-bind="text:name" style="font-size:150%;font-weight:bold"></span>
                             </a>
                             <div data-bind="visible:transients.orgUrl">
