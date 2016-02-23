@@ -98,7 +98,7 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     }
 
     self.isInfoValid = function () {
-        return self.name() && self.description() && self.startDate() && self.isEndDateAfterStartDate();
+        return self.name() && self.description() && self.attribution() && self.startDate() && self.isEndDateAfterStartDate();
     };
 
     self.isEndDateAfterStartDate = function () {
