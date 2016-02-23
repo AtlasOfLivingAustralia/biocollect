@@ -12,7 +12,7 @@
                 <i class="icon-question-sign"></i>
             </a>
         </label>
-        <input id="alertEmailAddress" class="input-xlarge" type="text" data-bind="value: alert.transients.emailAddress, valueUpdate:'afterkeyup'" placeholder="Enter email address (seperated by commas)"/>
+        <input id="alertEmailAddress" class="input-xlarge" type="text" data-bind="value: alert.transients.emailAddress, valueUpdate:'afterkeyup'" placeholder="Enter email address"/>
         <div class="margin-bottom-5"></div>
         <button class="btn-default btn block btn-small" data-toggle="tooltip" title="Enter valid email address"
                 data-bind="click: alert.addEmail, disable: alert.transients.disableAddEmail"><i class="icon-plus" ></i>  Add</button>

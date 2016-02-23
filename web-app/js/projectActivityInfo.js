@@ -18,6 +18,8 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     self.published = ko.observable(o.published ? o.published : false);
     self.publicAccess = ko.observable(o.publicAccess ? o.publicAccess : false);
     self.attribution = ko.observable(o.attribution ? o.attribution : self.formatAttribution(organisationName, self.name()));
+    self.methodName = ko.observable(o.methodName);
+    self.methodAbstract = ko.observable(o.methodAbstract);
 
     self.current = ko.observable(selected);
 
