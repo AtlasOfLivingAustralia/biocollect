@@ -63,6 +63,41 @@
                 </div>
             </div>
 
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="methodName"><g:message code="project.survey.info.methodName"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodName"/>', content:'<g:message code="project.survey.info.methodName.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <input id="methodName" type="text" data-bind="value: methodName">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="methodAbstract"><g:message code="project.survey.info.methodAbstract"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodAbstract"/>', content:'<g:message code="project.survey.info.methodAbstract.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <textarea id="methodAbstract" rows="4" class="input-xlarge" data-bind="value: methodAbstract"></textarea>
+                    </div>
+                </div>
+            </div>
+
             <div class="row-fluid">
                 <div class="span4 text-right">
                     <label class="control-label" for="startDate"> <g:message code="project.survey.info.startDate"/>
