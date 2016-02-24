@@ -29,6 +29,9 @@ var ProjectActivitiesViewModel = function (params) {
         self.sort();
     });
 
+    // flag to check if survey was changed by dropdown menu. it is used to decide on saving survey.
+    self.isSurveySelected = ko.observable(true);
+
     self.sort = function () {
         var by = self.sortBy();
         var order = self.sortOrder() == 'asc' ? '<' : '>';
@@ -54,8 +57,10 @@ var ProjectActivitiesViewModel = function (params) {
     };
 
     self.setCurrent = function (pActivity) {
+        self.isSurveySelected(true);
         self.reset();
         pActivity.current(true);
+        self.isSurveySelected(false);
     };
 
     self.loadProjectActivities = function (pActivities) {
@@ -515,7 +520,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
      * Auto save when all mandatory survey info fields are filled
      */
     self.isSurveyInfoFormFilled.subscribe(function(){
-        if(self.isSurveyInfoFormFilled()){
+        if(self.isSurveyInfoFormFilled() && !self.isSurveySelected()){
             self.saveInfo();
         }
     })
