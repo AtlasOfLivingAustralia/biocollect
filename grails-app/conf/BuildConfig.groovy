@@ -116,7 +116,7 @@ grails.project.dependency.resolution = {
         compile ':cookie:1.4'
 
         if (Environment.current != Environment.DEVELOPMENT) {
-            compile ":biocollect-sightings:1.0-SNAPSHOT"
+            compile ":biocollect-sightings:1.1-SNAPSHOT"
         }
     }
 }
