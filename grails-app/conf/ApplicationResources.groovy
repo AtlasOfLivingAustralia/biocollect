@@ -436,4 +436,9 @@ modules = {
         resource url: 'js/pagination.js'
         resource url: 'js/sites-list.js'
     }
+
+    responsiveTableStacked{
+        resource url: 'vendor/responsive-table-stacked/stacked.css', attrs: [media: "screen and (max-width:736px)"]
+        resource url: 'vendor/responsive-table-stacked/stacked.js'
+    }
 }

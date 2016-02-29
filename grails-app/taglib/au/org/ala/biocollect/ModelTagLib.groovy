@@ -716,7 +716,7 @@ class ModelTagLib {
             out << INDENT*5 << "<td>" << dataTag(attrs, col, '', edit) << "</td>" << "\n"
         }
         if (model.editableRows) {
-                out << INDENT*5 << "<td>\n"
+                out << INDENT*5 << "<td >\n"
                 out << INDENT*6 << "<button class='btn btn-mini' data-bind='click:\$root.edit${model.source}Row, enable:!\$root.${model.source}Editing()' title='edit'><i class='icon-edit'></i> Edit</button>\n"
                 out << INDENT*6 << "<button class='btn btn-mini' data-bind='click:\$root.remove${model.source}Row, enable:!\$root.${model.source}Editing()' title='remove'><i class='icon-trash'></i> Remove</button>\n"
                 out << INDENT*5 << "</td>\n"
