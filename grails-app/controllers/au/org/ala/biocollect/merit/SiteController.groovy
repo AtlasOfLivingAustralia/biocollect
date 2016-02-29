@@ -548,6 +548,11 @@ class SiteController {
 
     }
 
+    def myFavourites() {
+        // wip #460
+        render view: "list"
+    }
+
     /**
      * This function does an elastic search for sites. All elastic search parameters are supported like fq, max etc.
      * @return
