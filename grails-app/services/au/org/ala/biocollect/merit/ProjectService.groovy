@@ -85,7 +85,7 @@ class ProjectService {
             body = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) has successfully created a new project ${props.name} with id ${projectId}"
         } else {
             subject = "An error occurred while creating a new project"
-            body = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) attempted to create a new project ${props.name}, but an error occurred during creation: ${result.error}."
+            body = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) attempted to create a new project ${props.name}, but an error occurred during creation: ${result.detail} : ${result.error}."
         }
 
         emailService.sendEmail(subject, body, ["${grailsApplication.config.biocollect.support.email.address}"])
