@@ -355,7 +355,7 @@ class SiteController {
         // ALL linked projects to proceed.
         String userId = userService.getCurrentUserId()
         values.projects?.each { projectId ->
-            if (!projectService.canUserEditProject(userId, projectId)) {
+            if (!projectService.canUserEditProject(userId, projectId) && !userService.userIsAlaAdmin()) {
                 flash.message = "Error: access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
                 result = [status: 'error']
                 //render result as JSON
@@ -366,7 +366,7 @@ class SiteController {
             result = siteService.updateRaw(id, values)
             if(postBody?.pActivityId){
                 def pActivity = projectActivityService.get(postBody.pActivityId)
-                if(!projectService.canUserEditProject(userId, pActivity?.projectId)){
+                if(!projectService.canUserEditProject(userId, pActivity?.projectId) && !userService.userIsAlaAdmin()){
                     flash.message = "Error: access denied: User does not have <b>editor</b> permission for pActivitityId ${postBody.pActivityId}"
                     result = [status: 'error']
                 } else {

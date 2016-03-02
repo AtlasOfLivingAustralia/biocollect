@@ -339,11 +339,12 @@
             };
             var smallMap = new ALA.Map("smallMap", mapOptions);
 
-            var geoJson = Biocollect.MapUtilities.featureToValidGeoJson(mapFeatures.features[0]);
-            smallMap.setGeoJSON(geoJson);
 
             if(mapFeatures.features === undefined || mapFeatures.features.length == 0){
                 $('#siteNotDefined').show();
+            } else {
+                var geoJson = Biocollect.MapUtilities.featureToValidGeoJson(mapFeatures.features[0]);
+                smallMap.setGeoJSON(geoJson);
             }
 
 

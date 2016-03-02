@@ -131,23 +131,24 @@
 
             siteList.forEach(function (site) {
                 var feature = site.extent
-                if (feature.geometry) {
-                    var lng = parseFloat(feature.geometry.centre[0]),
-                        lat = parseFloat(feature.geometry.centre[1]),
-                        geometry;
+                if (feature.source != 'none' && feature.geometry) {
+                    var lng, lat, geometry, options;
 
-                    if(!feature.geometry){
+                    if(feature.geometry.centre && feature.geometry.centre.length){
+                        lng= parseFloat(feature.geometry.centre[0]);
+                        lat = parseFloat(feature.geometry.centre[1]);
+                        if(!feature.geometry.coordinates){
+                            feature.geometry.coordinates = [lng, lat];
+                        }
 
-                        feature.geometry.coordinates= [lng, lat];
+                        geometry = Biocollect.MapUtilities.featureToValidGeoJson(feature.geometry);
+                        var options = {
+                            markerWithMouseOver: true,
+                            markerLocation: [lat, lng],
+                            popup: $('#popup'+site.siteId()).html()
+                        };
+                        map.setGeoJSON(geometry, options);
                     }
-                    geometry = Biocollect.MapUtilities.featureToValidGeoJson(feature.geometry);
-
-                    var options = {
-                        markerWithMouseOver: true,
-                        markerLocation: [lat, lng],
-                        popup: $('#popup'+site.siteId()).html()
-                    };
-                    map.setGeoJSON(geometry, options);
                 }
             });
         }
