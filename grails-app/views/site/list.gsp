@@ -131,7 +131,7 @@
 
             siteList.forEach(function (site) {
                 var feature = site.extent
-                if (feature.source != 'none' && feature.geometry) {
+                if (feature && feature.source != 'none' && feature.geometry) {
                     var lng, lat, geometry, options;
 
                     if(feature.geometry.centre && feature.geometry.centre.length){
