@@ -164,6 +164,7 @@ class ProjectService {
         //validate
         def error = validate(props)
         if (error) {
+            result = [:]
             result.error = error
             result.detail = ''
         }
@@ -196,11 +197,12 @@ class ProjectService {
     }
 
     def update(id, body, boolean skipEmailNotification = false) {
-        def result = [:]
+        def result
 
         //validate
         def error = validate(body, id)
         if (error) {
+            result = [:]
             result.error = error
             result.detail = ''
         }
