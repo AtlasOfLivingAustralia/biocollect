@@ -50,6 +50,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.selectedFilters = ko.observableArray(); // User selected facet filters.
     self.transients = {};
     self.transients.totalPoints = ko.observable(0);
+    self.transients.loadingMap = ko.observable(true);
     self.transients.placeHolder = placeHolder;
     self.transients.bieUrl = fcConfig.bieUrl;
     self.transients.showEmailDownloadPrompt = ko.observable(false);
@@ -151,6 +152,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         }
 
         self.total(total);
+
+        var $loading = $('.loading-message');
+        $loading.hide();
     };
 
     self.download = function(data, event) {
@@ -389,6 +393,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             results = data;
             self.generateDotsFromResult(data);
             alaMap.finishLoading();
+            self.transients.loadingMap(false)
         }).error(function (request, status, error) {
             console.error("AJAX error", status, error);
             alaMap.finishLoading();

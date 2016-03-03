@@ -178,10 +178,13 @@
                     </div>
 
                     <div class="tab-pane" id="mapVis">
-                        <span data-bind="visible: transients.totalPoints() == 0">
+                        <span data-bind="visible: transients.loadingMap()">
+                            <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
+                        </span>
+                        <span data-bind="visible: transients.totalPoints() == 0 && !transients.loadingMap()">
                             <h3 class="text-left margin-bottom-five">No results</h3>
                         </span>
-                        <span data-bind="visible: transients.totalPoints() > 0">
+                        <span data-bind="visible: transients.totalPoints() > 0 && !transients.loadingMap()">
                             <m:map id="recordOrActivityMap" width="100%"/>
                         </span>
                     </div>
