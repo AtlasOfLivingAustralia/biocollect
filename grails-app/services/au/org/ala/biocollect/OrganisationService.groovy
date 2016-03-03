@@ -35,15 +35,45 @@ class OrganisationService {
         return orgId ? list().list.find({ it.organisationId == orgId })?.name : ''
     }
 
-    List list() {
+    def list() {
         metadataService.organisationList()
     }
 
-    Map update(id, organisation) {
+    def validate(props, organisationId = null) {
+        def error = null
+        def updating = organisationId != null
 
-        String url = "${grailsApplication.config.ecodata.service.url}/organisation/$id"
-        Map result = webService.doPost(url, organisation)
-        metadataService.clearOrganisationList()
+        if (!updating && !props.containsKey("description")) {
+            //error, no start date
+            return "description is missing"
+        }
+
+        if (props.containsKey("name")) {
+            def proj = getByName(props.name)
+            if (proj != null && (!updating || proj.organisationId != organisationId)) {
+                return "name is not unique"
+            }
+        } else if (!updating) {
+            //error, no project name
+            return "name is missing"
+        }
+
+        error
+    }
+
+    Map update(id, organisation) {
+        Map result = [:]
+
+        //validate
+        def error = validate(organisation, id)
+        if (error) {
+            result.error = error
+            result.detail = ''
+        } else {
+            String url = "${grailsApplication.config.ecodata.service.url}/organisation/$id"
+            result = webService.doPost(url, organisation)
+            metadataService.clearOrganisationList()
+        }
         result
 
     }
