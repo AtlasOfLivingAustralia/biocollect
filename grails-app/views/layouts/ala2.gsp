@@ -120,6 +120,11 @@
             window.location = "${createLink(controller: 'organisation', action: 'myOrganisations')}";
         });
 
+        $(".btnMyFavouriteSites").click(function (e) {
+            window.location = "${createLink(controller: 'site', action: 'myFavourites')}";
+        });
+
+
         $(".btnSearch").click(function(e){
              window.location = "${createLink(controller: 'project', action: 'citizenScience')}";
         })
