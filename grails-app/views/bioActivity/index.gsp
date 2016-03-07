@@ -33,7 +33,7 @@
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,species,activity, projectActivityInfo, imageViewer, comments, map"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,species,activity, projectActivityInfo, imageViewer, comments, map, responsiveTableStacked"/>
 </head>
 
 <body>

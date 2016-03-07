@@ -16,7 +16,7 @@
  */
 $(document).ready(function() {
     $('table').each(function(index, item){
-        $(this).addClass('responsive-table-stacked');
+        $(this).addClass('responsive-table-stacked').parent().addClass('overflow-table');
         addAttributeToTd(item)
         watch(this, addAttributeToTd)
     });
@@ -30,7 +30,10 @@ $(document).ready(function() {
 function addAttributeToTd(item){
     $(item).find('thead th').each(function(col, th){
         var colNum = col + 1;
-        $(item).find('tbody tr td:nth-child('+colNum+')').attr('data-th',$(th).text().trim());
+        var text = $(th).text()
+        if(text){
+            $(item).find('tbody tr td:nth-child('+colNum+')').attr('data-th',text.trim());
+        }
     });
 }
 
