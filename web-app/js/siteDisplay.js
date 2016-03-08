@@ -49,6 +49,7 @@ Biocollect.SiteDisplay = function() {
         var mapOptions = {
             drawControl: false,
             singleMarker: false,
+            singleDraw: false,
             useMyLocation: false,
             allowSearchLocationByAddress: false,
             allowSearchRegionByAddress: false,

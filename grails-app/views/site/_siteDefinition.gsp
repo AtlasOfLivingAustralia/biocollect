@@ -221,10 +221,12 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
     var map = siteViewModel.map;
 
     <g:if  test="${project?.projectSite?.extent?.geometry}">
+        var source = "${project.projectSite.extent.source}"
         var projectArea = <fc:modelAsJavascript model="${project.projectSite.extent.geometry}"/>;
-        var geometry = _.pick(projectArea, "type", "coordinates");
-        var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
-        map.setGeoJSON(geoJson);
+        var geometry = Biocollect.MapUtilities.featureToValidGeoJson(projectArea);
+        if(source != 'none'){
+            map.setGeoJSON(geometry);
+        }
     </g:if>
 
 

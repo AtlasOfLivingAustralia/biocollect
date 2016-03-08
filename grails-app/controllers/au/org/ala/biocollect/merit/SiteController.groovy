@@ -77,7 +77,7 @@ class SiteController {
         def result = siteService.getRaw(id)
         if (!result.site) {
             render 'no such site'
-        } else if (!isUserMemberOfSiteProjects(result.site)) {
+        } else if (!isUserMemberOfSiteProjects(result.site) && !userService.userIsAlaAdmin()) {
             // check user has permissions to edit - user must have edit access to
             // ALL linked projects to proceed.
             flash.message = "Access denied: User does not have <b>editor</b> permission to edit site: ${id}"
@@ -355,7 +355,7 @@ class SiteController {
         // ALL linked projects to proceed.
         String userId = userService.getCurrentUserId()
         values.projects?.each { projectId ->
-            if (!projectService.canUserEditProject(userId, projectId)) {
+            if (!projectService.canUserEditProject(userId, projectId) && !userService.userIsAlaAdmin()) {
                 flash.message = "Error: access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
                 result = [status: 'error']
                 //render result as JSON
@@ -366,7 +366,7 @@ class SiteController {
             result = siteService.updateRaw(id, values)
             if(postBody?.pActivityId){
                 def pActivity = projectActivityService.get(postBody.pActivityId)
-                if(!projectService.canUserEditProject(userId, pActivity?.projectId)){
+                if(!projectService.canUserEditProject(userId, pActivity?.projectId) && !userService.userIsAlaAdmin()){
                     flash.message = "Error: access denied: User does not have <b>editor</b> permission for pActivitityId ${postBody.pActivityId}"
                     result = [status: 'error']
                 } else {
@@ -561,7 +561,7 @@ class SiteController {
         try{
             List query = ['className:au.org.ala.ecodata.Site']
             String userId = userService.getCurrentUserId()
-            Boolean canDelete = userService.userIsAlaAdmin()
+            Boolean isAlaAdmin = userService.userIsAlaAdmin()
             GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userId)
             if(!queryParams.facets){
                 queryParams.facets="typeFacet,className,organisationFacet,stateFacet,lgaFacet,nrmFacet,siteSurveyNameFacet,siteProjectNameFacet,photoType"
@@ -574,15 +574,24 @@ class SiteController {
             Map searchResult = searchService.searchForSites(queryParams)
             List sites = searchResult?.hits?.hits
             List facets = []
-
-            List projectIds = sites?.collect{
-                StringUtils.join(it._source?.projects,',')
+            List projectIds = []
+            sites?.each{
+                if(it._source?.projects?.size()){
+                    projectIds.push(StringUtils.join(it._source?.projects,','))
+                }
             }
             // JSON Array join is inserting quotes around each array element. Hence using StringUtil.join method.
-            String pIds = StringUtils.join(projectIds,',')
-            Map permissions = projectService.canUserEditProjects(userId, pIds)
+            String pIds = StringUtils.join(projectIds, ',')
+            Map permissions = [:]
+            // when sites are not associated with a project canUserEditProjects will throw exception.
+            if(projectIds.size()>0){
+                permissions = projectService.canUserEditProjects(userId, pIds)
+            }
             sites = sites?.collect {
                 Map doc = it._source
+                Boolean canEdit = isAlaAdmin || doc.projects.inject(false){flag, id ->
+                    flag || !!permissions[id]
+                }
                 [
                         siteId           : doc.siteId,
                         name             : doc.name,
@@ -593,11 +602,9 @@ class SiteController {
                         type             : doc.type,
                         extent           : doc.extent,
                         // does a logical OR reduce operation on permissions for each projects
-                        canEdit          : doc.projects.inject(false){flag, id ->
-                                               flag || !!permissions[id]
-                                           },
+                        canEdit          : canEdit,
                         // only sites with no projects can be deleted
-                        canDelete        : canDelete && (doc.projects?.size() == 0)
+                        canDelete        : isAlaAdmin && (doc.projects?.size() == 0)
                 ]
             }
 

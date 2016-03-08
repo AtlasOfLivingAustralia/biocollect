@@ -136,7 +136,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         latSubscriber = geometryObservable.decimalLatitude.subscribe(updateSiteMarkerPosition);
         lngSubscriber = geometryObservable.decimalLongitude.subscribe(updateSiteMarkerPosition);
 
-        if (!_.isEmpty(geometry)) {
+        if (!_.isEmpty(geometry) && self.site().extent().source() != 'none') {
             var validGeoJson = Biocollect.MapUtilities.featureToValidGeoJson(geometry);
             self.map.setGeoJSON(validGeoJson);
             self.showPointAttributes(geometry.type == "Point");
@@ -200,6 +200,11 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
 
     self.toJS = function() {
         var js = ko.toJS(self.site);
+
+        // legacy support - it was possible to have no extent for a site. This step will delete geometry before saving.
+        if(js.extent.source == 'none'){
+            delete js.extent.geometry;
+        }
 
         js.poi = [];
         self.pointsOfInterest().forEach(function (poi) {
