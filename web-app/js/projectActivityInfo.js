@@ -79,7 +79,7 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
         if(self.transients.daysSince() < 0){
             status = "Active, Not yet started"
         }
-        else if(self.transients.daysSince() >= 0 && self.transients.daysRemaining() > 0){
+        else if(self.transients.daysSince() >= 0 && (self.transients.daysRemaining() > 0 || self.transients.daysRemaining() == -1)){
             status = "Active, In progress"
         }
         else if(self.transients.daysSince() >= 0 && self.transients.daysRemaining() == 0){
