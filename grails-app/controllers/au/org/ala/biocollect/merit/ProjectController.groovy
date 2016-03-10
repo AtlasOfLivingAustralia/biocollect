@@ -390,7 +390,7 @@ class ProjectController {
         } else {
             response.setContentType('application/json')
         }
-
+        response.setCharacterEncoding('UTF-8')
         render( text: [ projects:  projects, total: searchResult.hits?.total?:0 ] as JSON );
     }
 
