@@ -310,7 +310,9 @@ class BioActivityController {
                 Map model = activityAndOutputModel(activity, activity.projectId)
                 model.pActivity = pActivity
                 model.id = pActivity.projectActivityId
+                params.mobile ? model.mobile = true : ''
                 model
+
             }
         } else {
             forward(action: 'list', model: [error: 'no such id'])
