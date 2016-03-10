@@ -377,6 +377,7 @@ class BioActivityController {
         List facets = []
         activities = activities?.collect {
             Map doc = it._source
+            def projectActivity = projectActivityService.get(doc.projectActivityId,  "all")
             [
                     activityId       : doc.activityId,
                     projectActivityId: doc.projectActivityId,
@@ -394,7 +395,8 @@ class BioActivityController {
                     endDate          : doc.projectActivity?.endDate,
                     projectName      : doc.projectActivity?.projectName,
                     projectId        : doc.projectActivity?.projectId,
-                    showCrud         : ((queryParams.userId && doc.projectId && projectService.canUserEditProject(queryParams.userId, doc.projectId, false) || (doc.userId == queryParams.userId)))
+                    showCrud         : ((queryParams.userId && doc.projectId && projectService.canUserEditProject(queryParams.userId, doc.projectId, false) || (doc.userId == queryParams.userId))),
+                    thumbnailUrl     : projectActivity?.documents?.find {it.status == 'active' && it.thumbnailUrl}?.thumbnailUrl
             ]
         }
 
