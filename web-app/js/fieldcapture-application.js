@@ -336,8 +336,7 @@ function autoSaveModel(viewModel, saveUrl, options) {
                     if (config.blockUIOnSave) {
                         $.unblockUI();
                     }
-                    showAlert(config.errorMessage + data.detail + ' \n' + data.error,
-                        "alert-error",config.resultsMessageId);
+                    bootbox.alert(config.errorMessage + data.detail + '<br/>' + data.error)
                     if (typeof errorCallback === 'function') {
                         errorCallback(data);
                     }
