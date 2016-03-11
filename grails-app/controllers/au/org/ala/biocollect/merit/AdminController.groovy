@@ -97,6 +97,11 @@ class AdminController {
         [programsModel: metadataService.programsModel(), activityTypes:metadataService.activityTypesList()]
     }
 
+    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
+    def syncSciStarter(){
+        render text:projectService.importSciStarterProjects() as JSON, contentType: 'application/json'
+    }
+
     def updateActivitiesModel() {
         def model = request.JSON
         log.debug model

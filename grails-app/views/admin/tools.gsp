@@ -101,6 +101,17 @@
                         alert(result.statusText);
                     });
                 });
+
+                $("#btnSyncSciStarter").click(function(e) {
+                    e.preventDefault();
+                    $.ajax("${createLink(controller: 'admin', action:'syncSciStarter')}"
+                    ).done(function(result) {
+                        alert("Successfully imported " + result.count + " SciStarter projects!")
+                        document.location.reload();
+                    }).fail(function (result) {
+                        alert(result.statusText);
+                    });
+                });
             });
 
         </script>
@@ -169,6 +180,13 @@
                     </td>
                     <td>
                         Ensures that all institutions in collectory have a corresponding organisation in ecodata.
+                    </td>
+                </tr>
+                <tr>
+                    <td><button id="btnSyncSciStarter" class="btn btn-small btn-info" title="Synchronise Biocollect with SciStarter">Import SciStarter Projects</button>
+                    </td>
+                    <td>
+                        Import projects from SciStarter to Biocollect.
                     </td>
                 </tr>
             </tbody>

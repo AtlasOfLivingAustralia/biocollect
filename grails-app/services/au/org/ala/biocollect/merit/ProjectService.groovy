@@ -384,4 +384,24 @@ class ProjectService {
             }
         }
     }
+
+    /**
+     * calls ecodata webservice to import scistarter projects
+     * @return Interger - number of imported projects.
+     * @throws SocketTimeoutException
+     * @throws Exception
+     */
+    Map importSciStarterProjects() throws SocketTimeoutException, Exception{
+        String url = "${grailsApplication.config.ecodata.service.url}/project/importProjectsFromScistarter";
+        Map response = webService.doGet(url, [:]);
+        if(response.resp && response.resp.count != null){
+            return response.resp
+        } else {
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw  new Exception(response.error);
+            }
+        }
+    }
 }
