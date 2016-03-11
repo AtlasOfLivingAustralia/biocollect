@@ -256,7 +256,8 @@
                     } else if (obj.model === 'photoPoints' && obj.isDirty()) {
                         photoPoints = obj.get();
                     }
-                    else if (obj.isDirty()) {
+                    else { // Update outputs unconditionally, backend needs the activityModel and outputs to
+                           // create derived data even if outputs didn't change
                         outputs.push(obj.get());
                     }
                 });
