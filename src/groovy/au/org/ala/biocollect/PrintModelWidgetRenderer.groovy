@@ -57,6 +57,11 @@ class PrintModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderSelectManyCombo(WidgetRenderContext context) {
+        renderCheckboxes(context)
+    }
+
+    @Override
     void renderImage(WidgetRenderContext context) {
         defaultRender(context)
     }

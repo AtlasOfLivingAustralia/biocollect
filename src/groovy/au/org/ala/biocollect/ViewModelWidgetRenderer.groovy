@@ -64,6 +64,16 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderSelectManyCombo(WidgetRenderContext context) {
+        def tagsBlock = "<div id='tagsBlock' data-bind='foreach: ${context.source}'>" +
+                "<span class='tag label label-default' comboList='${context.source}'>" +
+                '<input type="hidden" data-bind="value: $data" name="tags" class="tags group">' +
+                '<span data-bind="text: $data"></span>' +
+                '</span></div>'
+        context.writer << tagsBlock
+    }
+
+    @Override
     void renderImage(WidgetRenderContext context) {
         context.addDeferredTemplate('/output/fileUploadTemplate')
         context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"

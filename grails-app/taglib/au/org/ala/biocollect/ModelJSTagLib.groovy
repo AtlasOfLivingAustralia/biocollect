@@ -124,16 +124,24 @@ class ModelJSTagLib {
                 out << INDENT*4 << "}\n"
             } else if (mod.dataType == "geoMap") {
                 out << INDENT*4 << """
-                    if (data.${mod.name}) {
-                        self.data.${mod.name}(data.${mod.name});
-                        if (data.${mod.name}Latitude && typeof data.${mod.name}Latitude !== 'undefined') {
-                            self.data.${mod.name}Latitude(data.${mod.name}Latitude);
-                        }
-                        if (data.${mod.name}Longitude && typeof data.${mod.name}Longitude !== 'undefined') {
-                            self.data.${mod.name}Longitude(data.${mod.name}Longitude);
-                        }
-                    } else if (activityLevelData.pActivity.sites.length == 1) {
-                        self.data.${mod.name}(activityLevelData.pActivity.sites[0].siteId);
+                    self.data.${mod.name}(data.${mod.name});
+                    if (data.${mod.name}Latitude && typeof data.${mod.name}Latitude !== 'undefined') {
+                        self.data.${mod.name}Latitude(data.${mod.name}Latitude);
+                    }
+                    if (data.${mod.name}Longitude && typeof data.${mod.name}Longitude !== 'undefined') {
+                        self.data.${mod.name}Longitude(data.${mod.name}Longitude);
+                    }
+                    if (data.${mod.name}Accuracy && typeof data.${mod.name}Accuracy !== 'undefined') {
+                        self.data.${mod.name}Accuracy(data.${mod.name}Accuracy);
+                    }
+                    if (data.${mod.name}Locality && typeof data.${mod.name}Locality !== 'undefined') {
+                        self.data.${mod.name}Locality(data.${mod.name}Locality);
+                    }
+                    if (data.${mod.name}Source && typeof data.${mod.name}Source !== 'undefined') {
+                        self.data.${mod.name}Source(data.${mod.name}Source);
+                    }
+                    if (data.${mod.name}Notes && typeof data.${mod.name}Notes !== 'undefined') {
+                        self.data.${mod.name}Notes(data.${mod.name}Notes);
                     }
                 """
                 if (readonly) {
@@ -544,6 +552,13 @@ class ModelJSTagLib {
     }
 
     def geoMapViewModel(model, out, String container = "self.data", boolean readonly = false, boolean edit = false) {
+        model.columns.each {
+            if (it?.source != "locationLatitude" && it?.source != "locationLongitude") {
+                out << "\n" << INDENT*3 << """
+                    ${container}.${model.name + it.source} = ko.observable();
+                """
+            }
+        }
         out << "\n" << INDENT*3 << """
             ${container}.${model.name} = ko.observable();
             ${container}.${model.name}Name = ko.observable();
@@ -613,6 +628,42 @@ class ModelJSTagLib {
             function update${model.name}MarkerPosition() {
                 if (${container}.${model.name}Latitude() && ${container}.${model.name}Longitude()) {
                     ${model.name}Map.addMarker(${container}.${model.name}Latitude(), ${container}.${model.name}Longitude());
+                }
+            }
+
+            self.selectManyCombo = function(obj, event) {
+                if (event.originalEvent) {
+                    var item = event.originalEvent.target.attributes["combolist"].value.split(".")
+                    var list = self[item[0]][item[1]]()
+                    var value = event.originalEvent.target.value
+                    for (var k in list) {
+                        if (list[k] == value) return
+                    }
+                    list.push(value)
+                    self[item[0]][item[1]](list)
+                }
+            }
+
+            self.removeTag = function(obj, event) {
+                if (event.originalEvent) {
+                    event.originalEvent.preventDefault();
+
+                    var element = event.originalEvent.target
+                    while (!element.attributes["combolist"]) element = element.parentElement
+
+                    var combolist = element.attributes["combolist"]
+                    var value = element.firstChild.value
+                    var item = combolist.value.split(".")
+                    var list = self[item[0]][item[1]]()
+                    var found = false
+                    for (var k in list) {
+                        if (list[k] == value) {
+                            list.splice(k, 1)
+                            self[item[0]][item[1]](list)
+                            element.remove()
+                            return
+                        }
+                    }
                 }
             }
 

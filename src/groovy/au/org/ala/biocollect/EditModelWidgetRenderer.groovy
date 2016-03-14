@@ -91,6 +91,24 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderSelectManyCombo(WidgetRenderContext context) {
+        context.databindAttrs.add 'options', 'transients.' + context.model.source + 'Constraints'
+        context.databindAttrs.add 'optionsCaption', '"Please select"'
+        context.databindAttrs.add 'event', '{ change: selectManyCombo}'
+
+        context.writer <<  "<select${context.attributes.toString()} comboList='${context.source}' data-bind='${context.databindAttrs.toString()}'${context.validationAttr}></select>"
+
+        def tagsBlock = "<div id='tagsBlock' data-bind='foreach: ${context.source}'>" +
+                "<span class='tag label label-default' comboList='${context.source}'>" +
+                '<input type="hidden" data-bind="value: $data" name="tags" class="tags group">' +
+                '<span data-bind="text: $data"></span>' +
+                '<a href="#" class="remove removeTag" title="remove this item" data-bind="event: { click: $parent.removeTag }" >' +
+                '<i class="remove fa fa-close fa-inverse"></i></a></span> ' +
+                '</div>'
+        context.writer << tagsBlock
+    }
+
+    @Override
     void renderImage(WidgetRenderContext context) {
         context.addDeferredTemplate('/output/fileUploadTemplate')
         context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"

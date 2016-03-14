@@ -14,6 +14,7 @@ public interface ModelWidgetRenderer {
     void renderSimpleDate(WidgetRenderContext context)
     void renderSelectOne(WidgetRenderContext context)
     void renderSelectMany(WidgetRenderContext context)
+    void renderSelectManyCombo(WidgetRenderContext context)
     void renderImage(WidgetRenderContext context)
     void renderEmbeddedImage(WidgetRenderContext context)
     void renderEmbeddedImages(WidgetRenderContext context)

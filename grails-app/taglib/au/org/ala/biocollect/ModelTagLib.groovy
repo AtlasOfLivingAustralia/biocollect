@@ -122,6 +122,9 @@ class ModelTagLib {
             case 'selectMany':
                 renderer.renderSelectMany(renderContext)
                 break
+            case 'selectManyCombo':
+                renderer.renderSelectManyCombo(renderContext)
+                break
             case 'image':
                 renderer.renderImage(renderContext)
                 break
