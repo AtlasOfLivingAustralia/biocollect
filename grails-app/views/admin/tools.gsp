@@ -80,6 +80,30 @@
 
                 }).trigger('change');
 
+                $("#btnLoadSightingsData").click(function(e) {
+                    e.preventDefault();
+                    $('form.loadSightingsData').submit();
+                });
+
+                $("#sightingsData").change(function() {
+                    if ($("#sightingsData").val() && $("#pActivityId").val()) {
+                        $("#btnLoadSightingsData").removeAttr("disabled");
+                    }
+                    else {
+                        $("#btnLoadSightingsData").attr("disabled", "disabled");
+                    }
+
+                }).trigger('change');
+                $("#pActivityId").change(function() {
+                    if ($("#sightingsData").val() && $("#pActivityId").val()) {
+                        $("#btnLoadSightingsData").removeAttr("disabled");
+                    }
+                    else {
+                        $("#btnLoadSightingsData").attr("disabled", "disabled");
+                    }
+
+                }).trigger('change');
+
                 $("#btnReindexAll").click(function(e) {
                     e.preventDefault();
                     var url = "${createLink(controller: 'admin', action:'reIndexAll')}";
