@@ -683,5 +683,42 @@ class FCTagLib {
         }
     }
 
+    /**
+     * Renders the value of a site geographic facet, accepting either a String or List typed value.
+     * Both the value and label will be looked up in the message.properties under the key 'label.'<facetName/value>
+     *
+     * @param site the site to render the value of
+     * @param facet the name of the facet to render
+     * @param label optionally override the facet name
+     * @param max the maximum number of values to display if the facet value is List typed
+     */
+    def siteFacet = {attrs ->
+        Map site = attrs.site
+        String facetName = attrs.facet
+
+        MarkupBuilder mb = new MarkupBuilder(out)
+        Map geom =  site?.extent?.geometry?:[:]
+
+        Object facetValue = geom[facetName]
+        if (facetValue) {
+            String label = attrs.label ?: g.message(code:'label.'+facetName+'Facet', default:facetName)
+            mb.span(class:"label label-success", label)
+
+            if (!(facetValue instanceof List)) {
+                facetValue = [facetValue]
+            }
+            StringBuilder value = new StringBuilder()
+            int max = attrs.max ? Math.min(Integer.parseInt(attrs.max), facetValue.size()):facetValue.size()
+            for (int i in 0..(max-1)) {
+                value.append(g.message(code:'label.'+facetValue[i], default:facetValue[i]))
+                if (i < max-1) {
+                    value.append(', ')
+                }
+
+            }
+            out << " "+value.toString()
+        }
+    }
+
 
 }
