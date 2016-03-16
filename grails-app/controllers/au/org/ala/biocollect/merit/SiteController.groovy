@@ -157,6 +157,29 @@ class SiteController {
         }
     }
 
+    def ajaxAddToFavourites(String id) {
+        try{
+
+            def response = userService.addStarSiteForUser(userService.getCurrentUserId(), id)
+
+            if (response.statusCode < 400) {
+                def result = [status: 'added']
+                render result as JSON
+            } else {
+                def result = [status: response.statusCode]
+                render result as JSON
+            }
+        } catch (SocketTimeoutException sTimeout){
+            log.error(sTimeout.message, sTimeout)
+            log.error(sTimeout.stackTrace)
+            render(text: 'Webserive call timed out', status: HttpStatus.SC_REQUEST_TIMEOUT);
+        } catch (Exception e){
+            log.error(e.message, e)
+            render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     def update(String id) {
 
         log.debug("Updating site: " + id)
@@ -546,6 +569,11 @@ class SiteController {
 
     def list(){
 
+    }
+
+    def myFavourites() {
+        // wip #460
+        render view: "list"
     }
 
     /**

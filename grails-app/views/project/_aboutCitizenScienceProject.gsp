@@ -63,9 +63,19 @@
                     <p/>
                 </div>
                 <hr/>
-                <div id="surveyLink" class="row-fluid" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb())">
-                    <a class="btn pull-right" data-bind="showTabOrRedirect: { url: isExternal() ? urlWeb() : '', tabId: '#activities-tab'}"><g:message code="project.display.join" /></a>
-                    <p class="clearfix"/>
+                <div class="row-fluid">
+                    <div class="media span8"  data-bind="visible:isSciStarter">
+                        <a class="pull-left" href="#">
+                            <div class="media-object sciStarterLogo"></div>
+                        </a>
+                        <div class="media-body">
+                            <h4 class="media-heading">Project sourced from SciStarter</h4>
+                        </div>
+                    </div>
+                    <div id="surveyLink" class="span4" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb())">
+                        <a class="btn pull-right" data-bind="showTabOrRedirect: { url: isExternal() ? urlWeb() : '', tabId: '#activities-tab'}"><g:message code="project.display.join" /></a>
+                        <p class="clearfix"/>
+                    </div>
                 </div>
                 <g:render template="/shared/listDocumentLinks"
                           model="${[transients:transients,imageUrl:resource(dir:'/images/filetypes')]}"/>

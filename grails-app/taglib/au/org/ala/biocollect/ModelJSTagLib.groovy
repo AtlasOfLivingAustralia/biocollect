@@ -22,8 +22,6 @@ class ModelJSTagLib {
             }
             else if (model.dataType == 'matrix') {
                 matrixModel attrs, model, out
-            } else if (model.dataType == 'singleSighting' || model.dataType == 'multipleSightings') {
-                sightingsModel(attrs, model, out)
             }
         }
         // TODO only necessary if the model has a field of type species.
@@ -39,9 +37,6 @@ class ModelJSTagLib {
     private insertControllerScripts(Map attrs, List viewModel) {
         viewModel?.each { view ->
             switch (view.type) {
-                case "masterDetail":
-                    masterDetailController(attrs, view, out)
-                    break
                 case "section":
                     insertControllerScripts(attrs, view.items)
                     break
@@ -82,10 +77,6 @@ class ModelJSTagLib {
                 timeViewModel(mod, out)
             } else if (mod.dataType == 'document') {
                 documentViewModel(mod, out)
-            } else if (mod.dataType == 'singleSighting') {
-                singleSightingViewModel(mod, out, container)
-            } else if (mod.dataType == 'masterDetail') {
-                masterDetailViewModel(mod, out)
             } else if (mod.dataType == "geoMap") {
                 geoMapViewModel(mod, out, container, attrs.readonly?.toBoolean() ?: false, attrs.edit?.toBoolean() ?: false)
             }
@@ -128,23 +119,11 @@ class ModelJSTagLib {
             }
             else if (mod.dataType == 'species') {
                 out << INDENT*4 << "self.data['${mod.name}'] = new SpeciesViewModel(data['${mod.name}'], speciesLists, ${mod.validate == 'required'});\n"
-            }
-            else if (mod.dataType == 'document') {
+            } else if (mod.dataType == 'document') {
                 out << INDENT*4 << "var doc = findDocumentById(documents, data['${mod.name}']);\n"
                 out << INDENT*4 << "if (doc) {\n"
                 out << INDENT*8 << "self.data['${mod.name}'](new DocumentViewModel(doc));\n"
                 out << INDENT*4 << "}\n"
-            } else if (mod.dataType == 'singleSighting') {
-                if(attrs?.defaultData?.type == 'singleSighting'){
-                    Map defaultData = [:]
-                    defaultData.speciesLookup = attrs.defaultData.name
-                    defaultData.guid = attrs.defaultData.guid
-                    defaultData.outputSpeciesId = attrs.defaultData.outputSpeciesId
-                    out << INDENT*4 << "data = ${defaultData as JSON};\n"
-                }
-                out << INDENT*4 << "self.data.sighting.loadSightingData(data, ${readonly});\n"
-            } else if (mod.dataType == 'masterDetail') {
-                out << INDENT*4 << "self.data.masterDetail.loadItems(data['${mod.name}']);\n"
             } else if (mod.dataType == "geoMap") {
                 out << INDENT*4 << """
                     self.data.${mod.name}(data.${mod.name});
@@ -153,6 +132,18 @@ class ModelJSTagLib {
                     }
                     if (data.${mod.name}Longitude && typeof data.${mod.name}Longitude !== 'undefined') {
                         self.data.${mod.name}Longitude(data.${mod.name}Longitude);
+                    }
+                    if (data.${mod.name}Accuracy && typeof data.${mod.name}Accuracy !== 'undefined') {
+                        self.data.${mod.name}Accuracy(data.${mod.name}Accuracy);
+                    }
+                    if (data.${mod.name}Locality && typeof data.${mod.name}Locality !== 'undefined') {
+                        self.data.${mod.name}Locality(data.${mod.name}Locality);
+                    }
+                    if (data.${mod.name}Source && typeof data.${mod.name}Source !== 'undefined') {
+                        self.data.${mod.name}Source(data.${mod.name}Source);
+                    }
+                    if (data.${mod.name}Notes && typeof data.${mod.name}Notes !== 'undefined') {
+                        self.data.${mod.name}Notes(data.${mod.name}Notes);
                     }
                 """
                 if (readonly) {
@@ -176,47 +167,13 @@ class ModelJSTagLib {
         out << INDENT*8 << "var outputData = {};\n"
         out << INDENT*8 << "ko.utils.extend(outputData, ko.mapping.toJS(self, {'ignore':['transients']}));\n"
 
-        attrs.model?.dataModel?.each { mod ->
-            switch (mod.dataType) {
-                case "singleSighting":
-                    out << INDENT*8 << "ko.utils.extend(outputData, {\n"
-                    out << INDENT*12 << "name: '${attrs.output.name}',\n"
-                    out << INDENT*12 << "outputId: '${attrs.output.outputId}',\n"
-                    out << INDENT*8 << "});\n"
-                    out << INDENT*8 << "ko.utils.extend(outputData.data, self.data.sighting.getSightingsDataAsJS());\n"
-                    break
-                case "masterDetail":
-                    out << INDENT*8 << "ko.utils.extend(outputData, {\n"
-                    out << INDENT*12 << "name: '${attrs.output.name}',\n"
-                    out << INDENT*12 << "outputId: '${attrs.output.outputId}',\n"
-                    out << INDENT*8 << "});\n"
-                    out << INDENT*8 << "ko.utils.extend(outputData.data, {${mod.name}: self.data.masterDetail.items()});\n"
-                    break
-            }
-        }
-
         out << INDENT*8 << "return outputData;\n"
         out << INDENT*4 << "}\n"
 
     }
 
     def jsDirtyFlag = { attrs ->
-        if (!attrs.model || !attrs.model.dataModel) {
-            out << "window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);"
-        } else {
-            boolean isSingleSighting = attrs.model.dataModel.find { it.dataType == "singleSighting" }
-
-            if (isSingleSighting) {
-                out << """
-                        window[viewModelInstance].dirtyFlag = {
-                            isDirty: window[viewModelInstance].data.sighting.isDirty,
-                            reset: window[viewModelInstance].data.sighting.resetDirtyFlag
-                        };
-                    """
-            } else {
-                out << "window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);"
-            }
-        }
+        out << "window[viewModelInstance].dirtyFlag = ko.dirtyFlag(window[viewModelInstance], false);"
     }
 
     def columnTotalsModel(out, attrs, model) {
@@ -414,13 +371,6 @@ class ModelJSTagLib {
         out << "];\n"
     }
 
-    /**
-     * Creates a js array containing Sighting objects for use with single or multiple sighing models
-     */
-    def sightingsModel(attrs, model, out) {
-        out << INDENT*2 << "var ${model.name}Sightings = [];"
-    }
-
     def matrixViewModel(attrs, model, out) {
         out << """
             self.data.${model.name} = [];//ko.observable([]);
@@ -616,17 +566,14 @@ class ModelJSTagLib {
         out << "\n" << INDENT*3 << "self.data.${model.name} = ko.observable();\n"
     }
 
-    def singleSightingViewModel(model, out, String container = "self.data") {
-        out << "\n" << INDENT*3 << "${container}.sighting = new Sighting();\n"
-    }
-
-    def masterDetailViewModel(model, out) {
-        out << "\n" << INDENT*3 << "self.data.masterDetail = new MasterDetail();\n"
-
-        createDataModelJS([model: [dataModel: [model.detail]]], "self.data.masterDetail.detailView")
-    }
-
     def geoMapViewModel(model, out, String container = "self.data", boolean readonly = false, boolean edit = false) {
+        model.columns.each {
+            if (it?.source != "locationLatitude" && it?.source != "locationLongitude") {
+                out << "\n" << INDENT*3 << """
+                    ${container}.${model.name + it.source} = ko.observable();
+                """
+            }
+        }
         out << "\n" << INDENT*3 << """
             ${container}.${model.name} = ko.observable();
             ${container}.${model.name}Name = ko.observable();
@@ -699,6 +646,42 @@ class ModelJSTagLib {
             function update${model.name}MarkerPosition() {
                 if (${container}.${model.name}Latitude() && ${container}.${model.name}Longitude()) {
                     ${model.name}Map.addMarker(${container}.${model.name}Latitude(), ${container}.${model.name}Longitude());
+                }
+            }
+
+            self.selectManyCombo = function(obj, event) {
+                if (event.originalEvent) {
+                    var item = event.originalEvent.target.attributes["combolist"].value.split(".")
+                    var list = self[item[0]][item[1]]()
+                    var value = event.originalEvent.target.value
+                    for (var k in list) {
+                        if (list[k] == value) return
+                    }
+                    list.push(value)
+                    self[item[0]][item[1]](list)
+                }
+            }
+
+            self.removeTag = function(obj, event) {
+                if (event.originalEvent) {
+                    event.originalEvent.preventDefault();
+
+                    var element = event.originalEvent.target
+                    while (!element.attributes["combolist"]) element = element.parentElement
+
+                    var combolist = element.attributes["combolist"]
+                    var value = element.firstChild.value
+                    var item = combolist.value.split(".")
+                    var list = self[item[0]][item[1]]()
+                    var found = false
+                    for (var k in list) {
+                        if (list[k] == value) {
+                            list.splice(k, 1)
+                            self[item[0]][item[1]](list)
+                            element.remove()
+                            return
+                        }
+                    }
                 }
             }
 
@@ -944,112 +927,6 @@ class ModelJSTagLib {
             def stringifiedOptions = "["+ model.constraints.join(",")+"]"
             out << INDENT*3 << "self.transients.${model.name}Constraints = ${stringifiedOptions};\n"
         }
-    }
-
-    def masterDetailController(attrs, view, out) {
-        boolean readonly = attrs.readonly?.toBoolean() ?: false
-
-        out << """
-            function MasterDetail() {
-                var self = this;
-
-                self.detailView = {};
-
-                self.items = ko.observableArray();
-                self.addOrEditMode = ko.observable(false);
-                self.currentItem = ko.observable();
-                self.selectedIndex = ko.observable(-1);
-
-                self.addItem = function() {
-                    self.selectedIndex(-1);
-                    self.addOrEditMode(true);
-                    self.reset();
-                    self.toggleOverallSaveButton();
-                };
-
-                self.reset = function() {
-                    if (typeof self.detailView === "undefined") {
-                        self.detailView = {};
-                    }
-
-                    if (typeof self.detailView.sighting === "undefined") {
-                        self.detailView.sighting = new Sighting();
-                    } else {
-                        self.detailView.sighting.reset();
-                    }
-
-                    self.toggleOverallSaveButton();
-                }
-
-                self.editItem = function(item) {
-                    var index = self.items.indexOf(item);
-                    if (index > -1 && index < self.items().length) {
-                        self.selectedIndex(index);
-
-                        self.reset();
-                        self.detailView.sighting.loadSightingData(self.items()[index], ${readonly});
-
-                        self.addOrEditMode(true);
-
-                        self.toggleOverallSaveButton();
-                    }
-                };
-
-                self.removeItem = function(item) {
-                    var index = self.items.indexOf(item);
-
-                    if (index > -1 && index < self.items().length) {
-                        self.items.splice(index, 1);
-                    }
-
-                    self.toggleOverallSaveButton();
-                };
-
-                self.saveItem = function() {
-                    if (\$('#validation-container').validationEngine('validate')) {
-                        var data = self.detailView.sighting.getSightingsDataAsJS();
-
-                        if (self.selectedIndex() > -1) {
-                            var oldData = self.items()[self.selectedIndex()]
-                            self.items.replace(oldData, data);
-                        } else {
-                            self.items.push(data);
-                        }
-
-                        self.addOrEditMode(false);
-                        self.selectedIndex(-1);
-                        self.toggleOverallSaveButton();
-                    }
-                };
-
-                self.cancelItem = function() {
-                    self.addOrEditMode(false);
-                    self.selectedIndex(-1);
-                    self.toggleOverallSaveButton();
-                };
-
-                self.loadItems = function(data) {
-                    if (data) {
-                        self.items = ko.observableArray(data);
-                    }
-
-                    self.toggleOverallSaveButton();
-                };
-
-                self.toggleOverallSaveButton = function() {
-                    \$("#save").prop('disabled', (self.items().length == 0  || self.addOrEditMode()));
-                };
-            };
-        """
-
-        jsModelObjects([output: attrs.output, model: constructDetailModelFromMasterDetail(attrs.model)])
-    }
-
-    static constructDetailModelFromMasterDetail(Map masterDetailModel) {
-        List dataModels = masterDetailModel?.dataModel?.findAll { it.dataType == "masterDetail" }?.detail ?: []
-        List viewModels = masterDetailModel?.viewModel?.findAll { it.type == "masterDetail" }?.detail ?: []
-
-        [dataModel: dataModels, viewModel: viewModels]
     }
 
     /*------------ methods to look up attributes in the view model -------------*/

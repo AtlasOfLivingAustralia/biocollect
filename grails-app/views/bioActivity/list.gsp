@@ -38,6 +38,9 @@
     <div class="main-content" style="display:none;">
         <g:render template="../bioActivity/activities"/>
     </div>
+    <div class="loading-message">
+        <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
+    </div>
 </div>
 
 <r:script>

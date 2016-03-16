@@ -397,3 +397,18 @@ th .popover {
 input.padding-14, .padding-14{
     padding: 14px;
 }
+
+.sciStarterLogo{
+    height: 50px;
+    width: 50px;
+    background-image: url(/images/robot.png);
+    background-repeat: no-repeat;
+}
+
+.sciStarterProjectFinderLogo{
+    width: 25px;
+}
+
+.inline-block{
+    display: inline-block;
+}

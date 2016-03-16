@@ -16,7 +16,9 @@
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         geocodeUrl: "${grailsApplication.config.google.geocode.url}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
-        returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}"
+        returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}",
+        scienceType: ${grailsApplication.config.biocollect.scienceType as grails.converters.JSON},
+        lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON}
         },
         here = window.location.href;
 

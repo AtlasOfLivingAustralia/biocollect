@@ -5,7 +5,7 @@
     <title><g:layoutTitle /></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <r:require modules="nrmSkin, jquery_cookie"/>
+    <r:require modules="ala2Skin, jquery_cookie"/>
     <r:layoutResources/>
     <g:layoutHead />
     <style type="text/css">

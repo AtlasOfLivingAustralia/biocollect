@@ -338,6 +338,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.isCitizenScience = ko.observable(project.isCitizenScience);
     self.isDIY = ko.observable(project.isDIY);
     self.isExternal = ko.observable(project.isExternal);
+    self.isSciStarter = ko.observable(project.isSciStarter)
     self.isMERIT = ko.observable(project.isMERIT);
     self.isMetadataSharing = ko.observable(project.isMetadataSharing);
     self.isContributingDataToAla = ko.observable(project.isContributingDataToAla);
@@ -345,7 +346,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.keywords = ko.observable(project.keywords);
     self.projectSiteId = project.projectSiteId;
     self.projectType = ko.observable(project.projectType);
-    self.scienceType = ko.observable(project.scienceType);
+    self.scienceType = ko.observableArray(project.scienceType);
     self.task = ko.observable(project.task);
     self.urlWeb = ko.observable(project.urlWeb).extend({url:true});
     self.contractStartDate = ko.observable(project.contractStartDate).extend({simpleDate: false});
@@ -568,12 +569,32 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         {name:'Ecology', value:'ecology'},
         {name:'Natural resource management', value:'nrm'}
     ];
-    self.transients.availableScienceTypes = scienceTypesList;
+    self.transients.availableScienceTypes = fcConfig.scienceType;
     self.transients.scienceTypeDisplay = ko.pureComputed(function () {
         for (var st = self.scienceType(), i = 0; i < scienceTypesList.length; i++)
             if (st === scienceTypesList[i].value)
                 return scienceTypesList[i].name;
     });
+
+    self.transients.isScienceTypeChecked = function(value){
+        var types = self.scienceType()
+        for(var i=0; i<types.length; i++){
+            if(types[i] == value.toLowerCase()){
+                return true
+            }
+        }
+
+        return false;
+    };
+
+    self.transients.addScienceType = function(data, event){
+        var elem = event.target
+        if(elem.checked){
+            self.scienceType.push(elem.value)
+        } else {
+            self.scienceType.remove(elem.value)
+        }
+    }
 
     var availableProjectTypes = [
         {name:'Citizen Science Project', display:'Citizen\nScience', value:'citizenScience'},

@@ -336,10 +336,33 @@
 
             <div class="clearfix control-group">
                 <label class="control-label span3"
-                       for="scienceType"><g:message code="project.details.scienceType"/><fc:iconHelp><g:message code="project.details.scienceType.help"/></fc:iconHelp><i class="req-field"></i></label>
+                       ><g:message code="project.details.scienceType"/><fc:iconHelp><g:message code="project.details.scienceType.help"/></fc:iconHelp><i class="req-field"></i></label>
 
                 <div class="controls span9">
-                    <select id="scienceType" data-bind="value:scienceType, options:transients.availableScienceTypes, optionsText:'name', optionsValue:'value', optionsCaption:'Select...'" data-validation-engine="validate[required]"></select>
+                    %{--<select id="scienceType" data-bind="value:scienceType, options:transients.availableScienceTypes, optionsText:'name', optionsValue:'value', optionsCaption:'Select...'" data-validation-engine="validate[required]"></select>--}%
+                    <div class="row-fluid" >
+                        <div class="span4">
+                            <!-- ko foreach: transients.availableScienceTypes -->
+                            <!-- ko template: { name:'scienceTypeTemplate', if: ($index() +1) % 3 == 1 }-->
+
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        </div>
+                        <div class="span4">
+                            <!-- ko foreach: transients.availableScienceTypes -->
+                            <!-- ko template: { name:'scienceTypeTemplate', if: ($index() +1) % 3 == 2 }-->
+
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        </div>
+                        <div class="span4">
+                            <!-- ko foreach: transients.availableScienceTypes -->
+                            <!-- ko template: { name:'scienceTypeTemplate', if: ($index() +1) % 3 == 0 }-->
+
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -497,4 +520,12 @@
         </div>
         <!-- /ko -->
     </div>
+    <script id="scienceTypeTemplate" type="text/html">
+        <div class="large-checkbox">
+            <input type="checkbox" name="scienceType" class="validate[required]"
+                   data-validation-engine="validate[minCheckbox[1]]"
+                   data-bind="value: $data.toLowerCase(), attr:{id:'checkbox'+$index()}, checked: $root.transients.isScienceTypeChecked($data), event:{change:$root.transients.addScienceType}">
+            <label data-bind="html: '<span></span> ' + $data, attr:{for:'checkbox'+$index()}"></label>
+        </div>
+    </script>
 </bc:koLoading>

@@ -179,7 +179,31 @@ ko.bindingHandlers.photoPointUpload = {
             }
 
             if (result.files[0]) {
-                target.push(result.files[0]);
+                result.files.forEach(function (f) {
+                    var data = {
+                        thumbnailUrl: f.thumbnail_url,
+                        url: f.url,
+                        contentType: f.contentType,
+                        filename: f.name,
+                        name: f.name,
+                        filesize: f.size,
+                        dateTaken: f.isoDate,
+                        staged: true,
+                        attribution: f.attribution,
+                        notes: f.notes,
+                        status: f.status,
+                        licence: f.licence
+                    };
+
+                    if (f.contentType.indexOf("image") > -1) {
+                        target.push(new ImageViewModel(data));
+                    } else if (f.contentType.indexOf("audio") > -1) {
+                        target.push(new AudioItem(data));
+                    } else {
+                        target.push(new DocumentViewModel(data));
+                    }
+                });
+
                 complete(true);
             }
             else {
@@ -262,7 +286,8 @@ ko.bindingHandlers.imageUpload = {
                         filesize: f.size,
                         dateTaken: f.isoDate,
                         staged: true,
-                        attribution: f.attribution
+                        attribution: f.attribution,
+                        licence: f.licence
                     };
 
                     target.push(new ImageViewModel(data));

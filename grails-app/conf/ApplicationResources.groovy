@@ -41,6 +41,10 @@ modules = {
         resource url: 'vendor/jquery.blockUI/jquery.blockUI.js'
     }
 
+    bootbox {
+        resource url: "vendor/bootbox/bootbox.min.js"
+    }
+
     defaultSkin {
         dependsOn 'application'
         resource url: 'css/default.skin.css'
@@ -435,5 +439,10 @@ modules = {
         resource url: 'css/sites-list.css'
         resource url: 'js/pagination.js'
         resource url: 'js/sites-list.js'
+    }
+
+    responsiveTableStacked{
+        resource url: 'vendor/responsive-table-stacked/stacked.css'
+        resource url: 'vendor/responsive-table-stacked/stacked.js'
     }
 }

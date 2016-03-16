@@ -7,7 +7,7 @@
         <title>Print | ${activity.type} | Field Capture</title>
     </g:if>
     <g:else>
-        <meta name="layout" content="${hubConfig.skin}"/>
+        <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
         <title>View | ${activity.type} | Bio Collect</title>
     </g:else>
 %{-- this will ultimately follow through to the comment controller using url mapping --}%
@@ -33,7 +33,7 @@
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,species,activity, projectActivityInfo, imageViewer, comments, map"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,species,activity, projectActivityInfo, imageViewer, comments, map, responsiveTableStacked"/>
 </head>
 
 <body>
@@ -41,7 +41,7 @@
 
     <div id="koActivityMainBlock">
 
-        <g:if test="${!printView}">
+        <g:if test="${!printView && !mobile}">
             <ul class="breadcrumb">
                 <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
                 <li><a href="#" data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
@@ -156,9 +156,11 @@
         <g:render template="/comment/comment"></g:render>
     </g:if>
 
-    <div class="form-actions">
-        <button type="button" id="cancel" class="btn">return</button>
-    </div>
+    <g:if test="${!mobile}">
+        <div class="form-actions">
+            <button type="button" id="cancel" class="btn">return</button>
+        </div>
+    </g:if>
 </div>
 <!-- templates -->
 

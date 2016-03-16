@@ -35,7 +35,7 @@ describe("Citizen Science Project Finder Spec", function () {
           'name',
           'orgid',
           'orgname',
-          'scienceType',
+          ['scienceType'],
           threeDaysAgo.toISOString(), // plannedStartDate
           null, // urlImage
           null // urlWeb

@@ -28,10 +28,6 @@ grails.project.fork = [
 if (Environment.current == Environment.DEVELOPMENT) {
     // Enable hot swap reloading for Grails 2.3+
     grails.reload.enabled = true
-
-    grails.plugin.location.'biocollect-sightings' = './plugins/biocollect-sightings'
-    println('Using inline biocollect-sightings plugin...')
-
 }
 
 grails.project.dependency.resolver = "maven"
@@ -103,7 +99,7 @@ grails.project.dependency.resolution = {
         compile ":resources:1.2.14"
         compile ':cache:1.1.8'
         compile ':cache-headers:1.1.7'
-
+        compile ":cache-ehcache:1.0.5"
         compile ":google-visualization:0.6.2"
         compile ":mail:1.0.7"
         compile ":excel-export:0.2.0"
@@ -115,8 +111,5 @@ grails.project.dependency.resolution = {
         }
         compile ':cookie:1.4'
 
-        if (Environment.current != Environment.DEVELOPMENT) {
-            compile ":biocollect-sightings:1.01"
-        }
     }
 }
