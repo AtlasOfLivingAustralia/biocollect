@@ -227,7 +227,8 @@ ko.bindingHandlers.imageUpload = {
             minWidth:150,
             minHeight:150,
             maxHeight: 300,
-            previewSelector: '.preview'
+            previewSelector: '.preview',
+            viewModel: viewModel
         };
         var size = ko.observable();
         var progress = ko.observable();
@@ -290,6 +291,18 @@ ko.bindingHandlers.imageUpload = {
                     };
 
                     target.push(new ImageViewModel(data));
+
+                    if (viewModel.data) {
+                        if (f.decimalLongitude && viewModel.data.locationLongitude && !viewModel.data.locationLongitude()) {
+                            viewModel.data.locationLongitude(f.decimalLongitude)
+                        }
+                        if (f.decimalLatitude && viewModel.data.locationLatitude && !viewModel.data.locationLatitude()) {
+                            viewModel.data.locationLatitude(f.decimalLatitude)
+                        }
+                        if (f.isoDate && viewModel.data.surveyDate && !viewModel.data.surveyDate()) {
+                            viewModel.data.surveyDate(f.isoDate)
+                        }
+                    }
                 });
 
                 complete(true);
