@@ -1,4 +1,5 @@
 package au.org.ala.biocollect.merit
+
 import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.projectresult.Builder
@@ -8,12 +9,10 @@ import grails.converters.JSON
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
+
 import java.text.SimpleDateFormat
 
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST
-import static org.apache.http.HttpStatus.SC_FORBIDDEN
-import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR
-import static org.apache.http.HttpStatus.SC_REQUEST_TIMEOUT
+import static org.apache.http.HttpStatus.*
 
 class ProjectController {
 
@@ -294,6 +293,15 @@ class ProjectController {
             String mainImageAttribution = values.remove("mainImageAttribution")
             String logoAttribution = values.remove("logoAttribution")
 
+            def siteResult
+            if (projectSite) {
+                siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
+                if (siteResult.status == 'error') render status: 400, text: "SiteService failed."
+                else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
+            } else {
+                render status: 400, text: "No project site is defined."
+            }
+
             def result = id? projectService.update(id, values): projectService.create(values)
             log.debug "result is " + result
             if (documents && !result.error) {
@@ -318,19 +326,14 @@ class ProjectController {
                     documentService.saveLink(link)
                 }
             }
-            if (projectSite && !result.error) {
+            if (siteResult && !result.error) {
                 if (!id) id = result.resp.projectId
-                if (!projectSite.projects)
+                if (!projectSite.projects || (projectSite.projects.size() == 1 && projectSite.projects.get(0).isEmpty()))
                     projectSite.projects = [id]
                 else if (!projectSite.projects.contains(id))
                     projectSite.projects += id
-                def siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
-                if (siteResult.status == 'error')
-                    result = [error:'SiteService failed']
-                else if (siteResult.status == 'created') {
-                    def updateResult = projectService.update(id, [projectSiteId: siteResult.id], true)
-                    if (updateResult.error) result = updateResult
-                }
+
+                siteService.update(siteResult.id, projectSite)
             }
             if (result.error) {
                 render result as JSON
@@ -388,7 +391,7 @@ class ProjectController {
         } else {
             response.setContentType('application/json')
         }
-
+        response.setCharacterEncoding('UTF-8')
         render( text: [ projects:  projects, total: searchResult.hits?.total?:0 ] as JSON );
     }
 

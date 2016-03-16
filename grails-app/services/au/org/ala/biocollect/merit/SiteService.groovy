@@ -269,14 +269,15 @@ class SiteService {
     def persistSiteExtent(name, geometry) {
 
         def resp = null
-        if(geometry?.type == 'Circle'){
-           def body = [name: "test", description: "my description", user_id: "1551", api_key: "b3f3c932-ba88-4ad5-b429-f947475024af"]
-           def url = grailsApplication.config.spatial.layersUrl + "/shape/upload/pointradius/" +
+        def userId = userService.getUser().userId
+        if (geometry?.type == 'Circle') {
+            def body = [name: "test", description: "my description", user_id: userId, api_key: grailsApplication.config.api_key]
+            def url = grailsApplication.config.spatial.layersUrl + "/shape/upload/pointradius/" +
                     geometry?.coordinates[1] + '/' + geometry?.coordinates[0] + '/' + (geometry?.radius / 1000)
-           resp = webService.doPost(url, body)
-        } else if (geometry?.type == 'Polygon'){
-           def body = [geojson: geometry, name: name, description:'my description', user_id: '1551', api_key: "b3f3c932-ba88-4ad5-b429-f947475024af"]
-           resp = webService.doPost(grailsApplication.config.spatial.layersUrl + "/shape/upload/geojson", body)
+            resp = webService.doPost(url, body)
+        } else if (geometry?.type == 'Polygon') {
+            def body = [geojson: geometry, name: name, description: 'my description', user_id: userId, api_key: grailsApplication.config.api_key]
+            resp = webService.doPost(grailsApplication.config.spatial.layersUrl + "/shape/upload/geojson", body)
         }
         resp
     }
