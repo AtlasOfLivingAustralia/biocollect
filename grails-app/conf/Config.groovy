@@ -123,6 +123,24 @@ identify.subgroupFacet="names_and_lsid"
 identify.enabled = true
 // ----------------------------------
 
+// Biocollect
+if(!biocollect.scienceType){
+    biocollect.scienceType = [
+            "Animals",
+            "Nature & Outdoors",
+            "Ocean",
+            "Water",
+            "Marine & Terrestrial",
+            "Birds",
+            "Insects & Pollinators",
+            "Ecology & Environment",
+            "Biology",
+            "Biodiversity",
+            "NRM",
+            "Ecology"
+    ]
+}
+
 environments {
     development {
         grails.logging.jul.usebridge = true

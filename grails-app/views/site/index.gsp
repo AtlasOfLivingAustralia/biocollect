@@ -10,6 +10,8 @@
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             siteListUrl: "${createLink(controller: 'site', action: 'list')}",
+            addStarSiteUrl: "${createLink(controller: 'site', action: 'ajaxAddToFavourites')}",
+            removeStarSiteUrl: "${createLink(controller: 'site', action: 'ajaxRemoveFromFavourites')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
             spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
@@ -55,6 +57,8 @@
         <li class="active"> <a href="${createLink(controller: 'site', action: 'list')}">Sites</a> <span class="divider">/</span></li>
         <li class="active">${site.name?.encodeAsHTML()}</li>
         <li class="pull-right">
+            <div onclick="addToFavourites()"  class="btn btn-small"><i class="icon-star-empty"></i>Add to favourites</div>
+            <div onclick="removeFromFavourites()"  class="btn btn-small"><i class="icon-star"></i>Remove from favourites</div>
             <g:link action="edit" id="${site.siteId}" class="btn btn-small"><i class="icon-edit"></i> Edit site</g:link>
             <g:if test="${site?.extent?.geometry?.pid}">
                 <a href="${grailsApplication.config.spatial.layersUrl}/shape/shp/${site.extent.geometry.pid}" class="btn btn-small">
@@ -378,6 +382,34 @@
                 success: function(){
                     msg.message('Successfully deleted site. Redirecting in 3 seconds.');
                     setTimeout(function(){ window.location = fcConfig.siteListUrl}, 3000);
+                },
+                error: function(xhr){
+                    msg.message(xhr.responseText);
+                }
+            })
+        }
+
+        function addToFavourites(){
+            var url = fcConfig.addStarSiteUrl + '/' + "${site.siteId}"
+            $.ajax({
+                url: url,
+                success: function(){
+                    msg.message('Successfully added site. Redirecting in 3 seconds.');
+                    setTimeout(function(){}, 3000);
+                },
+                error: function(xhr){
+                    msg.message(xhr.responseText);
+                }
+            })
+        }
+
+        function removeFromFavourites(){
+            var url = fcConfig.removeStarSiteUrl + '/' + "${site.siteId}"
+            $.ajax({
+                url: url,
+                success: function(){
+                    msg.message('Successfully removed site. Redirecting in 3 seconds.');
+                    setTimeout(function(){}, 3000);
                 },
                 error: function(xhr){
                     msg.message(xhr.responseText);

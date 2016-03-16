@@ -80,30 +80,6 @@
 
                 }).trigger('change');
 
-                $("#btnLoadSightingsData").click(function(e) {
-                    e.preventDefault();
-                    $('form.loadSightingsData').submit();
-                });
-
-                $("#sightingsData").change(function() {
-                    if ($("#sightingsData").val() && $("#pActivityId").val()) {
-                        $("#btnLoadSightingsData").removeAttr("disabled");
-                    }
-                    else {
-                        $("#btnLoadSightingsData").attr("disabled", "disabled");
-                    }
-
-                }).trigger('change');
-                $("#pActivityId").change(function() {
-                    if ($("#sightingsData").val() && $("#pActivityId").val()) {
-                        $("#btnLoadSightingsData").removeAttr("disabled");
-                    }
-                    else {
-                        $("#btnLoadSightingsData").attr("disabled", "disabled");
-                    }
-
-                }).trigger('change');
-
                 $("#btnReindexAll").click(function(e) {
                     e.preventDefault();
                     var url = "${createLink(controller: 'admin', action:'reIndexAll')}";
@@ -120,6 +96,17 @@
                     $.ajax("${createLink(controller: 'admin', action:'syncCollectoryOrgs')}"
                     ).done(function(result) {
                         alert("Ecodata organisations synchronized with Collectory!")
+                        document.location.reload();
+                    }).fail(function (result) {
+                        alert(result.statusText);
+                    });
+                });
+
+                $("#btnSyncSciStarter").click(function(e) {
+                    e.preventDefault();
+                    $.ajax("${createLink(controller: 'admin', action:'syncSciStarter')}"
+                    ).done(function(result) {
+                        alert("Successfully imported " + result.count + " SciStarter projects!")
                         document.location.reload();
                     }).fail(function (result) {
                         alert(result.statusText);
@@ -193,6 +180,13 @@
                     </td>
                     <td>
                         Ensures that all institutions in collectory have a corresponding organisation in ecodata.
+                    </td>
+                </tr>
+                <tr>
+                    <td><button id="btnSyncSciStarter" class="btn btn-small btn-info" title="Synchronise Biocollect with SciStarter">Import SciStarter Projects</button>
+                    </td>
+                    <td>
+                        Import projects from SciStarter to Biocollect.
                     </td>
                 </tr>
                 <tr>

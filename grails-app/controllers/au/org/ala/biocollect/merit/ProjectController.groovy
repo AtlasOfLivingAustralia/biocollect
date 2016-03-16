@@ -89,7 +89,8 @@ class ProjectController {
                 projectContent:content.model,
                 messages: messages?.messages,
                 userMap: messages?.userMap,
-                hideBackButton: true
+                hideBackButton: true,
+                projectSite: project.projectSite
             ]
 
             if(project.projectType == 'survey'){

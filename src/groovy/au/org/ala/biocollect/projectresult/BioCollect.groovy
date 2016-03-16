@@ -59,6 +59,7 @@ class BioCollect {
                 isContributingDataToAla: doc.isContributingDataToAla?.toBoolean(),
                 isExternal             : doc.isExternal?.toBoolean(),
                 isSuitableForChildren  : doc.isSuitableForChildren?.toBoolean(),
+                isSciStarter           : doc.isSciStarter?.toBoolean(),
                 keywords               : doc.keywords,
                 links                  : trimmedLinks,
                 name                   : doc.name,
