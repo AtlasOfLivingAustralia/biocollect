@@ -28,6 +28,7 @@ function ImageViewModel(prop, skipFindingDocument){
     self.thumbnailUrl = prop.thumbnailUrl;
     self.filename = prop.filename;
     self.attribution = ko.observable(prop.attribution);
+    self.licence = ko.observable(prop.licence);
     self.notes = ko.observable(prop.notes || '');
     self.name = ko.observable(prop.name);
     self.formattedSize = formatBytes(prop.filesize);
