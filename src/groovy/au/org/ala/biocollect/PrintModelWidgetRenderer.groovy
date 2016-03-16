@@ -57,6 +57,11 @@ class PrintModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderSelectManyCombo(WidgetRenderContext context) {
+        renderCheckboxes(context)
+    }
+
+    @Override
     void renderAudio(WidgetRenderContext context) {
         context.writer << context.g.render(template: '/output/audioDataTypeViewModelTemplate',
                 model: [databindAttrs:context.databindAttrs.toString(), name: context.source, index: "''", hideFile: true])

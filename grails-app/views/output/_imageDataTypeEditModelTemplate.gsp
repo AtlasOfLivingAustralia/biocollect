@@ -29,6 +29,21 @@
                     </div>
 
                     <div class="control-group">
+                        <label class="control-label">Licence <i class="icon-question-sign"
+                                                                data-bind="popover:{content:'Creative Commons Attribution (CC BY), Creative Commons-Noncommercial (CC BY-NC), Creative Commons Attribution-Share Alike (CC BY-SA), Creative Commons Attribution-Noncommercial-Share Alike (CC BY-NC-SA)', placement:'top'}">&nbsp;</i>:
+                        </label>
+
+                        <div class="controls">
+                            <select id="licence" data-bind="value:licence" class="form-control input-sm">
+                                <option>CC BY</option>
+                                <option>CC BY-NC</option>
+                                <option>CC BY-SA</option>
+                                <option>CC BY-NC-SA</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
                         <label class="control-label" for="attribution">
                             Attribution <i class="icon-question-sign" data-bind="popover:{content:'The name of the photographer', placement:'top'}">&nbsp;</i>:
                         </label>

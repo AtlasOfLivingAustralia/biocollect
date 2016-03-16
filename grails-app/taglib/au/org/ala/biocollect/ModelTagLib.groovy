@@ -55,9 +55,6 @@ class ModelTagLib {
                 case 'template':
                     out << g.render(template:mod.source, plugin: "${mod.plugin ?: 'fieldcapture-plugin'}", model: [config: mod.config ?: [:], readonly: attrs.readonly?.toBoolean() ?: false])
                     break
-                case 'masterDetail':
-                    masterDetail out, attrs, mod
-                    break
             }
         }
     }
@@ -124,6 +121,9 @@ class ModelTagLib {
                 break;
             case 'selectMany':
                 renderer.renderSelectMany(renderContext)
+                break
+            case 'selectManyCombo':
+                renderer.renderSelectManyCombo(renderContext)
                 break
             case 'audio':
                 renderer.renderAudio(renderContext)
@@ -522,60 +522,6 @@ class ModelTagLib {
             out << INDENT*5 << "</tr>\n"
         }
         out << INDENT*4 << "</tr></tbody>\n"
-    }
-
-    def masterDetail(out, attrs, model) {
-        model.master.source = "masterDetail.items"
-
-        out << INDENT*4 << """
-                        <div class="row-fluid">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>"""
-
-        model.master.columns.eachWithIndex { col, i ->
-            out << "<th width='${col.width}'>" + labelText(attrs, col, col.title) + "</th>"
-        }
-
-        out << INDENT*4 << """
-                                        <th width="10%">Controls</th>
-                                    </tr>
-                                </thead>
-                                <tbody data-bind="foreach: data.masterDetail.items()">
-                                    <tr>
-                                """
-
-        model.master.columns.eachWithIndex { col, i ->
-            out << INDENT*5 << "<td><span data-bind=\"text:${col.source}\"></span></td>"
-        }
-
-        out << INDENT*4 << """
-                                        <td width="10%">
-                                            <button data-bind="click:\$parent.data.masterDetail.removeItem,visible:!\$parent.data.masterDetail.addOrEditMode()" class="btn btn-link" title="Delete item"><i class='icon-remove'></i></button>
-                                            <button data-bind="click:\$parent.data.masterDetail.editItem,visible:!\$parent.data.masterDetail.addOrEditMode()" class="btn btn-link" title="Edit item"><i class='icon-edit'></i></button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        """
-
-        out << INDENT*4 << """
-                            <div class="row-fluid" data-bind="visible:!data.masterDetail.addOrEditMode()">
-                                <input type="button" data-bind="click:data.masterDetail.addItem" value="Add an item" class="btn btn-primary"></input>
-                            </div>
-                           """
-
-        out << INDENT*4 << "<div data-bind='visible: data.masterDetail.addOrEditMode()'>"
-        viewModelItems(attrs, out, model.detail)
-        out << INDENT*4 << "</div>"
-
-        out << INDENT*4 << """
-                            <div class="row-fluid" data-bind="visible:data.masterDetail.addOrEditMode()">
-                                <input type="button" data-bind="click:data.masterDetail.saveItem" value="Save item" class="btn btn-primary"></input>
-                                <input type="button" data-bind="click:data.masterDetail.cancelItem" value="Cancel" class="btn btn-default"></input>
-                            </div>
-                           """
     }
 
     def table(out, attrs, model) {
