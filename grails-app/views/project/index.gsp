@@ -487,6 +487,12 @@
                 }).fail(function(j,t,e){ alert(t + ":" + e);}).done();
             }
         }
+
+        // select about tab when coming from project finder
+        if(amplify.store('traffic-from-project-finder-page')){
+            amplify.store('traffic-from-project-finder-page',false)
+            $('#about-tab').tab('show');
+        }
     </r:script>
     <g:if test="${user?.isAdmin || user?.isCaseManager}">
         <r:script>

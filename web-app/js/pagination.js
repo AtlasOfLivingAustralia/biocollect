@@ -49,7 +49,7 @@ var PaginationViewModel = function (o, caller) {
     };
 
     self.resultsPerPage.subscribe(function () {
-        caller.refreshPage(0);
+        self.first();
     });
 
     self.refreshPage = function (rp) {

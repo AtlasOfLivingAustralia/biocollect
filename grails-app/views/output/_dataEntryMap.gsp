@@ -45,7 +45,7 @@
                 </g:if>
                 <g:else>
                     <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude"
-                        ${validation}>
+                           ${validation}>
                 </g:else>
             </div>
         </div>
@@ -61,7 +61,7 @@
                 </g:if>
                 <g:else>
                     <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude"
-                        ${validation}>
+                           ${validation}>
                 </g:else>
             </div>
         </div>

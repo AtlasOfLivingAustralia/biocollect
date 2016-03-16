@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>My Data | Bio Collect</title>
+    <title>${view == 'allrecords' ? 'All Records' : 'My Data'} | Bio Collect</title>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <r:script disposition="head">
     var fcConfig = {
@@ -17,15 +17,15 @@
             searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
             downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
             getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping')}",
-            recordListUrl: "${createLink(controller: 'record', action: 'ajaxList')}",
-            recordDeleteUrl: "${createLink(controller: 'record', action: 'delete')}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
-            view: "${view}",
+            view: "${view == 'allrecords' ? view : 'myrecords'}",
             returnTo: "${view == 'allrecords' ? createLink(controller: 'bioActivity', action:'allRecords') : createLink(controller: 'bioActivity', action:'list') }",
-            projectLinkPrefix: "${createLink(controller: 'project')}/"
+            projectLinkPrefix: "${createLink(controller: 'project')}/",
+            recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
+            imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}'
         },
         here = document.location.href;
     </r:script>
@@ -37,6 +37,9 @@
     <h2>${view == 'allrecords' ? 'All Records' : 'My Data'}</h2>
     <div class="main-content" style="display:none;">
         <g:render template="../bioActivity/activities"/>
+    </div>
+    <div class="loading-message">
+        <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
     </div>
 </div>
 

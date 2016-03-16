@@ -233,151 +233,42 @@ OrganisationSelectionViewModel = function(organisations, userOrganisations, init
     }
 };
 
-var OrganisationsViewModel = function(organisations, userOrgIds) {
+var OrganisationsViewModel = function() {
     var self = this;
-
-    var userOrgList = [], otherOrgList = [];
-    for (var i=0; i<organisations.length; i++) {
-
-        // Attach images to each organisations for display
-        var orgView = new OrganisationViewModel(organisations[i]);
-        orgView.searchableName = organisations[i].name;
-        orgView.searchableDescription = organisations[i].description;
-
-        if (userOrgIds && userOrgIds.indexOf(organisations[i].organisationId) >= 0) {
-            userOrgList.push(orgView);
+    self.pagination = new PaginationViewModel({}, self);
+    self.organisations = ko.observableArray([]);
+    self.searchTerm = ko.observable('').extend({throttle:500});
+    self.searchTerm.subscribe(function(term) {
+        self.refreshPage(0);
+    });
+    self.refreshPage = function(offset) {
+        var url = fcConfig.organisationSearchUrl;
+        var params = {offset:offset, max:self.pagination.resultsPerPage()};
+        if (self.searchTerm()) {
+            params.searchTerm = self.searchTerm();
         }
         else {
-            otherOrgList.push(orgView)
+            params.sort = "nameSort"; // Sort by name unless there is a search term, in which case we sort by relevence.
         }
-    }
-
-    var searchableUserList, searchableOtherList;
-
-    self.searchTerm = ko.observable('');
-    self.searchName = ko.observable(true);
-    self.searchDescription = ko.observable(false);
-    self.caseSensitive = ko.observable(false);
-
-    var buildSearch = function() {
-        var keys = [];
-        if (self.searchName()) {
-            keys.push('searchableName');
-        }
-        if (self.searchDescription()) {
-            keys.push('searchableDescription');
-        }
-
-        var options = {keys:keys, caseSensitive:self.caseSensitive()};
-
-        searchableUserList = new SearchableList(userOrgList, keys, options);
-        searchableOtherList = new SearchableList(otherOrgList, keys, options);
-    };
-
-    buildSearch();
-
-    self.delayedSearchTerm = ko.pureComputed(self.searchTerm).extend({rateLimit:{method:'notifyWhenChangesStop', timeout:400}});
-
-    self.delayedSearchTerm.subscribe(function(term) {
-        searchableUserList.term(term);
-        searchableOtherList.term(term);
-        self.pageNum(1);
-        self.pageList(buildPageList());
-    });
-
-    this.userOrganisations = searchableUserList.results;
-    this.otherOrganisations = searchableOtherList.results;
-
-    this.pageNum = ko.observable(1);
-    this.organisationsPerPage = 20;
-    var maxPageButtons = 10;
-
-    this.totalPages = ko.computed(function() {
-        var count = self.userOrganisations().length + self.otherOrganisations().length;
-        var pageCount = Math.floor(count / self.organisationsPerPage);
-        return count % self.organisationsPerPage > 0 ? pageCount + 1 : pageCount;
-    });
-
-    this.currentPage = ko.computed(function() {
-        var results = [].concat(self.userOrganisations(), self.otherOrganisations());
-        var first = (self.pageNum()-1) * self.organisationsPerPage;
-        return results.slice(first, first+self.organisationsPerPage);
-
-    });
-
-    function buildPageList() {
-        var pages = [];
-        var i;
-        var currentPage = self.pageNum();
-        var total = self.totalPages();
-        if (total <= maxPageButtons) {
-            for (i=1; i<=total; i++) {
-                pages.push(i);
+        $.get(url, params, function(data) {
+            if (data.hits) {
+                var orgs = data.hits.hits || [];
+                self.organisations($.map(orgs, function(hit) {
+                    if (hit._source.logoUrl) {
+                        hit._source.documents = [{
+                            role:'logo',
+                            status:'active',
+                            thumbnailUrl: hit._source.logoUrl
+                        }]
+                    }
+                    return new OrganisationViewModel(hit._source);
+                }));
             }
-            return pages;
-        }
-
-        if (currentPage <= (maxPageButtons / 2) + 1) {
-            for (i=1; i<maxPageButtons; i++) {
-                pages.push(i);
+            if (offset == 0) {
+                self.pagination.loadPagination(0, data.hits.total);
             }
-            pages.push('..');
-            pages.push(total);
-            return pages;
 
-        }
-
-        if (currentPage > (total - (maxPageButtons / 2))) {
-            pages.push(1);
-            pages.push('..');
-            for (i=total - maxPageButtons+2; i<=total; i++) {
-                pages.push(i);
-            }
-            return pages;
-        }
-
-        pages.push(1);
-        pages.push('..');
-        var start = currentPage-(maxPageButtons/2)+1;
-        for (i=start; i<start+maxPageButtons-2; i++) {
-            pages.push(i);
-        }
-        pages.push('..');
-        pages.push(total);
-        return pages;
+        });
     };
-
-    this.pageList = ko.observableArray(buildPageList());
-
-    this.hasPrev = ko.computed(function() {
-        return self.pageNum() > 1;
-    });
-
-    this.hasNext = ko.computed(function() {
-        return self.pageNum() < self.totalPages();
-    });
-
-    this.next = function() {
-        if (self.hasNext()) {
-            self.gotoPage(self.pageNum()+1);
-        }
-    };
-    this.prev = function() {
-        if (self.hasPrev()) {
-            self.gotoPage(self.pageNum()-1);
-        }
-    };
-
-    this.gotoPage = function(page) {
-        if (page != '..') {
-            self.pageNum(page);
-            self.pageList(buildPageList());
-            self.pageList.notifySubscribers();
-        }
-    };
-
-    this.addOrganisation = function() {
-        window.location = fcConfig.createOrganisationUrl;
-    };
-
+    self.refreshPage(0);
 };

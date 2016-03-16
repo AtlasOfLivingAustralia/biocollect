@@ -17,7 +17,7 @@
     <g:elseif test="${projects}">
         <div class="control-group">
             <label class="control-label" for="projectId">Project</label>
-            <div class="controls">
+            <div class="controls nowrap">
                 <g:select name="project" id="projectId" class="input-xlarge combobox validate[required]" from="${projects}" optionValue="name" optionKey="projectId" noSelection="['':'start typing a project name']" />
             </div>
         </div>

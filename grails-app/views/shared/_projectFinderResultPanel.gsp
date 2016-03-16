@@ -1,7 +1,7 @@
 <div id="pt-table" class="row-fluid">
     <table data-table-list>
         <tbody>
-            <tr>
+            <tr class="padding10-small-screen">
                 <td><h3 id="pt-resultsReturned"></h3></td>
                 <td>
                     <g:if test="${fc.userIsAlaOrFcAdmin()}">
@@ -27,7 +27,7 @@
                     </td>
                     <td>
                         <div class="project-row-layout pf-project-text">
-                            <a data-bind="attr:{href:transients.indexUrl}">
+                            <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
                                 <span data-bind="text:name" style="font-size:150%;font-weight:bold"></span>
                             </a>
                             <div data-bind="visible:transients.orgUrl">
@@ -37,11 +37,14 @@
                                 </g:if>
                             </div>
                             <div data-bind="text:aim"></div>
-                            <div style="padding: 4px">
+                            <div data-bind="if: transients.links.length > 0">
                                 <i class="icon-info-sign"></i>&nbsp;<span data-bind="html:transients.links"/>
                             </div>
-                            <div style="line-height:2.2em">
+                            <div style="line-height:2.2em" data-bind="visible:!isMERIT()">
                                 TAGS:&nbsp;<g:render template="/project/tags"/>
+                            </div>
+                            <div data-bind="if: isContributingDataToAla()">
+                                <img src="${resource([dir: "images", file: "ala-logo-small.png"])}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
                             </div>
                         </div>
                     </td>

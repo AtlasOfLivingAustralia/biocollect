@@ -95,6 +95,7 @@ security.cas.adminRole = "ROLE_FC_ADMIN"
 security.cas.readOnlyOfficerRole = "ROLE_FC_READ_ONLY"
 
 upload.images.path = "/data/${appName}/images/"
+upload.path = "/data/${appName}/"
 upload.extensions.blacklist = ['exe','js','php','asp','aspx','com','bat']
 
 app.http.header.userId = "X-ALA-userId"
@@ -102,6 +103,7 @@ app.http.header.userId = "X-ALA-userId"
 google.maps.url = "//maps.google.com/maps/api/js?sensor=false&language=en"
 google.geocode.url = "https://maps.googleapis.com/maps/api/geocode/json?"
 pdfgen.baseURL="http://pdfgen.ala.org.au/"
+merit.baseURL="https://fieldcapture-test.ala.org.au"
 
 app.view.nocache = false
 

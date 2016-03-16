@@ -104,6 +104,10 @@
             window.location = "${createLink(controller: 'bioActivity', action: 'allRecords')}";
         });
 
+        $(".btnMyDashboard").click(function (e) {
+            window.location = "${createLink(controller: 'user', action: 'index')}";
+        });
+
         $(".btnMyData").click(function (e) {
             window.location = "${createLink(controller: 'bioActivity', action: 'list')}";
         });
@@ -112,8 +116,21 @@
             window.location = "${createLink(controller: 'project', action: 'myProjects')}";
         });
 
+        $(".btnMyOrganisation").click(function (e) {
+            window.location = "${createLink(controller: 'organisation', action: 'myOrganisations')}";
+        });
+
+        $(".btnMyFavouriteSites").click(function (e) {
+            window.location = "${createLink(controller: 'site', action: 'myFavourites')}";
+        });
+
+
         $(".btnSearch").click(function(e){
              window.location = "${createLink(controller: 'project', action: 'citizenScience')}";
+        })
+
+        $(".btnSite").click(function(e){
+             window.location = "${createLink(controller: 'site', action: 'list')}";
         })
 
         $("#toggleFluid").click(function(el){
@@ -198,7 +215,7 @@
         if (navwidth > availablespace) {
             var lastItem = $('#main > li:not(.more)').last();
             lastItem.attr('data-width', lastItem.outerWidth(true));
-            lastItem.prependTo($('#main .more ul'));
+            lastItem.prependTo($('#main .more ul.more-ul'));
             calcWidth();
         } else {
             var firstMoreElement = $('#main li.more li').first();

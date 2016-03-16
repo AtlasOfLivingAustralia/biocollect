@@ -44,7 +44,7 @@ class ProjectActivityController {
         if (!userId) {
             response.status = 401
             result = [status: 401, error: "Access denied: User has not been authenticated."]
-        } else if (!(projectService.isUserAdminForProject(userId, params.projectId) && pActivity)) {
+        } else if (!(projectService.isUserAdminForProject(userId, project?.projectId) && pActivity)) {
             response.status = 401
             result = [status: 401, error: "Access denied: User is not an admin of this project - ${project?.projectId}"]
         } else {
@@ -80,7 +80,7 @@ class ProjectActivityController {
         if (!userId) {
             response.status = 401
             result = [status: 401, error: "Access denied: User has not been authenticated."]
-        } else if (!projectService.isUserAdminForProject(userId, params.projectId)) {
+        } else if (!projectService.isUserAdminForProject(userId, project?.projectId)) {
             response.status = 401
             result = [status: 401, error: "Access denied: User is not an admin of this project - ${project?.projectId}"]
         } else if (pActivity) {
@@ -109,7 +109,7 @@ class ProjectActivityController {
         if (!userId) {
             response.status = 401
             result = [status: 401, error: "Access denied: User has not been authenticated."]
-        } else if (!(projectService.isUserAdminForProject(userId, params.projectId) && pActivity)) {
+        } else if (!(projectService.isUserAdminForProject(userId, project?.projectId) && pActivity)) {
             response.status = 401
             result = [status: 401, error: "Access denied: User is not an admin of this project - ${project?.projectId}"]
         } else {

@@ -75,7 +75,7 @@ input[type=checkbox] {
 }
 
 #pt-search{
-    min-width: 60px;
+    min-width: 300px;
     width: 50%;
     max-width: 500px;
     padding: 14px;
@@ -145,3 +145,4 @@ input[type=checkbox] {
     width: auto;
     height: 100%;
 }​
+

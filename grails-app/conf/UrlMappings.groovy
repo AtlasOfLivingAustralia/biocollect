@@ -82,6 +82,7 @@ class UrlMappings {
                 "/myProfile"(controller: 'home', action: 'myProfile') {
 
                 }
+                "/ws/project/search"(controller: "project", action: 'search')
 
                 "/$hub/admin/user/$id"(controller: "user", action: "show") {
                         constraints {
@@ -91,6 +92,7 @@ class UrlMappings {
                 "/admin/user/$id"(controller: "user", action: "show") {
 
                 }
+                "/download/file"(controller: "download", action: [GET: "file"])
                 "/download/$id"(controller: "download", action: [GET: "downloadProjectDataFile"])
                 "500"(controller:'error', action:'response500')
                 "404"(controller:'error', action:'response404')

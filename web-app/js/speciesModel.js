@@ -10,6 +10,9 @@ var SpeciesViewModel = function (species, lists, populate) {
     self.name = ko.observable(species.name);
     self.guid = ko.observable(species.guid);
 
+    // Reference to output species uuid - for uniqueness retrieved from ecodata server
+    self.outputSpeciesId = ko.observable();
+
     self.transients = {};
     self.transients.name = ko.observable(species.name);
     self.transients.guid = ko.observable(species.guid);
@@ -50,6 +53,36 @@ var SpeciesViewModel = function (species, lists, populate) {
         }
     };
 
+    self.reset = function () {
+        self.name("");
+        self.guid("");
+        self.transients.name("");
+        self.transients.guid("");
+    };
+
+
+    self.loadOutputSpeciesId = function(species) {
+        var idRequired = fcConfig.getOutputSpeciesIdUrl;
+        if (species.outputSpeciesId) {
+            self.outputSpeciesId(species.outputSpeciesId);
+        } else if (idRequired) {
+            $.ajax({
+                url: fcConfig.getOutputSpeciesIdUrl,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data.outputSpeciesId) {
+                        self.outputSpeciesId(data.outputSpeciesId);
+                    }
+                },
+                error: function (data) {
+                    bootbox.alert("Error retrieving species data, please try again later.");
+                }
+            });
+        }
+    };
+
+    self.loadOutputSpeciesId(species);
     self.populateSingleSpecies(populate);
 };
 

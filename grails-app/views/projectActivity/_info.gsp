@@ -4,7 +4,7 @@
             <!-- ko if: current -->
             <div class="row-fluid">
                 <div class="span10">
-                    <h2 class="strong">Step 1 of 6 - Describe the survey</h2>
+                    <h2 class="strong">Step 1 of 7 - Describe the survey</h2>
                 </div>
                 <div class="span2 text-right">
                     <g:render template="../projectActivity/status"/>
@@ -22,7 +22,7 @@
 
                 <div class="span8">
                     <div class="controls">
-                        <input id="name" type="text" data-bind="value: name" data-validation-engine="validate[required]">
+                        <input id="name" type="text" data-bind="valueUpdate: 'input',value: name" data-validation-engine="validate[required]">
                     </div>
                 </div>
             </div>
@@ -41,6 +41,59 @@
                     <div class="controls">
                         <textarea id="description" style="width: 97%;" rows="4" class="input-xlarge" data-bind="value: description"
                                   data-validation-engine="validate[required]"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="attribution"><g:message code="project.survey.info.attribution"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.attribution"/>', content:'<g:message code="project.survey.info.attribution.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="req-field"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <textarea id="attribution" rows="4" class="input-xlarge" data-bind="value: attribution"
+                                  data-validation-engine="validate[required]"></textarea>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="methodName"><g:message code="project.survey.info.methodName"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodName"/>', content:'<g:message code="project.survey.info.methodName.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <input id="methodName" type="text" data-bind="value: methodName">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="methodAbstract"><g:message code="project.survey.info.methodAbstract"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodAbstract"/>', content:'<g:message code="project.survey.info.methodAbstract.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <textarea id="methodAbstract" rows="4" class="input-xlarge" data-bind="value: methodAbstract"></textarea>
                     </div>
                 </div>
             </div>
@@ -150,7 +203,8 @@
 
 <div class="row-fluid">
     <div class="span12">
-        <button class="btn-primary btn btn-small block" data-bind="click: saveInfo"><i class="icon-white  icon-hdd" ></i>  Save </button>
-        <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-visibility-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
+        <div class="alert alert-info" data-bind="visible: !isSurveyInfoFormFilled()">Enable Next button by filling all mandatory fields on this page.</div>
+        <button class="btn-primary btn btn-small block" data-bind="disable: !isSurveyInfoFormFilled(), click: saveInfo"><i class="icon-white  icon-hdd" ></i>  Save </button>
+        <button class="btn-primary btn btn-small block" data-bind="disable: !isSurveyInfoFormFilled(), showTabOrRedirect: {url:'', tabId: '#survey-visibility-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
     </div>
 </div>

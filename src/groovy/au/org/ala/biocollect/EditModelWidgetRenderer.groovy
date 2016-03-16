@@ -53,10 +53,10 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
         context.databindAttrs.add 'value', context.source
 
         context.writer << """
-<div class="timefield input-append">
-    <input${context.attributes.toString()} id="${context.model.source}TimeField" data-bind='${context.databindAttrs.toString()}'${context.validationAttr} type='text' class='input-mini timepicker'/>
-</div>
-"""
+            <div class="timefield input-append">
+                <input${context.attributes.toString()} id="${context.model.source}TimeField" data-bind='${context.databindAttrs.toString()}'${context.validationAttr} type='text' class='input-mini timepicker'/>
+            </div>
+        """
     }
 
     @Override
@@ -109,10 +109,21 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderAudio(WidgetRenderContext context) {
+        context.databindAttrs.add 'fileUploadWithProgress', "{target:${context.source}.files, config:{}}"
+        context.writer << context.g.render(template: '/output/audioDataTypeEditModelTemplate', model: [databindAttrs:context.databindAttrs.toString(), name: context.source])
+    }
+
+    @Override
     void renderImage(WidgetRenderContext context) {
-        context.addDeferredTemplate('/output/fileUploadTemplate')
         context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"
-        context.writer << context.g.render(template: '/output/imageDataTypeTemplate', model: [databindAttrs:context.databindAttrs.toString(), source: context.source])
+        context.writer << context.g.render(template: '/output/imageDataTypeEditModelTemplate', model: [databindAttrs:context.databindAttrs.toString(), name: context.source])
+    }
+
+    @Override
+    void renderImageDialog(WidgetRenderContext context) {
+        context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"
+        context.writer << context.g.render(template: '/output/imageDialogDataTypeEditModelTemplate', model: [databindAttrs:context.databindAttrs.toString(), name: context.source])
     }
 
     @Override
@@ -187,8 +198,11 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderGeoMap(WidgetRenderContext context) {
-        context.model.readonly = false
-        context.writer << context.g.render(template: '/output/dataEntryMap', model: context.model)
+        Map model = [:]
+        model.putAll(context.model)
+        model.readonly = false
+        model.validation = context.validationAttr
+        context.writer << context.g.render(template: '/output/dataEntryMap', model: model)
     }
 
 }

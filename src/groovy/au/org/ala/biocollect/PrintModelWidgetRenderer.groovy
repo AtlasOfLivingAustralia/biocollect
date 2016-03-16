@@ -62,7 +62,18 @@ class PrintModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderAudio(WidgetRenderContext context) {
+        context.writer << context.g.render(template: '/output/audioDataTypeViewModelTemplate',
+                model: [databindAttrs:context.databindAttrs.toString(), name: context.source, index: "''", hideFile: true])
+    }
+
+    @Override
     void renderImage(WidgetRenderContext context) {
+        defaultRender(context)
+    }
+
+    @Override
+    void renderImageDialog(WidgetRenderContext context) {
         defaultRender(context)
     }
 

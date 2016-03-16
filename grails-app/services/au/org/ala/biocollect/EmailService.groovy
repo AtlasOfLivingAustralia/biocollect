@@ -35,6 +35,7 @@ class EmailService {
             log.info("Sending email: ${subjectLine} to: ${recipients}, cc:${ccList}, body: ${body}")
 
             mailService.sendMail {
+                async true
                 to recipients
                 if (ccList) {cc ccList}
                 from sender

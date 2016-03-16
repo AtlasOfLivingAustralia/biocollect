@@ -165,9 +165,9 @@ describe("SurveyVisibilityViewModel Spec", function () {
         var visibility = new SurveyVisibilityViewModel();
         expect(visibility.embargoOption()).toEqual("NONE");
     });
-    it("default set date should be 60", function () {
+    it("default set date should be 10", function () {
         var visibility = new SurveyVisibilityViewModel();
-        expect(visibility.embargoForDays()).toEqual(60);
+        expect(visibility.embargoForDays()).toEqual(10);
     });
 
 });

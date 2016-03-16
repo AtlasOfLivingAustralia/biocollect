@@ -16,7 +16,11 @@
             </div>
         </div>
 
+
         <div class="well well-small fc-docs-list-well">
+            <!-- ko if: filteredDocuments().length == 0 -->
+                <h4 class="text-center">No documents</h4>
+            <!-- /ko -->
             <ul class="nav nav-list fc-docs-list" data-bind="foreach: { data: filteredDocuments, afterAdd: showListItem, beforeRemove: hideListItem }">
                 <li class="pointer" data-bind="{ if: (role() == '${filterBy}' || 'all' == '${filterBy}') && role() != '${ignore}' && role() != 'variation', click: $parent.selectDocument, css: { active: $parent.selectedDocument() == $data } }">
                     <div class="clearfix space-after media" data-bind="template:ko.utils.unwrapObservable(type) === 'image' ? 'imageDocTmpl' : 'objDocTmpl'"></div>

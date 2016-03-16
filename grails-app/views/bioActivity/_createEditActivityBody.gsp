@@ -30,11 +30,15 @@
 
             <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h3>
 
-            <!-- add the dynamic components -->
+            <div data-bind="if:transients.optional || outputNotCompleted()">
+                <label class="checkbox" ><input type="checkbox" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>
+            </div>
+            <div id="${blockId}-content" data-bind="visible:!outputNotCompleted()">
+                <!-- add the dynamic components -->
 
-            <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}"
+                <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}"
                           printable="${printView}"/>
-
+            </div>
             <r:script>
                     $(function(){
                         var viewModelName = "${blockId}ViewModel", viewModelInstance = viewModelName + "Instance";
@@ -43,13 +47,21 @@
                 <md:jsModelObjects model="${model}" site="${site}" edit="true"
                                    viewModelInstance="${blockId}ViewModelInstance"/>
 
-                this[viewModelName] = function () {
+                this[viewModelName] = function (config, outputNotCompleted) {
                     var self = this;
                     self.name = "${output.name}";
-                            self.outputId = "${output.outputId}";
-                            self.data = {};
-                            self.transients = {};
-                            self.transients.dummy = ko.observable();
+                    self.outputId = "${output.outputId}";
+                    self.data = {};
+                    self.transients = {};
+
+                    var notCompleted = outputNotCompleted;
+                    if (notCompleted === undefined) {
+                        notCompleted = config.collapsedByDefault;
+                    }
+                    self.outputNotCompleted = ko.observable(notCompleted);
+                    self.transients.optional = config.optional || false;
+                    self.transients.questionText = config.optionalQuestionText || 'Not applicable';
+                    self.transients.dummy = ko.observable();
                             // add declarations for dynamic data
                 <md:jsViewModel model="${model}" output="${output.name}" edit="true"
                                 viewModelInstance="${blockId}ViewModelInstance"/>
@@ -84,11 +96,13 @@
             };
         };
 
-        window[viewModelInstance] = new this[viewModelName](site);
+        var config = ${fc.modelAsJavascript(model:metaModel.outputConfig?.find{it.outputName == outputName}, default:'{}')};
+        var outputNotCompleted = ${output.outputNotCompleted?:'undefined'};
+
+        window[viewModelInstance] = new this[viewModelName](config, outputNotCompleted);
 
         var output = ${output.data ?: '{}'};
-
-                window[viewModelInstance].loadData(output);
+        window[viewModelInstance].loadData(output);
 
                         // dirtyFlag must be defined after data is loaded
                 <md:jsDirtyFlag model="${model}"/>
@@ -199,7 +213,9 @@
 </div>
 
 
-<g:render template="/shared/imagerViewerModal" model="[readOnly: false]"></g:render>
+<g:render template="/shared/imagerViewerModal" model="[readOnly: false]"/>
+<g:render template="/shared/attachDocument"/>
+<g:render template="/shared/documentTemplate"/>
 
 <r:script>
         var returnTo = "${returnTo}";
@@ -348,6 +364,7 @@
             self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
             self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
             self.pActivity = JSON.parse('${(pActivity as JSON).toString().encodeAsJavaScript()}');
+            self.projectSite = JSON.parse('${(projectSite as JSON).toString().encodeAsJavaScript()}');
         }
 
         var activityLevelData = new ActivityLevelData();
@@ -402,7 +419,6 @@
 
                     var matchingSite = $.grep(self.transients.pActivitySites, function(site) { return siteId == site.siteId})[0];
 
-                    activityLevelData.siteMap.resetMap();
                     if (matchingSite && matchingSite.extent && matchingSite.extent.geometry) {
                         var geometry = matchingSite.extent.geometry;
                         if (geometry.pid) {
@@ -496,7 +512,8 @@
                     showReset: true,
                     draggableMarkers: false,
                     useMyLocation: false,
-                    allowSearchByAddress: false,
+                    allowSearchLocationByAddress: false,
+                    allowSearchRegionByAddress: false,
                     wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
                     wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
                 }
@@ -511,6 +528,10 @@
                         var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
                         activityLevelData.siteMap.setGeoJSON(geoJson);
                     }
+                } else if (activityLevelData.pActivity.sites.length == 1) {
+                    viewModel.siteId(activityLevelData.pActivity.sites[0].siteId);
+                } else if (activityLevelData.projectSite && activityLevelData.projectSite.extent) {
+                    activityLevelData.siteMap.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(activityLevelData.projectSite.extent.geometry));
                 }
             </g:if>
 

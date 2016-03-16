@@ -340,6 +340,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.isExternal = ko.observable(project.isExternal);
     self.isMERIT = ko.observable(project.isMERIT);
     self.isMetadataSharing = ko.observable(project.isMetadataSharing);
+    self.isContributingDataToAla = ko.observable(project.isContributingDataToAla);
     self.isSuitableForChildren = ko.observable(project.isSuitableForChildren);
     self.keywords = ko.observable(project.keywords);
     self.projectSiteId = project.projectSiteId;
@@ -353,6 +354,12 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
 
     self.associatedOrgs = ko.observableArray(project.associatedOrgs);
+
+    self.isExternal.subscribe(function (newVal) {
+        if (!newVal) {
+            self.isContributingDataToAla(true)
+        }
+    });
 
     self.transients = self.transients || {};
 
@@ -634,7 +641,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.attachDocument = function() {
         showDocumentAttachInModal(fcConfig.documentUpdateUrl, new DocumentViewModel({role:'information', maxStages: maxStages},{key:'projectId', value:project.projectId}), '#attachDocument')
             .done(function(result){
-                self.documents.push(new DocumentViewModel(result))}
+                    window.location.href = here;
+                }
             );
     };
     self.editDocumentMetadata = function(document) {
@@ -656,6 +664,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             self.addDocument(doc);
         });
     }
+    self.mainImageAttribution = ko.observable(self.mainImageAttributionText());
+    self.logoAttribution = ko.observable(self.logoAttributionText());
 
     // links
     if (project.links) {
@@ -679,8 +689,10 @@ function ProjectViewModel(project, isUserEditor, organisations) {
                         if (data.error) {
                             showAlert(data.error, "alert-error", self.transients.resultsHolder);
                         } else {
-                            showAlert("Successfully deleted, redirecting to home page.", "alert-success", self.transients.resultsHolder);
-                            window.location.href = fcConfig.serverUrl;
+                            showAlert("Successfully deleted. Indexing is in process, search result will be updated in few minutes. Redirecting to search page...", "alert-success", self.transients.resultsHolder);
+                            setTimeout(function () {
+                                window.location.href = fcConfig.serverUrl;
+                            }, 3000);
                         }
                     },
                     error: function (data) {
@@ -753,14 +765,15 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
 
     var self = this;
 
-    // Automatically create the site of type "Project Area" with a name of "Project area for ..."
-    var siteViewModel = initSiteViewModel(false);
-    self.name.subscribe(function(newValue){
-        var oldValue = siteViewModel.site().name();
-        var projectName =  newValue
+    self.transients.siteViewModel = initSiteViewModel(false);
+
+    self.name.subscribe(function(projectName) {
+        checkProjectName(projectName);
+
+        var oldValue = self.transients.siteViewModel.site().name();
         var prefix = "Project area for ";
-        if(oldValue.indexOf(prefix) >= 0 || !oldValue){
-            siteViewModel.site().name(prefix+projectName);
+        if (oldValue.indexOf(prefix) >= 0 || !oldValue) {
+            self.transients.siteViewModel.site().name(prefix + projectName);
         }
     });
 
@@ -771,6 +784,22 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     self.transients.associatedOrgLogoUrl = ko.observable();
 
     self.transients.termsOfUseClicked = ko.observable(false);
+
+    self.transients.validProjectName = ko.observable(true);
+
+    function checkProjectName(projectName) {
+        if (!_.isUndefined(projectName) && projectName) {
+            $.ajax({
+                url: fcConfig.checkProjectNameUrl,
+                type: 'GET',
+                data: {projectName: projectName, id: project.projectId},
+                contentType: 'application/json',
+                success: function (data) {
+                    self.transients.validProjectName(data.validName);
+                }
+            });
+        }
+    }
 
     self.clickTermsOfUse = function() {
         self.transients.termsOfUseClicked(true);
@@ -825,7 +854,7 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     self.modelAsJSON = function() {
         var projectData = self.toJS();
 
-        var siteData = siteViewModel.toJS();
+        var siteData = self.transients.siteViewModel.toJS();
         var documents = ko.mapping.toJS(self.documents());
         self.fixLinkDocumentIds(self.transients.existingLinks);
         var links = ko.mapping.toJS(self.links());
@@ -840,3 +869,20 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
 
     autoSaveModel(self, config.projectSaveUrl, {blockUIOnSave:config.blockUIOnSave, blockUISaveMessage:"Saving project...", storageKey:config.storageKey});
 };
+
+/**
+ * Used by the validation engine jquery plugin to validate the selection of an organisation from a picklist.
+ */
+function validateOrganisationSelection(field, rules, i, options) {
+    var organisationSelectionViewModel = ko.dataFor(field[0]);
+
+    var selectedOrg = organisationSelectionViewModel.selection();
+    if (!selectedOrg || selectedOrg == null || _.isUndefined(selectedOrg)) {
+        // there is a bug with the funcCall option in JQuery Validation Engine where the rule is triggered but the
+        // message is not raised unless the 'required' rule is also present.
+        // The work-around for this is to manually add the 'required' rule when the message is raised.
+        // http://stackoverflow.com/questions/16182395/jquery-validation-engine-funccall-not-working-if-only-rule
+        rules.push('required');
+        return "You must select an organisation from the list"
+    }
+}

@@ -336,8 +336,7 @@ function autoSaveModel(viewModel, saveUrl, options) {
                     if (config.blockUIOnSave) {
                         $.unblockUI();
                     }
-                    showAlert(config.errorMessage + data.detail + ' \n' + data.error,
-                        "alert-error",config.resultsMessageId);
+                    bootbox.alert(config.errorMessage + data.detail + '<br/>' + data.error)
                     if (typeof errorCallback === 'function') {
                         errorCallback(data);
                     }
@@ -696,8 +695,14 @@ function Documents() {
 
     self.logoUrl = ko.pureComputed(function() {
         var logoDocument = self.findDocumentByRole(self.documents(), 'logo');
-        return logoDocument ? logoDocument.url : null;
+        return logoDocument ? (logoDocument.thumbnailUrl ? logoDocument.thumbnailUrl : logoDocument.url) : null;
     });
+
+    self.logoAttributionText = ko.pureComputed(function() {
+        var logoDocument = self.findDocumentByRole(self.documents(), 'logo');
+        return logoDocument && logoDocument.attribution ? logoDocument.attribution() : null;
+    });
+
     self.bannerUrl = ko.pureComputed(function() {
         var bannerDocument = self.findDocumentByRole(self.documents(), 'banner');
         return bannerDocument ? bannerDocument.url : null;
@@ -710,6 +715,11 @@ function Documents() {
     self.mainImageUrl = ko.pureComputed(function() {
         var mainImageDocument = self.findDocumentByRole(self.documents(), 'mainImage');
         return mainImageDocument ? mainImageDocument.url : null;
+    });
+
+    self.mainImageAttributionText = ko.pureComputed(function() {
+        var mainImageDocument = self.findDocumentByRole(self.documents(), 'mainImage');
+        return mainImageDocument && mainImageDocument.attribution ? mainImageDocument.attribution() : null;
     });
 
     self.removeBannerImage = function() {
@@ -763,7 +773,8 @@ function Documents() {
 
     self.ignore = ['documents', 'links', 'logoUrl', 'bannerUrl', 'mainImageUrl', 'primaryImages', 'embeddedVideos',
         'ignore', 'transients', 'documentFilter', 'documentFilterFieldOptions', 'documentFilterField',
-        'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass'];
+        'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass',
+        'mainImageAttributionText', 'logoAttributionText'];
 
 }
 
@@ -896,21 +907,49 @@ function imageError(imageElement, alternateImage) {
 /**
  * fired when logo image is loaded. fn used to stretch small image to height or width of parent container.
  * @param imageElement the img element
+ * givenWidth - (optional) width of the bounding box containing the image. If nothing is passed parent width is used.
+ * givenHeight - (optional) height of the bounding box containing the image. If nothing is passed parent height is used.
  */
-function findLogoScalingClass(imageElement) {
+function findLogoScalingClass(imageElement, givenWidth, givenHeight) {
     var $elem = $(imageElement);
-    var parentHeight = $elem.parent().height();
-    var parentWidth = $elem.parent().width();
-    var height = $elem.height();
-    var width = $elem.width();
+    var parentHeight = givenHeight || $elem.parent().height();
+    var parentWidth = givenWidth || $elem.parent().width();
+    var height = imageElement.height;
+    var width = imageElement.width;
 
-    var wide = width > height;
-
-    var ratio = width / height;
-
-    if (ratio > 1.2 && width < parentWidth) {
+    var ratio = parentWidth/parentHeight;
+    if( ratio * height > width){
+        $elem.addClass('tall')
+    } else {
         $elem.addClass('wide')
-    } else if (ratio < 0.80 && height < parentHeight) {
-        $elem.addClass('tall');
+    }
+}
+
+function initCarouselImages(image){
+    $(image).parent().fancybox({nextEffect:'fade', preload:0, 'prevEffect':'fade'});
+    findLogoScalingClass(image)
+};
+
+function initialiseImageGallery(config){
+    var vm = new ImageGalleryViewModel(config);
+    ko.applyBindings(vm, config.element);
+}
+
+/**
+ * Converts kilometer square area to an appropriate human readable unit
+ * supported units - km square, hectare, meter square
+ * @param kmSq {number}
+ * @returns {string}
+ */
+function convertKMSqToReadableUnit(kmSq){
+    if(kmSq != undefined){
+        if(kmSq > 1){
+            return neat_number(kmSq,4) + ' km&sup2;'
+        }
+        if(kmSq > 0.001){
+            return neat_number(kmSq*100,4) + ' hectare'
+        }
+
+        return neat_number(kmSq*1000000,4) + ' m&sup2;'
     }
 }

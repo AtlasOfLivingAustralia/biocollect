@@ -29,8 +29,8 @@
 
                     <label class="control-label span3" for="organisationName"><g:message code="project.details.organisationNameSearch"/><fc:iconHelp><g:message code="project.details.organisationName.help"/></fc:iconHelp><i class="req-field"></i></label>
                     <div class="span6 controls">
-                        <div class="input-append">
-                            <input id="organisationName" class="input-xxlarge" type="text" placeholder="Start typing a name here" data-bind="value:term, valueUpdate:'afterkeydown', disable:selection"><button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
+                        <div id="organisationSearchControls" class="input-append">
+                            <input id="organisationName" class="input-xxlarge" type="text" placeholder="Start typing a name here" data-bind="value:term, valueUpdate:'afterkeydown', disable:selection" data-validation-engine="validate[funcCall[validateOrganisationSelection]]"><button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
                         </div>
                     </div>
                 </div>
@@ -75,6 +75,15 @@
                 </div>
             </div>
         </div>
+        <div class="row-fluid">
+            <div class="control-group">
+                <label class="control-label span3" for="isContributingToAla"><g:message code="project.details.isContributingToAla"/><fc:iconHelp><g:message code="project.details.isContributingToAla.help"/></fc:iconHelp></label>
+                <div class="controls span9 large-checkbox">
+                    <input data-bind="checked:isContributingDataToAla" type="checkbox" id="isContributingToAla"/>
+                    <label for="isContributingToAla"> <span></span> <g:message code="project.details.isContributingToAla.extra"/> </label>
+                </div>
+            </div>
+        </div>
 
     </div>
 
@@ -88,6 +97,7 @@
                 <div class="controls span9">
                     <g:textField style="width:90%;" name="name" data-bind="value:name"
                                  data-validation-engine="validate[required]"/>
+                    <div class="alert alert-error margin-top-1" data-bind="visible: !transients.validProjectName()"><g:message code="project.details.invalidName"/></div>
                 </div>
             </div>
 
@@ -440,10 +450,17 @@
                     <button class="btn main-image-button" data-bind="click:removeLogoImage, visible:logoUrl()"><i class="icon-minus"></i> Remove</button>
                 </span>
             </div>
+            <div class="control-group" data-bind="visible: logoUrl()">
+                <label class="control-label span3" for="logoCredit"><g:message code="project.details.logo.attribution"/><fc:iconHelp><g:message code="project.details.logo.attribution.help"/></fc:iconHelp></label>
+                <div class="controls span9">
+                    <g:textField class="input-xxlarge" name="logoCredit" data-bind="value:logoAttribution"/>
+                </div>
+            </div>
 
             <div class="control-group">
                 <label class="control-label span3" for="mainImage"><g:message code="project.details.mainImage"/><fc:iconHelp><g:message code="project.details.mainImage.help"/></fc:iconHelp></label>
                 <div class="span6" style="text-align:center;background:white">
+                    <g:message code="project.details.mainImage.extra"/><br/>
                     <div class="well" style="padding:0;max-height:512px;display:inline-block;overflow:hidden">
                         <img style="width:100%" alt="No image provided" data-bind="attr:{src:mainImageUrl}">
                     </div>
@@ -460,18 +477,24 @@
                     <button class="btn main-image-button" data-bind="click:removeMainImage,  visible:mainImageUrl()"><i class="icon-minus"></i> Remove</button>
                 </span>
             </div>
+            <div class="control-group" data-bind="visible: mainImageUrl()">
+                <label class="control-label span3" for="mainImageCredit"><g:message code="project.details.mainImage.attribution"/><fc:iconHelp><g:message code="project.details.mainImage.attribution.help"/></fc:iconHelp></label>
+                <div class="controls span9">
+                    <g:textField class="input-xxlarge" name="mainImageCredit" data-bind="value:mainImageAttribution"/>
+                </div>
+            </div>
         </div>
     </div>
 
     <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
-        <div class="well">
-            <h4 class="block-header"><g:message code="project.details.site"/></h4>
+        <!-- ko stopBinding: true -->
+        <div class="well" id="sitemap">
+            <h4 class="block-header"><g:message code="project.details.site"/><i class="req-field"></i></h4>
             <p>
                 A project area should represent the smallest area which contains all of the data collected in a single activity or survey event.
             </p>
-            <!-- ko stopBinding: true -->
             <g:render template="/site/siteDefinition" />
-            <!-- /ko -->
         </div>
+        <!-- /ko -->
     </div>
 </bc:koLoading>

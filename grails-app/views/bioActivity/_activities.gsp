@@ -4,27 +4,44 @@
 <div id="survey-all-activities-and-records-content">
     <div id="data-result-placeholder"></div>
     <g:render template="../bioActivity/search"/>
+
     <div class="row-fluid">
         <div class="span12">
-            <div class="span3 text-left well">
-                <!-- ko if: activities().length > 0 -->
-                <g:render template="../bioActivity/facets"/>
-                <!-- /ko -->
+            <div class="span3 text-left">
+
+                <div class="well">
+                    <g:render template="../bioActivity/facets"/>
+                </div>
+
             </div>
-            <div class="span9 text-left">
+            <div class="span9 text-left well">
                 <ul class="nav nav-tabs" id="tabDifferentViews">
-                    <li class="active"><a href="#recordVis" data-toggle="tab">List</a></li>
-                    <li class=""><a href="#mapVis" id="dataMapTab" data-toggle="tab">Map</a></li>
+                    <li class="active"><a id="recordVis-tab" href="#recordVis" data-toggle="tab" >List</a></li>
+                    <li class=""><a href="#mapVis" id="dataMapTab" data-bind="attr:{'data-toggle': activities().length > 0 ? 'tab' : ''}">Map</a></li>
+                    <li class=""><a href="#imageGallery" data-toggle="tab">Images</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
+                        <!-- ko if: activities().length == 0 -->
+                            <div class="row-fluid">
+                                <h3 class="text-left margin-bottom-five">
+                                    <!-- ko if: $root.searchTerm() == "" && $root.selectedFilters().length == 0 -->
+                                        No data has been recorded for this project yet
+                                    <!-- /ko -->
+                                    <!-- ko if: $root.searchTerm() != "" || $root.selectedFilters().length > 0 -->
+                                        No results
+                                    <!-- /ko -->
+                                </h3>
+                            </div>
+                        <!-- /ko -->
 
                         <!-- ko if: activities().length > 0 -->
-                        <div class="well">
+
+                            <div class="alert alert-info hide" id="downloadStartedMsg"><i class="fa fa-spin fa-spinner">&nbsp;&nbsp;</i>Preparing download, please wait...</div>
+
                             <div class="row-fluid">
                                 <div class="span9">
-                                    <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record<span
-                                            data-bind="if: total() >= 2">s</span></h3>
+                                    <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record(s)</h3>
                                 </div>
                                 <div class="span3 padding-top-0 margin-bottom-2">
                                     <button data-bind="click: download, disable: transients.loading" data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}" class="btn btn-primary pull-right padding-top-1"><span class="fa fa-download">&nbsp;</span>Download</button>
@@ -141,6 +158,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <hr/>
                             <!-- /ko -->
                             <div class="margin-top-2"></div>
                             <g:render template="../shared/pagination"/>
@@ -156,13 +174,25 @@
                                 </div>
                             </div>
                             <!-- /ko -->
-                        </div>
                         <!-- /ko -->
                     </div>
 
                     <div class="tab-pane" id="mapVis">
-                        <m:map id="recordOrActivityMap" width="100%"/>
+                        <span data-bind="visible: transients.loadingMap()">
+                            <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
+                        </span>
+                        <span data-bind="visible: transients.totalPoints() == 0 && !transients.loadingMap()">
+                            <h3 class="text-left margin-bottom-five">No results</h3>
+                        </span>
+                        <span data-bind="visible: transients.totalPoints() > 0 && !transients.loadingMap()">
+                            <m:map id="recordOrActivityMap" width="100%"/>
+                        </span>
                     </div>
+                    <!-- ko stopBinding:true -->
+                    <div class="tab-pane" id="imageGallery">
+                        <g:render template="/shared/imageGallery"></g:render>
+                    </div>
+                    <!-- /ko -->
                 </div>
             </div>
         </div>
@@ -172,7 +202,8 @@
 <r:script>
     var activitiesAndRecordsViewModel, alaMap, results;
     function initialiseData(view) {
-        var user = '${user as grails.converters.JSON}'
+        var user = '${user as grails.converters.JSON}',
+            configImageGallery;
         if (user) {
             user = JSON.parse(user);
         } else {
@@ -184,6 +215,22 @@
             activitiesAndRecordsViewModel.transients.alaMap.redraw();
         })
         activitiesAndRecordsViewModel.getDataAndShowOnMap();
+
+        configImageGallery = {
+            recordUrl: fcConfig.recordImageListUrl,
+            poiUrl: fcConfig.poiImageListUrl,
+            method: 'POST',
+            element: document.getElementById('imageGallery'),
+            data: {
+                view: fcConfig.view,
+                fq: [],
+                searchTerm: '',
+                projectId: fcConfig.projectId || ''
+            },
+            viewModel: activitiesAndRecordsViewModel
+        }
+
+        initialiseImageGallery(configImageGallery);
     }
 
 

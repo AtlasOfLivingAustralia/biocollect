@@ -9,6 +9,7 @@
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
@@ -24,11 +25,12 @@
         imageLocation:"${resource(dir:'/images')}",
         logoLocation:"${resource(dir:'/images/filetypes')}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
-        projectListUrl: "${createLink(controller: 'project', action: 'getProjectList')}",
+        projectListUrl: "${createLink(controller: 'project', action: 'search', params:[initiator:'biocollect'])}",
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
         isCitizenScience: true,
-        isOrganisationPage: false
+        showAllProjects: false,
+        meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}"
     }
     <g:if test = "${grailsApplication.config.merit.projectLogo}" >
         fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";
@@ -41,7 +43,7 @@
 <div id="wrapper" class="content container-fluid">
     <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
     <div class="row-fluid">
-        <div class="span12" id="heading">
+        <div class="span12 padding10-small-screen" id="heading">
             <h1 class="pull-left"><g:message code="project.citizenScience.heading"/></h1>
             <div class="pull-right">
                 <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</a>

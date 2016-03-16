@@ -34,6 +34,10 @@
                     <div class="text-small-heading"><g:message code="project.display.description" /></div>
                     <span data-bind="html:description.markdownToHtml()"></span>
                 </div>
+                <div data-bind="visible:isContributingDataToAla" class="margin-top-1 margin-bottom-1">
+                    <img src="${resource([dir: "images", file: "ala-logo-small.png"])}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
+
+                </div>
             </div>
         </div>
         <div class="span6" id="column2">
@@ -83,6 +87,11 @@
         </div>
     </div>
     </g:if>
+
+    <div class="image-attribution-panel" data-bind="visible: logoAttributionText() || mainImageAttributionText()">
+        <strong>Image credits</strong>: <span data-bind="visible: logoAttributionText()">Logo: <span data-bind="text: logoAttributionText()"></span>;&nbsp;</span>
+        <span data-bind="visible: mainImageAttributionText()">Feature image: <span data-bind="text: mainImageAttributionText()"></span></span>
+    </div>
 </div>
 <r:script>
 
@@ -96,7 +105,8 @@
                 showReset: false,
                 draggableMarkers: false,
                 useMyLocation: false,
-                allowSearchByAddress: false,
+                allowSearchLocationByAddress: false,
+                allowSearchRegionByAddress: false,
                 wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
                 wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
             }
@@ -135,7 +145,7 @@
     <!-- ko foreach: associatedOrgs -->
     <div class="span5 associated-org thumbnail">
         <div data-bind="visible: url" class=" clearfix">
-            <a href="#" data-bind="attr: {href: url}" target="_blank">
+            <a href="#" data-bind="attr: {href: url}" target="_blank" class="do-not-mark-external">
                 <div data-bind="visible: logo"><img src="" data-bind="attr: {src: logo, title: name}"
                                                     alt="Organisation logo" class="small-logo"></div>
 

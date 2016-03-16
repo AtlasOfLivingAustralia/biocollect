@@ -4,7 +4,7 @@
     <!-- ko if: current -->
     <div class="row-fluid">
         <div class="span10 text-left">
-            <h2 class="strong">Step 5 of 6 - Specify the area or places where the survey will be undertaken</h2>
+            <h2 class="strong">Step 6 of 7 - Specify the area or places where the survey will be undertaken</h2>
         </div>
         <div class="span2 text-right">
             <g:render template="../projectActivity/status"/>
@@ -26,7 +26,10 @@
             <table class="table white-background table-custom-border borderless">
                 <thead>
                 <tr>
-                    <th class="text-left">Sites associated with this survey: <span class="req-field"></span></th>
+                    <th class="text-left">Sites associated with this survey:
+                        <span class="req-field"></span>
+                        <a href="#" data-bind="popover: {content:'Sites listed here will be selectable on the data collection form. If you don\'t want a particular site to be available for selection in this survey, click the arrow to move it into the \'Sites associated with the project\' column. Note that the survey must have at least one site associated with it.'}"><i  class="icon-question-sign"></i></a>
+                    </th>
                 </tr>
                 </thead>
 
@@ -58,7 +61,9 @@
             <table class="table table-custom-border borderless white-background">
                 <thead>
                 <tr>
-                    <th>Sites associated with this project:</th>
+                    <th>Sites associated with this project:
+                        <a href="#" data-bind="popover: {content:'Sites listed here are associated with the project, but are not used by this particular survey. If you want a particular site to be available for selection in this survey, click on the arrow to move it into the \'Sites associated with the survey\' column.'}"><i  class="icon-question-sign"></i></a>
+                    </th>
                 </tr>
                 </thead>
 
@@ -90,9 +95,9 @@
     <h3>Or, add custom site using the below options</h3>
     <div class="">
         <div class="btn-group btn-group-justified">
-            <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteCreateUrl}"><i class="icon-plus"></i> Add new site</a>
-            <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteSelectUrl}"><i class="icon-folder-open"></i> Choose existing sites</a>
-            <a class="btn btn-xs btn-default" data-bind="attr:{href: transients.siteUploadUrl}"><i class="icon-arrow-up"></i> Upload locations from shapefile</a>
+            <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToCreate, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"><i class="icon-plus"></i> Add new site </button>
+            <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToSelect, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"><i class="icon-folder-open"></i> Choose existing sites </button>
+            <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToUpload, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"><i class="icon-arrow-up"></i> Upload locations from shapefile </button>
         </div>
     </div>
 </div>

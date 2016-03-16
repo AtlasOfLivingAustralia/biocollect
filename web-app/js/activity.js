@@ -1,17 +1,24 @@
-var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
+var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit) {
     var self = this;
 
     var features, featureType = 'record', alaMap, results;
     self.view = view ? view : 'allrecords';
     var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500;
 
+    // These parameters are used when activity is instantiated from sites page.
+    // It is used to disable certain aspects like map and auto load feature
+    ignoreMap = !!ignoreMap;
+    doNotInit = !!doNotInit;
+
     self.sortOptions = [
         {id: 'lastUpdated', name: 'Date', order: 'DESC'},
         {id: 'activityOwnerName', name: 'Owner name', order: 'ASC'}];
 
     var index = 0;
+
     self.availableFacets = [
         {name: 'projectNameFacet', displayName: 'Project', order: index++},
+        {name: 'organisationNameFacet', displayName: 'Organisation', order: index++},
         {name: 'projectActivityNameFacet', displayName: 'Survey', order: index++},
         {name: 'recordNameFacet', displayName: 'Species', order: index++},
         {name: 'activityOwnerNameFacet', displayName: 'Owner', order: index++},
@@ -37,11 +44,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         $('#search-spinner').hide();
     };
 
-    self.searchTerm = ko.observable();
+    self.searchTerm = ko.observable('');
     self.order = ko.observable('DESC');
     self.sort = ko.observable('lastUpdated');
     self.selectedFilters = ko.observableArray(); // User selected facet filters.
     self.transients = {};
+    self.transients.totalPoints = ko.observable(0);
+    self.transients.loadingMap = ko.observable(true);
     self.transients.placeHolder = placeHolder;
     self.transients.bieUrl = fcConfig.bieUrl;
     self.transients.showEmailDownloadPrompt = ko.observable(false);
@@ -60,12 +69,45 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         self.refreshPage();
     };
 
-    self.reset = function () {
+    self.clearData = function() {
         self.searchTerm('');
         self.order('DESC');
         self.sort('lastUpdated');
-        self.refreshPage();
-        alaMap.fitBounds()
+        alaMap.resetMap();
+    };
+
+    self.reset = function () {
+        self.clearData();
+        self.selectedFilters([]);
+        self.refreshPage(0);
+    };
+
+    var facetsLocalStorageHandler = function (cmd) {
+        var orgTerm = fcConfig.organisationName;
+        if (!orgTerm) {
+            var key = self.view.toUpperCase() + '_DATA_PAGE_FACET_KEY';
+            switch (cmd) {
+                case 'store':
+                    var facets = [];
+                    ko.utils.arrayForEach(self.selectedFilters(), function (filter) {
+                        var value = {};
+                        value.term = filter.term();
+                        value.facetDisplayName = filter.facetDisplayName();
+                        value.facetName = filter.facetName();
+                        facets.push(value);
+                    });
+                    amplify.store(key, facets);
+                    break;
+
+                case 'restore':
+                default:
+                    return amplify.store(key);
+            }
+        }
+    };
+
+    self.selectFacetTerm = function (term, facetGroup) {
+        self.resetFacetsAndSelect(term, facetGroup);
     };
 
     self.addUserSelectedFacet = function (facet) {
@@ -75,7 +117,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
 
     self.removeUserSelectedFacet = function () {
         self.selectedFilters.removeAll();
-        self.refreshPage();
+        self.refreshPage(0);
     };
 
     self.removeFilter = function (filter) {
@@ -110,6 +152,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         }
 
         self.total(total);
+
+        var $loading = $('.loading-message');
+        $loading.hide();
     };
 
     self.download = function(data, event) {
@@ -119,17 +164,21 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             asyncDownloadThreshold = $(elem).attr("data-email-threshold");
         }
 
-        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0);
+        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
 
         if (self.total() > asyncDownloadThreshold) {
             self.transients.showEmailDownloadPrompt(!self.transients.showEmailDownloadPrompt());
         } else {
+            $('#downloadStartedMsg').removeClass('hide');
+            window.setTimeout(function(){
+                $('#downloadStartedMsg').addClass('hide');
+            }, 5000);
             window.location.href = url;
         }
     };
 
     self.asyncDownload = function() {
-        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0);
+        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
 
         url += "&async=true&email=" + self.transients.downloadEmail();
 
@@ -145,7 +194,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
     };
 
     self.refreshPage = function (offset) {
-        var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, offset);
+        var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, offset, false);
         // initialise offset
         offset = offset || 0;
 
@@ -159,6 +208,83 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             },
             success: function (data) {
                 self.load(data, Math.ceil(offset / self.pagination.resultsPerPage()));
+                facetsLocalStorageHandler('store');
+            },
+            error: function (data) {
+                alert('An unhandled error occurred: ' + data);
+            },
+            complete: function () {
+                $('#search-spinner').hide();
+                $('.main-content').show();
+                self.transients.loading(false);
+            }
+        });
+    };
+
+    self.refineSearch = function() {
+        var terms = getSelectedTermsForRefinement();
+        terms.forEach(function (term) {
+            self.selectedFilters.push(term);
+        });
+        self.refreshPage();
+    };
+
+    function getSelectedTermsForRefinement() {
+        return $.map(self.facets(), function (facet) {
+            return $.map(facet.terms(), function (term) {
+                return term.selected() ? term : null;
+            });
+        });
+    }
+
+    self.refinementSelected = function() {
+        return getSelectedTermsForRefinement().length > 0;
+    };
+
+    self.resetFacetsAndSelect = function(term, facetGroup) {
+        var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, 0, true);
+
+        self.transients.loading(true);
+        $.ajax({
+            url: url,
+            type: 'GET',
+            contentType: 'application/json',
+            beforeSend: function () {
+                $('#search-spinner').show();
+            },
+            success: function (data) {
+                var facets = data.facets;
+
+                facets = $.map(facets ? facets : [], function (facet, index) {
+                    return new DataFacetsVM(facet, self.availableFacets);
+                });
+                facets.sort(function (left, right) {
+                    return left.order() == right.order() ? 0 : (left.order() < right.order() ? -1 : 1)
+                });
+
+                self.facets(facets);
+
+                var selectedFacet = null;
+
+                self.facets().forEach(function (facet) {
+                    var match = facet.findTerm(term);
+
+                    if (match != null) {
+                        selectedFacet = match;
+                    }
+                });
+
+                if (selectedFacet == null) {
+                    selectedFacet = new TermFacetVM({
+                        term: term,
+                        facetName: facetGroup,
+                        facetDisplayName: facetGroup
+                    })
+                }
+
+                self.selectedFilters([selectedFacet]);
+
+                self.refreshPage();
             },
             error: function (data) {
                 alert('An unhandled error occurred: ' + data);
@@ -240,8 +366,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
      * function used to create map and plot the fetched points
      */
     self.getDataAndShowOnMap = function () {
-        var searchTerm = activitiesAndRecordsViewModel.searchTerm() || '';
-        var view = activitiesAndRecordsViewModel.view;
+        // do not execute code if ignoreMap is set. helpful in situations where map is not included
+        if(ignoreMap){
+            return;
+        }
+
+        var searchTerm = self.searchTerm() || '';
+        var view = self.view;
         var url =fcConfig.getRecordsForMapping + '?max=10000&searchTerm='+ searchTerm+'&view=' + view;
         var facetFilters = [];
         self.plotOnMap(null);
@@ -250,7 +381,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             url += '&projectId=' + fcConfig.projectId;
         }
 
-        ko.utils.arrayForEach(activitiesAndRecordsViewModel.selectedFilters(), function (term) {
+        ko.utils.arrayForEach(self.selectedFilters(), function (term) {
             facetFilters.push(term.facetName() + ':' + term.term());
         });
 
@@ -262,6 +393,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             results = data;
             self.generateDotsFromResult(data);
             alaMap.finishLoading();
+            self.transients.loadingMap(false)
         }).error(function (request, status, error) {
             console.error("AJAX error", status, error);
             alaMap.finishLoading();
@@ -288,8 +420,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                             $.each(activity.records, function(k, el) {
                                 if(el.coordinates && el.coordinates.length && el.coordinates[1] && !isNaN(el.coordinates[1]) && el.coordinates[0] && !isNaN(el.coordinates[0])){
                                     features.push({
-                                        lat: el.coordinates[1],
-                                        lng: el.coordinates[0],
+                                        // the ES index always returns the coordinate array in [lat, lng] order
+                                        lat: el.coordinates[0],
+                                        lng: el.coordinates[1],
                                         popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, el.name)
                                     });
                                 }
@@ -297,10 +430,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                         }
                         break;
                     case 'activity':
-                        if(activity.coordinates && activity.coordinates.length && activity.coordinates[1] && !isNaN(activity.coordinates[1]) && el.coordinates[0] && !isNaN(activity.coordinates[0])){
+                        if(activity.coordinates && activity.coordinates.length && activity.coordinates[1] && !isNaN(activity.coordinates[1]) && activity.coordinates[0] && !isNaN(activity.coordinates[0])){
                             features.push({
-                                lat: activity.coordinates[1],
+                                // the ES index always returns the coordinate array in [lat, lng] order
                                 lng: activity.coordinates[0],
+                                lat: activity.coordinates[1],
                                 popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name)
                             });
                         }
@@ -323,7 +457,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             showReset: false,
             draggableMarkers: false,
             useMyLocation: false,
-            allowSearchByAddress: false
+            allowSearchLocationByAddress: false,
+            allowSearchRegionByAddress: false,
         };
 
         if(!alaMap){
@@ -342,9 +477,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
                 onClick: self.getActivityOrRecords
             });
             alaMap.addControl(radio);
-            alaMap.addButton("<span class='fa fa-refresh' title='Reset zoom'></span>", alaMap.fitBounds, "bottomleft");
+            alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomleft");
         }
 
+        self.transients.totalPoints(features && features.length ? features.length : 0);
         features && features.length && alaMap.addClusteredPoints(features);
     };
 
@@ -364,7 +500,19 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         alaMap.getMapImpl().invalidateSize();
     };
 
-    function constructQueryUrl(prefix, offset) {
+
+    /**
+     * gets the list of selected filters to a format easy enough to construct an URL.
+     */
+    self.urlFacetParameter = function(){
+        var facetFilters = [];
+        ko.utils.arrayForEach(activitiesAndRecordsViewModel.selectedFilters(), function (term) {
+            facetFilters.push(term.facetName() + ':' + term.term());
+        });
+        return facetFilters;
+    };
+
+    function constructQueryUrl(prefix, offset, facetOnly) {
         if (!offset) offset = 0;
 
         var params = {
@@ -372,16 +520,20 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
             offset: offset,
             sort: self.sort(),
             order: self.order(),
-            searchTerm: self.searchTerm(),
             flimit: 1000,
             view: self.view
         };
 
-        url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
         var filters = '';
-        ko.utils.arrayForEach(self.selectedFilters(), function (term) {
-            filters = filters + '&fq=' + term.facetName() + ':' + term.term();
-        });
+        if (_.isUndefined(facetOnly) || !facetOnly) {
+            params.searchTerm = self.searchTerm().trim();
+
+            ko.utils.arrayForEach(self.selectedFilters(), function (term) {
+                filters = filters + '&fq=' + term.facetName() + ':' + term.term();
+            });
+        }
+
+        url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
 
         return url + filters;
     }
@@ -397,7 +549,29 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user) {
         self.sort(data.id);
     };
 
-    self.refreshPage();
+    var restored = facetsLocalStorageHandler("restore");
+    var orgTerm = fcConfig.organisationName;
+    if (orgTerm) {
+        self.selectedFilters.push(new TermFacetVM({
+            term: orgTerm,
+            facetName: "organisationNameFacet",
+            facetDisplayName: 'Organisation'
+        }));
+        self.refreshPage();
+    } else if (restored && restored.length > 0) {
+        $.each(restored, function (index, value) {
+            self.selectedFilters.push(new TermFacetVM({
+                term: value.term ? value.term : '',
+                facetName: value.facetName ? value.facetName : '',
+                facetDisplayName: value.facetDisplayName ? value.facetDisplayName : ''
+            }));
+        });
+
+        !doNotInit && self.refreshPage();
+    }
+    else {
+        !doNotInit && self.refreshPage();
+    }
 };
 
 var ActivityRecordViewModel = function (activity) {
@@ -457,15 +631,19 @@ var DataFacetsVM = function (facet, availableFacets) {
     self.total = ko.observable(facet.total);
     self.terms = ko.observableArray();
     self.filter = ko.observable(false);
+
     self.toggleFilter = function () {
         self.filter(!self.filter())
     };
+
     self.displayText = ko.pureComputed(function () {
         return getFacetName(self.name()) + " (" + self.total() + ")";
     });
+
     self.order = ko.pureComputed(function () {
         return getFacetOrder(self.name());
     });
+
     self.searchTerm = ko.observable('');
     /**
      * search for a token and show terms matching the token.
@@ -481,7 +659,19 @@ var DataFacetsVM = function (facet, availableFacets) {
                 term.showTerm(false);
             }
         });
-    }
+    };
+
+    self.findTerm = function(termName) {
+        var match = null;
+
+        self.terms().forEach(function(term) {
+            if (term.term() == termName) {
+                match = term;
+            }
+        });
+
+        return match;
+    };
 
     self.searchTerm.subscribe(self.search);
 
@@ -495,7 +685,7 @@ var DataFacetsVM = function (facet, availableFacets) {
         }
 
         return false;
-    }
+    };
 
     var getFacetName = function (name) {
         var found = $.grep(availableFacets, function (obj, i) {
@@ -525,6 +715,8 @@ var TermFacetVM = function (term) {
     var self = this;
     if (!term) term = {};
 
+    self.id = ko.observable(generateTermId(term));
+    self.selected = ko.observable(false);
     self.facetName = ko.observable(term.facetName);
     self.facetDisplayName = ko.observable(term.facetDisplayName);
     self.count = ko.observable(term.count);
@@ -534,3 +726,11 @@ var TermFacetVM = function (term) {
         return self.term() + " (" + self.count() + ")";
     });
 };
+
+function generateTermId(term) {
+    if (_.isFunction(term.facetName)) {
+        return term.facetName().replace(/[^a-zA-Z0-9]/g, "") + term.term().replace(/[^a-zA-Z0-9]/g, "")
+    } else {
+        return term.facetName.replace(/[^a-zA-Z0-9]/g, "") + term.term.replace(/[^a-zA-Z0-9]/g, "")
+    }
+}

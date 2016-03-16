@@ -17,6 +17,8 @@
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
+        documentUpdateUrl: "${g.createLink(controller:"proxy", action:"documentUpdate")}",
+        documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
@@ -25,12 +27,13 @@
         speciesSearch: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10])}",
         bioActivityUpdate: "${createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId])}",
         activityDataTableUploadUrl: "${createLink(controller:'bioActivity', action:'extractDataFromExcelTemplate', params:[pActivityId:pActivity.projectActivityId])}",
-        getSingleSpeciesUrl : "${createLink(controller: 'projectActivity', action: 'getSingleSpecies', params: [id: pActivity.projectActivityId])}"
+        getSingleSpeciesUrl : "${createLink(controller: 'projectActivity', action: 'getSingleSpecies', params: [id: pActivity.projectActivityId])}",
+        getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}"
         },
         here = document.location.href;
     </r:script>
     <r:require
-            modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,activity,attachDocuments,amplify,imageViewer,projectActivityInfo,species,map"/>
+            modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,activity,attachDocuments,amplify,imageViewer,projectActivityInfo,species,map,responsiveTableStacked"/>
 </head>
 
 <body>

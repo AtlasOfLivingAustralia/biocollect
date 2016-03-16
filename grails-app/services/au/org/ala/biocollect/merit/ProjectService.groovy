@@ -1,7 +1,7 @@
 package au.org.ala.biocollect.merit
-
 import au.org.ala.biocollect.EmailService
-import au.org.ala.web.AuthService
+import au.org.ala.biocollect.OrganisationController
+import au.org.ala.biocollect.OrganisationService
 import grails.converters.JSON
 
 class ProjectService {
@@ -10,12 +10,25 @@ class ProjectService {
     def grailsApplication
     SiteService siteService
     ActivityService activityService
-    AuthService authService
     DocumentService documentService
     UserService userService
     MetadataService metadataService
     SettingService settingService
     EmailService emailService
+    OrganisationService organisationService
+
+    /**
+     * Check if a project already exists with the specified name.
+     *
+     * @param projectName The name to check
+     * @param id The ID of the project being edited, to exclude it from the check. Leave null if creating a new project
+     * @return True if no other active project exists with the same name
+     */
+    boolean checkProjectName(String projectName, String id) {
+        def results = webService.getJson("${grailsApplication.config.ecodata.service.url}/project/findByName?projectName=${URLEncoder.encode(projectName, "utf-8")}", 30000, true)
+
+        results?.isEmpty() || (results?.size() == 1 && id == results[0]?.projectId)
+    }
 
     def list(brief = false, citizenScienceOnly = false) {
         def params = brief ? '?brief=true' : ''
@@ -52,14 +65,114 @@ class ProjectService {
         list
     }
 
+    def validate(props, projectId = null) {
+        def error = null
+        def updating = projectId != null
+
+        if (!updating && !props.containsKey("isExternal")) {
+            //error, not null
+            return "isExternal is missing"
+        }
+
+        if (props.containsKey("organisationId")) {
+            def org = organisationService.get(props.organisationId)
+            if (org?.error) {
+                //error, not valid org
+                return "organisationId is not a valid organisationId"
+            } else if (!props.containsKey("organisationName") || !org.name.equals(props.organisationName)) {
+                //fix the organisation name
+                props["organisationName"] = org.name
+            }
+        } else if (!updating) {
+            //error, no org
+            return "organisationId is missing"
+        }
+
+        if (!updating && !props.containsKey("plannedStartDate")) {
+            //error, no start date
+            return "plannedStartDate is missing"
+        }
+
+        if (props.containsKey("name")) {
+            if (!checkProjectName(props.name, projectId)) {
+                return "name is not unique"
+            }
+        } else if (!updating) {
+            //error, no project name
+            return "name is missing"
+        }
+
+        if (!updating && !props.containsKey("aim")) {
+            //error, no project aim
+            return "aim is missing"
+        }
+
+        if (!updating && !props.containsKey("description")) {
+            //error, no project description
+            return "description is missing"
+        }
+
+        if (!updating && !props.containsKey("scienceType")) {
+            //error, no science type
+            return "scienceType is missing"
+        }
+
+        if (props.containsKey("difficulty")) {
+            if (!['Easy', 'Medium', 'Hard'].contains(props.difficulty)) {
+                return "difficulty is not valid."
+            }
+        } else if (!updating) {
+            //error, no difficulty
+            return "difficulty is missing"
+        }
+
+        if (!updating && !props.containsKey("task")) {
+            //error, no task
+            return "task is missing"
+        }
+
+        if (props.containsKey("projectSiteId")) {
+            def site = siteService.get(props.projectSiteId)
+            if (site?.error) {
+                //error, invalid site
+                return "projectSiteId is not a valid projectSiteId"
+            }
+        } else if (!updating) {
+            //error, no site id
+            return "projectSiteId is missing"
+        }
+
+        if (props.containsKey("termsOfUseAccepted")) {
+            if (!props.termsOfUseAccepted) {
+                //error, terms of use not accepted
+                return "termsOfUseAccepted is not true"
+            }
+        } else if (!updating) {
+            //error, no terms of use accepted
+            return "termsOfUseAccepted is missing"
+        }
+
+        error
+    }
+
     /**
      * Creates a new project and adds the user as a project admin.
      */
     def create(props) {
+        Map result
+
+        //validate
+        def error = validate(props)
+        if (error) {
+            result = [:]
+            result.error = error
+            result.detail = ''
+        }
+
         def activities = props.remove('selectedActivities')
 
         // create a project in ecodata
-        Map result = webService.doPost(grailsApplication.config.ecodata.service.url + '/project/', props)
+        if (!result) result = webService.doPost(grailsApplication.config.ecodata.service.url + '/project/', props)
 
         String subject
         String body
@@ -75,7 +188,7 @@ class ProjectService {
             body = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) has successfully created a new project ${props.name} with id ${projectId}"
         } else {
             subject = "An error occurred while creating a new project"
-            body = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) attempted to create a new project ${props.name}, but an error occurred during creation: ${result.error}."
+            body = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) attempted to create a new project ${props.name}, but an error occurred during creation: ${result.detail} : ${result.error}."
         }
 
         emailService.sendEmail(subject, body, ["${grailsApplication.config.biocollect.support.email.address}"])
@@ -84,7 +197,17 @@ class ProjectService {
     }
 
     def update(id, body, boolean skipEmailNotification = false) {
-        def result = webService.doPost(grailsApplication.config.ecodata.service.url + '/project/' + id, body)
+        def result
+
+        //validate
+        def error = validate(body, id)
+        if (error) {
+            result = [:]
+            result.error = error
+            result.detail = ''
+        }
+
+        if (!result) result = webService.doPost(grailsApplication.config.ecodata.service.url + '/project/' + id, body)
 
         if (!skipEmailNotification) {
             String projectName = get(id, "brief")?.name
@@ -226,6 +349,50 @@ class ProjectService {
     }
 
     /**
+     * Does the current user have permission to edit the requested projectId?
+     * Checks for the ADMIN role in CAS and then checks the UserPermission
+     * lookup in ecodata.
+     *
+     * @param userId
+     * @param projectId
+     * @return boolean
+     */
+    Map canUserEditProjects(String userId, String projectId) throws SocketTimeoutException, Exception {
+        def isAdmin
+        Map permissions = [:], response
+
+        if (userService.userIsAlaAdmin()) {
+            isAdmin = true
+        }
+
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProjects"
+        Map params = [projectIds:projectId,userId:userId]
+        response = webService.doPostWithParams(url, params)
+
+        if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw new Exception(response.error)
+            }
+        }
+
+        if(isAdmin){
+            response?.resp?.each{ key, value ->
+                if(value != null){
+                    permissions[key] = true
+                } else {
+                    permissions[key] = null;
+                }
+            }
+        } else {
+            permissions = response.resp;
+        }
+
+        permissions
+    }
+
+    /**
      * Can user edit bio collect activity
      * @param userId the user to test.
      * @param the activity to test.
@@ -305,6 +472,29 @@ class ProjectService {
             ['active': projects, 'starred': starredProjects] as JSON;
         } else {
             [:] as JSON
+        }
+    }
+
+    /**
+     * get image documents from ecodata
+     * @param projectId
+     * @param payload
+     * @return
+     */
+    Map listImages(Map payload) throws SocketTimeoutException, Exception{
+        Map response
+        payload.type = 'image';
+        payload.role = ['surveyImage']
+        String url = grailsApplication.config.ecodata.service.url + '/document/listImages'
+        response = webService.doPost(url, payload)
+        if(response.resp){
+            return response.resp;
+        } else  if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw  new Exception(response.error);
+            }
         }
     }
 }

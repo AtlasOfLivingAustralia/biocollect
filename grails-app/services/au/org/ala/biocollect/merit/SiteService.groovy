@@ -6,6 +6,7 @@ import com.vividsolutions.jts.io.WKTReader
 import grails.converters.JSON
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.geotools.kml.v22.KMLConfiguration
 import org.geotools.xml.Parser
 import org.opengis.feature.simple.SimpleFeature
@@ -14,6 +15,8 @@ class SiteService {
 
     def webService, grailsApplication, commonService, metadataService, userService
     def documentService
+    ActivityService activityService
+    ProjectService projectService
     LinkGenerator grailsLinkGenerator
 
     def list() {
@@ -266,14 +269,15 @@ class SiteService {
     def persistSiteExtent(name, geometry) {
 
         def resp = null
-        if(geometry?.type == 'Circle'){
-           def body = [name: "test", description: "my description", user_id: "1551", api_key: "b3f3c932-ba88-4ad5-b429-f947475024af"]
-           def url = grailsApplication.config.spatial.layersUrl + "/shape/upload/pointradius/" +
+        def userId = userService.getUser().userId
+        if (geometry?.type == 'Circle') {
+            def body = [name: "test", description: "my description", user_id: userId, api_key: grailsApplication.config.api_key]
+            def url = grailsApplication.config.spatial.layersUrl + "/shape/upload/pointradius/" +
                     geometry?.coordinates[1] + '/' + geometry?.coordinates[0] + '/' + (geometry?.radius / 1000)
-           resp = webService.doPost(url, body)
-        } else if (geometry?.type == 'Polygon'){
-           def body = [geojson: geometry, name: name, description:'my description', user_id: '1551', api_key: "b3f3c932-ba88-4ad5-b429-f947475024af"]
-           resp = webService.doPost(grailsApplication.config.spatial.layersUrl + "/shape/upload/geojson", body)
+            resp = webService.doPost(url, body)
+        } else if (geometry?.type == 'Polygon') {
+            def body = [geojson: geometry, name: name, description: 'my description', user_id: userId, api_key: grailsApplication.config.api_key]
+            resp = webService.doPost(grailsApplication.config.spatial.layersUrl + "/shape/upload/geojson", body)
         }
         resp
     }
@@ -315,6 +319,41 @@ class SiteService {
         log.debug asJSON
 
         asJSON
+    }
+
+    /**
+     * Get images for a list of sites. Number of images returned can be limited by max and offset parameters.
+     */
+    List getImages( GrailsParameterMap params) throws SocketTimeoutException, Exception{
+        String url = grailsApplication.config.ecodata.service.url + '/site/getImages';
+        Map response = webService.doGet(url, params);
+        if(response.resp){
+            return response.resp;
+        } else  if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw  new Exception(response.error);
+            }
+        }
+    }
+
+
+    /**
+     * Get images for a point of interest id. Number of images returned can be limited by max and offset parameters.
+     */
+    Map getPoiImages( GrailsParameterMap params) throws SocketTimeoutException, Exception{
+        String url = grailsApplication.config.ecodata.service.url + '/site/getPoiImages';
+        Map response = webService.doGet(url, params);
+        if(response.resp){
+            return response.resp;
+        } else  if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw  new Exception(response.error);
+            }
+        }
     }
 
     static metaModel() {
@@ -388,5 +427,59 @@ class SiteService {
                         ],
                 ]
             ]
+    }
+
+    /**
+     * Checks if a siteId is linked to one or more activity.
+     * @param siteId
+     * @return Boolean - true if more than one activity is associated with a site
+     */
+    Boolean isSiteAssociatedWithActivity(String siteId) throws SocketTimeoutException, Exception{
+        Map siteCriteria = new HashMap();
+        siteCriteria.put('siteId', siteId);
+        Map response = activityService.search(siteCriteria);
+        List activities
+
+        if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw new Exception(response.error)
+            }
+        }
+
+        activities = response.resp?.activities;
+        if(activities?.size()){
+            return true
+        }
+
+        return false
+    }
+
+    /**
+     * Checks if a siteId is linked to a project.
+     * @param siteId
+     * @return Boolean - true if site is project area
+     */
+    Boolean isSiteAssociatedWithProject(String siteId) throws SocketTimeoutException, Exception{
+        Map siteCriteria = new HashMap();
+        siteCriteria.put('siteId', siteId);
+        Map response = get(siteId);
+        List projects
+
+        if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw new Exception(response.error)
+            }
+        }
+
+        projects = response?.projects;
+        if(projects?.size()){
+            return true
+        }
+
+        return false
     }
 }

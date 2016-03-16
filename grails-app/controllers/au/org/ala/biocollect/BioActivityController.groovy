@@ -11,7 +11,9 @@ import au.org.ala.biocollect.merit.SiteService
 import au.org.ala.biocollect.merit.UserService
 import grails.converters.JSON
 import groovyx.net.http.ContentType
+import org.apache.commons.io.FilenameUtils
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.web.multipart.MultipartFile
 
 import static org.apache.http.HttpStatus.*
 import org.codehaus.groovy.grails.web.json.JSONArray
@@ -85,16 +87,14 @@ class BioActivityController {
                 def photoPoints = postBody.remove('photoPoints')
                 postBody.projectActivityId = pActivity.projectActivityId
                 postBody.userId = userId
-                // if activity is not created then create it now to get id
-                if(!id){
-                    result = activityService.update(id, postBody)
-                }
+
+                result = activityService.update(id, postBody)
 
                 String activityId = id ?: result?.resp?.activityId
                 if (photoPoints && activityId) {
                     updatePhotoPoints(activityId, photoPoints)
                 }
-                
+
                 postBody.outputs?.each {
                     it.data?.multimedia?.each {
                         String filename
@@ -122,11 +122,6 @@ class BioActivityController {
 
                 }
 
-                // save images as documents
-                postBody.outputs = outputService.updateImages(activityId, postBody.outputs);
-
-                // save the activity again
-                result = activityService.update(activityId, postBody)
             } else {
                 flash.message = userAlreadyInRole.error
                 response.status = userAlreadyInRole.statusCode
@@ -137,7 +132,7 @@ class BioActivityController {
         render result as JSON
     }
 
-    def getProjectActivityCount(String id){
+    def getProjectActivityCount(String id) {
         def result = activityService.getProjectActivityCount(id)
         render result as JSON
     }
@@ -224,7 +219,7 @@ class BioActivityController {
         if (!userId) {
             response.status = 401
             result = [status: 401, error: "Access denied: User has not been authenticated."]
-        } else if(projectService.isUserAdminForProject(userId, activity?.projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+        } else if (projectService.isUserAdminForProject(userId, activity?.projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             def resp = activityService.delete(id)
             if (resp == SC_OK) {
                 result = [status: resp, text: 'deleted']
@@ -232,7 +227,7 @@ class BioActivityController {
                 response.status = resp
                 result = [status: resp, error: "Error deleting the survey, please try again later."]
             }
-        } else{
+        } else {
             response.status = 401
             result = [status: 401, error: "Access denied: User is not an admin or owner of this activity - ${id}"]
         }
@@ -264,7 +259,9 @@ class BioActivityController {
                 Map model = activityAndOutputModel(activity, activity.projectId)
                 model.pActivity = pActivity
                 model.id = pActivity.projectActivityId
+                params.mobile ? model.mobile = true : ''
                 model
+
             }
         } else {
             forward(action: 'list', model: [error: 'no such id'])
@@ -279,7 +276,7 @@ class BioActivityController {
     def list() {
     }
 
-    def allRecords (){
+    def allRecords() {
         render(view: 'list', model: [view: 'allrecords', user: userService.user])
     }
 
@@ -300,8 +297,8 @@ class BioActivityController {
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
         Map parsed = commonService.parseParams(params)
         parsed.userId = userService.getCurrentUserId()
-        parsed.each{ key, value ->
-            if(value != null && value){
+        parsed.each { key, value ->
+            if (value != null && value) {
                 queryParams.put(key, value)
             }
         }
@@ -317,9 +314,10 @@ class BioActivityController {
         queryParams
     }
 
-   /*
-    * Search project activities and records
-    */
+    /*
+     * Search project activities and records
+     */
+
     def searchProjectActivities() {
         GrailsParameterMap queryParams = constructDefaultSearchParams(params)
 
@@ -328,6 +326,7 @@ class BioActivityController {
         List facets = []
         activities = activities?.collect {
             Map doc = it._source
+            def projectActivity = projectActivityService.get(doc.projectActivityId,  "all")
             [
                     activityId       : doc.activityId,
                     projectActivityId: doc.projectActivityId,
@@ -345,7 +344,8 @@ class BioActivityController {
                     endDate          : doc.projectActivity?.endDate,
                     projectName      : doc.projectActivity?.projectName,
                     projectId        : doc.projectActivity?.projectId,
-                    showCrud         : ((queryParams.userId && doc.projectId && projectService.canUserEditProject(queryParams.userId, doc.projectId, false) || (doc.userId == queryParams.userId)))
+                    showCrud         : ((queryParams.userId && doc.projectId && projectService.canUserEditProject(queryParams.userId, doc.projectId, false) || (doc.userId == queryParams.userId))),
+                    thumbnailUrl     : projectActivity?.documents?.find {it.status == 'active' && it.thumbnailUrl}?.thumbnailUrl
             ]
         }
 
@@ -364,12 +364,12 @@ class BioActivityController {
      * map points are generated from this function. It requires some client side code to convert the output of this
      * function to points.
      */
-    def getProjectActivitiesRecordsForMapping(){
+    def getProjectActivitiesRecordsForMapping() {
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
         Map parsed = commonService.parseParams(params)
         parsed.userId = userService.getCurrentUserId()
-        parsed.each{ key, value ->
-            if(value != null && value){
+        parsed.each { key, value ->
+            if (value != null && value) {
                 queryParams.put(key, value)
             }
         }
@@ -400,7 +400,7 @@ class BioActivityController {
                     coordinates      : doc.coordinates
             ]
 
-            if(doc.sites && doc.sites.size() > 0){
+            if (doc.sites && doc.sites.size() > 0) {
                 result.coordinates = doc.sites[0]?.extent?.geometry?.centre
             }
 
@@ -410,7 +410,7 @@ class BioActivityController {
         render([activities: activities, total: searchResult.hits?.total ?: 0] as JSON)
     }
 
-    def ajaxListForProject(String id){
+    def ajaxListForProject(String id) {
 
         def model = [:]
         def query = [pageSize: params.max ?: 10,
@@ -477,6 +477,7 @@ class BioActivityController {
         model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view: 'brief']) : null
         model.mapFeatures = model.site ? siteService.getMapFeatures(model.site) : []
         model.project = projectId ? projectService.get(model.activity.projectId) : null
+        model.projectSite = model.project.sites?.find { it.siteId == model.project.projectSiteId }
 
         // Add the species lists that are relevant to this activity.
         model.speciesLists = new JSONArray()
@@ -518,9 +519,8 @@ class BioActivityController {
 
                 if (data && !data.error) {
                     activityService.lookupSpeciesInOutputData(params.pActivityId, params.type, params.listName, data.data)
-                    result = [status:SC_OK, data:data.data]
-                }
-                else {
+                    result = [status: SC_OK, data: data.data]
+                } else {
                     result = data
                 }
 
@@ -530,10 +530,9 @@ class BioActivityController {
                 def resultJson = result as JSON
                 render resultJson.toString()
             }
-        }
-        else {
+        } else {
             response.status = SC_BAD_REQUEST
-            result = [status: SC_BAD_REQUEST, error:'No file attachment found']
+            result = [status: SC_BAD_REQUEST, error: 'No file attachment found']
             // This is returned to the browswer as a text response due to workaround the warning
             // displayed by IE8/9 when JSON is returned from an iframe submit.
 
@@ -541,6 +540,40 @@ class BioActivityController {
             def resultJson = result as JSON
             render resultJson.toString()
         }
+    }
+
+    def uploadFile() {
+        String stagingDirPath = grailsApplication.config.upload.path
+        Map result = [:]
+        if (request.respondsTo('getFile')) {
+            MultipartFile multipartFile = request.getFile('files')
+
+            if (multipartFile?.size) {  // will only have size if a file was selected
+                String filename = multipartFile.getOriginalFilename().replaceAll(' ', '_')
+                String ext = FilenameUtils.getExtension(filename)
+                filename = FileUtils.nextUniqueFileName(FilenameUtils.getBaseName(filename) + '.' + ext, stagingDirPath)
+
+                File stagingDir = new File(stagingDirPath)
+                stagingDir.mkdirs()
+                File file = new File(FileUtils.fullPath(filename, stagingDirPath))
+                multipartFile.transferTo(file)
+
+                Map metadata = [
+                        name       : filename,
+                        size       : multipartFile.size,
+                        contentType: multipartFile.contentType,
+                        url        : FileUtils.encodeUrl(grailsApplication.config.grails.serverURL + "/download/file?filename=", filename),
+                        attribution: '',
+                        notes      : '',
+                        status     : "active"
+                ]
+                result = [files: [metadata]]
+            }
+        }
+
+        response.addHeader('Content-Type', 'text/plain')
+        def resultJson = result as JSON
+        render resultJson.toString()
     }
 
     private static boolean isProjectActivityClosed(Map projectActivity) {

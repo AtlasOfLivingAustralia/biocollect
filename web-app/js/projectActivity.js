@@ -1,15 +1,14 @@
 var ProjectActivitiesViewModel = function (params) {
     var self = this;
     var pActivities = params.pActivities;
-    var pActivityForms = params.pActivityForms;
-    var projectId = params.projectId;
-    var sites = params.sites;
     var user = params.user;
 
-    self.pActivityForms = pActivityForms;
-    self.sites = sites;
+    self.organisationName = params.organisationName;
+    self.pActivityForms = params.pActivityForms;
+    self.sites = params.sites;
     self.projectStartDate = params.projectStartDate;
-    self.projectId = ko.observable();
+
+    self.projectId = ko.observable(params.projectId);
     self.projectActivities = ko.observableArray();
 
     self.user = user ? user : {isEditor: false, isAdmin: false};
@@ -29,6 +28,9 @@ var ProjectActivitiesViewModel = function (params) {
     self.sortOrder.subscribe(function (order) {
         self.sort();
     });
+
+    // flag to check if survey was changed by dropdown menu. it is used to decide on saving survey.
+    self.isSurveySelected = ko.observable(true);
 
     self.sort = function () {
         var by = self.sortBy();
@@ -55,16 +57,26 @@ var ProjectActivitiesViewModel = function (params) {
     };
 
     self.setCurrent = function (pActivity) {
+        self.isSurveySelected(true);
         self.reset();
         pActivity.current(true);
+        self.isSurveySelected(false);
     };
 
-    self.loadProjectActivitiesVM = function (pActivities, pActivityForms, projectId, sites) {
-        self.projectId(projectId);
+    self.loadProjectActivities = function (pActivities) {
         self.sortBy("name");
         self.sortOrder("asc");
         $.map(pActivities, function (pActivity, i) {
-            return self.projectActivities.push(new ProjectActivity(pActivity, pActivityForms, projectId, (i == 0), sites));
+            var args = {
+                pActivity: pActivity,
+                pActivityForms: self.pActivityForms,
+                projectId: self.projectId(),
+                selected: (i == 0),
+                sites: self.sites,
+                organisationName: self.organisationName,
+                startDate: self.projectStartDate
+            };
+            return self.projectActivities.push(new ProjectActivity(args));
         });
 
         self.sort();
@@ -76,7 +88,7 @@ var ProjectActivitiesViewModel = function (params) {
         return projectActive && (pActivity.publicAccess() || userIsEditorOrAdmin);
     };
 
-    self.loadProjectActivitiesVM(pActivities, pActivityForms, projectId, sites);
+    self.loadProjectActivities(pActivities);
 
 };
 
@@ -101,6 +113,7 @@ var ProjectActivitiesDataViewModel = function (pActivitiesVM) {
 var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
     var self = $.extend(this, pActivitiesVM);
+    var surveyInfoTab = '#survey-info-tab';
     self.placeHolder = placeHolder;
     self.speciesOptions =  [{id: 'ALL_SPECIES', name:'All species'},{id:'SINGLE_SPECIES', name:'Single species'}, {id:'GROUP_OF_SPECIES',name:'A selection or group of species'}];
     self.datesOptions = [60, 90, 120, 180];
@@ -110,9 +123,19 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
     self.addProjectActivity = function () {
         self.reset();
-        self.projectActivities.push(new ProjectActivity([], self.pActivityForms, self.projectId(), true, self.sites, self.projectStartDate));
+        var args = {
+            pActivity: [],
+            pActivityForms: self.pActivityForms,
+            projectId: self.projectId(),
+            selected: true,
+            sites: self.sites,
+            organisationName: self.organisationName,
+            startDate: self.projectStartDate
+        };
+        self.projectActivities.push(new ProjectActivity(args));
         initialiseValidator();
         self.refreshSurveyStatus();
+        $(surveyInfoTab).tab('show');
         showAlert("Successfully added.", "alert-success", self.placeHolder);
     };
 
@@ -155,8 +178,38 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         return self.genericUpdate("species");
     };
 
+    self.saveAlert = function () {
+        return self.genericUpdate("alert");
+    };
+
     self.saveSites = function () {
-        return self.genericUpdate("sites");
+        var jsData = self.current().asJS("sites");
+        if (jsData.sites && jsData.sites.length > 0) {
+            self.genericUpdate("sites");
+        } else {
+            showAlert("No site associated with this survey", "alert-error", self.placeHolder);
+        }
+    };
+
+    self.saveSitesBeforeRedirect = function(redirectUrl) {
+        var jsData = self.current().asJS("sites");
+        if (jsData.sites && jsData.sites.length > 0) {
+            self.genericUpdate("sites");
+        }
+        window.location.href = redirectUrl;
+    };
+
+    self.redirectToCreate = function(){
+        var pActivity = self.current();
+        self.saveSitesBeforeRedirect(fcConfig.siteCreateUrl + '&pActivityId=' + pActivity.projectActivityId());
+    };
+
+    self.redirectToSelect = function(){
+        self.saveSitesBeforeRedirect(fcConfig.siteSelectUrl);
+    };
+
+    self.redirectToUpload = function(){
+        self.saveSitesBeforeRedirect(fcConfig.siteUploadUrl);
     };
 
     self.deleteProjectActivity = function () {
@@ -194,7 +247,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         } else if (caller == "info" && !pActivity.isEndDateAfterStartDate()){
             showAlert("Survey end date must be after start date", "alert-error", self.placeHolder);
             return false;
-        } else if(caller == "info" || caller == "visibility"){
+        } else if(caller == "info" || caller == "visibility" || caller == "alert"){
             return true;
         }
 
@@ -377,7 +430,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     };
 
     self.genericUpdate = function (caller) {
-        if (!$('#project-activities-' + caller + '-validation').validationEngine('validate')) {
+        if (caller != 'alert' && !$('#project-activities-' + caller + '-validation').validationEngine('validate')) {
             return false;
         }
         var pActivity = self.current();
@@ -409,30 +462,100 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
     };
 
+    /**
+     * checks if selected survey has survey info tab filled.
+     * @returns {boolean}
+     */
+    self.isSurveyInfoFormFilled = ko.computed(function(){
+        return !!(self.current() && self.current().isInfoValid())
+    })
+
+    /**
+     * This function checks if the survey info tab is valid and returns an appropriate string to fill data-toggle
+     * attribute on the anchor tag. This logic is used to disable all tabs except survey info tab. It helps to force
+     * users to fill the survey info tab before moving to other tabs.
+     * @returns {string} 'tab' or ''
+     */
+    self.dataToggleVal = function(){
+        if(self.isSurveyInfoFormFilled()){
+            return 'tab'
+        } else {
+            return ''
+        }
+    }
+
+    /**
+     * Checks if all mandatory survey fields are filled for survey to be published.
+     * @returns {boolean}
+     */
+    self.isSurveyPublishable = function(){
+        var current = self.current();
+        var sites = current.sites();
+
+        return (current.isInfoValid() &&
+        current.species.isValid() &&
+        current.pActivityFormName() &&
+        (sites && sites.length > 0))
+    }
+
+    /**
+     * Checks if survey data entry template is selected
+     * @returns {boolean}
+     */
+    self.isPActivityFormNameFilled = function(){
+        var current = self.current();
+        return !!current.pActivityFormName();
+    }
+
+    /**
+     * Checks if one or more sites are added to the survey
+     * @returns {boolean}
+     */
+    self.isSiteSelected = function(){
+        var sites = self.current().sites();
+        return sites && sites.length > 0
+    }
+
+    /**
+     * Auto save when all mandatory survey info fields are filled
+     */
+    self.isSurveyInfoFormFilled.subscribe(function(){
+        if(self.isSurveyInfoFormFilled() && !self.isSurveySelected()){
+            self.saveInfo();
+        }
+    })
+
     self.refreshSurveyStatus();
 };
 
-var ProjectActivity = function (o, pActivityForms, projectId, selected, sites, startDate) {
-    if (!o) o = {};
-    if (!pActivityForms) pActivityForms = [];
-    if (!projectId) projectId = "";
-    if (!selected) selected = false;
-    if (!sites) sites = [];
+var ProjectActivity = function (params) {
+    if(!params) params = {};
+    var pActivity = params.pActivity ? params.pActivity : {};
+    var pActivityForms = params.pActivityForms ? params.pActivityForms : [];
+    var projectId = params.projectId ? params.projectId : "";
+    var selected = params.selected ? params.selected : false;
+    var sites = params.sites ? params.sites : [];
+    var startDate = params.startDate ? params.startDate : "";
+    var organisationName = params.organisationName ? params.organisationName : "";
 
-    var self = $.extend(this, new pActivityInfo(o, selected, startDate));
-    self.projectId = ko.observable(o.projectId ? o.projectId : projectId);
-    self.restrictRecordToSites = ko.observable(o.restrictRecordToSites);
-    self.pActivityFormName = ko.observable(o.pActivityFormName);
-    self.species = new SpeciesConstraintViewModel(o.species);
-    self.visibility = new SurveyVisibilityViewModel(o.visibility);
+    var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
+    self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
+    self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
+    self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
+    self.species = new SpeciesConstraintViewModel(pActivity.species);
+    self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
+    self.alert = new AlertViewModel(pActivity.alert);
 
     self.transients = self.transients || {};
-    self.transients.siteSelectUrl = ko.observable(fcConfig.siteSelectUrl);
-    self.transients.siteCreateUrl = ko.observable(fcConfig.siteCreateUrl);
-    self.transients.siteUploadUrl = ko.observable(fcConfig.siteUploadUrl);
-
     self.transients.warning = ko.computed(function () {
         return self.projectActivityId() === undefined ? true : false;
+    });
+    self.transients.disableEmbargoUntil = ko.computed(function () {
+        if(self.visibility.embargoOption() != 'DATE'){
+            return true;
+        }
+
+        return false;
     });
 
     self.sites = ko.observableArray();
@@ -443,7 +566,7 @@ var ProjectActivity = function (o, pActivityForms, projectId, selected, sites, s
             self.sites.push(new SiteList(obj, defaultSites));
         });
     };
-    self.loadSites(sites, o.sites);
+    self.loadSites(sites, pActivity.sites);
 
     var images = [];
     $.each(pActivityForms, function (index, form) {
@@ -491,6 +614,7 @@ var ProjectActivity = function (o, pActivityForms, projectId, selected, sites, s
             self.asJS("form"),
             self.asJS("species"),
             self.asJS("visibility"),
+            self.asJS("alert"),
             self.asJS("sites"));
         return jsData;
     };
@@ -530,6 +654,11 @@ var ProjectActivity = function (o, pActivityForms, projectId, selected, sites, s
             jsData = {};
             var ignore = self.ignore.concat(['transients']);
             jsData.visibility = ko.mapping.toJS(self.visibility, {ignore: ignore});
+        }
+        else if (by == "alert") {
+            jsData = {};
+            var ignore = self.ignore.concat(['transients']);
+            jsData.alert = ko.mapping.toJS(self.alert, {ignore: ignore});
         }
 
         return jsData;
@@ -618,6 +747,10 @@ var SpeciesConstraintViewModel = function (o) {
     self.removeSpeciesLists = function (lists) {
         self.speciesLists.remove(lists);
     };
+
+    self.allSpeciesInfoVisible = ko.computed(function () {
+        return (self.type() == "ALL_SPECIES");
+    });
 
     self.groupInfoVisible = ko.computed(function () {
         return (self.type() == "GROUP_OF_SPECIES");
@@ -838,14 +971,98 @@ var SurveyVisibilityViewModel = function (visibility) {
 
     self.embargoOption = ko.observable(visibility.embargoOption ? visibility.embargoOption : 'NONE');   // 'NONE', 'DAYS', 'DATE' -> See au.org.ala.ecodata.EmbargoOptions in Ecodata
 
-    self.embargoForDays = ko.observable(visibility.embargoForDays ? visibility.embargoForDays : 60);     // 60, 90, 120 days
+    self.embargoForDays = ko.observable(visibility.embargoForDays ? visibility.embargoForDays : 10).extend({numeric:0});     // 1 - 180 days
     self.embargoUntil = ko.observable(visibility.embargoUntil).extend({simpleDate: true});
+};
 
-    self.embargoOption.subscribe(function (option) {
-        if (option !== 'DAYS') {
-            self.embargoForDays(60)
+var AlertViewModel = function (alert) {
+    var self = this;
+    if (!alert) alert = {};
+    self.allSpecies = ko.observableArray();
+    self.emailAddresses = ko.observableArray();
+
+    self.add = function () {
+        if (!$('#project-activities-alert-validation').validationEngine('validate')) {
+            return;
         }
+        var species = {};
+        species.name = self.transients.species.name();
+        species.guid = self.transients.species.guid();
+
+        var match = ko.utils.arrayFirst(self.allSpecies(), function(item) {
+            return species.guid === item.guid();
+        });
+
+        if (!match) {
+            self.allSpecies.push(new SpeciesViewModel(species));
+        }
+        self.transients.species.reset();
+    };
+    self.delete = function (species) {
+        self.allSpecies.remove(species);
+    };
+
+    self.addEmail = function () {
+        var emails = [];
+        emails = self.transients.emailAddress().split(",");
+        var invalidEmail = false;
+        var message = "";
+        $.each(emails, function (index, email) {
+            if (!self.validateEmail(email)) {
+                invalidEmail = true;
+                message = email;
+                return false;
+            }
+        });
+
+        if (invalidEmail) {
+            showAlert("Invalid email address (" + message + ")", "alert-error", "project-activities-result-placeholder");
+        } else {
+            $.each(emails, function (index, email) {
+                if (self.emailAddresses.indexOf(email) < 0) {
+                    self.emailAddresses.push(email);
+                }
+            });
+            self.transients.emailAddress('');
+        }
+    };
+
+    self.deleteEmail = function (email) {
+        self.emailAddresses.remove(email);
+    };
+
+    self.transients = {};
+    self.transients.species = new SpeciesViewModel();
+    self.transients.emailAddress = ko.observable();
+    self.transients.disableSpeciesAdd  = ko.observable(true);
+    self.transients.disableAddEmail  = ko.observable(true);
+    self.transients.emailAddress.subscribe(function(email) {
+        return email ? self.transients.disableAddEmail(false): self.transients.disableAddEmail(true);
     });
+    self.transients.species.guid.subscribe(function(guid) {
+        return guid ? self.transients.disableSpeciesAdd(false) : self.transients.disableSpeciesAdd(true);
+    });
+
+    self.validateEmail = function(email){
+        var expression = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        return expression.test(email);
+    };
+
+    self.transients.bioProfileUrl = fcConfig.bieUrl + '/species/';
+    self.transients.bioSearch = ko.observable(fcConfig.speciesSearchUrl);
+    self.loadAlert = function (alert) {
+        self.allSpecies($.map(alert.allSpecies ? alert.allSpecies : [], function (obj, i) {
+                return new SpeciesViewModel(obj);
+            })
+        );
+
+        self.emailAddresses($.map(alert.emailAddresses ? alert.emailAddresses : [], function (obj, i) {
+                return obj;
+            })
+        );
+    };
+
+    self.loadAlert(alert);
 };
 
 /**
@@ -868,7 +1085,7 @@ function isEmbargoDateRequired(field, rules, i, options) {
 }
 
 function initialiseValidator() {
-    var tabs = ['info', 'species', 'form', 'access', 'visibility'];
+    var tabs = ['info', 'species', 'form', 'access', 'visibility', 'alert'];
     $.each(tabs, function (index, label) {
         $('#project-activities-' + label + '-validation').validationEngine();
     });

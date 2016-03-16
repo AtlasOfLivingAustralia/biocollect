@@ -1,5 +1,7 @@
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.RoleService
+import au.org.ala.web.AuthService
 import grails.converters.JSON
 
 /**
@@ -10,27 +12,10 @@ class OrganisationController {
     static allowedMethods = [ajaxDelete: "POST", delete: "POST", ajaxUpdate: "POST"]
 
     def organisationService, searchService, documentService, userService, roleService, commonService, webService
-    def citizenScienceOrgId = null
+    AuthService authService
 
-    def list() {
-        if (params.createCitizenScienceProject as boolean) { // came from CS Hub page
-            if (citizenScienceOrgId == null) {
-                def orgName = grailsApplication.config.citizenScienceOrgName ?: "ALA"
-                citizenScienceOrgId = organisationService.getByName(orgName)?.organisationId
-            }
-            // this session attribute indicates user's desire to create a citizen science project
-            // this attribute is cleared on any project indez/edit/create action
-            session.setAttribute('citizenScienceOrgId', citizenScienceOrgId)
-        }
-        def organisations = organisationService.list()
-        def user = userService.getUser()
-        def userOrgIds = user ? userService.getOrganisationIdsForUserId(user.userId) : []
-        [organisations      : organisations.list ?: [],
-         user               : user,
-         userOrgIds         : userOrgIds,
-         citizenScienceOrgId: session.getAttribute('citizenScienceOrgId') ?: ''
-        ]
-    }
+    // Simply forwards to the list view
+    def list() {}
 
     def index(String id) {
         def organisation = organisationService.get(id, 'all')
@@ -67,10 +52,11 @@ class OrganisationController {
         def hasViewAccess = hasAdminAccess || userService.userHasReadOnlyAccess() || orgRole.role == RoleService.PROJECT_EDITOR_ROLE
         def includeProjectList = organisation.projects?.size() > 0
 
-        [about    : [label: 'About', visible: true, stopBinding: false, type: 'tab', default: true, includeProjectList: includeProjectList],
-         projects : [label: 'Projects', visible: true, stopBinding: true, type: 'tab', template: '/shared/projectFinder', model: [allowGeographicFilter: false]],
-         sites    : [label: 'Sites', visible: hasViewAccess, stopBinding: true, type: 'tab', projectCount: organisation.projects?.size() ?: 0, showShapefileDownload: hasAdminAccess],
-         admin    : [label: 'Admin', visible: hasAdminAccess, type: 'tab']]
+        [about   : [label: 'About', visible: true, stopBinding: false, type: 'tab', default: true, includeProjectList: includeProjectList],
+         projects: [label: 'Projects', visible: true, stopBinding: true, type: 'tab', template: '/shared/projectFinder', model: [allowGeographicFilter: false]],
+         sites   : [label: 'Map', visible: hasViewAccess, stopBinding: true, type: 'tab', projectCount: organisation.projects?.size() ?: 0, showShapefileDownload: hasAdminAccess],
+         data    : [label: 'Data', visible: true, stopBinding: true, type: 'tab', template: '/bioActivity/activities'],
+         admin   : [label: 'Admin', visible: hasAdminAccess, type: 'tab']]
     }
 
     def create() {
@@ -226,5 +212,29 @@ class OrganisationController {
             flash.message += "<br/>${response.error}"
         }
         redirect(controller: 'home', model: [error: flash.message])
+    }
+
+    def search(Integer offset, Integer max, String searchTerm, String sort) {
+        render organisationService.search(offset, max, searchTerm, sort) as JSON
+    }
+
+    /**
+     * similar to search action above but adds user id to get organisations for current user.
+     * @param offset
+     * @param max
+     * @param searchTerm
+     * @param sort
+     * @return
+     */
+    def searchMyOrg(Integer offset, Integer max, String searchTerm, String sort) {
+        String userId = authService.getUserId()
+        render organisationService.search(offset, max, searchTerm, sort, userId) as JSON
+    }
+
+    /**
+     * render my organisation page
+     */
+    def myOrganisations(){
+
     }
 }

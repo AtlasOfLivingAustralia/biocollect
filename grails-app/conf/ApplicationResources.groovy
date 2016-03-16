@@ -62,7 +62,7 @@ modules = {
         resource url: 'vendor/wmd/showdown.js'
         resource url: 'vendor/wmd/wmd.js'
         resource url: 'vendor/wmd/wmd-buttons.png'
-
+        resource url: 'css/wmd-editor.css'
     }
 
     nrmPrintSkin {
@@ -235,7 +235,7 @@ modules = {
     }
 
     projectFinder {
-        dependsOn('knockout', 'projects','bootstrap', 'responsiveTable', 'zip', 'underscore')
+        dependsOn('knockout', 'projects','bootstrap', 'responsiveTable', 'zip', 'underscore','amplify')
         resource url: 'js/button-toggle-events.js'
         resource url: 'js/project-finder.js'
         resource url: 'css/project-finder.css'
@@ -304,6 +304,7 @@ modules = {
         defaultBundle 'application'
         dependsOn 'jquery', 'knockout', 'wmd'
         resource url: 'js/organisation.js'
+        resource url: 'css/organisation.css'
     }
 
     slickgrid {
@@ -389,7 +390,59 @@ modules = {
         resource url: 'vendor/large-checkbox/large-checkbox.css'
     }
 
+    audio {
+        dependsOn "modernizr"
+        resource url: 'js/audio.js'
+        resource url: 'css/audio-control.css'
+        resource url: 'vendor/recorderjs/recorder.js'
+//        resource url: 'vendor/libmp3lame/libmp3lame.min.js'
+    }
+
+    modernizr {
+        resource url: "vendor/modernizr/modernizr-custom.js"
+    }
+
     imageDataType{
         resource url: 'js/images.js'
+        resource url: 'css/images.css'
+    }
+
+    admin {
+        resource url: 'js/activityModel.js'
+        resource url: 'js/hubs.js'
+    }
+
+    imageGallery{
+        dependsOn('imageViewer')
+        resource url: 'css/image-gallery.css'
+        resource url: 'js/knockout-custom-bindings.js'
+        resource url: 'js/knockout-dates.js'
+        resource url: 'js/fieldcapture-application.js'
+        resource url: 'js/images.js'
+        resource url: 'js/image-gallery.js'
+    }
+
+    sites{
+        dependsOn('imageViewer', 'font_awesome_44', 'projectActivityInfo', 'myActivity')
+        resource url: 'css/sites.css'
+        resource url: 'css/horizontal-scroll-list.css'
+        resource url: 'vendor/vkbeautyfy/vkbeautify.0.99.00.beta.js'
+        resource url: 'js/knockout-dates.js'
+        resource url: 'js/fieldcapture-application.js'
+        resource url: 'js/knockout-custom-bindings.js'
+        resource url: 'js/images.js'
+        resource url: 'js/poi-gallery.js'
+    }
+
+    siteSearch{
+        dependsOn('mapUtils','map')
+        resource url: 'css/sites-list.css'
+        resource url: 'js/pagination.js'
+        resource url: 'js/sites-list.js'
+    }
+
+    responsiveTableStacked{
+        resource url: 'vendor/responsive-table-stacked/stacked.css'
+        resource url: 'vendor/responsive-table-stacked/stacked.js'
     }
 }

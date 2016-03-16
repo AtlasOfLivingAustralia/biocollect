@@ -65,7 +65,10 @@
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}",
         auditMessageUrl: "${createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId])}",
         projectId: "${project.projectId}",
-        projectLinkPrefix: "${createLink(controller: 'project')}/"
+        projectLinkPrefix: "${createLink(controller: 'project')}/",
+        recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
+        view: 'project',
+        imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}'
         },
         here = window.location.href;
 
@@ -92,6 +95,7 @@
 <bc:koLoading>
     <g:render template="banner"/>
     <div class="container-fluid">
+        <div id="project-results-placeholder"></div>
         <g:render template="../shared/flashScopeMessage"/>
         <div class="row-fluid">
             <!-- content  -->
@@ -129,6 +133,7 @@
         params.user = user;
         params.projectStartDate = project.plannedStartDate;
         params.pActivityForms = pActivityForms;
+        params.organisationName = project.organisationName
 
         var pActivitiesVM = new ProjectActivitiesViewModel(params);
         initialiseProjectActivitiesList(pActivitiesVM);
@@ -136,6 +141,10 @@
 
         //Main tab selection
         new RestoreTab('ul-main-project', 'about-tab');
+        if(amplify.store('traffic-from-project-finder-page')){
+            amplify.store('traffic-from-project-finder-page',false)
+            $('#about-tab').tab('show');
+        }
         <g:if test="${projectContent.admin.visible}">
             initialiseProjectActivitiesSettings(pActivitiesVM);
 

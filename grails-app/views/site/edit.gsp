@@ -52,7 +52,7 @@
     <div class="container-fluid validationEngineContainer" id="validation-container">
         <ul class="breadcrumb">
             <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-            <li>Sites<span class="divider">/</span></li>
+            <li><g:link controller="site" action="list">Sites</g:link><span class="divider">/</span></li>
             <g:if test="${project}">
                 <li class="active">Create new site for ${project?.name?.encodeAsHTML()}</li>
             </g:if>
@@ -105,7 +105,7 @@
 
         $('.helphover').popover({animation: true, trigger:'hover'});
 
-        var siteViewModel = initSiteViewModel(true);
+        var siteViewModel = initSiteViewModel(true, ${!(create == true)});
         $('#cancel').click(function () {
             if(siteViewModel.saved()){
                 document.location.href = fcConfig.sitePageUrl;
@@ -118,12 +118,19 @@
 
         $('#save').click(function () {
             if ($('#validation-container').validationEngine('validate')) {
-                var json = siteViewModel.modelAsJSON();
+                var json = siteViewModel.toJS();
+                var data = {
+                    site: json
+                    <g:if test="${pActivityId}">
+                        ,
+                        pActivityId: '${pActivityId.encodeAsHTML()}'
+                    </g:if>
+                };
 
                 $.ajax({
                     url: fcConfig.ajaxUpdateUrl,
                     type: 'POST',
-                    data: json,
+                    data: JSON.stringify(data),
                     contentType: 'application/json',
                     success: function (data) {
                         if(data.status == 'created'){
@@ -131,14 +138,16 @@
                             document.location.href = fcConfig.projectUrl;
                         </g:if>
                         <g:else>
-                            document.location.href = fcConfig.sitePageUrl + '/' + json.siteId;
+                            document.location.href = fcConfig.sitePageUrl + '/' + data.id;
                         </g:else>
-                        } else {
+                        } else if(data.status == 'updated'){
                             document.location.href = fcConfig.sitePageUrl;
+                        } else {
+                            bootbox.alert('There was a problem saving this site', function() {location.reload();});
                         }
                     },
                     error: function (data) {
-                        alert('There was a problem saving this site');
+                        bootbox.alert('There was a problem saving this site', function() {location.reload();});
                     }
                 });
             }

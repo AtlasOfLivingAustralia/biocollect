@@ -1,4 +1,4 @@
-<div id="sitemap" class="row-fluid">
+<div id="sitedef" class="row-fluid">
     <div class="span7">
         <m:map id="mapForExtent" width="100%"/>
     </div>
@@ -7,6 +7,8 @@
         <div data-bind="visible: showPointAttributes(), template: { name: 'point'}"></div>
 
         <div class="well well-small" data-bind="visible: site().extent().geometry().type">
+            <div data-bind="if: transients.loadingGazette()"><span class="fa fa-spin fa-spinner"></span></div>
+
             <!-- ko if:site().extent().geometry().type() == 'pid' -->
             <div class="row-fluid controls-row">
                 <span class="label label-success"><g:message code="site.metadata.name"/> </span> <span
@@ -116,8 +118,10 @@
 
             <div class="row-fluid controls-row">
                 <fc:textField data-bind="value: site().extent().geometry().uncertainty" outerClass="span4"
+                              data-validation-engine="validate[min[0],custom[integer]]"
                               label="${message(code:'site.point.uncertainty')}"/>
                 <fc:textField data-bind="value: site().extent().geometry().precision" outerClass="span4"
+                              data-validation-engine="validate[min[0],custom[number]]"
                               label="${message(code:'site.point.precision')}"/>
                 %{-- CG - only supporting WGS84 at the moment --}%
                 <fc:textField data-bind="value: site().extent().geometry().datum" outerClass="span4" label="${message(code:'site.point.datum')}"
@@ -179,16 +183,18 @@
 
 
 <r:script>
-function initSiteViewModel(allowPointsOfInterest) {
+function initSiteViewModel(allowPointsOfInterest, edit) {
 
     // server side generated paths & properties
     var SERVER_CONF = {
         siteData: ${site ?: [] as grails.converters.JSON},
         spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
+        regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: '${grailsApplication.config.spatial.geoserverUrl}',
-        allowPointsOfInterest: allowPointsOfInterest
+        allowPointsOfInterest: allowPointsOfInterest,
+        readonly: edit? true : false
     };
 
     var savedSiteData = {
@@ -212,6 +218,17 @@ function initSiteViewModel(allowPointsOfInterest) {
     };
 
     var siteViewModel = new SiteViewModel("mapForExtent", savedSiteData, SERVER_CONF)
+    var map = siteViewModel.map;
+
+    <g:if  test="${project?.projectSite?.extent?.geometry}">
+        var source = "${project.projectSite.extent.source}"
+        var projectArea = <fc:modelAsJavascript model="${project.projectSite.extent.geometry}"/>;
+        var geometry = Biocollect.MapUtilities.featureToValidGeoJson(projectArea);
+        if(source != 'none'){
+            map.setGeoJSON(geometry);
+        }
+    </g:if>
+
 
     ko.applyBindings(siteViewModel, document.getElementById("sitemap"));
 

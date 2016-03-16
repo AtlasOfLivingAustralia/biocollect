@@ -7,7 +7,7 @@
         <title>Print | ${activity.type} | Field Capture</title>
     </g:if>
     <g:else>
-        <meta name="layout" content="${hubConfig.skin}"/>
+        <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
         <title>View | ${activity.type} | Bio Collect</title>
     </g:else>
 %{-- this will ultimately follow through to the comment controller using url mapping --}%
@@ -22,15 +22,18 @@
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
-        imageLocation:"${resource(dir:'/images/filetypes')}",
+        imageLocation:"${resource(dir:'/images')}",
         createCommentUrl : "${commentUrl}",
         commentListUrl:"${commentUrl}",
         updateCommentUrl:"${commentUrl}",
-        deleteCommentUrl:"${commentUrl}"
+        deleteCommentUrl:"${commentUrl}",
+        imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
+        projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
+        activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}"
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,species,activity, projectActivityInfo, imageViewer, comments, map"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,species,activity, projectActivityInfo, imageViewer, comments, map, responsiveTableStacked"/>
 </head>
 
 <body>
@@ -38,7 +41,7 @@
 
     <div id="koActivityMainBlock">
 
-        <g:if test="${!printView}">
+        <g:if test="${!printView && !mobile}">
             <ul class="breadcrumb">
                 <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
                 <li><a href="#" data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
@@ -78,8 +81,13 @@
 
             <div class="output-block well" id="ko${blockId}">
                 <h3>${outputName}</h3>
-                <!-- add the dynamic components -->
-                <md:modelView model="${model}" site="${site}" readonly="true"/>
+                <div data-bind="if:outputNotCompleted">
+                    <label class="checkbox" ><input type="checkbox" disabled="disabled" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>
+                </div>
+                <g:if test="${!output.outputNotCompleted}">
+                    <!-- add the dynamic components -->
+                    <md:modelView model="${model}" site="${site}" readonly="true"/>
+                </g:if>
                 <r:script>
                     $(function(){
                         var viewModelName = "${blockId}ViewModel";
@@ -89,13 +97,20 @@
                     <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}"
                                        viewModelInstance="${blockId}ViewModelInstance"/>
 
-                    this[viewModelName] = function (site) {
+                    this[viewModelName] = function (site, config, outputNotCompleted) {
                         var self = this;
                         self.name = "${output.name}";
                             self.outputId = "${output.outputId}";
                             self.data = {};
                             self.transients = {};
                             self.transients.selectedSite = ko.observable(site);
+                            var notCompleted = outputNotCompleted;
+                            if (notCompleted === undefined) {
+                                notCompleted = config.collapsedByDefault;
+                            }
+                            self.outputNotCompleted = ko.observable(notCompleted);
+                            self.transients.optional = config.optional || false;
+                            self.transients.questionText = config.optionalQuestionText || 'No '+self.name+' was completed during this activity';
                             self.transients.dummy = ko.observable();
 
                             // add declarations for dynamic data
@@ -123,7 +138,10 @@
                 };
             };
 
-            window[viewModelInstance] = new this[viewModelName](site);
+            var config = ${fc.modelAsJavascript(model:metaModel.outputConfig?.find{it.outputName == outputName}, default:'{}')};
+            var outputNotCompleted = ${output.outputNotCompleted?:'undefined'};
+
+            window[viewModelInstance] = new this[viewModelName](site, config, outputNotCompleted);
             window[viewModelInstance].loadData(${output.data ?: '{}'});
 
                         ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
@@ -138,9 +156,11 @@
         <g:render template="/comment/comment"></g:render>
     </g:if>
 
-    <div class="form-actions">
-        <button type="button" id="cancel" class="btn">return</button>
-    </div>
+    <g:if test="${!mobile}">
+        <div class="form-actions">
+            <button type="button" id="cancel" class="btn">return</button>
+        </div>
+    </g:if>
 </div>
 <!-- templates -->
 
@@ -224,7 +244,8 @@
                 showReset: false,
                 draggableMarkers: false,
                 useMyLocation: false,
-                allowSearchByAddress: false,
+                allowSearchLocationByAddress: false,
+                allowSearchRegionByAddress: false,
                 wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
                 wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
             }

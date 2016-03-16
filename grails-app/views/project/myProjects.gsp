@@ -13,6 +13,7 @@
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
@@ -28,11 +29,15 @@
         logoLocation:"${resource(dir:'/images/filetypes')}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
         isUserPage: true,
-        projectListUrl: "${createLink(controller: 'project', action: 'getProjectList')}",
+        projectListUrl: "${createLink(controller: 'project', action: 'search', params:[initiator:'biocollect'])}",
         isCitizenScience: true,
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
-        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}"
+        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
+        showAllProjects: true,
+        meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
+        meritProjectUrl: "${grailsApplication.config.merit.project.url}",
+        isCitizenScience: false
   }
     </r:script>
     <r:require modules="js_iso8601,projects,projectFinder,map"/>

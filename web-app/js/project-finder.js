@@ -53,7 +53,7 @@ function ProjectFinder() {
         this.pageProjects = ko.observableArray();
 
         this.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
-        this.projectTypes = ko.observable(['citizenScience', 'works', 'survey']);
+        this.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
         this.sortKeys = ko.observableArray(self.sortKeys);
         this.hideshow = function () {
             $("#pt-selectors").toggle();
@@ -65,6 +65,17 @@ function ProjectFinder() {
             $(e.target).attr('href', domain + '?' + 'download=true&' + params);
             return true;
         }
+        /**
+         * this function is used to tell project/index or citizenscience page that the traffic is coming from
+         * project finder page. This flag is used to decide if about page of the project should be shown.
+         * @returns {boolean}
+         */
+        this.setTrafficFromProjectFinderFlag = function(){
+            amplify.store('traffic-from-project-finder-page',true);
+            // to execute default action of anchor tag, true must be returned.
+            return true;
+        }
+
     }
 
     /**
@@ -136,7 +147,7 @@ function ProjectFinder() {
                     myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location"
                 });
 
-                var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService);
+                var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService, fcConfig.regionListUrl);
 
                 spatialFilter.addControl(regionSelector);
 
@@ -182,25 +193,30 @@ function ProjectFinder() {
         var hasParticipantCost = isButtonChecked($('#pt-search-noCost')); // no cost
         var hasTeachingMaterials = isButtonChecked($('#pt-search-teach')); // teaching material
         var isMobile = isButtonChecked($('#pt-search-mobile')); // mobile uses links to find it out
+        var isContributingDataToAla = isButtonChecked($('#pt-search-dataToAla')); // the project contributes data to the ALA
         var difficulty = getActiveButtonValues($('#pt-search-difficulty'));
         var isUserPage = fcConfig.isUserPage || false;
         var organisationName = fcConfig.organisationName;
         var isCitizenScience = fcConfig.isCitizenScience;
         var isWorks = false;
-        var isSurvey = false;
+        var isBiologicalScience = false;
+        var isMERIT = false;
 
         sortBy = getActiveButtonValues($("#pt-sort"));
         perPage = getActiveButtonValues($("#pt-per-page"));
 
-        if (fcConfig.isOrganisationPage) {
+        if (fcConfig.showAllProjects) {
             var values = getActiveButtonValues($('#pt-search-projecttype'));
             for (var i in values) {
                 switch (values[i]) {
                     case 'citizenScience':
                         isCitizenScience = true;
                         break;
-                    case "survey":
-                        isSurvey = true;
+                    case "biologicalScience":
+                        isBiologicalScience = true;
+                        break;
+                    case 'merit':
+                        isMERIT = true;
                         break;
                     case 'works':
                         isWorks = true;
@@ -215,18 +231,21 @@ function ProjectFinder() {
             status: status,
             isCitizenScience: isCitizenScience,
             isWorks: isWorks,
-            isSurvey: isSurvey,
+            isBiologicalScience: isBiologicalScience,
+            isMERIT: isMERIT,
             isUserPage: isUserPage,
             hasParticipantCost: hasParticipantCost,
             isSuitableForChildren: isSuitableForChildren,
             isDIY: isDIY,
             hasTeachingMaterials: hasTeachingMaterials,
             isMobile: isMobile,
+            isContributingDataToAla: isContributingDataToAla,
             difficulty: difficulty,
             organisationName: organisationName,
             max: perPage, // page size
             sort: sortBy,
             geoSearchJSON: JSON.stringify(geoSearch),
+            skipDefaultFilters:fcConfig.showAllProjects,
             q: $('#pt-search').val().toLowerCase()
         };
     };
@@ -315,14 +334,14 @@ function ProjectFinder() {
         var x, urls = [];
         if (vm.urlWeb()) urls.push('<a href="' + vm.urlWeb() + '">Website</a>');
         for (x = "", docs = vm.transients.mobileApps(), i = 0; i < docs.length; i++)
-            x += '&nbsp;<a href="' + docs[i].link.url + '"><img class="logo-small" src="' + docs[i].logo(fcConfig.logoLocation) + '"/></a>';
+            x += '&nbsp;<a href="' + docs[i].link.url + '" class="do-not-mark-external"><img class="logo-small" src="' + docs[i].logo(fcConfig.logoLocation) + '"/></a>';
         if (x) urls.push("Mobile Apps&nbsp;" + x);
         for (x = "", docs = vm.transients.socialMedia(), i = 0; i < docs.length; i++)
-            x += '&nbsp;<a href="' + docs[i].link.url + '"><img class="logo-small" src="' + docs[i].logo(fcConfig.logoLocation) + '"/></a>';
+            x += '&nbsp;<a href="' + docs[i].link.url + '" class="do-not-mark-external"><img class="logo-small" src="' + docs[i].logo(fcConfig.logoLocation) + '"/></a>';
         if (x) urls.push("Social Media&nbsp;" + x);
         vm.transients.links = urls.join('&nbsp;&nbsp;|&nbsp;&nbsp;') || '';
         vm.transients.searchText = (vm.name() + ' ' + vm.aim() + ' ' + vm.description() + ' ' + vm.keywords() + ' ' + vm.transients.scienceTypeDisplay() + ' ' + vm.transients.locality + ' ' + vm.transients.state + ' ' + vm.organisationName()).toLowerCase();
-        vm.transients.indexUrl = fcConfig.projectIndexBaseUrl + vm.transients.projectId;
+        vm.transients.indexUrl = vm.isMERIT() ? fcConfig.meritProjectUrl + '/' + vm.transients.projectId : fcConfig.projectIndexBaseUrl + vm.transients.projectId;
         vm.transients.orgUrl = vm.organisationId() && (fcConfig.organisationBaseUrl + vm.organisationId());
         vm.transients.imageUrl = fcConfig.meritProjectLogo && vm.isMERIT() ? fcConfig.meritProjectLogo : vm.imageUrl();
         if (!vm.transients.imageUrl) {
@@ -472,6 +491,7 @@ function ProjectFinder() {
         toggleButton($('#pt-search-noCost'), toBoolean(params.hasParticipantCost));
         toggleButton($('#pt-search-teach'), toBoolean(params.hasTeachingMaterials));
         toggleButton($('#pt-search-mobile'), toBoolean(params.isMobile));
+        toggleButton($('#pt-search-dataToAla'), toBoolean(params.isContributingDataToAla));
         toggleButton($('#pt-search-children'), toBoolean(params.isSuitableForChildren));
         setActiveButtonValues($('#pt-search-difficulty'), params.difficulty);
         setGeoSearch(params.geoSearch);

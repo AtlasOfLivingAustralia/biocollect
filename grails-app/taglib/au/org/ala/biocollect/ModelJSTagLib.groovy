@@ -65,6 +65,8 @@ class ModelJSTagLib {
                 stringListModel(mod, out)
             } else if (mod.dataType == 'image') {
                 imageModel(mod, out)
+            } else if (mod.dataType == 'audio') {
+                audioModel(mod, out)
             } else if (mod.dataType == 'photoPoints') {
                 photoPointModel(attrs, mod, out)
             } else if (mod.dataType == 'species') {
@@ -112,7 +114,7 @@ class ModelJSTagLib {
             else if (mod.dataType == 'time' && !mod.computed) {
                 out << INDENT*4 << "self.data['${mod.name}'](data['${mod.name}']);\n"
             }
-            else if (mod.dataType in ['stringList', 'image', 'photoPoints'] && !mod.computed) {
+            else if (mod.dataType in ['stringList', 'image', 'photoPoints', 'audio'] && !mod.computed) {
                 out << INDENT*4 << "self.load${mod.name}(data['${mod.name}']);\n"
             }
             else if (mod.dataType == 'species') {
@@ -499,6 +501,19 @@ class ModelJSTagLib {
                     case 'stringList':
                         out << INDENT*3 << "this.${col.name}=ko.observableArray(orEmptyArray(data['${col.name}']));\n";
                         break
+                    case 'image':
+                        out << INDENT*3 << "this.${col.name}=ko.observableArray();\n";
+                        out << INDENT*4 << """
+                            (function (data) {
+                                if (data !== undefined) {
+                                    \$.each(data, function (i, obj) {
+                                        self.${col.name}.push( new ImageViewModel(obj));
+                                    });
+                            }})(data['${col.name}']);
+                            """
+                        break;
+                    case 'audio':
+                        out << INDENT*3 << "this.${col.name} = new AudioViewModel({downloadUrl: '${grailsApplication.config.grails.serverURL}/download/file?filename='}, data['${col.name}'])\n";
 
                 }
                 modelConstraints(col, out)
@@ -573,9 +588,11 @@ class ModelJSTagLib {
                 showReset: false,
                 singleDraw: true,
                 singleMarker: true,
-                markerOrShapeNotBoth: false,
+                markerOrShapeNotBoth: ${model.options ? !model.options.allowMarkerAndRegion : true},
                 useMyLocation: ${!readonly},
-                allowSearchByAddress: ${!readonly},
+                allowSearchLocationByAddress: ${!readonly},
+                allowSearchRegionByAddress: false,
+                zoomToObject: true,
                 drawOptions: {
                     polyline: false,
                     polygon: false,
@@ -612,12 +629,13 @@ class ModelJSTagLib {
             };
 
             function update${model.name}MapForSite(siteId) {
+                ${model.name}Map.resetMap();
                 if (typeof siteId !== "undefined" && siteId) {
                     var matchingSite = \$.grep(activityLevelData.pActivity.sites, function(site) { return siteId == site.siteId})[0];
-                    ${model.name}Map.resetMap();
                     if (matchingSite) {
+                        ${model.name}Map.clearBoundLimits()
                         if (matchingSite.extent.geometry.pid) {
-                            ${model.name}Map.addWmsLayer(matchingSite.extent.geometry.pid);
+                            ${model.name}Map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(matchingSite.extent.geometry));
                         } else {
                             ${model.name}Map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
                         }
@@ -683,6 +701,13 @@ class ModelJSTagLib {
                     }
                 }, "bottomleft");
             }
+
+            if (activityLevelData.pActivity.sites.length == 1) {
+                self.data.${model.name}(activityLevelData.pActivity.sites[0].siteId);
+            } else if (activityLevelData.projectSite && activityLevelData.projectSite.extent) {
+                ${model.name}Map.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(activityLevelData.projectSite.extent.geometry));
+            }
+
         """
     }
 
@@ -861,9 +886,29 @@ class ModelJSTagLib {
         """
     }
 
+    def populateAudioList(model, out) {
+        out << INDENT*4 << """
+        self.load${model.name} = function (data) {
+            if (data !== undefined) {
+                \$.each(data, function (i, obj) {
+                    if (_.isUndefined(obj.url)) {
+                        obj.url = "${grailsApplication.config.grails.serverURL}/download/file?filename=" + obj.filename;
+                    }
+                    self.data.${model.name}.files.push(new AudioItem(obj));
+                });
+            }
+        };
+        """
+    }
+
     def imageModel(model, out) {
         out << INDENT*4 << "self.data.${model.name}=ko.observableArray([]);\n"
         populateImageList(model, out)
+    }
+
+    def audioModel(model, out) {
+        out << INDENT*4 << "self.data.${model.name}= new AudioViewModel({downloadUrl: '${grailsApplication.config.grails.serverURL}/download/file?filename='});\n"
+        populateAudioList(model, out)
     }
 
     def photoPointModel(attrs, model, out) {

@@ -6,6 +6,7 @@
     <r:script disposition="head">
     var fcConfig = {
         projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
+        checkProjectNameUrl: "${createLink(controller: 'project', action:'checkProjectName')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
@@ -48,6 +49,9 @@
                         <div class="controls span9 large-checkbox">
                             <input data-bind="checked:termsOfUseAccepted, disable: !transients.termsOfUseClicked()" type="checkbox" id="termsOfUseAgreement" name="termsOfUseAgreement" data-validation-engine="validate[required]" title="<g:message code="project.details.termsOfUseAgreement.checkboxTip"/>"/>
                             <label for="termsOfUseAgreement"><span></span> I confirm that have read and accept the <a href="${grailsApplication.config.termsOfUseUrl}" data-bind="click: clickTermsOfUse" target="_blank">Terms of Use</a>.</label>
+                            <div class="margin-bottom-1"></div>
+                            <p><g:message code="project.details.termsOfUseAgreement.help"/></p>
+                            <p><img src="${request.contextPath}/images/cc.png" alt="Creative Commons Attribution 3.0"></p>
                         </div>
                     </div>
                 </div>
@@ -55,7 +59,7 @@
         </g:if>
         <div class="well" style="display: none" data-bind="visible: true"> <!-- hide the panel until knockout has finished. Needs to use an inline style for this to work. -->
             <div class="alert warning" data-bind="visible: !termsOfUseAccepted() && !isExternal()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
-            <button type="button" id="save" class="btn btn-primary" data-bind="disable: !termsOfUseAccepted() && !isExternal()"><g:message code="g.save"/></button>
+            <button type="button" id="save" class="btn btn-primary" data-bind="disable: (!termsOfUseAccepted() && !isExternal()) || !transients.validProjectName()"><g:message code="g.save"/></button>
             <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
         </div>
     </form>
@@ -94,17 +98,20 @@ $(function(){
     });
     </g:else>
     $('#save').click(function () {
-        if ($('#projectDetails').validationEngine('validate')) {
+        if ($('#projectDetails').validationEngine('validate') && viewModel.transients.validProjectName()) {
+            if (viewModel.transients.siteViewModel.isValid(true)) {
+                viewModel.saveWithErrorDetection(function(data) {
+                    var projectId = "${project?.projectId}" || data.projectId;
 
-            viewModel.saveWithErrorDetection(function(data) {
-                var projectId = "${project?.projectId}" || data.projectId;
-
-                if (viewModel.isExternal()) {
-                    document.location.href = "${createLink(action: 'index')}/" + projectId;
-                } else {
-                    document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
-                }
-            });
+                    if (viewModel.isExternal()) {
+                        document.location.href = "${createLink(action: 'index')}/" + projectId;
+                    } else {
+                        document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
+                    }
+                });
+            } else {
+                bootbox.alert("You must define the spatial extent of the project area");
+            }
         }
     });
 

@@ -1,9 +1,17 @@
 package au.org.ala.biocollect.merit
+import au.org.ala.web.AuthService
 import grails.converters.JSON
+import org.apache.commons.lang.StringUtils
+import org.apache.http.HttpStatus
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 class SiteController {
 
-    def siteService, projectService, activityService, metadataService, userService, searchService, importService, webService
+    def siteService, projectService, projectActivityService, activityService, metadataService, userService,
+            searchService, importService, webService
+
+    AuthService authService
+    CommonService commonService
 
     static defaultAction = "index"
 
@@ -35,20 +43,20 @@ class SiteController {
             flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${params.projectId}"
             redirect(controller:'project', action:'index', id: params.projectId)
         }
-        render view: 'edit', model: [create:true, project:project, documents:[]]
+
+        project.sites?.sort {it.name}
+        project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
+
+
+        render view: 'edit', model: [create:true, project:project, documents:[], projectSite:project.projectSite,
+                                     pActivityId: params?.pActivityId]
     }
 
     def index(String id) {
 
         // Include activities only when biocollect starts supporting NRM based projects.
         def site = siteService.get(id, [view: 'projects'])
-        if (site) {
-            // permissions check - can't use annotation as we have to know the projectId in order to lookup access right
-            if (!isUserMemberOfSiteProjects(site)) {
-                flash.message = "Access denied: User does not have permission to view site: ${id}"
-                redirect(controller:'home', action:'index')
-            }
-
+        if (site && site.status != 'deleted') {
             // inject the metadata model for each activity
             site.activities = site.activities ?: []
             site.activities?.each {
@@ -60,7 +68,8 @@ class SiteController {
              mapFeatures: siteService.getMapFeatures(site)]
         } else {
             //forward(action: 'list', model: [error: 'no such id'])
-            render 'no such site'
+            flash.message = "Site not found."
+            redirect(controller: 'site', action: 'list')
         }
     }
 
@@ -68,7 +77,7 @@ class SiteController {
         def result = siteService.getRaw(id)
         if (!result.site) {
             render 'no such site'
-        } else if (!isUserMemberOfSiteProjects(result.site)) {
+        } else if (!isUserMemberOfSiteProjects(result.site) && !userService.userIsAlaAdmin()) {
             // check user has permissions to edit - user must have edit access to
             // ALL linked projects to proceed.
             flash.message = "Access denied: User does not have <b>editor</b> permission to edit site: ${id}"
@@ -117,19 +126,34 @@ class SiteController {
     }
 
     def ajaxDelete(String id) {
-        // permissions check
-        if (!isUserMemberOfSiteProjects(siteService.get(id))) {
-            render status:403, text: "Access denied: User does not have permission to edit site: ${id}"
-            return
-        }
+        try{
+            // permissions check
+            // rule ala admin can only delete a site on condition,
+            // 1. site is not assoicated with an acitivity(s)
+            if(!userService.userIsAlaAdmin()){
+                render status:HttpStatus.SC_UNAUTHORIZED, text: "Access denied: User not authorised to delete"
+                return
+            } else if(siteService.isSiteAssociatedWithProject(id) || siteService.isSiteAssociatedWithActivity(id)){
+                render status: HttpStatus.SC_BAD_REQUEST, text: "Site ${id} has projects or activities associated with it. The site cannot be deleted."
+                return
+            }
 
-        def status = siteService.delete(id)
-        if (status < 400) {
-            def result = [status: 'deleted']
-            render result as JSON
-        } else {
-            def result = [status: status]
-            render result as JSON
+            def status = siteService.delete(id)
+            if (status < 400) {
+                def result = [status: 'deleted']
+                render result as JSON
+            } else {
+                def result = [status: status]
+                render result as JSON
+            }
+        } catch (SocketTimeoutException sTimeout){
+            log.error(sTimeout.message)
+            log.error(sTimeout.stackTrace)
+            render(text: 'Webserive call timed out', status: HttpStatus.SC_REQUEST_TIMEOUT);
+        } catch (Exception e){
+            log.error(e.message)
+            log.error(e.stackTrace)
+            render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -319,7 +343,7 @@ class SiteController {
         //  1. keys in the ignore list; &
         //  2. keys with dot notation - the controller will automatically marshall these into maps &
         //  3. keys in nested maps with dot notation
-        postBody.each { k, v ->
+        postBody.site?.each { k, v ->
             if (!(k in ignore)) {
                 values[k] = v //reMarshallRepeatingObjects(v);
             }
@@ -331,15 +355,26 @@ class SiteController {
         // ALL linked projects to proceed.
         String userId = userService.getCurrentUserId()
         values.projects?.each { projectId ->
-            if (!projectService.canUserEditProject(userId, projectId)) {
+            if (!projectService.canUserEditProject(userId, projectId) && !userService.userIsAlaAdmin()) {
                 flash.message = "Error: access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
                 result = [status: 'error']
                 //render result as JSON
             }
         }
 
-        if (!result)
+        if (!result) {
             result = siteService.updateRaw(id, values)
+            if(postBody?.pActivityId){
+                def pActivity = projectActivityService.get(postBody.pActivityId)
+                if(!projectService.canUserEditProject(userId, pActivity?.projectId) && !userService.userIsAlaAdmin()){
+                    flash.message = "Error: access denied: User does not have <b>editor</b> permission for pActivitityId ${postBody.pActivityId}"
+                    result = [status: 'error']
+                } else {
+                    pActivity.sites.add(result.id)
+                    projectActivityService.update(postBody.pActivityId, pActivity)
+                }
+            }
+        }
         render result as JSON
     }
 
@@ -459,6 +494,133 @@ class SiteController {
             render siteService.getMapFeatures(site)
         } else {
             render 'no such site'
+        }
+    }
+
+    /**
+     * this function will get a list of siteId and return photo points for them
+     * @param id - required - eg. 123,345
+     * @return
+     */
+    def getImages(){
+        List results
+        if(params.id){
+            GrailsParameterMap mParams = new GrailsParameterMap(commonService.parseParams(params), request);
+            mParams.userId = authService.getUserId()
+            try{
+                results = siteService.getImages(mParams)
+                render(text: results as JSON, contentType: 'application/json')
+            } catch (SocketTimeoutException sTimeout){
+                render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
+            } catch (Exception e){
+                render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            render( status: HttpStatus.SC_BAD_REQUEST, text: 'Parameter id not found')
+        }
+    }
+
+    /**
+     * this function will get all documents / images for a point of interest. Max and offset are supported.
+     * @param siteId - required
+     * @param poiId - required
+     * @return
+     */
+    def getPoiImages(){
+        Map results
+        if(params.siteId && params.poiId){
+            GrailsParameterMap mParams = new GrailsParameterMap(commonService.parseParams(params), request);
+            mParams.userId = authService.getUserId()
+            try {
+                results = siteService.getPoiImages(mParams)
+                render(text: results as JSON, contentType: 'application/json')
+            } catch (SocketTimeoutException sTimeout){
+                render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
+            } catch (Exception e){
+                render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            render( status: HttpStatus.SC_BAD_REQUEST, text: 'Parameters siteId or poiId not found')
+        }
+    }
+
+    def list(){
+
+    }
+
+    def myFavourites() {
+        // wip #460
+        render view: "list"
+    }
+
+    /**
+     * This function does an elastic search for sites. All elastic search parameters are supported like fq, max etc.
+     * @return
+     */
+    def elasticsearch(){
+        try{
+            List query = ['className:au.org.ala.ecodata.Site']
+            String userId = userService.getCurrentUserId()
+            Boolean isAlaAdmin = userService.userIsAlaAdmin()
+            GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userId)
+            if(!queryParams.facets){
+                queryParams.facets="typeFacet,className,organisationFacet,stateFacet,lgaFacet,nrmFacet,siteSurveyNameFacet,siteProjectNameFacet,photoType"
+            }
+            if(queryParams.query){
+                query.push(queryParams.query);
+            }
+
+            queryParams.query = query.join(' AND ')
+            Map searchResult = searchService.searchForSites(queryParams)
+            List sites = searchResult?.hits?.hits
+            List facets = []
+            List projectIds = []
+            sites?.each{
+                if(it._source?.projects?.size()){
+                    projectIds.push(StringUtils.join(it._source?.projects,','))
+                }
+            }
+            // JSON Array join is inserting quotes around each array element. Hence using StringUtil.join method.
+            String pIds = StringUtils.join(projectIds, ',')
+            Map permissions = [:]
+            // when sites are not associated with a project canUserEditProjects will throw exception.
+            if(projectIds.size()>0){
+                permissions = projectService.canUserEditProjects(userId, pIds)
+            }
+            sites = sites?.collect {
+                Map doc = it._source
+                Boolean canEdit = isAlaAdmin || doc.projects.inject(false){flag, id ->
+                    flag || !!permissions[id]
+                }
+                [
+                        siteId           : doc.siteId,
+                        name             : doc.name,
+                        description      : doc.description,
+                        numberOfPoi      : doc.poi?.size(),
+                        numberOfProjects : doc.projects?.size(),
+                        lastUpdated      : doc.lastUpdated,
+                        type             : doc.type,
+                        extent           : doc.extent,
+                        // does a logical OR reduce operation on permissions for each projects
+                        canEdit          : canEdit,
+                        // only sites with no projects can be deleted
+                        canDelete        : isAlaAdmin && (doc.projects?.size() == 0)
+                ]
+            }
+
+            searchResult?.facets?.each { k, v ->
+                Map facet = [:]
+                facet.name = k
+                facet.total = v.total
+                facet.terms = v.terms
+                facets << facet
+            }
+
+            render([sites: sites, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
+        } catch (SocketTimeoutException sTimeout){
+            render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
+        } catch (Exception e){
+            render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
 

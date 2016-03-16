@@ -49,13 +49,15 @@ Biocollect.SiteDisplay = function() {
         var mapOptions = {
             drawControl: false,
             singleMarker: false,
+            singleDraw: false,
             useMyLocation: false,
-            allowSearchByAddress: false,
+            allowSearchLocationByAddress: false,
+            allowSearchRegionByAddress: false,
             draggableMarkers: false,
             showReset: false,
-            zoomToObject: false,
+            zoomToObject: true,
             wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
-            wmsFeatureUrl: fcConfig.featureService + "?featureId=",
+            wmsFeatureUrl: fcConfig.featureService + "?featureId="
         };
         var map = new ALA.Map("siteMap", mapOptions);
 

@@ -10,9 +10,11 @@ import org.springframework.web.context.request.RequestAttributes
 class SettingService {
 
     private static def ThreadLocal localHubConfig = new ThreadLocal()
-    private static final String HUB_CONFIG_KEY_SUFFIX = '.hub.configuration'
+    private static final String HUB_LIST_CACHE_KEY = 'hubList'
+    private static final String HUB_CACHE_KEY_SUFFIX = '_hub'
     public static final String HUB_CONFIG_ATTRIBUTE_NAME = 'hubConfig'
     public static final String LAST_ACCESSED_HUB = 'recentHub'
+
 
     public static void setHubConfig(HubSettings hubSettings) {
         localHubConfig.set(hubSettings)
@@ -33,9 +35,9 @@ class SettingService {
     /**
      * Checks if there is a configuration defined for the specified hub.
      */
-    boolean isValidHub(hub) {
-        def result = (getHubSettings(hub) != null)
-        result
+    boolean isValidHub(String hubUrlPath) {
+        List hubs = listHubs()
+        hubs.find{it.urlPath == hubUrlPath}
     }
 
     def loadHubConfig(hub) {
@@ -59,7 +61,7 @@ class SettingService {
             settings = new HubSettings(
                     title:'Default',
                     skin:'ala2',
-                    id:grailsApplication.config.app.default.hub?:'default',
+                    urlPath:grailsApplication.config.app.default.hub?:'default',
                     availableFacets: ['status', 'organisationFacet','associatedProgramFacet','associatedSubProgramFacet','mainThemeFacet','stateFacet','nrmFacet','lgaFacet','mvgFacet','ibraFacet','imcra4_pbFacet','otherFacet', 'gerSubRegionFacet','electFacet'],
                     adminFacets: ['electFacet'],
                     availableMapFacets: ['status', 'organisationFacet','associatedProgramFacet','associatedSubProgramFacet','stateFacet','nrmFacet','lgaFacet','mvgFacet','ibraFacet','imcra4_pbFacet','electFacet']
@@ -70,14 +72,14 @@ class SettingService {
     }
 
     def getSettingText(SettingPageType type) {
-        def key = localHubConfig.get().id + type.key
+        def key = localHubConfig.get().urlPath + type.key
 
         get(key)
 
     }
 
     def setSettingText(SettingPageType type, String content) {
-        def key = localHubConfig.get().id + type.key
+        def key = localHubConfig.get().urlPath + type.key
 
         set(key, content)
     }
@@ -127,22 +129,35 @@ class SettingService {
         set(key, (settings as JSON).toString())
     }
 
-    private def hubSettingsKey(hub) {
-        if (!hub) {
-            throw new IllegalArgumentException("the hub parameter must not be null")
-        }
-        return hub+HUB_CONFIG_KEY_SUFFIX
+    private String hubCacheKey(String prefix) {
+        return prefix+HUB_CACHE_KEY_SUFFIX
     }
 
-    HubSettings getHubSettings(hub) {
+    HubSettings getHubSettings(String urlPath) {
 
-        def json = getJson(hubSettingsKey(hub))
+        cacheService.get(hubCacheKey(urlPath), {
+            String url = grailsApplication.config.ecodata.service.url + '/hub/findByUrlPath/' + urlPath
+            Map json = webService.getJson(url, null, true)
 
-        json.id ? new HubSettings(new HashMap(json)) : null
+            json.hubId ? new HubSettings(new HashMap(json)) : null
+        })
     }
 
-    def updateHubSettings(HubSettings settings) {
-        set(hubSettingsKey(settings.id), (settings as JSON).toString())
+    void updateHubSettings(HubSettings settings) {
+        cacheService.clear(HUB_LIST_CACHE_KEY)
+        cacheService.clear(hubCacheKey(settings.urlPath))
+
+        String url = grailsApplication.config.ecodata.service.url+'/hub/'+(settings.hubId?:'')
+        webService.doPost(url, settings)
     }
+
+    List listHubs() {
+        cacheService.get(HUB_LIST_CACHE_KEY, {
+            String url = grailsApplication.config.ecodata.service.url+'/hub/'
+            Map resp = webService.getJson(url, null, true)
+            resp.list ?: []
+        })
+    }
+
 
 }

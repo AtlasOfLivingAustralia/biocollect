@@ -221,28 +221,28 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
 
     $(uiSelector).fileupload({
         url:uploadUrl,
-        formData:function(form) {return [{name:'document', value:documentViewModel.toJSONString()}]},
+        formData:function(form) {
+            return [{name:'document', value:documentViewModel.toJSONString()}]
+        },
         autoUpload:false,
         forceIframeTransport: true,
         getFilesFromResponse: function(data) { // This is to support file upload on pages that include the fileupload-ui which expects a return value containing an array of files.
             return data;
         }
     }).on('fileuploadadd', function(e, data) {
-
         fileUploadHelper = data;
         documentViewModel.fileAttached(data.files[0]);
     }).on('fileuploadprocessalways', function(e, data) {
         if (data.files[0].preview) {
             documentViewModel.filePreviewAvailable(data.files[0]);
             if (previewElementSelector !== undefined) {
-                $(uiSelector).find(previewElementSelector).html(data.files[0].preview);
+                $(uiSelector).find(previewElementSelector).append(data.files[0].preview);
             }
 
         }
     }).on('fileuploadprogressall', function(e, data) {
         documentViewModel.uploadProgress(data.loaded, data.total);
     }).on('fileuploaddone', function(e, data) {
-
         var result;
 
         // Because of the iframe upload, the result will be returned as a query object wrapping a document containing
@@ -318,7 +318,6 @@ function showDocumentAttachInModal(uploadUrl, documentViewModel, modalSelector, 
     }
     var $fileUpload = $(fileUploadSelector);
     var $modal = $(modalSelector);
-    //var documentViewModel = new DocumentViewModel(document?document:{}, owner);
 
     attachViewModelToFileUpload(uploadUrl, documentViewModel, fileUploadSelector, previewSelector);
 

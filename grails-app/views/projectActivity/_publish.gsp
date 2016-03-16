@@ -4,7 +4,7 @@
             <span data-bind="if: !published()">
             <div class="row-fluid">
                 <div class="span10 text-left">
-                    <h2 class="strong">Step 6 of 6 - Publish the survey to enter data</h2>
+                    <h2 class="strong">Step 7 of 7 - Publish the survey to enter data</h2>
                 </div>
 
                 <div class="span2 text-right">
@@ -12,10 +12,32 @@
                 </div>
             </div>
 
+            <div class="alert alert-danger" data-bind="visible: !$root.isSurveyPublishable()">
+                <span>Validation failed</span>
+                <ol>
+                    <li data-bind="visible:!isInfoValid()">
+                        All mandatory fields in survey info tab needs to be filled. <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-info-tab'}">Fill survey info</div>
+                    </li>
+                    <li data-bind="visible: !species.isValid()">
+                        Survey species constrain not set. <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}">Set species</div>
+                    </li>
+                    <li data-bind="visible: !$root.isPActivityFormNameFilled()">
+                        Survey data entry template not set.  <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-form-tab'}">Set template</div>
+                    </li>
+                    <li data-bind="visible: !$root.isSiteSelected()">
+                        Site not selected for this survey <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-locations-tab'}">Choose survey site(s)</div>
+                    </li>
+                </ol>
+            </div>
+
             <div class="row-fluid">
                 <div class="span12 text-left">
                     <p>The survey must be published to be accessible on the survey list for data entry.</p>
-                    <button class="btn btn-success btn-small" data-bind="click: $root.updateStatus">Publish</button>
+                    <p><strong>Note:</strong> If the survey is published and you wish to change anything on the &quot;species&quot;,
+                    &quot;Survey form&quot; or &quot;Locations&quot; tabs, you must first &quot;Unpublish&quot; the survey.
+                    All data already recorded for this survey will be lost if you do this. To retain existing data, end-date
+                    the current survey and create a new one with the same details and changed configuration settings.</p>
+                    <button class="btn btn-success btn-small" data-bind="click: $root.updateStatus, disable: !$root.isSurveyPublishable()">Publish</button>
                 </div>
             </div>
             </span>

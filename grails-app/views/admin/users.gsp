@@ -10,11 +10,13 @@
     <r:require module="jqueryValidationEngine"/>
     <content tag="pageTitle">Users</content>
 
-    <div class="container">
+    <div class="container-fluid padding20">
         <div class="well">Logged in user is <b class="tooltips" title="${user}">${user.userDisplayName}</b></div>
 
-        <div>
-            <g:render template="addPermissions" model="[projects:projects]"/>
+        <div class="row-fluid">
+            <div class="span12">
+                <g:render template="addPermissions" model="[projects:projects]"/>
+            </div>
         </div>
         <div class='hide'>
             <h4>View Permissions for user</h4>

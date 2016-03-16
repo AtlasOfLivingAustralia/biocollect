@@ -1,7 +1,5 @@
 package au.org.ala.biocollect
-/**
- * Created by baird on 16/10/13.
- */
+
 class ViewModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
@@ -74,10 +72,23 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderAudio(WidgetRenderContext context) {
+        context.writer << context.g.render(template: '/output/audioDataTypeViewModelTemplate',
+                model: [databindAttrs:context.databindAttrs.toString(), name: context.source, index: "''", hideFile: false])
+    }
+
+    @Override
     void renderImage(WidgetRenderContext context) {
-        context.addDeferredTemplate('/output/fileUploadTemplate')
         context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"
-        context.writer << context.g.render(template: '/output/imageDataTypeTemplate', model: [databindAttrs:context.databindAttrs.toString(), source: context.source, readOnly: true])
+        context.writer << context.g.render(template: '/output/imageDataTypeViewModelTemplate',
+                model: [databindAttrs:context.databindAttrs.toString(), name: context.source, index: "''"])
+    }
+
+    @Override
+    void renderImageDialog(WidgetRenderContext context) {
+        context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"
+        context.writer << context.g.render(template: '/output/imageDataTypeViewModelTemplate',
+                model: [databindAttrs:context.databindAttrs.toString(), name: context.source, index: '$index()'])
     }
 
     @Override

@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="java.text.SimpleDateFormat" contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +9,7 @@
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
-            activityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
+            siteListUrl: "${createLink(controller: 'site', action: 'list')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
             spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
@@ -17,20 +17,56 @@
             spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
             spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
             sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
-            sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
+            sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
+            poiGalleryUrl: "${createLink(controller: 'site', action: 'getImages')}",
+            imagesForPoiUrl: "${createLink(controller: 'site', action: 'getPoiImages')}",
+            imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
+            // copied from bioactivity/list.gsp
+            activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
+            activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
+            activityEditUrl: "${createLink(controller: 'bioActivity', action: 'edit')}",
+            activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'delete')}",
+            activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
+            activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
+            searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
+            downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
+            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping')}",
+            recordListUrl: "${createLink(controller: 'record', action: 'ajaxList')}",
+            recordDeleteUrl: "${createLink(controller: 'record', action: 'delete')}",
+            projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
+            siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
+            bieUrl: "${grailsApplication.config.bie.baseURL}",
+            speciesPage: "${grailsApplication.config.bie.baseURL}/species/"
             },
             here = "${createLink(controller:'site', action:'index', id:site.siteId)}";
     </r:script>
-  <r:require modules="knockout,amplify,map"/>
+  <r:require modules="knockout,amplify,map,sites"/>
 </head>
 <body>
     <div class="container-fluid">
+        <div class="alert alert-block hide well" data-bind="slideVisible: message" id="message">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <span data-bind="text: message"></span>
+        </div>
     <ul class="breadcrumb">
         <li>
             <g:link controller="home">Home</g:link> <span class="divider">/</span>
         </li>
-        <li class="active">Sites <span class="divider">/</span></li>
+        <li class="active"> <a href="${createLink(controller: 'site', action: 'list')}">Sites</a> <span class="divider">/</span></li>
         <li class="active">${site.name?.encodeAsHTML()}</li>
+        <li class="pull-right">
+            <g:link action="edit" id="${site.siteId}" class="btn btn-small"><i class="icon-edit"></i> Edit site</g:link>
+            <g:if test="${site?.extent?.geometry?.pid}">
+                <a href="${grailsApplication.config.spatial.layersUrl}/shape/shp/${site.extent.geometry.pid}" class="btn btn-small">
+                    <i class="icon-download"></i>
+                    Download ShapeFile
+                </a>
+                <a href="${grailsApplication.config.spatial.baseURL}/?pid=${site.extent.geometry.pid}" class="btn btn-small"><i class="fa fa-map"></i> View in Spatial Portal</a>
+            </g:if>
+            <g:if test="${fc.userIsAlaAdmin()}">
+                <div class="btn btn-small btn-danger" onclick="deleteSite()"><i class="fa fa-remove"></i> Delete site</div>
+            </g:if>
+        </li>
     </ul>
     <div class="row-fluid space-after">
         <div class="span6"><!-- left block of header -->
@@ -42,236 +78,252 @@
                     </div>
                 </div>
             </g:if>
-
             <div>
                 <div class="clearfix">
-                    <h1 class="pull-left">${site?.name?.encodeAsHTML()}</h1>
-                    <g:link style="margin-bottom:10px;" action="edit" id="${site.siteId}" class="btn pull-right title-edit">Edit site</g:link>
+                    <h1 class="pull-left"><strong>${site?.name?.encodeAsHTML()}</strong></h1>
                 </div>
                 <g:if test="${site.description?.encodeAsHTML()}">
-                    <div class="clearfix well well-small">
-                        <p>${site.description?.encodeAsHTML()}</p>
-                    </div>
+                    <dl>
+                        <dt><h3>Site description</h3></dt>
+                        <dd>${site.description?.encodeAsHTML()}</dd>
+                    </dl>
                 </g:if>
             </div>
-
-            <p>
-                <span class="label label-info">External Id:</span> ${site.externalId?:'Not specified'}
-                <span class="label label-info">Type:</span> ${site.type?:'Not specified'}
-                <span class="label label-info">Area:</span>
-                <g:if test="${site?.extent?.geometry?.area}">
-                    ${site.extent.geometry.area} square km
+            <h3>Site metadata</h3>
+            <dl class="dl-horizontal">
+                <dt>External Id</dt>
+                <dd>${site.externalId?:'Not specified'}</dd>
+                <dt>Type</dt>
+                <dd>${site.type?:'Not specified'}</dd>
+                <dt>Area</dt>
+                <dd>
+                    <g:if test="${site?.extent?.geometry?.area}">
+                        ${site.extent.geometry.area} square km
+                    </g:if>
+                    <g:else>
+                        Not specified
+                    </g:else>
+                </dd>
+                <g:if test="${site.extent?.geometry}">
+                <dt>State/territory</dt>
+                <dd>${site.extent.geometry.state?:'Not specified'}</dd>
+                <dt>Local government area</dt>
+                <dd>${site.extent.geometry.lga?:'Not specified'}</dd>
+                <dt>NRM</dt>
+                <dd>${site.extent.geometry.nrm?:'Not specified'}</dd>
+                <dt>Locality</dt>
+                <dd>${site.extent.geometry.locality?:'Not specified'}</dd>
+                <dt data-toggle="tooltip" title="NVIS major vegetation group">NVIS major vegetation group</dt>
+                <dd>${site.extent.geometry.mvg?:'Not specified'}</dd>
+                <dt data-toggle="tooltip" title="NVIS major vegetation subgroup">NVIS major vegetation subgroup</dt>
+                <dd>${site.extent.geometry.mvs?:'Not specified'}</dd>
                 </g:if>
-                <g:else>
-                    Not specified
-                </g:else>
-                </span>
-            </p>
-
-            <g:if test="${site.extent?.geometry}">
-            <p>
-                <span class="label label-success">State/territory:</span> ${site.extent.geometry.state?:'Not specified'}
-                <span class="label label-success">Local government area:</span> ${site.extent.geometry.lga?:'Not specified'}
-                <span class="label label-success">NRM:</span> ${site.extent.geometry.nrm?:'Not specified'}
-            </p>
-
-            <p>
-                <span class="label label-success">Locality:</span> ${site.extent.geometry.locality?:'Not specified'}
-            </p>
-            <p>
-                <span class="label label-success">NVIS major vegetation group:</span> ${site.extent.geometry.mvg?:'Not specified'}
-            </p>
-            <p>
-                <span class="label label-success">NVIS major vegetation subgroup:</span> ${site.extent.geometry.mvs?:'Not specified'}
-            </p>
-            </g:if>
-
-            <div>
-                <span class="label label-info">Notes:</span>
-                ${site.notes?.encodeAsHTML()}
-            </div>
-
-            <g:if test="${site.projects}">
-            <div>
-                <h2>Projects associated with this site</h2>
-                <ul style="list-style: none;margin:13px 0;">
-                    <g:each in="${site.projects}" var="p" status="count">
-                        <li>
-                            <g:link controller="project" action="index" id="${p.projectId}">${p.name?.encodeAsHTML()}</g:link>
-                            <g:if test="${count < site.projects.size() - 1}">, </g:if>
-                        </li>
-                    </g:each>
-                </ul>
-            </div>
-            </g:if>
-
+                <g:if test="${site.notes}">
+                    <dt>Notes</dt>
+                    <dd>${site.notes?.encodeAsHTML()}</dd>
+                </g:if>
+            </dl>
+            <script>
+                $('.dl-horizontal').tooltip()
+            </script>
         </div>
         <div class="span6">
             <div id="siteNotDefined" class="hide pull-right">
                 <span class="label label-important">This site does not have a geoference associated with it.</span>
             </div>
             <m:map id="smallMap" width="100%" height="500px"/>
-            <g:if test="${site?.extent?.geometry?.pid}">
-                <div style="margin-top:20px;" class="pull-right">
-                    <a href="${grailsApplication.config.spatial.layersUrl}/shape/shp/${site.extent.geometry.pid}" class="btn">
-                        <i class="icon-download"></i>
-                        Download ShapeFile
-                    </a>
-                    <a href="${grailsApplication.config.spatial.baseURL}/?pid=${site.extent.geometry.pid}" class="btn">View in Spatial Portal</a>
-                </div>
-            </g:if>
         </div>
     </div>
-    <g:if test="${site.poi}">
-        <h2>Points of interest at this site</h2>
-        <div class="row-fluid">
-              <ul>
-              <g:each in="${site.poi}" var="poi">
-                <li>${poi.name?.encodeAsHTML()}</li>
-              </g:each>
-              </ul>
-        </div>
-    </g:if>
+    <div id="detailsLinkedToSite">
+        <ul class="nav nav-tabs" id="myTab">
+            <li class="active"><a href="#sitePhotopoints" data-toggle="tab">Photo points</a></li>
+            <g:if test="${site.projects}">
+            <li><a href="#siteProjects" data-toggle="tab">Projects</a></li>
+            </g:if>
+            <li><a href="#siteActivities" data-toggle="tab">Records</a></li>
+        </ul>
 
-    <g:if test="${site.activities}">
-        <h2>Activities at this site</h2>
-        <div class="row-fluid">
-            <!-- ACTIVITIES -->
-            <div class="tab-pane active" id="activity">
-                <g:render template="/shared/activitiesListReadOnly"
-                          model="[activities:site.activities ?: [], sites:[], showSites:false]"/>
+        <div class="tab-content">
+            <!-- ko stopBinding: true -->
+            <div class="tab-pane active" id="sitePhotopoints">
+                <g:render template="poiGallery" model="${[siteId:site.siteId, siteElementId:'sitePhotopoints']}"></g:render>
+            </div>
+            <!-- /ko -->
+            <div class="tab-pane" id="siteProjects">
+                <g:if test="${site.projects}">
+                    <div>
+                        <p>Projects associated with this site -</p>
+                        <ol>
+                            <g:each in="${site.projects}" var="p" status="count">
+                                <li>
+                                    <g:link controller="project" action="index" id="${p.projectId}">${p.name?.encodeAsHTML()}</g:link>
+                                </li>
+                            </g:each>
+                        </ol>
+                    </div>
+                </g:if>
+            </div>
+            <div class="tab-pane" id="siteActivities">
+                <!-- ko if: activities().length == 0 -->
+                <div class="row-fluid">
+                    <h4 class="text-left margin-bottom-five">
+                        <!-- ko if: $root.searchTerm() != "" || $root.selectedFilters().length > 0 -->
+                        No results
+                        <!-- /ko -->
+                    </h4>
+                </div>
+                <!-- /ko -->
+
+                <!-- ko if: activities().length > 0 -->
+
+                <div class="alert alert-info hide" id="downloadStartedMsg"><i class="fa fa-spin fa-spinner">&nbsp;&nbsp;</i>Preparing download, please wait...</div>
+
+                <div class="row-fluid">
+                    <div class="span9">
+                        <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record(s)</h3>
+                    </div>
+                </div>
+                <g:render template="../shared/pagination"/>
+                <!-- ko foreach : activities -->
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div data-bind="attr:{class: embargoed() ? 'searchResultSection locked' : 'searchResultSection'}">
+
+                            <div class="span9 text-left">
+                                <div>
+                                    <h4>
+                                        <!-- ko if: embargoed() -->
+                                        <a href="#" class="helphover"
+                                           data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment(embargoUntil()).format('DD/MM/YYYY')}">
+                                            <span class="icon-lock"></span>
+                                        </a>
+                                        <!--/ko -->
+                                        Survey name:
+                                        <a data-bind="attr:{'href': transients.viewUrl}">
+                                            <span data-bind="text: name"></span>
+                                        </a>
+                                    </h4>
+                                </div>
+
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="span7">
+                                            <div>
+                                                <h6>Project name: <a
+                                                        data-bind="attr:{'href': projectUrl()}"><span
+                                                            data-bind="text: projectName"></span></a></h6>
+                                            </div>
+
+                                            <div>
+                                                <h6>Submitted by: <span
+                                                        data-bind="text: ownerName"></span> on <span
+                                                        data-bind="text: lastUpdated.formattedDate"></span>
+                                                </h6>
+                                            </div>
+                                        </div>
+
+                                        <div class="span5">
+                                            <!-- ko if : records().length > 0 -->
+                                            <div>
+                                                <h6>
+                                                    Species :
+                                                    <!-- ko foreach : records -->
+                                                    <a target="_blank"
+                                                       data-bind="visible: guid, attr:{href: $root.transients.bieUrl + '/species/' + guid()}">
+                                                        <span data-bind="text: $index()+1"></span>. <span
+                                                            data-bind="text: name"></span>
+                                                    </a>
+                                                    <span data-bind="visible: !guid()">
+                                                        <span data-bind="text: $index()+1"></span>. <span
+                                                            data-bind="text: name"></span>
+                                                    </span>
+                                                    <span data-bind="if: $parent.records().length != $index()+1">
+                                                        <b>|</b>
+                                                    </span>
+                                                    <!-- /ko -->
+                                                </h6>
+                                            </div>
+                                            <!-- /ko -->
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="span3 text-right">
+
+                                <!-- looks awkward to show view eye icon by itself. Users can view the survey by clicking the survey title.-->
+                                <div class="padding-top-0" data-bind="if: showCrud()">
+                                    <span class="margin-left-1">
+                                        <a data-bind="attr:{'href': transients.viewUrl}"><i
+                                                class="fa fa-eye" title="View survey"></i></a>
+                                    </span>
+                                    <span class="margin-left-1" data-bind="visible: showAdd()">
+                                        <a data-bind="attr:{'href': transients.addUrl}"><i
+                                                class="fa fa-plus" title="Add survey"></i></a>
+                                    </span>
+                                    <span class="margin-left-1">
+                                        <a data-bind="attr:{'href': transients.editUrl}"><i
+                                                class="fa fa-edit" title="Edit survey"></i></a>
+                                    </span>
+                                    <span class="margin-left-1">
+                                        <a href="#" data-bind="click: $parent.delete"><i
+                                                class="fa fa-remove" title="Delete survey"></i></a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+                <!-- /ko -->
+                <div class="margin-top-2"></div>
+                <g:render template="../shared/pagination"/>
+                <!-- ko if : activities().length > 0 -->
+                <div class="row-fluid">
+                    <div class="span12 pull-right">
+                        <div class="span12 text-right">
+                            <div><small class="text-right"><span
+                                    class="icon-lock"></span> indicates that only project members can access the record.
+                            </small></div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- /ko -->
+
+                <!-- /ko -->
             </div>
         </div>
-    </g:if>
+    </div>
+        <small class="pull-right"><em>Created on <fc:formatDateString date="${site.dateCreated}" inputFormat="yyyy-MM-dd'T'HH:mm:ss'Z'"
+                                                   format="dd-MM-yyyy"/>
+            and last updated on <fc:formatDateString date="${site.lastUpdated}" inputFormat="yyyy-MM-dd'T'HH:mm:ss'Z'"
+                                                     format="dd-MM-yyyy"/></em></small>
+        <g:if env="development">
+            <div class="expandable-debug">
+                <hr/>
 
-    <div class="row-fluid">
-        <div class="span12 metadata">
-            <span class="span6">
-                <p><span class="label">Created:</span> ${site.dateCreated}</p>
-                <p><span class="label">Last updated:</span> ${site.lastUpdated}</p>
-            </span>
-        </div>
-    </div>
-    <g:if env="development">
-    <div class="expandable-debug">
-        <hr />
-        <h3>Debug</h3>
-        <div>
-            <h4>KO model</h4>
-            <pre data-bind="text:ko.toJSON($root,null,2)"></pre>
-            <h4>Activities</h4>
-            <pre>${site.activities?.encodeAsHTML()}</pre>
-            <h4>Site</h4>
-            <pre>${site}</pre>
-            <h4>Projects</h4>
-            <pre>${projects?.encodeAsHTML()}</pre>
-            <h4>Features</h4>
-            <pre>${mapFeatures}</pre>
-        </div>
-    </div>
-    </g:if>
+                <h3>Debug</h3>
+
+                <div>
+                    <h4>KO model</h4>
+                    <pre data-bind="text:ko.toJSON($root,null,2)"></pre>
+                    <h4>Activities</h4>
+                    <pre>${site.activities?.encodeAsHTML()}</pre>
+                    <h4>Site</h4>
+                    <pre>${site}</pre>
+                    <h4>Projects</h4>
+                    <pre>${projects?.encodeAsHTML()}</pre>
+                    <h4>Features</h4>
+                    <pre>${mapFeatures}</pre>
+                </div>
+            </div>
+        </g:if>
     </div>
     <r:script>
-
-        var isodatePattern = /\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\dZ/,
-            activitiesObject = ${site.activities + site.assessments};
-
         $(function(){
-
-            // change toggle icon when expanding and collapsing and track open state
-            $('#activities').
-            on('show', 'div.collapse', function() {
-                $(this).parents('tr').prev().find('td:first-child i').
-                    removeClass('icon-plus').addClass('icon-minus');
-            }).
-            on('hide', 'div.collapse', function() {
-                $(this).parents('tr').prev().find('td:first-child i').
-                    removeClass('icon-minus').addClass('icon-plus');
-            }).
-            on('shown', 'div.collapse', function() {
-                trackState();
-            }).
-            on('hidden', 'div.collapse', function() {
-                trackState();
-            });
-
-            // determines which project an activity belongs to
-            ko.bindingHandlers.projectName =  {
-                init: function(element, valueAccessor, allBindingsAccessor, model, bindingContext) {
-                    var activity = ko.utils.unwrapObservable(valueAccessor()),
-                        projects = [];
-                    if (activity.projectId) {
-                        $(element).html(activity.projectId);
-                    }
-                    // no directly linked project so use the site's project(s)
-                    ko.utils.arrayForEach(viewModel.projects, function (p) {
-                        projects.push(p.name);
-                    });
-                    $(element).html(projects.join(','));
-                }
-            };
-
-            function ViewModel(projects, site, activities) {
-                var self = this;
-                this.loadActivities = function (activities) {
-                    var acts = ko.observableArray([]);
-                    $.each(activities, function (i, act) {
-                        var activity = {
-                            activityId: act.activityId,
-                            siteId: act.siteId,
-                            type: act.type,
-                            startDate: ko.observable(act.startDate).extend({simpleDate:false}),
-                            endDate: ko.observable(act.endDate).extend({simpleDate:false}),
-                            outputs: ko.observableArray([]),
-                            collector: act.collector,
-                            metaModel: act.model || {},
-                            edit: function () {
-                                document.location.href = fcConfig.activityEditUrl + '/' + this.activityId +
-                                    "?returnTo=" + here;
-                            }
-                        };
-                        $.each(act.outputs, function (j, out) {
-                            activity.outputs.push({
-                                outputId: out.outputId,
-                                name: out.name,
-                                collector: out.collector,
-                                assessmentDate: out.assessmentDate,
-                                scores: out.scores
-                            });
-                        });
-                        acts.push(activity);
-                    });
-                    return acts;
-                };
-                self.name = ko.observable(site.name);
-                self.description = ko.observable(site.description);
-                self.externalId = ko.observable(site.externalId);
-                self.startDate = ko.observable(site.startDate).extend({simpleDate: false});
-                self.endDate = ko.observable(site.endDate).extend({simpleDate: false});
-                self.projects = ko.toJS(site.projects);
-                self.activities = self.loadActivities(activities);
-                // Animation callbacks for the lists
-                self.showElement = function(elem) { if (elem.nodeType === 1) $(elem).hide().slideDown() };
-                self.hideElement = function(elem) { if (elem.nodeType === 1) $(elem).slideUp(function() { $(elem).remove(); }) };
-                self.newActivity = function () {
-                    document.location.href = fcConfig.activityCreateUrl +
-                    "?siteId=${site.siteId}&returnTo=" + here;
-                };
-                self.notImplemented = function () {
-                    alert("Not implemented yet.")
-                };
-                self.expandActivities = function () {
-                    $('#activityList div.collapse').collapse('show');
-                };
-                self.collapseActivities = function () {
-                    $('#activityList div.collapse').collapse('hide');
-                }
-            }
-
-            var viewModel = new ViewModel(${projects || []},${site},${site.activities ?: []});
-
-            ko. applyBindings(viewModel);
-
             var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
 
             var mapOptions = {
@@ -281,20 +333,57 @@
                 allowSearchByAddress: false,
                 draggableMarkers: false,
                 showReset: false,
-                maxZoom: 7,
+                maxZoom: 20,
                 wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
                 wmsFeatureUrl: fcConfig.featureService + "?featureId="
             };
             var smallMap = new ALA.Map("smallMap", mapOptions);
 
-            var geoJson = Biocollect.MapUtilities.featureToValidGeoJson(mapFeatures.features[0]);
-            smallMap.setGeoJSON(geoJson);
 
             if(mapFeatures.features === undefined || mapFeatures.features.length == 0){
                 $('#siteNotDefined').show();
+            } else {
+                var geoJson = Biocollect.MapUtilities.featureToValidGeoJson(mapFeatures.features[0]);
+                smallMap.setGeoJSON(geoJson);
             }
-        });
 
+
+            var activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', null, null, true, true)
+            activitiesAndRecordsViewModel.searchTerm('siteId:${site.siteId}')
+            ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('siteActivities'));
+            var params = {
+                params: {
+                    id: '${site.siteId}'
+                }
+            }
+            initPoiGallery(params,'sitePhotopoints');
+        });
+        function Message (){
+            var self = this;
+            self.message = ko.observable();
+            self.clear = function(){
+                self.message('')
+            }
+
+            self.message.subscribe(function(){
+                setTimeout(self.clear, 3000);
+            })
+        }
+        var msg = new Message();
+        ko.applyBindings(msg, document.getElementById('message'))
+        function deleteSite(){
+            var url = fcConfig.siteDeleteUrl + '/' + "${site.siteId}"
+            $.ajax({
+                url: url,
+                success: function(){
+                    msg.message('Successfully deleted site. Redirecting in 3 seconds.');
+                    setTimeout(function(){ window.location = fcConfig.siteListUrl}, 3000);
+                },
+                error: function(xhr){
+                    msg.message(xhr.responseText);
+                }
+            })
+        }
     </r:script>
 </body>
 </html>

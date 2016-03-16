@@ -21,4 +21,6 @@ class RecordService {
     def delete(id) {
         webService.doDelete(grailsApplication.config.ecodata.service.url + '/record/' + id)
     }
+
+
 }

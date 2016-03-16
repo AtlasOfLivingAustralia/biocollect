@@ -8,33 +8,78 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     var latSubscriber = null;
     var lngSubscriber = null;
 
-    self.site = null;
+    self.transients = {
+        loadingGazette: ko.observable(false)
+    };
+    self.site = ko.observable({
+        name: ko.observable(),
+        siteId: ko.observable(),
+        externalId: ko.observable(),
+        type: ko.observable(),
+        area: ko.observable(),
+        description: ko.observable(),
+        notes: ko.observable(),
+        projects: ko.observableArray(),
+        extent: ko.observable({
+            source: ko.observable(),
+            geometry:  ko.observable({
+                decimalLatitude: ko.observable(),
+                decimalLongitude: ko.observable(),
+                uncertainty: ko.observable(),
+                precision: ko.observable(),
+                datum: ko.observable(),
+
+                type: ko.observable(),
+                nrm: ko.observable(),
+                state: ko.observable(),
+                lga: ko.observable(),
+                locality: ko.observable(),
+                mvg: ko.observable(),
+                mvs: ko.observable(),
+
+                radius: ko.observable(),
+                areaKmSq: ko.observable(),
+                coordinates: ko.observable(),
+                centre: ko.observable(),
+
+                bbox: ko.observable(),
+                pid: ko.observable(),
+                name: ko.observable(),
+                fid: ko.observable(),
+                layerName: ko.observable()
+            })
+        })
+    });
     self.pointsOfInterest = ko.observableArray();
     self.showPointAttributes = ko.observable(false);
     self.allowPointsOfInterest = ko.observable(mapOptions.allowPointsOfInterest || false);
+    self.displayAreaInReadableFormat = null
+
+    self.site().extent().geometry().areaKmSq.subscribe(function(val){
+        self.site().area(val)
+    })
 
     self.loadSite = function (site) {
-        self.site = ko.observable({
-            name: ko.observable(exists(site, "name")),
-            siteId: ko.observable(exists(site, "siteId")),
-            externalId: ko.observable(exists(site, "externalId")),
-            type: ko.observable(exists(site, "type")),
-            area: ko.observable(exists(site, "area")),
-            description: ko.observable(exists(site, "description")),
-            notes: ko.observable(exists(site, "notes")),
-            projects: ko.observableArray(site.projects || [])
-        });
+        var siteModel = self.site();
+        siteModel.name(exists(site, "name"));
+        siteModel.siteId(exists(site, "siteId"));
+        siteModel.externalId(exists(site, "externalId"));
+        siteModel.type(exists(site, "type"));
+        siteModel.area(exists(site, "area"));
+        siteModel.description(exists(site, "description"));
+        siteModel.notes(exists(site, "notes"));
+        siteModel.projects(site.projects || [])
 
         if (site.extent) {
-            self.site().extent = ko.observable({
-                source: ko.observable(exists(site.extent, "source")),
-                geometry: self.loadGeometry(site.extent.geometry || {})
-            });
+            self.site().extent().source(exists(site.extent, "source"));
+            self.loadGeometry(site.extent.geometry || {});
         } else {
-            self.site().extent = ko.observable({
-                source: ko.observable(),
-                geometry: self.loadGeometry({})
-            });
+            self.site().extent().source('');
+            self.loadGeometry({});
+        }
+
+        if(self.site().extent().geometry().areaKmSq()){
+            self.site().area(self.site().extent().geometry().areaKmSq())
         }
 
         if (!_.isEmpty(site.poi)) {
@@ -42,6 +87,12 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
                 createPointOfInterest(poi, self.hasPhotoPointDocuments(poi))
             });
         }
+
+        self.displayAreaInReadableFormat = ko.computed(function(){
+            if(self.site().area()){
+                return convertKMSqToReadableUnit(self.site().area())
+            }
+        });
     };
 
     self.hasPhotoPointDocuments = function (poi) {
@@ -59,41 +110,38 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     };
 
     self.loadGeometry = function (geometry) {
+        var geometryObservable = self.site().extent().geometry();
+        geometryObservable.decimalLatitude(exists(geometry, 'decimalLatitude')),
+        geometryObservable.decimalLongitude(exists(geometry, 'decimalLongitude')),
+        geometryObservable.uncertainty(exists(geometry, 'uncertainty')),
+        geometryObservable.precision(exists(geometry, 'precision')),
+        geometryObservable.datum(exists(geometry, 'datum')),
+        geometryObservable.type(exists(geometry, 'type')),
+        geometryObservable.nrm(exists(geometry, 'nrm')),
+        geometryObservable.state(exists(geometry, 'state')),
+        geometryObservable.lga(exists(geometry, 'lga')),
+        geometryObservable.locality(exists(geometry, 'locality')),
+        geometryObservable.mvg(exists(geometry, 'mvg')),
+        geometryObservable.mvs(exists(geometry, 'mvs')),
+        geometryObservable.radius(exists(geometry, 'radius')),
+        geometryObservable.areaKmSq(exists(geometry, 'areaKmSq')),
+        geometryObservable.coordinates(exists(geometry, 'coordinates')),
+        geometryObservable.centre(exists(geometry, 'centre')),
+        geometryObservable.bbox(exists(geometry, 'bbox')),
+        geometryObservable.pid(exists(geometry, 'pid')),
+        geometryObservable.name(exists(geometry, 'name')),
+        geometryObservable.fid(exists(geometry, 'fid')),
+        geometryObservable.layerName(exists(geometry, 'layerName'))
 
-        var geometryObservable = ko.observable({
-            decimalLatitude: ko.observable(exists(geometry, 'decimalLatitude')),
-            decimalLongitude: ko.observable(exists(geometry, 'decimalLongitude')),
-            uncertainty: ko.observable(exists(geometry, 'uncertainty')),
-            precision: ko.observable(exists(geometry, 'precision')),
-            datum: ko.observable(exists(geometry, 'datum')),
+        latSubscriber = geometryObservable.decimalLatitude.subscribe(updateSiteMarkerPosition);
+        lngSubscriber = geometryObservable.decimalLongitude.subscribe(updateSiteMarkerPosition);
 
-            type: ko.observable(exists(geometry, 'type')),
-            nrm: ko.observable(exists(geometry, 'nrm')),
-            state: ko.observable(exists(geometry, 'state')),
-            lga: ko.observable(exists(geometry, 'lga')),
-            locality: ko.observable(exists(geometry, 'locality')),
-            mvg: ko.observable(exists(geometry, 'mvg')),
-            mvs: ko.observable(exists(geometry, 'mvs')),
-
-            radius: ko.observable(exists(geometry, 'radius')),
-            areaKmSq: ko.observable(exists(geometry, 'areaKmSq')),
-            coordinates: ko.observable(exists(geometry, 'coordinates')),
-            centre: ko.observable(exists(geometry, 'centre')),
-
-            bbox: ko.observable(exists(geometry, 'bbox')),
-            pid: ko.observable(exists(geometry, 'pid')),
-            name: ko.observable(exists(geometry, 'name')),
-            fid: ko.observable(exists(geometry, 'fid')),
-            layerName: ko.observable(exists(geometry, 'layerName'))
-        });
-        latSubscriber = geometryObservable().decimalLatitude.subscribe(updateSiteMarkerPosition);
-        lngSubscriber = geometryObservable().decimalLongitude.subscribe(updateSiteMarkerPosition);
-
-        if (!_.isEmpty(geometry)) {
+        if (!_.isEmpty(geometry) && self.site().extent().source() != 'none') {
             var validGeoJson = Biocollect.MapUtilities.featureToValidGeoJson(geometry);
             self.map.setGeoJSON(validGeoJson);
             self.showPointAttributes(geometry.type == "Point");
         }
+        loadGazetteInformation(geometryObservable.decimalLatitude(), geometryObservable.decimalLongitude());
 
         return geometryObservable;
     };
@@ -153,11 +201,11 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     self.toJS = function() {
         var js = ko.toJS(self.site);
 
-        // the ALA Map plugin uses GeoJSON, which species coords in lng/lat rather than lat/lng.
-        // Biocollect & Ecodata use lat/lng, so we need to flip the order for Points & circles before we save it.
-        if (js.extent.geometry.type == "Point" || js.extent.geometry.type == "Circle") {
-            js.extent.geometry.coordinates = js.extent.geometry.coordinates.reverse();
+        // legacy support - it was possible to have no extent for a site. This step will delete geometry before saving.
+        if(js.extent.source == 'none'){
+            delete js.extent.geometry;
         }
+
         js.poi = [];
         self.pointsOfInterest().forEach(function (poi) {
             js.poi.push(poi.toJSON())
@@ -175,24 +223,56 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         return self.site().siteId();
     };
 
+    self.isValid = function(mandatory) {
+        var valid = true;
+
+        if (mandatory) {
+            var js = self.toJS();
+            valid = js && js.extent && js.extent.geometry && js.extent.geometry.type && js.extent.geometry.type != null && js.extent.geometry.type != "";
+        }
+
+        return valid;
+    };
+
     function initialiseViewModel() {
-        self.map = new ALA.Map(mapContainerId, {
-            maxZoom: 9,
+        var options =  {
+            maxZoom: 20,
             wmsLayerUrl: mapOptions.spatialWms + "/wms/reflect?",
             wmsFeatureUrl: mapOptions.featureService + "?featureId=",
             showReset: false
-        });
+        };
 
-        var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(self.map, mapOptions.featuresService);
+        if(mapOptions.readonly){
+            var readonlyProps = {
+                drawControl: false,
+                singleMarker: false,
+                useMyLocation: false,
+                allowSearchLocationByAddress: false,
+                allowSearchRegionByAddress: false,
+                draggableMarkers: false,
+                showReset: false
+            };
+            for(var prop in readonlyProps){
+                options[prop] = readonlyProps[prop]
+            }
+        }
+
+        self.map = new ALA.Map(mapContainerId, options);
+
+        if(!mapOptions.readonly){
+            var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(self.map, mapOptions.featuresService, mapOptions.regionListUrl);
+            self.map.addControl(regionSelector);
+        }
 
         self.map.addButton("<span class='fa fa-refresh reset-map' title='Reset map'></span>", function () {
             self.map.resetMap();
             pointOfInterestMarkers.clearLayers();
             self.pointsOfInterest([]);
             self.loadGeometry({});
+            self.loadSite(site || {});
         }, "bottomleft");
 
-        self.map.addControl(regionSelector);
+
 
         self.map.registerListener("draw:created", function (event) {
             if (event.layerType == ALA.MapConstants.LAYER_TYPE.MARKER) {
@@ -239,10 +319,12 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     function updatePointLatLng(lat, lng) {
         latSubscriber.dispose();
         lngSubscriber.dispose();
-        self.site().extent().geometry().decimalLatitude(lat);
-        self.site().extent().geometry().decimalLongitude(lng);
-        latSubscriber = self.site().extent().geometry().decimalLatitude.subscribe(updateSiteMarkerPosition);
-        lngSubscriber = self.site().extent().geometry().decimalLongitude.subscribe(updateSiteMarkerPosition);
+        if (self.site() && self.site().extent) {
+            self.site().extent().geometry().decimalLatitude(lat);
+            self.site().extent().geometry().decimalLongitude(lng);
+            latSubscriber = self.site().extent().geometry().decimalLatitude.subscribe(updateSiteMarkerPosition);
+            lngSubscriber = self.site().extent().geometry().decimalLongitude.subscribe(updateSiteMarkerPosition);
+        }
     }
 
     function updateSiteMarkerPosition() {
@@ -252,6 +334,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         if (siteMarker && geometry.decimalLatitude() && geometry.decimalLongitude()) {
             siteMarker.setLatLng(new L.LatLng(geometry.decimalLatitude(), geometry.decimalLongitude()));
             self.map.fitBounds();
+            loadGazetteInformation(geometry.decimalLatitude(), geometry.decimalLongitude());
         }
     }
 
@@ -262,12 +345,17 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             var feature = geoJson.features[0];
             var geometryType = feature.geometry.type;
             var latLng = null;
+            var lat;
+            var lng;
             var bounds = self.map.getBounds();
             if (geometryType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
-                latLng = feature.geometry.coordinates.reverse();
+                // the ALA Map plugin uses valid GeoJSON, which specifies coordinates as [lng, lat]
+                lat = feature.geometry.coordinates[1];
+                lng = feature.geometry.coordinates[0];
                 self.site().extent().geometry().centre(latLng);
             } else if (bounds) {
-                latLng = [bounds.getCenter().lat, bounds.getCenter().lng];
+                lat = bounds.getCenter().lat;
+                lng = bounds.getCenter().lng;
             }
 
             var geoType = determineExtentType(feature);
@@ -289,24 +377,29 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             self.site().extent().geometry().fid(exists(feature.properties, 'fid'));
             self.site().extent().geometry().layerName(exists(feature.properties, 'fieldname'));
 
-            loadGazetteInformation(latLng);
+            loadGazetteInformation(lat, lng);
         } else {
             self.loadGeometry({});
         }
     }
 
-    function loadGazetteInformation(latLng) {
-        $.ajax({
-            url: fcConfig.siteMetaDataUrl + "?lat=" + latLng[0] + "&lon=" + latLng[1],
-            dataType: "json"
-        }).done(function (data) {
-            self.site().extent().geometry().nrm(exists(data, 'nrm'));
-            self.site().extent().geometry().state(exists(data, 'state'));
-            self.site().extent().geometry().lga(exists(data, 'lga'));
-            self.site().extent().geometry().locality(exists(data, 'locality'));
-            self.site().extent().geometry().mvg(exists(data, 'mvg'));
-            self.site().extent().geometry().mvs(exists(data, 'mvs'));
-        });
+    function loadGazetteInformation(lat, lng) {
+        if (!_.isUndefined(lat) && lat && !_.isUndefined(lng) && lng) {
+            self.transients.loadingGazette(true);
+            $.ajax({
+                url: fcConfig.siteMetaDataUrl + "?lat=" + lat + "&lon=" + lng,
+                dataType: "json"
+            }).done(function (data) {
+                self.site().extent().geometry().nrm(exists(data, 'nrm'));
+                self.site().extent().geometry().state(exists(data, 'state'));
+                self.site().extent().geometry().lga(exists(data, 'lga'));
+                self.site().extent().geometry().locality(exists(data, 'locality'));
+                self.site().extent().geometry().mvg(exists(data, 'mvg'));
+                self.site().extent().geometry().mvs(exists(data, 'mvs'));
+            }).always(function (data) {
+                self.transients.loadingGazette(false);
+            });
+        }
     }
 
     function determineExtentType(geoJsonFeature) {
@@ -375,7 +468,7 @@ var PointOfInterest = function (data, hasDocuments) {
         };
 
         if (self.hasCoordinate()) {
-            js.geometry.coordinates = [js.geometry.decimalLongitude, js.geometry.decimalLatitude];
+            js.geometry.coordinates = [js.geometry.decimalLatitude, js.geometry.decimalLongitude];
         }
         return js;
     };

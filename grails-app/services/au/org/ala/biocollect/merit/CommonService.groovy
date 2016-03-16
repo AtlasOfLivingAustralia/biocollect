@@ -2,11 +2,15 @@ package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
+import javax.servlet.http.HttpServletRequest
 import javax.xml.bind.DatatypeConverter
 import java.text.SimpleDateFormat
 
 class CommonService {
+
+    UserService userService
 
     LinkGenerator grailsLinkGenerator
 
@@ -57,4 +61,35 @@ class CommonService {
         }
         result
     }
+
+    /**
+     * This function adds a standard set of parameters used by elastic search.
+     * copies url parameter and deletes parameters added by grails.
+     *
+     * @param params
+     * @param request
+     * @param userId
+     * @return
+     */
+    GrailsParameterMap constructDefaultSearchParams(Map params, HttpServletRequest request, String userId) {
+        GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
+        Map parsed = parseParams(params)
+        parsed.each{ key, value ->
+            if(value != null && value){
+                queryParams.put(key, value)
+            }
+        }
+
+        queryParams.userId = userId
+        queryParams.max = queryParams.max ?: 10
+        queryParams.offset = queryParams.offset ?: 0
+        queryParams.flimit = queryParams.flimit ?: 20
+        queryParams.sort = queryParams.sort ?: 'lastUpdated'
+        queryParams.order = queryParams.order ?: 'DESC'
+        queryParams.fq = queryParams.fq ?: ''
+        queryParams.searchTerm = queryParams.searchTerm ?: ''
+
+        queryParams
+    }
+
 }
