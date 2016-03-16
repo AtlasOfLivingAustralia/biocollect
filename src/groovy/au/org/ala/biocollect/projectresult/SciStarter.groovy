@@ -65,6 +65,7 @@ class SciStarter {
                 difficulty             : doc.difficulty,
                 scienceType            : doc.scienceType,
                 isDIY                  : doc.isDIY?.toBoolean(),
+                isSciStarter           : doc.isSciStarter?.toBoolean(),
                 hasParticipantCost     : doc.hasParticipantCost?.toBoolean(),
                 equipment              : doc.gear,
                 plannedStartDate       : doc.plannedStartDate,
