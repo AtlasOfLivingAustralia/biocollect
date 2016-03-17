@@ -57,18 +57,31 @@
         <li class="active"> <a href="${createLink(controller: 'site', action: 'list')}">Sites</a> <span class="divider">/</span></li>
         <li class="active">${site.name?.encodeAsHTML()}</li>
         <li class="pull-right">
-            <div onclick="addToFavourites()"  class="btn btn-small"><i class="icon-star-empty"></i>Add to favourites</div>
-            <div onclick="removeFromFavourites()"  class="btn btn-small"><i class="icon-star"></i>Remove from favourites</div>
+            <g:set var="disabled">${(!user) ? "disabled='disabled' title='login required'" : ''}</g:set>
+            %{--Favourite functionality only available to authenticated users --}%
+            <g:if test="${user}">
+                <g:if test="${isSiteStarredByUser}">
+                    <button class="btn btn-small" id="starBtn"><i
+                            class="icon-star"></i><span> Remove from favourites</span></button>
+                </g:if>
+                <g:else>
+                    <button class="btn btn-small" id="starBtn" ${disabled}><i
+                            class="icon-star-empty"></i><span> Add to favourites</span></button>
+                </g:else>
+            </g:if>
             <g:link action="edit" id="${site.siteId}" class="btn btn-small"><i class="icon-edit"></i> Edit site</g:link>
             <g:if test="${site?.extent?.geometry?.pid}">
-                <a href="${grailsApplication.config.spatial.layersUrl}/shape/shp/${site.extent.geometry.pid}" class="btn btn-small">
+                <a href="${grailsApplication.config.spatial.layersUrl}/shape/shp/${site.extent.geometry.pid}"
+                   class="btn btn-small">
                     <i class="icon-download"></i>
                     Download ShapeFile
                 </a>
-                <a href="${grailsApplication.config.spatial.baseURL}/?pid=${site.extent.geometry.pid}" class="btn btn-small"><i class="fa fa-map"></i> View in Spatial Portal</a>
+                <a href="${grailsApplication.config.spatial.baseURL}/?pid=${site.extent.geometry.pid}"
+                   class="btn btn-small"><i class="fa fa-map"></i> View in Spatial Portal</a>
             </g:if>
             <g:if test="${fc.userIsAlaAdmin()}">
-                <div class="btn btn-small btn-danger" onclick="deleteSite()"><i class="fa fa-remove"></i> Delete site</div>
+                <div class="btn btn-small btn-danger" onclick="deleteSite()"><i class="fa fa-remove"></i> Delete site
+                </div>
             </g:if>
         </li>
     </ul>
@@ -361,6 +374,14 @@
                 }
             }
             initPoiGallery(params,'sitePhotopoints');
+
+            // Star button click event
+            $("#starBtn").click(function(e) {
+                var isStarred = ($("#starBtn i").attr("class") == "icon-star");
+                toggleStarred(isStarred);
+            });
+
+
         });
         function Message (){
             var self = this;
@@ -389,33 +410,44 @@
             })
         }
 
-        function addToFavourites(){
-            var url = fcConfig.addStarSiteUrl + '/' + "${site.siteId}"
-            $.ajax({
-                url: url,
-                success: function(){
-                    msg.message('Successfully added site. Redirecting in 3 seconds.');
-                    setTimeout(function(){}, 3000);
-                },
-                error: function(xhr){
+
+       /**
+        * Star/Unstar project for user - send AJAX and update UI
+        *
+        * @param boolean isProjectStarredByUser
+        */
+        function toggleStarred(isProjectStarredByUser) {
+            if (isProjectStarredByUser) {
+              // remove star
+              var url = fcConfig.removeStarSiteUrl + '/' + "${site.siteId}"
+                $.ajax({
+                    url: url,
+                    success: function(){
+                        msg.message('Site removed from favourites.');
+                        $("#starBtn i").removeClass("icon-star").addClass("icon-star-empty");
+                        $("#starBtn span").text(" Add to favourites");
+                    },
+                    error: function(xhr){
+                        msg.message(xhr.responseText);
+                    }
+                })
+            } else {
+                // add star
+                var url = fcConfig.addStarSiteUrl + '/' + "${site.siteId}"
+                $.ajax({
+                    url: url,
+                    success: function(){
+                        msg.message('Site added to favourites.');
+                        $("#starBtn i").removeClass("icon-star-empty").addClass("icon-star");
+                        $("#starBtn span").text(" Remove from favourites");
+                    },
+                    error: function(xhr){
                     msg.message(xhr.responseText);
-                }
-            })
+                    }
+                })
+            }
         }
 
-        function removeFromFavourites(){
-            var url = fcConfig.removeStarSiteUrl + '/' + "${site.siteId}"
-            $.ajax({
-                url: url,
-                success: function(){
-                    msg.message('Successfully removed site. Redirecting in 3 seconds.');
-                    setTimeout(function(){}, 3000);
-                },
-                error: function(xhr){
-                    msg.message(xhr.responseText);
-                }
-            })
-        }
     </r:script>
 </body>
 </html>
