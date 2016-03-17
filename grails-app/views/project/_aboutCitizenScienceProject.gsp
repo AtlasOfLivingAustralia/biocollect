@@ -72,7 +72,7 @@
                             <h4 class="media-heading">Project sourced from SciStarter</h4>
                         </div>
                     </div>
-                    <div id="surveyLink" class="span4" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb())">
+                    <div id="surveyLink" class="span4 pull-right" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb())">
                         <a class="btn pull-right" data-bind="showTabOrRedirect: { url: isExternal() ? urlWeb() : '', tabId: '#activities-tab'}"><g:message code="project.display.join" /></a>
                         <p class="clearfix"/>
                     </div>

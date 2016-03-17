@@ -505,7 +505,7 @@ class ProjectService {
      * @throws Exception
      */
     Map importSciStarterProjects() throws SocketTimeoutException, Exception{
-        String url = "${grailsApplication.config.ecodata.service.url}/project/importProjectsFromScistarter";
+        String url = "${grailsApplication.config.ecodata.service.url}/project/importProjectsFromSciStarter";
         Map response = webService.doGet(url, [:]);
         if(response.resp && response.resp.count != null){
             return response.resp

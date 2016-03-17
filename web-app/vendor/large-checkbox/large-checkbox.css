@@ -6,7 +6,9 @@
 *    </div>
 */
 .large-checkbox input[type="checkbox"] {
-    display: none;
+    position: absolute;
+    /* hide checkbox behind large checkbox. this is done so that the form validation is triggered correctly.*/
+    z-index: -1;
 }
 
 .large-checkbox label {
