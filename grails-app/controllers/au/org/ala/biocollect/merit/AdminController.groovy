@@ -22,6 +22,7 @@ class AdminController {
     def siteService
     def outputService
     def documentService
+    def projectActivityService
 
     def index() {}
 
@@ -518,6 +519,30 @@ class AdminController {
         def message = [status:'ok']
         render message as JSON
 
+    }
+
+
+    def importSightingsData() {
+        if (request instanceof MultipartHttpServletRequest) {
+            def file = request.getFile('sightingsData')
+
+            if (file) {
+                def pActivity = projectActivityService.get(params.pActivityId)
+                if (pActivity?.projectId) {
+                    def model = metadataService.getActivityModel(pActivity.pActivityFormName)
+                    def results = importService.importSightingsData(file.inputStream, pActivity.projectId, pActivity.pActivityFormName, model.outputs[0], params.pActivityId)
+
+                    render results as JSON
+                    return
+                } else {
+                    render contentType: 'text/json', status:400, text:'{"error":"Invalid project activity id"}'
+                    return
+                }
+            }
+
+        }
+
+        render contentType: 'text/json', status:400, text:'{"error":"No file supplied"}'
     }
 
 }

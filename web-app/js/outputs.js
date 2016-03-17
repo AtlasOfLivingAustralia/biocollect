@@ -179,7 +179,31 @@ ko.bindingHandlers.photoPointUpload = {
             }
 
             if (result.files[0]) {
-                target.push(result.files[0]);
+                result.files.forEach(function (f) {
+                    var data = {
+                        thumbnailUrl: f.thumbnail_url,
+                        url: f.url,
+                        contentType: f.contentType,
+                        filename: f.name,
+                        name: f.name,
+                        filesize: f.size,
+                        dateTaken: f.isoDate,
+                        staged: true,
+                        attribution: f.attribution,
+                        notes: f.notes,
+                        status: f.status,
+                        licence: f.licence
+                    };
+
+                    if (f.contentType.indexOf("image") > -1) {
+                        target.push(new ImageViewModel(data));
+                    } else if (f.contentType.indexOf("audio") > -1) {
+                        target.push(new AudioItem(data));
+                    } else {
+                        target.push(new DocumentViewModel(data));
+                    }
+                });
+
                 complete(true);
             }
             else {
@@ -203,7 +227,8 @@ ko.bindingHandlers.imageUpload = {
             minWidth:150,
             minHeight:150,
             maxHeight: 300,
-            previewSelector: '.preview'
+            previewSelector: '.preview',
+            viewModel: viewModel
         };
         var size = ko.observable();
         var progress = ko.observable();
@@ -261,10 +286,23 @@ ko.bindingHandlers.imageUpload = {
                         filesize: f.size,
                         dateTaken: f.isoDate,
                         staged: true,
-                        attribution: f.attribution
+                        attribution: f.attribution,
+                        licence: f.licence
                     };
 
                     target.push(new ImageViewModel(data));
+
+                    if (viewModel.data) {
+                        if (f.decimalLongitude && viewModel.data.locationLongitude && !viewModel.data.locationLongitude()) {
+                            viewModel.data.locationLongitude(f.decimalLongitude)
+                        }
+                        if (f.decimalLatitude && viewModel.data.locationLatitude && !viewModel.data.locationLatitude()) {
+                            viewModel.data.locationLatitude(f.decimalLatitude)
+                        }
+                        if (f.isoDate && viewModel.data.surveyDate && !viewModel.data.surveyDate()) {
+                            viewModel.data.surveyDate(f.isoDate)
+                        }
+                    }
                 });
 
                 complete(true);

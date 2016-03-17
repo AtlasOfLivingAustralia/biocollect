@@ -9,7 +9,6 @@ import au.org.ala.biocollect.merit.ProjectService
 import au.org.ala.biocollect.merit.SearchService
 import au.org.ala.biocollect.merit.SiteService
 import au.org.ala.biocollect.merit.UserService
-import au.org.ala.biocollect.sightings.BieService
 import grails.converters.JSON
 import groovyx.net.http.ContentType
 import org.apache.commons.io.FilenameUtils
@@ -21,8 +20,6 @@ import org.codehaus.groovy.grails.web.json.JSONArray
 
 class BioActivityController {
 
-    public static final String BIOCOLLECT_SIGHTINGS_PLUGIN_NAME = "biocollectSightings"
-    public static final String SINGLE_SIGHTINGS_DATA_TYPE = "singleSighting"
     ProjectService projectService
     MetadataService metadataService
     SiteService siteService
@@ -30,7 +27,6 @@ class BioActivityController {
     UserService userService
     DocumentService documentService
     ActivityService activityService
-    BieService bieService
     CommonService commonService
     SearchService searchService
     OutputService outputService
@@ -105,9 +101,6 @@ class BioActivityController {
                         if (it.filename) {
                             filename = it.filename
                         } else if (it.identifier) {
-                            // the sightings plugin puts the image into the media.uploadDir directory, and
-                            // includes and 'identifier' parameter which is a URL ending with the filename
-                            // e.g. http://biocollect-test.ala.org.au/.../image_12354.jpg
                             filename = it.identifier.substring(it.identifier.lastIndexOf("/") + 1)
                         }
 
@@ -207,35 +200,11 @@ class BioActivityController {
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
 
             addOutputModel(model)
-            addConfigToOutputModels(pActivity, model)
-            addDefaultActivityData(model)
         }
 
         model
     }
 
-    /**
-     * Assign default data for new activity
-     * @param model model value.
-     * @return
-     */
-    private void addDefaultActivityData(model) {
-        if (!model.activity?.activityId) {
-            model?.outputModels?.each { String name, Map outputModel ->
-                outputModel?.dataModel?.each { Map dataModel ->
-                    if (dataModel.dataType == SINGLE_SIGHTINGS_DATA_TYPE) {
-                        Map species = projectActivityService.getSingleSpecies(model.pActivity?.projectActivityId)
-                        model.defaultData = [:]
-                        if (species.isSingle) {
-                            model.defaultData = [name: species.name, guid: species.guid]
-                        }
-                        model.defaultData.type = SINGLE_SIGHTINGS_DATA_TYPE
-                        model.defaultData.outputSpeciesId  = outputService.getOutputSpeciesId()?.outputSpeciesId
-                    }
-                }
-            }
-        }
-    }
     /**
      * Delete activity for the given activityId
      * @param id activity identifier
@@ -264,26 +233,6 @@ class BioActivityController {
         }
 
         render result as JSON
-    }
-
-    /**
-     * Some view models can accept additional configuration options, based on the config of the Project Activity.
-     *
-     * For example, the Sightings model (from the {@value #BIOCOLLECT_SIGHTINGS_PLUGIN_NAME}) allows the map section to
-     * be configured based on the location constraints in the Project Activity.
-     *
-     */
-    private static addConfigToOutputModels(Map pActivity, Map model) {
-        model?.outputModels?.each { String name, Map outputModel ->
-            outputModel?.viewModel?.each { Map viewModel ->
-                if (viewModel.plugin == BIOCOLLECT_SIGHTINGS_PLUGIN_NAME) {
-                    if (!viewModel.config) {
-                        viewModel.config = [:]
-                    }
-                    viewModel.config.allowGeospatialSpeciesSuggestion = !(pActivity?.species?.speciesLists || pActivity?.species?.singleSpecies)
-                }
-            }
-        }
     }
 
     /**
@@ -541,7 +490,6 @@ class BioActivityController {
             model.themes = metadataService.getThemesForProject(model.project)
         }
 
-        model.speciesGroupsMap = bieService.getSpeciesGroupsMap()
         model.user = userService.getUser()
 
         model

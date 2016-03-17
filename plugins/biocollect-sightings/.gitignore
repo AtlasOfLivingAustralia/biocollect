@@ -1,9 +1,0 @@
-.idea/
-target/
-*.iml
-*.zip
-*.sha1
-plugin.xml
-*.log
-*.tld
-patches/

@@ -99,6 +99,21 @@ class UserService {
         webService.getJson(url)
     }
 
+    def addStarSiteForUser(String userId, String siteId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/addStarSiteForUser"
+        webService.doPostWithParams(url, [userId: userId, siteId: siteId])
+    }
+
+    def removeStarSiteForUser(String userId, String siteId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/removeStarSiteForUser"
+        webService.doPostWithParams(url, [userId: userId, siteId: siteId])
+    }
+
+    def isSiteStarredByUser(String userId, String siteId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/isSiteStarredByUser?userId=${userId}&siteId=${siteId}"
+        webService.getJson(url)
+    }
+
     def addUserAsRoleToProject(String userId, String projectId, String role) {
         def url = grailsApplication.config.ecodata.service.url + "/permissions/addUserAsRoleToProject?userId=${userId}&projectId=${projectId}&role=${role}"
         webService.getJson(url)

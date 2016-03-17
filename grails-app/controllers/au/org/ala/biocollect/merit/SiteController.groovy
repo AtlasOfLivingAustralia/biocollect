@@ -63,9 +63,14 @@ class SiteController {
                 it.model = metadataService.getActivityModel(it.type)
             }
             //siteService.injectLocationMetadata(site)
-            [site: site,
+            def user = userService.getUser()
+
+            [site               : site,
              //activities: activityService.activitiesForProject(id),
-             mapFeatures: siteService.getMapFeatures(site)]
+             mapFeatures        : siteService.getMapFeatures(site),
+             isSiteStarredByUser: userService.isSiteStarredByUser(user?.userId ?: "0", site.siteId)?.isSiteStarredByUser,
+             user               : user
+            ]
         } else {
             //forward(action: 'list', model: [error: 'no such id'])
             flash.message = "Site not found."
@@ -153,6 +158,39 @@ class SiteController {
         } catch (Exception e){
             log.error(e.message)
             log.error(e.stackTrace)
+            render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    def ajaxAddToFavourites(String id) {
+        try{
+
+            def response = userService.addStarSiteForUser(userService.getCurrentUserId(), id)
+            if (!response?.error) {
+                def result = [status: 'added']
+                render result as JSON
+            } else {
+                def result = [status: response.statusCode]
+                render (text: response.error, status:  HttpStatus.SC_INTERNAL_SERVER_ERROR)
+            }
+        } catch (Exception e){
+            log.error(e.message, e)
+            render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    def ajaxRemoveFromFavourites(String id) {
+        try{
+
+            def response = userService.removeStarSiteForUser(userService.getCurrentUserId(), id)
+            if (!response?.error) {
+                def result = [status: 'removed']
+                render result as JSON
+            } else {
+                render (text: response.error, status:  HttpStatus.SC_INTERNAL_SERVER_ERROR)
+            }
+        } catch (Exception e){
+            log.error(e.message, e)
             render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }

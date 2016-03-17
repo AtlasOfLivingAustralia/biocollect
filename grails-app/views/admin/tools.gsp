@@ -189,6 +189,20 @@
                         Import projects from SciStarter to Biocollect.
                     </td>
                 </tr>
+                <tr>
+                    <td><button disabled id="btnLoadSightingsData" class="btn btn-small btn-info" title="Load sightings data">Load Sightings from JSON</button>
+                    </td>
+                    <td>
+                        Loads sightings information from JSON file. To produce JSON file for import
+                        <ul>
+                            <li>Export BSON from sightings; mongoexport -d ecodata -c records</li>
+                            <li>Convert BSON to JSON; bsondump records.bson > records.json</li>
+                        </ul>
+                        <p><g:uploadForm class="loadSightingsData" controller="admin" action="importSightingsData">
+                            <input id="sightingsData" type="file" accept="application/json" name="sightingsData"/>
+                            <br/><input type="text" name="pActivityId" id="pActivityId">Project Activity Id</g:uploadForm></p>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </body>
