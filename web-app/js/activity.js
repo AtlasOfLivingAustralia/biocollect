@@ -162,15 +162,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
         var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
 
-        if (self.total() > asyncDownloadThreshold) {
-            self.transients.showEmailDownloadPrompt(!self.transients.showEmailDownloadPrompt());
-        } else {
-            $('#downloadStartedMsg').removeClass('hide');
-            window.setTimeout(function(){
-                $('#downloadStartedMsg').addClass('hide');
-            }, 5000);
-            window.location.href = url;
-        }
+        // remove threshold check since downloading via biocollect proxy is causing chunck transfer encoding issue.
+        self.transients.showEmailDownloadPrompt(!self.transients.showEmailDownloadPrompt());
     };
 
     self.asyncDownload = function() {
