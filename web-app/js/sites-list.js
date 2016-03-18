@@ -150,7 +150,8 @@ function SitesListViewModel(params) {
             query: self.searchTerm(),
             fq: $.map(self.selectedFacets(), function(fq){
                 return fq.getQueryText();
-            })
+            }),
+            myFavourites:fcConfig.myFavourites
         }
         return params;
     }
@@ -239,6 +240,8 @@ function SitesListViewModel(params) {
     config.loadOnInit && (self.pagination.loadPagination(1,0) || self.pagination.first())
 }
 
+
+
 function SiteListViewModel(prop) {
     var self = this;
     self.name = ko.observable(prop.name);
@@ -250,6 +253,8 @@ function SiteListViewModel(prop) {
     self.type = ko.observable(prop.type);
     self.canEdit = ko.observable(prop.canEdit);
     self.canDelete = ko.observable(prop.canDelete);
+    self.showAddToFavourites = ko.observable(prop.addToFavourites);
+    self.showRemoveFromFavourites = ko.observable(prop.removeFromFavourites);
     self.extent = prop.extent;
     self.sites = prop.sites
 
@@ -259,6 +264,46 @@ function SiteListViewModel(prop) {
      */
     self.getSiteUrl = function () {
         return fcConfig.viewSiteUrl + '/' + self.siteId();
+    }
+
+    self.addSiteToFavourites = function () {
+        $.ajax({
+            url: fcConfig.addStarSiteUrl + '/' + self.siteId(),
+            success: function(data){
+                //self.sites.error('Successfully added site to favourites');
+                self.showAddToFavourites(false);
+                self.showRemoveFromFavourites(true);
+            },
+            error: function(xhr){
+                self.sites.error(xhr.responseText);
+            }
+        })
+    }
+
+    self.removeSiteFromFavourites = function () {
+        $.ajax({
+            url: fcConfig.removeStarSiteUrl + '/' + self.siteId(),
+            success: function(data){
+                //If we are displaying the My Favourites Sites it is important to keep consistent the contents
+                //ie, if a site is un marked as favourite it should dissappear from the screen rather than
+                // just changing the star icon to empty
+                if(fcConfig.myFavourites){
+                    self.sites.error('Site removed from favourites');
+                    self.sites.sites.remove(self);
+                    //Let's refresh the view in case we get an empty list
+                    if(self.sites.sites().length == 0) {
+                        self.sites.pagination.first();
+                        self.sites.removeAllSelectedFacets();
+                    }
+                } else {
+                    self.showAddToFavourites(true);
+                    self.showRemoveFromFavourites(false);
+                }
+            },
+            error: function(xhr){
+                self.sites.error(xhr.responseText);
+            }
+        })
     }
 
     /**

@@ -79,6 +79,13 @@ class UserService {
         webService.getJson(url)
     }
 
+    def getStarredSiteIdsForUserId(String userId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/getStarredSiteIdsForUserId/${userId}"
+        webService.getJson(url)
+    }
+
+
+
     def isProjectStarredByUser(String userId, String projectId) {
         def url = grailsApplication.config.ecodata.service.url + "/permissions/isProjectStarredByUser?userId=${userId}&projectId=${projectId}"
         webService.getJson(url)

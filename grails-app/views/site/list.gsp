@@ -19,20 +19,28 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title>List of all sites</title>
+    <g:if test="${myFavourites}">
+        <title><g:message code="site.myFavouriteSites.heading"/></title>
+    </g:if>
+    <g:else>
+        <title><g:message code="site.allSites.heading"/></title>
+    </g:else>
     <meta name="layout" content="${hubConfig.skin}"/>
     <script>
         var fcConfig = {
             listSitesUrl: '${createLink(controller: 'site', action: 'elasticsearch')}',
             viewSiteUrl: '${createLink(controller: 'site', action: 'index')}',
             editSiteUrl: '${createLink(controller: 'site', action: 'edit')}',
+            addStarSiteUrl: "${createLink(controller: 'site', action: 'ajaxAddToFavourites')}",
+            removeStarSiteUrl: "${createLink(controller: 'site', action: 'ajaxRemoveFromFavourites')}",
             poiGalleryUrl: "${createLink(controller: 'site', action: 'getImages')}",
             imagesForPoiUrl: "${createLink(controller: 'site', action: 'getPoiImages')}",
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
             activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
-            siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}"
+            siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
+            myFavourites: "${myFavourites}"
         }
     </script>
     <r:require modules="restoreTab,siteSearch"></r:require>
@@ -40,6 +48,14 @@
 
 <body>
 <div id="siteSearch" class="container-fluid">
+    <g:if test="${myFavourites}">
+        <div class="row-fluid">
+            <div class="span6" id="heading">
+                <h1 class="pull-left"><g:message code="site.myFavouriteSites.heading"/></h1>
+            </div>
+        </div>
+    </g:if>
+
     <div class="row-fluid">
         <div class="span3 well">
             <bc:koLoading>
