@@ -13,6 +13,7 @@ class ProjectService {
     MetadataService metadataService
     SettingService settingService
     EmailService emailService
+    CacheService cacheService
 
     /**
      * Check if a project already exists with the specified name.
@@ -391,9 +392,9 @@ class ProjectService {
      * @throws SocketTimeoutException
      * @throws Exception
      */
-    Map importSciStarterProjects() throws SocketTimeoutException, Exception{
+    Map importSciStarterProjects(String whiteList) throws SocketTimeoutException, Exception{
         String url = "${grailsApplication.config.ecodata.service.url}/project/importProjectsFromSciStarter";
-        Map response = webService.doGet(url, [:]);
+        Map response = webService.doPostWithParams(url, [whiteList:whiteList]);
         if(response.resp && response.resp.count != null){
             return response.resp
         } else {
@@ -403,5 +404,16 @@ class ProjectService {
                 throw  new Exception(response.error);
             }
         }
+    }
+
+    /**
+     * get science type from ecodata and cache it since it is not likely to change.
+     * @return
+     */
+    List getScienceTypes(){
+        cacheService.get("project-sciencetypes", {
+            def url = grailsApplication.config.ecodata.service.url + '/project/getScienceTypes'
+            webService.getJson(url)
+        })
     }
 }
