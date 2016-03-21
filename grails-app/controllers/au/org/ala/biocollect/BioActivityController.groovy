@@ -334,12 +334,17 @@ class BioActivityController {
     }
 
     def downloadProjectData() {
-        response.setContentType(ContentType.BINARY.toString())
-        response.setHeader('Content-Disposition', 'Attachment;Filename="data.zip"')
+        if(params.getBoolean('async') == true && params.email){
+            response.setContentType(ContentType.BINARY.toString())
+            response.setHeader('Content-Disposition', 'Attachment;Filename="data.zip"')
 
-        Map queryParams = constructDefaultSearchParams(params)
-        queryParams.isMerit = false
-        searchService.downloadProjectData(response, queryParams)
+            Map queryParams = constructDefaultSearchParams(params)
+            queryParams.isMerit = false
+            searchService.downloadProjectData(response, queryParams)
+        } else {
+            response.status = SC_BAD_REQUEST
+            render(text: "Must provide async and email parameters. Async should be set to true.")
+        }
     }
 
     private GrailsParameterMap constructDefaultSearchParams(Map params) {
