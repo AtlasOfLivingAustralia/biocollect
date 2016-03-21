@@ -583,12 +583,18 @@ class SiteController {
     }
 
     def list(){
-
     }
 
     def myFavourites() {
-        // wip #460
-        render view: "list"
+        def user = userService.getCurrentUserId()
+        if(user){
+            def model = [myFavourites:true]
+            render view:"list", model:model
+        } else {
+            redirect action: 'list'
+        }
+//        def index = { def hobbies = ["basketball", "photography"]
+//            render(view: "myFavourites", model: [name: "Maricel", hobbies: hobbies]) }
     }
 
     /**
@@ -600,7 +606,19 @@ class SiteController {
             List query = ['className:au.org.ala.ecodata.Site']
             String userId = userService.getCurrentUserId()
             Boolean isAlaAdmin = userService.userIsAlaAdmin()
+
+
             GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userId)
+
+            def favouriteSiteIds
+            if(userId) {
+                favouriteSiteIds = userService.getStarredSiteIdsForUserId(userId)
+                if(params.remove('myFavourites')){
+                    def terms = [field: "siteId", values: favouriteSiteIds]
+                    queryParams.terms = terms
+                }
+            }
+
             if(!queryParams.facets){
                 queryParams.facets="typeFacet,className,organisationFacet,stateFacet,lgaFacet,nrmFacet,siteSurveyNameFacet,siteProjectNameFacet,photoType"
             }
@@ -630,6 +648,18 @@ class SiteController {
                 Boolean canEdit = isAlaAdmin || doc.projects.inject(false){flag, id ->
                     flag || !!permissions[id]
                 }
+
+                Boolean addToFavourites = false
+                Boolean removeFromFavourites = false
+
+                if (userId) {
+                    if (favouriteSiteIds.contains(doc.siteId)) {
+                        removeFromFavourites = true
+                    } else {
+                        addToFavourites = true
+                    }
+                }
+
                 [
                         siteId           : doc.siteId,
                         name             : doc.name,
@@ -642,7 +672,9 @@ class SiteController {
                         // does a logical OR reduce operation on permissions for each projects
                         canEdit          : canEdit,
                         // only sites with no projects can be deleted
-                        canDelete        : isAlaAdmin && (doc.projects?.size() == 0)
+                        canDelete        : isAlaAdmin && (doc.projects?.size() == 0),
+                        addToFavourites  : addToFavourites,
+                        removeFromFavourites : removeFromFavourites
                 ]
             }
 
