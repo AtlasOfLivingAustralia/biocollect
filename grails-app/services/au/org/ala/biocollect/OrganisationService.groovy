@@ -17,6 +17,7 @@ class OrganisationService {
     ProjectService projectService
     UserService userService
     SearchService searchService
+    OrganisationService organisationService
 
 
     Map get(String id, view = '') {
@@ -39,21 +40,28 @@ class OrganisationService {
         metadataService.organisationList()
     }
 
-    def validate(props, organisationId = null) {
+    def validate(props, organisationId) {
         def error = null
-        def updating = organisationId != null
+        def notUpdating = !organisationId
 
-        if (!updating && !props.containsKey("description")) {
+        if (!notUpdating) {
+            def org = get(organisationId)
+            if (org?.error) {
+                return "invalid organisationId"
+            }
+        }
+
+        if (notUpdating && !props?.description) {
             //error, no start date
             return "description is missing"
         }
 
         if (props.containsKey("name")) {
             def proj = getByName(props.name)
-            if (proj != null && (!updating || proj.organisationId != organisationId)) {
+            if (proj && (notUpdating || proj?.organisationId != organisationId)) {
                 return "name is not unique"
             }
-        } else if (!updating) {
+        } else if (notUpdating) {
             //error, no project name
             return "name is missing"
         }
