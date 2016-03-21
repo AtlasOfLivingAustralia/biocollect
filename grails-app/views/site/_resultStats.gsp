@@ -1,7 +1,8 @@
 <div class="row-fluid">
     <div class="span12">
         <h4><strong>Search result</strong></h4>
-        <span data-bind="text: pagination.totalResults"></span> sites found.
+        <span data-bind="visible: !sitesLoaded()"><span class="fa fa-spin fa-spinner"></span>&nbsp;Sites Loading...</span>
+        <div data-bind="visible: sitesLoaded()"><span data-bind="text: pagination.totalResults"></span> sites found.</div>
         <div data-bind="slideVisible: selectedFacets().length">
             <h4><strong>Selected filters</strong></h4>
             <!-- ko foreach: selectedFacets -->

@@ -19,6 +19,7 @@
     </div>
     <!-- /ko -->
     <!-- ko if: sites().length == 0 -->
-    <h4>No sites found</h4>
+    <h4 data-bind="visible: !sitesLoaded()"><span class="fa fa-spin fa-spinner"></span>&nbsp;Sites Loading...</h4>
+    <h4 data-bind="visible: sitesLoaded()">No sites found</h4>
     <!-- /ko -->
 </bc:koLoading>

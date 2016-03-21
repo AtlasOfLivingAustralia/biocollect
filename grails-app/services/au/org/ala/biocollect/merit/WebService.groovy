@@ -378,7 +378,7 @@ class WebService {
         builder.request(Method.POST) { request ->
             requestContentType : 'multipart/form-data'
             MultipartEntity content = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
-            content.addPart(fileParamName, new InputStreamBody(contentIn, contentType, originalFilename?:fileParamName))
+            if (contentIn) content.addPart(fileParamName, new InputStreamBody(contentIn, contentType, originalFilename?:fileParamName))
             params.each { key, value ->
                 if (value) {
                     content.addPart(key, new StringBody(value.toString()))
