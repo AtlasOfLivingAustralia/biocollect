@@ -367,7 +367,7 @@ class ProjectService {
 
         def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProjects"
         Map params = [projectIds:projectId,userId:userId]
-        response = webService.doPostWithParams(url, params)
+        response = webService.postMultipart(url, params, null, null, null)
 
         if(response.error){
             if(response.error.contains('Timed out')){

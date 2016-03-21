@@ -45,6 +45,7 @@ function SitesListViewModel(params) {
     self.pagination = new PaginationViewModel(null,self)
     self.doNotLoad = ko.observable(false)
     self.refineList = ko.observableArray();
+    self.sitesLoaded = ko.observable(false)
 
 
     /**
@@ -72,6 +73,8 @@ function SitesListViewModel(params) {
                     data.facets && self.createFacets(data.facets, availableFacets);
 
                     self.pagination.loadPagination(self.pagination.currentPage(), data.total)
+
+                    self.sitesLoaded(true)
                 },
                 error: function (xhr) {
                     self.error(xhr.responseText);
