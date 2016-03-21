@@ -569,7 +569,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         {name:'Ecology', value:'ecology'},
         {name:'Natural resource management', value:'nrm'}
     ];
-    self.transients.availableScienceTypes = fcConfig.scienceType;
+    self.transients.availableScienceTypes = fcConfig.scienceTypes;
     self.transients.scienceTypeDisplay = ko.pureComputed(function () {
         for (var st = self.scienceType(), i = 0; i < scienceTypesList.length; i++)
             if (st === scienceTypesList[i].value)

@@ -104,7 +104,11 @@
 
                 $("#btnSyncSciStarter").click(function(e) {
                     e.preventDefault();
-                    $.ajax("${createLink(controller: 'admin', action:'syncSciStarter')}"
+                    $.ajax("${createLink(controller: 'admin', action:'syncSciStarter')}",
+                            {
+                                method:"POST",
+                                data:{whiteList:$('#sciStarterWhiteList').val()}
+                            }
                     ).done(function(result) {
                         alert("Successfully imported " + result.count + " SciStarter projects!")
                         document.location.reload();
@@ -183,10 +187,13 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><button id="btnSyncSciStarter" class="btn btn-small btn-info" title="Synchronise Biocollect with SciStarter">Import SciStarter Projects</button>
+                    <td>
+                        <label>Enter comma separated white list below:</label>
+                        <input id="sciStarterWhiteList" type="text"/>
+                        <button id="btnSyncSciStarter" class="btn btn-small btn-info" title="Synchronise Biocollect with SciStarter">Import SciStarter Projects</button>
                     </td>
                     <td>
-                        Import projects from SciStarter to Biocollect.
+                        Import projects from SciStarter to Biocollect. Note: this might take a long time
                     </td>
                 </tr>
                 <tr>

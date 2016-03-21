@@ -146,6 +146,7 @@ class ProjectController {
         }
         def user = userService.getUser()
         def groupedOrganisations = groupOrganisationsForUser(user.userId)
+        def scienceTypes = projectService.getScienceTypes();
 
         if (project) {
             def siteInfo = siteService.getRaw(project.projectSiteId)
@@ -154,7 +155,10 @@ class ProjectController {
              site: siteInfo.site,
              userOrganisations: groupedOrganisations.user ?: [],
              organisations: groupedOrganisations.other ?: [],
-             programs: metadataService.programsModel()]
+             programs: metadataService.programsModel(),
+             scienceTypes: scienceTypes
+            ]
+
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }
@@ -179,6 +183,7 @@ class ProjectController {
             return
         }
         def groupedOrganisations = groupOrganisationsForUser(user.userId)
+        def scienceTypes = projectService.getScienceTypes();
         // Prepopulate the project as appropriate.
         def project = [:]
         if (params.organisationId) {
@@ -198,7 +203,8 @@ class ProjectController {
                 userOrganisations: groupedOrganisations.user ?: [],
                 organisations: groupedOrganisations.other ?: [],
                 programs: projectService.programsModel(),
-                project:project
+                project:project,
+                scienceTypes: scienceTypes
         ]
     }
 

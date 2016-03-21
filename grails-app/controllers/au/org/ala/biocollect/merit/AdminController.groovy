@@ -100,7 +100,9 @@ class AdminController {
 
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def syncSciStarter(){
-        render text:projectService.importSciStarterProjects() as JSON, contentType: 'application/json'
+        String whiteList = params.whiteList
+        Map imported = projectService.importSciStarterProjects(whiteList)
+        render text: imported as JSON, contentType: 'application/json'
     }
 
     def updateActivitiesModel() {
