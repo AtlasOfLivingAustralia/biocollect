@@ -27,82 +27,86 @@ class ProjectActivityService {
         webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/get/'+ projectActivityId + params)
     }
 
-    def validate(props, projectActivityId = null) {
+    def validate(props, projectActivityId) {
         def error = null
-        def updating = projectActivityId != null
-        def published = props.containsKey("published") && props.published
+        def notUpdating = !projectActivityId
+        def published = props?.published.toString().toBoolean()
 
-        //when publishing always validate species, sites and pActivityFormName
         def attributesAdded = []
-        if (updating && published) {
+        if (!notUpdating) {
             def act = get(projectActivityId)
-            if (!act?.error) {
-                if (!props.containsKey("species")) {
+            if (act?.error) {
+                return "invalid projectActivityId"
+            }
+
+            //when publishing always validate species, sites and pActivityFormName
+            if (published) {
+                if (!props?.species) {
                     attributesAdded.add("species")
                     props.species = act.species
                 }
-                if (!props.containsKey("sites")) {
+                if (!props?.sites) {
                     attributesAdded.add("sites")
                     props.sites = act.sites
                 }
-                if (!props.containsKey("pActivityFormName")) {
+                if (!props?.pActivityFormName) {
                     attributesAdded.add("pActivityFormName")
                     props.pActivityFormName = act.pActivityFormName
                 }
             }
         }
 
-        if (props.containsKey("projectId")) {
+        if (props?.projectId) {
             def proj = projectService.get(props.projectId)
             if (proj?.error) {
                 return "\"${props.projectId}\" is not a valid projectId"
             }
-        } else if (!updating) {
+        } else if (notUpdating) {
             //error, no description
             return "projectId is missing"
         }
 
-        if (!updating && !props.containsKey("status")) {
+        if (notUpdating && !props?.status) {
             //error, no status
             return "status is missing"
         }
 
-        if (!updating && !props.containsKey("description")) {
+        if (notUpdating && !props?.description) {
             //error, no description
             return "description is missing"
         }
 
-        if (!updating && !props.containsKey("name")) {
+        if (notUpdating && !props?.name) {
             //error, no name
             return "name is missing"
         }
 
-        if (!updating && !props.containsKey("attribution")) {
+        if (notUpdating && !props?.attribution) {
             //error, no attribution
             return "attribution is missing"
         }
 
-        if (!updating && !props.containsKey("startDate")) {
+        if (notUpdating && !props?.startDate) {
             //error, no start date
             return "startDate is missing"
         }
 
         //error, no species constraint
-        if (props.containsKey("species")) {
+        if (props?.species) {
             if (!(props.species instanceof Map)) {
                 return "species is not a map"
             }
 
-            if (props.species.containsKey("type")) {
+            if (props.species?.type) {
                 if (props.species.type == 'SINGLE_SPECIES') {
-                    if (!props.species.containsKey("singleSpecies") ||
+                    if (!props.species?.singleSpecies ||
                             !(props.species.singleSpecies instanceof Map) ||
-                            !props.species.singleSpecies.containsKey("guid") ||
-                            !props.species.singleSpecies.containsKey("name")) {
+                            !props.species.singleSpecies?.guid ||
+                            !props.species.singleSpecies?.name) {
                         return "invalid single_species for species type SINGLE_SPECIES"
                     }
                 } else if (props.species.type == 'GROUP_OF_SPECIES'){
-                    if (!props.species.containsKey("speciesLists") ||
+                    if (!props.species?.speciesLists ||
                             !(props.species.speciesLists instanceof List)) {
                         return "invalid speciesLists for species type GROUP_OF_SPECIES"
                     }
@@ -110,7 +114,7 @@ class ProjectActivityService {
                         return "no speciesLists defined for GROUP_OF_SPECIES"
                     }
                     props.species.speciesLists.each {
-                        if (!(it instanceof Map) || !it.containsKey("listName") || !it.containsKey("dataResourceUid")) {
+                        if (!(it instanceof Map) || !it?.listName || !it?.dataResourceUid) {
                             error = "invalid speciesLists item for species type GROUP_OF_SPECIES"
                         }
                     }
@@ -122,7 +126,7 @@ class ProjectActivityService {
             return "species is missing"
         }
 
-        if (props.containsKey("pActivityFormName")) {
+        if (props?.pActivityFormName) {
             def match = metadataService.activitiesModel().activities.findAll {
                 it.name == props.pActivityFormName
             }
@@ -134,7 +138,7 @@ class ProjectActivityService {
             return "pActivityFormName is missing"
         }
 
-        if (props.containsKey("sites")) {
+        if (props?.sites) {
             if (!(props.sites instanceof List)) {
                 return "sites is not a list"
             } else if (props.sites.size() == 0) {
