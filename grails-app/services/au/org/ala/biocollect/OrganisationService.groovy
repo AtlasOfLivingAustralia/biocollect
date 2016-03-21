@@ -52,7 +52,7 @@ class OrganisationService {
         }
 
         if (notUpdating && !props?.description) {
-            //error, no start date
+            //error, no description
             return "description is missing"
         }
 
