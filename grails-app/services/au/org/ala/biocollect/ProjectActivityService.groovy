@@ -29,11 +29,11 @@ class ProjectActivityService {
 
     def validate(props, projectActivityId) {
         def error = null
-        def notUpdating = !projectActivityId
+        def creating = !projectActivityId
         def published = props?.published.toString().toBoolean()
 
         def attributesAdded = []
-        if (!notUpdating) {
+        if (!creating) {
             def act = get(projectActivityId)
             if (act?.error) {
                 return "invalid projectActivityId"
@@ -61,32 +61,32 @@ class ProjectActivityService {
             if (proj?.error) {
                 return "\"${props.projectId}\" is not a valid projectId"
             }
-        } else if (notUpdating) {
+        } else if (creating) {
             //error, no description
             return "projectId is missing"
         }
 
-        if (notUpdating && !props?.status) {
+        if (creating && !props?.status) {
             //error, no status
             return "status is missing"
         }
 
-        if (notUpdating && !props?.description) {
+        if (creating && !props?.description) {
             //error, no description
             return "description is missing"
         }
 
-        if (notUpdating && !props?.name) {
+        if (creating && !props?.name) {
             //error, no name
             return "name is missing"
         }
 
-        if (notUpdating && !props?.attribution) {
+        if (creating && !props?.attribution) {
             //error, no attribution
             return "attribution is missing"
         }
 
-        if (notUpdating && !props?.startDate) {
+        if (creating && !props?.startDate) {
             //error, no start date
             return "startDate is missing"
         }
