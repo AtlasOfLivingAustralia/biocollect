@@ -29,8 +29,7 @@
     <div class="row-fluid">
         <bc:koLoading>
             <div class="well span6">
-
-                <div class="row-fluid margin-bottom-2">
+                <div class="row-fluid">
                     <div class="span5">
                         <form class="form-search" data-bind="submit: searchSites">
                             <div class="input-append">
@@ -38,9 +37,17 @@
                                        placeholder="Filter..."/>
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </div>
-
-                            <div><span data-bind="text: matchingSiteCount()"
-                                       class="margin-top-1"></span> matching sites.</div>
+                            <div class="span12">
+                            </div>
+                            <div class="span12">
+                                    <div class=" btn-group span6" data-toggle="buttons-checkbox">
+                                        <button type="button" class="btn  btn-small btn-info"
+                                                    data-bind="click: toggleMyFavourites">Only Favourites<i data-bind="visible: myFavourites"
+                                                    class="toggleIndicator icon-remove icon-white"></i></button>
+                                    </div>
+                            </div>
+                            <div class="row-fluid margin-top-2" ><span data-bind="text: matchingSiteCount()"
+                                       class=""></span> matching sites.</div>
                         </form>
                     </div>
                 </div>

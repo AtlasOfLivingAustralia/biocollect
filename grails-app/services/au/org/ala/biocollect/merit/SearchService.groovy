@@ -47,6 +47,7 @@ class SearchService {
         params.highlight = params.highlight?:true
         params.flimit = 999
         def url = elasticBaseUrl + commonService.buildUrlParamsFromMap(params)
+        log.debug "url = $url"
         webService.getJson(url)
     }
 

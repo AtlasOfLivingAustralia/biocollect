@@ -19,6 +19,17 @@ class SiteController {
 
     def search = {
         params.fq = "docType:site"
+
+        String userId = userService.getCurrentUserId()
+
+        if(userId) {
+            def favouriteSiteIds = userService.getStarredSiteIdsForUserId(userId)
+            if(params.remove('myFavourites') == "true"){
+                def terms = [field: "siteId", values: favouriteSiteIds]
+                params.terms = terms
+            }
+        }
+
         def results = searchService.fulltextSearch(params, true)
         render results as JSON
     }
@@ -593,8 +604,6 @@ class SiteController {
         } else {
             redirect action: 'list'
         }
-//        def index = { def hobbies = ["basketball", "photography"]
-//            render(view: "myFavourites", model: [name: "Maricel", hobbies: hobbies]) }
     }
 
     /**
