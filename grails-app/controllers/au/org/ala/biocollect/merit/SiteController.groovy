@@ -649,12 +649,12 @@ class SiteController {
             String pIds = StringUtils.join(projectIds, ',')
             Map permissions = [:]
             // when sites are not associated with a project canUserEditProjects will throw exception.
-            if(projectIds.size()>0){
+            if(projectIds.size()>0 && userId){
                 permissions = projectService.canUserEditProjects(userId, pIds)
             }
             sites = sites?.collect {
                 Map doc = it._source
-                Boolean canEdit = isAlaAdmin || doc.projects.inject(false){flag, id ->
+                Boolean canEdit = isAlaAdmin || userId && doc.projects.inject(false){flag, id ->
                     flag || !!permissions[id]
                 }
 
