@@ -3,7 +3,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     var features, featureType = 'record', alaMap, results;
     self.view = view ? view : 'allrecords';
-    var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500;
 
     // These parameters are used when activity is instantiated from sites page.
     // It is used to disable certain aspects like map and auto load feature
@@ -158,23 +157,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     };
 
     self.download = function(data, event) {
-        var elem = event.target ? event.target : event.srcElement;
-        var asyncDownloadThreshold = DEFAULT_EMAIL_DOWNLOAD_THRESHOLD;
-        if (elem) {
-            asyncDownloadThreshold = $(elem).attr("data-email-threshold");
-        }
-
         var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
 
-        if (self.total() > asyncDownloadThreshold) {
-            self.transients.showEmailDownloadPrompt(!self.transients.showEmailDownloadPrompt());
-        } else {
-            $('#downloadStartedMsg').removeClass('hide');
-            window.setTimeout(function(){
-                $('#downloadStartedMsg').addClass('hide');
-            }, 5000);
-            window.location.href = url;
-        }
+        // remove threshold check since downloading via biocollect proxy is causing chunck transfer encoding issue.
+        self.transients.showEmailDownloadPrompt(!self.transients.showEmailDownloadPrompt());
     };
 
     self.asyncDownload = function() {
