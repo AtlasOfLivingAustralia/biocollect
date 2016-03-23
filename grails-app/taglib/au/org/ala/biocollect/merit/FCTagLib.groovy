@@ -702,7 +702,7 @@ class FCTagLib {
         Object facetValue = geom[facetName]
         if (facetValue) {
             String label = attrs.label ?: g.message(code:'label.'+facetName+'Facet', default:facetName)
-            mb.span(class:"label label-success", label)
+            mb.dt(label)
 
             if (!(facetValue instanceof List)) {
                 facetValue = [facetValue]
@@ -716,7 +716,7 @@ class FCTagLib {
                 }
 
             }
-            out << " "+value.toString()
+            mb.dd(value.toString())
         }
     }
 

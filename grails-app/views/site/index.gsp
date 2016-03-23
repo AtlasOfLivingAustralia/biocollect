@@ -122,12 +122,9 @@
                     </g:else>
                 </dd>
                 <g:if test="${site.extent?.geometry}">
-                <dt>State/territory</dt>
-                <dd>${site.extent.geometry.state?:'Not specified'}</dd>
-                <dt>Local government area</dt>
-                <dd>${site.extent.geometry.lga?:'Not specified'}</dd>
-                <dt>NRM</dt>
-                <dd>${site.extent.geometry.nrm?:'Not specified'}</dd>
+                <fc:siteFacet site="${site}" label="State/territory" facet="state"/>
+                <fc:siteFacet label="Local government area" site="${site}" facet="lga"/>
+                <fc:siteFacet label="NRM" site="${site}" facet="nrm"/>
                 <dt>Locality</dt>
                 <dd>${site.extent.geometry.locality?:'Not specified'}</dd>
                 <dt data-toggle="tooltip" title="NVIS major vegetation group">NVIS major vegetation group</dt>
