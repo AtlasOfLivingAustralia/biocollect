@@ -42,26 +42,26 @@ class OrganisationService {
 
     def validate(props, organisationId) {
         def error = null
-        def notUpdating = !organisationId
+        def creating = !organisationId
 
-        if (!notUpdating) {
+        if (!creating) {
             def org = get(organisationId)
             if (org?.error) {
                 return "invalid organisationId"
             }
         }
 
-        if (notUpdating && !props?.description) {
+        if (creating && !props?.description) {
             //error, no description
             return "description is missing"
         }
 
         if (props.containsKey("name")) {
             def proj = getByName(props.name)
-            if (proj && (notUpdating || proj?.organisationId != organisationId)) {
+            if (proj && (creating || proj?.organisationId != organisationId)) {
                 return "name is not unique"
             }
-        } else if (notUpdating) {
+        } else if (creating) {
             //error, no project name
             return "name is missing"
         }

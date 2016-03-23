@@ -6,6 +6,7 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
     self.projectId = projectId;
     self.projects = [projectId];
     self.currentSearch = ko.observable('');
+    self.myFavourites = ko.observable(false);
     self.sites = ko.observableArray([]);
     self.matchingSiteCount = ko.observable(0);
     self.currentProjectSites = ko.observableArray(currentProjectSites);
@@ -106,12 +107,18 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
         var query = self.currentSearch();
         var max = self.pagination.resultsPerPage();
         var newOffset = offset;
-        queryForSites(query, max, newOffset, null);
+        var myFavourites = self.myFavourites();
+        queryForSites(query, max, newOffset, myFavourites, null);
     }
 
-    function queryForSites(query, max, offset, callbackFcn) {
+    self.toggleMyFavourites = function () {
+        self.myFavourites(!self.myFavourites());
+        self.searchSites();
+    }
+
+    function queryForSites(query, max, offset, myFavourites, callbackFcn) {
         $.ajax({
-            url: self.config.siteQueryUrl + query + "&max=" + max + "&offset=" + offset,
+            url: self.config.siteQueryUrl + query + "&max=" + max + "&offset=" + offset+"&myFavourites="+myFavourites,
             type: 'GET',
             contentType: 'application/json',
             success: function (data) {

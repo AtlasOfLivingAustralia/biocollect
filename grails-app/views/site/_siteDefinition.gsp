@@ -34,17 +34,17 @@
 
             <div class="row-fluid controls-row gazProperties" data-bind="visible: site().extent().geometry().state">
                 <span class="label label-success"><g:message code="site.metadata.state"/></span> <span
-                    data-bind="text: site().extent().geometry().state"></span>
+                    data-bind="expandable: site().extent().geometry().state"></span>
             </div>
 
             <div class="row-fluid controls-row gazProperties" data-bind="visible: site().extent().geometry().lga">
                 <span class="label label-success"><g:message code="site.metadata.govArea"/></span> <span
-                    data-bind="text: site().extent().geometry().lga"></span>
+                    data-bind="expandable: site().extent().geometry().lga"></span>
             </div>
 
             <div class="row-fluid controls-row gazProperties" data-bind="visible: site().extent().geometry().nrm">
                 <span class="label label-success"><g:message code="site.metadata.nrm"/></span> <span
-                    data-bind="text: site().extent().geometry().nrm"></span>
+                    data-bind="expandable: site().extent().geometry().nrm"></span>
             </div>
 
             <div class="row-fluid controls-row gazProperties"

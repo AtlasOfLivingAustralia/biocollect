@@ -273,7 +273,6 @@ function SiteListViewModel(prop) {
         $.ajax({
             url: fcConfig.addStarSiteUrl + '/' + self.siteId(),
             success: function(data){
-                //self.sites.error('Successfully added site to favourites');
                 self.showAddToFavourites(false);
                 self.showRemoveFromFavourites(true);
             },
@@ -290,11 +289,16 @@ function SiteListViewModel(prop) {
                 //If we are displaying the My Favourites Sites it is important to keep consistent the contents
                 //ie, if a site is un marked as favourite it should dissappear from the screen rather than
                 // just changing the star icon to empty
-                if(fcConfig.myFavourites){
+                if (fcConfig.myFavourites) {
                     self.sites.error('Site removed from favourites');
+                    //Just as self.deleteSite function, removing the site from screen seems trivial however the backing
+                    // model comes from elastic search, in order to keep all values on screen consistent we need to
+                    // issue a new search which will refresh most elements on screen causing a nasty flicker, not much
+                    // different that reloading the whole page, hence we accept that result and facet count values won't be in sync.
+                    // Eventually when the user applies any filter or revisit the page, result count and facets will be in sync.
                     self.sites.sites.remove(self);
                     //Let's refresh the view in case we get an empty list
-                    if(self.sites.sites().length == 0) {
+                    if (self.sites.sites().length == 0) {
                         self.sites.pagination.first();
                         self.sites.removeAllSelectedFacets();
                     }
