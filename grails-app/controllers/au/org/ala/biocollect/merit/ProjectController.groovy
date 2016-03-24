@@ -304,7 +304,7 @@ class ProjectController {
                 siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
                 if (siteResult.status == 'error') render status: 400, text: "SiteService failed."
                 else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
-            } else {
+            } else if (projectService.get(id)?.sites?.isEmpty()){
                 render status: 400, text: "No project site is defined."
             }
 
