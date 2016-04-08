@@ -446,4 +446,13 @@ modules = {
         resource url: 'vendor/responsive-table-stacked/stacked.css'
         resource url: 'vendor/responsive-table-stacked/stacked.js'
     }
+
+    mdba {
+        dependsOn 'bootstrap','font_awesome_44', 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
+        resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
+        resource url: 'css/bootstrap-combobox.css'
+        resource url: 'css/common.css'
+        resource url: [dir:'css', file:'Common_fonts.css']
+        resource url: [dir:'css', file:'mdba-styles.css']
+    }
 }

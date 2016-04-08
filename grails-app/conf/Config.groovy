@@ -86,6 +86,11 @@ grails.views.default.codec = "none"
 // ----------------------------------
 layout.skin = "ala2"
 
+// MDBA config
+mdba.baseUrl = 'http://mdba.ala.org.au/'
+
+// MDBA config END
+
 webservice.connectTimeout = 10000
 webservice.readTimeout = 20000
 

@@ -11,7 +11,7 @@
 
 
     <!-- ko if: projectActivities().length > 1 -->
-    <div class="row-fluid">
+    <div class="row-fluid  survey-list-actions">
 
         <div class="span2">
             <span data-bind="click: toggleFilter" class="btn btn-default btn-small">Sort</span>
