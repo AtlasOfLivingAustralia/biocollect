@@ -181,9 +181,13 @@ log4j = {
     debug   'grails.app'
 }
 
-grails.cache.config = {
-    provider {
-        name "ehcache-${appName}-"+(new Date().format("yyyyMMddHHmmss"))
+if (!grails.cache.ehcache) {
+    grails {
+        cache {
+            ehcache {
+                cacheManagerName = appName + '-ehcache'
+                reloadable = false
+            }
+        }
     }
 }
-
