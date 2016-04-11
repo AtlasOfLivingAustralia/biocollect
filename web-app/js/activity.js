@@ -25,6 +25,16 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         {name: 'activityLastUpdatedMonthFacet', displayName: 'Month', order: index++},
         {name: 'activityLastUpdatedYearFacet', displayName: 'Year', order: index++}];
 
+    index=0;
+
+    self.projectAvailableFacets = [
+        {name: 'projectActivityNameFacet', displayName: 'Survey', order: index++},
+        {name: 'recordNameFacet', displayName: 'Species', order: index++},
+        {name: 'activityOwnerNameFacet', displayName: 'Owner', order: index++},
+        {name: 'embargoedFacet', displayName: 'Access', order: index++},
+        {name: 'activityLastUpdatedMonthFacet', displayName: 'Month', order: index++},
+        {name: 'activityLastUpdatedYearFacet', displayName: 'Year', order: index++}]
+
     self.orderOptions = [{id: 'ASC', name: 'ASC'}, {id: 'DESC', name: 'DESC'}];
     self.activities = ko.observableArray();
     self.pagination = new PaginationViewModel({}, self);
@@ -124,6 +134,14 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         self.refreshPage();
     };
 
+    self.canFacetBeDisplayed = function(facetModel, whiteList){
+        var found = $.grep(whiteList, function (obj, i) {
+            return (obj.name == facetModel.name());
+        });
+
+        return found.length > 0;
+    }
+
     self.load = function (data, page) {
         var activities = data.activities;
         var facets = data.facets;
@@ -136,9 +154,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         });
         self.activities(activities);
 
-        facets = $.map(facets ? facets : [], function (facet, index) {
-            return new DataFacetsVM(facet, self.availableFacets);
-        });
+        facets = $.map(facets ? facets : [], createFacetModelAndSetVisibility);
         self.facets(facets);
 
         self.facets.sort(function (left, right) {
@@ -241,9 +257,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             success: function (data) {
                 var facets = data.facets;
 
-                facets = $.map(facets ? facets : [], function (facet, index) {
-                    return new DataFacetsVM(facet, self.availableFacets);
-                });
+                facets = $.map(facets ? facets : [], createFacetModelAndSetVisibility);
                 facets.sort(function (left, right) {
                     return left.order() == right.order() ? 0 : (left.order() < right.order() ? -1 : 1)
                 });
@@ -524,6 +538,22 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return url + filters;
     }
 
+    function createFacetModelAndSetVisibility(facet, index) {
+        var displayableFacets, facetModel;
+        switch (self.view){
+            case 'project':
+                displayableFacets = self.projectAvailableFacets;
+                break;
+            default :
+                displayableFacets = self.availableFacets;
+                break;
+        }
+
+        facetModel = new DataFacetsVM(facet, displayableFacets);
+        self.canFacetBeDisplayed(facetModel, displayableFacets) ? facetModel.visible(true) : facetModel.visible(false);
+        return facetModel
+    }
+
     // listen to facet change event so that map can be updated.
     self.selectedFilters.subscribe(self.getDataAndShowOnMap);
     self.searchTerm.subscribe(self.getDataAndShowOnMap);
@@ -617,6 +647,7 @@ var DataFacetsVM = function (facet, availableFacets) {
     self.total = ko.observable(facet.total);
     self.terms = ko.observableArray();
     self.filter = ko.observable(false);
+    self.visible = ko.observable(true);
 
     self.toggleFilter = function () {
         self.filter(!self.filter())

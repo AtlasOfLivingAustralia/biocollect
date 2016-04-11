@@ -24,7 +24,7 @@
 
 <div class="panel-group" id="facet-accordion">
     <!-- ko foreach: facets -->
-    <div class="panel panel-default">
+    <div data-bind="visible: visible" class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
                 <span data-bind="attr:{class: filter() ? 'icon-chevron-right' : 'icon-chevron-down'}"></span>
