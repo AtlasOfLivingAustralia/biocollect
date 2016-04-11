@@ -30,7 +30,7 @@ var ProjectActivitiesViewModel = function (params) {
     });
 
     // flag to check if survey was changed by dropdown menu. it is used to decide on saving survey.
-    self.isSurveySelected = ko.observable(true);
+    self.isSurveySelected = ko.observable(false);
 
     self.sort = function () {
         var by = self.sortBy();
