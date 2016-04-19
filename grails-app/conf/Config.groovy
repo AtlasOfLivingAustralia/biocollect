@@ -88,7 +88,7 @@ layout.skin = "ala2"
 
 // MDBA config
 mdba.baseUrl = 'http://mdba.ala.org.au/'
-
+mdba.searchUrl = 'occurrences/search?fq=data_hub_uid:dh10#tab_mapView'
 // MDBA config END
 
 webservice.connectTimeout = 10000
