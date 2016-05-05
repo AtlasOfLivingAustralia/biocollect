@@ -32,7 +32,6 @@ modules = {
     /** BEGIN - Fildcapture/Marite resources **/
     application {
         dependsOn 'jquery', 'knockout', 'bootbox'
-        resource url: "${grailsApplication.config.ala.baseURL ?: 'http://www.ala.org.au'}/wp-content/themes/ala2011/images/favicon.ico", attrs: [type: 'ico'], disposition: 'head'
         resource url: 'vendor/html5/html5.js', wrapper: { s -> "<!--[if lt IE 9]>$s<![endif]-->" }, disposition: 'head'
         resource url: 'vendor/vkbeautyfy/vkbeautify.0.99.00.beta.js'
         resource url: 'js/fieldcapture-application.js'

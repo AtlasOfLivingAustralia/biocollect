@@ -93,6 +93,7 @@ grails.project.dependency.resolution = {
         runtime ":ala-bootstrap2:2.2"
         runtime ":csv:0.3.1"
         runtime ":lesscss-resources:1.3.3"
+        runtime ":ala-admin-plugin:1.2"
 
         compile ":ala-auth:1.3.1"
         compile ":markdown:1.1.1"
