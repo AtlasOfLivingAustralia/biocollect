@@ -271,7 +271,7 @@ modules = {
     }
 
     imageViewer {
-        dependsOn 'viewer', 'jquery'
+        dependsOn 'image-viewer', 'jquery'
         resource url: 'vendor/fancybox/jquery.fancybox.js'
         resource url: 'vendor/fancybox/jquery.fancybox.css?v=2.1.5'
         resource url: 'vendor/fancybox/fancybox_overlay.png'
