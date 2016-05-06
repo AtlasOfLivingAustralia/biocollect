@@ -77,11 +77,20 @@
                     </div>
                 </div>
 
+                <div class="row-fluid">
+                    <h6>How should the survey display species name?</h6>
+                    <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="SCIENTIFICNAME(COMMONNAME)" data-bind="checked: speciesDisplayFormat"> <div>Scientific name (Common name)</div></label>
+                    <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="COMMONNAME(SCIENTIFICNAME)" data-bind="checked: speciesDisplayFormat"> <div>Common name (Scientific name)</div></label>
+                    <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="COMMONNAME" data-bind="checked: speciesDisplayFormat"> <div>Common name</div></label>
+                    <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="SCIENTIFICNAME" data-bind="checked: speciesDisplayFormat"> <div>Scientific name</div></label>
+                </div>
 
 
 
 
-                <span data-bind="visible: species.groupInfoVisible, if: species.speciesLists().length > 0">
+
+
+    <span data-bind="visible: species.groupInfoVisible, if: species.speciesLists().length > 0">
                     <div class="row-fluid">
                         <div class="span12 text-left">
 

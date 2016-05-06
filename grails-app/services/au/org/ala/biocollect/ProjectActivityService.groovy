@@ -212,7 +212,49 @@ class ProjectActivityService {
                 result = [autoCompleteList: []]
                 break
         }
+
+        // process according to setting
+        formatSpeciesNameForSurvey(pActivity, result)
         result
+    }
+
+    List formatSpeciesNameForSurvey(Map pActivity, Map data){
+        data?.autoCompleteList?.each{
+            it.name = formatSpeciesName(pActivity.speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', it)
+        }
+    }
+
+    String formatSpeciesName(String type, Map data){
+        String name
+        switch (type){
+            case 'COMMONNAME(SCIENTIFICNAME)':
+                if(data.commonName){
+                    name = "${data.commonName} (${data.scientificName})"
+                } else {
+                    name = "${data.scientificName}"
+                }
+                break;
+            case 'SCIENTIFICNAME(COMMONNAME)':
+                if(data.commonName){
+                    name = "${data.scientificName} (${data.commonName})"
+                } else {
+                    name = "${data.scientificName}"
+                }
+
+                break;
+            case 'COMMONNAME':
+                if(data.commonName){
+                    name = "${data.commonName}"
+                } else {
+                    name = "${data.scientificName}"
+                }
+                break;
+            case 'SCIENTIFICNAME':
+                name = "${data.scientificName}"
+                break;
+        }
+
+        name
     }
 
     /*

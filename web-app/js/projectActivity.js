@@ -545,6 +545,7 @@ var ProjectActivity = function (params) {
     self.species = new SpeciesConstraintViewModel(pActivity.species);
     self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
     self.alert = new AlertViewModel(pActivity.alert);
+    self.speciesDisplayFormat = ko.observable(params.speciesDisplayFormat||'SCIENTIFICNAME(COMMONNAME)')
 
     self.transients = self.transients || {};
     self.transients.warning = ko.computed(function () {
@@ -557,6 +558,20 @@ var ProjectActivity = function (params) {
 
         return false;
     });
+
+    self.transients.availableSpeciesDisplayFormat = ko.observableArray([{
+        name:'SCIENTIFICNAME(COMMONNAME)',
+        displayName: 'Scientific name (Common name)'
+    },{
+        name:'COMMONNAME(SCIENTIFICNAME)',
+        displayName: 'Common name (Scientific name)'
+    },{
+        name:'COMMONNAME',
+        displayName: 'Common name'
+    },{
+        name:'SCIENTIFICNAME',
+        displayName: 'Scientific name'
+    }])
 
     self.sites = ko.observableArray();
     self.loadSites = function (projectSites, surveySites) {
@@ -606,6 +621,11 @@ var ProjectActivity = function (params) {
         });
         return count;
     }
+    //
+    //self.isSpeciesDisplayFormatChecked = ko.computed(function(){
+    //    debugger;
+    //    $(this).val() == self.speciesDisplayFormat()
+    //})
 
     self.asJSAll = function () {
         var jsData = $.extend({},
