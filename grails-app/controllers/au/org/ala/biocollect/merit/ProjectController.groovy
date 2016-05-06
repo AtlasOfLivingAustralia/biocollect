@@ -97,6 +97,10 @@ class ProjectController {
                 def activityModel = metadataService.activitiesModel().activities.findAll { it.category == "Assessment & monitoring" }
                 model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs")
                 model.pActivityForms = activityModel.collect{[name: it.name, images: it.images]}
+            } else if(project.projectType == 'ecoscience'){
+                def activityModel = metadataService.activitiesModel().activities.findAll { it.category == "Assessment & monitoring" }
+                model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs")
+                model.pActivityForms = activityModel.collect{[name: it.name, images: it.images]}
             }
 
             render view:content.view, model:model
@@ -106,7 +110,8 @@ class ProjectController {
     protected Map projectContent(project, user, programs) {
 
         boolean isSurveyProject = (project.projectType == 'survey')
-        def model = isSurveyProject?surveyProjectContent(project, user):worksProjectContent(project, user)
+        boolean isEcoScienceProject = (project.projectType == 'ecoscience')
+        def model = isSurveyProject?surveyProjectContent(project, user):(isEcoScienceProject?ecoSurveyProjectContent(project, user):worksProjectContent(project, user))
         [view:projectView(project), model:model]
     }
 
@@ -119,6 +124,15 @@ class ProjectController {
     }
 
     protected Map surveyProjectContent(project, user) {
+        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
+         news:[label:'News', visible: true, type:'tab'],
+         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
+         activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
+         data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
+         admin:[label:'Admin', template:'internalCSAdmin', visible:(user?.isAdmin || user?.isCaseManager), type:'tab']]
+    }
+
+    protected Map ecoSurveyProjectContent(project, user) {
         [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
          news:[label:'News', visible: true, type:'tab'],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
@@ -295,17 +309,20 @@ class ProjectController {
             def projectSite = values.remove("projectSite")
             def documents = values.remove('documents')
             def links = values.remove('links')
+            def projectType = id ? projectService.get(id).projectType : values?.projectType
 
             String mainImageAttribution = values.remove("mainImageAttribution")
             String logoAttribution = values.remove("logoAttribution")
 
             def siteResult
-            if (projectSite) {
-                siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
-                if (siteResult.status == 'error') render status: 400, text: "SiteService failed."
-                else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
-            } else if (projectService.get(id)?.sites?.isEmpty()){
-                render status: 400, text: "No project site is defined."
+            if (projectType != 'ecoscience') {
+                if (projectSite) {
+                    siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
+                    if (siteResult.status == 'error') render status: 400, text: "SiteService failed."
+                    else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
+                } else if (projectService.get(id)?.sites?.isEmpty()) {
+                    render status: 400, text: "No project site is defined."
+                }
             }
 
             def result = id? projectService.update(id, values): projectService.create(values)
@@ -332,7 +349,7 @@ class ProjectController {
                     documentService.saveLink(link)
                 }
             }
-            if (siteResult && !result.error) {
+            if (siteResult && !result.error && projectType != 'ecoscience') {
                 if (!id) id = result.resp.projectId
                 if (!projectSite.projects || (projectSite.projects.size() == 1 && projectSite.projects.get(0).isEmpty()))
                     projectSite.projects = [id]
