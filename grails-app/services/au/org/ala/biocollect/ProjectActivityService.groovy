@@ -220,7 +220,7 @@ class ProjectActivityService {
 
     List formatSpeciesNameForSurvey(Map pActivity, Map data){
         data?.autoCompleteList?.each{
-            it.name = formatSpeciesName(pActivity.speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', it)
+            it.name = formatSpeciesName(pActivity.species.speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', it)
         }
     }
 

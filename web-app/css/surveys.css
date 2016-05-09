@@ -66,3 +66,7 @@ table.table-list.survey-finder-table tr{
 .table-custom-border.borderless th{
     border-bottom: 1px solid #ddd;
 }
+
+.indent-left-10{
+    margin-left: 18px;
+}
