@@ -156,11 +156,14 @@
     <div class="span5 associated-org thumbnail">
         <div data-bind="visible: url" class=" clearfix">
             <a href="#" data-bind="attr: {href: url}" target="_blank" class="do-not-mark-external">
-                <div data-bind="visible: logo"><img src="" data-bind="attr: {src: logo, title: name}"
+
+                <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
+
+                    %{--Use 'if' instead of 'visible' to prevent creating child elements that potentially will source non https content--}%
+                    <div data-bind="if: logo && logo.startsWith('https') "><img src="" data-bind="attr: {src: logo, title: name}"
                                                     alt="Organisation logo" class="small-logo"></div>
 
-                <div data-bind="visible: !logo" class="associated-org-no-logo"><span data-bind="text: name"></span>
-                </div>
+                    <div data-bind="visible: !logo || !logo.startsWith('https')" class="associated-org-no-logo"><span data-bind="text: name"></span></div>
             </a>
         </div>
 
