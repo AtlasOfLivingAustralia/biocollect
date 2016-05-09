@@ -101,7 +101,7 @@ $(function(){
     </g:else>
     $('#save').click(function () {
         if ($('#projectDetails').validationEngine('validate') && viewModel.transients.validProjectName()) {
-            if (viewModel.transients.siteViewModel.isValid(true)) {
+            if (viewModel.transients.kindOfProject() == 'ecoscience' || viewModel.transients.siteViewModel.isValid(true)) {
                 viewModel.saveWithErrorDetection(function(data) {
                     var projectId = "${project?.projectId}" || data.projectId;
 

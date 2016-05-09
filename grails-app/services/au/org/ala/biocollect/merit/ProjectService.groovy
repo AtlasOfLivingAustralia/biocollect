@@ -69,10 +69,22 @@ class ProjectService {
     def validate(props, projectId = null) {
         def error = null
         def updating = projectId != null
+        def projectType = props?.projectType
 
         if (!updating && !props.containsKey("isExternal")) {
             //error, not null
             return "isExternal is missing"
+        }
+
+        if (updating) {
+            def project = get(projectId)
+            if (project?.error) {
+                return "invalid projectId"
+            }
+
+            if (!projectType) {
+                projectType = project?.projectType
+            }
         }
 
         if (props.containsKey("organisationId")) {
@@ -118,29 +130,35 @@ class ProjectService {
             return "scienceType is missing"
         }
 
-        if (props.containsKey("difficulty")) {
-            if (!['Easy', 'Medium', 'Hard'].contains(props.difficulty)) {
-                return "difficulty is not valid."
+        if (projectType != 'ecoscience') {
+            if (props.containsKey("difficulty")) {
+                if (!['Easy', 'Medium', 'Hard'].contains(props.difficulty)) {
+                    return "difficulty is not valid."
+                }
+            } else if (!updating) {
+                //error, no difficulty
+                return "difficulty is missing"
             }
-        } else if (!updating) {
-            //error, no difficulty
-            return "difficulty is missing"
         }
 
-        if (!updating && !props.containsKey("task")) {
-            //error, no task
-            return "task is missing"
+        if (projectType != 'ecoscience') {
+            if (!updating && !props.containsKey("task")) {
+                //error, no task
+                return "task is missing"
+            }
         }
 
-        if (props.containsKey("projectSiteId")) {
-            def site = siteService.get(props.projectSiteId)
-            if (site?.error) {
-                //error, invalid site
-                return "projectSiteId is not a valid projectSiteId"
+        if (projectType != 'ecoscience') {
+            if (props.containsKey("projectSiteId")) {
+                def site = siteService.get(props.projectSiteId)
+                if (site?.error) {
+                    //error, invalid site
+                    return "projectSiteId is not a valid projectSiteId"
+                }
+            } else if (!updating) {
+                //error, no site id
+                return "projectSiteId is missing"
             }
-        } else if (!updating) {
-            //error, no site id
-            return "projectSiteId is missing"
         }
 
         if (props.containsKey("termsOfUseAccepted")) {
