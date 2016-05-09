@@ -75,7 +75,8 @@
                 </div>
             </div>
         </div>
-        <div class="row-fluid">
+
+        <div class="row-fluid" data-bind="visible:transients.kindOfProject() != 'ecoscience'" >
             <div class="control-group">
                 <label class="control-label span3" for="isContributingToAla"><g:message code="project.details.isContributingToAla"/><fc:iconHelp><g:message code="project.details.isContributingToAla.help"/></fc:iconHelp></label>
                 <div class="controls span9 large-checkbox">
@@ -124,6 +125,14 @@
 
                 <div class="controls span9">
                     <g:textField style="width:90%;" type="email" data-bind="value:manager" name="manager"/>
+                </div>
+            </div>
+
+            <div class="clearfix control-group">
+                <label class="control-label span3" for="managerEmail"><g:message code="project.details.managerEmail"/><fc:iconHelp><g:message code="project.details.managerEmail.help"/></fc:iconHelp></label>
+
+                <div class="controls span9">
+                    <g:textField style="width:90%;" type="text" data-bind="value:managerEmail" name="managerEmail"/>
                 </div>
             </div>
 
@@ -241,7 +250,7 @@
         </div>
     </div>
 
-    <div data-bind="visible:!isCitizenScience() && !isExternal()" class="row-fluid">
+    <div data-bind="visible:!isCitizenScience() && !isExternal() && transients.kindOfProject() != 'ecoscience'" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.associations"/></h4>
 
@@ -325,7 +334,7 @@
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.involved"/></h4>
 
-            <div class="clearfix control-group">
+            <div class="clearfix control-group" data-bind="visible:transients.kindOfProject() != 'ecoscience'">
                 <label class="control-label span3" for="getInvolved"><g:message code="project.details.involved"/><fc:iconHelp><g:message code="project.details.involved.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
@@ -366,7 +375,7 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div class="clearfix control-group" data-bind="visible:transients.kindOfProject() != 'ecoscience'">
                 <label class="control-label span3"><g:message code="project.details.difficulty"/><fc:iconHelp><g:message code="project.details.difficulty.help"/></fc:iconHelp><i class="req-field"></i></label>
 
                 <div class="controls span9">
@@ -374,7 +383,7 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div class="clearfix control-group" data-bind="visible:transients.kindOfProject() != 'ecoscience'">
                 <label class="control-label span3" for="hasParticipantCost"><g:message code="project.details.hasParticipantCost"/><fc:iconHelp><g:message code="project.details.hasParticipantCost.help"/></fc:iconHelp></label>
                 <div class="controls span9">
                     <select id="hasParticipantCost" data-bind="booleanValue:hasParticipantCost, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
@@ -382,7 +391,7 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div class="clearfix control-group" data-bind="visible:transients.kindOfProject() != 'ecoscience'">
                 <label class="control-label span3" for="hasTeachingMaterials"><g:message code="project.details.hasTeachingMaterials"/><fc:iconHelp><g:message code="project.details.hasTeachingMaterials.help"/></fc:iconHelp></label>
                 <div class="controls span9">
                     <select id="hasTeachingMaterials" data-bind="booleanValue:hasTeachingMaterials, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
@@ -390,7 +399,7 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div class="clearfix control-group" data-bind="visible:transients.kindOfProject() != 'ecoscience'">
                 <label class="control-label span3" for="isDIY"><g:message code="project.details.isDIY"/><fc:iconHelp><g:message code="project.details.isDIY.help"/></fc:iconHelp></label>
                 <div class="controls span9">
                     <select id="isDIY" data-bind="booleanValue:isDIY, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
@@ -398,7 +407,7 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div class="clearfix control-group" data-bind="visible:transients.kindOfProject() != 'ecoscience'">
                 <label class="control-label span3" for="isSuitableForChildren"><g:message code="project.details.isSuitableForChildren"/><fc:iconHelp><g:message code="project.details.isSuitableForChildren.help"/></fc:iconHelp></label>
                 <div class="controls span9">
                     <select id="isSuitableForChildren" data-bind="booleanValue:isSuitableForChildren, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
@@ -406,14 +415,14 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div class="clearfix control-group" data-bind="visible:transients.kindOfProject() != 'ecoscience'">
                 <label class="control-label span3"><g:message code="project.details.gear"/><fc:iconHelp><g:message code="project.details.gear.help"/></fc:iconHelp></label>
                 <div class="controls span9">
                     <g:textArea style="width:90%;" name="gear" data-bind="value:gear" rows="2"/>
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div class="clearfix control-group" data-bind="visible:transients.kindOfProject() != 'ecoscience'">
                 <label class="control-label span3"><g:message code="project.details.task"/><fc:iconHelp><g:message code="project.details.task.help"/></fc:iconHelp><i class="req-field"></i></label>
                 <div class="controls span9">
                     <g:textArea style="width:90%;" name="task" data-bind="value:task" rows="2" data-validation-engine="validate[required]"/>
@@ -509,7 +518,7 @@
         </div>
     </div>
 
-    <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
+    <div data-bind="visible:(isCitizenScience() || !isExternal()) && transients.kindOfProject() != 'ecoscience'" class="row-fluid">
         <!-- ko stopBinding: true -->
         <div class="well" id="sitemap">
             <h4 class="block-header"><g:message code="project.details.site"/><i class="req-field"></i></h4>

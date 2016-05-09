@@ -40,6 +40,10 @@ var ProjectActivitiesViewModel = function (params) {
         }
     };
 
+    self.setLegalCustodian = function(data) {
+        self.current().legalCustodian(data);
+    };
+
     self.reset = function () {
         $.each(self.projectActivities(), function (i, obj) {
             obj.current(false);
@@ -328,13 +332,13 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
             data: JSON.stringify(pActivity.asJS(caller), function (key, value) {return value === undefined ? "" : value;}),
             contentType: 'application/json',
             success: function (data) {
-               var result = data.resp;
-               if (result && result.message == 'updated') {
+                var result = data.resp;
+                if (result && result.message == 'updated') {
                     self.updateLogo(data);
                     showAlert("Successfully updated ", "alert-success", self.placeHolder);
-               } else {
+                } else {
                     showAlert(data.error ? data.error : "Error updating the survey", "alert-error", self.placeHolder);
-               }
+                }
             },
             error: function (data) {
                 showAlert("Error updating the survey -" + data.status, "alert-error", self.placeHolder);
@@ -547,6 +551,17 @@ var ProjectActivity = function (params) {
     self.alert = new AlertViewModel(pActivity.alert);
     self.speciesDisplayFormat = ko.observable(params.speciesDisplayFormat||'SCIENTIFICNAME(COMMONNAME)')
 
+    self.usageGuide = ko.observable(pActivity.usageGuide ? pActivity.usageGuide : "");
+
+    self.relatedDatasets = ko.observableArray (pActivity.relatedDatasets ? pActivity.relatedDatasets : []);
+
+    self.lastUpdated = ko.observable(pActivity.lastUpdated ? pActivity.lastUpdated : "");
+
+    var legalCustodian = pActivity.legalCustodian? pActivity.legalCustodian: "";
+    self.legalCustodian = ko.observable(legalCustodian);
+
+    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "");
+
     self.transients = self.transients || {};
     self.transients.warning = ko.computed(function () {
         return self.projectActivityId() === undefined ? true : false;
@@ -572,6 +587,15 @@ var ProjectActivity = function (params) {
         name:'SCIENTIFICNAME',
         displayName: 'Scientific name'
     }])
+
+    if (legalCustodian != "" && organisationName != legalCustodian) {
+        self.transients.custodianOptions = [organisationName, legalCustodian];
+    } else {
+        self.transients.custodianOptions = [organisationName];
+    }
+
+    //self.selectedCustodianOption = ko.observableArray([legalCustodian]);
+    self.transients.selectedCustodianOption = [legalCustodian];
 
     self.sites = ko.observableArray();
     self.loadSites = function (projectSites, surveySites) {
@@ -804,7 +828,7 @@ var SpeciesConstraintViewModel = function (o) {
 
     self.isValid = function(){
         return ((self.type() == "ALL_SPECIES") || (self.type() == "SINGLE_SPECIES" && self.singleSpecies.guid()) ||
-            (self.type() == "GROUP_OF_SPECIES" && self.speciesLists().length > 0))
+        (self.type() == "GROUP_OF_SPECIES" && self.speciesLists().length > 0))
     };
 
     self.saveNewSpeciesName = function () {

@@ -296,6 +296,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.externalId = ko.observable(project.externalId);
     self.grantId = ko.observable(project.grantId);
     self.manager = ko.observable(project.manager);
+    self.managerEmail = ko.observable(project.managerEmail);
     self.plannedStartDate = ko.observable(project.plannedStartDate).extend({simpleDate: false});
     self.plannedEndDate = ko.observable(project.plannedEndDate).extend({simpleDate: false});
     self.funding = ko.observable(project.funding).extend({currency:{}});
@@ -599,7 +600,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     var availableProjectTypes = [
         {name:'Citizen Science Project', display:'Citizen\nScience', value:'citizenScience'},
         {name:'Ecological or biological survey / assessment (not citizen science)', display:'Biological\nScience', value:'survey'},
-        {name:'Natural resource management works project', display:'Works\nProject', value:'works'}
+        {name:'Natural resource management works project', display:'Works\nProject', value:'works'},
+        {name:'Ecological survey (not citizen science)', display:'Ecological\nSurvey', value:'ecoscience'}
     ];
     self.transients.availableProjectTypes = availableProjectTypes;
     self.transients.kindOfProjectDisplay = ko.pureComputed(function () {
@@ -614,7 +616,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
                 return 'citizenScience';
             }
             if (self.projectType()) {
-                return self.projectType() == 'survey' ? 'survey' : 'works';
+                return self.projectType() == 'survey' ? 'survey' : (self.projectType() == 'works' ? 'works' : 'ecoscience');
             }
         },
         write: function(value) {
