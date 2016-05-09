@@ -790,17 +790,19 @@ var SpeciesConstraintViewModel = function (o) {
         var jsData = {};
         if (self.type() == "ALL_SPECIES") {
             jsData.type = self.type();
+            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
         }
         else if (self.type() == "SINGLE_SPECIES") {
             jsData.type = self.type();
             jsData.singleSpecies = ko.mapping.toJS(self.singleSpecies, {ignore: ['transients']});
+            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
         }
         else if (self.type() == "GROUP_OF_SPECIES") {
             jsData.type = self.type();
             jsData.speciesLists = ko.mapping.toJS(self.speciesLists, {ignore: ['listType', 'fullName', 'itemCount', 'description', 'listType', 'allSpecies', 'transients']});
+            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
         }
 
-        jsData.speciesDisplayFormat = self.speciesDisplayFormat()
         return jsData;
     };
 
