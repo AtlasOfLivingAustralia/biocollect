@@ -1,21 +1,3 @@
-<style type="text/css">
-.dropdown {
-    position: relative;
-}
-.dropdown select
-{
-    width: 100%;
-    z-index: 1;
-}
-
-.dropdown input {
-    position: absolute;
-    width: calc(100% - 30px);
-    z-index: 999;
-}
-
-</style>
-
 <div id="pActivityInfo" class="well">
 
         <!-- ko foreach: projectActivities -->
@@ -250,7 +232,7 @@
 
                     <span data-bind="text: name"></span>
 
-                </br>
+                    </br>
 
                     <!-- /ko -->
 
@@ -296,16 +278,16 @@
                     <span class="right-padding"></span>
                 </label>
                 <div class="controls">
-                    <div class="dropdown">
+                    <div class="survey-editable-dropdown">
 
-                        <input id="legalCustodian" type="text" data-bind="value: legalCustodian" />
+                        <input id="legalCustodian" type="text" data-bind="value: legalCustodian" >
 
-                        <!-- Need to bind onChange to Knockout so that it doesn't overwrite the value when page load. -->
                         <select id="selectOption" data-bind="options: transients.custodianOptions,
                                                              value: transients.selectedCustodianOption,
-                                                             optionsCaption: 'Enter the custodian',
-                                                             event: {onChange: function(data, event) {$parent.setLegalCustodian(data)}}",
-                                onChange="this.previousElementSibling.value=this.value; this.previousElementSibling.focus();" >
+                                                             optionsCaption: 'Enter the custodian'",
+                                onChange="$('#legalCustodian').val(this.value);
+                                          $('#legalCustodian').trigger('change');
+                                          $('#legalCustodian').focus();">
                         </select>
                     </div>
 

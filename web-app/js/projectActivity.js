@@ -40,10 +40,6 @@ var ProjectActivitiesViewModel = function (params) {
         }
     };
 
-    self.setLegalCustodian = function(data) {
-        self.current().legalCustodian(data);
-    };
-
     self.reset = function () {
         $.each(self.projectActivities(), function (i, obj) {
             obj.current(false);
@@ -556,8 +552,8 @@ var ProjectActivity = function (params) {
 
     self.lastUpdated = ko.observable(pActivity.lastUpdated ? pActivity.lastUpdated : "");
 
-    var legalCustodian = pActivity.legalCustodian? pActivity.legalCustodian: "";
-    self.legalCustodian = ko.observable(legalCustodian);
+    var legalCustodianVal = pActivity.legalCustodian? pActivity.legalCustodian: "";
+    self.legalCustodian = ko.observable(legalCustodianVal);
 
     self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "");
 
@@ -573,14 +569,13 @@ var ProjectActivity = function (params) {
         return false;
     });
 
-    if (legalCustodian != "" && organisationName != legalCustodian) {
-        self.transients.custodianOptions = [organisationName, legalCustodian];
+    if (legalCustodianVal != "" && organisationName != legalCustodianVal) {
+        self.transients.custodianOptions = [organisationName, legalCustodianVal];
     } else {
         self.transients.custodianOptions = [organisationName];
     }
 
-    //self.selectedCustodianOption = ko.observableArray([legalCustodian]);
-    self.transients.selectedCustodianOption = [legalCustodian];
+    self.transients.selectedCustodianOption = legalCustodian;
 
     self.sites = ko.observableArray();
     self.loadSites = function (projectSites, surveySites) {

@@ -66,3 +66,18 @@ table.table-list.survey-finder-table tr{
 .table-custom-border.borderless th{
     border-bottom: 1px solid #ddd;
 }
+
+.survey-editable-dropdown {
+    position: relative;
+}
+.survey-editable-dropdown select
+{
+    width: 100%;
+    z-index: 1;
+}
+
+.survey-editable-dropdown input {
+    position: absolute;
+    width: calc(100% - 30px);
+    z-index: 999;
+}
