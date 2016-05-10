@@ -40,6 +40,13 @@ var ProjectActivitiesViewModel = function (params) {
         }
     };
 
+    self.setLegalCustodian = function (data, event) {
+        if (event.originalEvent) { //user changed
+            self.current().legalCustodian(data.transients.selectedCustodianOption);
+        }
+    };
+
+
     self.reset = function () {
         $.each(self.projectActivities(), function (i, obj) {
             obj.current(false);
@@ -555,7 +562,7 @@ var ProjectActivity = function (params) {
     var legalCustodianVal = pActivity.legalCustodian? pActivity.legalCustodian: "";
     self.legalCustodian = ko.observable(legalCustodianVal);
 
-    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "");
+    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "CC BY");
 
     self.transients = self.transients || {};
     self.transients.warning = ko.computed(function () {
@@ -575,7 +582,7 @@ var ProjectActivity = function (params) {
         self.transients.custodianOptions = [organisationName];
     }
 
-    self.transients.selectedCustodianOption = legalCustodian;
+    self.transients.selectedCustodianOption = legalCustodianVal;
 
     self.sites = ko.observableArray();
     self.loadSites = function (projectSites, surveySites) {

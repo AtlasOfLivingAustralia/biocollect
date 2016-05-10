@@ -73,11 +73,9 @@ table.table-list.survey-finder-table tr{
 .survey-editable-dropdown select
 {
     width: 100%;
-    z-index: 1;
 }
 
 .survey-editable-dropdown input {
     position: absolute;
     width: calc(100% - 30px);
-    z-index: 999;
 }

@@ -279,15 +279,13 @@
                 </label>
                 <div class="controls">
                     <div class="survey-editable-dropdown">
-
                         <input id="legalCustodian" type="text" data-bind="value: legalCustodian" >
 
                         <select id="selectOption" data-bind="options: transients.custodianOptions,
                                                              value: transients.selectedCustodianOption,
-                                                             optionsCaption: 'Enter the custodian'",
-                                onChange="$('#legalCustodian').val(this.value);
-                                          $('#legalCustodian').trigger('change');
-                                          $('#legalCustodian').focus();">
+                                                             optionsCaption: 'Enter the custodian',
+                                                             event:{ change: $parent.setLegalCustodian}">
+
                         </select>
                     </div>
 
