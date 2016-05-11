@@ -594,6 +594,17 @@ var ProjectActivity = function (params) {
     };
     self.loadSites(sites, pActivity.sites);
 
+    // AEKOS submission records
+    self.submissionRecords = ko.observableArray(pActivity.submissionRecords ? pActivity.submissionRecords : []);
+
+    var methodName = pActivity.methodName? pActivity.methodName : "";
+
+    if (pActivity.sites.length > 0 && methodName != "") {
+        self.transients.isAekosData = ko.observable(true);
+    } else {
+        self.transients.isAekosData = ko.observable(false);
+    }
+
     var images = [];
     $.each(pActivityForms, function (index, form) {
         if (form.name == self.pActivityFormName()) {

@@ -58,7 +58,75 @@
                             <div data-bind="visible:transients.status()">
                                 <span>Status: <span data-bind="text: transients.status"></span></span>
                             </div>
+                            <br/>
+                            <div><a href="#" data-bind="visible: transients.isAekosData,
+                                                        click: showAekosDetails,
+                                                        text: transients.aekosToggleText"
+                                    title="View and send Data Submission to AEKOS"></a>
+                            </div>
+                            <br/>
+                            <div data-bind="visible: transients.showAekosDetailsState">
+                                <div class="table-responsive">
+                                    <span style="color: #f85e20"><b>Submission to AEKOS</b></span>
+                                    <br/>
+                                    <table class="table" data-toggle="table" data-striped="true">
+                                        <thead style="color: #1B82C6">
+                                            <tr>
+                                                <td>
+                                                    <g:message code="project.survey.info.submissionPublicationDate"/>
+                                                    <a href="#" class="helphover"
+                                                       data-bind="popover: {title:'<g:message code="project.survey.info.submissionPublicationDate"/>',
+                                                                            content:'<g:message code="project.survey.info.submissionPublicationDate.content"/>'}">
+                                                        <i class="icon-question-sign"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <g:message code="project.survey.info.submitter"/>
+                                                    <a href="#" class="helphover"
+                                                       data-bind="popover: {title:'<g:message code="project.survey.info.submitter"/>',
+                                                                            content:'<g:message code="project.survey.info.submitter.content"/>'}">
+                                                        <i class="icon-question-sign"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <g:message code="project.survey.info.datasetVersion"/>
+                                                    <a href="#" class="helphover"
+                                                       data-bind="popover: {title:'<g:message code="project.survey.info.datasetVersion"/>',
+                                                                            content:'<g:message code="project.survey.info.datasetVersion.content"/>'}">
+                                                        <i class="icon-question-sign"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <g:message code="project.survey.info.submissionDoi"/>
+                                                    <a href="#" class="helphover"
+                                                       data-bind="popover: {title:'<g:message code="project.survey.info.submissionDoi"/>',
+                                                                            content:'<g:message code="project.survey.info.submissionDoi.content"/>'}">
+                                                        <i class="icon-question-sign"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- ko foreach: submissionRecords -->
+                                                <tr style="border-bottom: none !important;">
+                                                    <td><span data-bind="submissionPublicationDate"></span></td>
+                                                    <td><span data-bind="datasetSubmitter"></span></td>
+                                                    <td><span data-bind="datasetVersion"></span></td>
+                                                    <td><span data-bind="submissionDoi"></span></td>
+                                                </tr>
+                                            <!-- /ko -->
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                                <div>
+                                    <br/>
+                                    <span><a href="#" class="btn btn-success btn-sm">Submit current version to AEKOS</a></span>
+                                </div>
+                            </div>
+
                         </div>
+
                     </td>
                     <td>
                         <div class="survey-row-layout">
