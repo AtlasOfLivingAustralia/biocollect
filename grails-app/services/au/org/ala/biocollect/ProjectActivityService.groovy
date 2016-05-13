@@ -224,34 +224,46 @@ class ProjectActivityService {
         }
     }
 
+    /**
+     * formats a name into the specified format
+     * if species does not match to a taxon, then mention it in name.
+     * @param type
+     * @param data
+     * @return
+     */
     String formatSpeciesName(String type, Map data){
         String name
-        switch (type){
-            case 'COMMONNAME(SCIENTIFICNAME)':
-                if(data.commonName){
-                    name = "${data.commonName} (${data.scientificName})"
-                } else {
-                    name = "${data.scientificName}"
-                }
-                break;
-            case 'SCIENTIFICNAME(COMMONNAME)':
-                if(data.commonName){
-                    name = "${data.scientificName} (${data.commonName})"
-                } else {
-                    name = "${data.scientificName}"
-                }
+        if(data.guid){
+            switch (type){
+                case 'COMMONNAME(SCIENTIFICNAME)':
+                    if(data.commonName){
+                        name = "${data.commonName} (${data.scientificName})"
+                    } else {
+                        name = "${data.scientificName}"
+                    }
+                    break;
+                case 'SCIENTIFICNAME(COMMONNAME)':
+                    if(data.commonName){
+                        name = "${data.scientificName} (${data.commonName})"
+                    } else {
+                        name = "${data.scientificName}"
+                    }
 
-                break;
-            case 'COMMONNAME':
-                if(data.commonName){
-                    name = "${data.commonName}"
-                } else {
+                    break;
+                case 'COMMONNAME':
+                    if(data.commonName){
+                        name = "${data.commonName}"
+                    } else {
+                        name = "${data.scientificName}"
+                    }
+                    break;
+                case 'SCIENTIFICNAME':
                     name = "${data.scientificName}"
-                }
-                break;
-            case 'SCIENTIFICNAME':
-                name = "${data.scientificName}"
-                break;
+                    break;
+            }
+        } else {
+            // when no guid, append unmatched taxon string
+            name = "${data.name} (Unmatched taxon)"
         }
 
         name
