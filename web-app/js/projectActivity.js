@@ -599,7 +599,7 @@ var ProjectActivity = function (params) {
 
     var methodName = pActivity.methodName? pActivity.methodName : "";
 
-    if (pActivity.sites.length > 0 && methodName != "") {
+    if ((pActivity.sites ? pActivity.sites.length : 0) > 0 && methodName != "") {
         self.transients.isAekosData = ko.observable(true);
     } else {
         self.transients.isAekosData = ko.observable(false);
