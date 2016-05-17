@@ -128,7 +128,7 @@ class ProjectService {
             return "description is missing"
         }
 
-        if (!updating && !props.containsKey("scienceType")) {
+        if (!updating && !props.containsKey("scienceType") && !isEcoScience) {
             //error, no science type
             return "scienceType is missing"
         }

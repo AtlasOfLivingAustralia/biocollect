@@ -355,6 +355,8 @@ class ProjectController {
                 render status: 400, text: "No project site is defined."
             }
 
+            if (!values?.associatedOrgs) values.put('associatedOrgs', [])
+
             def result = id? projectService.update(id, values): projectService.create(values)
             log.debug "result is " + result
             if (documents && !result.error) {
@@ -504,6 +506,10 @@ class ProjectController {
         if(trimmedParams.isWorks){
             projectType.push('(projectType:works AND isMERIT:false)')
             trimmedParams.isWorks = null
+        }
+
+        if(trimmedParams.isEcoScience){
+            projectType.push('(projectType:ecoscience)')
         }
 
         if (trimmedParams.isMERIT) {

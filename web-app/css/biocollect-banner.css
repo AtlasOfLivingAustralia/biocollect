@@ -16,6 +16,14 @@ nav#biocollectNav.ecoScienceNav > ul, nav#biocollectNav.ecoScienceNav > ul > li 
     background: rgb(148,222,255);
 }
 
+nav#biocollectNav.ecoScienceNav > ul > li a + ul li a:hover, nav#biocollectNav.ecoScienceNav > ul > li:hover > a {
+    background: rgb(100,170,200);
+}
+
+nav#biocollectNav.ecoScienceNav ul > li.active > a {
+    background: rgb(100,170,200);
+}
+
 nav#biocollectNav > ul > li {
     display: inline-block;
     position: relative;
