@@ -183,7 +183,7 @@
                                     <label class="control-label left-aligned-label span3" for="associatedOrgName"><g:message code="project.details.associatedOrgs.name"/><i class="req-field" data-bind="visible: $parent.transients.associatedOrgNotInList()"></i></label>
 
                                     <div class="controls span12 margin-left-0">
-                                        <input id="associatedOrgName" class="input-xxlarge" type="text" placeholder="Start typing a name here" data-bind="value:term, valueUpdate:'afterkeydown'"><button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
+                                        <input id="associatedOrgName" class="input-xxlarge" type="text" placeholder="Start typing a name here" maxlength="256" data-validation-engine="validate[condRequired[associatedOrgNotPresent],maxSize[256]]" data-bind="value:term, valueUpdate:'afterkeydown'"><button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
                                     </div>
                                 </div>
                             </div>
