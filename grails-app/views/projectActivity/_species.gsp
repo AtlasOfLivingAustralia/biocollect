@@ -77,14 +77,6 @@
                     </div>
                 </div>
 
-                <div class="row-fluid">
-                    <h6>How should the survey display species name?</h6>
-                    <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="SCIENTIFICNAME(COMMONNAME)" data-bind="checked: speciesDisplayFormat"> <div>Scientific name (Common name)</div></label>
-                    <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="COMMONNAME(SCIENTIFICNAME)" data-bind="checked: speciesDisplayFormat"> <div>Common name (Scientific name)</div></label>
-                    <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="COMMONNAME" data-bind="checked: speciesDisplayFormat"> <div>Common name</div></label>
-                    <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="SCIENTIFICNAME" data-bind="checked: speciesDisplayFormat"> <div>Scientific name</div></label>
-                </div>
-
 
 
 
@@ -107,6 +99,15 @@
                     </div>
                 </span>
 
+    <div class="row-fluid">
+        <h6>How should the survey display species name?</h6>
+        <div class="indent-left-10">
+            <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="SCIENTIFICNAME(COMMONNAME)" data-bind="checked: species.speciesDisplayFormat"> <div>Scientific name (Common name)</div></label>
+            <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="COMMONNAME(SCIENTIFICNAME)" data-bind="checked: species.speciesDisplayFormat"> <div>Common name (Scientific name)</div></label>
+            <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="COMMONNAME" data-bind="checked: species.speciesDisplayFormat"> <div>Common name</div></label>
+            <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="SCIENTIFICNAME" data-bind="checked: species.speciesDisplayFormat"> <div>Scientific name</div></label>
+        </div>
+    </div>
 
             </div>
 
