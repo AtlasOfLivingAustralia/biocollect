@@ -54,10 +54,14 @@ class HomeController {
             mapFacets: mapFacets,
             geographicFacets:selectedGeographicFacets,
             description: settingService.getSettingText(SettingPageType.DESCRIPTION),
-            results: resp ]
+            results: resp,
+            hubConfig: SettingService.getHubConfig()]
     }
 
     def citizenScience() {
+    }
+
+    def works() {
     }
 
     /**

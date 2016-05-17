@@ -85,7 +85,7 @@ var ProjectActivitiesViewModel = function (params) {
     self.userCanEdit = function (pActivity) {
         var projectActive = !pActivity.endDate() || moment(pActivity.endDate()).isAfter(moment());
         var userIsEditorOrAdmin = user && Object.keys(user).length > 0 && (user.isEditor || user.isAdmin);
-        return projectActive && (pActivity.publicAccess() || userIsEditorOrAdmin);
+        return projectActive && (pActivity.publicAccess() || userIsEditorOrAdmin) && fcConfig.version.length == 0;
     };
 
     self.loadProjectActivities(pActivities);
