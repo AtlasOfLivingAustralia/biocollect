@@ -575,7 +575,7 @@ var ProjectActivity = function (params) {
 
         return false;
     });
-    
+
     self.transients.availableSpeciesDisplayFormat = ko.observableArray([{
         name:'SCIENTIFICNAME(COMMONNAME)',
         displayName: 'Scientific name (Common name)'
