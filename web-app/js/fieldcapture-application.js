@@ -785,7 +785,7 @@ function Documents() {
 SearchableList = function(list, keys, options) {
 
     var self = this;
-    var options = $.extend({keys:keys, maxPatternLength:64}, options || {});
+    var options = $.extend({keys:keys, maxPatternLength:256}, options || {});
 
     var searchable = new Fuse(list, options);
 

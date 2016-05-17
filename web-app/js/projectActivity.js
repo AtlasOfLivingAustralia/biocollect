@@ -40,9 +40,12 @@ var ProjectActivitiesViewModel = function (params) {
         }
     };
 
-    self.setLegalCustodian = function(data) {
-        self.current().legalCustodian(data);
+    self.setLegalCustodian = function (data, event) {
+        if (event.originalEvent) { //user changed
+            self.current().legalCustodian(data.transients.selectedCustodianOption);
+        }
     };
+
 
     self.reset = function () {
         $.each(self.projectActivities(), function (i, obj) {
@@ -556,10 +559,10 @@ var ProjectActivity = function (params) {
 
     self.lastUpdated = ko.observable(pActivity.lastUpdated ? pActivity.lastUpdated : "");
 
-    var legalCustodian = pActivity.legalCustodian? pActivity.legalCustodian: "";
-    self.legalCustodian = ko.observable(legalCustodian);
+    var legalCustodianVal = pActivity.legalCustodian? pActivity.legalCustodian: "";
+    self.legalCustodian = ko.observable(legalCustodianVal);
 
-    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "");
+    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "CC BY");
 
     self.transients = self.transients || {};
     self.transients.warning = ko.computed(function () {
@@ -572,7 +575,7 @@ var ProjectActivity = function (params) {
 
         return false;
     });
-
+    
     self.transients.availableSpeciesDisplayFormat = ko.observableArray([{
         name:'SCIENTIFICNAME(COMMONNAME)',
         displayName: 'Scientific name (Common name)'
@@ -587,14 +590,13 @@ var ProjectActivity = function (params) {
         displayName: 'Scientific name'
     }])
 
-    if (legalCustodian != "" && organisationName != legalCustodian) {
-        self.transients.custodianOptions = [organisationName, legalCustodian];
+    if (legalCustodianVal != "" && organisationName != legalCustodianVal) {
+        self.transients.custodianOptions = [organisationName, legalCustodianVal];
     } else {
         self.transients.custodianOptions = [organisationName];
     }
 
-    //self.selectedCustodianOption = ko.observableArray([legalCustodian]);
-    self.transients.selectedCustodianOption = [legalCustodian];
+    self.transients.selectedCustodianOption = legalCustodianVal;
 
     self.sites = ko.observableArray();
     self.loadSites = function (projectSites, surveySites) {
@@ -605,6 +607,17 @@ var ProjectActivity = function (params) {
         });
     };
     self.loadSites(sites, pActivity.sites);
+
+    // AEKOS submission records
+    self.submissionRecords = ko.observableArray(pActivity.submissionRecords ? pActivity.submissionRecords : []);
+
+    var methodName = pActivity.methodName? pActivity.methodName : "";
+
+    if ((pActivity.sites ? pActivity.sites.length : 0) > 0 && methodName != "") {
+        self.transients.isAekosData = ko.observable(true);
+    } else {
+        self.transients.isAekosData = ko.observable(false);
+    }
 
     var images = [];
     $.each(pActivityForms, function (index, form) {
