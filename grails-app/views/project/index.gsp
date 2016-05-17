@@ -8,6 +8,8 @@
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         projectUpdateUrl: "${createLink(action: 'ajaxUpdate', id: project.projectId)}",
+        projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
+        projectEditUrl:"${createLink(action:'edit', id:project.projectId)}",
         sitesDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDeleteSitesFromProject', id:project.projectId)}",
         siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDeleteSiteFromProject', id:project.projectId)}",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
@@ -43,7 +45,10 @@
         videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
         errorViewer: "${createLink(controller: 'resource', action: 'error')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}",
-        auditMessageUrl: "${createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId])}"
+        auditMessageUrl: "${createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId])}",
+        createBlogEntryUrl: "${createLink(controller: 'blog', action:'create', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}%23overview",
+        editBlogEntryUrl: "${createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}%23overview",
+        deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}"
         },
         here = window.location.href;
 
@@ -107,8 +112,11 @@
     <g:set var="tabIsActive"><g:if test="${user?.hasViewAccess}">tab</g:if></g:set>
     <ul id="projectTabs" class="nav nav-tabs big-tabs">
         <li class="active"><a href="#overview" id="overview-tab" data-toggle="tab">Overview</a></li>
+        <li><a href="#document" id="document-tab" data-toggle="${tabIsActive}">Documents</a></li>
         <li><a href="#plan" id="plan-tab" data-toggle="${tabIsActive}">Activities</a></li>
-        <li><a href="#site" id="site-tab" data-toggle="${tabIsActive}">Sites</a></li>
+        <g:if test="${!hubConfig?.defaultFacetQuery.contains('isWorks:true')}">
+            <li><a href="#site" id="site-tab" data-toggle="${tabIsActive}">Sites</a></li>
+        </g:if>
         <li><a href="#dashboard" id="dashboard-tab" data-toggle="${tabIsActive}">Dashboard</a></li>
         <g:if test="${(user?.isAdmin || user?.isCaseManager) && user?.isEditor}"><li><a href="#admin" id="admin-tab" data-toggle="tab">Admin</a></li></g:if>
     </ul>
@@ -203,7 +211,11 @@
                       model="[useExistingModel: true,editable:false,imageUrl:resource(dir:'/images/filetypes'),containerId:'overviewDocumentList']"/>
                 </div>
 
-                <div class="span4">
+                <div class="span10">
+                    <h4>Project Blog</h4>
+                    <div class="well">
+                        <g:render template="/shared/blog" model="${[blog:project.blog?:[]]}"/>
+                    </div>
                     <div data-bind="visible:newsAndEvents()">
                         <h4>News and events</h4>
                         <div id="newsAndEventsDiv" data-bind="html:newsAndEvents" class="well"></div>
@@ -215,20 +227,17 @@
                 </div>
             </div>
         </div>
+
         <g:if test="${user?.hasViewAccess}">
-            <div class="tab-pane" id="plan">
-
-
-                <g:render template="/shared/activitiesList"
-                          model="[activities:activities ?: [], sites:project.sites ?: [], showSites:true]"/>
-
+            <div class="tab-pane" id="document">
+                <!-- DOCUMENTS -->
+                <g:render template="docs" />
             </div>
 
-            <div class="tab-pane" id="site">
-                <!-- SITES -->
-                <!-- ko stopBinding:true -->
-                <g:render template="/site/sitesList" model="${[editable:user?.isEditor]}"/>
-                <!-- /ko -->
+            <div class="tab-pane" id="plan">
+                <!-- PLANS -->
+                <g:render template="/shared/activitiesWorks"
+                          model="[activities:activities ?: [], sites:project.sites ?: [], showSites:true]"/>
             </div>
 
             <div class="tab-pane" id="dashboard">
@@ -248,6 +257,7 @@
                                 <li ${activeClass}><a href="#settings" id="settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project settings</a></li>
                                 <g:set var="activeClass" value=""/>
                             </g:if>
+                            <li><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Project Blog</a></li>
                             <li><a href="#editNewsAndEvents" id="editnewsandevents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> News and events</a></li>
                             <li><a href="#editProjectStories" id="editprojectstories-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project stories</a></li>
 
@@ -266,13 +276,42 @@
                                     <div class="row-fluid">
                                         <div id="save-result-placeholder"></div>
                                         <div class="span10 validationEngineContainer" id="settings-validation">
-                                            <g:render template="editProject"
-                                                      model="[project: project]"/>
+                                            <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+                                                <g:render template="editProject"
+                                                          model="[project: project]"/>
+                                            </g:if>
+                                            <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+                                                <h4>Project info</h4>
+
+                                                <div class="row-fluid">
+                                                    <div class="span12 text-left" >
+                                                        <p>
+                                                            Edit project details and content
+                                                            <button class="btn admin-action" data-bind="click:editProject"><i class="icon-edit"></i> Edit </button>
+                                                        </p>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="row-fluid">
+                                                    <div class="span12 text-left" >
+                                                        <g:if test="${fc.userIsAlaOrFcAdmin()}">
+                                                            <p>
+                                                                <button class="admin-action btn btn-danger" data-bind="click:deleteProject"> <i class="icon-remove icon-white"></i> Delete Project</button>
+                                                            </p>
+                                                        </g:if>
+                                                    </div>
+                                                </div>
+                                            </g:if>
                                         </div>
                                     </div>
                                 </div>
                                 <g:set var="activeClass" value=""/>
                             </g:if>
+                            <div id="editProjectBlog" class="pill-pane">
+                                <h3>Edit Project Blog</h3>
+                                <g:render template="/blog/blogSummary" model="${[blog:project.blog?:[]]}"/>
+                            </div>
                             <div id="editNewsAndEvents" class="pill-pane">
 
                                 <g:render template="editProjectContent" model="${[attributeName:'newsAndEvents', header:'News and events']}"/>
@@ -300,13 +339,13 @@
                                 <div class="row-fluid">
                                     <div class="span10">
                                         <g:render template="/shared/editDocuments"
-                                                  model="[useExistingModel: true,editable:true,imageUrl:resource(dir:'/images/filetypes'),containerId:'adminDocumentList']"/>
+                                                  model="[useExistingModel: true,editable:true, filterBy: 'all', ignore: '', imageUrl:resource(dir:'/images/filetypes'),containerId:'adminDocumentList']"/>
                                     </div>
                                 </div>
                                 %{--The modal view containing the contents for a modal dialog used to attach a document--}%
                                 <g:render template="/shared/attachDocument"/>
                                 <div class="row-fluid attachDocumentModal">
-                                    <button class="btn" id="doAttach" data-bind="click:attachDocument">Attach Document</button>
+                                <button class="btn btn-small btn-primary" id="doAttach" data-bind="click:attachDocument"><i class="icon-white icon-plus"></i> Attach Document</button>
                                 </div>
                             </div>
                         </div>
@@ -397,7 +436,7 @@
                     };
 
                     map = new ALA.Map("map", {});
-                    var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
+                    var mapFeatures = ${mapFeatures};
                     var sitesViewModel = new SitesViewModel(project.sites, map, mapFeatures, ${user?.isEditor?:false});
                     ko.applyBindings(sitesViewModel, document.getElementById('sitesList'));
 
@@ -454,6 +493,11 @@
 
             // BS tooltip
             $('.tooltips').tooltip();
+
+            $('#gotoEditBlog').click(function () {
+                amplify.store('project-admin-tab-state', '#editProjectBlog');
+                $('#admin-tab').tab('show');
+            });
 
         });// end window.load
 

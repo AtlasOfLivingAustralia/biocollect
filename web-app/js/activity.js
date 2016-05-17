@@ -43,6 +43,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.total = ko.observable(0);
     self.filter = ko.observable(false);
 
+    self.version = ko.observable(fcConfig.version)
+    
     self.toggleFilter = function () {
         self.filter(!self.filter())
     };
@@ -359,14 +361,15 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
      */
     self.generatePopup = function (projectLinkPrefix, projectId, projectName, activityUrl, surveyName, speciesName){
         var html = "<div class='projectInfoWindow'>";
+        var version = fcConfig.version === undefined ? "" : "?version=" + fcConfig.version
 
         if (activityUrl && surveyName) {
             html += "<div><i class='icon-home'></i> <a target='_blank' href='" +
-                activityUrl + "'>" +surveyName + "</a></div>";
+                activityUrl + version +"'>" +surveyName + "</a></div>";
         }
 
         if(projectName){
-            html += "<div><a target='_blank' href="+projectLinkPrefix+projectId+"><i class='icon-map-marker'></i>&nbsp;" +projectName + "</a></div>";
+            html += "<div><a target='_blank' href="+projectLinkPrefix+projectId+version+"><i class='icon-map-marker'></i>&nbsp;" +projectName + "</a></div>";
         }
 
         if(speciesName){
@@ -387,7 +390,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
         var searchTerm = self.searchTerm() || '';
         var view = self.view;
-        var url =fcConfig.getRecordsForMapping + '?max=10000&searchTerm='+ searchTerm+'&view=' + view;
+        var url =fcConfig.getRecordsForMapping + '&max=10000&searchTerm='+ searchTerm+'&view=' + view;
         var facetFilters = [];
         self.plotOnMap(null);
 
@@ -622,7 +625,8 @@ var ActivityRecordViewModel = function (activity) {
     self.projectName = ko.observable(activity.projectName);
     self.projectId = ko.observable(activity.projectId);
     self.projectUrl = ko.pureComputed(function () {
-        return fcConfig.projectIndexUrl + '/' + self.projectId();
+        return fcConfig.projectIndexUrl + '/' + self.projectId() +
+            (fcConfig.version !== undefined ? "?version=" + fcConfig.version : '');
     });
     self.records = ko.observableArray();
     self.siteUrl = fcConfig.siteViewUrl + '/' + self.siteId();
@@ -631,6 +635,7 @@ var ActivityRecordViewModel = function (activity) {
         projectActivityOpen = moment(activity.endDate).isAfter(moment());
     }
     self.showAdd = ko.observable(projectActivityOpen);
+    self.readOnly = ko.observable(fcConfig.version.length > 0)//183,238,252
 
     var allRecords = $.map(activity.records ? activity.records : [], function (record, index) {
         return new RecordVM(record);
@@ -638,7 +643,7 @@ var ActivityRecordViewModel = function (activity) {
     self.records(allRecords);
 
     self.transients = {};
-    self.transients.viewUrl = ko.observable(fcConfig.activityViewUrl + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
+    self.transients.viewUrl = ko.observable(fcConfig.activityViewUrl + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo, dataVersion: fcConfig.version});
     self.transients.editUrl = ko.observable(fcConfig.activityEditUrl + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
     self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo: fcConfig.returnTo});
 };

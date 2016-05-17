@@ -161,6 +161,34 @@ ko.extenders.returnTo = function(target, returnToUrl) {
 
 };
 
+/**
+ * Adds a request parameter named "version" to the value of the target observable.
+ * @param target assumed to be an observable containing a URL.
+ * @param version the value for the "version" parameter in the URL.
+ */
+ko.extenders.dataVersion = function(target, version) {
+
+    var result = ko.pureComputed({
+        read: target,
+        write: function (url) {
+            if (version) {
+                var separator = '?';
+                if (url.indexOf('?') >= 0) {
+                    separator = '&';
+                }
+
+                target(url + separator + 'version=' + version);
+            }
+            else {
+                target(url);
+            }
+        }
+    });
+    result(target());
+    return result;
+
+};
+
 ko.extenders.numeric = function(target, precision) {
     //create a writable computed observable to intercept writes to our observable
     var result = ko.pureComputed({
