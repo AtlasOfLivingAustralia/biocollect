@@ -362,11 +362,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
         if (activityUrl && surveyName) {
             html += "<div><i class='icon-home'></i> <a target='_blank' href='" +
-                activityUrl + "'>" +surveyName + "</a></div>";
+                activityUrl + "'>" +surveyName + " (record)</a></div>";
         }
 
         if(projectName){
-            html += "<div><a target='_blank' href="+projectLinkPrefix+projectId+"><i class='icon-map-marker'></i>&nbsp;" +projectName + "</a></div>";
+            html += "<div><a target='_blank' href="+projectLinkPrefix+projectId+"><i class='icon-map-marker'></i>&nbsp;" +projectName + " (project)</a></div>";
         }
 
         if(speciesName){
