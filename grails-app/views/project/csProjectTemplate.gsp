@@ -23,9 +23,9 @@
         activityListUrl : "${createLink(controller: 'bioActivity', action: 'ajaxListForProject', params: [id:project.projectId])}",
         activiyCountUrl: "${createLink(controller: 'bioActivity', action: 'getProjectActivityCount')}",
         speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
-        searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities',params: [projectId:project.projectId])}",
+        searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities',params: [projectId:project.projectId, version: params.version])}",
         downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData',params: [projectId:project.projectId])}",
-        getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping')}",
+        getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params:[version: params.version])}",
         siteCreateUrl: "${createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId])}",
         siteSelectUrl: "${createLink(controller: 'site', action: 'select', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
         siteUploadUrl: "${createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
@@ -66,11 +66,12 @@
         auditMessageUrl: "${createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId])}",
         projectId: "${project.projectId}",
         projectLinkPrefix: "${createLink(controller: 'project')}/",
-        recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
+        recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages", params:[version: params.version])}',
         view: 'project',
         imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
-        aekosSubmissionPostUrl: "${createLink(controller: 'projectActivity', action: 'aekosSubmission')}",
-        }
+        version: "${params.version}",
+        aekosSubmissionPostUrl: "${createLink(controller: 'projectActivity', action: 'aekosSubmission')}"
+        },
         here = window.location.href;
 
     </r:script>
@@ -98,6 +99,16 @@
     <div class="container-fluid">
         <div id="project-results-placeholder"></div>
         <g:render template="../shared/flashScopeMessage"/>
+
+        <g:if test="${params?.version}">
+            <div class="well">
+                <h4>
+                    Version:
+                    <span id="versionMsg"></span>
+                </h4>
+            </div>
+        </g:if>
+
         <div class="row-fluid">
             <!-- content  -->
             <ul id="ul-main-project" class="nav nav-pills">
@@ -141,9 +152,6 @@
         initialiseProjectActivitiesList(pActivitiesVM);
         initialiseData('project');
 
-
-      //  initialiseAekosWorkflow(aekosVM);
-
         //Main tab selection
         new RestoreTab('ul-main-project', 'about-tab');
         if(amplify.store('traffic-from-project-finder-page')){
@@ -163,10 +171,7 @@
 
             populatePermissionsTable();
 
-            //initialiseInternalCSAdmin(pActivitiesVM);
             initialiseInternalCSAdmin();
-
-
         </g:if>
 
         $('.validationEngineContainer').validationEngine();

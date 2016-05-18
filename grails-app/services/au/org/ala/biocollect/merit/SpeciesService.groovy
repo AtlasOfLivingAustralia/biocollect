@@ -14,11 +14,19 @@ class SpeciesService {
             }
         }
         def results = searchBie(searchTerm, limit)
+
+        // standardise output
+        results?.autoCompleteList?.each { result ->
+            result.scientificName = result.name
+            if(result.commonName?.contains(',')){
+                result.commonName = result.commonName.split(',')[0]
+            }
+        }
+
         return results
     }
 
-    def searchSpeciesInLists(searchTerm, lists, limit = 10){
-        def results
+    def searchSpeciesInLists(searchTerm, lists, limit = 10){ def results
         def autoCompleteList = []
         lists?.each{ list ->
             def listResults =  filterSpeciesList(searchTerm, list?.dataResourceUid)
@@ -61,9 +69,9 @@ class SpeciesService {
      * @return a JSON formatted String of the form {"autoCompleteList":[{...results...}]}
      */
     private def filterSpeciesList(String query, String listId) {
-        def listContents = webService.getJson("${grailsApplication.config.lists.baseURL}/ws/speciesListItems/${listId}")
+        def listContents = webService.getJson("${grailsApplication.config.lists.baseURL}/ws/speciesListItems/${listId}?q=${query}")
 
-        def filtered = listContents.findResults({it.name?.toLowerCase().contains(query.toLowerCase()) ? [id: it.id, listId: listId, name: it.name, scientificNameMatches:[it.name], guid:it.lsid]: null})
+        def filtered = listContents.collect({[id: it.id, listId: listId, name: it.name, commonName: it.commonName, scientificName: it.scientificName, scientificNameMatches:[it.name], guid:it.lsid]})
 
         def results = [:];
         results.autoCompleteList = filtered

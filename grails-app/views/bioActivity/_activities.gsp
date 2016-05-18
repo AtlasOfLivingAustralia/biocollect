@@ -3,13 +3,15 @@
 <!-- ko stopBinding: true -->
 <div id="survey-all-activities-and-records-content">
     <div id="data-result-placeholder"></div>
-    <g:render template="../bioActivity/search"/>
+    <div data-bind="visible: version().length == 0">
+        <g:render template="../bioActivity/search"/>
+    </div>
 
     <div class="row-fluid">
         <div class="span12">
             <div class="span3 text-left">
 
-                <div class="well">
+                <div class="well" data-bind="visible: version().length == 0">
                     <g:render template="../bioActivity/facets"/>
                 </div>
 
@@ -39,7 +41,7 @@
 
                             <div class="alert alert-info hide" id="downloadStartedMsg"><i class="fa fa-spin fa-spinner">&nbsp;&nbsp;</i>Preparing download, please wait...</div>
 
-                            <div class="row-fluid">
+                            <div class="row-fluid" data-bind="visible: version().length == 0">
                                 <div class="span9">
                                     <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record(s)</h3>
                                 </div>
@@ -141,15 +143,15 @@
                                                     <a data-bind="attr:{'href': transients.viewUrl}"><i
                                                             class="fa fa-eye" title="View survey"></i></a>
                                                 </span>
-                                                <span class="margin-left-1" data-bind="visible: showAdd()">
+                                                <span class="margin-left-1" data-bind="visible: showAdd() && !readOnly()">
                                                     <a data-bind="attr:{'href': transients.addUrl}"><i
                                                             class="fa fa-plus" title="Add survey"></i></a>
                                                 </span>
-                                                <span class="margin-left-1">
+                                                <span class="margin-left-1" data-bind="visible: !readOnly()">
                                                     <a data-bind="attr:{'href': transients.editUrl}"><i
                                                             class="fa fa-edit" title="Edit survey"></i></a>
                                                 </span>
-                                                <span class="margin-left-1">
+                                                <span class="margin-left-1" data-bind="visible: !readOnly()">
                                                     <a href="#" data-bind="click: $parent.delete"><i
                                                             class="fa fa-remove" title="Delete survey"></i></a>
                                                 </span>

@@ -67,6 +67,10 @@ table.table-list.survey-finder-table tr{
     border-bottom: 1px solid #ddd;
 }
 
+.indent-left-10{
+    margin-left: 18px;
+}
+
 .survey-editable-dropdown {
     position: relative;
 }

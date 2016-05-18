@@ -24,6 +24,7 @@ function DocumentViewModel (doc, owner, settings) {
 
     // NOTE that attaching a file is optional, ie you can have a document record without a physical file
     this.filename = ko.observable(doc ? doc.filename : '');
+    this.description = ko.observable(doc ? doc.description : '');
     this.filesize = ko.observable(doc ? doc.filesize : '');
     this.name = ko.observable(doc.name);
     // the notes field can be used as a pseudo-document (eg a deferral reason) or just for additional metadata

@@ -94,7 +94,7 @@ var ProjectActivitiesViewModel = function (params) {
     self.userCanEdit = function (pActivity) {
         var projectActive = !pActivity.endDate() || moment(pActivity.endDate()).isAfter(moment());
         var userIsEditorOrAdmin = user && Object.keys(user).length > 0 && (user.isEditor || user.isAdmin);
-        return projectActive && (pActivity.publicAccess() || userIsEditorOrAdmin);
+        return projectActive && (pActivity.publicAccess() || userIsEditorOrAdmin) && fcConfig.version.length == 0;
     };
 
     self.loadProjectActivities(pActivities);
@@ -671,6 +671,20 @@ var ProjectActivity = function (params) {
         return false;
     });
 
+    self.transients.availableSpeciesDisplayFormat = ko.observableArray([{
+        name:'SCIENTIFICNAME(COMMONNAME)',
+        displayName: 'Scientific name (Common name)'
+    },{
+        name:'COMMONNAME(SCIENTIFICNAME)',
+        displayName: 'Common name (Scientific name)'
+    },{
+        name:'COMMONNAME',
+        displayName: 'Common name'
+    },{
+        name:'SCIENTIFICNAME',
+        displayName: 'Scientific name'
+    }])
+
     if (legalCustodianVal != "" && organisationName != legalCustodianVal) {
         self.transients.custodianOptions = [organisationName, legalCustodianVal];
     } else {
@@ -754,6 +768,11 @@ var ProjectActivity = function (params) {
         });
         return count;
     }
+    //
+    //self.isSpeciesDisplayFormatChecked = ko.computed(function(){
+    //    debugger;
+    //    $(this).val() == self.speciesDisplayFormat()
+    //})
 
     self.asJSAll = function () {
         var jsData = $.extend({},
@@ -871,6 +890,7 @@ var SpeciesConstraintViewModel = function (o) {
         return new SpeciesList(obj);
     }));
     self.newSpeciesLists = new SpeciesList();
+    self.speciesDisplayFormat = ko.observable(o.speciesDisplayFormat ||'SCIENTIFICNAME(COMMONNAME)')
 
     self.transients = {};
     self.transients.bioProfileUrl = ko.computed(function () {
@@ -937,15 +957,19 @@ var SpeciesConstraintViewModel = function (o) {
         var jsData = {};
         if (self.type() == "ALL_SPECIES") {
             jsData.type = self.type();
+            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
         }
         else if (self.type() == "SINGLE_SPECIES") {
             jsData.type = self.type();
             jsData.singleSpecies = ko.mapping.toJS(self.singleSpecies, {ignore: ['transients']});
+            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
         }
         else if (self.type() == "GROUP_OF_SPECIES") {
             jsData.type = self.type();
             jsData.speciesLists = ko.mapping.toJS(self.speciesLists, {ignore: ['listType', 'fullName', 'itemCount', 'description', 'listType', 'allSpecies', 'transients']});
+            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
         }
+
         return jsData;
     };
 

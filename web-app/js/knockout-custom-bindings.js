@@ -325,7 +325,7 @@ ko.bindingHandlers.fusedAutocomplete = {
             // Fall back mechanism to handle deprecated version of autocomplete.
             var options = {}, unknown = {
                 guid: '',
-                name: 'Unknown species',
+                name: '(Unmatched taxon)',
                 value: element.value
             };
             options.source = url;
@@ -338,10 +338,11 @@ ko.bindingHandlers.fusedAutocomplete = {
                 var rows = new Array();
                 if (params.matchUnknown) {
                     unknown.value = element.value;
+                    unknown.name = element.value + ' (Unmatched taxon)'
                     rows.push({
                         data: unknown,
                         value: unknown,
-                        result: unknown.value
+                        result: unknown.name
                     })
                 }
 
@@ -359,7 +360,7 @@ ko.bindingHandlers.fusedAutocomplete = {
             $(element).autocomplete(options.source, options).result(function (event, data, formatted) {
                 if (data) {
                     if (data.name == unknown.name) {
-                        params.name(data.value);
+                        params.name(data.name);
                     } else {
                         params.name(data.name);
                     }
