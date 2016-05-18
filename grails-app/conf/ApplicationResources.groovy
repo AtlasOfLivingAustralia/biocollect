@@ -10,20 +10,20 @@ modules = {
 
     nrmSkin {
         dependsOn 'application', 'bootstrap_nrm', 'font_awesome_44'
-        resource url: [dir: 'css/nrm/css', file: 'screen.css'], attrs: [media: 'screen,print']
-        resource url: [dir: 'css/', file: 'capture.css'], plugin: 'fieldcapture-plugin'
-        resource url: [dir: 'css/nrm/images/', file: 'AustGovt_inline_white_on_transparent.png'], plugin: 'fieldcapture-plugin'
+        resource url: 'css/nrm/css/screen.css', attrs: [media: 'screen,print']
+        resource url: 'css/capture.css'
+        resource url: 'css/nrm/images/AustGovt_inline_white_on_transparent.png'
         resource url: 'css/common.css'
     }
 
     bootstrap_nrm {
-        dependsOn 'app_bootstrap', 'a-jquery-ui'
+        dependsOn 'bootstrap', 'app_bootstrap', 'a-jquery-ui', 'app_bootstrap_responsive_nrm'
         resource url: [dir: 'css/nrm/less', file: 'bootstrap.less'], attrs: [rel: "stylesheet/less", type: 'css', media: 'screen,print'], bundle: 'bundle_app_bootstrap'
         resource url: 'css/empty.css'
 
     }
 
-    app_bootstrap_responsive {
+    app_bootstrap_responsive_nrm {
         dependsOn 'app_bootstrap'
         resource url: 'css/nrm/less/responsive.less', attrs: [rel: "stylesheet/less", type: 'css', media: 'screen,print'], bundle: 'bundle_app_bootstrap_responsive'
         resource url: 'css/empty.css' // needed for less-resources plugin ?
@@ -47,13 +47,6 @@ modules = {
     defaultSkin {
         dependsOn 'application'
         resource url: 'css/default.skin.css'
-    }
-
-    nrmSkin {
-        dependsOn 'application', 'app_bootstrap_responsive'
-        resource url: 'css/nrm/css/screen.css', attrs: [media: 'screen,print']
-        resource url: 'css/capture.css'
-        resource url: 'css/nrm/images/AustGovt_inline_white_on_transparent.png'
     }
 
     wmd {
@@ -114,7 +107,7 @@ modules = {
 
     app_bootstrap_responsive {
         dependsOn 'app_bootstrap'
-        resource url: 'vendor/bootstrap/less/responsive.less', attrs: [rel: "stylesheet/less", type: 'css', media: 'screen,print'], bundle: 'bundle_app_bootstrap_responsive'
+        resource url: 'vendor/bootstrap/less/responsive.less', attrs: [rel: "stylesheet/less", type: 'css', media: 'screen,print']
         resource url: 'css/empty.css' // needed for less-resources plugin ?
     }
 
@@ -378,7 +371,7 @@ modules = {
         resource url: "css/siteSelection.css"
     }
 
-    siteDisplay {
+    siteDisplaysiteDispl {
         resource url: "js/siteDisplay.js"
     }
     

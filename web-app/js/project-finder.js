@@ -6,6 +6,8 @@ function ProjectFinder() {
     /* i.e. if the filter details from the URL hash are different to the default, then the filter panel will be opened */
     var DEFAULT_CITIZEN_SCIENCE_FILTER = {isCitizenScience: "true", max: "20", sort: "nameSort"};
     var DEFAULT_USER_PROJECT_FILTER = {isCitizenScience: "true", max: "20", sort: "nameSort", isUserPage: "true"};
+    var DEFAULT_USER_WORKS_PROJECT_FILTER = {isWorks: "true", max: "20", sort: "nameSort", isUserPage: "true"};
+    var DEFAULT_USER_ECO_SCIENCE_PROJECT_FILTER = {isEcoScience: "true", max: "20", sort: "nameSort", isUserPage: "true"};
     var DEFAULT_ORGANISATION_PROJECT_FILTER = {
         isCitizenScience: "true",
         isWorks: "true",
@@ -196,6 +198,8 @@ function ProjectFinder() {
         var isContributingDataToAla = isButtonChecked($('#pt-search-dataToAla')); // the project contributes data to the ALA
         var difficulty = getActiveButtonValues($('#pt-search-difficulty'));
         var isUserPage = fcConfig.isUserPage || false;
+        var isUserWorksPage = fcConfig.isUserWorksPage || false;
+        var isUserEcoSciencePage = fcConfig.isUserEcoSciencePage || false;
         var organisationName = fcConfig.organisationName;
         var isCitizenScience = fcConfig.isCitizenScience;
         var isWorks = false;
@@ -234,6 +238,8 @@ function ProjectFinder() {
             isBiologicalScience: isBiologicalScience,
             isMERIT: isMERIT,
             isUserPage: isUserPage,
+            isUserWorksPage: isUserWorksPage,
+            isUserEcoSciencePage: isUserEcoSciencePage,
             hasParticipantCost: hasParticipantCost,
             isSuitableForChildren: isSuitableForChildren,
             isDIY: isDIY,
@@ -504,7 +510,11 @@ function ProjectFinder() {
 
     function isDefaultFilter(params) {
         var defaultFilter = false;
-        if (params.isUserPage) {
+        if (params.isUserWorksPage) {
+            defaultFilter = _.isEqual(params, DEFAULT_USER_WORKS_PROJECT_FILTER)
+        } else if (params.isUserEcoSciencePage) {
+            defaultFilter = _.isEqual(params, DEFAULT_USER_ECO_SCIENCE_PROJECT_FILTER)
+        } else if (params.isUserPage) {
             defaultFilter = _.isEqual(params, DEFAULT_USER_PROJECT_FILTER)
         } else if (params.organisationName) {
             defaultFilter = _.isEqual(_.omit(params, "organisationName"), DEFAULT_ORGANISATION_PROJECT_FILTER);

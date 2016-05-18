@@ -58,7 +58,83 @@
                             <div data-bind="visible:transients.status()">
                                 <span>Status: <span data-bind="text: transients.status"></span></span>
                             </div>
+                            <br/>
+                            <div><a href="#" data-bind="visible: transients.isAekosData,
+                                                        click: showAekosDetails,
+                                                        text: transients.aekosToggleText"
+                                    title="View and send Data Submission to AEKOS"></a>
+                            </div>
+                            <br/>
+                            <div data-bind="visible: transients.showAekosDetailsState">
+                                <div class="table-responsive">
+                                    <span style="color: #f85e20"><b>Submission to AEKOS</b></span>
+                                    <br/>
+                                    <table class="table" data-toggle="table" data-striped="true">
+                                        <thead style="color: #1B82C6">
+                                            <tr>
+                                                <td>
+                                                    <g:message code="project.survey.info.submissionPublicationDate"/>
+                                                    <a href="#" class="helphover"
+                                                       data-bind="popover: {title:'<g:message code="project.survey.info.submissionPublicationDate"/>',
+                                                                            content:'<g:message code="project.survey.info.submissionPublicationDate.content"/>'}">
+                                                        <i class="icon-question-sign"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <g:message code="project.survey.info.submitter"/>
+                                                    <a href="#" class="helphover"
+                                                       data-bind="popover: {title:'<g:message code="project.survey.info.submitter"/>',
+                                                                            content:'<g:message code="project.survey.info.submitter.content"/>'}">
+                                                        <i class="icon-question-sign"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <g:message code="project.survey.info.datasetVersion"/>
+                                                    <a href="#" class="helphover"
+                                                       data-bind="popover: {title:'<g:message code="project.survey.info.datasetVersion"/>',
+                                                                            content:'<g:message code="project.survey.info.datasetVersion.content"/>'}">
+                                                        <i class="icon-question-sign"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <g:message code="project.survey.info.submissionDoi"/>
+                                                    <a href="#" class="helphover"
+                                                       data-bind="popover: {title:'<g:message code="project.survey.info.submissionDoi"/>',
+                                                                            content:'<g:message code="project.survey.info.submissionDoi.content"/>'}">
+                                                        <i class="icon-question-sign"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- ko foreach: submissionRecords -->
+                                                <tr style="border-bottom: none !important;">
+                                                    <td><span data-bind="submissionPublicationDate"></span></td>
+                                                    <td><span data-bind="datasetSubmitter"></span></td>
+                                                    <td><span data-bind="datasetVersion"></span></td>
+                                                    <td><span data-bind="submissionDoi"></span></td>
+                                                </tr>
+                                            <!-- /ko -->
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                                <div>
+                                    <br/>
+
+                                    <span><a href="#" data-bind="click:function() {showModal();}"
+                                             class="btn btn-success btn-sm">Submit current version to AEKOS</a></span>
+<!--span data-bind="text: aekosModal"></span -->
+
+                                    <g:render template="/projectActivity/aekosWorkflowModal"/>
+
+                                    <!--button type="button" data-toggle="modal" data-target="#aekosModalDialog">Open Modal</button-->
+
+                                </div>
+                            </div>
+
                         </div>
+
                     </td>
                     <td>
                         <div class="survey-row-layout">
@@ -89,18 +165,53 @@
                         </div>
                     </td>
                 </tr>
-            <!-- /ko -->
+
+        <!-- /ko -->
         <!-- /ko -->
         </tbody>
     </table>
 
 </div>
 
+
+
 <!-- /ko -->
 
+
+
+
+
+<!--script id="myModal" type="text/html">
+<div class="modal-header">
+    <button type="button" class="close" data-bind="click:close" aria-hidden="true">&times;</button>
+    <h3 data-bind="html:header"></h3>
+</div>
+<div class="modal-body" data-bind="html:body"></div>
+<div class="modal-footer">
+    <a href="#" class="btn" data-bind="click:close,html:closeLabel"></a>
+    <a href="#" class="btn btn-primary" data-bind="click:action,html:primaryLabel"></a>
+</div>
+</script-->
+
 <r:script>
+
+
+    $(window).load(function () {
+
+
+
+
+
+     });
+
+
     function initialiseProjectActivitiesList(pActivitiesVM){
         var pActivitiesListVM = new ProjectActivitiesListViewModel(pActivitiesVM);
         ko.applyBindings(pActivitiesListVM, document.getElementById('pActivitiesList'));
-    }
+    };
+/*
+    function initialiseAekosWorkflow(aekosVM) {
+        //var aekosVM = new aekosViewModel();
+        ko.applyBindings(aekosVM, document.getElementById('aekosModel'));
+    } */
 </r:script>

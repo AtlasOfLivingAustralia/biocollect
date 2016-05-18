@@ -31,6 +31,12 @@
     <g:if test="${showCitizenScienceBanner}">
         <g:render template="/shared/bannerCitizenScience"/>
     </g:if>
+    <g:if test="${hubConfig?.defaultFacetQuery.contains('isWorks:true')}">
+        <g:render template="/shared/bannerWorks"/>
+    </g:if>
+    <g:if test="${hubConfig?.defaultFacetQuery.contains('isEcoScience:true')}">
+        <g:render template="/shared/bannerEcoScience"/>
+    </g:if>
 
     <div class="container-fluid" id="main-content">
         <g:layoutBody />
@@ -94,7 +100,15 @@
             window.location = "${createLink(controller: 'admin')}";
         });
         $('.btnNewProject').click(function(e) {
-            window.location = "${createLink(controller: 'project', action:'create', params: [citizenScience:true])}"
+            <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+                window.location = "${createLink(controller: 'project', action:'create', params: [citizenScience:true])}"
+            </g:if>
+            <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+                window.location = "${createLink(controller: 'project', action:'create', params: [works:true])}"
+            </g:if>
+            <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
+                window.location = "${createLink(controller: 'project', action:'create', params: [ecoScience:true])}"
+            </g:if>
         });
 
         $(".btnProfile").click(function (e) {
@@ -127,7 +141,16 @@
 
 
         $(".btnSearch").click(function(e){
-             window.location = "${createLink(controller: 'project', action: 'citizenScience')}";
+            <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+                window.location = "${createLink(controller: 'project', action: 'citizenScience')}";
+            </g:if>
+            <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+                window.location = "${createLink(controller: 'home', action: 'index')}";
+            </g:if>
+            <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
+                //TODO: redirect to ecoScience instead of index
+                window.location = "${createLink(controller: 'home', action: 'index')}";
+            </g:if>
         })
 
         $(".btnSite").click(function(e){

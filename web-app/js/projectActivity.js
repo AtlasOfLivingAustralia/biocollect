@@ -7,6 +7,7 @@ var ProjectActivitiesViewModel = function (params) {
     self.pActivityForms = params.pActivityForms;
     self.sites = params.sites;
     self.projectStartDate = params.projectStartDate;
+    self.project = params.project;
 
     self.projectId = ko.observable(params.projectId);
     self.projectActivities = ko.observableArray();
@@ -39,6 +40,13 @@ var ProjectActivitiesViewModel = function (params) {
             eval('self.projectActivities.sort(function(left, right) { return left.' + by + '() == right.' + by + '() ? 0 : (left.' + by + '() ' + order + ' right.' + by + '() ? -1 : 1) });');
         }
     };
+
+    self.setLegalCustodian = function (data, event) {
+        if (event.originalEvent) { //user changed
+            self.current().legalCustodian(data.transients.selectedCustodianOption);
+        }
+    };
+
 
     self.reset = function () {
         $.each(self.projectActivities(), function (i, obj) {
@@ -74,7 +82,8 @@ var ProjectActivitiesViewModel = function (params) {
                 selected: (i == 0),
                 sites: self.sites,
                 organisationName: self.organisationName,
-                startDate: self.projectStartDate
+                startDate: self.projectStartDate,
+                project: self.project
             };
             return self.projectActivities.push(new ProjectActivity(args));
         });
@@ -85,7 +94,7 @@ var ProjectActivitiesViewModel = function (params) {
     self.userCanEdit = function (pActivity) {
         var projectActive = !pActivity.endDate() || moment(pActivity.endDate()).isAfter(moment());
         var userIsEditorOrAdmin = user && Object.keys(user).length > 0 && (user.isEditor || user.isAdmin);
-        return projectActive && (pActivity.publicAccess() || userIsEditorOrAdmin);
+        return projectActive && (pActivity.publicAccess() || userIsEditorOrAdmin) && fcConfig.version.length == 0;
     };
 
     self.loadProjectActivities(pActivities);
@@ -109,6 +118,98 @@ var ProjectActivitiesListViewModel = function (pActivitiesVM) {
 var ProjectActivitiesDataViewModel = function (pActivitiesVM) {
     var self = $.extend(this, pActivitiesVM);
 };
+
+var AekosViewModel = function (pActivityVM, projectName, projectDescription, projectStatus) {
+
+
+    var self = $.extend(this, pActivityVM);
+    self.projectName = projectName;
+
+    self.projectDescription = ko.observable(projectDescription);
+
+    self.projectStatus = projectStatus;
+
+    self.submissionName = projectName + ' - ' + name;
+
+    self.selectedTab = ko.observable('submission-project-info-tab');
+
+    self.selectTab = function(data, event) {
+        self.selectedTab(event.currentTarget.id);
+    }
+
+    //self.project = $.extend(self.project, projectVM);
+    self.header = ko.observable("This is a modal");
+    self.body = ko.observable("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut " +
+        "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+    self.closeLabel = "Close";
+    self.primaryLabel = "Do Something";
+    self.show = ko.observable(false);
+    self.hideModal = function () {
+        self.show(false);
+    }
+    self.onClose = function() {
+        self.onModalClose();
+    };
+    self.onAction = function() {
+        self.onModalAction();
+    };
+
+    self.showModal = function() {
+        self.show(true);
+    };
+
+    self.onModalClose = function() {
+        alert("CLOSE!");
+    };
+
+    self.onModalAction = function() {
+        alert("ACTION!");
+    };
+
+    self.isSubmissionStep1InfoValid = function () {
+        return self.projectDescription();
+    };
+
+    self.submit = function(pActivity, caller){
+        var url =  fcConfig.aekosSubmissionPostUrl + "/" + pActivity.projectActivityId();
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: JSON.stringify(pActivity.asJS(caller), function (key, value) {return value === undefined ? "" : value;}),
+            contentType: 'application/json',
+            success: function (data) {
+                var result = data.resp;
+                if (result && result.message == 'updated') {
+                    self.updateLogo(data);
+                    showAlert("Successfully updated ", "alert-success", self.placeHolder);
+                } else {
+                    showAlert(data.error ? data.error : "Error updating the survey", "alert-error", self.placeHolder);
+                }
+            },
+            error: function (data) {
+                showAlert("Error updating the survey -" + data.status, "alert-error", self.placeHolder);
+            }
+        });
+    };
+
+};
+
+ko.bindingHandlers.showTabOrRedirect = {
+    'init': function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+        var newValueAccesssor = function () {
+            return function () {
+                var options = ko.utils.unwrapObservable(valueAccessor());
+                if (options.url == '' && options.tabId) {
+                    $(options.tabId).tab('show');
+                } else if (options.url != '') {
+                    window.location.href = options.url;
+                }
+            }
+        };
+        ko.bindingHandlers.click.init(element, newValueAccesssor, allBindingsAccessor, viewModel, bindingContext);
+    }
+};
+
 
 var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
@@ -328,13 +429,13 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
             data: JSON.stringify(pActivity.asJS(caller), function (key, value) {return value === undefined ? "" : value;}),
             contentType: 'application/json',
             success: function (data) {
-               var result = data.resp;
-               if (result && result.message == 'updated') {
+                var result = data.resp;
+                if (result && result.message == 'updated') {
                     self.updateLogo(data);
                     showAlert("Successfully updated ", "alert-success", self.placeHolder);
-               } else {
+                } else {
                     showAlert(data.error ? data.error : "Error updating the survey", "alert-error", self.placeHolder);
-               }
+                }
             },
             error: function (data) {
                 showAlert("Error updating the survey -" + data.status, "alert-error", self.placeHolder);
@@ -537,6 +638,7 @@ var ProjectActivity = function (params) {
     var sites = params.sites ? params.sites : [];
     var startDate = params.startDate ? params.startDate : "";
     var organisationName = params.organisationName ? params.organisationName : "";
+    var project = params.project ? params.project : {};
 
     var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
@@ -545,6 +647,17 @@ var ProjectActivity = function (params) {
     self.species = new SpeciesConstraintViewModel(pActivity.species);
     self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
     self.alert = new AlertViewModel(pActivity.alert);
+
+    self.usageGuide = ko.observable(pActivity.usageGuide ? pActivity.usageGuide : "");
+
+    self.relatedDatasets = ko.observableArray (pActivity.relatedDatasets ? pActivity.relatedDatasets : []);
+
+    self.lastUpdated = ko.observable(pActivity.lastUpdated ? pActivity.lastUpdated : "");
+
+    var legalCustodianVal = pActivity.legalCustodian? pActivity.legalCustodian: "";
+    self.legalCustodian = ko.observable(legalCustodianVal);
+
+    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "CC BY");
 
     self.transients = self.transients || {};
     self.transients.warning = ko.computed(function () {
@@ -558,6 +671,28 @@ var ProjectActivity = function (params) {
         return false;
     });
 
+    self.transients.availableSpeciesDisplayFormat = ko.observableArray([{
+        name:'SCIENTIFICNAME(COMMONNAME)',
+        displayName: 'Scientific name (Common name)'
+    },{
+        name:'COMMONNAME(SCIENTIFICNAME)',
+        displayName: 'Common name (Scientific name)'
+    },{
+        name:'COMMONNAME',
+        displayName: 'Common name'
+    },{
+        name:'SCIENTIFICNAME',
+        displayName: 'Scientific name'
+    }])
+
+    if (legalCustodianVal != "" && organisationName != legalCustodianVal) {
+        self.transients.custodianOptions = [organisationName, legalCustodianVal];
+    } else {
+        self.transients.custodianOptions = [organisationName];
+    }
+
+    self.transients.selectedCustodianOption = legalCustodianVal;
+
     self.sites = ko.observableArray();
     self.loadSites = function (projectSites, surveySites) {
         $.map(projectSites ? projectSites : [], function (obj, i) {
@@ -567,6 +702,22 @@ var ProjectActivity = function (params) {
         });
     };
     self.loadSites(sites, pActivity.sites);
+
+    // AEKOS submission records
+    self.submissionRecords = ko.observableArray(pActivity.submissionRecords ? pActivity.submissionRecords : []);
+
+    var methodName = pActivity.methodName? pActivity.methodName : "";
+
+    if ((pActivity.sites ? pActivity.sites.length : 0) > 0 && methodName != "") {
+        self.transients.isAekosData = ko.observable(true);
+    } else {
+        self.transients.isAekosData = ko.observable(false);
+    }
+
+    /*   self.showModal = function (pActivity) {
+     self.modal = ko.observable(new AekosWorkflowViewModel(pActivity));
+
+     } */
 
     var images = [];
     $.each(pActivityForms, function (index, form) {
@@ -592,6 +743,17 @@ var ProjectActivity = function (params) {
         });
     });
 
+
+
+    self.aekosModalView = ko.observable(new AekosViewModel (pActivity, project.name, project.description, project.status));
+
+    self.aekosModal = ko.observable(false);
+
+    self.showModal = function () {
+        self.aekosModal(true);
+    };
+
+
     /**
      * get number of sites selected for a survey
      * @returns {number}
@@ -606,6 +768,11 @@ var ProjectActivity = function (params) {
         });
         return count;
     }
+    //
+    //self.isSpeciesDisplayFormatChecked = ko.computed(function(){
+    //    debugger;
+    //    $(this).val() == self.speciesDisplayFormat()
+    //})
 
     self.asJSAll = function () {
         var jsData = $.extend({},
@@ -665,6 +832,25 @@ var ProjectActivity = function (params) {
     }
 };
 
+
+// Custom binding for modal dialog
+ko.bindingHandlers.bootstrapShowModal = {
+    init: function (element, valueAccessor) {
+    },
+    update: function (element, valueAccessor) {
+        var value = valueAccessor();
+
+        if (ko.utils.unwrapObservable(value)) {
+            $(element).modal('show');
+            // this is to focus input field inside dialog
+            $("input", element).focus();
+        }
+        else {
+            $(element).modal('hide');
+        }
+    }
+};
+
 var SiteList = function (o, surveySites) {
     var self = this;
     if (!o) o = {};
@@ -704,6 +890,7 @@ var SpeciesConstraintViewModel = function (o) {
         return new SpeciesList(obj);
     }));
     self.newSpeciesLists = new SpeciesList();
+    self.speciesDisplayFormat = ko.observable(o.speciesDisplayFormat ||'SCIENTIFICNAME(COMMONNAME)')
 
     self.transients = {};
     self.transients.bioProfileUrl = ko.computed(function () {
@@ -770,21 +957,25 @@ var SpeciesConstraintViewModel = function (o) {
         var jsData = {};
         if (self.type() == "ALL_SPECIES") {
             jsData.type = self.type();
+            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
         }
         else if (self.type() == "SINGLE_SPECIES") {
             jsData.type = self.type();
             jsData.singleSpecies = ko.mapping.toJS(self.singleSpecies, {ignore: ['transients']});
+            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
         }
         else if (self.type() == "GROUP_OF_SPECIES") {
             jsData.type = self.type();
             jsData.speciesLists = ko.mapping.toJS(self.speciesLists, {ignore: ['listType', 'fullName', 'itemCount', 'description', 'listType', 'allSpecies', 'transients']});
+            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
         }
+
         return jsData;
     };
 
     self.isValid = function(){
         return ((self.type() == "ALL_SPECIES") || (self.type() == "SINGLE_SPECIES" && self.singleSpecies.guid()) ||
-            (self.type() == "GROUP_OF_SPECIES" && self.speciesLists().length > 0))
+        (self.type() == "GROUP_OF_SPECIES" && self.speciesLists().length > 0))
     };
 
     self.saveNewSpeciesName = function () {
@@ -1090,3 +1281,30 @@ function initialiseValidator() {
         $('#project-activities-' + label + '-validation').validationEngine();
     });
 };
+
+
+
+/*ko.bindingHandlers.bootstrapModal = {
+ init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+ var props = valueAccessor(),
+ vm = bindingContext.createChildContext(viewModel);
+ ko.utils.extend(vm, props);
+ vm.close = function () {
+ vm.show(false);
+ vm.onClose();
+ };
+ vm.action = function () {
+ vm.onAction();
+ };
+ ko.utils.toggleDomNodeCssClass(element, "modal fade", true);
+ alert("Modal test");
+ ko.renderTemplate("myModal", vm, null, element);
+ var showHide = ko.computed(function () {
+ $(element).modal(vm.show() ? 'show' : 'hide');
+ });
+ return {
+ // tell knockout don't bind descendent bindings
+ controlsDescendantBindings: true
+ };
+ }
+ }; */

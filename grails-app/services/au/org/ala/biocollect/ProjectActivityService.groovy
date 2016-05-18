@@ -15,15 +15,17 @@ class ProjectActivityService {
     ProjectService projectService
     MetadataService metadataService
 
-    def getAllByProject(projectId, levelOfDetail = ""){
+    def getAllByProject(projectId, levelOfDetail = "", version = null){
         def params = '?'
         params += levelOfDetail ? "view=${levelOfDetail}&" : ''
+        params += version ? "version=${version}&" : ''
         webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/getAllByProject/'+ projectId + params).list
     }
 
-    def get(projectActivityId, levelOfDetail = ""){
+    def get(projectActivityId, levelOfDetail = "", version = null){
         def params = '?'
         params += levelOfDetail ? "view=${levelOfDetail}&" : ''
+        params += version ? "version=${version}&" : ''
         webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/get/'+ projectActivityId + params)
     }
 
@@ -212,7 +214,61 @@ class ProjectActivityService {
                 result = [autoCompleteList: []]
                 break
         }
+
+        // process according to setting
+        formatSpeciesNameForSurvey(pActivity, result)
         result
+    }
+
+    List formatSpeciesNameForSurvey(Map pActivity, Map data){
+        data?.autoCompleteList?.each{
+            it.name = formatSpeciesName(pActivity.species.speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', it)
+        }
+    }
+
+    /**
+     * formats a name into the specified format
+     * if species does not match to a taxon, then mention it in name.
+     * @param type
+     * @param data
+     * @return
+     */
+    String formatSpeciesName(String type, Map data){
+        String name
+        if(data.guid){
+            switch (type){
+                case 'COMMONNAME(SCIENTIFICNAME)':
+                    if(data.commonName){
+                        name = "${data.commonName} (${data.scientificName})"
+                    } else {
+                        name = "${data.scientificName}"
+                    }
+                    break;
+                case 'SCIENTIFICNAME(COMMONNAME)':
+                    if(data.commonName){
+                        name = "${data.scientificName} (${data.commonName})"
+                    } else {
+                        name = "${data.scientificName}"
+                    }
+
+                    break;
+                case 'COMMONNAME':
+                    if(data.commonName){
+                        name = "${data.commonName}"
+                    } else {
+                        name = "${data.scientificName}"
+                    }
+                    break;
+                case 'SCIENTIFICNAME':
+                    name = "${data.scientificName}"
+                    break;
+            }
+        } else {
+            // when no guid, append unmatched taxon string
+            name = "${data.name} (Unmatched taxon)"
+        }
+
+        name
     }
 
     /*
