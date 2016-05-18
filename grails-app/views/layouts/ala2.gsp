@@ -31,10 +31,10 @@
     <g:if test="${showCitizenScienceBanner}">
         <g:render template="/shared/bannerCitizenScience"/>
     </g:if>
-    <g:if test="${hubConfig?.defaultFacetQuery.contains('isWorks:true')}">
+    <g:if test="${showWorksBanner}">
         <g:render template="/shared/bannerWorks"/>
     </g:if>
-    <g:if test="${hubConfig?.defaultFacetQuery.contains('isEcoScience:true')}">
+    <g:if test="${showEcoScienceBanner}">
         <g:render template="/shared/bannerEcoScience"/>
     </g:if>
 

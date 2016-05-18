@@ -11,7 +11,7 @@
         <div class="span12">
             <div class="span3 text-left">
 
-                <div class="well" data-bind="visible: version().length == 0">
+                <div class="well">
                     <g:render template="../bioActivity/facets"/>
                 </div>
 
