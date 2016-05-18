@@ -93,6 +93,7 @@ grails.project.dependency.resolution = {
         runtime ":ala-bootstrap2:2.2"
         runtime ":csv:0.3.1"
         runtime ":lesscss-resources:1.3.3"
+        runtime ":ala-admin-plugin:1.2"
 
         compile ":ala-auth:1.3.1"
         compile ":markdown:1.1.1"
@@ -104,11 +105,9 @@ grails.project.dependency.resolution = {
         compile ":mail:1.0.7"
         compile ":excel-export:0.2.0"
         compile ":excel-import:1.0.1"
-        compile ":ala-map:1.3"
+        compile ":ala-map:1.3.2"
 
-        compile (":images-client-plugin:0.2.3") {
-            exclude "ala-web-theme"
-        }
+        compile ":images-client-plugin:0.6.1"
         compile ':cookie:1.4'
 
     }

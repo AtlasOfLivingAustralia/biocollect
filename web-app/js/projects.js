@@ -853,9 +853,15 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         var org = { id: self.associatedOrgs().length };
 
         if (self.transients.associatedOrgNotInList()) {
+
+            if($('#associatedOrgLogo').validationEngine('validate')) {
+                //Invalid content, let validation engine pop up the error and we just stop processing
+                return;
+            }
             org.name = self.associatedOrganisationSearch.term();
             org.url = self.transients.associatedOrgUrl() || null;
             org.logo = self.transients.associatedOrgLogoUrl() || null;
+
         } else {
             var logoDocument = ko.utils.arrayFirst(self.associatedOrganisationSearch.selection().documents, function(document) {
                 return document.role === "logo"

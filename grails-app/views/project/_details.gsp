@@ -164,11 +164,21 @@
                         <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.associatedOrgs"/>:<fc:iconHelp><g:message code="project.details.associatedOrgs.help"/></fc:iconHelp></label>
                         <div class="span9"><g:message code="project.details.associatedOrgs.extra"/></div>
                         <div class="span6" id="associatedOrgList">
+                            <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
                             <!-- ko foreach: associatedOrgs -->
                             <div class="span12 margin-left-0 margin-bottom-1">
                                 <div class="span6 margin-left-0" data-bind="text: name"></div>
-                                <div class="span3"><img src="" data-bind="visible: logo, attr: {src: logo}" alt="Organisation logo" class="small-logo"></div>
-                                <div class="span3"><a href="#" data-bind="click: $parent.removeAssociatedOrganisation" class="btn btn-primary"><i class="fa fa-remove">&nbsp;</i><g:message code="project.details.associatedOrgs.remove"/></a></div>
+                            <div class="span3">
+                                <div data-bind="if: logo && logo.startsWith('https')">
+                                    <img src="" data-bind="attr: {src: logo}" alt="Organisation logo"
+                                         class="small-logo">
+                                </div>
+
+                                <div data-bind="if: !logo || !logo.startsWith('https')">
+                                    <img src="${noImageUrl}" alt="Organisation logo" class="small-logo">
+                                </div>
+                            </div>
+                            <div class="span3"><a href="#" data-bind="click: $parent.removeAssociatedOrganisation" class="btn btn-primary"><i class="fa fa-remove">&nbsp;</i><g:message code="project.details.associatedOrgs.remove"/></a></div>
                             </div>
                             <!-- /ko -->
                         </div>
@@ -231,7 +241,7 @@
                                         <label class="control-label left-aligned-label span3" for="associatedOrgLogo"><g:message code="project.details.associatedOrgs.logo"/></label>
 
                                         <div class="controls span12 margin-left-0">
-                                            <input id="associatedOrgLogo" class="input-xxlarge" type="text" data-bind="value: $parent.transients.associatedOrgLogoUrl">
+                                            <input id="associatedOrgLogo" class="input-xxlarge" type="text" data-validation-engine="validate[custom[httpsUrl]]" data-bind="value: $parent.transients.associatedOrgLogoUrl">
                                         </div>
                                     </div>
                                 </div>

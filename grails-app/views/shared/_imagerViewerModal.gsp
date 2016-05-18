@@ -1,5 +1,3 @@
-
-
 <r:script>
 
     $(function () {
