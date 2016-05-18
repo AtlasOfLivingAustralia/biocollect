@@ -117,7 +117,7 @@
         <div class="pill-content">
             <fc:tabContent tabs="${projectContent}" tabClass="pill-pane"/>
         </div>
-    </div>
+   </div>
 </bc:koLoading>
 
 <r:script>
@@ -146,7 +146,7 @@
         params.projectStartDate = project.plannedStartDate;
         params.pActivityForms = pActivityForms;
         params.organisationName = project.organisationName;
-        params.project = project;
+        params.project = projectViewModel;
 
         var pActivitiesVM = new ProjectActivitiesViewModel(params);
         initialiseProjectActivitiesList(pActivitiesVM);

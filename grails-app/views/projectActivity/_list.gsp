@@ -59,11 +59,6 @@
                                 <span>Status: <span data-bind="text: transients.status"></span></span>
                             </div>
                             <br/>
-                            <div><a href="#" data-bind="visible: transients.isAekosData,
-                                                        click: showAekosDetails,
-                                                        text: transients.aekosToggleText"
-                                    title="View and send Data Submission to AEKOS"></a>
-                            </div>
                             <br/>
                             <div data-bind="visible: transients.showAekosDetailsState">
                                 <div class="table-responsive">
@@ -124,9 +119,10 @@
 
                                     <span><a href="#" data-bind="click:function() {showModal();}"
                                              class="btn btn-success btn-sm">Submit current version to AEKOS</a></span>
-<!--span data-bind="text: aekosModal"></span -->
+                                    <!--span data-bind="text: aekosModalView().show"></span-->
 
-                                    <g:render template="/projectActivity/aekosWorkflowModal"/>
+                                    <g:render template="/aekosSubmission/aekosWorkflowModal"/>
+
 
                                     <!--button type="button" data-toggle="modal" data-target="#aekosModalDialog">Open Modal</button-->
 
@@ -162,6 +158,14 @@
                         <div class="survey-row-layout survey-add-record">
                             <div><a href="#" class="btn btn-success btn-sm" data-bind="click: addActivity, visible: $parent.userCanEdit($data)" title="Click to add a record to this survey"> Add a record</a></div>
                             <div class="margin-top-1"><a href="#" class="btn btn-info btn-sm" data-bind="click: listActivityRecords" title="Click to view existing records from this survey"> View records</a></div>
+
+                            <br><br><br>
+
+                            <div><a href="#" data-bind="visible: transients.isAekosData,
+                                                        click: showAekosDetails,
+                                                        text: transients.aekosToggleText"
+                                    title="View and send Data Submission to AEKOS"></a>
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -176,9 +180,6 @@
 
 
 <!-- /ko -->
-
-
-
 
 
 <!--script id="myModal" type="text/html">

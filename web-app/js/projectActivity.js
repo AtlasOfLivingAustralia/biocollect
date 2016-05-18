@@ -99,6 +99,15 @@ var ProjectActivitiesViewModel = function (params) {
 
     self.loadProjectActivities(pActivities);
 
+   /* self.aekosTestModalView = ko.observable(new AekosViewModel (pActivity, project.name, project.description, project.status));
+
+    //self.aekosModal = ko.observable(false);
+
+    self.showModal = function () {
+        //  self.aekosModal(true);
+        self.aekosTestModalView().show(true);
+    };
+*/
 };
 
 var ProjectActivitiesListViewModel = function (pActivitiesVM) {
@@ -119,23 +128,47 @@ var ProjectActivitiesDataViewModel = function (pActivitiesVM) {
     var self = $.extend(this, pActivitiesVM);
 };
 
-var AekosViewModel = function (pActivityVM, projectName, projectDescription, projectStatus) {
+var AekosViewModel = function (pActivityVM, projectViewModel) {
 
 
     var self = $.extend(this, pActivityVM);
-    self.projectName = projectName;
 
-    self.projectDescription = ko.observable(projectDescription);
+    self.projectViewModel = projectViewModel;
 
-    self.projectStatus = projectStatus;
+    self.projectName = self.projectViewModel.name();
 
-    self.submissionName = projectName + ' - ' + name;
+    self.projectDescription = ko.observable(self.projectViewModel.description());
+
+    self.projectStatus = self.projectViewModel.status();
+
+    self.submissionName = self.projectViewModel.name() + ' - ' + self.name;
+
+    self.datasetTitle = ko.computed(function() {
+        return self.projectViewModel.organisationName() + ' - ' + self.name;
+    });
+
+    self.currentDatasetVersion = ko.computed(function() {
+        var res = self.projectViewModel.name().substr(1, 3) + self.name.substr(1, 3);
+        //var res = self.name.substr(1, 3);
+
+        if (self.submissionRecords) {
+            var datasetArray = $.map(self.submissionRecords, function (o) {
+                return o.datasetVersion.substring(8, o.datasetVersion.length);
+            });
+            var highest = Math.max.apply(Math, datasetArray);
+            return res + "_" + (highest + 1);
+        } else {
+            return res + "_1";
+        }
+    });
 
     self.selectedTab = ko.observable('submission-project-info-tab');
 
     self.selectTab = function(data, event) {
         self.selectedTab(event.currentTarget.id);
-    }
+    };
+
+
 
     //self.project = $.extend(self.project, projectVM);
     self.header = ko.observable("This is a modal");
@@ -745,12 +778,13 @@ var ProjectActivity = function (params) {
 
 
 
-    self.aekosModalView = ko.observable(new AekosViewModel (pActivity, project.name, project.description, project.status));
+    self.aekosModalView = ko.observable(new AekosViewModel (pActivity, project));
 
-    self.aekosModal = ko.observable(false);
+    //self.aekosModal = ko.observable(false);
 
     self.showModal = function () {
-        self.aekosModal(true);
+        //  self.aekosModal(true);
+        self.aekosModalView().show(true);
     };
 
 
