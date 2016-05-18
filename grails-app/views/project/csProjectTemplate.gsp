@@ -68,8 +68,9 @@
         projectLinkPrefix: "${createLink(controller: 'project')}/",
         recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
         view: 'project',
-        imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}'
-        },
+        imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
+        aekosSubmissionPostUrl: "${createLink(controller: 'projectActivity', action: 'aekosSubmission')}",
+        }
         here = window.location.href;
 
     </r:script>
@@ -133,11 +134,15 @@
         params.user = user;
         params.projectStartDate = project.plannedStartDate;
         params.pActivityForms = pActivityForms;
-        params.organisationName = project.organisationName
+        params.organisationName = project.organisationName;
+        params.project = project;
 
         var pActivitiesVM = new ProjectActivitiesViewModel(params);
         initialiseProjectActivitiesList(pActivitiesVM);
         initialiseData('project');
+
+
+      //  initialiseAekosWorkflow(aekosVM);
 
         //Main tab selection
         new RestoreTab('ul-main-project', 'about-tab');
@@ -158,7 +163,10 @@
 
             populatePermissionsTable();
 
+            //initialiseInternalCSAdmin(pActivitiesVM);
             initialiseInternalCSAdmin();
+
+
         </g:if>
 
         $('.validationEngineContainer').validationEngine();
