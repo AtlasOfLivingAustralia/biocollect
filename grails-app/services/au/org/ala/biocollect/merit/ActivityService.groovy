@@ -57,8 +57,9 @@ class ActivityService {
         webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/countByProjectActivity/'+ id)
     }
 
-    def get(id) {
-        def activity = webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/' + id)
+    def get(id, version = null) {
+        def params = version ? '?version=' + version : ''
+        def activity = webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/' + id + params)
         activity
     }
 

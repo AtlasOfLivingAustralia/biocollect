@@ -1,13 +1,9 @@
-<%--
- Created by Temi Varghese on 29/09/15.
---%>
-
 <%@ page import="grails.converters.JSON; au.org.ala.biocollect.merit.SettingPageType" contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title><g:message code="g.myProjects"/> | <g:message code="g.citizenScience"/></title>
+    <title><g:message code="g.ecoScience"/> | <g:message code="g.fieldCapture"/></title>
     <r:script disposition="head">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
@@ -25,57 +21,46 @@
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
+        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
         imageLocation:"${resource(dir:'/images')}",
         logoLocation:"${resource(dir:'/images/filetypes')}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
-        isUserPage: true,
-        <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-            isUserWorksPage: true,
-        </g:if>
-        <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
-            isUserEcoSciencePage: true,
-        </g:if>
         projectListUrl: "${createLink(controller: 'project', action: 'search', params:[initiator:'biocollect'])}",
-        isCitizenScience: true,
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
-        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
-        showAllProjects: true,
-        meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
-        meritProjectUrl: "${grailsApplication.config.merit.project.url}",
-        isCitizenScience: false
-  }
+        isCitizenScience: false,
+        showAllProjects: false,
+        meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}"
+    }
+        <g:if test = "${grailsApplication.config.merit.projectLogo}" >
+            fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";
+        </g:if>
     </r:script>
-    <r:require modules="js_iso8601,projects,projectFinder,map"/>
+    <script type="text/javascript" src="//www.google.com/jsapi"></script>
+    <r:require modules="js_iso8601,knockout,jqueryValidationEngine,projects,projectFinder,map"/>
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">
+    <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
     <div class="row-fluid">
-        <div class="span6" id="heading">
-            <h1 class="pull-left"><g:message code="project.myProjects.heading"/></h1>
+        <div class="span12 padding10-small-screen" id="heading">
+            <h1 class="pull-left"><g:message code="project.ecoScience.heading"/></h1>
+            <div class="pull-right">
+                <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</a>
+                <a class="btn btn-info" href="${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</a>
+            </div>
         </div>
-        <g:if test="${user}">
-            <button id="newPortal" type="button" class="pull-right btn"><g:message
-                    code="project.citizenScience.portalLink"/></button>
-        </g:if>
     </div>
 
-    <g:render template="/shared/projectFinder"/>
+    <g:render template="/shared/projectFinderResultPanel"></g:render>
 </div>
 <r:script>
     $("#newPortal").on("click", function() {
-        <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-            document.location.href = "${createLink(controller:'project',action:'create',params:[citizenScience:true])}";
-        </g:if>
-        <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-            document.location.href = "${createLink(controller:'project',action:'create',params:[works:true])}";
-        </g:if>
-        <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
-            document.location.href = "${createLink(controller:'project',action:'create',params:[ecoScience:true])}";
-        </g:if>
+        document.location.href = "${createLink(controller:'project',action:'create',params:[ecoScience:true])}";
     });
 
     var projectFinder = new ProjectFinder();
+
 </r:script>
 </body>
 </html>

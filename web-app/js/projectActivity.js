@@ -7,6 +7,7 @@ var ProjectActivitiesViewModel = function (params) {
     self.pActivityForms = params.pActivityForms;
     self.sites = params.sites;
     self.projectStartDate = params.projectStartDate;
+    self.project = params.project;
 
     self.projectId = ko.observable(params.projectId);
     self.projectActivities = ko.observableArray();
@@ -81,7 +82,8 @@ var ProjectActivitiesViewModel = function (params) {
                 selected: (i == 0),
                 sites: self.sites,
                 organisationName: self.organisationName,
-                startDate: self.projectStartDate
+                startDate: self.projectStartDate,
+                project: self.project
             };
             return self.projectActivities.push(new ProjectActivity(args));
         });
@@ -92,11 +94,20 @@ var ProjectActivitiesViewModel = function (params) {
     self.userCanEdit = function (pActivity) {
         var projectActive = !pActivity.endDate() || moment(pActivity.endDate()).isAfter(moment());
         var userIsEditorOrAdmin = user && Object.keys(user).length > 0 && (user.isEditor || user.isAdmin);
-        return projectActive && (pActivity.publicAccess() || userIsEditorOrAdmin);
+        return projectActive && (pActivity.publicAccess() || userIsEditorOrAdmin) && fcConfig.version.length == 0;
     };
 
     self.loadProjectActivities(pActivities);
 
+   /* self.aekosTestModalView = ko.observable(new AekosViewModel (pActivity, project.name, project.description, project.status));
+
+    //self.aekosModal = ko.observable(false);
+
+    self.showModal = function () {
+        //  self.aekosModal(true);
+        self.aekosTestModalView().show(true);
+    };
+*/
 };
 
 var ProjectActivitiesListViewModel = function (pActivitiesVM) {
@@ -116,6 +127,122 @@ var ProjectActivitiesListViewModel = function (pActivitiesVM) {
 var ProjectActivitiesDataViewModel = function (pActivitiesVM) {
     var self = $.extend(this, pActivitiesVM);
 };
+
+var AekosViewModel = function (pActivityVM, projectViewModel) {
+
+
+    var self = $.extend(this, pActivityVM);
+
+    self.projectViewModel = projectViewModel;
+
+    self.projectName = self.projectViewModel.name();
+
+    self.projectDescription = ko.observable(self.projectViewModel.description());
+
+    self.projectStatus = self.projectViewModel.status();
+
+    self.submissionName = self.projectViewModel.name() + ' - ' + self.name;
+
+    self.datasetTitle = ko.computed(function() {
+        return self.projectViewModel.organisationName() + ' - ' + self.name;
+    });
+
+    self.currentDatasetVersion = ko.computed(function() {
+        var res = self.projectViewModel.name().substr(1, 3) + self.name.substr(1, 3);
+        //var res = self.name.substr(1, 3);
+
+        if (self.submissionRecords) {
+            var datasetArray = $.map(self.submissionRecords, function (o) {
+                return o.datasetVersion.substring(8, o.datasetVersion.length);
+            });
+            var highest = Math.max.apply(Math, datasetArray);
+            return res + "_" + (highest + 1);
+        } else {
+            return res + "_1";
+        }
+    });
+
+    self.selectedTab = ko.observable('submission-project-info-tab');
+
+    self.selectTab = function(data, event) {
+        self.selectedTab(event.currentTarget.id);
+    };
+
+
+
+    //self.project = $.extend(self.project, projectVM);
+    self.header = ko.observable("This is a modal");
+    self.body = ko.observable("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut " +
+        "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+    self.closeLabel = "Close";
+    self.primaryLabel = "Do Something";
+    self.show = ko.observable(false);
+    self.hideModal = function () {
+        self.show(false);
+    }
+    self.onClose = function() {
+        self.onModalClose();
+    };
+    self.onAction = function() {
+        self.onModalAction();
+    };
+
+    self.showModal = function() {
+        self.show(true);
+    };
+
+    self.onModalClose = function() {
+        alert("CLOSE!");
+    };
+
+    self.onModalAction = function() {
+        alert("ACTION!");
+    };
+
+    self.isSubmissionStep1InfoValid = function () {
+        return self.projectDescription();
+    };
+
+    self.submit = function(pActivity, caller){
+        var url =  fcConfig.aekosSubmissionPostUrl + "/" + pActivity.projectActivityId();
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: JSON.stringify(pActivity.asJS(caller), function (key, value) {return value === undefined ? "" : value;}),
+            contentType: 'application/json',
+            success: function (data) {
+                var result = data.resp;
+                if (result && result.message == 'updated') {
+                    self.updateLogo(data);
+                    showAlert("Successfully updated ", "alert-success", self.placeHolder);
+                } else {
+                    showAlert(data.error ? data.error : "Error updating the survey", "alert-error", self.placeHolder);
+                }
+            },
+            error: function (data) {
+                showAlert("Error updating the survey -" + data.status, "alert-error", self.placeHolder);
+            }
+        });
+    };
+
+};
+
+ko.bindingHandlers.showTabOrRedirect = {
+    'init': function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+        var newValueAccesssor = function () {
+            return function () {
+                var options = ko.utils.unwrapObservable(valueAccessor());
+                if (options.url == '' && options.tabId) {
+                    $(options.tabId).tab('show');
+                } else if (options.url != '') {
+                    window.location.href = options.url;
+                }
+            }
+        };
+        ko.bindingHandlers.click.init(element, newValueAccesssor, allBindingsAccessor, viewModel, bindingContext);
+    }
+};
+
 
 var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
@@ -544,6 +671,7 @@ var ProjectActivity = function (params) {
     var sites = params.sites ? params.sites : [];
     var startDate = params.startDate ? params.startDate : "";
     var organisationName = params.organisationName ? params.organisationName : "";
+    var project = params.project ? params.project : {};
 
     var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
@@ -619,6 +747,11 @@ var ProjectActivity = function (params) {
         self.transients.isAekosData = ko.observable(false);
     }
 
+    /*   self.showModal = function (pActivity) {
+     self.modal = ko.observable(new AekosWorkflowViewModel(pActivity));
+
+     } */
+
     var images = [];
     $.each(pActivityForms, function (index, form) {
         if (form.name == self.pActivityFormName()) {
@@ -642,6 +775,18 @@ var ProjectActivity = function (params) {
             }
         });
     });
+
+
+
+    self.aekosModalView = ko.observable(new AekosViewModel (pActivity, project));
+
+    //self.aekosModal = ko.observable(false);
+
+    self.showModal = function () {
+        //  self.aekosModal(true);
+        self.aekosModalView().show(true);
+    };
+
 
     /**
      * get number of sites selected for a survey
@@ -718,6 +863,25 @@ var ProjectActivity = function (params) {
         }
 
         return jsData;
+    }
+};
+
+
+// Custom binding for modal dialog
+ko.bindingHandlers.bootstrapShowModal = {
+    init: function (element, valueAccessor) {
+    },
+    update: function (element, valueAccessor) {
+        var value = valueAccessor();
+
+        if (ko.utils.unwrapObservable(value)) {
+            $(element).modal('show');
+            // this is to focus input field inside dialog
+            $("input", element).focus();
+        }
+        else {
+            $(element).modal('hide');
+        }
     }
 };
 
@@ -1151,3 +1315,30 @@ function initialiseValidator() {
         $('#project-activities-' + label + '-validation').validationEngine();
     });
 };
+
+
+
+/*ko.bindingHandlers.bootstrapModal = {
+ init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+ var props = valueAccessor(),
+ vm = bindingContext.createChildContext(viewModel);
+ ko.utils.extend(vm, props);
+ vm.close = function () {
+ vm.show(false);
+ vm.onClose();
+ };
+ vm.action = function () {
+ vm.onAction();
+ };
+ ko.utils.toggleDomNodeCssClass(element, "modal fade", true);
+ alert("Modal test");
+ ko.renderTemplate("myModal", vm, null, element);
+ var showHide = ko.computed(function () {
+ $(element).modal(vm.show() ? 'show' : 'hide');
+ });
+ return {
+ // tell knockout don't bind descendent bindings
+ controlsDescendantBindings: true
+ };
+ }
+ }; */

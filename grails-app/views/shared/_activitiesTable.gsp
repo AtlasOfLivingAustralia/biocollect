@@ -201,13 +201,13 @@
                 var context = '',
                     projectId = "${project?.projectId}",
                     siteId = "${site?.siteId}",
-                    returnTo = '?returnTo=' + document.location.href;
+                    returnTo = '&returnTo=' + document.location.href;
                 if (projectId) {
                     context = '&projectId=' + projectId;
                 } else if (siteId) {
                     context = '&siteId=' + siteId;
                 }
-                document.location.href = fcConfig.activityCreateUrl + returnTo + context;
+                document.location.href = fcConfig.activityCreateUrl + '?' + context + returnTo;
             };
             self.expandActivities = function () {
                 // the check is required as 'show' seems to act like a toggle and the collapse code

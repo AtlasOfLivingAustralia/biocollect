@@ -59,11 +59,6 @@
                                 <span>Status: <span data-bind="text: transients.status"></span></span>
                             </div>
                             <br/>
-                            <div><a href="#" data-bind="visible: transients.isAekosData,
-                                                        click: showAekosDetails,
-                                                        text: transients.aekosToggleText"
-                                    title="View and send Data Submission to AEKOS"></a>
-                            </div>
                             <br/>
                             <div data-bind="visible: transients.showAekosDetailsState">
                                 <div class="table-responsive">
@@ -121,7 +116,16 @@
                                 </div>
                                 <div>
                                     <br/>
-                                    <span><a href="#" class="btn btn-success btn-sm">Submit current version to AEKOS</a></span>
+
+                                    <span><a href="#" data-bind="click:function() {showModal();}"
+                                             class="btn btn-success btn-sm">Submit current version to AEKOS</a></span>
+                                    <!--span data-bind="text: aekosModalView().show"></span-->
+
+                                    <g:render template="/aekosSubmission/aekosWorkflowModal"/>
+
+
+                                    <!--button type="button" data-toggle="modal" data-target="#aekosModalDialog">Open Modal</button-->
+
                                 </div>
                             </div>
 
@@ -154,21 +158,61 @@
                         <div class="survey-row-layout survey-add-record">
                             <div><a href="#" class="btn btn-success btn-sm" data-bind="click: addActivity, visible: $parent.userCanEdit($data)" title="Click to add a record to this survey"> Add a record</a></div>
                             <div class="margin-top-1"><a href="#" class="btn btn-info btn-sm" data-bind="click: listActivityRecords" title="Click to view existing records from this survey"> View records</a></div>
+
+                            <br><br><br>
+
+                            <div><a href="#" data-bind="visible: transients.isAekosData,
+                                                        click: showAekosDetails,
+                                                        text: transients.aekosToggleText"
+                                    title="View and send Data Submission to AEKOS"></a>
+                            </div>
                         </div>
                     </td>
                 </tr>
-            <!-- /ko -->
+
+        <!-- /ko -->
         <!-- /ko -->
         </tbody>
     </table>
 
 </div>
 
+
+
 <!-- /ko -->
 
+
+<!--script id="myModal" type="text/html">
+<div class="modal-header">
+    <button type="button" class="close" data-bind="click:close" aria-hidden="true">&times;</button>
+    <h3 data-bind="html:header"></h3>
+</div>
+<div class="modal-body" data-bind="html:body"></div>
+<div class="modal-footer">
+    <a href="#" class="btn" data-bind="click:close,html:closeLabel"></a>
+    <a href="#" class="btn btn-primary" data-bind="click:action,html:primaryLabel"></a>
+</div>
+</script-->
+
 <r:script>
+
+
+    $(window).load(function () {
+
+
+
+
+
+     });
+
+
     function initialiseProjectActivitiesList(pActivitiesVM){
         var pActivitiesListVM = new ProjectActivitiesListViewModel(pActivitiesVM);
         ko.applyBindings(pActivitiesListVM, document.getElementById('pActivitiesList'));
-    }
+    };
+/*
+    function initialiseAekosWorkflow(aekosVM) {
+        //var aekosVM = new aekosViewModel();
+        ko.applyBindings(aekosVM, document.getElementById('aekosModel'));
+    } */
 </r:script>

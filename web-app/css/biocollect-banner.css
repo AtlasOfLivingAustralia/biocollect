@@ -10,6 +10,20 @@ nav#biocollectNav > ul {
     text-align: left;
     background: rgb(43, 123, 117);
 }
+
+nav#biocollectNav.ecoScienceNav > ul, nav#biocollectNav.ecoScienceNav > ul > li a, nav#biocollectNav.ecoScienceNav ul#main > li > a.ala-link {
+    color: #555;
+    background: rgb(148,222,255);
+}
+
+nav#biocollectNav.ecoScienceNav > ul > li a + ul li a:hover, nav#biocollectNav.ecoScienceNav > ul > li:hover > a {
+    background: rgb(100,170,200);
+}
+
+nav#biocollectNav.ecoScienceNav ul > li.active > a {
+    background: rgb(100,170,200);
+}
+
 nav#biocollectNav > ul > li {
     display: inline-block;
     position: relative;
@@ -86,7 +100,7 @@ nav#biocollectNav > ul > li.more > ul.more-ul > li > ul{
 }
 
 .ala-icon:before {
-    content: url(http://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico)
+    content: url(https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico)
 }
 
 nav#biocollectNav ul#main > li > a.ala-link{
@@ -98,7 +112,7 @@ nav#biocollectNav ul#main > li > a.ala-link{
 }
 
 nav#biocollectNav ul#main li a.ala-link:hover{
-    color: rgb(217,27,0);
+    color: #5f5d60;
     background: rgb(43, 123, 117);
 }
 
@@ -109,6 +123,20 @@ nav#biocollectNav ul#main li a.ala-link:hover{
     background-position-y: -54px;
 }
 
-.ala-header .input-append{
+.ala-header .input-append, .ala-header-works .input-append, .ala-header-ecoscience .input-append {
     margin-top: 75px ;
+}
+
+.ala-header-works {
+    background: url(http://www.ala.org.au/wp-content/uploads/2015/07/Revegetation.jpg) no-repeat center top;
+    height: 225px;
+    background-size: cover;
+    background-position-y: -54px;
+}
+
+.ala-header-ecoscience {
+    background: url(http://www.ala.org.au/wp-content/uploads/2015/07/ES-banner-4.jpg) no-repeat center top;
+    height: 225px;
+    background-size: cover;
+    background-position-y: -254px;
 }

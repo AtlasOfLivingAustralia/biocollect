@@ -15,15 +15,17 @@ class ProjectActivityService {
     ProjectService projectService
     MetadataService metadataService
 
-    def getAllByProject(projectId, levelOfDetail = ""){
+    def getAllByProject(projectId, levelOfDetail = "", version = null){
         def params = '?'
         params += levelOfDetail ? "view=${levelOfDetail}&" : ''
+        params += version ? "version=${version}&" : ''
         webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/getAllByProject/'+ projectId + params).list
     }
 
-    def get(projectActivityId, levelOfDetail = ""){
+    def get(projectActivityId, levelOfDetail = "", version = null){
         def params = '?'
         params += levelOfDetail ? "view=${levelOfDetail}&" : ''
+        params += version ? "version=${version}&" : ''
         webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/get/'+ projectActivityId + params)
     }
 
