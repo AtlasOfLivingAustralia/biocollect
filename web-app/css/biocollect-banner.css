@@ -112,3 +112,13 @@ nav#biocollectNav ul#main li a.ala-link:hover{
 .ala-header .input-append{
     margin-top: 75px ;
 }
+
+.biocollect-icon {
+    content: url('/images/icons/biocollect_29x29.png');
+    width: 20px;
+    padding-left: 25px;
+}
+
+.border-left-dashed {
+    border-left: 1px dashed white;
+}

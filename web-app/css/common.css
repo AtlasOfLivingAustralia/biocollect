@@ -412,3 +412,7 @@ input.padding-14, .padding-14{
 .inline-block{
     display: inline-block;
 }
+
+.bioactivity-logo{
+    max-height: 50px;
+}

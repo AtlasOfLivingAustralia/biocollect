@@ -2,7 +2,7 @@
     <ul id='main'>
         <g:set var="path" value="${request.getServletPath()}"/>
         <li>
-            <a href="${grailsApplication.config.biocollect.homepageUrl}" class="do-not-mark-external"><span class="fa fa-home"></span>Biocollect</a>
+            <a href="#" class="btnSearch" onclick="window.location = '${grailsApplication.config.biocollect.homepageUrl}'"><span class="fa biocollect-icon"></span>Biocollect</a>
         </li>
         <li class="${(path ==~ /.*project\/citizenScience.*/) ? 'active' : ''}">
             <a href="#" class="btnSearch"><span class="fa fa-search"></span>Search</a>
