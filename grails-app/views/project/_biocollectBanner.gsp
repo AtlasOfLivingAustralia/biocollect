@@ -1,8 +1,8 @@
-<nav role='navigation' id="biocollectNav">
+<nav role='navigation' id="biocollectNav" class="hide">
     <ul id='main'>
         <g:set var="path" value="${request.getServletPath()}"/>
-        <li>
-            <a href="#" class="btnSearch" onclick="window.location = '${grailsApplication.config.biocollect.homepageUrl}'"><span class="fa biocollect-icon"></span>Biocollect</a>
+        <li class="pull-left">
+            <a id="biocollectlogo" class="white-background" href="${grailsApplication.config.biocollect.homepageUrl}"><img src="${resource(dir: 'images/icons', file: 'BioCollect24.jpg')}" width="193"></a>
         </li>
         <li class="${(path ==~ /.*project\/citizenScience.*/) ? 'active' : ''}">
             <a href="#" class="btnSearch"><span class="fa fa-search"></span>Search</a>
