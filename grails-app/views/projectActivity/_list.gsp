@@ -119,7 +119,7 @@
 
                                     <span><a href="#" data-bind="click:function() {showModal();}"
                                              class="btn btn-success btn-sm">Submit current version to AEKOS</a></span>
-                                    <!--span data-bind="text: aekosModalView().show"></span-->
+                                    %{--<span data-bind="text: aekosModalView().show"></span>--}%
 
                                     <g:render template="/aekosSubmission/aekosWorkflowModal"/>
 

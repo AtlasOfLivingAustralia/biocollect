@@ -8,25 +8,25 @@
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="submissionName"><g:message code="aekos.submission.info.name"/>
+            <label class="control-label" data-bind="attr: {'for': 'submissionName' + $index()}"><g:message code="aekos.submission.info.name"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.submission.info.name"/>',
                               content:'<g:message code="aekos.submission.info.name.help"/>'}">
-                    <i class="icon-question-sign"></i>
+                   <i class="icon-question-sign"></i>
                 </a>
             </label>
         </div>
 
         <div class="span8">
             <div class="controls">
-                <span id="submissionName" data-bind="text: aekosModalView().submissionName"></span>
+                <span data-bind="attr:{id: 'submissionName' + $index()}, text: aekosModalView().submissionName"></span>
             </div>
         </div>
     </div>
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="submissionName"><g:message code="aekos.project.info.name"/>
+            <label class="control-label" for="projectName"><g:message code="aekos.project.info.name"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.project.info.name"/>',
                               content:'<g:message code="aekos.project.info.name.help"/>'}">
@@ -37,7 +37,7 @@
 
         <div class="span8">
             <div class="controls">
-                <span id="projectName" data-bind="text: aekosModalView().projectName"></span>
+                <span id="projectName" data-bind="text: aekosModalView().projectViewModel.name"></span>
             </div>
         </div>
     </div>
@@ -55,27 +55,20 @@
 
         <div class="span8">
             <div class="controls">
-                <textarea id="projectDescription" data-bind="value: aekosModalView().projectDescription" rows="6" style="width:90%;" ></textarea>
+                <textarea id="projectDescription" data-bind="value: aekosModalView().projectViewModel.description"
+                          data-validation-engine="validate[required]" rows="20" style="width:90%;" class="input-xlarge"></textarea>
             </div>
         </div>
     </div>
 
-    <!--div class="row-fluid">
-        <div class="span4 text-right">
-            <label class="control-label" for="projectStatus"><g:message code="aekos.project.info.status"/>
-                <a href="#" class="helphover"
-                   data-bind="popover: {title:'<g:message code="aekos.project.info.status"/>',
-                              content:'<g:message code="aekos.project.info.status.content"/>'}">
-                    <i class="icon-question-sign"></i>
-                </a>
-            </label>
-        </div>
-
-        <div class="span8">
-            <div class="controls">
-                <span id="projectStatus" data-bind="text: aekosModalView().projectStatus"></span>
-            </div>
-        </div>
-    </div-->
 
 </div>
+%{--
+
+<r:script>
+    $(window).load(function () {
+        AekosViewModel.isProjectInfoValidated = function () {
+            return self.projectName;
+        }
+    });
+</r:script>--}%

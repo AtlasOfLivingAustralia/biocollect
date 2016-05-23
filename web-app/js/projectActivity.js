@@ -130,30 +130,33 @@ var ProjectActivitiesDataViewModel = function (pActivitiesVM) {
 
 var AekosViewModel = function (pActivityVM, projectViewModel) {
 
-
     var self = $.extend(this, pActivityVM);
 
     self.projectViewModel = projectViewModel;
 
-    self.projectName = self.projectViewModel.name();
+  //  self.projectName = self.projectViewModel.name();
 
-    self.projectDescription = ko.observable(self.projectViewModel.description());
+  //  self.projectDescription = ko.observable(self.projectViewModel.description());
 
-    self.projectStatus = self.projectViewModel.status();
+  //  self.projectStatus = self.projectViewModel.status();
 
-    self.submissionName = self.projectViewModel.name() + ' - ' + self.name;
+    self.submissionName = self.projectViewModel.name() + ' - ' + self.name();
 
     self.datasetTitle = ko.computed(function() {
-        return self.projectViewModel.organisationName() + ' - ' + self.name;
+        return self.projectViewModel.organisationName() + ' - ' + self.name();
     });
 
     self.currentDatasetVersion = ko.computed(function() {
-        var res = self.projectViewModel.name().substr(1, 3) + self.name.substr(1, 3);
+        var res = self.projectViewModel.name().substr(1, 3) + self.name().substr(1, 3);
         //var res = self.name.substr(1, 3);
 
-        if (self.submissionRecords) {
+        if (self.submissionRecords && self.submissionRecords.datasetVersion) {
             var datasetArray = $.map(self.submissionRecords, function (o) {
-                return o.datasetVersion.substring(8, o.datasetVersion.length);
+                if (o.datasetVersion.length > 0) {
+                    return o.datasetVersion.substr(8, o.datasetVersion.length);
+                } else {
+                    return 0;
+                }
             });
             var highest = Math.max.apply(Math, datasetArray);
             return res + "_" + (highest + 1);
@@ -162,85 +165,125 @@ var AekosViewModel = function (pActivityVM, projectViewModel) {
         }
     });
 
-    self.selectedTab = ko.observable('submission-project-info-tab');
+    self.environmentFeatures = ko.observableArray();
+
+    self.otherEnvironmentFeatures = ko.observable('');
+
+    self.associatedMaterialTypes = ko.observableArray(['Algorithms', 'Database Manual', 'Database Schema',
+                                    'Derived Spatial Layers', 'Field Manual', 'Mathematical Equations',
+                                    'None', 'Other', 'Patent', 'Published Paper', 'Published Report']);
+    self.selectedMaterialType = '';
+
+    self.otherMaterials = ko.observable('');
+    self.associatedMaterialNane = ko.observable('');
+
+    self.materialIdentifierTypes = ko.observableArray(['Ark Persistent Identifier Scheme', 'Australian Research Council Identifier',
+                                        'DOI', 'National Library Of Australia Identifier', 'None']);
+    self.selectedMaterialIdentifier = ko.observable('');
+
+    self.samplingDesign = ko.observableArray();
+    self.samplingDesignSuggest = ko.observable('');
+
+    self.measurementTheme = ko.observableArray();
+    self.measurementThemeSuggest = ko.observable('');
+
+    self.measurement = ko.observableArray();
+    self.measurementSuggest = ko.observable('');
+
+    self.methodDriftDescription = ko.observable('');
+
+    self.artefacts = ko.observableArray();
+    self.artefactsSuggest = ko.observable('');
+
+    self.pageModel = new PageModel();
+    self.pageModel.loadData(_sampleVocabData);
+
+    self.selectedTab = ko.observable('tab-1');
 
     self.selectTab = function(data, event) {
-        self.selectedTab(event.currentTarget.id);
+        if (self.isValidationValid()) {
+            var tabId = event.currentTarget.id;
+            $("#" + tabId).tab('show');
+            var tabNumber = tabId.substr(0, 5);
+            self.selectedTab(tabNumber);
+        }
     };
 
+    self.selectNextTab = function(nextTab) {
+        if (self.isValidationValid()) {
+            $(nextTab).tab('show');
+            var nextTab = nextTab.substr(1, 5);
+            self.selectedTab(nextTab);
+        }
+    }
 
+    self.nextTab = ko.computed(function(){
+        var currentTab = ko.utils.unwrapObservable(self.selectedTab);
+        var currentTabNumber = parseInt(currentTab.charAt(4));
+        var nextTabNumber = currentTabNumber + 1;
+        var nextTab = currentTab.substr(0, 4) + nextTabNumber;
+       // if (nextTabNumber < 9) {
+         //   self.selectedTab(nextTab);
+       // }
+        //alert(nextTab);
+        return nextTab;
+    });
+
+    self.dataToggleVal = function(){
+        if(self.isValidationValid()){
+            return 'tab'
+        } else {
+            return ''
+        }
+    }
 
     //self.project = $.extend(self.project, projectVM);
-    self.header = ko.observable("This is a modal");
-    self.body = ko.observable("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut " +
-        "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-    self.closeLabel = "Close";
-    self.primaryLabel = "Do Something";
     self.show = ko.observable(false);
     self.hideModal = function () {
-        self.show(false);
-    }
-    self.onClose = function() {
-        self.onModalClose();
-    };
-    self.onAction = function() {
-        self.onModalAction();
-    };
+        bootbox.confirm("You will lose unsaved changes. Are you sure you want to close this window?", function(result) {
+            if (result) {
+                self.show(false);
+        }});
+   }
 
     self.showModal = function() {
         self.show(true);
     };
 
-    self.onModalClose = function() {
-        alert("CLOSE!");
+    self.isProjectInfoValidated = function () {
+        return ko.utils.unwrapObservable(self.projectViewModel.description);
     };
 
-    self.onModalAction = function() {
-        alert("ACTION!");
+    self.isDatasetInfoValidated = function () {
+        return ko.utils.unwrapObservable(self.projectViewModel.description);
     };
 
-    self.isSubmissionStep1InfoValid = function () {
-        return self.projectDescription();
+    self.isValidationValid = function () {
+        switch(ko.utils.unwrapObservable(self.selectedTab)) {
+            case 'tab-1':
+                return self.isProjectInfoValidated();
+                break;
+            case 'tab-2':
+                return self.isDatasetInfoValidated();
+                break;
+            default:
+            return true;
+        }
     };
 
-    self.submit = function(pActivity, caller){
-        var url =  fcConfig.aekosSubmissionPostUrl + "/" + pActivity.projectActivityId();
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: JSON.stringify(pActivity.asJS(caller), function (key, value) {return value === undefined ? "" : value;}),
-            contentType: 'application/json',
-            success: function (data) {
-                var result = data.resp;
-                if (result && result.message == 'updated') {
-                    self.updateLogo(data);
-                    showAlert("Successfully updated ", "alert-success", self.placeHolder);
-                } else {
-                    showAlert(data.error ? data.error : "Error updating the survey", "alert-error", self.placeHolder);
-                }
-            },
-            error: function (data) {
-                showAlert("Error updating the survey -" + data.status, "alert-error", self.placeHolder);
-            }
-        });
+    self.submit = function(){
+        var jsData = $.extend({},
+            self.asJS("info"),
+            self.asJS("access"),
+            self.asJS("form"),
+            self.asJS("species"),
+            self.asJS("visibility"),
+            self.asJS("alert"),
+            self.asJS("sites"));
+        alert (JSON.stringify(jsData, null, 4));
+
     };
 
-};
-
-ko.bindingHandlers.showTabOrRedirect = {
-    'init': function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-        var newValueAccesssor = function () {
-            return function () {
-                var options = ko.utils.unwrapObservable(valueAccessor());
-                if (options.url == '' && options.tabId) {
-                    $(options.tabId).tab('show');
-                } else if (options.url != '') {
-                    window.location.href = options.url;
-                }
-            }
-        };
-        ko.bindingHandlers.click.init(element, newValueAccesssor, allBindingsAccessor, viewModel, bindingContext);
-    }
 };
 
 
@@ -776,16 +819,23 @@ var ProjectActivity = function (params) {
         });
     });
 
+    // New fields for Aekos Submission
+    self.environmentalFeatures = ko.observableArray();
+    self.environmentalFeaturesSuggest = ko.observable();
 
+    self.transients.titleOptions = ['Assoc Prof', 'Dr', 'Miss', 'Mr', 'Mrs', 'Miss', 'Prof'];
 
-    self.aekosModalView = ko.observable(new AekosViewModel (pActivity, project));
+    self.datasetContactRole = ko.observable('');
+    self.datasetContactDetails = ko.observable('');
+    self.datasetContactEmail = ko.observable('');
+    self.datasetContactName = ko.observable('');
+    self.datasetContactPhone = ko.observable('');
+    self.datasetContactAddress = ko.observable('');
 
-    //self.aekosModal = ko.observable(false);
+    self.authorGivenNames = ko.observable('');
+    self.authorSurname = ko.observable('');
+    self.authorAffiliation = ko.observable('');
 
-    self.showModal = function () {
-        //  self.aekosModal(true);
-        self.aekosModalView().show(true);
-    };
 
 
     /**
@@ -864,6 +914,16 @@ var ProjectActivity = function (params) {
 
         return jsData;
     }
+
+    self.aekosModalView = ko.observable(new AekosViewModel (self, project));
+
+    //self.aekosModal = ko.observable(false);
+
+    self.showModal = function () {
+        //  self.aekosModal(true);
+        self.aekosModalView().show(true);
+    };
+
 };
 
 

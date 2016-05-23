@@ -20,7 +20,7 @@
 
         <div class="span8">
             <div class="controls">
-                <input id="datasetTitle" data-bind="value: aekosModalView().datasetTitle" style="width: 90%">
+                <input id="datasetTitle" data-bind="value: aekosModalView().datasetTitle" data-validation-engine="validate[required]" style="width: 90%">
             </div>
         </div>
     </div>
@@ -38,7 +38,7 @@
 
         <div class="span8">
             <div class="controls">
-                <textarea id="projectAim" data-bind="value: aekosModalView().projectViewModel.aim()" rows="3" style="width: 90%"></textarea>
+                <span id="projectAim" data-bind="text: aekosModalView().projectViewModel.aim()"></span>
             </div>
         </div>
     </div>
@@ -51,19 +51,20 @@
                           content:'<g:message code="aekos.dataset.summary.help"/>'}">
                     <i class="icon-question-sign"></i>
                 </a>
+                <span class="req-field"></span></label>
             </label>
         </div>
 
         <div class="span8">
             <div class="controls">
-                <textarea id="activityDescription" data-bind="value: aekosModalView().description" rows="3" style="width: 90%"></textarea>
+                <textarea id="activityDescription" data-bind="value: aekosModalView().description"  data-validation-engine="validate[required]" rows="3" style="width: 90%"></textarea>
             </div>
         </div>
     </div>
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="activityDescription"><g:message code="aekos.dataset.version"/>
+            <label class="control-label" for="datasetVersion"><g:message code="aekos.dataset.version"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.version"/>',
                           content:'<g:message code="aekos.dataset.version.help"/>'}">
@@ -81,7 +82,7 @@
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="activityDescription"><g:message code="aekos.project.keywords"/>
+            <label class="control-label" for="projectKeywords"><g:message code="aekos.project.keywords"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.project.keywords"/>',
                           content:'<g:message code="aekos.project.keywords.help"/>'}">
@@ -99,7 +100,7 @@
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="activityDescription"><g:message code="aekos.activity.usageGuide"/>
+            <label class="control-label" for="usageGuide"><g:message code="aekos.activity.usageGuide"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.activity.usageGuide"/>',
                           content:'<g:message code="aekos.activity.usageGuide.help"/>'}">
@@ -117,7 +118,7 @@
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="activityDescription"><g:message code="aekos.activity.relatedDatasets"/>
+            <label class="control-label" for="relatedDatasets"><g:message code="aekos.activity.relatedDatasets"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.activity.relatedDatasets"/>',
                           content:'<g:message code="aekos.activity.relatedDatasets.help"/>'}">
@@ -128,7 +129,7 @@
 
         <div class="span8">
             <div class="controls">
-                <div class="panel panel-default" >
+                <div id="relatedDatasets" class="panel panel-default" >
                     <div class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
 
                         <!-- ko foreach: $parent.projectActivities -->
@@ -154,7 +155,7 @@
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="activityDescription"><g:message code="aekos.activity.urlImage"/>
+            <label class="control-label" for="urlImage"><g:message code="aekos.activity.urlImage"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.activity.urlImage"/>',
                           content:'<g:message code="aekos.activity.urlImage.help"/>'}">
@@ -165,8 +166,9 @@
 
         <div class="span8">
             <div class="controls">
-                <!--textarea id="urlImage" data-bind="value: aekosModalView().project.urlImage" rows="3" style="width: 90%"></textarea-->
-                <textarea></textarea>
+                %{--<textarea id="urlImage" data-bind="value: aekosModalView().projectViewModel.urlImage" rows="3" style="width: 90%"></textarea>--}%
+                <input type="file" accept="text/csv" data-bind="aekosModalView().projectViewModel.urlImage" />
+                <!--textarea></textarea-->
             </div>
         </div>
     </div>
