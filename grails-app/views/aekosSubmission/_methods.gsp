@@ -19,10 +19,25 @@
 
         <div class="span8">
             <div class="controls">
+                <div id="samplingDesign" class="panel panel-default" >
+                    <div class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
 
+                        <!-- ko foreach: aekosModalView().samplingDesignList -->
+
+                        <input type="checkbox" data-bind="checkedValue: $data, checked: $parent.samplingDesign" />
+
+                        <span data-bind="text: $data"></span>
+
+                        <br/>
+
+                        <!-- /ko -->
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    <br/>
 
     <div class="row-fluid">
         <div class="span4 text-right">
@@ -53,12 +68,28 @@
             </label>
         </div>
 
-        <div class="span8">
+         <div class="span8">
             <div class="controls">
-                <!--textarea id="measurementTheme" data-bind="value: aekosModalView().measurementTheme" rows="1" style="width: 90%"></textarea-->
+                <div id="measurementTheme" class="panel panel-default" >
+                    <div class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
+
+                        <!-- ko foreach: aekosModalView().measurementThemeList -->
+
+                        <input type="checkbox" data-bind="checkedValue: $data, checked: $parent.measurementTheme" />
+
+                        <span data-bind="text: $data"></span>
+
+                        <br/>
+
+                        <!-- /ko -->
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <br/>
 
     <div class="row-fluid">
         <div class="span4 text-right">
@@ -91,10 +122,26 @@
 
         <div class="span8">
             <div class="controls">
-                <!--textarea id="measurementTheme" data-bind="value: aekosModalView().measurementTheme" rows="1" style="width: 90%"></textarea-->
+                <div id="measurement" class="panel panel-default" >
+                    <div class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
+
+                        <!-- ko foreach: aekosModalView().measurementList -->
+
+                        <input type="checkbox" data-bind="checkedValue: $data, checked: $parent.measurement" />
+
+                        <span data-bind="text: $data"></span>
+
+                        <br/>
+
+                        <!-- /ko -->
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <br/>
 
     <div class="row-fluid">
         <div class="span4 text-right">
@@ -128,7 +175,7 @@
 
         <div class="span8">
             <div class="controls">
-                <input id="methodName" data-bind="value: aekosModalView().methodName" style="width: 90%">
+                <input id="methodName" data-bind="value: aekosModalView().methodName" data-validation-engine="validate[required]" style="width: 95%">
             </div>
         </div>
     </div>
@@ -147,7 +194,7 @@
 
         <div class="span8">
             <div class="controls">
-                <textarea id="methodAbstract" data-bind="value: aekosModalView().methodAbstract" rows="3" style="width: 90%"></textarea>
+                <textarea id="methodAbstract" data-bind="value: aekosModalView().methodAbstract" data-validation-engine="validate[required]" rows="3" style="width: 90%"></textarea>
             </div>
         </div>
     </div>
@@ -183,10 +230,26 @@
 
         <div class="span8">
             <div class="controls">
-                <!--textarea id="measurementTheme" data-bind="value: aekosModalView().measurementTheme" rows="1" style="width: 90%"></textarea-->
+                <div id="artefacts" class="panel panel-default" >
+                    <div class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
+
+                        <!-- ko foreach: aekosModalView().artefactsList -->
+
+                        <input type="checkbox" data-bind="checkedValue: $data, checked: $parent.artefacts" />
+
+                        <span data-bind="text: $data"></span>
+
+                        <br/>
+
+                        <!-- /ko -->
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <br/>
 
     <div class="row-fluid">
         <div class="span4 text-right">

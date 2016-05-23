@@ -139,7 +139,7 @@
 
                         <span data-bind="text: name"></span>
 
-                    </br>
+                        </br>
 
                         <!-- /ko -->
 

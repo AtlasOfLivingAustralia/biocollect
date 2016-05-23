@@ -51,9 +51,9 @@
                 <div class="span8">
                     <div class="controls">
                         <div class="panel panel-default" >
-                            <div class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
+                            <div id="ibraRegion" class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
                                 <!-- ko foreach: aekosModalView().sites() -->
-                                <!--input id="ibraRegion" data-bind="value: ibraRegion"><br-->
+                                <span data-bind="text: ibra"></span><br>
                                 <!-- /ko -->
                             </div>
                         </div>

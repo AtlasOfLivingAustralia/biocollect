@@ -14,16 +14,31 @@
                               content:'<g:message code="aekos.environment.features.help"/>'}">
                     <i class="icon-question-sign"></i>
                 </a>
-                <span class="req-field"></span></label>
-        </label>
+            </label>
         </div>
 
         <div class="span8">
             <div class="controls">
+                <div id="environmentFeatures" class="panel panel-default" >
+                    <div class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
 
+                        <!-- ko foreach: aekosModalView().environmentFeaturesList -->
+
+                        <input type="checkbox" data-bind="checkedValue: $data, checked: $parent.environmentFeatures" />
+
+                        <span data-bind="text: $data"></span>
+
+                        <br>
+
+                        <!-- /ko -->
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <br>
 
     <div class="row-fluid">
         <div class="span4 text-right">
@@ -33,8 +48,7 @@
                               content:'<g:message code="aekos.other.environment.features.help"/>'}">
                     <i class="icon-question-sign"></i>
                 </a>
-                <span class="req-field"></span></label>
-        </label>
+            </label>
         </div>
 
         <div class="span8">
@@ -58,7 +72,7 @@
 
         <div class="span8">
             <div class="controls">
-                <select id="materialType" data-bind="options: associatedMaterialTypes,
+                <select id="materialType" data-bind="options: aekosModalView().associatedMaterialTypes,
                                                       value: aekosModalView().selectedMaterialType,
                                                       optionsCaption: 'N/A'"></select>
             </div>
