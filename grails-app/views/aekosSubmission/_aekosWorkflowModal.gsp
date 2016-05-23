@@ -68,8 +68,7 @@
                     </div>
 
                     <div class="tab-pane" data-bind="attr: {id: 'dataset-content-' + $index() }">
-                        <p>testabc4</p>
-                        <!--g:render template="/aekosSubmission/locationDates" /-->
+                        <g:render template="/aekosSubmission/datasetContent" />
                     </div>
 
                     <div class="tab-pane" data-bind="attr: {id: 'location-dates-' + $index() }" >

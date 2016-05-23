@@ -168,7 +168,170 @@ var AekosViewModel = function (pActivityVM, projectViewModel) {
         self.selectedTab(event.currentTarget.id);
     };
 
+    self.listFos = ko.observableArray([{ value:"401", name:"Atmospheric Sciences (0401)", description: "Group: Atmospheric Sciences (0401),,"},
+        { value:"601", name:"Biochemistry And Cell Biology (0601)", description: "Group: Biochemistry And Cell Biology (0601),,"},
+        { value:"501", name:"Ecological Applications (0501)", description: "Group: Ecological Applications (0501),,"},
+        { value:"602", name:"Ecology (0602)", description: "Group: Ecology (0602),,"},
+        { value:"60208", name:"Terrestrial Ecology (060208)", description: "Terrestrial Ecology (060208)"},
+        { value:"502", name:"Environmental Science And Management (0502)", description: "Group: Environmental Science And Management (0502),,"},
+        { value:"50202", name:"Conservation and Biodiversity (050202)", description: "Conservation and Biodiversity (050202)"},
+        { value:"50211", name:"Wildlife and Habitat Management (050211)", description: "Wildlife and Habitat Management (050211)"},
+        { value:"603", name:"Evolutionary Biology (0603)", description: "Group: Evolutionary Biology (0603),,"},
+        { value:"604", name:"Genetics (0604)", description: "Group: Genetics (0604),,"},
+        { value:"402", name:"Geochemistry (0402)", description: "Group: Geochemistry (0402),,"},
+        { value:"403", name:"Geology (0403)", description: "Group: Geology (0403),,"},
+        { value:"404", name:"Geophysics (0404)", description: "Group: Geophysics (0404),,"},
+        { value:"605", name:"Microbiology (0605)", description: "Group: Microbiology (0605),,"},
+        { value:"None", name:"None", description: "None,,"},
+        { value:"405", name:"Oceanography (0405)", description: "Group: Oceanography (0405),,"},
+        { value:"699", name:"Other Biological Sciences (0699)", description: "Group: Other Biological Sciences (0699),,"},
+        { value:"499", name:"Other Earth Sciences (0499)", description: "Group: Other Earth Sciences (0499),,"},
+        { value:"599", name:"Other Environmental Sciences (0599)", description: "Group: Other Environmental Sciences (0599),,"},
+        { value:"406", name:"Physical Geography And Environmental Geoscience (0406)", description: "Group: Physical Geography And Environmental Geoscience (0406),,"},
+        { value:"606", name:"Physiology (0606)", description: "Group: Physiology (0606),,"},
+        { value:"607", name:"Plant Biology (0607)", description: "Group: Plant Biology (0607),,"},
+        { value:"503", name:"Soil Sciences (0503)", description: "Group: Soil Sciences (0503),,"},
+        { value:"608", name:"Zoology (0608)", description: "Group: Zoology (0608),,"}])
+    self.listSeo = ko.observableArray([{ value:"9601", name:"Air Quality (9601)", description: "Group: Air Quality (9601),,"},
+        { value:"9602", name:"Atmosphere And Weather (9602)", description: "Group: Atmosphere And Weather (9602),,"},
+        { value:"9603", name:"Climate And Climate Change (9603)", description: "Group: Climate And Climate Change (9603),,"},
+        { value:"9604", name:"Control Of Pests, Diseases And Exotic Species (9604)", description: "Group: Control Of Pests, Diseases And Exotic Species (9604),,"},
+        { value:"9605", name:"Ecosystem Assessment And Management (9605)", description: "Group: Ecosystem Assessment And Management (9605),,"},
+        { value:"9606", name:"Environmental And Natural Resource Evaluation (9606)", description: "Group: Environmental And Natural Resource Evaluation (9606),,"},
+        { value:"9607", name:"Environmental Policy, Legislation And Standards (9607)", description: "Group: Environmental Policy, Legislation And Standards (9607),,"},
+        { value:"9608", name:"Flora, Fauna And Biodiversity (9608)", description: "Group: Flora, Fauna And Biodiversity (9608),,"},
+        { value:"960805", name:"Flora, Fauna and Biodiversity at Regional or Larger Scales (960805)", description: "Flora, Fauna and Biodiversity at Regional or Larger Scales (960805)"},
+        { value:"9609", name:"Land And Water Management (9609)", description: "Group: Land And Water Management (9609),,"},
+        { value:"9610", name:"Natural Hazards (9610)", description: "Group: Natural Hazards (9610),,"},
+        { value:"None", name:"None", description: "None,,"},
+        { value:"9699", name:"Other Environment (9699)", description: "Group: Other Environment (9699),,"},
+        { value:"9611", name:"Physical And Chemical Conditions Of Water (9611)", description: "Group: Physical And Chemical Conditions Of Water (9611),,"},
+        { value:"9612", name:"Rehabilitation Of Degraded Environments (9612)", description: "Group: Rehabilitation Of Degraded Environments (9612),,"},
+        { value:"9613", name:"Remnant Vegetation And Protected Conservation Areas (9613)", description: "Group: Remnant Vegetation And Protected Conservation Areas (9613),,"},
+        { value:"9614", name:"Soils (9614)", description: "Group: Soils (9614),,"}])
+    self.listResearch = ko.observableArray([{ value:"Agroecology", name:"Agroecology", description: "Observations on populations of species and communities and ecological processes that operate and influence biota in agricultural production systems.,,"},
+        { value:"Behavioural Ecology", name:"Behavioural Ecology", description: "Behavioural ecology is the study of the fitness consequences of behaviour. It combines the study of animal behaviour with evolutionary biology and population ecology, and more recently, physiology and molecular biology. Observations are made on individuals in  such areas as habitat selection, foraging, anti-predator, mating, and parental care strategies; dispersal and migration, sexual selection; cooperation and conflict; communication; spacing and group behaviour; and social organisation.,,"},
+        { value:"Biodiversity Inventory", name:"Biodiversity Inventory", description: "The systematic survey of fauna and flora at different locations to identify the composition and distribution on taxa.,,"},
+        { value:"Species Composition", name:"Species Composition", description: "Species Composition"},
+        { value:"Structural Assemblage", name:"Structural Assemblage", description: "Structural Assemblage"},
+        { value:"Biogeography", name:"Biogeography", description: "Observations on a large scale of the spatial distributions of species and ecosystems in relation to climate and soil.,,"},
+        { value:"Bioregional Inventory", name:"Bioregional Inventory", description: "The systematic survey of fauna and flora at different locations to identify the composition and distribution on taxa.,,"},
+        { value:"Chemical Ecology", name:"Chemical Ecology", description: "Observations made on the origin, function and significance of natural chemicals that mediate interactions with and between organisms (e.g., insect pheromones)..,,"},
+        { value:"Competition/Resource Partitioning", name:"Competition/Resource Partitioning", description: "Observations made on populations of two or more species coexisting in and competing for resources in the same habitat.,,"},
+        { value:"Decomposition", name:"Decomposition", description: "The study of the process of decaying biomass.,,"},
+        { value:"Disease Ecology", name:"Disease Ecology", description: "Observations made on populations, communities and ecosystems studying  the interactions between  Parasitic, bacterial and viral infections, their animal hosts and their environment. ,,"},
+        { value:"Disturbances", name:"Disturbances", description: "Observations on environmental disturbances (e.g., changed fire regimes, climate change, invasive species) and their influence on populations, ecological community and ecosystems.,,"},
+        { value:"Ecological Succession", name:"Ecological Succession", description: "Observations on the gradual and orderly process of change in species structure of ecological communities of an ecosystem over time.,,"},
+        { value:"Ecophysiology", name:"Ecophysiology", description: "Observations on the interrelationship of an organism???s functioning and physiological adaptation to the environment (e.g., temperature extremes). ,,"},
+        { value:"Ecosystem Modelling", name:"Ecosystem Modelling", description: "Ecosystem modelling is the practice of applying numerical tools that combine observations of species distributions, species interactions with environmental estimates of ecosystems to understand functional change in ecosystems. ,,"},
+        { value:"Ecotoxicology", name:"Ecotoxicology", description: "Observations made on the effects of toxic chemicals on individuals of populations (e.g., stress of agricultural chemicals).,,"},
+        { value:"Evolutionary Ecology", name:"Evolutionary Ecology", description: "Observations made on organisms to understand the evolutionary influences on ecological processes or the ecological influence on evolutionary processes (e.g., genetics, behaviour, life histories, mating systems).,,"},
+        { value:"Fire Ecology", name:"Fire Ecology", description: "Observations made on fire behaviour, its effects on biota and ecosystems, including predictions about behaviour.,,"},
+        { value:"Functional Ecology", name:"Functional Ecology", description: "The study of the roles or functions that species play in the community or ecosystem in which they occur.,,"},
+        { value:"Global Ecology", name:"Global Ecology", description: "The study of the interactions among the Earth's species occurrence, ecological communities, functional complexity ecosystems, land, atmosphere and oceans at a whole of globe scale.,,"},
+        { value:"Herbivory", name:"Herbivory", description: "The study of animals that feeds chiefly on grass and other plants.,,"},
+        { value:"Landscape Ecology", name:"Landscape Ecology", description: "Observations made on many species simultaneously in relation to their environment with a focus on spatial patterns and processes related to them. ,,"},
+        { value:"Long-Term Community Monitoring", name:"Long-Term Community Monitoring", description: "The systematic study of communities over long time frames.,,"},
+        { value:"Long-Term Species Monitoring", name:"Long-Term Species Monitoring", description: "Observations made on populations of species where the focus is the study of trends in populations and ecological processes over long temporal scales.  L,,"},
+        { value:"Macroecology", name:"Macroecology", description: "The study of relationships between organisms and their environment at large spatial scales to characterise and explain statistical patterns of abundance, distribution and diversity.,,"},
+        { value:"Molecular Ecology", name:"Molecular Ecology", description: "Observations on organisms using molecular genetic approaches that investigate the interactions among species (including difficult to culture microbes), the genetics and evolution of ecologically important traits, the relatedness among individuals and (based on this information) their dispersal and behaviour, the movement of individuals across landscapes, the formation of new species and the consequences of hybridization between divergent lineages..,,"},
+        { value:"None", name:"None", description: "None,,"},
+        { value:"Other", name:"Other", description: "Other,,"},
+        { value:"Paleoecology", name:"Paleoecology", description: "The study of fossil organisms and their associated remains, including their life cycle, living interactions, natural environment, and manner of death and burial to reconstruct the paleoenvironment.,,"},
+        { value:"Pollination", name:"Pollination", description: "The study of the distribution of pollen (wind-born or transported by animals) and the efficiency of pollen fertilisation.,,"},
+        { value:"Population Dynamics", name:"Population Dynamics", description: "Observations made on the abundance, distribution and growth of a group of individuals of a single species living and interacting in the same area, including predictions of population shifts.,,"},
+        { value:"Predator-Prey Interactions", name:"Predator-Prey Interactions", description: "Observation made on the interaction of populations of predator(s) on prey species populations. ,,"},
+        { value:"Productivity", name:"Productivity", description: "The study of the generation of biomass in an ecosystem.,,"},
+        { value:"Restoration Ecology", name:"Restoration Ecology", description: "The study of renewing and restoring degraded, damaged, or destroyed ecosystems and habitats in the environment by active human intervention and action.,,"},
+        { value:"Soil Ecology", name:"Soil Ecology", description: "The study of the interactions among soil organisms, and between biotic and abiotic aspects of the soil environment.,,"},
+        { value:"Species Decline", name:"Species Decline", description: "Observations are made on the critical decline and/or disappearance of populations of a species  A specialised research area of population ecology.,,"},
+        { value:"Species Distribution Modelling", name:"Species Distribution Modelling", description: "Species distribution modelling is the practice of applying numerical tools that combine observations of species occurrence or abundance with environmental estimates. They are used to gain ecological and evolutionary insights and to predict distributions across landscapes in space and time. ,,"},
+        { value:"Symbyotic Interactions", name:"Symbyotic Interactions", description: "The study of the relation between two different kinds of organisms in which one receives benefits from the other by causing damage to it (usually not fatal damage _ mutualism, commensulaism, parasitism).,,"},
+        { value:"Urban Ecology", name:"Urban Ecology", description: "The study of the relation of living organisms with each other and their surroundings in the context of built-up human environments.,,"}])
+    self.listThreat = ko.observableArray([{ value:"Agrochemicals", name:"Agrochemicals", description: "Agrochemicals,,"},
+        { value:"Nutrients", name:"Nutrients", description: "Nutrients"},
+        { value:"Altered Water Flows", name:"Altered Water Flows", description: "Altered Water Flows,,"},
+        { value:"Changed Hydrology", name:"Changed Hydrology", description: "Changed hydrology,,"},
+        { value:"Sedimentation", name:"Sedimentation", description: "Sedimentation"},
+        { value:"Climate Change", name:"Climate Change", description: "Climate Change,,"},
+        { value:"disease", name:"Disease", description: "disease"},
+        { value:"Exotic Animal Species", name:"Exotic Animal Species", description: "Exotic Animal Species,,"},
+        { value:"Exotic Plant Species", name:"Exotic Plant Species", description: "Exotic Plant Species,,"},
+        { value:"famine", name:"Famine", description: "famine"},
+        { value:"Fire Regimes", name:"Fire Regimes", description: "Fire Regimes,,"},
+        { value:"Habitat Fragmentation", name:"Habitat Fragmentation", description: "Habitat Fragmentation,,"},
+        { value:"Human road kill", name:"Human road kill", description: "Human road kill"},
+        { value:"Interacting Pressures", name:"Interacting Pressures", description: "Interacting Pressures,,"},
+        { value:"Invasive Animal Species", name:"Invasive Animal Species", description: "Invasive Animal Species,,"},
+        { value:"Invasive Plant Species", name:"Invasive Plant Species", description: "Invasive Plant Species,,"},
+        { value:"Land-use change", name:"Land-use change", description: "Land-use change"},
+        { value:"Natural Resource Use", name:"Natural Resource Use", description: "Natural Resource Use,,"},
+        { value:"None", name:"None", description: "None,,"},
+        { value:"Other", name:"Other", description: "Other,,"},
+        { value:"over-consumption", name:"Over-consumption", description: "over-consumption"},
+        { value:"over-population", name:"Over-population", description: "over-population"},
+        { value:"Pollution", name:"Pollution", description: "Pollution,,"},
+        { value:"Salinity", name:"Salinity", description: "Salinity,,"},
+        { value:"Soil Erosion", name:"Soil Erosion", description: "Soil Erosion,,"},
+        { value:"war", name:"War", description: "war"},
+        { value:"Water Extraction", name:"Water Extraction", description: "Water extraction,,"}])
+    self.listConservation = ko.observableArray([{ value:"Agrochemical Management", name:"Agrochemical Management", description: "Agrochemical Management"},
+        { value:"Animal Health", name:"Animal Health", description: "Animal Health"},
+        { value:"Biosecurity", name:"Biosecurity", description: "Biosecurity,,"},
+        { value:"Critical Habitat", name:"Critical Habitat", description: "Critical habitat,,"},
+        { value:"Environmental Water Management", name:"Environmental Water Management", description: "Environmental Water Management,,"},
+        { value:"Fire Management", name:"Fire Management", description: "Fire Management,,"},
+        { value:"Habitat Restoration", name:"Habitat Restoration", description: "Habitat Restoration,,"},
+        { value:"human pressure on threatened ecosystems", name:"Human Population Density", description: "human pressure on threatened ecosystems"},
+        { value:"Human Wildlife Interactions", name:"Human Wildlife Interactions", description: "Human Wildlife Interactions,,"},
+        { value:"Landscape-Scale Management", name:"Landscape-Scale Management", description: "Landscape-scale Management,,"},
+        { value:"Market-Based Approaches", name:"Market-Based Approaches", description: "Market-based Approaches,,"},
+        { value:"Migratory Species", name:"Migratory Species", description: "Migratory species,,"},
+        { value:"National Reserve System", name:"National Reserve System", description: "National Reserve System,,"},
+        { value:"None", name:"None", description: "None,,"},
+        { value:"Other", name:"Other", description: "Other,,"},
+        { value:"Special Management Populations", name:"Special Management Populations", description: "Special Management Populations,,"},
+        { value:"Threatened Ecological Communities", name:"Threatened Ecological Communities", description: "Threatened Ecological Communities,,"},
+        { value:"Threatened Species", name:"Threatened Species", description: "Threatened Species,,"},
+        { value:"Translocation/Re-Introduction/Ex Situ Conservation", name:"Translocation/Re-Introduction/Ex Situ Conservation", description: "Translocation/Re-introduction/Ex situ conservation,,"},
+        { value:"Vertebrate/Invertebrate Pest Species Management", name:"Vertebrate/Invertebrate Pest Species Management", description: "Vertebrate/Invertebrate Pest Species Management,,"},
+        { value:"Water Quality", name:"Water Quality", description: "Water Quality"},
+        { value:"Weed Management", name:"Weed Management", description: "Weed Management,,"},
+        { value:"Wildlife Corridors", name:"Wildlife Corridors", description: "Wildlife Corridors,,"}])
 
+    self.extraFos = ko.observable('')
+    self.extraSeo = ko.observable('')
+    self.extraResearch = ko.observable('')
+    self.extraThreat = ko.observable('')
+    self.extraConservation = ko.observable('')
+
+    self.addExtraFos = function() {
+        self.addListItem(self.listFos, self.extraFos())
+    }
+
+    self.addExtraSeo = function() {
+        self.addListItem(self.listSeo, self.extraSeo())
+    }
+
+    self.addExtraResearch = function() {
+        self.addListItem(self.listResearch, self.extraResearch())
+    }
+
+    self.addExtraThreat = function() {
+        self.addListItem(self.listThreat, self.extraThreat())
+    }
+
+    self.addExtraConservation = function() {
+        self.addListItem(self.listConservation, self.extraConservation())
+    }
+
+    self.addListItem = function(list, item) {
+        var found = false
+        for (var i in list()) {
+            if (list()[i].value == item) found = true
+        }
+        if (!found) list.push({value: item, name: item, description: ''})
+    }
 
     //self.project = $.extend(self.project, projectVM);
     self.header = ko.observable("This is a modal");
@@ -685,6 +848,12 @@ var ProjectActivity = function (params) {
 
     self.relatedDatasets = ko.observableArray (pActivity.relatedDatasets ? pActivity.relatedDatasets : []);
 
+    self.typeFor = ko.observableArray(pActivity.typeFor ? pActivity.typeFor : [])
+    self.typeSeo = ko.observableArray(pActivity.typeSeo ? pActivity.typeSeo : [])
+    self.typeResearch = ko.observableArray(pActivity.typeResearch ? pActivity.typeResearch : [])
+    self.typeThreat = ko.observableArray(pActivity.typeThreat ? pActivity.typeThreat : [])
+    self.typeConservation = ko.observableArray(pActivity.typeConservation ? pActivity.typeConservation : [])
+
     self.lastUpdated = ko.observable(pActivity.lastUpdated ? pActivity.lastUpdated : "");
 
     var legalCustodianVal = pActivity.legalCustodian? pActivity.legalCustodian: "";
@@ -785,6 +954,8 @@ var ProjectActivity = function (params) {
     self.showModal = function () {
         //  self.aekosModal(true);
         self.aekosModalView().show(true);
+        $('.modal')[0].style.width = '90%'
+        $('.modal')[0].style.height = '80%'
     };
 
 
