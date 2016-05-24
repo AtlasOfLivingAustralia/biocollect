@@ -75,7 +75,7 @@
 
         <div class="span8">
             <div class="controls">
-                <span id="datasetVersion" data-bind="value: aekosModalView().currentDatasetVersion"></span>
+                <span id="datasetVersion" data-bind="text: aekosModalView().currentDatasetVersion()"></span>
             </div>
         </div>
     </div>
