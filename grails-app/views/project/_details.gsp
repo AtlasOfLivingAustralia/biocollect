@@ -257,6 +257,36 @@
                     </div>
                 </div>
             </div>
+            <div class="clearfix control-group" data-bind="visible:isEcoScience()">
+                <label class="control-label span3"><g:message code="project.details.scienceType"/><fc:iconHelp><g:message code="project.details.scienceType.help"/></fc:iconHelp></label>
+
+                <div class="controls span9">
+                    %{--<select id="scienceType" data-bind="value:ecoScienceType, options:transients.availableEcoScienceTypes, optionsText:'name', optionsValue:'value', optionsCaption:'Select...'" data-validation-engine="validate[required]"></select>--}%
+                    <div class="row-fluid" >
+                        <div class="span4">
+                            <!-- ko foreach: transients.availableEcoScienceTypes -->
+                            <!-- ko template: { name:'ecoScienceTypeTemplate', if: ($index() +1) % 3 == 1 }-->
+
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        </div>
+                        <div class="span4">
+                            <!-- ko foreach: transients.availableEcoScienceTypes -->
+                            <!-- ko template: { name:'ecoScienceTypeTemplate', if: ($index() +1) % 3 == 2 }-->
+
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        </div>
+                        <div class="span4">
+                            <!-- ko foreach: transients.availableEcoScienceTypes -->
+                            <!-- ko template: { name:'ecoScienceTypeTemplate', if: ($index() +1) % 3 == 0 }-->
+
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -265,7 +295,7 @@
             <h4 class="block-header"><g:message code="project.details.associations"/></h4>
 
             <div class="clearfix control-group">
-                <label class="control-label span3" for="externalId"><g:message code="project.details.externalId"/></label>
+                <label class="control-label span3" for="externalId"><g:message code="project.details.externalId"/><fc:iconHelp><g:message code="project.details.externalId.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
                     <g:textField class="span12" name="externalId" data-bind="value:externalId"/>
@@ -273,7 +303,7 @@
             </div>
 
             <div class="clearfix control-group">
-                <label class="control-label span3" for="grantId"><g:message code="project.details.grantId"/></label>
+                <label class="control-label span3" for="grantId"><g:message code="project.details.grantId"/><fc:iconHelp><g:message code="project.details.grantId.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
                     <g:textField class="span12" name="grantId" data-bind="value:grantId"/>
@@ -281,7 +311,7 @@
             </div>
 
             <div class="clearfix control-group">
-                <label class="control-label span3" for="funding"><g:message code="project.details.funding"/></label>
+                <label class="control-label span3" for="funding"><g:message code="project.details.funding"/><fc:iconHelp><g:message code="project.details.funding.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
                     <g:textField class="span12" name="funding" data-bind="value:funding"
@@ -290,7 +320,7 @@
             </div>
 
             <div data-bind="visible:!isWorks()" class="clearfix control-group">
-                <label class="control-label span3" for="program"><g:message code="project.details.program"/><i class="req-field"></i></label>
+                <label class="control-label span3" for="program"><g:message code="project.details.program"/><fc:iconHelp><g:message code="project.details.program.help"/></fc:iconHelp><i class="req-field"></i></label>
 
                 <div class="controls span9">
                     <select class="span12" id="program"
@@ -300,7 +330,7 @@
             </div>
 
             <div data-bind="visible:!isWorks()" class="clearfix control-group">
-                <label class="control-label span3" for="subProgram"><g:message code="project.details.subprogram"/></label>
+                <label class="control-label span3" for="subProgram"><g:message code="project.details.subprogram"/><fc:iconHelp><g:message code="project.details.subprogram.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
                     <select class="span12" id="subProgram"
@@ -310,7 +340,7 @@
 
             <div data-bind="visible:!isWorks()" class="clearfix control-group">
                 <label class="control-label span3"
-                       for="orgGrantee"><g:message code="project.details.orgGrantee"/></label>
+                       for="orgGrantee"><g:message code="project.details.orgGrantee"/><fc:iconHelp><g:message code="project.details.orgGrantee.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
                     <select class="span12" id="orgGrantee"
@@ -320,7 +350,7 @@
 
             <div data-bind="visible:!isWorks()" class="clearfix control-group">
                 <label class="control-label span3"
-                       for="orgSponsor"><g:message code="project.details.orgSponsor"/></label>
+                       for="orgSponsor"><g:message code="project.details.orgSponsor"/><fc:iconHelp><g:message code="project.details.orgSponsor.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
                     <select class="span12" id="orgSponsor"
@@ -546,5 +576,12 @@
                    data-bind="value: $data.toLowerCase(), attr:{id:'checkbox'+$index()}, checked: $root.transients.isScienceTypeChecked($data), event:{change:$root.transients.addScienceType}">
             <label data-bind="html: '<span></span> ' + $data, attr:{for:'checkbox'+$index()}"></label>
         </div>
+    </script>
+    <script id="ecoScienceTypeTemplate" type="text/html">
+    <div class="large-checkbox">
+        <input type="checkbox" name="ecoScienceType"
+               data-bind="value: $data.toLowerCase(), attr:{id:'checkbox'+$index()}, checked: $root.transients.isEcoScienceTypeChecked($data), event:{change:$root.transients.addEcoScienceType}">
+        <label data-bind="html: '<span></span> ' + $data, attr:{for:'checkbox'+$index()}"></label>
+    </div>
     </script>
 </bc:koLoading>

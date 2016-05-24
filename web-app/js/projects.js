@@ -350,6 +350,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.projectSiteId = project.projectSiteId;
     self.projectType = ko.observable(project.projectType);
     self.scienceType = ko.observableArray(project.scienceType);
+    self.ecoScienceType = ko.observableArray(project.ecoScienceType);
     self.task = ko.observable(project.task);
     self.urlWeb = ko.observable(project.urlWeb).extend({url:true});
     self.contractStartDate = ko.observable(project.contractStartDate).extend({simpleDate: false});
@@ -577,15 +578,37 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         {name:'Ecology', value:'ecology'},
         {name:'Natural resource management', value:'nrm'}
     ];
+    var ecoScienceTypesList = [
+        {name:'Biodiversity', value:'biodiversity'},
+        {name:'Ecology', value:'ecology'},
+        {name:'Natural resource management', value:'nrm'}
+    ];
     self.transients.availableScienceTypes = fcConfig.scienceTypes;
+    self.transients.availableEcoScienceTypes = fcConfig.ecoScienceTypes;
     self.transients.scienceTypeDisplay = ko.pureComputed(function () {
         for (var st = self.scienceType(), i = 0; i < scienceTypesList.length; i++)
             if (st === scienceTypesList[i].value)
                 return scienceTypesList[i].name;
     });
+    self.transients.ecoScienceTypeDisplay = ko.pureComputed(function () {
+        for (var st = self.ecoScienceType(), i = 0; i < ecoScienceTypesList.length; i++)
+            if (st === ecoScienceTypesList[i].value)
+                return ecoScienceTypesList[i].name;
+    });
 
     self.transients.isScienceTypeChecked = function(value){
         var types = self.scienceType()
+        for(var i=0; i<types.length; i++){
+            if(types[i] == value.toLowerCase()){
+                return true
+            }
+        }
+
+        return false;
+    };
+
+    self.transients.isEcoScienceTypeChecked = function(value){
+        var types = self.ecoScienceType()
         for(var i=0; i<types.length; i++){
             if(types[i] == value.toLowerCase()){
                 return true
@@ -601,6 +624,15 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             self.scienceType.push(elem.value)
         } else {
             self.scienceType.remove(elem.value)
+        }
+    }
+
+    self.transients.addEcoScienceType = function(data, event){
+        var elem = event.target
+        if(elem.checked){
+            self.ecoScienceType.push(elem.value)
+        } else {
+            self.ecoScienceType.remove(elem.value)
         }
     }
 

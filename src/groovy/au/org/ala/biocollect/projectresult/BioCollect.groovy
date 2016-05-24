@@ -66,6 +66,7 @@ class BioCollect {
                 organisationId         : doc.organisationId,
                 organisationName       : doc.organisationName,
                 scienceType            : doc.scienceType,
+                ecoScienceType         : doc.ecoScienceType,
                 startDate              : doc.plannedStartDate,
                 urlImage               : doc.imageUrl,
                 urlWeb                 : doc.urlWeb,

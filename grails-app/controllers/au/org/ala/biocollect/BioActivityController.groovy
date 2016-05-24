@@ -304,6 +304,10 @@ class BioActivityController {
             parsed.userId = userService.getCurrentUserId()
         }
 
+        if (params?.hub == 'ecoscience') {
+            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectType:ecoscience"
+        }
+
         parsed.each { key, value ->
             if (value != null && value) {
                 queryParams.put(key, value)
@@ -379,6 +383,10 @@ class BioActivityController {
             if (value != null && value) {
                 queryParams.put(key, value)
             }
+        }
+
+        if (params?.hub == 'ecoscience') {
+            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectType:ecoscience"
         }
 
         queryParams.max = queryParams.max ?: 10

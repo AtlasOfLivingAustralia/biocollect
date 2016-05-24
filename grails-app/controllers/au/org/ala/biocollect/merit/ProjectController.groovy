@@ -167,6 +167,7 @@ class ProjectController {
         def user = userService.getUser()
         def groupedOrganisations = groupOrganisationsForUser(user.userId)
         def scienceTypes = projectService.getScienceTypes();
+        def ecoScienceTypes = projectService.getEcoScienceTypes();
 
         if (project) {
             def siteInfo = siteService.getRaw(project.projectSiteId)
@@ -176,7 +177,8 @@ class ProjectController {
              userOrganisations: groupedOrganisations.user ?: [],
              organisations: groupedOrganisations.other ?: [],
              programs: metadataService.programsModel(),
-             scienceTypes: scienceTypes
+             scienceTypes: scienceTypes,
+             ecoScienceTypes: ecoScienceTypes
             ]
 
         } else {
@@ -204,6 +206,7 @@ class ProjectController {
         }
         def groupedOrganisations = groupOrganisationsForUser(user.userId)
         def scienceTypes = projectService.getScienceTypes();
+        def ecoScienceTypes = projectService.getEcoScienceTypes();
         // Prepopulate the project as appropriate.
         def project = [:]
         if (params.organisationId) {
@@ -232,7 +235,8 @@ class ProjectController {
                 organisations: groupedOrganisations.other ?: [],
                 programs: projectService.programsModel(),
                 project:project,
-                scienceTypes: scienceTypes
+                scienceTypes: scienceTypes,
+                ecoScienceTypes: ecoScienceTypes
         ]
     }
 
@@ -483,6 +487,10 @@ class ProjectController {
             it? fq.push(it):null;
         }
         trimmedParams.fq = fq;
+
+        if (params?.hub == 'ecoscience') {
+            trimmedParams.query += " AND projectType:ecoscience";
+        }
 
         switch (trimmedParams.sort){
             case 'organisationSort':
@@ -751,6 +759,9 @@ class ProjectController {
             payload.sort = payload.sort ?: 'lastUpdated';
             payload.fq = payload.fq ?: []
             payload.fq.push('surveyImage:true');
+            if (params?.hub == 'ecoscience') {
+                payload.fq.push("projectType:ecoscience");
+            }
             Map result = projectService.listImages(payload, params?.version) ?: [:];
             render contentType: 'application/json', text: result as JSON
         } catch (SocketTimeoutException sTimeout){
