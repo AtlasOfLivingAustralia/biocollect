@@ -61,10 +61,12 @@
                                 <h5><g:message code="project.search.programName"/> </h5>
                                 <div class="row-fluid">
                                     <div class="span12">
-                                        <g:each var="program" in="${associatedPrograms}">
-                                            <button type="button" class="btn btn-small btn-info" data-value="${program}"
-                                                    data-toggle="button" id="pt-search-program-${program.name.replace(' ', '-')}" >${program.name.capitalize()} <i class="toggleIndicator icon-remove icon-white"></i></button>
-                                        </g:each>
+                                        <g:if test="${associatedPrograms}">
+                                            <g:each var="program" in="${associatedPrograms}">
+                                                <button type="button" class="btn btn-small btn-info" data-value="${program}"
+                                                        data-toggle="button" id="pt-search-program-${program.name.replace(' ', '-')}" >${program.name.capitalize()} <i class="toggleIndicator icon-remove icon-white"></i></button>
+                                            </g:each>
+                                        </g:if>
                                     </div>
                                 </div>
                             </div>

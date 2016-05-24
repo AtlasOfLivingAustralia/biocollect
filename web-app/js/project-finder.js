@@ -255,10 +255,12 @@ function ProjectFinder() {
             q: $('#pt-search').val().toLowerCase()
         };
 
-        $.each(fcConfig.associatedPrograms, function (i, program) {
-            var checked = isButtonChecked($('#pt-search-program-' + program.name.replace(/ /g, '-')))
-            if (checked) map["isProgram" + program.name.replace(/ /g, '-')] = true
-        });
+        if (fcConfig.associatedPrograms) {
+            $.each(fcConfig.associatedPrograms, function (i, program) {
+                var checked = isButtonChecked($('#pt-search-program-' + program.name.replace(/ /g, '-')))
+                if (checked) map["isProgram" + program.name.replace(/ /g, '-')] = true
+            });
+        }
 
         return map
     };
@@ -509,9 +511,11 @@ function ProjectFinder() {
         setActiveButtonValues($('#pt-search-difficulty'), params.difficulty);
         setGeoSearch(params.geoSearch);
 
-        $.each(fcConfig.associatedPrograms, function (i, program) {
-            toggleButton($('#pt-search-program-' + program.name.replace(/ /g, '-')), toBoolean(params["isProject" + program.name]));
-        });
+        if (fcConfig.associatedPrograms) {
+            $.each(fcConfig.associatedPrograms, function (i, program) {
+                toggleButton($('#pt-search-program-' + program.name.replace(/ /g, '-')), toBoolean(params["isProject" + program.name]));
+            });
+        }
 
         checkButton($("#pt-sort"), params.sort || 'nameSort');
         checkButton($("#pt-per-page"), params.max || '20');
