@@ -277,6 +277,7 @@ class ProjectController {
                 user                    : userService.getUser(),
                 showTag                 : params.tag,
                 downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
+                associatedPrograms      : projectService.programsModel().programs.findAll{!it?.readOnly},
                 showEcoScienceBanner: true
         ]
     }
@@ -543,6 +544,17 @@ class ProjectController {
             trimmedParams.query += " AND (isMetadataSharing:true)"
             trimmedParams.isMetadataSharing = null
         }
+
+        def programs = ''
+        params.each {
+            if (it.key.startsWith('isProgram') && it.value.toString().toBoolean()) {
+                def programName = it.key.substring('isProgram'.length()).replace('-',' ')
+                if (programs.length()) programs += " OR "
+                programs += " associatedProgram:\"${programName}\""
+                trimmedParams.remove(it.key)
+            }
+        }
+        if (programs.length()) trimmedParams.query += " AND (" + programs + ")"
 
         // query construction
         if(trimmedParams.q){
