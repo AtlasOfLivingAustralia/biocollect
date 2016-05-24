@@ -83,7 +83,8 @@ var ProjectActivitiesViewModel = function (params) {
                 sites: self.sites,
                 organisationName: self.organisationName,
                 startDate: self.projectStartDate,
-                project: self.project
+                project: self.project,
+                user: self.user
             };
             return self.projectActivities.push(new ProjectActivity(args));
         });
@@ -128,13 +129,15 @@ var ProjectActivitiesDataViewModel = function (pActivitiesVM) {
     var self = $.extend(this, pActivitiesVM);
 };
 
-var AekosViewModel = function (pActivityVM, projectViewModel) {
+var AekosViewModel = function (pActivityVM, projectViewModel, user) {
 
     var self = $.extend(this, pActivityVM);
 
     self.projectViewModel = projectViewModel;
     
     if (!self.projectViewModel.name) return
+
+    self.user = user;
 
     self.submissionName = self.projectViewModel.name() + ' - ' + self.name();
 
@@ -143,21 +146,25 @@ var AekosViewModel = function (pActivityVM, projectViewModel) {
     });
 
     self.currentDatasetVersion = ko.computed(function() {
-        var res = self.projectViewModel.name().substr(1, 3) + self.name().substr(1, 3);
+        var res = self.projectViewModel.name().substr(0, 3) + self.name().substr(0, 3);
         //var res = self.name.substr(1, 3);
 
-        if (self.submissionRecords && self.submissionRecords.datasetVersion) {
-            var datasetArray = $.map(self.submissionRecords, function (o) {
-                if (o.datasetVersion.length > 0) {
-                    return o.datasetVersion.substr(8, o.datasetVersion.length);
+        if (self.submissionRecords && self.submissionRecords().length > 0) {
+            var datasetArray = $.map(self.submissionRecords(), function (o) {
+                if (o.datasetVersion().length > 0) {
+                    return o.datasetVersion().substr(8, o.datasetVersion().length)
                 } else {
                     return 0;
                 }
             });
+            //var latestDataset = self.submissionRecords()[0].datasetVersion;
             var highest = Math.max.apply(Math, datasetArray);
-            return res + "_" + (highest + 1);
+            highest = highest + 1;
+            var i = (highest > 9) ? "" + highest: "0" + highest;
+
+            return res + "_" + i;
         } else {
-            return res + "_1";
+            return res + "_01";
         }
     });
 
@@ -435,6 +442,9 @@ var AekosViewModel = function (pActivityVM, projectViewModel) {
         bootbox.confirm("You will lose unsaved changes. Are you sure you want to close this window?", function(result) {
             if (result) {
                self.show(false);
+                $(window).on('beforeunload', function(){
+                    $('*').css("cursor", "progress");
+                });
                 window.location.reload();
         }});
    }
@@ -564,11 +574,50 @@ var AekosViewModel = function (pActivityVM, projectViewModel) {
         return true;
     };
 
+    self.update = function(pActivity, caller){
+        var url =  fcConfig.projectActivityUpdateUrl + "/" + pActivity.projectActivityId();
+     //   alert(JSON.stringify(pActivity.asJS(caller), null, 4));
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: JSON.stringify(pActivity.asJS(caller), function (key, value) {return value === undefined ? "" : value;}),
+            contentType: 'application/json',
+            success: function (data) {
+                var result = data.resp;
+                if (result && result.message == 'updated') {
+                   // self.updateLogo(data);
+                    showAlert("Successfully updated ", "alert-success", self.placeHolder);
+
+                    window.location.reload();
+                } else {
+                    showAlert(data.error ? data.error : "Error updating the survey", "alert-error", self.placeHolder);
+                }
+            },
+            error: function (data) {
+                showAlert("Error updating the survey -" + data.status, "alert-error", self.placeHolder);
+            }
+        });
+    };
+
+
     self.submit = function(index){
 
         if (self.isAllValidationValid(index)) {
+            var current_time = Date.now();
 
-            var jsData = $.extend({},
+            var submissionDate = moment(current_time).format("YYYY-MM-DDTHH:mm:ssZZ"); //moment(new Date(), 'YYYY-MM-DDThh:mm:ssZ').isValid() ? self.endDate() : "";
+            //var utc = new Date().toJSON().slice(0,10);
+            self.submissionRecords.push (new SubmissionRec(submissionDate, self.user, self.currentDatasetVersion(), 'Pending'));
+
+            //setTimeout(function(){
+                self.update (self, 'info');
+
+            //}, 0);
+
+
+
+
+/*            var jsData = $.extend({},
                 self.asJS("info"),
                 self.asJS("access"),
                 self.asJS("form"),
@@ -576,11 +625,24 @@ var AekosViewModel = function (pActivityVM, projectViewModel) {
                 self.asJS("visibility"),
                 self.asJS("alert"),
                 self.asJS("sites"));
-            alert(JSON.stringify(jsData, null, 4));
+            alert(JSON.stringify(jsData, null, 4)); */
         }
     };
 
 };
+
+var SubmissionRec = function (submitDateVal, submitterVal, datasetVersionVal, doiRef) {
+    var self = this;
+
+    self.submissionPublicationDate = ko.observable(submitDateVal);
+    self.datasetSubmitter = ko.observable(submitterVal);
+    self.datasetVersion = ko.observable(datasetVersionVal);
+    self.submissionDoi = ko.observable(doiRef);
+
+    self.displayDate = ko.computed (function(){
+        return moment(self.submissionPublicationDate()).format("DD-MM-YYYY");
+    })
+}
 
 
 var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
@@ -1011,6 +1073,7 @@ var ProjectActivity = function (params) {
     var startDate = params.startDate ? params.startDate : "";
     var organisationName = params.organisationName ? params.organisationName : "";
     var project = params.project ? params.project : {};
+    var user = params.user ? params.user : {};
 
     var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
@@ -1085,7 +1148,32 @@ var ProjectActivity = function (params) {
     self.loadSites(sites, pActivity.sites);
 
     // AEKOS submission records
-    self.submissionRecords = ko.observableArray(pActivity.submissionRecords ? pActivity.submissionRecords : []);
+    var submissionRecs = pActivity.submissionRecords ? pActivity.submissionRecords : [];
+
+    submissionRecs.sort(function(b, a) {
+        var v1 = parseInt(a.datasetVersion.substr(7, 8))
+        var v2 = parseInt(b.datasetVersion.substr(7, 8))
+        if (v1 < v2) {
+            return -1;
+        }
+        if (v1 > v2) {
+            return 1;
+        }
+
+        // names must be equal
+        return 0;
+    });
+
+    var sortedSubmissionRecs = submissionRecs.sort();
+
+    self.submissionRecords = ko.observableArray();
+
+    self.loadSubmissionRecords = function (submissionRecs) {
+        $.map(submissionRecs ? submissionRecs : [], function (obj, i) {
+            self.submissionRecords.push(new SubmissionRec(obj.submissionPublicationDate, obj.datasetSubmitter, obj.datasetVersion, obj.submissionDoi));
+        });
+    };
+    self.loadSubmissionRecords(sortedSubmissionRecs);
 
     var methodName = pActivity.methodName? pActivity.methodName : "";
 
@@ -1141,13 +1229,13 @@ var ProjectActivity = function (params) {
     self.authorSurname = ko.observable('');
     self.authorAffiliation = ko.observable('');
 
-    self.showModal = function () {
+   /* self.showModal = function () {
         //  self.aekosModal(true);
         self.aekosModalView().show(true);
         $('.modal')[0].style.width = '90%'
         $('.modal')[0].style.height = '80%'
     };
-
+*/
 
     /**
      * get number of sites selected for a survey
@@ -1190,7 +1278,8 @@ var ProjectActivity = function (params) {
         }
         else if (by == "info") {
             var ignore = self.ignore.concat(['current', 'pActivityForms', 'pActivityFormImages',
-                'access', 'species', 'sites', 'transients', 'endDate','visibility','pActivityFormName', 'restrictRecordToSites']);
+                'access', 'species', 'sites', 'transients', 'endDate','visibility','pActivityFormName', 'restrictRecordToSites',
+                'aekosModalView']);
             ignore = $.grep(ignore, function (item, i) {
                 return item != "documents";
             });
@@ -1226,7 +1315,7 @@ var ProjectActivity = function (params) {
         return jsData;
     }
 
-    self.aekosModalView = ko.observable(new AekosViewModel (self, project));
+    self.aekosModalView = ko.observable(new AekosViewModel (self, project, user));
 
     //self.aekosModal = ko.observable(false);
 
@@ -1688,29 +1777,3 @@ function initialiseValidator() {
     });
 };
 
-
-
-/*ko.bindingHandlers.bootstrapModal = {
- init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
- var props = valueAccessor(),
- vm = bindingContext.createChildContext(viewModel);
- ko.utils.extend(vm, props);
- vm.close = function () {
- vm.show(false);
- vm.onClose();
- };
- vm.action = function () {
- vm.onAction();
- };
- ko.utils.toggleDomNodeCssClass(element, "modal fade", true);
- alert("Modal test");
- ko.renderTemplate("myModal", vm, null, element);
- var showHide = ko.computed(function () {
- $(element).modal(vm.show() ? 'show' : 'hide');
- });
- return {
- // tell knockout don't bind descendent bindings
- controlsDescendantBindings: true
- };
- }
- }; */

@@ -104,10 +104,10 @@
                                         <tbody>
                                             <!-- ko foreach: submissionRecords -->
                                                 <tr style="border-bottom: none !important;">
-                                                    <td><span data-bind="submissionPublicationDate"></span></td>
-                                                    <td><span data-bind="datasetSubmitter"></span></td>
-                                                    <td><span data-bind="datasetVersion"></span></td>
-                                                    <td><span data-bind="submissionDoi"></span></td>
+                                                    <td><span data-bind="text: displayDate()"></span></td>
+                                                    <td><span data-bind="text: datasetSubmitter().displayName"></span></td>
+                                                    <td><span data-bind="text: datasetVersion"></span></td>
+                                                    <td><span data-bind="text: submissionDoi"></span></td>
                                                 </tr>
                                             <!-- /ko -->
                                         </tbody>
