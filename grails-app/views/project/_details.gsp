@@ -76,7 +76,7 @@
             </div>
         </div>
 
-        <div class="row-fluid" data-bind="visible:!isEcoScience()" >
+        <div class="row-fluid" >
             <div class="control-group">
                 <label class="control-label span3" for="isContributingToAla"><g:message code="project.details.isContributingToAla"/><fc:iconHelp><g:message code="project.details.isContributingToAla.help"/></fc:iconHelp></label>
                 <div class="controls span9 large-checkbox">
