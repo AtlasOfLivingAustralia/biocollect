@@ -296,7 +296,18 @@ class BioActivityController {
     private GrailsParameterMap constructDefaultSearchParams(Map params) {
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
         Map parsed = commonService.parseParams(params)
-        parsed.userId = userService.getCurrentUserId()
+        if (parsed.mobile) {
+            String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
+            String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
+            parsed.userId = username && key ? userService.getUserFromAuthKey(username, key)?.userId : ''
+        } else {
+            parsed.userId = userService.getCurrentUserId()
+        }
+
+        if (params?.hub == 'ecoscience') {
+            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectType:ecoscience"
+        }
+
         parsed.each { key, value ->
             if (value != null && value) {
                 queryParams.put(key, value)
@@ -372,6 +383,10 @@ class BioActivityController {
             if (value != null && value) {
                 queryParams.put(key, value)
             }
+        }
+
+        if (params?.hub == 'ecoscience') {
+            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectType:ecoscience"
         }
 
         queryParams.max = queryParams.max ?: 10

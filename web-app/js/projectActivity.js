@@ -134,6 +134,8 @@ var AekosViewModel = function (pActivityVM, projectViewModel, user) {
     var self = $.extend(this, pActivityVM);
 
     self.projectViewModel = projectViewModel;
+    
+    if (!self.projectViewModel.name) return
 
     self.user = user;
 

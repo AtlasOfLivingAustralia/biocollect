@@ -42,18 +42,33 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="span6">
-                            <h5><g:message code="project.search.difficulty"/> </h5>
-                            <div class="row-fluid">
-                                <div>
-                                    <div class="btn-group span6" data-toggle="buttons-checkbox" id="pt-search-difficulty">
-                                        <g:each var="level" in="${['easy','medium','hard']}">
-                                            <button type="button" class="btn  btn-small btn-info" data-value="${level}">${level.capitalize()} <i class="toggleIndicator icon-remove icon-white"></i></button>
+                        <g:if test="${!hubConfig?.defaultFacetQuery.contains('isEcoScience:true')}">
+                            <div class="span6">
+                                <h5><g:message code="project.search.difficulty"/> </h5>
+                                <div class="row-fluid">
+                                    <div>
+                                        <div class="btn-group span6" data-toggle="buttons-radio" id="pt-search-difficulty">
+                                            <g:each var="level" in="${['easy','medium','hard']}">
+                                                <button type="button" class="btn  btn-small btn-info" data-value="${level}">${level.capitalize()} <i class="toggleIndicator icon-remove icon-white"></i></button>
+                                            </g:each>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </g:if>
+                        <g:else>
+                            <div class="span6">
+                                <h5><g:message code="project.search.programName"/> </h5>
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <g:each var="program" in="${associatedPrograms}">
+                                            <button type="button" class="btn btn-small btn-info" data-value="${program}"
+                                                    data-toggle="button" id="pt-search-program-${program.name.replace(' ', '-')}" >${program.name.capitalize()} <i class="toggleIndicator icon-remove icon-white"></i></button>
                                         </g:each>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </g:else>
                     </div>
                 </div>
                 <div class="span4" id="pt-tags">
@@ -61,10 +76,12 @@
                         <h5>Tags</h5>
                         <div class="row-fluid">
                             <div class="span12">
-                                <button id="pt-search-diy" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="project.tag.diy" /> <i class="toggleIndicator icon-remove icon-white"></i> </button>
-                                <button id="pt-search-noCost" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="project.tag.noCost" /> <i class="toggleIndicator icon-remove icon-white"></i></button>
-                                <button id="pt-search-teach" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="project.tag.teach" /> <i class="toggleIndicator icon-remove icon-white"></i></button>
-                                <button id="pt-search-children" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="project.tag.children" /> <i class="toggleIndicator icon-remove icon-white"></i></button>
+                                <g:if test="${!hubConfig?.defaultFacetQuery.contains('isEcoScience:true')}">
+                                    <button id="pt-search-diy" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="project.tag.diy" /> <i class="toggleIndicator icon-remove icon-white"></i> </button>
+                                    <button id="pt-search-noCost" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="project.tag.noCost" /> <i class="toggleIndicator icon-remove icon-white"></i></button>
+                                    <button id="pt-search-teach" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="project.tag.teach" /> <i class="toggleIndicator icon-remove icon-white"></i></button>
+                                    <button id="pt-search-children" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="project.tag.children" /> <i class="toggleIndicator icon-remove icon-white"></i></button>
+                                </g:if>
                                 <button id="pt-search-mobile" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="g.mobileApps" /> <i class="toggleIndicator icon-remove icon-white"></i></button>
                                 <button id="pt-search-dataToAla" type="button" class="btn btn-info btn-small" data-toggle="button"><g:message code="g.dataToAla" /> <i class="toggleIndicator icon-remove icon-white"></i></button>
                             </div>
@@ -75,10 +92,10 @@
                         <div class="row-fluid">
                             <div class="span12">
                                 <div class="btn-group span6" data-toggle="buttons-checkbox" id="pt-search-projecttype">
-                                    <button type="button" class="btn  btn-small btn-info active" data-value="citizenScience">Citizen Science <i class="toggleIndicator icon-remove icon-white"></i></button>
-                                    <button type="button" class="btn  btn-small btn-info active" data-value="works">NRM <i class="toggleIndicator icon-remove icon-white"></i></button>
-                                    <button type="button" class="btn  btn-small btn-info active" data-value="biologicalScience">Biological Science <i class="toggleIndicator icon-remove icon-white"></i></button>
-                                    <button type="button" class="btn  btn-small btn-info active" data-value="merit">MERIT <i class="toggleIndicator icon-remove icon-white"></i></button>
+                                    <button type="button" class="btn  btn-small btn-info active" data-toggle="button" data-value="citizenScience">Citizen Science <i class="toggleIndicator icon-remove icon-white"></i></button>
+                                    <button type="button" class="btn  btn-small btn-info active" data-toggle="button" data-value="works">NRM <i class="toggleIndicator icon-remove icon-white"></i></button>
+                                    <button type="button" class="btn  btn-small btn-info active" data-toggle="button" data-value="biologicalScience">Biological Science <i class="toggleIndicator icon-remove icon-white"></i></button>
+                                    <button type="button" class="btn  btn-small btn-info active" data-toggle="button" data-value="merit">MERIT <i class="toggleIndicator icon-remove icon-white"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -94,7 +111,6 @@
                     <m:map id="mapFilter" width="100%"/>
                 </div>
             </div>
-
 
             <div class="row-fluid">
                 <div class="pull-right" id="pt-control-buttons">

@@ -560,4 +560,15 @@ class ProjectService {
             webService.getJson(url)
         })
     }
+
+    /**
+     * get eco science type from ecodata and cache it since it is not likely to change.
+     * @return
+     */
+    List getEcoScienceTypes(){
+        cacheService.get("project-ecosciencetypes", {
+            def url = grailsApplication.config.ecodata.service.url + '/project/getEcoScienceTypes'
+            webService.getJson(url)
+        })
+    }
 }

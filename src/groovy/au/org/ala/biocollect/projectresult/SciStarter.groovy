@@ -64,6 +64,7 @@ class SciStarter {
                 logoCredit             : doc.logoAttribution,
                 difficulty             : doc.difficulty,
                 scienceType            : doc.scienceType,
+                ecoScienceType         : doc.ecoScienceType,
                 isDIY                  : doc.isDIY?.toBoolean(),
                 isSciStarter           : doc.isSciStarter?.toBoolean(),
                 hasParticipantCost     : doc.hasParticipantCost?.toBoolean(),

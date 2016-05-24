@@ -167,6 +167,7 @@ class ProjectController {
         def user = userService.getUser()
         def groupedOrganisations = groupOrganisationsForUser(user.userId)
         def scienceTypes = projectService.getScienceTypes();
+        def ecoScienceTypes = projectService.getEcoScienceTypes();
 
         if (project) {
             def siteInfo = siteService.getRaw(project.projectSiteId)
@@ -176,7 +177,8 @@ class ProjectController {
              userOrganisations: groupedOrganisations.user ?: [],
              organisations: groupedOrganisations.other ?: [],
              programs: metadataService.programsModel(),
-             scienceTypes: scienceTypes
+             scienceTypes: scienceTypes,
+             ecoScienceTypes: ecoScienceTypes
             ]
 
         } else {
@@ -204,6 +206,7 @@ class ProjectController {
         }
         def groupedOrganisations = groupOrganisationsForUser(user.userId)
         def scienceTypes = projectService.getScienceTypes();
+        def ecoScienceTypes = projectService.getEcoScienceTypes();
         // Prepopulate the project as appropriate.
         def project = [:]
         if (params.organisationId) {
@@ -232,7 +235,8 @@ class ProjectController {
                 organisations: groupedOrganisations.other ?: [],
                 programs: projectService.programsModel(),
                 project:project,
-                scienceTypes: scienceTypes
+                scienceTypes: scienceTypes,
+                ecoScienceTypes: ecoScienceTypes
         ]
     }
 
@@ -273,6 +277,7 @@ class ProjectController {
                 user                    : userService.getUser(),
                 showTag                 : params.tag,
                 downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
+                associatedPrograms      : projectService.programsModel().programs.findAll{!it?.readOnly},
                 showEcoScienceBanner: true
         ]
     }
@@ -475,6 +480,7 @@ class ProjectController {
         trimmedParams.isMobile = params.boolean('isMobile')
         trimmedParams.isContributingDataToAla = params.boolean('isContributingDataToAla')
         trimmedParams.difficulty = params.list('difficulty')
+        trimmedParams.mobile = params.boolean('mobile')
 
         List fq = [], projectType = []
         List immutableFq = params.list('fq')
@@ -482,6 +488,10 @@ class ProjectController {
             it? fq.push(it):null;
         }
         trimmedParams.fq = fq;
+
+        if (params?.hub == 'ecoscience') {
+            trimmedParams.query += " AND projectType:ecoscience";
+        }
 
         switch (trimmedParams.sort){
             case 'organisationSort':
@@ -535,6 +545,17 @@ class ProjectController {
             trimmedParams.isMetadataSharing = null
         }
 
+        def programs = ''
+        params.each {
+            if (it.key.startsWith('isProgram') && it.value.toString().toBoolean()) {
+                def programName = it.key.substring('isProgram'.length()).replace('-',' ')
+                if (programs.length()) programs += " OR "
+                programs += " associatedProgram:\"${programName}\""
+                trimmedParams.remove(it.key)
+            }
+        }
+        if (programs.length()) trimmedParams.query += " AND (" + programs + ")"
+
         // query construction
         if(trimmedParams.q){
             trimmedParams.query += " AND " + trimmedParams.q;
@@ -559,9 +580,14 @@ class ProjectController {
             }
             trimmedParams.status = null
         }
-
-        if(trimmedParams.isUserPage){
-            fq.push('admins:' + userService.getUser()?.userId);
+        if (trimmedParams.isUserPage) {
+            if (trimmedParams.mobile) {
+                String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
+                String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
+                fq.push('admins:' + (username && key ? userService.getUserFromAuthKey(username, key)?.userId : ''))
+            } else {
+                fq.push('admins:' + userService.getUser()?.userId);
+            }
             trimmedParams.isUserPage = null
         }
 
@@ -745,6 +771,9 @@ class ProjectController {
             payload.sort = payload.sort ?: 'lastUpdated';
             payload.fq = payload.fq ?: []
             payload.fq.push('surveyImage:true');
+            if (params?.hub == 'ecoscience') {
+                payload.fq.push("projectType:ecoscience");
+            }
             Map result = projectService.listImages(payload, params?.version) ?: [:];
             render contentType: 'application/json', text: result as JSON
         } catch (SocketTimeoutException sTimeout){

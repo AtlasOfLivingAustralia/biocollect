@@ -32,7 +32,7 @@
         <div class="row-fluid ">
             <div class="span8">
                 <h4>Pages recently edited by you</h4>
-                <g:if test="${recentEdits}">
+                <g:if test="${recentEdits && !recentEdits.get('error')}">
                     <table class="table table-striped table-bordered table-condensed">
                         <thead>
                         <tr>

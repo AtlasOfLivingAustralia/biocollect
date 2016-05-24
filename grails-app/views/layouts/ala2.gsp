@@ -258,6 +258,7 @@
     $(window).on('resize',function(){
         calcWidth();
     });
+    $('#biocollectNav').show();
     calcWidth();
 </r:script>
     <!-- JS resources-->

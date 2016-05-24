@@ -136,7 +136,11 @@ nav#biocollectNav ul#main li a.ala-link:hover{
 
 .ala-header-ecoscience {
     background: url(http://www.ala.org.au/wp-content/uploads/2015/07/ES-banner-4.jpg) no-repeat center top;
-    height: 225px;
+    height: 350px;
     background-size: cover;
-    background-position-y: -254px;
+    background-position-y: -90px;
+}
+
+#biocollectlogo {
+    background-color: white !important;
 }
