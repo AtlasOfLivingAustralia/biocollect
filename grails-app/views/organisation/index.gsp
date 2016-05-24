@@ -73,7 +73,7 @@
             margin: 5px 0;
         }
     </style>
-    <r:require modules="wmd,knockout,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder,map,siteDisplay,myActivity, activities"/>
+    <r:require modules="wmd,knockout,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder,map,siteDisplaysiteDispl,myActivity, activities"/>
 </head>
 <body>
 
