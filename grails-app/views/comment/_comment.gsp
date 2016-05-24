@@ -1,4 +1,4 @@
-<div id="commentOutput" class="clearfix">
+<div id="commentOutput" class="clearfix ${mobile?'hide':''}">
     <h3>Comments (<b data-bind="text: total"></b>)</h3>
     <div id="postComment" class="comment clearfix comment-post">
         <div class="comment-header">

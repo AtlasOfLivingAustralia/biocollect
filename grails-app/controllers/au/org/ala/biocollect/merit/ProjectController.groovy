@@ -424,6 +424,7 @@ class ProjectController {
         trimmedParams.isMobile = params.boolean('isMobile')
         trimmedParams.isContributingDataToAla = params.boolean('isContributingDataToAla')
         trimmedParams.difficulty = params.list('difficulty')
+        trimmedParams.mobile = params.boolean('mobile')
 
         List fq = [], projectType = []
         List immutableFq = params.list('fq')
@@ -504,9 +505,14 @@ class ProjectController {
             }
             trimmedParams.status = null
         }
-
-        if(trimmedParams.isUserPage){
-            fq.push('admins:' + userService.getUser()?.userId);
+        if (trimmedParams.isUserPage) {
+            if (trimmedParams.mobile) {
+                String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
+                String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
+                fq.push('admins:' + (username && key ? userService.getUserFromAuthKey(username, key)?.userId : ''))
+            } else {
+                fq.push('admins:' + userService.getUser()?.userId);
+            }
             trimmedParams.isUserPage = null
         }
 

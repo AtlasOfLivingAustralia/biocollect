@@ -1,10 +1,16 @@
 package au.org.ala.biocollect.merit
 
 import javax.annotation.PostConstruct
+import org.apache.commons.httpclient.HttpStatus
 
 class UserService {
    def grailsApplication, authService, webService
     def auditBaseUrl = ""
+
+    static String USER_NAME_HEADER_FIELD = "userName"
+    static String AUTH_KEY_HEADER_FIELD = "authKey"
+    static String MOBILE_AUTH_BASE_URL = "https://m.ala.org.au"
+    static String MOBILE_AUTH_CHECK_KEY_URL = MOBILE_AUTH_BASE_URL+"/mobileauth/mobileKey/checkKey"
 
     @PostConstruct
     private void init() {
@@ -22,6 +28,32 @@ class UserService {
     def getCurrentUserId() {
         getUser()?.userId?:""
     }
+
+   /*
+    * Get User details for the given user name and auth key.
+    *
+    * @param username username
+    * @param key mobile auth key
+    * @return userdetails
+    * */
+
+    def UserDetails getUserFromAuthKey(String username, String key) {
+        String url = MOBILE_AUTH_CHECK_KEY_URL
+        Map params = [userName: username, authKey: key]
+        def result = webService.doPostWithParams(url, params)
+
+        if (result.statusCode == HttpStatus.SC_OK && result.resp?.status == 'success') {
+            params = [userName: username]
+            url = grailsApplication.config.userDetails.url + "getUserDetails"
+            result = webService.doPostWithParams(url, params)
+            if (result.statusCode == HttpStatus.SC_OK && result.resp) {
+                return new UserDetails(result.resp.firstName + result.resp.lastName, result.resp.userName, result.resp.userId)
+            }
+        }
+
+        return null
+    }
+
 
     public UserDetails getUser() {
         def u = authService.userDetails()
