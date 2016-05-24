@@ -576,7 +576,7 @@ var AekosViewModel = function (pActivityVM, projectViewModel, user) {
 
     self.update = function(pActivity, caller){
         var url =  fcConfig.projectActivityUpdateUrl + "/" + pActivity.projectActivityId();
-        alert(JSON.stringify(pActivity.asJS(caller), null, 4));
+     //   alert(JSON.stringify(pActivity.asJS(caller), null, 4));
         $.ajax({
             url: url,
             type: 'POST',
