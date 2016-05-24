@@ -32,7 +32,7 @@
 
     <div class="span12">
         <div class="span1">
-            <img alt="No image" data-bind="attr:{title:transients.pActivity.name, src: transients.pActivity.transients.logoUrl()}"/>
+            <img class="bioactivity-logo" alt="No image" data-bind="attr:{title:transients.pActivity.name, src: transients.pActivity.transients.logoUrl()}"/>
         </div>
         <div class="span9">
             <h2 data-bind="text: transients.pActivity.name"></h2>
