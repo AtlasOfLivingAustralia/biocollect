@@ -356,6 +356,11 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
     self.imageUrl = ko.observable(project.urlImage);
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
+    
+    self.associatedProgram = ko.observable(project.associatedProgram ? project.associatedProgram : '');
+    self.associatedSubProgram = ko.observable(project.associatedSubProgram ? project.associatedSubProgram : '');
+    self.orgGrantee = ko.observable(project.orgGrantee ? project.orgGrantee : '');
+    self.orgSponsor = ko.observable(project.orgSponsor ? project.orgSponsor : '');
 
     self.associatedOrgs = ko.observableArray(project.associatedOrgs);
 

@@ -133,6 +133,8 @@ var AekosViewModel = function (pActivityVM, projectViewModel) {
     var self = $.extend(this, pActivityVM);
 
     self.projectViewModel = projectViewModel;
+    
+    if (!self.projectViewModel.name) return
 
     self.submissionName = self.projectViewModel.name() + ' - ' + self.name();
 

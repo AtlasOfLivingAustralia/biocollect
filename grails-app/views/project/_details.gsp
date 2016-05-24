@@ -88,7 +88,7 @@
 
     </div>
 
-    <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
+    <div data-bind="visible:isCitizenScience() || isEcoScience() || !isExternal()" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.tell"/></h4>
 
@@ -260,7 +260,7 @@
         </div>
     </div>
 
-    <div data-bind="visible:!isCitizenScience() && !isExternal()" class="row-fluid">
+    <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.associations"/></h4>
 
@@ -441,7 +441,7 @@
         </div>
     </div>
 
-    <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
+    <div data-bind="visible:isCitizenScience() || isEcoScience() || !isExternal()" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.find"/></h4>
 
@@ -467,7 +467,7 @@
         </div>
     </div>
 
-    <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
+    <div data-bind="visible:isCitizenScience() || isEcoScience() || !isExternal()" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.image"/></h4>
 
@@ -528,7 +528,7 @@
         </div>
     </div>
 
-    <div data-bind="visible:(isCitizenScience() || !isExternal())" class="row-fluid">
+    <div data-bind="visible:(isCitizenScience() || isEcoScience() || !isExternal())" class="row-fluid">
         <!-- ko stopBinding: true -->
         <div class="well" id="sitemap">
             <h4 class="block-header"><g:message code="project.details.site"/><i class="req-field"></i></h4>
