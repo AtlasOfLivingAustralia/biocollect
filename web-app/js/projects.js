@@ -322,6 +322,20 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         var org = self.organisationId() && organisationsMap[self.organisationId()];
         return org? org.name: project.organisationName;
     });
+
+    var legalCustodianVal = project.legalCustodianOrganisation? project.legalCustodianOrganisation: ko.utils.unwrapObservable(self.organisationName);
+    self.legalCustodianOrganisation = ko.observable(legalCustodianVal);
+
+    self.setLegalCustodian = function (data, event) {
+        if (event.originalEvent) { //user changed
+            self.current().legalCustodianOrganisation(data.transients.selectedCustodianOption);
+        }
+    };
+
+    var legalCustodianOrganisationTypeVal = project.legalCustodianOrganisationType? project.legalCustodianOrganisationType: "";
+    self.legalCustodianOrganisationType = ko.observable(legalCustodianOrganisationTypeVal);
+
+
     self.orgIdGrantee = ko.observable(project.orgIdGrantee);
     self.orgIdSponsor = ko.observable(project.orgIdSponsor);
     self.orgIdSvcProvider = ko.observable(project.orgIdSvcProvider);

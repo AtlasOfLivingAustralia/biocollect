@@ -41,13 +41,6 @@ var ProjectActivitiesViewModel = function (params) {
         }
     };
 
-    self.setLegalCustodian = function (data, event) {
-        if (event.originalEvent) { //user changed
-            self.current().legalCustodian(data.transients.selectedCustodianOption);
-        }
-    };
-
-
     self.reset = function () {
         $.each(self.projectActivities(), function (i, obj) {
             obj.current(false);
@@ -98,6 +91,14 @@ var ProjectActivitiesViewModel = function (params) {
         return projectActive && (pActivity.publicAccess() || userIsEditorOrAdmin) && fcConfig.version.length == 0;
     };
 
+    self.userIsAdmin = function (pActivity) {
+        if (user && Object.keys(user).length > 0 && user.isAdmin) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     self.loadProjectActivities(pActivities);
 
    /* self.aekosTestModalView = ko.observable(new AekosViewModel (pActivity, project.name, project.description, project.status));
@@ -134,8 +135,8 @@ var AekosViewModel = function (pActivityVM, projectViewModel, user) {
     var self = $.extend(this, pActivityVM);
 
     self.projectViewModel = projectViewModel;
-    
-    if (!self.projectViewModel.name) return
+
+    if (!self.projectViewModel.name) return;
 
     self.user = user;
 
@@ -248,17 +249,13 @@ var AekosViewModel = function (pActivityVM, projectViewModel, user) {
             var nextTab = nextTab.substr(1, 5);
             self.selectedTab(nextTab);
         }
-    }
+    };
 
     self.nextTab = ko.computed(function(){
         var currentTab = ko.utils.unwrapObservable(self.selectedTab);
         var currentTabNumber = parseInt(currentTab.charAt(4));
         var nextTabNumber = currentTabNumber + 1;
         var nextTab = currentTab.substr(0, 4) + nextTabNumber;
-        // if (nextTabNumber < 9) {
-        //   self.selectedTab(nextTab);
-        // }
-        //alert(nextTab);
         return nextTab;
     });
 
@@ -557,26 +554,11 @@ var AekosViewModel = function (pActivityVM, projectViewModel, user) {
             return false;
         }
 
-       /* if (!self.isContactsValidated()) {
-            self.selectNextTab('#tab-8-' + index);
-            return false;
-        }*/
-        //} &&
-        //     &&
-        //    self.isLocationDatesValidated() &&
-        //    self.isDatasetSpeciesValidated() &&
-        //    self.isMaterialsValidated() &&
-        //    self.isMethodsValidated() &&
-        //    self.isContactsValidated() &&
-        //    self.isManagementValidated()) {
-        //    return true;
-
         return true;
     };
 
     self.update = function(pActivity, caller){
         var url =  fcConfig.projectActivityUpdateUrl + "/" + pActivity.projectActivityId();
-     //   alert(JSON.stringify(pActivity.asJS(caller), null, 4));
         $.ajax({
             url: url,
             type: 'POST',
@@ -590,15 +572,23 @@ var AekosViewModel = function (pActivityVM, projectViewModel, user) {
 
                     window.location.reload();
                 } else {
-                    showAlert(data.error ? data.error : "Error updating the survey", "alert-error", self.placeHolder);
+                    self.showAlert(data.error ? data.error : "Error updating survey dataset", "alert-error", 'div.aekosAlert');
                 }
             },
             error: function (data) {
-                showAlert("Error updating the survey -" + data.status, "alert-error", self.placeHolder);
+                self.showAlert("Error updating the survey -" + data.status, "alert-error", 'div.aekosAlert');
             }
         });
     };
 
+    self.showAlert = function(message, alerttype, target) {
+
+        $(target).append('<div class="alert ' +  alerttype + ' aekosAlertDiv"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')
+
+        setTimeout(function() { // this will automatically close the alert and remove this if the users doesnt close it in 5 secs
+            $("div.alert." + alerttype + ".aekosAlertDiv").remove();
+        }, 5000);
+    }
 
     self.submit = function(index){
 
@@ -608,26 +598,15 @@ var AekosViewModel = function (pActivityVM, projectViewModel, user) {
             var submissionDate = moment(current_time).format("YYYY-MM-DDTHH:mm:ssZZ"); //moment(new Date(), 'YYYY-MM-DDThh:mm:ssZ').isValid() ? self.endDate() : "";
             //var utc = new Date().toJSON().slice(0,10);
             self.submissionRecords.push (new SubmissionRec(submissionDate, self.user, self.currentDatasetVersion(), 'Pending'));
-
+          //  self.showAlert("Error updating the survey - error", "alert-error", 'div.aekosAlert');
             //setTimeout(function(){
-                self.update (self, 'info');
+              self.update (self, 'info');
 
             //}, 0);
 
-
-
-
-/*            var jsData = $.extend({},
-                self.asJS("info"),
-                self.asJS("access"),
-                self.asJS("form"),
-                self.asJS("species"),
-                self.asJS("visibility"),
-                self.asJS("alert"),
-                self.asJS("sites"));
-            alert(JSON.stringify(jsData, null, 4)); */
         }
     };
+
 
 };
 
@@ -1076,6 +1055,9 @@ var ProjectActivity = function (params) {
     var user = params.user ? params.user : {};
 
     var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
+
+    self.project = project;
+
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
@@ -1094,12 +1076,6 @@ var ProjectActivity = function (params) {
     self.typeConservation = ko.observableArray(pActivity.typeConservation ? pActivity.typeConservation : [])
 
     self.lastUpdated = ko.observable(pActivity.lastUpdated ? pActivity.lastUpdated : "");
-
-    var legalCustodianVal = pActivity.legalCustodian? pActivity.legalCustodian: "";
-    self.legalCustodian = ko.observable(legalCustodianVal);
-
-    var legalCustodianOrganisationTypeVal = pActivity.legalCustodianOrganisationType? pActivity.legalCustodianOrganisationType: "";
-    self.legalCustodianOrganisationType = ko.observable(legalCustodianOrganisationTypeVal);
 
     self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "CC BY");
 
@@ -1128,6 +1104,8 @@ var ProjectActivity = function (params) {
         name:'SCIENTIFICNAME',
         displayName: 'Scientific name'
     }])
+
+    var legalCustodianVal = ko.utils.unwrapObservable(project.legalCustodianOrganisation);
 
     if (legalCustodianVal != "" && organisationName != legalCustodianVal) {
         self.transients.custodianOptions = [organisationName, legalCustodianVal];
@@ -1279,7 +1257,7 @@ var ProjectActivity = function (params) {
         else if (by == "info") {
             var ignore = self.ignore.concat(['current', 'pActivityForms', 'pActivityFormImages',
                 'access', 'species', 'sites', 'transients', 'endDate','visibility','pActivityFormName', 'restrictRecordToSites',
-                'aekosModalView']);
+                'aekosModalView', 'project']);
             ignore = $.grep(ignore, function (item, i) {
                 return item != "documents";
             });

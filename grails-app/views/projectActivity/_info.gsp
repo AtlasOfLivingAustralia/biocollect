@@ -206,15 +206,18 @@
     <div class="row-fluid">
         <div class="span10">
             <h2 class="strong">Supplementary Data</h2>
+            Including additional information about this dataset is important for your data to be useful to others, particularly in scientific studies
         </div>
     </div>
+
+    <br/>
 
     <div class="row-fluid">
 
         <!-- ko foreach: projectActivities -->
         <!-- ko if: current -->
 
-        <div class="span8 text-left">
+        <div class="span6 text-left">
             <label class="control-label"><g:message code="project.survey.info.relatedDatasets"/>
                 <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.relatedDatasets"/>', content:'<g:message code="project.survey.info.relatedDatasets.content"/>'}">
                     <i class="icon-question-sign"></i>
@@ -222,8 +225,15 @@
 
             </label>
 
+        <!-- ko if: $parent.projectActivities().length <= 1 -->
+            <h3 class="text-left margin-bottom-five">
+                There are no other related datasets in the project
+            </h3>
+        <!-- /ko -->
+
+        <!-- ko if: $parent.projectActivities().length > 1 -->
             <div class="panel panel-default" >
-                <div class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
+                <div class="panel-body" style="max-height: 388px; max-width: 440px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
 
                     <!-- ko foreach: $parent.projectActivities -->
 
@@ -240,11 +250,12 @@
 
                 </div>
             </div>
+        <!-- /ko -->
 
         </div>
 
         <div class="row-fluid">
-            <div class="span4 text-left">
+            <div class="span6 text-left">
                 <label class="control-label" for="usageGuide"><g:message code="project.survey.info.usageGuide"/>
                     <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.usageGuide"/>', content:'<g:message code="project.survey.info.usageGuide.content"/>'}">
                         <i class="icon-question-sign"></i>
@@ -252,7 +263,7 @@
 
                 </label>
                 <div class="controls">
-                    <textarea id="usageGuide" rows="4" class="input-xlarge" data-bind="value: usageGuide"></textarea>
+                    <textarea id="usageGuide" rows="6" style="width: 100%" class="input-xlarge" data-bind="value: usageGuide"></textarea>
                 </div>
 
                 <span class="right-padding"></span>
@@ -279,12 +290,12 @@
                 </label>
                 <div class="controls">
                     <div class="survey-editable-dropdown">
-                        <input id="legalCustodian" type="text" data-bind="value: legalCustodian" >
+                        <input id="legalCustodian" type="text" data-bind="value: project.legalCustodianOrganisation" >
 
                         <select id="selectOption" data-bind="options: transients.custodianOptions,
                                                              value: transients.selectedCustodianOption,
                                                              optionsCaption: 'Enter the custodian',
-                                                             event:{ change: $parent.setLegalCustodian}">
+                                                             event:{ change: project.setLegalCustodian}">
 
                         </select>
                     </div>

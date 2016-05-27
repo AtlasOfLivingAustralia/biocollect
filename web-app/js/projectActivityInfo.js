@@ -20,11 +20,11 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     self.attribution = ko.observable(o.attribution ? o.attribution : self.formatAttribution(organisationName, self.name()));
     self.methodName = ko.observable(o.methodName);
     self.methodAbstract = ko.observable(o.methodAbstract);
-    self.datasetVersion = ko.observable(o.datasetVersion ? o.datasetVersion : "");
+ /*   self.datasetVersion = ko.observable(o.datasetVersion ? o.datasetVersion : "");
     self.submissionDoi = ko.observable(o.submissionDoi ? o.submissionDoi : "");
     self.submissionPublicationDate = ko.observable(o.submissionPublicationDate ? o.submissionPublicationDate : "");
     self.datasetSubmitter = ko.observable(o.datasetSubmitter ? o.datasetSubmitter : "");
-
+*/
     self.current = ko.observable(selected);
 
     self.addActivity = function(){
