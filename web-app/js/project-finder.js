@@ -58,7 +58,7 @@ function ProjectFinder() {
         this.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
         this.sortKeys = ko.observableArray(self.sortKeys);
         this.hideshow = function () {
-            $("#pt-selectors").toggle();
+            // $("#pt-selectors").toggle();
         };
         this.download = function (obj, e) {
             var params = $.param(self.getParams(), true);
@@ -142,6 +142,7 @@ function ProjectFinder() {
     function toggleMapFilterPanel() {
         if ($('#pt-map-filter').hasClass('active')) {
             $('#pt-map-filter-panel').slideDown(400);
+            $('#mapModal').modal({backdrop: 'static'});
             if (!mapInitialised) {
                 spatialFilter = new ALA.Map("mapFilter", {
                     wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
@@ -416,7 +417,7 @@ function ProjectFinder() {
         }
         geoSearch = {};
         toggleMapFilterPanel();
-        toggleFilterPanel();
+        // toggleFilterPanel();
 
         self.pago.firstPage();
     });
@@ -499,7 +500,7 @@ function ProjectFinder() {
 
         if (!isDefaultFilter(params)) {
             toggleButton($('#pt-filter'), true);
-            toggleFilterPanel();
+            // toggleFilterPanel();
         }
         toggleButton($('#pt-search-diy'), toBoolean(params.isDIY));
         setActiveButtonValues($('#pt-status'), params.status);
