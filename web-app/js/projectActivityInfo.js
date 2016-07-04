@@ -20,7 +20,11 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     self.attribution = ko.observable(o.attribution ? o.attribution : self.formatAttribution(organisationName, self.name()));
     self.methodName = ko.observable(o.methodName);
     self.methodAbstract = ko.observable(o.methodAbstract);
-
+ /*   self.datasetVersion = ko.observable(o.datasetVersion ? o.datasetVersion : "");
+    self.submissionDoi = ko.observable(o.submissionDoi ? o.submissionDoi : "");
+    self.submissionPublicationDate = ko.observable(o.submissionPublicationDate ? o.submissionPublicationDate : "");
+    self.datasetSubmitter = ko.observable(o.datasetSubmitter ? o.datasetSubmitter : "");
+*/
     self.current = ko.observable(selected);
 
     self.addActivity = function(){
@@ -34,9 +38,23 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
         }
     };
 
+    self.showAekosDetails = function() {
+        if (self.transients.showAekosDetailsState()) {
+            self.transients.showAekosDetailsState(false);
+            self.transients.aekosToggleText('Show Datasets in AEKOS');
+        } else {
+            self.transients.showAekosDetailsState(true);
+            self.transients.aekosToggleText('Hide Datasets in AEKOS');
+        }
+    };
+
     self.transients = self.transients || {};
     self.transients.organisationName = ko.observable(organisationName);
     self.transients.oldName = ko.observable(self.name());
+
+    self.transients.showAekosDetailsState = ko.observable(false);
+
+    self.transients.aekosToggleText = ko.observable('Show Datasets in AEKOS');
 
     // Publish is allowed only when no data's are associated with the survey
     // Survey Info & visibility can be saved regardless of the existence of the data.

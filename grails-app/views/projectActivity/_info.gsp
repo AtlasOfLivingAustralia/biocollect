@@ -201,6 +201,130 @@
 <!-- /ko -->
 </div>
 
+<div id="pSupplementaryActivitySurvey" class="well">
+
+    <div class="row-fluid">
+        <div class="span10">
+            <h2 class="strong">Supplementary Data</h2>
+            Including additional information about this dataset is important for your data to be useful to others, particularly in scientific studies
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="row-fluid">
+
+        <!-- ko foreach: projectActivities -->
+        <!-- ko if: current -->
+
+        <div class="span6 text-left">
+            <label class="control-label"><g:message code="project.survey.info.relatedDatasets"/>
+                <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.relatedDatasets"/>', content:'<g:message code="project.survey.info.relatedDatasets.content"/>'}">
+                    <i class="icon-question-sign"></i>
+                </a>
+
+            </label>
+
+        <!-- ko if: $parent.projectActivities().length <= 1 -->
+            <h3 class="text-left margin-bottom-five">
+                There are no other related datasets in the project
+            </h3>
+        <!-- /ko -->
+
+        <!-- ko if: $parent.projectActivities().length > 1 -->
+            <div class="panel panel-default" >
+                <div class="panel-body" style="max-height: 388px; max-width: 440px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
+
+                    <!-- ko foreach: $parent.projectActivities -->
+
+                    <!-- ko if: $parent.projectActivityId != projectActivityId -->
+                    <input type="checkbox" data-bind="checkedValue: projectActivityId, checked: $parent.relatedDatasets" />
+
+                    <span data-bind="text: name"></span>
+
+                    </br>
+
+                    <!-- /ko -->
+
+                    <!-- /ko -->
+
+                </div>
+            </div>
+        <!-- /ko -->
+
+        </div>
+
+        <div class="row-fluid">
+            <div class="span6 text-left">
+                <label class="control-label" for="usageGuide"><g:message code="project.survey.info.usageGuide"/>
+                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.usageGuide"/>', content:'<g:message code="project.survey.info.usageGuide.content"/>'}">
+                        <i class="icon-question-sign"></i>
+                    </a>
+
+                </label>
+                <div class="controls">
+                    <textarea id="usageGuide" rows="6" style="width: 100%" class="input-xlarge" data-bind="value: usageGuide"></textarea>
+                </div>
+
+                <span class="right-padding"></span>
+
+                <label class="control-label" for="lastUpdated"><g:message code="project.survey.info.lastUpdated"/>
+                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.lastUpdated"/>', content:'<g:message code="project.survey.info.lastUpdated.content"/>'}">
+                        <i class="icon-question-sign"></i>
+                    </a>
+                </label>
+                <div class="controls">
+                    <div class="controls input-append">
+                        <input id="lastUpdated" data-bind="datepicker:lastUpdated.date" type="text"/>
+                        <span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
+                    </div>
+                </div>
+
+                <span class="right-padding"></span>
+
+                <label class="control-label" for="legalCustodian"><g:message code="project.survey.info.legalCustodian"/>
+                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.legalCustodian"/>', content:'<g:message code="project.survey.info.legalCustodian.content"/>'}">
+                        <i class="icon-question-sign"></i>
+                    </a>
+                    <span class="right-padding"></span>
+                </label>
+                <div class="controls">
+                    <div class="survey-editable-dropdown">
+                        <input id="legalCustodian" type="text" data-bind="value: project.legalCustodianOrganisation" >
+
+                        <select id="selectOption" data-bind="options: transients.custodianOptions,
+                                                             value: transients.selectedCustodianOption,
+                                                             optionsCaption: 'Enter the custodian',
+                                                             event:{ change: project.setLegalCustodian}">
+
+                        </select>
+                    </div>
+
+                </div>
+
+                <span class="right-padding"></span>
+
+                <label class="control-label" for="dataSharingLicense"><g:message code="project.survey.info.dataSharingLicense"/>
+                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataSharingLicense"/>', content:'<g:message code="project.survey.info.dataSharingLicense.content"/>'}">
+                        <i class="icon-question-sign"></i>
+                    </a>
+                    <span class="req-field"></span>
+                </label>
+                <div class="controls">
+                    <input id="dataSharingLicense" type="text" data-bind="value: dataSharingLicense" data-validation-engine="validate[required]">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- /ko -->
+        <!-- /ko -->
+
+
+    </div>
+
+</div>
+
 <div class="row-fluid">
     <div class="span12">
         <div class="alert alert-info" data-bind="visible: !isSurveyInfoFormFilled()">Enable Next button by filling all mandatory fields on this page.</div>

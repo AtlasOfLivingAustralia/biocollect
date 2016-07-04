@@ -179,7 +179,7 @@
         </div>
     </g:each>
 
-    <g:if test="${projectActivity.commentsAllowed}">
+    <g:if test="${projectActivity?.commentsAllowed}">
         <g:render template="/comment/comment"></g:render>
     </g:if>
     <div class="form-actions">

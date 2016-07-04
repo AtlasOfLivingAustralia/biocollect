@@ -1,4 +1,6 @@
-<nav role='navigation' id="biocollectNav" class="hide">
+<nav role='navigation' id="biocollectNav"
+    ${hubConfig.defaultFacetQuery.contains('isEcoScience:true') ? 'class="ecoScienceNav"' : ''}
+>
     <ul id='main'>
         <g:set var="path" value="${request.getServletPath()}"/>
         <li class="pull-left">
@@ -7,9 +9,11 @@
         <li class="${(path ==~ /.*project\/citizenScience.*/) ? 'active' : ''}">
             <a href="#" class="btnSearch"><span class="fa fa-search"></span>Search</a>
         </li>
-        <li class="${(path ==~ /.*bioActivity\/allRecords.*/) ? 'active' : ''}">
-            <a href="#" class="btnAllData"><span class="fa fa-database"></span>All Records</a>
-        </li>
+        <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+            <li class="${(path ==~ /.*bioActivity\/allRecords.*/) ? 'active' : ''}">
+                <a href="#" class="btnAllData"><span class="fa fa-database"></span>All Records</a>
+            </li>
+        </g:if>
         <li class="${(path ==~ /.*site\/.*/) ? 'active' : ''}">
             <a href="#" class="btnSite"><span class="fa fa-map-marker"></span>Sites</a>
         </li>
@@ -26,7 +30,9 @@
                 <a href="#" ><span class="fa fa-user"></span><fc:currentUserDisplayName/></a>
                 <ul>
                     <li><a href="#" class="btnMyDashboard"><span class="fa fa-dashboard"></span>My Dashboard</a></li>
-                    <li><a href="#" class="btnMyData"><span class="fa fa-database"></span>My Data</a></li>
+                    <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+                        <li><a href="#" class="btnMyData"><span class="fa fa-database"></span>My Data</a></li>
+                    </g:if>
                     <li><a href="#" class="btnMyProjects"><span class="fa fa-folder"></span>My Projects</a></li>
                     <li><a href="#" class="btnMyOrganisation"><span class="fa fa-building"></span>My Organisation</a></li>
                     <li><a href="#" class="btnMyFavouriteSites"><span class="fa fa-map-marker"></span>My Favourite Sites</a></li>

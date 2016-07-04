@@ -103,7 +103,7 @@
         };
 
         map = new new ALA.Map("map", {});
-        var mapFeatures = $.parseJSON('${mapFeatures?:[].encodeAsJavaScript()}');
+        var mapFeatures = ${mapFeatures?:[]};
         var sitesViewModel = new SitesViewModel(sites, map, mapFeatures, ${editable ?: false});
         ko.applyBindings(sitesViewModel, document.getElementById('sitesList'));
 

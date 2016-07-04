@@ -42,9 +42,45 @@
         </div>
         <div class="span6" id="column2">
             <div class="well">
-                <div class="well-title"><g:message code="project.display.involved" /></div>
+                <div class="well-title" data-bind="visible:projectType() != 'ecoscience'"><g:message code="project.display.involved" /></div>
+                <div class="well-title" data-bind="visible:projectType() == 'ecoscience'"><g:message code="project.display.funding" /></div>
                 <div data-bind="visible:getInvolved">
                     <div data-bind="html:getInvolved.markdownToHtml()"></div>
+                    <p/>
+                </div>
+                <div data-bind="visible:externalId">
+                    <div class="text-small-heading"><g:message code="project.display.externalId" /></div>
+                    <span data-bind="text:externalId"></span>
+                    <p/>
+                </div>
+                <div data-bind="visible:grantId">
+                    <div class="text-small-heading"><g:message code="project.display.grantId" /></div>
+                    <span data-bind="text:grantId"></span>
+                    <p/>
+                </div>
+                <div data-bind="visible:externalId">
+                    <div class="text-small-heading"><g:message code="project.display.fundingValue" /></div>
+                    <span data-bind="text:funding"></span>
+                    <p/>
+                </div>
+                <div data-bind="visible:associatedProgram">
+                    <div class="text-small-heading"><g:message code="project.display.program" /></div>
+                    <span data-bind="text:associatedProgram"></span>
+                    <p/>
+                </div>
+                <div data-bind="visible:associatedSubProgram">
+                        <div class="text-small-heading"><g:message code="project.display.subprogram" /></div>
+                    <span data-bind="text:associatedSubProgram"></span>
+                    <p/>
+                </div>
+                <div data-bind="visible:orgGrantee">
+                    <div class="text-small-heading"><g:message code="project.display.orgGrantee" /></div>
+                    <span data-bind="text:orgGrantee"></span>
+                    <p/>
+                </div>
+                <div data-bind="visible:orgSponsor">
+                    <div class="text-small-heading"><g:message code="project.display.orgSponsor" /></div>
+                    <span data-bind="text:orgSponsor"></span>
                     <p/>
                 </div>
                 <div data-bind="visible:manager">
@@ -156,11 +192,14 @@
     <div class="span5 associated-org thumbnail">
         <div data-bind="visible: url" class=" clearfix">
             <a href="#" data-bind="attr: {href: url}" target="_blank" class="do-not-mark-external">
-                <div data-bind="visible: logo"><img src="" data-bind="attr: {src: logo, title: name}"
+
+                <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
+
+                    %{--Use 'if' instead of 'visible' to prevent creating child elements that potentially will source non https content--}%
+                    <div data-bind="if: logo && logo.startsWith('https') "><img src="" data-bind="attr: {src: logo, title: name}"
                                                     alt="Organisation logo" class="small-logo"></div>
 
-                <div data-bind="visible: !logo" class="associated-org-no-logo"><span data-bind="text: name"></span>
-                </div>
+                    <div data-bind="visible: !logo || !logo.startsWith('https')" class="associated-org-no-logo"><span data-bind="text: name"></span></div>
             </a>
         </div>
 

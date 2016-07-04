@@ -19,6 +19,15 @@
                     </div>
 
                     <div class="control-group">
+                        <label class="control-label" for="documentDescription">Description</label>
+
+                        <div class="controls">
+                            <input id="documentDescription" type="text" data-bind="value:description"/>
+
+                        </div>
+                    </div>
+
+                    <div class="control-group">
                         <label class="control-label" for="documentAttribution">Attribution</label>
 
                         <div class="controls">

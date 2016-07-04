@@ -241,8 +241,8 @@ class BioActivityController {
      * @return
      */
     def index(String id) {
-        def activity = activityService.get(id)
-        def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
+        def activity = activityService.get(id, params?.version)
+        def pActivity = projectActivityService.get(activity?.projectActivityId, "all", params?.version)
 
         String userId = userService.getCurrentUserId()
 
@@ -256,7 +256,7 @@ class BioActivityController {
                 flash.message = "Access denied: You do not have permission to access the requested resource."
                 redirect(controller: 'project', action: 'index', id: activity.projectId)
             } else {
-                Map model = activityAndOutputModel(activity, activity.projectId)
+                Map model = activityAndOutputModel(activity, activity.projectId, params?.version)
                 model.pActivity = pActivity
                 model.id = pActivity.projectActivityId
                 params.mobile ? model.mobile = true : ''
@@ -285,17 +285,12 @@ class BioActivityController {
     }
 
     def downloadProjectData() {
-        if(params.getBoolean('async') == true && params.email){
-            response.setContentType(ContentType.BINARY.toString())
-            response.setHeader('Content-Disposition', 'Attachment;Filename="data.zip"')
+        response.setContentType(ContentType.BINARY.toString())
+        response.setHeader('Content-Disposition', 'Attachment;Filename="data.zip"')
 
-            Map queryParams = constructDefaultSearchParams(params)
-            queryParams.isMerit = false
-            searchService.downloadProjectData(response, queryParams)
-        } else {
-            response.status = SC_BAD_REQUEST
-            render(text: "Must provide async and email parameters. Async should be set to true.")
-        }
+        Map queryParams = constructDefaultSearchParams(params)
+        queryParams.isMerit = false
+        searchService.downloadProjectData(response, queryParams)
     }
 
     private GrailsParameterMap constructDefaultSearchParams(Map params) {
@@ -307,6 +302,10 @@ class BioActivityController {
             parsed.userId = username && key ? userService.getUserFromAuthKey(username, key)?.userId : ''
         } else {
             parsed.userId = userService.getCurrentUserId()
+        }
+
+        if (params?.hub == 'ecoscience') {
+            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectType:ecoscience"
         }
 
         parsed.each { key, value ->
@@ -338,7 +337,7 @@ class BioActivityController {
         List facets = []
         activities = activities?.collect {
             Map doc = it._source
-            def projectActivity = projectActivityService.get(doc.projectActivityId,  "all")
+            def projectActivity = projectActivityService.get(doc.projectActivityId,  "all", params?.version)
             [
                     activityId       : doc.activityId,
                     projectActivityId: doc.projectActivityId,
@@ -386,6 +385,10 @@ class BioActivityController {
             }
         }
 
+        if (params?.hub == 'ecoscience') {
+            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectType:ecoscience"
+        }
+
         queryParams.max = queryParams.max ?: 10
         queryParams.offset = queryParams.offset ?: 0
         queryParams.flimit = queryParams.flimit ?: 20
@@ -413,13 +416,14 @@ class BioActivityController {
             ]
 
             if (doc.sites && doc.sites.size() > 0) {
-                result.coordinates = doc.sites[0]?.extent?.geometry?.centre
+                if (doc.sites[0] instanceof String) result.coordinates = siteService.get(doc.sites[0])?.extent?.geometry?.centre
+                else result.coordinates = doc.sites[0]?.extent?.geometry?.centre
             }
 
             result
         }
 
-        render([activities: activities, total: searchResult.hits?.total ?: 0] as JSON)
+        render([activities: activities, total: searchResult.hits?.total ?: activities.size()] as JSON)
     }
 
     def ajaxListForProject(String id) {
@@ -484,11 +488,11 @@ class BioActivityController {
         }
     }
 
-    private Map activityModel(activity, projectId) {
+    private Map activityModel(activity, projectId, version = null) {
         Map model = [activity: activity, returnTo: params.returnTo]
-        model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view: 'brief']) : null
+        model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view: 'brief', version: version]) : null
         model.mapFeatures = model.site ? siteService.getMapFeatures(model.site) : []
-        model.project = projectId ? projectService.get(model.activity.projectId) : null
+        model.project = projectId ? projectService.get(model.activity.projectId, version) : null
         model.projectSite = model.project.sites?.find { it.siteId == model.project.projectSiteId }
 
         // Add the species lists that are relevant to this activity.
@@ -507,8 +511,8 @@ class BioActivityController {
         model
     }
 
-    private Map activityAndOutputModel(activity, projectId) {
-        def model = activityModel(activity, projectId)
+    private Map activityAndOutputModel(activity, projectId, version = null) {
+        def model = activityModel(activity, projectId, version)
         addOutputModel(model)
 
         model

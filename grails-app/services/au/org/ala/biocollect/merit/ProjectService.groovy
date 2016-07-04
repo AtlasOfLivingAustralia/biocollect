@@ -43,12 +43,13 @@ class ProjectService {
         resp
     }
 
-    def get(id, levelOfDetail = "", includeDeleted = false) {
+    def get(id, levelOfDetail = "", includeDeleted = false, version = null) {
 
         def params = '?'
 
         params += levelOfDetail ? "view=${levelOfDetail}&" : ''
-        params += "includeDeleted=${includeDeleted}"
+        params += "includeDeleted=${includeDeleted}&"
+        params += version ? "version=${version}" : ''
         webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + id + params)
     }
 
@@ -69,10 +70,24 @@ class ProjectService {
     def validate(props, projectId = null) {
         def error = null
         def updating = projectId != null
+        def projectType = ((updating && !props?.projectType) ? get(projectId)?.projectType : props?.projectType)
+        def isWorks = projectType == 'works'
+        def isEcoScience = projectType == 'ecoscience'
 
-        if (!updating && !props.containsKey("isExternal")) {
+        if (!updating && !props.containsKey("isExternal") && !isWorks) {
             //error, not null
             return "isExternal is missing"
+        }
+
+        if (updating) {
+            def project = get(projectId)
+            if (project?.error) {
+                return "invalid projectId"
+            }
+
+            if (!projectType) {
+                projectType = project?.projectType
+            }
         }
 
         if (props.containsKey("organisationId")) {
@@ -103,7 +118,7 @@ class ProjectService {
             return "name is missing"
         }
 
-        if (!updating && !props.containsKey("aim")) {
+        if (!updating && !props.containsKey("aim") && !isWorks) {
             //error, no project aim
             return "aim is missing"
         }
@@ -113,34 +128,40 @@ class ProjectService {
             return "description is missing"
         }
 
-        if (!updating && !props.containsKey("scienceType")) {
+        if (!updating && !props.containsKey("scienceType") && !isEcoScience) {
             //error, no science type
             return "scienceType is missing"
         }
 
-        if (props.containsKey("difficulty")) {
-            if (!['Easy', 'Medium', 'Hard'].contains(props.difficulty)) {
-                return "difficulty is not valid."
+        if (!isEcoScience && !isWorks) {
+            if (props.containsKey("difficulty")) {
+                if (!['Easy', 'Medium', 'Hard'].contains(props.difficulty)) {
+                    return "difficulty is not valid."
+                }
+            } else if (!updating) {
+                //error, no difficulty
+                return "difficulty is missing"
             }
-        } else if (!updating) {
-            //error, no difficulty
-            return "difficulty is missing"
         }
 
-        if (!updating && !props.containsKey("task")) {
-            //error, no task
-            return "task is missing"
+        if (!isEcoScience && !isWorks) {
+            if (!updating && !props.containsKey("task")) {
+                //error, no task
+                return "task is missing"
+            }
         }
 
-        if (props.containsKey("projectSiteId")) {
-            def site = siteService.get(props.projectSiteId)
-            if (site?.error) {
-                //error, invalid site
-                return "projectSiteId is not a valid projectSiteId"
+        if (!isEcoScience) {
+            if (props.containsKey("projectSiteId")) {
+                def site = siteService.get(props.projectSiteId)
+                if (site?.error) {
+                    //error, invalid site
+                    return "projectSiteId is not a valid projectSiteId"
+                }
+            } else if (!updating) {
+                //error, no site id
+                return "projectSiteId is missing"
             }
-        } else if (!updating) {
-            //error, no site id
-            return "projectSiteId is missing"
         }
 
         if (props.containsKey("termsOfUseAccepted")) {
@@ -151,6 +172,15 @@ class ProjectService {
         } else if (!updating) {
             //error, no terms of use accepted
             return "termsOfUseAccepted is missing"
+        }
+
+        //funding must be Double
+        if (props?.funding && !(props?.funding instanceof Double)) {
+            try {
+                props.funding = props?.funding.toDouble()
+            } catch (err) {
+                return 'funding is not a number'
+            }
         }
 
         error
@@ -482,11 +512,12 @@ class ProjectService {
      * @param payload
      * @return
      */
-    Map listImages(Map payload) throws SocketTimeoutException, Exception{
+    Map listImages(Map payload, version = null) throws SocketTimeoutException, Exception{
         Map response
         payload.type = 'image';
         payload.role = ['surveyImage']
-        String url = grailsApplication.config.ecodata.service.url + '/document/listImages'
+        def params = version ? "?version=${version}" : ''
+        String url = grailsApplication.config.ecodata.service.url + '/document/listImages' + params
         response = webService.doPost(url, payload)
         if(response.resp){
             return response.resp;
@@ -526,6 +557,17 @@ class ProjectService {
     List getScienceTypes(){
         cacheService.get("project-sciencetypes", {
             def url = grailsApplication.config.ecodata.service.url + '/project/getScienceTypes'
+            webService.getJson(url)
+        })
+    }
+
+    /**
+     * get eco science type from ecodata and cache it since it is not likely to change.
+     * @return
+     */
+    List getEcoScienceTypes(){
+        cacheService.get("project-ecosciencetypes", {
+            def url = grailsApplication.config.ecodata.service.url + '/project/getEcoScienceTypes'
             webService.getJson(url)
         })
     }

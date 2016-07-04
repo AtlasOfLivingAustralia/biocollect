@@ -29,6 +29,12 @@
         logoLocation:"${resource(dir:'/images/filetypes')}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
         isUserPage: true,
+        <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+            isUserWorksPage: true,
+        </g:if>
+        <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
+            isUserEcoSciencePage: true,
+        </g:if>
         projectListUrl: "${createLink(controller: 'project', action: 'search', params:[initiator:'biocollect'])}",
         isCitizenScience: true,
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
@@ -58,7 +64,15 @@
 </div>
 <r:script>
     $("#newPortal").on("click", function() {
-        document.location.href = "${createLink(controller:'project',action:'create',params:[citizenScience:true])}";
+        <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+            document.location.href = "${createLink(controller:'project',action:'create',params:[citizenScience:true])}";
+        </g:if>
+        <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+            document.location.href = "${createLink(controller:'project',action:'create',params:[works:true])}";
+        </g:if>
+        <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
+            document.location.href = "${createLink(controller:'project',action:'create',params:[ecoScience:true])}";
+        </g:if>
     });
 
     var projectFinder = new ProjectFinder();

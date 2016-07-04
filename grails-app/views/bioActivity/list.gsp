@@ -16,7 +16,7 @@
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
             searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
             downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
-            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping')}",
+            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params:[version: params.version])}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
@@ -25,7 +25,8 @@
             returnTo: "${view == 'allrecords' ? createLink(controller: 'bioActivity', action:'allRecords') : createLink(controller: 'bioActivity', action:'list') }",
             projectLinkPrefix: "${createLink(controller: 'project')}/",
             recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
-            imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}'
+            imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
+            version: "${params?.version}"
         },
         here = document.location.href;
     </r:script>

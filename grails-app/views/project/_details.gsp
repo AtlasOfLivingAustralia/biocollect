@@ -7,11 +7,11 @@
                 <label class="control-label span3"><g:message code="project.details.type"/><fc:iconHelp><g:message code="project.details.type.help"/></fc:iconHelp><i class="req-field"></i></label>
 
                 <div class="controls span9">
-                    <select data-bind="value:transients.kindOfProject, options:transients.availableProjectTypes, optionsText:'name', optionsValue:'value', optionsCaption:'Select...'"  <g:if test="${params.citizenScience}">disabled</g:if> data-validation-engine="validate[required]"></select>
+                    <select data-bind="value:transients.kindOfProject, options:transients.availableProjectTypes, optionsText:'name', optionsValue:'value', optionsCaption:'Select...'"  <g:if test="${params.citizenScience || params.works || params.ecoScience}">disabled</g:if> data-validation-engine="validate[required]"></select>
                 </div>
             </div>
         </div>
-        <div class="row-fluid">
+        <div data-bind="visible:!isWorks()" class="row-fluid">
 
             <div class="clearfix control-group">
                 <label class="control-label span3" for="isExternal"><g:message code="project.details.useALA"/><fc:iconHelp><g:message code="project.details.useALA.help"/></fc:iconHelp><i class="req-field"></i></label>
@@ -65,7 +65,7 @@
                 </div>
             </div>
         </div>
-        <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
+        <div data-bind="visible:(isCitizenScience() || !isExternal()) && !isEcoScience()" class="row-fluid">
             <p/>
             <div class="control-group">
                 <label class="control-label span3" for="isMetadataSharing"><g:message code="project.details.isMetadataSharing"/><fc:iconHelp><g:message code="project.details.isMetadataSharing.help"/></fc:iconHelp></label>
@@ -75,7 +75,8 @@
                 </div>
             </div>
         </div>
-        <div class="row-fluid">
+
+        <div class="row-fluid" >
             <div class="control-group">
                 <label class="control-label span3" for="isContributingToAla"><g:message code="project.details.isContributingToAla"/><fc:iconHelp><g:message code="project.details.isContributingToAla.help"/></fc:iconHelp></label>
                 <div class="controls span9 large-checkbox">
@@ -87,7 +88,7 @@
 
     </div>
 
-    <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
+    <div data-bind="visible:isCitizenScience() || isEcoScience() || !isExternal()" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.tell"/></h4>
 
@@ -101,7 +102,7 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div data-bind="visible:!isWorks()" class="clearfix control-group">
                 <label class="control-label span3" for="aim"><g:message code="project.details.aim"/><fc:iconHelp><g:message code="project.details.aim.help"/></fc:iconHelp><i class="req-field"></i></label>
 
                 <div class="controls span9">
@@ -128,6 +129,14 @@
             </div>
 
             <div class="clearfix control-group">
+                <label class="control-label span3" for="managerEmail"><g:message code="project.details.managerEmail"/><fc:iconHelp><g:message code="project.details.managerEmail.help"/></fc:iconHelp></label>
+
+                <div class="controls span9">
+                    <g:textField style="width:90%;" type="text" data-bind="value:managerEmail" name="managerEmail"/>
+                </div>
+            </div>
+
+            <div class="clearfix control-group">
                 <label class="control-label span3" for="plannedStartDate"><g:message code="project.details.plannedStartDate"/>
                 <fc:iconHelp><g:message code="project.details.plannedStartDate.help"/></fc:iconHelp><i class="req-field"></i></label>
 
@@ -149,17 +158,27 @@
                 </div>
             </div>
 
-            <div id="associatedOrgs">
+            <div data-bind="visible:!isWorks()" id="associatedOrgs">
                 <div class="row-fluid">
                     <div class="clearfix control-group">
                         <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.associatedOrgs"/>:<fc:iconHelp><g:message code="project.details.associatedOrgs.help"/></fc:iconHelp></label>
                         <div class="span9"><g:message code="project.details.associatedOrgs.extra"/></div>
                         <div class="span6" id="associatedOrgList">
+                            <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
                             <!-- ko foreach: associatedOrgs -->
                             <div class="span12 margin-left-0 margin-bottom-1">
                                 <div class="span6 margin-left-0" data-bind="text: name"></div>
-                                <div class="span3"><img src="" data-bind="visible: logo, attr: {src: logo}" alt="Organisation logo" class="small-logo"></div>
-                                <div class="span3"><a href="#" data-bind="click: $parent.removeAssociatedOrganisation" class="btn btn-primary"><i class="fa fa-remove">&nbsp;</i><g:message code="project.details.associatedOrgs.remove"/></a></div>
+                            <div class="span3">
+                                <div data-bind="if: logo && logo.startsWith('https')">
+                                    <img src="" data-bind="attr: {src: logo}" alt="Organisation logo"
+                                         class="small-logo">
+                                </div>
+
+                                <div data-bind="if: !logo || !logo.startsWith('https')">
+                                    <img src="${noImageUrl}" alt="Organisation logo" class="small-logo">
+                                </div>
+                            </div>
+                            <div class="span3"><a href="#" data-bind="click: $parent.removeAssociatedOrganisation" class="btn btn-primary"><i class="fa fa-remove">&nbsp;</i><g:message code="project.details.associatedOrgs.remove"/></a></div>
                             </div>
                             <!-- /ko -->
                         </div>
@@ -174,7 +193,7 @@
                                     <label class="control-label left-aligned-label span3" for="associatedOrgName"><g:message code="project.details.associatedOrgs.name"/><i class="req-field" data-bind="visible: $parent.transients.associatedOrgNotInList()"></i></label>
 
                                     <div class="controls span12 margin-left-0">
-                                        <input id="associatedOrgName" class="input-xxlarge" type="text" placeholder="Start typing a name here" data-bind="value:term, valueUpdate:'afterkeydown'"><button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
+                                        <input id="associatedOrgName" class="input-xxlarge" type="text" placeholder="Start typing a name here" maxlength="256" data-validation-engine="validate[condRequired[associatedOrgNotPresent],maxSize[256]]" data-bind="value:term, valueUpdate:'afterkeydown'"><button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -222,7 +241,7 @@
                                         <label class="control-label left-aligned-label span3" for="associatedOrgLogo"><g:message code="project.details.associatedOrgs.logo"/></label>
 
                                         <div class="controls span12 margin-left-0">
-                                            <input id="associatedOrgLogo" class="input-xxlarge" type="text" data-bind="value: $parent.transients.associatedOrgLogoUrl">
+                                            <input id="associatedOrgLogo" class="input-xxlarge" type="text" data-validation-engine="validate[custom[httpsUrl]]" data-bind="value: $parent.transients.associatedOrgLogoUrl">
                                         </div>
                                     </div>
                                 </div>
@@ -238,15 +257,45 @@
                     </div>
                 </div>
             </div>
+            <div class="clearfix control-group" data-bind="visible:isEcoScience()">
+                <label class="control-label span3"><g:message code="project.details.scienceType"/><fc:iconHelp><g:message code="project.details.scienceType.help"/></fc:iconHelp></label>
+
+                <div class="controls span9">
+                    %{--<select id="scienceType" data-bind="value:ecoScienceType, options:transients.availableEcoScienceTypes, optionsText:'name', optionsValue:'value', optionsCaption:'Select...'" data-validation-engine="validate[required]"></select>--}%
+                    <div class="row-fluid" >
+                        <div class="span4">
+                            <!-- ko foreach: transients.availableEcoScienceTypes -->
+                            <!-- ko template: { name:'ecoScienceTypeTemplate', if: ($index() +1) % 3 == 1 }-->
+
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        </div>
+                        <div class="span4">
+                            <!-- ko foreach: transients.availableEcoScienceTypes -->
+                            <!-- ko template: { name:'ecoScienceTypeTemplate', if: ($index() +1) % 3 == 2 }-->
+
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        </div>
+                        <div class="span4">
+                            <!-- ko foreach: transients.availableEcoScienceTypes -->
+                            <!-- ko template: { name:'ecoScienceTypeTemplate', if: ($index() +1) % 3 == 0 }-->
+
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div data-bind="visible:!isCitizenScience() && !isExternal()" class="row-fluid">
+    <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.associations"/></h4>
 
             <div class="clearfix control-group">
-                <label class="control-label span3" for="externalId"><g:message code="project.details.externalId"/></label>
+                <label class="control-label span3" for="externalId"><g:message code="project.details.externalId"/><fc:iconHelp><g:message code="project.details.externalId.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
                     <g:textField class="span12" name="externalId" data-bind="value:externalId"/>
@@ -254,7 +303,7 @@
             </div>
 
             <div class="clearfix control-group">
-                <label class="control-label span3" for="grantId"><g:message code="project.details.grantId"/></label>
+                <label class="control-label span3" for="grantId"><g:message code="project.details.grantId"/><fc:iconHelp><g:message code="project.details.grantId.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
                     <g:textField class="span12" name="grantId" data-bind="value:grantId"/>
@@ -262,7 +311,7 @@
             </div>
 
             <div class="clearfix control-group">
-                <label class="control-label span3" for="funding"><g:message code="project.details.funding"/></label>
+                <label class="control-label span3" for="funding"><g:message code="project.details.funding"/><fc:iconHelp><g:message code="project.details.funding.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
                     <g:textField class="span12" name="funding" data-bind="value:funding"
@@ -270,8 +319,8 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
-                <label class="control-label span3" for="program"><g:message code="project.details.program"/><i class="req-field"></i></label>
+            <div data-bind="visible:!isWorks()" class="clearfix control-group">
+                <label class="control-label span3" for="program"><g:message code="project.details.program"/><fc:iconHelp><g:message code="project.details.program.help"/></fc:iconHelp><i class="req-field"></i></label>
 
                 <div class="controls span9">
                     <select class="span12" id="program"
@@ -280,8 +329,8 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
-                <label class="control-label span3" for="subProgram"><g:message code="project.details.subprogram"/></label>
+            <div data-bind="visible:!isWorks()" class="clearfix control-group">
+                <label class="control-label span3" for="subProgram"><g:message code="project.details.subprogram"/><fc:iconHelp><g:message code="project.details.subprogram.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
                     <select class="span12" id="subProgram"
@@ -289,9 +338,9 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div data-bind="visible:!isWorks()" class="clearfix control-group">
                 <label class="control-label span3"
-                       for="orgGrantee"><g:message code="project.details.orgGrantee"/></label>
+                       for="orgGrantee"><g:message code="project.details.orgGrantee"/><fc:iconHelp><g:message code="project.details.orgGrantee.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
                     <select class="span12" id="orgGrantee"
@@ -299,9 +348,9 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div data-bind="visible:!isWorks()" class="clearfix control-group">
                 <label class="control-label span3"
-                       for="orgSponsor"><g:message code="project.details.orgSponsor"/></label>
+                       for="orgSponsor"><g:message code="project.details.orgSponsor"/><fc:iconHelp><g:message code="project.details.orgSponsor.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
                     <select class="span12" id="orgSponsor"
@@ -309,7 +358,7 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div data-bind="visible:!isWorks() && !isEcoScience()" class="clearfix control-group">
                 <label class="control-label span3"
                        for="orgSvcProvider"><g:message code="project.details.orgSvcProvider"/></label>
 
@@ -321,7 +370,7 @@
         </div>
     </div>
 
-    <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
+    <div data-bind="visible:(isCitizenScience() || !isExternal()) && !isWorks() && !isEcoScience()" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.involved"/></h4>
 
@@ -406,7 +455,7 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div class="clearfix control-group" data-bind="visible:!isEcoScience()">
                 <label class="control-label span3"><g:message code="project.details.gear"/><fc:iconHelp><g:message code="project.details.gear.help"/></fc:iconHelp></label>
                 <div class="controls span9">
                     <g:textArea style="width:90%;" name="gear" data-bind="value:gear" rows="2"/>
@@ -422,7 +471,7 @@
         </div>
     </div>
 
-    <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
+    <div data-bind="visible:isCitizenScience() || isEcoScience() || !isExternal()" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.find"/></h4>
 
@@ -448,7 +497,7 @@
         </div>
     </div>
 
-    <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
+    <div data-bind="visible:isCitizenScience() || isEcoScience() || !isExternal()" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.image"/></h4>
 
@@ -509,7 +558,7 @@
         </div>
     </div>
 
-    <div data-bind="visible:isCitizenScience() || !isExternal()" class="row-fluid">
+    <div data-bind="visible:(isCitizenScience() || isEcoScience() || !isExternal())" class="row-fluid">
         <!-- ko stopBinding: true -->
         <div class="well" id="sitemap">
             <h4 class="block-header"><g:message code="project.details.site"/><i class="req-field"></i></h4>
@@ -527,5 +576,12 @@
                    data-bind="value: $data.toLowerCase(), attr:{id:'checkbox'+$index()}, checked: $root.transients.isScienceTypeChecked($data), event:{change:$root.transients.addScienceType}">
             <label data-bind="html: '<span></span> ' + $data, attr:{for:'checkbox'+$index()}"></label>
         </div>
+    </script>
+    <script id="ecoScienceTypeTemplate" type="text/html">
+    <div class="large-checkbox">
+        <input type="checkbox" name="ecoScienceType"
+               data-bind="value: $data.toLowerCase(), attr:{id:'checkbox'+$index()}, checked: $root.transients.isEcoScienceTypeChecked($data), event:{change:$root.transients.addEcoScienceType}">
+        <label data-bind="html: '<span></span> ' + $data, attr:{for:'checkbox'+$index()}"></label>
+    </div>
     </script>
 </bc:koLoading>

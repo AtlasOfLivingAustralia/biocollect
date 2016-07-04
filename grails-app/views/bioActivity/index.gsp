@@ -30,6 +30,7 @@
         imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}"
+        ${(params?.version) ? ',version: ' + params?.version : ''}
         },
         here = document.location.href;
     </r:script>
@@ -52,6 +53,15 @@
         </g:if>
 
         <g:render template="header"/>
+
+        <g:if test="${params?.version}">
+            <div class="well">
+                <h4>
+                    Version:
+                    <span id="versionMsg"></span>
+                </h4>
+            </div>
+        </g:if>
 
         <g:if test="${metaModel?.supportsSites?.toBoolean()}">
             <div class="row-fluid" data-bind="if: transients.site">
@@ -262,6 +272,9 @@
         }
     </g:if>
     });
+
+    var versionMsg = $('#versionMsg')
+    if (versionMsg.length > 0) versionMsg[0].innerHTML = moment(fcConfig.version, 'x').format('YYYY-MM-DD HH:mm:ss')
 </r:script>
 </body>
 </html>

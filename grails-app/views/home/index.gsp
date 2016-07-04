@@ -16,7 +16,7 @@
     }
     </r:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <r:require modules="knockout,jquery_bootstrap_datatable,js_iso8601,amplify,siteDisplay"/>
+    <r:require modules="knockout,jquery_bootstrap_datatable,js_iso8601,amplify,map,siteDisplaysiteDispl"/>
 </head>
 <body>
 <div id="wrapper" class="container-fluid">
@@ -203,16 +203,6 @@
                                         <i class="icon-home"></i>
                                         <a href="">View project page</a>
                                     </div>
-                                    <div class="sitesLine">
-                                        <i class="icon-map-marker"></i>
-                                        Sites: <a href="#" data-id="$id" class="zoom-in btnX btn-miniX"><i
-                                            class="icon-plus-sign"></i> show on map</a>
-                                        %{--<a href="#" data-id="$id" class="zoom-out btnX btn-miniX"><i--}%
-                                                %{--class="icon-minus-sign"></i> zoom out</a>--}%
-                                    </div>
-                                    <div class="orgLine">
-                                        <i class="icon-user"></i>
-                                    </div>
                                     <div class="descLine">
                                         <i class="icon-info-sign"></i>
                                     </div>
@@ -307,7 +297,7 @@
 </div>
 
 <r:script>
-    var projectListIds = [], facetList = [], mapDataHasChanged = false, mapBounds, projectSites; // globals
+    var projectListIds = [], facetList = [], mapDataHasChanged = false, mapBounds, projectSites, siteDisplay; // globals
 
     $(window).load(function () {
         $.fn.clicktoggle = function(a, b) {
@@ -423,8 +413,6 @@
             el.preventDefault();
             var thisEl = this;
             var fId = $(this).data("id");
-            //if (prevFeatureId) alaMap.unAnimateFeatureById(prevFeatureId);
-            projectSites = alaMap.animateFeatureById(fId);
             if (!prevFeatureId) {
                 $("#proj_" + fId).slideToggle();
                 $(thisEl).find(".showHideCaret").html("&#9660;");
@@ -442,7 +430,6 @@
                     $("#proj_" + prevFeatureId).slideUp();
                     $("#a_" + prevFeatureId).find(".showHideCaret").html("&#9658;");
                 }
-                alaMap.unAnimateFeatureById(prevFeatureId);
             } else {
                 $("#proj_" + fId).slideToggle();
                 if ($("#proj_" + fId).is(':visible')) {
@@ -450,7 +437,6 @@
                 } else {
                     $(thisEl).find(".showHideCaret").html("&#9660;");
                 }
-                alaMap.unAnimateFeatureById(fId);
             }
             prevFeatureId = fId;
         });

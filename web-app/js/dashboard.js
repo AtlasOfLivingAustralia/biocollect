@@ -275,6 +275,7 @@ function addPlantsLayer(data) {
 
 function loadWMSLayer(name, opacity) {
 
+    // Use https when available
     var wmsLayer = new OpenLayers.Layer.WMS(name, "http://spatial.ala.org.au/geoserver/gwc/service/wms/reflect", {
         layers: 'ALA:' + name,
         srs: 'EPSG:900913',

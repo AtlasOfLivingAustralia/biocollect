@@ -9,8 +9,6 @@ class UserService {
 
     static String USER_NAME_HEADER_FIELD = "userName"
     static String AUTH_KEY_HEADER_FIELD = "authKey"
-    static String MOBILE_AUTH_BASE_URL = "https://m.ala.org.au"
-    static String MOBILE_AUTH_CHECK_KEY_URL = MOBILE_AUTH_BASE_URL+"/mobileauth/mobileKey/checkKey"
 
     @PostConstruct
     private void init() {
@@ -38,7 +36,7 @@ class UserService {
     * */
 
     def UserDetails getUserFromAuthKey(String username, String key) {
-        String url = MOBILE_AUTH_CHECK_KEY_URL
+        String url = grailsApplication.config.mobile.auth.check.url
         Map params = [userName: username, authKey: key]
         def result = webService.doPostWithParams(url, params)
 

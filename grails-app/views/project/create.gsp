@@ -18,7 +18,9 @@
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}",
         scienceTypes: ${scienceTypes as grails.converters.JSON},
-        lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON}
+        ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},
+        lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
+        lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON}
         },
         here = window.location.href;
 
@@ -101,7 +103,7 @@ $(function(){
     </g:else>
     $('#save').click(function () {
         if ($('#projectDetails').validationEngine('validate') && viewModel.transients.validProjectName()) {
-            if (viewModel.transients.siteViewModel.isValid(true)) {
+            if (viewModel.transients.kindOfProject() == 'ecoscience' || viewModel.transients.siteViewModel.isValid(true)) {
                 viewModel.saveWithErrorDetection(function(data) {
                     var projectId = "${project?.projectId}" || data.projectId;
 

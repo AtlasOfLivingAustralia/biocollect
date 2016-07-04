@@ -49,7 +49,7 @@
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
-            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping')}",
+            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params:[version: params.version])}",
             downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
             activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
             activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
@@ -73,7 +73,7 @@
             margin: 5px 0;
         }
     </style>
-    <r:require modules="wmd,knockout,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder,map,siteDisplay,myActivity, activities"/>
+    <r:require modules="wmd,knockout,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder,map,siteDisplaysiteDispl,myActivity, activities"/>
 </head>
 <body>
 

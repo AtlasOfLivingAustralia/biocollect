@@ -96,7 +96,7 @@ function addTimelineBasedOnStartDate (project, reportingPeriod, alignToCalendar)
         // make one up so we can proceed
         var endDate = new Date(Date.now());
         endDate = endDate.setUTCFullYear(endDate.getUTCFullYear()+5);
-        project.plannedEndDate = endDate.toISOStringNoMillis();
+        project.plannedEndDate = new Date(endDate).toISOStringNoMillis();
     }
 
     var date = Date.fromISO(project.plannedStartDate),
@@ -296,6 +296,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.externalId = ko.observable(project.externalId);
     self.grantId = ko.observable(project.grantId);
     self.manager = ko.observable(project.manager);
+    self.managerEmail = ko.observable(project.managerEmail);
     self.plannedStartDate = ko.observable(project.plannedStartDate).extend({simpleDate: false});
     self.plannedEndDate = ko.observable(project.plannedEndDate).extend({simpleDate: false});
     self.funding = ko.observable(project.funding).extend({currency:{}});
@@ -321,6 +322,20 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         var org = self.organisationId() && organisationsMap[self.organisationId()];
         return org? org.name: project.organisationName;
     });
+
+    var legalCustodianVal = project.legalCustodianOrganisation? project.legalCustodianOrganisation: ko.utils.unwrapObservable(self.organisationName);
+    self.legalCustodianOrganisation = ko.observable(legalCustodianVal);
+
+    self.setLegalCustodian = function (data, event) {
+        if (event.originalEvent) { //user changed
+            self.current().legalCustodianOrganisation(data.transients.selectedCustodianOption);
+        }
+    };
+
+    var legalCustodianOrganisationTypeVal = project.legalCustodianOrganisationType? project.legalCustodianOrganisationType: "";
+    self.legalCustodianOrganisationType = ko.observable(legalCustodianOrganisationTypeVal);
+
+
     self.orgIdGrantee = ko.observable(project.orgIdGrantee);
     self.orgIdSponsor = ko.observable(project.orgIdSponsor);
     self.orgIdSvcProvider = ko.observable(project.orgIdSvcProvider);
@@ -337,6 +352,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.hasTeachingMaterials = ko.observable(project.hasTeachingMaterials);
     self.isCitizenScience = ko.observable(project.isCitizenScience);
     self.isDIY = ko.observable(project.isDIY);
+    self.isWorks = ko.observable(project.isWorks);
+    self.isEcoScience = ko.observable(project.isEcoScience);
     self.isExternal = ko.observable(project.isExternal);
     self.isSciStarter = ko.observable(project.isSciStarter)
     self.isMERIT = ko.observable(project.isMERIT);
@@ -347,12 +364,18 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.projectSiteId = project.projectSiteId;
     self.projectType = ko.observable(project.projectType);
     self.scienceType = ko.observableArray(project.scienceType);
+    self.ecoScienceType = ko.observableArray(project.ecoScienceType);
     self.task = ko.observable(project.task);
     self.urlWeb = ko.observable(project.urlWeb).extend({url:true});
     self.contractStartDate = ko.observable(project.contractStartDate).extend({simpleDate: false});
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
     self.imageUrl = ko.observable(project.urlImage);
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
+    
+    self.associatedProgram = ko.observable(project.associatedProgram ? project.associatedProgram : '');
+    self.associatedSubProgram = ko.observable(project.associatedSubProgram ? project.associatedSubProgram : '');
+    self.orgGrantee = ko.observable(project.orgGrantee ? project.orgGrantee : '');
+    self.orgSponsor = ko.observable(project.orgSponsor ? project.orgSponsor : '');
 
     self.associatedOrgs = ko.observableArray(project.associatedOrgs);
 
@@ -569,15 +592,37 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         {name:'Ecology', value:'ecology'},
         {name:'Natural resource management', value:'nrm'}
     ];
+    var ecoScienceTypesList = [
+        {name:'Biodiversity', value:'biodiversity'},
+        {name:'Ecology', value:'ecology'},
+        {name:'Natural resource management', value:'nrm'}
+    ];
     self.transients.availableScienceTypes = fcConfig.scienceTypes;
+    self.transients.availableEcoScienceTypes = fcConfig.ecoScienceTypes;
     self.transients.scienceTypeDisplay = ko.pureComputed(function () {
         for (var st = self.scienceType(), i = 0; i < scienceTypesList.length; i++)
             if (st === scienceTypesList[i].value)
                 return scienceTypesList[i].name;
     });
+    self.transients.ecoScienceTypeDisplay = ko.pureComputed(function () {
+        for (var st = self.ecoScienceType(), i = 0; i < ecoScienceTypesList.length; i++)
+            if (st === ecoScienceTypesList[i].value)
+                return ecoScienceTypesList[i].name;
+    });
 
     self.transients.isScienceTypeChecked = function(value){
         var types = self.scienceType()
+        for(var i=0; i<types.length; i++){
+            if(types[i] == value.toLowerCase()){
+                return true
+            }
+        }
+
+        return false;
+    };
+
+    self.transients.isEcoScienceTypeChecked = function(value){
+        var types = self.ecoScienceType()
         for(var i=0; i<types.length; i++){
             if(types[i] == value.toLowerCase()){
                 return true
@@ -596,9 +641,18 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         }
     }
 
+    self.transients.addEcoScienceType = function(data, event){
+        var elem = event.target
+        if(elem.checked){
+            self.ecoScienceType.push(elem.value)
+        } else {
+            self.ecoScienceType.remove(elem.value)
+        }
+    }
+
     var availableProjectTypes = [
         {name:'Citizen Science Project', display:'Citizen\nScience', value:'citizenScience'},
-        {name:'Ecological or biological survey / assessment (not citizen science)', display:'Biological\nScience', value:'survey'},
+        {name:'Ecological or biological survey / assessment (not citizen science)', display:'Biological\nScience', value:'ecoScience'},
         {name:'Natural resource management works project', display:'Works\nProject', value:'works'}
     ];
     self.transients.availableProjectTypes = availableProjectTypes;
@@ -613,8 +667,14 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             if (self.isCitizenScience()) {
                 return 'citizenScience';
             }
+            if (self.isWorks()) {
+                return 'works';
+            }
+            if (self.isEcoScience()) {
+                return 'ecoScience';
+            }
             if (self.projectType()) {
-                return self.projectType() == 'survey' ? 'survey' : 'works';
+                return self.projectType() == 'survey' ? 'survey' : (self.projectType() == 'works' ? 'works' : 'ecoScience');
             }
         },
         write: function(value) {
@@ -844,9 +904,15 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         var org = { id: self.associatedOrgs().length };
 
         if (self.transients.associatedOrgNotInList()) {
+
+            if($('#associatedOrgLogo').validationEngine('validate')) {
+                //Invalid content, let validation engine pop up the error and we just stop processing
+                return;
+            }
             org.name = self.associatedOrganisationSearch.term();
             org.url = self.transients.associatedOrgUrl() || null;
             org.logo = self.transients.associatedOrgLogoUrl() || null;
+
         } else {
             var logoDocument = ko.utils.arrayFirst(self.associatedOrganisationSearch.selection().documents, function(document) {
                 return document.role === "logo"
@@ -907,3 +973,346 @@ function validateOrganisationSelection(field, rules, i, options) {
         return "You must select an organisation from the list"
     }
 }
+
+
+
+var EditableBlogEntryViewModel = function(blogEntry, options) {
+
+    var defaults = {
+        validationElementSelector:'.validationEngineContainer',
+        types:['News and Events', 'Project Stories', 'Photo'],
+        returnTo:fcConfig.returnTo,
+        blogUpdateUrl:fcConfig.blogUpdateUrl
+    };
+    var config = $.extend(defaults, options);
+    var self = this;
+    var now = convertToSimpleDate(new Date());
+    self.blogEntryId = ko.observable(blogEntry.blogEntryId);
+    self.projectId = ko.observable(blogEntry.projectId || undefined);
+    self.title = ko.observable(blogEntry.title || '');
+    self.date = ko.observable(blogEntry.date || now).extend({simpleDate:false});
+    self.content = ko.observable(blogEntry.content);
+    self.stockIcon = ko.observable(blogEntry.stockImageName);
+    self.documents = ko.observableArray();
+    self.image = ko.observable();
+    self.type = ko.observable(blogEntry.type);
+    self.viewMoreUrl = ko.observable(blogEntry.viewMoreUrl).extend({url:true});
+
+    self.imageUrl = ko.computed(function() {
+        if (self.image()) {
+            return self.image().url;
+        }
+    });
+    self.imageId = ko.computed(function() {
+        if (self.image()) {
+            return self.image().documentId;
+        }
+    });
+    self.documents.subscribe(function() {
+        if (self.documents()[0]) {
+            self.image(new DocumentViewModel(self.documents()[0]));
+        }
+        else {
+            self.image(undefined);
+        }
+    });
+    self.removeBlogImage = function() {
+        self.documents([]);
+    };
+
+    self.modelAsJSON = function() {
+        var js = ko.mapping.toJS(self, {ignore:['transients', 'documents', 'image', 'imageUrl']});
+        if (self.image()) {
+            js.image = self.image().modelForSaving();
+        }
+        return JSON.stringify(js);
+    };
+
+    self.editContent = function() {
+        editWithMarkdown('Blog content', self.content);
+    };
+
+    self.save = function() {
+        if ($(config.validationElementSelector).validationEngine('validate')) {
+            self.saveWithErrorDetection(
+                function() {document.location.href = config.returnTo},
+                function(data) {bootbox.alert("Error: "+data.responseText);}
+            );
+        }
+    };
+
+    self.cancel = function() {
+        document.location.href = config.returnTo;
+    };
+
+    self.transients = {};
+    self.transients.blogEntryTypes = config.types;
+
+    if (blogEntry.documents && blogEntry.documents[0]) {
+        self.documents.push(blogEntry.documents[0]);
+    }
+    $(config.validationElementSelector).validationEngine();
+    autoSaveModel(self, config.blogUpdateUrl, {blockUIOnSave:true});
+};
+
+var BlogEntryViewModel = function(blogEntry) {
+    var self = this;
+    var now = convertToSimpleDate(new Date());
+    self.blogEntryId = ko.observable(blogEntry.blogEntryId);
+    self.projectId = ko.observable(blogEntry.projectId);
+    self.title = ko.observable(blogEntry.title || '');
+    self.date = ko.observable(blogEntry.date || now).extend({simpleDate:false});
+    self.content = ko.observable(blogEntry.content).extend({markdown:true});
+    self.stockIcon = ko.observable(blogEntry.stockIcon);
+    self.documents = ko.observableArray(blogEntry.documents || []);
+    self.viewMoreUrl = ko.observable(blogEntry.viewMoreUrl);
+    self.image = ko.computed(function() {
+        return self.documents()[0];
+    });
+    self.type = ko.observable();
+    self.formattedDate = ko.computed(function() {
+        return moment(self.date()).format('Do MMM')
+    });
+    self.shortContent = ko.computed(function() {
+        var content = self.content() || '';
+        if (content.length > 60) {
+            content = content.substring(0, 100)+'...';
+        }
+        return content;
+    });
+    self.imageUrl = ko.computed(function() {
+        if (self.image()) {
+            return self.image().url;
+        }
+    });
+};
+
+
+var BlogSummary = function(blogEntries) {
+    var self = this;
+    self.entries = ko.observableArray();
+
+    self.load = function(entries) {
+        self.entries($.map(entries, function(blogEntry) {
+            return new BlogEntryViewModel(blogEntry);
+        }));
+    };
+
+    self.newBlogEntry = function() {
+        document.location.href = fcConfig.createBlogEntryUrl;
+    };
+    self.deleteBlogEntry = function(entry) {
+        var url = fcConfig.deleteBlogEntryUrl+'&id='+entry.blogEntryId();
+        $.post(url).done(function() {
+            document.location.reload();
+        });
+    };
+    self.editBlogEntry = function(entry) {
+        document.location.href = fcConfig.editBlogEntryUrl+'&id='+entry.blogEntryId();
+    };
+    self.load(blogEntries);
+};
+
+var BlogViewModel = function(entries, type) {
+    var self = this;
+    self.entries = ko.observableArray();
+
+    for (var i=0; i<entries.length; i++) {
+        if (!type || entries[i].type == type) {
+            self.entries.push(new BlogEntryViewModel(entries[i]));
+        }
+    }
+};
+
+var SiteViewModel = function (site, feature) {
+    var self = $.extend(this, new Documents());
+
+    self.siteId = site.siteId;
+    self.name = ko.observable(site.name);
+    self.externalId = ko.observable(site.externalId);
+    self.context = ko.observable(site.context);
+    self.type = ko.observable(site.type);
+    self.area = ko.observable(site.area);
+    self.description = ko.observable(site.description);
+    self.notes = ko.observable(site.notes);
+    self.extent = ko.observable(new EmptyLocation());
+    self.state = ko.observable('');
+    self.nrm = ko.observable('');
+    self.address = ko.observable("");
+    self.feature = feature;
+    self.projects = site.projects || [];
+    self.extentSource = ko.pureComputed({
+        read: function() {
+            if (self.extent()) {
+                return self.extent().source();
+            }
+            return 'none'
+        },
+        write: function(value) {
+            self.updateExtent(value);
+        }
+    });
+
+    self.setAddress = function (address) {
+        if (address.indexOf(', Australia') === address.length - 11) {
+            address = address.substr(0, address.length - 11);
+        }
+        self.address(address);
+    };
+    self.poi = ko.observableArray();
+
+    self.addPOI = function(poi) {
+        self.poi.push(poi);
+
+    };
+    self.removePOI = function(poi){
+        if (poi.hasPhotoPointDocuments) {
+            return;
+        }
+        self.poi.remove(poi);
+    };
+    self.toJS = function(){
+        var js = ko.mapping.toJS(self, {ignore:self.ignore});
+        js.extent = self.extent().toJS();
+        delete js.extentSource;
+        delete js.extentGeometryWatcher;
+        delete js.isValid;
+        return js;
+    };
+
+    self.modelAsJSON = function() {
+        var js = self.toJS();
+        return JSON.stringify(js);
+    }
+    /** Check if the supplied POI has any photos attached to it */
+    self.hasPhotoPointDocuments = function(poi) {
+        if (!site.documents) {
+            return;
+        }
+        var hasDoc = false;
+        $.each(site.documents, function(i, doc) {
+            if (doc.poiId === poi.poiId) {
+                hasDoc = true;
+                return false;
+            }
+        });
+        return hasDoc;
+    };
+    self.saved = function(){
+        return self.siteId;
+    };
+    self.loadPOI = function (pois) {
+        if (!pois) {
+            return;
+        }
+        $.each(pois, function (i, poi) {
+            self.poi.push(new POI(poi, self.hasPhotoPointDocuments(poi)));
+        });
+    };
+    self.loadExtent = function(){
+        if(site && site.extent) {
+            var extent = site.extent;
+            switch (extent.source) {
+                case 'point':   self.extent(new PointLocation(extent.geometry)); break;
+                case 'pid':     self.extent(new PidLocation(extent.geometry)); break;
+                case 'upload':  self.extent(new UploadLocation()); break;
+                case 'drawn':   self.extent(new DrawnLocation(extent.geometry)); break;
+            }
+        } else {
+            self.extent(new EmptyLocation());
+        }
+    };
+
+
+    self.updateExtent = function(source){
+        switch (source) {
+            case 'point':
+                if(site && site.extent) {
+                    self.extent(new PointLocation(site.extent.geometry));
+                } else {
+                    self.extent(new PointLocation({}));
+                }
+                break;
+            case 'pid':
+                if(site && site.extent) {
+                    self.extent(new PidLocation(site.extent.geometry));
+                } else {
+                    self.extent(new PidLocation({}));
+                }
+                break;
+            case 'upload': self.extent(new UploadLocation({})); break;
+            case 'drawn':
+                //breaks the edits....
+                self.extent(new DrawnLocation({}));
+                break;
+            default: self.extent(new EmptyLocation());
+        }
+    };
+
+    self.refreshGazInfo = function() {
+
+        var geom = self.extent().geometry();
+        var lat, lng;
+        if (geom.type === 'Point') {
+            lat = self.extent().geometry().decimalLatitude();
+            lng = self.extent().geometry().decimalLongitude();
+        }
+        else if (geom.centre !== undefined) {
+            lat = self.extent().geometry().centre()[1];
+            lng = self.extent().geometry().centre()[0];
+        }
+        else {
+            // No coordinates we can use for the lookup.
+            return;
+        }
+
+        $.ajax({
+            url: fcConfig.siteMetaDataUrl,
+            method:"POST",
+            contentType: 'application/json',
+            data:self.modelAsJSON()
+        })
+            .done(function (data) {
+                var geom = self.extent().geometry();
+                for (var name in data) {
+                    if (data.hasOwnProperty(name) && geom.hasOwnProperty(name)) {
+                        geom[name](data[name]);
+                    }
+                }
+            });
+
+        //do the google geocode lookup
+        $.ajax({
+            url: fcConfig.geocodeUrl + lat + "," + lng
+        }).done(function (data) {
+            if (data.results.length > 0) {
+                self.extent().geometry().locality(data.results[0].formatted_address);
+            }
+        });
+    };
+    self.isValid = ko.pureComputed(function() {
+        return self.extent() && self.extent().isValid();
+    });
+    self.loadPOI(site.poi);
+    self.loadExtent(site.extent);
+
+
+    // Watch for changes to the extent content and notify subscribers when they do.
+    self.extentGeometryWatcher = ko.pureComputed(function() {
+        // We care about changes to either the geometry coordinates or the PID in the case of known shape.
+        var result = {};
+        if (self.extent()) {
+            var geom = self.extent().geometry();
+            if (geom) {
+                if (geom.decimalLatitude) result.decimalLatitude = ko.utils.unwrapObservable(geom.decimalLatitude);
+                if (geom.decimalLongitude) result.decimalLongitude = ko.utils.unwrapObservable(geom.decimalLongitude);
+                if (geom.coordinates) result.coordinates = ko.utils.unwrapObservable(geom.coordinates);
+                if (geom.pid) result.pid = ko.utils.unwrapObservable(geom.pid);
+                if (geom.fid) result.fid = ko.utils.unwrapObservable(geom.fid);
+            }
+
+        }
+        return result;
+
+    });
+};
