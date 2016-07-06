@@ -144,3 +144,6 @@ nav#biocollectNav ul#main li a.ala-link:hover{
 #biocollectlogo {
     background-color: white !important;
 }
+#biocollectlogo > img {
+    width: 193px;
+}

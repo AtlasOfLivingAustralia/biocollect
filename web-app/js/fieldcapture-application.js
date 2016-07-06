@@ -953,3 +953,11 @@ function convertKMSqToReadableUnit(kmSq){
         return neat_number(kmSq*1000000,4) + ' m&sup2;'
     }
 }
+
+/** Polyfill String.startsWith */
+if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function(searchString, position){
+        position = position || 0;
+        return this.substr(position, searchString.length) === searchString;
+    };
+}
