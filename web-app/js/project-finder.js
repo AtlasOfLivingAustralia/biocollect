@@ -59,9 +59,6 @@ function ProjectFinder() {
         this.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
         this.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
         this.sortKeys = ko.observableArray(self.sortKeys);
-        this.hideshow = function () {
-            // $("#pt-selectors").toggle();
-        };
         this.download = function (obj, e) {
             var params = $.param(self.getParams(), true);
             var href = $(e.target).attr('href');
@@ -423,8 +420,6 @@ function ProjectFinder() {
         }
         geoSearch = {};
         refreshGeofilterButtons();
-        // toggleMapFilterPanel();
-        // toggleFilterPanel();
 
         self.pago.firstPage();
         self.doSearch();
@@ -509,7 +504,6 @@ function ProjectFinder() {
 
         if (!isDefaultFilter(params)) {
             toggleButton($('#pt-filter'), true);
-            // toggleFilterPanel();
         }
         toggleButton($('#pt-search-diy'), toBoolean(params.isDIY));
         setActiveButtonValues($('#pt-status'), params.status);
