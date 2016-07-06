@@ -574,7 +574,6 @@ function ProjectFinder() {
         if ($.isEmptyObject(geoSearch)) {
             $('#clearFilterByRegionButton').removeClass('active');
             $('#filterByRegionButton').removeClass('active');
-            // uncheckButton($('#filterByRegionButton'));
         } else {
             $('#clearFilterByRegionButton').addClass('active');
             $('#filterByRegionButton').addClass('active');
