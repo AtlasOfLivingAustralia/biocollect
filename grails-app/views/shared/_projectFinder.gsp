@@ -7,7 +7,7 @@
 </div>
 
 <div class="row-fluid">
-    <div class="span3">
+    <div id="filterPanel" class="span3">
         <g:render template="/shared/projectFinderQueryPanel"/>
     </div>
 

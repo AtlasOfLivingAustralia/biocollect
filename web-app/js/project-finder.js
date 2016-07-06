@@ -35,6 +35,8 @@ function ProjectFinder() {
 
     var geoSearch = {};
 
+    var refreshSearch = false;
+
     var searchTerm = '', perPage = 20, sortBy = 'nameSort', sortOrder = 1;
     // variable to not scroll to result when result is loaded for the first time.
     var firstTimeLoad = true;
@@ -128,41 +130,30 @@ function ProjectFinder() {
     }
 
     function toggleFilterPanel() {
-        if ($('#pt-filter').hasClass('active')) {
-            $('#pt-selectors').slideDown(400)
+        if ($('#pt-filter').hasClass('hide')) {
+            $('#pt-filter').removeClass('hide');
         } else {
-            $('#pt-selectors').slideUp(400)
+            $('#pt-filter').addClass('hide');
         }
+        $('#filterPanel').toggle("slide");
     }
 
     function collapseFilterPanel(){
         $('#pt-filter').click();
     }
 
-    function toggleMapFilterPanel() {
-        if ($('#pt-map-filter').hasClass('active')) {
-            $('#pt-map-filter-panel').slideDown(400);
-            $('#mapModal').modal({backdrop: 'static'});
-            if (!mapInitialised) {
-                spatialFilter = new ALA.Map("mapFilter", {
-                    wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
-                    wmsFeatureUrl: fcConfig.featureService + "?featureId=",
-                    myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location"
-                });
+    function initialiseMap() {
+        if (!mapInitialised) {
+            spatialFilter = new ALA.Map("mapFilter", {
+                wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
+                wmsFeatureUrl: fcConfig.featureService + "?featureId=",
+                myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location"
+            });
 
-                var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService, fcConfig.regionListUrl);
-
-                spatialFilter.addControl(regionSelector);
-
-                spatialFilter.subscribe(geoSearchChanged);
-
-                mapInitialised = true;
-            }
-        } else {
-            $('#pt-map-filter-panel').slideUp(400);
-
-            geoSearch = {};
-            self.doSearch();
+            var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService, fcConfig.regionListUrl);
+            spatialFilter.addControl(regionSelector);
+            spatialFilter.subscribe(geoSearchChanged);
+            mapInitialised = true;
         }
     }
 
@@ -270,6 +261,7 @@ function ProjectFinder() {
      * this is the function calling server with the latest query.
      */
     this.doSearch = function () {
+        refreshSearch = false;
         var params = self.getParams();
 
         window.location.hash = constructHash();
@@ -388,9 +380,23 @@ function ProjectFinder() {
 
     });
 
-    $("#pt-map-filter").on('statechange', function () {
-        toggleMapFilterPanel();
+    $("#mapModal").on('shown', function () {
+        initialiseMap();
     });
+
+    $("#mapModal").on('hide', function () {
+        geoSearchChanged();
+        if(refreshSearch) {
+            self.doSearch();
+        }
+    });
+
+    $("#clearFilterByRegionButton").click(function () {
+        geoSearch = {};
+        spatialFilter.resetMap();
+        refreshGeofilterButtons();
+    });
+
 
     $('#pt-search-link').click(function () {
         self.setTextSearchSettings();
@@ -416,10 +422,13 @@ function ProjectFinder() {
             spatialFilter.resetMap();
         }
         geoSearch = {};
-        toggleMapFilterPanel();
+        refreshGeofilterButtons();
+        // toggleMapFilterPanel();
         // toggleFilterPanel();
 
         self.pago.firstPage();
+        self.doSearch();
+
     });
 
     $("#pt-collapse").click(collapseFilterPanel);
@@ -547,8 +556,6 @@ function ProjectFinder() {
 
             toggleButton($('#pt-map-filter'), true);
 
-            toggleMapFilterPanel();
-
             var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geoSearch);
             geoJson = ALA.MapUtils.getStandardGeoJSONForCircleGeometry(geoJson);
             if (geoSearch.pointSearch) {
@@ -569,7 +576,24 @@ function ProjectFinder() {
         return str && str.toLowerCase() === 'true';
     }
 
+    function refreshGeofilterButtons() {
+        if ($.isEmptyObject(geoSearch)) {
+            $('#clearFilterByRegionButton').removeClass('active');
+            $('#filterByRegionButton').removeClass('active');
+            // uncheckButton($('#filterByRegionButton'));
+        } else {
+            $('#clearFilterByRegionButton').addClass('active');
+            $('#filterByRegionButton').addClass('active');
+        }
+    }
+
     function geoSearchChanged() {
+        readUpdatedGeographicFilters();
+        refreshGeofilterButtons();
+
+    }
+     function readUpdatedGeographicFilters() {
+
         var geoJSON = ALA.MapUtils.getGeometryWithCirclesFromGeoJSON(spatialFilter.getGeoJSON());
 
         if (geoJSON && geoJSON.features.length == 1) {
@@ -600,10 +624,10 @@ function ProjectFinder() {
                 geoCriteriaChanged = true;
             }
 
-            if (geoCriteriaChanged && validSearchGeometry(geoSearch)) {
-                self.doSearch();
-            }
+            refreshSearch = geoCriteriaChanged && validSearchGeometry(geoSearch);
+
         } else if (geoJSON.features.length == 0 && geoSearch) {
+            refreshSearch = true;
             geoSearch = {};
             self.doSearch();
         }
@@ -624,6 +648,6 @@ function ProjectFinder() {
     }
 
     parseHash();
-    this.doSearch();
+    self.doSearch();
 }
 

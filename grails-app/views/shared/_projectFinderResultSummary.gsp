@@ -14,3 +14,11 @@
     </tr>
     </tbody>
 </table>
+
+<div class="row-fluid">
+    <div>
+        <button id="pt-filter" class="btn btn-default hide" data-toggle="button"><i class="icon-arrow-right"></i><g:message code="project.search.filter"/>  </button>
+    </div>
+</div>
+
+

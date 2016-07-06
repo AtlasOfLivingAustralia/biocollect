@@ -54,7 +54,7 @@
         <g:render template="/shared/projectFinderResultSummary"/>
     </div>
     <div class="row-fluid">
-        <div class="span3">
+        <div id="filterPanel" class="span3">
             <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
         </div>
         <div class="span9">
