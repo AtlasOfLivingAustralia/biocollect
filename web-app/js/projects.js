@@ -273,8 +273,6 @@ function isValid(p, a) {
 	 return p;
 }
 
-
-
 function ProjectViewModel(project, isUserEditor, organisations) {
     var self = $.extend(this, new Documents());
 
@@ -377,7 +375,17 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.orgGrantee = ko.observable(project.orgGrantee ? project.orgGrantee : '');
     self.orgSponsor = ko.observable(project.orgSponsor ? project.orgSponsor : '');
 
-    self.associatedOrgs = ko.observableArray(project.associatedOrgs);
+    self.associatedOrgs = ko.observableArray();
+    ko.utils.arrayMap(project.associatedOrgs || [], function(org) {
+        var tmpOrg = org || {};
+        self.associatedOrgs.push({
+            id: tmpOrg.id,
+            organisationId: tmpOrg.organisationId || null,
+            logo: tmpOrg.logo || null,
+            name: tmpOrg.name || null,
+            url: tmpOrg.url || null
+        });
+    });
 
     self.isExternal.subscribe(function (newVal) {
         if (!newVal) {
@@ -648,7 +656,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         } else {
             self.ecoScienceType.remove(elem.value)
         }
-    }
+    };
 
     var availableProjectTypes = [
         {name:'Citizen Science Project', display:'Citizen\nScience', value:'citizenScience'},
