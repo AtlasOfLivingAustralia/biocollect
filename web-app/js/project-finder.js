@@ -77,6 +77,30 @@ function ProjectFinder() {
             return true;
         }
 
+        this.partitioned = function (observableArray, count) {
+            var rows, partIdx, i, j, arr;
+
+            arr = observableArray();
+
+            rows = [];
+            for (i = 0, partIdx = 0; i < arr.length; i += count, partIdx += 1) {
+                rows[partIdx] = [];
+                for (j = 0; j < count; j += 1) {
+                    if (i + j >= arr.length) {
+                        break;
+                    }
+                    arr[i + j].transients.index(i+j);
+                    rows[partIdx].push(arr[i + j]);
+                }
+            }
+            return rows;
+        };
+
+        this.styleIndex = function (dataIndex, rowSize) {
+            console.log("typeof dataIndex" + (typeof dataIndex));
+            console.log("typeof rowSize" + (typeof rowSize));
+            return dataIndex() % rowSize + 1 ;
+        };
     }
 
     /**

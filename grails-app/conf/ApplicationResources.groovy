@@ -225,8 +225,8 @@ modules = {
         resource url: 'vendor/moment/moment.min.js'
         resource url: 'css/surveys.css'
         resource url: 'css/project-tile-view.css'
+        resource url: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700", attrs:[type:"css"]
         resource url: "https://fonts.googleapis.com/css?family=Oswald:300", attrs:[type:"css"]
-        resource  "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700", attrs:[type:"css"]
     }
 
     projectFinder {
@@ -235,7 +235,6 @@ modules = {
         resource url: 'js/project-finder.js'
         resource url: 'css/project-finder.css'
     }
-
 
 
     responsiveTable{

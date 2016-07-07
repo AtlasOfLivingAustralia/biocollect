@@ -689,6 +689,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         }
     });
 
+    self.transients.index = ko.observable();
+
     self.loadPrograms = function (programsModel) {
         $.each(programsModel.programs, function (i, program) {
             if (program.readOnly && self.associatedProgram() != program.name) {
