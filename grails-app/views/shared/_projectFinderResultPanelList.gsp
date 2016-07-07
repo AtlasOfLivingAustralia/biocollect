@@ -2,21 +2,21 @@
 
     <bc:koLoading>
         <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
-        <div  class="statistics project-finder-table">
-            <div data-bind="foreach:pageProjects">
-                <div class="stat stat-2">
-                    <div class="projectLogoTd">
-                        %{--<div class="projectLogo project-row-layout">--}%
-                            %{--<img class="image-logo" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name, src:transients.imageUrl || '${noImageUrl}'}" onload="findLogoScalingClass(this)" onerror="imageError(this, '${noImageUrl}');"/>--}%
-                        %{--</div>--}%
-                    </div>
-                    <div>
-                        <div>
-                            <a class="stat-title" data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
-                                <span data-bind="text:name"></span>
+        <table data-table-list class="project-finder-table">
+            <tbody data-bind="foreach:pageProjects">
+                <tr>
+                    <td class="projectLogoTd">
+                        <div class="projectLogo project-row-layout">
+                            <img class="image-logo" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name, src:transients.imageUrl || '${noImageUrl}'}" onload="findLogoScalingClass(this)" onerror="imageError(this, '${noImageUrl}');"/>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="project-row-layout pf-project-text">
+                            <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
+                                <span data-bind="text:name" style="font-size:150%;font-weight:bold"></span>
                             </a>
-                            <div class="stat-units" data-bind="visible:transients.orgUrl">
-                                <span  data-bind="visible:transients.daysSince() >= 0">Started <!--ko text:transients.since--><!--/ko-->&nbsp;</span>
+                            <div data-bind="visible:transients.orgUrl">
+                                <span data-bind="visible:transients.daysSince() >= 0" style="font-size:80%;color:grey">Started <!--ko text:transients.since--><!--/ko-->&nbsp;</span>
                                 <g:if test="${controllerName != 'organisation'}">
                                     <a data-bind="text:organisationName,attr:{href:transients.orgUrl}"></a>
                                 </g:if>
@@ -33,8 +33,8 @@
                                 <img src="${resource([dir: "images", file: "ala-logo-small.png"])}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
                             </div>
                         </div>
-                    </div>
-                    <div class="span2">
+                    </td>
+                    <td class="span2">
                         <div class="project-row-layout project-row-status">
                             <g:render template="/project/dayscount"/>
                             <span data-bind="visible:plannedStartDate">
@@ -47,10 +47,10 @@
                                 <span class="projectType" data-bind="text:transients.kindOfProjectDisplay"></span>
                             </g:if>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </bc:koLoading>
     <div id="pt-searchNavBar" class="clearfix">
         <div id="pt-navLinks"></div>

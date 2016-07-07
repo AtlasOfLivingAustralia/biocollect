@@ -1,0 +1,92 @@
+.statistics .stat {
+    min-height: 160px !important;
+    background-image: none !important;
+}
+
+.statistics .stat-value,.statistics .stat-text {
+    padding-left: 0 !important;
+}
+
+@media (max-width: 767px) {
+
+    /*This may not apply for biocollect*/
+
+    body {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .statistics .stat {
+        min-height: 130px !important;
+        background-image: none !important;
+    }
+}
+
+
+.statistics .stat {
+    font-family: 'Oswald',sans-serif;
+    background-color: #E5E5E5;
+    color: #000;
+    margin-bottom: 30px;
+    padding: 20px;
+    border-radius: 4px;
+    min-height: 155px;
+    background-repeat: no-repeat;
+    background-size: 100px;
+    background-position: 20px 60px;
+}
+
+.statistics .stat-title {
+    font-family: 'Source Sans Pro',sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.statistics .stat-value {
+    font-size: 48px;
+    padding-left: 120px;
+    color: #fff;
+}
+
+.statistics .stat-units {
+    font-size: 18px;
+    color: #fff;
+}
+
+.statistics .stat-text {
+    font-size: 18px;
+    text-transform: uppercase;
+    padding-left: 120px;
+}
+
+.statistics .stat-1 {
+    background-color: #aa6cc2;
+    background-image: url(../images/tile/users6.png);
+}
+
+.statistics .stat-2 {
+    background-color: #26c281;
+    background-image: url(../images/tile/shovel3.png);
+}
+
+.statistics .stat-3 {
+    background-color: #44b6ae;
+    background-image: url(../images/tile/plant43.png);
+}
+
+.statistics .stat-4 {
+    background-color: #25aed6;
+    background-image: url(../images/tile/beach57.png);
+}
+
+.statistics .stat-5 {
+    background-color: #f26e83;
+    background-image: url(../images/tile/agreement.png);
+}
+
+.statistics .stat-6 {
+    background-color: #e87e04;
+    background-image: url(../images/tile/forest2.png);
+}
