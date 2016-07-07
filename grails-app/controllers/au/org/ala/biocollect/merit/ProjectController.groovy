@@ -268,6 +268,7 @@ class ProjectController {
                 user                    : userService.getUser(),
                 showTag                 : params.tag,
                 downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
+                associatedPrograms      : projectService.programsModel().programs.findAll{!it?.readOnly},
                 showWorksBanner: true
         ]
     }
