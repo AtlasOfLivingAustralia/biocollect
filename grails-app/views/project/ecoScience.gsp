@@ -60,7 +60,7 @@
             <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
         </div>
         <div class="span9">
-            <g:render template="/shared/projectFinderResultPanel"></g:render>
+            <g:render template="/shared/projectFinderResultPanelList"></g:render>
         </div>
     </div>
 </div>
