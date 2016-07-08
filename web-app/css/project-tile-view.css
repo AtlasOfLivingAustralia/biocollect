@@ -1,9 +1,9 @@
-.statistics .stat {
+.tiles .tile {
     min-height: 160px !important;
     background-image: none !important;
 }
 
-.statistics .stat-value,.statistics .stat-text {
+.tiles .tile-value,.tiles .tile-text {
     padding-left: 0 !important;
 }
 
@@ -16,14 +16,13 @@
         padding-right: 0;
     }
 
-    .statistics .stat {
+    .tiles .tile {
         min-height: 130px !important;
         background-image: none !important;
     }
 }
 
-
-.statistics .stat {
+.tiles .tile {
     font-family: 'Oswald',sans-serif;
     background-color: #E5E5E5;
     color: #000;
@@ -36,7 +35,7 @@
     background-position: 20px 60px;
 }
 
-.statistics .stat-title {
+.tiles .tile-title {
     font-family: 'Source Sans Pro',sans-serif;
     font-weight: 600;
     font-size: 16px;
@@ -44,55 +43,55 @@
     text-transform: uppercase;
 }
 
-.statistics .stat-value {
+.tiles .tile-value {
     font-size: 48px;
     padding-left: 120px;
     color: #fff;
 }
 
-.statistics .stat-units {
+.tiles .tile-units {
     font-size: 18px;
     color: #fff;
 }
 
-.statistics .stat-text {
+.tiles .tile-text {
     font-size: 18px;
     text-transform: uppercase;
     padding-left: 120px;
 }
 
-.statistics .stat-1 {
+.tiles .tile-1 {
     background-color: #aa6cc2;
     background-image: url(../images/tile/users6.png);
 }
 
-.statistics .stat-2 {
+.tiles .tile-2 {
     background-color: #26c281;
     background-image: url(../images/tile/shovel3.png);
 }
 
-.statistics .stat-3 {
+.tiles .tile-3 {
     background-color: #44b6ae;
     background-image: url(../images/tile/plant43.png);
 }
 
-.statistics .stat-4 {
+.tiles .tile-4 {
     background-color: #25aed6;
     background-image: url(../images/tile/beach57.png);
 }
 
-.statistics .stat-5 {
+.tiles .tile-5 {
     background-color: #f26e83;
     background-image: url(../images/tile/agreement.png);
 }
 
-.statistics .stat-6 {
+.tiles .tile-6 {
     background-color: #e87e04;
     background-image: url(../images/tile/forest2.png);
 }
 
 
-.stat-overlay {
+.tile-overlay {
     width:80px;
     height:80px;
     box-shadow:inset 1px 1px 40px 0 rgba(0,0,0,0.5);
@@ -102,7 +101,7 @@
     position: absolute;
     z-index: 1;
 }
-.stat-image{
+.tile-image{
     position:relative;
     width:80px;
     height:80px;
@@ -110,14 +109,7 @@
     /*overflow: hidden;*/
 }
 
-/*.stat-image img{*/
-    /*display: block; !* Otherwise it keeps some space around baseline *!*/
-    /*min-width: 100%;    !* Scale up to fill container width *!*/
-    /*min-height: 100%;   !* Scale up to fill container height *!*/
-    /*-ms-interpolation-mode: bicubic; !* Scaled images look a bit better in IE now *!*/
-/*}*/
-
-.stat-thumb {
+.tile-thumb {
     display: inline-block;
     width: 80px;
     height: 80px;
