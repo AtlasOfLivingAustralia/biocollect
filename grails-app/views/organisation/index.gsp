@@ -59,7 +59,9 @@
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
             recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
-            organisationName: '${organisation.name}'
+            organisationName: '${organisation.name}',
+            version: "${params.version?:''}",
+
         };
     </r:script>
     <style type="text/css">
