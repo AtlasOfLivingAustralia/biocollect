@@ -410,23 +410,19 @@ modules = {
     }
 
     imageGallery{
-        dependsOn('imageViewer')
+        dependsOn('imageViewer','knockout')
         resource url: 'css/image-gallery.css'
-        resource url: 'js/knockout-custom-bindings.js'
-        resource url: 'js/knockout-dates.js'
         resource url: 'js/fieldcapture-application.js'
         resource url: 'js/images.js'
         resource url: 'js/image-gallery.js'
     }
 
     sites{
-        dependsOn('imageViewer', 'font_awesome_44', 'projectActivityInfo', 'myActivity')
+        dependsOn('imageViewer', 'font_awesome_44', 'projectActivityInfo', 'myActivity', 'knockout')
         resource url: 'css/sites.css'
         resource url: 'css/horizontal-scroll-list.css'
         resource url: 'vendor/vkbeautyfy/vkbeautify.0.99.00.beta.js'
-        resource url: 'js/knockout-dates.js'
         resource url: 'js/fieldcapture-application.js'
-        resource url: 'js/knockout-custom-bindings.js'
         resource url: 'js/images.js'
         resource url: 'js/poi-gallery.js'
     }
