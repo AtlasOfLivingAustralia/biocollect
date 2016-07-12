@@ -18,6 +18,7 @@
 <div class="row-fluid">
     <div>
         <button id="pt-filter" class="btn btn-default hide" data-toggle="button"><i class="icon-arrow-right"></i><g:message code="project.search.filter"/>  </button>
+        <button class="btn btn-mini" type="button" ><i class="icon-cog"></i></button>
     </div>
 </div>
 

@@ -417,6 +417,9 @@ modules = {
         resource url: 'js/image-gallery.js'
     }
 
+    projectDaysToGo {
+        resource url: 'css/project-daystogo.css'
+    }
     sites{
         dependsOn('imageViewer', 'font_awesome_44', 'projectActivityInfo', 'myActivity', 'knockout')
         resource url: 'css/sites.css'

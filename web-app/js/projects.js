@@ -321,6 +321,32 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         return org? org.name: project.organisationName;
     });
 
+    var truncate = function (string,  length) {
+        if(string == undefined)
+        {
+            return undefined;
+        }
+
+        length = length || 30;
+        var truncation = '...';
+        return string.length > length ?
+        string.slice(0, length - truncation.length) + truncation : string;
+    };
+
+    self.transients.truncatedOrganisationName = ko.computed(function () {
+        return truncate(self.organisationName(), 50);
+    });
+
+    self.transients.truncatedAim = ko.computed(function () {
+        return truncate(self.aim(), 65);
+    });
+
+    self.transients.truncatedName = ko.computed(function () {
+        return truncate(self.name(), 25);
+    });
+    
+    
+
     var legalCustodianVal = project.legalCustodianOrganisation? project.legalCustodianOrganisation: ko.utils.unwrapObservable(self.organisationName);
     self.legalCustodianOrganisation = ko.observable(legalCustodianVal);
 

@@ -1,16 +1,18 @@
+/*
+tiles and tile styles are based on
+statistics and stat styles from Merit project
+*/
+
 .tiles .tile {
     min-height: 160px !important;
     background-image: none !important;
 }
 
-.tiles .tile-value,.tiles .tile-text {
+.tiles .tile-organisation,.tiles .tile-text {
     padding-left: 0 !important;
 }
 
 @media (max-width: 767px) {
-
-    /*This may not apply for biocollect*/
-
     body {
         padding-left: 0;
         padding-right: 0;
@@ -19,6 +21,16 @@
     .tiles .tile {
         min-height: 130px !important;
         background-image: none !important;
+    }
+
+    .tile .span4 {
+        width: 31.91%;
+        float: left;
+    }
+
+    .tile .span8 {
+        width: 65.95%;
+        float: left;
     }
 }
 
@@ -35,6 +47,15 @@
     background-position: 20px 60px;
 }
 
+.tile-title a  {
+    color: #000000;
+}
+
+.tile-title a:hover, .tile-title a:focus {
+    color: #303030;
+    text-decoration: underline;
+}
+
 .tiles .tile-title {
     font-family: 'Source Sans Pro',sans-serif;
     font-weight: 600;
@@ -43,14 +64,18 @@
     text-transform: uppercase;
 }
 
-.tiles .tile-value {
-    font-size: 48px;
+.tiles .tile-organisation {
+    font-size: 18px;
     padding-left: 120px;
     color: #fff;
 }
 
-.tiles .tile-units {
-    font-size: 18px;
+.tile-organisation:hover, .tile-organisation:focus {
+    color: #EEEEEE;
+}
+
+.tiles .tile-small {
+    font-size: 12px;
     color: #fff;
 }
 
@@ -62,32 +87,26 @@
 
 .tiles .tile-1 {
     background-color: #aa6cc2;
-    background-image: url(../images/tile/users6.png);
 }
 
 .tiles .tile-2 {
     background-color: #26c281;
-    background-image: url(../images/tile/shovel3.png);
 }
 
 .tiles .tile-3 {
     background-color: #44b6ae;
-    background-image: url(../images/tile/plant43.png);
 }
 
 .tiles .tile-4 {
     background-color: #25aed6;
-    background-image: url(../images/tile/beach57.png);
 }
 
 .tiles .tile-5 {
     background-color: #f26e83;
-    background-image: url(../images/tile/agreement.png);
 }
 
 .tiles .tile-6 {
     background-color: #e87e04;
-    background-image: url(../images/tile/forest2.png);
 }
 
 
@@ -113,8 +132,24 @@
     display: inline-block;
     width: 80px;
     height: 80px;
-    /*margin: 5px;*/
-    /*border: 3px solid #c99;*/
     background-position: center center;
     background-size: cover;
+}
+
+.tile .dayscount > h2 {
+    font-size: 12px;
+    margin: 0px 0;
+    color: #fff;
+    line-height: 20px;
+}
+
+.tile .dayscount > h4 {
+    text-transform: none;
+    font-size: 12px;
+    color: #fff;
+    margin: 0px 0;
+}
+
+.tile .dayscount > img {
+    display: none;
 }
