@@ -1,8 +1,7 @@
-<div id="pt-table" class="row-fluid">
-
+<div class="row-fluid">
+    <span>Tile View</span>
     <bc:koLoading>
         <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
-        %{--<div >--}%
             <div class="tiles">
             <div data-bind="foreach: partitioned( pageProjects, 4)">
                 <div class="row-fluid" data-bind="template: { name: 'projectCell', foreach: $data }">

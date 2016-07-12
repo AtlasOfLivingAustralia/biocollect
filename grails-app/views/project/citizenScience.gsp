@@ -57,8 +57,13 @@
         <div id="filterPanel" class="span3">
             <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
         </div>
-        <div class="span9">
-            <g:render template="/shared/projectFinderResultPanel"></g:render>
+        <div id="pt-table" class="span9" >
+            <div data-bind="if: listView">
+                <g:render template="/shared/projectFinderResultPanelList"></g:render>
+            </div>
+            <div data-bind="ifnot: listView">
+                <g:render template="/shared/projectFinderResultPanel"></g:render>
+            </div>
         </div>
     </div>
 </div>

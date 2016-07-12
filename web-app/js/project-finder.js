@@ -38,6 +38,9 @@ function ProjectFinder() {
     var refreshSearch = false;
 
     var searchTerm = '', perPage = 20, sortBy = 'nameSort', sortOrder = 1;
+
+    var viewMode = 'listView';
+
     // variable to not scroll to result when result is loaded for the first time.
     var firstTimeLoad = true;
 
@@ -66,6 +69,10 @@ function ProjectFinder() {
             $(e.target).attr('href', domain + '?' + 'download=true&' + params);
             return true;
         }
+
+        this.listView = ko.observable(true);
+
+
         /**
          * this function is used to tell project/index or citizenscience page that the traffic is coming from
          * project finder page. This flag is used to decide if about page of the project should be shown.
@@ -151,11 +158,6 @@ function ProjectFinder() {
     }
 
     function toggleFilterPanel() {
-        if ($('#pt-filter').hasClass('hide')) {
-            $('#pt-filter').removeClass('hide');
-        } else {
-            $('#pt-filter').addClass('hide');
-        }
         $('#filterPanel').toggle("slide");
     }
 
@@ -221,6 +223,9 @@ function ProjectFinder() {
 
         sortBy = getActiveButtonValues($("#pt-sort"));
         perPage = getActiveButtonValues($("#pt-per-page"));
+
+        viewMode = getActiveButtonValues($("#pt-view"));
+        pageWindow.listView(viewMode[0] == "listView");
 
         if (fcConfig.showAllProjects) {
             var values = getActiveButtonValues($('#pt-search-projecttype'));
@@ -401,6 +406,12 @@ function ProjectFinder() {
 
     });
 
+    $("#pt-view").on('statechange', function () {
+        viewMode = getActiveButtonValues($("#pt-view"));
+        pageWindow.listView(viewMode[0] == "listView");
+    });
+
+
     $("#mapModal").on('shown', function () {
         initialiseMap();
     });
@@ -450,7 +461,15 @@ function ProjectFinder() {
 
     });
 
-    $("#pt-collapse").click(collapseFilterPanel);
+    $("#btnShowTileView").click(function () {
+        pageWindow.showTileView();
+        
+    });
+
+    $("#btnShowListView").click(function () {
+        pageWindow.showListView();
+
+    });
 
     // check for statechange event on all buttons in filter panel.
     $('#pt-searchControls button').on('statechange', self.searchAndShowFirstPage);

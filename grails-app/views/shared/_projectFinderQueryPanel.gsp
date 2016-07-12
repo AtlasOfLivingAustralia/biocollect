@@ -190,7 +190,6 @@
                 <div class="pull-right" id="pt-control-buttons">
                     <button id="pt-reset" class="btn btn-primary" ><i class="icon-white icon-remove"></i> <g:message
                             code="g.resetSearch"/></button>
-                    <button class="btn btn-default" id="pt-collapse"><i class="icon-arrow-left"></i> <g:message code="g.collapseFilter" /></button>
                 </div>
             </div>
         </div>

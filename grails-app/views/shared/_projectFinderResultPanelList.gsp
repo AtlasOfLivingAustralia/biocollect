@@ -1,5 +1,5 @@
-<div id="pt-table" class="row-fluid">
-
+<div class="row-fluid">
+    <span>List View</span>
     <bc:koLoading>
         <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
         <table data-table-list class="project-finder-table">
