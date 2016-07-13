@@ -2,7 +2,7 @@
         <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
             <div class="tiles">
             <div data-bind="foreach: partitioned( pageProjects, 4)">
-                <div class="row-fluid" data-bind="template: { name: 'projectCell', foreach: $data }">
+                <div class="row-fluid equal-height" data-bind="template: { name: 'projectCell', foreach: $data }">
                 </div>
             </div>
         </div>
@@ -39,19 +39,16 @@
         <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
             <span data-bind="text:transients.truncatedName"></span>
         </a>
-        %{--<span data-bind="text:name"></span>--}%
     </div>
 
     <div class="row-fluid">
         <div class="span4" style="min-width: 80px;">
             <div class="tile-image">
-                %{--<div >--}%
                 <div class="tile-thumb"
                      data-bind="attr:{title:name, style: backgroundImageStyle(transients.imageUrl || '${noImageUrl}') }"
                      onerror="backgroundImageError(this, '${noImageUrl}');"></div>
 
                 <div class="tile-overlay"></div>
-%{--Plain&nbsp;content again--}%
             </div>
 
             <div data-bind="visible: isSciStarter" class="inline-block"><img class="logo-small"
@@ -59,9 +56,7 @@
                                                                              title="Project is sourced from SciStarter">
             </div>
         </div>
-
         <div class="span8">
-
             <div class="tile-small">
                 <span data-bind="visible:transients.daysSince() >= 0">Started <!--ko text:transients.since--><!--/ko-->&nbsp;</span>
             </div>
