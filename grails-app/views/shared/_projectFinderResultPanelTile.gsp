@@ -1,6 +1,4 @@
 <div class="row-fluid">
-    <span>Tile View</span>
-    <bc:koLoading>
         <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
             <div class="tiles">
             <div data-bind="foreach: partitioned( pageProjects, 4)">
@@ -8,7 +6,6 @@
                 </div>
             </div>
         </div>
-    </bc:koLoading>
     <div id="pt-searchNavBar" class="clearfix">
         <div id="pt-navLinks"></div>
     </div>

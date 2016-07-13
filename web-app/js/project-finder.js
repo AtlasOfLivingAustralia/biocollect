@@ -37,15 +37,6 @@ function ProjectFinder() {
 
     var refreshSearch = false;
 
-    var searchTerm = '', perPage = 20, sortBy = 'nameSort', sortOrder = 1;
-
-    var viewMode = 'listView';
-
-    // variable to not scroll to result when result is loaded for the first time.
-    var firstTimeLoad = true;
-
-    var siteViewModel = null;//initSiteViewModel({type:'projectArea'});
-
     this.availableProjectTypes = new ProjectViewModel({}, false, []).transients.availableProjectTypes;
 
     this.sortKeys = [
@@ -157,14 +148,6 @@ function ProjectFinder() {
         }
     }
 
-    function toggleFilterPanel() {
-        $('#filterPanel').toggle("slide");
-    }
-
-    function collapseFilterPanel(){
-        $('#pt-filter').click();
-    }
-
     function initialiseMap() {
         if (!mapInitialised) {
             spatialFilter = new ALA.Map("mapFilter", {
@@ -224,8 +207,6 @@ function ProjectFinder() {
         sortBy = getActiveButtonValues($("#pt-sort"));
         perPage = getActiveButtonValues($("#pt-per-page"));
 
-        viewMode = getActiveButtonValues($("#pt-view"));
-        pageWindow.listView(viewMode[0] == "listView");
 
         if (fcConfig.showAllProjects) {
             var values = getActiveButtonValues($('#pt-search-projecttype'));
@@ -385,6 +366,43 @@ function ProjectFinder() {
         return vm;
     };
 
+
+    /**
+     * Initialises user default (saved) view for filter and results
+     * Filter can be shown/hidden
+     * Results can be displayed as list or tile (grid)
+     */
+    this.initViewMode = function () {
+
+        // Results view
+        var savedViewMode = amplify.store('pt-view-state');
+        savedViewMode = savedViewMode || "listView"; //Default is the old list view
+        checkButton($("#pt-view"), savedViewMode);
+        var viewMode = getActiveButtonValues($("#pt-view"));
+        pageWindow.listView(viewMode[0] == "listView");
+
+        // Filters view
+        var showPanel = amplify.store('pt-filter');
+        toggleFilterPanel(showPanel);
+    };
+
+    function toggleFilterPanel(showPanel) {
+        if(showPanel) {
+
+            $('#pt-table').removeClass('span12 no-sidebar');
+            $('#pt-table').addClass('span9');
+            $('#filterPanel').show();
+            // $('#filterPanel').show('slide', {direction: 'right'}, 1000);
+            $('#pt-filter').addClass('active');
+
+        } else {
+            $('#filterPanel').hide();
+            // $('#filterPanel').hide('slide', {direction: 'left'}, 1000);
+            $('#pt-table').removeClass('span9');
+            $('#pt-table').addClass('span12 no-sidebar');
+        }
+    }
+
     /* comparator for data projects */
     function comparator(a, b) {
         var va = a[sortBy](), vb = b[sortBy]();
@@ -402,13 +420,17 @@ function ProjectFinder() {
     };
 
     $("#pt-filter").on('statechange', function () {
-        toggleFilterPanel();
+        var active = isButtonChecked($("#pt-filter"));
+        amplify.store('pt-filter', active);
+        toggleFilterPanel(active);
+        //toggleFilterPanel();
 
     });
 
     $("#pt-view").on('statechange', function () {
-        viewMode = getActiveButtonValues($("#pt-view"));
+        var viewMode = getActiveButtonValues($("#pt-view"));
         pageWindow.listView(viewMode[0] == "listView");
+        amplify.store('pt-view-state', viewMode[0]);
     });
 
 
@@ -683,7 +705,10 @@ function ProjectFinder() {
         return valid
     }
 
+
+
     parseHash();
     self.doSearch();
+    self.initViewMode();
 }
 

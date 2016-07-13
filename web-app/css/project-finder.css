@@ -135,3 +135,15 @@ input[type=checkbox] {
     width: auto;
     height: 100%;
 }​
+
+
+ .no-sidebar {
+     margin-left: 0 !important;
+ }
+
+.scrollDiv {
+    overflow-y: scroll;
+    display: inline-block;
+    float: none;
+    /* Very important */
+}

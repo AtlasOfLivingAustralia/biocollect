@@ -11,7 +11,15 @@
         <g:render template="/shared/projectFinderQueryPanel"/>
     </div>
 
-    <div class="span9">
-        <g:render template="/shared/projectFinderResultPanel"/>
+    <div id="pt-table" class="span12 no-sidebar">
+        <bc:koLoading>
+            <div data-bind="if: listView">
+                <g:render template="/shared/projectFinderResultPanelList"></g:render>
+            </div>
+
+            <div data-bind="ifnot: listView">
+                <g:render template="/shared/projectFinderResultPanelTile"></g:render>
+            </div>
+        </bc:koLoading>
     </div>
 </div>

@@ -1,6 +1,4 @@
 <div class="row-fluid">
-    <span>List View</span>
-    <bc:koLoading>
         <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
         <table data-table-list class="project-finder-table">
             <tbody data-bind="foreach:pageProjects">
@@ -51,7 +49,6 @@
                 </tr>
             </tbody>
         </table>
-    </bc:koLoading>
     <div id="pt-searchNavBar" class="clearfix">
         <div id="pt-navLinks"></div>
     </div>

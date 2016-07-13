@@ -21,16 +21,20 @@
 </div>
 
 <div class="row-fluid clearfix margin-bottom-5">
-    <div class="span6 " >
-        <button id="pt-filter" class="active btn btn-mini" title="${message(code: 'project.search.filter.tooltip')}" data-status="1"
+    <div class="span12 ">
+        <button id="pt-filter" class="btn btn-mini" title="${message(code: 'project.search.filter.tooltip')}"
+                data-status="1"
                 data-toggle="button"><i class="icon-align-justify"></i></button>
+        <div class="btn-group pull-right" data-toggle="buttons-radio" id="pt-view">
+            <button class="btn btn-mini" title="${message(code: 'project.tile.view.tooltip')}"
+                    data-toggle="button" data-value="tileView"><i
+                    class="icon-th"></i></button>
+            <button class="btn btn-mini" title="${message(code: 'project.list.view.tooltip')}"
+                    data-toggle="button" data-value="listView"><i
+                    class="icon-th-list"></i></button>
+        </div>
     </div>
-    <div class="btn-group span6" data-toggle="buttons-radio" id="pt-view">
-        <button class="active btn btn-mini pull-right" title="${message(code: 'project.tile.view.tooltip')}" data-toggle="button" data-value="tileView"><i
-                class="icon-th"></i></button>
-        <button class="btn btn-mini pull-right" title="${message(code: 'project.list.view.tooltip')}" data-toggle="button" data-value="listView"><i
-                class="icon-th-list"></i></button>
-    </div>
+
 </div>
 
 
