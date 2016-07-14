@@ -30,6 +30,7 @@ class BioActivityController {
     CommonService commonService
     SearchService searchService
     OutputService outputService
+    RecordService recordService
 
     /**
      * Update Activity by activityId or
@@ -256,7 +257,7 @@ class BioActivityController {
                 flash.message = "Access denied: You do not have permission to access the requested resource."
                 redirect(controller: 'project', action: 'index', id: activity.projectId)
             } else {
-                Map model = activityAndOutputModel(activity, activity.projectId, params?.version)
+                Map model = activityAndOutputModel(activity, activity.projectId, 'view', params?.version)
                 model.pActivity = pActivity
                 model.id = pActivity.projectActivityId
                 params.mobile ? model.mobile = true : ''
@@ -337,7 +338,7 @@ class BioActivityController {
         List facets = []
         activities = activities?.collect {
             Map doc = it._source
-            def projectActivity = projectActivityService.get(doc.projectActivityId,  "all", params?.version)
+            def projectActivity = projectActivityService.get(doc.projectActivityId, "all", params?.version)
             [
                     activityId       : doc.activityId,
                     projectActivityId: doc.projectActivityId,
@@ -356,7 +357,9 @@ class BioActivityController {
                     projectName      : doc.projectActivity?.projectName,
                     projectId        : doc.projectActivity?.projectId,
                     showCrud         : ((queryParams.userId && doc.projectId && projectService.canUserEditProject(queryParams.userId, doc.projectId, false) || (doc.userId == queryParams.userId))),
-                    thumbnailUrl     : projectActivity?.documents?.find {it.status == 'active' && it.thumbnailUrl}?.thumbnailUrl
+                    thumbnailUrl     : projectActivity?.documents?.find {
+                        it.status == 'active' && it.thumbnailUrl
+                    }?.thumbnailUrl
             ]
         }
 
@@ -399,9 +402,23 @@ class BioActivityController {
 
         Map searchResult = searchService.searchProjectActivity(queryParams)
         List activities = searchResult?.hits?.hits
-        List facets = []
+        List projectIds = parsed.userId ? userService.getProjectsForUserId(parsed.userId)?.collect {
+            it.project?.projectId
+        } : []
+
         activities = activities?.collect {
             Map doc = it._source
+
+            //Sensitive species coordinate adjustments.
+            boolean projectMember = projectIds && projectIds.find { it == doc?.projectId }
+            if (!userService.userIsAlaOrFcAdmin() && !projectMember) {
+                doc.projectActivity?.records?.each {
+                    if (it.generalizedCoordinates) {
+                        it.coordinates = it.generalizedCoordinates
+                    }
+                }
+            }
+
             Map result = [
                     activityId       : doc.activityId,
                     projectActivityId: doc.projectActivityId,
@@ -488,10 +505,9 @@ class BioActivityController {
         }
     }
 
-    private Map activityModel(activity, projectId, version = null) {
-        Map model = [activity: activity, returnTo: params.returnTo]
+    private Map activityModel(activity, projectId, mode = '', version = null) {
+        Map model = [activity: activity, returnTo: params.returnTo, mode: mode]
         model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view: 'brief', version: version]) : null
-        model.mapFeatures = model.site ? siteService.getMapFeatures(model.site) : []
         model.project = projectId ? projectService.get(model.activity.projectId, version) : null
         model.projectSite = model.project.sites?.find { it.siteId == model.project.projectSiteId }
 
@@ -508,11 +524,15 @@ class BioActivityController {
 
         model.user = userService.getUser()
 
+        generalizeCoordinates(model)
+
+        model.mapFeatures = model.site ? siteService.getMapFeatures(model.site) : []
+
         model
     }
 
-    private Map activityAndOutputModel(activity, projectId, version = null) {
-        def model = activityModel(activity, projectId, version)
+    private Map activityAndOutputModel(activity, projectId, mode = '', version = null) {
+        def model = activityModel(activity, projectId, mode, version)
         addOutputModel(model)
 
         model
@@ -595,4 +615,62 @@ class BioActivityController {
     private static boolean isProjectActivityClosed(Map projectActivity) {
         projectActivity?.endDate && Date.parse("yyyy-MM-dd", projectActivity?.endDate)?.before(new Date())
     }
+
+    /**
+     * Generalise coordinates for sensitive species.
+     * Supports only point based coordinates.
+     * @param model model with activity and site object
+     */
+    private void generalizeCoordinates(Map model) {
+
+        // don't overwrite coordinates:
+        // 1. if user is a project member or admin ?
+        // 2. if request comes from create or edit page.
+        if (model.mode != 'view' || (model?.user && !activityService.applySensitiveSpeciesCoordinates(model.user?.userId, model.activity?.projectId))) {
+            return
+        }
+
+        def records = recordService.listActivityRecords(model.activity?.activityId)?.records
+        def sensitiveRecord = records?.find { it.generalizedDecimalLatitude && it.generalizedDecimalLongitude }
+
+        if (sensitiveRecord) {
+
+            //Embedded maps - Single and Multi species
+            model?.activity?.outputs?.each {
+                if (it.data?.locationLatitude && it.data?.locationLongitude) {
+                    it.data?.locationLatitude = sensitiveRecord.generalizedDecimalLatitude
+                    it.data?.locationLongitude = sensitiveRecord.generalizedDecimalLongitude
+                }
+            }
+
+            //External site associated with activity
+            modifyCoordinates(sensitiveRecord, model.site);
+
+            //Project site associated with activity
+            modifyCoordinates(sensitiveRecord, model.projectSite);
+
+            model.project?.sites = null
+        }
+    }
+
+    private modifyCoordinates(sensitiveRecord, site) {
+
+        if (site?.extent?.geometry?.decimalLatitude && site?.extent?.geometry?.decimalLongitude) {
+            site.extent.geometry.decimalLatitude = sensitiveRecord.generalizedDecimalLatitude
+            site.extent.geometry.decimalLongitude = sensitiveRecord.generalizedDecimalLongitude
+            if (site.extent.geometry.coordinates && site.extent.geometry.coordinates.size() == 2) {
+                site.extent.geometry.coordinates[0] = sensitiveRecord.generalizedDecimalLongitude
+                site.extent.geometry.coordinates[1] = sensitiveRecord.generalizedDecimalLatitude
+            }
+            if (site.extent.geometry.centre && site.extent.geometry.centre.size() == 2) {
+                site.extent.geometry.centre[0] = sensitiveRecord.generalizedDecimalLongitude
+                site.extent.geometry.centre[1] = sensitiveRecord.generalizedDecimalLatitude
+            }
+            if (site.geoIndex?.coordinates && site.geoIndex?.coordinates.size() == 2) {
+                site.geoIndex.coordinates[0] = sensitiveRecord.generalizedDecimalLongitude
+                site.geoIndex.coordinates[1] = sensitiveRecord.generalizedDecimalLatitude
+            }
+        }
+    }
+
 }
