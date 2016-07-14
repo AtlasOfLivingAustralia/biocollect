@@ -33,7 +33,8 @@
 
 <script id="projectCell" type="text/html">
 %{--There are 6 different tile-n styles--}%
-<div data-bind="attr:{class:'span3 tile tile-' + (transients.index() % 6 +1)}">
+%{--<div data-bind="attr:{class:'span3 tile tile-' + (transients.index() % 6 +1)}">--}%
+<div data-bind="attr:{class:'span3 well tile'}">
     <div class="tile-title"
          data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
         <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
@@ -42,21 +43,23 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4" style="min-width: 80px;">
-            <div class="tile-image">
-                <div class="tile-thumb"
-                     data-bind="attr:{title:name, style: backgroundImageStyle(transients.imageUrl || '${noImageUrl}') }"
-                     onerror="backgroundImageError(this, '${noImageUrl}');"></div>
+        <div class="span12 padding-left-5" style="min-width: 80px;">
+            <div>
+            <img class="image-logo" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name, src:transients.imageUrl || '${noImageUrl}'}" onerror="imageError(this, '${noImageUrl}');"/>
 
-                <div class="tile-overlay"></div>
+                %{--<div class="tile-thumb"--}%
+                     %{--data-bind="attr:{title:name, style: backgroundImageStyle(transients.imageUrl || '${noImageUrl}') }"--}%
+                     %{--onerror="backgroundImageError(this, '${noImageUrl}');"></div>--}%
+
+                %{--<div class="tile-overlay"></div>--}%
             </div>
-
             <div data-bind="visible: isSciStarter" class="inline-block"><img class="logo-small"
                                                                              src="${resource(dir: 'images', file: 'robot.png')}"
-                                                                             title="Project is sourced from SciStarter">
-            </div>
+                                                                             title="Project is sourced from SciStarter"></div>
         </div>
-        <div class="span8">
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
             <div class="tile-small">
                 <span data-bind="visible:transients.daysSince() >= 0">Started <!--ko text:transients.since--><!--/ko-->&nbsp;</span>
             </div>

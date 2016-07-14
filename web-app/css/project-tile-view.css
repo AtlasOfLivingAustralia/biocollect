@@ -36,8 +36,8 @@ statistics and stat styles from Merit project
 
 .tiles .tile {
     font-family: 'Oswald',sans-serif;
-    background-color: #E5E5E5;
-    color: #000;
+    background-color: #ffffff;
+    /*color: #000;*/
     margin-bottom: 30px;
     padding: 20px;
     border-radius: 4px;
@@ -47,14 +47,14 @@ statistics and stat styles from Merit project
     background-position: 20px 60px;
 }
 
-.tile-title a  {
-    color: #000000;
-}
+/*.tile-title a  {*/
+    /*color: #000000;*/
+/*}*/
 
-.tile-title a:hover, .tile-title a:focus {
-    color: #303030;
-    text-decoration: underline;
-}
+/*.tile-title a:hover, .tile-title a:focus {*/
+    /*color: #303030;*/
+    /*text-decoration: underline;*/
+/*}*/
 
 .tiles .tile-title {
     font-family: 'Source Sans Pro',sans-serif;
@@ -67,16 +67,16 @@ statistics and stat styles from Merit project
 .tiles .tile-organisation {
     font-size: 18px;
     padding-left: 120px;
-    color: #fff;
+    /*color: #fff;*/
 }
 
-.tile-organisation:hover, .tile-organisation:focus {
-    color: #EEEEEE;
-}
+/*.tile-organisation:hover, .tile-organisation:focus {*/
+    /*color: #EEEEEE;*/
+/*}*/
 
 .tiles .tile-small {
     font-size: 12px;
-    color: #fff;
+    /*color: #fff;*/
 }
 
 .tiles .tile-text {
@@ -139,14 +139,14 @@ statistics and stat styles from Merit project
 .tile .dayscount > h2 {
     font-size: 12px;
     margin: 0px 0;
-    color: #fff;
+    color: #000000;
     line-height: 20px;
 }
 
 .tile .dayscount > h4 {
     text-transform: none;
     font-size: 12px;
-    color: #fff;
+    color: #000000;
     margin: 0px 0;
 }
 
