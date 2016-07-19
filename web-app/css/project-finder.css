@@ -66,11 +66,10 @@ input[type=checkbox] {
 }
 
 #pt-selectors{
-    display: none;
     padding:10px;
 }
 
-#pt-search-link, #pt-filter{
+#pt-search-link {
     padding: 14px;
 }
 
@@ -121,15 +120,6 @@ input[type=checkbox] {
     border-color: #f15a3b;
 }
 
-/*chevron logic*/
-#pf-search #pt-filter.active .icon-chevron-down{
-    display: none;
-}
-
-#pf-search #pt-filter.active .icon-chevron-up{
-    display: inherit;
-}
-
 /*image display size on project finder*/
 .image-logo{
     max-width: 100%;
@@ -145,4 +135,3 @@ input[type=checkbox] {
     width: auto;
     height: 100%;
 }​
-

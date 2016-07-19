@@ -42,7 +42,6 @@
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">
-    <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
     <div class="row-fluid">
         <div class="span12 padding10-small-screen" id="heading">
             <h1 class="pull-left"><g:message code="project.ecoScience.heading"/></h1>
@@ -53,7 +52,17 @@
         </div>
     </div>
 
-    <g:render template="/shared/projectFinderResultPanel"></g:render>
+    <div>
+        <g:render template="/shared/projectFinderResultSummary"/>
+    </div>
+    <div class="row-fluid">
+        <div id="filterPanel" class="span3">
+            <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
+        </div>
+        <div class="span9">
+            <g:render template="/shared/projectFinderResultPanel"></g:render>
+        </div>
+    </div>
 </div>
 <r:script>
     $("#newPortal").on("click", function() {
