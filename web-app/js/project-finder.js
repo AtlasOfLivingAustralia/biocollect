@@ -95,8 +95,6 @@ function ProjectFinder() {
         };
 
         this.styleIndex = function (dataIndex, rowSize) {
-            console.log("typeof dataIndex" + (typeof dataIndex));
-            console.log("typeof rowSize" + (typeof rowSize));
             return dataIndex() % rowSize + 1 ;
         };
     }
@@ -392,12 +390,10 @@ function ProjectFinder() {
             $('#pt-table').removeClass('span12 no-sidebar');
             $('#pt-table').addClass('span9');
             $('#filterPanel').show();
-            // $('#filterPanel').show('slide', {direction: 'right'}, 1000);
             $('#pt-filter').addClass('active');
 
         } else {
             $('#filterPanel').hide();
-            // $('#filterPanel').hide('slide', {direction: 'left'}, 1000);
             $('#pt-table').removeClass('span9');
             $('#pt-table').addClass('span12 no-sidebar');
         }
