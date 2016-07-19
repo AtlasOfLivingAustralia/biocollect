@@ -9,7 +9,7 @@
     <meta name="description" content="Atlas of Living Australia Field Capture"/>
     <meta name="author" content="Atlas of Living Australia">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="http://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>
+    <link href="https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>
 
    <title><g:layoutTitle /></title>
    <r:require modules="ala2Skin, jquery_cookie" />

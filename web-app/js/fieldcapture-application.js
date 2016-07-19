@@ -925,6 +925,16 @@ function findLogoScalingClass(imageElement, givenWidth, givenHeight) {
     }
 }
 
+function backgroundImageStyle(imageUrl) {
+    return "background-image: url('" + imageUrl + "');" ;
+}
+
+function backgroundImageError(imageElement, alternateImage) {
+    imageElement.onerror = "";
+    imageElement.style =  backgroundImageStyle(alternateImage);//"/static/images/no-image-2.png";
+    return true;
+}
+
 function initCarouselImages(image){
     $(image).parent().fancybox({nextEffect:'fade', preload:0, 'prevEffect':'fade'});
     findLogoScalingClass(image)

@@ -37,12 +37,6 @@ function ProjectFinder() {
 
     var refreshSearch = false;
 
-    var searchTerm = '', perPage = 20, sortBy = 'nameSort', sortOrder = 1;
-    // variable to not scroll to result when result is loaded for the first time.
-    var firstTimeLoad = true;
-
-    var siteViewModel = null;//initSiteViewModel({type:'projectArea'});
-
     this.availableProjectTypes = new ProjectViewModel({}, false, []).transients.availableProjectTypes;
 
     this.sortKeys = [
@@ -66,6 +60,10 @@ function ProjectFinder() {
             $(e.target).attr('href', domain + '?' + 'download=true&' + params);
             return true;
         }
+
+        this.listView = ko.observable(true);
+
+
         /**
          * this function is used to tell project/index or citizenscience page that the traffic is coming from
          * project finder page. This flag is used to decide if about page of the project should be shown.
@@ -77,6 +75,28 @@ function ProjectFinder() {
             return true;
         }
 
+        this.partitioned = function (observableArray, count) {
+            var rows, partIdx, i, j, arr;
+
+            arr = observableArray();
+
+            rows = [];
+            for (i = 0, partIdx = 0; i < arr.length; i += count, partIdx += 1) {
+                rows[partIdx] = [];
+                for (j = 0; j < count; j += 1) {
+                    if (i + j >= arr.length) {
+                        break;
+                    }
+                    arr[i + j].transients.index(i+j);
+                    rows[partIdx].push(arr[i + j]);
+                }
+            }
+            return rows;
+        };
+
+        this.styleIndex = function (dataIndex, rowSize) {
+            return dataIndex() % rowSize + 1 ;
+        };
     }
 
     /**
@@ -124,19 +144,6 @@ function ProjectFinder() {
         } else {
             $button.removeClass('active');
         }
-    }
-
-    function toggleFilterPanel() {
-        if ($('#pt-filter').hasClass('hide')) {
-            $('#pt-filter').removeClass('hide');
-        } else {
-            $('#pt-filter').addClass('hide');
-        }
-        $('#filterPanel').toggle("slide");
-    }
-
-    function collapseFilterPanel(){
-        $('#pt-filter').click();
     }
 
     function initialiseMap() {
@@ -197,6 +204,7 @@ function ProjectFinder() {
 
         sortBy = getActiveButtonValues($("#pt-sort"));
         perPage = getActiveButtonValues($("#pt-per-page"));
+
 
         if (fcConfig.showAllProjects) {
             var values = getActiveButtonValues($('#pt-search-projecttype'));
@@ -356,6 +364,41 @@ function ProjectFinder() {
         return vm;
     };
 
+
+    /**
+     * Initialises user default (saved) view for filter and results
+     * Filter can be shown/hidden
+     * Results can be displayed as list or tile (grid)
+     */
+    this.initViewMode = function () {
+
+        // Results view
+        var savedViewMode = amplify.store('pt-view-state');
+        savedViewMode = savedViewMode || "listView"; //Default is the old list view
+        checkButton($("#pt-view"), savedViewMode);
+        var viewMode = getActiveButtonValues($("#pt-view"));
+        pageWindow.listView(viewMode[0] == "listView");
+
+        // Filters view
+        var showPanel = amplify.store('pt-filter');
+        toggleFilterPanel(showPanel);
+    };
+
+    function toggleFilterPanel(showPanel) {
+        if(showPanel) {
+
+            $('#pt-table').removeClass('span12 no-sidebar');
+            $('#pt-table').addClass('span9');
+            $('#filterPanel').show();
+            $('#pt-filter').addClass('active');
+
+        } else {
+            $('#filterPanel').hide();
+            $('#pt-table').removeClass('span9');
+            $('#pt-table').addClass('span12 no-sidebar');
+        }
+    }
+
     /* comparator for data projects */
     function comparator(a, b) {
         var va = a[sortBy](), vb = b[sortBy]();
@@ -373,9 +416,19 @@ function ProjectFinder() {
     };
 
     $("#pt-filter").on('statechange', function () {
-        toggleFilterPanel();
+        var active = isButtonChecked($("#pt-filter"));
+        amplify.store('pt-filter', active);
+        toggleFilterPanel(active);
+        //toggleFilterPanel();
 
     });
+
+    $("#pt-view").on('statechange', function () {
+        var viewMode = getActiveButtonValues($("#pt-view"));
+        pageWindow.listView(viewMode[0] == "listView");
+        amplify.store('pt-view-state', viewMode[0]);
+    });
+
 
     $("#mapModal").on('shown', function () {
         initialiseMap();
@@ -426,7 +479,15 @@ function ProjectFinder() {
 
     });
 
-    $("#pt-collapse").click(collapseFilterPanel);
+    $("#btnShowTileView").click(function () {
+        pageWindow.showTileView();
+        
+    });
+
+    $("#btnShowListView").click(function () {
+        pageWindow.showListView();
+
+    });
 
     // check for statechange event on all buttons in filter panel.
     $('#pt-searchControls button').on('statechange', self.searchAndShowFirstPage);
@@ -640,7 +701,10 @@ function ProjectFinder() {
         return valid
     }
 
+
+
     parseHash();
     self.doSearch();
+    self.initViewMode();
 }
 

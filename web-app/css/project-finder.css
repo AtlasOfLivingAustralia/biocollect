@@ -110,7 +110,7 @@ input[type=checkbox] {
 }
 
 #pt-selectors{
-    background-color: #E6F3F2;
+    background-color: #FFFFFF;
 }
 
 /**
@@ -135,3 +135,25 @@ input[type=checkbox] {
     width: auto;
     height: 100%;
 }​
+
+
+ .no-sidebar {
+     margin-left: 0 !important;
+ }
+
+.scrollDiv {
+    overflow-y: scroll;
+    display: inline-block;
+    float: none;
+    /* Very important */
+}
+
+.equal-height {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.equal-height > div[class*='span'] {
+    display: flex;
+    flex-direction: column;
+}
