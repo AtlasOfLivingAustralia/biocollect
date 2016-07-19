@@ -14,6 +14,7 @@ class ActivityService {
     MetadataService metadataService
     SpeciesService speciesService
     ProjectActivityService projectActivityService
+    UserService userService
 
     private static def PROGRESS = ['planned', 'started', 'finished', 'cancelled', 'deferred']
 
@@ -218,5 +219,20 @@ class ActivityService {
         }
     }
 
+    /**
+     * Check whether sensitive species coordinates needs to be applied for the given projectId + userId
+     * Supports only point based coordinates.
+     *
+     * @param userId user identifier
+     * @param projectId project identifier.
+     * @param model model with activity and site object
+     */
+    boolean applySensitiveSpeciesCoordinates(String userId, String projectId){
+
+        List projectIds = userId ? userService.getProjectsForUserId(userId)?.collect{it.project?.projectId} : []
+        boolean projectMember = projectIds && projectIds.find{it == projectId}
+
+        return !(userService.userIsAlaOrFcAdmin() || projectMember)
+    }
 
 }

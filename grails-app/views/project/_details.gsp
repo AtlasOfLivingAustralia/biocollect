@@ -257,7 +257,7 @@
                     </div>
                 </div>
             </div>
-            <div class="clearfix control-group" data-bind="visible:isEcoScience()">
+            <div class="clearfix control-group" data-bind="if:isEcoScience()">
                 <label class="control-label span3"><g:message code="project.details.scienceType"/><fc:iconHelp><g:message code="project.details.scienceType.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
@@ -370,7 +370,7 @@
         </div>
     </div>
 
-    <div data-bind="visible:(isCitizenScience() || !isExternal()) && !isWorks() && !isEcoScience()" class="row-fluid">
+    <div data-bind="if:(isCitizenScience() || !isExternal()) && !isWorks() && !isEcoScience()" class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.involved"/></h4>
 
