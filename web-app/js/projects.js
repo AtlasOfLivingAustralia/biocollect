@@ -96,7 +96,7 @@ function addTimelineBasedOnStartDate (project, reportingPeriod, alignToCalendar)
         // make one up so we can proceed
         var endDate = new Date(Date.now());
         endDate = endDate.setUTCFullYear(endDate.getUTCFullYear()+5);
-        project.plannedEndDate = endDate.toISOStringNoMillis();
+        project.plannedEndDate = new Date(endDate).toISOStringNoMillis();
     }
 
     var date = Date.fromISO(project.plannedStartDate),
@@ -273,8 +273,6 @@ function isValid(p, a) {
 	 return p;
 }
 
-
-
 function ProjectViewModel(project, isUserEditor, organisations) {
     var self = $.extend(this, new Documents());
 
@@ -296,6 +294,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.externalId = ko.observable(project.externalId);
     self.grantId = ko.observable(project.grantId);
     self.manager = ko.observable(project.manager);
+    self.managerEmail = ko.observable(project.managerEmail);
     self.plannedStartDate = ko.observable(project.plannedStartDate).extend({simpleDate: false});
     self.plannedEndDate = ko.observable(project.plannedEndDate).extend({simpleDate: false});
     self.funding = ko.observable(project.funding).extend({currency:{}});
@@ -321,6 +320,20 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         var org = self.organisationId() && organisationsMap[self.organisationId()];
         return org? org.name: project.organisationName;
     });
+
+    var legalCustodianVal = project.legalCustodianOrganisation? project.legalCustodianOrganisation: ko.utils.unwrapObservable(self.organisationName);
+    self.legalCustodianOrganisation = ko.observable(legalCustodianVal);
+
+    self.setLegalCustodian = function (data, event) {
+        if (event.originalEvent) { //user changed
+            self.current().legalCustodianOrganisation(data.transients.selectedCustodianOption);
+        }
+    };
+
+    var legalCustodianOrganisationTypeVal = project.legalCustodianOrganisationType? project.legalCustodianOrganisationType: "";
+    self.legalCustodianOrganisationType = ko.observable(legalCustodianOrganisationTypeVal);
+
+
     self.orgIdGrantee = ko.observable(project.orgIdGrantee);
     self.orgIdSponsor = ko.observable(project.orgIdSponsor);
     self.orgIdSvcProvider = ko.observable(project.orgIdSvcProvider);
@@ -330,9 +343,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.associatedSubProgram = ko.observable(project.associatedSubProgram);
     self.newsAndEvents = ko.observable(project.newsAndEvents).extend({markdown:true});
     self.projectStories = ko.observable(project.projectStories).extend({markdown:true});
-
-    self.dataSharing = ko.observable(project.isDataSharing? "Enabled": "Disabled");
-    self.dataSharingLicense = ko.observable(project.dataSharingLicense);
     self.difficulty = ko.observable(project.difficulty);
     self.gear = ko.observable(project.gear);
     self.getInvolved = ko.observable(project.getInvolved).extend({markdown:true});
@@ -340,25 +350,54 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.hasTeachingMaterials = ko.observable(project.hasTeachingMaterials);
     self.isCitizenScience = ko.observable(project.isCitizenScience);
     self.isDIY = ko.observable(project.isDIY);
+    self.isWorks = ko.observable(project.isWorks);
+    self.isEcoScience = ko.observable(project.isEcoScience);
     self.isExternal = ko.observable(project.isExternal);
+    self.isSciStarter = ko.observable(project.isSciStarter)
     self.isMERIT = ko.observable(project.isMERIT);
     self.isMetadataSharing = ko.observable(project.isMetadataSharing);
+    self.isContributingDataToAla = ko.observable(project.isContributingDataToAla);
     self.isSuitableForChildren = ko.observable(project.isSuitableForChildren);
     self.keywords = ko.observable(project.keywords);
-    self.projectPrivacy = ko.observable(project.projectPrivacy);
     self.projectSiteId = project.projectSiteId;
     self.projectType = ko.observable(project.projectType);
-    self.scienceType = ko.observable(project.scienceType);
+    self.scienceType = ko.observableArray(project.scienceType);
+    self.ecoScienceType = ko.observableArray(project.ecoScienceType);
     self.task = ko.observable(project.task);
     self.urlWeb = ko.observable(project.urlWeb).extend({url:true});
     self.contractStartDate = ko.observable(project.contractStartDate).extend({simpleDate: false});
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
+    self.imageUrl = ko.observable(project.urlImage);
+    self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
+    
+    self.associatedProgram = ko.observable(project.associatedProgram ? project.associatedProgram : '');
+    self.associatedSubProgram = ko.observable(project.associatedSubProgram ? project.associatedSubProgram : '');
+    self.orgGrantee = ko.observable(project.orgGrantee ? project.orgGrantee : '');
+    self.orgSponsor = ko.observable(project.orgSponsor ? project.orgSponsor : '');
+
+    self.associatedOrgs = ko.observableArray();
+    ko.utils.arrayMap(project.associatedOrgs || [], function(org) {
+        var tmpOrg = org || {};
+        self.associatedOrgs.push({
+            id: tmpOrg.id,
+            organisationId: tmpOrg.organisationId || null,
+            logo: tmpOrg.logo || null,
+            name: tmpOrg.name || null,
+            url: tmpOrg.url || null
+        });
+    });
+
+    self.isExternal.subscribe(function (newVal) {
+        if (!newVal) {
+            self.isContributingDataToAla(true)
+        }
+    });
 
     self.transients = self.transients || {};
 
     var isBeforeToday = function(date) {
         return moment(date) < moment().startOf('day');
-    }
+    };
     var calculateDurationInDays = function(startDate, endDate) {
         var start = moment(startDate);
         var end = moment(endDate);
@@ -425,6 +464,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     });
     var updatingDurations = false; // Flag to prevent endless loops during change of end date / duration.
     self.transients.plannedDuration = ko.observable(calculateDuration(self.plannedStartDate(), self.plannedEndDate()));
+
     self.transients.plannedDuration.subscribe(function(newDuration) {
         if (updatingDurations) {
             return;
@@ -551,12 +591,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.transients.subprogramsToDisplay = ko.computed(function () {
         return self.transients.subprograms[self.associatedProgram()];
     });
-    self.transients.dataSharingLicenses = [
-            {lic:'CC BY', name:'Creative Commons Attribution'},
-            {lic:'CC BY-NC', name:'Creative Commons Attribution-NonCommercial'},
-            {lic:'CC BY-SA', name:'Creative Commons Attribution-ShareAlike'},
-            {lic:'CC BY-NC-SA', name:'Creative Commons Attribution-NonCommercial-ShareAlike'}
-        ];
     self.transients.organisations = organisations;
 
     self.transients.difficultyLevels = [ "Easy", "Medium", "Hard" ];
@@ -566,16 +600,67 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         {name:'Ecology', value:'ecology'},
         {name:'Natural resource management', value:'nrm'}
     ];
-    self.transients.availableScienceTypes = scienceTypesList;
+    var ecoScienceTypesList = [
+        {name:'Biodiversity', value:'biodiversity'},
+        {name:'Ecology', value:'ecology'},
+        {name:'Natural resource management', value:'nrm'}
+    ];
+    self.transients.availableScienceTypes = fcConfig.scienceTypes;
+    self.transients.availableEcoScienceTypes = fcConfig.ecoScienceTypes;
     self.transients.scienceTypeDisplay = ko.pureComputed(function () {
         for (var st = self.scienceType(), i = 0; i < scienceTypesList.length; i++)
             if (st === scienceTypesList[i].value)
                 return scienceTypesList[i].name;
     });
+    self.transients.ecoScienceTypeDisplay = ko.pureComputed(function () {
+        for (var st = self.ecoScienceType(), i = 0; i < ecoScienceTypesList.length; i++)
+            if (st === ecoScienceTypesList[i].value)
+                return ecoScienceTypesList[i].name;
+    });
+
+    self.transients.isScienceTypeChecked = function(value){
+        var types = self.scienceType()
+        for(var i=0; i<types.length; i++){
+            if(types[i] == value.toLowerCase()){
+                return true
+            }
+        }
+
+        return false;
+    };
+
+    self.transients.isEcoScienceTypeChecked = function(value){
+        var types = self.ecoScienceType()
+        for(var i=0; i<types.length; i++){
+            if(types[i] == value.toLowerCase()){
+                return true
+            }
+        }
+
+        return false;
+    };
+
+    self.transients.addScienceType = function(data, event){
+        var elem = event.target
+        if(elem.checked){
+            self.scienceType.push(elem.value)
+        } else {
+            self.scienceType.remove(elem.value)
+        }
+    }
+
+    self.transients.addEcoScienceType = function(data, event){
+        var elem = event.target
+        if(elem.checked){
+            self.ecoScienceType.push(elem.value)
+        } else {
+            self.ecoScienceType.remove(elem.value)
+        }
+    };
 
     var availableProjectTypes = [
         {name:'Citizen Science Project', display:'Citizen\nScience', value:'citizenScience'},
-        {name:'Ecological or biological survey / assessment (not citizen science)', display:'Biological\nScience', value:'survey'},
+        {name:'Ecological or biological survey / assessment (not citizen science)', display:'Biological\nScience', value:'ecoScience'},
         {name:'Natural resource management works project', display:'Works\nProject', value:'works'}
     ];
     self.transients.availableProjectTypes = availableProjectTypes;
@@ -590,8 +675,14 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             if (self.isCitizenScience()) {
                 return 'citizenScience';
             }
+            if (self.isWorks()) {
+                return 'works';
+            }
+            if (self.isEcoScience()) {
+                return 'ecoScience';
+            }
             if (self.projectType()) {
-                return self.projectType() == 'survey' ? 'survey' : 'works';
+                return self.projectType() == 'survey' ? 'survey' : (self.projectType() == 'works' ? 'works' : 'ecoScience');
             }
         },
         write: function(value) {
@@ -639,7 +730,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.attachDocument = function() {
         showDocumentAttachInModal(fcConfig.documentUpdateUrl, new DocumentViewModel({role:'information', maxStages: maxStages},{key:'projectId', value:project.projectId}), '#attachDocument')
             .done(function(result){
-                self.documents.push(new DocumentViewModel(result))}
+                    window.location.href = here;
+                }
             );
     };
     self.editDocumentMetadata = function(document) {
@@ -661,6 +753,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             self.addDocument(doc);
         });
     }
+    self.mainImageAttribution = ko.observable(self.mainImageAttributionText());
+    self.logoAttribution = ko.observable(self.logoAttributionText());
 
     // links
     if (project.links) {
@@ -674,7 +768,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     };
 
     self.deleteProject = function () {
-        var message = "<span class='label label-important'>Important</span><p><b>This cannot be undone</b></p><p>Are you sure you want to delete this project?</p>";
+        var message = "<span class='label label-important'>Important</span><p><b>This cannot be undone</b></p><p>Are you sure you want to delete this project? All associated data will also be deleted.</p>";
         bootbox.confirm(message, function (result) {
             if (result) {
                 $.ajax({
@@ -684,8 +778,10 @@ function ProjectViewModel(project, isUserEditor, organisations) {
                         if (data.error) {
                             showAlert(data.error, "alert-error", self.transients.resultsHolder);
                         } else {
-                            showAlert("Successfully deleted, redirecting to home page.", "alert-success", self.transients.resultsHolder);
-                            window.location.href = fcConfig.serverUrl;
+                            showAlert("Successfully deleted. Indexing is in process, search result will be updated in few minutes. Redirecting to search page...", "alert-success", self.transients.resultsHolder);
+                            setTimeout(function () {
+                                window.location.href = fcConfig.serverUrl;
+                            }, 3000);
                         }
                     },
                     error: function (data) {
@@ -695,7 +791,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             }
         });
     };
-
 };
 
 /**
@@ -759,12 +854,46 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
 
     var self = this;
 
-    // Automatically create the site of type "Project Area" with a name of "Project area for ..."
-    var siteViewModel = initSiteViewModel({type:'projectArea'});
-    siteViewModel.name = ko.computed(function() {
-        return 'Project area for '+self.name();
+    self.transients.siteViewModel = initSiteViewModel(false);
+
+    self.name.subscribe(function(projectName) {
+        checkProjectName(projectName);
+
+        var oldValue = self.transients.siteViewModel.site().name();
+        var prefix = "Project area for ";
+        if (oldValue.indexOf(prefix) >= 0 || !oldValue) {
+            self.transients.siteViewModel.site().name(prefix + projectName);
+        }
     });
+
     self.organisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId);
+    self.associatedOrganisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations);
+    self.transients.associatedOrgNotInList = ko.observable(false);
+    self.transients.associatedOrgUrl = ko.observable();
+    self.transients.associatedOrgLogoUrl = ko.observable();
+
+    self.transients.termsOfUseClicked = ko.observable(false);
+
+    self.transients.validProjectName = ko.observable(true);
+
+    function checkProjectName(projectName) {
+        if (!_.isUndefined(projectName) && projectName) {
+            $.ajax({
+                url: fcConfig.checkProjectNameUrl,
+                type: 'GET',
+                data: {projectName: projectName, id: project.projectId},
+                contentType: 'application/json',
+                success: function (data) {
+                    self.transients.validProjectName(data.validName);
+                }
+            });
+        }
+    }
+
+    self.clickTermsOfUse = function() {
+        self.transients.termsOfUseClicked(true);
+        return true;
+    };
 
     self.organisationSearch.createOrganisation = function() {
         var projectData = self.modelAsJSON();
@@ -772,19 +901,55 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         var here = document.location.href;
         document.location.href = config.organisationCreateUrl+'?returnTo='+here+'&returning=true';
     };
+
     self.organisationSearch.selection.subscribe(function(newSelection) {
         if (newSelection) {
             self.organisationId(newSelection.organisationId);
         }
     });
 
-    self.ignore = self.ignore.concat(['organisationSearch']);
+    self.associatedOrganisationSearch.addSelectedOrganisation = function() {
+        var org = { id: self.associatedOrgs().length };
+
+        if (self.transients.associatedOrgNotInList()) {
+
+            if($('#associatedOrgLogo').validationEngine('validate')) {
+                //Invalid content, let validation engine pop up the error and we just stop processing
+                return;
+            }
+            org.name = self.associatedOrganisationSearch.term();
+            org.url = self.transients.associatedOrgUrl() || null;
+            org.logo = self.transients.associatedOrgLogoUrl() || null;
+
+        } else {
+            var logoDocument = ko.utils.arrayFirst(self.associatedOrganisationSearch.selection().documents, function(document) {
+                return document.role === "logo"
+            });
+
+            org.organisationId = self.associatedOrganisationSearch.selection().organisationId || "";
+            org.name = self.associatedOrganisationSearch.selection().name;
+            org.url = self.associatedOrganisationSearch.selection().url || "";
+            org.logo = logoDocument && logoDocument.thumbnailUrl ? logoDocument.thumbnailUrl : "";
+        }
+
+        self.associatedOrgs.push(org);
+        self.associatedOrganisationSearch.clearSelection();
+        self.transients.associatedOrgLogoUrl(false);
+        self.transients.associatedOrgUrl(null);
+        self.transients.associatedOrgLogoUrl(null);
+    };
+
+    self.removeAssociatedOrganisation = function(org, event) {
+        self.associatedOrgs.remove(org);
+    };
+
+    self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch']);
     self.transients.existingLinks = project.links;
 
     self.modelAsJSON = function() {
         var projectData = self.toJS();
 
-        var siteData = siteViewModel.toJS();
+        var siteData = self.transients.siteViewModel.toJS();
         var documents = ko.mapping.toJS(self.documents());
         self.fixLinkDocumentIds(self.transients.existingLinks);
         var links = ko.mapping.toJS(self.links());
@@ -798,4 +963,364 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     };
 
     autoSaveModel(self, config.projectSaveUrl, {blockUIOnSave:config.blockUIOnSave, blockUISaveMessage:"Saving project...", storageKey:config.storageKey});
+};
+
+/**
+ * Used by the validation engine jquery plugin to validate the selection of an organisation from a picklist.
+ */
+function validateOrganisationSelection(field, rules, i, options) {
+    var organisationSelectionViewModel = ko.dataFor(field[0]);
+
+    var selectedOrg = organisationSelectionViewModel.selection();
+    if (!selectedOrg || selectedOrg == null || _.isUndefined(selectedOrg)) {
+        // there is a bug with the funcCall option in JQuery Validation Engine where the rule is triggered but the
+        // message is not raised unless the 'required' rule is also present.
+        // The work-around for this is to manually add the 'required' rule when the message is raised.
+        // http://stackoverflow.com/questions/16182395/jquery-validation-engine-funccall-not-working-if-only-rule
+        rules.push('required');
+        return "You must select an organisation from the list"
+    }
+}
+
+
+
+var EditableBlogEntryViewModel = function(blogEntry, options) {
+
+    var defaults = {
+        validationElementSelector:'.validationEngineContainer',
+        types:['News and Events', 'Project Stories', 'Photo'],
+        returnTo:fcConfig.returnTo,
+        blogUpdateUrl:fcConfig.blogUpdateUrl
+    };
+    var config = $.extend(defaults, options);
+    var self = this;
+    var now = convertToSimpleDate(new Date());
+    self.blogEntryId = ko.observable(blogEntry.blogEntryId);
+    self.projectId = ko.observable(blogEntry.projectId || undefined);
+    self.title = ko.observable(blogEntry.title || '');
+    self.date = ko.observable(blogEntry.date || now).extend({simpleDate:false});
+    self.content = ko.observable(blogEntry.content);
+    self.stockIcon = ko.observable(blogEntry.stockImageName);
+    self.documents = ko.observableArray();
+    self.image = ko.observable();
+    self.type = ko.observable(blogEntry.type);
+    self.viewMoreUrl = ko.observable(blogEntry.viewMoreUrl).extend({url:true});
+
+    self.imageUrl = ko.computed(function() {
+        if (self.image()) {
+            return self.image().url;
+        }
+    });
+    self.imageId = ko.computed(function() {
+        if (self.image()) {
+            return self.image().documentId;
+        }
+    });
+    self.documents.subscribe(function() {
+        if (self.documents()[0]) {
+            self.image(new DocumentViewModel(self.documents()[0]));
+        }
+        else {
+            self.image(undefined);
+        }
+    });
+    self.removeBlogImage = function() {
+        self.documents([]);
+    };
+
+    self.modelAsJSON = function() {
+        var js = ko.mapping.toJS(self, {ignore:['transients', 'documents', 'image', 'imageUrl']});
+        if (self.image()) {
+            js.image = self.image().modelForSaving();
+        }
+        return JSON.stringify(js);
+    };
+
+    self.editContent = function() {
+        editWithMarkdown('Blog content', self.content);
+    };
+
+    self.save = function() {
+        if ($(config.validationElementSelector).validationEngine('validate')) {
+            self.saveWithErrorDetection(
+                function() {document.location.href = config.returnTo},
+                function(data) {bootbox.alert("Error: "+data.responseText);}
+            );
+        }
+    };
+
+    self.cancel = function() {
+        document.location.href = config.returnTo;
+    };
+
+    self.transients = {};
+    self.transients.blogEntryTypes = config.types;
+
+    if (blogEntry.documents && blogEntry.documents[0]) {
+        self.documents.push(blogEntry.documents[0]);
+    }
+    $(config.validationElementSelector).validationEngine();
+    autoSaveModel(self, config.blogUpdateUrl, {blockUIOnSave:true});
+};
+
+var BlogEntryViewModel = function(blogEntry) {
+    var self = this;
+    var now = convertToSimpleDate(new Date());
+    self.blogEntryId = ko.observable(blogEntry.blogEntryId);
+    self.projectId = ko.observable(blogEntry.projectId);
+    self.title = ko.observable(blogEntry.title || '');
+    self.date = ko.observable(blogEntry.date || now).extend({simpleDate:false});
+    self.content = ko.observable(blogEntry.content).extend({markdown:true});
+    self.stockIcon = ko.observable(blogEntry.stockIcon);
+    self.documents = ko.observableArray(blogEntry.documents || []);
+    self.viewMoreUrl = ko.observable(blogEntry.viewMoreUrl);
+    self.image = ko.computed(function() {
+        return self.documents()[0];
+    });
+    self.type = ko.observable();
+    self.formattedDate = ko.computed(function() {
+        return moment(self.date()).format('Do MMM')
+    });
+    self.shortContent = ko.computed(function() {
+        var content = self.content() || '';
+        if (content.length > 60) {
+            content = content.substring(0, 100)+'...';
+        }
+        return content;
+    });
+    self.imageUrl = ko.computed(function() {
+        if (self.image()) {
+            return self.image().url;
+        }
+    });
+};
+
+
+var BlogSummary = function(blogEntries) {
+    var self = this;
+    self.entries = ko.observableArray();
+
+    self.load = function(entries) {
+        self.entries($.map(entries, function(blogEntry) {
+            return new BlogEntryViewModel(blogEntry);
+        }));
+    };
+
+    self.newBlogEntry = function() {
+        document.location.href = fcConfig.createBlogEntryUrl;
+    };
+    self.deleteBlogEntry = function(entry) {
+        var url = fcConfig.deleteBlogEntryUrl+'&id='+entry.blogEntryId();
+        $.post(url).done(function() {
+            document.location.reload();
+        });
+    };
+    self.editBlogEntry = function(entry) {
+        document.location.href = fcConfig.editBlogEntryUrl+'&id='+entry.blogEntryId();
+    };
+    self.load(blogEntries);
+};
+
+var BlogViewModel = function(entries, type) {
+    var self = this;
+    self.entries = ko.observableArray();
+
+    for (var i=0; i<entries.length; i++) {
+        if (!type || entries[i].type == type) {
+            self.entries.push(new BlogEntryViewModel(entries[i]));
+        }
+    }
+};
+
+var SiteViewModel = function (site, feature) {
+    var self = $.extend(this, new Documents());
+
+    self.siteId = site.siteId;
+    self.name = ko.observable(site.name);
+    self.externalId = ko.observable(site.externalId);
+    self.context = ko.observable(site.context);
+    self.type = ko.observable(site.type);
+    self.area = ko.observable(site.area);
+    self.description = ko.observable(site.description);
+    self.notes = ko.observable(site.notes);
+    self.extent = ko.observable(new EmptyLocation());
+    self.state = ko.observable('');
+    self.nrm = ko.observable('');
+    self.address = ko.observable("");
+    self.feature = feature;
+    self.projects = site.projects || [];
+    self.extentSource = ko.pureComputed({
+        read: function() {
+            if (self.extent()) {
+                return self.extent().source();
+            }
+            return 'none'
+        },
+        write: function(value) {
+            self.updateExtent(value);
+        }
+    });
+
+    self.setAddress = function (address) {
+        if (address.indexOf(', Australia') === address.length - 11) {
+            address = address.substr(0, address.length - 11);
+        }
+        self.address(address);
+    };
+    self.poi = ko.observableArray();
+
+    self.addPOI = function(poi) {
+        self.poi.push(poi);
+
+    };
+    self.removePOI = function(poi){
+        if (poi.hasPhotoPointDocuments) {
+            return;
+        }
+        self.poi.remove(poi);
+    };
+    self.toJS = function(){
+        var js = ko.mapping.toJS(self, {ignore:self.ignore});
+        js.extent = self.extent().toJS();
+        delete js.extentSource;
+        delete js.extentGeometryWatcher;
+        delete js.isValid;
+        return js;
+    };
+
+    self.modelAsJSON = function() {
+        var js = self.toJS();
+        return JSON.stringify(js);
+    }
+    /** Check if the supplied POI has any photos attached to it */
+    self.hasPhotoPointDocuments = function(poi) {
+        if (!site.documents) {
+            return;
+        }
+        var hasDoc = false;
+        $.each(site.documents, function(i, doc) {
+            if (doc.poiId === poi.poiId) {
+                hasDoc = true;
+                return false;
+            }
+        });
+        return hasDoc;
+    };
+    self.saved = function(){
+        return self.siteId;
+    };
+    self.loadPOI = function (pois) {
+        if (!pois) {
+            return;
+        }
+        $.each(pois, function (i, poi) {
+            self.poi.push(new POI(poi, self.hasPhotoPointDocuments(poi)));
+        });
+    };
+    self.loadExtent = function(){
+        if(site && site.extent) {
+            var extent = site.extent;
+            switch (extent.source) {
+                case 'point':   self.extent(new PointLocation(extent.geometry)); break;
+                case 'pid':     self.extent(new PidLocation(extent.geometry)); break;
+                case 'upload':  self.extent(new UploadLocation()); break;
+                case 'drawn':   self.extent(new DrawnLocation(extent.geometry)); break;
+            }
+        } else {
+            self.extent(new EmptyLocation());
+        }
+    };
+
+
+    self.updateExtent = function(source){
+        switch (source) {
+            case 'point':
+                if(site && site.extent) {
+                    self.extent(new PointLocation(site.extent.geometry));
+                } else {
+                    self.extent(new PointLocation({}));
+                }
+                break;
+            case 'pid':
+                if(site && site.extent) {
+                    self.extent(new PidLocation(site.extent.geometry));
+                } else {
+                    self.extent(new PidLocation({}));
+                }
+                break;
+            case 'upload': self.extent(new UploadLocation({})); break;
+            case 'drawn':
+                //breaks the edits....
+                self.extent(new DrawnLocation({}));
+                break;
+            default: self.extent(new EmptyLocation());
+        }
+    };
+
+    self.refreshGazInfo = function() {
+
+        var geom = self.extent().geometry();
+        var lat, lng;
+        if (geom.type === 'Point') {
+            lat = self.extent().geometry().decimalLatitude();
+            lng = self.extent().geometry().decimalLongitude();
+        }
+        else if (geom.centre !== undefined) {
+            lat = self.extent().geometry().centre()[1];
+            lng = self.extent().geometry().centre()[0];
+        }
+        else {
+            // No coordinates we can use for the lookup.
+            return;
+        }
+
+        $.ajax({
+            url: fcConfig.siteMetaDataUrl,
+            method:"POST",
+            contentType: 'application/json',
+            data:self.modelAsJSON()
+        })
+            .done(function (data) {
+                var geom = self.extent().geometry();
+                for (var name in data) {
+                    if (data.hasOwnProperty(name) && geom.hasOwnProperty(name)) {
+                        geom[name](data[name]);
+                    }
+                }
+            });
+
+        //do the google geocode lookup
+        $.ajax({
+            url: fcConfig.geocodeUrl + lat + "," + lng
+        }).done(function (data) {
+            if (data.results.length > 0) {
+                self.extent().geometry().locality(data.results[0].formatted_address);
+            }
+        });
+    };
+    self.isValid = ko.pureComputed(function() {
+        return self.extent() && self.extent().isValid();
+    });
+    self.loadPOI(site.poi);
+    self.loadExtent(site.extent);
+
+
+    // Watch for changes to the extent content and notify subscribers when they do.
+    self.extentGeometryWatcher = ko.pureComputed(function() {
+        // We care about changes to either the geometry coordinates or the PID in the case of known shape.
+        var result = {};
+        if (self.extent()) {
+            var geom = self.extent().geometry();
+            if (geom) {
+                if (geom.decimalLatitude) result.decimalLatitude = ko.utils.unwrapObservable(geom.decimalLatitude);
+                if (geom.decimalLongitude) result.decimalLongitude = ko.utils.unwrapObservable(geom.decimalLongitude);
+                if (geom.coordinates) result.coordinates = ko.utils.unwrapObservable(geom.coordinates);
+                if (geom.pid) result.pid = ko.utils.unwrapObservable(geom.pid);
+                if (geom.fid) result.fid = ko.utils.unwrapObservable(geom.fid);
+            }
+
+        }
+        return result;
+
+    });
 };

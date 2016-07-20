@@ -1,5 +1,7 @@
 /**
+ * This code is dependent on knockout js v3.3, jquery and other libraries.
  * Created by Temi Varghese on 6/10/15.
+ *
  */
 /**
  Bootstrap Alerts -
@@ -32,7 +34,7 @@ function CommentViewModel(config) {
     self.displayName = ko.observable(config.displayName || '')
     self.text = ko.observable(config.text || '')
     self.parent = ko.observable(config.parent || null)
-    self.dateCreated = ko.observable(config.dateCreated || null).extend({simpleDate: true})
+    self.lastUpdated = ko.observable(config.lastUpdated || null).extend({simpleDate: true})
     //stores replies to a comment
     self.children = ko.observableArray(config.children || [])
     // controls editing of a comment by an owner
@@ -48,7 +50,7 @@ function CommentViewModel(config) {
         self.displayName(config.displayName)
         self.text(config.text)
         self.parent(config.parent)
-        self.dateCreated(config.dateCreated)
+        self.lastUpdated(config.lastUpdated)
     }
 
     // talk with server to create a comment, callback sent from listmodelview
@@ -146,13 +148,15 @@ function CommentListViewModel() {
     self.userId = ko.observable();
     // total comments in list
     self.total = ko.observable(0)
+    // flag giving admin privileges like delete / edit comments
+    self.admin = false;
     // current sorting mechanism
     self.selectedSort = ko.observable(self.sortOptions()[0])
     // controls load more button visibility
     self.showLoadMore = ko.observable(true);
 
     self.sort = {
-        field: ko.observable('dateCreated'),
+        field: ko.observable('lastUpdated'),
         order: ko.observable('desc')
     }
 
@@ -194,11 +198,11 @@ function CommentListViewModel() {
         var params = {}, selection = self.selectedSort();
         switch (selection.sort) {
             case 'oldestfirst':
-                params.sort = 'dateCreated'
+                params.sort = 'lastUpdated'
                 params.order = 'asc'
                 break;
             case 'latestfirst':
-                params.sort = 'dateCreated'
+                params.sort = 'lastUpdated'
                 params.order = 'desc'
                 break;
         }
@@ -238,9 +242,10 @@ function CommentListViewModel() {
 
     // initialise/load comments and other metadata
     self.load = function(data){
-        self.addItems(data.items);
         self.userId(data.userId);
         self.total(data.total)
+        self.admin = data.admin;
+        self.addItems(data.items);
         if(self.total() > (self.page.start + self.page.pageSize)){
             self.showLoadMore(true)
         } else {
@@ -351,8 +356,8 @@ function CommentListViewModel() {
     }
 
     // controls edit/delete button on a comment
-    self.isUserCommentOwner = function(comment){
-        return self.userId() == comment.userId()
+    self.canModifyOrDeleteComment = function(comment){
+        return self.admin || (self.userId() == comment.userId())
     }
 
     // show children comment threads

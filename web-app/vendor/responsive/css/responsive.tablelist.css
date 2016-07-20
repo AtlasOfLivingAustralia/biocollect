@@ -1,0 +1,60 @@
+/*  ==|== Responsive =============================================================
+    Author: James South
+    twitter : http://twitter.com/James_M_South
+    github : https://github.com/ResponsiveBP/Responsive
+    Copyright (c),  James South.
+    Licensed under the MIT License.
+    ============================================================================== */
+@media print and (max-width: 536px), screen and (max-width: 47.99em) {
+    /*
+	 * Force the columns to display as rows on small viewports.
+     * Headers are applied with data attributes.
+	 */
+  .table-list {
+    display: block; }
+    .table-list thead,
+    .table-list tfoot,
+    .table-list th {
+      position: absolute;
+      clip: rect(0 0 0 0);
+      overflow: hidden;
+      visibility: hidden; }
+    .table-list tbody,
+    .table-list tr,
+    .table-list td,
+    .table-list th[scope=row] {
+      position: static;
+      display: block;
+      overflow: visible;
+      visibility: visible; }
+    .table-list tr:before, .table-list tr:after {
+      content: "";
+      display: table; }
+    .table-list tr:after {
+      clear: both; }
+    .table-list td,
+    .table-list th[scope=row] {
+      float: left;
+      width: 100%; }
+      [dir="rtl"] .table-list td, [dir="rtl"]
+      .table-list th[scope=row] {
+        float: right; }
+    .table-list td:before, .table-list td:after {
+      display: block;
+      padding: 0.5rem 0;
+      font-weight: bold; }
+    .table-list td:before {
+      content: attr(data-thead); }
+    .table-list th[scope=row]:before, .table-list th[scope=row]:after {
+      display: block;
+      padding: 0.5rem 0;
+      font-weight: bold; }
+    .table-list th[scope=row]:before {
+      content: attr(data-thead); }
+    .table-list td:after,
+    .table-list th[scope=row]:after {
+      content: attr(data-tfoot); }
+    .table-list.table-bordered {
+      border-top-style: none; } }
+
+/*# sourceMappingURL=tablelist.css.map */

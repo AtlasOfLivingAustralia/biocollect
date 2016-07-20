@@ -208,6 +208,10 @@ function stringToDate(date) {
     // The datepicker is 2-way bound to the model. An input element will be updated automatically,
     //  other elements may need an explicit text binding to the formatted model date (see
     //  clickToPickDate for an example of a simple element).
+    //
+    // Additional properties that are supported by the Bootstrap Data Picker can be provided by adding
+    // "datePickerOptions: {...}" to the data-bind attribute of the parent element.
+    // e.g. data-bind="datepicker: myDate, datePickerOptions: {endDate: '+12m', startDate: '+0d'}" will add a date range constraint to the calendar.
     ko.bindingHandlers.datepicker = {
         init: function(element, valueAccessor, allBindingsAccessor) {
             // set current date into the element
@@ -221,7 +225,11 @@ function stringToDate(date) {
             }
 
             //initialize datepicker with some optional options
-            $element.datepicker({format: 'dd-mm-yyyy', autoclose: true});
+            var datePickerConfig = {format: 'dd-mm-yyyy', autoclose: true};
+            if (allBindingsAccessor().datePickerOptions) {
+                $.extend(datePickerConfig, allBindingsAccessor().datePickerOptions);
+            }
+            $element.datepicker(datePickerConfig);
 
             // if the parent container holds any element with the class 'open-datepicker'
             // then add a hook to do so

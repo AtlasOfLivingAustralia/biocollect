@@ -1,7 +1,11 @@
 package au.org.ala.biocollect.merit
 import groovy.json.JsonSlurper
+import org.apache.commons.lang.StringUtils
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 import javax.annotation.PostConstruct
+import javax.servlet.http.HttpServletResponse
+
 /**
  * Service for ElasticSearch running on ecodata
  */
@@ -19,22 +23,31 @@ class SearchService {
         def defaultFacetQuery = SettingService.getHubConfig().defaultFacetQuery
         if (defaultFacetQuery) {
             def fq = new HashSet(defaultFacetQuery)
-            if (params.fq) {
-                fq.addAll(params.list('fq'))
+            def paramFq = params.fq
+
+            if (paramFq) {
+                if (paramFq instanceof List) {
+                    fq.addAll(paramFq)
+                }
+                else {
+                    fq.add(paramFq)
+                }
             }
             params.fq = fq.asList()
-
         }
     }
 
-    def fulltextSearch(params) {
-        addDefaultFacetQuery(params)
+    def fulltextSearch(params, skipDefaultFacetQuery = false) {
+        if(!skipDefaultFacetQuery){
+            addDefaultFacetQuery(params)
+        }
         params.offset = params.offset?:0
         params.max = params.max?:10
         params.query = params.query?:"*:*"
         params.highlight = params.highlight?:true
         params.flimit = 999
         def url = elasticBaseUrl + commonService.buildUrlParamsFromMap(params)
+        log.debug "url = $url"
         webService.getJson(url)
     }
 
@@ -68,6 +81,54 @@ class SearchService {
         def url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url)
+    }
+
+    /**
+     * Queries the homepage index for projects.
+     * @param params the query parameters
+     * @param skipDefaultFacetQuery true if the default query filters defined by the hub should be ommitted.
+     * @return a map containing the search results.
+     */
+    Map findProjects(GrailsParameterMap params, boolean skipDefaultFacetQuery = false){
+        if (!skipDefaultFacetQuery) {
+            addDefaultFacetQuery(params)
+        }
+        String url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
+        log.debug "url = $url"
+        webService.getJson(url)
+    }
+
+    def downloadProjectData(HttpServletResponse response, Map params) {
+        webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/search/downloadAllData${commonService.buildUrlParamsFromMap(params)}", true, true)
+    }
+
+    Map searchProjectActivity(GrailsParameterMap params, String q = null){
+        String url = grailsApplication.config.ecodata.service.url + '/search/elasticProjectActivity' + commonService.buildUrlParamsFromMap(params)
+        log.debug "url = $url"
+        webService.getJson(url, null, true)
+    }
+
+    /**
+     * Execute elastic search for site with given parameters.
+     * @param params
+     * @return
+     * @throws SocketTimeoutException
+     * @throws Exception
+     */
+    Map searchForSites(GrailsParameterMap params) throws SocketTimeoutException, Exception{
+        String url = grailsApplication.config.ecodata.service.url + '/search/elastic' + commonService.buildUrlParamsFromMap(params)
+        log.debug "url = $url"
+        Map response = webService.getJson(url, null, true)
+        if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw  new Exception(response.error);
+            }
+
+        }
+
+        response
     }
 
     def allProjectsWithSites(params, String searchTerm = null) {
@@ -108,7 +169,7 @@ class SearchService {
         params.fsort = "term"
         //params.offset = 0
         params.query = "docType:project"
-        params.facets = params.facets ?: SettingService.getHubConfig().availableFacets.join(',')
+        params.facets = params.facets ?: StringUtils.join(SettingService.getHubConfig().availableFacets,',')
 
         addDefaultFacetQuery(params)
 

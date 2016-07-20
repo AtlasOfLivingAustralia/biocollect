@@ -12,7 +12,6 @@
     </g:else>
     <g:set var="commentUrl" value="${resource(dir:'/activity')}/${activity.activityId}/comment"></g:set>
 
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <r:script disposition="head">
     var fcConfig = {
@@ -29,7 +28,7 @@
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,mapWithFeatures,species,activity,comments"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,map,species,activity,comments"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -180,7 +179,7 @@
         </div>
     </g:each>
 
-    <g:if test="${projectActivity.commentsAllowed}">
+    <g:if test="${projectActivity?.commentsAllowed}">
         <g:render template="/comment/comment"></g:render>
     </g:if>
     <div class="form-actions">
@@ -261,7 +260,7 @@
                     wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
                 };
 
-            viewModel.siteMap = new MapWithFeatures(mapOptions, mapFeatures);
+            viewModel.siteMap = new new ALA.Map("smallMap", {});
         }
     });
 </r:script>

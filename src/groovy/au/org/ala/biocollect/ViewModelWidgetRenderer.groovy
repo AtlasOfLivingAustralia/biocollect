@@ -1,7 +1,5 @@
 package au.org.ala.biocollect
-/**
- * Created by baird on 16/10/13.
- */
+
 class ViewModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
@@ -11,6 +9,12 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderText(WidgetRenderContext context) {
+        context.databindAttrs.add 'text', context.source
+        context.writer << "<span ${context.attributes.toString()} data-bind='${context.databindAttrs.toString()}'></span>"
+    }
+
+    @Override
+    void renderTime(WidgetRenderContext context) {
         context.databindAttrs.add 'text', context.source
         context.writer << "<span ${context.attributes.toString()} data-bind='${context.databindAttrs.toString()}'></span>"
     }
@@ -58,9 +62,33 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderSelectManyCombo(WidgetRenderContext context) {
+        def tagsBlock = "<div id='tagsBlock' data-bind='foreach: ${context.source}'>" +
+                "<span class='tag label label-default' comboList='${context.source}'>" +
+                '<input type="hidden" data-bind="value: $data" name="tags" class="tags group">' +
+                '<span data-bind="text: $data"></span>' +
+                '</span></div>'
+        context.writer << tagsBlock
+    }
+
+    @Override
+    void renderAudio(WidgetRenderContext context) {
+        context.writer << context.g.render(template: '/output/audioDataTypeViewModelTemplate',
+                model: [databindAttrs:context.databindAttrs.toString(), name: context.source, index: "''", hideFile: false])
+    }
+
+    @Override
     void renderImage(WidgetRenderContext context) {
-        context.databindAttrs.add "attr",  '{src: ' + context.source + '.thumbnail_url}'
-        context.writer << "<img data-bind='${context.databindAttrs.toString()}'></img>"
+        context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"
+        context.writer << context.g.render(template: '/output/imageDataTypeViewModelTemplate',
+                model: [databindAttrs:context.databindAttrs.toString(), name: context.source, index: "''"])
+    }
+
+    @Override
+    void renderImageDialog(WidgetRenderContext context) {
+        context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"
+        context.writer << context.g.render(template: '/output/imageDataTypeViewModelTemplate',
+                model: [databindAttrs:context.databindAttrs.toString(), name: context.source, index: '$index()'])
     }
 
     @Override
@@ -86,7 +114,7 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
     void renderFusedAutocomplete(WidgetRenderContext context) {
         context.databindAttrs.add 'text', 'name'
         context.writer << """<span data-bind="with: ${context.source}"><span${context.attributes.toString()} data-bind='${context.databindAttrs.toString()}'></span>
-            <a  target="_blank" data-bind="attr: {href: transients.bioProfileUrl}"><i class="icon-info-sign"></i></a>
+            <a  target="_blank" data-bind="visible: guid, attr: {href: transients.bioProfileUrl}"><i class="icon-info-sign"></i></a>
             </span>"""
     }
 
@@ -124,6 +152,7 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderGeoMap(WidgetRenderContext context) {
-        context.writer << """<div id="map" style="width:100%; height: 512px;"></div>"""
+        context.model.readonly = true
+        context.writer << context.g.render(template: '/output/dataEntryMap', model: context.model)
     }
 }

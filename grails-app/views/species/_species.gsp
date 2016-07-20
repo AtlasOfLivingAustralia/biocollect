@@ -1,4 +1,4 @@
-<r:require modules="jquery-ui, jquery_bootstrap_datatable"/>
+<r:require modules="a-jquery-ui, jquery_bootstrap_datatable"/>
 <!-- This section is bound to a secondary KO viewModel. The following line prevents binding
          to the main viewModel. -->
 <!-- ko stopBinding: true -->

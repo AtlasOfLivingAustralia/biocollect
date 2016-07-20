@@ -1,0 +1,41 @@
+#siteSearch .tab-pane{
+    height: 650px;
+    overflow: auto;
+}
+
+.facet-window{
+    max-height: 110px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#map.tab-pane{
+    overflow: hidden;
+}
+
+.leaflet-map-impl{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.search-sites-input{
+    width: 100%;
+}
+
+.site-input{
+    display:block;
+    overflow:hidden;
+}
+
+.label-ellipsis{
+    max-width: 200px;
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.inline-flex{
+    display: inline-flex;
+}

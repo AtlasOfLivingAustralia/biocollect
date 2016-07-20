@@ -1,19 +1,45 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
+import au.org.ala.biocollect.ProjectActivityService
+import au.org.ala.biocollect.projectresult.Builder
+import au.org.ala.biocollect.projectresult.Initiator
+import au.org.ala.web.AuthService
 import grails.converters.JSON
 import org.apache.http.HttpStatus
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
+
+import java.text.SimpleDateFormat
+
+import static org.apache.http.HttpStatus.*
 
 class ProjectController {
 
-    def projectService, metadataService, organisationService, commonService, activityService, userService, webService, roleService, grailsApplication, projectActivityService
-    def siteService, documentService
+    ProjectService projectService
+    MetadataService metadataService
+    CommonService commonService
+    ActivityService activityService
+    UserService userService
+    WebService webService
+    RoleService roleService
+    ProjectActivityService projectActivityService
+    SiteService siteService
+    DocumentService documentService
+    SettingService settingService
+    SearchService searchService
+    AuditService auditService
+    AuthService authService
+    BlogService blogService
+
+    def grailsApplication
+
     static defaultAction = "index"
     static ignore = ['action','controller','id']
+    static allowedMethods = [listRecordImages: "POST"]
 
     def index(String id) {
-        def project = projectService.get(id, 'brief')
+        def project = projectService.get(id, 'brief', false, params?.version)
         def roles = roleService.getRoles()
 
         if (!project || project.error) {
@@ -23,7 +49,13 @@ class ProjectController {
                 log.warn project.error
             }
             redirect(controller: 'home', model: [error: flash.message])
-        } else {
+        }
+        else if (project.isMERIT) {
+            // MERIT projects have different security / access rules to BioCollect so it's best to simply
+            // redirect to MERIT to view the project.
+            redirect(uri:grailsApplication.config.merit.project.url+'/'+id)
+        }
+        else {
             project.sites?.sort {it.name}
             project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
 
@@ -39,11 +71,10 @@ class ProjectController {
                 user.hasViewAccess = projectService.canUserViewProject(user.userId, id)?:false
             }
             def programs = projectService.programsModel()
-            def activities = activityService.activitiesForProject(id)
-            def content = projectContent(project, user, programs)
+            def content = projectContent(project, user, programs, params)
+            def messages = auditService.getAuditMessagesForProject(id)
 
             def model = [project: project,
-                activities: activities,
                 mapFeatures: commonService.getMapFeatures(project),
                 isProjectStarredByUser: userService.isProjectStarredByUser(user?.userId?:"0", project.projectId)?.isProjectStarredByUser,
                 user: user,
@@ -52,27 +83,41 @@ class ProjectController {
                 activityTypes: projectService.activityTypesList(),
                 metrics: projectService.summary(id),
                 outputTargetMetadata: metadataService.getOutputTargetsByOutputByActivity(),
-                organisations: metadataService.organisationList().list,
+                organisations: metadataService.organisationList().list.collect { [organisationId: it.organisationId, name: it.name] },
                 programs: programs,
                 today:DateUtils.format(new DateTime()),
                 themes:metadataService.getThemesForProject(project),
-                projectContent:content.model
+                projectContent:content.model,
+                messages: messages?.messages,
+                userMap: messages?.userMap,
+                hideBackButton: true,
+                projectSite: project.projectSite
             ]
 
             if(project.projectType == 'survey'){
                 def activityModel = metadataService.activitiesModel().activities.findAll { it.category == "Assessment & monitoring" }
-                model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs")
+                model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
                 model.pActivityForms = activityModel.collect{[name: it.name, images: it.images]}
+            } else if(project.projectType == 'ecoscience'){
+                def activityModel = metadataService.activitiesModel().activities.findAll { it.category == "Assessment & monitoring" }
+                model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
+                model.pActivityForms = activityModel.collect{[name: it.name, images: it.images]}
+            }else if(project.projectType == 'works'){
+                model.activities = activityService.activitiesForProject(project.projectId)
             }
 
             render view:content.view, model:model
         }
     }
 
-    protected Map projectContent(project, user, programs) {
+    protected Map projectContent(project, user, programs, params) {
 
         boolean isSurveyProject = (project.projectType == 'survey')
-        def model = isSurveyProject?surveyProjectContent(project, user):worksProjectContent(project, user)
+        boolean isEcoScienceProject = (project.projectType == 'ecoscience')
+        def model = isSurveyProject?surveyProjectContent(project, user, params):(isEcoScienceProject?ecoSurveyProjectContent(project, user):worksProjectContent(project, user))
+
+        blogService.getProjectBlog(project)
+
         [view:projectView(project), model:model]
     }
 
@@ -80,16 +125,26 @@ class ProjectController {
         if (project.isExternal) {
             return 'externalCSProjectTemplate'
         }
-        return project.projectType == 'survey' ? 'csProjectTemplate' : 'index'
+
+        return project.projectType == 'survey' || project.projectType == 'ecoscience' ? 'csProjectTemplate' : 'index'
     }
 
-    protected Map surveyProjectContent(project, user) {
-        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite, click: "initialiseProjectArea"],
+    protected Map surveyProjectContent(project, user, params) {
+        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
          news:[label:'News', visible: true, type:'tab'],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
-         data:[label:'Data', visible:true, template:'/bioActivity/allData', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
-         admin:[label:'Admin', template:'internalCSAdmin', visible:(user?.isAdmin || user?.isCaseManager), type:'tab']]
+         data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
+         admin:[label:'Admin', template:'internalCSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab']]
+    }
+
+    protected Map ecoSurveyProjectContent(project, user) {
+        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
+         news:[label:'News', visible: true, type:'tab'],
+         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
+         activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
+         data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
+         admin:[label:'Admin', template:'internalCSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab']]
     }
 
     protected Map worksProjectContent(project, user) {
@@ -111,6 +166,8 @@ class ProjectController {
         }
         def user = userService.getUser()
         def groupedOrganisations = groupOrganisationsForUser(user.userId)
+        def scienceTypes = projectService.getScienceTypes();
+        def ecoScienceTypes = projectService.getEcoScienceTypes();
 
         if (project) {
             def siteInfo = siteService.getRaw(project.projectSiteId)
@@ -119,7 +176,22 @@ class ProjectController {
              site: siteInfo.site,
              userOrganisations: groupedOrganisations.user ?: [],
              organisations: groupedOrganisations.other ?: [],
-             programs: metadataService.programsModel()]
+             programs: metadataService.programsModel(),
+             scienceTypes: scienceTypes,
+             ecoScienceTypes: ecoScienceTypes
+            ]
+
+        } else {
+            forward(action: 'list', model: [error: 'no such id'])
+        }
+    }
+
+    @PreAuthorise
+    def newProjectIntro(String id) {
+        Map project = projectService.get(id, 'brief')
+
+        if (project) {
+            [project: project, text: settingService.getSettingText(SettingPageType.NEW_CITIZEN_SCIENCE_PROJECT_INTRO)]
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }
@@ -133,6 +205,8 @@ class ProjectController {
             return
         }
         def groupedOrganisations = groupOrganisationsForUser(user.userId)
+        def scienceTypes = projectService.getScienceTypes();
+        def ecoScienceTypes = projectService.getEcoScienceTypes();
         // Prepopulate the project as appropriate.
         def project = [:]
         if (params.organisationId) {
@@ -141,6 +215,14 @@ class ProjectController {
         if (params.citizenScience) {
             project.isCitizenScience = true
             project.projectType = 'survey'
+        }
+        if (params.works) {
+            project.isWorks = true
+            project.projectType = 'works'
+        }
+        if (params.ecoScience) {
+            project.isEcoScience = true
+            project.projectType = 'ecoscience'
         }
         // Default the project organisation if the user is a member of a single organisation.
         if (groupedOrganisations.user?.size() == 1) {
@@ -152,7 +234,9 @@ class ProjectController {
                 userOrganisations: groupedOrganisations.user ?: [],
                 organisations: groupedOrganisations.other ?: [],
                 programs: projectService.programsModel(),
-                project:project
+                project:project,
+                scienceTypes: scienceTypes,
+                ecoScienceTypes: ecoScienceTypes
         ]
     }
 
@@ -171,169 +255,35 @@ class ProjectController {
     }
 
     def citizenScience() {
-        def today = DateUtils.now()
-        def user = userService.getUser()
-        def userId = user?.userId
-        def projects = projectService.list(false, true).collect {
-            def urlImage
-            it.documents.each { doc ->
-                if (doc.role == documentService.ROLE_LOGO)
-                    urlImage = doc.url
-                else if (!urlImage && doc.isPrimaryProjectImage)
-                    urlImage = doc.url
-            }
-            // no need to ship the whole link object down to browser
-            def trimmedLinks = it.links.collect {
-                [
-                    role: it.role,
-                    url: it.url
-                ]
-            }
-            def siteGeom = siteService.getRaw(it.projectSiteId)?.site?.extent?.geometry
-            [
-                projectId  : it.projectId,
-                aim        : it.aim,
-                coverage   : siteGeom,
-                description: it.description,
-                difficulty : it.difficulty,
-                endDate    : it.plannedEndDate,
-                hasParticipantCost: it.hasParticipantCost && true, // force it to boolean
-                hasTeachingMaterials: it.hasTeachingMaterials && true, // force it to boolean
-                isDIY      : it.isDIY && true, // force it to boolean
-                isExternal : it.isExternal && true, // force it to boolean
-                isSuitableForChildren: it.isSuitableForChildren && true, // force it to boolean
-                keywords   : it.keywords,
-                links      : trimmedLinks,
-                name       : it.name,
-                organisationId  : it.organisationId,
-                organisationName: it.organisationName ?: organisationService.getNameFromId(it.organisationId),
-                scienceType: it.scienceType,
-                startDate  : it.plannedStartDate,
-                urlImage   : urlImage,
-                urlWeb     : it.urlWeb
-            ]
-        }
-        if (params.download as boolean) {
-            response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
-            // This is returned to the browswer as a text response due to workaround the warning
-            // displayed by IE8/9 when JSON is returned from an iframe submit.
-            response.setContentType('text/plain;charset=UTF8')
-            def resultJson = projects as JSON
-            render resultJson.toString()
-        } else {
-            [
-                user: user,
-                showTag: params.tag,
-                downloadLink: createLink(action:'citizenScience',params:[download:true]),
-                projects: projects.collect {
-                    [ // pass array instead of object to reduce JSON size
-                      it.projectId,
-                      it.aim,
-                      it.coverage,
-                      it.description,
-                      it.difficulty,
-                      it.endDate,
-                      it.hasParticipantCost,
-                      it.hasTeachingMaterials,
-                      it.isDIY,
-                      it.isExternal,
-                      it.isSuitableForChildren,
-                      it.keywords,
-                      it.links,
-                      it.name,
-                      it.organisationId,
-                      it.organisationName,
-                      it.scienceType,
-                      it.startDate,
-                      it.urlImage,
-                      it.urlWeb
-                    ]
-                }
-            ]
-        }
+        [
+                user                    : userService.getUser(),
+                showTag                 : params.tag,
+                downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
+                showCitizenScienceBanner: true
+        ]
+    }
+
+    def works() {
+        [
+                user                    : userService.getUser(),
+                showTag                 : params.tag,
+                downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
+                showWorksBanner: true
+        ]
+    }
+
+    def ecoScience() {
+        [
+                user                    : userService.getUser(),
+                showTag                 : params.tag,
+                downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
+                associatedPrograms      : projectService.programsModel().programs.findAll{!it?.readOnly},
+                showEcoScienceBanner: true
+        ]
     }
 
     def myProjects() {
-        def today = DateUtils.now()
-        def user = userService.getUser()
-        def userId = user?.userId
-        def projects = projectService.listMyProjects(userId).collect {
-            def urlImage
-            it.documents.each { doc ->
-                if (doc.role == documentService.ROLE_LOGO)
-                    urlImage = doc.url
-                else if (!urlImage && doc.isPrimaryProjectImage)
-                    urlImage = doc.url
-            }
-            // no need to ship the whole link object down to browser
-            def trimmedLinks = it.links.collect {
-                [
-                        role: it.role,
-                        url: it.url
-                ]
-            }
-            def siteGeom = siteService.getRaw(it.projectSiteId)?.site?.extent?.geometry
-            [
-                    projectId  : it.projectId,
-                    aim        : it.aim,
-                    coverage   : siteGeom,
-                    description: it.description,
-                    difficulty : it.difficulty,
-                    endDate    : it.plannedEndDate,
-                    hasParticipantCost: it.hasParticipantCost && true, // force it to boolean
-                    hasTeachingMaterials: it.hasTeachingMaterials && true, // force it to boolean
-                    isDIY      : it.isDIY && true, // force it to boolean
-                    isExternal : it.isExternal && true, // force it to boolean
-                    isSuitableForChildren: it.isSuitableForChildren && true, // force it to boolean
-                    keywords   : it.keywords,
-                    links      : trimmedLinks,
-                    name       : it.name,
-                    organisationId  : it.organisationId,
-                    organisationName: it.organisationName ?: organisationService.getNameFromId(it.organisationId),
-                    scienceType: it.scienceType,
-                    startDate  : it.plannedStartDate,
-                    urlImage   : urlImage,
-                    urlWeb     : it.urlWeb
-            ]
-        }
-        if (params.download as boolean) {
-            response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
-            // This is returned to the browser as a text response due to workaround the warning
-            // displayed by IE8/9 when JSON is returned from an iframe submit.
-            response.setContentType('text/plain;charset=UTF8')
-            def resultJson = projects as JSON
-            render resultJson.toString()
-        } else {
-            render( view: 'myProjects', model: [
-                    user: user,
-                    showTag: params.tag,
-                    downloadLink: createLink(action:'myProjects',params:[download:true]),
-                    projects: projects.collect {
-                        [ // pass array instead of object to reduce JSON size
-                          it.projectId,
-                          it.aim,
-                          it.coverage,
-                          it.description,
-                          it.difficulty,
-                          it.endDate,
-                          it.hasParticipantCost,
-                          it.hasTeachingMaterials,
-                          it.isDIY,
-                          it.isExternal,
-                          it.isSuitableForChildren,
-                          it.keywords,
-                          it.links,
-                          it.name,
-                          it.organisationId,
-                          it.organisationName,
-                          it.scienceType,
-                          it.startDate,
-                          it.urlImage,
-                          it.urlWeb
-                        ]
-                    }
-            ])
-        }
+        [user: userService.getUser()]
     }
 
     /**
@@ -348,86 +298,120 @@ class ProjectController {
         def postBody = request.JSON
         log.debug "Body: ${postBody}"
         log.debug "Params: ${params}"
-        def values = [:]
-        // filter params to remove keys in the ignore list
-        postBody.each { k, v ->
-            if (!(k in ignore)) {
-                values[k] = v
-            }
+
+        Map project
+        String name = postBody.name
+        if (id && !name) {
+            project = projectService.get(id, 'brief')
+            name = project?.name
         }
 
-        // The rule currently is that anyone is allowed to create a project so we only do these checks for
-        // existing projects.
-        def userId = userService.getUser()?.userId
-        if (id) {
-            if (!projectService.canUserEditProject(userId, id)) {
-                render status:401, text: "User ${userId} does not have edit permissions for project ${id}"
-                log.debug "user not caseManager"
-                return
-            }
-
-            if (values.containsKey("planStatus") && values.planStatus =~ /approved/) {
-                // check to see if user has caseManager permissions
-                if (!projectService.isUserCaseManagerForProject(userId, id)) {
-                    render status:401, text: "User does not have caseManager permissions for project"
-                    log.warn "User ${userId} who is not a caseManager attempting to change planStatus for project ${id}"
-                    return
+        boolean validName = projectService.checkProjectName(name, id)
+        if (!validName) {
+            render status: 400, text: "Another project already exists with the name ${params.projectName}"
+        } else {
+            def values = [:]
+            // filter params to remove keys in the ignore list
+            postBody.each { k, v ->
+                if (!(k in ignore)) {
+                    values[k] = v
                 }
             }
-        } else if (!userId) {
-            render status: 401, text: 'You do not have permission to create a project'
-        }
+
+            // The rule currently is that anyone is allowed to create a project so we only do these checks for
+            // existing projects.
+            def userId = userService.getUser()?.userId
+            if (id) {
+                if (!projectService.canUserEditProject(userId, id)) {
+                    render status:401, text: "User ${userId} does not have edit permissions for project ${id}"
+                    log.debug "user not caseManager"
+                    return
+                }
+
+                if (values.containsKey("planStatus") && values.planStatus =~ /approved/) {
+                    // check to see if user has caseManager permissions
+                    if (!projectService.isUserCaseManagerForProject(userId, id)) {
+                        render status:401, text: "User does not have caseManager permissions for project"
+                        log.warn "User ${userId} who is not a caseManager attempting to change planStatus for project ${id}"
+                        return
+                    }
+                }
+            } else if (!userId) {
+                render status: 401, text: 'You do not have permission to create a project'
+            }
 
 
-        log.debug "json=" + (values as JSON).toString()
-        log.debug "id=${id} class=${id?.getClass()}"
-        def projectSite = values.remove("projectSite")
-        def documents = values.remove('documents')
-        def links = values.remove('links')
-        def result = id? projectService.update(id, values): projectService.create(values)
-        log.debug "result is " + result
-        if (documents && !result.error) {
-            if (!id) id = result.resp.projectId
-            documents.each { doc ->
-                doc.projectId = id
-                doc.isPrimaryProjectImage = doc.role == 'mainImage'
-                if (doc.isPrimaryProjectImage || doc.role == documentService.ROLE_LOGO) doc.public = true
-                documentService.saveStagedImageDocument(doc)
+            log.debug "json=" + (values as JSON).toString()
+            log.debug "id=${id} class=${id?.getClass()}"
+            def projectSite = values.remove("projectSite")
+            def documents = values.remove('documents')
+            def links = values.remove('links')
+            def projectType = id ? projectService.get(id).projectType : values?.projectType
+
+            String mainImageAttribution = values.remove("mainImageAttribution")
+            String logoAttribution = values.remove("logoAttribution")
+
+            def siteResult
+            if (projectSite) {
+                siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
+                if (siteResult.status == 'error') render status: 400, text: "SiteService failed."
+                else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
+            } else if (projectService.get(id)?.sites?.isEmpty()) {
+                render status: 400, text: "No project site is defined."
             }
-        }
-        if (links && !result.error) {
-            if (!id) id = result.resp.projectId
-            links.each { link ->
-                link.projectId = id
-                documentService.saveLink(link)
+
+            if (!values?.associatedOrgs) values.put('associatedOrgs', [])
+
+            def result = id? projectService.update(id, values): projectService.create(values)
+            log.debug "result is " + result
+            if (documents && !result.error) {
+                if (!id) id = result.resp.projectId
+                documents.each { doc ->
+                    doc.projectId = id
+                    if (doc.role == "mainImage") {
+                        doc.isPrimaryProjectImage = true
+                        doc.attribution = mainImageAttribution
+                        doc.public = true
+                    } else if (doc.role == documentService.ROLE_LOGO) {
+                        doc.public = true
+                        doc.attribution = logoAttribution
+                    }
+                    documentService.saveStagedImageDocument(doc)
+                }
             }
-        }
-        if (projectSite && !result.error) {
-            if (!id) id = result.resp.projectId
-            if (!projectSite.projects)
-                projectSite.projects = [id]
-            else if (!projectSite.projects.contains(id))
-                projectSite.projects += id
-            def siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
-            if (siteResult.status == 'error')
-                result = [error:'SiteService failed']
-            else if (siteResult.status == 'created') {
-                def updateResult = projectService.update(id, [projectSiteId: siteResult.id])
-                if (updateResult.error) result = updateResult
+            if (links && !result.error) {
+                if (!id) id = result.resp.projectId
+                links.each { link ->
+                    link.projectId = id
+                    documentService.saveLink(link)
+                }
             }
-        }
-        if (result.error) {
-            render result as JSON
-        } else {
-            render result.resp as JSON
+            if (siteResult && !result.error) {
+                if (!id) id = result.resp.projectId
+                if (!projectSite.projects || (projectSite.projects.size() == 1 && projectSite.projects.get(0).isEmpty()))
+                    projectSite.projects = [id]
+                else if (!projectSite.projects.contains(id))
+                    projectSite.projects += id
+
+                siteService.update(siteResult.id, projectSite)
+            }
+            if (result.error) {
+                render result as JSON
+            } else {
+                render result.resp as JSON
+            }
         }
     }
 
     @PreAuthorise
     def update(String id) {
-        //params.each { println it }
-        projectService.update(id, params)
-        chain action: 'index', id: id
+        boolean validName = projectService.checkProjectName(params.projectName, params.id)
+        if (!validName) {
+            render status: 400, text: "Another project already exists with the name ${params.projectName}"
+        } else {
+            projectService.update(id, params)
+            chain action: 'index', id: id
+        }
     }
 
     @PreAuthorise(accessLevel = 'admin')
@@ -448,6 +432,215 @@ class ProjectController {
         // but for now just go home
         forward(controller: 'home')
     }
+
+    /**
+     * Search project data and customize the result set based on initiator (ala, scistarter and biocollect).
+     */
+    def search() {
+
+        GrailsParameterMap queryParams = buildProjectSearch(params)
+        boolean skipDefaultFilters = params.getBoolean('skipDefaultFilters', false)
+        Map searchResult = searchService.findProjects(queryParams, skipDefaultFilters);
+        List projects = Builder.build(params, searchResult.hits?.hits)
+
+        if (params.download as boolean) {
+            response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
+            // This is returned to the browswer as a text response due to workaround the warning
+            // displayed by IE8/9 when JSON is returned from an iframe submit.
+            response.setContentType('text/plain;charset=UTF8')
+        } else {
+            response.setContentType('application/json')
+        }
+        response.setCharacterEncoding('UTF-8')
+        render( text: [ projects:  projects, total: searchResult.hits?.total?:0 ] as JSON );
+    }
+
+
+    private GrailsParameterMap buildProjectSearch(GrailsParameterMap params){
+        Builder.override(params)
+
+        List difficulty = [], status =[]
+        Map trimmedParams = commonService.parseParams(params)
+        trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
+        trimmedParams.offset = params.offset && params.offset.isNumber() ? params.offset : 0
+        trimmedParams.status = params.list('status');
+        trimmedParams.isCitizenScience = params.boolean('isCitizenScience');
+        trimmedParams.isWorks = params.boolean('isWorks');
+        trimmedParams.isBiologicalScience = params.boolean('isBiologicalScience')
+        trimmedParams.isMERIT = params.boolean('isMERIT')
+        trimmedParams.isMetadataSharing = params.boolean("isMetadataSharing")
+        trimmedParams.query = "docType:project"
+        trimmedParams.isUserPage = params.boolean('isUserPage');
+        trimmedParams.isUserWorksPage = params.boolean('isUserWorksPage');
+        trimmedParams.isUserEcoSciencePage = params.boolean('isUserEcoSciencePage');
+        trimmedParams.hasParticipantCost = params.boolean('hasParticipantCost')
+        trimmedParams.isSuitableForChildren = params.boolean('isSuitableForChildren')
+        trimmedParams.isDIY = params.boolean('isDIY')
+        trimmedParams.hasTeachingMaterials = params.boolean('hasTeachingMaterials')
+        trimmedParams.isMobile = params.boolean('isMobile')
+        trimmedParams.isContributingDataToAla = params.boolean('isContributingDataToAla')
+        trimmedParams.difficulty = params.list('difficulty')
+        trimmedParams.mobile = params.boolean('mobile')
+
+        List fq = [], projectType = []
+        List immutableFq = params.list('fq')
+        immutableFq.each {
+            it? fq.push(it):null;
+        }
+        trimmedParams.fq = fq;
+
+        if (params?.hub == 'ecoscience') {
+            trimmedParams.query += " AND projectType:ecoscience";
+        }
+
+        switch (trimmedParams.sort){
+            case 'organisationSort':
+            case 'nameSort':
+                trimmedParams.order = 'ASC';
+                break;
+            case '_score':
+                trimmedParams.order = 'DESC';
+                break;
+        }
+
+        if(trimmedParams.isCitizenScience){
+            projectType.push('isCitizenScience:true')
+            trimmedParams.isCitizenScience = null
+        }
+
+        if(trimmedParams.isBiologicalScience){
+            projectType.push('(projectType:survey AND isCitizenScience:false)')
+            trimmedParams.isSurvey = null
+        }
+
+        if(trimmedParams.isWorks){
+            projectType.push('(projectType:works AND isMERIT:false)')
+            trimmedParams.isWorks = null
+        }
+
+        if(trimmedParams.isEcoScience){
+            projectType.push('(projectType:ecoscience)')
+        }
+
+        if (trimmedParams.isMERIT) {
+            projectType.push('isMERIT:true')
+            trimmedParams.isMERIT = null
+        }
+
+        if(trimmedParams.difficulty){
+            trimmedParams.difficulty.each{
+                difficulty.push("difficulty:${it}")
+            }
+            trimmedParams.query += " AND (${difficulty.join(' OR ')})"
+            trimmedParams.difficulty = null
+        }
+
+        if (projectType) {
+            // append projectType to query. this is used by organisation page.
+            trimmedParams.query += ' AND (' + projectType.join(' OR ') + ')'
+        }
+
+        if(trimmedParams.isMetadataSharing){
+            trimmedParams.query += " AND (isMetadataSharing:true)"
+            trimmedParams.isMetadataSharing = null
+        }
+
+        def programs = ''
+        params.each {
+            if (it.key.startsWith('isProgram') && it.value.toString().toBoolean()) {
+                def programName = it.key.substring('isProgram'.length()).replace('-',' ')
+                if (programs.length()) programs += " OR "
+                programs += " associatedProgram:\"${programName}\""
+                trimmedParams.remove(it.key)
+            }
+        }
+        if (programs.length()) trimmedParams.query += " AND (" + programs + ")"
+
+        // query construction
+        if(trimmedParams.q){
+            trimmedParams.query += " AND " + trimmedParams.q;
+            trimmedParams.q = null
+        }
+
+        if(trimmedParams.status){
+            SimpleDateFormat sdf = new SimpleDateFormat('yyyy-MM-dd');
+            // do not run if both active and completed is pressed
+            if(trimmedParams.status.size()<2){
+                trimmedParams.status.each{
+                    switch (it){
+                        case 'active':
+                            status.push("-(plannedEndDate:[* TO *] AND -plannedEndDate:>=${sdf.format( new Date())})");
+                            break;
+                        case 'completed':
+                            status.push("(plannedEndDate:<${sdf.format( new Date())})");
+                            break;
+                    }
+                }
+                trimmedParams.query += " AND (${status.join(' OR ')})";
+            }
+            trimmedParams.status = null
+        }
+        if (trimmedParams.isUserPage) {
+            if (trimmedParams.mobile) {
+                String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
+                String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
+                fq.push('admins:' + (username && key ? userService.getUserFromAuthKey(username, key)?.userId : ''))
+            } else {
+                fq.push('admins:' + userService.getUser()?.userId);
+            }
+            trimmedParams.isUserPage = null
+        }
+
+        if(trimmedParams.hasParticipantCost){
+            fq.push('hasParticipantCost:false');
+            trimmedParams.hasParticipantCost = null
+        }
+
+        if(trimmedParams.isSuitableForChildren){
+            fq.push('isSuitableForChildren:true');
+            trimmedParams.isSuitableForChildren = null
+        }
+
+        if(trimmedParams.isDIY){
+            fq.push('isDIY:true');
+            trimmedParams.isDIY = null
+        }
+
+        if(trimmedParams.hasTeachingMaterials){
+            fq.push('hasTeachingMaterials:true');
+            trimmedParams.hasTeachingMaterials = null
+        }
+
+        if(trimmedParams.isMobile){
+            fq.push('isMobileApp:true');
+            trimmedParams.isMobile = null
+        }
+
+        if(trimmedParams.isContributingDataToAla){
+            fq.push('isContributingDataToAla:true');
+            trimmedParams.isContributingDataToAla = null
+        }
+
+        if(trimmedParams.organisationName){
+            fq.push('organisationFacet:'+trimmedParams.organisationName);
+            trimmedParams.organisationName = null
+        }
+
+
+        GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
+        trimmedParams.each { key, value ->
+            if (value != null && value) {
+                queryParams.put(key, value)
+            }
+        }
+
+        queryParams.put("geoSearchJSON", params.geoSearchJSON)
+
+        params.url = grailsApplication.config.grails.serverURL
+        queryParams
+    }
+
+
 
     def species(String id) {
         def project = projectService.get(id, 'brief')
@@ -498,29 +691,105 @@ class ProjectController {
         }
     }
 
-    @PreAuthorise(accessLevel = 'siteAdmin', redirectController ='home', redirectAction = 'index')
-    def downloadProjectData() {
-        String projectId = params.id
-
-        if (!projectId) {
-            render status:400, text: 'Required params not provided: id'
-        }
-        else{
-            def path = "project/downloadProjectData/${projectId}"
-
-            if (params.view == 'xlsx' || params.view == 'json') {
-                path += ".${params.view}"
-            }else{
-                path += ".json"
-            }
-            def url = grailsApplication.config.ecodata.service.url + path
-            webService.proxyGetRequest(response, url, true, true,120000)
-        }
-    }
-
     def getUserProjects(){
         UserDetails user = userService.user;
         JSON projects = projectService.userProjects(user);
         render(text: projects);
+    }
+
+    def auditMessageDetails() {
+        String userId = authService.getUserId()
+        String projectId = params.projectId
+        String compareId= params.compareId
+        String skin
+
+        Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
+        if(isAdmin) {
+            def results = auditService.getAuditMessage(params.id as String)
+            def userDetails = [:]
+            Map compare
+            if (results?.message) {
+                userDetails = auditService.getUserDetails(results?.message?.userId)
+            }
+
+            if(compareId){
+                compare = auditService.getAuditMessage(params.compareId as String)
+            } else {
+                compare = auditService.getAutoCompareAuditMessage(params.id)
+            }
+
+            skin = SettingService.getHubConfig().skin
+            render view: '/admin/auditMessageDetails', model: [message: results?.message, compare: compare?.message, userDetails: userDetails.user, layoutContent: skin, backToProject: true]
+        } else {
+            response.sendError(SC_FORBIDDEN, 'You are not authorized to view this page')
+        }
+    }
+
+    def getAuditMessagesForProject(){
+        String userId = authService.getUserId()
+        String projectId = params.id
+        Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
+        if(isAdmin) {
+            String sort = params.sort?:''
+            String orderBy = params.orderBy?:''
+            Integer start = params.int('start')
+            Integer size = params.int('length')
+            String q = params.q
+            Long version = params.long('version')
+
+            def results = auditService.getAuditMessagesForProjectPerPage(projectId,start,size,sort,orderBy,q)
+            def data = []
+            results.data.each{ msg ->
+                if (!version || DateUtils.parse(msg.date).millis < version) {
+                    msg['date'] = DateUtils.displayFormatWithTime(msg['date']);
+                    data << msg
+                }
+
+            }
+            results.data = data
+            asJson results;
+        } else {
+            response.sendError(SC_FORBIDDEN, 'You are not authorized to view this page')
+        }
+    }
+
+    def asJson(json) {
+        render(contentType: 'application/json', text: json as JSON)
+    }
+
+    /**
+     * list images in the context of a project, all records or my records
+     * payload.view parameter is used to differentiate these context
+     */
+    def listRecordImages() {
+        try{
+            Map payload = request.JSON
+            payload.max = payload.max ?: 10;
+            payload.offset = payload.offset ?: 0;
+            payload.userId = authService.getUserId()
+            payload.order = payload.order ?: 'DESC';
+            payload.sort = payload.sort ?: 'lastUpdated';
+            payload.fq = payload.fq ?: []
+            payload.fq.push('surveyImage:true');
+            if (params?.hub == 'ecoscience') {
+                payload.fq.push("projectType:ecoscience");
+            }
+            Map result = projectService.listImages(payload, params?.version) ?: [:];
+            render contentType: 'application/json', text: result as JSON
+        } catch (SocketTimeoutException sTimeout){
+            render(status: SC_REQUEST_TIMEOUT, text: sTimeout.message)
+        } catch( Exception e){
+            render(status: SC_INTERNAL_SERVER_ERROR, text: e.message)
+        }
+    }
+
+    def checkProjectName() {
+        if (!params.projectName) {
+            render status: SC_BAD_REQUEST, text: 'projectName is a required parameter'
+        } else {
+            boolean validName = projectService.checkProjectName(params.projectName, params.id)
+
+            render ([validName: validName] as JSON)
+        }
     }
 }

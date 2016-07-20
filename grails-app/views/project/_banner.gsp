@@ -47,9 +47,9 @@
         </div>
         <div class="header-days">
             <g:render template="dayscount"/>
-            <span class="header-dates" data-bind="visible:plannedStartDate,text:'Start date: ' + moment(plannedStartDate()).format('DD MMMM, YYYY')"></span>
+            <span class="header-dates project-start-date" data-bind="visible:plannedStartDate,text:'Start date: ' + moment(plannedStartDate()).format('DD MMMM, YYYY')"></span>
             <br/>
-            <span class="header-dates" data-bind="visible:plannedEndDate,text:'End date: ' + moment(plannedEndDate()).format('DD MMMM, YYYY')"></span>
+            <span class="header-dates project-end-date" data-bind="visible:plannedEndDate,text:'End date: ' + moment(plannedEndDate()).format('DD MMMM, YYYY')"></span>
         </div>
     </div>
     <g:render template="daysline"/>

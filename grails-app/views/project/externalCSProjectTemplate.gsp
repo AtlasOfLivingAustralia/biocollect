@@ -33,7 +33,7 @@
     }
     </style>
 
-    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd, restoreTab"/>
+    <r:require modules="knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd, restoreTab, map"/>
 </head>
 <g:render template="banner"/>
 
@@ -78,7 +78,7 @@
     </div>
 </g:if>
 <g:else>
-    <g:render template="aboutCitizenScienceProject"/>
+    <g:render template="aboutCitizenScienceProject" model="${projectContent.about}"/>
 </g:else>
 
 <r:script>

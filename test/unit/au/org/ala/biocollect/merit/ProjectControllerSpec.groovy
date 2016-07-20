@@ -1,7 +1,11 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.web.AuthService
 import grails.test.mixin.TestFor
 import spock.lang.Specification
+
+import static org.apache.http.HttpStatus.SC_OK
+import static org.apache.http.HttpStatus.SC_REQUEST_TIMEOUT
 
 /**
  * Specification for the ProjectController
@@ -16,6 +20,9 @@ class ProjectControllerSpec extends Specification {
     def roleServiceStub = Stub(RoleService)
     def activityServiceStub = Stub(ActivityService)
     def commonServiceStub = Stub(CommonService)
+    def auditServiceStub = Stub(AuditService)
+    def authServiceStub = Stub(AuthService)
+    def blogServiceStub = Stub(BlogService)
 
     void setup() {
         controller.userService = userServiceStub
@@ -25,6 +32,10 @@ class ProjectControllerSpec extends Specification {
         controller.roleService = roleServiceStub
         controller.activityService = activityServiceStub
         controller.commonService = commonServiceStub
+        controller.auditService = auditServiceStub
+        controller.authService = authServiceStub
+        controller.blogService = blogServiceStub
+        auditServiceStub.getAuditMessagesForProject(_) >> []
         metadataServiceStub.organisationList() >> [list:[buildOrganisation(), buildOrganisation(), buildOrganisation()]]
         metadataServiceStub.activitiesModel() >> [activities: []]
         userServiceStub.getOrganisationIdsForUserId(_) >> ['1']
@@ -33,6 +44,8 @@ class ProjectControllerSpec extends Specification {
         userServiceStub.getOrganisationIdsForUserId(_) >> []
         userServiceStub.isProjectStarredByUser(_, _) >> [isProjectStarredByUser:true]
         roleServiceStub.getRoles() >> []
+        authServiceStub.getUserId() >> ''
+        blogServiceStub.get(_, _) >> []
     }
 
     void "creating a citizen science project should pre-populate the citizen science project type"() {
@@ -121,7 +134,7 @@ class ProjectControllerSpec extends Specification {
         def citizenScience = true
         def external = true
         userServiceStub.getUser() >> null
-        projectServiceStub.get(projectId, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
+        projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
 
         when:
         controller.index(projectId)
@@ -142,7 +155,7 @@ class ProjectControllerSpec extends Specification {
         def external = true
         stubProjectAdmin('1234', projectId)
 
-        projectServiceStub.get(projectId, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
+        projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
 
         when:
         controller.index(projectId)
@@ -162,7 +175,7 @@ class ProjectControllerSpec extends Specification {
         def citizenScience = true
         def external = false
         userServiceStub.getUser() >> null
-        projectServiceStub.get(projectId, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
+        projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
 
         when:
         controller.index(projectId)
@@ -182,7 +195,7 @@ class ProjectControllerSpec extends Specification {
         def citizenScience = true
         def external = false
         stubProjectEditor('1234', projectId)
-        projectServiceStub.get(projectId, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
+        projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
 
         when:
         controller.index(projectId)
@@ -204,7 +217,7 @@ class ProjectControllerSpec extends Specification {
         def citizenScience = true
         def external = false
         stubProjectAdmin('1234', projectId)
-        projectServiceStub.get(projectId, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
+        projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
 
         when:
         controller.index(projectId)
@@ -223,7 +236,7 @@ class ProjectControllerSpec extends Specification {
         def citizenScience = true
         def external = false
         stubProjectEditor('1234', projectId)
-        projectServiceStub.get(projectId, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'works', isExternal:external]
+        projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'works', isExternal:external]
 
         when:
         controller.index(projectId)
@@ -245,7 +258,7 @@ class ProjectControllerSpec extends Specification {
         def citizenScience = true
         def external = false
         stubProjectEditor('1234', projectId)
-        projectServiceStub.get(projectId, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
+        projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
 
         when:
         controller.index(projectId)
@@ -255,6 +268,49 @@ class ProjectControllerSpec extends Specification {
 
         model.projectContent.activities.label == 'Surveys'
         model.projectContent.activities.wordForActivity == 'Survey'
+    }
+
+    void "list all images for a project"(){
+        given:
+        Map payload = [:]
+        payload.max = 10;
+        payload.offset = 0;
+        payload.userId = ''
+        payload.order = 'DESC';
+        payload.sort = 'lastUpdated';
+        payload.fq = ['surveyImage:true']
+        payload.projectId = 'abs'
+        projectServiceStub.listImages(payload, _) >> [count:1,documents:[[documentId:'124']]]
+        when:
+        request.method = "POST"
+        request.json = '{"projectId":"abs"}'
+        controller.listRecordImages()
+        then:
+        response.status == SC_OK;
+        response.json.documents.size() == 1
+        response.json.count == 1
+        response.json.documents[0].documentId == '124'
+
+    }
+
+    void "list all images during timeout exception"(){
+        given:
+        Map payload = [:]
+        payload.max = 10;
+        payload.offset = 0;
+        payload.userId = ''
+        payload.order = 'DESC';
+        payload.sort = 'lastUpdated';
+        payload.fq = ['surveyImage:true']
+        payload.projectId = 'abs'
+        projectServiceStub.listImages(payload, _) >> {throw new SocketTimeoutException('timed out')}
+        when:
+        request.method = "POST"
+        request.json = '{"projectId":"abs"}'
+        controller.listRecordImages()
+        then:
+        response.status == SC_REQUEST_TIMEOUT;
+        response.text == 'timed out';
     }
 
     int orgCount = 0;

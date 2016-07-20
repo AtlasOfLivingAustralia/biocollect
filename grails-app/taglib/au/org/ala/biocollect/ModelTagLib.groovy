@@ -53,10 +53,7 @@ class ModelTagLib {
                     photoPoints out, attrs, mod, index
                     break
                 case 'template':
-                    out << g.render(template:mod.source, plugin: "${mod.plugin ?: 'fieldcapture-plugin'}", model: [config: mod.config ?: [:]])
-                    break
-                case 'masterDetail':
-                    masterDetail out, attrs, mod
+                    out << g.render(template:mod.source, plugin: "${mod.plugin ?: 'fieldcapture-plugin'}", model: [config: mod.config ?: [:], readonly: attrs.readonly?.toBoolean() ?: false])
                     break
             }
         }
@@ -125,8 +122,17 @@ class ModelTagLib {
             case 'selectMany':
                 renderer.renderSelectMany(renderContext)
                 break
+            case 'selectManyCombo':
+                renderer.renderSelectManyCombo(renderContext)
+                break
+            case 'audio':
+                renderer.renderAudio(renderContext)
+                break
             case 'image':
                 renderer.renderImage(renderContext)
+                break
+            case 'imageDialog':
+                renderer.renderImageDialog(renderContext)
                 break
             case 'embeddedImage':
                 renderer.renderEmbeddedImage(renderContext)
@@ -148,6 +154,9 @@ class ModelTagLib {
                 break
             case 'date':
                 renderer.renderDate(renderContext)
+                break
+            case 'time':
+                renderer.renderTime(renderContext)
                 break
             case 'document':
                 renderer.renderDocument(renderContext)
@@ -292,6 +301,9 @@ class ModelTagLib {
             }
         }
 
+        if (dataModel?.dataType == 'species') {
+            criteria << 'funcCall[validateSpeciesLookup]'
+        }
 
         return criteria
     }
@@ -512,60 +524,6 @@ class ModelTagLib {
         out << INDENT*4 << "</tr></tbody>\n"
     }
 
-    def masterDetail(out, attrs, model) {
-        model.master.source = "masterDetail.items"
-
-        out << INDENT*4 << """
-                        <div class="row-fluid">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>"""
-
-        model.master.columns.eachWithIndex { col, i ->
-            out << "<th width='${col.width}'>" + labelText(attrs, col, col.title) + "</th>"
-        }
-
-        out << INDENT*4 << """
-                                        <th width="10%">Controls</th>
-                                    </tr>
-                                </thead>
-                                <tbody data-bind="foreach: data.masterDetail.items()">
-                                    <tr>
-                                """
-
-        model.master.columns.eachWithIndex { col, i ->
-            out << INDENT*5 << "<td><span data-bind=\"text:${col.source}\"></span></td>"
-        }
-
-        out << INDENT*4 << """
-                                        <td width="10%">
-                                            <button data-bind="click:\$parent.data.masterDetail.removeItem,visible:!\$parent.data.masterDetail.addOrEditMode()" class="btn btn-link" title="Delete item"><i class='icon-remove'></i></button>
-                                            <button data-bind="click:\$parent.data.masterDetail.editItem,visible:!\$parent.data.masterDetail.addOrEditMode()" class="btn btn-link" title="Edit item"><i class='icon-edit'></i></button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        """
-
-        out << INDENT*4 << """
-                            <div class="row-fluid" data-bind="visible:!data.masterDetail.addOrEditMode()">
-                                <input type="button" data-bind="click:data.masterDetail.addItem" value="Add an item" class="btn btn-primary"></input>
-                            </div>
-                           """
-
-        out << INDENT*4 << "<div data-bind='visible: data.masterDetail.addOrEditMode()'>"
-        viewModelItems(attrs, out, model.detail)
-        out << INDENT*4 << "</div>"
-
-        out << INDENT*4 << """
-                            <div class="row-fluid" data-bind="visible:data.masterDetail.addOrEditMode()">
-                                <input type="button" data-bind="click:data.masterDetail.saveItem" value="Save item" class="btn btn-primary"></input>
-                                <input type="button" data-bind="click:data.masterDetail.cancelItem" value="Cancel" class="btn btn-default"></input>
-                            </div>
-                           """
-    }
-
     def table(out, attrs, model) {
 
         def isprint = attrs.printable
@@ -704,7 +662,7 @@ class ModelTagLib {
             out << INDENT*5 << "<td>" << dataTag(attrs, col, '', edit) << "</td>" << "\n"
         }
         if (model.editableRows) {
-                out << INDENT*5 << "<td>\n"
+                out << INDENT*5 << "<td >\n"
                 out << INDENT*6 << "<button class='btn btn-mini' data-bind='click:\$root.edit${model.source}Row, enable:!\$root.${model.source}Editing()' title='edit'><i class='icon-edit'></i> Edit</button>\n"
                 out << INDENT*6 << "<button class='btn btn-mini' data-bind='click:\$root.remove${model.source}Row, enable:!\$root.${model.source}Editing()' title='remove'><i class='icon-trash'></i> Remove</button>\n"
                 out << INDENT*5 << "</td>\n"
@@ -786,7 +744,7 @@ class ModelTagLib {
                 if (containsSpecies) {
                     out << """
                 <div class="text-error text-left">
-                    Note: Only valid exact scientific names will be matched and populated from the database (indicated by a green tick). Unmatched species will load, but will be indicated by a green <b>?</b>. Please check your uploaded data and correct as required.
+                    Note: Only valid exact scientific names will be matched and populated from the database (indicated by a <i class="icon-info-sign"></i> button). Unmatched species will load, but will not show <i class="icon-info-sign"></i> button. Please check your uploaded data and correct as required.
                 </div>"""
                 }
                 out << """<div class="text-left" style="margin:5px">

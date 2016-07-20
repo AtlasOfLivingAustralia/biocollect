@@ -1,7 +1,6 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.ProjectActivityService
-import au.org.ala.biocollect.sightings.BieService
 import grails.converters.JSON
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
@@ -21,7 +20,6 @@ class ActivityController {
     def grailsApplication
     SpeciesService speciesService
     DocumentService documentService
-    BieService bieService
     ProjectActivityService projectActivityService
 
 
@@ -49,7 +47,6 @@ class ActivityController {
             model.themes = metadataService.getThemesForProject(model.project)
         }
 
-        model.speciesGroupsMap = bieService.getSpeciesGroupsMap()
         model.user = userService.getUser()
 
         model

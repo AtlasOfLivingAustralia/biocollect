@@ -1,0 +1,68 @@
+@media (max-width: 450px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    /** accessability - this will cause screen readers to read headers. display none would have ignored it.**/
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tbody td {
+        position: relative;
+        width: auto !important;
+    }
+
+    tbody td:before {
+        margin-right: 10px;
+        margin-bottom: 2px;
+        /** \a new line **/
+        content: attr(data-th) '\a';
+        white-space: pre-line;
+        font-weight: normal;
+    }
+
+    tfoot td{
+        border-top: 0px !important;
+        border-bottom: 0px !important;
+    }
+}
+
+@media (min-width:450px) and  (max-width: 1000px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    /** accessability - this will cause screen readers to read headers. display none would have ignored it.**/
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tbody td {
+        position: relative;
+        width: auto !important;
+    }
+
+    tbody td:before {
+        margin-right: 10px;
+        margin-bottom: 2px;
+        /** \a new line **/
+        content: attr(data-th) ;
+        white-space: pre-line;
+        font-weight: normal;
+    }
+    tfoot td{
+        border-top: 0px !important;
+        border-bottom: 0px !important;
+    }
+}
+
+@media (min-width: 1000px) {
+    .overflow-table{
+        overflow-x: scroll;
+    }
+}

@@ -3,8 +3,7 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>My Data | Bio Collect</title>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
+    <title>${view == 'allrecords' ? 'All Records' : 'My Data'} | Bio Collect</title>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <r:script disposition="head">
     var fcConfig = {
@@ -12,49 +11,42 @@
             activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
             activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
             activityEditUrl: "${createLink(controller: 'bioActivity', action: 'edit')}",
-            activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
+            activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'delete')}",
             activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
-            recordListUrl: "${createLink(controller: 'record', action: 'ajaxList')}",
-            returnTo: "${createLink(controller: 'bioActivity', action:'list')}"
+            searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
+            downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
+            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params:[version: params.version])}",
+            projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
+            siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
+            bieUrl: "${grailsApplication.config.bie.baseURL}",
+            speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
+            view: "${view == 'allrecords' ? view : 'myrecords'}",
+            returnTo: "${view == 'allrecords' ? createLink(controller: 'bioActivity', action:'allRecords') : createLink(controller: 'bioActivity', action:'list') }",
+            projectLinkPrefix: "${createLink(controller: 'project')}/",
+            recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
+            imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
+            version: "${params?.version}"
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout, projectActivityInfo, jqueryValidationEngine, restoreTab, myActivity, records"/>
+    <r:require modules="knockout, projectActivityInfo, jqueryValidationEngine, restoreTab, myActivity, activities"/>
 </head>
 <body>
 
 <div class="container-fluid">
-    <h2>My Data</h2>
-
-    <div class="row-fluid">
-
-        <div class="span12">
-
-            <ul class="nav nav-tabs" id="ul-survey-activities">
-                <li><a href="#survey-activities" id="survey-activities-tab" data-toggle="tab">Surveys</a></li>
-                <li><a href="#survey-records" id= "survey-records-tab" data-toggle="tab">Records</a></li>
-            </ul>
-
-            <div class="tab-content">
-                <div class="tab-pane" id="survey-activities">
-                    <g:render template="allActivities" model="[show:true]"/>
-                </div>
-                <div class="tab-pane" id="survey-records">
-                    <g:render template="allRecords" model="[show:true]"/>
-                </div>
-            </div>
-        </div>
+    <h2>${view == 'allrecords' ? 'All Records' : 'My Data'}</h2>
+    <div class="main-content" style="display:none;">
+        <g:render template="../bioActivity/activities"/>
+    </div>
+    <div class="loading-message">
+        <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
     </div>
 </div>
 
-
 <r:script>
-    $(window).load(function () {
-        $(".main-content").show();
-        initialiseActivities();
-        initialiseRecords();
-        new RestoreTab('ul-survey-activities', 'survey-records-tab');
+    $(function() {
+        initialiseData(fcConfig.view == 'allrecords' ? fcConfig.view : 'myrecords');
     });
 </r:script>
 

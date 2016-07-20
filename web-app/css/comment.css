@@ -6,19 +6,24 @@
     border: 0;
 }
 
+#commentOutput{
+    background-color: #f2f2f2;
+    border: 1px solid #e3e3e3;
+    padding: 10px;
+}
+
 .comment-post{
-    background-color: #FFF7E6;
     padding:10px;
 }
 
 .comment-body{
-    margin-left: 15px;
-    margin-top: 5px;
-    padding-top: 5px;
+    margin: 5px 0px 5px 0px;
+    padding: 5px 5px 5px 15px;
+    background-color: white;
 }
 
-.comment-list{
-    background-color: #FEF7E7;
+.comment-list > .comment-body {
+    border: 1px solid #e3e3e3;
 }
 
 .comment-indent{
@@ -26,7 +31,7 @@
     height: 16px;
 }
 
-.username {
+.comment-username {
     font-size: 16px;
 }
 
@@ -37,8 +42,14 @@ pre.media{
     padding-top: 2px;
     padding-bottom: 2px;
     margin-bottom: 0px;
+    font-family: inherit;
+    font-size: inherit;
 }
 
 .margin-bottom-five{
     margin-bottom: 5px;
+}
+
+b.media-heading{
+    font-family: inherit;
 }

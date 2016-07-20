@@ -28,11 +28,12 @@ import org.springframework.web.multipart.MultipartFile
 
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
+import java.nio.charset.StandardCharsets
 /**
  * Helper class for invoking ecodata (and other Atlas) web services.
  */
 class WebService {
-
+    private static APPLICATION_JSON = 'application/json'
     // Used to avoid a circular dependency during initialisation
     def getUserService() {
         return grailsApplication.mainContext.userService
@@ -90,7 +91,7 @@ class WebService {
             conn.setRequestProperty("Authorization", grailsApplication.config.api_key);
         }
 
-        def headers = [HttpHeaders.CONTENT_DISPOSITION, HttpHeaders.TRANSFER_ENCODING]
+        def headers = [HttpHeaders.CONTENT_DISPOSITION]
         response.setContentType(conn.getContentType())
         response.setContentLength(conn.getContentLength())
 
@@ -149,10 +150,13 @@ class WebService {
         return get(url, true)
     }
 
-    def getJson(String url, Integer timeout = null) {
+    def getJson(String url, Integer timeout = null, boolean includeApiKey = false) {
         def conn = null
         try {
             conn = configureConnection(url, true, timeout)
+            if (includeApiKey) {
+                conn.setRequestProperty("Authorization", grailsApplication.config.api_key);
+            }
             def json = responseText(conn)
             return JSON.parse(json)
         } catch (ConverterException e) {
@@ -221,9 +225,11 @@ class WebService {
             wr.flush()
             def resp = conn.inputStream.text
             wr.close()
-            return [resp: JSON.parse(resp?:"{}")] // fail over to empty json object if empty response string otherwise JSON.parse fails
+            return [resp: JSON.parse(resp?:"{}"), statusCode: conn.responseCode] // fail over to empty json object if empty response string otherwise JSON.parse fails
         } catch (SocketTimeoutException e) {
-            def error = [error: "Timed out calling web service. URL= ${url}."]
+            def error = [error: "Timed out calling web service. URL= ${url}.",
+                         statusCode: conn?.responseCode?:"",
+                         detail: conn?.errorStream?.text]
             log.error(error, e)
             return error
         } catch (Exception e) {
@@ -268,13 +274,13 @@ class WebService {
         }
     }
 
-    def doGet(String url, Map data) {
+    Map doGet(String url, Map data) {
         URLConnection conn = null
-        def charEncoding = 'utf-8'
+
         try {
             List params = []
             data?.each{ key, value->
-                params.add("${key}=${URLEncoder.encode(value)}")
+                params.add("${key}=${URLEncoder.encode(value ?: "", StandardCharsets.UTF_8.toString())}")
             }
 
             String serialParam = params.join('&');
@@ -285,13 +291,13 @@ class WebService {
             conn = new URL(url).openConnection()
             conn.setDoOutput(true)
             conn.setRequestMethod("GET")
-            conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}");
+            conn.setRequestProperty("Content-Type", "${APPLICATION_JSON};charset=${StandardCharsets.UTF_8.toString()}");
             conn.setRequestProperty("Authorization", grailsApplication.config.api_key);
 
             def user = getUserService().getUser()
             if (user) {
                 conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId) // used by ecodata
-                conn.setRequestProperty("Cookie", "ALA-Auth="+java.net.URLEncoder.encode(user.userName, charEncoding)) // used by specieslist
+                conn.setRequestProperty("Cookie", "ALA-Auth="+java.net.URLEncoder.encode(user.userName, StandardCharsets.UTF_8.toString())) // used by specieslist
             }
             def resp = conn.inputStream.text
             return [resp: JSON.parse(resp?:"{}"), statusCode: conn.responseCode] // fail over to empty json object if empty response string otherwise JSON.parse fails
@@ -372,7 +378,7 @@ class WebService {
         builder.request(Method.POST) { request ->
             requestContentType : 'multipart/form-data'
             MultipartEntity content = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
-            content.addPart(fileParamName, new InputStreamBody(contentIn, contentType, originalFilename?:fileParamName))
+            if (contentIn) content.addPart(fileParamName, new InputStreamBody(contentIn, contentType, originalFilename?:fileParamName))
             params.each { key, value ->
                 if (value) {
                     content.addPart(key, new StringBody(value.toString()))

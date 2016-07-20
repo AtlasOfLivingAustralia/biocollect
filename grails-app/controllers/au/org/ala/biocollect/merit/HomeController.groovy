@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
+import org.apache.commons.lang.StringUtils
 
 class HomeController {
 
@@ -53,10 +54,14 @@ class HomeController {
             mapFacets: mapFacets,
             geographicFacets:selectedGeographicFacets,
             description: settingService.getSettingText(SettingPageType.DESCRIPTION),
-            results: resp ]
+            results: resp,
+            hubConfig: SettingService.getHubConfig()]
     }
 
     def citizenScience() {
+    }
+
+    def works() {
     }
 
     /**
@@ -99,7 +104,7 @@ class HomeController {
     def geoService() {
         params.max = params.max?:9999
         if(params.geo){
-            params.facets = SettingService.getHubConfig().availableFacets.join(',')
+            params.facets = StringUtils.join(SettingService.getHubConfig().availableFacets,',')
             render searchService.allProjectsWithSites(params) as JSON
         } else {
             render searchService.allProjects(params) as JSON
@@ -124,6 +129,14 @@ class HomeController {
 
     def contacts() {
         renderStaticPage(SettingPageType.CONTACTS, false)
+    }
+
+    def gettingStarted(){
+        renderStaticPage(SettingPageType.CITIZEN_SCIENCE_GETTING_STARTED, false)
+    }
+
+    def whatIsThis(){
+        renderStaticPage(SettingPageType.CITIZEN_SCIENCE_WHAT_IS_THIS, false)
     }
 
     def close() {

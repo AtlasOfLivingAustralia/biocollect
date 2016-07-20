@@ -15,24 +15,16 @@ function DocumentViewModel (doc, owner, settings) {
 
     var defaults = {
         //Information is the default option.
-        roles:  [{id: 'information', name: 'Information'}, {id:'embeddedVideo', name:'Embedded Video'}, {id: 'programmeLogic', name: 'Programme Logic'}],
-        stages:[],
+        roles:  [{id: 'information', name: 'Information'}, {id:'embeddedVideo', name:'Embedded Video'}],
         showSettings: true,
         thirdPartyDeclarationTextSelector:'#thirdPartyDeclarationText',
         imageLocation: fcConfig.imageLocation
     };
     this.settings = $.extend({}, defaults, settings);
 
-    //Associate project document to stages.
-    this.maxStages = doc.maxStages;
-    for(i = 0; i < this.maxStages; i++){
-        this.settings.stages.push((i+1))
-    }
-    this.stage = ko.observable(doc ? doc.stage : 0);
-    this.stages = this.settings.stages;
-
     // NOTE that attaching a file is optional, ie you can have a document record without a physical file
     this.filename = ko.observable(doc ? doc.filename : '');
+    this.description = ko.observable(doc ? doc.description : '');
     this.filesize = ko.observable(doc ? doc.filesize : '');
     this.name = ko.observable(doc.name);
     // the notes field can be used as a pseudo-document (eg a deferral reason) or just for additional metadata
@@ -59,14 +51,7 @@ function DocumentViewModel (doc, owner, settings) {
     this.fileButtonText = ko.computed(function() {
         return (self.filename() ? "Change file" : "Attach file");
     });
-    this.onRoleChange = function(val) {
-        if(this.role() == 'programmeLogic'){
-            this.public(false);
-            this.isPrimaryProjectImage(false);
-        }
-    };
 
-    this.isPrimaryProjectImage = ko.observable(doc.isPrimaryProjectImage);
     this.thirdPartyConsentDeclarationMade = ko.observable(doc.thirdPartyConsentDeclarationMade);
     this.thirdPartyConsentDeclarationText = null;
     this.embeddedVideo = ko.observable(doc.embeddedVideo);
@@ -217,7 +202,7 @@ function DocumentViewModel (doc, owner, settings) {
     };
 
     this.modelForSaving = function() {
-        return ko.mapping.toJS(self, {'ignore':['embeddedVideoVisible','iframe','helper', 'progress', 'hasPreview', 'error', 'fileLabel', 'file', 'complete', 'fileButtonText', 'roles', 'stages','maxStages', 'settings', 'thirdPartyConsentDeclarationRequired', 'saveEnabled', 'saveHelp', 'fileReady']});
+        return ko.mapping.toJS(self, {'ignore':['embeddedVideoVisible','iframe','helper', 'progress', 'hasPreview', 'error', 'fileLabel', 'file', 'complete', 'fileButtonText', 'roles', 'settings', 'thirdPartyConsentDeclarationRequired', 'saveEnabled', 'saveHelp', 'fileReady']});
     };
 
 }
@@ -237,14 +222,15 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
 
     $(uiSelector).fileupload({
         url:uploadUrl,
-        formData:function(form) {return [{name:'document', value:documentViewModel.toJSONString()}]},
+        formData:function(form) {
+            return [{name:'document', value:documentViewModel.toJSONString()}]
+        },
         autoUpload:false,
         forceIframeTransport: true,
         getFilesFromResponse: function(data) { // This is to support file upload on pages that include the fileupload-ui which expects a return value containing an array of files.
             return data;
         }
     }).on('fileuploadadd', function(e, data) {
-
         fileUploadHelper = data;
         documentViewModel.fileAttached(data.files[0]);
     }).on('fileuploadprocessalways', function(e, data) {
@@ -258,7 +244,6 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
     }).on('fileuploadprogressall', function(e, data) {
         documentViewModel.uploadProgress(data.loaded, data.total);
     }).on('fileuploaddone', function(e, data) {
-
         var result;
 
         // Because of the iframe upload, the result will be returned as a query object wrapping a document containing
@@ -334,7 +319,6 @@ function showDocumentAttachInModal(uploadUrl, documentViewModel, modalSelector, 
     }
     var $fileUpload = $(fileUploadSelector);
     var $modal = $(modalSelector);
-    //var documentViewModel = new DocumentViewModel(document?document:{}, owner);
 
     attachViewModelToFileUpload(uploadUrl, documentViewModel, fileUploadSelector, previewSelector);
 

@@ -5,9 +5,9 @@
 <g:if test="${!printView}">
     <ul class="breadcrumb">
         <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-        <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
+        <li><a data-bind="click:goToProject" href="#" class="clickable">Project</a> <span class="divider">/</span></li>
         <li class="active">
-            <span>${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span>
+            <span>${activity.type}</span>
         </li>
     </ul>
 </g:if>
@@ -30,11 +30,15 @@
 
             <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h3>
 
-            <!-- add the dynamic components -->
+            <div data-bind="if:transients.optional || outputNotCompleted()">
+                <label class="checkbox" ><input type="checkbox" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>
+            </div>
+            <div id="${blockId}-content" data-bind="visible:!outputNotCompleted()">
+                <!-- add the dynamic components -->
 
-            <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}"
+                <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}"
                           printable="${printView}"/>
-
+            </div>
             <r:script>
                     $(function(){
                         var viewModelName = "${blockId}ViewModel", viewModelInstance = viewModelName + "Instance";
@@ -43,13 +47,21 @@
                 <md:jsModelObjects model="${model}" site="${site}" edit="true"
                                    viewModelInstance="${blockId}ViewModelInstance"/>
 
-                this[viewModelName] = function () {
+                this[viewModelName] = function (config, outputNotCompleted) {
                     var self = this;
                     self.name = "${output.name}";
-                            self.outputId = "${output.outputId}";
-                            self.data = {};
-                            self.transients = {};
-                            self.transients.dummy = ko.observable();
+                    self.outputId = "${output.outputId}";
+                    self.data = {};
+                    self.transients = {};
+
+                    var notCompleted = outputNotCompleted;
+                    if (notCompleted === undefined) {
+                        notCompleted = config.collapsedByDefault;
+                    }
+                    self.outputNotCompleted = ko.observable(notCompleted);
+                    self.transients.optional = config.optional || false;
+                    self.transients.questionText = config.optionalQuestionText || 'Not applicable';
+                    self.transients.dummy = ko.observable();
                             // add declarations for dynamic data
                 <md:jsViewModel model="${model}" output="${output.name}" edit="true"
                                 viewModelInstance="${blockId}ViewModelInstance"/>
@@ -74,7 +86,7 @@
 
                 self.loadData = function (data) {
                     // load dynamic data
-                <md:jsLoadModel model="${model}"/>
+                <md:jsLoadModel model="${model}" defaultData="${defaultData}"/>
 
                 // if there is no data in tables then add an empty row for the user to add data
                 if (typeof self.addRow === 'function' && self.rowCount() === 0) {
@@ -84,11 +96,13 @@
             };
         };
 
-        window[viewModelInstance] = new this[viewModelName](site);
+        var config = ${fc.modelAsJavascript(model:metaModel.outputConfig?.find{it.outputName == outputName}, default:'{}')};
+        var outputNotCompleted = ${output.outputNotCompleted?:'undefined'};
+
+        window[viewModelInstance] = new this[viewModelName](config, outputNotCompleted);
 
         var output = ${output.data ?: '{}'};
-
-                window[viewModelInstance].loadData(output);
+        window[viewModelInstance].loadData(output);
 
                         // dirtyFlag must be defined after data is loaded
                 <md:jsDirtyFlag model="${model}"/>
@@ -139,7 +153,7 @@
             <fc:select
                     data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
                     printable="${printView}"/>
-            <div id="siteMap" style="width:100%; height: 512px;"></div>
+            <m:map id="activitySiteMap" width="100%" height="512px"/>
         </div>
 
     </div>
@@ -199,7 +213,9 @@
 </div>
 
 
-<g:render template="/shared/imagerViewerModal" model="[readOnly: false]"></g:render>
+<g:render template="/shared/imagerViewerModal" model="[readOnly: false]"/>
+<g:render template="/shared/attachDocument"/>
+<g:render template="/shared/documentTemplate"/>
 
 <r:script>
         var returnTo = "${returnTo}";
@@ -207,8 +223,7 @@
         /* Master controller for page. This handles saving each model as required. */
         var Master = function () {
             var self = this;
-            this.subscribers = [];
-            this.maps = {};
+            self.subscribers = [];
 
             // client models register their name and methods to participate in saving
             self.register = function (modelInstanceName, getMethod, isDirtyMethod, resetMethod) {
@@ -218,10 +233,6 @@
                     isDirty: isDirtyMethod,
                     reset: resetMethod
                 });
-            };
-
-            self.registerMap = function(uniqueId, map) {
-                self.maps[uniqueId] = map;
             };
 
             // master isDirty flag for the whole page - can control button enabling
@@ -240,21 +251,22 @@
             this.collectData = function() {
                 var activityData, outputs = [], photoPoints;
                 $.each(this.subscribers, function(i, obj) {
-                    if (obj.isDirty()) {
-                        if (obj.model === 'activityModel') {
-                            activityData = obj.get();
-                        } else if (obj.model === 'photoPoints') {
-                            photoPoints = obj.get();
-                        }
-                        else {
-                            outputs.push(obj.get());
-                        }
+                    if (obj.model === 'activityModel') {
+                        activityData = obj.get();
+                    } else if (obj.model === 'photoPoints' && obj.isDirty()) {
+                        photoPoints = obj.get();
+                    }
+                    else { // Update outputs unconditionally, backend needs the activityModel and outputs to
+                           // create derived data even if outputs didn't change
+                        outputs.push(obj.get());
                     }
                 });
                 if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
                     return null;
                 } else {
-                    if (activityData === undefined) { activityData = {}}
+                    if (activityData === undefined) {
+                        activityData = {}
+                    }
                     activityData.outputs = outputs;
 
                     return activityData;
@@ -353,6 +365,7 @@
             self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
             self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
             self.pActivity = JSON.parse('${(pActivity as JSON).toString().encodeAsJavaScript()}');
+            self.projectSite = JSON.parse('${(projectSite as JSON).toString().encodeAsJavaScript()}');
         }
 
         var activityLevelData = new ActivityLevelData();
@@ -407,28 +420,33 @@
 
                     var matchingSite = $.grep(self.transients.pActivitySites, function(site) { return siteId == site.siteId})[0];
 
-                    activityLevelData.siteMap.clearFeatures();
-                    if (matchingSite) {
-                        activityLevelData.siteMap.replaceAllFeatures([matchingSite.extent.geometry]);
+                    if (matchingSite && matchingSite.extent && matchingSite.extent.geometry) {
+                        var geometry = matchingSite.extent.geometry;
+                        if (geometry.pid) {
+                            activityLevelData.siteMap.addWmsLayer(geometry.pid);
+                        } else {
+                            var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                            activityLevelData.siteMap.setGeoJSON(geoJson);
+                        }
                     }
                     self.transients.site(matchingSite);
 
                     <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
                         self.updatePhotoPointModel(matchingSite);
                     </g:if>
-                });
+              });
 
-                self.goToProject = function () {
-                    if (self.projectId) {
-                        document.location.href = fcConfig.projectViewUrl + self.projectId;
-                    }
-                };
+                 self.goToProject = function () {
+                     if (self.projectId) {
+                         document.location.href = fcConfig.projectViewUrl + self.projectId;
+                     }
+                 };
 
-                self.goToSite = function () {
-                    if (self.siteId()) {
-                        document.location.href = fcConfig.siteViewUrl + self.siteId();
-                    }
-                };
+                 self.goToSite = function () {
+                     if (self.siteId()) {
+                         document.location.href = fcConfig.siteViewUrl + self.siteId();
+                     }
+                 };
 
                 <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
                     self.transients.photoPointModel = ko.observable(new PhotoPointViewModel(site, activityLevelData.activity));
@@ -489,22 +507,33 @@
 
             <g:if test="${metaModel.supportsSites?.toBoolean()}">
                 var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
-                if (!mapFeatures) {
-                    mapFeatures = {zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []};
-                }
 
                 var mapOptions = {
-                    mapContainer: "siteMap",
-                    scrollwheel: false,
-                    zoomToBounds:true,
-                    zoomLimit:16,
-                    highlightOnHover:true,
-                    features:[],
-                    featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-                    wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-                };
+                    drawControl: false,
+                    showReset: true,
+                    draggableMarkers: false,
+                    useMyLocation: false,
+                    allowSearchLocationByAddress: false,
+                    allowSearchRegionByAddress: false,
+                    wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
+                    wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
+                }
 
-                activityLevelData.siteMap = new MapWithFeatures(mapOptions, mapFeatures);
+                activityLevelData.siteMap = new ALA.Map("activitySiteMap", mapOptions);
+
+                if (mapFeatures && mapFeatures.features && mapFeatures.features.length > 0) {
+                    if (mapFeatures.features[0].pid) {
+                        activityLevelData.siteMap.addWmsLayer(mapFeatures.features[0].pid);
+                    } else {
+                        var geometry = _.pick(mapFeatures.features[0], "type", "coordinates");
+                        var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                        activityLevelData.siteMap.setGeoJSON(geoJson);
+                    }
+                } else if (activityLevelData.pActivity.sites.length == 1) {
+                    viewModel.siteId(activityLevelData.pActivity.sites[0].siteId);
+                } else if (activityLevelData.projectSite && activityLevelData.projectSite.extent) {
+                    activityLevelData.siteMap.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(activityLevelData.projectSite.extent.geometry));
+                }
             </g:if>
 
             ko.applyBindings(viewModel);

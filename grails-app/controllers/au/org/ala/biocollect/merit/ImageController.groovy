@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.FileUtils
 import com.drew.imaging.ImageMetadataReader
 import com.drew.lang.GeoLocation
 import com.drew.metadata.Directory
@@ -137,16 +138,17 @@ class ImageController {
             MultipartFile file = request.getFile('files')
             //println "file is " + file
             if (file?.size) {  // will only have size if a file was selected
-                def filename = file.getOriginalFilename().replaceAll(' ','_')
-                def ext = FilenameUtils.getExtension(filename)
-                filename = nextUniqueFileName(FilenameUtils.getBaseName(filename)+'.'+ext)
+                String filename = file.getOriginalFilename().replaceAll(' ','_')
+                String ext = FilenameUtils.getExtension(filename)
+                String path = grailsApplication.config.upload.images.path
+                filename = FileUtils.nextUniqueFileName(FilenameUtils.getBaseName(filename)+'.'+ext, path)
 
                 def thumbFilename = FilenameUtils.removeExtension(filename) + "-thumb." + ext
                 //println "filename=${filename}"
 
                 def colDir = new File(grailsApplication.config.upload.images.path as String)
                 colDir.mkdirs()
-                File f = new File(fullPath(filename))
+                File f = new File(FileUtils.fullPath(filename, path))
                 //println "saving ${filename} to ${f.absoluteFile}"
                 file.transferTo(f)
                 def exifMd = getExifMetadata(f)
@@ -174,10 +176,12 @@ class ImageController {
                         decimalLongitude: doubleToString(exifMd.decLng),
                         verbatimLatitude: exifMd.latitude,
                         verbatimLongitude: exifMd.longitude,
-                        url: encodeImageURL(grailsApplication.config.upload.images.url,filename),
-                        thumbnail_url: encodeImageURL(grailsApplication.config.upload.images.url, thumbFilename),
-                        delete_url: encodeImageURL(grailsApplication.config.grails.serverURL+"/image/delete?filename=", filename),
-                        delete_type: 'DELETE']
+                        url: FileUtils.encodeUrl(grailsApplication.config.upload.images.url,filename),
+                        thumbnail_url: FileUtils.encodeUrl(grailsApplication.config.upload.images.url, thumbFilename),
+                        delete_url: FileUtils.encodeUrl(grailsApplication.config.grails.serverURL+"/image/delete?filename=", filename),
+                        delete_type: 'DELETE',
+                        attribution: ''
+                ]
                 result = [files:[md]]
             }
         }
@@ -193,19 +197,14 @@ class ImageController {
         render '{"deleted":true}'
     }
 
-    def encodeImageURL(prefix, filename) {
-        def encodedFileName = filename.encodeAsURL().replaceAll('\\+', '%20')
-        URI uri = new URI(prefix + "/" + encodedFileName)
-        return uri.toURL();
-    }
 
     /**
      * A convenience method to help serve files in the dev. environment.
      * The content type of the file is derived purely from the file extension.
      */
     def get() {
-
-        File f = new File(fullPath(params.id))
+        String path = grailsApplication.config.upload.images.path
+        File f = new File(FileUtils.fullPath(params.id, path))
         if (!f.exists()) {
             response.status = 404
             return
@@ -219,25 +218,4 @@ class ImageController {
 
     }
 
-    /**
-     * We are preserving the file name so the URLs look nicer and the file extension isn't lost.
-     * As filename are not guaranteed to be unique, we are pre-pending the file with a counter if necessary to
-     * make it unique.
-     */
-    private String nextUniqueFileName(filename) {
-        int counter = 0;
-        String newFilename = filename
-        File f = new File(fullPath(newFilename))
-        while (f.exists()) {
-            newFilename = "${counter}_${filename}"
-            counter++;
-            f = new File(fullPath(newFilename))
-        }
-        return newFilename;
-    }
-
-    String fullPath(filename) {
-
-        return grailsApplication.config.upload.images.path + File.separator  + filename
-    }
 }

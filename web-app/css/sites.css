@@ -1,0 +1,5 @@
+#detailsLinkedToSite .tab-content{
+    min-height: 400px;
+    max-height: 700px;
+    padding-left: 10px;
+}

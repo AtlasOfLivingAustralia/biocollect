@@ -7,6 +7,7 @@
     <r:script disposition="head">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
+        projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         projectUpdateUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
         projectEditUrl:"${createLink(action:'edit', id:project.projectId)}",
         sitesDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDeleteSitesFromProject', id:project.projectId)}",
@@ -16,9 +17,15 @@
         removeSiteUrl: "${createLink(controller: 'site', action: '')}",
         activityEditUrl: "${createLink(controller: 'bioActivity', action: 'edit')}",
         activityCreateUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
-        activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'ajaxDelete')}",
+        activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
+        activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'delete')}",
         activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
         activityListUrl : "${createLink(controller: 'bioActivity', action: 'ajaxListForProject', params: [id:project.projectId])}",
+        activiyCountUrl: "${createLink(controller: 'bioActivity', action: 'getProjectActivityCount')}",
+        speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
+        searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities',params: [projectId:project.projectId, version: params.version])}",
+        downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData',params: [projectId:project.projectId])}",
+        getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params:[version: params.version])}",
         siteCreateUrl: "${createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId])}",
         siteSelectUrl: "${createLink(controller: 'site', action: 'select', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
         siteUploadUrl: "${createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
@@ -33,7 +40,9 @@
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         projectActivityCreateUrl: "${createLink(controller: 'projectActivity', action: 'ajaxCreate', params: [projectId:project.projectId])}",
-        projectActivityUpdateUrl: "${createLink(controller: 'projectActivity', action: 'ajaxUpdate', params: [projectId:project.projectId])}",
+        projectActivityUpdateUrl: "${createLink(controller: 'projectActivity', action: 'ajaxUpdate')}",
+        projectActivityDeleteUrl: "${createLink(controller: 'projectActivity', action: 'delete')}",
+        projectActivityUnpublishUrl: "${createLink(controller: 'projectActivity', action: 'unpublish')}",
         addNewSpeciesListsUrl: "${createLink(controller: 'projectActivity', action: 'ajaxAddNewSpeciesLists', params: [projectId:project.projectId])}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         speciesListUrl: "${createLink(controller: 'search', action: 'searchSpeciesList')}",
@@ -42,6 +51,7 @@
         imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         documentUpdateUrl: "${createLink(controller:"proxy", action:"documentUpdate")}",
+        documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
         imageLocation:"${resource(dir:'/images')}",
         pdfgenUrl: "${createLink(controller: 'resource', action: 'pdfUrl')}",
         pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
@@ -49,9 +59,18 @@
         audioViewer: "${createLink(controller: 'resource', action: 'audioviewer')}",
         videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
         recordListUrl: "${createLink(controller: 'record', action: 'ajaxListForProject', params: [id:project.projectId])}",
+        recordDeleteUrl:"${createLink(controller: 'record', action: 'delete')}",
         projectDeleteUrl:"${createLink(action:'delete', id:project.projectId)}",
-        ßerrorViewer: "${createLink(controller: 'resource', action: 'error')}",
-        returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}"
+        errorViewer: "${createLink(controller: 'resource', action: 'error')}",
+        returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}",
+        auditMessageUrl: "${createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId])}",
+        projectId: "${project.projectId}",
+        projectLinkPrefix: "${createLink(controller: 'project')}/",
+        recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages", params:[version: params.version])}',
+        view: 'project',
+        imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
+        version: "${params.version}",
+        aekosSubmissionPostUrl: "${createLink(controller: 'projectActivity', action: 'aekosSubmission')}"
         },
         here = window.location.href;
 
@@ -71,28 +90,25 @@
             }
         </style>
     <![endif]-->
-    <r:require modules="gmap3,mapWithFeatures,knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, records"/>
+    <r:require modules="knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, map"/>
 </head>
 <body>
 
 <bc:koLoading>
     <g:render template="banner"/>
     <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="row-fluid">
-                <div class="clearfix">
-                    <g:if test="${flash.errorMessage || flash.message}">
-                        <div class="span5">
-                            <div class="alert alert-error">
-                                <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-                                ${flash.errorMessage?:flash.message}
-                            </div>
-                        </div>
-                    </g:if>
+        <div id="project-results-placeholder"></div>
+        <g:render template="../shared/flashScopeMessage"/>
 
-                </div>
+        <g:if test="${params?.version}">
+            <div class="well">
+                <h4>
+                    Version:
+                    <span id="versionMsg"></span>
+                </h4>
             </div>
-        </div>
+        </g:if>
+
         <div class="row-fluid">
             <!-- content  -->
             <ul id="ul-main-project" class="nav nav-pills">
@@ -101,7 +117,7 @@
         <div class="pill-content">
             <fc:tabContent tabs="${projectContent}" tabClass="pill-pane"/>
         </div>
-    </div>
+   </div>
 </bc:koLoading>
 
 <r:script>
@@ -122,12 +138,26 @@
         };
         ko.applyBindings(new ViewModel());
 
-        var pActivitiesVM = new ProjectActivitiesViewModel(pActivities, pActivityForms, project.projectId, project.sites, user);
+        var params = {};
+        params.projectId = project.projectId;
+        params.sites = project.sites;
+        params.pActivities = pActivities;
+        params.user = user;
+        params.projectStartDate = project.plannedStartDate;
+        params.pActivityForms = pActivityForms;
+        params.organisationName = project.organisationName;
+        params.project = projectViewModel;
+
+        var pActivitiesVM = new ProjectActivitiesViewModel(params);
         initialiseProjectActivitiesList(pActivitiesVM);
-        initialiseData();
+        initialiseData('project');
 
         //Main tab selection
         new RestoreTab('ul-main-project', 'about-tab');
+        if(amplify.store('traffic-from-project-finder-page')){
+            amplify.store('traffic-from-project-finder-page',false)
+            $('#about-tab').tab('show');
+        }
         <g:if test="${projectContent.admin.visible}">
             initialiseProjectActivitiesSettings(pActivitiesVM);
 

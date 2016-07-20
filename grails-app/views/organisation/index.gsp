@@ -4,8 +4,6 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${organisation.name.encodeAsHTML()} | Field Capture</title>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
-    <script type="text/javascript" src="//www.google.com/jsapi"></script>
     <g:set var="loadPermissionsUrl" value="${createLink(controller: 'organisation', action: 'getMembersForOrganisation', id:organisation.organisationId)}"/>
 
     <r:script disposition="head">
@@ -20,19 +18,51 @@
             organisationListUrl: '${g.createLink(action:"list")}',
             organisationViewUrl: '${g.createLink(action:"index", id:"${organisation.organisationId}")}',
             organisationMembersUrl: "${loadPermissionsUrl}",
+            regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
+            featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
             imageLocation:"${resource(dir:'/images')}",
             logoLocation:"${resource(dir:'/images/filetypes')}",
             adHocReportsUrl: '${g.createLink(action:"getAdHocReportTypes")}',
             dashboardUrl: "${g.createLink(controller: 'report', action: 'loadReport', params:[fq:'organisationFacet:'+organisation.name])}",
-            activityViewUrl: '${g.createLink(controller: 'activity', action:'index')}',
-            activityEditUrl: '${g.createLink(controller: 'activity', action:'enterData')}',
             reportCreateUrl: '${g.createLink( action:'createAdHocReport')}',
             submitReportUrl: '${g.createLink( action:'ajaxSubmitReport', id:"${organisation.organisationId}")}',
             approveReportUrl: '${g.createLink( action:'ajaxApproveReport', id:"${organisation.organisationId}")}',
+            spatialService: '${createLink(controller:'proxy',action:'feature')}',
+            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
             rejectReportUrl: '${g.createLink( action:'ajaxRejectReport', id:"${organisation.organisationId}")}',
+            defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
             returnTo: '${g.createLink(action:'index', id:"${organisation.organisationId}")}',
-            projects : <fc:modelAsJavascript model="${organisation.projects}"/>
-            };
+            projects : <fc:modelAsJavascript model="${organisation.projects}"/>,
+            projectListUrl: "${createLink(controller: 'project', action: 'search',params:[initiator:'biocollect'])}",
+            projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
+            organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
+            organisation : <fc:modelAsJavascript model="${organisation}"/>,
+            organisationName : "${organisation.name}",
+            showAllProjects: true,
+            meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
+            meritProjectUrl: "${grailsApplication.config.merit.project.url}",
+
+            searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
+            projectLinkPrefix: "${createLink(controller: 'project')}/",
+            bieUrl: "${grailsApplication.config.bie.baseURL}",
+            siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
+            projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
+            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params:[version: params.version])}",
+            downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
+            activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
+            activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
+            activityEditUrl: "${createLink(controller: 'bioActivity', action: 'edit')}",
+            activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'delete')}",
+            activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
+            activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
+            recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
+            imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
+            organisationName: '${organisation.name}',
+            version: "${params.version?:''}",
+
+        };
     </r:script>
     <style type="text/css">
         #projectList th {
@@ -45,7 +75,7 @@
             margin: 5px 0;
         }
     </style>
-    <r:require modules="wmd,knockout,mapWithFeatures,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid"/>
+    <r:require modules="wmd,knockout,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder,map,siteDisplaysiteDispl,myActivity, activities"/>
 </head>
 <body>
 
@@ -113,8 +143,8 @@
         $('a[data-toggle="tab"]').on('shown', function (e) {
             var tab = e.currentTarget.hash;
             amplify.store(organisationTabStorageKey, tab);
-            if (!initialisedSites && tab == '#sites') { // Google maps doesn't initialise well unless it is visible.
-                generateMap(['organisationFacet:'+organisation.name], false, {includeLegend:false});
+            if (!initialisedSites && tab == '#sites') {
+                generateMap(['organisationFacet:'+organisation.name]);
                 initialisedSites = true;
             }
         });
@@ -124,12 +154,15 @@
         if (storedTab) {
             $(storedTab + '-tab').tab('show');
         }
-
         <g:if test="${content.admin.visible}">
         populatePermissionsTable(fcConfig.organisationMembersUrl);
         </g:if>
-    });
 
+        initialiseData("allrecords");
+    });
+    $(function() {
+        var projectFinder = new ProjectFinder();
+    });
 </r:script>
 
 </body>

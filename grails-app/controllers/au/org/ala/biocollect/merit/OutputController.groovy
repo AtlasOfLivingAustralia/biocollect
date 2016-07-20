@@ -142,4 +142,20 @@ class OutputController {
         render "ok"
     }
 
+    /**
+     * Get Output Species Identifier
+     *
+     * @return output species identifier.
+     */
+    def getOutputSpeciesIdentifier(){
+        def result = outputService.getOutputSpeciesId()
+
+        if(!result.error){
+            render result as JSON
+        } else {
+            response.status = 503
+            return [status:'error', error: 'Error retrieving output species id']
+        }
+    }
+
 }

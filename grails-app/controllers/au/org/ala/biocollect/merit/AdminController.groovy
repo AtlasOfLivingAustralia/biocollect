@@ -22,6 +22,7 @@ class AdminController {
     def siteService
     def outputService
     def documentService
+    def projectActivityService
 
     def index() {}
 
@@ -95,6 +96,13 @@ class AdminController {
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def programsModel() {
         [programsModel: metadataService.programsModel(), activityTypes:metadataService.activityTypesList()]
+    }
+
+    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
+    def syncSciStarter(){
+        String whiteList = params.whiteList
+        Map imported = projectService.importSciStarterProjects(whiteList)
+        render text: imported as JSON, contentType: 'application/json'
     }
 
     def updateActivitiesModel() {
@@ -383,8 +391,8 @@ class AdminController {
         if (id) {
             def project = projectService.get(id)
             if (project) {
-                def messages = auditService.getAuditMessagesForProject(id)
-                [project: project, messages: messages?.messages, userMap: messages?.userMap]
+                render view:'/admin/auditProject', model: [project: project]
+
             } else {
                 flash.message = "Specified project id does not exist!"
                 redirect(action:'audit')
@@ -397,13 +405,20 @@ class AdminController {
 
     def auditMessageDetails() {
         def results = auditService.getAuditMessage(params.id as String)
+        String compareId = params.compareId
         def userDetails = [:]
         def compare
         if (results?.message) {
             userDetails = auditService.getUserDetails(results?.message?.userId)
-            compare = auditService.getAuditMessage(params.compareId as String)
         }
-        [message: results?.message, compare: compare?.message, userDetails: userDetails.user]
+
+        if(compareId){
+            compare = auditService.getAuditMessage(params.compareId as String)
+        } else {
+            compare = auditService.getAutoCompareAuditMessage(params.id)
+        }
+
+        [message: results?.message, compare: compare?.message, userDetails: userDetails.user, layoutContent: 'adminLayout']
     }
 
     def reloadSiteMetadata() {
@@ -466,12 +481,18 @@ class AdminController {
     }
 
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
+    def listHubs() {
+        List hubs = settingService.listHubs()?.collect{it.urlPath}
+        render hubs as JSON
+    }
+
+    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def loadHubSettings(String id) {
-        def hubSettings = settingService.getHubSettings(id)
+        HubSettings hubSettings = settingService.getHubSettings(id)
         if (!hubSettings) {
             hubSettings = new HubSettings()
         }
-        respond hubSettings, [formats:['json','xml']]
+        render hubSettings as JSON
     }
 
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
@@ -498,8 +519,32 @@ class AdminController {
         settingService.updateHubSettings(settings)
 
         def message = [status:'ok']
-        respond ((Object)message,  (Map)[formats:['json','xml']])
+        render message as JSON
 
+    }
+
+
+    def importSightingsData() {
+        if (request instanceof MultipartHttpServletRequest) {
+            def file = request.getFile('sightingsData')
+
+            if (file) {
+                def pActivity = projectActivityService.get(params.pActivityId)
+                if (pActivity?.projectId) {
+                    def model = metadataService.getActivityModel(pActivity.pActivityFormName)
+                    def results = importService.importSightingsData(file.inputStream, pActivity.projectId, pActivity.pActivityFormName, model.outputs[0], params.pActivityId)
+
+                    render results as JSON
+                    return
+                } else {
+                    render contentType: 'text/json', status:400, text:'{"error":"Invalid project activity id"}'
+                    return
+                }
+            }
+
+        }
+
+        render contentType: 'text/json', status:400, text:'{"error":"No file supplied"}'
     }
 
 }

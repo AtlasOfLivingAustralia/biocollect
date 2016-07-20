@@ -1,37 +1,37 @@
 modules = {
 
     ala2Skin {
-        dependsOn 'jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
+        dependsOn 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
         resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
         resource url: 'css/bootstrap-combobox.css'
         resource url: 'css/common.css'
+        resource url: 'css/biocollect-banner.css'
     }
 
     nrmSkin {
         dependsOn 'application', 'bootstrap_nrm', 'font_awesome_44'
-        resource url: [dir:'css/nrm/css', file:'screen.css'], attrs:[media:'screen,print']
-        resource url: [dir:'css/', file:'capture.css'],  plugin: 'fieldcapture-plugin'
-        resource url: [dir:'css/nrm/images/', file:'AustGovt_inline_white_on_transparent.png'],  plugin: 'fieldcapture-plugin'
+        resource url: 'css/nrm/css/screen.css', attrs: [media: 'screen,print']
+        resource url: 'css/capture.css'
+        resource url: 'css/nrm/images/AustGovt_inline_white_on_transparent.png'
         resource url: 'css/common.css'
     }
 
     bootstrap_nrm {
-        dependsOn 'app_bootstrap', 'jquery-ui'
-        resource url: [dir:'css/nrm/less', file:'bootstrap.less'],attrs:[rel: "stylesheet/less", type:'css', media:'screen,print'], bundle:'bundle_app_bootstrap'
+        dependsOn 'bootstrap', 'app_bootstrap', 'a-jquery-ui', 'app_bootstrap_responsive_nrm'
+        resource url: [dir: 'css/nrm/less', file: 'bootstrap.less'], attrs: [rel: "stylesheet/less", type: 'css', media: 'screen,print'], bundle: 'bundle_app_bootstrap'
         resource url: 'css/empty.css'
 
     }
 
-    app_bootstrap_responsive {
+    app_bootstrap_responsive_nrm {
         dependsOn 'app_bootstrap'
-        resource url: 'css/nrm/less/responsive.less' ,attrs:[rel: "stylesheet/less", type:'css', media:'screen,print'], bundle:'bundle_app_bootstrap_responsive'
+        resource url: 'css/nrm/less/responsive.less', attrs: [rel: "stylesheet/less", type: 'css', media: 'screen,print'], bundle: 'bundle_app_bootstrap_responsive'
         resource url: 'css/empty.css' // needed for less-resources plugin ?
     }
-    
+
     /** BEGIN - Fildcapture/Marite resources **/
     application {
         dependsOn 'jquery', 'knockout', 'bootbox'
-        resource url: "${grailsApplication.config.ala.baseURL ?: 'http://www.ala.org.au'}/wp-content/themes/ala2011/images/favicon.ico", attrs: [type: 'ico'], disposition: 'head'
         resource url: 'vendor/html5/html5.js', wrapper: { s -> "<!--[if lt IE 9]>$s<![endif]-->" }, disposition: 'head'
         resource url: 'vendor/vkbeautyfy/vkbeautify.0.99.00.beta.js'
         resource url: 'js/fieldcapture-application.js'
@@ -40,16 +40,13 @@ modules = {
         resource url: 'vendor/jquery.blockUI/jquery.blockUI.js'
     }
 
+    bootbox {
+        resource url: "vendor/bootbox/bootbox.min.js"
+    }
+
     defaultSkin {
         dependsOn 'application'
         resource url: 'css/default.skin.css'
-    }
-
-    nrmSkin {
-        dependsOn 'application', 'app_bootstrap_responsive'
-        resource url: 'css/nrm/css/screen.css', attrs: [media: 'screen,print']
-        resource url: 'css/capture.css'
-        resource url: 'css/nrm/images/AustGovt_inline_white_on_transparent.png'
     }
 
     wmd {
@@ -57,27 +54,12 @@ modules = {
         resource url: 'vendor/wmd/showdown.js'
         resource url: 'vendor/wmd/wmd.js'
         resource url: 'vendor/wmd/wmd-buttons.png'
-
+        resource url: 'css/wmd-editor.css'
     }
 
     nrmPrintSkin {
         dependsOn 'nrmSkin'
         resource url: 'css/print.css', attrs: [media: 'screen,print']
-    }
-
-    gmap3 {
-        resource url: 'vendor/gmap3/gmap3.min.js'
-    }
-
-    projectsMap {
-        resource url: 'js/projects-map.js'
-        resource url: 'js/wms.js'
-        resource url: 'vendor/keydragzoom/keydragzoom.js'
-    }
-
-    mapWithFeatures {
-        resource url: 'js/wms.js'
-        resource url: 'js/mapWithFeatures.js'
     }
 
     knockout {
@@ -105,9 +87,14 @@ modules = {
         resource url: 'vendor/bootstrap-datepicker/css/datepicker.css'
     }
 
+    timepicker {
+        resource url: "vendor/jquery.timeentry.package-2.0.1/jquery.plugin.min.js"
+        resource url: "vendor/jquery.timeentry.package-2.0.1/jquery.timeentry.min.js"
+        resource url: "vendor/jquery.timeentry.package-2.0.1/jquery.timeentry.css"
+    }
+
     app_bootstrap {
         dependsOn 'application', 'font_awesome_44'
-        resource url: 'vendor/bootstrap/js/bootstrap.min.js'
         // The less css resources plugin (1.3.3, resources plugin 1.2.14) is unable to resolve less files in a plugin so apps that use this plugin must supply their own bootstrap styles.
         // However, commenting this section
         resource url: 'vendor/bootstrap/less/bootstrap.less', attrs: [rel: "stylesheet/less", type: 'css', media: 'screen,print'], bundle: 'bundle_app_bootstrap'
@@ -120,11 +107,11 @@ modules = {
 
     app_bootstrap_responsive {
         dependsOn 'app_bootstrap'
-        resource url: 'vendor/bootstrap/less/responsive.less', attrs: [rel: "stylesheet/less", type: 'css', media: 'screen,print'], bundle: 'bundle_app_bootstrap_responsive'
+        resource url: 'vendor/bootstrap/less/responsive.less', attrs: [rel: "stylesheet/less", type: 'css', media: 'screen,print']
         resource url: 'css/empty.css' // needed for less-resources plugin ?
     }
 
-    restoreTab{
+    restoreTab {
         defaultBundle true
         dependsOn 'amplify'
         resource url: 'js/restoreTab.js'
@@ -141,12 +128,6 @@ modules = {
         resource url: 'js/activity.js'
     }
 
-    records {
-        defaultBundle 'application'
-        dependsOn 'knockout, pagination'
-        resource url: 'js/records.js'
-    }
-
     jstimezonedetect {
         resource url: 'vendor/jstz/jstz.min.js'
     }
@@ -155,12 +136,14 @@ modules = {
         resource url: 'vendor/js-iso8601/js-iso8601.min.js'
     }
 
-    'jquery-ui' {
+    // name changed since jquery-ui js file should load before bootstrap js file. Otherwise, bootstrap functionality
+    // like button toggle does not work. It seems resource plugin is loading resources in alphabetic order.
+    'a-jquery-ui' {
         dependsOn 'jquery'
 
-        resource url: '/vendor/jquery-ui/jquery-ui-1.11.2-no-autocomplete.js'
-        resource url: '/vendor/jquery-ui/themes/smoothness/jquery-ui.css', attrs:[media:'all']
-        resource url: 'vendor/jquery.appear/jquery.appear.js'
+        resource url: '/vendor/jquery-ui/jquery-ui-1.11.2-no-autocomplete.js', disposition: 'head'
+        resource url: '/vendor/jquery-ui/themes/smoothness/jquery-ui.css', attrs: [media: 'all'], disposition: 'head'
+        resource url: 'vendor/jquery.appear/jquery.appear.js', disposition: 'head'
     }
 
     jquery_bootstrap_datatable {
@@ -177,15 +160,8 @@ modules = {
 
     }
 
-    drawmap {
-        defaultBundle true
-        resource url: 'vendor/keydragzoom/keydragzoom.js'
-        resource url: 'js/wms.js'
-        resource url: 'js/selection-map.js'
-    }
-
     jQueryFileUpload {
-        dependsOn 'jquery-ui'
+        dependsOn 'a-jquery-ui'
         resource url: 'css/jquery.fileupload-ui.css', disposition: 'head'
 
         resource url: 'vendor/fileupload-9.0.0/load-image.min.js'
@@ -226,7 +202,7 @@ modules = {
         resource url: 'js/parser.js'
     }
 
-    pagination{
+    pagination {
         defaultBundle 'application'
         resource url: 'js/pagination.js'
     }
@@ -243,10 +219,24 @@ modules = {
 
     projects {
         defaultBundle 'application'
-        dependsOn 'knockout', 'attachDocuments', 'wmd'
+        dependsOn 'knockout', 'attachDocuments', 'wmd', 'responsiveTable'
         resource url: 'js/projects.js'
         resource url: 'js/sites.js'
         resource url: 'vendor/moment/moment.min.js'
+        resource url: 'css/surveys.css'
+    }
+
+    projectFinder {
+        dependsOn('knockout', 'projects','bootstrap', 'responsiveTable', 'zip', 'underscore','amplify')
+        resource url: 'js/button-toggle-events.js'
+        resource url: 'js/project-finder.js'
+        resource url: 'css/project-finder.css'
+    }
+
+    responsiveTable{
+        resource url: 'vendor/responsive/js/responsive.core.js'
+        resource url: 'vendor/responsive/js/responsive.tablelist.js'
+        resource url: 'vendor/responsive/css/responsive.tablelist.css'
     }
 
     jquery_cookie {
@@ -261,7 +251,7 @@ modules = {
         resource url: 'js/projectActivity.js'
     }
 
-    projectActivityInfo{
+    projectActivityInfo {
         defaultBundle 'application'
         dependsOn 'knockout'
         resource url: 'js/projectActivityInfo.js'
@@ -274,7 +264,7 @@ modules = {
     }
 
     imageViewer {
-        dependsOn 'viewer', 'jquery'
+        dependsOn 'image-viewer', 'jquery'
         resource url: 'vendor/fancybox/jquery.fancybox.js'
         resource url: 'vendor/fancybox/jquery.fancybox.css?v=2.1.5'
         resource url: 'vendor/fancybox/fancybox_overlay.png'
@@ -306,10 +296,11 @@ modules = {
         defaultBundle 'application'
         dependsOn 'jquery', 'knockout', 'wmd'
         resource url: 'js/organisation.js'
+        resource url: 'css/organisation.css'
     }
 
     slickgrid {
-        dependsOn 'jquery', 'jquery-ui'
+        dependsOn 'jquery', 'a-jquery-ui'
         resource url: 'vendor/slickgrid/slick.grid.css'
         //resource 'slickgrid/slick-default-theme.css'
         //resource 'slickgrid/css/smoothness/jquery-ui-1.8.16.custom.css'
@@ -351,13 +342,105 @@ modules = {
     }
 
     font_awesome_44 {
-        resource url: 'vendor/font-awesome/4.4.0/css/font-awesome.min.css', attrs:[media:'all']
+        resource url: 'vendor/font-awesome/4.4.0/css/font-awesome.min.css', attrs: [media: 'all']
     }
     /** END - Fildcapture/Marite resources **/
 
-    comments{
+    comments {
         dependsOn 'knockout'
         resource url: 'css/comment.css'
         resource url: 'js/comment.js'
+    }
+
+    zip {
+        resource url: "vendor/lz-string-1.4.4/lz-string.min.js"
+    }
+
+    underscore {
+        resource url: "vendor/underscore/underscore-1.8.3.min.js"
+    }
+
+    mapUtils {
+        dependsOn 'map' // from the ala-map plugin
+        defaultBundle 'application'
+        resource url: 'js/MapUtilities.js'
+    }
+
+    siteSelection {
+        resource url: "js/siteSelection.js"
+        resource url: "css/siteSelection.css"
+    }
+
+    siteDisplaysiteDispl {
+        resource url: "js/siteDisplay.js"
+    }
+    
+    activities{
+        resource url: 'css/activities.css'
+    }
+
+    largeCheckbox{
+        resource url: 'vendor/large-checkbox/large-checkbox.css'
+    }
+
+    audio {
+        dependsOn "modernizr"
+        resource url: 'js/audio.js'
+        resource url: 'css/audio-control.css'
+        resource url: 'vendor/recorderjs/recorder.js'
+//        resource url: 'vendor/libmp3lame/libmp3lame.min.js'
+    }
+
+    modernizr {
+        resource url: "vendor/modernizr/modernizr-custom.js"
+    }
+
+    imageDataType{
+        resource url: 'js/images.js'
+        resource url: 'css/images.css'
+    }
+
+    admin {
+        resource url: 'js/activityModel.js'
+        resource url: 'js/hubs.js'
+    }
+
+    imageGallery{
+        dependsOn('imageViewer','knockout')
+        resource url: 'css/image-gallery.css'
+        resource url: 'js/fieldcapture-application.js'
+        resource url: 'js/images.js'
+        resource url: 'js/image-gallery.js'
+    }
+
+    sites{
+        dependsOn('imageViewer', 'font_awesome_44', 'projectActivityInfo', 'myActivity', 'knockout')
+        resource url: 'css/sites.css'
+        resource url: 'css/horizontal-scroll-list.css'
+        resource url: 'vendor/vkbeautyfy/vkbeautify.0.99.00.beta.js'
+        resource url: 'js/fieldcapture-application.js'
+        resource url: 'js/images.js'
+        resource url: 'js/poi-gallery.js'
+    }
+
+    siteSearch{
+        dependsOn('mapUtils','map')
+        resource url: 'css/sites-list.css'
+        resource url: 'js/pagination.js'
+        resource url: 'js/sites-list.js'
+    }
+
+    responsiveTableStacked{
+        resource url: 'vendor/responsive-table-stacked/stacked.css'
+        resource url: 'vendor/responsive-table-stacked/stacked.js'
+    }
+
+    mdba {
+        dependsOn 'bootstrap','font_awesome_44', 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
+        resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
+        resource url: 'css/bootstrap-combobox.css'
+        resource url: 'css/common.css'
+        resource url: [dir:'css', file:'Common_fonts.css']
+        resource url: [dir:'css', file:'mdba-styles.css']
     }
 }

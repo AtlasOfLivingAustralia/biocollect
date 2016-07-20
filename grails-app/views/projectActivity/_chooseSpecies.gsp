@@ -3,18 +3,40 @@
 
         <div class="well">
 
+            <div class="row-fluid margin-bottom-1">
+                <label for="speciesNameSearch">Enter a species name to search for</label>
+                <input id="speciesNameSearch" class="input-xxlarge" type="text" placeholder="Search species"
+                       data-bind="value:species.allSpeciesLists.searchName,
+                                            fusedAutocomplete:{
+                                                source: species.transients.bioSearch,
+                                                name: species.allSpeciesLists.searchName,
+                                                guid: species.allSpeciesLists.searchGuid
+                                            }">
+                <div class="input-append">
+                    <button id="search" class="btn btn-primary" data-bind="click: species.allSpeciesLists.loadAllSpeciesLists">Search</button>
+                </div>
+                <div class="input-append">
+                    <button id="clear" class="btn btn-default" data-bind="click: species.allSpeciesLists.clearSearch">Clear</button>
+                </div>
+            </div>
+
             <div class="row-fluid">
                 <div class="span6 text-left">
                     <label> Found: <span data-bind="text: species.allSpeciesLists.listCount"></span> species lists </label>
                 </div>
+
+                <!-- ko if: species.allSpeciesLists.listCount() > 0 -->
                 <div class="span6 text-right">
                     <span data-bind="if: species.allSpeciesLists.isPrevious"> <a class="btn btn-small" target="blank" data-bind="click: species.allSpeciesLists.previous"> << Previous </a></span>
                     <span data-bind="if: species.allSpeciesLists.isNext"> <a class="btn btn-small" target="blank" data-bind="click: species.allSpeciesLists.next"> Next >> </a></span>
                     <button class="btn btn-small" data-bind="click: species.transients.toggleShowExistingSpeciesLists">  Close</button>
                 </div>
-                </br>
+                <div class="margin-bottom-2"></div>
+                <!-- /ko -->
+
             </div>
 
+            <!-- ko if: species.allSpeciesLists.listCount() > 0 -->
             <div class="row-fluid">
                 <div class="span12 text-left">
                     <table class="table table-striped" id="select-species-list">
@@ -57,11 +79,14 @@
                     </table>
                 </div>
             </div>
+            <!-- /ko -->
 
             <div class="row-fluid">
                 <div class="span12 text-left">
+                    <!-- ko if: species.allSpeciesLists.listCount() > 0 -->
                     <span data-bind="if: species.allSpeciesLists.isPrevious"> <a class="btn btn-small" target="blank" data-bind="click: species.allSpeciesLists.previous"> << Previous </a></span>
                     <span data-bind="if: species.allSpeciesLists.isNext"> <a class="btn btn-small" target="blank" data-bind="click: species.allSpeciesLists.next"> Next >> </a></span>
+                    <!-- /ko -->
                     <button class="btn btn-small" data-bind="click: species.transients.toggleShowExistingSpeciesLists">  Close</button>
                 </div>
             </div>

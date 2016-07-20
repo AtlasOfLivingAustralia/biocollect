@@ -20,6 +20,11 @@ class PrintModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderTime(WidgetRenderContext context) {
+        defaultRender(context)
+    }
+
+    @Override
     void renderNumber(WidgetRenderContext context) {
         defaultRender(context)
     }
@@ -52,7 +57,23 @@ class PrintModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderSelectManyCombo(WidgetRenderContext context) {
+        renderCheckboxes(context)
+    }
+
+    @Override
+    void renderAudio(WidgetRenderContext context) {
+        context.writer << context.g.render(template: '/output/audioDataTypeViewModelTemplate',
+                model: [databindAttrs:context.databindAttrs.toString(), name: context.source, index: "''", hideFile: true])
+    }
+
+    @Override
     void renderImage(WidgetRenderContext context) {
+        defaultRender(context)
+    }
+
+    @Override
+    void renderImageDialog(WidgetRenderContext context) {
         defaultRender(context)
     }
 
@@ -123,6 +144,7 @@ class PrintModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderGeoMap(WidgetRenderContext context) {
-        context.writer << """<div id="map" style="width:100%; height: 512px;"></div>"""
+        context.model.readonly = true
+        context.writer << context.g.render(template: '/output/dataEntryMap', model: context.model)
     }
 }

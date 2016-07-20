@@ -11,6 +11,14 @@
     <r:script disposition="head">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
+        spatialService: '${createLink(controller:'proxy',action:'feature')}',
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        geocodeUrl: "${grailsApplication.config.google.geocode.url}",
+        siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
         spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
         spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
@@ -19,11 +27,26 @@
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         imageLocation:"${resource(dir:'/images')}",
         logoLocation:"${resource(dir:'/images/filetypes')}",
-        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}"
-    }
+        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
+        isUserPage: true,
+        <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+            isUserWorksPage: true,
+        </g:if>
+        <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
+            isUserEcoSciencePage: true,
+        </g:if>
+        projectListUrl: "${createLink(controller: 'project', action: 'search', params:[initiator:'biocollect'])}",
+        isCitizenScience: true,
+        projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
+        organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
+        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
+        showAllProjects: true,
+        meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
+        meritProjectUrl: "${grailsApplication.config.merit.project.url}",
+        isCitizenScience: false
+  }
     </r:script>
-    <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <r:require modules="js_iso8601,projects"/>
+    <r:require modules="js_iso8601,projects,projectFinder,map"/>
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">
@@ -37,20 +60,22 @@
         </g:if>
     </div>
 
-    <div id="pt-root" class="row-fluid">
-        <g:render template="projectsList"/>
-    </div>
+    <g:render template="/shared/projectFinder"/>
 </div>
 <r:script>
-$(document).ready(function () {
     $("#newPortal").on("click", function() {
-        document.location.href = "${createLink(controller:'project',action:'create',params:[citizenScience:true])}";
+        <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+            document.location.href = "${createLink(controller:'project',action:'create',params:[citizenScience:true])}";
+        </g:if>
+        <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+            document.location.href = "${createLink(controller:'project',action:'create',params:[works:true])}";
+        </g:if>
+        <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
+            document.location.href = "${createLink(controller:'project',action:'create',params:[ecoScience:true])}";
+        </g:if>
     });
 
-    window.pago.init([
-    <g:each var="p" in="${projects}">new CitizenScienceFinderProjectViewModel(${p as JSON}),</g:each>
-    ]);
-});
+    var projectFinder = new ProjectFinder();
 </r:script>
 </body>
 </html>

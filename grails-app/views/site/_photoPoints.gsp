@@ -14,7 +14,7 @@
                 <th style="width:20%">Photo point location:</th>
                 <th style="width:70%">Photo(s)</th>
             </tr>
-
+            </thead>
             <tbody data-bind="foreach:photoPoints">
             <tr>
                 <td data-bind="template:{name:template}">
@@ -94,7 +94,6 @@
                 </tr>
                 </tfoot>
             </g:if>
-        </thead>
 
         </table>
     </div>
@@ -191,6 +190,21 @@
         </div>
 
         <div class="control-group">
+            <label class="control-label">Licence <i class="icon-question-sign"
+                                                                  data-bind="popover:{content:'Creative Commons Attribution (CC BY), Creative Commons-Noncommercial (CC BY-NC), Creative Commons Attribution-Share Alike (CC BY-SA), Creative Commons Attribution-Noncommercial-Share Alike (CC BY-NC-SA)', placement:'top'}">&nbsp;</i>:
+            </label>
+
+            <div class="controls">
+                <select id="licence" data-bind="value:licence" class="form-control input-sm">
+                    <option>CC BY</option>
+                    <option>CC BY-NC</option>
+                    <option>CC BY-SA</option>
+                    <option>CC BY-NC-SA</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="control-group">
             <label class="control-label">Notes:</label>
 
             <div class="controls"><input type="text" data-bind="value:notes"></div>
@@ -221,6 +235,10 @@
 
     <div class="control-group">
         <label class="control-label">Attribution : <span data-bind="text:attribution"></span></label>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">License : <span data-bind="text:license"></span></label>
     </div>
 
     <div class="control-group">

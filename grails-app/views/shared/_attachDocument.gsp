@@ -19,6 +19,15 @@
                     </div>
 
                     <div class="control-group">
+                        <label class="control-label" for="documentDescription">Description</label>
+
+                        <div class="controls">
+                            <input id="documentDescription" type="text" data-bind="value:description"/>
+
+                        </div>
+                    </div>
+
+                    <div class="control-group">
                         <label class="control-label" for="documentAttribution">Attribution</label>
 
                         <div class="controls">
@@ -31,14 +40,7 @@
                         <label class="control-label" for="documentRole">Document type</label>
 
                         <div class="controls">
-                            <select style="width: 97%;" data-bind="options:roles, optionsText: 'name', optionsValue: 'id', value:role, event: {change: onRoleChange}"></select>
-                        </div>
-                    </div>
-
-                    <div class="control-group" >
-                        <label class="control-label" for="documentStage">Associate to Stage</label>
-                        <div class="controls">
-                            <select id="documentStage" style="width: 35%;" data-bind="options:stages, optionsCaption: 'Please select', value:stage"></select>
+                            <select style="width: 97%;" data-bind="options:roles, optionsText: 'name', optionsValue: 'id', value:role"></select>
                         </div>
                     </div>
 
@@ -65,8 +67,8 @@
                         <label class="control-label" for="public">Settings</label>
                         <div class="controls">
                             <label class="checkbox" for="public">
-                                <input id="public" type="checkbox" data-bind="checked:public, disable: role() =='programmeLogic'"/>
-                                make this document public on the project documents tab
+                                <input id="public" type="checkbox" data-bind="checked:public"/>
+                                make this document public on the project "Resources" tab
                             </label>
                         </div>
 
@@ -84,17 +86,6 @@
 
 
                     <div data-bind="visible: !embeddedVideoVisible()">
-                        <div class="control-group"  data-bind="visible:settings.showSettings">
-                            <label class="control-label" for="documentFile">Image settings</label>
-                            <div class="controls">
-                                <label class="checkbox" for="documentRole">
-                                    <input id="documentRole" type="checkbox" data-bind="enable:type() == 'image' && public() && role() =='information', checked: isPrimaryProjectImage"/>
-                                    use as the main project image
-                                </label>
-                            </div>
-                        </div>
-
-
                         <div class="control-group">
                             <label class="control-label" for="documentFile">File</label>
 

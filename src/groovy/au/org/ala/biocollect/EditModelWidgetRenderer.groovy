@@ -47,6 +47,19 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderTime(WidgetRenderContext context) {
+        context.attributes.addClass context.getInputWidth()
+        context.attributes.add 'style','text-align:center'
+        context.databindAttrs.add 'value', context.source
+
+        context.writer << """
+            <div class="timefield input-append">
+                <input${context.attributes.toString()} id="${context.model.source}TimeField" data-bind='${context.databindAttrs.toString()}'${context.validationAttr} type='text' class='input-mini timepicker'/>
+            </div>
+        """
+    }
+
+    @Override
     void renderSelectOne(WidgetRenderContext context) {
         context.databindAttrs.add 'value', context.source
         // Select one or many view types require that the data model has defined a set of valid options
@@ -78,11 +91,39 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
-    void renderImage(WidgetRenderContext context) {
-        context.addDeferredTemplate('/output/fileUploadTemplate')
-        context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"
+    void renderSelectManyCombo(WidgetRenderContext context) {
+        context.databindAttrs.add 'options', 'transients.' + context.model.source + 'Constraints'
+        context.databindAttrs.add 'optionsCaption', '"Please select"'
+        context.databindAttrs.add 'event', '{ change: selectManyCombo}'
 
-        context.writer << context.g.render(template: '/output/imageDataTypeTemplate', plugin:'fieldcapture-plugin', model: [databindAttrs:context.databindAttrs.toString(), source: context.source])
+        context.writer <<  "<select${context.attributes.toString()} comboList='${context.source}' data-bind='${context.databindAttrs.toString()}'${context.validationAttr}></select>"
+
+        def tagsBlock = "<div id='tagsBlock' data-bind='foreach: ${context.source}'>" +
+                "<span class='tag label label-default' comboList='${context.source}'>" +
+                '<input type="hidden" data-bind="value: $data" name="tags" class="tags group">' +
+                '<span data-bind="text: $data"></span>' +
+                '<a href="#" class="remove removeTag" title="remove this item" data-bind="event: { click: $parent.removeTag }" >' +
+                '<i class="remove fa fa-close fa-inverse"></i></a></span> ' +
+                '</div>'
+        context.writer << tagsBlock
+    }
+
+    @Override
+    void renderAudio(WidgetRenderContext context) {
+        context.databindAttrs.add 'fileUploadWithProgress', "{target:${context.source}.files, config:{}}"
+        context.writer << context.g.render(template: '/output/audioDataTypeEditModelTemplate', model: [databindAttrs:context.databindAttrs.toString(), name: context.source])
+    }
+
+    @Override
+    void renderImage(WidgetRenderContext context) {
+        context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"
+        context.writer << context.g.render(template: '/output/imageDataTypeEditModelTemplate', model: [databindAttrs:context.databindAttrs.toString(), name: context.source])
+    }
+
+    @Override
+    void renderImageDialog(WidgetRenderContext context) {
+        context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"
+        context.writer << context.g.render(template: '/output/imageDialogDataTypeEditModelTemplate', model: [databindAttrs:context.databindAttrs.toString(), name: context.source])
     }
 
     @Override
@@ -109,7 +150,7 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
         def source = context.g.createLink(controller: 'search', action:'species', absolute:'true')
         newAttrs.add "value", "name"
         newAttrs.add "event", "{focusout:focusLost}"
-        newAttrs.add "fusedAutocomplete", "{source:transients.source, name:transients.name, guid:transients.guid}"
+        newAttrs.add "fusedAutocomplete", "{source:transients.source, name:transients.name, guid:transients.guid, matchUnknown: true}"
         context.writer << context.g.render(template: '/output/speciesTemplate', plugin:'fieldcapture-plugin', model:[source: context.source, databindAttrs: newAttrs.toString(), validationAttrs:context.validationAttr])
     }
 
@@ -157,7 +198,11 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderGeoMap(WidgetRenderContext context) {
-        context.writer << context.g.render(template: '/output/dataEntryMap', model: context.model)
+        Map model = [:]
+        model.putAll(context.model)
+        model.readonly = false
+        model.validation = context.validationAttr
+        context.writer << context.g.render(template: '/output/dataEntryMap', model: model)
     }
 
 }

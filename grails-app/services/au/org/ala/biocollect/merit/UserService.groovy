@@ -1,10 +1,14 @@
 package au.org.ala.biocollect.merit
 
 import javax.annotation.PostConstruct
+import org.apache.commons.httpclient.HttpStatus
 
 class UserService {
    def grailsApplication, authService, webService
     def auditBaseUrl = ""
+
+    static String USER_NAME_HEADER_FIELD = "userName"
+    static String AUTH_KEY_HEADER_FIELD = "authKey"
 
     @PostConstruct
     private void init() {
@@ -23,6 +27,32 @@ class UserService {
         getUser()?.userId?:""
     }
 
+   /*
+    * Get User details for the given user name and auth key.
+    *
+    * @param username username
+    * @param key mobile auth key
+    * @return userdetails
+    * */
+
+    def UserDetails getUserFromAuthKey(String username, String key) {
+        String url = grailsApplication.config.mobile.auth.check.url
+        Map params = [userName: username, authKey: key]
+        def result = webService.doPostWithParams(url, params)
+
+        if (result.statusCode == HttpStatus.SC_OK && result.resp?.status == 'success') {
+            params = [userName: username]
+            url = grailsApplication.config.userDetails.url + "getUserDetails"
+            result = webService.doPostWithParams(url, params)
+            if (result.statusCode == HttpStatus.SC_OK && result.resp) {
+                return new UserDetails(result.resp.firstName + result.resp.lastName, result.resp.userName, result.resp.userId)
+            }
+        }
+
+        return null
+    }
+
+
     public UserDetails getUser() {
         def u = authService.userDetails()
         def user
@@ -40,6 +70,10 @@ class UserService {
 
     def userIsSiteAdmin() {
         authService.userInRole(grailsApplication.config.security.cas.officerRole) || authService.userInRole(grailsApplication.config.security.cas.adminRole) || authService.userInRole(grailsApplication.config.security.cas.alaAdminRole)
+    }
+
+    Boolean  userIsAlaAdmin() {
+        authService.userInRole(grailsApplication.config.security.cas.alaAdminRole)
     }
 
     def userIsAlaOrFcAdmin() {
@@ -75,6 +109,13 @@ class UserService {
         webService.getJson(url)
     }
 
+    def getStarredSiteIdsForUserId(String userId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/getStarredSiteIdsForUserId/${userId}"
+        webService.getJson(url)
+    }
+
+
+
     def isProjectStarredByUser(String userId, String projectId) {
         def url = grailsApplication.config.ecodata.service.url + "/permissions/isProjectStarredByUser?userId=${userId}&projectId=${projectId}"
         webService.getJson(url)
@@ -92,6 +133,21 @@ class UserService {
 
     Map isUserInRoleForProject(String userId, String projectId, String role) {
         def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserInRoleForProject?userId=${userId}&projectId=${projectId}&role=${role}"
+        webService.getJson(url)
+    }
+
+    def addStarSiteForUser(String userId, String siteId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/addStarSiteForUser"
+        webService.doPostWithParams(url, [userId: userId, siteId: siteId])
+    }
+
+    def removeStarSiteForUser(String userId, String siteId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/removeStarSiteForUser"
+        webService.doPostWithParams(url, [userId: userId, siteId: siteId])
+    }
+
+    def isSiteStarredByUser(String userId, String siteId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/isSiteStarredByUser?userId=${userId}&siteId=${siteId}"
         webService.getJson(url)
     }
 

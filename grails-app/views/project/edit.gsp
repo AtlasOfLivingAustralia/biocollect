@@ -6,6 +6,7 @@
     <r:script disposition="head">
     var fcConfig = {
         projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
+        checkProjectNameUrl: "${createLink(controller: 'project', action:'checkProjectName')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
@@ -16,12 +17,16 @@
         geocodeUrl: "${grailsApplication.config.google.geocode.url}",
         imageLocation:"${resource(dir:'/images')}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
-        returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}"
+        returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}",
+        scienceTypes: ${scienceTypes as grails.converters.JSON},
+        lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
+        ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},
+        lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON}
         },
         here = window.location.href;
 
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,amplify,drawmap,jQueryFileUpload,projects,organisation, fuseSearch"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,amplify,jQueryFileUpload,projects,organisation, fuseSearch, map, largeCheckbox"/>
 </head>
 
 <body>
@@ -36,11 +41,11 @@
 </ul>
 <form id="projectDetails" class="form-horizontal">
     <g:render template="details" model="${pageScope.variables}"/>
+    <div class="well">
+        <button type="button" id="save" class="btn btn-primary" data-bind="disable: !transients.validProjectName()"><g:message code="g.save"/></button>
+        <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
+    </div>
 </form>
-<div class="form-actions">
-    <button type="button" id="save" class="btn btn-primary"><g:message code="g.save"/></button>
-    <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
-</div>
 
 </div>
 <r:script>
@@ -70,7 +75,7 @@ $(function(){
         document.location.href = "${createLink(action: 'index', id: project?.projectId)}";
     });
     $('#save').click(function () {
-        if ($('#projectDetails').validationEngine('validate')) {
+        if ($('#projectDetails').validationEngine('validate') && viewModel.transients.validProjectName()) {
 
             viewModel.saveWithErrorDetection(function(data) {
                 var projectId = "${project?.projectId}" || data.projectId;

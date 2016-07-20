@@ -2,10 +2,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title> Upload | Sites | Field Capture</title>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <r:script disposition="head">
             var fcConfig = {
                 serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -20,7 +18,7 @@
             },
             returnTo = "${params.returnTo}";
     </r:script>
-    <r:require modules="knockout,mapWithFeatures,amplify,jqueryValidationEngine"/>
+    <r:require modules="knockout,amplify,jqueryValidationEngine"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -48,21 +46,13 @@
             </div>
         </g:if>
 
-        <div class="row-fluid">
-            <div class="span5">
-                <div class="alert">
-                    <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-                    MERIT no longer requires that shapefiles use the WGS84 CRS.  This feature is currently experimental, so please let us know if you encounter issues when uploading your shapefile.
-                </div>
-            </div>
-        </div>
-
         <g:uploadForm id="shapeFileUpload" class="loadPlanData" controller="site" action="uploadShapeFile">
             <input type="hidden" name="returnTo" value="${returnTo}">
             <input type="hidden" name="projectId" value="${projectId}">
             <label for="shapefile">Attach shape file (zip format)</label>
             <input id="shapefile" type="file" accept="application/zip" name="shapefile"/>
             <button id="uploadShapeFile" type="button" class="btn btn-success" onclick="$(this).parent().submit();">Upload Shapefile</button>
+            <button id="cancel" type="button" class="btn btn-default">Cancel</button>
         </g:uploadForm>
     </g:if>
     <g:else>
@@ -331,6 +321,9 @@ ko.applyBindings(new SiteUploadViewModel());
         }
 
     }).trigger('change');
+    $('#cancel').click(function(){
+        document.location.href = returnTo;
+    })
 </g:else>
 </r:script>
 

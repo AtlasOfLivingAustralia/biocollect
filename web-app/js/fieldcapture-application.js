@@ -336,8 +336,7 @@ function autoSaveModel(viewModel, saveUrl, options) {
                     if (config.blockUIOnSave) {
                         $.unblockUI();
                     }
-                    showAlert(config.errorMessage + data.detail + ' \n' + data.error,
-                        "alert-error",config.resultsMessageId);
+                    bootbox.alert(config.errorMessage + data.detail + '<br/>' + data.error)
                     if (typeof errorCallback === 'function') {
                         errorCallback(data);
                     }
@@ -696,8 +695,14 @@ function Documents() {
 
     self.logoUrl = ko.pureComputed(function() {
         var logoDocument = self.findDocumentByRole(self.documents(), 'logo');
-        return logoDocument ? logoDocument.url : null;
+        return logoDocument ? (logoDocument.thumbnailUrl ? logoDocument.thumbnailUrl : logoDocument.url) : null;
     });
+
+    self.logoAttributionText = ko.pureComputed(function() {
+        var logoDocument = self.findDocumentByRole(self.documents(), 'logo');
+        return logoDocument && logoDocument.attribution ? logoDocument.attribution() : null;
+    });
+
     self.bannerUrl = ko.pureComputed(function() {
         var bannerDocument = self.findDocumentByRole(self.documents(), 'banner');
         return bannerDocument ? bannerDocument.url : null;
@@ -710,6 +715,11 @@ function Documents() {
     self.mainImageUrl = ko.pureComputed(function() {
         var mainImageDocument = self.findDocumentByRole(self.documents(), 'mainImage');
         return mainImageDocument ? mainImageDocument.url : null;
+    });
+
+    self.mainImageAttributionText = ko.pureComputed(function() {
+        var mainImageDocument = self.findDocumentByRole(self.documents(), 'mainImage');
+        return mainImageDocument && mainImageDocument.attribution ? mainImageDocument.attribution() : null;
     });
 
     self.removeBannerImage = function() {
@@ -763,7 +773,8 @@ function Documents() {
 
     self.ignore = ['documents', 'links', 'logoUrl', 'bannerUrl', 'mainImageUrl', 'primaryImages', 'embeddedVideos',
         'ignore', 'transients', 'documentFilter', 'documentFilterFieldOptions', 'documentFilterField',
-        'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass'];
+        'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass',
+        'mainImageAttributionText', 'logoAttributionText'];
 
 }
 
@@ -774,7 +785,7 @@ function Documents() {
 SearchableList = function(list, keys, options) {
 
     var self = this;
-    var options = $.extend({keys:keys, maxPatternLength:64}, options || {});
+    var options = $.extend({keys:keys, maxPatternLength:256}, options || {});
 
     var searchable = new Fuse(list, options);
 
@@ -872,4 +883,81 @@ function showFloatingMessage(message, alertType) {
 
     }
     messageContainer.slideDown(400);
+}
+
+function siteExtentToValidGeoJSON(siteExtent) {
+    var geoJson = null;
+
+    if (siteExtent.geometry) {
+        var geometry = _.pick(siteExtent.geometry, "type", "coordinates");
+        var properties = _.extend(_.extend({}, siteExtent.properties), siteExtent.geometry);
+        geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+        geoJson.properties = properties;
+    }
+
+    return geoJson;
+}
+
+function imageError(imageElement, alternateImage) {
+    imageElement.onerror = "";
+    imageElement.src = alternateImage;//"/static/images/no-image-2.png";
+    return true;
+}
+
+/**
+ * fired when logo image is loaded. fn used to stretch small image to height or width of parent container.
+ * @param imageElement the img element
+ * givenWidth - (optional) width of the bounding box containing the image. If nothing is passed parent width is used.
+ * givenHeight - (optional) height of the bounding box containing the image. If nothing is passed parent height is used.
+ */
+function findLogoScalingClass(imageElement, givenWidth, givenHeight) {
+    var $elem = $(imageElement);
+    var parentHeight = givenHeight || $elem.parent().height();
+    var parentWidth = givenWidth || $elem.parent().width();
+    var height = imageElement.height;
+    var width = imageElement.width;
+
+    var ratio = parentWidth/parentHeight;
+    if( ratio * height > width){
+        $elem.addClass('tall')
+    } else {
+        $elem.addClass('wide')
+    }
+}
+
+function initCarouselImages(image){
+    $(image).parent().fancybox({nextEffect:'fade', preload:0, 'prevEffect':'fade'});
+    findLogoScalingClass(image)
+};
+
+function initialiseImageGallery(config){
+    var vm = new ImageGalleryViewModel(config);
+    ko.applyBindings(vm, config.element);
+}
+
+/**
+ * Converts kilometer square area to an appropriate human readable unit
+ * supported units - km square, hectare, meter square
+ * @param kmSq {number}
+ * @returns {string}
+ */
+function convertKMSqToReadableUnit(kmSq){
+    if(kmSq != undefined){
+        if(kmSq > 1){
+            return neat_number(kmSq,4) + ' km&sup2;'
+        }
+        if(kmSq > 0.001){
+            return neat_number(kmSq*100,4) + ' hectare'
+        }
+
+        return neat_number(kmSq*1000000,4) + ' m&sup2;'
+    }
+}
+
+/** Polyfill String.startsWith */
+if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function(searchString, position){
+        position = position || 0;
+        return this.substr(position, searchString.length) === searchString;
+    };
 }

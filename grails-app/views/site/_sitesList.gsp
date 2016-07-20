@@ -1,4 +1,3 @@
-<script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
 <g:set var="wordForSite" value="${wordForSite?:'site'}"/>
 <div id="sitesList">
     <div data-bind="visible: sites.length == 0">
@@ -103,15 +102,8 @@
             wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
         };
 
-        map = new MapWithFeatures({
-                mapContainer: "map",
-                scrollwheel: false,
-                featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-                wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-            },
-            mapOptions
-        );
-        var mapFeatures = $.parseJSON('${mapFeatures?:[].encodeAsJavaScript()}');
+        map = new new ALA.Map("map", {});
+        var mapFeatures = ${mapFeatures?:[]};
         var sitesViewModel = new SitesViewModel(sites, map, mapFeatures, ${editable ?: false});
         ko.applyBindings(sitesViewModel, document.getElementById('sitesList'));
 

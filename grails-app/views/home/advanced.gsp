@@ -4,7 +4,6 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Advanced | Field Capture</title>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <r:script disposition="head">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",

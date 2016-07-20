@@ -14,11 +14,19 @@ class SpeciesService {
             }
         }
         def results = searchBie(searchTerm, limit)
+
+        // standardise output
+        results?.autoCompleteList?.each { result ->
+            result.scientificName = result.name
+            if(result.commonName?.contains(',')){
+                result.commonName = result.commonName.split(',')[0]
+            }
+        }
+
         return results
     }
 
-    def searchSpeciesInLists(searchTerm, lists, limit = 10){
-        def results
+    def searchSpeciesInLists(searchTerm, lists, limit = 10){ def results
         def autoCompleteList = []
         lists?.each{ list ->
             def listResults =  filterSpeciesList(searchTerm, list?.dataResourceUid)
@@ -41,6 +49,19 @@ class SpeciesService {
     }
 
     /**
+     * Searches each result supplied list to find a name that matches (in a case insensitive manner) the supplied name.
+     * This method expects the format of each result to be as returned from the BIE species autocomplete function.
+     * @param speciesSearchResults the list of results.
+     * @param name the name to match.
+     * @return the result that matches the supplied name, or null if no match is found.
+     */
+    Map findMatch(Map speciesSearchResults, String name) {
+        speciesSearchResults?.autoCompleteList?.find { result ->
+            (result.name == name || result.matchedNames?.find { matchedName -> name.equalsIgnoreCase(matchedName) })
+        }
+    }
+
+    /**
      * Searches the "name" returned by the Species List service for the supplied search term and reformats the
      * results to match those returned by the bie.
      * @param query the term to search for.
@@ -48,9 +69,9 @@ class SpeciesService {
      * @return a JSON formatted String of the form {"autoCompleteList":[{...results...}]}
      */
     private def filterSpeciesList(String query, String listId) {
-        def listContents = webService.getJson("${grailsApplication.config.lists.baseURL}/ws/speciesListItems/${listId}")
+        def listContents = webService.getJson("${grailsApplication.config.lists.baseURL}/ws/speciesListItems/${listId}?q=${query}")
 
-        def filtered = listContents.findResults({it.name?.toLowerCase().contains(query.toLowerCase()) ? [id: it.id, listId: listId, name: it.name, scientificNameMatches:[it.name], guid:it.lsid]: null})
+        def filtered = listContents.collect({[id: it.id, listId: listId, name: it.name, commonName: it.commonName, scientificName: it.scientificName, scientificNameMatches:[it.name], guid:it.lsid]})
 
         def results = [:];
         results.autoCompleteList = filtered
@@ -63,14 +84,18 @@ class SpeciesService {
         if (!limit) {
             limit = 10
         }
-        def encodedQuery = URLEncoder.encode(searchTerm, "UTF-8")
+        def encodedQuery = URLEncoder.encode(searchTerm ?: '', "UTF-8")
         def url = "${grailsApplication.config.bie.baseURL}/ws/search/auto.jsonp?q=${encodedQuery}&limit=${limit}&idxType=TAXON"
 
         webService.getJson(url)
     }
 
-    def searchSpeciesList(sort = 'listName', max = 100, offset = 0) {
-        webService.getJson("${grailsApplication.config.lists.baseURL}/ws/speciesList?sort=${sort}&max=${max}&offset=${offset}")
+    def searchSpeciesList(String sort = 'listName', Integer max = 100, Integer offset = 0, String guid = null) {
+        String url = "${grailsApplication.config.lists.baseURL}/ws/speciesList?sort=${sort}&max=${max}&offset=${offset}"
+        if (guid) {
+            url = "${url}&items=createAlias:items&items.guid=eq:${guid}"
+        }
+        webService.getJson(url)
     }
 
     def addSpeciesList(postBody) {

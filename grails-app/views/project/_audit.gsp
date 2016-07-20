@@ -5,9 +5,11 @@
 </div>
 <div class="row-fluid">
     <div class="span12">
-        <g:link controller="admin" action="auditProject" params='[id: "${project.projectId}", searchTerm:"${project.name}"]' target="_blank">
-            <h4>${project.name}</h4>
-        </g:link>
+        <h4>
+            <g:link controller="admin" action="auditProject" params='[id: "${project.projectId}", searchTerm:"${project.name}"]' target="_blank">
+                ${project.name}
+            </g:link>
+        </h4>
     </div>
 </div>
 

@@ -27,14 +27,22 @@ class UrlMappings {
                         action = [GET: "get", POST: "upload", PUT: "upload", DELETE: "delete"]
                 }
 
-                "/sightingAjax/saveBookmarkLocation" controller: "sightingAjax", action: [POST:"saveBookmarkLocation"]
-                "/uploads/$file**"(controller:"sightingImage", action:"index")
+                "/project/getAuditMessagesForProject/$id"(controller: "project", action: 'getAuditMessagesForProject')
 
                 "/activity/$entityId/comment"(controller: "comment"){
                         action = [GET: 'list', POST: 'create']
                         entityType = 'au.org.ala.ecodata.Activity'
                 }
                 "/activity/$entityId/comment/$id"(controller: 'comment'){
+                        entityType = 'au.org.ala.ecodata.Activity'
+                        action = [GET: 'get', POST: 'update', PUT: 'update', DELETE: 'delete']
+                }
+
+                "/bioActivity/$entityId/comment"(controller: "comment"){
+                        action = [GET: 'list', POST: 'create']
+                        entityType = 'au.org.ala.ecodata.Activity'
+                }
+                "/bioActivity/$entityId/comment/$id"(controller: 'comment'){
                         entityType = 'au.org.ala.ecodata.Activity'
                         action = [GET: 'get', POST: 'update', PUT: 'update', DELETE: 'delete']
                 }
@@ -74,6 +82,7 @@ class UrlMappings {
                 "/myProfile"(controller: 'home', action: 'myProfile') {
 
                 }
+                "/ws/project/search"(controller: "project", action: 'search')
 
                 "/$hub/admin/user/$id"(controller: "user", action: "show") {
                         constraints {
@@ -83,6 +92,8 @@ class UrlMappings {
                 "/admin/user/$id"(controller: "user", action: "show") {
 
                 }
+                "/download/file"(controller: "download", action: [GET: "file"])
+                "/download/$id"(controller: "download", action: [GET: "downloadProjectDataFile"])
                 "500"(controller:'error', action:'response500')
                 "404"(controller:'error', action:'response404')
                 "/$hub?/$controller/ws/$action/$id" {

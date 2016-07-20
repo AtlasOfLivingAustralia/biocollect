@@ -919,13 +919,13 @@
                 var context = '',
                     projectId = project.projectId,
                     siteId = "${site?.siteId}",
-                    returnTo = '?returnTo=' + document.location.href;
+                    returnTo = '&returnTo=' + document.location.href;
                 if (projectId) {
                     context = '&projectId=' + projectId;
                 } else if (siteId) {
                     context = '&siteId=' + siteId;
                 }
-                document.location.href = fcConfig.activityCreateUrl + returnTo + context;
+                document.location.href = fcConfig.activityCreateUrl + '?' + context + returnTo;
             };
             self.openSite = function () {
                 var siteId = this.siteId;

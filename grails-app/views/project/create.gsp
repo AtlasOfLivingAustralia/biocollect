@@ -6,6 +6,7 @@
     <r:script disposition="head">
     var fcConfig = {
         projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
+        checkProjectNameUrl: "${createLink(controller: 'project', action:'checkProjectName')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
@@ -15,12 +16,16 @@
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         geocodeUrl: "${grailsApplication.config.google.geocode.url}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
-        returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}"
+        returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}",
+        scienceTypes: ${scienceTypes as grails.converters.JSON},
+        ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},
+        lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
+        lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON}
         },
         here = window.location.href;
 
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,amplify,drawmap,jQueryFileUpload,projects,organisation,fuseSearch"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,amplify,jQueryFileUpload,projects,organisation,fuseSearch,map,largeCheckbox"/>
 </head>
 
 <body>
@@ -37,12 +42,31 @@
     </p>
     <form id="projectDetails" class="form-horizontal">
         <g:render template="details" model="${pageScope.variables}"/>
-    </form>
-    <div class="form-actions">
-        <button type="button" id="save" class="btn btn-primary"><g:message code="g.save"/></button>
-        <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
-    </div>
 
+        <g:if test="${grailsApplication.config.termsOfUseUrl}">
+            <div class="row-fluid" style="display: none" data-bind="visible: !isExternal()">
+                <div class="well">
+                    <h4 class="block-header"><g:message code="project.details.termsOfUseAgreement"/></h4>
+
+                    <div class="clearfix">
+                        <label class="control-label span3" for="termsOfUseAgreement"><g:message code="project.details.termsOfUseAgreement"/><fc:iconHelp><g:message code="project.details.termsOfUseAgreement.help"/></fc:iconHelp></label>
+                        <div class="controls span9 large-checkbox">
+                            <input data-bind="checked:termsOfUseAccepted, disable: !transients.termsOfUseClicked()" type="checkbox" id="termsOfUseAgreement" name="termsOfUseAgreement" data-validation-engine="validate[required]" title="<g:message code="project.details.termsOfUseAgreement.checkboxTip"/>"/>
+                            <label for="termsOfUseAgreement"><span></span> I confirm that have read and accept the <a href="${grailsApplication.config.termsOfUseUrl}" data-bind="click: clickTermsOfUse" target="_blank">Terms of Use</a>.</label>
+                            <div class="margin-bottom-1"></div>
+                            <p><g:message code="project.details.termsOfUseAgreement.help"/></p>
+                            <p><img src="${request.contextPath}/images/cc.png" alt="Creative Commons Attribution 3.0"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </g:if>
+        <div class="well" style="display: none" data-bind="visible: true"> <!-- hide the panel until knockout has finished. Needs to use an inline style for this to work. -->
+            <div class="alert warning" data-bind="visible: !termsOfUseAccepted() && !isExternal()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
+            <button type="button" id="save" class="btn btn-primary" data-bind="disable: (!termsOfUseAccepted() && !isExternal()) || !transients.validProjectName()"><g:message code="g.save"/></button>
+            <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
+        </div>
+    </form>
 </div>
 <r:script>
 $(function(){
@@ -78,12 +102,20 @@ $(function(){
     });
     </g:else>
     $('#save').click(function () {
-        if ($('#projectDetails').validationEngine('validate')) {
+        if ($('#projectDetails').validationEngine('validate') && viewModel.transients.validProjectName()) {
+            if (viewModel.transients.kindOfProject() == 'ecoscience' || viewModel.transients.siteViewModel.isValid(true)) {
+                viewModel.saveWithErrorDetection(function(data) {
+                    var projectId = "${project?.projectId}" || data.projectId;
 
-            viewModel.saveWithErrorDetection(function(data) {
-                var projectId = "${project?.projectId}" || data.projectId;
-                document.location.href = "${createLink(action: 'index')}/" + projectId;
-            });
+                    if (viewModel.isExternal()) {
+                        document.location.href = "${createLink(action: 'index')}/" + projectId;
+                    } else {
+                        document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
+                    }
+                });
+            } else {
+                bootbox.alert("You must define the spatial extent of the project area");
+            }
         }
     });
 

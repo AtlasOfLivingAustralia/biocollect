@@ -5,52 +5,84 @@
             <!-- ko if: current -->
 
             <div class="well">
+                <div class="row-fluid">
+                    <div class="span10 text-left">
+                        <h2 class="strong">Step 4 of 7 - Set the range of species applicable for the survey</h2>
+                    </div>
+                    <div class="span2 text-right">
+                        <g:render template="../projectActivity/status"/>
+                    </div>
+                </div>
+
                 <g:render template="/projectActivity/warning"/>
 
-                <h5>You can constrain the species available for selection in this survey to:</h5>
+                <g:render template="/projectActivity/unpublishWarning"/>
+
+                <div class="row-fluid">
+                    <div class="span12 text-left">
+                        <p>You can constrain this survey to an individual species or a group of species of your choice. Eg. all species within a particular area or a particular group of species such as reptiles.
+                        Choose from existing lists or create your own.</p>
+                    </div>
+                </div>
+
+                </br>
 
                 <div class="row-fluid">
                     <div class="span4 text-left">
                         <div class="controls">
-                            <select style="width:98%;" data-validation-engine="validate[required]" data-bind="options: $root.speciesOptions, optionsText:'name', optionsValue:'id', value: species.type, optionsCaption: 'Please select'" ></select>
+                            <span class="req-field">
+                                <select data-validation-engine="validate[required]" data-bind="options: $root.speciesOptions, optionsText:'name', optionsValue:'id', value: species.type, optionsCaption: 'Please select'" ></select>
+                            </span>
                         </div>
-                    </div>
 
-                    <div class="span4 text-left">
-
-                        <div class="btn-group btn-group-vertical" data-bind="visible: species.groupInfoVisible, if: species.groupInfoVisible" >
+                        <div class="btn-group btn-group-vertical margin-top-2" data-bind="visible: species.groupInfoVisible, if: species.groupInfoVisible" >
                             <a class="btn btn-xs btn-default" data-bind="click: species.transients.toggleShowExistingSpeciesLists">Choose from existing species lists</a>
                             (OR)
                             <a class="btn btn-xs btn-default" target="blank" data-bind="click: species.transients.toggleShowAddSpeciesLists">Add new species lists</a>
                         </div>
 
+                        <div data-bind="visible: species.singleInfoVisible" class="margin-top-2">
+                            <div class="controls block">
+                                <span data-bind="if: species.singleSpecies.transients.guid">
+                                    <a data-bind="attr:{href: species.transients.bioProfileUrl}" target="_blank"><small data-bind="text:  species.singleSpecies.transients.name"></small></a>
+                                </span>
+
+                                <input class="input-xlarge" type="text" placeholder="Search species"
+                                       data-bind="value:species.singleSpecies.name,
+                                        event:{focusout: species.singleSpecies.focusLost},
+                                        fusedAutocomplete:{
+                                            source: species.transients.bioSearch,
+                                            name: species.singleSpecies.transients.name,
+                                            guid: species.singleSpecies.transients.guid
+                                        }" data-validation-engine="validate[required]">
+
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="row-fluid" data-bind="visible: species.singleInfoVisible" >
-                    <div class="span4 text-left">
-                        <div class="controls">
-                            <span data-bind="if: species.singleSpecies.transients.guid">
-                                <a data-bind="attr:{href: species.transients.bioProfileUrl}" target="_blank"><small data-bind="text:  species.singleSpecies.transients.name"></small></a>
-                           </span>
-                           </br>
-                            <input style="width:80%;" type="text" placeholder="Search species"
-                                data-bind="value:species.singleSpecies.name,
-                                            event:{focusout: species.singleSpecies.focusLost},
-                                            fusedAutocomplete:{
-                                                source: species.transients.bioSearch,
-                                                name: species.singleSpecies.transients.name,
-                                                guid: species.singleSpecies.transients.guid
-                                            }" data-validation-engine="validate[required]">
-
+                    <div class="span8 text-left">
+                        <div class="">
+                            <!-- ko if: species.allSpeciesInfoVisible() -->
+                            <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.SURVEY_SPECIES_ALL}"/>
+                            <!-- /ko-->
+                            <!-- ko if: species.singleInfoVisible() -->
+                            <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.SURVEY_SPECIES_SINGLE}"/>
+                            <!-- /ko-->
+                            <!-- ko if: species.groupInfoVisible() -->
+                            <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.SURVEY_SPECIES_GROUP}"/>
+                            <!-- /ko-->
                         </div>
 
+
                     </div>
                 </div>
 
 
 
-                <span data-bind="visible: species.groupInfoVisible, if: species.speciesLists().length > 0">
+
+
+
+    <span data-bind="visible: species.groupInfoVisible, if: species.speciesLists().length > 0">
                     <div class="row-fluid">
                         <div class="span12 text-left">
 
@@ -67,6 +99,15 @@
                     </div>
                 </span>
 
+    <div class="row-fluid">
+        <h6>How should the survey display species name?</h6>
+        <div class="indent-left-10">
+            <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="SCIENTIFICNAME(COMMONNAME)" data-bind="checked: species.speciesDisplayFormat"> <div>Scientific name (Common name)</div></label>
+            <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="COMMONNAME(SCIENTIFICNAME)" data-bind="checked: species.speciesDisplayFormat"> <div>Common name (Scientific name)</div></label>
+            <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="COMMONNAME" data-bind="checked: species.speciesDisplayFormat"> <div>Common name</div></label>
+            <label class="radio"><input type="radio" name="speciesDisplayFormatRadio" value="SCIENTIFICNAME" data-bind="checked: species.speciesDisplayFormat"> <div>Scientific name</div></label>
+        </div>
+    </div>
 
             </div>
 
@@ -74,26 +115,27 @@
             <span data-bind="visible: species.groupInfoVisible">
 
                 <span data-bind="if: species.groupInfoVisible">
-                    <g:render template="/projectActivity/addSpecies" />
+                    <g:render template="/projectActivity/addSpecies"/>
 
-                    <g:render template="/projectActivity/chooseSpecies" />
+                    <g:render template="/projectActivity/chooseSpecies"/>
                 </span>
 
             </span>
 
-        <!-- /ko -->
+            <div class="row-fluid">
+
+                <div class="span12">
+                    <button class="btn-primary btn block btn-small"
+                            data-bind="click: $parent.saveSpecies, disable: !transients.saveOrUnPublishAllowed()"><i class="icon-white  icon-hdd" ></i>  Save</button>
+                    <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-alert-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
+                    <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-form-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
+                </div>
+
+            </div>
 
         <!-- /ko -->
 
-    </br>
-    <div class="row-fluid">
-
-        <div class="span12">
-            <button class="btn-primary btn block" data-bind="click: saveSpecies"> Save </button>
-        </div>
-
-    </div>
-
+        <!-- /ko -->
 </div>
 
 

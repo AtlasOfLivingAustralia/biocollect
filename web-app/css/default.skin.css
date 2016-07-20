@@ -25,6 +25,7 @@ body {
 
 #main-content {
     padding-bottom: 20px; /* matches .content bottom padding in merit */
+    padding-top: 20px;
 }
 
 #fixed-footer-wrapper {  /*FIXED FOOTER*/
@@ -105,7 +106,7 @@ footer img {
 }
 
 .logo-small {
-    width: 1.2em;
+    width: 25px;
     margin: 0 2px;
 }
 
@@ -116,4 +117,48 @@ footer img {
 
 .nav-list>.active>div, .nav-list>.active>div:hover, .nav-list>.active>div:focus {
     background-color: #c44d34;
+}
+
+@media only screen and (max-width: 768px) {
+    #organisationSearchControls {
+        display: flex;
+    }
+    .input-append #organisationName  {
+        width: 90%;
+    }
+
+    .padding10-small-screen {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+#pt-search-group {
+    white-space: normal;
+}
+
+@media only screen and (max-width: 480px) {
+    #pt-search-group {
+        margin-top: 0px ;
+    }
+}
+
+footer, .ftr-primary, .ftr-secondary, .ftr-social {
+    background-color: #F2F2F2;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.padding20 {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.min-width-68 {
+    min-width: 68px;
+}
+
+.word-break-all {
+    word-break:break-all;
 }

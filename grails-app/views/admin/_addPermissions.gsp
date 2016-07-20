@@ -17,7 +17,7 @@
     <g:elseif test="${projects}">
         <div class="control-group">
             <label class="control-label" for="projectId">Project</label>
-            <div class="controls">
+            <div class="controls nowrap">
                 <g:select name="project" id="projectId" class="input-xlarge combobox validate[required]" from="${projects}" optionValue="name" optionKey="projectId" noSelection="['':'start typing a project name']" />
             </div>
         </div>
@@ -25,7 +25,7 @@
     <g:else><div class="alert alert-error">Missing model - either <code>projectId</code> or <code>projects</code> must be provided</div></g:else>
     <div class="control-group">
         <div class="controls">
-            <button id="addUserRoleBtn" class="btn btn-primary">Submit</button>
+            <button id="addUserRoleBtn" class="btn btn-primary btn-small">Submit</button>
             <g:img dir="images" file="spinner.gif" id="spinner1" class="hide spinner" alt="spinner icon"/>
         </div>
     </div>

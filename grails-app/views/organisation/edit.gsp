@@ -4,7 +4,6 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Edit | ${organisation.name.encodeAsHTML()} | Field Capture</title>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
     <r:script disposition="head">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",

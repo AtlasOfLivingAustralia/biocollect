@@ -1,0 +1,8 @@
+.btn-group .active {
+    background-color: #fbaf44;
+}
+
+.facet-block{
+    max-height:400px;
+    overflow-y: auto
+}

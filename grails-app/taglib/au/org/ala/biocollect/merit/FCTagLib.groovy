@@ -1,13 +1,10 @@
 package au.org.ala.biocollect.merit
-
 import au.org.ala.cas.util.AuthenticationCookieUtils
 import grails.converters.JSON
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.json.JSONObject
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
-
-import static org.github.bootstrap.Attribute.outputAttributes
 
 class FCTagLib {
 
@@ -19,6 +16,8 @@ class FCTagLib {
 
     def textField = { attrs ->
         def outerClass = attrs.remove 'outerClass'
+        String labelClass = attrs.remove 'labelClass'
+
         if (outerClass) {
             out << """<div class="${outerClass}">"""
         }
@@ -26,7 +25,7 @@ class FCTagLib {
         def forAttr = id ? " for='${id}'" : ''
         def label = attrs.remove 'label'
         if (label) {
-            out << """<label class="control-label" ${forAttr}>${label}</label>"""
+            out << """<label class="${labelClass ?: 'control-label'}" ${forAttr}>${label}</label>"""
         }
         def value = attrs.remove 'value'
         //println "${id}: ${value?.toString()}: ${value?.getClass()}"
@@ -111,14 +110,20 @@ class FCTagLib {
      */
     def datePicker = { attrs ->
         /**
-            <input data-bind="datepicker:startDate.date" name="startDate" id="startDate" type="text" size="16"
-                data-validation-engine="validate[required]" class="input-xlarge"/>
-            <span class="add-on open-datepicker"><i class="icon-th"></i></span>
+            <div class="input-append">
+                <input data-bind="datepicker:startDate.date" name="startDate" id="startDate" type="text" size="16"
+                    data-validation-engine="validate[required]" class="input-xlarge"/>
+                <span class="add-on open-datepicker"><i class="icon-calendar"></i></span>
+            <div>
          */
 
         def mb = new MarkupBuilder(out)
 
         if (!attrs.printable) {
+            Map inputAppend = [
+                class: 'input-append'
+            ]
+
             def inputAttrs = [
                 "data-bind":"datepicker:${attrs.targetField}",
                 name:"${attrs.name}",
@@ -138,15 +143,16 @@ class FCTagLib {
             if (attrs.required) {
                 inputAttrs["data-validation-engine"] = "validate[required]"
             }
-
-            mb.input(inputAttrs) {
-            }
-
-            mb.span(class:'add-on open-datepicker') {
-                mb.i(class:'icon-th') {
-                    mkp.yieldUnescaped("&nbsp;")
+            mb.div(inputAppend){
+                mb.input(inputAttrs) {
                 }
-            }
+
+                mb.span(class:'add-on open-datepicker') {
+                    mb.i(class:'icon-calendar') {
+                        mkp.yieldUnescaped("&nbsp;")
+                    }
+                }
+            };
         } else {
             def inputAttrs = [
                 name:"${attrs.name}",
@@ -174,7 +180,7 @@ class FCTagLib {
     def iconHelp = { attrs, body ->
         if (!attrs.printable) {
             def mb = new MarkupBuilder(out)
-            def anchorAttrs = [href:'#', class:'helphover', 'data-original-title':attrs.title, 'data-placement':'top', 'data-content':body()]
+            def anchorAttrs = [href:'#', tabindex: '-1', class:'helphover', 'data-original-title':attrs.title, 'data-placement':'top', 'data-content':body()]
             if (attrs.container) {
                 anchorAttrs << ['data-container':attrs.container]
             }
@@ -204,29 +210,14 @@ class FCTagLib {
 
         def navbarConfig = [
                 home:[
-                        icon:"icon-home",
+                        icon:"icon-home icon-white",
                         link:createLink(controller: 'home'),
                         cssClass:'visible-desktop',
-                        label:'Home'
-                ],
-                about:[
-                        icon:"icon-info-sign",
-                        link:createLink(controller: 'home', action: 'about'),
-                        label:'About'
-                ],
-                help:[
-                        icon:"icon-question-sign",
-                        link:createLink(controller: 'home', action: "help"),
-                        label:'Help'
-                ],
-                contacts:[
-                        icon:"icon-envelope",
-                        link:createLink(controller: 'home', action: 'contacts'),
-                        label:'Contacts'
+                        label:'Biocollect'
                 ]
         ]
 
-        def navDefaults = ['home', 'about', 'help', 'contacts']
+        def navDefaults = ['home']
         def navItems = attrs.items ?: navDefaults
 
         def mb = new MarkupBuilder(out)
@@ -423,16 +414,19 @@ class FCTagLib {
         def casLogoutUrl = attrs.casLogoutUrl ?: grailsApplication.config.security.cas.logoutUrl ?: "https://auth.ala.org.au/cas/logout"
         def cssClass = attrs.cssClass?:"btn btn-small btn-inverse btn-login"
         def output
+        def iconClass = attrs.iconClass?:("icon-off ${(cssClass.contains("btn-login")) ? "icon-white" : ""}")
+        def iconLogin = attrs.iconLogin?:iconClass;
+        def iconLogout = attrs.iconLogout?:iconClass;
 
         def username = userService.currentUserDisplayName
         if (username) {
             output = "<a id='logout-btn' href='${logoutUrl}" +
                     "?casUrl=${casLogoutUrl}" +
                     "&appUrl=${logoutReturnToUrl}' " +
-                    "class='${cssClass}'><i class='icon-off ${(cssClass.contains("btn-login")) ? "icon-white" : ""}'></i> Logout</a>"
+                    "class='${cssClass}'><i class='${iconLogout}'></i> Logout</a>"
         } else {
             // currently logged out
-            output =  "<a href='${casLoginUrl}?service=${loginReturnToUrl}' class='${cssClass}'><span><i class='icon-off ${(cssClass.contains("btn-login")) ? "icon-white" : ""}'></i> Log in</span></a>"
+            output =  "<a href='${casLoginUrl}?service=${loginReturnToUrl}' class='${cssClass}'><span><i class='${iconLogin}'></i> Log in</span></a>"
         }
         out << output
     }
@@ -471,6 +465,12 @@ class FCTagLib {
 
     def userIsAlaOrFcAdmin = { attrs ->
         if (userService.userIsAlaOrFcAdmin()) {
+            out << true
+        }
+    }
+
+    def userIsAlaAdmin = { attrs ->
+        if (userService.userIsAlaAdmin()) {
             out << true
         }
     }
@@ -683,5 +683,47 @@ class FCTagLib {
         }
     }
 
+    /**
+     * Renders the value of a site geographic facet, accepting either a String or List typed value.
+     * Both the value and label will be looked up in the message.properties under the key 'label.'<facetName/value>
+     *
+     * @param site the site to render the value of
+     * @param facet the name of the facet to render
+     * @param label optionally override the facet name
+     * @param max the maximum number of values to display if the facet value is List typed
+     */
+    def siteFacet = {attrs ->
+        Map site = attrs.site
+        String facetName = attrs.facet
 
+        MarkupBuilder mb = new MarkupBuilder(out)
+        Map geom =  site?.extent?.geometry?:[:]
+
+        Object facetValue = geom[facetName]
+        if (facetValue) {
+            String label = attrs.label ?: g.message(code:'label.'+facetName+'Facet', default:facetName)
+            mb.dt(label)
+
+            if (!(facetValue instanceof List)) {
+                facetValue = [facetValue]
+            }
+            StringBuilder value = new StringBuilder()
+            int max = attrs.max ? Math.min(Integer.parseInt(attrs.max), facetValue.size()):facetValue.size()
+            for (int i in 0..(max-1)) {
+                value.append(g.message(code:'label.'+facetValue[i], default:facetValue[i]))
+                if (i < max-1) {
+                    value.append(', ')
+                }
+
+            }
+            mb.dd(value.toString())
+        }
+    }
+
+    def attributeSafeValue = { attrs ->
+        String value = attrs.value
+        if (value) {
+            out << value.replaceAll(/[^A-Za-z0-9]/, "")
+        }
+    }
 }

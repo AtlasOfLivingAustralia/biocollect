@@ -14,3 +14,4 @@
 <span class="projecttag" data-bind="visible:difficulty() == 'Medium'"><g:message code="project.tag.difficultyMedium"/></span>
 <span class="projecttag" data-bind="visible:difficulty() == 'Hard'"><g:message code="project.tag.difficultyHard"/></span>
 <span class="projecttag" data-bind="visible:transients.scienceTypeDisplay(),text:transients.scienceTypeDisplay()"></span>
+<span class="projecttag" data-bind="visible:transients.ecoScienceTypeDisplay(),text:transients.ecoScienceTypeDisplay()"></span>

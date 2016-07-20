@@ -1,7 +1,4 @@
 <style type="text/css">
-.dayscount {
-    text-align: center;
-}
 .dayscount > h2 {
     font-size: 300%;
 }

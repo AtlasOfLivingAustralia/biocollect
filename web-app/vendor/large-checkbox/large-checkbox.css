@@ -1,0 +1,42 @@
+/*
+* usage:
+*    <div class="large-checkbox">
+*        <input type="checkbox" id="termsOfUseAgreement"/>
+*        <label for="termsOfUseAgreement"><span></span> I confirm that have read and accept the Terms of Use.</label>
+*    </div>
+*/
+.large-checkbox input[type="checkbox"] {
+    position: absolute;
+    /* hide checkbox behind large checkbox. this is done so that the form validation is triggered correctly.*/
+    z-index: -1;
+}
+
+.large-checkbox label {
+    cursor:pointer;
+}
+
+.large-checkbox input[type="checkbox"]:disabled + label{
+    cursor: not-allowed;
+}
+
+.large-checkbox label span{
+    display: inline-block;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #c5c3c3;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.large-checkbox input[type="checkbox"] + label span::before {
+    content: "";
+    display: block;
+}
+
+.large-checkbox input[type="checkbox"]:checked + label span::before {
+    content: "✓";
+    color: dodgerblue;
+    text-align: center;
+    font-size: 20px;
+}

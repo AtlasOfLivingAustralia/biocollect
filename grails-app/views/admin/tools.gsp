@@ -101,6 +101,21 @@
                         alert(result.statusText);
                     });
                 });
+
+                $("#btnSyncSciStarter").click(function(e) {
+                    e.preventDefault();
+                    $.ajax("${createLink(controller: 'admin', action:'syncSciStarter')}",
+                            {
+                                method:"POST",
+                                data:{whiteList:$('#sciStarterWhiteList').val()}
+                            }
+                    ).done(function(result) {
+                        alert("Successfully imported " + result.count + " SciStarter projects!")
+                        document.location.reload();
+                    }).fail(function (result) {
+                        alert(result.statusText);
+                    });
+                });
             });
 
         </script>
@@ -169,6 +184,30 @@
                     </td>
                     <td>
                         Ensures that all institutions in collectory have a corresponding organisation in ecodata.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Enter comma separated white list below:</label>
+                        <input id="sciStarterWhiteList" type="text"/>
+                        <button id="btnSyncSciStarter" class="btn btn-small btn-info" title="Synchronise Biocollect with SciStarter">Import SciStarter Projects</button>
+                    </td>
+                    <td>
+                        Import projects from SciStarter to Biocollect. Note: this might take a long time
+                    </td>
+                </tr>
+                <tr>
+                    <td><button disabled id="btnLoadSightingsData" class="btn btn-small btn-info" title="Load sightings data">Load Sightings from JSON</button>
+                    </td>
+                    <td>
+                        Loads sightings information from JSON file. To produce JSON file for import
+                        <ul>
+                            <li>Export BSON from sightings; mongoexport -d ecodata -c records</li>
+                            <li>Convert BSON to JSON; bsondump records.bson > records.json</li>
+                        </ul>
+                        <p><g:uploadForm class="loadSightingsData" controller="admin" action="importSightingsData">
+                            <input id="sightingsData" type="file" accept="application/json" name="sightingsData"/>
+                            <br/><input type="text" name="pActivityId" id="pActivityId">Project Activity Id</g:uploadForm></p>
                     </td>
                 </tr>
             </tbody>

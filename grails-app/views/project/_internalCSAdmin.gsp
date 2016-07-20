@@ -9,7 +9,9 @@
                 <li><a href="#edit-project-stories" id="edit-project-stories-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project stories</a></li>
                 <li><a href="#edit-documents" id="edit-documents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Resources</a></li>
                 <li><a href="#permissions" id="permissions-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Members</a></li>
-
+                <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
+                    <li><a href="#project-audit" id="project-audit-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Audit</a></li>
+                </g:if>
             </ul>
         </div>
         <div class="span10">
@@ -27,7 +29,7 @@
                     </div>
 
                     <div class="row-fluid">
-                        <div class="span12 text-right" >
+                        <div class="span12 text-left" >
                             <g:if test="${fc.userIsAlaOrFcAdmin()}">
                                 <p>
                                     <button class="admin-action btn btn-small btn-danger" data-bind="click:deleteProject"> <i class="icon-remove icon-white"></i> Delete Project</button>
@@ -60,7 +62,7 @@
                     </div>
                     <g:render template="/shared/attachDocument"/>
                     <div class="row-fluid attachDocumentModal">
-                        <button class="btn" id="doAttach" data-bind="click:attachDocument">Attach Document</button>
+                        <button class="btn btn-small btn-primary" id="doAttach" data-bind="click:attachDocument"><i class="icon-white icon-plus"></i> Attach Document</button>
                     </div>
                 </div>
 
@@ -69,7 +71,12 @@
                     <g:render template="/admin/addPermissions" model="[addUserUrl:g.createLink(controller:'user', action:'addUserAsRoleToProject'), entityId:project.projectId]"/>
                     <g:render template="/admin/permissionTable" model="[loadPermissionsUrl:g.createLink(controller:'project', action:'getMembersForProjectId', id:project.projectId), removeUserUrl:g.createLink(controller:'user', action:'removeUserWithRoleFromProject'), entityId:project.projectId, user:user]"/>
                 </div>
-
+                <!--AUDIT-->
+                <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
+                    <div id="project-audit" class="pill-pane">
+                        <g:render template="/admin/auditProject"/>
+                    </div>
+                </g:if>
             </div>
         </div>
     </div>

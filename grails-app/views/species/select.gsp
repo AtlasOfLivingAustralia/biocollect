@@ -3,7 +3,7 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${project.name} | Species | Field Capture</title>
-    <r:require modules="knockout, jquery-ui, jquery_bootstrap_datatable"/>
+    <r:require modules="knockout, a-jquery-ui, jquery_bootstrap_datatable"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">

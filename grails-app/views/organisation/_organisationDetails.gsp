@@ -7,7 +7,7 @@
             <div class="control-group required">
                 <label class="control-label span3" for="name">Name: <fc:iconHelp><g:message code="organisation.name.help"/></fc:iconHelp> </label>
                 <div class="controls span9">
-                    <input type="text" id="name" class="input-xxlarge" data-bind="value:name" data-validation-engine="validate[required]" placeholder="Organisation name">
+                    <input type="text" id="name" class="input-xxlarge" data-bind="value:name" maxlength="256" data-validation-engine="validate[required,maxSize[256]]" placeholder="Organisation name">
                 </div>
             </div>
             %{--Commenting out the type until we can come up with some better options and include them in the collectory--}%
@@ -66,6 +66,7 @@
             <div class="control-group">
                 <label class="control-label span3" for="mainImage">Feature Graphic<fc:iconHelp><g:message code="organisation.mainImage.help"/></fc:iconHelp>:</label>
                 <div class="span6" style="text-align:center;background:white">
+                    <g:message code="organisation.mainImage.extra"/><br/>
                     <div class="well" style="padding:0;max-height:512px;display:inline-block;overflow:hidden">
                         <img style="width:100%" alt="No image provided" data-bind="attr:{src:mainImageUrl}">
                     </div>

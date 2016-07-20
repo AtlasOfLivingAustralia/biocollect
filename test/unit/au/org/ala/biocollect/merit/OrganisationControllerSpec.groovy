@@ -1,5 +1,7 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.OrganisationController
+import au.org.ala.biocollect.OrganisationService
 import grails.converters.JSON
 import grails.test.mixin.TestFor
 import spock.lang.Specification
@@ -121,7 +123,6 @@ class OrganisationControllerSpec extends Specification {
         model.organisation == testOrg
         model.content.about.visible == true
         model.content.sites.visible == false
-        model.content.dashboard.visible == false
         model.content.admin.visible == false
     }
 
@@ -138,7 +139,6 @@ class OrganisationControllerSpec extends Specification {
         model.organisation == testOrg
         model.content.about.visible == true
         model.content.sites.visible == true
-        model.content.dashboard.visible == true
         model.content.admin.visible == false
     }
 
@@ -155,7 +155,6 @@ class OrganisationControllerSpec extends Specification {
         model.organisation == testOrg
         model.content.about.visible == true
         model.content.sites.visible == true
-        model.content.dashboard.visible == true
         model.content.admin.visible == true
     }
 
@@ -172,7 +171,6 @@ class OrganisationControllerSpec extends Specification {
         model.organisation == testOrg
         model.content.about.visible == true
         model.content.sites.visible == true
-        model.content.dashboard.visible == true
         model.content.admin.visible == true
     }
 
@@ -189,7 +187,6 @@ class OrganisationControllerSpec extends Specification {
         model.organisation == testOrg
         model.content.about.visible == true
         model.content.sites.visible == true
-        model.content.dashboard.visible == true
         model.content.admin.visible == false
     }
 

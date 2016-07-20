@@ -160,3 +160,60 @@ ko.extenders.returnTo = function(target, returnToUrl) {
     return result;
 
 };
+
+/**
+ * Adds a request parameter named "version" to the value of the target observable.
+ * @param target assumed to be an observable containing a URL.
+ * @param version the value for the "version" parameter in the URL.
+ */
+ko.extenders.dataVersion = function(target, version) {
+
+    var result = ko.pureComputed({
+        read: target,
+        write: function (url) {
+            if (version) {
+                var separator = '?';
+                if (url.indexOf('?') >= 0) {
+                    separator = '&';
+                }
+
+                target(url + separator + 'version=' + version);
+            }
+            else {
+                target(url);
+            }
+        }
+    });
+    result(target());
+    return result;
+
+};
+
+ko.extenders.numeric = function(target, precision) {
+    //create a writable computed observable to intercept writes to our observable
+    var result = ko.pureComputed({
+        read: target,  //always return the original observables value
+        write: function(newValue) {
+            var current = target(),
+                roundingMultiplier = Math.pow(10, precision),
+                newValueAsNum = isNaN(newValue) ? 0 : parseFloat(+newValue),
+                valueToWrite = Math.round(newValueAsNum * roundingMultiplier) / roundingMultiplier;
+
+            //only write if it changed
+            if (valueToWrite !== current) {
+                target(valueToWrite);
+            } else {
+                //if the rounded value is the same, but a different value was written, force a notification for the current field
+                if (newValue !== current) {
+                    target.notifySubscribers(valueToWrite);
+                }
+            }
+        }
+    }).extend({ notify: 'always' });
+
+    //initialize with current value to make sure it is rounded appropriately
+    result(target());
+
+    //return the new computed observable
+    return result;
+};
