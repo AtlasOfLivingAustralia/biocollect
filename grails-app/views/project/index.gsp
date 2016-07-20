@@ -114,9 +114,9 @@
         <li class="active"><a href="#overview" id="overview-tab" data-toggle="tab">Overview</a></li>
         <li><a href="#document" id="document-tab" data-toggle="${tabIsActive}">Documents</a></li>
         <li><a href="#plan" id="plan-tab" data-toggle="${tabIsActive}">Activities</a></li>
-        <g:if test="${!hubConfig?.defaultFacetQuery.contains('isWorks:true')}">
-            <li><a href="#site" id="site-tab" data-toggle="${tabIsActive}">Sites</a></li>
-        </g:if>
+        %{--<g:if test="${!hubConfig?.defaultFacetQuery.contains('isWorks:true')}">--}%
+            %{--<li><a href="#site" id="site-tab" data-toggle="${tabIsActive}">Sites</a></li>--}%
+        %{--</g:if>--}%
         <li><a href="#dashboard" id="dashboard-tab" data-toggle="${tabIsActive}">Dashboard</a></li>
         <g:if test="${(user?.isAdmin || user?.isCaseManager) && user?.isEditor}"><li><a href="#admin" id="admin-tab" data-toggle="tab">Admin</a></li></g:if>
     </ul>
@@ -200,17 +200,6 @@
                     </div>
                 </div>
 
-                <!-- show other documents -->
-                <div id="documents" data-bind="css: { span3: primaryImages() != null, span7: primaryImages() == null }">
-                    <h4>Project documents</h4>
-                    <div data-bind="visible:documents().length == 0">
-                        No documents are currently attached to this project.
-                        <g:if test="${user?.isAdmin}">To add a document use the Documents section of the Admin tab.</g:if>
-                    </div>
-                    <g:render template="/shared/listDocuments"
-                      model="[useExistingModel: true,editable:false,imageUrl:resource(dir:'/images/filetypes'),containerId:'overviewDocumentList']"/>
-                </div>
-
                 <div class="span10">
                     <h4>Project Blog</h4>
                     <div class="well">
@@ -272,39 +261,7 @@
                             <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole)}">
                                 <!-- PROJECT SETTINGS -->
                                 <div id="settings" class="pill-pane ${activeClass}">
-                                    <h3>Project Settings</h3>
-                                    <div class="row-fluid">
-                                        <div id="save-result-placeholder"></div>
-                                        <div class="span10 validationEngineContainer" id="settings-validation">
-                                            <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-                                                <g:render template="editProject"
-                                                          model="[project: project]"/>
-                                            </g:if>
-                                            <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-                                                <h4>Project info</h4>
-
-                                                <div class="row-fluid">
-                                                    <div class="span12 text-left" >
-                                                        <p>
-                                                            Edit project details and content
-                                                            <button class="btn admin-action" data-bind="click:editProject"><i class="icon-edit"></i> Edit </button>
-                                                        </p>
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="row-fluid">
-                                                    <div class="span12 text-left" >
-                                                        <g:if test="${fc.userIsAlaOrFcAdmin()}">
-                                                            <p>
-                                                                <button class="admin-action btn btn-danger" data-bind="click:deleteProject"> <i class="icon-remove icon-white"></i> Delete Project</button>
-                                                            </p>
-                                                        </g:if>
-                                                    </div>
-                                                </div>
-                                            </g:if>
-                                        </div>
-                                    </div>
+                                    <g:render template="editOrDeleteProject"/>
                                 </div>
                                 <g:set var="activeClass" value=""/>
                             </g:if>
