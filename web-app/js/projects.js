@@ -338,11 +338,11 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     });
 
     self.transients.truncatedAim = ko.computed(function () {
-        return truncate(self.aim(), 65);
+        return truncate(self.aim(), 80);
     });
 
     self.transients.truncatedName = ko.computed(function () {
-        return truncate(self.name(), 25);
+        return truncate(self.name(), 50);
     });
     
     

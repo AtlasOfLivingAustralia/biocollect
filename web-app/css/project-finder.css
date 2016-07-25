@@ -100,14 +100,60 @@ input[type=checkbox] {
     color: #fff;
 }
 
-.toggleIndicator{
-    display: none;
-    margin-left: 5px;
+#pt-selectors  .btn-info.as-checkbox{
+    background-color:white;
+    background-image: none;
+    border: none;
+    box-shadow: none;
+    padding: 0px;
+    font-weight: 200;
+    text-shadow: none;
+    color: #C44D34;
 }
 
-.active > .toggleIndicator{
+
+#pt-selectors label {
+    color: #C44D34;
+    font-weight: 200;
+}
+
+#pt-selectors input[type=checkbox] {
+    visibility: hidden;
+}
+
+#pt-selectors input[type=checkbox] ~ .active-checkbox  {
+    display: none;
+}
+
+#pt-selectors input[type=checkbox]:checked ~ .active-checkbox  {
+    display: inline-block;
+}
+
+#pt-selectors input[type=checkbox]:checked ~ .inactive-checkbox  {
+    display: none;
+}
+
+
+
+.toggleIndicator.fa.fa-check-square-o {
+    display: none;
+    margin-left: 6px;
+}
+
+.active > .toggleIndicator.fa.fa-check-square-o {
     display: inherit;
 }
+
+.toggleIndicator.fa.fa-square-o {
+    display: inherit;
+    margin-left: 6px;
+}
+
+.active > .toggleIndicator.fa.fa-square-o {
+    display: none;
+}
+
+
 
 #pt-selectors{
     background-color: #FFFFFF;

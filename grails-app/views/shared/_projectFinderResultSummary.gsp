@@ -1,3 +1,4 @@
+<div id="pt-display-options">
 <div class="row-fluid">
     <div class="span6">
         <table data-table-list>
@@ -36,5 +37,37 @@
     </div>
 
 </div>
+<div class="row-fluid clearfix margin-bottom-5">
+    <div class="span12">
+        <div class="row-fluid">
+            <div class="pull-right margin-bottom-5">
+                    <small class=""><g:message code="g.sortBy"></g:message>&nbsp;</small>
+                    <div class="btn-group " data-toggle="buttons-radio" id="pt-sort">
+                        <button type="button" class="btn  btn-mini active"
+                                data-value="nameSort">Name</button>
+                        <button type="button" class="btn  btn-mini"
+                                data-value="_score">Relevance</button>
+                        <button type="button" class="btn  btn-mini"
+                                data-value="organisationSort">Organisation</button>
+                    </div>
 
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="pull-right margin-bottom-5">
+                <small ><g:message code="g.projects"/>&nbsp;<g:message code="g.perPage"/>&nbsp;</small>
+                    <div class="btn-group" data-toggle="buttons-radio" id="pt-per-page">
+                        <button type="button" class="btn  btn-small active" data-value="20">20</button>
+                        <button type="button" class="btn  btn-small" data-value="50">50</button>
+                        <button type="button" class="btn  btn-small" data-value="100">100</button>
+                        <button type="button" class="btn  btn-small" data-value="500">500</button>
+                    </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
 

@@ -48,7 +48,10 @@ function ProjectFinder() {
 
     /* window into current page */
     function PageVM() {
+        this.self = this;
         this.pageProjects = ko.observableArray();
+        this.columns = ko.observable(2);
+        self.columns = this.columns;
 
         this.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
         this.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
@@ -61,8 +64,26 @@ function ProjectFinder() {
             return true;
         }
 
-        this.listView = ko.observable(true);
+        self.resizeGrid = function () {
+            var width = $( window ).width();
+            if(width >= 1 && width <=480) {
+                self.columns(1);
+            } else if (width > 480 && width <768) {
+                self.columns(2);
+            } else if (width >= 768 && width <992) {
+                self.columns(3);
+            } else if (width >= 992) {
+                self.columns(4);
+            }
+        };
 
+        $( window ).resize(function () {
+            self.resizeGrid();
+        });
+
+        self.resizeGrid();
+
+        this.listView = ko.observable(true);
 
         /**
          * this function is used to tell project/index or citizenscience page that the traffic is coming from
@@ -75,8 +96,9 @@ function ProjectFinder() {
             return true;
         }
 
-        this.partitioned = function (observableArray, count) {
+        this.partitioned = function (observableArray, countObservable) {
             var rows, partIdx, i, j, arr;
+            var count = countObservable();
 
             arr = observableArray();
 
@@ -388,13 +410,13 @@ function ProjectFinder() {
         if(showPanel) {
 
             $('#pt-table').removeClass('span12 no-sidebar');
-            $('#pt-table').addClass('span9');
+            $('#pt-table').addClass('span10');
             $('#filterPanel').show();
             $('#pt-filter').addClass('active');
 
         } else {
             $('#filterPanel').hide();
-            $('#pt-table').removeClass('span9');
+            $('#pt-table').removeClass('span10');
             $('#pt-table').addClass('span12 no-sidebar');
         }
     }
@@ -490,7 +512,12 @@ function ProjectFinder() {
     });
 
     // check for statechange event on all buttons in filter panel.
-    $('#pt-searchControls button').on('statechange', self.searchAndShowFirstPage);
+    $('#pt-searchControls').on('statechange', self.searchAndShowFirstPage);
+
+    $('#pt-sort').on('statechange', self.searchAndShowFirstPage);
+
+    $('#pt-per-page').on('statechange', self.searchAndShowFirstPage);
+
 
     pago = this.pago = {
         init: function (projs) {
