@@ -32,7 +32,7 @@
                             <h5><g:message code="project.search.difficulty"/></h5>
 
                             <div class="row-fluid">
-                                <div class="btn-group span6" data-toggle="buttons-radio" id="pt-search-difficulty">
+                                <div class="btn-group span6" data-toggle="buttons-checkbox" id="pt-search-difficulty">
                                        <g:each var="level" in="${['easy', 'medium', 'hard']}">
                                            <div>
                                             <button type="button" class="btn  btn-small btn-info as-checkbox"
