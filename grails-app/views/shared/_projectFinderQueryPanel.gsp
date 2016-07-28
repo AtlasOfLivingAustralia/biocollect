@@ -3,7 +3,7 @@
     <div id="pt-selectors" class="well">
         <div id="filters-hidden">
             <div id="pt-searchControls" class="row-fluid">
-
+                <h4><g:message code="project.search.heading"/></h4>
                 <div class="row-fluid">
                     <div class="span12">
                         <h5><g:message code="project.search.status"/></h5>

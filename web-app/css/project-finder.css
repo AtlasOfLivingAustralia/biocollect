@@ -101,7 +101,7 @@ input[type=checkbox] {
 }
 
 #pt-selectors  .btn-info.as-checkbox{
-    background-color:white;
+    background-color:inherit;
     background-image: none;
     border: none;
     box-shadow: none;
@@ -151,12 +151,6 @@ input[type=checkbox] {
 
 .active > .toggleIndicator.fa.fa-square-o {
     display: none;
-}
-
-
-
-#pt-selectors{
-    background-color: #FFFFFF;
 }
 
 /**

@@ -1,4 +1,4 @@
-<div class="row-fluid">
+<div class="row-fluid well">
         <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
             <div class="tiles">
             <div data-bind="foreach: partitioned( pageProjects, columns)">
@@ -6,9 +6,6 @@
                 </div>
             </div>
         </div>
-    <div id="pt-searchNavBar" class="clearfix">
-        <div id="pt-navLinks"></div>
-    </div>
 </div>
 <script id="projectCell" type="text/html">
 <div data-bind="attr:{class:'well tile span' + 12 / $root.columns()}">

@@ -49,7 +49,4 @@
                 </tr>
             </tbody>
         </table>
-    <div id="pt-searchNavBar" class="clearfix">
-        <div id="pt-navLinks"></div>
-    </div>
 </div>
