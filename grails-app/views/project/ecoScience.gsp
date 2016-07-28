@@ -68,6 +68,9 @@
                 <div data-bind="ifnot: listView">
                     <g:render template="/shared/projectFinderResultPanelTile"></g:render>
                 </div>
+                <div id="pt-searchNavBar" class="clearfix">
+                    <div id="pt-navLinks"></div>
+                </div>
             </bc:koLoading>
         </div>
     </div>
