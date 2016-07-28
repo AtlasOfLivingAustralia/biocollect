@@ -1,7 +1,7 @@
 <div class="row-fluid">
         <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
             <div class="tiles">
-            <div data-bind="foreach: partitioned( pageProjects, 4)">
+            <div data-bind="foreach: partitioned( pageProjects, columns)">
                 <div class="row-fluid equal-height" data-bind="template: { name: 'projectCell', foreach: $data }">
                 </div>
             </div>
@@ -11,7 +11,7 @@
     </div>
 </div>
 <script id="projectCell" type="text/html">
-<div data-bind="attr:{class:'span3 well tile'}">
+<div data-bind="attr:{class:'well tile span' + 12 / $root.columns()}">
     <div class="tile-title"
          data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
         <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
@@ -22,7 +22,9 @@
     <div class="row-fluid">
         <div class="span12 padding-left-5" style="min-width: 80px;">
             <div>
-                <img class="image-logo" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name, src:transients.imageUrl || '${noImageUrl}'}" onerror="imageError(this, '${noImageUrl}');"/>
+                <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
+                    <img class="image-logo" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name, src:transients.imageUrl || '${noImageUrl}'}" onerror="imageError(this, '${noImageUrl}');"/>
+                </a>
             </div>
             <div data-bind="visible: isSciStarter" class="inline-block"><img class="logo-small"
                                                                              src="${resource(dir: 'images', file: 'robot.png')}"
@@ -42,12 +44,10 @@
 
             <div data-bind="text:transients.truncatedAim"></div>
 
-            <div>
-                <g:render template="/project/dayscount"/>
+            <div class="tile-small">
+                <g:render template="/project/dayscountTile"/>
             </div>
-
         </div>
-
     </div>
 </div>
 </script>

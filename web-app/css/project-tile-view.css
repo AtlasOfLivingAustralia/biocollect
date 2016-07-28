@@ -117,21 +117,3 @@ statistics and stat styles from Merit project
     background-position: center center;
     background-size: cover;
 }
-
-.tile .dayscount > h2 {
-    font-size: 12px;
-    margin: 0px 0;
-    color: #000000;
-    line-height: 20px;
-}
-
-.tile .dayscount > h4 {
-    text-transform: none;
-    font-size: 12px;
-    color: #000000;
-    margin: 0px 0;
-}
-
-.tile .dayscount > img {
-    display: none;
-}
