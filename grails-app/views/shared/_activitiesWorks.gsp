@@ -1093,11 +1093,11 @@
                 });
             }();
         }
-
+        var project = <fc:modelAsJavascript model="${project}"/>;
         var planViewModel = new PlanViewModel(
     ${activities ?: []},
-    ${project.outputTargets ?: '{}'},
-            checkAndUpdateProject(${project})
+            project.outputTargets || {},
+            project
         );
         ko.applyBindings(planViewModel, document.getElementById('planContainer'));
 

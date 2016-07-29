@@ -102,8 +102,6 @@ class ProjectController {
                 def activityModel = metadataService.activitiesModel().activities.findAll { it.category == "Assessment & monitoring" }
                 model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
                 model.pActivityForms = activityModel.collect{[name: it.name, images: it.images]}
-            }else if(project.projectType == 'works'){
-                model.activities = activityService.activitiesForProject(project.projectId)
             }
 
             render view:content.view, model:model
@@ -126,7 +124,7 @@ class ProjectController {
             return 'externalCSProjectTemplate'
         }
 
-        return project.projectType == 'survey' || project.projectType == 'ecoscience' ? 'csProjectTemplate' : 'index'
+        return project.projectType == 'survey' || project.projectType == 'ecoscience' ? 'csProjectTemplate' : 'worksProjectTemplate'
     }
 
     protected Map surveyProjectContent(project, user, params) {
@@ -148,12 +146,13 @@ class ProjectController {
     }
 
     protected Map worksProjectContent(project, user) {
-        [overview:[label:'Overview', visible: true, default: true, type:'tab', projectSite:project.projectSite],
-         documents:[label:'Documents', visible: !project.isExternal, type:'tab'],
-         activities:[label:'Activities', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab'],
-         site:[label:'Sites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
+        def activities = activityService.activitiesForProject(project.projectId)
+        [overview:[label:'About', template:'aboutWorksProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
+         documents:[label:'Documents', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
+         activities:[label:'Activities', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:true],
+         //site:[label:'Sites', template:'/shared/sites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
          dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab'],
-         admin:[label:'Admin', visible:(user?.isAdmin || user?.isCaseManager), type:'tab']]
+         admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab']]
     }
 
     @PreAuthorise
