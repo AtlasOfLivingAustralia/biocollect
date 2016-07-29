@@ -242,11 +242,10 @@ class ProjectControllerSpec extends Specification {
         controller.index(projectId)
 
         then:
-        view == '/project/index'
+        view == '/project/worksProjectTemplate'
         model.projectContent.overview.visible == true
         model.projectContent.documents.visible == true
         model.projectContent.activities.visible == true
-        model.projectContent.site.visible == true
         model.projectContent.dashboard.visible == true
         model.projectContent.admin.visible == false
     }
