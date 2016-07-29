@@ -499,6 +499,7 @@ class ProjectController {
             case 'nameSort':
                 trimmedParams.order = 'ASC';
                 break;
+            case 'dateCreatedSort':
             case '_score':
                 trimmedParams.order = 'DESC';
                 break;

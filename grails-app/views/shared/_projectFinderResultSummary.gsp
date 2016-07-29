@@ -48,6 +48,8 @@
 
                     <div class="btn-group " data-toggle="buttons-radio" id="pt-sort">
                         <button type="button" class="btn  btn-mini active"
+                                data-value="dateCreatedSort">Most recent</button>
+                        <button type="button" class="btn  btn-mini"
                                 data-value="nameSort">Name</button>
                         <button type="button" class="btn  btn-mini"
                                 data-value="_score">Relevance</button>
