@@ -589,7 +589,7 @@ function ProjectFinder() {
                 params[keyAndValue[0]] = keyAndValue[1];
             }
         }
-        
+
         toggleButton($('#pt-search-diy'), toBoolean(params.isDIY));
         setActiveButtonValues($('#pt-status'), params.status);
         toggleButton($('#pt-search-noCost'), toBoolean(params.hasParticipantCost));
