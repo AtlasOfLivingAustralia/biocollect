@@ -590,9 +590,6 @@ function ProjectFinder() {
             }
         }
 
-        if (!isDefaultFilter(params)) {
-            toggleButton($('#pt-filter'), true);
-        }
         toggleButton($('#pt-search-diy'), toBoolean(params.isDIY));
         setActiveButtonValues($('#pt-status'), params.status);
         toggleButton($('#pt-search-noCost'), toBoolean(params.hasParticipantCost));
@@ -613,23 +610,6 @@ function ProjectFinder() {
         checkButton($("#pt-per-page"), params.max || '20');
 
         $('#pt-search').val(params.q).focus()
-    }
-
-    function isDefaultFilter(params) {
-        var defaultFilter = false;
-        if (params.isUserWorksPage) {
-            defaultFilter = _.isEqual(params, DEFAULT_USER_WORKS_PROJECT_FILTER)
-        } else if (params.isUserEcoSciencePage) {
-            defaultFilter = _.isEqual(params, DEFAULT_USER_ECO_SCIENCE_PROJECT_FILTER)
-        } else if (params.isUserPage) {
-            defaultFilter = _.isEqual(params, DEFAULT_USER_PROJECT_FILTER)
-        } else if (params.organisationName) {
-            defaultFilter = _.isEqual(_.omit(params, "organisationName"), DEFAULT_ORGANISATION_PROJECT_FILTER);
-        } else {
-            defaultFilter = _.isEqual(params, DEFAULT_CITIZEN_SCIENCE_FILTER);
-        }
-
-        return defaultFilter;
     }
 
     function setGeoSearch(geoSearchHash) {
