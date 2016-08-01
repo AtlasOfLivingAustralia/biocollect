@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
 import grails.test.mixin.TestFor
 import spock.lang.Specification
@@ -85,6 +86,17 @@ class ProjectControllerSpec extends Specification {
         ["2", "3"].each { orgId ->
             model.organisations.find{it.organisationId == orgId}.organisationId == orgId
         }
+    }
+
+    void "when creating a project, the current hub's default program should be assigned to the new project"() {
+        when:
+        userServiceStub.getUser() >> [userId:'1234']
+        SettingService.setHubConfig(new HubSettings([defaultProgram:'my program']))
+
+        def model = controller.create()
+
+        then:
+        model.project.associatedProgram == 'my program'
     }
 
     void "the edit method should overwrite the project organisation if returning from the create organisation workflow"() {
@@ -310,6 +322,23 @@ class ProjectControllerSpec extends Specification {
         then:
         response.status == SC_REQUEST_TIMEOUT;
         response.text == 'timed out';
+    }
+
+    void "available survey types should be provided by the project service"() {
+        setup:
+        def projectId = 'project1'
+        def siteId = 'site1'
+        def citizenScience = true
+        def external = false
+        stubProjectAdmin('1234', projectId)
+        projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE, isExternal:external]
+        projectServiceStub.supportedActivityTypes(_) >> [[name:'1'], [name:'2'], [name:'3']]
+
+        when:
+        controller.index(projectId)
+
+        then:
+        model.pActivityForms == [[name:'1', images:null], [name:'2', images:null], [name:'3', images:null]]
     }
 
     int orgCount = 0;

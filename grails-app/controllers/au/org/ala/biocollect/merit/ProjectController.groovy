@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.ProjectActivityService
+import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
 import au.org.ala.biocollect.projectresult.Initiator
 import au.org.ala.web.AuthService
@@ -94,14 +95,11 @@ class ProjectController {
                 projectSite: project.projectSite
             ]
 
-            if(project.projectType == 'survey'){
-                def activityModel = metadataService.activitiesModel().activities.findAll { it.category == "Assessment & monitoring" }
+
+            if(project.projectType in [ProjectService.PROJECT_TYPE_ECOSCIENCE, ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE]){
                 model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
-                model.pActivityForms = activityModel.collect{[name: it.name, images: it.images]}
-            } else if(project.projectType == 'ecoscience'){
-                def activityModel = metadataService.activitiesModel().activities.findAll { it.category == "Assessment & monitoring" }
-                model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
-                model.pActivityForms = activityModel.collect{[name: it.name, images: it.images]}
+                model.pActivityForms = projectService.supportedActivityTypes(project).collect{[name: it.name, images: it.images]}
+                println model.pActivityForms
             }
 
             render view:content.view, model:model
@@ -110,8 +108,8 @@ class ProjectController {
 
     protected Map projectContent(project, user, programs, params) {
 
-        boolean isSurveyProject = (project.projectType == 'survey')
-        boolean isEcoScienceProject = (project.projectType == 'ecoscience')
+        boolean isSurveyProject = (project.projectType == ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE)
+        boolean isEcoScienceProject = (project.projectType == ProjectService.PROJECT_TYPE_ECOSCIENCE)
         def model = isSurveyProject?surveyProjectContent(project, user, params):(isEcoScienceProject?ecoSurveyProjectContent(project, user):worksProjectContent(project, user))
 
         blogService.getProjectBlog(project)
@@ -124,7 +122,7 @@ class ProjectController {
             return 'externalCSProjectTemplate'
         }
 
-        return project.projectType == 'survey' || project.projectType == 'ecoscience' ? 'csProjectTemplate' : 'worksProjectTemplate'
+        return project.projectType == ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE || project.projectType == ProjectService.PROJECT_TYPE_ECOSCIENCE ? 'csProjectTemplate' : 'worksProjectTemplate'
     }
 
     protected Map surveyProjectContent(project, user, params) {
@@ -213,16 +211,22 @@ class ProjectController {
         }
         if (params.citizenScience) {
             project.isCitizenScience = true
-            project.projectType = 'survey'
+            project.projectType = ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE
         }
         if (params.works) {
             project.isWorks = true
-            project.projectType = 'works'
+            project.projectType = ProjectService.PROJECT_TYPE_WORKS
         }
         if (params.ecoScience) {
             project.isEcoScience = true
-            project.projectType = 'ecoscience'
+            project.projectType = ProjectService.PROJECT_TYPE_ECOSCIENCE
         }
+
+        HubSettings hub = SettingService.getHubConfig()
+        if (hub && hub.defaultProgram) {
+            project.associatedProgram = hub.defaultProgram
+        }
+
         // Default the project organisation if the user is a member of a single organisation.
         if (groupedOrganisations.user?.size() == 1) {
             project.organisationId = groupedOrganisations.user[0].organisationId
