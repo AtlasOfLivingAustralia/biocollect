@@ -108,6 +108,13 @@
         </div>
 
         <div class="control-group">
+            <label class="control-label" for="default-program">Default program (new projects created from this hub will inherit this program)</label>
+            <div class="controls">
+                <select id="default-program" data-bind="value:defaultProgram, options:supportedPrograms"></select>
+            </div>
+        </div>
+
+        <div class="control-group">
             <label class="control-label" for="available-facets">Available Facets (Only these facets will display on the home page)</label>
             <div class="controls">
                 <ul id="available-facets" data-bind="foreach:$parent.transients.availableFacets" class="unstyled">

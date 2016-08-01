@@ -69,6 +69,7 @@ var HubSettings = function(settings, config) {
     self.bannerUrl = ko.observable();
     self.logoUrl = ko.observable();
     self.documents = ko.observableArray();
+    self.defaultProgram = ko.observable();
 
     self.documents.subscribe(function(documents) {
         $.each(documents, function(i, document) {
@@ -124,6 +125,7 @@ var HubSettings = function(settings, config) {
         self.skin(settings.skin);
         self.title(settings.title);
         self.supportedPrograms(self.orEmptyArray(settings.supportedPrograms));
+        self.defaultProgram(settings.defaultProgram);
         self.availableFacets(self.orEmptyArray(settings.availableFacets));
         self.adminFacets(self.orEmptyArray(settings.adminFacets));
         self.availableMapFacets(self.orEmptyArray(settings.availableMapFacets));
