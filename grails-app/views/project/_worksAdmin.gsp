@@ -5,6 +5,7 @@
                 <li ${activeClass}><a href="#settings" id="settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project settings</a></li>
                 <g:set var="activeClass" value=""/>
             </g:if>
+            <li><a href="#editMeriPlan" id="editMeriPlan-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit MERI Plan</a></li>
             <li><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Project Blog</a></li>
             <li><a href="#editNewsAndEvents" id="editnewsandevents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> News and events</a></li>
             <li><a href="#editProjectStories" id="editprojectstories-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project stories</a></li>
@@ -24,6 +25,10 @@
                 </div>
                 <g:set var="activeClass" value=""/>
             </g:if>
+            <div id="editMeriPlan" class="pill-pane">
+                <h3>Edit MERI Plan</h3>
+                <g:render template="editMeriPlan"></g:render>
+            </div>
             <div id="editProjectBlog" class="pill-pane">
                 <h3>Edit Project Blog</h3>
                 <g:render template="/blog/blogSummary" model="${[blog:project.blog?:[]]}"/>

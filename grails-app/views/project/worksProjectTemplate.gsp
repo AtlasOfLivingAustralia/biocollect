@@ -9,6 +9,7 @@
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         projectUpdateUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
+        saveMeriPlanUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
         projectEditUrl:"${createLink(action:'edit', id:project.projectId)}",
         sitesDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDeleteSitesFromProject', id:project.projectId)}",
         siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDeleteSiteFromProject', id:project.projectId)}",
@@ -129,9 +130,8 @@
             var project = <fc:modelAsJavascript model="${project}"/>;
             var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
             var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
-            var viewModel = new ProjectViewModel(project, ${user?.isEditor?:false}, organisations);
+            var viewModel = new WorksProjectViewModel(project, ${user?.isEditor?:false}, organisations, {});
 
-            viewModel.loadPrograms(<fc:modelAsJavascript model="${programs}"/>);
             ko.applyBindings(viewModel);
 
             // retain tab state for future re-visits
@@ -174,36 +174,6 @@
 
         });// end window.load
 
-       /**
-        * Star/Unstar project for user - send AJAX and update UI
-        *
-        * @param boolean isProjectStarredByUser
-        */
-        function toggleStarred(isProjectStarredByUser) {
-            var basUrl = fcConfig.starProjectUrl;
-            var query = "?userId=${user?.userId}&projectId=${project?.projectId}";
-            if (isProjectStarredByUser) {
-                // remove star
-                $.getJSON(basUrl + "/remove" + query, function(data) {
-                    if (data.error) {
-                        alert(data.error);
-                    } else {
-                        $("#starBtn i").removeClass("icon-star").addClass("icon-star-empty");
-                        $("#starBtn span").text("Add to favourites");
-                    }
-                }).fail(function(j,t,e){ alert(t + ":" + e);}).done();
-            } else {
-                // add star
-                $.getJSON(basUrl + "/add" + query, function(data) {
-                    if (data.error) {
-                        alert(data.error);
-                    } else {
-                        $("#starBtn i").removeClass("icon-star-empty").addClass("icon-star");
-                        $("#starBtn span").text("Remove from favourites");
-                    }
-                }).fail(function(j,t,e){ alert(t + ":" + e);}).done();
-            }
-        }
 
         // select about tab when coming from project finder
         if(amplify.store('traffic-from-project-finder-page')){

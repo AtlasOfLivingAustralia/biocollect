@@ -222,9 +222,11 @@ modules = {
         dependsOn 'knockout', 'attachDocuments', 'wmd', 'responsiveTable'
         resource url: 'js/projects.js'
         resource url: 'js/sites.js'
+        resource url: 'js/meriPlan.js'
         resource url: 'vendor/moment/moment.min.js'
         resource url: 'css/surveys.css'
         resource url: 'css/project-tile-view.css'
+        resource url: 'css/works-project.css'
         resource url: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700", attrs:[type:"css"]
         resource url: "https://fonts.googleapis.com/css?family=Oswald:300", attrs:[type:"css"]
     }
