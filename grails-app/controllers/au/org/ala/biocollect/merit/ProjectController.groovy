@@ -333,14 +333,6 @@ class ProjectController {
                     return
                 }
 
-                if (values.containsKey("planStatus") && values.planStatus =~ /approved/) {
-                    // check to see if user has caseManager permissions
-                    if (!projectService.isUserCaseManagerForProject(userId, id)) {
-                        render status:401, text: "User does not have caseManager permissions for project"
-                        log.warn "User ${userId} who is not a caseManager attempting to change planStatus for project ${id}"
-                        return
-                    }
-                }
             } else if (!userId) {
                 render status: 401, text: 'You do not have permission to create a project'
             }
