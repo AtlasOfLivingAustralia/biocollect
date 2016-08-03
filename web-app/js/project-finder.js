@@ -297,6 +297,9 @@ function ProjectFinder() {
             url: fcConfig.projectListUrl,
             data: params,
             traditional: true,
+            beforeSend: function () {
+                $('#search-spinner').show();
+            },
             success: function (data) {
                 var projectVMs = [];
                 var organisation = fcConfig.organisation || [];
@@ -309,6 +312,9 @@ function ProjectFinder() {
             error: function () {
                 console.error("Could not load project data.");
                 console.error(arguments)
+            },
+            complete: function () {
+                $('#search-spinner').hide();
             }
         })
     };
@@ -535,26 +541,24 @@ function ProjectFinder() {
         gotoPage: function (pageNum) {
             offset = (pageNum - 1) * perPage;
             self.doSearch().done(function () {
-                scrollToView("#pt-table");
+                scrollToView("#heading");
             });
         },
         prevPage: function () {
             offset -= perPage;
             self.doSearch().done(function () {
-                scrollToView("#pt-table");
+                scrollToView("#heading");
             });
         },
         nextPage: function () {
             offset += perPage;
             self.doSearch().done(function () {
-                scrollToView("#pt-table");
+                scrollToView("#heading");
             });
         },
         firstPage: function () {
             offset = 0;
-            self.doSearch().done(function () {
-                scrollToView("#pt-table");
-            });
+            self.doSearch();
         }
     };
 
