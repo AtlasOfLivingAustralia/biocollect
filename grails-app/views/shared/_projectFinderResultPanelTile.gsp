@@ -11,13 +11,6 @@
 </div>
 <script id="projectCell" type="text/html">
 <div data-bind="attr:{class:'well tile span' + 12 / $root.columns()}">
-    <div class="tile-title"
-         data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
-        <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
-            <span data-bind="text:transients.truncatedName"></span>
-        </a>
-    </div>
-
     <div class="row-fluid">
         <div class="span12 padding-left-5" style="min-width: 80px;">
             <div>
@@ -29,6 +22,12 @@
                                                                              src="${resource(dir: 'images', file: 'robot.png')}"
                                                                              title="Project is sourced from SciStarter"></div>
         </div>
+    </div>
+    <div class="tile-title"
+         data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
+        <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
+            <span data-bind="text:transients.truncatedName"></span>
+        </a>
     </div>
     <div class="row-fluid">
         <div class="span12">
