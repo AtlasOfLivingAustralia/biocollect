@@ -206,6 +206,7 @@ function ProjectFinder() {
     ko.applyBindings(pageWindow, document.getElementById('pt-table'));
 
     this.getParams = function () {
+        debugger;
         var fq = [];
         var isSuitableForChildren = isButtonChecked($('#pt-search-children'));
         var isDIY = isButtonChecked($('#pt-search-diy'));
@@ -223,6 +224,8 @@ function ProjectFinder() {
         var isWorks = false;
         var isBiologicalScience = false;
         var isMERIT = false;
+        var isWorldWide = getActiveButtonValues($('#pt-aus-world'));
+        isWorldWide = isWorldWide.length? isWorldWide[0] : false
 
         sortBy = getActiveButtonValues($("#pt-sort"));
         perPage = getActiveButtonValues($("#pt-per-page"));
@@ -271,6 +274,7 @@ function ProjectFinder() {
             sort: sortBy,
             geoSearchJSON: JSON.stringify(geoSearch),
             skipDefaultFilters:fcConfig.showAllProjects,
+            isWorldWide: isWorldWide,
             q: $('#pt-search').val().toLowerCase()
         };
 
@@ -450,6 +454,10 @@ function ProjectFinder() {
         pageWindow.listView(viewMode[0] == "listView");
         amplify.store('pt-view-state', viewMode[0]);
     });
+    
+    $("#pt-aus-world").on('statechange', function(){
+        var viewMode = getActiveButtonValues($("#pt-view"));
+    })
 
 
     $("#mapModal").on('shown', function () {

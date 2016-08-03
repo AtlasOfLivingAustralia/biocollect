@@ -485,6 +485,7 @@ class ProjectController {
         trimmedParams.isContributingDataToAla = params.boolean('isContributingDataToAla')
         trimmedParams.difficulty = params.list('difficulty')
         trimmedParams.mobile = params.boolean('mobile')
+        trimmedParams.isWorldWide = params.boolean('isWorldWide', false)
 
         List fq = [], projectType = []
         List immutableFq = params.list('fq')
@@ -630,6 +631,15 @@ class ProjectController {
             fq.push('organisationFacet:'+trimmedParams.organisationName);
             trimmedParams.organisationName = null
         }
+
+        if (trimmedParams.isWorldWide) {
+            fq.push('isWorldWide:true')
+            trimmedParams.isWorldWide = null
+        } else {
+            fq.push('isWorldWide:!true')
+            trimmedParams.isWorldWide = null
+        }
+
 
 
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)

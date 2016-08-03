@@ -48,6 +48,14 @@
                         data-toggle="button" data-value="listView"><i
                         class="icon-th-list"></i></button>
             </div>
+            <div class="btn-group margin-bottom-5 margin-left-10" data-toggle="buttons-radio" id="pt-aus-world">
+                <button class="btn btn-small active" title="${message(code: 'project.australia.title')}"
+                        data-toggle="button" data-value="false"><i
+                        class="icon-th"></i></button>
+                <button class="btn btn-small" title="${message(code: 'project.worldwide.title')}"
+                        data-toggle="button" data-value="true"><i
+                        class="icon-world"></i></button>
+            </div>
             </div>
         </div>
 
