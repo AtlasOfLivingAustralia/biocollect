@@ -1,11 +1,13 @@
-<div class="row-fluid well">
+<div class="well">
+    <div class="row-fluid">
         <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
-            <div class="tiles">
+        <div class="tiles">
             <div data-bind="foreach: partitioned( pageProjects, columns)">
-                <div class="row-fluid equal-height" data-bind="template: { name: 'projectCell', foreach: $data }">
+                <div class="row-fluid row-eq-height" data-bind="template: { name: 'projectCell', foreach: $data }">
                 </div>
             </div>
         </div>
+    </div>
 </div>
 <script id="projectCell" type="text/html">
 <div data-bind="attr:{class:'well tile span' + 12 / $root.columns()}">

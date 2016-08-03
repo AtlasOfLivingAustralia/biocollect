@@ -187,13 +187,3 @@ input[type=checkbox] {
     float: none;
     /* Very important */
 }
-
-.equal-height {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.equal-height > div[class*='span'] {
-    display: flex;
-    flex-direction: column;
-}
