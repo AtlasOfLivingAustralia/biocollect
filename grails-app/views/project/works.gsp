@@ -54,6 +54,8 @@
     </div>
 
     <g:render template="/shared/projectFinderResultPanel"></g:render>
+
+
 </div>
 <r:script>
     $("#newPortal").on("click", function() {
