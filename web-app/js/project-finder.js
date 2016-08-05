@@ -35,11 +35,7 @@ function ProjectFinder() {
 
     var geoSearch = {};
 
-    var searchTerm = '', perPage = 20, sortBy = 'nameSort', sortOrder = 1;
-    // variable to not scroll to result when result is loaded for the first time.
-    var firstTimeLoad = true;
-
-    var siteViewModel = null;//initSiteViewModel({type:'projectArea'});
+    var refreshSearch = false;
 
     this.availableProjectTypes = new ProjectViewModel({}, false, []).transients.availableProjectTypes;
 
@@ -52,14 +48,14 @@ function ProjectFinder() {
 
     /* window into current page */
     function PageVM() {
+        this.self = this;
         this.pageProjects = ko.observableArray();
+        this.columns = ko.observable(2);
+        self.columns = this.columns;
 
         this.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
         this.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
         this.sortKeys = ko.observableArray(self.sortKeys);
-        this.hideshow = function () {
-            $("#pt-selectors").toggle();
-        };
         this.download = function (obj, e) {
             var params = $.param(self.getParams(), true);
             var href = $(e.target).attr('href');
@@ -67,6 +63,28 @@ function ProjectFinder() {
             $(e.target).attr('href', domain + '?' + 'download=true&' + params);
             return true;
         }
+
+        self.resizeGrid = function () {
+            var width = $( window ).width();
+            if(width >= 1 && width <=480) {
+                self.columns(1);
+            } else if (width > 480 && width <768) {
+                self.columns(2);
+            } else if (width >= 768 && width <992) {
+                self.columns(3);
+            } else if (width >= 992) {
+                self.columns(4);
+            }
+        };
+
+        $( window ).resize(function () {
+            self.resizeGrid();
+        });
+
+        self.resizeGrid();
+
+        this.listView = ko.observable(true);
+
         /**
          * this function is used to tell project/index or citizenscience page that the traffic is coming from
          * project finder page. This flag is used to decide if about page of the project should be shown.
@@ -78,6 +96,29 @@ function ProjectFinder() {
             return true;
         }
 
+        this.partitioned = function (observableArray, countObservable) {
+            var rows, partIdx, i, j, arr;
+            var count = countObservable();
+
+            arr = observableArray();
+
+            rows = [];
+            for (i = 0, partIdx = 0; i < arr.length; i += count, partIdx += 1) {
+                rows[partIdx] = [];
+                for (j = 0; j < count; j += 1) {
+                    if (i + j >= arr.length) {
+                        break;
+                    }
+                    arr[i + j].transients.index(i+j);
+                    rows[partIdx].push(arr[i + j]);
+                }
+            }
+            return rows;
+        };
+
+        this.styleIndex = function (dataIndex, rowSize) {
+            return dataIndex() % rowSize + 1 ;
+        };
     }
 
     /**
@@ -127,41 +168,18 @@ function ProjectFinder() {
         }
     }
 
-    function toggleFilterPanel() {
-        if ($('#pt-filter').hasClass('active')) {
-            $('#pt-selectors').slideDown(400)
-        } else {
-            $('#pt-selectors').slideUp(400)
-        }
-    }
+    function initialiseMap() {
+        if (!mapInitialised) {
+            spatialFilter = new ALA.Map("mapFilter", {
+                wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
+                wmsFeatureUrl: fcConfig.featureService + "?featureId=",
+                myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location"
+            });
 
-    function collapseFilterPanel(){
-        $('#pt-filter').click();
-    }
-
-    function toggleMapFilterPanel() {
-        if ($('#pt-map-filter').hasClass('active')) {
-            $('#pt-map-filter-panel').slideDown(400);
-            if (!mapInitialised) {
-                spatialFilter = new ALA.Map("mapFilter", {
-                    wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
-                    wmsFeatureUrl: fcConfig.featureService + "?featureId=",
-                    myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location"
-                });
-
-                var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService, fcConfig.regionListUrl);
-
-                spatialFilter.addControl(regionSelector);
-
-                spatialFilter.subscribe(geoSearchChanged);
-
-                mapInitialised = true;
-            }
-        } else {
-            $('#pt-map-filter-panel').slideUp(400);
-
-            geoSearch = {};
-            self.doSearch();
+            var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService, fcConfig.regionListUrl);
+            spatialFilter.addControl(regionSelector);
+            spatialFilter.subscribe(geoSearchChanged);
+            mapInitialised = true;
         }
     }
 
@@ -208,6 +226,7 @@ function ProjectFinder() {
 
         sortBy = getActiveButtonValues($("#pt-sort"));
         perPage = getActiveButtonValues($("#pt-per-page"));
+
 
         if (fcConfig.showAllProjects) {
             var values = getActiveButtonValues($('#pt-search-projecttype'));
@@ -269,6 +288,7 @@ function ProjectFinder() {
      * this is the function calling server with the latest query.
      */
     this.doSearch = function () {
+        refreshSearch = false;
         var params = self.getParams();
 
         window.location.hash = constructHash();
@@ -277,6 +297,9 @@ function ProjectFinder() {
             url: fcConfig.projectListUrl,
             data: params,
             traditional: true,
+            beforeSend: function () {
+                $('#search-spinner').show();
+            },
             success: function (data) {
                 var projectVMs = [];
                 var organisation = fcConfig.organisation || [];
@@ -289,6 +312,9 @@ function ProjectFinder() {
             error: function () {
                 console.error("Could not load project data.");
                 console.error(arguments)
+            },
+            complete: function () {
+                $('#search-spinner').hide();
             }
         })
     };
@@ -366,6 +392,41 @@ function ProjectFinder() {
         return vm;
     };
 
+
+    /**
+     * Initialises user default (saved) view for filter and results
+     * Filter can be shown/hidden
+     * Results can be displayed as list or tile (grid)
+     */
+    this.initViewMode = function () {
+
+        // Results view
+        var savedViewMode = amplify.store('pt-view-state');
+        savedViewMode = savedViewMode || "listView"; //Default is the old list view
+        checkButton($("#pt-view"), savedViewMode);
+        var viewMode = getActiveButtonValues($("#pt-view"));
+        pageWindow.listView(viewMode[0] == "listView");
+
+        // Filters view
+        var showPanel = amplify.store('pt-filter');
+        toggleFilterPanel(showPanel);
+    };
+
+    function toggleFilterPanel(showPanel) {
+        if(showPanel) {
+
+            $('#pt-table').removeClass('span12 no-sidebar');
+            $('#pt-table').addClass('span10');
+            $('#filterPanel').show();
+            $('#pt-filter').addClass('active');
+
+        } else {
+            $('#filterPanel').hide();
+            $('#pt-table').removeClass('span10');
+            $('#pt-table').addClass('span12 no-sidebar');
+        }
+    }
+
     /* comparator for data projects */
     function comparator(a, b) {
         var va = a[sortBy](), vb = b[sortBy]();
@@ -383,13 +444,37 @@ function ProjectFinder() {
     };
 
     $("#pt-filter").on('statechange', function () {
-        toggleFilterPanel();
+        var active = isButtonChecked($("#pt-filter"));
+        amplify.store('pt-filter', active);
+        toggleFilterPanel(active);
+        //toggleFilterPanel();
 
     });
 
-    $("#pt-map-filter").on('statechange', function () {
-        toggleMapFilterPanel();
+    $("#pt-view").on('statechange', function () {
+        var viewMode = getActiveButtonValues($("#pt-view"));
+        pageWindow.listView(viewMode[0] == "listView");
+        amplify.store('pt-view-state', viewMode[0]);
     });
+
+
+    $("#mapModal").on('shown', function () {
+        initialiseMap();
+    });
+
+    $("#mapModal").on('hide', function () {
+        geoSearchChanged();
+        if(refreshSearch) {
+            self.doSearch();
+        }
+    });
+
+    $("#clearFilterByRegionButton").click(function () {
+        geoSearch = {};
+        spatialFilter.resetMap();
+        refreshGeofilterButtons();
+    });
+
 
     $('#pt-search-link').click(function () {
         self.setTextSearchSettings();
@@ -415,16 +500,30 @@ function ProjectFinder() {
             spatialFilter.resetMap();
         }
         geoSearch = {};
-        toggleMapFilterPanel();
-        toggleFilterPanel();
+        refreshGeofilterButtons();
 
         self.pago.firstPage();
+        self.doSearch();
+
     });
 
-    $("#pt-collapse").click(collapseFilterPanel);
+    $("#btnShowTileView").click(function () {
+        pageWindow.showTileView();
+        
+    });
+
+    $("#btnShowListView").click(function () {
+        pageWindow.showListView();
+
+    });
 
     // check for statechange event on all buttons in filter panel.
-    $('#pt-searchControls button').on('statechange', self.searchAndShowFirstPage);
+    $('#pt-searchControls').on('statechange', self.searchAndShowFirstPage);
+
+    $('#pt-sort').on('statechange', self.searchAndShowFirstPage);
+
+    $('#pt-per-page').on('statechange', self.searchAndShowFirstPage);
+
 
     pago = this.pago = {
         init: function (projs) {
@@ -442,26 +541,24 @@ function ProjectFinder() {
         gotoPage: function (pageNum) {
             offset = (pageNum - 1) * perPage;
             self.doSearch().done(function () {
-                scrollToView("#pt-table");
+                scrollToView("#heading");
             });
         },
         prevPage: function () {
             offset -= perPage;
             self.doSearch().done(function () {
-                scrollToView("#pt-table");
+                scrollToView("#heading");
             });
         },
         nextPage: function () {
             offset += perPage;
             self.doSearch().done(function () {
-                scrollToView("#pt-table");
+                scrollToView("#heading");
             });
         },
         firstPage: function () {
             offset = 0;
-            self.doSearch().done(function () {
-                scrollToView("#pt-table");
-            });
+            self.doSearch();
         }
     };
 
@@ -497,10 +594,6 @@ function ProjectFinder() {
             }
         }
 
-        if (!isDefaultFilter(params)) {
-            toggleButton($('#pt-filter'), true);
-            toggleFilterPanel();
-        }
         toggleButton($('#pt-search-diy'), toBoolean(params.isDIY));
         setActiveButtonValues($('#pt-status'), params.status);
         toggleButton($('#pt-search-noCost'), toBoolean(params.hasParticipantCost));
@@ -523,30 +616,11 @@ function ProjectFinder() {
         $('#pt-search').val(params.q).focus()
     }
 
-    function isDefaultFilter(params) {
-        var defaultFilter = false;
-        if (params.isUserWorksPage) {
-            defaultFilter = _.isEqual(params, DEFAULT_USER_WORKS_PROJECT_FILTER)
-        } else if (params.isUserEcoSciencePage) {
-            defaultFilter = _.isEqual(params, DEFAULT_USER_ECO_SCIENCE_PROJECT_FILTER)
-        } else if (params.isUserPage) {
-            defaultFilter = _.isEqual(params, DEFAULT_USER_PROJECT_FILTER)
-        } else if (params.organisationName) {
-            defaultFilter = _.isEqual(_.omit(params, "organisationName"), DEFAULT_ORGANISATION_PROJECT_FILTER);
-        } else {
-            defaultFilter = _.isEqual(params, DEFAULT_CITIZEN_SCIENCE_FILTER);
-        }
-
-        return defaultFilter;
-    }
-
     function setGeoSearch(geoSearchHash) {
         if (geoSearchHash && typeof geoSearchHash !== 'undefined') {
             geoSearch = JSON.parse(LZString.decompressFromBase64(geoSearchHash));
 
             toggleButton($('#pt-map-filter'), true);
-
-            toggleMapFilterPanel();
 
             var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geoSearch);
             geoJson = ALA.MapUtils.getStandardGeoJSONForCircleGeometry(geoJson);
@@ -568,7 +642,23 @@ function ProjectFinder() {
         return str && str.toLowerCase() === 'true';
     }
 
+    function refreshGeofilterButtons() {
+        if ($.isEmptyObject(geoSearch)) {
+            $('#clearFilterByRegionButton').removeClass('active');
+            $('#filterByRegionButton').removeClass('active');
+        } else {
+            $('#clearFilterByRegionButton').addClass('active');
+            $('#filterByRegionButton').addClass('active');
+        }
+    }
+
     function geoSearchChanged() {
+        readUpdatedGeographicFilters();
+        refreshGeofilterButtons();
+
+    }
+     function readUpdatedGeographicFilters() {
+
         var geoJSON = ALA.MapUtils.getGeometryWithCirclesFromGeoJSON(spatialFilter.getGeoJSON());
 
         if (geoJSON && geoJSON.features.length == 1) {
@@ -599,10 +689,10 @@ function ProjectFinder() {
                 geoCriteriaChanged = true;
             }
 
-            if (geoCriteriaChanged && validSearchGeometry(geoSearch)) {
-                self.doSearch();
-            }
+            refreshSearch = geoCriteriaChanged && validSearchGeometry(geoSearch);
+
         } else if (geoJSON.features.length == 0 && geoSearch) {
+            refreshSearch = true;
             geoSearch = {};
             self.doSearch();
         }
@@ -622,7 +712,10 @@ function ProjectFinder() {
         return valid
     }
 
+
+
     parseHash();
-    this.doSearch();
+    self.doSearch();
+    self.initViewMode();
 }
 

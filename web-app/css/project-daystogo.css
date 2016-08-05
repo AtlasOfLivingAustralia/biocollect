@@ -1,0 +1,10 @@
+.dayscount > h2 {
+    font-size: 300%;
+}
+.dayscount > h4 {
+    color: grey;
+    text-transform: uppercase;
+}
+.dayscount > img {
+    width: 70px;
+}

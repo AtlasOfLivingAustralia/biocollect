@@ -6,6 +6,11 @@ import grails.converters.JSON
 
 class ProjectService {
 
+    public static final String PROJECT_TYPE_CITIZEN_SCIENCE = 'survey'
+    public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoscience'
+    public static final String PROJECT_TYPE_WORKS = 'works'
+
+
     WebService webService
     def grailsApplication
     SiteService siteService
@@ -494,6 +499,28 @@ class ProjectService {
         }
 
         allowedActivities
+    }
+
+    /**
+     * Returns a list of the activity types that can be used by the supplied project.
+     * The types are filtered based on what program the project is run under.
+     * @param project the project.
+     * @return a flat List of activity types that can be used by the project.
+     */
+    protected List supportedActivityTypes(Map project, List projectActivities = []) {
+        List activityTypes
+        if (project.associatedProgram) {
+            List activityTypesByCategory = metadataService.activityTypesList(project.associatedProgram)
+            activityTypes = activityTypesByCategory.collect{it.list}.flatten()
+        }
+        // Even if the program exists, it may not have configured a set of supported activities.  If so, we
+        // will fallback on the assessment & monitoring activities for backwards compatibility
+        if (!activityTypes) {
+            activityTypes = metadataService.activitiesModel().activities.findAll { it.category == "Assessment & monitoring" }
+        }
+
+        activityTypes += projectActivities.findAll{it.pActivityForm && !activityTypes.find{type->type.name == it.pActivityForm}}.collect{[name:it.pActivityForm]}
+        activityTypes
     }
 
 

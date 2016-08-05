@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.ProjectActivityService
+import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
 import au.org.ala.biocollect.projectresult.Initiator
 import au.org.ala.web.AuthService
@@ -94,16 +95,11 @@ class ProjectController {
                 projectSite: project.projectSite
             ]
 
-            if(project.projectType == 'survey'){
-                def activityModel = metadataService.activitiesModel().activities.findAll { it.category == "Assessment & monitoring" }
+
+            if(project.projectType in [ProjectService.PROJECT_TYPE_ECOSCIENCE, ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE]){
                 model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
-                model.pActivityForms = activityModel.collect{[name: it.name, images: it.images]}
-            } else if(project.projectType == 'ecoscience'){
-                def activityModel = metadataService.activitiesModel().activities.findAll { it.category == "Assessment & monitoring" }
-                model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
-                model.pActivityForms = activityModel.collect{[name: it.name, images: it.images]}
-            }else if(project.projectType == 'works'){
-                model.activities = activityService.activitiesForProject(project.projectId)
+                model.pActivityForms = projectService.supportedActivityTypes(project).collect{[name: it.name, images: it.images]}
+                println model.pActivityForms
             }
 
             render view:content.view, model:model
@@ -112,8 +108,8 @@ class ProjectController {
 
     protected Map projectContent(project, user, programs, params) {
 
-        boolean isSurveyProject = (project.projectType == 'survey')
-        boolean isEcoScienceProject = (project.projectType == 'ecoscience')
+        boolean isSurveyProject = (project.projectType == ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE)
+        boolean isEcoScienceProject = (project.projectType == ProjectService.PROJECT_TYPE_ECOSCIENCE)
         def model = isSurveyProject?surveyProjectContent(project, user, params):(isEcoScienceProject?ecoSurveyProjectContent(project, user):worksProjectContent(project, user))
 
         blogService.getProjectBlog(project)
@@ -126,7 +122,7 @@ class ProjectController {
             return 'externalCSProjectTemplate'
         }
 
-        return project.projectType == 'survey' || project.projectType == 'ecoscience' ? 'csProjectTemplate' : 'index'
+        return project.projectType == ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE || project.projectType == ProjectService.PROJECT_TYPE_ECOSCIENCE ? 'csProjectTemplate' : 'worksProjectTemplate'
     }
 
     protected Map surveyProjectContent(project, user, params) {
@@ -148,12 +144,14 @@ class ProjectController {
     }
 
     protected Map worksProjectContent(project, user) {
-        [overview:[label:'Overview', visible: true, default: true, type:'tab', projectSite:project.projectSite],
-         documents:[label:'Documents', visible: !project.isExternal, type:'tab'],
-         activities:[label:'Activities', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab'],
-         site:[label:'Sites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
+        def activities = activityService.activitiesForProject(project.projectId)
+        [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
+         documents:[label:'Documents', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
+         activities:[label:'Activities', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:true],
+         //site:[label:'Sites', template:'/shared/sites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
+         meriPlan:[label:'MERI Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, type:'tab', template:'viewMeriPlan'],
          dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab'],
-         admin:[label:'Admin', visible:(user?.isAdmin || user?.isCaseManager), type:'tab']]
+         admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab']]
     }
 
     @PreAuthorise
@@ -214,16 +212,22 @@ class ProjectController {
         }
         if (params.citizenScience) {
             project.isCitizenScience = true
-            project.projectType = 'survey'
+            project.projectType = ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE
         }
         if (params.works) {
             project.isWorks = true
-            project.projectType = 'works'
+            project.projectType = ProjectService.PROJECT_TYPE_WORKS
         }
         if (params.ecoScience) {
             project.isEcoScience = true
-            project.projectType = 'ecoscience'
+            project.projectType = ProjectService.PROJECT_TYPE_ECOSCIENCE
         }
+
+        HubSettings hub = SettingService.getHubConfig()
+        if (hub && hub.defaultProgram) {
+            project.associatedProgram = hub.defaultProgram
+        }
+
         // Default the project organisation if the user is a member of a single organisation.
         if (groupedOrganisations.user?.size() == 1) {
             project.organisationId = groupedOrganisations.user[0].organisationId
@@ -268,6 +272,7 @@ class ProjectController {
                 user                    : userService.getUser(),
                 showTag                 : params.tag,
                 downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
+                associatedPrograms      : projectService.programsModel().programs.findAll{!it?.readOnly},
                 showWorksBanner: true
         ]
     }
@@ -328,14 +333,6 @@ class ProjectController {
                     return
                 }
 
-                if (values.containsKey("planStatus") && values.planStatus =~ /approved/) {
-                    // check to see if user has caseManager permissions
-                    if (!projectService.isUserCaseManagerForProject(userId, id)) {
-                        render status:401, text: "User does not have caseManager permissions for project"
-                        log.warn "User ${userId} who is not a caseManager attempting to change planStatus for project ${id}"
-                        return
-                    }
-                }
             } else if (!userId) {
                 render status: 401, text: 'You do not have permission to create a project'
             }
@@ -498,6 +495,7 @@ class ProjectController {
             case 'nameSort':
                 trimmedParams.order = 'ASC';
                 break;
+            case 'dateCreatedSort':
             case '_score':
                 trimmedParams.order = 'DESC';
                 break;

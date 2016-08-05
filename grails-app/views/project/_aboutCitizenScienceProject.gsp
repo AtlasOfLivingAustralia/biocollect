@@ -42,8 +42,8 @@
         </div>
         <div class="span6" id="column2">
             <div class="well">
-                <div class="well-title" data-bind="visible:projectType() != 'ecoscience'"><g:message code="project.display.involved" /></div>
-                <div class="well-title" data-bind="visible:projectType() == 'ecoscience'"><g:message code="project.display.funding" /></div>
+                <div class="well-title" data-bind="visible:projectType() == 'survey'"><g:message code="project.display.involved" /></div>
+                <div class="well-title" data-bind="visible:projectType() != 'survey'"><g:message code="project.display.information" /></div>
                 <div data-bind="visible:getInvolved">
                     <div data-bind="html:getInvolved.markdownToHtml()"></div>
                     <p/>
@@ -60,7 +60,7 @@
                 </div>
                 <div data-bind="visible:externalId">
                     <div class="text-small-heading"><g:message code="project.display.fundingValue" /></div>
-                    <span data-bind="text:funding"></span>
+                    <span data-bind="text:funding.formattedCurrency"></span>
                     <p/>
                 </div>
                 <div data-bind="visible:associatedProgram">

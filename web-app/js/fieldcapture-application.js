@@ -925,6 +925,16 @@ function findLogoScalingClass(imageElement, givenWidth, givenHeight) {
     }
 }
 
+function backgroundImageStyle(imageUrl) {
+    return "background-image: url('" + imageUrl + "');" ;
+}
+
+function backgroundImageError(imageElement, alternateImage) {
+    imageElement.onerror = "";
+    imageElement.style =  backgroundImageStyle(alternateImage);//"/static/images/no-image-2.png";
+    return true;
+}
+
 function initCarouselImages(image){
     $(image).parent().fancybox({nextEffect:'fade', preload:0, 'prevEffect':'fade'});
     findLogoScalingClass(image)
@@ -960,4 +970,38 @@ if (!String.prototype.startsWith) {
         position = position || 0;
         return this.substr(position, searchString.length) === searchString;
     };
+}
+
+/**
+ * Sets up the floating save appear / disappear based on a supplied dirtyFlag and some selectors.
+ * Note this method requires the floating save to have been rendered into page html.
+ * @param dirtyFlag needs to be an object containing a knockout observable "isDirty".
+ * @param options selectors for page elements.
+ */
+function configureFloatingSave(dirtyFlag, options) {
+    var defaults = {
+        floatingSaveSelector: '#floating-save',
+        saveButtonSelector: '#save-button'
+    };
+    var config = $.extend(defaults, options);
+
+    var $floatingSave = $(config.floatingSaveSelector);
+    $(config.saveButtonSelector).appear().on('appear', function() {
+        $floatingSave.slideUp(400);
+    }).on('disappear', function() {
+        if (dirtyFlag.isDirty()) {
+            $floatingSave.slideDown(400);
+        }
+        else {
+            $floatingSave.slideUp(400);
+        }
+    });
+    dirtyFlag.isDirty.subscribe(function(dirty) {
+        if (dirty && !$floatingSave.is(':appeared')) {
+            $floatingSave.slideDown(400);
+        }
+        else {
+            $floatingSave.slideUp(400);
+        }
+    });
 }

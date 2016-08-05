@@ -1,0 +1,119 @@
+/*
+tiles and tile styles are based on
+statistics and stat styles from Merit project
+*/
+
+.tiles .tile {
+    min-height: 160px !important;
+    background-image: none !important;
+}
+
+.tiles .tile-organisation,.tiles .tile-text {
+    padding-left: 0 !important;
+}
+
+@media (max-width: 767px) {
+    body {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .tiles .tile {
+        min-height: 130px !important;
+        background-image: none !important;
+    }
+
+    .tile .span4 {
+        width: 31.91%;
+        float: left;
+    }
+
+    .tile .span8 {
+        width: 65.95%;
+        float: left;
+    }
+}
+
+.tiles .tile {
+    font-family: 'Oswald',sans-serif;
+    background-color: #ffffff;
+    margin-bottom: 30px;
+    padding: 20px;
+    border-radius: 4px;
+    min-height: 155px;
+    background-repeat: no-repeat;
+    background-size: 100px;
+    background-position: 20px 60px;
+}
+
+.tiles .tile-title {
+    font-family: 'Source Sans Pro',sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.tiles .tile-organisation {
+    font-size: 18px;
+    padding-left: 120px;
+}
+
+.tiles .tile-small {
+    font-size: 12px;
+}
+
+.tiles .tile-text {
+    font-size: 18px;
+    text-transform: uppercase;
+    padding-left: 120px;
+}
+
+.tiles .tile-1 {
+    background-color: #aa6cc2;
+}
+
+.tiles .tile-2 {
+    background-color: #26c281;
+}
+
+.tiles .tile-3 {
+    background-color: #44b6ae;
+}
+
+.tiles .tile-4 {
+    background-color: #25aed6;
+}
+
+.tiles .tile-5 {
+    background-color: #f26e83;
+}
+
+.tiles .tile-6 {
+    background-color: #e87e04;
+}
+
+
+.tile-overlay {
+    width:80px;
+    height:80px;
+    box-shadow:inset 1px 1px 40px 0 rgba(0,0,0,0.5);
+    bottom:0;
+    left: 0px;
+    top:0px;
+    position: absolute;
+    z-index: 1;
+}
+.tile-image{
+    position:relative;
+    width:80px;
+    height:80px;
+}
+
+.tile-thumb {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    background-position: center center;
+    background-size: cover;
+}

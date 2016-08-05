@@ -119,7 +119,7 @@ class MetadataService {
         cacheService.get('activitiesSelectList'+program, {
             String url = grailsApplication.config.ecodata.service.url + '/metadata/activitiesList'
             if (program) {
-                url += 'program='+program.encodeAsURL()
+                url += '?program='+program.encodeAsURL()
             }
             def activityTypes = webService.getJson(url)
             activityTypes.collect {key, value -> [name:key, list:value]}.sort{it.name}

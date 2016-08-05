@@ -390,6 +390,10 @@ th .popover {
     margin-left: 10px;
 }
 
+.margin-right-10{
+    margin-right: 10px;
+}
+
 .margin-right-20{
     margin-right: 20px;
 }
@@ -415,4 +419,31 @@ input.padding-14, .padding-14{
 
 .bioactivity-logo{
     max-height: 50px;
+}
+
+
+#floating-save {
+    position: fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:40px;
+}
+#floating-save .transparent-background {
+    background-color:#000000;
+    opacity: 0.2;
+}
+#floating-save div {
+    width: 100%;
+    height:30px;
+
+    position: absolute;
+    top: 0;
+    left:0;
+    padding-top: 5px;
+    padding-bottom:5px;
+    text-align:center;
+}
+#floating-save button {
+    top:5px;
 }

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title><g:message code="g.ecoScience"/> | <g:message code="g.fieldCapture"/></title>
+    <title><g:message code="project.works.heading"/> | <g:message code="project.works.heading"/></title>
     <r:script disposition="head">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
@@ -42,9 +42,10 @@
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">
+    <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
     <div class="row-fluid">
         <div class="span12 padding10-small-screen" id="heading">
-            <h1 class="pull-left"><g:message code="project.ecoScience.heading"/></h1>
+            <h1 class="pull-left"><g:message code="project.works.heading"/></h1>
             <div class="pull-right">
                 <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</a>
                 <a class="btn btn-info" href="${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</a>
@@ -52,32 +53,13 @@
         </div>
     </div>
 
-    <div>
-        <g:render template="/shared/projectFinderResultSummary"/>
-    </div>
-    <div class="row-fluid">
-        <div id="filterPanel" class="span2">
-            <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
-        </div>
-        <div id="pt-table" class="span12 no-sidebar">
-            <bc:koLoading>
-                <div data-bind="if: listView">
-                    <g:render template="/shared/projectFinderResultPanelList"></g:render>
-                </div>
+    <g:render template="/shared/projectFinderResultPanel"></g:render>
 
-                <div data-bind="ifnot: listView">
-                    <g:render template="/shared/projectFinderResultPanelTile"></g:render>
-                </div>
-                <div id="pt-searchNavBar" class="clearfix">
-                    <div id="pt-navLinks"></div>
-                </div>
-            </bc:koLoading>
-        </div>
-    </div>
+
 </div>
 <r:script>
     $("#newPortal").on("click", function() {
-        document.location.href = "${createLink(controller:'project',action:'create',params:[ecoScience:true])}";
+        document.location.href = "${createLink(controller:'project',action:'create',params:[works:true])}";
     });
 
     var projectFinder = new ProjectFinder();

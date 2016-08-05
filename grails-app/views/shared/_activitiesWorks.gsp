@@ -14,15 +14,42 @@
     <div id="status-update-error-placeholder"></div>
 
     <div id="activityContainer" class="space-before">
-        <h4 class="inline">Planned Activities</h4>
 
-        <g:if test="${user?.isEditor}">
-            <div class="pull-right space-after">
-                <button type="button" class="btn btn-link"
-                        data-bind="visible:planStatus()==='not approved',click:newActivity"
-                        style="vertical-align: baseline"><i class="icon-plus"></i> Add new activity</button>
+        <div class="row-fluid" data-bind="visible:planStatus()==='not approved'">
+            <div class="span6"><span class="badge badge-info">Planning Mode</span>
+                <fc:iconHelp>Use the "Add new activity" button to add a new activity to your plan.  When you have finished adding activities, use the "Finished planning" button to go into data entry mode.  You can toggle freely between planning and data entry modes.</fc:iconHelp>
             </div>
-        </g:if>
+            <g:if test="${user?.isEditor}">
+                <h5></h5>
+            <div class="form-actions">
+
+                <span>Planning actions: </span>
+                <a class="btn btn-success" class="btn btn-link"
+                        data-bind="visible:planStatus()==='not approved',click:newActivity"
+                        style="vertical-align: baseline"><i class="fa fa-plus"></i> Add new activity</a>
+
+                <button class="btn btn-info" data-bind="click:finishedPlanning">Finished planning</button>
+            </g:if>
+            </div>
+        </div>
+
+        <div class="row-fluid" data-bind="visible:planStatus()==='approved'">
+            <div class="span6"><span class="badge badge-info">Data Entry Mode</span>
+                <fc:iconHelp>Enter implementation details for project activities using the controls to the left of each activity.  Use the "Edit plann" button to return to planning mode to add new activities or change planning dates.</fc:iconHelp>
+            </div>
+            <g:if test="${user?.isEditor}">
+                <h5></h5>
+                <div class="form-actions">
+
+                    <span>Actions: </span>
+
+                    <button class="btn btn-info" data-bind="click:editPlan">Edit plan</button>
+            </g:if>
+        </div>
+        </div>
+
+
+        <h4 class="inline">Planned Activities</h4>
 
         <ul class="nav nav-tabs nav-tab-small space-before">
             <li class="active"><a href="#tablePlan" data-toggle="tab">Tabular</a></li>
@@ -57,8 +84,7 @@
                                     data-bind="click:printActivity"><i
                                     class="icon-print" title="Print activity"></i></button>
                             <button type="button" class="btn btn-mini"
-                                    data-bind="click:del"><i class="icon-remove"
-                                                                                               title="Delete activity"></i>
+                                    data-bind="click:deleteActivity"><i class="icon-remove" title="Delete activity"></i>
                             </button>
                         </td>
                         <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
@@ -74,7 +100,7 @@
                             <td><a class="clickable" data-bind="text:siteName,click:$parent.openSite"></a></td>
                         </g:if>
                         <td>
-                            <span data-bind="template:$parent.activities.canUpdateStatus() ? 'updateStatusTmpl' : 'viewStatusTmpl'"></span>
+                            <span data-bind="template:canUpdateStatus() ? 'updateStatusTmpl' : 'viewStatusTmpl'"></span>
 
                             <!-- Modal for getting reasons for status change -->
                             <div id="activityStatusReason" class="modal hide fade" tabindex="-1" role="dialog"
@@ -208,32 +234,6 @@
 </span>
 <!-- /ko -->
 </script>
-<!-- /ko -->
-
-<!-- ko stopBinding: true -->
-<div id="declaration" class="modal hide fade">
-    <g:set var="legalDeclaration"><fc:getSettingContent
-            settingType="${au.org.ala.biocollect.merit.SettingPageType.DECLARATION}"/></g:set>
-    <div class="modal-header hide">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-
-        <h3>Declaration</h3>
-    </div>
-
-    <div class="modal-body">
-        ${legalDeclaration}
-    </div>
-
-    <div class="modal-footer">
-        <label for="acceptTerms" class="pull-left">
-            <g:checkBox name="acceptTerms" data-bind="checked:termsAccepted" style="margin:0;"/>&nbsp;
-            I agree with the above declaration.
-        </label>
-        <button class="btn btn-success" data-bind="click:submitReport, enable:termsAccepted" data-dismiss="modal"
-                aria-hidden="true">Submit</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-    </div>
-</div>
 <!-- /ko -->
 
 <!-- ko stopBinding: true -->
@@ -401,7 +401,7 @@
 
     $(window).load(function () {
 
-        var PlannedActivity = function (act, isFirst, project) {
+        var PlannedActivity = function (act, isFirst, project, planViewModel) {
             var self = this;
             this.activityId = act.activityId;
             this.isFirst = isFirst ? this : undefined;
@@ -413,8 +413,8 @@
             this.hasOutputs = act.outputs && act.outputs.length;
             this.startDate = ko.observable(act.startDate).extend({simpleDate:false});
             this.endDate = ko.observable(act.endDate).extend({simpleDate:false});
-            this.plannedStartDate = ko.observable(act.startDate).extend({simpleDate:false});
-            this.plannedEndDate = ko.observable(act.endDate).extend({simpleDate:false});
+            this.plannedStartDate = ko.observable(act.plannedStartDate).extend({simpleDate:false});
+            this.plannedEndDate = ko.observable(act.plannedEndDate).extend({simpleDate:false});
             this.progress = ko.observable(act.progress).extend({withPrevious:act.progress});
             this.isSaving = ko.observable(false);
             this.publicationStatus = act.publicationStatus ? act.publicationStatus : 'unpublished';
@@ -502,19 +502,50 @@
                     }
                 });
             };
+            this.isReadOnly = ko.computed(function() {
+                var isEditor = ${user?.isEditor ? 'true' : 'false'};
+                return !isEditor;
+            });
+            this.canEditActivity = ko.computed(function () {
+                return !self.isReadOnly() && planViewModel.planStatus() === 'not approved';
+            });
+            this.canEditOutputData = ko.computed(function () {
+                return !self.isReadOnly() && planViewModel.planStatus() === 'approved';
+            });
+            this.canPrintActivity = ko.computed(function () {
+                return true;
+            });
+            this.canDeleteActivity = ko.computed(function () {
+                return !self.isReadOnly() && planViewModel.planStatus() === 'not approved';
+            });
+            this.canUpdateStatus = ko.computed(function () {
+                return !self.isReadOnly() && planViewModel.planStatus() === 'approved';
+            });
+
+
             this.editActivity = function () {
-                document.location.href = fcConfig.activityEnterDataUrl + "/" + this.activityId +
-                    "?returnTo=" + here;
+                var url;
+                if (self.isReadOnly()) {
+                    self.viewActivity(activity);
+                } else if (self.canEditOutputData()) {
+                    url = fcConfig.activityEnterDataUrl;
+                    document.location.href = url + "/" + self.activityId +
+                        "?returnTo=" + here;
+                } else if (self.canEditActivity()) {
+                    url = fcConfig.activityEditUrl;
+                    document.location.href = url + "/" + self.activityId +
+                        "?returnTo=" + here;
+                }
             };
             this.viewActivity = function() {
                 url = fcConfig.activityViewUrl;
-                document.location.href = url + "/" + this.activityId +
+                document.location.href = url + "/" + self.activityId +
                         "?returnTo=" + here;
             };
             this.printActivity = function() {
-                open(fcConfig.activityPrintUrl + "/" + this.activityId, "fieldDataPrintWindow");
+                open(fcConfig.activityPrintUrl + "/" + self.activityId, "fieldDataPrintWindow");
             };
-            this.del = function () {
+            this.deleteActivity = function () {
                 // confirm first
                 bootbox.confirm("Delete this activity? Are you sure?", function(result) {
                     if (result) {
@@ -529,6 +560,7 @@
                     }
                 });
             };
+
 
             var reasonDocs = $.grep(act.documents, function(document) {
                 return document.role === 'deferReason';
@@ -553,139 +585,74 @@
             activitiesInThisStage = activities
             this.label = stageLabel;
             this.isCurrentStage = isCurrentStage;
-    <g:if test="${enableReporting}">
-        this.isReportable = stage.toDate < new Date().toISOStringNoMillis();
-    </g:if>
-    <g:else>
-        this.isReportable = false;
-    </g:else>
-    this.projectId = project.projectId;
-    this.planViewModel = planViewModel;
+            <g:if test="${enableReporting}">
+                this.isReportable = stage.toDate < new Date().toISOStringNoMillis();
+            </g:if>
+            <g:else>
+                this.isReportable = false;
+            </g:else>
+            this.projectId = project.projectId;
+            this.planViewModel = planViewModel;
 
-    // sort activities by assigned sequence or date created (as a proxy for sequence).
-    // CG - still needs to be addressed properly.
-    activitiesInThisStage.sort(function (a,b) {
-        if (a.sequence !== undefined && b.sequence !== undefined) {
-            return a.sequence - b.sequence;
-        }
-        if (a.dateCreated !== undefined && b.dateCreated !== undefined && a.dateCreated != b.dateCreated) {
-            return a.dateCreated < b.dateCreated ? 1 : -1;
-        }
-        if (a.plannedStartDate != b.plannedStartDate) {
-             a.plannedStartDate < b.plannedStartDate ? 1 : (a.plannedStartDate > b.plannedStartDate ? -1 : 0);
-        }
-        var numericActivity = /[Aa]ctivity (\d+)(\w)?.*/;
-        var first = numericActivity.exec(a.description);
-        var second = numericActivity.exec(b.description);
-        if (first && second) {
-            var firstNum = Number(first[1]);
-            var secondNum = Number(second[1]);
-            if (firstNum == secondNum) {
-                // This is to catch activities of the form Activity 1a, Activity 1b etc.
-                if (first.length == 3 && second.length == 3) {
-                    return first[2] > second[2] ? 1 : (first[2] < second[2] ? -1 : 0);
+            // sort activities by assigned sequence or date created (as a proxy for sequence).
+            // CG - still needs to be addressed properly.
+            activitiesInThisStage.sort(function (a,b) {
+                if (a.sequence !== undefined && b.sequence !== undefined) {
+                    return a.sequence - b.sequence;
                 }
-            }
-            return  firstNum - secondNum;
-        }
-        else {
-            return a.description > b.description ? 1 : (a.description < b.description ? -1 : 0);
-        }
-
-    });
-    this.activities = $.map(activitiesInThisStage, function (act, index) {
-        act.projectStage = stageLabel;
-        return new PlannedActivity(act, index === 0, project);
-    });
-    /**
-     * A stage is considered to be approved when all of the activities in the stage have been marked
-     * as published.
-     */
-    this.isApproved = ko.computed(function() {
-        var numActivities = self.activities ? self.activities.length : 0;
-        if (numActivities == 0) {
-            return false;
-        }
-        return $.grep(self.activities, function(act, i) {
-            return act.isApproved();
-        }).length == numActivities;
-    }, this, {deferEvaluation: true});
-    this.isSubmitted = ko.computed(function() {
-        var numActivities = self.activities ? self.activities.length : 0;
-        if (numActivities == 0) {
-            return false;
-        }
-        return $.grep(self.activities, function(act, i) {
-            return act.isSubmitted();
-        }).length == numActivities;
-    }, this, {deferEvaluation: true});
-
-    this.readyForApproval = ko.computed(function() {
-        return $.grep(self.activities, function (act, i) {
-                return act.progress() === 'planned' || act.progress() === 'started';
-            }).length === 0;
-    }, this, {deferEvaluation: true});
-    this.submitReport = function () {
-        var declaration = $('#declaration')[0];
-        var declarationViewModel = {
-
-            termsAccepted : ko.observable(false),
-            submitReport : function() {
-                self.submitStage();
-            }
-        };
-        ko.applyBindings(declarationViewModel, declaration);
-        $(declaration).modal({ backdrop: 'static', keyboard: true, show: true }).on('hidden', function() {ko.cleanNode(declaration);});
-
-    };
-
-            this.submitStage = function() {
-                var url = '${createLink(controller: 'project', action: 'ajaxSubmitReport')}/';
-                self.updateStageStatus(url);
-            };
-            this.approveStage = function () {
-                var url = '${createLink(controller: 'project', action: 'ajaxApproveReport')}/';
-                self.updateStageStatus(url);
-            };
-            this.rejectStage = function() {
-                var url = '${createLink(controller: 'project', action: 'ajaxRejectReport')}/';
-                self.updateStageStatus(url);
-            };
-
-            this.updateStageStatus = function(url) {
-                var payload = {};
-                payload.activityIds = $.map(self.activities, function(act, i) {
-                    return act.activityId;
-                });
-                payload.stage = stageLabel;
-                payload.projectId = self.projectId;
-                $.ajax({
-                    url: url + self.projectId,
-                    type: 'POST',
-                    data: JSON.stringify(payload),
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if (data.error) {
-                            bootbox.alert("The report could not be submited.  This may be due to a login timeout or because not all activities have been completed, deferred or cancelled.  Please try again after the page reloads.", function() {location.reload();});
+                if (a.dateCreated !== undefined && b.dateCreated !== undefined && a.dateCreated != b.dateCreated) {
+                    return a.dateCreated < b.dateCreated ? 1 : -1;
+                }
+                if (a.plannedStartDate != b.plannedStartDate) {
+                     a.plannedStartDate < b.plannedStartDate ? 1 : (a.plannedStartDate > b.plannedStartDate ? -1 : 0);
+                }
+                var numericActivity = /[Aa]ctivity (\d+)(\w)?.*/;
+                var first = numericActivity.exec(a.description);
+                var second = numericActivity.exec(b.description);
+                if (first && second) {
+                    var firstNum = Number(first[1]);
+                    var secondNum = Number(second[1]);
+                    if (firstNum == secondNum) {
+                        // This is to catch activities of the form Activity 1a, Activity 1b etc.
+                        if (first.length == 3 && second.length == 3) {
+                            return first[2] > second[2] ? 1 : (first[2] < second[2] ? -1 : 0);
                         }
-                        else {
-                            location.reload();
-                        }
-                    },
-                    error: function (data) {
-                        bootbox.alert("The report could not be submited due to a login timeout or server error.  Please try again after the page reloads.", function() {location.reload();});
-                    },
-                    complete: function () {
-                        //console.log('saved progress');
-
                     }
-                });
-            };
+                    return  firstNum - secondNum;
+                }
+                else {
+                    return a.description > b.description ? 1 : (a.description < b.description ? -1 : 0);
+                }
 
-            this.isReadOnly = ko.computed(function() {
-                var isEditor = ${user?.isEditor ? 'true' : 'false'};
-                return !isEditor || self.isSubmitted() || self.isApproved();
             });
+            this.activities = $.map(activitiesInThisStage, function (act, index) {
+                act.projectStage = stageLabel;
+                return new PlannedActivity(act, index === 0, project, planViewModel);
+            });
+            /**
+             * A stage is considered to be approved when all of the activities in the stage have been marked
+             * as published.
+             */
+            this.isApproved = ko.computed(function() {
+                var numActivities = self.activities ? self.activities.length : 0;
+                if (numActivities == 0) {
+                    return false;
+                }
+                return $.grep(self.activities, function(act, i) {
+                    return act.isApproved();
+                }).length == numActivities;
+            }, this, {deferEvaluation: true});
+            this.isSubmitted = ko.computed(function() {
+                var numActivities = self.activities ? self.activities.length : 0;
+                if (numActivities == 0) {
+                    return false;
+                }
+                return $.grep(self.activities, function(act, i) {
+                    return act.isSubmitted();
+                }).length == numActivities;
+            }, this, {deferEvaluation: true});
+
+
             this.stageStatusTemplateName = ko.computed(function() {
                 if (!self.isReportable) {
                     return 'stageNotReportableTmpl';
@@ -699,44 +666,7 @@
                 return 'stageNotApprovedTmpl';
             });
 
-            this.canEditActivity = ko.computed(function () {
-                return !self.isReadOnly() && planViewModel.planStatus() === 'not approved';
-            });
-            this.canEditOutputData = ko.computed(function () {
-                return !self.isReadOnly() && planViewModel.planStatus() === 'approved';
-            });
-            this.canPrintActivity = ko.computed(function () {
-                return true;
-            });
-            this.canDeleteActivity = ko.computed(function () {
-                return !self.isReadOnly() && planViewModel.planStatus() === 'not approved';
-            });
-            this.canUpdateStatus = ko.computed(function () {
-                return !self.isReadOnly() && planViewModel.planStatus() === 'approved';
-            });
 
-            this.editActivity = function (activity) {
-                var url;
-                if (self.isReadOnly()) {
-                    self.viewActivity(activity);
-                } else if (self.canEditOutputData()) {
-                    url = fcConfig.activityEnterDataUrl;
-                    document.location.href = url + "/" + activity.activityId +
-                        "?returnTo=" + here;
-                } else if (self.canEditActivity()) {
-                    url = fcConfig.activityEditUrl;
-                    document.location.href = url + "/" + activity.activityId +
-                        "?returnTo=" + here;
-                }
-            };
-            this.viewActivity = function(activity) {
-                url = fcConfig.activityViewUrl;
-                document.location.href = url + "/" + activity.activityId +
-                        "?returnTo=" + here;
-            };
-            this.printActivity = function(activity) {
-                open(fcConfig.activityPrintUrl + "/" + activity.activityId, "fieldDataPrintWindow");
-            };
         };
 
         /* data structures for handling output targets */
@@ -763,7 +693,7 @@
             this.scores = $.map(scores, function (score, index) {
                 var targetValue = 0;
                 $.each(existingTargets, function(j, existingTarget) {
-                    if (existingTarget.scoreName === score.name && existingTarget.outputLabel === self.name) {
+                    if (existingTarget.scoreLabel === score.label) {
                         targetValue = existingTarget.target;
                         return false; // end the loop
                     }
@@ -793,7 +723,7 @@
             var self = this;
             this.scoreName = target.name;
             this.scoreLabel = target.label;
-            this.target = ko.observable(value);
+            this.target = ko.observable(value).extend({numericString:1});
             this.isSaving = ko.observable(false);
             this.isFirst = isFirst;
             this.units = target.units;
@@ -839,7 +769,7 @@
             });
             //this.currentDate = ko.observable("2014-02-03T00:00:00Z"); // mechanism for testing behaviour at different dates
             this.currentDate = ko.observable(new Date().toISOStringNoMillis()); // mechanism for testing behaviour at different dates
-            this.currentProjectStage = findStageFromDate(project.timeline,this.currentDate());
+
             this.loadActivities = function (activities) {
                 return new PlanStage('', activities, self, true, project)
             };
@@ -864,6 +794,11 @@
                     document.location.href = fcConfig.siteViewUrl + '/' + siteId;
                 }
             };
+            self.descriptionExpanded = ko.observable(false);
+            self.toggleDescriptions = function() {
+                self.descriptionExpanded(!self.descriptionExpanded());
+                adjustTruncations();
+            };
 
 
             // Project status manipulations
@@ -882,28 +817,15 @@
                 });
             };
             // submit plan and handle errors
-            this.confirmSubmitPlan = function () {
-                var declaration = $('#declaration')[0];
-                var declarationViewModel = {
-
-                    termsAccepted : ko.observable(false),
-                    submitReport : function() {
-                        self.submitPlan();
-                    }
-                };
-                ko.applyBindings(declarationViewModel, declaration);
-                $(declaration).modal({ backdrop: 'static', keyboard: true, show: true }).on('hidden', function() {ko.cleanNode(declaration);});
-
-            };
-            this.submitPlan = function () {
-
-                self.saveStatus('submitted')
+            this.editPlan = function () {
+                self.saveStatus('not approved')
                 .done(function (data) {
                     if (data.error) {
-                        showAlert("Unable to submit plan. An unhandled error occurred: " + data.detail + ' \n' + data.error,
+                        showAlert("Unable to enter planing mode. An unhandled error occurred: " + data.detail + ' \n' + data.error,
                             "alert-error","status-update-error-placeholder");
                     } else {
-                        self.planStatus('submitted');
+                        self.planStatus('approved');
+                        window.location.reload();
                     }
                 })
                 .fail(function (data) {
@@ -916,75 +838,28 @@
                     }
                 });
             };
-            // approve plan and handle errors
-            this.approvePlan = function () {
-                // should we check that status is 'submitted'?
+            this.finishedPlanning = function () {
+
                 self.saveStatus('approved')
                 .done(function (data) {
                     if (data.error) {
-                        showAlert("Unable to approve plan. An unhandled error occurred: " + data.detail + ' \n' + data.error,
+                        showAlert("Unable to leave planning mode. An unhandled error occurred: " + data.detail + ' \n' + data.error,
                             "alert-error","status-update-error-placeholder");
                     } else {
                         self.planStatus('approved');
+                        window.location.reload();
                     }
                 })
                 .fail(function (data) {
                     if (data.status === 401) {
-                        showAlert("Unable to approve plan. You do not have case manager rights for this project.",
+                        showAlert("Unable to leave planning mode.  You do not have administrator rights for this project.",
                             "alert-error","status-update-error-placeholder");
                     } else {
-                        showAlert("Unable to approve plan. An unhandled error occurred: " + data.status,
+                        showAlert("Unable to leave planning mode. An unhandled error occurred: " + data.status,
                             "alert-error","status-update-error-placeholder");
                     }
                 });
             };
-            // reject plan and handle errors
-            this.rejectPlan = function () {
-                // should we check that status is 'submitted'?
-                self.saveStatus('not approved')
-                .done(function (data) {
-                    if (data.error) {
-                        showAlert("Unable to reject plan. An unhandled error occurred: " + data.detail + ' \n' + data.error,
-                            "alert-error","status-update-error-placeholder");
-                    } else {
-                        self.planStatus('not approved');
-                    }
-                })
-                .fail(function (data) {
-                    if (data.status === 401) {
-                        showAlert("Unable to reject plan. You do not have case manager rights for this project.",
-                            "alert-error","status-update-error-placeholder");
-                    } else {
-                        showAlert("Unable to reject plan. An unhandled error occurred: " + data.status,
-                            "alert-error","status-update-error-placeholder");
-                    }
-                });
-            };
-            // make plan modifiable and handle errors
-            // this is the same as rejectPlan apart from messages but it is expected that it will
-            // have different functionality in the future so it has been separated
-            this.modifyPlan = function () {
-                // should we check that status is 'approved'?
-                self.saveStatus('not approved')
-                .done(function (data) {
-                    if (data.error) {
-                        showAlert("Unable to modify plan. An unhandled error occurred: " + data.detail + ' \n' + data.error,
-                            "alert-error","status-update-error-placeholder");
-                    } else {
-                        self.planStatus('not approved');
-                    }
-                })
-                .fail(function (data) {
-                    if (data.status === 401) {
-                        showAlert("Unable to modify plan. You do not have case manager rights for this project.",
-                            "alert-error","status-update-error-placeholder");
-                    } else {
-                        showAlert("Unable to modify plan. An unhandled error occurred: " + data.status,
-                            "alert-error","status-update-error-placeholder");
-                    }
-                });
-            };
-
 
             this.submitReport = function (e) {
             console.log(e);
@@ -1093,11 +968,11 @@
                 });
             }();
         }
-
+        var project = <fc:modelAsJavascript model="${project}"/>;
         var planViewModel = new PlanViewModel(
     ${activities ?: []},
-    ${project.outputTargets ?: '{}'},
-            checkAndUpdateProject(${project})
+            project.outputTargets || {},
+            project
         );
         ko.applyBindings(planViewModel, document.getElementById('planContainer'));
 
@@ -1129,6 +1004,7 @@
                     };
                     $span.data('truncation',original);
                 }
+                if (!planViewModel.descriptionExpanded()) {
                 var cellWidth = $span.parent().width(),
                     isTruncated = original.text !== text;
                 if (cellWidth > 0 && textWidth > cellWidth) {
@@ -1142,6 +1018,11 @@
                     } else {
                         $span.html(truncate(cellWidth, original.textWidth, original.text));
                     }
+                }
+                }
+                else {
+                    $span.html(original.text);
+                    $span.removeAttr('title');
                 }
             });
         }

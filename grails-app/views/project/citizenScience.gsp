@@ -41,7 +41,6 @@
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">
-    <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
     <div class="row-fluid">
         <div class="span12 padding10-small-screen" id="heading">
             <h1 class="pull-left"><g:message code="project.citizenScience.heading"/></h1>
@@ -51,8 +50,29 @@
             </div>
         </div>
     </div>
+    <div>
+        <g:render template="/shared/projectFinderResultSummary"/>
+    </div>
+    <div class="row-fluid">
+        <div id="filterPanel" class="span2" style="display: none">
+            <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
+        </div>
 
-    <g:render template="/shared/projectFinderResultPanel"></g:render>
+        <div id="pt-table" class="span12 no-sidebar">
+            <bc:koLoading>
+                <div data-bind="if: listView">
+                    <g:render template="/shared/projectFinderResultPanelList"></g:render>
+                </div>
+
+                <div data-bind="ifnot: listView">
+                    <g:render template="/shared/projectFinderResultPanelTile"></g:render>
+                </div>
+                <div id="pt-searchNavBar" class="clearfix">
+                    <div id="pt-navLinks"></div>
+                </div>
+            </bc:koLoading>
+        </div>
+    </div>
 </div>
 <r:script>
     $("#newPortal").on("click", function() {

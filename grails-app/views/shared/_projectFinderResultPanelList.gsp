@@ -1,21 +1,4 @@
-<div id="pt-table" class="row-fluid">
-    <table data-table-list>
-        <tbody>
-            <tr class="padding10-small-screen">
-                <td><h3 id="pt-resultsReturned"></h3></td>
-                <td>
-                    <g:if test="${fc.userIsAlaOrFcAdmin()}">
-                        <div>
-                            <a href="${downloadLink}" id="pt-downloadLink" class="btn btn-warning"
-                               title="${message(code:'project.download.tooltip')}" data-bind="click: download">
-                                <i class="icon-download icon-white"></i>&nbsp;<g:message code="g.download" /></a>
-                        </div>
-                    </g:if>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <bc:koLoading>
+<div class="row-fluid">
         <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
         <table data-table-list class="project-finder-table">
             <tbody data-bind="foreach:pageProjects">
@@ -66,8 +49,4 @@
                 </tr>
             </tbody>
         </table>
-    </bc:koLoading>
-    <div id="pt-searchNavBar" class="clearfix">
-        <div id="pt-navLinks"></div>
-    </div>
 </div>
