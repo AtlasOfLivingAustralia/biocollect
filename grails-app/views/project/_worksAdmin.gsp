@@ -5,28 +5,43 @@
                 <li ${activeClass}><a href="#settings" id="settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project settings</a></li>
                 <g:set var="activeClass" value=""/>
             </g:if>
+            <li><a href="#activity-settings" id="activity-settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Activity Settings</a></li>
             <li><a href="#editMeriPlan" id="editMeriPlan-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit MERI Plan</a></li>
             <li><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Project Blog</a></li>
             <li><a href="#editNewsAndEvents" id="editnewsandevents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> News and events</a></li>
             <li><a href="#editProjectStories" id="editprojectstories-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project stories</a></li>
 
             <li ${activeClass}><a href="#permissions" id="permissions-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project access</a></li>
-            <li><a href="#species" id="species-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Species of interest</a></li>
             <li><a href="#edit-documents" id="documents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Documents</a></li>
         </ul>
     </div>
     <div class="span10">
         <div class="pill-content">
             <g:set var="activeClass" value="active"/>
-            <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole)}">
-                <!-- PROJECT SETTINGS -->
-                <div id="settings" class="pill-pane ${activeClass}">
-                    <g:render template="editOrDeleteProject"/>
+            <!-- PROJECT SETTINGS -->
+            <div id="settings" class="pill-pane ${activeClass}">
+                <g:render template="editOrDeleteProject"/>
+            </div>
+            <g:set var="activeClass" value=""/>
+            <!-- Activity settings -->
+            <div id="activity-settings" class="pill-pane">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <ul id="ul-survey-constraint-citizen-science" class="nav nav-pills">
+                            <li class="active"><a href="#species" id="species-tab" data-toggle="tab">Species</a></li>
+                        </ul>
+
+                        <div class="pill-content">
+                            <div class="pill-pane active" id="species">
+                                <g:render template="/species/species" model="[project:project, activityTypes:activityTypes]"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <g:set var="activeClass" value=""/>
-            </g:if>
+            </div>
+
             <div id="editMeriPlan" class="pill-pane">
-                <h3>Edit MERI Plan</h3>
+                <h3>Edit Project Plan</h3>
                 <g:render template="editMeriPlan"></g:render>
             </div>
             <div id="editProjectBlog" class="pill-pane">
@@ -43,20 +58,14 @@
             </div>
 
             <div id="permissions" class="pill-pane ${activeClass}">
-                <h3>Project Access</h3>
+                <h3>Project Members</h3>
                 <g:render template="/admin/addPermissions" model="[addUserUrl:g.createLink(controller:'user', action:'addUserAsRoleToProject'), entityId:project.projectId]"/>
                 <g:render template="/admin/permissionTable" model="[loadPermissionsUrl:g.createLink(controller:'project', action:'getMembersForProjectId', id:project.projectId), removeUserUrl:g.createLink(controller:'user', action:'removeUserWithRoleFromProject'), entityId:project.projectId, user:user]"/>
 
             </div>
-            <!-- SPECIES -->
-            %{--<div class="border-divider large-space-before">&nbsp;</div>--}%
-            <div id="species" class="pill-pane">
-                %{--<a name="species"></a>--}%
-                <g:render template="/species/species" model="[project:project, activityTypes:activityTypes]"/>
-            </div>
             <!-- DOCUMENTS -->
             <div id="edit-documents" class="pill-pane">
-                <h3>Project Documents</h3>
+                <h3>Resources</h3>
                 <div class="row-fluid">
                     <div class="span10">
                         <g:render template="/shared/editDocuments"
