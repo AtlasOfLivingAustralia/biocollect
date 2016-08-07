@@ -24,7 +24,7 @@ function MERIPlan(project, themes, key) {
         return (project['custom']['details'].status == 'active');
     });
     self.isProjectDetailsLocked = ko.computed (function (){
-        return (project.planStatus == 'approved' || project.planStatus =='submitted');
+        return false; // Always editable, at least for now.
     });
 
     self.projectThemes =  $.map(themes, function(theme, i) { return theme.name; });
