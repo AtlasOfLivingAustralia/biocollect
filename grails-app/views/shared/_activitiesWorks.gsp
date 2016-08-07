@@ -21,16 +21,17 @@
             </div>
             <g:if test="${user?.isEditor}">
                 <h5></h5>
-            <div class="form-actions">
+                <div class="form-actions">
 
-                <span>Planning actions: </span>
-                <a class="btn btn-success" class="btn btn-link"
-                        data-bind="visible:planStatus()==='not approved',click:newActivity"
-                        style="vertical-align: baseline"><i class="fa fa-plus"></i> Add new activity</a>
+                    <span>Planning actions: </span>
+                    <a class="btn btn-success" class="btn btn-link"
+                            data-bind="visible:planStatus()==='not approved',click:newActivity"
+                            style="vertical-align: baseline"><i class="fa fa-plus"></i> Add new activity</a>
 
-                <button class="btn btn-info" data-bind="click:finishedPlanning">Finished planning</button>
+                    <button class="btn btn-info" data-bind="click:finishedPlanning">Finished planning</button>
+                </div>
             </g:if>
-            </div>
+
         </div>
 
         <div class="row-fluid" data-bind="visible:planStatus()==='approved'">
@@ -600,12 +601,11 @@
                 if (a.sequence !== undefined && b.sequence !== undefined) {
                     return a.sequence - b.sequence;
                 }
-                if (a.dateCreated !== undefined && b.dateCreated !== undefined && a.dateCreated != b.dateCreated) {
-                    return a.dateCreated < b.dateCreated ? 1 : -1;
-                }
                 if (a.plannedStartDate != b.plannedStartDate) {
-                     a.plannedStartDate < b.plannedStartDate ? 1 : (a.plannedStartDate > b.plannedStartDate ? -1 : 0);
+                     return a.plannedStartDate < b.plannedStartDate ? -1 : (a.plannedStartDate > b.plannedStartDate ? 1 : 0);
                 }
+
+
                 var numericActivity = /[Aa]ctivity (\d+)(\w)?.*/;
                 var first = numericActivity.exec(a.description);
                 var second = numericActivity.exec(b.description);
@@ -621,6 +621,9 @@
                     return  firstNum - secondNum;
                 }
                 else {
+                    if (a.dateCreated !== undefined && b.dateCreated !== undefined && a.dateCreated != b.dateCreated) {
+                        return a.dateCreated < b.dateCreated ? 1 : -1;
+                    }
                     return a.description > b.description ? 1 : (a.description < b.description ? -1 : 0);
                 }
 
