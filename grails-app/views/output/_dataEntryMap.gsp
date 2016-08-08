@@ -239,7 +239,8 @@
                     // inject values into select widget
                     $('#bookmarkedLocations option[value != ""]').remove(); // clear list if already loaded
                     $.each(data, function(i, el) {
-                        $('#bookmarkedLocations').append('<option value="' + el.locationId + '">' + el.locality + '</option>');
+                        var name = el.locality ? el.locality : 'Location '+ (i+1);
+                        $('#bookmarkedLocations').append('<option value="' + el.locationId + '">' + name + '</option>');
                     });
                 }
             }).fail(function( jqXHR, textStatus, errorThrown ) {
