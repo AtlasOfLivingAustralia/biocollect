@@ -73,7 +73,6 @@ class ProjectController {
             }
             def programs = projectService.programsModel()
             def content = projectContent(project, user, programs, params)
-            def messages = auditService.getAuditMessagesForProject(id)
 
             def model = [project: project,
                 mapFeatures: commonService.getMapFeatures(project),
@@ -82,15 +81,13 @@ class ProjectController {
                 roles: roles,
                 admins: admins,
                 activityTypes: projectService.activityTypesList(),
-                metrics: projectService.summary(id),
+                metrics: project.projectType == projectService.PROJECT_TYPE_WORKS ? projectService.summary(id): [],
                 outputTargetMetadata: metadataService.getOutputTargetsByOutputByActivity(),
                 organisations: metadataService.organisationList().list.collect { [organisationId: it.organisationId, name: it.name] },
                 programs: programs,
                 today:DateUtils.format(new DateTime()),
                 themes:metadataService.getThemesForProject(project),
                 projectContent:content.model,
-                messages: messages?.messages,
-                userMap: messages?.userMap,
                 hideBackButton: true,
                 projectSite: project.projectSite
             ]
