@@ -15,6 +15,7 @@
 <g:render template="header"></g:render>
 
 <!-- ko stopBinding: true -->
+<g:set var="user" value="${user}"/>
 <g:each in="${metaModel?.outputs}" var="outputName">
     <g:if test="${outputName != 'Photo Points'}">
         <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
@@ -86,7 +87,7 @@
 
                 self.loadData = function (data) {
                     // load dynamic data
-                <md:jsLoadModel model="${model}" defaultData="${defaultData}"/>
+                <md:jsLoadModel model="${model}" defaultData="${defaultData}" user="${user}"/>
 
                 // if there is no data in tables then add an empty row for the user to add data
                 if (typeof self.addRow === 'function' && self.rowCount() === 0) {

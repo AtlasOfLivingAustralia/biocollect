@@ -91,7 +91,6 @@ class ModelJSTagLib {
      */
     def jsLoadModel = { attrs ->
         boolean readonly = attrs.readonly?.toBoolean() ?: false
-
         attrs.model?.dataModel?.each { mod ->
             if (mod.dataType == 'list') {
                 out << INDENT*4 << "self.load${mod.name}(data.${mod.name});\n"
@@ -104,7 +103,11 @@ class ModelJSTagLib {
                 // MEW: Removed the 'orBlank' wrapper on the initial data which means missing data will be
                 // 'undefined'. This works better with dropdowns as the default value is undefined and
                 // therefore no data change occurs when the model is bound.
-                out << INDENT*4 << "self.data['${mod.name}'](data['${mod.name}']);\n"
+                if(mod.name == 'recordedBy' && mod.dataType == 'text' && attrs.user?.displayName) {
+                    out << INDENT*4 << "self.data['${mod.name}'](data['${mod.name}'] ? data['${mod.name}'] : '${attrs.user.displayName}');\n"
+                } else {
+                    out << INDENT*4 << "self.data['${mod.name}'](data['${mod.name}']);\n"
+                }
                 // This seemed to work ok for plain text too but if it causes an issue, just add an
                 // 'if (mode.constraints)' condition and return plain text to use orBlank.
             }
