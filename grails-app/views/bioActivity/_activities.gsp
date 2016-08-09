@@ -24,10 +24,10 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
+                        <span data-bind="if: $root.transients.loading()">Loading...</span>
                         <!-- ko if: activities().length == 0 -->
                             <div class="row-fluid">
                                 <h3 class="text-left margin-bottom-five">
-                                    <span data-bind="if: $root.transients.loading()">Loading...</span>
                                     <span data-bind="if: $root.searchTerm() == '' && $root.selectedFilters().length == 0 && !$root.transients.loading()">
                                         No data has been recorded for this project yet
                                     </span>
