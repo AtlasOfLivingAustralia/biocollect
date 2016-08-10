@@ -63,7 +63,7 @@
                     <span data-bind="text:funding.formattedCurrency"></span>
                     <p/>
                 </div>
-                <div data-bind="visible:associatedProgram">
+                <div data-bind="visible:associatedProgram && projectType() != 'survey'">
                     <div class="text-small-heading"><g:message code="project.display.program" /></div>
                     <span data-bind="text:associatedProgram"></span>
                     <p/>
