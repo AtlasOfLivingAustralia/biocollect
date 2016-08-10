@@ -266,7 +266,7 @@
             var lat = $('#${source}Latitude').val();
             var lng = $('#${source}Longitude').val();
             $.ajax({
-                url: 'http://nominatim.openstreetmap.org/reverse?format=json&zoom=18&addressdetails=1' + '&lat=' + lat + '&lon=' + lng,
+                url: 'https://nominatim.openstreetmap.org/reverse?format=json&zoom=18&addressdetails=1' + '&lat=' + lat + '&lon=' + lng,
                 dataType: 'json',
             }).done(function (data) {
                 console.log(data)

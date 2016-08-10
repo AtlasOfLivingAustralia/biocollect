@@ -148,8 +148,11 @@ ko.extenders.returnTo = function(target, returnToUrl) {
                 if (url.indexOf('?') >= 0) {
                     separator = '&';
                 }
-
-                target(url + separator + 'returnTo=' + encodedReturnToUrl);
+                if(url.indexOf('returnTo') == -1) {
+                    target(url + separator + 'returnTo=' + encodedReturnToUrl);
+                } else {
+                    target(url);
+                }
             }
             else {
                 target(url);
