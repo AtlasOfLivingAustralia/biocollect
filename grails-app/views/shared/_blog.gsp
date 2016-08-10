@@ -9,7 +9,6 @@
             <div class="text" data-bind="html:content.markdownToHtml()"></div> <a data-bind="visible:viewMoreUrl, attr:{href:viewMoreUrl}" aria-label="More information"><i class="fa fa-arrow-circle-o-right"></i></a>
         </div>
     </div>
-
 </div>
 <!-- /ko -->
 <r:script>
