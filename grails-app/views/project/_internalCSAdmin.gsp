@@ -6,11 +6,11 @@
                 <li><a href="#project-settings" id="project-settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project info</a></li>
                 <li><a href="#project-activity" id="project-activity-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Survey settings</a></li>
                 <li><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Blog</a></li>
-                <g:if test="${hasLegacyProjectStories}">
-                    <li><a href="#editNewsAndEvents" id="editnewsandevents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> News and events (Legacy)</a></li>
+                <g:if test="${hasLegacyNewsAndEvents}">
+                    <li><a href="#edit-news-and-events" id="editnewsandevents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> News and events</a></li>
                 </g:if>
                 <g:if test="${hasLegacyProjectStories}">
-                    <li><a href="#editProjectStories" id="editprojectstories-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project stories (Legacy)</a></li>
+                    <li><a href="#edit-project-stories" id="editprojectstories-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project stories</a></li>
                 </g:if>
                 <li><a href="#edit-documents" id="edit-documents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Resources</a></li>
                 <li><a href="#permissions" id="permissions-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Members</a></li>
@@ -31,13 +31,17 @@
                     <g:render template="/blog/blogSummary" model="${[blog:project.blog?:[]]}"/>
                 </div>
 
-                <div id="edit-news-and-events" class="pill-pane">
-                    <g:render template="editProjectContent" model="${[attributeName:'newsAndEvents', header:'News and events']}"/>
-                </div>
+                <g:if test="${hasLegacyNewsAndEvents}">
+                    <div id="edit-news-and-events" class="pill-pane">
+                        <g:render template="editProjectContent" model="${[attributeName:'newsAndEvents', header:'News and events']}"/>
+                    </div>
+                </g:if>
 
-                <div id="edit-project-stories" class="pill-pane">
-                    <g:render template="editProjectContent" model="${[attributeName:'projectStories', header:'Project stories']}"/>
-                </div>
+                <g:if test="${hasLegacyProjectStories}">
+                    <div id="edit-project-stories" class="pill-pane">
+                        <g:render template="editProjectContent" model="${[attributeName:'projectStories', header:'Project stories']}"/>
+                    </div>
+                </g:if>
 
                 <div id="project-activity" class="pill-pane">
                     <g:render template="/projectActivity/settings" model="[projectActivities : projectActivities]" />

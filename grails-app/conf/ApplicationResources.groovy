@@ -227,6 +227,7 @@ modules = {
         resource url: 'css/surveys.css'
         resource url: 'css/project-tile-view.css'
         resource url: 'css/works-project.css'
+        resource url: 'css/blog.css'
         resource url: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700", attrs:[type:"css"]
         resource url: "https://fonts.googleapis.com/css?family=Oswald:300", attrs:[type:"css"]
     }

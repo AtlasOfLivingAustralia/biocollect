@@ -8,7 +8,7 @@
             <li><a href="#activity-settings" id="activity-settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Activity Settings</a></li>
             <li><a href="#editMeriPlan" id="editMeriPlan-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit MERI Plan</a></li>
             <li><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Blog</a></li>
-            <g:if test="${hasLegacyProjectStories}">
+            <g:if test="${hasLegacyNewsAndEvents}">
                 <li><a href="#editNewsAndEvents" id="editnewsandevents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> News and events</a></li>
             </g:if>
             <g:if test="${hasLegacyProjectStories}">
@@ -54,13 +54,17 @@
                 <h3>Edit Project Blog</h3>
                 <g:render template="/blog/blogSummary" model="${[blog:project.blog?:[]]}"/>
             </div>
-            <div id="editNewsAndEvents" class="pill-pane">
-                <g:render template="editProjectContent" model="${[attributeName:'newsAndEvents', header:'News and events']}"/>
-            </div>
+            <g:if test="${hasLegacyNewsAndEvents}">
+                <div id="editNewsAndEvents" class="pill-pane">
+                    <g:render template="editProjectContent" model="${[attributeName:'newsAndEvents', header:'News and events']}"/>
+                </div>
+            </g:if>
 
-            <div id="editProjectStories" class="pill-pane">
-                <g:render template="editProjectContent" model="${[attributeName:'projectStories', header:'Project stories']}"/>
-            </div>
+            <g:if test="${hasLegacyProjectStories}">
+                <div id="editProjectStories" class="pill-pane">
+                    <g:render template="editProjectContent" model="${[attributeName:'projectStories', header:'Project stories']}"/>
+                </div>
+            </g:if>
 
             <div id="permissions" class="pill-pane ${activeClass}">
                 <h3>Project Members</h3>
