@@ -146,7 +146,7 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div class="clearfix control-group" data-bind="visible:!isWorks()">
                 <label class="control-label span3" for="plannedEndDate"><g:message code="project.details.plannedEndDate"/>
                 <fc:iconHelp><g:message code="project.details.plannedEndDate.help"/></fc:iconHelp>
                 </label>
@@ -157,8 +157,18 @@
                     <g:message code="project.details.plannedEndDate.extra"/>
                 </div>
             </div>
+            <div class="clearfix control-group" data-bind="visible:isWorks()">
+                <label class="control-label span3" for="plannedEndDate"><g:message code="project.details.plannedEndDate"/>
+                <fc:iconHelp><g:message code="project.details.plannedEndDate.help"/></fc:iconHelp><i class="req-field"></i>
+                </label>
 
-            <div data-bind="visible:!isWorks()" id="associatedOrgs">
+                <div class="controls span9">
+                    <fc:datePicker class="input-small" targetField="plannedEndDate.date" name="plannedEndDate"
+                                   id="plannedEndDate" data-validation-engine="validate[required,future[plannedStartDate]]" data-errormessage-value-missing="Works projects must have an end date"/>
+                </div>
+            </div>
+
+            <div id="associatedOrgs">
                 <div class="row-fluid">
                     <div class="clearfix control-group">
                         <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.associatedOrgs"/>:<fc:iconHelp><g:message code="project.details.associatedOrgs.help"/></fc:iconHelp></label>
