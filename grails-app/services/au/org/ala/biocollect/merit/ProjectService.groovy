@@ -1,6 +1,6 @@
 package au.org.ala.biocollect.merit
+
 import au.org.ala.biocollect.EmailService
-import au.org.ala.biocollect.OrganisationController
 import au.org.ala.biocollect.OrganisationService
 import grails.converters.JSON
 
@@ -563,9 +563,9 @@ class ProjectService {
      * @throws SocketTimeoutException
      * @throws Exception
      */
-    Map importSciStarterProjects(String whiteList) throws SocketTimeoutException, Exception{
+    Map importSciStarterProjects() throws SocketTimeoutException, Exception{
         String url = "${grailsApplication.config.ecodata.service.url}/project/importProjectsFromSciStarter";
-        Map response = webService.doPostWithParams(url, [whiteList:whiteList]);
+        Map response = webService.doPostWithParams(url, [:]);
         if(response.resp && response.resp.count != null){
             return response.resp
         } else {
@@ -595,6 +595,26 @@ class ProjectService {
     List getEcoScienceTypes(){
         cacheService.get("project-ecosciencetypes", {
             def url = grailsApplication.config.ecodata.service.url + '/project/getEcoScienceTypes'
+            webService.getJson(url)
+        })
+    }
+
+    /**
+     * Get UN regions from ecoddata
+     */
+    List getUNRegions(){
+        cacheService.get("UNRegions", {
+            String url =  grailsApplication.config.ecodata.service.url + '/project/getUNRegions'
+            webService.getJson(url)
+        })
+    }
+
+    /**
+     * Get list of all countries from ecoddata
+     */
+    List getCountries(){
+        cacheService.get("AllCountries", {
+            String url =  grailsApplication.config.ecodata.service.url + '/project/getCountries'
             webService.getJson(url)
         })
     }

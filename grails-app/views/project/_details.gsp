@@ -257,6 +257,43 @@
                     </div>
                 </div>
             </div>
+            <div class="row-fluid">
+                <div class="clearfix control-group">
+                    <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.countires.label"/>:<fc:iconHelp><g:message code="project.details.countires.help"/></fc:iconHelp></label>
+                    <div class="span9">
+                        <!-- ko foreach: countries -->
+                        <div class="span12 margin-left-0 margin-bottom-1">
+                            <input data-bind="value: $data" readonly>
+                            <a href="#" data-bind="click: $root.transients.removeCountry"><i class="icon-remove"></i></a>
+                        </div>
+                        <!-- /ko -->
+                        <input  type="text" placeholder="Enter a country" data-ui-autocomplete="yes"
+                                data-bind="autocompleteFromList:{
+                                                data: $root.transients.countries,
+                                                select: $root.transients.selectCountry
+                                            }">
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="clearfix control-group">
+                    <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.uNRegions.label"/>:<fc:iconHelp><g:message code="project.details.uNRegions.help"/></fc:iconHelp></label>
+                    <div class="span9">
+                        <!-- ko foreach: uNRegions -->
+                        <div class="span12 margin-left-0 margin-bottom-1" >
+                        <input data-bind="value: $data" readonly>
+                        <a href="#" data-bind="click: $root.transients.removeUNRegion"><i class="icon-remove"></i></a>
+                        </div>
+                        <!-- /ko -->
+                        <input  type="text" placeholder="Enter a UN Region" data-ui-autocomplete="yes"
+                               data-bind="autocompleteFromList:{
+                                                data: $root.transients.uNRegions,
+                                                select: $root.transients.selectUNRegion
+                                            }">
+
+                    </div>
+                </div>
+            </div>
             <div class="clearfix control-group" data-bind="if:isEcoScience()">
                 <label class="control-label span3"><g:message code="project.details.scienceType"/><fc:iconHelp><g:message code="project.details.scienceType.help"/></fc:iconHelp></label>
 

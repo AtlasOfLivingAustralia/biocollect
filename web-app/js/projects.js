@@ -298,6 +298,11 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.plannedStartDate = ko.observable(project.plannedStartDate).extend({simpleDate: false});
     self.plannedEndDate = ko.observable(project.plannedEndDate).extend({simpleDate: false});
     self.funding = ko.observable(project.funding).extend({currency:{}});
+    self.countries = ko.observableArray(project.countries)
+    self.uNRegions = ko.observableArray(project.uNRegions)
+    self.origin = ko.observable(project.origin)
+
+    self.facets = ko.observableArray();
 
     self.regenerateProjectTimeline = ko.observable(false);
     self.projectDatesChanged = ko.computed(function() {
@@ -631,6 +636,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         {name:'Ecology', value:'ecology'},
         {name:'Natural resource management', value:'nrm'}
     ];
+    self.transients.uNRegions = [];
+    self.transients.countries = [];
     self.transients.availableScienceTypes = fcConfig.scienceTypes;
     self.transients.availableEcoScienceTypes = fcConfig.ecoScienceTypes;
     self.transients.scienceTypeDisplay = ko.pureComputed(function () {
@@ -683,6 +690,79 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             self.ecoScienceType.remove(elem.value)
         }
     };
+
+    self.transients.getCountries = function () {
+        var url = fcConfig.countriesUrl
+        if(url){
+            $.ajax(url, {
+                success: function (data) {
+                    self.transients.countries.push.apply(self.transients.countries, data );
+                }
+            })
+        }
+    }
+
+    self.transients.getUNRegions = function () {
+        var url = fcConfig.uNRegionsUrl
+        if(url){
+            $.ajax(url, {
+                success: function (data) {
+                    self.transients.uNRegions.push.apply(self.transients.uNRegions, data );
+                }
+            })
+        }
+    }
+
+    /**
+     * Remove a selected UN region
+     * @param data
+     * @param event
+     */
+    self.transients.removeUNRegion = function (data, event) {
+        self.uNRegions.remove(data)
+    }
+
+    /**
+     * Remove a selected country
+     * @param data
+     * @param event
+     */
+    self.transients.removeCountry = function (data, event) {
+        self.countries.remove(data)
+    }
+
+    /**
+     * Select a UN Region
+     * @param data
+     * @param event
+     */
+    self.transients.selectUNRegion = function (region) {
+        var valid = false
+        self.transients.uNRegions.forEach(function(item){
+            if(item == region){
+                valid = true
+            }
+        })
+
+        valid && self.uNRegions.push (region)
+    }
+
+    /**
+     * Select a country
+     * @param data
+     * @param event
+     */
+    self.transients.selectCountry = function (country) {
+        var valid = false
+        self.transients.countries.forEach(function(item){
+            if(item == country){
+                valid = true
+            }
+        })
+
+        valid && self.countries.push (country)
+    }
+
 
     var availableProjectTypes = [
         {name:'Citizen Science Project', display:'Citizen\nScience', value:'citizenScience'},
@@ -819,6 +899,9 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             }
         });
     };
+
+    self.transients.getCountries()
+    self.transients.getUNRegions()
 };
 
 /**

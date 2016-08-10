@@ -106,8 +106,7 @@
                     e.preventDefault();
                     $.ajax("${createLink(controller: 'admin', action:'syncSciStarter')}",
                             {
-                                method:"POST",
-                                data:{whiteList:$('#sciStarterWhiteList').val()}
+                                method:"POST"
                             }
                     ).done(function(result) {
                         alert("Successfully imported " + result.count + " SciStarter projects!")
@@ -188,8 +187,6 @@
                 </tr>
                 <tr>
                     <td>
-                        <label>Enter comma separated white list below:</label>
-                        <input id="sciStarterWhiteList" type="text"/>
                         <button id="btnSyncSciStarter" class="btn btn-small btn-info" title="Synchronise Biocollect with SciStarter">Import SciStarter Projects</button>
                     </td>
                     <td>

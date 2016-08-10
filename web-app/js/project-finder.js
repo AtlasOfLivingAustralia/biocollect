@@ -37,6 +37,8 @@ function ProjectFinder() {
 
     var refreshSearch = false;
 
+    var filterQuery
+
     this.availableProjectTypes = new ProjectViewModel({}, false, []).transients.availableProjectTypes;
 
     this.sortKeys = [
@@ -50,6 +52,8 @@ function ProjectFinder() {
     function PageVM() {
         this.self = this;
         this.pageProjects = ko.observableArray();
+        this.facets = ko.observableArray();
+        this.selectedFacets = ko.observableArray();
         this.columns = ko.observable(2);
         self.columns = this.columns;
 
@@ -119,6 +123,22 @@ function ProjectFinder() {
         this.styleIndex = function (dataIndex, rowSize) {
             return dataIndex() % rowSize + 1 ;
         };
+    }
+
+    self.addToRefineList = function (term) {
+        pageWindow.selectedFacets.push(term)
+    }
+
+    self.removeFromRefineList = function (term) {
+        var facets = pageWindow.selectedFacets()
+        var remove = []
+        facets.forEach(function (item) {
+            if((item.facet.name() == term.facet.name()) && item.term() == term.term()){
+                remove.push(item)
+            }
+        })
+
+        pageWindow.selectedFacets.removeAll(remove)
     }
 
     /**
@@ -202,11 +222,10 @@ function ProjectFinder() {
         })
     }
 
-    var pageWindow = new PageVM();
-    ko.applyBindings(pageWindow, document.getElementById('pt-table'));
+    pageWindow = new PageVM();
+    ko.applyBindings(pageWindow, document.getElementById('wrapper'));
 
     this.getParams = function () {
-        debugger;
         var fq = [];
         var isSuitableForChildren = isButtonChecked($('#pt-search-children'));
         var isDIY = isButtonChecked($('#pt-search-diy'));
@@ -250,6 +269,10 @@ function ProjectFinder() {
                 }
             }
         }
+
+        pageWindow.selectedFacets().forEach(function (facet) {
+            fq.push(facet.getQueryText())
+        })
 
         var map = {
             fq: fq,
@@ -302,13 +325,21 @@ function ProjectFinder() {
             data: params,
             traditional: true,
             success: function (data) {
-                var projectVMs = [];
+                var projectVMs = [], facets;
                 var organisation = fcConfig.organisation || [];
                 total = data.total;
                 $.each(data.projects, function (i, project) {
                     projectVMs.push(new ProjectViewModel(project, false, organisation));
                 });
                 self.pago.init(projectVMs);
+
+                facets = data.facets
+                pageWindow.facets($.map(facets, function (facet) {
+                    facet.ref = self;
+                    var facetVm = new FacetViewModel(facet)
+                    self.setFacetTerm(facetVm)
+                    return facetVm;
+                }))
             },
             error: function () {
                 console.error("Could not load project data.");
@@ -316,6 +347,15 @@ function ProjectFinder() {
             }
         })
     };
+
+    this.setFacetTerm = function(facet){
+        var selectedFacets = pageWindow.selectedFacets()
+        selectedFacets.forEach(function (term) {
+            if (facet.name() == term.facet.name()) {
+                facet.setTermState (term.term())
+            }
+        })
+    }
 
     this.searchAndShowFirstPage = function () {
         self.pago.firstPage();
@@ -503,6 +543,7 @@ function ProjectFinder() {
         }
         geoSearch = {};
         refreshGeofilterButtons();
+        pageWindow.selectedFacets.removeAll();
 
         self.pago.firstPage();
         self.doSearch();
@@ -525,6 +566,7 @@ function ProjectFinder() {
     $('#pt-sort').on('statechange', self.searchAndShowFirstPage);
 
     $('#pt-per-page').on('statechange', self.searchAndShowFirstPage);
+    $('#pt-aus-world').on('statechange', self.searchAndShowFirstPage);
 
 
     pago = this.pago = {
@@ -572,7 +614,7 @@ function ProjectFinder() {
         var hash = [];
         for (var param in params) {
             if (params.hasOwnProperty(param) && params[param] && params[param] != '') {
-                if (param != 'geoSearchJSON') {
+                if ((param != 'geoSearchJSON') && (param != 'fq')) {
                     hash.push(param + "=" + params[param]);
                 }
             }
@@ -580,6 +622,12 @@ function ProjectFinder() {
 
         if (!_.isEmpty(geoSearch)) {
             hash.push('geoSearch=' + LZString.compressToBase64(JSON.stringify(geoSearch)));
+        }
+
+        if (!_.isEmpty(params.fq)) {
+            params.fq.forEach(function (filter) {
+                hash.push('fq=' + filter)
+            })
         }
 
         return encodeURIComponent(hash.join("&"));
@@ -594,7 +642,13 @@ function ProjectFinder() {
             if (keyAndValue.indexOf(",") > -1) {
                 params[keyAndValue[0]] = keyAndValue.split(",");
             } else {
-                params[keyAndValue[0]] = keyAndValue[1];
+                if(typeof params[keyAndValue[0]] == 'string'){
+                    params[keyAndValue[0]] = [params[keyAndValue[0]], keyAndValue[1]]
+                } if( params[keyAndValue[0]] == undefined) {
+                    params[keyAndValue[0]] = keyAndValue[1]
+                } else {
+                    params[keyAndValue[0]].push( keyAndValue[1] );
+                }
             }
         }
 
@@ -607,6 +661,7 @@ function ProjectFinder() {
         toggleButton($('#pt-search-children'), toBoolean(params.isSuitableForChildren));
         setActiveButtonValues($('#pt-search-difficulty'), params.difficulty);
         setGeoSearch(params.geoSearch);
+        setFilterQuery(params.fq)
 
         if (fcConfig.associatedPrograms) {
             $.each(fcConfig.associatedPrograms, function (i, program) {
@@ -616,8 +671,24 @@ function ProjectFinder() {
 
         checkButton($("#pt-sort"), params.sort || 'nameSort');
         checkButton($("#pt-per-page"), params.max || '20');
-
+        checkButton($("#pt-aus-world"), params.isWorldWide || 'false');
+        
         $('#pt-search').val(params.q).focus()
+    }
+
+    function setFilterQuery(fqs) {
+        if(fqs){
+            if(typeof fqs  == 'string'){
+                fqs = [fqs]
+            }
+
+            fqs.forEach(function (fq) {
+                var nameAndValue = fq.split(':')
+                var facet = new FacetViewModel({ name: nameAndValue[0], terms: [{term:nameAndValue[1]}]})
+                var term = facet.terms()[0]
+                self.addToRefineList (term)
+            })
+        }
     }
 
     function setGeoSearch(geoSearchHash) {

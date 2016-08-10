@@ -34,6 +34,21 @@
                     <div class="text-small-heading"><g:message code="project.display.description" /></div>
                     <span data-bind="html:description.markdownToHtml()"></span>
                 </div>
+                <div data-bind="visible: origin">
+                    <div class="text-small-heading"><g:message code="project.display.origin" /></div>
+                    <span data-bind="text:origin"></span>
+                    <p/>
+                </div>
+                <div data-bind="visible: countries().length">
+                    <div class="text-small-heading"><g:message code="project.display.countries" /></div>
+                    <span data-bind="text:countries().join(', ')"></span>
+                    <p/>
+                </div>
+                <div data-bind="visible: uNRegions().length">
+                    <div class="text-small-heading"><g:message code="project.display.unregions" /></div>
+                    <span data-bind="text:uNRegions().join(', ')"></span>
+                    <p/>
+                </div>
                 <div data-bind="visible:isContributingDataToAla" class="margin-top-1 margin-bottom-1">
                     <img src="${resource([dir: "images", file: "ala-logo-small.png"])}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
 

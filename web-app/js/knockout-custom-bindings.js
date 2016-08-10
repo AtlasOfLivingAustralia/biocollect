@@ -371,6 +371,19 @@ ko.bindingHandlers.fusedAutocomplete = {
     }
 };
 
+ko.bindingHandlers.autocompleteFromList = {
+    init: function (element, params) {
+        var params = params();
+        var options = {};
+        var data = ko.utils.unwrapObservable(params.data);
+        options.select = function (event, ui) {
+            params.select(ui)
+            $(element).val('')
+        };
+        $(element).autocomplete(data, options).result(options.select)
+    }
+}
+
 ko.bindingHandlers.autocomplete = {
     init: function (element, params) {
         var param = params();

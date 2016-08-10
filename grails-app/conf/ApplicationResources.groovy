@@ -234,6 +234,7 @@ modules = {
         resource url: 'js/button-toggle-events.js'
         resource url: 'js/project-finder.js'
         resource url: 'css/project-finder.css'
+        resource url: 'js/facets.js'
     }
 
 

@@ -109,6 +109,8 @@ input[type=checkbox] {
     font-weight: 200;
     text-shadow: none;
     color: #C44D34;
+    width: 100%;
+    text-align: left;
 }
 
 
@@ -142,11 +144,13 @@ input[type=checkbox] {
 
 .active > .toggleIndicator.fa.fa-check-square-o {
     display: inherit;
+    margin-top: 5px;
 }
 
 .toggleIndicator.fa.fa-square-o {
     display: inherit;
     margin-left: 6px;
+    margin-top: 5px;
 }
 
 .active > .toggleIndicator.fa.fa-square-o {
@@ -196,4 +200,12 @@ input[type=checkbox] {
 .equal-height > div[class*='span'] {
     display: flex;
     flex-direction: column;
+}
+
+.label-ellipsis{
+    max-width: 100%;
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }

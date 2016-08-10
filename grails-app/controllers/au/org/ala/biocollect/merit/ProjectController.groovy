@@ -446,6 +446,7 @@ class ProjectController {
         boolean skipDefaultFilters = params.getBoolean('skipDefaultFilters', false)
         Map searchResult = searchService.findProjects(queryParams, skipDefaultFilters);
         List projects = Builder.build(params, searchResult.hits?.hits)
+        List facets = searchService.standardiseFacets(searchResult.facets)
 
         if (params.download as boolean) {
             response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
@@ -456,7 +457,7 @@ class ProjectController {
             response.setContentType('application/json')
         }
         response.setCharacterEncoding('UTF-8')
-        render( text: [ projects:  projects, total: searchResult.hits?.total?:0 ] as JSON );
+        render( text: [ projects:  projects, total: searchResult.hits?.total?:0, facets: facets ] as JSON );
     }
 
 
@@ -632,11 +633,14 @@ class ProjectController {
             trimmedParams.organisationName = null
         }
 
+        if(!trimmedParams.facets){
+            trimmedParams.facets = "scienceType,organisationFacet,origin,uNRegions,countries"
+        }
+
         if (trimmedParams.isWorldWide) {
-            fq.push('isWorldWide:true')
             trimmedParams.isWorldWide = null
         } else {
-            fq.push('isWorldWide:!true')
+            trimmedParams.query += " AND countries:(Australia OR Worldwide)"
             trimmedParams.isWorldWide = null
         }
 
@@ -806,5 +810,15 @@ class ProjectController {
 
             render ([validName: validName] as JSON)
         }
+    }
+
+    def getCountries(){
+        def countries = projectService.getCountries()
+        render text: countries as JSON, contentType: 'application/json'
+    }
+
+    def getUNRegions(){
+        def uNRegions = projectService.getUNRegions()
+        render text: uNRegions as JSON, contentType: 'application/json'
     }
 }

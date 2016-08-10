@@ -170,6 +170,8 @@
                         </g:elseif>
                     </div>
                 </div>
+
+                <g:render template="/shared/facetView"></g:render>
             </div>
 
             <div class="row-fluid">
