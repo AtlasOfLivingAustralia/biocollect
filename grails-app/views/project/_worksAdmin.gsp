@@ -54,17 +54,14 @@
                 <h3>Edit Project Blog</h3>
                 <g:render template="/blog/blogSummary" model="${[blog:project.blog?:[]]}"/>
             </div>
-            <g:if test="${hasLegacyNewsAndEvents}">
-                <div id="editNewsAndEvents" class="pill-pane">
-                    <g:render template="editProjectContent" model="${[attributeName:'newsAndEvents', header:'News and events']}"/>
-                </div>
-            </g:if>
 
-            <g:if test="${hasLegacyProjectStories}">
-                <div id="editProjectStories" class="pill-pane">
-                    <g:render template="editProjectContent" model="${[attributeName:'projectStories', header:'Project stories']}"/>
-                </div>
-            </g:if>
+            <div id="editNewsAndEvents" class="pill-pane">
+                <g:render template="editProjectContent" model="${[attributeName:'newsAndEvents', header:'News and events']}"/>
+            </div>
+
+            <div id="editProjectStories" class="pill-pane">
+                <g:render template="editProjectContent" model="${[attributeName:'projectStories', header:'Project stories']}"/>
+            </div>
 
             <div id="permissions" class="pill-pane ${activeClass}">
                 <h3>Project Members</h3>

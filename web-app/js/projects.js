@@ -1013,13 +1013,13 @@ function validateOrganisationSelection(field, rules, i, options) {
 
 
 var EditableBlogEntryViewModel = function(blogEntry, options) {
-
     var defaults = {
         validationElementSelector:'.validationEngineContainer',
-        types:['News and Events', 'Project Stories', 'Photo'],
+        types:['News and Events', 'Project Stories'],
         returnTo:fcConfig.returnTo,
         blogUpdateUrl:fcConfig.blogUpdateUrl
     };
+
     var config = $.extend(defaults, options);
     var self = this;
     var now = convertToSimpleDate(new Date());

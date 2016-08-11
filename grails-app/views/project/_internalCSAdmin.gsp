@@ -31,17 +31,14 @@
                     <g:render template="/blog/blogSummary" model="${[blog:project.blog?:[]]}"/>
                 </div>
 
-                <g:if test="${hasLegacyNewsAndEvents}">
-                    <div id="edit-news-and-events" class="pill-pane">
-                        <g:render template="editProjectContent" model="${[attributeName:'newsAndEvents', header:'News and events']}"/>
-                    </div>
-                </g:if>
 
-                <g:if test="${hasLegacyProjectStories}">
-                    <div id="edit-project-stories" class="pill-pane">
-                        <g:render template="editProjectContent" model="${[attributeName:'projectStories', header:'Project stories']}"/>
-                    </div>
-                </g:if>
+                <div id="edit-news-and-events" class="pill-pane">
+                    <g:render template="editProjectContent" model="${[attributeName:'newsAndEvents', header:'News and events']}"/>
+                </div>
+
+                <div id="edit-project-stories" class="pill-pane">
+                    <g:render template="editProjectContent" model="${[attributeName:'projectStories', header:'Project stories']}"/>
+                </div>
 
                 <div id="project-activity" class="pill-pane">
                     <g:render template="/projectActivity/settings" model="[projectActivities : projectActivities]" />

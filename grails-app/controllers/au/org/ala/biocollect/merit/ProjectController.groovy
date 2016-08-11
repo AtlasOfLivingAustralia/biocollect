@@ -130,11 +130,8 @@ class ProjectController {
         Boolean hasLegacyNewsAndEvents = project.newsAndEvents as Boolean
         Boolean hasLegacyProjectStories = project.projectStories as Boolean
 
-        log.debug "hasLegacyNewsAndEvents: ${hasLegacyNewsAndEvents}"
-        log.debug "hasLegacyProjectStories: ${hasLegacyProjectStories}"
-
         [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
-         news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories],
+         news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
@@ -148,12 +145,9 @@ class ProjectController {
 
         Boolean hasLegacyNewsAndEvents = project.newsAndEvents as Boolean
         Boolean hasLegacyProjectStories = project.projectStories as Boolean
-        log.debug "hasLegacyNewsAndEvents: ${hasLegacyNewsAndEvents}"
-        log.debug "hasLegacyProjectStories: ${hasLegacyProjectStories}"
-
 
         [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
-         news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories],
+         news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
@@ -169,12 +163,9 @@ class ProjectController {
 
         Boolean hasLegacyNewsAndEvents = project.newsAndEvents as Boolean
         Boolean hasLegacyProjectStories = project.projectStories as Boolean
-        log.debug "hasLegacyNewsAndEvents: ${hasLegacyNewsAndEvents}"
-        log.debug "hasLegacyProjectStories: ${hasLegacyProjectStories}"
-
 
         [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
-         news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories],
+         news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
          activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:true],
          //site:[label:'Sites', template:'/shared/sites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
