@@ -39,16 +39,6 @@
                     <span data-bind="text:origin"></span>
                     <p/>
                 </div>
-                <div data-bind="visible: countries().length">
-                    <div class="text-small-heading"><g:message code="project.display.countries" /></div>
-                    <span data-bind="text:countries().join(', ')"></span>
-                    <p/>
-                </div>
-                <div data-bind="visible: uNRegions().length">
-                    <div class="text-small-heading"><g:message code="project.display.unregions" /></div>
-                    <span data-bind="text:uNRegions().join(', ')"></span>
-                    <p/>
-                </div>
                 <div data-bind="visible:isContributingDataToAla" class="margin-top-1 margin-bottom-1">
                     <img src="${resource([dir: "images", file: "ala-logo-small.png"])}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
 
@@ -63,55 +53,71 @@
                     <div data-bind="html:getInvolved.markdownToHtml()"></div>
                     <p/>
                 </div>
-                <div data-bind="visible:externalId">
-                    <div class="text-small-heading"><g:message code="project.display.externalId" /></div>
-                    <span data-bind="text:externalId"></span>
-                    <p/>
-                </div>
-                <div data-bind="visible:grantId">
-                    <div class="text-small-heading"><g:message code="project.display.grantId" /></div>
-                    <span data-bind="text:grantId"></span>
-                    <p/>
-                </div>
-                <div data-bind="visible:externalId">
-                    <div class="text-small-heading"><g:message code="project.display.fundingValue" /></div>
-                    <span data-bind="text:funding"></span>
-                    <p/>
-                </div>
-                <div data-bind="visible:associatedProgram">
-                    <div class="text-small-heading"><g:message code="project.display.program" /></div>
-                    <span data-bind="text:associatedProgram"></span>
-                    <p/>
-                </div>
-                <div data-bind="visible:associatedSubProgram">
-                        <div class="text-small-heading"><g:message code="project.display.subprogram" /></div>
-                    <span data-bind="text:associatedSubProgram"></span>
-                    <p/>
-                </div>
-                <div data-bind="visible:orgGrantee">
-                    <div class="text-small-heading"><g:message code="project.display.orgGrantee" /></div>
-                    <span data-bind="text:orgGrantee"></span>
-                    <p/>
-                </div>
-                <div data-bind="visible:orgSponsor">
-                    <div class="text-small-heading"><g:message code="project.display.orgSponsor" /></div>
-                    <span data-bind="text:orgSponsor"></span>
-                    <p/>
-                </div>
-                <div data-bind="visible:manager">
-                    <div class="text-small-heading"><g:message code="project.display.contact" /></div>
-                    <a data-bind="attr:{href:'mailto:' + manager()}"><span data-bind="text:manager"></span></a>
-                    <p/>
-                </div>
-                <div data-bind="visible:gear">
-                    <div class="text-small-heading"><g:message code="project.display.gear" /></div>
-                    <span data-bind="text:gear"></span>
-                    <p/>
-                </div>
-                <div data-bind="visible:task">
-                    <div class="text-small-heading"><g:message code="project.display.task" /></div>
-                    <span data-bind="text:task"></span>
-                    <p/>
+                <div class="row-fluid">
+                    <div class="span6">
+                        <div data-bind="visible:externalId">
+                            <div class="text-small-heading"><g:message code="project.display.externalId" /></div>
+                            <span data-bind="text:externalId"></span>
+                            <p/>
+                        </div>
+                        <div data-bind="visible:grantId">
+                            <div class="text-small-heading"><g:message code="project.display.grantId" /></div>
+                            <span data-bind="text:grantId"></span>
+                            <p/>
+                        </div>
+                        <div data-bind="visible:externalId">
+                            <div class="text-small-heading"><g:message code="project.display.fundingValue" /></div>
+                            <span data-bind="text:funding"></span>
+                            <p/>
+                        </div>
+                        <div data-bind="visible:associatedProgram">
+                            <div class="text-small-heading"><g:message code="project.display.program" /></div>
+                            <span data-bind="text:associatedProgram"></span>
+                            <p/>
+                        </div>
+                        <div data-bind="visible:associatedSubProgram">
+                            <div class="text-small-heading"><g:message code="project.display.subprogram" /></div>
+                            <span data-bind="text:associatedSubProgram"></span>
+                            <p/>
+                        </div>
+                        <div data-bind="visible:orgGrantee">
+                            <div class="text-small-heading"><g:message code="project.display.orgGrantee" /></div>
+                            <span data-bind="text:orgGrantee"></span>
+                            <p/>
+                        </div>
+                        <div data-bind="visible:orgSponsor">
+                            <div class="text-small-heading"><g:message code="project.display.orgSponsor" /></div>
+                            <span data-bind="text:orgSponsor"></span>
+                            <p/>
+                        </div>
+                        <div data-bind="visible:manager">
+                            <div class="text-small-heading"><g:message code="project.display.contact" /></div>
+                            <a data-bind="attr:{href:'mailto:' + manager()}"><span data-bind="text:manager"></span></a>
+                            <p/>
+                        </div>
+                        <div data-bind="visible:gear">
+                            <div class="text-small-heading"><g:message code="project.display.gear" /></div>
+                            <span data-bind="text:gear"></span>
+                            <p/>
+                        </div>
+                        <div data-bind="visible:task">
+                            <div class="text-small-heading"><g:message code="project.display.task" /></div>
+                            <span data-bind="text:task"></span>
+                            <p/>
+                        </div>
+                    </div>
+                    <div class="span6">
+                        <div data-bind="visible: countries().length">
+                            <div class="text-small-heading"><g:message code="project.display.countries" /></div>
+                            <span data-bind="text:countries().join(', ')"></span>
+                            <p/>
+                        </div>
+                        <div data-bind="visible: uNRegions().length">
+                            <div class="text-small-heading"><g:message code="project.display.unregions" /></div>
+                            <span data-bind="text:uNRegions().join(', ')"></span>
+                            <p/>
+                        </div>
+                    </div>
                 </div>
                 <hr/>
                 <div class="row-fluid">

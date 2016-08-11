@@ -85,7 +85,6 @@ $(function(){
 
     var viewModel =  new CreateEditProjectViewModel(project, true, userOrganisations, organisations, {storageKey:PROJECT_DATA_KEY});
     viewModel.loadPrograms(programsModel);
-    viewModel.isMetadataSharing(true);
 
     $('#projectDetails').validationEngine();
     $('.helphover').popover({animation: true, trigger:'hover'});

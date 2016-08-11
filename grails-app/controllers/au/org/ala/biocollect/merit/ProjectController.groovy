@@ -473,7 +473,6 @@ class ProjectController {
         trimmedParams.isWorks = params.boolean('isWorks');
         trimmedParams.isBiologicalScience = params.boolean('isBiologicalScience')
         trimmedParams.isMERIT = params.boolean('isMERIT')
-        trimmedParams.isMetadataSharing = params.boolean("isMetadataSharing")
         trimmedParams.query = "docType:project"
         trimmedParams.isUserPage = params.boolean('isUserPage');
         trimmedParams.isUserWorksPage = params.boolean('isUserWorksPage');
@@ -545,11 +544,6 @@ class ProjectController {
         if (projectType) {
             // append projectType to query. this is used by organisation page.
             trimmedParams.query += ' AND (' + projectType.join(' OR ') + ')'
-        }
-
-        if(trimmedParams.isMetadataSharing){
-            trimmedParams.query += " AND (isMetadataSharing:true)"
-            trimmedParams.isMetadataSharing = null
         }
 
         def programs = ''

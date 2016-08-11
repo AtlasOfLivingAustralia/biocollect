@@ -59,7 +59,6 @@ class Builder {
                 params.isBiologicalScience = false
                 params.isMERIT = false
                 params.isUserPage = false
-                params.isMetadataSharing = true
                 params.query = "docType:project"
                 break
 

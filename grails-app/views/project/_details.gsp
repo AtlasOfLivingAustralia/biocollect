@@ -65,17 +65,6 @@
                 </div>
             </div>
         </div>
-        <div data-bind="visible:(isCitizenScience() || !isExternal()) && !isEcoScience()" class="row-fluid">
-            <p/>
-            <div class="control-group">
-                <label class="control-label span3" for="isMetadataSharing"><g:message code="project.details.isMetadataSharing"/><fc:iconHelp><g:message code="project.details.isMetadataSharing.help"/></fc:iconHelp></label>
-                <div class="controls span9 large-checkbox">
-                    <input data-bind="checked:isMetadataSharing" type="checkbox" id="isMetadataSharing"/>
-                    <label for="isMetadataSharing"> <span></span> <g:message code="project.details.isMetadataSharing.extra"/> </label>
-                </div>
-            </div>
-        </div>
-
         <div class="row-fluid" >
             <div class="control-group">
                 <label class="control-label span3" for="isContributingToAla"><g:message code="project.details.isContributingToAla"/><fc:iconHelp><g:message code="project.details.isContributingToAla.help"/></fc:iconHelp></label>
