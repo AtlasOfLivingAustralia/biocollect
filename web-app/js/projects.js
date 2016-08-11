@@ -1139,7 +1139,7 @@ var BlogSummary = function(blogEntries) {
     };
     self.deleteBlogEntry = function(entry) {
         var url = fcConfig.deleteBlogEntryUrl+'&id='+entry.blogEntryId();
-        $.post(url).done(function() {
+        $.post(url).always(function() {
             document.location.reload();
         });
     };
