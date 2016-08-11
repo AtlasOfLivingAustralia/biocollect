@@ -186,3 +186,7 @@ if (!grails.cache.ehcache) {
         }
     }
 }
+
+if (!acsaUrl){
+    acsaUrl = 'http://csna.gaiaresources.com.au/wordpress/'
+}

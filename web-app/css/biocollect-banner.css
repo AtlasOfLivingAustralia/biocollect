@@ -147,3 +147,33 @@ nav#biocollectNav ul#main li a.ala-link:hover{
 #biocollectlogo > img {
     width: 193px;
 }
+
+.acsa-image {
+    content: url(/images/ACSA_logo_white.png);
+    height: 45px;
+}
+
+nav#biocollectNav > ul > li#acsa-banner {
+    display: inline-block;
+}
+
+nav#biocollectNav .more li#acsa-banner {
+    display: none;
+}
+
+nav#biocollectNav > ul > li#acsa-banner a{
+    border-right: 0px;
+}
+
+nav#biocollectNav .more li#acsa-text {
+    display: inline-block;
+}
+
+nav#biocollectNav > ul > li#acsa-text {
+    display: none;
+}
+
+.acsa-icon{
+    content: url(/images/acsa_icon.png);
+    height: 20px;
+}
