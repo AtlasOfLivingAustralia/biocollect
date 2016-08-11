@@ -6,7 +6,7 @@
                 <g:set var="activeClass" value=""/>
             </g:if>
             <li><a href="#activity-settings" id="activity-settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Activity Settings</a></li>
-            <li><a href="#editMeriPlan" id="editMeriPlan-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit MERI Plan</a></li>
+            <li><a href="#editMeriPlan" id="editMeriPlan-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Project Plan</a></li>
             <li><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Blog</a></li>
             <g:if test="${hasLegacyNewsAndEvents}">
                 <li><a href="#editNewsAndEvents" id="editnewsandevents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> News and events</a></li>

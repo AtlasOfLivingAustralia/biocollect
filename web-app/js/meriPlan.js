@@ -335,8 +335,8 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
         restoredDataWarningSelector:'#restoredData',
         resultsMessageId:'save-details-result-placeholder',
         timeoutMessageSelector:'#timeoutMessage',
-        errorMessage:"Failed to save MERI Plan: ",
-        successMessage: 'MERI Plan saved',
+        errorMessage:"Failed to save Project Plan: ",
+        successMessage: 'Project Plan saved',
         preventNavigationIfDirty:true,
         defaultDirtyFlag:ko.dirtyFlag
     };
