@@ -57,61 +57,64 @@
             </div>
         </div>
 
-        <bs:form action="update" inline="true">
+        <div class="row-fluid">
+            <div class="span6">
+                <label for="type">Type of activity</label>
+                <select data-bind="value: type, popover:{title:'', content:transients.activityDescription, trigger:'manual', autoShow:true}" id="type" data-validation-engine="validate[required]" class="input-xlarge">
+                    <g:each in="${activityTypes}" var="t" status="i">
+                        <g:if test="${i == 0 && create}">
+                            <option></option>
+                        </g:if>
+                        <optgroup label="${t.name}">
+                            <g:each in="${t.list}" var="opt">
+                                <option>${opt.name}</option>
+                            </g:each>
+                        </optgroup>
+                    </g:each>
+                </select>
+            </div>
+            <div class="span6" data-bind="visible:transients.themes && transients.themes.length > 1">
+                <label for="theme">Major theme</label>
+                <select id="theme" data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'" class="input-xlarge">
+                </select>
+            </div>
+            <div class="span6" data-bind="visible:transients.themes && transients.themes.length == 1">
+                <label for="theme">Major theme</label>
+                <span data-bind="text:mainTheme">
+                </span>
+            </div>
+        </div>
 
-            <div class="row-fluid">
-                <div class="span6">
-                    <label for="type">Type of activity</label>
-                    <select data-bind="value: type, popover:{title:'', content:transients.activityDescription, trigger:'manual', autoShow:true}" id="type" data-validation-engine="validate[required]" class="input-xlarge">
-                        <g:each in="${activityTypes}" var="t" status="i">
-                            <g:if test="${i == 0 && create}">
-                                <option></option>
-                            </g:if>
-                            <optgroup label="${t.name}">
-                                <g:each in="${t.list}" var="opt">
-                                    <option>${opt.name}</option>
-                                </g:each>
-                            </optgroup>
-                        </g:each>
-                    </select>
-                </div>
-                <div class="span6">
-                    <label for="theme">Major theme</label>
-                    <select id="theme" data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'" class="input-xlarge">
-                    </select>
+        <div class="row-fluid">
+            <div class="span12">
+                <fc:textArea data-bind="value: description" id="description" label="Description" class="span12" rows="2" />
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span6">
+                <label for="plannedStartDate">Planned start date
+                <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
+                </label>
+                <div class="input-append">
+                    <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
                 </div>
             </div>
-
-            <div class="row-fluid">
-                <div class="span12">
-                    <fc:textArea data-bind="value: description" id="description" label="Description" class="span12" rows="2" />
+            <div class="span6">
+                <label for="plannedEndDate">Planned end date
+                <fc:iconHelp title="Planned end date" printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
+                </label>
+                <div class="input-append">
+                    <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate" data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]" printable="${printView}" />
                 </div>
             </div>
+        </div>
 
-            <div class="row-fluid">
-                <div class="span6">
-                    <label for="plannedStartDate">Planned start date
-                    <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
-                    </label>
-                    <div class="input-append">
-                        <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
-                    </div>
-                </div>
-                <div class="span6">
-                    <label for="plannedEndDate">Planned end date
-                    <fc:iconHelp title="Planned end date" printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
-                    </label>
-                    <div class="input-append">
-                        <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate" data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]" printable="${printView}" />
-                    </div>
-                </div>
-            </div>
+        <div class="form-actions">
+            <button type="button" data-bind="click: save" class="btn btn-primary">Save changes</button>
+            <button type="button" id="cancel" class="btn">Cancel</button>
+        </div>
 
-            <div class="form-actions">
-                <button type="button" data-bind="click: save" class="btn btn-primary">Save changes</button>
-                <button type="button" id="cancel" class="btn">Cancel</button>
-            </div>
-        </bs:form>
 
     </div>
 </div>
@@ -172,6 +175,9 @@
             self.transients.sites = project ? project.sites : sites;
             self.transients.projects = site ? site.projects : projects;
             self.transients.themes = $.map(${themes ?: '[]'}, function (obj, i) { return obj.name });
+            if (!act.mainTheme && self.transients.themes.length == 1) {
+                self.mainTheme(self.tranients.themes[0]);
+            }
             self.goToProject = function () {
                 if (self.projectId) {
                     document.location.href = fcConfig.projectViewUrl + self.projectId();

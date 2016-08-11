@@ -971,3 +971,37 @@ if (!String.prototype.startsWith) {
         return this.substr(position, searchString.length) === searchString;
     };
 }
+
+/**
+ * Sets up the floating save appear / disappear based on a supplied dirtyFlag and some selectors.
+ * Note this method requires the floating save to have been rendered into page html.
+ * @param dirtyFlag needs to be an object containing a knockout observable "isDirty".
+ * @param options selectors for page elements.
+ */
+function configureFloatingSave(dirtyFlag, options) {
+    var defaults = {
+        floatingSaveSelector: '#floating-save',
+        saveButtonSelector: '#save-button'
+    };
+    var config = $.extend(defaults, options);
+
+    var $floatingSave = $(config.floatingSaveSelector);
+    $(config.saveButtonSelector).appear().on('appear', function() {
+        $floatingSave.slideUp(400);
+    }).on('disappear', function() {
+        if (dirtyFlag.isDirty()) {
+            $floatingSave.slideDown(400);
+        }
+        else {
+            $floatingSave.slideUp(400);
+        }
+    });
+    dirtyFlag.isDirty.subscribe(function(dirty) {
+        if (dirty && !$floatingSave.is(':appeared')) {
+            $floatingSave.slideDown(400);
+        }
+        else {
+            $floatingSave.slideUp(400);
+        }
+    });
+}

@@ -24,15 +24,14 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
+                        <span data-bind="if: $root.transients.loading()">Loading...</span>
                         <!-- ko if: activities().length == 0 -->
                             <div class="row-fluid">
                                 <h3 class="text-left margin-bottom-five">
-                                    <!-- ko if: $root.searchTerm() == "" && $root.selectedFilters().length == 0 -->
+                                    <span data-bind="if: $root.searchTerm() == '' && $root.selectedFilters().length == 0 && !$root.transients.loading()">
                                         No data has been recorded for this project yet
-                                    <!-- /ko -->
-                                    <!-- ko if: $root.searchTerm() != "" || $root.selectedFilters().length > 0 -->
-                                        No results
-                                    <!-- /ko -->
+                                    </span>
+                                    <span data-bind="if: $root.searchTerm() != '' || $root.selectedFilters().length > 0 && !$root.transients.loading()">No results</span>
                                 </h3>
                             </div>
                         <!-- /ko -->

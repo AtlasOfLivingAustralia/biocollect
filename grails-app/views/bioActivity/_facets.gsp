@@ -1,4 +1,5 @@
 <h3>Refine results</h3>
+<span data-bind="if: $root.transients.loading()">Loading...</span>
 <!-- ko if: selectedFilters().length > 0 -->
 <div class="row-fluid">
     <div class="span12">

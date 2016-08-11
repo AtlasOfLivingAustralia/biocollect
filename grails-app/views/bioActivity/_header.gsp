@@ -30,12 +30,12 @@
 
 <div class="row-fluid">
 
-    <div class="span12">
-        <div class="span1">
+    <div class="span12 well">
+        <div class="span1 text-center">
             <img class="bioactivity-logo" alt="No image" data-bind="attr:{title:transients.pActivity.name, src: transients.pActivity.transients.logoUrl()}"/>
         </div>
-        <div class="span9">
-            <h2 data-bind="text: transients.pActivity.name"></h2>
+        <div class="span9 text-center">
+            <h1 data-bind="text: transients.pActivity.name"></h1>
             <h5 data-bind="text: transients.pActivity.description"></h5>
         </div>
 

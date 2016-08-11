@@ -1,3 +1,5 @@
+%{--To be removed once #595 and related tickets are finalised--}%
+
 <!-- OVERVIEW -->
 <div class="row-fluid">
     <div class="clearfix" data-bind="visible:organisationId()||organisationName()">

@@ -78,6 +78,7 @@ class ProjectService {
         def projectType = ((updating && !props?.projectType) ? get(projectId)?.projectType : props?.projectType)
         def isWorks = projectType == 'works'
         def isEcoScience = projectType == 'ecoscience'
+        def termsNeeded = !(props.containsKey("isExternal") && props.isExternal)
 
         if (!updating && !props.containsKey("isExternal") && !isWorks) {
             //error, not null
@@ -169,12 +170,12 @@ class ProjectService {
             }
         }
 
-        if (props.containsKey("termsOfUseAccepted")) {
+        if (termsNeeded && props.containsKey("termsOfUseAccepted")) {
             if (!props.termsOfUseAccepted) {
                 //error, terms of use not accepted
                 return "termsOfUseAccepted is not true"
             }
-        } else if (!updating) {
+        } else if (termsNeeded && !updating) {
             //error, no terms of use accepted
             return "termsOfUseAccepted is missing"
         }

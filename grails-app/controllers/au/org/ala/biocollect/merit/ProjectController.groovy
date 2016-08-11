@@ -73,7 +73,6 @@ class ProjectController {
             }
             def programs = projectService.programsModel()
             def content = projectContent(project, user, programs, params)
-            def messages = auditService.getAuditMessagesForProject(id)
 
             def model = [project: project,
                 mapFeatures: commonService.getMapFeatures(project),
@@ -82,15 +81,13 @@ class ProjectController {
                 roles: roles,
                 admins: admins,
                 activityTypes: projectService.activityTypesList(),
-                metrics: projectService.summary(id),
+                metrics: project.projectType == projectService.PROJECT_TYPE_WORKS ? projectService.summary(id): [],
                 outputTargetMetadata: metadataService.getOutputTargetsByOutputByActivity(),
                 organisations: metadataService.organisationList().list.collect { [organisationId: it.organisationId, name: it.name] },
                 programs: programs,
                 today:DateUtils.format(new DateTime()),
                 themes:metadataService.getThemesForProject(project),
                 projectContent:content.model,
-                messages: messages?.messages,
-                userMap: messages?.userMap,
                 hideBackButton: true,
                 projectSite: project.projectSite
             ]
@@ -145,10 +142,17 @@ class ProjectController {
 
     protected Map worksProjectContent(project, user) {
         def activities = activityService.activitiesForProject(project.projectId)
-        [overview:[label:'About', template:'aboutWorksProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
-         documents:[label:'Documents', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
-         activities:[label:'Activities', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:true],
+
+        List blog = blogService.getProjectBlog(project)
+        Boolean hasNewsAndEvents = blog.find{it.type == 'News and Events'}
+        Boolean hasProjectStories = blog.find{it.type == 'Project Stories'}
+
+        [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
+         news:[label:'Project Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories],
+         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
+         activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:true],
          //site:[label:'Sites', template:'/shared/sites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
+         meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, type:'tab', template:'viewMeriPlan'],
          dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab'],
          admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab']]
     }
@@ -332,14 +336,6 @@ class ProjectController {
                     return
                 }
 
-                if (values.containsKey("planStatus") && values.planStatus =~ /approved/) {
-                    // check to see if user has caseManager permissions
-                    if (!projectService.isUserCaseManagerForProject(userId, id)) {
-                        render status:401, text: "User does not have caseManager permissions for project"
-                        log.warn "User ${userId} who is not a caseManager attempting to change planStatus for project ${id}"
-                        return
-                    }
-                }
             } else if (!userId) {
                 render status: 401, text: 'You do not have permission to create a project'
             }

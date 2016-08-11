@@ -1,21 +1,16 @@
-<div class="row-fluid well">
+<div class="well">
+    <div class="row-fluid">
         <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
-            <div class="tiles">
+        <div class="tiles">
             <div data-bind="foreach: partitioned( pageProjects, columns)">
-                <div class="row-fluid equal-height" data-bind="template: { name: 'projectCell', foreach: $data }">
+                <div class="row-fluid row-eq-height" data-bind="template: { name: 'projectCell', foreach: $data }">
                 </div>
             </div>
         </div>
+    </div>
 </div>
 <script id="projectCell" type="text/html">
 <div data-bind="attr:{class:'well tile span' + 12 / $root.columns()}">
-    <div class="tile-title"
-         data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
-        <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
-            <span data-bind="text:transients.truncatedName"></span>
-        </a>
-    </div>
-
     <div class="row-fluid">
         <div class="span12 padding-left-5" style="min-width: 80px;">
             <div>
@@ -27,6 +22,12 @@
                                                                              src="${resource(dir: 'images', file: 'robot.png')}"
                                                                              title="Project is sourced from SciStarter"></div>
         </div>
+    </div>
+    <div class="tile-title"
+         data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
+        <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
+            <span data-bind="text:transients.truncatedName"></span>
+        </a>
     </div>
     <div class="row-fluid">
         <div class="span12">

@@ -7,45 +7,46 @@
         <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
         <li><a data-bind="click:goToProject" href="#" class="clickable">Project</a> <span class="divider">/</span></li>
         <li class="active">
-            <span>${activity.type}</span>
+            <span>${pActivity.name}</span>
         </li>
     </ul>
 </g:if>
-
-<g:render template="header"></g:render>
-
+<div class="well text-center ">
+    <h1 class="text-error">Survey : ${pActivity?.name}</h1>
+    <small><a data-bind="click:goToProject" href="#" class="clickable">Project: ${project?.name?.toUpperCase()}</a></small>
+</div>
 <!-- ko stopBinding: true -->
+<g:set var="user" value="${user}"/>
 <g:each in="${metaModel?.outputs}" var="outputName">
     <g:if test="${outputName != 'Photo Points'}">
         <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
         <g:set var="model" value="${outputModels[outputName]}"/>
         <g:set var="output" value="${activity.outputs.find { it.name == outputName }}"/>
+
         <g:if test="${!output}">
             <g:set var="output" value="[name: outputName]"/>
         </g:if>
 
         <md:modelStyles model="${model}" edit="true"/>
 
-        <div class="output-block well" id="ko${blockId}">
+        <div class="output-block" id="ko${blockId}">
 
-            <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h3>
+            <h4 class="text-center text-error well-title" data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h4>
 
             <div data-bind="if:transients.optional || outputNotCompleted()">
                 <label class="checkbox" ><input type="checkbox" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>
             </div>
-            <div id="${blockId}-content" data-bind="visible:!outputNotCompleted()">
-                <!-- add the dynamic components -->
 
-                <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}"
-                          printable="${printView}"/>
+            <div id="${blockId}-content" class="well" data-bind="visible:!outputNotCompleted()">
+                <!-- add the dynamic components -->
+                <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}" printable="${printView}"/>
             </div>
+
             <r:script>
                     $(function(){
                         var viewModelName = "${blockId}ViewModel", viewModelInstance = viewModelName + "Instance";
-
                         // load dynamic models - usually objects in a list
-                <md:jsModelObjects model="${model}" site="${site}" edit="true"
-                                   viewModelInstance="${blockId}ViewModelInstance"/>
+                        <md:jsModelObjects model="${model}" site="${site}" edit="true" viewModelInstance="${blockId}ViewModelInstance"/>
 
                 this[viewModelName] = function (config, outputNotCompleted) {
                     var self = this;
@@ -86,7 +87,7 @@
 
                 self.loadData = function (data) {
                     // load dynamic data
-                <md:jsLoadModel model="${model}" defaultData="${defaultData}"/>
+                <md:jsLoadModel model="${model}" defaultData="${defaultData}" user="${user}"/>
 
                 // if there is no data in tables then add an empty row for the user to add data
                 if (typeof self.addRow === 'function' && self.rowCount() === 0) {
@@ -146,10 +147,9 @@
 
 
 <g:if test="${metaModel.supportsSites?.toBoolean()}">
-    <div class="row-fluid">
-
-        <div class="span12 well">
-            <h3>Site Details:</h3>
+    <div >
+        <h3 class="text-center text-error well-title">Site Details</h3>
+        <div class="output-block text-center well">
             <fc:select
                     data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
                     printable="${printView}"/>
@@ -160,8 +160,8 @@
 </g:if>
 
 <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
+    <h3 class="text-center text-error well-title">Photo Points</h3>
     <div class="output-block well" data-bind="with:transients.photoPointModel">
-        <h3>Photo Points</h3>
         <g:render template="/site/photoPoints"></g:render>
     </div>
 </g:if>
