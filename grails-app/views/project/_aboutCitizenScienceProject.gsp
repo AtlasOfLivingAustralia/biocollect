@@ -108,7 +108,7 @@
                             <h4 class="media-heading">Project sourced from SciStarter</h4>
                         </div>
                     </div>
-                    <div id="surveyLink" class="span4 pull-right" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb())">
+                    <div id="surveyLink" class="span4 pull-right" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb()) && projectType() == 'survey' ">
                         <a class="btn pull-right" data-bind="showTabOrRedirect: { url: isExternal() ? urlWeb() : '', tabId: '#activities-tab'}"><g:message code="project.display.join" /></a>
                         <p class="clearfix"/>
                     </div>
@@ -117,7 +117,7 @@
                           model="${[transients:transients,imageUrl:resource(dir:'/images/filetypes')]}"/>
                 <p/>
                 <div style="line-height:2.2em">
-                    <g:render template="tags"/>
+                    <g:render template="tags" />
                 </div>
             </div>
         </div>
