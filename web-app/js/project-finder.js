@@ -2,19 +2,6 @@
  * Created by Temi Varghese on 22/10/15.
  */
 function ProjectFinder() {
-    /* the default filter selections: used to determine whether to display the filter panel on load */
-    /* i.e. if the filter details from the URL hash are different to the default, then the filter panel will be opened */
-    var DEFAULT_CITIZEN_SCIENCE_FILTER = {isCitizenScience: "true", max: "20", sort: "nameSort"};
-    var DEFAULT_USER_PROJECT_FILTER = {isCitizenScience: "true", max: "20", sort: "nameSort", isUserPage: "true"};
-    var DEFAULT_USER_WORKS_PROJECT_FILTER = {isWorks: "true", max: "20", sort: "nameSort", isUserPage: "true"};
-    var DEFAULT_USER_ECO_SCIENCE_PROJECT_FILTER = {isEcoScience: "true", max: "20", sort: "nameSort", isUserPage: "true"};
-    var DEFAULT_ORGANISATION_PROJECT_FILTER = {
-        isCitizenScience: "true",
-        isWorks: "true",
-        isSurvey: "true",
-        max: "20",
-        sort: "nameSort"
-    };
 
     var self = this;
     /* holds all projects */
@@ -448,13 +435,14 @@ function ProjectFinder() {
 
         // Results view
         var savedViewMode = amplify.store('pt-view-state');
-        savedViewMode = savedViewMode || "listView"; //Default is the old list view
+        savedViewMode = savedViewMode || "tileView"; //Default is the new tile view
         checkButton($("#pt-view"), savedViewMode);
         var viewMode = getActiveButtonValues($("#pt-view"));
         pageWindow.listView(viewMode[0] == "listView");
 
         // Filters view
         var showPanel = amplify.store('pt-filter');
+        showPanel = showPanel === undefined ? true : showPanel;
         toggleFilterPanel(showPanel);
     };
 
@@ -543,7 +531,7 @@ function ProjectFinder() {
         uncheckButton($('#pt-tags'));
         uncheckButton($('#pt-status'));
         uncheckButton($('#pt-search-difficulty'));
-        checkButton($('#pt-sort'), 'nameSort');
+        checkButton($('#pt-sort'), 'dateCreatedSort');
         checkButton($('#pt-per-page'), '20');
         $('#pt-search').val('');
         if (spatialFilter) {
@@ -676,7 +664,7 @@ function ProjectFinder() {
             });
         }
 
-        checkButton($("#pt-sort"), params.sort || 'nameSort');
+        checkButton($("#pt-sort"), params.sort || 'dateCreatedSort');
         checkButton($("#pt-per-page"), params.max || '20');
         checkButton($("#pt-aus-world"), params.isWorldWide || 'false');
         
