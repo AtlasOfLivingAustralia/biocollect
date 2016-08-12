@@ -4,12 +4,12 @@
 }
 </style>
 <div data-bind="ifnot: details.status() == 'active'">
-	<h4>MERI Plan not available.</h4>
+	<h4>Project Plan not available.</h4>
 </div>
 
 <div data-bind="if: details.status() == 'active'">
 	<span style="float:right;" data-bind="if:detailsLastUpdated">Last update date : <span data-bind="text:detailsLastUpdated.formattedDate"></span></span>
-		<h3>MERI Plan Information</h3>
+		<h3>Project Plan Information</h3>
 		<div class="row-fluid space-after">
 			    <div class="span6">
 			        <div id="project-objectives" class="well well-small">

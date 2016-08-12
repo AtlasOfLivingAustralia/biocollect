@@ -2,6 +2,11 @@
 <div id="edit${attributeName}Content">
 <h3>${header}</h3>
 <div class="row-fluid">
+    <div class="span5 alert">This functionality is now deprecated, please create any new ${header} using
+        <a href="#" onclick="$('#editProjectBlog-tab').click()" >Edit Blog</a></li>
+    </div>
+</div>
+<div class="row-fluid">
     <div class="span5 alert" data-bind="visible:message(), css:{'alert-error':error(), 'alert-success':success()}">
         <button class="close" data-bind="click:clearMessage" href="#">×</button>
         <span data-bind="text:message"></span>

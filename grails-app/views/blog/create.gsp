@@ -44,7 +44,7 @@ var EditableBlogEntryViewModel = function(blogEntry, options) {
 
     var defaults = {
         validationElementSelector:'.validationEngineContainer',
-        types:['News and Events', 'Project Stories', 'Photo'],
+        types:['News and Events', 'Project Stories'],
         returnTo:fcConfig.returnTo,
         blogUpdateUrl:fcConfig.blogUpdateUrl
     };
@@ -124,6 +124,8 @@ var EditableBlogEntryViewModel = function(blogEntry, options) {
         var blogEntryViewModel = new EditableBlogEntryViewModel(blogEntry, '.validationEngineContainer');
 
         ko.applyBindings(blogEntryViewModel);
+
+        $('.helphover').popover({animation: true, trigger:'hover'});
     });
 
 

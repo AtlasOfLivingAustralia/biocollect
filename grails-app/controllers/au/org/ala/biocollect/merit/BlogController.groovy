@@ -64,9 +64,6 @@ class BlogController {
     }
 
     def delete(String id) {
-
         blogService.delete(params.projectId, id)
-
-        chain controller: 'admin', action: 'editSiteBlog'
     }
 }

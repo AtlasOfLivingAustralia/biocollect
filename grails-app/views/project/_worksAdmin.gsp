@@ -6,13 +6,16 @@
                 <g:set var="activeClass" value=""/>
             </g:if>
             <li><a href="#activity-settings" id="activity-settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Activity Settings</a></li>
-            <li><a href="#editMeriPlan" id="editMeriPlan-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit MERI Plan</a></li>
-            <li><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Project Blog</a></li>
-            <li><a href="#editNewsAndEvents" id="editnewsandevents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> News and events</a></li>
-            <li><a href="#editProjectStories" id="editprojectstories-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project stories</a></li>
-
+            <li><a href="#editMeriPlan" id="editMeriPlan-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Project Plan</a></li>
+            <li><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Blog</a></li>
+            <g:if test="${hasLegacyNewsAndEvents}">
+                <li><a href="#editNewsAndEvents" id="editnewsandevents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> News and events</a></li>
+            </g:if>
+            <g:if test="${hasLegacyProjectStories}">
+                <li><a href="#editProjectStories" id="editprojectstories-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project stories</a></li>
+            </g:if>
             <li ${activeClass}><a href="#permissions" id="permissions-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project access</a></li>
-            <li><a href="#edit-documents" id="documents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Documents</a></li>
+            <li><a href="#edit-documents" id="documents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Resources</a></li>
             <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
                 <li><a href="#project-audit" id="project-audit-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Audit</a></li>
             </g:if>
@@ -51,8 +54,8 @@
                 <h3>Edit Project Blog</h3>
                 <g:render template="/blog/blogSummary" model="${[blog:project.blog?:[]]}"/>
             </div>
-            <div id="editNewsAndEvents" class="pill-pane">
 
+            <div id="editNewsAndEvents" class="pill-pane">
                 <g:render template="editProjectContent" model="${[attributeName:'newsAndEvents', header:'News and events']}"/>
             </div>
 

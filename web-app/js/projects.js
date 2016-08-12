@@ -1130,13 +1130,13 @@ function validateOrganisationSelection(field, rules, i, options) {
 
 
 var EditableBlogEntryViewModel = function(blogEntry, options) {
-
     var defaults = {
         validationElementSelector:'.validationEngineContainer',
-        types:['News and Events', 'Project Stories', 'Photo'],
+        types:['News and Events', 'Project Stories'],
         returnTo:fcConfig.returnTo,
         blogUpdateUrl:fcConfig.blogUpdateUrl
     };
+
     var config = $.extend(defaults, options);
     var self = this;
     var now = convertToSimpleDate(new Date());
@@ -1256,7 +1256,7 @@ var BlogSummary = function(blogEntries) {
     };
     self.deleteBlogEntry = function(entry) {
         var url = fcConfig.deleteBlogEntryUrl+'&id='+entry.blogEntryId();
-        $.post(url).done(function() {
+        $.post(url).always(function() {
             document.location.reload();
         });
     };
