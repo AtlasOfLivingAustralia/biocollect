@@ -119,22 +119,10 @@ input[type=checkbox] {
     font-weight: 200;
 }
 
-#pt-selectors input[type=checkbox] {
-    visibility: hidden;
+#pt-selectors a {
+    color: #C44D34;
+    font-size: small;
 }
-
-#pt-selectors input[type=checkbox] ~ .active-checkbox  {
-    display: none;
-}
-
-#pt-selectors input[type=checkbox]:checked ~ .active-checkbox  {
-    display: inline-block;
-}
-
-#pt-selectors input[type=checkbox]:checked ~ .inactive-checkbox  {
-    display: none;
-}
-
 
 
 .toggleIndicator.fa.fa-check-square-o {
@@ -208,4 +196,12 @@ input[type=checkbox] {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+.display-inline-block{
+    display: inline-block;
+}
+
+.facet-label-width{
+    width: 90%;
 }

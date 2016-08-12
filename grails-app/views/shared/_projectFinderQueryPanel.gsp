@@ -1,50 +1,64 @@
 
 <div class="row-fluid">
     <div id="pt-selectors" class="well">
+        <h4><g:message code="project.search.heading"/></h4>
+        <div id="filter-buttons">
+            <button class="btn btn-small facetSearch" data-bind="click: doSearch"><i class="icon-filter"></i>Refine</button>
+            <button class="btn btn-small clearFacet" data-bind="click: reset"><i class="icon-remove-sign"></i>Clear all</button>
+        </div>
+        <div>
+            <ul class="unstyled">
+                <!-- ko foreach:selectedFacets -->
+                <li data-bind="text: displayName"></li>
+                <!-- /ko  -->
+            </ul>
+        </div>
         <div id="filters-hidden">
             <div id="pt-searchControls" class="row-fluid">
-                <h4><g:message code="project.search.heading"/></h4>
-                <div class="row-fluid">
-                    <div class="span12">
-                        <h5><g:message code="project.search.status"/></h5>
+                <g:if test="${hubConfig?.defaultFacetQuery.contains('isCitizenScience:true')}">
+                    <g:render template="/shared/facetView"></g:render>
+                </g:if>
+                %{--<div class="row-fluid">--}%
+                    %{--<div class="span12">--}%
+                        %{--<h5><g:message code="project.search.status"/></h5>--}%
 
-                        <div class="row-fluid">
-                            <div class="btn-group span6" data-toggle="buttons-checkbox" id="pt-status">
-                                <g:each var="level" in="${['active', 'completed']}">
-                                    <div>
-                                        <button type="button" class="btn  btn-small btn-info as-checkbox"
-                                            data-value="${level}">
-                                            <i class="pull-left toggleIndicator fa fa-check-square-o"></i>
-                                            <i class="pull-left toggleIndicator fa fa-square-o"></i>
-                                            ${level.capitalize()}
-                                        </button>
-                                    </div>
-                                </g:each>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        %{--<div class="row-fluid">--}%
+                            %{--<div class="btn-group span6" data-toggle="buttons-checkbox" id="pt-status">--}%
+                                %{--<g:each var="level" in="${['active', 'completed']}">--}%
+                                    %{--<div>--}%
+                                        %{--<button type="button" class="btn  btn-small btn-info as-checkbox"--}%
+                                            %{--data-value="${level}">--}%
+                                            %{--<i class="pull-left toggleIndicator fa fa-check-square-o"></i>--}%
+                                            %{--<i class="pull-left toggleIndicator fa fa-square-o"></i>--}%
+                                            %{--${level.capitalize()}--}%
+                                        %{--</button>--}%
+                                    %{--</div>--}%
+                                %{--</g:each>--}%
+                            %{--</div>--}%
+                        %{--</div>--}%
+                    %{--</div>--}%
+                %{--</div>--}%
 
                 <div class="row-fluid">
                     <div class="span12">
                         <g:if test="${!hubConfig?.defaultFacetQuery.contains('isEcoScience:true')}">
 
-                            <h5><g:message code="project.search.difficulty"/></h5>
+                            %{--<h5><g:message code="project.search.difficulty"/></h5>--}%
 
-                            <div class="row-fluid">
-                                <div class="btn-group span6" data-toggle="buttons-checkbox" id="pt-search-difficulty">
-                                       <g:each var="level" in="${['easy', 'medium', 'hard']}">
-                                           <div>
-                                            <button type="button" class="btn  btn-small btn-info as-checkbox"
-                                                    data-value="${level}">
-                                                <i class="pull-left toggleIndicator fa fa-check-square-o"></i>
-                                                <i class="pull-left toggleIndicator fa fa-square-o"></i>
-                                                ${level.capitalize()}
-                                            </button>
-                                           </div>
-                                        </g:each>
-                                    </div>
-                            </div>
+                            %{--<div class="row-fluid">--}%
+                                %{--<div class="btn-group span6" data-toggle="buttons-checkbox" id="pt-search-difficulty">--}%
+                                       %{--<g:each var="level" in="${['easy', 'medium', 'hard']}">--}%
+                                           %{--<div>--}%
+                                            %{--<button type="button" class="btn  btn-small btn-info as-checkbox"--}%
+                                                    %{--data-value="${level}">--}%
+                                                %{--<i class="pull-left toggleIndicator fa fa-check-square-o"></i>--}%
+                                                %{--<i class="pull-left toggleIndicator fa fa-square-o"></i>--}%
+                                                %{--${level.capitalize()}--}%
+                                            %{--</button>--}%
+                                           %{--</div>--}%
+                                        %{--</g:each>--}%
+                                    %{--</div>--}%
+                            %{--</div>--}%
                         </g:if>
                         <g:else>
                             <h5><g:message code="project.search.programName"/></h5>
@@ -73,64 +87,73 @@
                 <div class="row-fluid">
                     <div class="span12" id="pt-tags">
                         <g:if test="${controllerName != 'organisation'}">
-                            <h5>Tags</h5>
+                            %{--<h5>Tags</h5>--}%
 
-                            <div class="row-fluid">
-                                <div class="span12">
-                                    <g:if test="${!hubConfig?.defaultFacetQuery.contains('isEcoScience:true')}">
-                                        <div>
-                                        <button id="pt-search-diy" type="button" class="btn btn-info as-checkbox btn-small"
-                                                data-toggle="button">
-                                            <i class="pull-left toggleIndicator fa fa-check-square-o"></i>
-                                            <i class="pull-left toggleIndicator fa fa-square-o"></i>
-                                            <g:message code="project.tag.diy"/>
-                                        </button>
-                                        </div>
-                                        <div>
-                                        <button id="pt-search-noCost" type="button" class="btn btn-info as-checkbox btn-small"
-                                                data-toggle="button">
-                                            <i class="pull-left toggleIndicator fa fa-check-square-o"></i>
-                                            <i class="pull-left toggleIndicator fa fa-square-o"></i>
-                                            <g:message code="project.tag.noCost"/></button>
-                                        </div>
-                                        <div>
-                                        <button id="pt-search-teach" type="button" class="btn btn-info as-checkbox btn-small"
-                                                data-toggle="button">
-                                            <i class="pull-left toggleIndicator fa fa-check-square-o"></i>
-                                            <i class="pull-left toggleIndicator fa fa-square-o"></i>
-                                            <g:message code="project.tag.teach"/> </button>
-                                        </div>
-                                        <div>
-                                        <button id="pt-search-children" type="button" class="btn btn-info as-checkbox btn-small"
-                                                data-toggle="button">
-                                            <i class="pull-left toggleIndicator fa fa-check-square-o"></i>
-                                            <i class="pull-left toggleIndicator fa fa-square-o"></i>
-                                            <g:message code="project.tag.children"/> </button>
-                                        </div>
-                                    </g:if>
-                                    <div>
-                                    <button id="pt-search-mobile" type="button" class="btn btn-info as-checkbox btn-small"
-                                            data-toggle="button">
-                                        <i class="pull-left toggleIndicator fa fa-check-square-o"></i>
-                                        <i class="pull-left toggleIndicator fa fa-square-o"></i>
-                                        <g:message code="g.mobileApps"/> </button>
-                                    </div>
-                                    <div>
-                                    <button id="pt-search-dataToAla" type="button" class="btn btn-info as-checkbox btn-small"
-                                            data-toggle="button">
-                                        <i class="pull-left toggleIndicator fa fa-check-square-o"></i>
-                                        <i class="pull-left toggleIndicator fa fa-square-o"></i>
-                                        <g:message code="g.dataToAla"/> </button>
-                                    </div>
-                                    <div>
-                                        <button id="pt-search-isHome" type="button" class="btn btn-info as-checkbox btn-small"
-                                                data-toggle="button">
-                                            <i class="pull-left toggleIndicator fa fa-check-square-o"></i>
-                                            <i class="pull-left toggleIndicator fa fa-square-o"></i>
-                                            <g:message code="project.tag.home"/> </button>
-                                    </div>
-                                </div>
-                            </div>
+                            %{--<div class="row-fluid">--}%
+                                %{--<div class="span12">--}%
+                                    %{--<g:if test="${!hubConfig?.defaultFacetQuery.contains('isEcoScience:true')}">--}%
+                                        %{--<div class="row-fluid">--}%
+                                            %{--<div data-bind="visible:count, attr:{title:displayName}" class="as-checkbox">--}%
+                                                %{--<input type="checkbox" data-bind="checked: checked" style="display: inline-block;">--}%
+                                                %{--<a href="#" class="inline-flex " data-bind="click: filterNow">--}%
+                                                    %{--<span class="label-ellipsis" data-bind="text:displayName"></span>--}%
+                                                %{--</a>--}%
+                                            %{--</div>--}%
+                                        %{--</div>--}%
+
+                                        %{--<div>--}%
+                                        %{--<button id="pt-search-diy" type="button" class="btn btn-info as-checkbox btn-small"--}%
+                                                %{--data-toggle="button">--}%
+                                            %{--<i class="pull-left toggleIndicator fa fa-check-square-o"></i>--}%
+                                            %{--<i class="pull-left toggleIndicator fa fa-square-o"></i>--}%
+                                            %{--<g:message code="project.tag.diy"/>--}%
+                                        %{--</button>--}%
+                                        %{--</div>--}%
+                                        %{--<div>--}%
+                                        %{--<button id="pt-search-noCost" type="button" class="btn btn-info as-checkbox btn-small"--}%
+                                                %{--data-toggle="button">--}%
+                                            %{--<i class="pull-left toggleIndicator fa fa-check-square-o"></i>--}%
+                                            %{--<i class="pull-left toggleIndicator fa fa-square-o"></i>--}%
+                                            %{--<g:message code="project.tag.noCost"/></button>--}%
+                                        %{--</div>--}%
+                                        %{--<div>--}%
+                                        %{--<button id="pt-search-teach" type="button" class="btn btn-info as-checkbox btn-small"--}%
+                                                %{--data-toggle="button">--}%
+                                            %{--<i class="pull-left toggleIndicator fa fa-check-square-o"></i>--}%
+                                            %{--<i class="pull-left toggleIndicator fa fa-square-o"></i>--}%
+                                            %{--<g:message code="project.tag.teach"/> </button>--}%
+                                        %{--</div>--}%
+                                        %{--<div>--}%
+                                        %{--<button id="pt-search-children" type="button" class="btn btn-info as-checkbox btn-small"--}%
+                                                %{--data-toggle="button">--}%
+                                            %{--<i class="pull-left toggleIndicator fa fa-check-square-o"></i>--}%
+                                            %{--<i class="pull-left toggleIndicator fa fa-square-o"></i>--}%
+                                            %{--<g:message code="project.tag.children"/> </button>--}%
+                                        %{--</div>--}%
+                                    %{--</g:if>--}%
+                                    %{--<div>--}%
+                                    %{--<button id="pt-search-mobile" type="button" class="btn btn-info as-checkbox btn-small"--}%
+                                            %{--data-toggle="button">--}%
+                                        %{--<i class="pull-left toggleIndicator fa fa-check-square-o"></i>--}%
+                                        %{--<i class="pull-left toggleIndicator fa fa-square-o"></i>--}%
+                                        %{--<g:message code="g.mobileApps"/> </button>--}%
+                                    %{--</div>--}%
+                                    %{--<div>--}%
+                                    %{--<button id="pt-search-dataToAla" type="button" class="btn btn-info as-checkbox btn-small"--}%
+                                            %{--data-toggle="button">--}%
+                                        %{--<i class="pull-left toggleIndicator fa fa-check-square-o"></i>--}%
+                                        %{--<i class="pull-left toggleIndicator fa fa-square-o"></i>--}%
+                                        %{--<g:message code="g.dataToAla"/> </button>--}%
+                                    %{--</div>--}%
+                                    %{--<div>--}%
+                                        %{--<button id="pt-search-isHome" type="button" class="btn btn-info as-checkbox btn-small"--}%
+                                                %{--data-toggle="button">--}%
+                                            %{--<i class="pull-left toggleIndicator fa fa-check-square-o"></i>--}%
+                                            %{--<i class="pull-left toggleIndicator fa fa-square-o"></i>--}%
+                                            %{--<g:message code="project.tag.home"/> </button>--}%
+                                    %{--</div>--}%
+                                %{--</div>--}%
+                            %{--</div>--}%
                         </g:if>
                         <g:elseif test="${controllerName == 'organisation'}">
                             <h5><g:message code="project.search.projecttype"/></h5>
@@ -177,8 +200,6 @@
                         </g:elseif>
                     </div>
                 </div>
-
-                <g:render template="/shared/facetView"></g:render>
             </div>
 
             <div class="row-fluid">

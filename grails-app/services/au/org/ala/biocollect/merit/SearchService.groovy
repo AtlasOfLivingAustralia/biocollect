@@ -243,6 +243,19 @@ class SearchService {
             results << facet
         }
 
-        results
+        List defaults = [
+            [
+                name:'projectStatus',
+                total: 10,
+                terms: [ [ term: 'active', count: 10], [ term: 'completed', count: 12]]
+             ],
+            [
+                    name:'difficultyLevel',
+                    total: 10,
+                    terms: [ [ term: 'easy', count: 10], [ term: 'medium', count: 12], [ term: 'hard', count: 12]]
+            ]
+        ]
+
+        defaults + results
     }
 }

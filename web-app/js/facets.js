@@ -86,8 +86,17 @@ function FacetTermViewModel(term) {
     /**
      * toggle checked status
      */
-    self.toggle = function () {
-        self.checked(!self.checked())
+    self.filterNow = function () {
+        self.checked(true)
+        self.facet.ref.addToRefineList(self);
+        self.facet.ref.doSearch()
+    }
+
+    /**
+     * add to refine list
+     */
+    self.addToRefine = function () {
+        self.facet.ref.addToRefineList(self);
     }
 
     /**

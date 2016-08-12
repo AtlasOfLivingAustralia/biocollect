@@ -56,6 +56,13 @@ function ProjectFinder() {
         this.selectedFacets = ko.observableArray();
         this.columns = ko.observable(2);
         self.columns = this.columns;
+        this.doSearch = function () {
+            self.doSearch();
+        }
+
+        this.reset = function () {
+            self.reset();
+        }
 
         this.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
         this.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
@@ -370,6 +377,24 @@ function ProjectFinder() {
         return true
     };
 
+
+    this.reset = function () {
+        uncheckButton($('#pt-tags'));
+        uncheckButton($('#pt-status'));
+        uncheckButton($('#pt-search-difficulty'));
+        checkButton($('#pt-sort'), 'nameSort');
+        checkButton($('#pt-per-page'), '20');
+        $('#pt-search').val('');
+        if (spatialFilter) {
+            spatialFilter.resetMap();
+        }
+        geoSearch = {};
+        refreshGeofilterButtons();
+        pageWindow.selectedFacets.removeAll();
+
+        self.pago.firstPage();
+        self.doSearch();
+    }
     /*************************************************\
      *  Show filtered projects on current page
      \*************************************************/
@@ -540,22 +565,7 @@ function ProjectFinder() {
     });
 
     $('#pt-reset').click(function () {
-        uncheckButton($('#pt-tags'));
-        uncheckButton($('#pt-status'));
-        uncheckButton($('#pt-search-difficulty'));
-        checkButton($('#pt-sort'), 'nameSort');
-        checkButton($('#pt-per-page'), '20');
-        $('#pt-search').val('');
-        if (spatialFilter) {
-            spatialFilter.resetMap();
-        }
-        geoSearch = {};
-        refreshGeofilterButtons();
-        pageWindow.selectedFacets.removeAll();
-
-        self.pago.firstPage();
-        self.doSearch();
-
+        self.reset()
     });
 
     $("#btnShowTileView").click(function () {

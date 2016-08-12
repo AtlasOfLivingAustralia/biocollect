@@ -4,16 +4,10 @@
         <div class="row-fluid" data-bind="visible: terms().length">
             <h5 data-bind="text: displayName"></h5>
             <!-- ko foreach: terms -->
-                <div class="row-fluid">
-                    <div>
-                        <button data-bind="visible:count, attr:{title:displayName}, css:{active: checked}" type="button" class="btn btn-info as-checkbox btn-small" data-toggle="button">
-                            <i class="pull-left toggleIndicator fa fa-check-square-o" data-bind="click: toggle"></i>
-                            <i class="pull-left toggleIndicator fa fa-square-o" data-bind="click: toggle"></i>
-                            <a href="#" class="inline-flex" data-bind="click: toggle">
-                                <span class="label-ellipsis" data-bind="text:displayName"></span></a>
-                        </button>
-                    </div>
-                </div>
+                <label class="control-label checkbox">
+                    <input type="checkbox" data-bind="checked: checked" style="display: inline-block;">
+                    <span class="label-ellipsis" data-bind="text:displayName, click: filterNow"></span>
+                </label>
             <!-- /ko -->
         </div>
         <!-- /ko -->
