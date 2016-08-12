@@ -381,6 +381,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.hasTeachingMaterials = ko.observable(project.hasTeachingMaterials);
     self.isCitizenScience = ko.observable(project.isCitizenScience);
     self.isDIY = ko.observable(project.isDIY);
+    self.isHome = ko.observable(project.isHome);
     self.isWorks = ko.observable(project.isWorks);
     self.isEcoScience = ko.observable(project.isEcoScience);
     self.isExternal = ko.observable(project.isExternal);
@@ -919,45 +920,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.transients.getUNRegions()
     self.transients.getDataCollectionWhiteList()
 };
-
-/**
- * View model for use by the citizen science project finder page.
- * @param props array of project attributes
- * @constructor
- */
-function CitizenScienceFinderProjectViewModel(props) {
-    ProjectViewModel.apply(this, [{
-        projectId: props[0],
-        aim: props[1],
-        description: props[3],
-        difficulty: props[4],
-        plannedEndDate: props[5] && new Date(props[5]),
-        hasParticipantCost: props[6],
-        hasTeachingMaterials: props[7],
-        isDIY: props[8],
-        isExternal: props[9],
-        isSuitableForChildren: props[10],
-        keywords: props[11],
-        links: props[12],
-        name: props[13],
-        organisationId: props[14],
-        organisationName: props[15],
-        scienceType: props[16],
-        plannedStartDate: props[17] && new Date(props[17]),
-        documents: [
-            {
-                public: true,
-                role: 'logo',
-                url: props[18]
-            }
-        ],
-        urlWeb: props[19]
-    }, false, []]);
-
-    var self = this;
-    self.transients.locality = props[2] && props[2].locality;
-    self.transients.state = props[2] && props[2].state;
-}
 
 /**
  * View model for use by the project create and edit pages.  Extends the ProjectViewModel to provide support

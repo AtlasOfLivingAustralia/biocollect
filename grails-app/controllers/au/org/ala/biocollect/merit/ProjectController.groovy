@@ -493,6 +493,7 @@ class ProjectController {
         trimmedParams.hasParticipantCost = params.boolean('hasParticipantCost')
         trimmedParams.isSuitableForChildren = params.boolean('isSuitableForChildren')
         trimmedParams.isDIY = params.boolean('isDIY')
+        trimmedParams.isHome = params.boolean('isHome')
         trimmedParams.hasTeachingMaterials = params.boolean('hasTeachingMaterials')
         trimmedParams.isMobile = params.boolean('isMobile')
         trimmedParams.isContributingDataToAla = params.boolean('isContributingDataToAla')
@@ -618,6 +619,11 @@ class ProjectController {
         if(trimmedParams.isDIY){
             fq.push('isDIY:true');
             trimmedParams.isDIY = null
+        }
+
+        if(trimmedParams.isHome){
+            fq.push('isHome:true');
+            trimmedParams.isHome = null
         }
 
         if(trimmedParams.hasTeachingMaterials){

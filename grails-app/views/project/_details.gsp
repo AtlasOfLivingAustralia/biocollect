@@ -490,6 +490,14 @@
                 </div>
             </div>
 
+            <div class="clearfix control-group">
+                <label class="control-label span3" for="isHome"><g:message code="project.details.isHome"/><fc:iconHelp><g:message code="project.details.isHome.help"/></fc:iconHelp></label>
+                <div class="controls span9">
+                    <select id="isHome" data-bind="booleanValue:isHome, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
+                    </select>
+                </div>
+            </div>
+
             <div class="clearfix control-group" data-bind="visible:!isEcoScience()">
                 <label class="control-label span3"><g:message code="project.details.gear"/><fc:iconHelp><g:message code="project.details.gear.help"/></fc:iconHelp></label>
                 <div class="controls span9">

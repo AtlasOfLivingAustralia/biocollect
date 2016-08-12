@@ -122,6 +122,13 @@
                                         <i class="pull-left toggleIndicator fa fa-square-o"></i>
                                         <g:message code="g.dataToAla"/> </button>
                                     </div>
+                                    <div>
+                                        <button id="pt-search-isHome" type="button" class="btn btn-info as-checkbox btn-small"
+                                                data-toggle="button">
+                                            <i class="pull-left toggleIndicator fa fa-check-square-o"></i>
+                                            <i class="pull-left toggleIndicator fa fa-square-o"></i>
+                                            <g:message code="project.tag.home"/> </button>
+                                    </div>
                                 </div>
                             </div>
                         </g:if>

@@ -56,6 +56,7 @@ class BioCollect {
                 hasParticipantCost     : doc.hasParticipantCost?.toBoolean(),
                 hasTeachingMaterials   : doc.hasTeachingMaterials?.toBoolean(),
                 isDIY                  : doc.isDIY?.toBoolean(),
+                isHome                 : doc.isHome?.toBoolean(),
                 isContributingDataToAla: doc.isContributingDataToAla?.toBoolean(),
                 isExternal             : doc.isExternal?.toBoolean(),
                 isSuitableForChildren  : doc.isSuitableForChildren?.toBoolean(),
@@ -72,6 +73,7 @@ class BioCollect {
                 urlWeb                 : doc.urlWeb,
                 plannedStartDate       : doc.plannedStartDate,
                 plannedEndDate         : doc.plannedEndDate,
+                projectType            : doc.projectType,
                 isMERIT                : doc.isMERIT
             ]
         }
