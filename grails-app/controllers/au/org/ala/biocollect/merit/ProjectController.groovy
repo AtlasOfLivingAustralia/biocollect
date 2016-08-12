@@ -802,13 +802,30 @@ class ProjectController {
         }
     }
 
+    /**
+     * Get list of all countries
+     * @return
+     */
     def getCountries(){
         def countries = projectService.getCountries()
         render text: countries as JSON, contentType: 'application/json'
     }
 
+    /**
+     * Get list of all UN regions
+     * @return
+     */
     def getUNRegions(){
         def uNRegions = projectService.getUNRegions()
         render text: uNRegions as JSON, contentType: 'application/json'
     }
+
+    /**
+     * Get science type list for which data collection is supported.
+     */
+    def getDataCollectionWhiteList(){
+        def whiteList = projectService.getDataCollectionWhiteList()
+        render text: whiteList as JSON, contentType: 'application/json'
+    }
+
 }

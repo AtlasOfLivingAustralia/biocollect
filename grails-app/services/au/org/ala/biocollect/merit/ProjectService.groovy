@@ -619,4 +619,15 @@ class ProjectService {
             webService.getJson(url)
         })
     }
+
+    /**
+     * Get science type list for which data collection is supported.
+     */
+    List getDataCollectionWhiteList(){
+        cacheService.get("data-collection-whitelist", {
+            String url =  grailsApplication.config.ecodata.service.url + '/project/getDataCollectionWhiteList'
+            webService.getJson(url)
+        })
+    }
+
 }

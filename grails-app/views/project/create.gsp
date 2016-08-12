@@ -20,7 +20,8 @@
         scienceTypes: ${scienceTypes as grails.converters.JSON},
         ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},
         lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
-        lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON}
+        lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
+        dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}"
         },
         here = window.location.href;
 
@@ -102,18 +103,40 @@ $(function(){
     </g:else>
     $('#save').click(function () {
         if ($('#projectDetails').validationEngine('validate') && viewModel.transients.validProjectName()) {
-            if (viewModel.transients.kindOfProject() == 'ecoscience' || viewModel.transients.siteViewModel.isValid(true)) {
-                viewModel.saveWithErrorDetection(function(data) {
-                    var projectId = "${project?.projectId}" || data.projectId;
+            if(viewModel.transients.isDataEntryValid()){
+                if (viewModel.transients.kindOfProject() == 'ecoscience' || viewModel.transients.siteViewModel.isValid(true)) {
+                    viewModel.saveWithErrorDetection(function(data) {
+                        var projectId = "${project?.projectId}" || data.projectId;
 
-                    if (viewModel.isExternal()) {
-                        document.location.href = "${createLink(action: 'index')}/" + projectId;
-                    } else {
-                        document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
-                    }
-                });
+                        if (viewModel.isExternal()) {
+                            document.location.href = "${createLink(action: 'index')}/" + projectId;
+                        } else {
+                            document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
+                        }
+                    });
+                } else {
+                    bootbox.alert("You must define the spatial extent of the project area");
+                }
             } else {
-                bootbox.alert("You must define the spatial extent of the project area");
+                bootbox.dialog("Use of this system for data collection is not available for non-biodiversity related projects." +
+                    "Press continue to turn data collection feature off. Otherwise, press cancel to modify the form.",
+                    [{
+                      label: "Continue",
+                      className: "btn-primary",
+                      callback: function() {
+                        viewModel.isExternal(true);
+                        $('#save').click()
+                      }
+                    },{
+                        label: "Cancel",
+                        className: "btn-alert",
+                        callback: function() {
+                            $('html, body').animate({
+                                scrollTop: $("#scienceTypeControlGroup").offset().top
+                            }, 2000);
+                       }
+                    }]
+                );
             }
         }
     });

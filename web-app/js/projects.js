@@ -635,8 +635,9 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         {name:'Ecology', value:'ecology'},
         {name:'Natural resource management', value:'nrm'}
     ];
-    self.transients.uNRegions = [];
-    self.transients.countries = [];
+    self.transients.dataCollectionWhiteList = []
+    self.transients.uNRegions = ko.observableArray();
+    self.transients.countries = ko.observableArray();
     self.transients.availableScienceTypes = fcConfig.scienceTypes;
     self.transients.availableEcoScienceTypes = fcConfig.ecoScienceTypes;
     self.transients.scienceTypeDisplay = ko.pureComputed(function () {
@@ -653,7 +654,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.transients.isScienceTypeChecked = function(value){
         var types = self.scienceType()
         for(var i=0; i<types.length; i++){
-            if(types[i] == value.toLowerCase()){
+            if(types[i] == value){
                 return true
             }
         }
@@ -695,7 +696,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         if(url){
             $.ajax(url, {
                 success: function (data) {
-                    self.transients.countries.push.apply(self.transients.countries, data );
+                    self.transients.countries ( data );
                 }
             })
         }
@@ -706,7 +707,18 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         if(url){
             $.ajax(url, {
                 success: function (data) {
-                    self.transients.uNRegions.push.apply(self.transients.uNRegions, data );
+                    self.transients.uNRegions ( data );
+                }
+            })
+        }
+    }
+
+    self.transients.getDataCollectionWhiteList = function () {
+        var url = fcConfig.dataCollectionWhiteListUrl
+        if(url){
+            $.ajax(url, {
+                success: function (data) {
+                    self.transients.dataCollectionWhiteList.push.apply(self.transients.dataCollectionWhiteList, data );
                 }
             })
         }
@@ -735,9 +747,10 @@ function ProjectViewModel(project, isUserEditor, organisations) {
      * @param data
      * @param event
      */
-    self.transients.selectUNRegion = function (region) {
+    self.transients.selectUNRegion = function (model , event) {
+        var region =  event.target.value
         var valid = false
-        self.transients.uNRegions.forEach(function(item){
+        self.transients.uNRegions().forEach(function(item){
             if(item == region){
                 valid = true
             }
@@ -751,15 +764,18 @@ function ProjectViewModel(project, isUserEditor, organisations) {
      * @param data
      * @param event
      */
-    self.transients.selectCountry = function (country) {
-        var valid = false
-        self.transients.countries.forEach(function(item){
-            if(item == country){
-                valid = true
-            }
-        })
+    self.transients.selectCountry = function (model, event) {
+        var country = event.target.value
+        if(country != "---------"){
+            var valid = false
+            self.transients.countries().forEach(function(item){
+                if(item == country){
+                    valid = true
+                }
+            })
 
-        valid && self.countries.push (country)
+            valid && self.countries.push (country)
+        }
     }
 
 
@@ -901,6 +917,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
 
     self.transients.getCountries()
     self.transients.getUNRegions()
+    self.transients.getDataCollectionWhiteList()
 };
 
 /**
@@ -985,6 +1002,24 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     self.transients.termsOfUseClicked = ko.observable(false);
 
     self.transients.validProjectName = ko.observable(true);
+    
+    self.transients.isDataEntryValid = function () {
+        if (!self.isExternal()) {
+            var types = self.scienceType()
+            for( var index = 0; index < types.length; index++){
+                var type = types[index]
+                for(var j = 0; j < self.transients.dataCollectionWhiteList.length; j++){
+                    if(type == self.transients.dataCollectionWhiteList[j]){
+                        return true
+                    }
+                }
+            }
+
+            return false
+        }
+
+        return true
+    }
 
     function checkProjectName(projectName) {
         if (!_.isUndefined(projectName) && projectName) {

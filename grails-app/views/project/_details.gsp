@@ -16,7 +16,7 @@
             <div class="clearfix control-group">
                 <label class="control-label span3" for="isExternal"><g:message code="project.details.useALA"/><fc:iconHelp><g:message code="project.details.useALA.help"/></fc:iconHelp><i class="req-field"></i></label>
 
-                <div class="controls span9">
+                <div class="controls span4">
                     <select id="isExternal" data-bind="booleanValue:isExternal, options:[{label:'Yes', value:'false'}, {label:'No', value:'true'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'" data-validation-engine="validate[required]">
                     </select>
                 </div>
@@ -268,11 +268,9 @@
                                     <a href="#" data-bind="click: $root.transients.removeCountry"><i class="icon-remove"></i></a>
                                 </div>
                                 <!-- /ko -->
-                                <input  type="text" placeholder="<g:message code="project.details.countries.placeholder"/>" data-ui-autocomplete="yes"
-                                        data-bind="autocompleteFromList:{
-                                                data: $root.transients.countries,
-                                                select: $root.transients.selectCountry
-                                            }">
+                                <select class="span12" id="countries"
+                                        data-bind="options: $root.transients.countries, event:{change: $root.transients.selectCountry}, optionsCaption: '<g:message code="project.details.countries.placeholder"/>'"
+                                        ></select>
                             </div>
                             <div class="span8">
                                 <div class="row-fluid">
@@ -285,12 +283,9 @@
                                                 <a href="#" data-bind="click: $root.transients.removeUNRegion"><i class="icon-remove"></i></a>
                                             </div>
                                             <!-- /ko -->
-                                            <input  type="text" placeholder="<g:message code="project.details.uNRegions.placeholder"/>" data-ui-autocomplete="yes"
-                                                    data-bind="autocompleteFromList:{
-                                                data: $root.transients.uNRegions,
-                                                select: $root.transients.selectUNRegion
-                                            }">
-
+                                            <select class="span12" id="uNRegionsId"
+                                                    data-bind="options: $root.transients.uNRegions, event:{change: $root.transients.selectUNRegion}, optionsCaption: '<g:message code="project.details.uNRegions.placeholder"/>'"
+                                            ></select>
                                         </div>
                                     </div>
                                 </div>
@@ -303,7 +298,6 @@
                 <label class="control-label span3"><g:message code="project.details.scienceType"/><fc:iconHelp><g:message code="project.details.scienceType.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
-                    %{--<select id="scienceType" data-bind="value:ecoScienceType, options:transients.availableEcoScienceTypes, optionsText:'name', optionsValue:'value', optionsCaption:'Select...'" data-validation-engine="validate[required]"></select>--}%
                     <div class="row-fluid" >
                         <div class="span4">
                             <!-- ko foreach: transients.availableEcoScienceTypes -->
@@ -425,12 +419,11 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div id="scienceTypeControlGroup" class="clearfix control-group">
                 <label class="control-label span3"
                        ><g:message code="project.details.scienceType"/><fc:iconHelp><g:message code="project.details.scienceType.help"/></fc:iconHelp><i class="req-field"></i></label>
 
                 <div class="controls span9">
-                    %{--<select id="scienceType" data-bind="value:scienceType, options:transients.availableScienceTypes, optionsText:'name', optionsValue:'value', optionsCaption:'Select...'" data-validation-engine="validate[required]"></select>--}%
                     <div class="row-fluid" >
                         <div class="span4">
                             <!-- ko foreach: transients.availableScienceTypes -->
@@ -615,7 +608,7 @@
         <div class="large-checkbox">
             <input type="checkbox" name="scienceType" class="validate[required]"
                    data-validation-engine="validate[minCheckbox[1]]"
-                   data-bind="value: $data.toLowerCase(), attr:{id:'checkbox'+$index()}, checked: $root.transients.isScienceTypeChecked($data), event:{change:$root.transients.addScienceType}">
+                   data-bind="value: $data, attr:{id:'checkbox'+$index()}, checked: $root.transients.isScienceTypeChecked($data), event:{change:$root.transients.addScienceType}">
             <label data-bind="html: '<span></span> ' + $data, attr:{for:'checkbox'+$index()}"></label>
         </div>
     </script>
