@@ -117,24 +117,12 @@ function ProjectFinder() {
         this.styleIndex = function (dataIndex, rowSize) {
             return dataIndex() % rowSize + 1 ;
         };
+
+        this.filterViewModel = new FilterViewModel()
+
+        this.filterViewModel.selectedFacets.subscribe(this.doSearch)
     }
-
-    self.addToRefineList = function (term) {
-        pageWindow.selectedFacets.push(term)
-    }
-
-    self.removeFromRefineList = function (term) {
-        var facets = pageWindow.selectedFacets()
-        var remove = []
-        facets.forEach(function (item) {
-            if((item.facet.name() == term.facet.name()) && item.term() == term.term()){
-                remove.push(item)
-            }
-        })
-
-        pageWindow.selectedFacets.removeAll(remove)
-    }
-
+    
     /**
      * check if button has active flag
      * @param $button
@@ -223,7 +211,6 @@ function ProjectFinder() {
         var fq = [];
         var isSuitableForChildren = isButtonChecked($('#pt-search-children'));
         var isDIY = isButtonChecked($('#pt-search-diy'));
-        var status = getActiveButtonValues($('#pt-status')); // active check field status
         var hasParticipantCost = isButtonChecked($('#pt-search-noCost')); // no cost
         var hasTeachingMaterials = isButtonChecked($('#pt-search-teach')); // teaching material
         var isMobile = isButtonChecked($('#pt-search-mobile')); // mobile uses links to find it out
@@ -265,14 +252,13 @@ function ProjectFinder() {
             }
         }
 
-        pageWindow.selectedFacets().forEach(function (facet) {
+        pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
             fq.push(facet.getQueryText())
         })
 
         var map = {
             fq: fq,
             offset: offset,
-            status: status,
             isCitizenScience: isCitizenScience,
             isWorks: isWorks,
             isBiologicalScience: isBiologicalScience,
@@ -331,14 +317,7 @@ function ProjectFinder() {
                     projectVMs.push(new ProjectViewModel(project, false, organisation));
                 });
                 self.pago.init(projectVMs);
-
-                facets = data.facets
-                pageWindow.facets($.map(facets, function (facet) {
-                    facet.ref = self;
-                    var facetVm = new FacetViewModel(facet)
-                    self.setFacetTerm(facetVm)
-                    return facetVm;
-                }))
+                pageWindow.filterViewModel.setFacets(data.facets)
             },
             error: function () {
                 console.error("Could not load project data.");
@@ -349,16 +328,7 @@ function ProjectFinder() {
             }
         })
     };
-
-    this.setFacetTerm = function(facet){
-        var selectedFacets = pageWindow.selectedFacets()
-        selectedFacets.forEach(function (term) {
-            if (facet.name() == term.facet.name()) {
-                facet.setTermState (term.term())
-            }
-        })
-    }
-
+    
     this.searchAndShowFirstPage = function () {
         self.pago.firstPage();
         return true
@@ -367,7 +337,6 @@ function ProjectFinder() {
 
     this.reset = function () {
         uncheckButton($('#pt-tags'));
-        uncheckButton($('#pt-status'));
         uncheckButton($('#pt-search-difficulty'));
         checkButton($('#pt-sort'), 'nameSort');
         checkButton($('#pt-per-page'), '20');
@@ -377,7 +346,7 @@ function ProjectFinder() {
         }
         geoSearch = {};
         refreshGeofilterButtons();
-        pageWindow.selectedFacets.removeAll();
+        pageWindow.filterViewModel.selectedFacets.removeAll();
 
         self.pago.firstPage();
         self.doSearch();
@@ -640,7 +609,9 @@ function ProjectFinder() {
     function parseHash() {
         var hash = decodeURIComponent(window.location.hash.substr(1)).split("&");
 
-        var params = {};
+        var params = {
+            fq: []
+        };
         for (var i = 0; i < hash.length; i++) {
             var keyAndValue = hash[i].split("=");
             if (keyAndValue.indexOf(",") > -1) {
@@ -648,7 +619,7 @@ function ProjectFinder() {
             } else {
                 if(typeof params[keyAndValue[0]] == 'string'){
                     params[keyAndValue[0]] = [params[keyAndValue[0]], keyAndValue[1]]
-                } if( params[keyAndValue[0]] == undefined) {
+                } else if( params[keyAndValue[0]] == undefined) {
                     params[keyAndValue[0]] = keyAndValue[1]
                 } else {
                     params[keyAndValue[0]].push( keyAndValue[1] );
@@ -656,8 +627,8 @@ function ProjectFinder() {
             }
         }
 
+
         toggleButton($('#pt-search-diy'), toBoolean(params.isDIY));
-        setActiveButtonValues($('#pt-status'), params.status);
         toggleButton($('#pt-search-noCost'), toBoolean(params.hasParticipantCost));
         toggleButton($('#pt-search-teach'), toBoolean(params.hasTeachingMaterials));
         toggleButton($('#pt-search-mobile'), toBoolean(params.isMobile));
@@ -666,7 +637,7 @@ function ProjectFinder() {
         toggleButton($('#pt-search-children'), toBoolean(params.isSuitableForChildren));
         setActiveButtonValues($('#pt-search-difficulty'), params.difficulty);
         setGeoSearch(params.geoSearch);
-        setFilterQuery(params.fq)
+        pageWindow.filterViewModel.setFilterQuery(params.fq)
 
         if (fcConfig.associatedPrograms) {
             $.each(fcConfig.associatedPrograms, function (i, program) {
@@ -679,21 +650,6 @@ function ProjectFinder() {
         checkButton($("#pt-aus-world"), params.isWorldWide || 'false');
         
         $('#pt-search').val(params.q).focus()
-    }
-
-    function setFilterQuery(fqs) {
-        if(fqs){
-            if(typeof fqs  == 'string'){
-                fqs = [fqs]
-            }
-
-            fqs.forEach(function (fq) {
-                var nameAndValue = fq.split(':')
-                var facet = new FacetViewModel({ name: nameAndValue[0], terms: [{term:nameAndValue[1]}]})
-                var term = facet.terms()[0]
-                self.addToRefineList (term)
-            })
-        }
     }
 
     function setGeoSearch(geoSearchHash) {

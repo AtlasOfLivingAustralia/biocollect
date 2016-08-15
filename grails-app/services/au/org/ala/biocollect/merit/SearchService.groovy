@@ -233,29 +233,27 @@ class SearchService {
     /**
      * Standardise facet results
      */
-    List standardiseFacets(Map facets) {
+    List standardiseFacets(Map facets, List orderList) {
         List results = []
-        facets?.each { k, v ->
-            Map facet = [:]
-            facet.name = k
-            facet.total = v.total
-            facet.terms = v.terms
-            results << facet
+        if(orderList){
+            orderList.each { k ->
+                results << formatFacet(facets[k], k)
+            }
+        } else {
+            facets?.each { k, v ->
+                results << formatFacet(facets[k], k)
+            }
         }
 
-        List defaults = [
-            [
-                name:'projectStatus',
-                total: 10,
-                terms: [ [ term: 'active', count: 10], [ term: 'completed', count: 12]]
-             ],
-            [
-                    name:'difficultyLevel',
-                    total: 10,
-                    terms: [ [ term: 'easy', count: 10], [ term: 'medium', count: 12], [ term: 'hard', count: 12]]
-            ]
-        ]
+        results
+    }
 
-        defaults + results
+    Map formatFacet(Map item, String name){
+        Map facet = [:]
+        facet.name = name
+        facet.total = item.total
+        facet.terms = item.terms
+
+        facet
     }
 }

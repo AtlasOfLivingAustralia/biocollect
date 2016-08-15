@@ -39,6 +39,8 @@ class ProjectController {
     static ignore = ['action','controller','id']
     static allowedMethods = [listRecordImages: "POST"]
 
+    static final searchFacetList = ["difficulty","scienceType","origin","countries","uNRegions","organisationFacet"]
+
     def index(String id) {
         def project = projectService.get(id, 'brief', false, params?.version)
         def roles = roleService.getRoles()
@@ -459,7 +461,22 @@ class ProjectController {
         boolean skipDefaultFilters = params.getBoolean('skipDefaultFilters', false)
         Map searchResult = searchService.findProjects(queryParams, skipDefaultFilters);
         List projects = Builder.build(params, searchResult.hits?.hits)
-        List facets = searchService.standardiseFacets(searchResult.facets)
+        List facets
+
+        // format facets to a way acceptable for JS view model
+        if(searchResult.facets){
+            facets = searchService.standardiseFacets (searchResult.facets, searchFacetList)
+            // the below facets are added manually since they are dynamic
+            // eg. today's date is used to determine if a project is completed or active
+            List defaults = [
+                    [
+                            name:'status',
+                            total: 0,
+                            terms: [ [ term: 'active', count: 0], [ term: 'completed', count: 0 ]]
+                    ]
+            ]
+            facets = defaults + facets
+        }
 
         if (params.download as boolean) {
             response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
@@ -481,7 +498,7 @@ class ProjectController {
         Map trimmedParams = commonService.parseParams(params)
         trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
         trimmedParams.offset = params.offset && params.offset.isNumber() ? params.offset : 0
-        trimmedParams.status = params.list('status');
+        trimmedParams.status = [];
         trimmedParams.isCitizenScience = params.boolean('isCitizenScience');
         trimmedParams.isWorks = params.boolean('isWorks');
         trimmedParams.isBiologicalScience = params.boolean('isBiologicalScience')
@@ -504,7 +521,11 @@ class ProjectController {
         List fq = [], projectType = []
         List immutableFq = params.list('fq')
         immutableFq.each {
-            it? fq.push(it):null;
+            if(it?.startsWith('status:')){
+                trimmedParams.status?.push ( it.replace('status:',''))
+            } else {
+                it? fq.push(it):null;
+            }
         }
         trimmedParams.fq = fq;
 
@@ -647,7 +668,7 @@ class ProjectController {
         }
 
         if(!trimmedParams.facets){
-            trimmedParams.facets = "scienceType,organisationFacet,origin,uNRegions,countries"
+            trimmedParams.facets = searchFacetList.join(",")
         }
 
         if (trimmedParams.isWorldWide) {
