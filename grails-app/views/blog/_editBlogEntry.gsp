@@ -63,7 +63,7 @@
 
             <div class="btn fileinput-button"
                   data-url="${grailsApplication.config.grails.serverURL}/image/upload"
-                  data-role="mainImage"
+                  data-role="blogImage"
                   data-owner-type="blogEntryId"
                   data-owner-id="${blogEntry?.blogEntryId}"
                   data-bind="stagedImageUpload:documents, visible:!image() && !stockIcon()"><i class="icon-plus"></i> <input
