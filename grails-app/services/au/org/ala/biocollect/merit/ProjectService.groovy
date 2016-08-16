@@ -3,6 +3,7 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.EmailService
 import au.org.ala.biocollect.OrganisationService
 import grails.converters.JSON
+import org.springframework.context.MessageSource
 
 class ProjectService {
 
@@ -22,6 +23,7 @@ class ProjectService {
     EmailService emailService
     OrganisationService organisationService
     CacheService cacheService
+    MessageSource messageSource
 
     /**
      * Check if a project already exists with the specified name.
@@ -630,4 +632,70 @@ class ProjectService {
         })
     }
 
+    /**
+     * Convert project values to a list of tags.
+     * @param project
+     * @return
+     */
+    Map buildTags(Map project){
+        project.tags = project.tags?:[]
+
+        if (project.hasParticipantCost) {
+            project.tags.push('hasParticipantCost')
+        }
+
+        project.remove('hasParticipantCost')
+
+        if (project.isSuitableForChildren) {
+            project.tags.push('isSuitableForChildren')
+        }
+
+        project.remove('isDIY')
+
+        if (project.isDIY) {
+            project.tags.push('isDIY')
+        }
+
+        project.remove('isDIY')
+
+        if (project.isHome) {
+            project.tags.push('isHome')
+        }
+
+        project.remove('isHome')
+
+        if (project.hasTeachingMaterials) {
+            project.tags.push('hasTeachingMaterials')
+        }
+
+        project.remove('hasTeachingMaterials')
+
+        if (project.isContributingDataToAla) {
+            project.tags.push('isContributingDataToAla')
+        }
+
+        project.remove('isContributingDataToAla')
+
+        project
+    }
+
+    Map buildFieldsForTags(Map project){
+        List fields = ['hasParticipantCost', 'isSuitableForChildren', 'isDIY', 'isHome', 'hasTeachingMaterials', 'isContributingDataToAla']
+        project?.tags?.eachWithIndex { String tag, int i ->
+            if(tag in fields){
+                project[tag] = true
+            }
+        }
+
+        project
+    }
+
+    List getDisplayNamesForFacets(facets){
+        facets?.each { facet ->
+            facet.title = messageSource.getMessage("project.facets."+facet.name, [].toArray(), facet.name, Locale.default)
+            facet.terms?.each{ term ->
+                term.title = messageSource.getMessage("project.facets."+facet.name+"."+term.term, [].toArray(), term.name, Locale.default)
+            }
+        }
+    }
 }

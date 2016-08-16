@@ -39,7 +39,7 @@ class ProjectController {
     static ignore = ['action','controller','id']
     static allowedMethods = [listRecordImages: "POST"]
 
-    static final searchFacetList = ["difficulty","scienceType","origin","countries","uNRegions","organisationFacet"]
+    static final searchFacetList = ["difficulty", "tags", "scienceType", "origin", "countries", "uNRegions", "organisationFacet"]
 
     def index(String id) {
         def project = projectService.get(id, 'brief', false, params?.version)
@@ -345,6 +345,8 @@ class ProjectController {
                 }
             }
 
+            projectService.buildTags(values)
+
             // The rule currently is that anyone is allowed to create a project so we only do these checks for
             // existing projects.
             def userId = userService.getUser()?.userId
@@ -476,6 +478,13 @@ class ProjectController {
                     ]
             ]
             facets = defaults + facets
+            projectService.getDisplayNamesForFacets(facets)
+        }
+
+        if (searchResult.projects){
+            searchResult.projects?.each{ Map project ->
+                projectService.buildFieldsForTags (project)
+            }
         }
 
         if (params.download as boolean) {
@@ -507,13 +516,6 @@ class ProjectController {
         trimmedParams.isUserPage = params.boolean('isUserPage');
         trimmedParams.isUserWorksPage = params.boolean('isUserWorksPage');
         trimmedParams.isUserEcoSciencePage = params.boolean('isUserEcoSciencePage');
-        trimmedParams.hasParticipantCost = params.boolean('hasParticipantCost')
-        trimmedParams.isSuitableForChildren = params.boolean('isSuitableForChildren')
-        trimmedParams.isDIY = params.boolean('isDIY')
-        trimmedParams.isHome = params.boolean('isHome')
-        trimmedParams.hasTeachingMaterials = params.boolean('hasTeachingMaterials')
-        trimmedParams.isMobile = params.boolean('isMobile')
-        trimmedParams.isContributingDataToAla = params.boolean('isContributingDataToAla')
         trimmedParams.difficulty = params.list('difficulty')
         trimmedParams.mobile = params.boolean('mobile')
         trimmedParams.isWorldWide = params.boolean('isWorldWide', false)
@@ -625,41 +627,6 @@ class ProjectController {
                 fq.push('admins:' + userService.getUser()?.userId);
             }
             trimmedParams.isUserPage = null
-        }
-
-        if(trimmedParams.hasParticipantCost){
-            fq.push('hasParticipantCost:false');
-            trimmedParams.hasParticipantCost = null
-        }
-
-        if(trimmedParams.isSuitableForChildren){
-            fq.push('isSuitableForChildren:true');
-            trimmedParams.isSuitableForChildren = null
-        }
-
-        if(trimmedParams.isDIY){
-            fq.push('isDIY:true');
-            trimmedParams.isDIY = null
-        }
-
-        if(trimmedParams.isHome){
-            fq.push('isHome:true');
-            trimmedParams.isHome = null
-        }
-
-        if(trimmedParams.hasTeachingMaterials){
-            fq.push('hasTeachingMaterials:true');
-            trimmedParams.hasTeachingMaterials = null
-        }
-
-        if(trimmedParams.isMobile){
-            fq.push('isMobileApp:true');
-            trimmedParams.isMobile = null
-        }
-
-        if(trimmedParams.isContributingDataToAla){
-            fq.push('isContributingDataToAla:true');
-            trimmedParams.isContributingDataToAla = null
         }
 
         if(trimmedParams.organisationName){
