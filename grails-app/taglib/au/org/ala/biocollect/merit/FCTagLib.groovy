@@ -538,14 +538,18 @@ class FCTagLib {
     }
 
     def modelAsJavascript = { attrs ->
-        def model = attrs.model
-        if (!(model instanceof JSONObject) && !(model instanceof JSONArray)) {
-            model = model as JSON
+        try {
+            def model = attrs.model
+            if (!(model instanceof JSONObject) && !(model instanceof JSONArray)) {
+                model = model as JSON
 
+            }
+            def json = (model?:attrs.default != null? attrs.default:[:] as JSON)
+            def modelJson = json.toString()
+            out << "JSON.parse('${modelJson.encodeAsJavaScript()}')"
+        } catch (Exception e){
+            log.info(e.message, e)
         }
-        def json = (model?:attrs.default != null? attrs.default:[:] as JSON)
-        def modelJson = json.toString()
-        out << "JSON.parse('${modelJson.encodeAsJavaScript()}')"
     }
 
     /**
