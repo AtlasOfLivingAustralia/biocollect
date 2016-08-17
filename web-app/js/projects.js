@@ -378,10 +378,12 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.gear = ko.observable(project.gear);
     self.getInvolved = ko.observable(project.getInvolved).extend({markdown:true});
     self.hasParticipantCost = ko.observable(project.hasParticipantCost);
+    self.noCost = ko.observable(project.noCost);
     self.hasTeachingMaterials = ko.observable(project.hasTeachingMaterials);
     self.isCitizenScience = ko.observable(project.isCitizenScience);
     self.isDIY = ko.observable(project.isDIY);
     self.isHome = ko.observable(project.isHome);
+    self.mobileApp = ko.observable(project.mobileApp);
     self.isWorks = ko.observable(project.isWorks);
     self.isEcoScience = ko.observable(project.isEcoScience);
     self.isExternal = ko.observable(project.isExternal);

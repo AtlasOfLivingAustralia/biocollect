@@ -75,6 +75,7 @@ class ProjectController {
             }
             def programs = projectService.programsModel()
             def content = projectContent(project, user, programs, params)
+            projectService.buildFieldsForTags (project)
 
             def model = [project: project,
                 mapFeatures: commonService.getMapFeatures(project),
@@ -383,7 +384,7 @@ class ProjectController {
 
             if (!values?.associatedOrgs) values.put('associatedOrgs', [])
 
-            def result = id? projectService.update(id, values): projectService.create(values)
+            def result = id? projectService.update(id, values, true): projectService.create(values)
             log.debug "result is " + result
             if (documents && !result.error) {
                 if (!id) id = result.resp.projectId
@@ -481,10 +482,8 @@ class ProjectController {
             projectService.getDisplayNamesForFacets(facets)
         }
 
-        if (searchResult.projects){
-            searchResult.projects?.each{ Map project ->
-                projectService.buildFieldsForTags (project)
-            }
+        projects?.each{ Map project ->
+            projectService.buildFieldsForTags (project)
         }
 
         if (params.download as boolean) {
@@ -505,6 +504,7 @@ class ProjectController {
 
         List difficulty = [], status =[]
         Map trimmedParams = commonService.parseParams(params)
+        trimmedParams.fsort = 'term'
         trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
         trimmedParams.offset = params.offset && params.offset.isNumber() ? params.offset : 0
         trimmedParams.status = [];

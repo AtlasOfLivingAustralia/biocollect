@@ -10,6 +10,10 @@ class ProjectService {
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE = 'survey'
     public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoscience'
     public static final String PROJECT_TYPE_WORKS = 'works'
+        static  final MOBILE_APP_ROLE = [ "android",
+                                          "blackberry",
+                                          "iTunes",
+                                          "windowsPhone"]
 
 
     WebService webService
@@ -678,11 +682,21 @@ class ProjectService {
 
         project.remove('isContributingDataToAla')
 
+        Boolean isMobile = isMobileAppForProject(project)
+        if(isMobile){
+            project.tags.push('mobileApp')
+        }
+
         project
     }
 
+    /**
+     * convert tags to field so that it can be stored as KO observable.
+     * @param project
+     * @return
+     */
     Map buildFieldsForTags(Map project){
-        List fields = ['hasParticipantCost', 'isSuitableForChildren', 'isDIY', 'isHome', 'hasTeachingMaterials', 'isContributingDataToAla']
+        List fields = ['hasParticipantCost', 'isSuitableForChildren', 'isDIY', 'isHome', 'hasTeachingMaterials', 'isContributingDataToAla', 'noCost', 'mobileApp']
         project?.tags?.eachWithIndex { String tag, int i ->
             if(tag in fields){
                 project[tag] = true
@@ -692,6 +706,11 @@ class ProjectService {
         project
     }
 
+    /**
+     * Convert facet names and terms to a human understandable text.
+     * @param facets
+     * @return
+     */
     List getDisplayNamesForFacets(facets){
         facets?.each { facet ->
             facet.title = messageSource.getMessage("project.facets."+facet.name, [].toArray(), facet.name, Locale.default)
@@ -699,5 +718,19 @@ class ProjectService {
                 term.title = messageSource.getMessage("project.facets."+facet.name+"."+term.term, [].toArray(), term.name, Locale.default)
             }
         }
+    }
+
+    /**
+     * Check if project has mobile application attached.
+     * @param project
+     * @return
+     */
+    Boolean isMobileAppForProject(Map project){
+        List links = project.links
+        Boolean isMobileApp = false;
+        isMobileApp = links?.any {
+            it.role in MOBILE_APP_ROLE;
+        }
+        isMobileApp;
     }
 }
