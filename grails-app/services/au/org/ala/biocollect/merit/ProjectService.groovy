@@ -642,6 +642,8 @@ class ProjectService {
 
         if (project.hasParticipantCost) {
             project.tags.push('hasParticipantCost')
+        } else {
+            project.tags.push('noCost')
         }
 
         project.remove('hasParticipantCost')
