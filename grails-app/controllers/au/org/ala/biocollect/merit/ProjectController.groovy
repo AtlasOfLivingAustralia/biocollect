@@ -275,7 +275,12 @@ class ProjectController {
         def organisations = metadataService.organisationList().list ?: []
         def userOrgIds = userService.getOrganisationIdsForUserId(userId)
 
-        organisations.groupBy{organisation -> organisation.organisationId in userOrgIds ? "user" : "other"}
+        organisations.groupBy{organisation ->
+            // remove projects since some organisation has projects embedded in them causing an exponential increase in organisation size.
+            // The huge size had caused an exception - java.lang.NegativeArraySizeException
+            organisation.remove('projects')
+            organisation.organisationId in userOrgIds ? "user" : "other"
+        }
     }
 
     def citizenScience() {

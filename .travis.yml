@@ -6,6 +6,7 @@ branches:
   only:
   - master
   - dev
+  - hotfix
 before_install:
 - rm -rf ~/.sdkman
 - curl -s get.sdkman.io > ~/install_sdkman.sh
