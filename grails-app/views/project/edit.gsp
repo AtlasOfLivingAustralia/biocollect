@@ -78,15 +78,7 @@ $(function(){
         document.location.href = "${createLink(action: 'index', id: project?.projectId)}";
     });
     $('#save').click(function () {
-    if (viewModel.transients.isDataEntryValid()) {
-        if ($('#projectDetails').validationEngine('validate') && viewModel.transients.validProjectName()) {
-
-            viewModel.saveWithErrorDetection(function(data) {
-                var projectId = "${project?.projectId}" || data.projectId;
-                document.location.href = "${createLink(action: 'index')}/" + projectId;
-            });
-        }
-    } else {
+    if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
         bootbox.dialog("Use of this system for data collection is not available for non-biodiversity related projects." +
             " Press continue to turn data collection feature off. Otherwise, press cancel to modify the form.", [{
               label: "Continue",
@@ -104,6 +96,14 @@ $(function(){
                     }, 2000);
               }
             }]);
+    } else {
+        if ($('#projectDetails').validationEngine('validate') && viewModel.transients.validProjectName()) {
+
+            viewModel.saveWithErrorDetection(function(data) {
+                var projectId = "${project?.projectId}" || data.projectId;
+                document.location.href = "${createLink(action: 'index')}/" + projectId;
+            });
+        }
     }
     });
  });

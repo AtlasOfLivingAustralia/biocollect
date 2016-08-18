@@ -103,21 +103,7 @@ $(function(){
     </g:else>
     $('#save').click(function () {
         if ($('#projectDetails').validationEngine('validate') && viewModel.transients.validProjectName()) {
-            if(viewModel.transients.isDataEntryValid()){
-                if (viewModel.transients.kindOfProject() == 'ecoscience' || viewModel.transients.siteViewModel.isValid(true)) {
-                    viewModel.saveWithErrorDetection(function(data) {
-                        var projectId = "${project?.projectId}" || data.projectId;
-
-                        if (viewModel.isExternal()) {
-                            document.location.href = "${createLink(action: 'index')}/" + projectId;
-                        } else {
-                            document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
-                        }
-                    });
-                } else {
-                    bootbox.alert("You must define the spatial extent of the project area");
-                }
-            } else {
+            if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
                 bootbox.dialog("Use of this system for data collection is not available for non-biodiversity related projects." +
                     "Press continue to turn data collection feature off. Otherwise, press cancel to modify the form.",
                     [{
@@ -137,6 +123,20 @@ $(function(){
                        }
                     }]
                 );
+            } else {
+                if (viewModel.transients.kindOfProject() == 'ecoscience' || viewModel.transients.siteViewModel.isValid(true)) {
+                    viewModel.saveWithErrorDetection(function(data) {
+                        var projectId = "${project?.projectId}" || data.projectId;
+
+                        if (viewModel.isExternal()) {
+                            document.location.href = "${createLink(action: 'index')}/" + projectId;
+                        } else {
+                            document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
+                        }
+                    });
+                } else {
+                    bootbox.alert("You must define the spatial extent of the project area");
+                }
             }
         }
     });
