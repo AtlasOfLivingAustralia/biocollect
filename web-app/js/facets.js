@@ -156,6 +156,7 @@ function FacetViewModel(facet) {
     self.total = ko.observable(facet.total);
     self.terms = ko.observableArray();
     self.filter = ko.observable(false);
+    self.helpText = ko.observable(facet.helpText)
     self.displayName = ko.computed(function(){
         return self.title || cleanName(self.name()) || 'Unknown';
     });
@@ -212,7 +213,7 @@ function FacetTermViewModel(term) {
         return label
     });
     self.showTerm = ko.observable(term.showTerm || true);
-    self.id = ko.observable(generateTermId(self));
+    self.id = ko.observable(generateTermIdForFacetTerm(self));
     self.checked = ko.observable(false);
     self.silent = ko.observable(false)
     self.refined = ko.observable(false)
@@ -266,7 +267,7 @@ function FacetTermViewModel(term) {
     }
 };
 
-function generateTermId(facetTerm) {
+function generateTermIdForFacetTerm(facetTerm) {
     var name, term
     name = facetTerm.facet.name()
     term = facetTerm.term()
