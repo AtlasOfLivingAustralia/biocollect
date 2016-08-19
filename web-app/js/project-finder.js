@@ -425,15 +425,15 @@ function ProjectFinder() {
     function toggleFilterPanel(showPanel) {
         if(showPanel) {
 
-            $('#pt-table').removeClass('span12 no-sidebar');
-            $('#pt-table').addClass('span10');
+            $('#pt-table').removeClass('span11 no-sidebar');
+            $('#pt-table').addClass('span9');
             $('#filterPanel').show();
             $('#pt-filter').addClass('active');
 
         } else {
             $('#filterPanel').hide();
-            $('#pt-table').removeClass('span10');
-            $('#pt-table').addClass('span12 no-sidebar');
+            $('#pt-table').removeClass('span9');
+            $('#pt-table').addClass('span11 no-sidebar');
         }
     }
 
