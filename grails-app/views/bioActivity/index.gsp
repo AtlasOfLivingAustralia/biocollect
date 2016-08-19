@@ -29,7 +29,9 @@
         deleteCommentUrl:"${commentUrl}",
         imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
-        activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}"
+        activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
+        getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}"
+
         ${(params?.version) ? ',version: ' + params?.version : ''}
         },
         here = document.location.href;

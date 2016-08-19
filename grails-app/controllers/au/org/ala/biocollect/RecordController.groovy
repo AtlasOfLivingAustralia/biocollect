@@ -84,4 +84,9 @@ class RecordController {
         render result as JSON
     }
 
+    def getGuidForOutputSpeciesIdentifier(String id) {
+        def result = recordService.getForOutputIdentifier(id)
+        render ([guid: result.guid ?: ''] as JSON)
+    }
+
 }

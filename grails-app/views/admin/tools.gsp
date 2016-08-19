@@ -109,7 +109,21 @@
                                 method:"POST"
                             }
                     ).done(function(result) {
-                        alert("Successfully imported " + result.count + " SciStarter projects!")
+                        alert("Successfully imported " + result.count + " SciStarter projects!");
+                        document.location.reload();
+                    }).fail(function (result) {
+                        alert(result.statusText);
+                    });
+                });
+
+                $("#btnSyncRematchSpeciesId").click(function(e) {
+                    e.preventDefault();
+                    $.ajax("${createLink(controller: 'admin', action:'syncSpeciesWithBie')}",
+                            {
+                                method:"GET"
+                            }
+                    ).done(function(result) {
+                        alert(result.message);
                         document.location.reload();
                     }).fail(function (result) {
                         alert(result.statusText);
@@ -191,6 +205,14 @@
                     </td>
                     <td>
                         Import projects from SciStarter to Biocollect. Note: this might take a long time
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button id="btnSyncRematchSpeciesId" class="btn btn-small btn-info" title="Synchronise Biocollect with SciStarter">Rematch species guid</button>
+                    </td>
+                    <td>
+                        Re-match species guid
                     </td>
                 </tr>
                 <tr>
