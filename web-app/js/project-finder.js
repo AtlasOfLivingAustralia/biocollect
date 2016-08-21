@@ -226,27 +226,6 @@ function ProjectFinder() {
         sortBy = getActiveButtonValues($("#pt-sort"));
         perPage = getActiveButtonValues($("#pt-per-page"));
 
-
-        if (fcConfig.showAllProjects) {
-            var values = getActiveButtonValues($('#pt-search-projecttype'));
-            for (var i in values) {
-                switch (values[i]) {
-                    case 'citizenScience':
-                        isCitizenScience = true;
-                        break;
-                    case "biologicalScience":
-                        isBiologicalScience = true;
-                        break;
-                    case 'merit':
-                        isMERIT = true;
-                        break;
-                    case 'works':
-                        isWorks = true;
-                        break;
-                }
-            }
-        }
-
         pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
             fq.push(facet.getQueryText())
         })
