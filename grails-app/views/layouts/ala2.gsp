@@ -26,9 +26,9 @@
             ${fc.announcementContent()}
         </div>
     </g:if>
-    
+
     <g:render template="/project/biocollectBanner" model="${[fc:fc, hf: hf]}"></g:render>
-    <g:if test="${showCitizenScienceBanner}">
+    <g:if test="${showCitizenScienceBanner}" model="${[hubConfig:hubConfig]}">
         <g:render template="/shared/bannerCitizenScience"/>
     </g:if>
     <g:if test="${showWorksBanner}">

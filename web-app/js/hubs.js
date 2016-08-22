@@ -17,7 +17,7 @@ var HubSettingsViewModel = function(programsModel, options) {
         availableMapFacets:['status', 'organisationFacet','associatedProgramFacet','associatedSubProgramFacet','stateFacet','nrmFacet','lgaFacet','mvgFacet','ibraFacet','imcra4_pbFacet','electFacet', 'cmzFacet'],
         adminFacets:['electFacet', 'cmzFacet','meriPlanAssetFacet', 'partnerOrganisationTypeFacet'],
         programNames:programNames,
-        availableSkins:['nrm', 'ala2','mdba']
+        availableSkins:['nrm', 'ala2','mdba','ala']
     };
 
     var config = $.extend({}, options, {message:self.message});
