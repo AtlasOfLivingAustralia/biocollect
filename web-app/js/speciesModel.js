@@ -9,6 +9,8 @@ var SpeciesViewModel = function (species, lists, populate) {
     if (!populate) populate = false;
     self.name = ko.observable(species.name);
     self.guid = ko.observable(species.guid);
+    self.scientificName = ko.observable(species.scientificName);
+    self.commonName = ko.observable(species.commonName);
 
     // Reference to output species uuid - for uniqueness retrieved from ecodata server
     self.outputSpeciesId = ko.observable();
@@ -16,6 +18,8 @@ var SpeciesViewModel = function (species, lists, populate) {
     self.transients = {};
     self.transients.name = ko.observable(species.name);
     self.transients.guid = ko.observable(species.guid);
+    self.transients.scientificName = ko.observable(species.scientificName);
+    self.transients.commonName = ko.observable(species.commonName);
     self.transients.source = ko.observable(fcConfig.speciesSearch);
 
     self.transients.bioProfileUrl = ko.computed(function () {
@@ -25,11 +29,16 @@ var SpeciesViewModel = function (species, lists, populate) {
     self.focusLost = function (event) {
         self.name(self.transients.name());
         self.guid(self.transients.guid());
+        self.scientificName(self.transients.scientificName());
+        self.commonName(self.transients.commonName());
     };
 
     self.transients.guid.subscribe(function (newValue) {
         self.name(self.transients.name());
         self.guid(self.transients.guid());
+        self.scientificName(self.transients.scientificName());
+        self.commonName(self.transients.commonName());
+        self.commonName(self.transients.commonName());
     });
 
     self.populateSingleSpecies = function (populate) {
@@ -42,8 +51,12 @@ var SpeciesViewModel = function (species, lists, populate) {
                     if (data.name && data.guid) {
                         self.name(data.name);
                         self.guid(data.guid);
+                        self.scientificName(data.scientificName);
+                        self.commonName(data.commonName);
                         self.transients.name(data.name);
                         self.transients.guid(data.guid);
+                        self.transients.scientificName(data.scientificName);
+                        self.transients.commonName(data.commonName);
                     }
                 },
                 error: function (data) {
@@ -56,8 +69,12 @@ var SpeciesViewModel = function (species, lists, populate) {
     self.reset = function () {
         self.name("");
         self.guid("");
+        self.scientificName("");
+        self.commonName("");
         self.transients.name("");
         self.transients.guid("");
+        self.transients.scientificName("");
+        self.transients.commonName("");
     };
 
 
