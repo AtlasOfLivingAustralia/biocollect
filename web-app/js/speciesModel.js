@@ -21,9 +21,10 @@ var SpeciesViewModel = function (species, lists, populate) {
     self.transients.scientificName = ko.observable(species.scientificName);
     self.transients.commonName = ko.observable(species.commonName);
     self.transients.source = ko.observable(fcConfig.speciesSearch);
+    self.transients.bieUrl = ko.observable();
 
     self.transients.bioProfileUrl = ko.computed(function () {
-        return fcConfig.bieUrl + '/species/' + self.guid();
+        return self.transients.bieUrl();
     });
 
     self.focusLost = function (event) {
@@ -31,6 +32,7 @@ var SpeciesViewModel = function (species, lists, populate) {
         self.guid(self.transients.guid());
         self.scientificName(self.transients.scientificName());
         self.commonName(self.transients.commonName());
+        self.transients.bieUrl(fcConfig.bieUrl + '/species/' + self.guid());
     };
 
     self.transients.guid.subscribe(function (newValue) {
@@ -38,7 +40,7 @@ var SpeciesViewModel = function (species, lists, populate) {
         self.guid(self.transients.guid());
         self.scientificName(self.transients.scientificName());
         self.commonName(self.transients.commonName());
-        self.commonName(self.transients.commonName());
+        self.transients.bieUrl(fcConfig.bieUrl + '/species/' + self.guid());
     });
 
     self.populateSingleSpecies = function (populate) {
@@ -82,7 +84,20 @@ var SpeciesViewModel = function (species, lists, populate) {
         var idRequired = fcConfig.getOutputSpeciesIdUrl;
         if (species.outputSpeciesId) {
             self.outputSpeciesId(species.outputSpeciesId);
+            $.ajax({
+                url: fcConfig.getGuidForOutputSpeciesUrl+ "/" + species.outputSpeciesId,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data) {
+                    self.transients.bieUrl(data.guid ? fcConfig.bieUrl + '/species/' + data.guid : fcConfig.bieUrl);
+                },
+                error: function (data) {
+                    bootbox.alert("Error retrieving species data, please try again later.");
+                }
+            });
+
         } else if (idRequired) {
+            self.transients.bieUrl(fcConfig.bieUrl + '/species/' + self.guid());
             $.ajax({
                 url: fcConfig.getOutputSpeciesIdUrl,
                 type: 'GET',

@@ -41,36 +41,38 @@
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">
-    <div class="row-fluid">
-        <div class="span12 padding10-small-screen" id="heading">
-            <h1 class="pull-left"><g:message code="project.citizenScience.heading"/></h1>
-            <div class="pull-right">
-                <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</a>
-                <a class="btn btn-info" href="${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</a>
+    <div id="project-finder-container">
+        <div class="row-fluid">
+            <div class="span12 padding10-small-screen" id="heading">
+                <h1 class="pull-left"><g:message code="project.citizenScience.heading"/></h1>
+                <div class="pull-right">
+                    <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</a>
+                    <a class="btn btn-info" href="${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</a>
+                </div>
             </div>
         </div>
-    </div>
-    <div>
-        <g:render template="/shared/projectFinderResultSummary"/>
-    </div>
-    <div class="row-fluid">
-        <div id="filterPanel" class="span2" style="display: none">
-            <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
+        <div>
+            <g:render template="/shared/projectFinderResultSummary"/>
         </div>
+        <div class="row-fluid">
+            <div id="filterPanel" class="span3" style="display: none">
+                <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
+            </div>
 
-        <div id="pt-table" class="span12 no-sidebar">
-            <bc:koLoading>
-                <div data-bind="if: listView">
-                    <g:render template="/shared/projectFinderResultPanelList"></g:render>
-                </div>
+            <div id="pt-table" class="span9 no-sidebar">
+                <bc:koLoading>
+                    <div data-bind="if: listView">
+                        <g:render template="/shared/projectFinderResultPanelList"></g:render>
+                    </div>
 
-                <div data-bind="ifnot: listView">
-                    <g:render template="/shared/projectFinderResultPanelTile"></g:render>
-                </div>
-                <div id="pt-searchNavBar" class="clearfix">
-                    <div id="pt-navLinks"></div>
-                </div>
-            </bc:koLoading>
+                    <div data-bind="ifnot: listView">
+                        <g:render template="/shared/projectFinderResultPanelTile"></g:render>
+                    </div>
+                    <div id="pt-searchNavBar" class="clearfix">
+                        <div id="pt-navLinks"></div>
+                    </div>
+                </bc:koLoading>
+            </div>
         </div>
     </div>
 </div>

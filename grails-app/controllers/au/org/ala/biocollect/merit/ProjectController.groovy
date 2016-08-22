@@ -39,7 +39,92 @@ class ProjectController {
     static ignore = ['action','controller','id']
     static allowedMethods = [listRecordImages: "POST"]
 
-    static final searchFacetList = ["difficulty", "tags", "scienceType", "origin", "countries", "uNRegions", "organisationFacet"]
+    static final searchFacetListProjectFinder = ["scienceType", "countries", "organisationFacet", "tags", "difficulty", "origin", "uNRegions"]
+    static final searchFacetListMyProject = ["typeOfProject", "scienceType", "ecoScienceType", "difficulty", "tags", "organisationFacet" ]
+    static final searchFacetListOrganisation = ["typeOfProject","scienceType","ecoScienceType",  "associatedProgram", "organisationFacet" ]
+    static final searchFacetListEcoScience = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgram" ]
+    static final searchFacetListWorks = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgram" ]
+
+    /**
+     * Get the list of facets to be displayed on CS project finder. Also note the order of facets returned determines
+     * how facets are shown on page.
+     * @return
+     */
+    String[] getFacetListForProjectFinder(){
+        String [] list
+        if(grailsApplication.config.facets.pf instanceof String){
+            list = grailsApplication.config.facets.pf.split(',')
+        } else {
+            list = searchFacetListProjectFinder.toArray()
+        }
+
+        list
+    }
+
+    /**
+     * Get the list of facets to be displayed on my projects page. Also note the order of facets returned determines
+     * how facets are shown on page.
+     * @return
+     */
+    String[] getFacetListForMyProject(){
+        String [] list
+        if(grailsApplication.config.facets.myproject instanceof String){
+            list = grailsApplication.config.facets.myproject.split(',')
+        } else {
+            list = searchFacetListMyProject.toArray()
+        }
+
+        list
+    }
+
+    /**
+     * Get the list of facets to be displayed on organisation page. Also note the order of facets returned determines
+     * how facets are shown on page.
+     * @return
+     */
+    String[] getFacetListForOrganisation(){
+        String [] list
+        if(grailsApplication.config.facets.organisation instanceof String){
+            list = grailsApplication.config.facets.organisation.split(',')
+        } else {
+            list = searchFacetListOrganisation.toArray()
+        }
+
+        list
+    }
+
+    /**
+     * Get the list of facets to be displayed on Eco Science project finder. Also note the order of facets returned determines
+     * how facets are shown on page.
+     * @return
+     */
+    String[] getFacetListForEcoScience(){
+        String [] list
+        if(grailsApplication.config.facets.ecoscience instanceof String){
+            list = grailsApplication.config.facets.ecoscience.split(',')
+        } else {
+            list = searchFacetListEcoScience.toArray()
+        }
+
+        list
+    }
+
+    /**
+     * Get the list of facets to be displayed on Works project finder. Also note the order of facets returned determines
+     * how facets are shown on page.
+     * @return
+     */
+    String[] getFacetListForWorks(){
+        String [] list
+        if(grailsApplication.config.facets.pf instanceof String){
+            list = grailsApplication.config.facets.works.split(',')
+        } else {
+            list = searchFacetListWorks.toArray()
+        }
+
+        list
+    }
+
 
     def index(String id) {
         def project = projectService.get(id, 'brief', false, params?.version)
@@ -389,7 +474,7 @@ class ProjectController {
 
             if (!values?.associatedOrgs) values.put('associatedOrgs', [])
 
-            def result = id? projectService.update(id, values, true): projectService.create(values)
+            def result = id? projectService.update(id, values): projectService.create(values)
             log.debug "result is " + result
             if (documents && !result.error) {
                 if (!id) id = result.resp.projectId
@@ -473,7 +558,8 @@ class ProjectController {
 
         // format facets to a way acceptable for JS view model
         if(searchResult.facets){
-            facets = searchService.standardiseFacets (searchResult.facets, searchFacetList)
+            String[] facetList = queryParams.facets?.split(',')
+            facets = searchService.standardiseFacets (searchResult.facets, Arrays.asList(facetList))
             // the below facets are added manually since they are dynamic
             // eg. today's date is used to determine if a project is completed or active
             List defaults = [
@@ -510,6 +596,7 @@ class ProjectController {
         List difficulty = [], status =[]
         Map trimmedParams = commonService.parseParams(params)
         trimmedParams.fsort = 'term'
+        trimmedParams.flimit = 20
         trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
         trimmedParams.offset = params.offset && params.offset.isNumber() ? params.offset : 0
         trimmedParams.status = [];
@@ -523,7 +610,7 @@ class ProjectController {
         trimmedParams.isUserEcoSciencePage = params.boolean('isUserEcoSciencePage');
         trimmedParams.difficulty = params.list('difficulty')
         trimmedParams.mobile = params.boolean('mobile')
-        trimmedParams.isWorldWide = params.boolean('isWorldWide', false)
+        trimmedParams.isWorldWide = params.boolean('isWorldWide')
 
         List fq = [], projectType = []
         List immutableFq = params.list('fq')
@@ -536,10 +623,6 @@ class ProjectController {
         }
         trimmedParams.fq = fq;
 
-        if (params?.hub == 'ecoscience') {
-            trimmedParams.query += " AND projectType:ecoscience";
-        }
-
         switch (trimmedParams.sort){
             case 'organisationSort':
             case 'nameSort':
@@ -551,14 +634,26 @@ class ProjectController {
                 break;
         }
 
+        if (trimmedParams.isWorks) {
+                // do nothing
+        } else if (trimmedParams.isBiologicalScience){
+            trimmedParams.facets = getFacetListForEcoScience()?.join (",")
+        } else if (trimmedParams.isUserPage || trimmedParams.isUserEcoSciencePage || trimmedParams.isUserWorksPage) {
+            trimmedParams.facets = getFacetListForMyProject()?.join (",")
+        } else if (trimmedParams.organisationName) {
+            trimmedParams.facets = getFacetListForOrganisation()?.join (",")
+        } else if (trimmedParams.isCitizenScience) {
+            trimmedParams.facets = getFacetListForProjectFinder()?.join (",")
+        }
+
         if(trimmedParams.isCitizenScience){
             projectType.push('isCitizenScience:true')
             trimmedParams.isCitizenScience = null
         }
 
         if(trimmedParams.isBiologicalScience){
-            projectType.push('(projectType:survey AND isCitizenScience:false)')
             trimmedParams.isSurvey = null
+            trimmedParams.isBiologicalScience=null
         }
 
         if(trimmedParams.isWorks){
@@ -568,6 +663,7 @@ class ProjectController {
 
         if(trimmedParams.isEcoScience){
             projectType.push('(projectType:ecoscience)')
+            trimmedParams.isEcoScience = null
         }
 
         if (trimmedParams.isMERIT) {
@@ -607,7 +703,7 @@ class ProjectController {
 
         if(trimmedParams.status){
             SimpleDateFormat sdf = new SimpleDateFormat('yyyy-MM-dd');
-            // do not run if both active and completed is pressed
+            // Do not execute when both active and completed facets are checked.
             if(trimmedParams.status.size()<2){
                 trimmedParams.status.each{
                     switch (it){
@@ -639,13 +735,9 @@ class ProjectController {
             trimmedParams.organisationName = null
         }
 
-        if(!trimmedParams.facets){
-            trimmedParams.facets = searchFacetList.join(",")
-        }
-
         if (trimmedParams.isWorldWide) {
             trimmedParams.isWorldWide = null
-        } else {
+        } else if (trimmedParams.isWorldWide == false) {
             trimmedParams.query += " AND countries:(Australia OR Worldwide)"
             trimmedParams.isWorldWide = null
         }

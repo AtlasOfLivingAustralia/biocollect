@@ -714,6 +714,7 @@ class ProjectService {
     List getDisplayNamesForFacets(facets){
         facets?.each { facet ->
             facet.title = messageSource.getMessage("project.facets."+facet.name, [].toArray(), facet.name, Locale.default)
+            facet.helpText = messageSource.getMessage("project.facets."+facet.name +".helpText", [].toArray(), "", Locale.default)
             facet.terms?.each{ term ->
                 term.title = messageSource.getMessage("project.facets."+facet.name+"."+term.term, [].toArray(), term.name, Locale.default)
             }

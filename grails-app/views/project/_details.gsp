@@ -451,12 +451,12 @@
             </div>
 
             <div class="clearfix control-group">
-                <label class="control-label span3"><g:message code="project.details.difficulty"/><fc:iconHelp><g:message code="project.details.difficulty.help"/></fc:iconHelp><i class="req-field"></i></label>
+                <label class="control-label span3"><g:message code="project.details.difficulty"/><fc:iconHelp><g:message code="project.details.difficulty.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
                     <div class="row-fluid">
                         <div class="span3">
-                            <select data-bind="value:difficulty, options:transients.difficultyLevels, optionsCaption:'Select...'" data-validation-engine="validate[required]"></select>
+                            <select data-bind="value:difficulty, options:transients.difficultyLevels, optionsCaption:'Select...'"></select>
                         </div>
                         <div class="span9">
                             <div class="clearfix control-group">
