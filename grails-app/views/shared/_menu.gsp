@@ -1,4 +1,4 @@
-<div class="row-fluid" style="background-color: black">
+<div class="row-fluid bg-black-color">
     <div class="dropdown">
         <button class="btn btn-link btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-list"></i> BioCollect
             <span class="caret"></span></button>

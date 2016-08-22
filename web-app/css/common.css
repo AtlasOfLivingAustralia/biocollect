@@ -447,3 +447,7 @@ input.padding-14, .padding-14{
 #floating-save button {
     top:5px;
 }
+
+.bg-black-color{
+    background-color: black;
+}
