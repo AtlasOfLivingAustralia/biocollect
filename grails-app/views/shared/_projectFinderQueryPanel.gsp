@@ -21,7 +21,10 @@
 
             <div class="row-fluid">
                 <div class="span12">
-                    <h5><g:message code="project.search.geoFilter"/></h5>
+                    <h5><g:message code="project.search.geoFilter"/>
+                        <a href="#" tabindex="-1" data-bind="popover: {placement:'right', content: '<g:message code="project.search.geoFilter.helpText"/>' }">
+                            <i class="icon-question-sign">&nbsp;</i>
+                        </a></h5>
                     <div class="row-fluid">
                         <!-- Trigger the modal with a button -->
                         <button id="filterByRegionButton" type="button" class="btn btn-small btn-info margin-bottom-2" data-toggle="modal" data-target="#mapModal"><g:message code="project.search.mapToggle"/></button>
