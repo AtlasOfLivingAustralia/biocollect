@@ -65,9 +65,9 @@
                             <span data-bind="text:grantId"></span>
                             <p/>
                         </div>
-                        <div data-bind="visible:externalId">
+                        <div data-bind="visible:funding">
                             <div class="text-small-heading"><g:message code="project.display.fundingValue" /></div>
-                            <span data-bind="text:funding"></span>
+                            <span data-bind="text:funding.formattedCurrency"></span>
                             <p/>
                         </div>
                         <div data-bind="visible:associatedProgram">
@@ -90,11 +90,6 @@
                             <span data-bind="text:orgSponsor"></span>
                             <p/>
                         </div>
-                        <div data-bind="visible:manager">
-                            <div class="text-small-heading"><g:message code="project.display.contact" /></div>
-                            <a data-bind="attr:{href:'mailto:' + manager()}"><span data-bind="text:manager"></span></a>
-                            <p/>
-                        </div>
                         <div data-bind="visible:gear">
                             <div class="text-small-heading"><g:message code="project.display.gear" /></div>
                             <span data-bind="text:gear"></span>
@@ -108,7 +103,14 @@
                     </div>
                     <div class="span6">
                         <div data-bind="visible: countries().length">
-                            <div class="text-small-heading"><g:message code="project.display.countries" /></div>
+                            <div class="text-small-heading">
+                                <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
+                                    <g:message code="project.display.countries.ecoscience" />
+                                </g:if>
+                                <g:else>
+                                    <g:message code="project.display.countries.citizenscience" />
+                                </g:else>
+                            </div>
                             <span data-bind="text:countries().join(', ')"></span>
                             <p/>
                         </div>
@@ -117,6 +119,18 @@
                             <span data-bind="text:uNRegions().join(', ')"></span>
                             <p/>
                         </div>
+                        %{-- TODO: swap fields. check issue - biocollect#667 --}%
+                        <div data-bind="visible:managerEmail">
+                            <div class="text-small-heading"><g:message code="project.display.contact.name" /></div>
+                            <span data-bind="text:managerEmail"></span>
+                            <p/>
+                        </div>
+                        <div data-bind="visible:manager">
+                            <div class="text-small-heading"><g:message code="project.display.contact.email" /></div>
+                            <a data-bind="attr:{href:'mailto:' + manager()}"><span data-bind="text:manager"></span></a>
+                            <p/>
+                        </div>
+                        %{-- TODO END--}%
                     </div>
                 </div>
                 <hr/>

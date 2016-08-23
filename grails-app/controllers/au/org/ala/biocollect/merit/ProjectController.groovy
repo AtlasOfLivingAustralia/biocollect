@@ -10,6 +10,7 @@ import grails.converters.JSON
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
+import org.springframework.context.MessageSource
 
 import java.text.SimpleDateFormat
 
@@ -32,6 +33,7 @@ class ProjectController {
     AuditService auditService
     AuthService authService
     BlogService blogService
+    MessageSource messageSource
 
     def grailsApplication
 
@@ -41,9 +43,9 @@ class ProjectController {
 
     static final searchFacetListProjectFinder = ["scienceType", "countries", "organisationFacet", "tags", "difficulty", "origin", "uNRegions"]
     static final searchFacetListMyProject = ["typeOfProject", "scienceType", "ecoScienceType", "difficulty", "tags", "organisationFacet" ]
-    static final searchFacetListOrganisation = ["typeOfProject","scienceType","ecoScienceType",  "associatedProgram", "organisationFacet" ]
-    static final searchFacetListEcoScience = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgram" ]
-    static final searchFacetListWorks = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgram" ]
+    static final searchFacetListOrganisation = ["typeOfProject","scienceType","ecoScienceType",  "associatedProgram", "associatedSubProgramFacet", "organisationFacet" ]
+    static final searchFacetListEcoScience = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgram", "associatedSubProgramFacet" ]
+    static final searchFacetListWorks = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgram", "associatedSubProgramFacet" ]
 
     /**
      * Get the list of facets to be displayed on CS project finder. Also note the order of facets returned determines
@@ -146,6 +148,9 @@ class ProjectController {
         else {
             project.sites?.sort {it.name}
             project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
+            if(project.origin){
+                project.origin = messageSource.getMessage("project.facets.origin." + project.origin, [].toArray(), project.origin, Locale.default)
+            }
 
             def user = userService.getUser()
             def members = projectService.getMembersForProjectId(id)

@@ -380,7 +380,7 @@
 
                 <div class="controls span9">
                     <select class="span12" id="orgGrantee"
-                            data-bind="options:transients.organisations, optionsText:'name', optionsValue:'uid', value:orgIdGrantee, optionsCaption: 'Choose...'"></select>
+                            data-bind="options:transients.organisations, optionsText:'name', optionsValue:'organisationId', value: orgIdGrantee, optionsCaption: 'Choose...'"></select>
                 </div>
             </div>
 
@@ -390,7 +390,7 @@
 
                 <div class="controls span9">
                     <select class="span12" id="orgSponsor"
-                            data-bind="options:transients.organisations, optionsText:'name', optionsValue:'uid', value:orgIdSponsor, optionsCaption: 'Choose...'"></select>
+                            data-bind="options:transients.organisations, optionsText:'name', optionsValue:'organisationId', value:orgIdSponsor, optionsCaption: 'Choose...'"></select>
                 </div>
             </div>
 

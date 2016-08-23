@@ -297,7 +297,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.managerEmail = ko.observable(project.managerEmail);
     self.plannedStartDate = ko.observable(project.plannedStartDate).extend({simpleDate: false});
     self.plannedEndDate = ko.observable(project.plannedEndDate).extend({simpleDate: false});
-    self.funding = ko.observable(project.funding).extend({currency:{}});
+    self.funding = ko.observable(project.funding).extend({currency:{currencySymbol:"AUD $ "}});
     self.countries = ko.observableArray(project.countries)
     self.uNRegions = ko.observableArray(project.uNRegions)
     self.origin = ko.observable(project.origin)
@@ -367,6 +367,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
 
     self.orgIdGrantee = ko.observable(project.orgIdGrantee);
     self.orgIdSponsor = ko.observable(project.orgIdSponsor);
+    self.orgGrantee = ko.observable(project.orgGrantee ? project.orgGrantee : '');
+    self.orgSponsor = ko.observable(project.orgSponsor ? project.orgSponsor : '');
     self.orgIdSvcProvider = ko.observable(project.orgIdSvcProvider);
 
     self.serviceProviderName = ko.observable(project.serviceProviderName);
@@ -403,11 +405,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.imageUrl = ko.observable(project.urlImage);
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
     
-    self.associatedProgram = ko.observable(project.associatedProgram ? project.associatedProgram : '');
-    self.associatedSubProgram = ko.observable(project.associatedSubProgram ? project.associatedSubProgram : '');
-    self.orgGrantee = ko.observable(project.orgGrantee ? project.orgGrantee : '');
-    self.orgSponsor = ko.observable(project.orgSponsor ? project.orgSponsor : '');
-
     self.associatedOrgs = ko.observableArray();
     ko.utils.arrayMap(project.associatedOrgs || [], function(org) {
         var tmpOrg = org || {};
@@ -458,6 +455,16 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         }
         return true;
     };
+
+    self.orgIdGrantee.subscribe(function (id) {
+        var org = organisationsMap[id]
+        org && self.orgGrantee(org.name)
+    })
+
+    self.orgIdSponsor.subscribe(function (id) {
+        var org = organisationsMap[id]
+        org && self.orgSponsor(org.name)
+    })
 
     self.transients.daysRemaining = ko.pureComputed(function() {
         var end = self.plannedEndDate();
@@ -825,7 +832,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
 
     self.loadPrograms = function (programsModel) {
         $.each(programsModel.programs, function (i, program) {
-            if (program.readOnly && self.associatedProgram() != program.name) {
+            if (program.readOnly && project.associatedProgram != program.name) {
                 return;
             }
             self.transients.programs.push(program.name);

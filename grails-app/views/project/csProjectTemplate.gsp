@@ -139,7 +139,9 @@
             self.transients = self.transients || {};
             self.transients.resultsHolder = 'project-results-placeholder';
         };
-        ko.applyBindings(new ViewModel());
+        var viewModel = new ViewModel()
+        viewModel.loadPrograms(<fc:modelAsJavascript model="${programs}"/>);
+        ko.applyBindings(viewModel);
 
         var params = {};
         params.projectId = project.projectId;
