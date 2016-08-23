@@ -94,6 +94,7 @@
             self.transients.resultsHolder = 'project-results-placeholder';
         };
         var viewModel = new ViewModel();
+        viewModel.loadPrograms(<fc:modelAsJavascript model="${programs}"/>);
         ko.applyBindings(viewModel);
 
         <g:if test="${user?.isAdmin || fc.userIsAlaOrFcAdmin()}">
