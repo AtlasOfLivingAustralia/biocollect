@@ -8,6 +8,14 @@ modules = {
         resource url: 'css/biocollect-banner.css'
     }
 
+    alaSkin {
+        dependsOn 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
+        resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
+        resource url: 'css/bootstrap-combobox.css'
+        resource url: 'css/common.css'
+        resource url: 'css/biocollect-banner.css'
+    }
+
     nrmSkin {
         dependsOn 'application', 'bootstrap_nrm', 'font_awesome_44'
         resource url: 'css/nrm/css/screen.css', attrs: [media: 'screen,print']
