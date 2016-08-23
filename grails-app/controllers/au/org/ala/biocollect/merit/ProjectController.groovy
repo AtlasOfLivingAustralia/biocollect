@@ -43,9 +43,9 @@ class ProjectController {
 
     static final searchFacetListProjectFinder = ["scienceType", "countries", "organisationFacet", "tags", "difficulty", "origin", "uNRegions"]
     static final searchFacetListMyProject = ["typeOfProject", "scienceType", "ecoScienceType", "difficulty", "tags", "organisationFacet" ]
-    static final searchFacetListOrganisation = ["typeOfProject","scienceType","ecoScienceType",  "associatedProgram", "associatedSubProgramFacet", "organisationFacet" ]
-    static final searchFacetListEcoScience = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgram", "associatedSubProgramFacet" ]
-    static final searchFacetListWorks = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgram", "associatedSubProgramFacet" ]
+    static final searchFacetListOrganisation = ["typeOfProject","scienceType","ecoScienceType",  "associatedProgramFacet", "associatedSubProgramFacet", "organisationFacet" ]
+    static final searchFacetListEcoScience = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgramFacet", "associatedSubProgramFacet" ]
+    static final searchFacetListWorks = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgramFacet", "associatedSubProgramFacet" ]
 
     /**
      * Get the list of facets to be displayed on CS project finder. Also note the order of facets returned determines
