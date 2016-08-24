@@ -27,9 +27,8 @@
         <button class="btn margin-left-30" data-bind="click: nextPage, visible: isLoadMore">Load more</button>
 
         <!-- ko if: recordImages().length == 0 && !error() -->
-        <h3>
-            No images found.
-        </h3>
+        <span data-bind="if: transients.loading()"><span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...</span>
+        <span data-bind="if: !transients.loading()">No images found</span>
         <!-- /ko -->
 
         <!-- ko if: error() -->

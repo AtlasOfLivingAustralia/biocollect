@@ -18,6 +18,8 @@ function ImageGalleryViewModel(config){
     self.isLoadMore = ko.computed(function(){
         return self.total() > self.max();
     });
+    self.transients = {};
+    self.transients.loading = ko.observable(false);
 
     /**
      * appends a list of images to the existing images.
@@ -42,6 +44,9 @@ function ImageGalleryViewModel(config){
             type: prop.method,
             data: JSON.stringify(prop.data),
             contentType: 'application/json',
+            beforeSend: function () {
+                self.transients.loading(true);
+            },
             success: function(data){
                 if(data.documents){
                     self.addImages(data.documents);
@@ -50,6 +55,9 @@ function ImageGalleryViewModel(config){
             },
             error: function(jxhr, status, message){
                 self.error(jxhr.responseText);
+            },
+            complete: function () {
+                self.transients.loading(false);
             }
         })
     }
