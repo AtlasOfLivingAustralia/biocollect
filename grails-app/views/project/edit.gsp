@@ -6,7 +6,6 @@
     <r:script disposition="head">
     var fcConfig = {
         projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
-        checkProjectNameUrl: "${createLink(controller: 'project', action:'checkProjectName')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
@@ -45,7 +44,7 @@
 <form id="projectDetails" class="form-horizontal">
     <g:render template="details" model="${pageScope.variables}"/>
     <div class="well">
-        <button type="button" id="save" class="btn btn-primary" data-bind="disable: !transients.validProjectName()"><g:message code="g.save"/></button>
+        <button type="button" id="save" class="btn btn-primary"><g:message code="g.save"/></button>
         <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
     </div>
 </form>
@@ -97,7 +96,7 @@ $(function(){
               }
             }]);
     } else {
-        if ($('#projectDetails').validationEngine('validate') && viewModel.transients.validProjectName()) {
+        if ($('#projectDetails').validationEngine('validate')) {
 
             viewModel.saveWithErrorDetection(function(data) {
                 var projectId = "${project?.projectId}" || data.projectId;

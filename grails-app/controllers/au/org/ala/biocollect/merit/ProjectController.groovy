@@ -429,106 +429,96 @@ class ProjectController {
             name = project?.name
         }
 
-        boolean validName = projectService.checkProjectName(name, id)
-        if (!validName) {
-            render status: 400, text: "Another project already exists with the name ${params.projectName}"
+        def values = [:]
+        // filter params to remove keys in the ignore list
+        postBody.each { k, v ->
+            if (!(k in ignore)) {
+                values[k] = v
+            }
+        }
+
+        projectService.buildTags(values)
+
+        // The rule currently is that anyone is allowed to create a project so we only do these checks for
+        // existing projects.
+        def userId = userService.getUser()?.userId
+        if (id) {
+            if (!projectService.canUserEditProject(userId, id)) {
+                render status:401, text: "User ${userId} does not have edit permissions for project ${id}"
+                log.debug "user not caseManager"
+                return
+            }
+
+        } else if (!userId) {
+            render status: 401, text: 'You do not have permission to create a project'
+        }
+
+
+        log.debug "json=" + (values as JSON).toString()
+        log.debug "id=${id} class=${id?.getClass()}"
+        def projectSite = values.remove("projectSite")
+        def documents = values.remove('documents')
+        def links = values.remove('links')
+        def projectType = id ? projectService.get(id).projectType : values?.projectType
+
+        String mainImageAttribution = values.remove("mainImageAttribution")
+        String logoAttribution = values.remove("logoAttribution")
+
+        def siteResult
+        if (projectSite) {
+            siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
+            if (siteResult.status == 'error') render status: 400, text: "SiteService failed."
+            else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
+        } else if (projectService.get(id)?.sites?.isEmpty()) {
+            render status: 400, text: "No project site is defined."
+        }
+
+        if (!values?.associatedOrgs) values.put('associatedOrgs', [])
+
+        def result = id? projectService.update(id, values): projectService.create(values)
+        log.debug "result is " + result
+        if (documents && !result.error) {
+            if (!id) id = result.resp.projectId
+            documents.each { doc ->
+                doc.projectId = id
+                if (doc.role == "mainImage") {
+                    doc.isPrimaryProjectImage = true
+                    doc.attribution = mainImageAttribution
+                    doc.public = true
+                } else if (doc.role == documentService.ROLE_LOGO) {
+                    doc.public = true
+                    doc.attribution = logoAttribution
+                }
+                documentService.saveStagedImageDocument(doc)
+            }
+        }
+        if (links && !result.error) {
+            if (!id) id = result.resp.projectId
+            links.each { link ->
+                link.projectId = id
+                documentService.saveLink(link)
+            }
+        }
+        if (siteResult && !result.error) {
+            if (!id) id = result.resp.projectId
+            if (!projectSite.projects || (projectSite.projects.size() == 1 && projectSite.projects.get(0).isEmpty()))
+                projectSite.projects = [id]
+            else if (!projectSite.projects.contains(id))
+                projectSite.projects += id
+
+            siteService.update(siteResult.id, projectSite)
+        }
+        if (result.error) {
+            render result as JSON
         } else {
-            def values = [:]
-            // filter params to remove keys in the ignore list
-            postBody.each { k, v ->
-                if (!(k in ignore)) {
-                    values[k] = v
-                }
-            }
-
-            projectService.buildTags(values)
-
-            // The rule currently is that anyone is allowed to create a project so we only do these checks for
-            // existing projects.
-            def userId = userService.getUser()?.userId
-            if (id) {
-                if (!projectService.canUserEditProject(userId, id)) {
-                    render status:401, text: "User ${userId} does not have edit permissions for project ${id}"
-                    log.debug "user not caseManager"
-                    return
-                }
-
-            } else if (!userId) {
-                render status: 401, text: 'You do not have permission to create a project'
-            }
-
-
-            log.debug "json=" + (values as JSON).toString()
-            log.debug "id=${id} class=${id?.getClass()}"
-            def projectSite = values.remove("projectSite")
-            def documents = values.remove('documents')
-            def links = values.remove('links')
-            def projectType = id ? projectService.get(id).projectType : values?.projectType
-
-            String mainImageAttribution = values.remove("mainImageAttribution")
-            String logoAttribution = values.remove("logoAttribution")
-
-            def siteResult
-            if (projectSite) {
-                siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
-                if (siteResult.status == 'error') render status: 400, text: "SiteService failed."
-                else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
-            } else if (projectService.get(id)?.sites?.isEmpty()) {
-                render status: 400, text: "No project site is defined."
-            }
-
-            if (!values?.associatedOrgs) values.put('associatedOrgs', [])
-
-            def result = id? projectService.update(id, values): projectService.create(values)
-            log.debug "result is " + result
-            if (documents && !result.error) {
-                if (!id) id = result.resp.projectId
-                documents.each { doc ->
-                    doc.projectId = id
-                    if (doc.role == "mainImage") {
-                        doc.isPrimaryProjectImage = true
-                        doc.attribution = mainImageAttribution
-                        doc.public = true
-                    } else if (doc.role == documentService.ROLE_LOGO) {
-                        doc.public = true
-                        doc.attribution = logoAttribution
-                    }
-                    documentService.saveStagedImageDocument(doc)
-                }
-            }
-            if (links && !result.error) {
-                if (!id) id = result.resp.projectId
-                links.each { link ->
-                    link.projectId = id
-                    documentService.saveLink(link)
-                }
-            }
-            if (siteResult && !result.error) {
-                if (!id) id = result.resp.projectId
-                if (!projectSite.projects || (projectSite.projects.size() == 1 && projectSite.projects.get(0).isEmpty()))
-                    projectSite.projects = [id]
-                else if (!projectSite.projects.contains(id))
-                    projectSite.projects += id
-
-                siteService.update(siteResult.id, projectSite)
-            }
-            if (result.error) {
-                render result as JSON
-            } else {
-                render result.resp as JSON
-            }
+            render result.resp as JSON
         }
     }
 
     @PreAuthorise
     def update(String id) {
-        boolean validName = projectService.checkProjectName(params.projectName, params.id)
-        if (!validName) {
-            render status: 400, text: "Another project already exists with the name ${params.projectName}"
-        } else {
-            projectService.update(id, params)
-            chain action: 'index', id: id
-        }
+        projectService.update(id, params)
+        chain action: 'index', id: id
     }
 
     @PreAuthorise(accessLevel = 'admin')
@@ -902,16 +892,6 @@ class ProjectController {
             render(status: SC_REQUEST_TIMEOUT, text: sTimeout.message)
         } catch( Exception e){
             render(status: SC_INTERNAL_SERVER_ERROR, text: e.message)
-        }
-    }
-
-    def checkProjectName() {
-        if (!params.projectName) {
-            render status: SC_BAD_REQUEST, text: 'projectName is a required parameter'
-        } else {
-            boolean validName = projectService.checkProjectName(params.projectName, params.id)
-
-            render ([validName: validName] as JSON)
         }
     }
 

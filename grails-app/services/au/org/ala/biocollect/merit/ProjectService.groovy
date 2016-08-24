@@ -29,19 +29,6 @@ class ProjectService {
     CacheService cacheService
     MessageSource messageSource
 
-    /**
-     * Check if a project already exists with the specified name.
-     *
-     * @param projectName The name to check
-     * @param id The ID of the project being edited, to exclude it from the check. Leave null if creating a new project
-     * @return True if no other active project exists with the same name
-     */
-    boolean checkProjectName(String projectName, String id) {
-        def results = webService.getJson("${grailsApplication.config.ecodata.service.url}/project/findByName?projectName=${URLEncoder.encode(projectName, "utf-8")}", 30000, true)
-
-        results?.isEmpty() || (results?.size() == 1 && id == results[0]?.projectId)
-    }
-
     def list(brief = false, citizenScienceOnly = false) {
         def params = brief ? '?brief=true' : ''
         if (citizenScienceOnly) params += (brief ? '&' : '?') + 'citizenScienceOnly=true'
@@ -122,8 +109,8 @@ class ProjectService {
         }
 
         if (props.containsKey("name")) {
-            if (!checkProjectName(props.name, projectId)) {
-                return "name is not unique"
+            if (!props.name) {
+                return "name cannot be emtpy"
             }
         } else if (!updating) {
             //error, no project name
@@ -143,17 +130,6 @@ class ProjectService {
         if (!updating && !props.containsKey("scienceType") && !isEcoScience) {
             //error, no science type
             return "scienceType is missing"
-        }
-
-        if (!isEcoScience && !isWorks) {
-            if (props.containsKey("difficulty")) {
-                if (!['Easy', 'Medium', 'Hard'].contains(props.difficulty)) {
-                    return "difficulty is not valid."
-                }
-            } else if (!updating) {
-                //error, no difficulty
-                return "difficulty is missing"
-            }
         }
 
         if (!isEcoScience && !isWorks) {

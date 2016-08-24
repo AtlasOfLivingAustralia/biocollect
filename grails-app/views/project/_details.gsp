@@ -87,7 +87,6 @@
                 <div class="controls span9">
                     <g:textField style="width:90%;" name="name" data-bind="value:name"
                                  data-validation-engine="validate[required]"/>
-                    <div class="alert alert-error margin-top-1" data-bind="visible: !transients.validProjectName()"><g:message code="project.details.invalidName"/></div>
                 </div>
             </div>
 

@@ -955,8 +955,6 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     self.transients.siteViewModel = initSiteViewModel(false);
 
     self.name.subscribe(function(projectName) {
-        checkProjectName(projectName);
-
         var oldValue = self.transients.siteViewModel.site().name();
         var prefix = "Project area for ";
         if (oldValue.indexOf(prefix) >= 0 || !oldValue) {
@@ -971,8 +969,6 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     self.transients.associatedOrgLogoUrl = ko.observable();
 
     self.transients.termsOfUseClicked = ko.observable(false);
-
-    self.transients.validProjectName = ko.observable(true);
     
     self.transients.isDataEntryValid = function () {
         if (!self.isExternal()) {
@@ -990,20 +986,6 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         }
 
         return true
-    }
-
-    function checkProjectName(projectName) {
-        if (!_.isUndefined(projectName) && projectName) {
-            $.ajax({
-                url: fcConfig.checkProjectNameUrl,
-                type: 'GET',
-                data: {projectName: projectName, id: project.projectId},
-                contentType: 'application/json',
-                success: function (data) {
-                    self.transients.validProjectName(data.validName);
-                }
-            });
-        }
     }
 
     self.clickTermsOfUse = function() {
