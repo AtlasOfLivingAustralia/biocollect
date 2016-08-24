@@ -14,7 +14,7 @@
     </div>
 </g:if>
 
-<div class="row well well-small">
+<div class="row well well-small" id="project-audit-list">
         <table style="width: 95%;" class="table table-striped table-bordered table-hover" id="project-list">
             <thead>
             <th>Date</th>
@@ -29,9 +29,20 @@
         </table>
 </div>
 
+<button id="loadAuditRecords" class="btn btn-primary btn-large">Load ${project.name} audit records</button>
+
 <r:script type="text/javascript">
     $(document).ready(function() {
-        $('#project-list').DataTable({
+        $("#project-audit-list").hide();
+
+        $("#loadAuditRecords").click(function() {
+            $("#loadAuditRecords").hide();
+            $("#project-audit-list").show();
+            loadAuditData();
+        });
+
+        function loadAuditData(){
+            $('#project-list').DataTable({
             "order": [[ 0, "desc" ]],
             "aoColumnDefs": [{ "sType": "date-uk", "aTargets": [0] }],
             "oLanguage": {
@@ -85,5 +96,7 @@
             }]
         });
         $('.dataTables_filter input').attr("placeholder", "Action, Type, Name");
+        }
+
     });
 </r:script>

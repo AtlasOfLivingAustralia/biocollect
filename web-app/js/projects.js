@@ -913,7 +913,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
                         } else {
                             showAlert("Successfully deleted. Indexing is in process, search result will be updated in few minutes. Redirecting to search page...", "alert-success", self.transients.resultsHolder);
                             setTimeout(function () {
-                                window.location.href = fcConfig.serverUrl;
+                                window.location.href = fcConfig.homePagePath;
                             }, 3000);
                         }
                     },

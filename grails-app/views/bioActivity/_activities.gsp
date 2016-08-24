@@ -183,9 +183,14 @@
                             <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
                         </span>
                         <span data-bind="visible: transients.totalPoints() == 0 && !transients.loadingMap()">
-                            <h3 class="text-left margin-bottom-five">No results</h3>
+                            <span class="text-left margin-bottom-five">
+                                <span data-bind="if: transients.loading()">
+                                    <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
+                                </span>
+                                <span data-bind="if: !transients.loading()">No Results</span>
+                            </span>
                         </span>
-                        <span data-bind="visible: transients.totalPoints() > 0 && !transients.loadingMap()">
+                        <span data-bind="visible: transients.totalPoints() > 0 && !transients.loadingMap() ">
                             <m:map id="recordOrActivityMap" width="100%"/>
                         </span>
                     </div>

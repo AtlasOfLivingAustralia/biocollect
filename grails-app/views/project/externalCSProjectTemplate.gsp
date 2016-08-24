@@ -8,6 +8,7 @@
     var fcConfig = {
         imageLocation:"${resource(dir:'/images')}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
+        homePagePath: "${createLink(controller: 'home', action: 'index')}",
         projectUpdateUrl: "${createLink(action: 'ajaxUpdate', id: project.projectId)}",
         projectEditUrl:"${createLink(action:'edit', id:project.projectId)}",
         projectDeleteUrl:"${createLink(action:'delete', id:project.projectId)}",
