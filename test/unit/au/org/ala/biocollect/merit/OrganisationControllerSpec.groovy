@@ -31,7 +31,7 @@ class OrganisationControllerSpec extends Specification {
 
         given:
         def testOrg = testOrganisation()
-        organisationService.get(_,_) >> testOrg
+        organisationService.get(_) >> testOrg
         searchService.dashboardReport(_) >> [:]
 
         when:
@@ -114,7 +114,7 @@ class OrganisationControllerSpec extends Specification {
         setup:
         setupAnonymousUser()
         def testOrg = testOrganisation()
-        organisationService.get(_,_) >> testOrg
+        organisationService.get(_) >> testOrg
 
         when:
         def model = controller.index('id')
@@ -130,7 +130,7 @@ class OrganisationControllerSpec extends Specification {
         setup:
         setupReadOnlyUser()
         def testOrg = testOrganisation()
-        organisationService.get(_,_) >> testOrg
+        organisationService.get(_) >> testOrg
 
         when:
         def model = controller.index('id')
@@ -145,7 +145,7 @@ class OrganisationControllerSpec extends Specification {
     def "all tabs are visible to fc admins"() {
         setup:
         def testOrg = testOrganisation()
-        organisationService.get(_,_) >> testOrg
+        organisationService.get(_) >> testOrg
         setupFcAdmin()
 
         when:
@@ -161,7 +161,7 @@ class OrganisationControllerSpec extends Specification {
     def "all tabs are visible to organisation admins"() {
         setup:
         def testOrg = testOrganisation()
-        organisationService.get(_,_) >> testOrg
+        organisationService.get(_) >> testOrg
         setupOrganisationAdmin()
 
         when:
@@ -177,7 +177,7 @@ class OrganisationControllerSpec extends Specification {
     def "all tabs expect the admin tab are visible to organisation editors"() {
         setup:
         def testOrg = testOrganisation()
-        organisationService.get(_,_) >> testOrg
+        organisationService.get(_) >> testOrg
         setupOrganisationEditor()
 
         when:
@@ -193,7 +193,7 @@ class OrganisationControllerSpec extends Specification {
     def "the about tab is the default"() {
         setup:
         def testOrg = testOrganisation()
-        organisationService.get(_,_) >> testOrg
+        organisationService.get(_) >> testOrg
         setupOrganisationEditor()
 
         when:
