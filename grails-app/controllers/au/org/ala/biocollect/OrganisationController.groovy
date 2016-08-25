@@ -18,7 +18,7 @@ class OrganisationController {
     def list() {}
 
     def index(String id) {
-        def organisation = organisationService.get(id, 'all')
+        def organisation = organisationService.get(id)
 
         if (!organisation || organisation.error) {
             organisationNotFound(id, organisation)
