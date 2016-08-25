@@ -6,7 +6,6 @@
     <r:script disposition="head">
     var fcConfig = {
         projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
-        checkProjectNameUrl: "${createLink(controller: 'project', action:'checkProjectName')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
@@ -21,7 +20,10 @@
         scienceTypes: ${scienceTypes as grails.converters.JSON},
         lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
         ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},
-        lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON}
+        lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
+        countriesUrl: "${createLink(controller: 'project', action: 'getCountries')}",
+        uNRegionsUrl: "${createLink(controller: 'project', action: 'getUNRegions')}",
+        dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}"
         },
         here = window.location.href;
 
@@ -42,7 +44,7 @@
 <form id="projectDetails" class="form-horizontal">
     <g:render template="details" model="${pageScope.variables}"/>
     <div class="well">
-        <button type="button" id="save" class="btn btn-primary" data-bind="disable: !transients.validProjectName()"><g:message code="g.save"/></button>
+        <button type="button" id="save" class="btn btn-primary"><g:message code="g.save"/></button>
         <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
     </div>
 </form>
@@ -75,13 +77,33 @@ $(function(){
         document.location.href = "${createLink(action: 'index', id: project?.projectId)}";
     });
     $('#save').click(function () {
-        if ($('#projectDetails').validationEngine('validate') && viewModel.transients.validProjectName()) {
+    if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
+        bootbox.dialog("Use of this system for data collection is not available for non-biodiversity related projects." +
+            " Press continue to turn data collection feature off. Otherwise, press cancel to modify the form.", [{
+              label: "Continue",
+              className: "btn-primary",
+              callback: function() {
+                viewModel.isExternal(true);
+                $('#save').click()
+              }
+            },{
+                label: "Cancel",
+                className: "btn-alert",
+                callback: function() {
+                    $('html, body').animate({
+                        scrollTop: $("#scienceTypeControlGroup").offset().top
+                    }, 2000);
+              }
+            }]);
+    } else {
+        if ($('#projectDetails').validationEngine('validate')) {
 
             viewModel.saveWithErrorDetection(function(data) {
                 var projectId = "${project?.projectId}" || data.projectId;
                 document.location.href = "${createLink(action: 'index')}/" + projectId;
             });
         }
+    }
     });
  });
 </r:script>

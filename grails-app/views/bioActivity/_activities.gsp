@@ -24,15 +24,14 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
+                        <span data-bind="if: $root.transients.loading()">Loading...</span>
                         <!-- ko if: activities().length == 0 -->
                             <div class="row-fluid">
                                 <h3 class="text-left margin-bottom-five">
-                                    <!-- ko if: $root.searchTerm() == "" && $root.selectedFilters().length == 0 -->
+                                    <span data-bind="if: $root.searchTerm() == '' && $root.selectedFilters().length == 0 && !$root.transients.loading()">
                                         No data has been recorded for this project yet
-                                    <!-- /ko -->
-                                    <!-- ko if: $root.searchTerm() != "" || $root.selectedFilters().length > 0 -->
-                                        No results
-                                    <!-- /ko -->
+                                    </span>
+                                    <span data-bind="if: $root.searchTerm() != '' || $root.selectedFilters().length > 0 && !$root.transients.loading()">No results</span>
                                 </h3>
                             </div>
                         <!-- /ko -->
@@ -184,9 +183,14 @@
                             <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
                         </span>
                         <span data-bind="visible: transients.totalPoints() == 0 && !transients.loadingMap()">
-                            <h3 class="text-left margin-bottom-five">No results</h3>
+                            <span class="text-left margin-bottom-five">
+                                <span data-bind="if: transients.loading()">
+                                    <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
+                                </span>
+                                <span data-bind="if: !transients.loading()">No Results</span>
+                            </span>
                         </span>
-                        <span data-bind="visible: transients.totalPoints() > 0 && !transients.loadingMap()">
+                        <span data-bind="visible: transients.totalPoints() > 0 && !transients.loadingMap() ">
                             <m:map id="recordOrActivityMap" width="100%"/>
                         </span>
                     </div>

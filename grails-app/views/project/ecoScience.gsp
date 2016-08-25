@@ -29,6 +29,8 @@
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
         isCitizenScience: false,
+        isBiologicalScience: true,
+        hideWorldWideBtn: true,
         showAllProjects: false,
         meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
         associatedPrograms: ${associatedPrograms}
@@ -56,10 +58,10 @@
         <g:render template="/shared/projectFinderResultSummary"/>
     </div>
     <div class="row-fluid">
-        <div id="filterPanel" class="span2">
+        <div id="filterPanel" class="span3" style="display: none">
             <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
         </div>
-        <div id="pt-table" class="span12 no-sidebar">
+        <div id="pt-table" class="span9 no-sidebar">
             <bc:koLoading>
                 <div data-bind="if: listView">
                     <g:render template="/shared/projectFinderResultPanelList"></g:render>

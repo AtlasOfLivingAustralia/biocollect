@@ -41,6 +41,17 @@
                         <button type="button" class="btn  btn-mini" data-value="500">500</button>
                     </div>
                 </div>
+                <div class="nowrap inline-block margin-bottom-5">
+                    &nbsp;
+                    <small><g:message
+                            code="project.label"/>&nbsp;</small>
+                    <div class="btn-group margin-bottom-5 margin-left-10" data-toggle="buttons-radio" id="pt-aus-world">
+                        <button class="btn btn-small btn-mini active" title="${message(code: 'project.australia.title')}"
+                                data-toggle="button" data-value="false">${message(code: 'project.australia.text')}</button>
+                        <button class="btn btn-small btn-mini" title="${message(code: 'project.worldwide.title')}"
+                                data-toggle="button" data-value="true">${message(code: 'project.worldwide.text')}</button>
+                    </div>
+                </div>
             <div class="btn-group margin-bottom-5 margin-left-10" data-toggle="buttons-radio" id="pt-view">
                 <button class="btn btn-small" title="${message(code: 'project.tile.view.tooltip')}"
                         data-toggle="button" data-value="tileView"><i

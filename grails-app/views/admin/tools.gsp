@@ -106,11 +106,24 @@
                     e.preventDefault();
                     $.ajax("${createLink(controller: 'admin', action:'syncSciStarter')}",
                             {
-                                method:"POST",
-                                data:{whiteList:$('#sciStarterWhiteList').val()}
+                                method:"POST"
                             }
                     ).done(function(result) {
-                        alert("Successfully imported " + result.count + " SciStarter projects!")
+                        alert("Successfully imported " + result.count + " SciStarter projects!");
+                        document.location.reload();
+                    }).fail(function (result) {
+                        alert(result.statusText);
+                    });
+                });
+
+                $("#btnSyncRematchSpeciesId").click(function(e) {
+                    e.preventDefault();
+                    $.ajax("${createLink(controller: 'admin', action:'syncSpeciesWithBie')}",
+                            {
+                                method:"GET"
+                            }
+                    ).done(function(result) {
+                        alert(result.message);
                         document.location.reload();
                     }).fail(function (result) {
                         alert(result.statusText);
@@ -188,12 +201,18 @@
                 </tr>
                 <tr>
                     <td>
-                        <label>Enter comma separated white list below:</label>
-                        <input id="sciStarterWhiteList" type="text"/>
                         <button id="btnSyncSciStarter" class="btn btn-small btn-info" title="Synchronise Biocollect with SciStarter">Import SciStarter Projects</button>
                     </td>
                     <td>
                         Import projects from SciStarter to Biocollect. Note: this might take a long time
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button id="btnSyncRematchSpeciesId" class="btn btn-small btn-info" title="Synchronise Biocollect with SciStarter">Rematch species guid</button>
+                    </td>
+                    <td>
+                        Re-match species guid
                     </td>
                 </tr>
                 <tr>

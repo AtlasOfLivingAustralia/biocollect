@@ -297,7 +297,12 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.managerEmail = ko.observable(project.managerEmail);
     self.plannedStartDate = ko.observable(project.plannedStartDate).extend({simpleDate: false});
     self.plannedEndDate = ko.observable(project.plannedEndDate).extend({simpleDate: false});
-    self.funding = ko.observable(project.funding).extend({currency:{}});
+    self.funding = ko.observable(project.funding).extend({currency:{currencySymbol:"AUD $ "}});
+    self.countries = ko.observableArray(project.countries)
+    self.uNRegions = ko.observableArray(project.uNRegions)
+    self.origin = ko.observable(project.origin)
+
+    self.facets = ko.observableArray();
 
     self.regenerateProjectTimeline = ko.observable(false);
     self.projectDatesChanged = ko.computed(function() {
@@ -362,6 +367,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
 
     self.orgIdGrantee = ko.observable(project.orgIdGrantee);
     self.orgIdSponsor = ko.observable(project.orgIdSponsor);
+    self.orgGrantee = ko.observable(project.orgGrantee ? project.orgGrantee : '');
+    self.orgSponsor = ko.observable(project.orgSponsor ? project.orgSponsor : '');
     self.orgIdSvcProvider = ko.observable(project.orgIdSvcProvider);
 
     self.serviceProviderName = ko.observable(project.serviceProviderName);
@@ -373,15 +380,17 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.gear = ko.observable(project.gear);
     self.getInvolved = ko.observable(project.getInvolved).extend({markdown:true});
     self.hasParticipantCost = ko.observable(project.hasParticipantCost);
+    self.noCost = ko.observable(project.noCost);
     self.hasTeachingMaterials = ko.observable(project.hasTeachingMaterials);
     self.isCitizenScience = ko.observable(project.isCitizenScience);
     self.isDIY = ko.observable(project.isDIY);
+    self.isHome = ko.observable(project.isHome);
+    self.mobileApp = ko.observable(project.mobileApp);
     self.isWorks = ko.observable(project.isWorks);
     self.isEcoScience = ko.observable(project.isEcoScience);
     self.isExternal = ko.observable(project.isExternal);
     self.isSciStarter = ko.observable(project.isSciStarter)
     self.isMERIT = ko.observable(project.isMERIT);
-    self.isMetadataSharing = ko.observable(project.isMetadataSharing);
     self.isContributingDataToAla = ko.observable(project.isContributingDataToAla);
     self.isSuitableForChildren = ko.observable(project.isSuitableForChildren);
     self.keywords = ko.observable(project.keywords);
@@ -396,11 +405,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.imageUrl = ko.observable(project.urlImage);
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
     
-    self.associatedProgram = ko.observable(project.associatedProgram ? project.associatedProgram : '');
-    self.associatedSubProgram = ko.observable(project.associatedSubProgram ? project.associatedSubProgram : '');
-    self.orgGrantee = ko.observable(project.orgGrantee ? project.orgGrantee : '');
-    self.orgSponsor = ko.observable(project.orgSponsor ? project.orgSponsor : '');
-
     self.associatedOrgs = ko.observableArray();
     ko.utils.arrayMap(project.associatedOrgs || [], function(org) {
         var tmpOrg = org || {};
@@ -451,6 +455,16 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         }
         return true;
     };
+
+    self.orgIdGrantee.subscribe(function (id) {
+        var org = organisationsMap[id]
+        org && self.orgGrantee(org.name)
+    })
+
+    self.orgIdSponsor.subscribe(function (id) {
+        var org = organisationsMap[id]
+        org && self.orgSponsor(org.name)
+    })
 
     self.transients.daysRemaining = ko.pureComputed(function() {
         var end = self.plannedEndDate();
@@ -631,6 +645,9 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         {name:'Ecology', value:'ecology'},
         {name:'Natural resource management', value:'nrm'}
     ];
+    self.transients.dataCollectionWhiteList = []
+    self.transients.uNRegions = ko.observableArray();
+    self.transients.countries = ko.observableArray();
     self.transients.availableScienceTypes = fcConfig.scienceTypes;
     self.transients.availableEcoScienceTypes = fcConfig.ecoScienceTypes;
     self.transients.scienceTypeDisplay = ko.pureComputed(function () {
@@ -647,7 +664,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.transients.isScienceTypeChecked = function(value){
         var types = self.scienceType()
         for(var i=0; i<types.length; i++){
-            if(types[i] == value.toLowerCase()){
+            if(types[i] == value){
                 return true
             }
         }
@@ -683,6 +700,94 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             self.ecoScienceType.remove(elem.value)
         }
     };
+
+    self.transients.getCountries = function () {
+        var url = fcConfig.countriesUrl
+        if(url){
+            $.ajax(url, {
+                success: function (data) {
+                    self.transients.countries ( data );
+                }
+            })
+        }
+    }
+
+    self.transients.getUNRegions = function () {
+        var url = fcConfig.uNRegionsUrl
+        if(url){
+            $.ajax(url, {
+                success: function (data) {
+                    self.transients.uNRegions ( data );
+                }
+            })
+        }
+    }
+
+    self.transients.getDataCollectionWhiteList = function () {
+        var url = fcConfig.dataCollectionWhiteListUrl
+        if(url){
+            $.ajax(url, {
+                success: function (data) {
+                    self.transients.dataCollectionWhiteList.push.apply(self.transients.dataCollectionWhiteList, data );
+                }
+            })
+        }
+    }
+
+    /**
+     * Remove a selected UN region
+     * @param data
+     * @param event
+     */
+    self.transients.removeUNRegion = function (data, event) {
+        self.uNRegions.remove(data)
+    }
+
+    /**
+     * Remove a selected country
+     * @param data
+     * @param event
+     */
+    self.transients.removeCountry = function (data, event) {
+        self.countries.remove(data)
+    }
+
+    /**
+     * Select a UN Region
+     * @param data
+     * @param event
+     */
+    self.transients.selectUNRegion = function (model , event) {
+        var region =  event.target.value
+        var valid = false
+        self.transients.uNRegions().forEach(function(item){
+            if(item == region){
+                valid = true
+            }
+        })
+
+        valid && self.uNRegions.push (region)
+    }
+
+    /**
+     * Select a country
+     * @param data
+     * @param event
+     */
+    self.transients.selectCountry = function (model, event) {
+        var country = event.target.value
+        if(country != "---------"){
+            var valid = false
+            self.transients.countries().forEach(function(item){
+                if(item == country){
+                    valid = true
+                }
+            })
+
+            valid && self.countries.push (country)
+        }
+    }
+
 
     var availableProjectTypes = [
         {name:'Citizen Science Project', display:'Citizen\nScience', value:'citizenScience'},
@@ -727,7 +832,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
 
     self.loadPrograms = function (programsModel) {
         $.each(programsModel.programs, function (i, program) {
-            if (program.readOnly && self.associatedProgram() != program.name) {
+            if (program.readOnly && project.associatedProgram != program.name) {
                 return;
             }
             self.transients.programs.push(program.name);
@@ -808,7 +913,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
                         } else {
                             showAlert("Successfully deleted. Indexing is in process, search result will be updated in few minutes. Redirecting to search page...", "alert-success", self.transients.resultsHolder);
                             setTimeout(function () {
-                                window.location.href = fcConfig.serverUrl;
+                                window.location.href = fcConfig.homePagePath;
                             }, 3000);
                         }
                     },
@@ -819,46 +924,11 @@ function ProjectViewModel(project, isUserEditor, organisations) {
             }
         });
     };
+
+    self.transients.getCountries()
+    self.transients.getUNRegions()
+    self.transients.getDataCollectionWhiteList()
 };
-
-/**
- * View model for use by the citizen science project finder page.
- * @param props array of project attributes
- * @constructor
- */
-function CitizenScienceFinderProjectViewModel(props) {
-    ProjectViewModel.apply(this, [{
-        projectId: props[0],
-        aim: props[1],
-        description: props[3],
-        difficulty: props[4],
-        plannedEndDate: props[5] && new Date(props[5]),
-        hasParticipantCost: props[6],
-        hasTeachingMaterials: props[7],
-        isDIY: props[8],
-        isExternal: props[9],
-        isSuitableForChildren: props[10],
-        keywords: props[11],
-        links: props[12],
-        name: props[13],
-        organisationId: props[14],
-        organisationName: props[15],
-        scienceType: props[16],
-        plannedStartDate: props[17] && new Date(props[17]),
-        documents: [
-            {
-                public: true,
-                role: 'logo',
-                url: props[18]
-            }
-        ],
-        urlWeb: props[19]
-    }, false, []]);
-
-    var self = this;
-    self.transients.locality = props[2] && props[2].locality;
-    self.transients.state = props[2] && props[2].state;
-}
 
 /**
  * View model for use by the project create and edit pages.  Extends the ProjectViewModel to provide support
@@ -885,8 +955,6 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     self.transients.siteViewModel = initSiteViewModel(false);
 
     self.name.subscribe(function(projectName) {
-        checkProjectName(projectName);
-
         var oldValue = self.transients.siteViewModel.site().name();
         var prefix = "Project area for ";
         if (oldValue.indexOf(prefix) >= 0 || !oldValue) {
@@ -901,21 +969,23 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     self.transients.associatedOrgLogoUrl = ko.observable();
 
     self.transients.termsOfUseClicked = ko.observable(false);
-
-    self.transients.validProjectName = ko.observable(true);
-
-    function checkProjectName(projectName) {
-        if (!_.isUndefined(projectName) && projectName) {
-            $.ajax({
-                url: fcConfig.checkProjectNameUrl,
-                type: 'GET',
-                data: {projectName: projectName, id: project.projectId},
-                contentType: 'application/json',
-                success: function (data) {
-                    self.transients.validProjectName(data.validName);
+    
+    self.transients.isDataEntryValid = function () {
+        if (!self.isExternal()) {
+            var types = self.scienceType()
+            for( var index = 0; index < types.length; index++){
+                var type = types[index]
+                for(var j = 0; j < self.transients.dataCollectionWhiteList.length; j++){
+                    if(type == self.transients.dataCollectionWhiteList[j]){
+                        return true
+                    }
                 }
-            });
+            }
+
+            return false
         }
+
+        return true
     }
 
     self.clickTermsOfUse = function() {
@@ -1013,13 +1083,13 @@ function validateOrganisationSelection(field, rules, i, options) {
 
 
 var EditableBlogEntryViewModel = function(blogEntry, options) {
-
     var defaults = {
         validationElementSelector:'.validationEngineContainer',
-        types:['News and Events', 'Project Stories', 'Photo'],
+        types:['News and Events', 'Project Stories'],
         returnTo:fcConfig.returnTo,
         blogUpdateUrl:fcConfig.blogUpdateUrl
     };
+
     var config = $.extend(defaults, options);
     var self = this;
     var now = convertToSimpleDate(new Date());
@@ -1139,7 +1209,7 @@ var BlogSummary = function(blogEntries) {
     };
     self.deleteBlogEntry = function(entry) {
         var url = fcConfig.deleteBlogEntryUrl+'&id='+entry.blogEntryId();
-        $.post(url).done(function() {
+        $.post(url).always(function() {
             document.location.reload();
         });
     };

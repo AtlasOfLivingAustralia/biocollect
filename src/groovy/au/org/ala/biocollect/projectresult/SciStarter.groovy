@@ -75,7 +75,6 @@ class SciStarter {
                 coverage               : siteGeom,
                 links                  : trimmedLinks,
                 startDate              : doc.plannedStartDate,
-                isMetadataSharing      : doc.isMetadataSharing,
                 url                    : params.url + "/project/index/" + doc.projectId
             ]
         }

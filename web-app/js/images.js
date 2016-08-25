@@ -34,12 +34,14 @@ function ImageViewModel(prop, skipFindingDocument){
     self.formattedSize = formatBytes(prop.filesize);
     self.staged = prop.staged || false;
     self.documentId = prop.documentId || '';
-    self.status = ko.observable(prop.status || 'active')
-    self.projectName = prop.projectName
-    self.projectId = prop.projectId
-    self.activityName = prop.activityName
-    self.activityId = prop.activityId
-    self.isEmbargoed = prop.isEmbargoed
+    self.status = ko.observable(prop.status || 'active');
+    self.projectName = prop.projectName;
+    self.projectId = prop.projectId;
+    self.activityName = prop.activityName;
+    self.activityId = prop.activityId;
+    self.isEmbargoed = prop.isEmbargoed;
+    self.identifier=prop.identifier;
+
 
     self.remove = function(images, data, event){
         if(data.documentId){

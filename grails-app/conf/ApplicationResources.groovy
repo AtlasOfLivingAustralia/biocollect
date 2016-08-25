@@ -8,6 +8,14 @@ modules = {
         resource url: 'css/biocollect-banner.css'
     }
 
+    alaSkin {
+        dependsOn 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
+        resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
+        resource url: 'css/bootstrap-combobox.css'
+        resource url: 'css/common.css'
+        resource url: 'css/biocollect-banner.css'
+    }
+
     nrmSkin {
         dependsOn 'application', 'bootstrap_nrm', 'font_awesome_44'
         resource url: 'css/nrm/css/screen.css', attrs: [media: 'screen,print']
@@ -227,6 +235,7 @@ modules = {
         resource url: 'css/surveys.css'
         resource url: 'css/project-tile-view.css'
         resource url: 'css/works-project.css'
+        resource url: 'css/blog.css'
         resource url: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700", attrs:[type:"css"]
         resource url: "https://fonts.googleapis.com/css?family=Oswald:300", attrs:[type:"css"]
     }
@@ -236,6 +245,7 @@ modules = {
         resource url: 'js/button-toggle-events.js'
         resource url: 'js/project-finder.js'
         resource url: 'css/project-finder.css'
+        resource url: 'js/facets.js'
     }
 
 

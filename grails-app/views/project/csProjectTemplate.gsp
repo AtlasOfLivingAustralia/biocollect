@@ -7,6 +7,7 @@
     <r:script disposition="head">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
+        homePagePath: "${createLink(controller: 'home', action: 'index')}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         projectUpdateUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
         projectEditUrl:"${createLink(action:'edit', id:project.projectId)}",
@@ -70,7 +71,10 @@
         view: 'project',
         imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
         version: "${params.version}",
-        aekosSubmissionPostUrl: "${createLink(controller: 'projectActivity', action: 'aekosSubmission')}"
+        aekosSubmissionPostUrl: "${createLink(controller: 'projectActivity', action: 'aekosSubmission')}",
+        createBlogEntryUrl: "${createLink(controller: 'blog', action:'create', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}%23overview",
+        editBlogEntryUrl: "${createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}%23overview",
+        deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}"
         },
         here = window.location.href;
 
@@ -136,7 +140,9 @@
             self.transients = self.transients || {};
             self.transients.resultsHolder = 'project-results-placeholder';
         };
-        ko.applyBindings(new ViewModel());
+        var viewModel = new ViewModel()
+        viewModel.loadPrograms(<fc:modelAsJavascript model="${programs}"/>);
+        ko.applyBindings(viewModel);
 
         var params = {};
         params.projectId = project.projectId;

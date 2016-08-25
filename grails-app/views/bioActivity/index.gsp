@@ -29,7 +29,9 @@
         deleteCommentUrl:"${commentUrl}",
         imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
-        activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}"
+        activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
+        getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}"
+
         ${(params?.version) ? ',version: ' + params?.version : ''}
         },
         here = document.location.href;
@@ -47,12 +49,15 @@
                 <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
                 <li><a href="#" data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
                 <li class="active">
-                    <span data-bind="text:type"></span>
+                    <span>${pActivity.name}</span>
                 </li>
             </ul>
         </g:if>
 
-        <g:render template="header"/>
+        <div class="well text-center">
+            <h1 class="text-error">${pActivity?.name?.toUpperCase()}</h1>
+            <small><a data-bind="click:goToProject" href="#" class="clickable">Project: ${project?.name?.toUpperCase()}</a></small>
+        </div>
 
         <g:if test="${params?.version}">
             <div class="well">
@@ -64,18 +69,17 @@
         </g:if>
 
         <g:if test="${metaModel?.supportsSites?.toBoolean()}">
-            <div class="row-fluid" data-bind="if: transients.site">
-                <div class="span12 well">
-                    <h3>Site location: <span data-bind="text: transients.site.name"></span></h3>
-
+            <h3 class="text-error text-center well-title">Site location: <span data-bind="text: transients.site.name"></span></h3>
+            <div data-bind="if: transients.site">
+                <div class="output-block well text-center">
                     <m:map id="activitySiteMap" width="100%" height="300px"/>
                 </div>
             </div>
         </g:if>
 
         <g:if test="${metaModel?.supportsPhotoPoints?.toBoolean()}">
+            <h3 class="text-center text-error well-title">Photo Points</h3>
             <div class="output-block well" data-bind="with:transients.photoPointModel">
-                <h3>Photo Points</h3>
                 <g:render template="/site/photoPoints" model="[readOnly: true]"/>
             </div>
         </g:if>
@@ -89,8 +93,8 @@
                 <g:set var="output" value="[name: outputName]"/>
             </g:if>
 
+            <h3 class="text-center text-error well-title">${outputName}</h3>
             <div class="output-block well" id="ko${blockId}">
-                <h3>${outputName}</h3>
                 <div data-bind="if:outputNotCompleted">
                     <label class="checkbox" ><input type="checkbox" disabled="disabled" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>
                 </div>

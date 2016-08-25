@@ -22,7 +22,7 @@ class AuditService {
 
     def getAuditMessagesForProjectPerPage(String projectId, Integer start, Integer size, String sort, String orderBy, String q){
         String url = grailsApplication.config.ecodata.service.url + "/audit/getAuditMessagesForProjectPerPage/${projectId}?start=${start}&size=${size}&sort=${sort}&orderBy=${orderBy}&q=${q}"
-        return webService.getJson(url);
+        return webService.getJson(url, 80000);
     }
 
     def getAutoCompareAuditMessage(String id){

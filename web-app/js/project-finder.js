@@ -2,19 +2,6 @@
  * Created by Temi Varghese on 22/10/15.
  */
 function ProjectFinder() {
-    /* the default filter selections: used to determine whether to display the filter panel on load */
-    /* i.e. if the filter details from the URL hash are different to the default, then the filter panel will be opened */
-    var DEFAULT_CITIZEN_SCIENCE_FILTER = {isCitizenScience: "true", max: "20", sort: "nameSort"};
-    var DEFAULT_USER_PROJECT_FILTER = {isCitizenScience: "true", max: "20", sort: "nameSort", isUserPage: "true"};
-    var DEFAULT_USER_WORKS_PROJECT_FILTER = {isWorks: "true", max: "20", sort: "nameSort", isUserPage: "true"};
-    var DEFAULT_USER_ECO_SCIENCE_PROJECT_FILTER = {isEcoScience: "true", max: "20", sort: "nameSort", isUserPage: "true"};
-    var DEFAULT_ORGANISATION_PROJECT_FILTER = {
-        isCitizenScience: "true",
-        isWorks: "true",
-        isSurvey: "true",
-        max: "20",
-        sort: "nameSort"
-    };
 
     var self = this;
     /* holds all projects */
@@ -37,6 +24,8 @@ function ProjectFinder() {
 
     var refreshSearch = false;
 
+    var filterQuery
+
     this.availableProjectTypes = new ProjectViewModel({}, false, []).transients.availableProjectTypes;
 
     this.sortKeys = [
@@ -50,8 +39,17 @@ function ProjectFinder() {
     function PageVM() {
         this.self = this;
         this.pageProjects = ko.observableArray();
+        this.facets = ko.observableArray();
+        this.selectedFacets = ko.observableArray();
         this.columns = ko.observable(2);
         self.columns = this.columns;
+        this.doSearch = function () {
+            self.doSearch();
+        }
+
+        this.reset = function () {
+            self.reset();
+        }
 
         this.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
         this.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
@@ -119,8 +117,12 @@ function ProjectFinder() {
         this.styleIndex = function (dataIndex, rowSize) {
             return dataIndex() % rowSize + 1 ;
         };
-    }
 
+        this.filterViewModel = new FilterViewModel()
+
+        this.filterViewModel.selectedFacets.subscribe(this.doSearch)
+    }
+    
     /**
      * check if button has active flag
      * @param $button
@@ -202,56 +204,35 @@ function ProjectFinder() {
         })
     }
 
-    var pageWindow = new PageVM();
-    ko.applyBindings(pageWindow, document.getElementById('pt-table'));
+    pageWindow = new PageVM();
+    ko.applyBindings(pageWindow, document.getElementById('project-finder-container'));
 
     this.getParams = function () {
         var fq = [];
-        var isSuitableForChildren = isButtonChecked($('#pt-search-children'));
-        var isDIY = isButtonChecked($('#pt-search-diy'));
-        var status = getActiveButtonValues($('#pt-status')); // active check field status
-        var hasParticipantCost = isButtonChecked($('#pt-search-noCost')); // no cost
-        var hasTeachingMaterials = isButtonChecked($('#pt-search-teach')); // teaching material
-        var isMobile = isButtonChecked($('#pt-search-mobile')); // mobile uses links to find it out
-        var isContributingDataToAla = isButtonChecked($('#pt-search-dataToAla')); // the project contributes data to the ALA
-        var difficulty = getActiveButtonValues($('#pt-search-difficulty'));
         var isUserPage = fcConfig.isUserPage || false;
         var isUserWorksPage = fcConfig.isUserWorksPage || false;
         var isUserEcoSciencePage = fcConfig.isUserEcoSciencePage || false;
         var organisationName = fcConfig.organisationName;
-        var isCitizenScience = fcConfig.isCitizenScience;
-        var isWorks = false;
-        var isBiologicalScience = false;
-        var isMERIT = false;
+        var isCitizenScience = fcConfig.isCitizenScience || false;
+        var isWorks = fcConfig.isWorks || false;
+        var isBiologicalScience = fcConfig.isBiologicalScience || false;
+        var isMERIT = fcConfig.isMERIT || false;
+        var isWorldWide, hideWorldWideBtn = fcConfig.hideWorldWideBtn || false;
+        if(!hideWorldWideBtn){
+            isWorldWide= getActiveButtonValues($('#pt-aus-world'));
+            isWorldWide = isWorldWide.length? isWorldWide[0] : false
+        }
 
         sortBy = getActiveButtonValues($("#pt-sort"));
         perPage = getActiveButtonValues($("#pt-per-page"));
 
-
-        if (fcConfig.showAllProjects) {
-            var values = getActiveButtonValues($('#pt-search-projecttype'));
-            for (var i in values) {
-                switch (values[i]) {
-                    case 'citizenScience':
-                        isCitizenScience = true;
-                        break;
-                    case "biologicalScience":
-                        isBiologicalScience = true;
-                        break;
-                    case 'merit':
-                        isMERIT = true;
-                        break;
-                    case 'works':
-                        isWorks = true;
-                        break;
-                }
-            }
-        }
+        pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
+            fq.push(facet.getQueryText())
+        })
 
         var map = {
             fq: fq,
             offset: offset,
-            status: status,
             isCitizenScience: isCitizenScience,
             isWorks: isWorks,
             isBiologicalScience: isBiologicalScience,
@@ -259,18 +240,12 @@ function ProjectFinder() {
             isUserPage: isUserPage,
             isUserWorksPage: isUserWorksPage,
             isUserEcoSciencePage: isUserEcoSciencePage,
-            hasParticipantCost: hasParticipantCost,
-            isSuitableForChildren: isSuitableForChildren,
-            isDIY: isDIY,
-            hasTeachingMaterials: hasTeachingMaterials,
-            isMobile: isMobile,
-            isContributingDataToAla: isContributingDataToAla,
-            difficulty: difficulty,
             organisationName: organisationName,
             max: perPage, // page size
             sort: sortBy,
             geoSearchJSON: JSON.stringify(geoSearch),
             skipDefaultFilters:fcConfig.showAllProjects,
+            isWorldWide: isWorldWide,
             q: $('#pt-search').val().toLowerCase()
         };
 
@@ -301,13 +276,14 @@ function ProjectFinder() {
                 $('#search-spinner').show();
             },
             success: function (data) {
-                var projectVMs = [];
+                var projectVMs = [], facets;
                 var organisation = fcConfig.organisation || [];
                 total = data.total;
                 $.each(data.projects, function (i, project) {
                     projectVMs.push(new ProjectViewModel(project, false, organisation));
                 });
                 self.pago.init(projectVMs);
+                pageWindow.filterViewModel.setFacets(data.facets)
             },
             error: function () {
                 console.error("Could not load project data.");
@@ -318,12 +294,24 @@ function ProjectFinder() {
             }
         })
     };
-
+    
     this.searchAndShowFirstPage = function () {
         self.pago.firstPage();
         return true
     };
 
+
+    this.reset = function () {
+        checkButton($('#pt-sort'), 'nameSort');
+        checkButton($('#pt-per-page'), '20');
+        $('#pt-search').val('');
+        if (spatialFilter) {
+            spatialFilter.resetMap();
+        }
+        geoSearch = {};
+        refreshGeofilterButtons();
+        pageWindow.filterViewModel.selectedFacets.removeAll();
+    }
     /*************************************************\
      *  Show filtered projects on current page
      \*************************************************/
@@ -402,28 +390,29 @@ function ProjectFinder() {
 
         // Results view
         var savedViewMode = amplify.store('pt-view-state');
-        savedViewMode = savedViewMode || "listView"; //Default is the old list view
+        savedViewMode = savedViewMode || "tileView"; //Default is the new tile view
         checkButton($("#pt-view"), savedViewMode);
         var viewMode = getActiveButtonValues($("#pt-view"));
         pageWindow.listView(viewMode[0] == "listView");
 
         // Filters view
         var showPanel = amplify.store('pt-filter');
+        showPanel = showPanel === undefined ? true : showPanel;
         toggleFilterPanel(showPanel);
     };
 
     function toggleFilterPanel(showPanel) {
         if(showPanel) {
 
-            $('#pt-table').removeClass('span12 no-sidebar');
-            $('#pt-table').addClass('span10');
+            $('#pt-table').removeClass('span11 no-sidebar');
+            $('#pt-table').addClass('span9');
             $('#filterPanel').show();
             $('#pt-filter').addClass('active');
 
         } else {
             $('#filterPanel').hide();
-            $('#pt-table').removeClass('span10');
-            $('#pt-table').addClass('span12 no-sidebar');
+            $('#pt-table').removeClass('span9');
+            $('#pt-table').addClass('span11 no-sidebar');
         }
     }
 
@@ -456,6 +445,10 @@ function ProjectFinder() {
         pageWindow.listView(viewMode[0] == "listView");
         amplify.store('pt-view-state', viewMode[0]);
     });
+    
+    $("#pt-aus-world").on('statechange', function(){
+        var viewMode = getActiveButtonValues($("#pt-view"));
+    })
 
 
     $("#mapModal").on('shown', function () {
@@ -490,21 +483,7 @@ function ProjectFinder() {
     });
 
     $('#pt-reset').click(function () {
-        uncheckButton($('#pt-tags'));
-        uncheckButton($('#pt-status'));
-        uncheckButton($('#pt-search-difficulty'));
-        checkButton($('#pt-sort'), 'nameSort');
-        checkButton($('#pt-per-page'), '20');
-        $('#pt-search').val('');
-        if (spatialFilter) {
-            spatialFilter.resetMap();
-        }
-        geoSearch = {};
-        refreshGeofilterButtons();
-
-        self.pago.firstPage();
-        self.doSearch();
-
+        self.reset()
     });
 
     $("#btnShowTileView").click(function () {
@@ -523,6 +502,7 @@ function ProjectFinder() {
     $('#pt-sort').on('statechange', self.searchAndShowFirstPage);
 
     $('#pt-per-page').on('statechange', self.searchAndShowFirstPage);
+    $('#pt-aus-world').on('statechange', self.searchAndShowFirstPage);
 
 
     pago = this.pago = {
@@ -568,7 +548,7 @@ function ProjectFinder() {
         var hash = [];
         for (var param in params) {
             if (params.hasOwnProperty(param) && params[param] && params[param] != '') {
-                if (param != 'geoSearchJSON') {
+                if ((param != 'geoSearchJSON') && (param != 'fq')) {
                     hash.push(param + "=" + params[param]);
                 }
             }
@@ -578,31 +558,39 @@ function ProjectFinder() {
             hash.push('geoSearch=' + LZString.compressToBase64(JSON.stringify(geoSearch)));
         }
 
+        if (!_.isEmpty(params.fq)) {
+            params.fq.forEach(function (filter) {
+                hash.push('fq=' + filter)
+            })
+        }
+
         return encodeURIComponent(hash.join("&"));
     }
 
     function parseHash() {
         var hash = decodeURIComponent(window.location.hash.substr(1)).split("&");
 
-        var params = {};
+        var params = {
+            fq: []
+        };
         for (var i = 0; i < hash.length; i++) {
             var keyAndValue = hash[i].split("=");
             if (keyAndValue.indexOf(",") > -1) {
                 params[keyAndValue[0]] = keyAndValue.split(",");
             } else {
-                params[keyAndValue[0]] = keyAndValue[1];
+                if(typeof params[keyAndValue[0]] == 'string'){
+                    params[keyAndValue[0]] = [params[keyAndValue[0]], keyAndValue[1]]
+                } else if( params[keyAndValue[0]] == undefined) {
+                    params[keyAndValue[0]] = keyAndValue[1]
+                } else {
+                    params[keyAndValue[0]].push( keyAndValue[1] );
+                }
             }
         }
 
-        toggleButton($('#pt-search-diy'), toBoolean(params.isDIY));
-        setActiveButtonValues($('#pt-status'), params.status);
-        toggleButton($('#pt-search-noCost'), toBoolean(params.hasParticipantCost));
-        toggleButton($('#pt-search-teach'), toBoolean(params.hasTeachingMaterials));
-        toggleButton($('#pt-search-mobile'), toBoolean(params.isMobile));
-        toggleButton($('#pt-search-dataToAla'), toBoolean(params.isContributingDataToAla));
-        toggleButton($('#pt-search-children'), toBoolean(params.isSuitableForChildren));
-        setActiveButtonValues($('#pt-search-difficulty'), params.difficulty);
+
         setGeoSearch(params.geoSearch);
+        pageWindow.filterViewModel.setFilterQuery(params.fq)
 
         if (fcConfig.associatedPrograms) {
             $.each(fcConfig.associatedPrograms, function (i, program) {
@@ -610,9 +598,10 @@ function ProjectFinder() {
             });
         }
 
-        checkButton($("#pt-sort"), params.sort || 'nameSort');
+        checkButton($("#pt-sort"), params.sort || 'dateCreatedSort');
         checkButton($("#pt-per-page"), params.max || '20');
-
+        checkButton($("#pt-aus-world"), params.isWorldWide || 'false');
+        
         $('#pt-search').val(params.q).focus()
     }
 
@@ -713,6 +702,9 @@ function ProjectFinder() {
     }
 
 
+    if (fcConfig.hideWorldWideBtn) {
+        $('#pt-aus-world').hide()
+    }
 
     parseHash();
     self.doSearch();

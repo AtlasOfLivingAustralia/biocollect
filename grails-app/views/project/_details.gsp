@@ -16,7 +16,7 @@
             <div class="clearfix control-group">
                 <label class="control-label span3" for="isExternal"><g:message code="project.details.useALA"/><fc:iconHelp><g:message code="project.details.useALA.help"/></fc:iconHelp><i class="req-field"></i></label>
 
-                <div class="controls span9">
+                <div class="controls span4">
                     <select id="isExternal" data-bind="booleanValue:isExternal, options:[{label:'Yes', value:'false'}, {label:'No', value:'true'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'" data-validation-engine="validate[required]">
                     </select>
                 </div>
@@ -65,17 +65,6 @@
                 </div>
             </div>
         </div>
-        <div data-bind="visible:(isCitizenScience() || !isExternal()) && !isEcoScience()" class="row-fluid">
-            <p/>
-            <div class="control-group">
-                <label class="control-label span3" for="isMetadataSharing"><g:message code="project.details.isMetadataSharing"/><fc:iconHelp><g:message code="project.details.isMetadataSharing.help"/></fc:iconHelp></label>
-                <div class="controls span9 large-checkbox">
-                    <input data-bind="checked:isMetadataSharing" type="checkbox" id="isMetadataSharing"/>
-                    <label for="isMetadataSharing"> <span></span> <g:message code="project.details.isMetadataSharing.extra"/> </label>
-                </div>
-            </div>
-        </div>
-
         <div class="row-fluid" >
             <div class="control-group">
                 <label class="control-label span3" for="isContributingToAla"><g:message code="project.details.isContributingToAla"/><fc:iconHelp><g:message code="project.details.isContributingToAla.help"/></fc:iconHelp></label>
@@ -98,7 +87,6 @@
                 <div class="controls span9">
                     <g:textField style="width:90%;" name="name" data-bind="value:name"
                                  data-validation-engine="validate[required]"/>
-                    <div class="alert alert-error margin-top-1" data-bind="visible: !transients.validProjectName()"><g:message code="project.details.invalidName"/></div>
                 </div>
             </div>
 
@@ -146,7 +134,7 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div class="clearfix control-group" data-bind="visible:!isWorks()">
                 <label class="control-label span3" for="plannedEndDate"><g:message code="project.details.plannedEndDate"/>
                 <fc:iconHelp><g:message code="project.details.plannedEndDate.help"/></fc:iconHelp>
                 </label>
@@ -157,8 +145,18 @@
                     <g:message code="project.details.plannedEndDate.extra"/>
                 </div>
             </div>
+            <div class="clearfix control-group" data-bind="visible:isWorks()">
+                <label class="control-label span3" for="plannedEndDate"><g:message code="project.details.plannedEndDate"/>
+                <fc:iconHelp><g:message code="project.details.plannedEndDate.help"/></fc:iconHelp><i class="req-field"></i>
+                </label>
 
-            <div data-bind="visible:!isWorks()" id="associatedOrgs">
+                <div class="controls span9">
+                    <fc:datePicker class="input-small" targetField="plannedEndDate.date" name="plannedEndDate"
+                                   id="plannedEndDate" data-validation-engine="validate[required,future[plannedStartDate]]" data-errormessage-value-missing="Works projects must have an end date"/>
+                </div>
+            </div>
+
+            <div id="associatedOrgs">
                 <div class="row-fluid">
                     <div class="clearfix control-group">
                         <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.associatedOrgs"/>:<fc:iconHelp><g:message code="project.details.associatedOrgs.help"/></fc:iconHelp></label>
@@ -257,11 +255,48 @@
                     </div>
                 </div>
             </div>
+            <div class="row-fluid">
+                <div class="clearfix control-group">
+                    <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.countries.label"/>:<fc:iconHelp><g:message code="project.details.countries.help"/></fc:iconHelp></label>
+                    <div class="span9">
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <!-- ko foreach: countries -->
+                                <div class="span12 margin-left-0 margin-bottom-1">
+                                    <input data-bind="value: $data" readonly>
+                                    <a href="#" data-bind="click: $root.transients.removeCountry"><i class="icon-remove"></i></a>
+                                </div>
+                                <!-- /ko -->
+                                <select class="span12" id="countries"
+                                        data-bind="options: $root.transients.countries, event:{change: $root.transients.selectCountry}, optionsCaption: '<g:message code="project.details.countries.placeholder"/>'"
+                                        ></select>
+                            </div>
+                            <div class="span8">
+                                <div class="row-fluid">
+                                    <div class="clearfix control-group">
+                                        <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.uNRegions.label"/>:<fc:iconHelp><g:message code="project.details.uNRegions.help"/></fc:iconHelp></label>
+                                        <div class="span9">
+                                            <!-- ko foreach: uNRegions -->
+                                            <div class="span12 margin-left-0 margin-bottom-1" >
+                                                <input data-bind="value: $data" readonly>
+                                                <a href="#" data-bind="click: $root.transients.removeUNRegion"><i class="icon-remove"></i></a>
+                                            </div>
+                                            <!-- /ko -->
+                                            <select class="span12" id="uNRegionsId"
+                                                    data-bind="options: $root.transients.uNRegions, event:{change: $root.transients.selectUNRegion}, optionsCaption: '<g:message code="project.details.uNRegions.placeholder"/>'"
+                                            ></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="clearfix control-group" data-bind="if:isEcoScience()">
                 <label class="control-label span3"><g:message code="project.details.scienceType"/><fc:iconHelp><g:message code="project.details.scienceType.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
-                    %{--<select id="scienceType" data-bind="value:ecoScienceType, options:transients.availableEcoScienceTypes, optionsText:'name', optionsValue:'value', optionsCaption:'Select...'" data-validation-engine="validate[required]"></select>--}%
                     <div class="row-fluid" >
                         <div class="span4">
                             <!-- ko foreach: transients.availableEcoScienceTypes -->
@@ -344,7 +379,7 @@
 
                 <div class="controls span9">
                     <select class="span12" id="orgGrantee"
-                            data-bind="options:transients.organisations, optionsText:'name', optionsValue:'uid', value:orgIdGrantee, optionsCaption: 'Choose...'"></select>
+                            data-bind="options:transients.organisations, optionsText:'name', optionsValue:'organisationId', value: orgIdGrantee, optionsCaption: 'Choose...'"></select>
                 </div>
             </div>
 
@@ -354,7 +389,7 @@
 
                 <div class="controls span9">
                     <select class="span12" id="orgSponsor"
-                            data-bind="options:transients.organisations, optionsText:'name', optionsValue:'uid', value:orgIdSponsor, optionsCaption: 'Choose...'"></select>
+                            data-bind="options:transients.organisations, optionsText:'name', optionsValue:'organisationId', value:orgIdSponsor, optionsCaption: 'Choose...'"></select>
                 </div>
             </div>
 
@@ -383,12 +418,11 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div id="scienceTypeControlGroup" class="clearfix control-group">
                 <label class="control-label span3"
                        ><g:message code="project.details.scienceType"/><fc:iconHelp><g:message code="project.details.scienceType.help"/></fc:iconHelp><i class="req-field"></i></label>
 
                 <div class="controls span9">
-                    %{--<select id="scienceType" data-bind="value:scienceType, options:transients.availableScienceTypes, optionsText:'name', optionsValue:'value', optionsCaption:'Select...'" data-validation-engine="validate[required]"></select>--}%
                     <div class="row-fluid" >
                         <div class="span4">
                             <!-- ko foreach: transients.availableScienceTypes -->
@@ -416,42 +450,65 @@
             </div>
 
             <div class="clearfix control-group">
-                <label class="control-label span3"><g:message code="project.details.difficulty"/><fc:iconHelp><g:message code="project.details.difficulty.help"/></fc:iconHelp><i class="req-field"></i></label>
+                <label class="control-label span3"><g:message code="project.details.difficulty"/><fc:iconHelp><g:message code="project.details.difficulty.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
-                    <select data-bind="value:difficulty, options:transients.difficultyLevels, optionsCaption:'Select...'" data-validation-engine="validate[required]"></select>
+                    <div class="row-fluid">
+                        <div class="span3">
+                            <select data-bind="value:difficulty, options:transients.difficultyLevels, optionsCaption:'Select...'"></select>
+                        </div>
+                        <div class="span9">
+                            <div class="clearfix control-group">
+                                <label class="control-label span8" for="isHome"><g:message code="project.details.isHome"/><fc:iconHelp><g:message code="project.details.isHome.help"/></fc:iconHelp></label>
+                                <div class="controls span4">
+                                    <select id="isHome" data-bind="booleanValue:isHome, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="clearfix control-group">
                 <label class="control-label span3" for="hasParticipantCost"><g:message code="project.details.hasParticipantCost"/><fc:iconHelp><g:message code="project.details.hasParticipantCost.help"/></fc:iconHelp></label>
                 <div class="controls span9">
-                    <select id="hasParticipantCost" data-bind="booleanValue:hasParticipantCost, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
-                    </select>
+                    <div class="row-fluid">
+                        <div class="span3">
+                            <select id="hasParticipantCost" data-bind="booleanValue:hasParticipantCost, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
+                            </select>
+                        </div>
+                        <div class="span9">
+                            <div class="clearfix control-group">
+                                <label class="control-label span8" for="isSuitableForChildren"><g:message code="project.details.isSuitableForChildren"/><fc:iconHelp><g:message code="project.details.isSuitableForChildren.help"/></fc:iconHelp></label>
+                                <div class="controls span4">
+                                    <select id="isSuitableForChildren" data-bind="booleanValue:isSuitableForChildren, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="clearfix control-group">
                 <label class="control-label span3" for="hasTeachingMaterials"><g:message code="project.details.hasTeachingMaterials"/><fc:iconHelp><g:message code="project.details.hasTeachingMaterials.help"/></fc:iconHelp></label>
                 <div class="controls span9">
-                    <select id="hasTeachingMaterials" data-bind="booleanValue:hasTeachingMaterials, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
-                    </select>
-                </div>
-            </div>
-
-            <div class="clearfix control-group">
-                <label class="control-label span3" for="isDIY"><g:message code="project.details.isDIY"/><fc:iconHelp><g:message code="project.details.isDIY.help"/></fc:iconHelp></label>
-                <div class="controls span9">
-                    <select id="isDIY" data-bind="booleanValue:isDIY, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
-                    </select>
-                </div>
-            </div>
-
-            <div class="clearfix control-group">
-                <label class="control-label span3" for="isSuitableForChildren"><g:message code="project.details.isSuitableForChildren"/><fc:iconHelp><g:message code="project.details.isSuitableForChildren.help"/></fc:iconHelp></label>
-                <div class="controls span9">
-                    <select id="isSuitableForChildren" data-bind="booleanValue:isSuitableForChildren, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
-                    </select>
+                    <div class="row-fluid">
+                        <div class="span3">
+                            <select id="hasTeachingMaterials" data-bind="booleanValue:hasTeachingMaterials, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
+                            </select>
+                        </div>
+                        <div class="span9">
+                            <div class="clearfix control-group">
+                                <label class="control-label span8" for="isDIY"><g:message code="project.details.isDIY"/><fc:iconHelp><g:message code="project.details.isDIY.help"/></fc:iconHelp></label>
+                                <div class="controls span4">
+                                    <select id="isDIY" data-bind="booleanValue:isDIY, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -573,7 +630,7 @@
         <div class="large-checkbox">
             <input type="checkbox" name="scienceType" class="validate[required]"
                    data-validation-engine="validate[minCheckbox[1]]"
-                   data-bind="value: $data.toLowerCase(), attr:{id:'checkbox'+$index()}, checked: $root.transients.isScienceTypeChecked($data), event:{change:$root.transients.addScienceType}">
+                   data-bind="value: $data, attr:{id:'checkbox'+$index()}, checked: $root.transients.isScienceTypeChecked($data), event:{change:$root.transients.addScienceType}">
             <label data-bind="html: '<span></span> ' + $data, attr:{for:'checkbox'+$index()}"></label>
         </div>
     </script>

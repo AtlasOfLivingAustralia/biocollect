@@ -7,6 +7,7 @@
     <r:script disposition="head">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
+        homePagePath: "${createLink(controller: 'home', action: 'index')}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         projectUpdateUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
         saveMeriPlanUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
@@ -71,7 +72,10 @@
         view: 'project',
         imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
         version: "${params.version}",
-        aekosSubmissionPostUrl: "${createLink(controller: 'projectActivity', action: 'aekosSubmission')}"
+        aekosSubmissionPostUrl: "${createLink(controller: 'projectActivity', action: 'aekosSubmission')}",
+        createBlogEntryUrl: "${createLink(controller: 'blog', action:'create', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}%23overview",
+        editBlogEntryUrl: "${createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}%23overview",
+        deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}"
         },
         here = window.location.href;
 
@@ -172,19 +176,11 @@
                 $('#admin-tab').tab('show');
             });
 
-        });// end window.load
+
+    <g:if test="${user?.isAdmin || user?.isCaseManager}">
 
 
-        // select about tab when coming from project finder
-        if(amplify.store('traffic-from-project-finder-page')){
-            amplify.store('traffic-from-project-finder-page',false)
-            $('#about-tab').tab('show');
-        }
-</r:script>
-<g:if test="${user?.isAdmin || user?.isCaseManager}">
-    <r:script>
         // Admin JS code only exposed to admin users
-        $(window).load(function () {
 
             // remember state of admin nav (vertical tabs)
             $('#adminNav a[data-toggle="tab"]').on('shown', function (e) {
@@ -199,9 +195,29 @@
                 $(storedAdminTab + "-tab").tab('show');
             }
             populatePermissionsTable();
-        }); // end window.load
 
-    </r:script>
-</g:if>
+//            var project = <fc:modelAsJavascript model="${project}"/>;
+//            var viewModel = new WorksProjectViewModel(project, ${user?.isEditor?:false}, {}, {});
+            var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
+            var projectStoriesViewModel = new window.projectStoriesViewModel(viewModel, projectStoriesMarkdown);
+            ko.applyBindings(projectStoriesViewModel, $('#editprojectStoriesContent')[0]);
+
+            var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
+            var newsAndEventsViewModel = new window.newsAndEventsViewModel(viewModel, newsAndEventsMarkdown);
+            ko.applyBindings(newsAndEventsViewModel, $('#editnewsAndEventsContent')[0]);
+
+
+    </g:if>
+
+    });// end window.load
+
+    // select about tab when coming from project finder
+    if(amplify.store('traffic-from-project-finder-page')) {
+        amplify.store('traffic-from-project-finder-page',false)
+        $('#about-tab').tab('show');
+    }
+
+</r:script>
+
 </body>
 </html>

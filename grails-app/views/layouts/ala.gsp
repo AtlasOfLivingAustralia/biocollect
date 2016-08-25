@@ -1,41 +1,35 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="au.org.ala.biocollect.merit.SettingPageType" %>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-   <meta name="app.version" content="${g.meta(name:'app.version')}"/>
-   <meta name="app.build" content="${g.meta(name:'app.build')}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="app.version" content="${g.meta(name:'app.version')}"/>
+    <meta name="app.build" content="${g.meta(name:'app.build')}"/>
     <meta name="description" content="Atlas of Living Australia Field Capture"/>
     <meta name="author" content="Atlas of Living Australia">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>
+    <link href="http://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>
 
-   <title><g:layoutTitle /></title>
-   <r:require modules="ala2Skin, jquery_cookie" />
+    <title><g:layoutTitle /></title>
+    <r:require modules="alaSkin, jquery_cookie" />
     <r:layoutResources/>
     <g:layoutHead />
 </head>
-<body class="${pageProperty(name:'body.class')?:'nav-getinvolved'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}">
-<ala:systemMessage/>
+<body class="${pageProperty(name:'body.class')?:'nav-getinvolved'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}" style="padding-top:50px;">
 <g:set var="introText"><fc:getSettingContent settingType="${SettingPageType.INTRO}"/></g:set>
 <g:set var="userLoggedIn"><fc:userIsLoggedIn/></g:set>
 <div id="body-wrapper">
+    <hf:banner logoutUrl="${g.createLink(controller:"logout", action:"logout", absolute: true)}"/>
+    <g:render template="/shared/menu" model="${[fc:fc]}"/>
     <g:if test="${fc.announcementContent()}">
         <div id="announcement">
             ${fc.announcementContent()}
         </div>
     </g:if>
-
-    <g:render template="/project/biocollectBanner" model="${[fc:fc, hf: hf]}"></g:render>
-    <g:if test="${showCitizenScienceBanner}" model="${[hubConfig:hubConfig]}">
+    <!-- ALA Skin supported only for sightings hib -->
+    <g:if test="${showCitizenScienceBanner}">
         <g:render template="/shared/bannerCitizenScience"/>
-    </g:if>
-    <g:if test="${showWorksBanner}">
-        <g:render template="/shared/bannerWorks"/>
-    </g:if>
-    <g:if test="${showEcoScienceBanner}">
-        <g:render template="/shared/bannerEcoScience"/>
     </g:if>
 
     <div class="container-fluid" id="main-content">
@@ -100,19 +94,98 @@
             window.location = "${createLink(controller: 'admin')}";
         });
         $('.btnNewProject').click(function(e) {
-            <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-                window.location = "${createLink(controller: 'project', action:'create', params: [citizenScience:true])}"
-            </g:if>
-            <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-                window.location = "${createLink(controller: 'project', action:'create', params: [works:true])}"
-            </g:if>
-            <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
-                window.location = "${createLink(controller: 'project', action:'create', params: [ecoScience:true])}"
-            </g:if>
+            window.location = "${createLink(controller: 'project', action:'create', params: [citizenScience:true])}"
         });
 
         $(".btnProfile").click(function (e) {
             window.location = "${createLink(controller: 'myProfile')}";
+        });
+
+        $(".btnMyData").click(function (e) {
+            window.location = "${createLink(controller: 'bioActivity', action: 'list')}";
+        });
+
+        $(".btnMyProjects").click(function (e) {
+            window.location = "${createLink(controller: 'project', action: 'myProjects')}";
+        });
+
+        $("#toggleFluid").click(function(el){
+            var fluidNo = $('div.container-fluid').length;
+            var fixNo = $('div.container').length;
+            //console.log("counts", fluidNo, fixNo);
+            if (fluidNo > fixNo) {
+                $('div.container-fluid').addClass('container').removeClass('container-fluid');
+            } else {
+                $('div.container').addClass('container-fluid').removeClass('container');
+            }
+        });
+
+        // Set up a timer that will periodically poll the server to keep the session alive
+        var intervalSeconds = 5 * 60;
+
+        setInterval(function() {
+            $.ajax("${createLink(controller: 'ajax', action:'keepSessionAlive')}").done(function(data) {});
+        }, intervalSeconds * 1000);
+
+    }); // end document ready
+
+</r:script>
+<g:if test="${userLoggedIn}">
+    <r:script>
+        $(document).ready(function (e) {
+            // Show introduction popup (with cookie check)
+            var cookieName = "hide-intro";
+            var introCookie = $.cookie(cookieName);
+            //  document.referrer is empty following login from AUTH
+            if (!introCookie && !document.referrer) {
+                $('#introPopup').modal('show');
+            } else {
+                $('#hideIntro').prop('checked', true);
+            }
+            // console.log("referrer", document.referrer);
+            // don't show popup if user has clicked checkbox on popup
+            $('#hideIntro').click(function() {
+                if ($(this).is(':checked')) {
+                    $.cookie(cookieName, 1);
+                } else {
+                    $.removeCookie(cookieName);
+                }
+            });
+        }); // end document ready
+    </r:script>
+</g:if>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<r:script>
+    // Prevent console.log() killing IE
+    if (typeof console == "undefined") {
+        this.console = {log: function() {}};
+    }
+
+    $(document).ready(function (e) {
+
+        $.ajaxSetup({ cache: false });
+
+        $(".btnAdministration").click(function (e) {
+            window.location = "${createLink(controller: 'admin')}";
+        });
+        $('.btnNewProject').click(function(e) {
+    <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+        window.location = "${createLink(controller: 'project', action:'create', params: [citizenScience:true])}"
+    </g:if>
+    <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+        window.location = "${createLink(controller: 'project', action:'create', params: [works:true])}"
+    </g:if>
+    <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
+        window.location = "${createLink(controller: 'project', action:'create', params: [ecoScience:true])}"
+    </g:if>
+    });
+
+    $(".btnProfile").click(function (e) {
+        window.location = "${createLink(controller: 'myProfile')}";
         });
 
         $(".btnAllData").click(function (e) {
@@ -141,20 +214,20 @@
 
 
         $(".btnSearch").click(function(e){
-            <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-                window.location = "${createLink(controller: 'project', action: 'citizenScience')}";
-            </g:if>
-            <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-                window.location = "${createLink(controller: 'home', action: 'index')}";
-            </g:if>
-            <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
-                //TODO: redirect to ecoScience instead of index
-                window.location = "${createLink(controller: 'home', action: 'index')}";
-            </g:if>
-        })
+    <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+        window.location = "${createLink(controller: 'project', action: 'citizenScience')}";
+    </g:if>
+    <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+        window.location = "${createLink(controller: 'home', action: 'index')}";
+    </g:if>
+    <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
+        //TODO: redirect to ecoScience instead of index
+        window.location = "${createLink(controller: 'home', action: 'index')}";
+    </g:if>
+    })
 
-        $(".btnSite").click(function(e){
-             window.location = "${createLink(controller: 'site', action: 'list')}";
+    $(".btnSite").click(function(e){
+         window.location = "${createLink(controller: 'site', action: 'list')}";
         })
 
         $("#toggleFluid").click(function(el){
@@ -213,20 +286,20 @@
     </r:script>
 </g:if>
 
-    <script type="text/javascript">
-        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <r:script>
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<r:script>
         var pageTracker = _gat._getTracker('${grailsApplication.config.googleAnalyticsID}');
         pageTracker._initData();
         pageTracker._trackPageview();
         // show warning if using IE6
         if ($.browser.msie && $.browser.version.slice(0,1) == '6') {
             $('#header').prepend($('<div style="text-align:center;color:red;">WARNING: This page is not compatible with IE6.' +
-                    ' Many functions will still work but layout and image transparency will be disrupted.</div>'));
+' Many functions will still work but layout and image transparency will be disrupted.</div>'));
         }
-    </r:script>
+</r:script>
 <r:script>
     function calcWidth() {
         var navwidth = 0;
@@ -261,7 +334,7 @@
     $('#biocollectNav').show();
     calcWidth();
 </r:script>
-    <!-- JS resources-->
-    <r:layoutResources/>
+<!-- JS resources-->
+<r:layoutResources/>
 </body>
-</html>
+</html>>

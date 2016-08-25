@@ -24,7 +24,7 @@ function MERIPlan(project, themes, key) {
         return (project['custom']['details'].status == 'active');
     });
     self.isProjectDetailsLocked = ko.computed (function (){
-        return (project.planStatus == 'approved' || project.planStatus =='submitted');
+        return false; // Always editable, at least for now.
     });
 
     self.projectThemes =  $.map(themes, function(theme, i) { return theme.name; });
@@ -335,8 +335,8 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
         restoredDataWarningSelector:'#restoredData',
         resultsMessageId:'save-details-result-placeholder',
         timeoutMessageSelector:'#timeoutMessage',
-        errorMessage:"Failed to save MERI Plan: ",
-        successMessage: 'MERI Plan saved',
+        errorMessage:"Failed to save Project Plan: ",
+        successMessage: 'Project Plan saved',
         preventNavigationIfDirty:true,
         defaultDirtyFlag:ko.dirtyFlag
     };

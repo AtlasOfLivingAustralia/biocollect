@@ -47,5 +47,11 @@
         </li>
         <li class="pull-right"><a href="http://www.ala.org.au" class="ala-link do-not-mark-external"><span
                 class="ala-icon">&nbsp;</span>Atlas of Living Australia</a></li>
+        <g:if test="${hubConfig.defaultFacetQuery.contains('isCitizenScience:true')}">
+            <li id="acsa-banner" class="pull-right"><a href="${grailsApplication.config.acsaUrl}" class="do-not-mark-external"><span
+                class="acsa-image"></span> </a></li>
+            <li id="acsa-text" class="pull-right"><a href="${grailsApplication.config.acsaUrl}" class="do-not-mark-external"><span
+                    class="acsa-icon"></span> ACSA</a></li>
+        </g:if>
     </ul>
 </nav>

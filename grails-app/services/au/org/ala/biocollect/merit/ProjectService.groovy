@@ -1,14 +1,19 @@
 package au.org.ala.biocollect.merit
+
 import au.org.ala.biocollect.EmailService
-import au.org.ala.biocollect.OrganisationController
 import au.org.ala.biocollect.OrganisationService
 import grails.converters.JSON
+import org.springframework.context.MessageSource
 
 class ProjectService {
 
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE = 'survey'
     public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoscience'
     public static final String PROJECT_TYPE_WORKS = 'works'
+        static  final MOBILE_APP_ROLE = [ "android",
+                                          "blackberry",
+                                          "iTunes",
+                                          "windowsPhone"]
 
 
     WebService webService
@@ -22,19 +27,7 @@ class ProjectService {
     EmailService emailService
     OrganisationService organisationService
     CacheService cacheService
-
-    /**
-     * Check if a project already exists with the specified name.
-     *
-     * @param projectName The name to check
-     * @param id The ID of the project being edited, to exclude it from the check. Leave null if creating a new project
-     * @return True if no other active project exists with the same name
-     */
-    boolean checkProjectName(String projectName, String id) {
-        def results = webService.getJson("${grailsApplication.config.ecodata.service.url}/project/findByName?projectName=${URLEncoder.encode(projectName, "utf-8")}", 30000, true)
-
-        results?.isEmpty() || (results?.size() == 1 && id == results[0]?.projectId)
-    }
+    MessageSource messageSource
 
     def list(brief = false, citizenScienceOnly = false) {
         def params = brief ? '?brief=true' : ''
@@ -116,8 +109,8 @@ class ProjectService {
         }
 
         if (props.containsKey("name")) {
-            if (!checkProjectName(props.name, projectId)) {
-                return "name is not unique"
+            if (!props.name) {
+                return "name cannot be emtpy"
             }
         } else if (!updating) {
             //error, no project name
@@ -137,17 +130,6 @@ class ProjectService {
         if (!updating && !props.containsKey("scienceType") && !isEcoScience) {
             //error, no science type
             return "scienceType is missing"
-        }
-
-        if (!isEcoScience && !isWorks) {
-            if (props.containsKey("difficulty")) {
-                if (!['Easy', 'Medium', 'Hard'].contains(props.difficulty)) {
-                    return "difficulty is not valid."
-                }
-            } else if (!updating) {
-                //error, no difficulty
-                return "difficulty is missing"
-            }
         }
 
         if (!isEcoScience && !isWorks) {
@@ -564,9 +546,9 @@ class ProjectService {
      * @throws SocketTimeoutException
      * @throws Exception
      */
-    Map importSciStarterProjects(String whiteList) throws SocketTimeoutException, Exception{
+    Map importSciStarterProjects() throws SocketTimeoutException, Exception{
         String url = "${grailsApplication.config.ecodata.service.url}/project/importProjectsFromSciStarter";
-        Map response = webService.doPostWithParams(url, [whiteList:whiteList]);
+        Map response = webService.doPostWithParams(url, [:]);
         if(response.resp && response.resp.count != null){
             return response.resp
         } else {
@@ -598,5 +580,134 @@ class ProjectService {
             def url = grailsApplication.config.ecodata.service.url + '/project/getEcoScienceTypes'
             webService.getJson(url)
         })
+    }
+
+    /**
+     * Get UN regions from ecoddata
+     */
+    List getUNRegions(){
+        cacheService.get("UNRegions", {
+            String url =  grailsApplication.config.ecodata.service.url + '/project/getUNRegions'
+            webService.getJson(url)
+        })
+    }
+
+    /**
+     * Get list of all countries from ecoddata
+     */
+    List getCountries(){
+        cacheService.get("AllCountries", {
+            String url =  grailsApplication.config.ecodata.service.url + '/project/getCountries'
+            webService.getJson(url)
+        })
+    }
+
+    /**
+     * Get science type list for which data collection is supported.
+     */
+    List getDataCollectionWhiteList(){
+        cacheService.get("data-collection-whitelist", {
+            String url =  grailsApplication.config.ecodata.service.url + '/project/getDataCollectionWhiteList'
+            webService.getJson(url)
+        })
+    }
+
+    /**
+     * Convert project values to a list of tags.
+     * @param project
+     * @return
+     */
+    Map buildTags(Map project){
+        project.tags = project.tags?:[]
+
+        if (project.hasParticipantCost) {
+            project.tags.push('hasParticipantCost')
+        } else {
+            project.tags.push('noCost')
+        }
+
+        project.remove('hasParticipantCost')
+
+        if (project.isSuitableForChildren) {
+            project.tags.push('isSuitableForChildren')
+        }
+
+        project.remove('isDIY')
+
+        if (project.isDIY) {
+            project.tags.push('isDIY')
+        }
+
+        project.remove('isDIY')
+
+        if (project.isHome) {
+            project.tags.push('isHome')
+        }
+
+        project.remove('isHome')
+
+        if (project.hasTeachingMaterials) {
+            project.tags.push('hasTeachingMaterials')
+        }
+
+        project.remove('hasTeachingMaterials')
+
+        if (project.isContributingDataToAla) {
+            project.tags.push('isContributingDataToAla')
+        }
+
+        project.remove('isContributingDataToAla')
+
+        Boolean isMobile = isMobileAppForProject(project)
+        if(isMobile){
+            project.tags.push('mobileApp')
+        }
+
+        project
+    }
+
+    /**
+     * convert tags to field so that it can be stored as KO observable.
+     * @param project
+     * @return
+     */
+    Map buildFieldsForTags(Map project){
+        List fields = ['hasParticipantCost', 'isSuitableForChildren', 'isDIY', 'isHome', 'hasTeachingMaterials', 'isContributingDataToAla', 'noCost', 'mobileApp']
+        project?.tags?.eachWithIndex { String tag, int i ->
+            if(tag in fields){
+                project[tag] = true
+            }
+        }
+
+        project
+    }
+
+    /**
+     * Convert facet names and terms to a human understandable text.
+     * @param facets
+     * @return
+     */
+    List getDisplayNamesForFacets(facets){
+        facets?.each { facet ->
+            facet.title = messageSource.getMessage("project.facets."+facet.name, [].toArray(), facet.name, Locale.default)
+            facet.helpText = messageSource.getMessage("project.facets."+facet.name +".helpText", [].toArray(), "", Locale.default)
+            facet.terms?.each{ term ->
+                term.title = messageSource.getMessage("project.facets."+facet.name+"."+term.term, [].toArray(), term.name, Locale.default)
+            }
+        }
+    }
+
+    /**
+     * Check if project has mobile application attached.
+     * @param project
+     * @return
+     */
+    Boolean isMobileAppForProject(Map project){
+        List links = project.links
+        Boolean isMobileApp = false;
+        isMobileApp = links?.any {
+            it.role in MOBILE_APP_ROLE;
+        }
+        isMobileApp;
     }
 }

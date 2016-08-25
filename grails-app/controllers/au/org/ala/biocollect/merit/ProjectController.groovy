@@ -10,6 +10,7 @@ import grails.converters.JSON
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
+import org.springframework.context.MessageSource
 
 import java.text.SimpleDateFormat
 
@@ -32,12 +33,100 @@ class ProjectController {
     AuditService auditService
     AuthService authService
     BlogService blogService
+    MessageSource messageSource
 
     def grailsApplication
 
     static defaultAction = "index"
     static ignore = ['action','controller','id']
     static allowedMethods = [listRecordImages: "POST"]
+
+    static final searchFacetListProjectFinder = ["scienceType", "countries", "organisationFacet", "tags", "difficulty", "origin", "uNRegions"]
+    static final searchFacetListMyProject = ["typeOfProject", "scienceType", "ecoScienceType", "difficulty", "tags", "organisationFacet" ]
+    static final searchFacetListOrganisation = ["typeOfProject","scienceType","ecoScienceType",  "associatedProgramFacet", "associatedSubProgramFacet", "organisationFacet" ]
+    static final searchFacetListEcoScience = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgramFacet", "associatedSubProgramFacet" ]
+    static final searchFacetListWorks = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgramFacet", "associatedSubProgramFacet" ]
+
+    /**
+     * Get the list of facets to be displayed on CS project finder. Also note the order of facets returned determines
+     * how facets are shown on page.
+     * @return
+     */
+    String[] getFacetListForProjectFinder(){
+        String [] list
+        if(grailsApplication.config.facets.pf instanceof String){
+            list = grailsApplication.config.facets.pf.split(',')
+        } else {
+            list = searchFacetListProjectFinder.toArray()
+        }
+
+        list
+    }
+
+    /**
+     * Get the list of facets to be displayed on my projects page. Also note the order of facets returned determines
+     * how facets are shown on page.
+     * @return
+     */
+    String[] getFacetListForMyProject(){
+        String [] list
+        if(grailsApplication.config.facets.myproject instanceof String){
+            list = grailsApplication.config.facets.myproject.split(',')
+        } else {
+            list = searchFacetListMyProject.toArray()
+        }
+
+        list
+    }
+
+    /**
+     * Get the list of facets to be displayed on organisation page. Also note the order of facets returned determines
+     * how facets are shown on page.
+     * @return
+     */
+    String[] getFacetListForOrganisation(){
+        String [] list
+        if(grailsApplication.config.facets.organisation instanceof String){
+            list = grailsApplication.config.facets.organisation.split(',')
+        } else {
+            list = searchFacetListOrganisation.toArray()
+        }
+
+        list
+    }
+
+    /**
+     * Get the list of facets to be displayed on Eco Science project finder. Also note the order of facets returned determines
+     * how facets are shown on page.
+     * @return
+     */
+    String[] getFacetListForEcoScience(){
+        String [] list
+        if(grailsApplication.config.facets.ecoscience instanceof String){
+            list = grailsApplication.config.facets.ecoscience.split(',')
+        } else {
+            list = searchFacetListEcoScience.toArray()
+        }
+
+        list
+    }
+
+    /**
+     * Get the list of facets to be displayed on Works project finder. Also note the order of facets returned determines
+     * how facets are shown on page.
+     * @return
+     */
+    String[] getFacetListForWorks(){
+        String [] list
+        if(grailsApplication.config.facets.pf instanceof String){
+            list = grailsApplication.config.facets.works.split(',')
+        } else {
+            list = searchFacetListWorks.toArray()
+        }
+
+        list
+    }
+
 
     def index(String id) {
         def project = projectService.get(id, 'brief', false, params?.version)
@@ -59,6 +148,9 @@ class ProjectController {
         else {
             project.sites?.sort {it.name}
             project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
+            if(project.origin){
+                project.origin = messageSource.getMessage("project.facets.origin." + project.origin, [].toArray(), project.origin, Locale.default)
+            }
 
             def user = userService.getUser()
             def members = projectService.getMembersForProjectId(id)
@@ -73,7 +165,7 @@ class ProjectController {
             }
             def programs = projectService.programsModel()
             def content = projectContent(project, user, programs, params)
-            def messages = auditService.getAuditMessagesForProject(id)
+            projectService.buildFieldsForTags (project)
 
             def model = [project: project,
                 mapFeatures: commonService.getMapFeatures(project),
@@ -82,15 +174,13 @@ class ProjectController {
                 roles: roles,
                 admins: admins,
                 activityTypes: projectService.activityTypesList(),
-                metrics: projectService.summary(id),
+                metrics: project.projectType == projectService.PROJECT_TYPE_WORKS ? projectService.summary(id): [],
                 outputTargetMetadata: metadataService.getOutputTargetsByOutputByActivity(),
                 organisations: metadataService.organisationList().list.collect { [organisationId: it.organisationId, name: it.name] },
                 programs: programs,
                 today:DateUtils.format(new DateTime()),
                 themes:metadataService.getThemesForProject(project),
                 projectContent:content.model,
-                messages: messages?.messages,
-                userMap: messages?.userMap,
                 hideBackButton: true,
                 projectSite: project.projectSite
             ]
@@ -126,32 +216,55 @@ class ProjectController {
     }
 
     protected Map surveyProjectContent(project, user, params) {
+        List blog = blogService.getProjectBlog(project)
+        Boolean hasNewsAndEvents = blog.find{it.type == 'News and Events'}
+        Boolean hasProjectStories = blog.find{it.type == 'Project Stories'}
+
+        Boolean hasLegacyNewsAndEvents = project.newsAndEvents as Boolean
+        Boolean hasLegacyProjectStories = project.projectStories as Boolean
+
         [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
-         news:[label:'News', visible: true, type:'tab'],
+         news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
-         admin:[label:'Admin', template:'internalCSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab']]
+         admin:[label:'Admin', template:'internalCSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
     }
 
     protected Map ecoSurveyProjectContent(project, user) {
+        List blog = blogService.getProjectBlog(project)
+        Boolean hasNewsAndEvents = blog.find{it.type == 'News and Events'}
+        Boolean hasProjectStories = blog.find{it.type == 'Project Stories'}
+
+        Boolean hasLegacyNewsAndEvents = project.newsAndEvents as Boolean
+        Boolean hasLegacyProjectStories = project.projectStories as Boolean
+
         [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
-         news:[label:'News', visible: true, type:'tab'],
+         news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
-         admin:[label:'Admin', template:'internalCSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab']]
+         admin:[label:'Admin', template:'internalCSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
     }
 
     protected Map worksProjectContent(project, user) {
         def activities = activityService.activitiesForProject(project.projectId)
+
+        List blog = blogService.getProjectBlog(project)
+        Boolean hasNewsAndEvents = blog.find{it.type == 'News and Events'}
+        Boolean hasProjectStories = blog.find{it.type == 'Project Stories'}
+
+        Boolean hasLegacyNewsAndEvents = project.newsAndEvents as Boolean
+        Boolean hasLegacyProjectStories = project.projectStories as Boolean
+
         [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
-         documents:[label:'Documents', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
-         activities:[label:'Activities', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:true],
+         news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
+         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
+         activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:true],
          //site:[label:'Sites', template:'/shared/sites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
-         meriPlan:[label:'MERI Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, type:'tab', template:'viewMeriPlan'],
+         meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, type:'tab', template:'viewMeriPlan'],
          dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab'],
-         admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab']]
+         admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
     }
 
     @PreAuthorise
@@ -316,104 +429,96 @@ class ProjectController {
             name = project?.name
         }
 
-        boolean validName = projectService.checkProjectName(name, id)
-        if (!validName) {
-            render status: 400, text: "Another project already exists with the name ${params.projectName}"
+        def values = [:]
+        // filter params to remove keys in the ignore list
+        postBody.each { k, v ->
+            if (!(k in ignore)) {
+                values[k] = v
+            }
+        }
+
+        projectService.buildTags(values)
+
+        // The rule currently is that anyone is allowed to create a project so we only do these checks for
+        // existing projects.
+        def userId = userService.getUser()?.userId
+        if (id) {
+            if (!projectService.canUserEditProject(userId, id)) {
+                render status:401, text: "User ${userId} does not have edit permissions for project ${id}"
+                log.debug "user not caseManager"
+                return
+            }
+
+        } else if (!userId) {
+            render status: 401, text: 'You do not have permission to create a project'
+        }
+
+
+        log.debug "json=" + (values as JSON).toString()
+        log.debug "id=${id} class=${id?.getClass()}"
+        def projectSite = values.remove("projectSite")
+        def documents = values.remove('documents')
+        def links = values.remove('links')
+        def projectType = id ? projectService.get(id).projectType : values?.projectType
+
+        String mainImageAttribution = values.remove("mainImageAttribution")
+        String logoAttribution = values.remove("logoAttribution")
+
+        def siteResult
+        if (projectSite) {
+            siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
+            if (siteResult.status == 'error') render status: 400, text: "SiteService failed."
+            else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
+        } else if (projectService.get(id)?.sites?.isEmpty()) {
+            render status: 400, text: "No project site is defined."
+        }
+
+        if (!values?.associatedOrgs) values.put('associatedOrgs', [])
+
+        def result = id? projectService.update(id, values): projectService.create(values)
+        log.debug "result is " + result
+        if (documents && !result.error) {
+            if (!id) id = result.resp.projectId
+            documents.each { doc ->
+                doc.projectId = id
+                if (doc.role == "mainImage") {
+                    doc.isPrimaryProjectImage = true
+                    doc.attribution = mainImageAttribution
+                    doc.public = true
+                } else if (doc.role == documentService.ROLE_LOGO) {
+                    doc.public = true
+                    doc.attribution = logoAttribution
+                }
+                documentService.saveStagedImageDocument(doc)
+            }
+        }
+        if (links && !result.error) {
+            if (!id) id = result.resp.projectId
+            links.each { link ->
+                link.projectId = id
+                documentService.saveLink(link)
+            }
+        }
+        if (siteResult && !result.error) {
+            if (!id) id = result.resp.projectId
+            if (!projectSite.projects || (projectSite.projects.size() == 1 && projectSite.projects.get(0).isEmpty()))
+                projectSite.projects = [id]
+            else if (!projectSite.projects.contains(id))
+                projectSite.projects += id
+
+            siteService.update(siteResult.id, projectSite)
+        }
+        if (result.error) {
+            render result as JSON
         } else {
-            def values = [:]
-            // filter params to remove keys in the ignore list
-            postBody.each { k, v ->
-                if (!(k in ignore)) {
-                    values[k] = v
-                }
-            }
-
-            // The rule currently is that anyone is allowed to create a project so we only do these checks for
-            // existing projects.
-            def userId = userService.getUser()?.userId
-            if (id) {
-                if (!projectService.canUserEditProject(userId, id)) {
-                    render status:401, text: "User ${userId} does not have edit permissions for project ${id}"
-                    log.debug "user not caseManager"
-                    return
-                }
-
-            } else if (!userId) {
-                render status: 401, text: 'You do not have permission to create a project'
-            }
-
-
-            log.debug "json=" + (values as JSON).toString()
-            log.debug "id=${id} class=${id?.getClass()}"
-            def projectSite = values.remove("projectSite")
-            def documents = values.remove('documents')
-            def links = values.remove('links')
-            def projectType = id ? projectService.get(id).projectType : values?.projectType
-
-            String mainImageAttribution = values.remove("mainImageAttribution")
-            String logoAttribution = values.remove("logoAttribution")
-
-            def siteResult
-            if (projectSite) {
-                siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
-                if (siteResult.status == 'error') render status: 400, text: "SiteService failed."
-                else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
-            } else if (projectService.get(id)?.sites?.isEmpty()) {
-                render status: 400, text: "No project site is defined."
-            }
-
-            if (!values?.associatedOrgs) values.put('associatedOrgs', [])
-
-            def result = id? projectService.update(id, values): projectService.create(values)
-            log.debug "result is " + result
-            if (documents && !result.error) {
-                if (!id) id = result.resp.projectId
-                documents.each { doc ->
-                    doc.projectId = id
-                    if (doc.role == "mainImage") {
-                        doc.isPrimaryProjectImage = true
-                        doc.attribution = mainImageAttribution
-                        doc.public = true
-                    } else if (doc.role == documentService.ROLE_LOGO) {
-                        doc.public = true
-                        doc.attribution = logoAttribution
-                    }
-                    documentService.saveStagedImageDocument(doc)
-                }
-            }
-            if (links && !result.error) {
-                if (!id) id = result.resp.projectId
-                links.each { link ->
-                    link.projectId = id
-                    documentService.saveLink(link)
-                }
-            }
-            if (siteResult && !result.error) {
-                if (!id) id = result.resp.projectId
-                if (!projectSite.projects || (projectSite.projects.size() == 1 && projectSite.projects.get(0).isEmpty()))
-                    projectSite.projects = [id]
-                else if (!projectSite.projects.contains(id))
-                    projectSite.projects += id
-
-                siteService.update(siteResult.id, projectSite)
-            }
-            if (result.error) {
-                render result as JSON
-            } else {
-                render result.resp as JSON
-            }
+            render result.resp as JSON
         }
     }
 
     @PreAuthorise
     def update(String id) {
-        boolean validName = projectService.checkProjectName(params.projectName, params.id)
-        if (!validName) {
-            render status: 400, text: "Another project already exists with the name ${params.projectName}"
-        } else {
-            projectService.update(id, params)
-            chain action: 'index', id: id
-        }
+        projectService.update(id, params)
+        chain action: 'index', id: id
     }
 
     @PreAuthorise(accessLevel = 'admin')
@@ -444,6 +549,28 @@ class ProjectController {
         boolean skipDefaultFilters = params.getBoolean('skipDefaultFilters', false)
         Map searchResult = searchService.findProjects(queryParams, skipDefaultFilters);
         List projects = Builder.build(params, searchResult.hits?.hits)
+        List facets
+
+        // format facets to a way acceptable for JS view model
+        if(searchResult.facets){
+            String[] facetList = queryParams.facets?.split(',')
+            facets = searchService.standardiseFacets (searchResult.facets, Arrays.asList(facetList))
+            // the below facets are added manually since they are dynamic
+            // eg. today's date is used to determine if a project is completed or active
+            List defaults = [
+                    [
+                            name:'status',
+                            total: 0,
+                            terms: [ [ term: 'active', count: 0], [ term: 'completed', count: 0 ]]
+                    ]
+            ]
+            facets = defaults + facets
+            projectService.getDisplayNamesForFacets(facets)
+        }
+
+        projects?.each{ Map project ->
+            projectService.buildFieldsForTags (project)
+        }
 
         if (params.download as boolean) {
             response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
@@ -454,7 +581,7 @@ class ProjectController {
             response.setContentType('application/json')
         }
         response.setCharacterEncoding('UTF-8')
-        render( text: [ projects:  projects, total: searchResult.hits?.total?:0 ] as JSON );
+        render( text: [ projects:  projects, total: searchResult.hits?.total?:0, facets: facets ] as JSON );
     }
 
 
@@ -463,37 +590,33 @@ class ProjectController {
 
         List difficulty = [], status =[]
         Map trimmedParams = commonService.parseParams(params)
+        trimmedParams.fsort = 'term'
+        trimmedParams.flimit = 20
         trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
         trimmedParams.offset = params.offset && params.offset.isNumber() ? params.offset : 0
-        trimmedParams.status = params.list('status');
+        trimmedParams.status = [];
         trimmedParams.isCitizenScience = params.boolean('isCitizenScience');
         trimmedParams.isWorks = params.boolean('isWorks');
         trimmedParams.isBiologicalScience = params.boolean('isBiologicalScience')
         trimmedParams.isMERIT = params.boolean('isMERIT')
-        trimmedParams.isMetadataSharing = params.boolean("isMetadataSharing")
         trimmedParams.query = "docType:project"
         trimmedParams.isUserPage = params.boolean('isUserPage');
         trimmedParams.isUserWorksPage = params.boolean('isUserWorksPage');
         trimmedParams.isUserEcoSciencePage = params.boolean('isUserEcoSciencePage');
-        trimmedParams.hasParticipantCost = params.boolean('hasParticipantCost')
-        trimmedParams.isSuitableForChildren = params.boolean('isSuitableForChildren')
-        trimmedParams.isDIY = params.boolean('isDIY')
-        trimmedParams.hasTeachingMaterials = params.boolean('hasTeachingMaterials')
-        trimmedParams.isMobile = params.boolean('isMobile')
-        trimmedParams.isContributingDataToAla = params.boolean('isContributingDataToAla')
         trimmedParams.difficulty = params.list('difficulty')
         trimmedParams.mobile = params.boolean('mobile')
+        trimmedParams.isWorldWide = params.boolean('isWorldWide')
 
         List fq = [], projectType = []
         List immutableFq = params.list('fq')
         immutableFq.each {
-            it? fq.push(it):null;
+            if(it?.startsWith('status:')){
+                trimmedParams.status?.push ( it.replace('status:',''))
+            } else {
+                it? fq.push(it):null;
+            }
         }
         trimmedParams.fq = fq;
-
-        if (params?.hub == 'ecoscience') {
-            trimmedParams.query += " AND projectType:ecoscience";
-        }
 
         switch (trimmedParams.sort){
             case 'organisationSort':
@@ -506,14 +629,26 @@ class ProjectController {
                 break;
         }
 
+        if (trimmedParams.isWorks) {
+                // do nothing
+        } else if (trimmedParams.isBiologicalScience){
+            trimmedParams.facets = getFacetListForEcoScience()?.join (",")
+        } else if (trimmedParams.isUserPage || trimmedParams.isUserEcoSciencePage || trimmedParams.isUserWorksPage) {
+            trimmedParams.facets = getFacetListForMyProject()?.join (",")
+        } else if (trimmedParams.organisationName) {
+            trimmedParams.facets = getFacetListForOrganisation()?.join (",")
+        } else if (trimmedParams.isCitizenScience) {
+            trimmedParams.facets = getFacetListForProjectFinder()?.join (",")
+        }
+
         if(trimmedParams.isCitizenScience){
             projectType.push('isCitizenScience:true')
             trimmedParams.isCitizenScience = null
         }
 
         if(trimmedParams.isBiologicalScience){
-            projectType.push('(projectType:survey AND isCitizenScience:false)')
             trimmedParams.isSurvey = null
+            trimmedParams.isBiologicalScience=null
         }
 
         if(trimmedParams.isWorks){
@@ -523,6 +658,7 @@ class ProjectController {
 
         if(trimmedParams.isEcoScience){
             projectType.push('(projectType:ecoscience)')
+            trimmedParams.isEcoScience = null
         }
 
         if (trimmedParams.isMERIT) {
@@ -541,11 +677,6 @@ class ProjectController {
         if (projectType) {
             // append projectType to query. this is used by organisation page.
             trimmedParams.query += ' AND (' + projectType.join(' OR ') + ')'
-        }
-
-        if(trimmedParams.isMetadataSharing){
-            trimmedParams.query += " AND (isMetadataSharing:true)"
-            trimmedParams.isMetadataSharing = null
         }
 
         def programs = ''
@@ -567,7 +698,7 @@ class ProjectController {
 
         if(trimmedParams.status){
             SimpleDateFormat sdf = new SimpleDateFormat('yyyy-MM-dd');
-            // do not run if both active and completed is pressed
+            // Do not execute when both active and completed facets are checked.
             if(trimmedParams.status.size()<2){
                 trimmedParams.status.each{
                     switch (it){
@@ -594,40 +725,18 @@ class ProjectController {
             trimmedParams.isUserPage = null
         }
 
-        if(trimmedParams.hasParticipantCost){
-            fq.push('hasParticipantCost:false');
-            trimmedParams.hasParticipantCost = null
-        }
-
-        if(trimmedParams.isSuitableForChildren){
-            fq.push('isSuitableForChildren:true');
-            trimmedParams.isSuitableForChildren = null
-        }
-
-        if(trimmedParams.isDIY){
-            fq.push('isDIY:true');
-            trimmedParams.isDIY = null
-        }
-
-        if(trimmedParams.hasTeachingMaterials){
-            fq.push('hasTeachingMaterials:true');
-            trimmedParams.hasTeachingMaterials = null
-        }
-
-        if(trimmedParams.isMobile){
-            fq.push('isMobileApp:true');
-            trimmedParams.isMobile = null
-        }
-
-        if(trimmedParams.isContributingDataToAla){
-            fq.push('isContributingDataToAla:true');
-            trimmedParams.isContributingDataToAla = null
-        }
-
         if(trimmedParams.organisationName){
             fq.push('organisationFacet:'+trimmedParams.organisationName);
             trimmedParams.organisationName = null
         }
+
+        if (trimmedParams.isWorldWide) {
+            trimmedParams.isWorldWide = null
+        } else if (trimmedParams.isWorldWide == false) {
+            trimmedParams.query += " AND countries:(Australia OR Worldwide)"
+            trimmedParams.isWorldWide = null
+        }
+
 
 
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
@@ -786,13 +895,30 @@ class ProjectController {
         }
     }
 
-    def checkProjectName() {
-        if (!params.projectName) {
-            render status: SC_BAD_REQUEST, text: 'projectName is a required parameter'
-        } else {
-            boolean validName = projectService.checkProjectName(params.projectName, params.id)
-
-            render ([validName: validName] as JSON)
-        }
+    /**
+     * Get list of all countries
+     * @return
+     */
+    def getCountries(){
+        def countries = projectService.getCountries()
+        render text: countries as JSON, contentType: 'application/json'
     }
+
+    /**
+     * Get list of all UN regions
+     * @return
+     */
+    def getUNRegions(){
+        def uNRegions = projectService.getUNRegions()
+        render text: uNRegions as JSON, contentType: 'application/json'
+    }
+
+    /**
+     * Get science type list for which data collection is supported.
+     */
+    def getDataCollectionWhiteList(){
+        def whiteList = projectService.getDataCollectionWhiteList()
+        render text: whiteList as JSON, contentType: 'application/json'
+    }
+
 }

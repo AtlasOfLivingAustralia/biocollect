@@ -6,7 +6,6 @@
     <r:script disposition="head">
     var fcConfig = {
         projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
-        checkProjectNameUrl: "${createLink(controller: 'project', action:'checkProjectName')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
@@ -20,7 +19,10 @@
         scienceTypes: ${scienceTypes as grails.converters.JSON},
         ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},
         lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
-        lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON}
+        lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
+        dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}",
+        countriesUrl: "${createLink(controller: 'project', action: 'getCountries')}",
+        uNRegionsUrl: "${createLink(controller: 'project', action: 'getUNRegions')}"
         },
         here = window.location.href;
 
@@ -63,7 +65,7 @@
         </g:if>
         <div class="well" style="display: none" data-bind="visible: true"> <!-- hide the panel until knockout has finished. Needs to use an inline style for this to work. -->
             <div class="alert warning" data-bind="visible: !termsOfUseAccepted() && !isExternal()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
-            <button type="button" id="save" class="btn btn-primary" data-bind="disable: (!termsOfUseAccepted() && !isExternal()) || !transients.validProjectName()"><g:message code="g.save"/></button>
+            <button type="button" id="save" class="btn btn-primary" data-bind="disable: (!termsOfUseAccepted() && !isExternal())"><g:message code="g.save"/></button>
             <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
         </div>
     </form>
@@ -85,7 +87,6 @@ $(function(){
 
     var viewModel =  new CreateEditProjectViewModel(project, true, userOrganisations, organisations, {storageKey:PROJECT_DATA_KEY});
     viewModel.loadPrograms(programsModel);
-    viewModel.isMetadataSharing(true);
 
     $('#projectDetails').validationEngine();
     $('.helphover').popover({animation: true, trigger:'hover'});
@@ -102,19 +103,41 @@ $(function(){
     });
     </g:else>
     $('#save').click(function () {
-        if ($('#projectDetails').validationEngine('validate') && viewModel.transients.validProjectName()) {
-            if (viewModel.transients.kindOfProject() == 'ecoscience' || viewModel.transients.siteViewModel.isValid(true)) {
-                viewModel.saveWithErrorDetection(function(data) {
-                    var projectId = "${project?.projectId}" || data.projectId;
-
-                    if (viewModel.isExternal()) {
-                        document.location.href = "${createLink(action: 'index')}/" + projectId;
-                    } else {
-                        document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
-                    }
-                });
+        if ($('#projectDetails').validationEngine('validate')) {
+            if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
+                bootbox.dialog("Use of this system for data collection is not available for non-biodiversity related projects." +
+                    "Press continue to turn data collection feature off. Otherwise, press cancel to modify the form.",
+                    [{
+                      label: "Continue",
+                      className: "btn-primary",
+                      callback: function() {
+                        viewModel.isExternal(true);
+                        $('#save').click()
+                      }
+                    },{
+                        label: "Cancel",
+                        className: "btn-alert",
+                        callback: function() {
+                            $('html, body').animate({
+                                scrollTop: $("#scienceTypeControlGroup").offset().top
+                            }, 2000);
+                       }
+                    }]
+                );
             } else {
-                bootbox.alert("You must define the spatial extent of the project area");
+                if (viewModel.transients.kindOfProject() == 'ecoscience' || viewModel.transients.siteViewModel.isValid(true)) {
+                    viewModel.saveWithErrorDetection(function(data) {
+                        var projectId = "${project?.projectId}" || data.projectId;
+
+                        if (viewModel.isExternal()) {
+                            document.location.href = "${createLink(action: 'index')}/" + projectId;
+                        } else {
+                            document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
+                        }
+                    });
+                } else {
+                    bootbox.alert("You must define the spatial extent of the project area");
+                }
             }
         }
     });

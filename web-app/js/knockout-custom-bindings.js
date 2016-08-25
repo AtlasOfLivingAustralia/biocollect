@@ -319,6 +319,8 @@ ko.bindingHandlers.fusedAutocomplete = {
             var selectedItem = ui.item;
             params.name(selectedItem.source.name);
             params.guid(selectedItem.source.guid);
+            params.scientificName(selectedItem.source.scientificName);
+            params.commonName(selectedItem.source.commonName);
         };
 
         if (!$(element).autocomplete(options).data("ui-autocomplete")) {
@@ -326,6 +328,8 @@ ko.bindingHandlers.fusedAutocomplete = {
             var options = {}, unknown = {
                 guid: '',
                 name: '(Unmatched taxon)',
+                commonName: '',
+                scientificName: '',
                 value: element.value
             };
             options.source = url;
@@ -359,17 +363,28 @@ ko.bindingHandlers.fusedAutocomplete = {
 
             $(element).autocomplete(options.source, options).result(function (event, data, formatted) {
                 if (data) {
-                    if (data.name == unknown.name) {
-                        params.name(data.name);
-                    } else {
-                        params.name(data.name);
-                    }
                     params.guid(data.guid);
+                    params.name(data.name);
+                    params.commonName(data.commonName);
+                    params.scientificName(data.scientificName);
                 }
             });
         }
     }
 };
+
+ko.bindingHandlers.autocompleteFromList = {
+    init: function (element, params) {
+        var params = params();
+        var options = {};
+        var data = ko.utils.unwrapObservable(params.data);
+        options.select = function (event, ui) {
+            params.select(ui)
+            $(element).val('')
+        };
+        $(element).autocomplete(data, options).result(options.select)
+    }
+}
 
 ko.bindingHandlers.autocomplete = {
     init: function (element, params) {

@@ -62,7 +62,7 @@
         </div>
 
         <div class="row-fluid">
-            <div class="span9">
+            <div class="span8">
                 <!-- Common activity fields -->
                 <div class="row-fluid" data-bind="visible:transients.typeWarning()" style="display:none">
                     <div class="alert alert-error">
@@ -87,10 +87,15 @@
                             </g:each>
                         </select>
                     </div>
-                    <div class="span6">
+                    <div class="span6" data-bind="visible:transients.themes && transients.themes.length > 1">
                         <label for="theme">Major theme</label>
                         <select id="theme" data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'" class="input-xlarge">
                         </select>
+                    </div>
+                    <div class="span6" data-bind="visible:transients.themes && transients.themes.length == 1">
+                        <label for="theme">Major theme</label>
+                        <span data-bind="text:mainTheme">
+                        </span>
                     </div>
                 </div>
 
@@ -120,34 +125,11 @@
                 </div>
 
             </div>
-            <div class="span3">
-                    <div id="smallMap" style="width:100%"></div>
+            <div class="span4">
+                    <div id="smallMap" style="width:100%; height:300px;"></div>
             </div>
 
         </div>
-
-        <g:if env="developkjkment" test="${!printView}">
-          <div class="expandable-debug">
-              <hr />
-              <h3>Debug</h3>
-              <div>
-                  <h4>KO model</h4>
-                  <pre data-bind="text:ko.toJSON($root.modelForSaving(),null,2)"></pre>
-                  <h4>Activity</h4>
-                  <pre>${activity?.encodeAsHTML()}</pre>
-                  <h4>Site</h4>
-                  <pre>${site?.encodeAsHTML()}</pre>
-                  <h4>Sites</h4>
-                  <pre>${(sites as JSON).toString()}</pre>
-                  <h4>Project</h4>
-                  <pre>${project?.encodeAsHTML()}</pre>
-                  <h4>Themes</h4>
-                  <pre>${themes.toString()}</pre>
-                  <h4>Map features</h4>
-                  <pre>${mapFeatures.toString()}</pre>
-              </div>
-          </div>
-        </g:if>
     </div>
 
     <g:if test="${!printView}">
@@ -305,6 +287,9 @@
             self.transients.site = ko.observable(site);
             self.transients.project = project;
             self.transients.themes = $.map(themes, function (obj, i) { return obj.name });
+            if (!act.mainTheme && self.transients.themes.length == 1) {
+                self.mainTheme(self.tranients.themes[0]);
+            }
             self.transients.typeWarning = ko.computed(function() {
                 if (act.outputs === undefined || act.outputs.length == 0) {
                     return false;

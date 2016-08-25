@@ -53,12 +53,7 @@ class BioCollect {
                 description            : doc.description,
                 difficulty             : doc.difficulty,
                 endDate                : doc.plannedEndDate,
-                hasParticipantCost     : doc.hasParticipantCost?.toBoolean(),
-                hasTeachingMaterials   : doc.hasTeachingMaterials?.toBoolean(),
-                isDIY                  : doc.isDIY?.toBoolean(),
-                isContributingDataToAla: doc.isContributingDataToAla?.toBoolean(),
                 isExternal             : doc.isExternal?.toBoolean(),
-                isSuitableForChildren  : doc.isSuitableForChildren?.toBoolean(),
                 isSciStarter           : doc.isSciStarter?.toBoolean(),
                 keywords               : doc.keywords,
                 links                  : trimmedLinks,
@@ -72,7 +67,9 @@ class BioCollect {
                 urlWeb                 : doc.urlWeb,
                 plannedStartDate       : doc.plannedStartDate,
                 plannedEndDate         : doc.plannedEndDate,
-                isMERIT                : doc.isMERIT
+                projectType            : doc.projectType,
+                isMERIT                : doc.isMERIT,
+                tags                   : doc.tags
             ]
         }
     }

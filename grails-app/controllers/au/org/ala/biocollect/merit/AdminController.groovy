@@ -23,6 +23,8 @@ class AdminController {
     def outputService
     def documentService
     def projectActivityService
+    def webService
+    def grailsApplication
 
     def index() {}
 
@@ -100,8 +102,7 @@ class AdminController {
 
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def syncSciStarter(){
-        String whiteList = params.whiteList
-        Map imported = projectService.importSciStarterProjects(whiteList)
+        Map imported = projectService.importSciStarterProjects()
         render text: imported as JSON, contentType: 'application/json'
     }
 
@@ -545,6 +546,13 @@ class AdminController {
         }
 
         render contentType: 'text/json', status:400, text:'{"error":"No file supplied"}'
+    }
+
+    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
+    def syncSpeciesWithBie(){
+        //It's a async task..
+        webService.get("${grailsApplication.config.ecodata.service.url}/admin/initiateSpeciesRematch")
+        render text: [message:'Species rematch initiated.'] as JSON, contentType: 'application/json'
     }
 
 }

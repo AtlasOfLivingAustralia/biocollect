@@ -229,4 +229,31 @@ class SearchService {
             webService.getJson(url, 1200000)
         })
     }
+
+    /**
+     * Standardise facet results
+     */
+    List standardiseFacets(Map facets, List orderList) {
+        List results = []
+        if(orderList){
+            orderList.each { k ->
+                results << formatFacet(facets[k], k)
+            }
+        } else {
+            facets?.each { k, v ->
+                results << formatFacet(facets[k], k)
+            }
+        }
+
+        results
+    }
+
+    Map formatFacet(Map item, String name){
+        Map facet = [:]
+        facet.name = name
+        facet.total = item.total
+        facet.terms = item.terms
+
+        facet
+    }
 }
