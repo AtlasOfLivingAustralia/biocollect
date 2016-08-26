@@ -612,7 +612,7 @@ class SiteController {
      */
     def elasticsearch(){
         try{
-            List query = ['className:au.org.ala.ecodata.Site']
+            List query = ['className:au.org.ala.ecodata.Site', '-type:projectArea']
             String userId = userService.getCurrentUserId()
             Boolean isAlaAdmin = userService.userIsAlaAdmin()
 
