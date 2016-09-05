@@ -208,7 +208,7 @@ class MetadataService {
 
     def organisationList() {
         return cacheService.get('organisations',{
-            webService.getJson(grailsApplication.config.ecodata.service.url + "/organisation")
+            webService.getJson(grailsApplication.config.ecodata.service.url + "/organisation", 80000)
         })
     }
 
