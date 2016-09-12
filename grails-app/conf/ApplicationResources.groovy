@@ -417,7 +417,6 @@ modules = {
     }
 
     admin {
-        resource url: 'js/activityModel.js'
         resource url: 'js/hubs.js'
     }
 

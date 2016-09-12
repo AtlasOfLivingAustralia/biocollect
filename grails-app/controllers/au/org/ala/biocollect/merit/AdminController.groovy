@@ -86,76 +86,9 @@ class AdminController {
     }
 
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
-    def metadata() {
-        [activitiesMetadata: metadataService.activitiesModel()]
-    }
-
-    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
-    def activityModel() {
-        [activitiesModel: metadataService.activitiesModel()]
-    }
-
-    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
-    def programsModel() {
-        [programsModel: metadataService.programsModel(), activityTypes:metadataService.activityTypesList()]
-    }
-
-    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def syncSciStarter(){
         Map imported = projectService.importSciStarterProjects()
         render text: imported as JSON, contentType: 'application/json'
-    }
-
-    def updateActivitiesModel() {
-        def model = request.JSON
-        log.debug model
-        metadataService.updateActivitiesModel(model)
-        flash.message = "Activity model updated."
-        def result = model
-        render result
-    }
-
-    def updateProgramsModel() {
-        def model = request.JSON
-        log.debug model
-        metadataService.updateProgramsModel(model)
-        flash.message = "Programs model updated."
-        def result = model
-        render result
-    }
-
-    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
-    def outputModels() {
-        def model = [activitiesModel: metadataService.activitiesModel()]
-        if (params.open) {
-            model.open = params.open
-        }
-        model
-    }
-
-    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
-    def rawOutputModels() {
-        def model = [activitiesModel: metadataService.activitiesModel()]
-        if (params.open) {
-            model.open = params.open
-        }
-        model
-    }
-
-    def getOutputDataModel(String id) {
-        log.debug(id)
-        def model = metadataService.getDataModel(id)
-        render model as JSON
-    }
-
-    def updateOutputDataModel(String id) {
-        def model = request.JSON
-        log.debug "template = ${id} model = ${model}"
-        log.debug "model class is ${model.getClass()}"
-        metadataService.updateOutputDataModel(model, id)
-        flash.message = "Output data model updated."
-        def result = model
-        render result
     }
 
     @PreAuthorise(accessLevel = 'siteAdmin', redirectController = "admin")

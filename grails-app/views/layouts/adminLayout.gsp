@@ -59,12 +59,6 @@
                     <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole)}">
                         <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'tools')}" title="Tools" />
                         <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'settings')}" title="Settings" />
-                        <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'metadata')}" title="Raw activity model" />
-                        <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'activityModel')}" title="Activity model" />
-                        <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'rawOutputModels')}" title="Raw output models" />
-                        <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'outputModels')}" title="Output models" />
-                        <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'programsModel')}" title="Programs model" />
-                        <fc:breadcrumbItem href="${createLink(controller: 'home', action:'advanced')}" title="Manage Projects, Sites & Activities"/>
                         <fc:breadcrumbItem href="${createLink(controller: 'admin', action:'manageHubs')}" title="Manage Hubs"/>
 
                     </g:if>
