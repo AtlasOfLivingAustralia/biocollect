@@ -616,6 +616,16 @@ class ProjectController {
                 it? fq.push(it):null;
             }
         }
+
+        // Backward compatible for iOS users.
+        if(params.boolean('isContributingDataToAla')) {
+            fq.push("tags:isContributingDataToAla")
+        }
+        if(params.status) {
+            trimmedParams.status = []
+            trimmedParams.status.push(params.status);
+        }
+
         trimmedParams.fq = fq;
 
         switch (trimmedParams.sort){
