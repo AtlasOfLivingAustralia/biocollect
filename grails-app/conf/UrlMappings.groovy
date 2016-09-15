@@ -82,7 +82,6 @@ class UrlMappings {
                 "/myProfile"(controller: 'home', action: 'myProfile') {
 
                 }
-                "/ws/project/search"(controller: "project", action: 'search')
 
                 "/$hub/admin/user/$id"(controller: "user", action: "show") {
                         constraints {
@@ -101,5 +100,13 @@ class UrlMappings {
                                 hub validator: {val, obj -> isHubValid(applicationContext, val)}
                         }
                 }
+
+                // Following api's are used by external clients
+                "/ws/project/search"(controller: "project", action: 'search')
+                "/ws/survey/list/$id"(controller:  "project", action: 'listSurveys')
+                "/ws/activity/model/$id"(controller: "bioActivity", action: 'getActivityModel')
+                "/ws/activity/data/$id"(controller:  "bioActivity", action: 'getOutputForActivity')
+                "/ws/activity/save"(controller:  "bioActivity", action: 'ajaxUpdate')
+                "/ws/activity/search"(controller:  "bioActivity", action: 'searchProjectActivities')
         }
 }

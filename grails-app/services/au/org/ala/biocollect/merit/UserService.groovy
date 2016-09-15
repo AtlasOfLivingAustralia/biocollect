@@ -20,7 +20,7 @@ class UserService {
     }
 
     def getCurrentUserDisplayName() {
-        getUser()?.displayName?:"" 
+        getUser()?.displayName?:""
     }
 
     def getCurrentUserId(request = null) {

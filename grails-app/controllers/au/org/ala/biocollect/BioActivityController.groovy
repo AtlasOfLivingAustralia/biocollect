@@ -58,7 +58,7 @@ class BioActivityController {
 
         Map result
 
-        String userId = userService.getCurrentUserId(request)
+        String userId = userService.getCurrentUserId()
         if (!userId) {
             flash.message = "Access denied: User has not been authenticated."
             response.status = 401
@@ -145,7 +145,7 @@ class BioActivityController {
      */
     def edit(String id) {
 
-        String userId = userService.getCurrentUserId(request)
+        String userId = userService.getCurrentUserId()
         def activity = activityService.get(id)
         String projectId = activity?.projectId
         def model = null
@@ -177,7 +177,7 @@ class BioActivityController {
      * @return
      */
     def create(String id) {
-        String userId = userService.getCurrentUserId(request)
+        String userId = userService.getCurrentUserId()
         Map pActivity = projectActivityService.get(id, "all")
         String projectId = pActivity?.projectId
         String type = pActivity?.pActivityFormName
@@ -664,6 +664,85 @@ class BioActivityController {
                 site.geoIndex.coordinates[1] = sensitiveRecord.generalizedDecimalLatitude
             }
         }
+    }
+
+    /*
+     * Get data/output for an activity
+     * Handles both session and non session based request.
+     *
+     * @param id activityId
+     *
+     * @return activity
+     *
+     */
+    def getOutputForActivity(String id){
+        String userId = userService.getCurrentUserId(request)
+        def activity = activityService.get(id)
+        String projectId = activity?.projectId
+        def model = [:]
+
+        if (!userId) {
+            response.status = 401
+            model.error = "Access denied: User has not been authenticated."
+        } else if (!activity) {
+            model.error = "Invalid activity id"
+        } else if (!activity) {
+            model.error = "Invalid activity - ${id}"
+        } else if (!projectId) {
+            model.error = "No project associated with the activity"
+        } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+            def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
+            model = activityAndOutputModel(activity, activity.projectId)
+            model.pActivity = pActivity
+            model.projectActivityId = pActivity.projectActivityId
+            model.id = id
+        } else {
+            response.status = 401
+            model.error = "Access denied: User is not an owner of this activity ${activity?.activityId}"
+        }
+
+        render model as JSON
+    }
+
+    /*
+     * Get activity model for a survey/projectActivity
+     * Handles both session and non session based request.
+     *
+     * @param id projectActivityId
+     *
+     * @return activity model
+     *
+     */
+    def getActivityModel(String id){
+        String userId = userService.getCurrentUserId(request)
+        Map pActivity = projectActivityService.get(id, "all")
+        String projectId = pActivity?.projectId
+        String type = pActivity?.pActivityFormName
+        Map model = [:]
+
+        if (!pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
+            model.error = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
+            response.status = 401
+        } else if (isProjectActivityClosed(pActivity)) {
+            model.error = "Access denied: This survey is closed."
+            response.status = 401
+        }  else if (!pActivity) {
+            model.error = "Invalid survey - ${id}"
+        } else if (!projectId) {
+            model.error = "No project associated with the survey"
+        } else if (!type) {
+            model.error = "Invalid activity type"
+        } else {
+            Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
+            model = activityModel(activity, projectId)
+            model.pActivity = pActivity
+            model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', id: projectId)
+            model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
+
+            addOutputModel(model)
+        }
+
+        render model as JSON
     }
 
 }

@@ -196,6 +196,24 @@ class ProjectController {
         }
     }
 
+    /*
+     * Get list of surveys/project activities for a given project
+     *
+     * @param id projectId
+     *
+     * @return surveys/projectActivities
+     *
+     */
+    def listSurveys(String id) {
+        def projectActivities = []
+        def project = projectService.get(id, 'brief', false, params?.version)
+        if (project && project.projectType in [ProjectService.PROJECT_TYPE_ECOSCIENCE, ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE]) {
+            projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
+        }
+
+        render projectActivities as JSON
+    }
+
     protected Map projectContent(project, user, programs, params) {
 
         boolean isSurveyProject = (project.projectType == ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE)
