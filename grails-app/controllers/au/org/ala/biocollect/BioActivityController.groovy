@@ -58,8 +58,7 @@ class BioActivityController {
 
         Map result
 
-        // Check user has admin/editor permission.
-        String userId = userService.getCurrentUserId()
+        String userId = userService.getCurrentUserId(request)
         if (!userId) {
             flash.message = "Access denied: User has not been authenticated."
             response.status = 401
@@ -146,7 +145,7 @@ class BioActivityController {
      */
     def edit(String id) {
 
-        String userId = userService.getCurrentUserId()
+        String userId = userService.getCurrentUserId(request)
         def activity = activityService.get(id)
         String projectId = activity?.projectId
         def model = null
@@ -178,7 +177,7 @@ class BioActivityController {
      * @return
      */
     def create(String id) {
-        String userId = userService.getCurrentUserId()
+        String userId = userService.getCurrentUserId(request)
         Map pActivity = projectActivityService.get(id, "all")
         String projectId = pActivity?.projectId
         String type = pActivity?.pActivityFormName
@@ -297,13 +296,7 @@ class BioActivityController {
     private GrailsParameterMap constructDefaultSearchParams(Map params) {
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
         Map parsed = commonService.parseParams(params)
-        if (parsed.mobile) {
-            String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
-            String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
-            parsed.userId = username && key ? userService.getUserFromAuthKey(username, key)?.userId : ''
-        } else {
-            parsed.userId = userService.getCurrentUserId()
-        }
+        parsed.userId = userService.getCurrentUserId(parsed.mobile ? request : null)
 
         if (params?.hub == 'ecoscience') {
             queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectType:ecoscience"

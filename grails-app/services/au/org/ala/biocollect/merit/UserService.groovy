@@ -20,11 +20,19 @@ class UserService {
     }
 
     def getCurrentUserDisplayName() {
-        getUser()?.displayName?:"" //?:"mark.woolston@csiro.au"
+        getUser()?.displayName?:"" 
     }
 
-    def getCurrentUserId() {
-        getUser()?.userId?:""
+    def getCurrentUserId(request = null) {
+        def userId = ""
+
+        if (request) {
+            String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
+            String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
+            userId = username && key ? getUserFromAuthKey(username, key)?.userId : ''
+        }
+
+        userId ?: (getUser()?.userId ?: "")
     }
 
    /*
