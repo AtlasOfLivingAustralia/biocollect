@@ -58,7 +58,7 @@ class BioActivityController {
 
         Map result
 
-        String userId = userService.getCurrentUserId()
+        String userId = userService.getCurrentUserId(request)
         if (!userId) {
             flash.message = "Access denied: User has not been authenticated."
             response.status = 401
@@ -715,31 +715,35 @@ class BioActivityController {
      */
     def getActivityModel(String id){
         String userId = userService.getCurrentUserId(request)
-        Map pActivity = projectActivityService.get(id, "all")
-        String projectId = pActivity?.projectId
-        String type = pActivity?.pActivityFormName
         Map model = [:]
 
-        if (!pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
-            model.error = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
-            response.status = 401
-        } else if (isProjectActivityClosed(pActivity)) {
-            model.error = "Access denied: This survey is closed."
-            response.status = 401
-        }  else if (!pActivity) {
-            model.error = "Invalid survey - ${id}"
-        } else if (!projectId) {
-            model.error = "No project associated with the survey"
-        } else if (!type) {
-            model.error = "Invalid activity type"
-        } else {
-            Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
-            model = activityModel(activity, projectId)
-            model.pActivity = pActivity
-            model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', id: projectId)
-            model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
+        if(userId){
+            Map pActivity = projectActivityService.get(id, "all")
+            String projectId = pActivity?.projectId
+            String type = pActivity?.pActivityFormName
+            if (!pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
+                model.error = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
+                response.status = 401
+            } else if (isProjectActivityClosed(pActivity)) {
+                model.error = "Access denied: This survey is closed."
+                response.status = 401
+            }  else if (!pActivity) {
+                model.error = "Invalid survey - ${id}"
+            } else if (!projectId) {
+                model.error = "No project associated with the survey"
+            } else if (!type) {
+                model.error = "Invalid activity type"
+            } else {
+                Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
+                model = activityModel(activity, projectId)
+                model.pActivity = pActivity
+                model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', id: projectId)
+                model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
 
-            addOutputModel(model)
+                addOutputModel(model)
+            }
+        } else {
+            model.error = "Invalid user"
         }
 
         render model as JSON

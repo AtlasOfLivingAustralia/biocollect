@@ -101,12 +101,14 @@ class UrlMappings {
                         }
                 }
 
-                // Following api's are used by external clients
+                // Following api's are used by external mobile clients
                 "/ws/project/search"(controller: "project", action: 'search')
                 "/ws/survey/list/$id"(controller:  "project", action: 'listSurveys')
-                "/ws/activity/model/$id"(controller: "bioActivity", action: 'getActivityModel')
-                "/ws/activity/data/$id"(controller:  "bioActivity", action: 'getOutputForActivity')
-                "/ws/activity/save"(controller:  "bioActivity", action: 'ajaxUpdate')
-                "/ws/activity/search"(controller:  "bioActivity", action: 'searchProjectActivities')
+                "/ws/attachment/upload"(controller:  "image", action: 'upload')
+                "/ws/bioactivity/model/$id"(controller: "bioActivity", action: 'getActivityModel')
+                "/ws/bioactivity/data/$id"(controller:  "bioActivity", action: 'getOutputForActivity')
+                "/ws/bioactivity/save"(controller:  "bioActivity", action: 'ajaxUpdate')
+                "/ws/bioactivity/search"(controller:  "bioActivity", action: 'searchProjectActivities')
         }
 }
+

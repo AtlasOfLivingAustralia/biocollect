@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat
 
 class ImageController {
 
-    def webService
+    def webService, userService
 
     static defaultAction = "get"
 
@@ -131,10 +131,10 @@ class ImageController {
     }
 
     def upload() {
-        log.debug "-------------------------------upload action"
-        params.each { log.debug it }
+        def user = userService.getCurrentUserId(request)
+
         def result = []
-        if (request.respondsTo('getFile')) {
+        if (request.respondsTo('getFile') && user) {
             MultipartFile file = request.getFile('files')
             //println "file is " + file
             if (file?.size) {  // will only have size if a file was selected
@@ -187,9 +187,13 @@ class ImageController {
         }
         log.debug result
 
-        response.addHeader('Content-Type','text/plain')
-        def json = result as JSON
-        render json.toString()
+        if(!user){
+            render ([error: 'Invalid user'] as JSON)
+        } else {
+            response.addHeader('Content-Type','text/plain')
+            def json = result as JSON
+            render json.toString()
+        }
     }
 
     def delete = {
