@@ -107,6 +107,7 @@ class UrlMappings {
                 "/ws/attachment/upload"(controller:  "image", action: 'upload')
                 "/ws/bioactivity/model/$id"(controller: "bioActivity", action: 'getActivityModel')
                 "/ws/bioactivity/data/$id"(controller:  "bioActivity", action: 'getOutputForActivity')
+                "/ws/species/uniqueId"(controller:  "output", action: 'getOutputSpeciesIdentifier')
                 "/ws/bioactivity/save"(controller:  "bioActivity", action: 'ajaxUpdate')
                 "/ws/bioactivity/search"(controller:  "bioActivity", action: 'searchProjectActivities')
         }
