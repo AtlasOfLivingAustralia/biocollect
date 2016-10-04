@@ -53,7 +53,9 @@
                                         fusedAutocomplete:{
                                             source: species.transients.bioSearch,
                                             name: species.singleSpecies.transients.name,
-                                            guid: species.singleSpecies.transients.guid
+                                            guid: species.singleSpecies.transients.guid,
+                                            scientificName: species.singleSpecies.transients.scientificName,
+                                            commonName: species.singleSpecies.transients.commonName
                                         }" data-validation-engine="validate[required]">
 
                             </div>

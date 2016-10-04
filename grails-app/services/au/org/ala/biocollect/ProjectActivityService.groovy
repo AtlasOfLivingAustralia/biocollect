@@ -283,9 +283,11 @@ class ProjectActivityService {
         switch (pActivity?.species?.type) {
             case 'SINGLE_SPECIES':
                 result.isSingle = true
-                if (pActivity?.species?.singleSpecies?.name && pActivity?.species?.singleSpecies?.guid) {
-                    result.name = pActivity?.species?.singleSpecies?.name
+                if (pActivity?.species?.singleSpecies?.guid) {
+                    result.name = formatSpeciesName(pActivity.species.speciesDisplayFormat, pActivity.species.singleSpecies)
                     result.guid = pActivity?.species?.singleSpecies?.guid
+                    result.scientificName = pActivity.species.singleSpecies?.scientificName
+                    result.commonName = pActivity.species.singleSpecies?.commonName
                 }
                 break
         }
