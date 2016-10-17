@@ -1523,8 +1523,7 @@ var SpeciesListsViewModel = function (o) {
     self.isNext = ko.computed(function () {
         var status = false;
         if (self.listCount() > 0) {
-            var maxOffset = self.listCount() / self.max();
-            if (self.offset() < Math.ceil(maxOffset) - 1) {
+            if ((self.offset() + self.max()) < self.listCount()) {
                 status = true;
             }
         }
@@ -1537,9 +1536,8 @@ var SpeciesListsViewModel = function (o) {
 
     self.next = function () {
         if (self.listCount() > 0) {
-            var maxOffset = self.listCount() / self.max();
-            if (self.offset() < Math.ceil(maxOffset) - 1) {
-                self.offset(self.offset() + 1);
+             if (self.offset() < self.listCount()) {
+                self.offset(self.offset() + self.max());
                 self.loadAllSpeciesLists();
             }
         }
@@ -1547,7 +1545,7 @@ var SpeciesListsViewModel = function (o) {
 
     self.previous = function () {
         if (self.offset() > 0) {
-            var newOffset = self.offset() - 1;
+            var newOffset = self.offset() - self.max();
             self.offset(newOffset);
             self.loadAllSpeciesLists();
         }
