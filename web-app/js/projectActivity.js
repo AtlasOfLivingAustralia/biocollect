@@ -1579,7 +1579,7 @@ var SpeciesListsViewModel = function (o) {
         }
     }
 
-    self.loadAllSpeciesLists = function (sortCol = 'listName', order = 'asc') {
+    self.loadAllSpeciesLists = function (sortCol, order) {
         self.transients.loading(true);
         var url = fcConfig.speciesListUrl + "?sort=" + sortCol + "&offset=" + self.offset() + "&max=" + self.max() + "&order=" + order;
         if (self.searchGuid()) {
@@ -1618,6 +1618,7 @@ var SpeciesListsViewModel = function (o) {
     }
 
     self.setDefault = function() {
+        $("#" + self.transients.sortCol () + "_Hdr").removeClass("icon-arrow-up").removeClass("icon-arrow-down");
         self.transients.sortCol("listName");
         self.transients.sortOrder("asc");
         self.transients.loading(true);
