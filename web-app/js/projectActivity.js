@@ -1392,9 +1392,10 @@ var SpeciesConstraintViewModel = function (o) {
     };
 
     self.transients.toggleShowExistingSpeciesLists = function () {
+        self.allSpeciesLists.transients.loading(true);
         self.transients.showExistingSpeciesLists(!self.transients.showExistingSpeciesLists());
         if (self.transients.showExistingSpeciesLists()) {
-            self.allSpeciesLists.loadAllSpeciesLists();
+            self.allSpeciesLists.setDefault()
             self.transients.showAddSpeciesLists(false);
         }
     };
@@ -1520,6 +1521,12 @@ var SpeciesListsViewModel = function (o) {
     self.offset = ko.observable(0);
     self.max = ko.observable(100);
     self.listCount = ko.observable();
+
+    self.transients = {};
+    self.transients.loading = ko.observable(false);
+    self.transients.sortCol = ko.observable("listName");
+    self.transients.sortOrder = ko.observable("asc");
+
     self.isNext = ko.computed(function () {
         var status = false;
         if (self.listCount() > 0) {
@@ -1538,7 +1545,7 @@ var SpeciesListsViewModel = function (o) {
         if (self.listCount() > 0) {
              if (self.offset() < self.listCount()) {
                 self.offset(self.offset() + self.max());
-                self.loadAllSpeciesLists();
+                self.loadAllSpeciesLists(self.transients.sortCol(), self.transients.sortOrder());
             }
         }
     };
@@ -1547,12 +1554,34 @@ var SpeciesListsViewModel = function (o) {
         if (self.offset() > 0) {
             var newOffset = self.offset() - self.max();
             self.offset(newOffset);
-            self.loadAllSpeciesLists();
+            self.loadAllSpeciesLists(self.transients.sortCol(), self.transients.sortOrder());
         }
     };
 
-    self.loadAllSpeciesLists = function () {
-        var url = fcConfig.speciesListUrl + "?sort=listName&offset=" + self.offset() + "&max=" + self.max();
+    self.sort = function(column, order) {
+        if (!self.transients.loading()) {
+            if (column == self.transients.sortCol()) {
+                //toggle the order
+                if (order == "asc") {
+                    self.transients.sortOrder("desc");
+                    $("#" + column + "_Hdr").removeClass("icon-arrow-up").addClass("icon-arrow-down");
+                } else {
+                    self.transients.sortOrder("asc");
+                    $("#" + column + "_Hdr").removeClass("icon-arrow-down").addClass("icon-arrow-up");
+                }
+            } else {
+                $("#" + self.transients.sortCol() + "_Hdr").removeClass("icon-arrow-up").removeClass("icon-arrow-down");
+                $("#" + column + "_Hdr").removeClass("icon-arrow-down").addClass("icon-arrow-up");
+                self.transients.sortCol(column)
+                self.transients.sortOrder("asc");
+            }
+            self.loadAllSpeciesLists(self.transients.sortCol(), self.transients.sortOrder())
+        }
+    }
+
+    self.loadAllSpeciesLists = function (sortCol = 'listName', order = 'asc') {
+        self.transients.loading(true);
+        var url = fcConfig.speciesListUrl + "?sort=" + sortCol + "&offset=" + self.offset() + "&max=" + self.max() + "&order=" + order;
         if (self.searchGuid()) {
             url += "&guid=" + self.searchGuid();
         }
@@ -1572,6 +1601,7 @@ var SpeciesListsViewModel = function (o) {
                             return new SpeciesList(obj);
                         })
                     );
+                    self.transients.loading(false);
                 }
             },
             error: function (data) {
@@ -1584,9 +1614,17 @@ var SpeciesListsViewModel = function (o) {
     self.clearSearch = function() {
         self.searchGuid(null);
         self.searchName(null);
-
-        self.loadAllSpeciesLists();
+        self.setDefault()
     }
+
+    self.setDefault = function() {
+        self.transients.sortCol("listName");
+        self.transients.sortOrder("asc");
+        self.transients.loading(true);
+        self.loadAllSpeciesLists(self.transients.sortCol(), self.transients.sortOrder());
+        $("#listName_Hdr").addClass("icon-arrow-up").removeClass("icon-arrow-down");
+    }
+
 };
 
 var SpeciesList = function (o) {

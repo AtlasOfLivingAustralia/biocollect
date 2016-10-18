@@ -13,7 +13,7 @@
                                                 guid: species.allSpeciesLists.searchGuid
                                             }">
                 <div class="input-append">
-                    <button id="search" class="btn btn-primary" data-bind="click: species.allSpeciesLists.loadAllSpeciesLists">Search</button>
+                    <button id="search" class="btn btn-primary" data-bind="click: species.allSpeciesLists.loadAllSpeciesLists(species.allSpeciesLists.transients.sortCol(), species.allSpeciesLists.transients.sortOrder())">Search</button>
                 </div>
                 <div class="input-append">
                     <button id="clear" class="btn btn-default" data-bind="click: species.allSpeciesLists.clearSearch">Clear</button>
@@ -41,10 +41,10 @@
                 <div class="span12 text-left">
                     <table class="table table-striped" id="select-species-list">
                         <thead>
-                        <th width="30%">List name</th>
-                        <th width="10%">List type</th>
-                        <th width="20%">Owner</th>
-                        <th width="10%">Item Count</th>
+                        <th width="30%" style="color:steelblue" data-bind="click: species.allSpeciesLists.sort('listName', species.allSpeciesLists.transients.sortOrder())">List name <span id="listName_Hdr" /></th>
+                        <th width="10%" style="color:steelblue" data-bind="click: species.allSpeciesLists.sort('listType', species.allSpeciesLists.transients.sortOrder())">List type <span id="listType_Hdr" /></th>
+                        <th width="20%" style="color:steelblue" data-bind="click: species.allSpeciesLists.sort('username', species.allSpeciesLists.transients.sortOrder())">Owner <span id="username_Hdr" /></th>
+                        <th width="10%" style="color:steelblue" data-bind="click: species.allSpeciesLists.sort('count', species.allSpeciesLists.transients.sortOrder())">Item Count <span id="count_Hdr" /></th>
                         <th width="10%"></th>
                         <th width="10%"></th>
 

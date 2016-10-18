@@ -365,8 +365,12 @@ ko.bindingHandlers.fusedAutocomplete = {
                 if (data) {
                     params.guid(data.guid);
                     params.name(data.name);
-                    params.commonName(data.commonName);
-                    params.scientificName(data.scientificName);
+                    if (params.commonName && params.commonName != undefined) {
+                        params.commonName(data.commonName);
+                    }
+                    if (params.scientificName && params.scientificName != undefined) {
+                        params.scientificName(data.scientificName);
+                    }
                 }
             });
         }
