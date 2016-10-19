@@ -32,7 +32,7 @@ reloadable.cfgs = ["file:/data/${appName}/config/${appName}-config.properties"]
 
 grails.project.groupId = "au.org.ala" // change this to alter the default package name and Maven publishing destination
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
-grails.mime.use.accept.header = false
+grails.mime.use.accept.header = true
 grails.mime.types = [
     all:           '*/*',
     atom:          'application/atom+xml',
