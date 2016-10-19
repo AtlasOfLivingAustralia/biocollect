@@ -5,7 +5,6 @@ import au.org.ala.biocollect.merit.CommonService
 import au.org.ala.biocollect.merit.DocumentService
 import au.org.ala.biocollect.merit.MetadataService
 import au.org.ala.biocollect.merit.OutputService
-import au.org.ala.biocollect.merit.PreAuthorise
 import au.org.ala.biocollect.merit.ProjectService
 import au.org.ala.biocollect.merit.SearchService
 import au.org.ala.biocollect.merit.SiteService
@@ -16,9 +15,6 @@ import org.apache.commons.io.FilenameUtils
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.web.multipart.MultipartFile
 
-import javax.servlet.http.HttpServletResponse
-
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED
 import static org.apache.http.HttpStatus.*
 import org.codehaus.groovy.grails.web.json.JSONArray
 
@@ -369,32 +365,6 @@ class BioActivityController {
         }
 
         render([activities: activities, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
-    }
-
-    def ozAtlasSync(String id, long since = 0) {
-        // Extract from headers and check auth token
-        def userId = userService.getCurrentUserId(request)
-        if (!userId) {
-            return forbidden()
-        }
-
-        final doc = projectActivityService.get(id, 'parent-name')
-        final String projectActivityName = doc.name
-        final String projectName = doc.project.name
-        final String searchTerm = since ? "lastUpdated:>$since" : ''
-
-
-        final params = [
-                sort: 'lastUpdated',
-                order: 'DESC',
-                flimit: 0,
-                view: 'myrecords',
-                searchTerm: searchTerm,
-                fq: ["projectActivityNameFacet:$projectActivityName", "projectNameFacet:$projectName"],
-                '_': System.currentTimeMillis()
-        ]
-
-        searchService.searchProjectActivity()
     }
 
     /**
