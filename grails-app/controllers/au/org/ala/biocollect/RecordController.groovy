@@ -50,7 +50,7 @@ class RecordController {
             if (response.statusCode == SC_NOT_FOUND) {
                 notFound("These are not the droids you're looking for")
             } else {
-                log.error("Couldn't call ecodata listProjectActivityAndUserRecords", response)
+                log.error("Couldn't call ecodata listProjectActivityAndUserRecords: $response")
                 error("I dun goofed")
             }
         } else {
