@@ -4,8 +4,8 @@
         <div class="well">
 
             <div class="row-fluid margin-bottom-1">
-                <label for="speciesNameSearch">Enter a species name to search for</label>
-                <input id="speciesNameSearch" class="input-xxlarge" type="text" placeholder="Search species"
+                <label for="speciesNameSearch">Enter a list name or select a species name to search for</label>
+                <input id="speciesNameSearch" class="input-xxlarge" type="text" placeholder="Search list or species"
                        data-bind="value:species.allSpeciesLists.searchName,
                                             fusedAutocomplete:{
                                                 source: species.transients.bioSearch,
@@ -41,10 +41,27 @@
                 <div class="span12 text-left">
                     <table class="table table-striped" id="select-species-list">
                         <thead>
-                        <th width="30%" style="color:steelblue" data-bind="click: species.allSpeciesLists.sort('listName', species.allSpeciesLists.transients.sortOrder())">List name <span id="listName_Hdr" /></th>
-                        <th width="10%" style="color:steelblue" data-bind="click: species.allSpeciesLists.sort('listType', species.allSpeciesLists.transients.sortOrder())">List type <span id="listType_Hdr" /></th>
-                        <th width="20%" style="color:steelblue" data-bind="click: species.allSpeciesLists.sort('username', species.allSpeciesLists.transients.sortOrder())">Owner <span id="username_Hdr" /></th>
-                        <th width="10%" style="color:steelblue" data-bind="click: species.allSpeciesLists.sort('count', species.allSpeciesLists.transients.sortOrder())">Item Count <span id="count_Hdr" /></th>
+                        <th width="30%" style="color:steelblue"
+                            data-bind="click: species.allSpeciesLists.sort('listName', species.allSpeciesLists.transients.sortOrder())">
+                            List name
+                            <span data-bind="css: species.allSpeciesLists.ascIconClass, visible: species.allSpeciesLists.transients.sortCol()=='listName' && species.allSpeciesLists.transients.sortOrder()=='asc'"></span>
+                            <span data-bind="css: species.allSpeciesLists.descIconClass, visible: species.allSpeciesLists.transients.sortCol()=='listName' && species.allSpeciesLists.transients.sortOrder()=='desc'"></span>
+                        </th>
+                        <th width="10%" style="color:steelblue" data-bind="click: species.allSpeciesLists.sort('listType', species.allSpeciesLists.transients.sortOrder())">
+                            List type
+                            <span data-bind="css: species.allSpeciesLists.ascIconClass, visible: species.allSpeciesLists.transients.sortCol()=='listType' && species.allSpeciesLists.transients.sortOrder()=='asc'"></span>
+                            <span data-bind="css: species.allSpeciesLists.descIconClass, visible: species.allSpeciesLists.transients.sortCol()=='listType' && species.allSpeciesLists.transients.sortOrder()=='desc'"></span>
+                        </th>
+                        <th width="20%" style="color:steelblue" data-bind="click: species.allSpeciesLists.sort('username', species.allSpeciesLists.transients.sortOrder())">
+                            Owner
+                            <span data-bind="css: species.allSpeciesLists.ascIconClass, visible: species.allSpeciesLists.transients.sortCol()=='username' && species.allSpeciesLists.transients.sortOrder()=='asc'"></span>
+                            <span data-bind="css: species.allSpeciesLists.descIconClass, visible: species.allSpeciesLists.transients.sortCol()=='username' && species.allSpeciesLists.transients.sortOrder()=='desc'"></span>
+                        </th>
+                        <th width="10%" style="color:steelblue" data-bind="click: species.allSpeciesLists.sort('count', species.allSpeciesLists.transients.sortOrder())">
+                            Item Count
+                            <span data-bind="css: species.allSpeciesLists.ascIconClass, visible: species.allSpeciesLists.transients.sortCol()=='count' && species.allSpeciesLists.transients.sortOrder()=='asc'"></span>
+                            <span data-bind="css: species.allSpeciesLists.descIconClass, visible: species.allSpeciesLists.transients.sortCol()=='username' && species.allSpeciesLists.transients.sortOrder()=='desc'"></span>
+                        </th>
                         <th width="10%"></th>
                         <th width="10%"></th>
 
