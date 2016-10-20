@@ -45,13 +45,16 @@ class RecordController {
         if (!userId) {
             return forbidden("Sorry mate, can't help you.")
         }
-        try {
-            respond(recordService.listProjectActivityAndUserRecords(id, userId))
-        } catch (FileNotFoundException e) {
-            notFound("These are not the droids you're looking for")
-        } catch (Exception e) {
-            log.error("Couldn't call ecodata listProjectActivityAndUserRecords", e)
-            error("I dun goofed")
+        final response = recordService.listProjectActivityAndUserRecords(id, userId)
+        if (response.error) {
+            if (response.statusCode == SC_NOT_FOUND) {
+                notFound("These are not the droids you're looking for")
+            } else {
+                log.error("Couldn't call ecodata listProjectActivityAndUserRecords", response)
+                error("I dun goofed")
+            }
+        } else {
+            respond(response)
         }
     }
 
