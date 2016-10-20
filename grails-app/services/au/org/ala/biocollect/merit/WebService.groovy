@@ -29,6 +29,9 @@ import org.springframework.web.multipart.MultipartFile
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
 import java.nio.charset.StandardCharsets
+
+import static org.apache.http.HttpHeaders.*
+
 /**
  * Helper class for invoking ecodata (and other Atlas) web services.
  */
@@ -157,6 +160,7 @@ class WebService {
             if (includeApiKey) {
                 conn.setRequestProperty("Authorization", grailsApplication.config.api_key);
             }
+            conn.setRequestProperty(ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             def json = responseText(conn)
             return JSON.parse(json)
         } catch (ConverterException e) {
