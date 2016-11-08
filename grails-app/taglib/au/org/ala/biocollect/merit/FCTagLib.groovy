@@ -608,6 +608,21 @@ class FCTagLib {
         }
     }
 
+
+    /**
+     * Output HTML content for the requested SettingPageType
+     *
+     * @attr key REQUIRED
+     */
+    def getSettingContentForDynamicKey = { attrs ->
+        if(attrs.key){
+            def content = settingService.getSettingText(attrs.key) as String
+            if (content) {
+                out << content.markdownToHtml()
+            }
+        }
+    }
+
     /** Render a list of bootstrap tabs based on content definitions */
     def tabList = {attrs ->
 
@@ -726,4 +741,5 @@ class FCTagLib {
             out << value.replaceAll(/[^A-Za-z0-9]/, "")
         }
     }
+
 }

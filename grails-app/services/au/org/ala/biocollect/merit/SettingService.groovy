@@ -3,7 +3,6 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
 import groovy.text.GStringTemplateEngine
-import org.codehaus.groovy.grails.web.servlet.GrailsFlashScope
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.web.context.request.RequestAttributes
 
@@ -78,8 +77,22 @@ class SettingService {
 
     }
 
+    def getSettingText(String type) {
+        def key = localHubConfig.get().urlPath + ".${type}"
+
+        get(key)
+
+    }
+
+
     def setSettingText(SettingPageType type, String content) {
         def key = localHubConfig.get().urlPath + type.key
+
+        set(key, content)
+    }
+
+    def setSettingText(String type, String content) {
+        def key = localHubConfig.get().urlPath + ".${type}"
 
         set(key, content)
     }
