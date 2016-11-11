@@ -90,6 +90,13 @@
     <g:render template="/shared/projectFinder" model="${[doNotShowSearchBtn: true]}"/>
 </div>
 <r:script>
+    <g:if test="${hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.defaultView == 'grid'}">
+        amplify.store('pt-view-state','tileView');
+    </g:if>
+    <g:elseif test="${hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.defaultView == 'list'}">
+        amplify.store('pt-view-state','listView');
+    </g:elseif>
+
     var projectFinder = new ProjectFinder();
 </r:script>
 </body>

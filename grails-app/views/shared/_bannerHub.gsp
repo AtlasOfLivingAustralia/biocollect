@@ -12,9 +12,11 @@
             <g:each var="image" in="${images}" status="index">
                 <div class="item ${index ==0? 'active' :''}">
                     <img src="${image.url}">
-                    <div class="carousel-caption">
-                        <p>${image.caption}</p>
-                    </div>
+                    <g:if test="${image.caption}">
+                        <div class="carousel-caption">
+                            <p>${image.caption}</p>
+                        </div>
+                    </g:if>
                 </div>
             </g:each>
         </div>

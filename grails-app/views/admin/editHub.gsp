@@ -410,15 +410,15 @@
                 <div class="accordion-inner">
                     <label>Default content view:</label>
                     <label class="radio">
-                        <input type="radio" name="defaultView" data-bind="value: defaultView" value="grid">
+                        <input type="radio" name="defaultView" data-bind="checked: defaultView" value="grid">
                         Projects Grid
                     </label>
                     <label class="radio">
-                        <input type="radio" name="defaultView" data-bind="value: defaultView" value="list">
+                        <input type="radio" name="defaultView" data-bind="checked: defaultView" value="list">
                         Projects List
                     </label>
                     <label class="radio">
-                        <input type="radio" name="defaultView" data-bind="value: defaultView" value="map" disabled>
+                        <input type="radio" name="defaultView" data-bind="checked: defaultView" value="map" disabled>
                         Projects Map
                     </label>
                 </div>

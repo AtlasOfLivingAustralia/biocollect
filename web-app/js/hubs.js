@@ -112,14 +112,6 @@ var HubSettings = function (settings, config) {
         self.documents.remove(document);
     };
 
-    self.removeBanner = function (banner) {
-        self.bannerImages.remove(banner);
-        var document = (self.documents() || []).find(function (item) {
-            return item.url == banner
-        });
-        self.documents.remove(document);
-    };
-
 
     self.removeDefaultFacetQuery = function (data) {
         self.defaultFacetQuery.remove(data);
@@ -232,6 +224,7 @@ var HubSettings = function (settings, config) {
                     config.message(data.errors);
                 }
                 else {
+                    self.documents.removeAll();
                     config.message('Hub saved!');
                 }
 
@@ -255,8 +248,6 @@ var TemplateConfigurationViewModel = function (config) {
     self.footer = ko.observable(new FooterViewModel( config.footer || {}));
     self.banner = ko.observable(new BannerViewModel(config.banner || {}));
     self.homePage = ko.observable(new HomePageViewModel(config.homePage || {}));
-    self.buttonsHomePage = ko.observable(new ButtonsHomePageViewModel(config.buttonsHomePage || {}));
-    self.projectFinderHomePage = ko.observable(new ProjectFinderHomePageViewModel(config.projectFinderHomePage || {}));
 };
 
 var HeaderViewModel = function (config) {
@@ -374,6 +365,14 @@ var BannerViewModel = function (config) {
 
     self.transitionSpeed = ko.observable(config.transitionSpeed || 3000);
     self.images = ko.observableArray(images);
+
+    self.removeBanner = function (banner) {
+        self.images.remove(banner);
+        var document = (self.documents() || []).find(function (item) {
+            return item.url == banner
+        });
+        self.documents.remove(document);
+    };
 };
 
 var ImageViewModel = function (config) {
