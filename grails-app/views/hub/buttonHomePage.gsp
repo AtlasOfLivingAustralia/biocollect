@@ -24,22 +24,31 @@
 </head>
 
 <body>
-<div class="container" id="main-content">
+<g:if test="${hubConfig.title}">
+    <div class="${fluidLayout?'container-fluid':'container'}">
+        <h1 class="title">${hubConfig.title}</h1>
+    </div>
+</g:if>
 
+<div id="bannerHubContainer" class="container-fluid">
+    <g:render template="/shared/bannerHub"/>
+</div>
+
+<div class="${fluidLayout?'container-fluid':'container'}" id="hubHomepageContent">
     <g:if test="${hubConfig.templateConfiguration?.buttonsHomePage?.buttons}">
-        <g:set var="layout" value="${Integer.parseInt(hubConfig.templateConfiguration?.buttonsHomePage?.numberOfColumns)}"></g:set>
+        <g:set var="layout" value="${Integer.parseInt(hubConfig.templateConfiguration?.homePage?.buttonsConfig?.numberOfColumns)}"></g:set>
         <div>
-        <g:each in="${hubConfig.templateConfiguration?.buttonsHomePage?.buttons}" var="link" status="index">
-            <g:if test="${(index) % layout == 0}">
-                </div>
-                <div class="row">
-            </g:if>
+            <g:each in="${hubConfig.templateConfiguration?.homePage?.buttonsConfig?.buttons}" var="link" status="index">
+                <g:if test="${(index) % layout == 0}">
+                    </div>
+                    <div class="row">
+                </g:if>
 
-            <config:createAButton config="${link}" layout="${layout}"></config:createAButton>
-        </g:each>
+                <config:createAButton config="${link}" layout="${layout}"></config:createAButton>
+            </g:each>
         </div>
     </g:if>
-
 </div>
+
 </body>
 </html>

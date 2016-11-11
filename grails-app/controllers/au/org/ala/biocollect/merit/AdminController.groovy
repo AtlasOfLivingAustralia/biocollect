@@ -433,20 +433,30 @@ class AdminController {
     def saveHubSettings() {
         def json = request.JSON
         def documents = json.remove('documents')
-
+        List bannerImages = json.templateConfiguration?.banner?.images
 
         documents.each { document ->
+            def staged = bannerImages?.find {
+                it.url == document.url
+            }
+
+            bannerImages?.remove(staged);
+
             def response = documentService.saveStagedImageDocument(document)
             if (response?.content.documentId) {
                 def savedDoc = documentService.get(response.content.documentId)
                 if (savedDoc.role == 'banner') {
-                    json.bannerUrl = savedDoc.url
+                    bannerImages.push([url: savedDoc.url, caption: staged.caption])
                 }
                 else if (savedDoc.role == 'logo') {
                     json.logoUrl = savedDoc.url
                 }
             }
 
+        }
+
+        if(bannerImages.size()){
+            json.bannerUrl = bannerImages[0];
         }
 
         HubSettings settings = new HubSettings(json)

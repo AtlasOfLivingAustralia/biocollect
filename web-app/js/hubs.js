@@ -17,7 +17,9 @@ var HubSettingsViewModel = function (programsModel, options) {
         adminFacets: ['electFacet', 'cmzFacet', 'meriPlanAssetFacet', 'partnerOrganisationTypeFacet'],
         programNames: programNames,
         availableSkins: ['nrm', 'ala2', 'mdba', 'ala', 'configurableHubTemplate1'],
-        configurableTemplates: ['configurableHubTemplate1']
+        configurableTemplates: ['configurableHubTemplate1'],
+        defaultHomePage: '/project/citizenScience',
+        hubHomePage: '/hub/index'
     };
 
     var config = $.extend({root: self}, options, {message: self.message});
@@ -72,27 +74,31 @@ var HubSettings = function (settings, config) {
     self.defaultProgram = ko.observable();
     self.templateConfiguration = ko.observable();
 
-    self.transients = {
-
-        /**
-         * check if skin layout can be configured
-         * @param skin
-         * @returns {boolean}
-         */
-        isSkinAConfigurableTemplate: ko.computed(function () {
-            if (config.root.transients.configurableTemplates.indexOf(self.skin()) != -1) {
-                return true;
+    /**
+     * Set home page only if the configurable template is chosen. Otherwise, do nothing. If user had previously chosen
+     * configurable template but not anymore, then do not change homepage.
+     */
+    self.skin.subscribe(function (skin) {
+        if(self.transients.isSkinAConfigurableTemplate()){
+            if(self.skin() !== config.root.transients.hubHomePage){
+                self.homePagePath(config.root.transients.hubHomePage);
             }
-
-            return false;
-        }),
-        showTemplateSettings: ko.observable(false)
-    };
+        }
+    });
 
     self.documents.subscribe(function (documents) {
         $.each(documents, function (i, document) {
             if (document.role == 'banner') {
-                self.bannerUrl(document.url);
+                var duplicate = self.templateConfiguration().banner().images().find(function (item) {
+                    return item.url() == document.url;
+                });
+
+                if(!duplicate){
+                    self.templateConfiguration().banner().images.push(new ImageViewModel({
+                        url: document.url,
+                        caption: ''
+                    }));
+                }
             }
             else if (document.role == 'logo') {
                 self.logoUrl(document.url);
@@ -106,9 +112,11 @@ var HubSettings = function (settings, config) {
         self.documents.remove(document);
     };
 
-    self.removeBanner = function () {
-        self.bannerUrl(null);
-        var document = findDocumentByRole(self.documents(), 'banner');
+    self.removeBanner = function (banner) {
+        self.bannerImages.remove(banner);
+        var document = (self.documents() || []).find(function (item) {
+            return item.url == banner
+        });
         self.documents.remove(document);
     };
 
@@ -141,6 +149,27 @@ var HubSettings = function (settings, config) {
         self.transients.showTemplateSettings(!self.transients.showTemplateSettings());
     }
 
+    self.isParameterConfigurableTemplate = function (skin) {
+        if (config.root.transients.configurableTemplates.indexOf(skin) != -1) {
+            return true;
+        }
+
+        return false;
+    };
+
+    self.transients = {
+
+        /**
+         * check if skin layout can be configured
+         * @param skin
+         * @returns {boolean}
+         */
+        isSkinAConfigurableTemplate: ko.computed(function () {
+            return self.isParameterConfigurableTemplate(self.skin());
+        }),
+        showTemplateSettings: ko.observable(false),
+    };
+
     self.loadSettings = function (settings) {
         self.hubId(settings.hubId);
         self.urlPath(settings.urlPath);
@@ -155,7 +184,7 @@ var HubSettings = function (settings, config) {
         self.logoUrl(self.orBlank(settings.logoUrl));
         self.homePagePath(self.orBlank(settings.homePagePath));
         self.defaultFacetQuery([]);
-        self.templateConfiguration(new TemplateConfigurationViewModel(settings.templateConfiguration));
+        self.templateConfiguration(new TemplateConfigurationViewModel(settings.templateConfiguration || {}));
         if (settings.defaultFacetQuery && settings.defaultFacetQuery instanceof Array) {
             $.each(settings.defaultFacetQuery, function (i, obj) {
                 self.defaultFacetQuery.push({query: ko.observable(obj)});
@@ -215,6 +244,7 @@ var HubSettings = function (settings, config) {
 
     self.loadSettings(settings);
 
+
 };
 
 var TemplateConfigurationViewModel = function (config) {
@@ -223,11 +253,10 @@ var TemplateConfigurationViewModel = function (config) {
     self.styles = ko.observable(new StyleViewModel(config.styles || colorScheme));
     self.header = ko.observable(new HeaderViewModel( config.header || {}));
     self.footer = ko.observable(new FooterViewModel( config.footer || {}));
-    self.homePage = ko.observable();
+    self.banner = ko.observable(new BannerViewModel(config.banner || {}));
+    self.homePage = ko.observable(new HomePageViewModel(config.homePage || {}));
     self.buttonsHomePage = ko.observable(new ButtonsHomePageViewModel(config.buttonsHomePage || {}));
     self.projectFinderHomePage = ko.observable(new ProjectFinderHomePageViewModel(config.projectFinderHomePage || {}));
-    self.logo = ko.observable();
-    self.title = ko.observable();
 };
 
 var HeaderViewModel = function (config) {
@@ -243,6 +272,10 @@ var HeaderViewModel = function (config) {
     self.addLink = function () {
       self.links.push(new LinkViewModel({}));
     };
+
+    self.removeLink = function (data) {
+        self.links.remove(data);
+    }
 };
 
 var FooterViewModel = function (config) {
@@ -265,6 +298,11 @@ var FooterViewModel = function (config) {
 
     self.addSocialMedia = function () {
         self.socials.push(new SocialMediaViewModel({}))
+    }
+
+    self.removeLink = function (data) {
+        self.links.remove(data);
+        self.socials.remove(data);
     }
 };
 
@@ -307,15 +345,43 @@ var ButtonsHomePageViewModel = function (config) {
     self.addButtton = function () {
         self.buttons.push(new LinkViewModel({}));
     }
+
+    self.removeLink = function (data) {
+        self.buttons.remove(data);
+    }
 };
 
 var ProjectFinderHomePageViewModel = function (config) {
     var self = this;
 
-    self.buttons = ko.observableArray(config.buttons || []);
-    self.numberOfColumns = ko.observable(config.numberOfColumns || 3);
+    self.defaultView = ko.observable(config.defaultView || 'grid');
 };
 
+var HomePageViewModel = function (config) {
+    var self = this;
+
+    self.homePageConfig = ko.observable(config.homePageConfig || '');
+    self.projectFinderConfig = ko.observable(new ProjectFinderHomePageViewModel(config.projectFinderConfig || {}));
+    self.buttonsConfig = ko.observable(new ButtonsHomePageViewModel(config.buttonsConfig || {}));
+};
+
+var BannerViewModel = function (config) {
+    var self = this;
+    var images = config.images || [];
+    images = $.map(images, function (image) {
+        return new ImageViewModel(image);
+    });
+
+    self.transitionSpeed = ko.observable(config.transitionSpeed || 3000);
+    self.images = ko.observableArray(images);
+};
+
+var ImageViewModel = function (config) {
+    var self = this;
+
+    self.url = ko.observable(config.url || '')
+    self.caption = ko.observable(config.caption || '')
+};
 var colorScheme = {
     menuBackgroundColor: "#009080",
     menuTextColor: "#efefef",
@@ -327,4 +393,4 @@ var colorScheme = {
     footerBackgroundColor: "#323334",
     footerTextColor: "#efefef",
     socialTextColor: "#000"
-}
+};

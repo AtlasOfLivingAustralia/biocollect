@@ -124,22 +124,8 @@
                     <ul class="nav">
                         <g:if test="${hubConfig.templateConfiguration?.header?.links}">
                             <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
-                                <li class="main-menu">
-                                    <config:getLinkFromConfig config="${link}"></config:getLinkFromConfig>
-                                </li>
+                                    <config:getLinkFromConfig config="${link}" hubConfig="${hubConfig}"></config:getLinkFromConfig>
                             </g:each>
-                        </g:if>
-                        <g:if test="${!fc.userIsLoggedIn()}">
-                            <li class="main-menu">
-                                <g:set var="loginUrl" value='${grailsApplication.config.casServerLoginUrl + "?service=" + grailsApplication.config.serverName + request.forwardURI + "?hub=" + hubConfig.urlPath}'/>
-                                <config:getLinkFromConfig config="${[displayName: 'Login', href: loginUrl, contentType:'external']}"></config:getLinkFromConfig>
-                            </li>
-                        </g:if>
-                        <g:if test="${fc.userIsLoggedIn()}">
-                            <li class="main-menu">
-                                <g:set var="logoutUrl" value='${grailsApplication.config.grails.serverURL + "/logout/logout?casUrl=" + grailsApplication.config.casServerUrlPrefix + "/logout&appUrl=" + grailsApplication.config.serverName + request.forwardURI + "?hub=" + hubConfig.urlPath}'/>
-                                <config:getLinkFromConfig config="${[displayName: 'Logout', href: logoutUrl, contentType:'external']}"></config:getLinkFromConfig>
-                            </li>
                         </g:if>
                     </ul>
                 </div><!--/.nav-collapse -->
@@ -150,7 +136,7 @@
 
 <g:pageProperty name="page.page-header"/> <%-- allows special content to be inserted --%>
 
-<div class="${fluidLayout?'container-fluid':'container'}" id="main-content">
+<div id="main-content">
     <g:layoutBody />
 </div><!--/.container-->
 <div id="footer">

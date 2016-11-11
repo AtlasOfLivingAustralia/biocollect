@@ -22,10 +22,6 @@ textarea {
   background-color: $body-background-color;
 }
 
-body > #main-content {
-  margin-top: 20px;
-}
-
 a {
   color: $primary-color;
   text-decoration: none;
@@ -352,4 +348,56 @@ body .navbar {
     min-height: 30px;
     box-sizing:inherit;
   }
+}
+
+//Banner
+#bannerHub {
+  height: 350px;
+  width: 1000px;
+  margin: 0 auto;
+}
+
+#bannerHubOuter {
+  position: relative;
+}
+
+#bannerHubContainer{
+  background-color: $banner-background-color;
+  position: relative;
+}
+
+// home page
+#hubHomepageContent {
+  padding-top: 20px;
+}
+
+#main-content{
+  padding-top: 0px;
+}
+
+// carousel
+#bannerHub .carousel-caption {
+  position: absolute;
+  right: 0px;
+  top: 75px;
+  left: auto;
+  width: 300px;
+  min-height: 100px;
+  max-height: 200px;
+  background: $inset-background-color;
+  opacity: 0.75;
+}
+
+#bannerHub .carousel-caption h4, #bannerHub .carousel-caption p {
+  color: $inset-text-color;
+}
+
+//logo
+#bannerHubOuter .logo{
+  left: 50px;
+  top: 0px;
+  max-width: 75px;
+  max-height: 75px;
+  position: absolute;
+  z-index: 5;
 }

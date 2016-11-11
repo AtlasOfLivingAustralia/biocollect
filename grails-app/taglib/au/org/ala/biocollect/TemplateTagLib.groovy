@@ -1,10 +1,11 @@
 package au.org.ala.biocollect
 
-import groovy.json.StringEscapeUtils
+import au.org.ala.biocollect.merit.UserService
 
 class TemplateTagLib {
     static namespace = "config"
-    //static encodeAsForTags = [tagName: [taglib:'html'], otherTagName: [taglib:'none']]
+
+    UserService userService;
 
     def createAButton = { attrs ->
         Map link = attrs.config;
@@ -29,20 +30,53 @@ class TemplateTagLib {
     def getLinkFromConfig = { attrs ->
         if(attrs.config){
             Map link = attrs.config;
-            String style = "";
-            if(attrs.style){
-                style = "style='color:${attrs.style?.textColor}';";
-            }
+            String url = getLinkUrl(link);
+
             switch (link.contentType){
                 case 'external':
-                    out << "<a href=\"${link.href}\" class=\"do-not-mark-external\" ${style}>${link.displayName}</a>";
+                    out << "<li class=\"main-menu\">";
+                    out << "<a href=\"${url}\" class=\"do-not-mark-external\">${link.displayName}</a>";
+                    out << "</li>";
                     break;
                 case 'content':
-                    out << "<a href=\"${createLink(uri: link.href)}\" ${style}>${link.displayName}</a>";
+                    out << "<li class=\"main-menu\">";
+                    out << "<a href=\"${url}\">${link.displayName}</a>";
+                    out << "</li>";
                     break;
                 case 'static':
-                    out << "<a href=\"${createLink(controller: 'staticPage', action: 'index')}?page=${link.href}\" ${style}>${link.displayName}</a>";
+                    out << "<li class=\"main-menu\">";
+                    out << "<a href=\"${url}\" >${link.displayName}</a>";
+                    out << "</li>";
                     break;
+                case 'admin':
+                    if(userService.userIsAlaAdmin()){
+                        out << "<li class=\"main-menu\">";
+                        out << "<a href=\"${url}\">${link.displayName?:'Admin'}</a>";
+                        out << "</li>";
+                    }
+                    break;
+                case 'allrecords':
+                    out << "<li class=\"main-menu\">";
+                    out << "<a href=\"${url}\">${link.displayName?:'All Records'}</a>";
+                    out << "</li>";
+                    break;
+                case 'login':
+                    Map loginOrLogout = printLoginOrLogoutButton(attrs.hubConfig);
+                    out << "<li class=\"main-menu\">";
+                    out << "<a href=\"${loginOrLogout.href}\">${loginOrLogout.displayName}</a>";
+                    out << "</li>";
+                    break;
+                case 'newproject':
+                    out << "<li class=\"main-menu\">";
+                    out << "<a href=\"${url}\">${link.displayName?:'New project'}</a>";
+                    out << "</li>";
+                    break;
+                case 'sites':
+                    out << "<li class=\"main-menu\">";
+                    out << "<a href=\"${url}\">${link.displayName?:'Sites'}</a>";
+                    out << "</li>";
+                    break;
+
             }
         }
     }
@@ -88,6 +122,21 @@ class TemplateTagLib {
             case 'static':
                 url = "${createLink(controller: 'staticPage', action: 'index')}?page=${link.href}";
                 break;
+            case 'admin':
+                url = "${createLink(controller: 'admin', action: 'index')}";
+                break;
+            case 'allrecords':
+                url = "${createLink(controller: 'bioActivity', action: 'allRecords')}";
+                break;
+            case 'login':
+                url = "${createLink(controller: 'bioActivity', action: 'allRecords')}";
+                break;
+            case 'newproject':
+                url = "${createLink(controller: 'project', action: 'create')}";
+                break;
+            case 'sites':
+                url = "${createLink(controller: 'site', action: 'list')}";
+                break;
         }
 
         return url;
@@ -105,5 +154,15 @@ class TemplateTagLib {
         }
 
         return ''
+    }
+
+    private Map printLoginOrLogoutButton(Map hubConfig){
+        if(!fc.userIsLoggedIn()){
+            String loginUrl = grailsApplication.config.casServerLoginUrl + "?service=" + grailsApplication.config.serverName + request.forwardURI + "?hub=" + hubConfig.urlPath
+            return [displayName: 'Login', href: loginUrl, contentType:'external']
+        } else {
+            String logoutUrl = grailsApplication.config.grails.serverURL + "/logout/logout?casUrl=" + grailsApplication.config.casServerUrlPrefix + "/logout&appUrl=" + grailsApplication.config.serverName + request.forwardURI + "?hub=" + hubConfig.urlPath
+            return [displayName: 'Logout', href: logoutUrl, contentType:'external']
+        }
     }
 }
