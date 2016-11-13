@@ -1,9 +1,15 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
+import com.vaadin.sass.internal.ScssContext
+import com.vaadin.sass.internal.ScssStylesheet
+import com.vaadin.sass.internal.handler.SCSSDocumentHandlerImpl
+import com.vaadin.sass.internal.handler.SCSSErrorHandler
 import grails.converters.JSON
+import grails.plugin.cache.Cacheable
 import groovy.text.GStringTemplateEngine
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
+import org.springframework.core.io.Resource
 import org.springframework.web.context.request.RequestAttributes
 
 class SettingService {
@@ -172,5 +178,49 @@ class SettingService {
         })
     }
 
+    @Cacheable("styleSheetCache")
+    public Map getConfigurableHubTemplate1(String urlPath, Map styles) {
+        String scssFilename = 'configurable-template-1.scss'
+        SCSSErrorHandler errorHandler = new SCSSErrorHandler()
+        errorHandler.setWarningsAreErrors(true);
+        Resource input = grailsApplication.parentContext.getResource("css/template/${scssFilename}")
+        String filename = input?.file?.absolutePath + "${scssFilename}.${urlPath}.scss"
+        File writer = new File(filename)
 
+        String config = """
+        \$menu-background-color: ${styles?.menuBackgroundColor};
+        \$menu-text-color: ${styles?.menuTextColor};
+        \$banner-background-color: ${styles?.bannerBackgroundColor};
+        \$inset-background-color: ${styles?.insetBackgroundColor};
+        \$inset-text-color: ${styles?.insetTextColor};
+        \$body-background-color: ${styles?.bodyBackgroundColor};
+        \$body-text-color: ${styles?.bodyTextColor};
+        \$footer-background-color: ${styles?.footerBackgroundColor};
+        \$footer-text-color: ${styles?.footerTextColor};
+        \$social-text-color: ${styles?.socialTextColor};
+        \$primary-color: #009080;
+        \$primary-color-hover: #007777;
+        """;
+
+        writer.write(config.toString())
+        writer.append(input.inputStream.text)
+
+        try {
+            // Parse stylesheet
+            ScssStylesheet scss = ScssStylesheet.get(filename, null,
+                    new SCSSDocumentHandlerImpl(), errorHandler);
+            if (scss == null) {
+                System.err.println("The scss file " + input
+                        + " could not be found.");
+                System.exit(2);
+            }
+
+            // Compile scss -> css
+            scss.compile(ScssContext.UrlMode.MIXED);
+
+            return  [css: scss.printState(), status: 'success'];
+        } catch (Exception e) {
+            return  [css: "An error occurred during compilation of SCSS file", status: 'failed'];
+        }
+    }
 }

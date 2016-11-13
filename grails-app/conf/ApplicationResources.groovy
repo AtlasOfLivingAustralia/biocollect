@@ -462,12 +462,8 @@ modules = {
         resource url: [dir:'css', file:'mdba-styles.css']
     }
 
-    sass {
-        resource url: [dir:'js', file:'sass.sync.js'], disposition: 'head'
-    }
-
     configHubTemplate1 {
-        dependsOn 'bootstrap','font_awesome_44', 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin', 'sass'
+        dependsOn 'bootstrap','font_awesome_44', 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
         resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
         resource url: 'css/bootstrap-combobox.css'
         resource url: 'css/common.css'

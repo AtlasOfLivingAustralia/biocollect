@@ -28,30 +28,7 @@
     <title><g:layoutTitle /></title>
     <r:require modules="configHubTemplate1" />
     <g:set var="styles" value="${hubConfig.templateConfiguration?.styles}"></g:set>
-    <script id="configurableHubTemplate" type="text/css">
-        $menu-background-color: ${styles?.menuBackgroundColor};
-        $menu-text-color: ${styles?.menuTextColor};
-        $banner-background-color: ${styles?.bannerBackgroundColor};
-        $inset-background-color: ${styles?.insetBackgroundColor};
-        $inset-text-color: ${styles?.insetTextColor};
-        $body-background-color: ${styles?.bodyBackgroundColor};
-        $body-text-color: ${styles?.bodyTextColor};
-        $footer-background-color: ${styles?.footerBackgroundColor};
-        $footer-text-color: ${styles?.footerTextColor};
-        $social-text-color: ${styles?.socialTextColor};
 
-        $primary-color: #009080;
-        $primary-color-hover: #007777;
-        <config:getStyleSheet file="configurable-template-1.scss"></config:getStyleSheet>
-    </script>
-    <r:script disposition="head">
-        Sass.compile($("#configurableHubTemplate").html(), function(result) {
-            var link = document.createElement('style');
-            link.type = 'text/css';
-            $(link).html(result.text);
-            $(document.body).append(link);
-        });
-    </r:script>
     <r:script disposition='head'>
         // initialise plugins
         jQuery(function(){
@@ -103,6 +80,7 @@
     </r:script>
     <r:layoutResources/>
     <g:layoutHead />
+    <link rel="stylesheet" type="text/css" href="${createLink(controller:'hub', action: 'getStyleSheet')}?hub=${hubConfig.urlPath}">
 </head>
 <body class="${pageProperty(name:'body.class')?:'nav-collections'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}"  data-offset="${pageProperty(name:'body.data-offset')}" data-target="${pageProperty(name:'body.data-target')}" data-spy="${pageProperty(name:'body.data-spy')}">
 %{--<g:set var="fluidLayout" value="${grailsApplication.config.skin.fluidLayout?.toBoolean()}"/>--}%

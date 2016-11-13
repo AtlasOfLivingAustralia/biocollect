@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
+import grails.plugin.cache.CacheEvict
 import grails.util.Environment
 import grails.util.GrailsNameUtils
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
@@ -430,6 +431,7 @@ class AdminController {
     }
 
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
+    @CacheEvict(value=['styleSheetCache'], allEntries = true)
     def saveHubSettings() {
         def json = request.JSON
         def documents = json.remove('documents')

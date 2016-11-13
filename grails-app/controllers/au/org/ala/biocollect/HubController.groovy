@@ -16,4 +16,17 @@ class HubController {
                 break;
         }
     }
+
+    def getStyleSheet() {
+        HubSettings hubSettings = SettingService.hubConfig
+        Map styles = hubSettings.templateConfiguration?.styles
+        String skin = hubSettings.skin
+        String urlPath = hubSettings.urlPath
+        switch (skin){
+            case 'configurableHubTemplate1':
+                Map map = settingService.getConfigurableHubTemplate1(urlPath, styles)
+                render text: map.css, contentType: 'text/css';
+                break;
+        }
+    }
 }
