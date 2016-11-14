@@ -75,7 +75,7 @@
 <div id="wrapper" class="content container-fluid">
     <div class="row-fluid">
         <div class="span6" id="heading">
-            <h1 class="pull-left"><g:message code="project.myProjects.heading"/></h1>
+            <h1 class="pull-left">${hubConfig.title}</h1>
         </div>
         <div class="span6">
             <h1>
