@@ -46,11 +46,10 @@
             <a href="#hubPrograms" data-toggle="tab">Programs</a>
         </li>
         <li><a href="#hubTemplate"  data-toggle="tab">Template</a></li>
-        <li><a href="#hubHeader"  data-toggle="tab">Header</a></li>
-        <li><a href="#hubFooter"  data-toggle="tab">Footer</a></li>
-        <li><a href="#hubBanner"  data-toggle="tab">Banner</a></li>
-        <li><a href="#hubHomepage"  data-toggle="tab">Homepage</a></li>
-        <li><a href="#hubPublish"  data-toggle="tab">Publish</a></li>
+        <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubHeader"  data-toggle="tab">Header</a></li>
+        <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubFooter"  data-toggle="tab">Footer</a></li>
+        <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubBanner"  data-toggle="tab">Banner</a></li>
+        <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubHomepage"  data-toggle="tab">Homepage</a></li>
     </ul>
     <div class="pill-content">
         <div class="pill-pane active" id="hubPrograms">
@@ -147,54 +146,68 @@
 
             <div data-bind="slideVisible: transients.isSkinAConfigurableTemplate">
                 <!-- ko with: templateConfiguration -->
-                <div class="control-group">
-                    <label class="control-label" for="skin">Header</label>
-                    <div class="controls">
-                        <!-- ko with: styles -->
-                            <!-- ko template: { name: 'templateStyles'} -->
+                    <div class="control-group">
+                        <label class="control-label" for="skin">Colour scheme</label>
+                        <div class="controls">
+                            <!-- ko with: styles -->
+                                <!-- ko template: { name: 'templateStyles'} -->
+                                <!-- /ko -->
                             <!-- /ko -->
-                        <!-- /ko -->
+                        </div>
                     </div>
-                </div>
                 <!-- /ko -->
             </div>
         </div>
         <div class="pill-pane" id="hubHeader">
-            <!-- ko with: templateConfiguration -->
-                <!-- ko with: header -->
-                    <!-- ko foreach: links -->
-                        <!-- ko template: { name: 'templateLink'} -->
-                        <!-- /ko -->
-                    <!-- /ko -->
-                    <button type="button" class="btn" data-bind="click: addLink"><i class="icon-plus"></i> Add link</button>
-                <!-- /ko -->
-            <!-- /ko -->
-        </div>
-        <div class="pill-pane" id="hubFooter">
-            <!-- ko with: templateConfiguration -->
-                <!-- ko with: footer -->
-                <div class="control-group">
-                    <label class="control-label" for="skin">Footer</label>
-                    <div class="controls">
+            <div data-bind="visible: transients.isSkinAConfigurableTemplate">
+                <!-- ko with: templateConfiguration -->
+                    <!-- ko with: header -->
                         <!-- ko foreach: links -->
-                        <!-- ko template: { name: 'templateLink'} -->
-                        <!-- /ko -->
+                            <!-- ko template: { name: 'templateLink'} -->
+                            <!-- /ko -->
                         <!-- /ko -->
                         <button type="button" class="btn" data-bind="click: addLink"><i class="icon-plus"></i> Add link</button>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="skin">Social</label>
-                    <div class="controls">
-                        <!-- ko foreach: socials -->
-                        <!-- ko template: { name: 'templateSocial'} -->
-                        <!-- /ko -->
-                        <!-- /ko -->
-                        <button type="button" class="btn" data-bind="click: addSocialMedia"><i class="icon-plus"></i> Add social media</button>
-                    </div>
-                </div>
+                    <!-- /ko -->
                 <!-- /ko -->
-            <!-- /ko -->
+            </div>
+
+            <div data-bind="visible: !transients.isSkinAConfigurableTemplate()">
+                <!-- ko template: {name: 'configurableTemplateNotSelectedMessage'} -->
+                <!-- /ko -->
+            </div>
+        </div>
+        <div class="pill-pane" id="hubFooter">
+            <div data-bind="visible: transients.isSkinAConfigurableTemplate">
+                <!-- ko with: templateConfiguration -->
+                    <!-- ko with: footer -->
+                    <div class="control-group">
+                        <label class="control-label" for="skin">Footer</label>
+                        <div class="controls">
+                            <!-- ko foreach: links -->
+                            <!-- ko template: { name: 'templateLink'} -->
+                            <!-- /ko -->
+                            <!-- /ko -->
+                            <button type="button" class="btn" data-bind="click: addLink"><i class="icon-plus"></i> Add link</button>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="skin">Social</label>
+                        <div class="controls">
+                            <!-- ko foreach: socials -->
+                            <!-- ko template: { name: 'templateSocial'} -->
+                            <!-- /ko -->
+                            <!-- /ko -->
+                            <button type="button" class="btn" data-bind="click: addSocialMedia"><i class="icon-plus"></i> Add social media</button>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+                <!-- /ko -->
+            </div>
+
+            <div data-bind="visible: !transients.isSkinAConfigurableTemplate()">
+                <!-- ko template: {name: 'configurableTemplateNotSelectedMessage'} -->
+                <!-- /ko -->
+            </div>
         </div>
         <div class="pill-pane" id="hubBanner">
             <div class="container">
@@ -257,23 +270,28 @@
             </div>
         </div>
         <div class="pill-pane" id="hubHomepage">
-            <div class="control-group">
-                <label class="control-label" for="skin">Homepage</label>
-                <!-- ko with: templateConfiguration -->
-                    <!-- ko with: homePage -->
-                        <div class="controls">
-                            <select data-bind="value: homePageConfig">
-                                <option value="projectfinder">Project finder</option>
-                                <option value="buttons">Buttons</option>
-                            </select>
-                            <!-- ko template: {name: 'templateHomePage'} -->
-                            <!-- /ko -->
-                        </div>
+            <div data-bind="visible: transients.isSkinAConfigurableTemplate">
+                <div class="control-group">
+                    <label class="control-label" for="skin">Homepage</label>
+                    <!-- ko with: templateConfiguration -->
+                        <!-- ko with: homePage -->
+                            <div class="controls">
+                                <select data-bind="value: homePageConfig">
+                                    <option value="projectfinder">Project finder</option>
+                                    <option value="buttons">Buttons</option>
+                                </select>
+                                <!-- ko template: {name: 'templateHomePage'} -->
+                                <!-- /ko -->
+                            </div>
+                        <!-- /ko -->
                     <!-- /ko -->
+                </div>
+            </div>
+            <div data-bind="visible: !transients.isSkinAConfigurableTemplate()">
+                <!-- ko template: {name: 'configurableTemplateNotSelectedMessage'} -->
                 <!-- /ko -->
             </div>
         </div>
-        <div class="pill-pane" id="hubPublish"></div>
     </div>
 
     <div class="form-actions">
@@ -453,7 +471,11 @@
     </div>
 </div>
 </script>
-
+<script id="configurableTemplateNotSelectedMessage" type="text/html">
+    <div class="alert alert-info">
+        You can only see options if the hub's skin is of type 'configurable template'.
+    </div>
+</script>
 <r:script>
 
     $(function() {

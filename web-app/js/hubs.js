@@ -112,6 +112,10 @@ var HubSettings = function (settings, config) {
         self.documents.remove(document);
     };
 
+    self.removeBanner = function () {
+        var document = findDocumentByRole(self.documents(), 'logo');
+        self.documents.remove(document);
+    };
 
     self.removeDefaultFacetQuery = function (data) {
         self.defaultFacetQuery.remove(data);
@@ -182,6 +186,16 @@ var HubSettings = function (settings, config) {
                 self.defaultFacetQuery.push({query: ko.observable(obj)});
             });
         }
+
+        self.templateConfiguration().banner().transients.removeBanner.subscribe(function (banner) {
+            if(banner){
+                var document = (self.documents() || []).find(function (item) {
+                    return item.url == banner.url()
+                });
+
+                self.documents.remove(document);
+            }
+        })
     };
 
 
@@ -224,7 +238,9 @@ var HubSettings = function (settings, config) {
                     config.message(data.errors);
                 }
                 else {
-                    self.documents.removeAll();
+                    if(self.documents().length){
+                        config.root.editHub();
+                    };
                     config.message('Hub saved!');
                 }
 
@@ -366,12 +382,13 @@ var BannerViewModel = function (config) {
     self.transitionSpeed = ko.observable(config.transitionSpeed || 3000);
     self.images = ko.observableArray(images);
 
+    self.transients = {
+        removeBanner: ko.observable()
+    }
+
     self.removeBanner = function (banner) {
         self.images.remove(banner);
-        var document = (self.documents() || []).find(function (item) {
-            return item.url == banner
-        });
-        self.documents.remove(document);
+        self.transients.removeBanner(banner);
     };
 };
 

@@ -7,7 +7,7 @@ class HubController {
     SettingService settingService
     def index() {
         HubSettings hubSettings = SettingService.hubConfig;
-        switch (hubSettings?.templateConfiguration?.homePage?.homePageConfig){
+            switch (hubSettings?.templateConfiguration?.homePage?.homePageConfig){
             case 'buttons':
                 render view: 'buttonHomePage';
                 break;

@@ -442,13 +442,11 @@ class AdminController {
                 it.url == document.url
             }
 
-            bannerImages?.remove(staged);
-
             def response = documentService.saveStagedImageDocument(document)
             if (response?.content.documentId) {
                 def savedDoc = documentService.get(response.content.documentId)
                 if (savedDoc.role == 'banner') {
-                    bannerImages.push([url: savedDoc.url, caption: staged.caption])
+                    staged.url = savedDoc.url
                 }
                 else if (savedDoc.role == 'logo') {
                     json.logoUrl = savedDoc.url
@@ -458,7 +456,7 @@ class AdminController {
         }
 
         if(bannerImages.size()){
-            json.bannerUrl = bannerImages[0];
+            json.bannerUrl = bannerImages[0].url;
         }
 
         HubSettings settings = new HubSettings(json)

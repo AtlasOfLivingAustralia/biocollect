@@ -35,7 +35,7 @@
 </div>
 
 <div class="${fluidLayout?'container-fluid':'container'}" id="hubHomepageContent">
-    <g:if test="${hubConfig.templateConfiguration?.buttonsHomePage?.buttons}">
+    <g:if test="${hubConfig.templateConfiguration?.homePage?.buttonsConfig?.buttons}">
         <g:set var="layout" value="${Integer.parseInt(hubConfig.templateConfiguration?.homePage?.buttonsConfig?.numberOfColumns)}"></g:set>
         <div>
             <g:each in="${hubConfig.templateConfiguration?.homePage?.buttonsConfig?.buttons}" var="link" status="index">
