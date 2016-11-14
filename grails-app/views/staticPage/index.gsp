@@ -24,30 +24,32 @@
 </head>
 
 <body>
-    <auth:ifAnyGranted roles="ROLE_ADMIN">
-        <div class="row-fluid">
-            <g:if test="${flash.errorMessage}">
-                <div class="row-fluid">
-                    <div class="span6 alert alert-error">
-                        ${flash.errorMessage}
+    <div class="${fluidLayout?'container-fluid':'container'}">
+        <auth:ifAnyGranted roles="ROLE_ADMIN">
+            <div class="row-fluid">
+                <g:if test="${flash.errorMessage}">
+                    <div class="row-fluid">
+                        <div class="span6 alert alert-error">
+                            ${flash.errorMessage}
+                        </div>
                     </div>
-                </div>
-            </g:if>
+                </g:if>
 
-            <g:if test="${flash.message}">
-                <div class="row-fluid">
-                    <div class="span6 alert alert-info">
-                        <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-                        ${flash.message}
+                <g:if test="${flash.message}">
+                    <div class="row-fluid">
+                        <div class="span6 alert alert-info">
+                            <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
+                            ${flash.message}
+                        </div>
                     </div>
-                </div>
-            </g:if>
-        </div>
-        <a href="${g.createLink(controller: 'staticPage', action:'edit',
-                params:[page:setting, editMode:true])}"
-           class="btn btn-default">edit
-        </a>
-    </auth:ifAnyGranted>
-    <fc:getSettingContentForDynamicKey key="${setting}"></fc:getSettingContentForDynamicKey>
+                </g:if>
+            </div>
+            <a href="${g.createLink(controller: 'staticPage', action:'edit',
+                    params:[page:setting, editMode:true])}"
+               class="btn btn-default">edit
+            </a>
+        </auth:ifAnyGranted>
+        <fc:getSettingContentForDynamicKey key="${setting}"></fc:getSettingContentForDynamicKey>
+    </div>
 </body>
 </html>
