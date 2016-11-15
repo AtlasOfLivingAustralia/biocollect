@@ -53,7 +53,7 @@
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
         defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
-        showAllProjects: true,
+        showAllProjects: false,
         meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
         meritProjectUrl: "${grailsApplication.config.merit.project.url}",
         isCitizenScience: false,

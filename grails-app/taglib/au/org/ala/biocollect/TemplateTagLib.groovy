@@ -60,6 +60,11 @@ class TemplateTagLib {
                     out << "<a href=\"${url}\">${link.displayName?:'All Records'}</a>";
                     out << "</li>";
                     break;
+                case 'home':
+                    out << "<li class=\"main-menu\">";
+                    out << "<a href=\"${url}\">${link.displayName?:'Home'}</a>";
+                    out << "</li>";
+                    break;
                 case 'login':
                     Map loginOrLogout = printLoginOrLogoutButton(attrs.hubConfig);
                     out << "<li class=\"main-menu\">";
@@ -127,6 +132,9 @@ class TemplateTagLib {
                 break;
             case 'allrecords':
                 url = "${createLink(controller: 'bioActivity', action: 'allRecords')}";
+                break;
+            case 'home':
+                url = "${createLink(controller: 'home', action: 'index')}";
                 break;
             case 'login':
                 url = "${createLink(controller: 'bioActivity', action: 'allRecords')}";

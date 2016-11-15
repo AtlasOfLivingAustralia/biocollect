@@ -162,12 +162,33 @@
             <div data-bind="visible: transients.isSkinAConfigurableTemplate">
                 <!-- ko with: templateConfiguration -->
                     <!-- ko with: header -->
-                        <!-- ko foreach: links -->
-                            <!-- ko template: { name: 'templateLink'} -->
-                            <!-- /ko -->
+                        <!-- ko template: {name: 'templateLinkNotes'} -->
                         <!-- /ko -->
-                        <button type="button" class="btn" data-bind="click: addLink"><i class="icon-plus"></i> Add link</button>
-                    <!-- /ko -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Display name</th>
+                                    <th>Content type</th>
+                                    <th>Href value</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- ko foreach: links -->
+                                <!-- ko template: { name: 'templateLink'} -->
+                                <!-- /ko -->
+                                <!-- /ko -->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <button type="button" class="btn" data-bind="click: addLink"><i class="icon-plus"></i> Add link</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                <!-- /ko -->
                 <!-- /ko -->
             </div>
 
@@ -180,24 +201,62 @@
             <div data-bind="visible: transients.isSkinAConfigurableTemplate">
                 <!-- ko with: templateConfiguration -->
                     <!-- ko with: footer -->
-                    <div class="control-group">
-                        <label class="control-label" for="skin">Footer</label>
-                        <div class="controls">
-                            <!-- ko foreach: links -->
-                            <!-- ko template: { name: 'templateLink'} -->
+                    <div>
+                        <h3>Footer</h3>
+                        <div class="">
+                            <!-- ko template: {name: 'templateLinkNotes'} -->
                             <!-- /ko -->
-                            <!-- /ko -->
-                            <button type="button" class="btn" data-bind="click: addLink"><i class="icon-plus"></i> Add link</button>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Display name</th>
+                                    <th>Content type</th>
+                                    <th>Href value</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- ko foreach: links -->
+                                <!-- ko template: { name: 'templateLink'} -->
+                                <!-- /ko -->
+                                <!-- /ko -->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <button type="button" class="btn" data-bind="click: addLink"><i class="icon-plus"></i> Add link</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <div class="control-group">
-                        <label class="control-label" for="skin">Social</label>
-                        <div class="controls">
-                            <!-- ko foreach: socials -->
-                            <!-- ko template: { name: 'templateSocial'} -->
-                            <!-- /ko -->
-                            <!-- /ko -->
-                            <button type="button" class="btn" data-bind="click: addSocialMedia"><i class="icon-plus"></i> Add social media</button>
+                    <div>
+                        <h3>Social media</h3>
+                        <div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Social media company</th>
+                                        <th>Link</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- ko foreach: socials -->
+                                        <!-- ko template: { name: 'templateSocial'} -->
+                                        <!-- /ko -->
+                                    <!-- /ko -->
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            <button type="button" class="btn" data-bind="click: addSocialMedia"><i class="icon-plus"></i> Add social media</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <!-- /ko -->
@@ -210,80 +269,86 @@
             </div>
         </div>
         <div class="pill-pane" id="hubBanner">
-            <div class="container">
-                <div>
-                    <h3>Logo image</h3>
-                    <div class="row-fluid">
-                        <div class="span6">
-                            <img data-bind="visible:logoUrl(), attr:{src:logoUrl}">
-                        </div>
-                        <div class="offset4 span2">
-                            <button type="button" class="btn" data-bind="visible:logoUrl(), click:removeLogo">Remove Logo</button>
-                            <span class="btn fileinput-button pull-right"
-                                  data-url="${createLink(controller: 'image', action:'upload')}"
-                                  data-role="logo"
-                                  data-owner-type="hubId"
-                                  data-bind="attr:{'data-owner-id':name}, stagedImageUpload:documents, visible:!logoUrl()"><i class="icon-plus"></i> <input id="logo" type="file" name="files"><span>Attach Organisation Logo</span></span>
-                        </div>
+            <div>
+                <h3>Logo image</h3>
+                <div class="row-fluid">
+                    <div class="span6">
+                        <img data-bind="visible:logoUrl(), attr:{src:logoUrl}">
+                    </div>
+                    <div class="offset4 span2">
+                        <button type="button" class="btn  btn-small btn-danger" data-bind="visible:logoUrl(), click:removeLogo"><i class="icon icon-white icon-remove"></i> Remove Logo</button>
+                        <span class="btn fileinput-button pull-right"
+                              data-url="${createLink(controller: 'image', action:'upload')}"
+                              data-role="logo"
+                              data-owner-type="hubId"
+                              data-bind="attr:{'data-owner-id':name}, stagedImageUpload:documents, visible:!logoUrl()"><i class="icon-plus"></i> <input id="logo" type="file" name="files"><span>Attach Organisation Logo</span></span>
                     </div>
                 </div>
-                <div>
-                    <h3>Banner image</h3>
-                    <!-- ko with: templateConfiguration -->
-                        <!-- ko with: banner -->
-                            <div class="row-fluid" data-bind="slideVisible: images().length">
-                                <div class="span6">Carousel image transition speed in milli-seconds (ms)</div>
+            </div>
+            <div>
+                <h3>Carousel settings</h3>
+                <!-- ko with: templateConfiguration -->
+                    <!-- ko with: banner -->
+                        <div class="row-fluid" data-bind="slideVisible: images().length">
+                            <div class="span6">Carousel image transition speed in milli-seconds (ms)</div>
+                            <div class="span2">
+                                <input type="number" data-bind="value: transitionSpeed">
+                            </div>
+                            <div class="row-fluid"><div class="span12"></div></div>
+                        </div>
+                        <h4>Carousel images</h4>
+                        <!-- ko foreach: images -->
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <img data-bind="visible: url, attr:{src:url}">
+                                </div>
+                                <div class="span4">
+                                    <textarea data-bind="value: caption"></textarea>
+                                </div>
                                 <div class="span2">
-                                    <input type="number" data-bind="value: transitionSpeed">
+                                    <button type="button" class="btn btn-small btn-danger" data-bind="visible:$data, click:$parent.removeBanner"><i class="icon icon-remove icon-white"></i> Remove Banner</button>
                                 </div>
                                 <div class="row-fluid"><div class="span12"></div></div>
                             </div>
-
-                            <!-- ko foreach: images -->
-                                <div class="row-fluid">
-                                    <div class="span6">
-                                        <img data-bind="visible: url, attr:{src:url}">
-                                    </div>
-                                    <div class="span4">
-                                        <textarea data-bind="value: caption"></textarea>
-                                    </div>
-                                    <div class="span2">
-                                        <button type="button" class="btn" data-bind="visible:$data, click:$parent.removeBanner">Remove Banner</button>
-                                    </div>
-                                    <div class="row-fluid"><div class="span12"></div></div>
-                                </div>
-                            <!-- /ko -->
-                            %{-- END bannerImages --}%
                         <!-- /ko -->
+                        %{-- END bannerImages --}%
                     <!-- /ko -->
-                    <div class="row-fluid">
-                        <div class="span10"></div>
-                        <div class="span2">
-                            <span class="btn fileinput-button pull-right"
-                                  data-url="${createLink(controller: 'image', action:'upload')}"
-                                  data-role="banner"
-                                  data-owner-type="hubId"
-                                  data-bind="attr:{'data-owner-id':name}, stagedImageUpload:documents"><i class="icon-plus"></i> <input id="banner" type="file" name="files"><span>Attach Banner Image</span></span>
-                        </div>
+                <!-- /ko -->
+                <div class="row-fluid">
+                    <div class="span10"></div>
+                    <div class="span2">
+                        <span class="btn fileinput-button pull-right  btn-small"
+                              data-url="${createLink(controller: 'image', action:'upload')}"
+                              data-role="banner"
+                              data-owner-type="hubId"
+                              data-bind="attr:{'data-owner-id':name}, stagedImageUpload:documents"><i class="icon-plus"></i> <input id="banner" type="file" name="files"><span>Attach Banner Image</span></span>
                     </div>
                 </div>
             </div>
         </div>
         <div class="pill-pane" id="hubHomepage">
             <div data-bind="visible: transients.isSkinAConfigurableTemplate">
-                <div class="control-group">
-                    <label class="control-label" for="skin">Homepage</label>
+                <div>
+
                     <!-- ko with: templateConfiguration -->
                         <!-- ko with: homePage -->
-                            <div class="controls">
-                                <select data-bind="value: homePageConfig">
-                                    <option value="projectfinder">Project finder</option>
-                                    <option value="buttons">Buttons</option>
-                                </select>
-                                <!-- ko template: {name: 'templateHomePage'} -->
-                                <!-- /ko -->
+                            <div>
+                                <h4>Homepage</h4>
+                                <div>
+                                    <select data-bind="value: homePageConfig">
+                                        <option value="projectfinder">Project finder</option>
+                                        <option value="buttons">Buttons</option>
+                                    </select>
+                                </div>
                             </div>
-                        <!-- /ko -->
+                            <div>
+                                <h4>Homepage content settings</h4>
+                                <div>
+                                    <!-- ko template: {name: 'templateHomePage'} -->
+                                    <!-- /ko -->
+                                </div>
+                            </div>
+                    <!-- /ko -->
                     <!-- /ko -->
                 </div>
             </div>
@@ -301,10 +366,11 @@
 </div>
 
 <script id="templateLink" type="text/html">
-    <div class="row-fluid">
-        <div class="span3"><label>Display name</label> <input type="text" data-bind="value: displayName"/></div>
-        <div class="span3">
-            <label>Content type</label>
+    <tr>
+        <td>
+            <input type="text" data-bind="value: displayName"/>
+        </td>
+        <td>
             <select data-bind="value: contentType">
                 <option value="content">Biocollect content</option>
                 <option value="static">Static page</option>
@@ -312,43 +378,41 @@
                 <option value="">---------</option>
                 <option value="admin">Admin</option>
                 <option value="allrecords">All Records</option>
+                <option value="home">Home</option>
                 <option value="login">Login / Logout</option>
                 <option value="newproject">New Project</option>
                 <option value="sites">Sites</option>
             </select>
-        </div>
-        <div class="span4">
-            <label>Link</label> <input type="text" data-bind="value: href"/>
-        </div>
-        <div class="span2">
+        </td>
+        <td>
+            <input type="text" data-bind="value: href"/>
+        </td>
+        <td>
             <button class="btn btn-danger" data-bind="click: $parent.removeLink">
                 <i class="icon icon-remove icon-white"></i> Remove
             </button>
-        </div>
-    </div>
+        </td>
+    </tr>
 </script>
 
 <script id="templateSocial" type="text/html">
-    <div class="row-fluid">
-        <div class="span6">
-            <label>Social media group</label>
+    <tr>
+        <td>
             <select data-bind="value: contentType">
                 <option value="youtube">Youtube</option>
                 <option value="facebook">Facebook</option>
                 <option value="twitter">Twitter</option>
             </select>
-        </div>
-        <div class="span4">
-            <label>Link</label> <input type="text" data-bind="value: href"/>
-        </div>
-        <div class="span2">
+        </td>
+        <td>
+            <input type="text" data-bind="value: href"/>
+        </td>
+        <td>
             <button class="btn btn-small btn-danger" data-bind="click: $parent.removeLink">
                 <i class="icon icon-remove icon-white"></i> Remove
             </button>
-        </div>
-    </div>
-
-
+        </td>
+    </tr>
 </script>
 
 <script id="templateStyles" type="text/html">
@@ -452,19 +516,43 @@
         <div id="collapseTwo" class="accordion-body collapse">
             <!-- ko with: buttonsConfig -->
                 <div class="accordion-inner">
-                    <label>Number of columns</label>
-                    <select data-bind="value: numberOfColumns">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                    </select>
+                    <div class="control-group">
+                        <label class="control-label">Number of columns</label>
+                        <div class="controls">
+                            <select data-bind="value: numberOfColumns">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+                    </div>
 
-                    <!-- ko foreach: buttons -->
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Display name</th>
+                            <th>Content type</th>
+                            <th>Href value</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- ko foreach: buttons -->
                         <!-- ko template: { name: 'templateLink'} -->
                         <!-- /ko -->
-                    <!-- /ko -->
-                    <button type="button" class="btn" data-bind="click: addButtton"><i class="icon-plus"></i> Add button</button>
+                        <!-- /ko -->
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <button type="button" class="btn" data-bind="click: addButtton"><i class="icon-plus"></i> Add button</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
                 </div>
             <!-- /ko -->
         </div>
@@ -474,6 +562,16 @@
 <script id="configurableTemplateNotSelectedMessage" type="text/html">
     <div class="alert alert-info">
         You can only see options if the hub's skin is of type 'configurable template'.
+    </div>
+</script>
+<script id="templateLinkNotes" type="text/html">
+    <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <h4>Note!</h4> The value set for href value will vary according to content type selection.<br/>
+        <strong>Biocollect content</strong> Href value must start with forward slash - '/' - e.g. '/hub/index'.<br/>
+        <strong>Static page</strong> Href value should be a word. This word should be unique to the hub e.g. 'contact'<br/>
+        <strong>External link</strong> Href value should be the full address to a website e.g. 'https://www.ala.org.au'.<br/>
+        <strong>Other settings</strong> Href value for content type such as 'home' is predefined. Hence it should be left empty.
     </div>
 </script>
 <r:script>
