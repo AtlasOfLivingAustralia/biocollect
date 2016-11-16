@@ -198,6 +198,8 @@ class SettingService {
         \$footer-background-color: ${styles?.footerBackgroundColor};
         \$footer-text-color: ${styles?.footerTextColor};
         \$social-text-color: ${styles?.socialTextColor};
+        \$title-text-color: ${styles?.titleTextColor};
+        \$header-banner-space-background-color: ${styles?.headerBannerBackgroundColor};
         \$primary-color: #009080;
         \$primary-color-hover: #007777;
         """;

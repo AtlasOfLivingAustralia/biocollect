@@ -68,9 +68,8 @@
         <g:render template="/shared/projectFinderQueryInput"/>
     </div>
 </div>
-<div id="bannerHubContainer" class="container-fluid">
-    <g:render template="/shared/bannerHub"/>
-</div>
+
+<g:render template="/shared/bannerHub"/>
 
 <div id="wrapper" class="content container-fluid">
     <div class="row-fluid">

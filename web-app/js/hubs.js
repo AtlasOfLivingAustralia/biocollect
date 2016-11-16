@@ -334,6 +334,8 @@ var StyleViewModel = function (config) {
     self.footerBackgroundColor = ko.observable(config.footerBackgroundColor || '');
     self.footerTextColor = ko.observable(config.footerTextColor || '');
     self.socialTextColor = ko.observable(config.socialTextColor || '');
+    self.titleTextColor = ko.observable(config.titleTextColor || '');
+    self.headerBannerBackgroundColor = ko.observable(config.headerBannerBackgroundColor || '');
 };
 
 var SocialMediaViewModel = function (config) {
@@ -408,5 +410,7 @@ var colorScheme = {
     bodyTextColor: "",
     footerBackgroundColor: "#323334",
     footerTextColor: "#efefef",
-    socialTextColor: "#000"
+    socialTextColor: "#000",
+    titleTextColor: "#5f5d60",
+    headerBannerBackgroundColor: '#ffffff'
 };

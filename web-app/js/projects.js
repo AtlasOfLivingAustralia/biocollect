@@ -236,6 +236,27 @@ function isPastStage(timeline, currentStage, period) {
 	return period.toDate <= stageToDate;
 }
 
+/**
+ * Get parameter of the current page's URL
+ * @param parameter to look for
+ * @returns String | Boolean
+ * source - http://stackoverflow.com/a/21903119
+ */
+function getUrlParameterValue(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+
 function getBugetHeaders(timeline) {
 	var headers = [];
     var startYr = moment(timeline[0].fromDate).format('YYYY');

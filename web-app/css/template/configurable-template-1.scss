@@ -366,6 +366,7 @@ body .navbar {
 #bannerHubContainer{
   background-color: $banner-background-color;
   position: relative;
+  margin-top: 25px;
 }
 
 // home page
@@ -431,4 +432,10 @@ body .navbar {
 // title
 H1 {
   Font-weight: 900;
+  color: $title-text-color;
+}
+
+// space between header & banner
+#headerBannerSpace{
+ background-color: $header-banner-space-background-color;
 }

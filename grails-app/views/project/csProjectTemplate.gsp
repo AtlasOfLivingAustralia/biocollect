@@ -126,6 +126,12 @@
 
 <r:script>
     $(function() {
+        // set project tab selection if a 'tab' parameter is set
+        var projectTab = getUrlParameterValue('tab');
+        if(projectTab && (typeof projectTab == 'string')){
+            amplify.store('ul-main-project-state', projectTab);
+        }
+
         $(".main-content").show();
         var organisations = <fc:modelAsJavascript model="${organisations?:[]}"/>;
         var project = <fc:modelAsJavascript model="${project}"/>;

@@ -461,6 +461,16 @@
             <td><div class="previewColor" data-bind="style:{'background-color':bodyTextColor}"></div></td>
         </tr>
         <tr>
+            <td>Title text colour</td>
+            <td><input type="text" data-bind="value: titleTextColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':titleTextColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Header banner space background colour</td>
+            <td><input type="text" data-bind="value: headerBannerBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':headerBannerBackgroundColor}"></div></td>
+        </tr>
+        <tr>
             <td>Footer background colour</td>
             <td><input type="text" data-bind="value: footerBackgroundColor"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':footerBackgroundColor}"></div></td>

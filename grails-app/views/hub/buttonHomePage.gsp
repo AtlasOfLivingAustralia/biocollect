@@ -25,14 +25,12 @@
 
 <body>
 <g:if test="${hubConfig.title}">
-    <div class="${fluidLayout?'container-fluid':'container'}">
+    <div class="container-fluid" id="headerBannerSpace">
         <h1 class="title">${hubConfig.title}</h1>
     </div>
 </g:if>
 
-<div id="bannerHubContainer" class="container-fluid">
-    <g:render template="/shared/bannerHub"/>
-</div>
+<g:render template="/shared/bannerHub"/>
 
 <div class="${fluidLayout?'container-fluid':'container'}" id="hubHomepageContent">
     <g:if test="${hubConfig.templateConfiguration?.homePage?.buttonsConfig?.buttons}">
