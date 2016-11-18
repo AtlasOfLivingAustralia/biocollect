@@ -136,7 +136,14 @@ class ProxyController {
      * Returns an excel template that can be used to populate a table of data in an output form.
      */
     def excelOutputTemplate() {
-        String url =  "${grailsApplication.config.ecodata.service.url}/metadata/excelOutputTemplate?type=${params.type?.encodeAsURL()}&listName=${params.listName?.encodeAsURL()}"
+
+        String paramStr = ""
+        if (params.listName)
+            paramStr = "&listName=${params.listName?.encodeAsURL()}"
+        else if (params.expandList)
+            paramStr = "&expandList=" + params.expandList
+
+        String url =  "${grailsApplication.config.ecodata.service.url}/metadata/excelOutputTemplate?type=${params.type?.encodeAsURL()}" + paramStr
 
         webService.proxyGetRequest(response, url)
         return null
