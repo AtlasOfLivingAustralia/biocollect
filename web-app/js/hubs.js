@@ -336,6 +336,16 @@ var StyleViewModel = function (config) {
     self.socialTextColor = ko.observable(config.socialTextColor || '');
     self.titleTextColor = ko.observable(config.titleTextColor || '');
     self.headerBannerBackgroundColor = ko.observable(config.headerBannerBackgroundColor || '');
+    self.navBackgroundColor = ko.observable(config.navBackgroundColor || '');
+    self.navTextColor = ko.observable(config.navTextColor || '');
+    self.primaryButtonBackgroundColor= ko.observable(config.primaryButtonBackgroundColor || '');
+    self.primaryButtonTextColor= ko.observable(config.primaryButtonTextColor || '');
+    self.defaultButtonBackgroundColor= ko.observable(config.defaultButtonBackgroundColor || '');
+    self.defaultButtonTextColor= ko.observable(config.defaultButtonTextColor || '');
+    self.hrefColor= ko.observable(config.hrefColor || '');
+    self.facetBackgroundColor= ko.observable(config.facetBackgroundColor || '');
+    self.tileBackgroundColor= ko.observable(config.tileBackgroundColor || '');
+    self.wellBackgroundColor= ko.observable(config.wellBackgroundColor || '');
 };
 
 var SocialMediaViewModel = function (config) {
@@ -407,10 +417,20 @@ var colorScheme = {
     insetBackgroundColor: "",
     insetTextColor: "",
     bodyBackgroundColor: "#ffffff",
-    bodyTextColor: "",
+    bodyTextColor: "#637073",
     footerBackgroundColor: "#323334",
     footerTextColor: "#efefef",
     socialTextColor: "#000",
     titleTextColor: "#5f5d60",
-    headerBannerBackgroundColor: '#ffffff'
+    headerBannerBackgroundColor: '#ffffff',
+    navBackgroundColor: '#e5e6e7',
+    navTextColor: '#5f5d60',
+    primaryButtonBackgroundColor: '#009080',
+    primaryButtonTextColor: '#fff',
+    defaultButtonBackgroundColor: '#f5f5f5',
+    defaultButtonTextColor: '#000',
+    hrefColor:'#009080',
+    facetBackgroundColor: '#f5f5f5',
+    tileBackgroundColor: '#f5f5f5',
+    wellBackgroundColor: '#f5f5f5'
 };

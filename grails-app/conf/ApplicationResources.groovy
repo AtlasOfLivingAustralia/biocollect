@@ -404,7 +404,6 @@ modules = {
         resource url: 'js/audio.js'
         resource url: 'css/audio-control.css'
         resource url: 'vendor/recorderjs/recorder.js'
-//        resource url: 'vendor/libmp3lame/libmp3lame.min.js'
     }
 
     modernizr {
@@ -418,6 +417,7 @@ modules = {
 
     admin {
         resource url: 'js/hubs.js'
+        resource url: 'css/admin.css'
     }
 
     imageGallery{

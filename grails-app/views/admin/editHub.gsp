@@ -146,15 +146,22 @@
 
             <div data-bind="slideVisible: transients.isSkinAConfigurableTemplate">
                 <!-- ko with: templateConfiguration -->
-                    <div class="control-group">
-                        <label class="control-label" for="skin">Colour scheme</label>
-                        <div class="controls">
-                            <!-- ko with: styles -->
+                    <!-- ko with: styles -->
+                        <div class="control-group">
+                            <label class="control-label" for="skin">Colour scheme</label>
+                            <div class="controls">
                                 <!-- ko template: { name: 'templateStyles'} -->
                                 <!-- /ko -->
-                            <!-- /ko -->
+                            </div>
                         </div>
-                    </div>
+                        <div class="control-group">
+                            <label class="control-label" for="skin">Preview</label>
+                            <div class="controls">
+                                <!-- ko template: { name: 'templatePreviewHomePage'} -->
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                    <!-- /ko -->
                 <!-- /ko -->
             </div>
         </div>
@@ -436,6 +443,11 @@
             <td><div class="previewColor" data-bind="style:{'background-color':menuTextColor}"></div></td>
         </tr>
         <tr>
+            <td>Header banner space background colour</td>
+            <td><input type="text" data-bind="value: headerBannerBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':headerBannerBackgroundColor}"></div></td>
+        </tr>
+        <tr>
             <td>Banner background colour</td>
             <td><input type="text" data-bind="value: bannerBackgroundColor"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':bannerBackgroundColor}"></div></td>
@@ -466,9 +478,55 @@
             <td><div class="previewColor" data-bind="style:{'background-color':titleTextColor}"></div></td>
         </tr>
         <tr>
-            <td>Header banner space background colour</td>
-            <td><input type="text" data-bind="value: headerBannerBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':headerBannerBackgroundColor}"></div></td>
+            <td>Primary button colour</td>
+            <td><input type="text" data-bind="value: primaryButtonBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':primaryButtonBackgroundColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Primary button text colour</td>
+            <td><input type="text" data-bind="value: primaryButtonTextColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':primaryButtonTextColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Default button colour</td>
+            <td><input type="text" data-bind="value: defaultButtonBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonBackgroundColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Default button text colour</td>
+            <td><input type="text" data-bind="value: defaultButtonTextColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonTextColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Href colour</td>
+            <td><input type="text" data-bind="value: hrefColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':hrefColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Well background colour</td>
+            <td><input type="text" data-bind="value: wellBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':wellBackgroundColor}"></div></td>
+        </tr>
+
+        <tr>
+            <td>Nav text colour</td>
+            <td><input type="text" data-bind="value: navTextColor"/></td>
+            <td><div class="previewColor" data-bind="style:{color:navTextColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Nav background colour</td>
+            <td><input type="text" data-bind="value: navBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':navBackgroundColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Facet background colour</td>
+            <td><input type="text" data-bind="value: facetBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':facetBackgroundColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Tile background colour</td>
+            <td><input type="text" data-bind="value: tileBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':tileBackgroundColor}"></div></td>
         </tr>
         <tr>
             <td>Footer background colour</td>
@@ -582,6 +640,94 @@
         <strong>Static page</strong> Href value should be a word. This word should be unique to the hub e.g. 'contact'<br/>
         <strong>External link</strong> Href value should be the full address to a website e.g. 'https://www.ala.org.au'.<br/>
         <strong>Other settings</strong> Href value for content type such as 'home' is predefined. Hence it should be left empty.
+    </div>
+</script>
+<script id="templatePreviewHomePage" type="text/html">
+    <div class="container-fluid">
+        <div class="row-fluid previewHeader" data-bind="style:{'background-color': menuBackgroundColor}">
+            <ul class="breadcrumb pull-right">
+                <li><a href="#" data-bind="style:{color: menuTextColor}">Home</a> <span class="divider" data-bind="style:{color: menuTextColor}">|</span></li>
+                <li><a href="#" data-bind="style:{color: menuTextColor}">Data</a> <span class="divider" data-bind="style:{color: menuTextColor}">|</span></li>
+                <li><a href="#" data-bind="style:{color: menuTextColor}">Help</a></li>
+            </ul>
+        </div>
+        <div class="row-fluid previewHeaderBannerSpace" data-bind="style:{'background-color': headerBannerBackgroundColor}">
+
+        </div>
+        <div class="row-fluid">
+            <div class="previewBanner row-fluid"  data-bind="style:{'background-color': bannerBackgroundColor}">
+                <div class="offset2 span8 previewBannerImage">
+                    <div class="previewLogo text-center"><p>Logo</p></div>
+                    <div class="previewInset" data-bind="style:{'background-color': insetBackgroundColor}">
+                        <p class="text-center" data-bind="style:{color: insetTextColor}">Inset text</p>
+                    </div>
+                    <h4 class="text-center">Banner Image</h4>
+                </div>
+            </div>
+            <div class="row-fluid previewBody" data-bind="style:{'background-color': bodyBackgroundColor}">
+                <h1 data-bind="style:{color: titleTextColor}">Title text</h1>
+                <h1 data-bind="style:{color: bodyTextColor}">Body text</h1>
+                <a href="#" data-bind="style:{color: hrefColor}">Link to</a>
+                <div class="row-fluid">
+                    <div class="offset4 span2 text-center" data-bind="style:{'background-color': primaryButtonBackgroundColor}">
+                        <h3  data-bind="style:{color: primaryButtonTextColor}">Primary button</h3>
+                    </div>
+                    <div class="span2 text-center" data-bind="style:{'background-color': defaultButtonBackgroundColor}">
+                        <h3  data-bind="style:{color: defaultButtonTextColor}">Default button</h3>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="offset4 span4 drawBorder height100" data-bind="style:{'background-color': wellBackgroundColor}">
+                        <h3>Well colour</h3>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="offset4 span2">
+                        <button class="well nav-well text-center" data-bind="style:{'background-color': navBackgroundColor}">
+                            <h3  data-bind="style:{color: navTextColor}">Nav button</h3>
+                        </button>
+                    </div>
+                    <div class="span2">
+                        <button class="well nav-well text-center" data-bind="style:{'background-color': navBackgroundColor}">
+                            <h3  data-bind="style:{color: navTextColor}">Nav button</h3>
+                        </button>
+                    </div>
+                </div>
+                <div class="row-fluid ">
+                    <div class="offset1 span2 drawBorder height100" data-bind="style:{'background-color': facetBackgroundColor}"><h3>Facet Background</h3></div>
+                    <div class="span8 drawBorder height100" data-bind="style:{'background-color': tileBackgroundColor}"><h3>Tile Background</h3></div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid previewFooter"  data-bind="style:{'background-color': footerBackgroundColor}">
+            <div class="span12">
+                <ul class="breadcrumb pull-left">
+                    <li><a href="#" data-bind="style:{color: footerTextColor}">Contact us</a> <span class="divider" data-bind="style:{color: footerTextColor}">|</span></li>
+                    <li><a href="#" data-bind="style:{color: footerTextColor}">Disclaimer</a> <span class="divider" data-bind="style:{color: footerTextColor}">|</span></li>
+                    <li><a href="#" data-bind="style:{color: footerTextColor}">About us</a></li>
+                </ul>
+                <div class="pull-right">
+                    <a class="do-not-mark-external" href="" data-bind="style:{color: socialTextColor}">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+                            <i class="fa fa-facebook fa-stack-1x"></i>
+                        </span>
+                    </a>
+                    <a class="do-not-mark-external" href="" data-bind="style:{color: socialTextColor}">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+                            <i class="fa fa-twitter fa-stack-1x"></i>
+                        </span>
+                    </a>
+                    <a class="do-not-mark-external" href="" data-bind="style:{color: socialTextColor}">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+                            <i class="fa fa-youtube fa-stack-1x"></i>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </script>
 <r:script>

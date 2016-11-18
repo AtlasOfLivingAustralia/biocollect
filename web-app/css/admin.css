@@ -1,0 +1,47 @@
+.previewHeaderBannerSpace {
+    height: 25px;
+}
+
+.previewBanner {
+    height: 100px;
+}
+
+.previewBannerImage{
+    position: relative;
+    border: 1px solid black;
+    height: 100px;
+}
+
+.previewLogo{
+    position: absolute;
+    left: 30px;
+    top: -10px;
+    border: 1px solid black;
+    height: 50px;
+    width: 50px;
+}
+
+.previewInset{
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    border: 1px solid black;
+    height: 80px;
+    width: 80px;
+}
+
+.previewBody{
+    height: 600px;
+}
+
+.previewWell{
+    hieght: 100px;
+}
+
+.drawBorder{
+    border: 1px solid black;
+}
+
+.height100{
+    height: 100px;
+}

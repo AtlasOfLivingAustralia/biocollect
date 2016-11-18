@@ -112,9 +112,9 @@
 
 <g:pageProperty name="page.page-header"/> <%-- allows special content to be inserted --%>
 
-<div id="main-content">
+<div id="main-content" class="${homepage? 'homepage': ''}">
     <g:layoutBody />
-</div><!--/.container-->
+</div>
 <div id="footer">
     <div class="${fluidLayout?'container-fluid':'container'}">
         <div class="row-fluid  navbar-inverse">

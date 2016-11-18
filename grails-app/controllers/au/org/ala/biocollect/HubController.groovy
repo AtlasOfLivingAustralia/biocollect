@@ -9,10 +9,10 @@ class HubController {
         HubSettings hubSettings = SettingService.hubConfig;
             switch (hubSettings?.templateConfiguration?.homePage?.homePageConfig){
             case 'buttons':
-                render view: 'buttonHomePage';
+                render view: 'buttonHomePage', model: [homepage: true];
                 break;
             case 'projectfinder':
-                render view: 'projectFinderHomePage';
+                render view: 'projectFinderHomePage', model: [homepage: true];
                 break;
         }
     }

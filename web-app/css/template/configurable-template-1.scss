@@ -2,6 +2,7 @@ body {
   background-color: $body-background-color !important;
   font-family: FFDINWeb, sans-serif;
   padding-top: 0px;
+  color: $body-text-color;
 }
 
 h1,h2,h3,h4,h5 {
@@ -23,20 +24,45 @@ textarea {
 }
 
 a {
-  color: $primary-color;
+  color: $href-color;
   text-decoration: none;
 }
 
 a:hover,
 a:focus {
-  color: $primary-color-hover;
+  color: $href-color;
   text-decoration: underline;
 }
 
+.btn, .btn-default {
+  color: $default-text-color;
+  background-color: $default-background-color;
+  background-image: linear-gradient(to bottom, $default-background-color, $default-background-color);
+  border-color: $default-background-color $default-background-color $default-background-color $default-background-color;
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active,
+.btn.active,
+.btn.disabled,
+.btn[disabled],
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active,
+.btn-default.active,
+.btn-default.disabled,
+.btn-default[disabled] {
+  color: #ffffff;
+  background-color: $default-background-color;
+  background-position: center center;
+}
+
 .btn-primary {
-  background-color: $primary-color;
-  background-image: linear-gradient(to bottom, $primary-color,$primary-color);
-  border-color: $primary-color $primary-color $primary-color $primary-color;
+  color: $primary-text-color;
+  background-color: $primary-background-color;
+  background-image: linear-gradient(to bottom, $primary-background-color, $primary-background-color);
+  border-color: $primary-background-color $primary-background-color $primary-background-color $primary-background-color;
 }
 
 .btn-primary:hover,
@@ -46,12 +72,12 @@ a:focus {
 .btn-primary.disabled,
 .btn-primary[disabled] {
   color: #ffffff;
-  background-color: $primary-color;
+  background-color: $primary-background-color;
 }
 
 .btn-primary:active,
 .btn-primary.active {
-  background-color: $primary-color-hover \9;
+  background-color: $primary-background-color \9;
 }
 
 .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-success,
@@ -259,10 +285,10 @@ body .navbar {
   line-height: 35px;
 }
 
-.nav-well {
+.homePageNav .nav-well {
   min-height: 135px;
-  background-color: #e5e6e7;
-  border: 0px solid #e5e6e7;
+  background-color: $nav-background-color;
+  border: 0px solid $nav-background-color;
   padding: 30px 15px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
@@ -270,6 +296,39 @@ body .navbar {
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.nav-well {
+  min-height: 135px;
+  background-color: $well-background-color;
+  border: 0px solid $well-background-color;
+  padding: 30px 15px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.well {
+  background-color: $well-background-color;
+  border: 0px solid $well-background-color;
+}
+
+#pt-selectors.well{
+  background-color: $facet-background-color;
+  border: 0px solid $facet-background-color;
+}
+
+#pt-selectors.well{
+  background-color: $facet-background-color;
+  border: 0px solid $facet-background-color;
+}
+
+#pt-table .well {
+  background-color: $tile-background-color;
+  border: 0px solid $tile-background-color;
 }
 
 #quickSearchBox {
@@ -301,7 +360,7 @@ body .navbar {
 
 #main-content #customiseFacetsButton > .dropdown-menu,
 #main-content #resultsReturned .dropdown-menu {
-  background-color: #fff;
+  background-color: $body-background-color;
 }
 
 .staticContent {
@@ -374,7 +433,7 @@ body .navbar {
   padding-top: 20px;
 }
 
-#main-content{
+#main-content.homepage{
   padding-top: 0px;
 }
 
