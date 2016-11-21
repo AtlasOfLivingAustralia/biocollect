@@ -39,7 +39,7 @@ function enmapify(args) {
       latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(),
       featureObservable = container[name + "Feature"]  = ko.observable(),
       sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
-      loadingObservable = container[name + "Loading"] = ko.observable(false);
+      loadingObservable = container[name + "Loading"] = ko.observable(false)
   ;
 
   // sitesObservable(activityLevelData.pActivity.sites);
@@ -66,13 +66,22 @@ function enmapify(args) {
     allowSearchLocationByAddress: !readonly,
     allowSearchRegionByAddress: false,
     zoomToObject: true,
-    drawOptions: {
-      polyline: false,
-      polygon: true,
-      circle: true,
-      rectangle: true,
-      edit: true
-    }
+    drawOptions: readonly || !activityLevelData.pActivity.allowAdditionalSurveySites ?
+      {
+        polyline: false,
+        polygon: false,
+        rectangle: false,
+        circle: false,
+        edit: false
+      }
+      :
+      {
+        polyline: false,
+        polygon: true,
+        circle: true,
+        rectangle: true,
+        edit: true
+      }
   };
 
   var map = new ALA.Map(name + 'Map', mapOptions);

@@ -100,7 +100,7 @@ upload.extensions.blacklist = ['exe','js','php','asp','aspx','com','bat']
 
 app.http.header.userId = "X-ALA-userId"
 
-google.maps.url = "https://maps.googleapis.com/maps/api/js?key=${google.maps.apikey ?: 'You.Need.To.Add.A.Config.Property.Named.google.maps.apiKey'}"
+google.maps.base = 'https://maps.googleapis.com/maps/api/js?key='
 google.geocode.url = "https://maps.googleapis.com/maps/api/geocode/json?"
 pdfgen.baseURL="http://pdfgen.ala.org.au/"
 merit.baseURL="https://fieldcapture-test.ala.org.au"
