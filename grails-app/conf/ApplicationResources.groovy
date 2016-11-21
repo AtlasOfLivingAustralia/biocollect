@@ -357,6 +357,10 @@ modules = {
         resource url: 'vendor/leaflet/0.7.3/leaflet.css'
     }
 
+    leaflet_google_base {
+        resource url: 'vendor/leaflet-plugins-2.0.0/layer/tile/Google.js'
+    }
+
     font_awesome_44 {
         resource url: 'vendor/font-awesome/4.4.0/css/font-awesome.min.css', attrs: [media: 'all']
     }
@@ -461,12 +465,16 @@ modules = {
         resource url: [dir:'css', file:'Common_fonts.css']
         resource url: [dir:'css', file:'mdba-styles.css']
     }
+    
+    viewmodels {
+        resource url: 'js/viewModels.js'
+    }
 
     configHubTemplate1 {
-        dependsOn 'bootstrap','font_awesome_44', 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
+        dependsOn 'bootstrap', 'font_awesome_44', 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
         resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
         resource url: 'css/bootstrap-combobox.css'
         resource url: 'css/common.css'
-        resource url: [dir:'css', file:'Common_fonts.css']
+        resource url: [dir: 'css', file: 'Common_fonts.css']
     }
 }

@@ -6,7 +6,7 @@
     </div>
 </g:if>
 
-<div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}" data-bind="visible: activityLevelData.pActivity.sites.length > 1">
+<div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 1">
     <div class="well">
         <div class="span12">
             <div class="span3">
@@ -19,7 +19,7 @@
                 </g:if>
                 <g:else>
                     <select id="siteLocation"
-                            data-bind='options: activityLevelData.pActivity.sites, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Choose a site...", disable: ${readonly}'></select>
+                            data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Choose a site...", disable: ${readonly} || data.${source}Loading'></select>
                 </g:else>
             </div>
         </div>
@@ -34,6 +34,12 @@
 
 <div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}">
     <div class="well">
+        <div class="row-fluid" data-bind="if: data.${source}LatLonDisabled">
+            <div class="span12">
+                <label>Shape centroid:</label>
+            </div>
+        </div>
+
         <div class="row-fluid">
             <div class="span3">
                 <label for="${source}Latitude">Latitude<g:if test="${validation?.contains('required')}"><i class="req-field"></i></g:if></label>
@@ -44,7 +50,7 @@
                     <span data-bind="text: data.${source}Latitude"></span>
                 </g:if>
                 <g:else>
-                    <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude"
+                    <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude, disable: data.${source}LatLonDisabled"
                            ${validation}>
                 </g:else>
             </div>
@@ -60,7 +66,7 @@
                     <span data-bind="text: data.${source}Longitude"></span>
                 </g:if>
                 <g:else>
-                    <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude"
+                    <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude, disable: data.${source}LatLonDisabled"
                            ${validation}>
                 </g:else>
             </div>

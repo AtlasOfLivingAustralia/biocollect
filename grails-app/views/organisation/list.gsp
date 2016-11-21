@@ -4,7 +4,7 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Organisations | Field Capture</title>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}"></script>
+    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>
     <r:script disposition="head">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",

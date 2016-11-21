@@ -103,6 +103,17 @@ class SiteController {
         }
     }
 
+    def ajaxList(String id) {
+        def pActivity = projectActivityService.get(id, 'all')
+//        def sites = siteService.getSitesFromIdList(pActivity.sites, BRIEF)
+        if (!pActivity) {
+            response.sendError(404, "Couldn't find project activity $id")
+            return
+        }
+        log.info(pActivity.sites)
+        render pActivity.sites as JSON
+    }
+
     def ajaxDeleteSitesFromProject(String id){
         // permissions check - id is the projectId here
         if (!projectService.canUserEditProject(userService.getCurrentUserId(), id)) {
