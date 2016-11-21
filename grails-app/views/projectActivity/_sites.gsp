@@ -118,7 +118,7 @@
     <div class="row-fluid">
         <div class="span12">
             <p>
-                <input type="checkbox" data-bind="checked: allowAdditionalSurveySites"/> Allow Additional Survey Sites
+                <input type="checkbox" data-bind="checked: current().allowAdditionalSurveySites"/> Allow Additional Survey Sites
             </p>
         </div>
     </div>
