@@ -465,7 +465,7 @@ modules = {
         resource url: [dir:'css', file:'Common_fonts.css']
         resource url: [dir:'css', file:'mdba-styles.css']
     }
-    
+
     viewmodels {
         resource url: 'js/viewModels.js'
     }
