@@ -37,7 +37,9 @@ function enmapify(args) {
       latObservable = container[name + "Latitude"] = ko.observable(),
       lonObservable = container[name + "Longitude"] = ko.observable(),
       latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(),
-      featureObservable = container[name + "Feature"]  = ko.observable(),
+      centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
+      centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
+      // featureObservable = container[name + "Feature"]  = ko.observable(),
       sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
       loadingObservable = container[name + "Loading"] = ko.observable(false)
   ;
@@ -90,13 +92,13 @@ function enmapify(args) {
 
   var latSubscriber = latObservable.subscribe(updateMarkerPosition);
   var lngSubscriber = lonObservable.subscribe(updateMarkerPosition);
-  var featureSubscriber = featureObservable.subscribe(updateMarkerPosition);
+  // var featureSubscriber = featureObservable.subscribe(updateMarkerPosition);
 
   function updateFieldsForMap() {
     // console.debug("updateFieldsFor${model.name}Map", arguments);
     latSubscriber.dispose();
     lngSubscriber.dispose();
-    featureSubscriber.dispose();
+    // featureSubscriber.dispose();
 
     var markerLocation = null;
     var markerLocations = map.getMarkerLocations();
@@ -111,27 +113,33 @@ function enmapify(args) {
       latObservable(markerLocation.lat);
       lonObservable(markerLocation.lng);
       latLonDisabledObservable(false);
-      if (geo && geo.features && geo.features.length > 0) {
-        feature = geo.features[0];
-        featureObservable(feature);
-      }
+      centroidLatObservable(null);
+      centroidLonObservable(null);
+      // if (geo && geo.features && geo.features.length > 0) {
+      //   feature = geo.features[0];
+      //   // featureObservable(feature);
+      // }
     } else if (geo && geo.features && geo.features.length > 0) {
       console.log("Computing centroid");
       latLonDisabledObservable(true);
       feature = geo.features[0];
-      featureObservable(geo.features[0]);
+      // featureObservable(geo.features[0]);
       var c = centroid(feature);
-      lonObservable(c[0]);
-      latObservable(c[1]);
+      latObservable(null);
+      lonObservable(null);
+      centroidLonObservable(c[0]);
+      centroidLatObservable(c[1]);
     } else {
       latLonDisabledObservable(false);
       latObservable(null);
       lonObservable(null);
+      centroidLatObservable(null);
+      centroidLonObservable(null);
     }
 
     latSubscriber = latObservable.subscribe(updateMarkerPosition);
     lngSubscriber = lonObservable.subscribe(updateMarkerPosition);
-    featureSubscriber = featureObservable.subscribe(updateMarkerPosition);
+    // featureSubscriber = featureObservable.subscribe(updateMarkerPosition);
   }
 
   function centroid(feature) {
@@ -180,12 +188,18 @@ function enmapify(args) {
   }
 
   function updateMarkerPosition() {
-    if (latObservable() && lonObservable()) {
-      map.addMarker(latObservable(), lonObservable());
-    }
-    if (featureObservable()) {
-      map.setGeoJSON(featureObservable());
-    }
+    // if (siteObservable()) {
+    //   updateMapForSite(siteObservable())
+    // } else {
+    // if (!siteObservable()) {
+      if ((!siteObservable() || !args.markerOrShapeNotBoth) && latObservable() && lonObservable()) {
+        map.addMarker(latObservable(), lonObservable());
+      }
+      // if (featureObservable()) {
+      //   map.setGeoJSON(featureObservable());
+      // }
+    // }
+    // }
   }
 
   viewModel.selectManyCombo = function(obj, event) {

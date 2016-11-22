@@ -34,11 +34,43 @@
 
 <div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}">
     <div class="well">
-        <div class="row-fluid" data-bind="if: data.${source}LatLonDisabled">
-            <div class="span12">
-                <label>Shape centroid:</label>
+        <!-- ko if: data.${source} -->
+
+        <div class="row-fluid">
+            <div class="span3">
+                <label for="${source}CentroidLatitude">Centroid Latitude</label>
+            </div>
+
+            <div class="span9">
+                <g:if test="${readonly}">
+                    <span data-bind="text: data.${source}CentroidLatitude"></span>
+                </g:if>
+                <g:else>
+                    <input id="${source}Latitude" type="text" data-bind="value: data.${source}CentroidLatitude"
+                        ${validation} disabled>
+                </g:else>
             </div>
         </div>
+
+        <div class="row-fluid">
+            <div class="span3">
+                <label for="${source}CentroidLongitude">Centroid Longitude</label>
+            </div>
+
+            <div class="span9">
+                <g:if test="${readonly}">
+                    <span data-bind="text: data.${source}CentroidLongitude"></span>
+                </g:if>
+                <g:else>
+                    <input id="${source}CentroidLongitude" type="text" data-bind="value: data.${source}CentroidLongitude"
+                        ${validation} disabled>
+                </g:else>
+            </div>
+        </div>
+
+        <!-- /ko -->
+
+        <!-- ko if: data.${source}Longitude && data.${source}Latitude -->
 
         <div class="row-fluid">
             <div class="span3">
@@ -71,6 +103,8 @@
                 </g:else>
             </div>
         </div>
+
+        <!-- /ko -->
 
         <g:if test="${includeAccuracy}">
             <div class="row-fluid">
