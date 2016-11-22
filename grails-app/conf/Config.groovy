@@ -100,7 +100,7 @@ upload.extensions.blacklist = ['exe','js','php','asp','aspx','com','bat']
 
 app.http.header.userId = "X-ALA-userId"
 
-google.maps.url = "//maps.google.com/maps/api/js?sensor=false&language=en"
+google.maps.base = 'https://maps.googleapis.com/maps/api/js?key='
 google.geocode.url = "https://maps.googleapis.com/maps/api/geocode/json?"
 pdfgen.baseURL="http://pdfgen.ala.org.au/"
 merit.baseURL="https://fieldcapture-test.ala.org.au"
@@ -127,6 +127,12 @@ environments {
     development {
         grails.logging.jul.usebridge = true
         emailFilter = /[A-Z0-9._%-]+@csiro\.au|chris\.godwin\.ala@gmail.com/
+        grails {
+            mail {
+                host = 'localhost'
+                port = 1025
+            }
+        }
     }
     test {
         test.user.admin.email = 'fc-ta@outlook.com'

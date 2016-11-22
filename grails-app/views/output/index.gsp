@@ -5,7 +5,7 @@
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Edit | ${activity.activityId ?: 'new'} | ${site.name} | ${site.projectName} | Field Capture</title>
     <md:modelStyles model="${model}"/>
-    <r:require modules="jstimezonedetect,knockout,jqueryValidationEngine,datepicker"/>
+    <r:require modules="jstimezonedetect,knockout,jqueryValidationEngine,datepicker,viewmodels"/>
 </head>
 <body>
 <div class="container-fluid">

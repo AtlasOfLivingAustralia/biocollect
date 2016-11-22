@@ -8,3 +8,4 @@ plugin.xml
 *.log
 *.tld
 node_modules/
+.slcache

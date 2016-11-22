@@ -33,8 +33,9 @@
         },
         here = document.location.href;
     </r:script>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
     <r:require
-            modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,activity,attachDocuments,amplify,imageViewer,projectActivityInfo,species,map,responsiveTableStacked"/>
+            modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,activity,attachDocuments,amplify,imageViewer,projectActivityInfo,species,map,leaflet_google_base,responsiveTableStacked,viewmodels"/>
 </head>
 
 <body>

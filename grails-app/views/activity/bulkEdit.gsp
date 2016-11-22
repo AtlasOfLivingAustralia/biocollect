@@ -16,7 +16,7 @@
         },
         here = document.location.href;
   </r:script>
-  <r:require modules="knockout,jqueryValidationEngine,datepicker,slickgrid,jQueryFileUpload,jQueryFileDownload,amplify"/>
+  <r:require modules="knockout,jqueryValidationEngine,datepicker,slickgrid,jQueryFileUpload,jQueryFileDownload,amplify,viewmodels"/>
     <style type="text/css">
         input.editor-text {box-sizing:border-box; width: 100%;}
         .slick-column-name { white-space: normal; }
