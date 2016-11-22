@@ -425,7 +425,7 @@ body .navbar {
 #bannerHubContainer{
   background-color: $banner-background-color;
   position: relative;
-  margin-top: 25px;
+  padding-top: 25px;
 }
 
 // home page
@@ -435,6 +435,7 @@ body .navbar {
 
 #main-content.homepage{
   padding-top: 0px;
+  min-height: 700px;
 }
 
 // carousel
