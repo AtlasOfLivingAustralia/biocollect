@@ -2,6 +2,7 @@ body {
   background-color: $body-background-color !important;
   font-family: FFDINWeb, sans-serif;
   padding-top: 0px;
+  padding-bottom: 0px;
   color: $body-text-color;
 }
 
@@ -34,7 +35,7 @@ a:focus {
   text-decoration: underline;
 }
 
-.btn, .btn-default {
+.btn.btn-default {
   color: $default-text-color;
   background-color: $default-background-color;
   background-image: linear-gradient(to bottom, $default-background-color, $default-background-color);
@@ -277,6 +278,7 @@ body .navbar {
   font-size: 36px;
   margin-top: 0;
   margin-bottom: 5px;
+  color: $nav-text-color;
 }
 
 .homePageNav h3.condensed {
@@ -435,7 +437,10 @@ body .navbar {
 
 #main-content.homepage{
   padding-top: 0px;
-  min-height: 700px;
+}
+
+#main-content{
+  min-height: 1000px;
 }
 
 // carousel

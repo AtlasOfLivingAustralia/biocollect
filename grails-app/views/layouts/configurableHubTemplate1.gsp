@@ -22,6 +22,8 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="app.version" content="${g.meta(name:'app.version')}"/>
+    <meta name="app.build" content="${g.meta(name:'app.build')}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><g:layoutTitle /></title>
     <r:require modules="configHubTemplate1" />
