@@ -32,7 +32,7 @@ function enmapify(args) {
       updateSiteUrl = args.updateSiteUrl,
       listSitesUrl = args.listSitesUrl,
       activityLevelData = args.activityLevelData,
-      siteObservable = container[name] = ko.observable(),
+      siteIdObservable = container[name] = ko.observable(),
       nameObservable = container[name + "Name"] = ko.observable(),
       latObservable = container[name + "Latitude"] = ko.observable(),
       lonObservable = container[name + "Longitude"] = ko.observable(),
@@ -192,7 +192,7 @@ function enmapify(args) {
     //   updateMapForSite(siteObservable())
     // } else {
     // if (!siteObservable()) {
-      if ((!siteObservable() || !args.markerOrShapeNotBoth) && latObservable() && lonObservable()) {
+      if ((!siteIdObservable() || !args.markerOrShapeNotBoth) && latObservable() && lonObservable()) {
         map.addMarker(latObservable(), lonObservable());
       }
       // if (featureObservable()) {
@@ -238,7 +238,7 @@ function enmapify(args) {
     }
   };
 
-  var siteSubscriber = siteObservable.subscribe(updateMapForSite);
+  var siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
 // make sure the lat/lng fields are cleared when the marker is removed by cancelling a new marker
   map.registerListener("layerremove", updateFieldsForMap);
   map.registerListener("draw:created", function(e) {
@@ -262,7 +262,7 @@ function enmapify(args) {
   // });
   map.registerListener("draw:editstop", function(e) {
     console.log("editstop", e);
-    if (!siteObservable() && !saved) {
+    if (!siteIdObservable() && !saved) {
       console.log("clear geo json");
       map.clearLayers();
     } else if (saved) {
@@ -285,39 +285,36 @@ function enmapify(args) {
 
   function completeDraw() {
     siteSubscriber.dispose();
-    siteObservable(null);
-    bootbox.prompt("Site Name (Cancel to edit)", function(newSiteName) {
-      if (newSiteName) {
+    siteIdObservable(null);
+    Biocollect.Modals.showModal({
+      viewModel: new AddSiteViewModel()
+    }).then(function(newSite) {
         loadingObservable(true);
         var extent = convertGeoJSONToExtent(map.getGeoJSON());
-        console.log(extent);
-
-        addSite({
+        // console.log(extent);
+        blockUIWithMessage("Adding Site \"" + newSite.name + "\", please stand by...");
+        return addSite({
           pActivityId: activityLevelData.pActivity.projectActivityId,
           site: {
-            name: newSiteName,
+            name: newSite.name,
             projects: [
               activityLevelData.pActivity.projectId
             ],
             extent: extent
           }
-        }).then(function(data, textStatus, jqXHR) {
-          // bootbox.alert("Success!");
-          console.log(data);
-          return reloadSiteData().then(function() { return data.id });
-        })
-          .done(function(id) {
-            siteObservable(id);
-          })
-          .fail(failed)
+        }).then(function (data, jqXHR, textStatus) { return reloadSiteData().then(function() { return data.id }) })
           .always(function() {
+            $.unblockUI();
             loadingObservable(false);
-          });
-      } else {
-        enableEditMode();
-      }
-    });
-    siteSubscriber = siteObservable.subscribe(updateMapForSite);
+          })
+          .done(function(id) {
+            siteIdObservable(id);
+          })
+          .fail(saveSiteFailed);
+      }).fail(enableEditMode);
+
+
+    siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
   }
 
   function enableEditMode() {
@@ -338,7 +335,7 @@ function enmapify(args) {
     });
   }
 
-  function failed(jqXHR, textStatus, errorThrown) {
+  function saveSiteFailed(jqXHR, textStatus, errorThrown) {
     bootbox.alert("An error occured while attempting to save your geometry. 😠");
     map.clearLayers();
   }
@@ -421,7 +418,22 @@ function enmapify(args) {
     map.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(activityLevelData.projectSite.extent.geometry));
   }
 
-  //return self;
 }
 
+var AddSiteViewModel = function() {
+  this.name = ko.observable();
+};
+
+AddSiteViewModel.prototype.template = "AddSiteModal";
+AddSiteViewModel.prototype.add = function() {
+  var newSite = {
+    name: this.name()
+  };
+  this.modal.close(newSite);
+};
+
+AddSiteViewModel.prototype.cancel = function () {
+  // Close the modal without passing any result data.
+  this.modal.close();
+};
 

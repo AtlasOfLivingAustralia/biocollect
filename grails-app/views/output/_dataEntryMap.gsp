@@ -204,6 +204,26 @@
         </g:if>
     </div>
 </div>
+
+<script type="text/html" id="AddSiteModal">
+<div class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-bind="click: cancel" aria-hidden="true">&times;</button>
+        <h3>Add Site</h3>
+    </div>
+    <div class="modal-body">
+        <form action="#" data-bind="submit: add">
+            <label>Site Name</label>
+            <input type="text" data-bind="value: name">
+        </form>
+        <p class="muted"><small>Cancel this dialog to edit your area.</small></p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn" data-bind="click: cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" data-bind="click: add">Save</button>
+    </div>
+</div>
+</script>
 <r:script>
 
     $(function () {

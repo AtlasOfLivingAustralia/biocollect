@@ -468,6 +468,7 @@ modules = {
 
     viewmodels {
         resource url: 'js/viewModels.js'
+        resource url: 'js/modals.js'
     }
 
     configHubTemplate1 {
