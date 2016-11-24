@@ -34,11 +34,43 @@
 
 <div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}">
     <div class="well">
-        <div class="row-fluid" data-bind="if: data.${source}LatLonDisabled">
-            <div class="span12">
-                <label>Shape centroid:</label>
+        <!-- ko if: data.${source} -->
+
+        <div class="row-fluid">
+            <div class="span3">
+                <label for="${source}CentroidLatitude">Centroid Latitude</label>
+            </div>
+
+            <div class="span9">
+                <g:if test="${readonly}">
+                    <span data-bind="text: data.${source}CentroidLatitude"></span>
+                </g:if>
+                <g:else>
+                    <input id="${source}Latitude" type="text" data-bind="value: data.${source}CentroidLatitude"
+                        ${validation} disabled>
+                </g:else>
             </div>
         </div>
+
+        <div class="row-fluid">
+            <div class="span3">
+                <label for="${source}CentroidLongitude">Centroid Longitude</label>
+            </div>
+
+            <div class="span9">
+                <g:if test="${readonly}">
+                    <span data-bind="text: data.${source}CentroidLongitude"></span>
+                </g:if>
+                <g:else>
+                    <input id="${source}CentroidLongitude" type="text" data-bind="value: data.${source}CentroidLongitude"
+                        ${validation} disabled>
+                </g:else>
+            </div>
+        </div>
+
+        <!-- /ko -->
+
+        <!-- ko if: data.${source}Longitude && data.${source}Latitude -->
 
         <div class="row-fluid">
             <div class="span3">
@@ -71,6 +103,8 @@
                 </g:else>
             </div>
         </div>
+
+        <!-- /ko -->
 
         <g:if test="${includeAccuracy}">
             <div class="row-fluid">
@@ -170,6 +204,26 @@
         </g:if>
     </div>
 </div>
+
+<script type="text/html" id="AddSiteModal">
+<div class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-bind="click: cancel" aria-hidden="true">&times;</button>
+        <h3>Add Site</h3>
+    </div>
+    <div class="modal-body">
+        <form action="#" data-bind="submit: add">
+            <label>Site Name</label>
+            <input type="text" data-bind="value: name">
+        </form>
+        <p class="muted"><small>Cancel this dialog to edit your area.</small></p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn" data-bind="click: cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" data-bind="click: add">Save</button>
+    </div>
+</div>
+</script>
 <r:script>
 
     $(function () {
