@@ -63,7 +63,7 @@
     <r:require modules="js_iso8601,projects,projectFinder,map"/>
 </head>
 <body>
-<div class="${fluidLayout?'container-fluid':'container'}">
+<div id="headerBannerSpace" class="container-fluid">
     <div class="row-fluid">
         <g:render template="/shared/projectFinderQueryInput"/>
     </div>
