@@ -5,6 +5,11 @@ import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
+import javax.servlet.http.HttpServletResponse
+
+import static javax.servlet.http.HttpServletResponse.SC_CONFLICT
+import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
+
 class SiteController {
 
     def siteService, projectService, projectActivityService, activityService, metadataService, userService,
@@ -439,6 +444,13 @@ class SiteController {
             }
         }
         render result as JSON
+    }
+
+    def checkSiteName(String id) {
+        log.debug "Name: ${params.name}"
+        def result = siteService.isSiteNameUnique(id, params.name)
+
+        response.sendError(result.value ? SC_NO_CONTENT : SC_CONFLICT)
     }
 
     def locationLookup(String id) {

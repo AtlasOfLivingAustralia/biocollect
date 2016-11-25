@@ -16,6 +16,7 @@
  * @param args.spatialGeoserverUrl The Spatial Portal geoserver URL
  * @param args.updateSiteUrl The URL to use to add or update a site.
  * @param args.listSitesUrl The URL to use to retrieve the list of sites for a project activity
+ * @param args.uniqueNameUrl The URL to use to check whether a site name is unique within a project activity.
  * @param args.activityLevelData The activity level data
  */
 function enmapify(args) {
@@ -32,6 +33,7 @@ function enmapify(args) {
       updateSiteUrl = args.updateSiteUrl,
       listSitesUrl = args.listSitesUrl,
       activityLevelData = args.activityLevelData,
+      uniqueNameUrl = args.uniqueNameUrl + "/" + activityLevelData.pActivity.projectActivityId,
       siteIdObservable = container[name] = ko.observable(),
       nameObservable = container[name + "Name"] = ko.observable(),
       latObservable = container[name + "Latitude"] = ko.observable(),
@@ -46,16 +48,7 @@ function enmapify(args) {
 
   // sitesObservable(activityLevelData.pActivity.sites);
 
-  var googleLayer = new L.Google('ROADMAP');
-  var otherLayers = {
-    Roadmap: googleLayer,
-    Hybrid: new L.Google('HYBRID'),
-    Terrain: new L.Google('TERRAIN')
-  };
-
   var mapOptions = {
-    baseLayer: googleLayer,
-    otherLayers: otherLayers,
     wmsFeatureUrl: proxyFeatureUrl + "?featureId=",
     wmsLayerUrl: spatialGeoserverUrl + "/wms/reflect?",
     draggableMarkers: !readonly,
@@ -85,6 +78,18 @@ function enmapify(args) {
         edit: true
       }
   };
+
+  if (activityLevelData.pActivity.baseLayersName === 'Google Maps') {
+    var googleLayer = new L.Google('ROADMAP');
+    var otherLayers = {
+      Roadmap: googleLayer,
+      Hybrid: new L.Google('HYBRID'),
+      Terrain: new L.Google('TERRAIN')
+    };
+
+    mapOptions.baseLayer = googleLayer;
+    mapOptions.otherLayers = otherLayers;
+  }
 
   var map = new ALA.Map(name + 'Map', mapOptions);
 
@@ -287,7 +292,7 @@ function enmapify(args) {
     siteSubscriber.dispose();
     siteIdObservable(null);
     Biocollect.Modals.showModal({
-      viewModel: new AddSiteViewModel()
+      viewModel: new AddSiteViewModel(uniqueNameUrl)
     }).then(function(newSite) {
         loadingObservable(true);
         var extent = convertGeoJSONToExtent(map.getGeoJSON());
@@ -420,20 +425,76 @@ function enmapify(args) {
 
 }
 
-var AddSiteViewModel = function() {
-  this.name = ko.observable();
+var AddSiteViewModel = function(uniqueNameUrl) {
+  var self = this;
+  self.uniqueNameUrl = uniqueNameUrl;
+
+  self.inflight = null;
+  self.name = ko.observable();
+  self.throttledName = ko.computed(this.name).extend({ throttle: 400 });
+  self.nameStatus = ko.observable(AddSiteViewModel.NAME_STATUS.BLANK);
+
+  self.name.subscribe(function(name) {
+    self.precheckUniqueName(name);
+  });
+  self.throttledName.subscribe(function (name) {
+    self.checkUniqueName(name);
+  });
+  self.nameStatus.subscribe(function(status) { console.log(status) });
+};
+
+AddSiteViewModel.NAME_STATUS = {
+  BLANK : 'blank'
+  , CHECKING : 'checking'
+  , CONFLICT : 'conflict'
+  , ERROR : 'error'
+  , OK : 'ok'
 };
 
 AddSiteViewModel.prototype.template = "AddSiteModal";
 AddSiteViewModel.prototype.add = function() {
-  var newSite = {
-    name: this.name()
-  };
-  this.modal.close(newSite);
+  if (this.nameStatus() === AddSiteViewModel.NAME_STATUS.OK) {
+    var newSite = {
+      name: this.name()
+    };
+    this.modal.close(newSite);
+  }
 };
 
 AddSiteViewModel.prototype.cancel = function () {
   // Close the modal without passing any result data.
   this.modal.close();
+};
+
+AddSiteViewModel.prototype.precheckUniqueName = function(name) {
+  if (this.inflight) this.inflight.abort();
+
+  this.nameStatus(name === '' ? AddSiteViewModel.NAME_STATUS.BLANK : AddSiteViewModel.NAME_STATUS.CHECKING);
+};
+
+AddSiteViewModel.prototype.checkUniqueName = function(name) {
+  var self = this;
+
+  if (name === '') return;
+
+  self.inflight = $.getJSON(self.uniqueNameUrl + "?name=" + encodeURIComponent(name))
+    .done(function(data, textStatus, jqXHR) {
+      self.nameStatus(AddSiteViewModel.NAME_STATUS.OK);
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+      if (errorThrown === 'abort') {
+        console.log('abort');
+        return;
+      }
+
+      switch (jqXHR.status) {
+        case 409:
+          self.nameStatus(AddSiteViewModel.NAME_STATUS.CONFLICT);
+          break;
+        default:
+          self.nameStatus(AddSiteViewModel.NAME_STATUS.ERROR);
+          bootbox.alert("An error occured checking your name. 😠");
+          console.error("Error checking unique status", jqXHR, textStatus, errorThrown);
+      }
+    });
 };
 

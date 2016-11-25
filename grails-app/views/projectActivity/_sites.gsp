@@ -91,16 +91,34 @@
         </div>
 
     </div>
-<div class="row-fluid">
-    <h3>Or, add custom site using the below options</h3>
-    <div class="">
-        <div class="btn-group btn-group-justified">
-            <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToCreate, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"><i class="icon-plus"></i> Add new site </button>
-            <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToSelect, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"><i class="icon-folder-open"></i> Choose existing sites </button>
-            <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToUpload, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"><i class="icon-arrow-up"></i> Upload locations from shapefile </button>
+    <div class="row-fluid">
+        <div class="span12">
+            <h3>Or, add custom site using the below options</h3>
+            <div class="">
+                <div class="btn-group btn-group-justified" style="margin-bottom: 5px">
+                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToCreate, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"><i class="icon-plus"></i> Add new site </button>
+                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToSelect, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"><i class="icon-folder-open"></i> Choose existing sites </button>
+                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToUpload, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"><i class="icon-arrow-up"></i> Upload locations from shapefile </button>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+    <div class="row-fluid">
+        <div class="span12">
+            <h3>Additional site options</h3>
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: allowAdditionalSurveySites, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"/> Allow Additional Survey Sites
+            </label>
+            <span class="help-block">Check this box if you want to allow users to add or edit site polygons on the survey record.</span>
+            <auth:ifAnyGranted roles="ROLE_ADMIN">
+                <label for="map-tiles">Map tiles</label>
+                <select id="map-tiles" data-bind="value: baseLayersName, optionsCaption: 'Choose...', disable: transients.warning() || !transients.saveOrUnPublishAllowed()">
+                    <option>Default</option>
+                    <option>Google Maps</option>
+                </select>
+            </auth:ifAnyGranted>
+        </div>
+    </div>
     <!--
     Not supported.
     <div class="row-fluid">
@@ -115,13 +133,6 @@
     -->
     <!-- /ko -->
     <!-- /ko -->
-    <div class="row-fluid">
-        <div class="span12">
-            <p>
-                <input type="checkbox" data-bind="checked: current().allowAdditionalSurveySites"/> Allow Additional Survey Sites
-            </p>
-        </div>
-    </div>
 </div>
 
 <!-- ko foreach: projectActivities -->

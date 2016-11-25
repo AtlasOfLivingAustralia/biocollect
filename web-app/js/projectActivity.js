@@ -1061,6 +1061,7 @@ var ProjectActivity = function (params) {
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
     self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
+    self.baseLayersName = ko.observable(pActivity.baseLayersName);
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
     self.species = new SpeciesConstraintViewModel(pActivity.species);
     self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
@@ -1257,8 +1258,8 @@ var ProjectActivity = function (params) {
         }
         else if (by == "info") {
             var ignore = self.ignore.concat(['current', 'pActivityForms', 'pActivityFormImages',
-                'access', 'species', 'sites', 'transients', 'endDate','visibility','pActivityFormName', 'restrictRecordToSites', 'allowAdditionalSurveySites',
-                'aekosModalView', 'project']);
+                'access', 'species', 'sites', 'transients', 'endDate','visibility','pActivityFormName', 'restrictRecordToSites',
+                'allowAdditionalSurveySites', 'baseLayersName', 'aekosModalView', 'project']);
             ignore = $.grep(ignore, function (item, i) {
                 return item != "documents";
             });
@@ -1280,6 +1281,7 @@ var ProjectActivity = function (params) {
             jsData.sites = sites;
             jsData.restrictRecordToSites = self.restrictRecordToSites();
             jsData.allowAdditionalSurveySites = self.allowAdditionalSurveySites();
+            jsData.baseLayersName = self.baseLayersName();
         }
         else if (by == "visibility") {
             jsData = {};

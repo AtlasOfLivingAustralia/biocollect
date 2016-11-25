@@ -213,14 +213,21 @@
     </div>
     <div class="modal-body">
         <form action="#" data-bind="submit: add">
-            <label>Site Name</label>
-            <input type="text" data-bind="value: name">
+            <div class="control-group" data-bind="css: { warning: nameStatus() == 'conflict' }">
+                <label for="site-name" class="control-label">Site Name</label>
+                <div class="controls">
+                    <input id="site-name" type="text" class="input-xlarge" data-bind="value: name, valueUpdate: 'afterkeydown'">
+                    <i class="fa fa-cog fa-spin" data-bind="visible: nameStatus() == 'checking' "></i>
+                    <span class="help-block" data-bind="visible: nameStatus() == 'conflict' ">This name is already being used for a site</span>
+                </div>
+            </div>
+
         </form>
         <p class="muted"><small>Cancel this dialog to edit your area.</small></p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn" data-bind="click: cancel">Cancel</button>
-        <button type="button" class="btn btn-primary" data-bind="click: add">Save</button>
+        <button type="button" class="btn btn-primary" data-bind="click: add, enable: nameStatus() == 'ok' ">Save</button>
     </div>
 </div>
 </script>

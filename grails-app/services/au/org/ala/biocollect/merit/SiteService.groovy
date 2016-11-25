@@ -482,4 +482,23 @@ class SiteService {
 
         return false
     }
+
+    Boolean isSiteNameUnique(String id, String name) {
+
+        def response = webService.getJson(grailsApplication.config.ecodata.service.url + "/site/uniqueName/${enc(id)}?name=${enc(name)}")
+        // convert an exception to a string and back again...
+        if(response.error){
+            if(response.error.contains('Timed out')){
+                throw new SocketTimeoutException(response.error)
+            } else {
+                throw new Exception(response.error)
+            }
+        }
+
+        return response.value
+    }
+
+    def enc(String value) {
+        URLEncoder.encode(value, 'UTF-8')
+    }
 }
