@@ -440,7 +440,6 @@ var AddSiteViewModel = function(uniqueNameUrl) {
   self.throttledName.subscribe(function (name) {
     self.checkUniqueName(name);
   });
-  self.nameStatus.subscribe(function(status) { console.log(status) });
 };
 
 AddSiteViewModel.NAME_STATUS = {
