@@ -19,6 +19,7 @@ var SpeciesViewModel = function (species, lists, populate) {
     self.transients.name = ko.observable(species.name);
     self.transients.guid = ko.observable(species.guid);
     self.transients.scientificName = ko.observable(species.scientificName);
+    self.transients.speciesFieldIsReadOnly = ko.observable(false);
     self.transients.commonName = ko.observable(species.commonName);
     self.transients.source = ko.observable(fcConfig.speciesSearch);
     self.transients.bieUrl = ko.observable();
@@ -59,6 +60,7 @@ var SpeciesViewModel = function (species, lists, populate) {
                         self.transients.guid(data.guid);
                         self.transients.scientificName(data.scientificName);
                         self.transients.commonName(data.commonName);
+                        self.transients.speciesFieldIsReadOnly(true)
                     }
                 },
                 error: function (data) {
