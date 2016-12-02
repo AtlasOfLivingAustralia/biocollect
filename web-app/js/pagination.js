@@ -40,7 +40,7 @@ var PaginationViewModel = function (o, caller) {
 
     self.first = function () {
         caller.refreshPage(0);
-        self.currentPage(0)
+        self.currentPage(1)
     };
 
     self.last = function () {

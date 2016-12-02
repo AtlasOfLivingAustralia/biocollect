@@ -2,6 +2,8 @@
 <bc:koLoading>
     <div class="image-gallery">
         <ul class="thumbnails">
+            <g:render template="../shared/pagination"/>
+
             <!-- ko foreach: recordImages -->
             <li>
                 <div class="projectLogo" data-toggle="popover" data-trigger="hover" data-title="Photo metadata" data-bind="popover: {placement:'top', content: function(){ return $(this).find('.metadata').html()} }">
@@ -24,10 +26,12 @@
             </li>
             <!-- /ko -->
         </ul>
-        <button class="btn margin-left-30" data-bind="click: nextPage, visible: isLoadMore">Load more</button>
 
-        <!-- ko if: recordImages().length == 0 && !error() -->
+        <div class="margin-top-2"></div>
+        <g:render template="../shared/pagination"/>
+
         <span data-bind="if: transients.loading()"><span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...</span>
+        <!-- ko if: recordImages().length == 0 && !error() -->
         <span data-bind="if: !transients.loading()">No images found</span>
         <!-- /ko -->
 
