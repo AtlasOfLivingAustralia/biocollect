@@ -142,6 +142,9 @@ OrganisationSelectionViewModel = function(organisations, userOrganisations, init
     var userOrgList = new SearchableList(userOrganisations, ['name']);
     var otherOrgList = new SearchableList(organisations, ['name']);
 
+    self.organisationsViewModel = new OrganisationsViewModel();
+
+
     self.term = ko.observable('');
     self.term.subscribe(function() {
         userOrgList.term(self.term());
@@ -241,6 +244,10 @@ var OrganisationsViewModel = function() {
     self.searchTerm.subscribe(function(term) {
         self.refreshPage(0);
     });
+
+
+    self.loading = ko.observable(false);
+
     self.refreshPage = function(offset) {
         var url = fcConfig.organisationSearchUrl;
         var params = {offset:offset, max:self.pagination.resultsPerPage()};
@@ -250,25 +257,81 @@ var OrganisationsViewModel = function() {
         else {
             params.sort = "nameSort"; // Sort by name unless there is a search term, in which case we sort by relevence.
         }
-        $.get(url, params, function(data) {
-            if (data.hits) {
-                var orgs = data.hits.hits || [];
-                self.organisations($.map(orgs, function(hit) {
-                    if (hit._source.logoUrl) {
-                        hit._source.documents = [{
-                            role:'logo',
-                            status:'active',
-                            thumbnailUrl: hit._source.logoUrl
-                        }]
-                    }
-                    return new OrganisationViewModel(hit._source);
-                }));
-            }
-            if (offset == 0) {
-                self.pagination.loadPagination(0, data.hits.total);
-            }
 
+
+        $.ajax({
+            url:url,
+            data:params,
+            beforeSend: function () {
+                self.loading(true);
+            },
+            success:function(data) {
+                if (data.hits) {
+                    var orgs = data.hits.hits || [];
+                    self.organisations($.map(orgs, function(hit) {
+                        if (hit._source.logoUrl) {
+                            hit._source.documents = [{
+                                role:'logo',
+                                status:'active',
+                                thumbnailUrl: hit._source.logoUrl
+                            }]
+                        }
+                        return new OrganisationViewModel(hit._source);
+                    }));
+                }
+                if (offset == 0) {
+                    self.pagination.loadPagination(0, data.hits.total);
+                }
+            },
+            complete: function () {
+                self.loading(false);
+            }
         });
     };
+
     self.refreshPage(0);
+
+    self.selectedOrganisation = ko.observable({});
+
+    self.isSelected = function(value) {
+        return self.selectedOrganisation()['name'] == value['name'];
+    };
+
+    self.select = function(value) {
+        self.selectedOrganisation(value);
+        self.searchTerm(value['name']());
+    };
+
+    self.clearSelection = function() {
+        self.selectedOrganisation({});
+        self.searchTerm('');
+    };
+
+    self.selection = ko.computed(function() {
+        return self.selectedOrganisation()['name'] !== undefined;
+    });
+
+    self.navigationShouldBeVisible = ko.observable(false);
+    self.searchHasFocus = ko.observable(false);
+    self.searchHasFocus.subscribe(function(){
+        self.navigationShouldBeVisible(true);
+    });
+
+    self.displayNavigationControls = ko.computed(function() {
+        return !self.selection() && self.navigationShouldBeVisible();
+    });
+
+    self.organisationNotPresent = ko.observable();
+
+    self.allViewed = ko.observable(false);
+
+    self.loading.subscribe(function() {
+        if(!self.loading()) { // Update allViewed only after results have been refreshed
+            if (self.pagination.currentPage() === self.pagination.lastPage() ||
+                self.pagination.totalResults() <= self.pagination.resultsPerPage() // Only one page to display
+            ) {
+                self.allViewed(true);
+            }
+        }
+    });
 };

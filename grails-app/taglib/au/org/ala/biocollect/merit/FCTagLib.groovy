@@ -1,6 +1,7 @@
 package au.org.ala.biocollect.merit
 import au.org.ala.cas.util.AuthenticationCookieUtils
 import grails.converters.JSON
+import groovy.json.JsonSlurper
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.json.JSONObject
@@ -540,8 +541,9 @@ class FCTagLib {
     def modelAsJavascript = { attrs ->
             def model = attrs.model
             if (!(model instanceof JSONObject) && !(model instanceof JSONArray)) {
-                model = model as JSON
-
+                model = (model instanceof String ) ?
+                        new JsonSlurper().parseText(model) :
+                        model as JSON
             }
             def json = (model?:attrs.default != null? attrs.default:[:] as JSON)
             def modelJson = json.toString()

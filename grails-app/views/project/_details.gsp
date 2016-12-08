@@ -23,6 +23,53 @@
             </div>
         </div>
         <div id="organisationSearch" data-bind="with: organisationSearch">
+            <div  data-bind="with: organisationsViewModel">
+                <div class="row-fluid">
+                    <div class="clearfix control-group">
+                        <label class="control-label span3" for="organisationName"><g:message code="project.details.organisationNameSearch"/><fc:iconHelp><g:message code="project.details.organisationName.help"/></fc:iconHelp><i class="req-field"></i></label>
+                        <div class="span6 controls">
+                            <div class="input-append">
+                                <input id="searchText" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection" class="input-xxlarge" placeholder="Start typing a name here..." type="text" />
+                                <button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!searchTerm(), 'icon-remove':searchTerm()}"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-bind="slideVisible:displayNavigationControls()">
+                    <div class="row-fluid">
+                        <div class="span3"></div>
+                        <div class="span8 organisation-search">
+                            <div><b>Organisation Search Results</b> (Click an organisation to select it)</div>
+                            <div class="organisation-list" >
+                                <ul class="nav nav-list">
+                                    <!-- ko foreach : organisations -->
+                                    <li data-bind="css:{active:$parent.isSelected($data)}"><a data-bind="click:$parent.select, text:name"></a></li>
+                                    <!-- /ko -->
+                                </ul>
+                            </div>
+                            <div class="margin-top-2"></div>
+                            <div class="row-fluid">
+                                <g:render template="/shared/pagination"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span3"></div>
+                        <div class="span7">
+                            %{--<div class="control-label span12 large-checkbox" data-bind="visible:!selection() && allViewed()">--}%
+                            <div class="control-label span12 large-checkbox" data-bind="visible:true">
+                                <input type="checkbox" id="organisationNotPresent" value="organisationNotOnList" data-bind="checked:organisationNotPresent, enable:displayNavigationControls() && allViewed()"/>
+                                <label for="organisationNotPresent"><span></span>&nbsp;<g:message code="project.details.organisation.notInList"/><fc:iconHelp><g:message code="project.details.organisation.notInList.help"/></fc:iconHelp></label>
+                            </div>
+                            <div style="display:none;" data-bind="visible:!selection() && allViewed() && organisationNotPresent()">
+                                <button class="btn btn-success" id="registerOrganisation" style="float:right" data-bind="enable: !selection() && allViewed() && organisationNotPresent(), click:function() {$parent.createOrganisation();}">Register my organisation</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row-fluid">
 
                 <div class="clearfix control-group">
@@ -30,7 +77,8 @@
                     <label class="control-label span3" for="organisationName"><g:message code="project.details.organisationNameSearch"/><fc:iconHelp><g:message code="project.details.organisationName.help"/></fc:iconHelp><i class="req-field"></i></label>
                     <div class="span6 controls">
                         <div id="organisationSearchControls" class="input-append">
-                            <input id="organisationName" class="input-xxlarge" type="text" placeholder="Start typing a name here" data-bind="value:term, valueUpdate:'afterkeydown', disable:selection" data-validation-engine="validate[funcCall[validateOrganisationSelection]]"><button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
+                            <input id="organisationName" class="input-xxlarge" type="text" placeholder="Start typing a name here" data-bind="value:term, valueUpdate:'afterkeydown', disable:selection" data-validation-engine="validate[funcCall[validateOrganisationSelection]]">
+                            <button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!term(), 'icon-remove':term()}"></i></button>
                         </div>
                     </div>
                 </div>
@@ -39,7 +87,7 @@
                 <div class="span3"></div>
                 <div class="span9">
                     <div class="control-label span12 large-checkbox" style="display:none;" data-bind="visible:!selection() && allViewed()">
-                        <input type="checkbox" id="organisationNotPresent" value="organisationNotOnList" data-bind="checked:organisationNotPresent"><label for="organisationNotPresent"><span></span> My organisation is not on the list &nbsp;</label>
+                        <input type="checkbox" id="organisationNotPresent" value="organisationNotOnList" data-bind="checked:organisationNotPresent"/><label for="organisationNotPresent"><span></span> My organisation is not on the list &nbsp;</label>
                     </div>
                     <div style="display:none;" data-bind="visible:!selection() && allViewed() && organisationNotPresent()">
                         <button class="btn btn-success" id="registerOrganisation" style="float:right" data-bind="click:function() {createOrganisation();}">Register my organisation</button>
@@ -201,7 +249,7 @@
                                 <div class="span3"></div>
                                 <div class="span8">
                                     <div class="span12 large-checkbox">
-                                        <input type="checkbox" id="associatedOrgNotPresent" value="organisationNotOnList" data-bind="checked: $parent.transients.associatedOrgNotInList, disable: !term"><label class="pull-right" for="associatedOrgNotPresent"><span></span> <g:message code="project.details.associatedOrgs.notInList"/>&nbsp;</label>
+                                        <input type="checkbox" id="associatedOrgNotPresent" value="organisationNotOnList" data-bind="checked: $parent.transients.associatedOrgNotInList, disable: !term"/><label class="pull-right" for="associatedOrgNotPresent"><span></span> <g:message code="project.details.associatedOrgs.notInList"/>&nbsp;</label>
                                     </div>
                                     <div data-bind="visible: !$parent.transients.associatedOrgNotInList()">
                                         <div><b>Organisation Search Results</b> (Click an organisation to select it)</div>
@@ -630,14 +678,14 @@
         <div class="large-checkbox">
             <input type="checkbox" name="scienceType" class="validate[required]"
                    data-validation-engine="validate[minCheckbox[1]]"
-                   data-bind="value: $data, attr:{id:'checkbox'+$index()}, checked: $root.transients.isScienceTypeChecked($data), event:{change:$root.transients.addScienceType}">
+                   data-bind="value: $data, attr:{id:'checkbox'+$index()}, checked: $root.transients.isScienceTypeChecked($data), event:{change:$root.transients.addScienceType}"/>
             <label data-bind="html: '<span></span> ' + $data, attr:{for:'checkbox'+$index()}"></label>
         </div>
     </script>
     <script id="ecoScienceTypeTemplate" type="text/html">
     <div class="large-checkbox">
         <input type="checkbox" name="ecoScienceType"
-               data-bind="value: $data.toLowerCase(), attr:{id:'checkbox'+$index()}, checked: $root.transients.isEcoScienceTypeChecked($data), event:{change:$root.transients.addEcoScienceType}">
+               data-bind="value: $data.toLowerCase(), attr:{id:'checkbox'+$index()}, checked: $root.transients.isEcoScienceTypeChecked($data), event:{change:$root.transients.addEcoScienceType}"/>
         <label data-bind="html: '<span></span> ' + $data, attr:{for:'checkbox'+$index()}"></label>
     </div>
     </script>

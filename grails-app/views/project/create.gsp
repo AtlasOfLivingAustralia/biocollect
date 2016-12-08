@@ -8,6 +8,7 @@
         projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
+        organisationSearchUrl: "${createLink(controller: 'organisation', action: 'search')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",

@@ -3,16 +3,16 @@
         <div class="row-fluid">
             <div class="span12">
                 <div class="span4 text-left">
-                    <p class="hidden-xs pull-left nomargin padding20">
+                    <p class="hidden-xs pull-left nomargin">
                         <span data-bind="text: pagination.info()"></span>
                     </p>
                 </div>
-                <div class="span2 text-center">
+                <div class="span3 text-center">
                     <p class="hidden-xs pull-center nomargin padding20">
                         <select style="width:60px;" data-bind="options: pagination.rppOptions, value: pagination.resultsPerPage" ></select>
                     </p>
                 </div>
-                <div class="text-right">
+                <div class=" text-right">
                     <span>
                         <span data-bind="if: pagination.currentPage() > 1"><a class="btn btn-small" href="#" data-bind="click:pagination.first"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a></span>
                         <span data-bind="if: pagination.currentPage() > 1"><a class="btn btn-small" href="#" data-bind="click:pagination.previous"><i class="fa fa-chevron-left"></i></a></span>

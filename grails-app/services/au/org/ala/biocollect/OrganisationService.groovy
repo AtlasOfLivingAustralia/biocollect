@@ -27,13 +27,9 @@ class OrganisationService {
     }
 
     Map getByName(orgName) {
+
         // The result of the service call will be a JSONArray if it's successful
         return list().list.find({ it.name == orgName })
-    }
-
-    String getNameFromId(orgId) {
-        // The result of the service call will be a JSONArray if it's successful
-        return orgId ? list().list.find({ it.organisationId == orgId })?.name : ''
     }
 
     def list() {
