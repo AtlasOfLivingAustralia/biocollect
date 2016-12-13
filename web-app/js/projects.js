@@ -342,10 +342,18 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         var org = self.organisationId() && organisationsMap[self.organisationId()];
         return org? org.collectoryInstitutionId: "";
     });
+
     self.organisationName = ko.computed(function() {
-        var org = self.organisationId() && organisationsMap[self.organisationId()];
+        var org;
+        if(self.organisationId() && self.organisationSearch) {
+            if (self.organisationSearch.selectedOrganisation['organisationId'] === self.organisationId()) {
+                org = self.organisationSearch.selectedOrganisation;
+            }
+        }
         return org? org.name: project.organisationName;
     });
+
+
 
     var truncate = function (string,  length) {
         if(string == undefined)
@@ -983,7 +991,8 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         }
     });
 
-    self.organisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId);
+    self.organisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId, project.organisationName);
+
     self.associatedOrganisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations);
     self.transients.associatedOrgNotInList = ko.observable(false);
     self.transients.associatedOrgUrl = ko.observable();
@@ -1021,42 +1030,55 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         document.location.href = config.organisationCreateUrl+'?returnTo='+here+'&returning=true';
     };
 
-    self.organisationSearch.selection.subscribe(function(newSelection) {
-        if (newSelection) {
+    self.organisationSearch.selectedOrganisation.subscribe(function(newSelection) {
+        if (! $.isEmptyObject( newSelection)) {
             self.organisationId(newSelection.organisationId);
         }
     });
 
+    self.hasOrgAlreadyBeenAdded = function(newOrganisation) {
+        for(var i = 0; i<self.associatedOrgs().length; i++) {
+            var existingOrganisation=self.associatedOrgs()[i];
+            if(existingOrganisation.name === newOrganisation.name) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     self.associatedOrganisationSearch.addSelectedOrganisation = function() {
         var org = { id: self.associatedOrgs().length };
-
         if (self.transients.associatedOrgNotInList()) {
 
             if($('#associatedOrgLogo').validationEngine('validate')) {
                 //Invalid content, let validation engine pop up the error and we just stop processing
                 return;
             }
-            org.name = self.associatedOrganisationSearch.term();
+            org.name = self.associatedOrganisationSearch.searchTerm();
             org.url = self.transients.associatedOrgUrl() || null;
             org.logo = self.transients.associatedOrgLogoUrl() || null;
 
         } else {
-            var logoDocument = ko.utils.arrayFirst(self.associatedOrganisationSearch.selection().documents, function(document) {
-                return document.role === "logo"
-            });
+            var selectedOrganisation = self.associatedOrganisationSearch.selectedOrganisation();
 
-            org.organisationId = self.associatedOrganisationSearch.selection().organisationId || "";
-            org.name = self.associatedOrganisationSearch.selection().name;
-            org.url = self.associatedOrganisationSearch.selection().url || "";
-            org.logo = logoDocument && logoDocument.thumbnailUrl ? logoDocument.thumbnailUrl : "";
+            org.organisationId = selectedOrganisation.organisationId || "";
+            org.name = selectedOrganisation.name();
+            org.url = selectedOrganisation.url() || "";
+            org.logo = selectedOrganisation.logoUrl() || "";
         }
 
-        self.associatedOrgs.push(org);
-        self.associatedOrganisationSearch.clearSelection();
-        self.transients.associatedOrgLogoUrl(false);
-        self.transients.associatedOrgUrl(null);
-        self.transients.associatedOrgLogoUrl(null);
+        if(!self.hasOrgAlreadyBeenAdded(org)) {
+            self.associatedOrgs.push(org);
+            self.associatedOrganisationSearch.clearSelection();
+            self.transients.associatedOrgLogoUrl(false);
+            self.transients.associatedOrgUrl(null);
+            self.transients.associatedOrgLogoUrl(null);
+        } else {
+            showAlert("This organisation has already been added",  "alert-error", "orgAlreadyAddedMessage")
+        }
+
     };
+
 
     self.removeAssociatedOrganisation = function(org, event) {
         self.associatedOrgs.remove(org);
@@ -1090,8 +1112,8 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
 function validateOrganisationSelection(field, rules, i, options) {
     var organisationSelectionViewModel = ko.dataFor(field[0]);
 
-    var selectedOrg = organisationSelectionViewModel.selection();
-    if (!selectedOrg || selectedOrg == null || _.isUndefined(selectedOrg)) {
+    var selectedOrg = organisationSelectionViewModel.selectedOrganisation();
+    if (!selectedOrg || selectedOrg == null || _.isUndefined(selectedOrg) || $.isEmptyObject(selectedOrg)) {
         // there is a bug with the funcCall option in JQuery Validation Engine where the rule is triggered but the
         // message is not raised unless the 'required' rule is also present.
         // The work-around for this is to manually add the 'required' rule when the message is raised.
@@ -1100,7 +1122,6 @@ function validateOrganisationSelection(field, rules, i, options) {
         return "You must select an organisation from the list"
     }
 }
-
 
 
 var EditableBlogEntryViewModel = function(blogEntry, options) {

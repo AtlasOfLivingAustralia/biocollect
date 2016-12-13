@@ -134,130 +134,89 @@ OrganisationViewModel = function (props) {
  * are maintained as separate lists for ease of display (so a users existing organisations can be prioritised).
  * @param organisations the organisations not belonging to the user.
  * @param userOrganisations the organisations that belong to the user.
- * @param (optional) if present, this value should contain the organisationId of an organisation to pre-select.
+ * @param inititialOrganisationId (optional) if present, this value should contain the organisation Id of an organisation to pre-select.
+ * @param inititialOrganisationName (optional) if present, this value should contain the organisation name of an organisation to pre-select.
  */
-OrganisationSelectionViewModel = function(organisations, userOrganisations, inititialSelection) {
+OrganisationSelectionViewModel = function(organisations, userOrganisations, inititialOrganisationId, initialOrganisationName) {
 
-    var self = this;
-    var userOrgList = new SearchableList(userOrganisations, ['name']);
-    var otherOrgList = new SearchableList(organisations, ['name']);
+    var self = $.extend(this, new OrganisationsViewModel());
 
-    self.organisationsViewModel = new OrganisationsViewModel();
-
-
-    self.term = ko.observable('');
-    self.term.subscribe(function() {
-        userOrgList.term(self.term());
-        otherOrgList.term(self.term());
-    });
-
-    self.selection = ko.computed(function() {
-        return userOrgList.selection() || otherOrgList.selection();
-    });
-
-    self.userOrganisationResults = userOrgList.results;
-    self.otherResults = otherOrgList.results;
-
-    self.clearSelection = function() {
-        userOrgList.clearSelection();
-        otherOrgList.clearSelection();
-        self.term('');
-    };
+    self.selectedOrganisation = ko.observable({});
 
     self.isSelected = function(value) {
-        return userOrgList.isSelected(value) || otherOrgList.isSelected(value);
+        return self.selectedOrganisation()['name'] == value['name'];
     };
 
     self.select = function(value) {
-        self.term(value['name']);
-
-        userOrgList.select(value);
-        otherOrgList.select(value);
+        self.selectedOrganisation(value);
+        self.searchTerm(value['name']());
     };
 
-    self.allViewed = ko.observable(false);
-
-    self.scrolled = function(blah, event) {
-        var elem = event.target;
-        var scrollPos = elem.scrollTop;
-        var maxScroll = elem.scrollHeight - elem.clientHeight;
-
-        if ((maxScroll - scrollPos) < 9) {
-            self.allViewed(true);
-        }
+    self.clearSelection = function() {
+        self.selectedOrganisation({});
+        self.searchTerm('');
+        self.refreshPage('', 0);
     };
 
-    self.visibleRows = ko.computed(function() {
-        var count = 0;
-        if (self.userOrganisationResults().length) {
-            count += self.userOrganisationResults().length+1; // +1 for the "user orgs" label.
-        }
-        if (self.otherResults().length) {
-            count += self.otherResults().length;
-            if (self.userOrganisationResults().length) {
-                count ++; // +1 for the "other orgs" label (it will only show if the my organisations label is also showing.
-            }
-        }
-        return count;
+    self.selection = ko.computed(function() {
+        return self.selectedOrganisation()['name'] !== undefined;
     });
 
-    self.visibleRows.subscribe(function() {
-        if (self.visibleRows() <= 4 && !self.selection()) {
-            self.allViewed(true);
-        }
+    self.navigationShouldBeVisible = ko.observable(false);
+    self.searchHasFocus.subscribe(function(){
+        self.navigationShouldBeVisible(true);
     });
-    self.visibleRows.notifySubscribers();
 
+    self.displayNavigationControls = ko.computed(function() {
+        return !self.selection() && self.navigationShouldBeVisible();
+    });
 
     self.organisationNotPresent = ko.observable();
 
-    var findByOrganisationId = function(list, organisationId) {
-        for (var i=0; i<list.length; i++) {
-            if (list[i].organisationId === organisationId) {
-                return list[i];
+    self.allViewed = ko.observable(false);
+
+    self.loading.subscribe(function() {
+        if(!self.loading()) { // Update allViewed only after results have been refreshed
+            if (self.pagination.currentPage() === self.pagination.lastPage() ||
+                self.pagination.totalResults() <= self.pagination.resultsPerPage() // Only one page to display
+            ) {
+                self.allViewed(true);
             }
         }
-        return null;
-    };
+    });
 
-    if (inititialSelection) {
-        var userOrg = findByOrganisationId(userOrganisations, inititialSelection);
-        var orgToSelect = userOrg ? userOrg : findByOrganisationId(organisations, inititialSelection);
-        if (orgToSelect) {
-            self.select(orgToSelect);
-        }
+    if (inititialOrganisationId && initialOrganisationName) {
+        self.searchTerm(initialOrganisationName);
+        self.selectedOrganisation({organisationId: inititialOrganisationId, name:initialOrganisationName});
     }
 
-    self.transients = {};
-    self.transients.showOrganisationSearchPanel = ko.observable(true);
-
-    self.toggleShowOrganisationSearchPanel = function() {
-        self.transients.showOrganisationSearchPanel(!self.transients.showOrganisationSearchPanel());
-    }
 };
 
-var OrganisationsViewModel = function() {
+var OrganisationsViewModel = function(eagerLoad) {
     var self = this;
+
+    eagerLoad = (eagerLoad !== undefined) ? eagerLoad : true;
+
     self.pagination = new PaginationViewModel({}, self);
+    self.loading = ko.observable(false);
+    self.searchHasFocus = ko.observable(false);
     self.organisations = ko.observableArray([]);
     self.searchTerm = ko.observable('').extend({throttle:500});
     self.searchTerm.subscribe(function(term) {
-        self.refreshPage(0);
+        if(self.searchHasFocus()) {
+            self.refreshPage(term, 0);
+        }
     });
 
-
-    self.loading = ko.observable(false);
-
-    self.refreshPage = function(offset) {
+    self.refreshPage = function(searchTerm, offset) {
         var url = fcConfig.organisationSearchUrl;
         var params = {offset:offset, max:self.pagination.resultsPerPage()};
-        if (self.searchTerm()) {
-            params.searchTerm = self.searchTerm();
+        if (searchTerm) {
+            params.searchTerm = searchTerm;
         }
         else {
             params.sort = "nameSort"; // Sort by name unless there is a search term, in which case we sort by relevence.
         }
-
 
         $.ajax({
             url:url,
@@ -289,49 +248,5 @@ var OrganisationsViewModel = function() {
         });
     };
 
-    self.refreshPage(0);
-
-    self.selectedOrganisation = ko.observable({});
-
-    self.isSelected = function(value) {
-        return self.selectedOrganisation()['name'] == value['name'];
-    };
-
-    self.select = function(value) {
-        self.selectedOrganisation(value);
-        self.searchTerm(value['name']());
-    };
-
-    self.clearSelection = function() {
-        self.selectedOrganisation({});
-        self.searchTerm('');
-    };
-
-    self.selection = ko.computed(function() {
-        return self.selectedOrganisation()['name'] !== undefined;
-    });
-
-    self.navigationShouldBeVisible = ko.observable(false);
-    self.searchHasFocus = ko.observable(false);
-    self.searchHasFocus.subscribe(function(){
-        self.navigationShouldBeVisible(true);
-    });
-
-    self.displayNavigationControls = ko.computed(function() {
-        return !self.selection() && self.navigationShouldBeVisible();
-    });
-
-    self.organisationNotPresent = ko.observable();
-
-    self.allViewed = ko.observable(false);
-
-    self.loading.subscribe(function() {
-        if(!self.loading()) { // Update allViewed only after results have been refreshed
-            if (self.pagination.currentPage() === self.pagination.lastPage() ||
-                self.pagination.totalResults() <= self.pagination.resultsPerPage() // Only one page to display
-            ) {
-                self.allViewed(true);
-            }
-        }
-    });
+    self.refreshPage(self.searchTerm(), 0);
 };

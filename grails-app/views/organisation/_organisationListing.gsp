@@ -20,7 +20,7 @@
 
     <div class="row-fluid">
         <div class="span8 input-append">
-            <input id="searchText" data-bind="value:searchTerm, valueUpdate:'keyup'" class="org-input padding-14" placeholder="Search organisations..." type="text" />
+            <input id="searchText" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup'" class="org-input padding-14" placeholder="Search organisations..." type="text" />
             <button class="btn btn-primary padding-14"><i class="fa fa-search "></i> Search</button>
         </div>
         <div class="span4">
