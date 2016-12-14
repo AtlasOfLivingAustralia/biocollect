@@ -672,91 +672,6 @@
 
         };
 
-        /* data structures for handling output targets */
-        var Output = function (name, scores, existingTargets, root) {
-            var self = this;
-            this.name = name;
-            this.outcomeTarget = ko.observable(function () {
-                // find any existing outcome value for this output
-                var outcomeValue = "";
-                $.each(existingTargets, function (j, existingTarget) {
-                    if (existingTarget.outcomeTarget && existingTarget.outputLabel === self.name) {
-                        outcomeValue = existingTarget.outcomeTarget;
-                        return false; // end the loop
-                    }
-                });
-                return outcomeValue;
-            }());
-            this.outcomeTarget.subscribe(function() {
-                if (root.canEditOutputTargets()) {
-                    self.isSaving(true);
-                    root.saveOutputTargets();
-                }
-            });
-            this.scores = $.map(scores, function (score, index) {
-                var targetValue = 0;
-                $.each(existingTargets, function(j, existingTarget) {
-                    if (existingTarget.scoreLabel === score.label) {
-                        targetValue = existingTarget.target;
-                        return false; // end the loop
-                    }
-                });
-                return new OutputTarget(score, targetValue, index === 0, root);
-            });
-            this.isSaving = ko.observable(false);
-        };
-        Output.prototype.toJSON = function () {
-            // we need to produce a flat target structure (for backwards compatibility)
-            var self = this,
-            targets = $.map(this.scores, function (score) {
-                var js = score.toJSON();
-                js.outputLabel = self.name;
-                return js;
-            });
-            // add the outcome target
-            targets.push({outputLabel:self.name, outcomeTarget: self.outcomeTarget()});
-            return targets;
-        };
-        Output.prototype.clearSaving = function () {
-            this.isSaving(false);
-            $.each(this.scores, function (i, score) { score.isSaving(false) });
-        };
-
-        var OutputTarget = function (target, value, isFirst, root) {
-            var self = this;
-            this.scoreName = target.name;
-            this.scoreLabel = target.label;
-            this.target = ko.observable(value).extend({numericString:1});
-            this.isSaving = ko.observable(false);
-            this.isFirst = isFirst;
-            this.units = target.units;
-            this.target.subscribe(function() {
-                if (root.canEditOutputTargets()) {
-                    self.isSaving(true);
-                    root.saveOutputTargets();
-                }
-            });
-        };
-        OutputTarget.prototype.toJSON = function () {
-            var clone = ko.toJS(this);
-            delete clone.isSaving;
-            delete clone.isFirst;
-            return clone;
-        };
-
-        var Outcome = function (target) {
-            var self = this;
-            this.outputLabel = target.outputLabel;
-            this.outcomeText = target.outcomeText;
-            this.isSaving = ko.observable(false);
-        };
-
-        Outcome.prototype.toJSON = function () {
-            var clone = ko.toJS(this);
-            delete clone.isSaving;
-            return clone;
-        };
-
         function PlanViewModel(activities, outputTargets, project) {
             var self = this;
             this.userIsCaseManager = ko.observable(${user?.isCaseManager});
@@ -954,22 +869,22 @@
             // metadata for setting up the output targets
             self.targetMetadata = ${outputTargetMetadata as grails.converters.JSON};
 
-            self.loadOutputTargets = function () {
-                var activityTypes = {},  // this just saves us checking multiple activities of the same type
-                    uniqueOutputs = {};  // this ensures each output is unique
-                // collect the metadata for the unique outputs for the current set of activities
-                $.each(activities, function (i, activity) {
-                    if (!activityTypes[activity.type] && self.targetMetadata[activity.type]) {
-                        activityTypes[activity.type] = true;
-                        $.each(self.targetMetadata[activity.type], function(outputName, scores) {
-                            if (!uniqueOutputs[outputName]) {
-                                uniqueOutputs[outputName] = true;
-                                self.outputTargets.push(new Output(outputName, scores, outputTargets, self));
-                            }
+            var outputTargetHelper = new OutputTargets(activities, outputTargets, self.canEditOutputTargets, self.targetMetadata,  {saveTargetsUrl:fcConfig.projectUpdateUrl});
+            $.extend(self, outputTargetHelper);
+            self.saveOutputTargets = function() {
+                var result;
+                if (self.canEditOutputTargets()) {
+                    if ($('#outputTargetsContainer').validationEngine('validate')) {
+                        return outputTargetHelper.saveOutputTargets();
+
+                    } else {
+                        // clear the saving indicator when validation fails
+                        $.each(self.outputTargets(), function (i, target) {
+                            target.clearSaving();
                         });
                     }
-                });
-            }();
+                }
+            };
         }
         var project = <fc:modelAsJavascript model="${project}"/>;
         var planViewModel = new PlanViewModel(
