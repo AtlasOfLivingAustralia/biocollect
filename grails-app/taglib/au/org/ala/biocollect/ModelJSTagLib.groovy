@@ -198,6 +198,19 @@ class ModelJSTagLib {
         }
     }
 
+    private void renderJSExpression(Map computed, String dependantContext) {
+        String expression = computed.expression
+        Map dependents = computed.dependents
+        int decimalPlaces = computed.rounding != null ? computed.rounding : 2
+        out << "var expression = Parser.parse('${expression}');\n"
+        out << "var variables = {};\n";
+        for(int i=0; i < dependents.source.size(); i++) {
+            out << "variables['${dependents.source[i]}'] = Number(${dependantContext}.${dependents.source[i]}());\n"
+        }
+        out << "var result = expression.evaluate(variables);\n"
+        out << "return neat_number(result, ${decimalPlaces});\n"
+    }
+
     def jsRemoveBeforeSave = { attrs ->
         attrs.model?.viewModel?.each({
             if (it.dataType == 'tableWithEditableRows' || it.type == 'photoPoints' || it.type == 'table') {
@@ -262,12 +275,7 @@ class ModelJSTagLib {
             out << INDENT*4 << "return ${dependantContext}.${model.computed.dependents.source}().length;\n"
         }
         else if (model.computed.expression) {
-            out << "var expression = Parser.parse('${model.computed.expression}');\n"
-            out << "var variables = {};\n";
-            for(int i=0; i < model.computed.dependents.source.size(); i++) {
-                out << "variables['${model.computed.dependents.source[i]}'] = Number(${dependantContext}.${model.computed.dependents.source[i]}());\n"
-            }
-            out << "return expression.evaluate(variables);\n"
+            renderJSExpression(model.computed, dependantContext)
         }
         else if (model.computed.dependents.fromList) {
             out << INDENT*4 << "var total = 0;\n"
@@ -603,31 +611,37 @@ class ModelJSTagLib {
 
     def computedObservable(model, propertyContext, dependantContext, out) {
         out << INDENT*5 << "${propertyContext}.${model.name} = ko.computed(function () {\n"
-        // must be at least one dependant
-        def numbers = []
-        def checkNumberness = []
-        model.computed.dependents.each {
-            def ref = it
-            def path = dependantContext
-            if (ref.startsWith('$')) {
-                ref = ref[1..-1]
-                path = "self.data"
-            }
-            numbers << "Number(${path}.${ref}())"
-            checkNumberness << "isNaN(Number(${path}.${ref}()))"
-        }
-        out << INDENT*6 << "if (" + checkNumberness.join(' || ') + ") { return 0; }\n"
-        if (model.computed.operation == 'divide') {
-            // can't divide by zero
-            out << INDENT*6 << "if (${numbers[-1]} === 0) { return 0; }\n"
-        }
-        def expression = numbers.join(" ${operators[model.computed.operation]} ")
-        if (model.computed.rounding) {
-            expression = "neat_number(${expression},${model.computed.rounding})"
-        }
-        out << INDENT*6 << "return " + expression + ";\n"
 
-        out << INDENT*5 << "});\n"
+        if (model.computed.expression) {
+            renderJSExpression(model.computed, "self")
+        }
+        else {
+            // must be at least one dependant
+            def numbers = []
+            def checkNumberness = []
+            model.computed.dependents.each {
+                def ref = it
+                def path = dependantContext
+                if (ref.startsWith('$')) {
+                    ref = ref[1..-1]
+                    path = "self.data"
+                }
+                numbers << "Number(${path}.${ref}())"
+                checkNumberness << "isNaN(Number(${path}.${ref}()))"
+            }
+            out << INDENT * 6 << "if (" + checkNumberness.join(' || ') + ") { return 0; }\n"
+            if (model.computed.operation == 'divide') {
+                // can't divide by zero
+                out << INDENT * 6 << "if (${numbers[-1]} === 0) { return 0; }\n"
+            }
+            def expression = numbers.join(" ${operators[model.computed.operation]} ")
+            if (model.computed.rounding) {
+                expression = "neat_number(${expression},${model.computed.rounding})"
+            }
+            out << INDENT * 6 << "return " + expression + ";\n"
+        }
+        out << INDENT * 5 << "});\n"
+
     }
 
     def listViewModel(attrs, model, out) {
