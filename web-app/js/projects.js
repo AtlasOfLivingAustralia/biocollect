@@ -303,11 +303,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     if (!organisations) {
         organisations = [];
     }
-    var organisationsMap = {}, organisationsRMap = {};
-    $.map(organisations, function(org) {
-        organisationsMap[org.organisationId] = org;
-        organisationsRMap[org.name] = org.organisationId;
-    });
 
     self.name = ko.observable(project.name);
     self.aim = ko.observable(project.aim);
@@ -338,21 +333,17 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.projectStatus = [{id: 'active', name:'Active'},{id:'completed',name:'Completed'},{id:'deleted', name:'Deleted'}];
 
     self.organisationId = ko.observable(project.organisationId);
+    self.organisationName = ko.observable(project.organisationName ? project.organisationName : '');
+
     self.collectoryInstitutionId = ko.computed(function() {
-        var org = self.organisationId() && organisationsMap[self.organisationId()];
-        return org? org.collectoryInstitutionId: "";
-    });
-
-    self.organisationName = ko.computed(function() {
-        var org;
-        if(self.organisationId() && self.organisationSearch) {
-            if (self.organisationSearch.selectedOrganisation['organisationId'] === self.organisationId()) {
-                org = self.organisationSearch.selectedOrganisation;
+            var org;
+            if(self.organisationId() && self.organisationSearch) {
+                if (self.organisationSearch.selectedOrganisation['organisationId'] === self.organisationId()) {
+                    org = self.organisationSearch.selectedOrganisation;
+                }
             }
-        }
-        return org? org.name: project.organisationName;
+            return  org && org.collectoryInstitutionId ? org.collectoryInstitutionId: "";
     });
-
 
 
     var truncate = function (string,  length) {
@@ -484,17 +475,7 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         }
         return true;
     };
-
-    self.orgIdGrantee.subscribe(function (id) {
-        var org = organisationsMap[id]
-        org && self.orgGrantee(org.name)
-    })
-
-    self.orgIdSponsor.subscribe(function (id) {
-        var org = organisationsMap[id]
-        org && self.orgSponsor(org.name)
-    })
-
+    
     self.transients.daysRemaining = ko.pureComputed(function() {
         var end = self.plannedEndDate();
         return end? isBeforeToday(end)? 0: calculateDurationInDays(undefined, end) + 1: -1;
@@ -991,12 +972,15 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         }
     });
 
-    self.organisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId, project.organisationName);
+    self.organisationSearch = new OrganisationSelectionViewModel(project.organisationId, project.organisationName);
 
-    self.associatedOrganisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations);
+    self.associatedOrganisationSearch = new OrganisationSelectionViewModel();
     self.transients.associatedOrgNotInList = ko.observable(false);
     self.transients.associatedOrgUrl = ko.observable();
     self.transients.associatedOrgLogoUrl = ko.observable();
+
+    self.granteeOrganisation = new OrganisationSelectionViewModel(project.orgIdGrantee, project.orgGrantee);
+    self.sponsorOrganisation = new OrganisationSelectionViewModel(project.orgIdSponsor, project.orgSponsor);
 
     self.transients.termsOfUseClicked = ko.observable(false);
     
@@ -1033,6 +1017,30 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
     self.organisationSearch.selectedOrganisation.subscribe(function(newSelection) {
         if (! $.isEmptyObject( newSelection)) {
             self.organisationId(newSelection.organisationId);
+            self.organisationName(newSelection.name());
+        } else {
+            self.organisationId('');
+            self.organisationName('');
+        }
+    });
+
+    self.granteeOrganisation.selectedOrganisation.subscribe(function(newSelection) {
+        if (! $.isEmptyObject( newSelection)) {
+            self.orgIdGrantee(newSelection.organisationId);
+            self.orgGrantee(newSelection.name());
+        } else {
+            self.orgIdGrantee('');
+            self.orgGrantee('');
+        }
+    });
+
+    self.sponsorOrganisation.selectedOrganisation.subscribe(function(newSelection) {
+        if (! $.isEmptyObject( newSelection)) {
+            self.orgIdSponsor(newSelection.organisationId);
+            self.orgSponsor(newSelection.name());
+        } else {
+            self.orgIdSponsor('');
+            self.orgSponsor('');
         }
     });
 
@@ -1084,7 +1092,7 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         self.associatedOrgs.remove(org);
     };
 
-    self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch']);
+    self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch', 'granteeOrganisation', 'sponsorOrganisation']);
     self.transients.existingLinks = project.links;
 
     self.modelAsJSON = function() {

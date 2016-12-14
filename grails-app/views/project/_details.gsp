@@ -423,23 +423,71 @@
                 </div>
             </div>
 
-            <div data-bind="visible:!isWorks()" class="clearfix control-group">
-                <label class="control-label span3"
-                       for="orgGrantee"><g:message code="project.details.orgGrantee"/><fc:iconHelp><g:message code="project.details.orgGrantee.help"/></fc:iconHelp></label>
+            <div data-bind="visible:!isWorks(), with: granteeOrganisation">
+                <div class="row-fluid">
+                    <div class="clearfix control-group">
+                        <label class="control-label span3" for="organisationName"><g:message code="project.details.orgGrantee"/><fc:iconHelp><g:message code="project.details.orgGrantee.help"/></fc:iconHelp></label>
+                        <div class="span6 controls">
+                            <div class="input-append">
+                                <input id="searchText" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection" class="input-xxlarge" placeholder="Start typing a name here..." type="text"/>
+                                <button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!searchTerm(), 'icon-remove':searchTerm()}"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="controls span9">
-                    <select class="span12" id="orgGrantee"
-                            data-bind="options:transients.organisations, optionsText:'name', optionsValue:'organisationId', value: orgIdGrantee, optionsCaption: 'Choose...'"></select>
+                <div data-bind="slideVisible:displayNavigationControls()">
+                    <div class="row-fluid">
+                        <div class="span3"></div>
+                        <div class="span8">
+                            <div><b>Organisation Search Results</b> (Click an organisation to select it)</div>
+                            <div class="organisation-list" >
+                                <ul class="nav nav-list">
+                                    <!-- ko foreach : organisations -->
+                                    <li data-bind="css:{active:$parent.isSelected($data)}"><a data-bind="click:$parent.select, text:name"></a></li>
+                                    <!-- /ko -->
+                                </ul>
+                            </div>
+                            <div class="margin-top-2"></div>
+                            <div class="row-fluid">
+                                <g:render template="/shared/pagination"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div data-bind="visible:!isWorks()" class="clearfix control-group">
-                <label class="control-label span3"
-                       for="orgSponsor"><g:message code="project.details.orgSponsor"/><fc:iconHelp><g:message code="project.details.orgSponsor.help"/></fc:iconHelp></label>
+            <div data-bind="visible:!isWorks(), with: sponsorOrganisation">
+                <div class="row-fluid">
+                    <div class="clearfix control-group">
+                        <label class="control-label span3" ><g:message code="project.details.orgSponsor"/><fc:iconHelp><g:message code="project.details.orgSponsor.help"/></fc:iconHelp></label>
+                        <div class="span6 controls">
+                            <div class="input-append">
+                                <input id="searchText" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection" class="input-xxlarge" placeholder="Start typing a name here..." type="text"/>
+                                <button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!searchTerm(), 'icon-remove':searchTerm()}"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="controls span9">
-                    <select class="span12" id="orgSponsor"
-                            data-bind="options:transients.organisations, optionsText:'name', optionsValue:'organisationId', value:orgIdSponsor, optionsCaption: 'Choose...'"></select>
+                <div data-bind="slideVisible:displayNavigationControls()">
+                    <div class="row-fluid">
+                        <div class="span3"></div>
+                        <div class="span8">
+                            <div><b>Organisation Search Results</b> (Click an organisation to select it)</div>
+                            <div class="organisation-list" >
+                                <ul class="nav nav-list">
+                                    <!-- ko foreach : organisations -->
+                                    <li data-bind="css:{active:$parent.isSelected($data)}"><a data-bind="click:$parent.select, text:name"></a></li>
+                                    <!-- /ko -->
+                                </ul>
+                            </div>
+                            <div class="margin-top-2"></div>
+                            <div class="row-fluid">
+                                <g:render template="/shared/pagination"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

@@ -130,21 +130,18 @@ OrganisationViewModel = function (props) {
 };
 
 /**
- * Provides the ability to search a user's organisations and other organisations at the same time.  The results
- * are maintained as separate lists for ease of display (so a users existing organisations can be prioritised).
- * @param organisations the organisations not belonging to the user.
- * @param userOrganisations the organisations that belong to the user.
+ * Provides the ability to search and navigate through organisations.
  * @param inititialOrganisationId (optional) if present, this value should contain the organisation Id of an organisation to pre-select.
  * @param inititialOrganisationName (optional) if present, this value should contain the organisation name of an organisation to pre-select.
  */
-OrganisationSelectionViewModel = function(organisations, userOrganisations, inititialOrganisationId, initialOrganisationName) {
+OrganisationSelectionViewModel = function(inititialOrganisationId, initialOrganisationName) {
 
     var self = $.extend(this, new OrganisationsViewModel());
 
     self.selectedOrganisation = ko.observable({});
 
     self.isSelected = function(value) {
-        return self.selectedOrganisation()['name'] == value['name'];
+        return self.selectedOrganisation()['name'] == value['name']();
     };
 
     self.select = function(value) {
