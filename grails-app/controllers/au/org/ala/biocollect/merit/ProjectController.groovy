@@ -177,7 +177,7 @@ class ProjectController {
                 admins: admins,
                 activityTypes: projectService.activityTypesList(),
                 metrics: project.projectType == projectService.PROJECT_TYPE_WORKS ? projectService.summary(id): [],
-                outputTargetMetadata: metadataService.getOutputTargetsByOutputByActivity(),
+                outputTargetMetadata:  metadataService.getOutputTargetScores(),
                 programs: programs,
                 today:DateUtils.format(new DateTime()),
                 themes:metadataService.getThemesForProject(project),

@@ -1,6 +1,5 @@
 <r:require modules="imageDataType"/>
 <div id="" class="fileupload-buttonbar">
-
     <!-- ko foreach: ${name} -->
     <!-- Images -->
     <div data-bind="visible: $data.status() != 'deleted'">
@@ -115,8 +114,8 @@
         </tr>
 
         <tr>
-            <td class="pull-right">
-                <span class="btn btn-success fileinput-button"><i class="fa fa-plus"></i> <input type="file" accept="image/*" name="files"><span>Attach Photo</span>
+            <td>
+                <span class="btn-sm btn-success fileinput-button"><i class="fa fa-plus"></i> <input type="file" accept="image/*" name="files"><span>Attach Photo</span>
                 </span>
             </td>
         </tr>

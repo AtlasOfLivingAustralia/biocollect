@@ -296,5 +296,24 @@ class MetadataService {
         result
     }
 
+    List<Map> getOutputTargetScores() {
+        cacheService.get('output-targets', {
+            List<Map> scores = getScores(false)
+            scores.findAll { it.isOutputTarget }.collect {
+                [scoreId: it.scoreId, label: it.label, entityTypes: it.entityTypes, description: it.description, outputType: it.outputType]
+            }
+        })
+    }
+
+    List<Map> getScores(boolean includeConfig) {
+        cacheService.get("scores-${includeConfig}", {
+            String url = grailsApplication.config.ecodata.service.url + "/metadata/scores"
+            if (includeConfig) {
+                url+='?view=config'
+            }
+            webService.getJson(url)
+        })
+    }
+
 
 }
