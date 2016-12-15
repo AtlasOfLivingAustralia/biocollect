@@ -363,11 +363,10 @@
                 document.location.href = "${createLink(action: 'index', id: project.projectId)}";
             });
 
-            var organisations = <fc:modelAsJavascript model="${organisations?:[]}"/>;
             var project = <fc:modelAsJavascript model="${project}"/>;
             var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
             var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
-            var viewModel = new ProjectViewModel(project, ${user?.isEditor?:false}, organisations);
+            var viewModel = new ProjectViewModel(project, ${user?.isEditor?:false});
 
             viewModel.loadPrograms(<fc:modelAsJavascript model="${programs}"/>);
             ko.applyBindings(viewModel);

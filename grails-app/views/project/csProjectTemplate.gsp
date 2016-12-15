@@ -134,11 +134,10 @@
         }
 
         $(".main-content").show();
-        var organisations = <fc:modelAsJavascript model="${organisations?:[]}"/>;
         var project = <fc:modelAsJavascript model="${project}"/>;
         var pActivities = <fc:modelAsJavascript model="${projectActivities}"/>;
         var pActivityForms = <fc:modelAsJavascript model="${pActivityForms}"/>;
-        var projectViewModel = new ProjectViewModel(project, ${user?.isEditor?:false}, organisations);
+        var projectViewModel = new ProjectViewModel(project, ${user?.isEditor?:false});
         var user = <fc:modelAsJavascript model="${user}"/>;
 
         var ViewModel = function() {

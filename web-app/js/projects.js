@@ -294,14 +294,11 @@ function isValid(p, a) {
 	 return p;
 }
 
-function ProjectViewModel(project, isUserEditor, organisations) {
+function ProjectViewModel(project, isUserEditor) {
     var self = $.extend(this, new Documents());
 
     if (isUserEditor === undefined) {
         isUserEditor = false;
-    }
-    if (!organisations) {
-        organisations = [];
     }
 
     self.name = ko.observable(project.name);
@@ -475,7 +472,8 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         }
         return true;
     };
-    
+
+
     self.transients.daysRemaining = ko.pureComputed(function() {
         var end = self.plannedEndDate();
         return end? isBeforeToday(end)? 0: calculateDurationInDays(undefined, end) + 1: -1;
@@ -641,7 +639,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.transients.subprogramsToDisplay = ko.computed(function () {
         return self.transients.subprograms[self.associatedProgram()];
     });
-    self.transients.organisations = organisations;
 
     self.transients.difficultyLevels = [ "Easy", "Medium", "Hard" ];
 
@@ -945,12 +942,10 @@ function ProjectViewModel(project, isUserEditor, organisations) {
  * for organisation search and selection as well as saving project information.
  * @param project pre-populated or existing project data.
  * @param isUserEditor true if the user can edit the project.
- * @param userOrganisations the list of organisations for which the user is a member.
- * @param organisations the list of organisations for which the user is not a member.
  * @constructor
  */
-function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, organisations, options) {
-    ProjectViewModel.apply(this, [project, isUserEditor, userOrganisations.concat(organisations)]);
+function CreateEditProjectViewModel(project, isUserEditor, options) {
+    ProjectViewModel.apply(this, [project, isUserEditor]);
 
     var defaults = {
         projectSaveUrl: fcConfig.projectUpdateUrl + '/' + (project.projectId || ''),
