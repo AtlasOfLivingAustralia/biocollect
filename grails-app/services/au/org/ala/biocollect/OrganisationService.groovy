@@ -17,23 +17,23 @@ class OrganisationService {
     ProjectService projectService
     UserService userService
     SearchService searchService
-    OrganisationService organisationService
 
 
-    Map get(String id, view = '') {
-
-        def url = "${grailsApplication.config.ecodata.service.url}/organisation/$id?view=$view"
+    Map get(String id, String view = '') {
+        def url = "${grailsApplication.config.ecodata.service.url}/organisation/" + id.encodeAsURL() + "?view=" + view.encodeAsURL()
         webService.getJson(url)
     }
 
-    Map getByName(orgName) {
+    Map getByName(String orgName) {
 
-        // The result of the service call will be a JSONArray if it's successful
-        return list().list.find({ it.name == orgName })
-    }
+        def url = "${grailsApplication.config.ecodata.service.url}/organisation/?name=" + orgName.encodeAsURL()
+        def org = webService.getJson(url)
 
-    def list() {
-        metadataService.organisationList()
+        if(org && org.statusCode == 404) {
+            org = [:]
+        }
+
+        return org
     }
 
     def validate(props, organisationId) {
@@ -53,8 +53,8 @@ class OrganisationService {
         }
 
         if (props.containsKey("name")) {
-            def proj = getByName(props.name)
-            if (proj && (creating || proj?.organisationId != organisationId)) {
+            def existingOrganisation = getByName(props.name)
+            if ((existingOrganisation as Boolean) && (creating || existingOrganisation?.organisationId != organisationId)) {
                 return "name is not unique"
             }
         } else if (creating) {
@@ -76,7 +76,6 @@ class OrganisationService {
         } else {
             String url = "${grailsApplication.config.ecodata.service.url}/organisation/$id"
             result = webService.doPost(url, organisation)
-            metadataService.clearOrganisationList()
         }
         result
 

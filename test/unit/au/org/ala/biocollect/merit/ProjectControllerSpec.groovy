@@ -37,11 +37,9 @@ class ProjectControllerSpec extends Specification {
         controller.authService = authServiceStub
         controller.blogService = blogServiceStub
         auditServiceStub.getAuditMessagesForProject(_) >> []
-        metadataServiceStub.organisationList() >> [list:[buildOrganisation(), buildOrganisation(), buildOrganisation()]]
         metadataServiceStub.activitiesModel() >> [activities: []]
         userServiceStub.getOrganisationIdsForUserId(_) >> ['1']
         projectServiceStub.getMembersForProjectId(_) >> []
-        metadataServiceStub.organisationList() >> [list:[]]
         userServiceStub.getOrganisationIdsForUserId(_) >> []
         userServiceStub.isProjectStarredByUser(_, _) >> [isProjectStarredByUser:true]
         roleServiceStub.getRoles() >> []
@@ -339,11 +337,6 @@ class ProjectControllerSpec extends Specification {
 
         then:
         model.pActivityForms == [[name:'1', images:null], [name:'2', images:null], [name:'3', images:null]]
-    }
-
-    int orgCount = 0;
-    private Map buildOrganisation() {
-        [organisationId:Integer.toString(++orgCount), name:"Organisation ${orgCount}"]
     }
 
     private def stubProjectAdmin(userId, projectId) {

@@ -206,25 +206,6 @@ class MetadataService {
         outputTypes
     }
 
-    def organisationList() {
-        return cacheService.get('organisations',{
-
-            // Very basic profiling
-            // organisationList should be removed shortly so this logging won't hurt
-
-            long start  = System.currentTimeMillis()
-            log.info("Getting organisation list")
-            def list = webService.getJson(grailsApplication.config.ecodata.service.url + "/organisation", 80000)
-            long end  = System.currentTimeMillis()
-            log.info("Organisation list retrieved in " + ( (end-start) /1000) + "s.")
-            return list
-        })
-    }
-
-    def clearOrganisationList() {
-        cacheService.clear('organisations')
-    }
-
     def getAccessLevels() {
         return cacheService.get('accessLevels',{
             webService.getJson(grailsApplication.config.ecodata.service.url +  "/permissions/getAllAccessLevels?baseLevel="+RoleService.PROJECT_PARTICIPANT_ROLE)

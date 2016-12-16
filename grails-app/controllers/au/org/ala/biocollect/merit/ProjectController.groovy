@@ -331,7 +331,6 @@ class ProjectController {
             redirect controller: 'home', action: 'index'
             return
         }
-        def groupedOrganisations = groupOrganisationsForUser(user.userId)
         def scienceTypes = projectService.getScienceTypes();
         def ecoScienceTypes = projectService.getEcoScienceTypes();
         // Prepopulate the project as appropriate.
@@ -357,11 +356,15 @@ class ProjectController {
             project.associatedProgram = hub.defaultProgram
         }
 
+        def userOrgIds = userService.getOrganisationIdsForUserId(user.userId)
+
         // Default the project organisation if the user is a member of a single organisation.
-        if (groupedOrganisations.user?.size() == 1) {
-            project.organisationId = groupedOrganisations.user[0].organisationId
-            project.organisationName = groupedOrganisations.user[0].name
+        if (userOrgIds?.size() == 1) {
+            def userOrganisation = organisationService.get(userOrgIds[0])
+            project.organisationId = userOrganisation.organisationId
+            project.organisationName = userOrganisation.name
         }
+
         [
                 organisationId: params.organisationId,
                 siteDocuments: '[]',
@@ -370,29 +373,6 @@ class ProjectController {
                 scienceTypes: scienceTypes,
                 ecoScienceTypes: ecoScienceTypes
         ]
-    }
-
-    /**
-     * Splits the list of organisations into two - one containing organisations that the user is a member of,
-     * the other containing the rest.
-     * @param the user id to use for the grouping.
-     * @return [user:[], other:[]]
-     */
-    private Map groupOrganisationsForUser(userId) {
-
-        def organisations = metadataService.organisationList().list ?: []
-        def userOrgIds = userService.getOrganisationIdsForUserId(userId)
-
-        // You were working here ------->>>
-
-//        organisation Service.get()
-
-        organisations.groupBy{organisation ->
-            // remove projects since some organisation has projects embedded in them causing an exponential increase in organisation size.
-            // The huge size had caused an exception - java.lang.NegativeArraySizeException
-            organisation.remove('projects')
-            organisation.organisationId in userOrgIds ? "user" : "other"
-        }
     }
 
     def citizenScience() {
