@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
 import grails.test.mixin.TestFor
@@ -24,6 +25,7 @@ class ProjectControllerSpec extends Specification {
     def auditServiceStub = Stub(AuditService)
     def authServiceStub = Stub(AuthService)
     def blogServiceStub = Stub(BlogService)
+    def organisationStub = Stub(OrganisationService)
 
     void setup() {
         controller.userService = userServiceStub
@@ -36,6 +38,7 @@ class ProjectControllerSpec extends Specification {
         controller.auditService = auditServiceStub
         controller.authService = authServiceStub
         controller.blogService = blogServiceStub
+        controller.organisationService = organisationStub
         auditServiceStub.getAuditMessagesForProject(_) >> []
         metadataServiceStub.activitiesModel() >> [activities: []]
         userServiceStub.getOrganisationIdsForUserId(_) >> ['1']
@@ -45,6 +48,7 @@ class ProjectControllerSpec extends Specification {
         roleServiceStub.getRoles() >> []
         authServiceStub.getUserId() >> ''
         blogServiceStub.get(_, _) >> []
+        organisationStub.get(_) >> [organisationId: "ABC123", name: "organisation name"]
     }
 
     void "creating a citizen science project should pre-populate the citizen science project type"() {
@@ -67,23 +71,8 @@ class ProjectControllerSpec extends Specification {
         def model = controller.create()
 
         then:
-        model.project.organisationId == '1'
-    }
-
-    void "the create method should split the organisations into two lists for the convenience of the page"() {
-        when:
-        userServiceStub.getUser() >> [userId:'1234']
-
-        def model = controller.create()
-
-        then:
-        model.userOrganisations.size() == 1
-        model.userOrganisations[0].organisationId == '1'
-
-        model.organisations.size() == 2
-        ["2", "3"].each { orgId ->
-            model.organisations.find{it.organisationId == orgId}.organisationId == orgId
-        }
+        model.project.organisationId == 'ABC123'
+        model.project.organisationName == 'organisation name'
     }
 
     void "when creating a project, the current hub's default program should be assigned to the new project"() {
@@ -112,29 +101,6 @@ class ProjectControllerSpec extends Specification {
         1 * siteServiceMock.getRaw(siteId) >> [:]
         model.project.projectId == projectId
         model.project.organisationId == 'org2'
-    }
-
-    void "the edit method should split the organisations into two lists for the convenience of the page"() {
-        def siteId = 'site1'
-
-        when:
-        def projectId = 'project1'
-        userServiceStub.getUser() >> [userId:'1234']
-        projectServiceStub.get(projectId, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId]
-        def model = controller.edit(projectId)
-
-        then:
-        1 * siteServiceMock.getRaw(siteId) >> [:]
-        model.userOrganisations.size() == 1
-        model.userOrganisations[0].organisationId == '1'
-
-        model.organisations.size() == 2
-        ["2", "3"].each { orgId ->
-            model.organisations.find{it.organisationId == orgId}.organisationId == orgId
-        }
-        model.project.projectId == projectId
-        model.project.organisationId == 'org1'
-        model.project.name == 'Test'
     }
 
     void "an external citizen science project viewed anonymously should have a single page only"() {
