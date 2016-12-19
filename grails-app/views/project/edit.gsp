@@ -8,6 +8,8 @@
         projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
+        organisationSearchUrl: "${createLink(controller: 'organisation', action: 'search')}",
+        // organisationSearchUrl: "${createLink(controller: 'organisation', action: 'searchMyOrg')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
@@ -56,8 +58,6 @@ $(function(){
     var PROJECT_DATA_KEY="CreateProjectSavedData";
 
     var programsModel = <fc:modelAsJavascript model="${programs}"/>;
-    var userOrganisations = <fc:modelAsJavascript model="${userOrganisations?:[]}"/>;
-    var organisations = <fc:modelAsJavascript model="${organisations?:[]}"/>;
     var project = <fc:modelAsJavascript model="${project?:[:]}"/>;
 
     <g:if test="${params.returning}">
@@ -65,7 +65,7 @@ $(function(){
         amplify.store(PROJECT_DATA_KEY, null);
     </g:if>
 
-    var viewModel =  new CreateEditProjectViewModel(project, true, userOrganisations, organisations, {storageKey:PROJECT_DATA_KEY});
+    var viewModel =  new CreateEditProjectViewModel(project, true, {storageKey:PROJECT_DATA_KEY});
     viewModel.loadPrograms(programsModel);
 
     $('#projectDetails').validationEngine();

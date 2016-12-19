@@ -84,9 +84,8 @@
 
 <r:script>
     $(function() {
-        var organisations = <fc:modelAsJavascript model="${organisations?:[]}"/>;
         var project = <fc:modelAsJavascript model="${project}"/>;
-        var projectViewModel = new ProjectViewModel(project, ${user?.isEditor?:false}, organisations);
+        var projectViewModel = new ProjectViewModel(project, ${user?.isEditor?:false});
 
         var ViewModel = function() {
             var self = this;

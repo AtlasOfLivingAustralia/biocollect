@@ -1,6 +1,7 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
+import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
@@ -20,6 +21,7 @@ class ProjectController {
 
     ProjectService projectService
     MetadataService metadataService
+    OrganisationService organisationService
     CommonService commonService
     ActivityService activityService
     UserService userService
@@ -176,7 +178,6 @@ class ProjectController {
                 activityTypes: projectService.activityTypesList(),
                 metrics: project.projectType == projectService.PROJECT_TYPE_WORKS ? projectService.summary(id): [],
                 outputTargetMetadata:  metadataService.getOutputTargetScores(),
-                organisations: metadataService.organisationList().list.collect { [organisationId: it.organisationId, name: it.name] },
                 programs: programs,
                 today:DateUtils.format(new DateTime()),
                 themes:metadataService.getThemesForProject(project),
@@ -293,8 +294,7 @@ class ProjectController {
         if (params.organisationId) {
             project.organisationId = params.organisationId
         }
-        def user = userService.getUser()
-        def groupedOrganisations = groupOrganisationsForUser(user.userId)
+
         def scienceTypes = projectService.getScienceTypes();
         def ecoScienceTypes = projectService.getEcoScienceTypes();
 
@@ -303,8 +303,6 @@ class ProjectController {
             [project: project,
              siteDocuments: siteInfo.documents?:'[]',
              site: siteInfo.site,
-             userOrganisations: groupedOrganisations.user ?: [],
-             organisations: groupedOrganisations.other ?: [],
              programs: metadataService.programsModel(),
              scienceTypes: scienceTypes,
              ecoScienceTypes: ecoScienceTypes
@@ -333,7 +331,6 @@ class ProjectController {
             redirect controller: 'home', action: 'index'
             return
         }
-        def groupedOrganisations = groupOrganisationsForUser(user.userId)
         def scienceTypes = projectService.getScienceTypes();
         def ecoScienceTypes = projectService.getEcoScienceTypes();
         // Prepopulate the project as appropriate.
@@ -359,39 +356,23 @@ class ProjectController {
             project.associatedProgram = hub.defaultProgram
         }
 
+        def userOrgIds = userService.getOrganisationIdsForUserId(user.userId)
+
         // Default the project organisation if the user is a member of a single organisation.
-        if (groupedOrganisations.user?.size() == 1) {
-            project.organisationId = groupedOrganisations.user[0].organisationId
+        if (userOrgIds?.size() == 1) {
+            def userOrganisation = organisationService.get(userOrgIds[0])
+            project.organisationId = userOrganisation.organisationId
+            project.organisationName = userOrganisation.name
         }
+
         [
                 organisationId: params.organisationId,
                 siteDocuments: '[]',
-                userOrganisations: groupedOrganisations.user ?: [],
-                organisations: groupedOrganisations.other ?: [],
                 programs: projectService.programsModel(),
                 project:project,
                 scienceTypes: scienceTypes,
                 ecoScienceTypes: ecoScienceTypes
         ]
-    }
-
-    /**
-     * Splits the list of organisations into two - one containing organisations that the user is a member of,
-     * the other containing the rest.
-     * @param the user id to use for the grouping.
-     * @return [user:[], other:[]]
-     */
-    private Map groupOrganisationsForUser(userId) {
-
-        def organisations = metadataService.organisationList().list ?: []
-        def userOrgIds = userService.getOrganisationIdsForUserId(userId)
-
-        organisations.groupBy{organisation ->
-            // remove projects since some organisation has projects embedded in them causing an exponential increase in organisation size.
-            // The huge size had caused an exception - java.lang.NegativeArraySizeException
-            organisation.remove('projects')
-            organisation.organisationId in userOrgIds ? "user" : "other"
-        }
     }
 
     def citizenScience() {

@@ -14,9 +14,9 @@ describe("ProjectViewModel Spec", function () {
             name:'Name',
             description:'Description'
         };
-        var organisations = [];
+
         var isEditor = true;
-        var project = new ProjectViewModel(projectData, isEditor, organisations);
+        var project = new ProjectViewModel(projectData, isEditor);
 
         expect(project.name()).toEqual(projectData.name);
         expect(project.description()).toEqual(projectData.description);
