@@ -401,7 +401,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.hasTeachingMaterials = ko.observable(project.hasTeachingMaterials);
     self.isCitizenScience = ko.observable(project.isCitizenScience);
     self.isDIY = ko.observable(project.isDIY);
-    self.isHome = ko.observable(project.isHome);
+    self.isHome = ko.observable($.inArray("isHome", project.tags) >= 0);
     self.mobileApp = ko.observable(project.mobileApp);
     self.isWorks = ko.observable(project.isWorks);
     self.isEcoScience = ko.observable(project.isEcoScience);
