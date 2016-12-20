@@ -1,5 +1,4 @@
 <g:if test="${hasNewsAndEvents || hasLegacyNewsAndEvents}">
-
     <h3>News & events</h3>
     <div class="blog-section">
         <g:render template="/shared/blog" model="${[blog:blog, type:'News and Events']}"/>
@@ -23,4 +22,11 @@
             </div>
         </div>
     </div>
+</g:if>
+
+<g:if test="${!hasNewsAndEvents && !hasLegacyNewsAndEvents}">
+    <div class="well">
+        <h4>Not available</h4>
+    </div>
+
 </g:if>

@@ -40,7 +40,7 @@
                         <label class="control-label" for="documentRole">Document type</label>
 
                         <div class="controls">
-                            <select style="width: 97%;" data-bind="options:roles, optionsText: 'name', optionsValue: 'id', value:role"></select>
+                            <select id="documentRole" style="width: 97%;" data-bind="options:roles, optionsText: 'name', optionsValue: 'id', value:role"></select>
                         </div>
                     </div>
 
@@ -142,7 +142,7 @@
             <div class="modal-footer control-group">
                 <div class="controls">
                     <button type="button" class="btn btn-success"
-                            data-bind="enable:saveEnabled, click:save, visible:!complete(), attr:{'title':saveHelp}">Save</button>
+                            data-bind="enable:saveEnabled, click:function () { save(true); }, visible:!complete(), attr:{'title':saveHelp}">Save</button>
                     <button class="btn" data-bind="click:cancel, visible:!complete()">Cancel</button>
                     <button class="btn" data-bind="click:close, visible:complete()">Close</button>
 

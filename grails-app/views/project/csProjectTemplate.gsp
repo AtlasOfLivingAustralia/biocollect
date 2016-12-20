@@ -160,36 +160,38 @@
         params.organisationName = project.organisationName;
         params.project = projectViewModel;
 
-        var pActivitiesVM = new ProjectActivitiesViewModel(params);
-        initialiseProjectActivitiesList(pActivitiesVM);
-        initialiseData('project');
+        <g:if test="${!project.isExternal}">
+            var pActivitiesVM = new ProjectActivitiesViewModel(params);
+            initialiseProjectActivitiesList(pActivitiesVM);
+            initialiseData('project');
+            <g:if test="${projectContent.admin.visible}">initialiseProjectActivitiesSettings(pActivitiesVM);</g:if>
+        </g:if>
+        <g:if test="${projectContent.admin.visible}">
+            <g:if test="${!project.isExternal}">
+                var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
+                var projectStoriesViewModel = new window.projectStoriesViewModel(projectViewModel, projectStoriesMarkdown);
+                ko.applyBindings(projectStoriesViewModel, $('#editprojectStoriesContent')[0]);
+
+                var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
+                var newsAndEventsViewModel = new window.newsAndEventsViewModel(projectViewModel, newsAndEventsMarkdown);
+                ko.applyBindings(newsAndEventsViewModel, $('#editnewsAndEventsContent')[0]);
+            </g:if>
+
+            initialiseInternalCSAdmin();
+            populatePermissionsTable();
+        </g:if>
+
+
+        $('.validationEngineContainer').validationEngine();
+        $('.helphover').popover({animation: true, trigger:'hover'})
 
         //Main tab selection
         new RestoreTab('ul-main-project', 'about-tab');
-        if(amplify.store('traffic-from-project-finder-page')){
+        if(amplify.store('traffic-from-project-finder-page')) {
             amplify.store('traffic-from-project-finder-page',false)
             $('#about-tab').tab('show');
         }
-        <g:if test="${projectContent.admin.visible}">
-            initialiseProjectActivitiesSettings(pActivitiesVM);
-
-            var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
-            var projectStoriesViewModel = new window.projectStoriesViewModel(projectViewModel, projectStoriesMarkdown);
-            ko.applyBindings(projectStoriesViewModel, $('#editprojectStoriesContent')[0]);
-
-            var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
-            var newsAndEventsViewModel = new window.newsAndEventsViewModel(projectViewModel, newsAndEventsMarkdown);
-            ko.applyBindings(newsAndEventsViewModel, $('#editnewsAndEventsContent')[0]);
-
-            populatePermissionsTable();
-
-            initialiseInternalCSAdmin();
-        </g:if>
-
-        $('.validationEngineContainer').validationEngine();
-        $('.helphover').popover({animation: true, trigger:'hover'})    });
-
-
+    });
 </r:script>
 </body>
 </html>

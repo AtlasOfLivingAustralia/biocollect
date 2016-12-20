@@ -103,47 +103,6 @@ class ProjectControllerSpec extends Specification {
         model.project.organisationId == 'org2'
     }
 
-    void "an external citizen science project viewed anonymously should have a single page only"() {
-        setup:
-        def projectId = 'project1'
-        def siteId = 'site1'
-        def citizenScience = true
-        def external = true
-        userServiceStub.getUser() >> null
-        projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
-
-        when:
-        controller.index(projectId)
-
-        then:
-        view == '/project/externalCSProjectTemplate'
-        model.projectContent.about.visible == true
-        model.projectContent.documents.visible == false
-        model.projectContent.activities.visible == false
-        model.projectContent.admin.visible == false
-    }
-
-    void "an external citizen science project viewed by an admin should have the overview and admin tabs"() {
-        setup:
-        def projectId = 'project1'
-        def siteId = 'site1'
-        def citizenScience = true
-        def external = true
-        stubProjectAdmin('1234', projectId)
-
-        projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
-
-        when:
-        controller.index(projectId)
-
-        then:
-        view == '/project/externalCSProjectTemplate'
-        model.projectContent.about.visible == true
-        model.projectContent.documents.visible == false
-        model.projectContent.activities.visible == false
-        model.projectContent.admin.visible == true
-    }
-
     void "an ALA managed citizen science project should have most content available to anonymous users"() {
         setup:
         def projectId = 'project1'
