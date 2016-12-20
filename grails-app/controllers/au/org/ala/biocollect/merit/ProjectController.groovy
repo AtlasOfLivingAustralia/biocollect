@@ -216,18 +216,20 @@ class ProjectController {
     }
 
     protected Map projectContent(project, user, programs, params) {
-
-        boolean isSurveyProject = (project.projectType == ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE)
-        boolean isEcoScienceProject = (project.projectType == ProjectService.PROJECT_TYPE_ECOSCIENCE)
-        def model = isSurveyProject?surveyProjectContent(project, user, params):(isEcoScienceProject?ecoSurveyProjectContent(project, user):worksProjectContent(project, user))
-
+        def model, view
+        if(projectService.isCitizenScience(project)){
+            model = surveyProjectContent(project, user, params)
+            view = 'csProjectTemplate'
+        } else if(projectService.isEcoScience(project)) {
+            model = ecoSurveyProjectContent(project, user)
+            view = 'csProjectTemplate'
+        } else {
+            model = worksProjectContent(project, user)
+            view = 'worksProjectTemplate'
+        }
         blogService.getProjectBlog(project)
 
-        [view:projectView(project), model:model]
-    }
-
-    protected String projectView(project) {
-        return project.projectType == ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE || project.projectType == ProjectService.PROJECT_TYPE_ECOSCIENCE ? 'csProjectTemplate' : 'worksProjectTemplate'
+        [view:view, model:model]
     }
 
     protected Map surveyProjectContent(project, user, params) {

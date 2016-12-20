@@ -7,7 +7,9 @@ import org.springframework.context.MessageSource
 
 class ProjectService {
 
+    //TODO refactor project type
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE = 'survey'
+    public static final String PROJECT_TYPE_CITIZEN_SCIENCE_TYPE_2 = 'citizenScience'
     public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoscience'
     public static final String PROJECT_TYPE_WORKS = 'works'
         static  final MOBILE_APP_ROLE = [ "android",
@@ -707,4 +709,17 @@ class ProjectService {
         }
         isMobileApp;
     }
+
+    private boolean isCitizenScience(project) {
+        project.projectType == PROJECT_TYPE_CITIZEN_SCIENCE || project.projectType == PROJECT_TYPE_CITIZEN_SCIENCE_TYPE_2
+    }
+
+    private boolean isEcoScience(project) {
+        project.projectType == PROJECT_TYPE_ECOSCIENCE
+    }
+
+    private boolean isWork(project){
+        !isCitizenScience(project) && !isEcoScience(project)
+    }
+
 }
