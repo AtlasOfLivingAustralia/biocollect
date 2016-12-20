@@ -631,8 +631,6 @@ class ProjectService {
             project.tags.push('isSuitableForChildren')
         }
 
-        project.remove('isDIY')
-
         if (project.isDIY) {
             project.tags.push('isDIY')
         }
