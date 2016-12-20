@@ -152,7 +152,6 @@ OrganisationSelectionViewModel = function(inititialOrganisationId, initialOrgani
     self.clearSelection = function() {
         self.selectedOrganisation({});
         self.searchTerm('');
-        self.refreshPage('', 0);
     };
 
     self.selection = ko.computed(function() {
@@ -198,18 +197,16 @@ var OrganisationsViewModel = function(eagerLoad) {
     self.loading = ko.observable(false);
     self.searchHasFocus = ko.observable(false);
     self.organisations = ko.observableArray([]);
-    self.searchTerm = ko.observable('').extend({throttle:500});
+    self.searchTerm = ko.observable('').extend({throttle:400});
     self.searchTerm.subscribe(function(term) {
-        if(self.searchHasFocus()) {
-            self.refreshPage(term, 0);
-        }
+        self.refreshPage(0);
     });
 
-    self.refreshPage = function(searchTerm, offset) {
+    self.refreshPage = function(offset) {
         var url = fcConfig.organisationSearchUrl;
         var params = {offset:offset, max:self.pagination.resultsPerPage()};
-        if (searchTerm) {
-            params.searchTerm = searchTerm;
+        if (self.searchTerm()) {
+            params.searchTerm = self.searchTerm();
         }
         else {
             params.sort = "nameSort"; // Sort by name unless there is a search term, in which case we sort by relevence.
@@ -245,5 +242,5 @@ var OrganisationsViewModel = function(eagerLoad) {
         });
     };
 
-    self.refreshPage(self.searchTerm(), 0);
+    self.refreshPage(0);
 };

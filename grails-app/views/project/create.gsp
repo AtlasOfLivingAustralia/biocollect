@@ -80,8 +80,11 @@ $(function(){
     var project = <fc:modelAsJavascript model="${project?:[:]}"/>;
 
     <g:if test="${params.returning}">
-        project = JSON.parse(amplify.store(PROJECT_DATA_KEY));
-        amplify.store(PROJECT_DATA_KEY, null);
+        var storedProject = amplify.store(PROJECT_DATA_KEY);
+        if(storedProject !== undefined) {
+            project = JSON.parse(storedProject);
+            amplify.store(PROJECT_DATA_KEY, null);
+        }
     </g:if>
 
     var viewModel =  new CreateEditProjectViewModel(project, true, {storageKey:PROJECT_DATA_KEY});

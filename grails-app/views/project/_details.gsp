@@ -25,7 +25,7 @@
         <div id="organisationSearch" data-bind="with: organisationSearch">
             <div class="row-fluid">
                 <div class="clearfix control-group">
-                    <label class="control-label span3" for="organisationName"><g:message code="project.details.organisationNameSearch"/><fc:iconHelp><g:message code="project.details.organisationName.help"/></fc:iconHelp><i class="req-field"></i></label>
+                    <label class="control-label span3"><g:message code="project.details.organisationNameSearch"/><fc:iconHelp><g:message code="project.details.organisationName.help"/></fc:iconHelp><i class="req-field"></i></label>
                     <div class="span6 controls">
                         <div class="input-append">
                             <input id="searchText" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection" class="input-xxlarge" placeholder="Start typing a name here..." type="text" data-validation-engine="validate[funcCall[validateOrganisationSelection]]"/>
@@ -61,7 +61,7 @@
                             <label for="organisationNotPresent"><span></span>&nbsp;<g:message code="project.details.organisation.notInList"/><fc:iconHelp><g:message code="project.details.organisation.notInList.help"/></fc:iconHelp></label>
                         </div>
                         <div style="display:none;" data-bind="visible:!selection() && allViewed() && organisationNotPresent()">
-                            <button class="btn btn-success" id="registerOrganisation" style="float:right" data-bind="enable: !selection() && allViewed() && organisationNotPresent(), click:function() {$parent.createOrganisation();}">Register my organisation</button>
+                            <button class="btn btn-success" style="float:right" data-bind="enable: !selection() && allViewed() && organisationNotPresent(), click:function() {$parent.createOrganisation();}">Register my organisation</button>
                         </div>
                     </div>
                 </div>
@@ -297,7 +297,6 @@
                                 <div class="span3"></div>
                                 <div class="span9">
                                     <button class="btn btn-primary"
-                                            id="registerOrganisation"
                                             data-bind="click: addSelectedOrganisation, enable: selection() || searchTerm() && $parent.transients.associatedOrgNotInList() "><i class="fa fa-check">&nbsp;</i><g:message code="project.details.associatedOrgs.add"  /></button>
                                 </div>
                             </div>
@@ -324,7 +323,7 @@
                             <div class="span8">
                                 <div class="row-fluid">
                                     <div class="clearfix control-group">
-                                        <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.uNRegions.label"/>:<fc:iconHelp><g:message code="project.details.uNRegions.help"/></fc:iconHelp></label>
+                                        <label class="control-label span3" ><g:message code="project.details.uNRegions.label"/>:<fc:iconHelp><g:message code="project.details.uNRegions.help"/></fc:iconHelp></label>
                                         <div class="span9">
                                             <!-- ko foreach: uNRegions -->
                                             <div class="span12 margin-left-0 margin-bottom-1" >
@@ -426,7 +425,7 @@
             <div data-bind="visible:!isWorks(), with: granteeOrganisation">
                 <div class="row-fluid">
                     <div class="clearfix control-group">
-                        <label class="control-label span3" for="organisationName"><g:message code="project.details.orgGrantee"/><fc:iconHelp><g:message code="project.details.orgGrantee.help"/></fc:iconHelp></label>
+                        <label class="control-label span3" ><g:message code="project.details.orgGrantee"/><fc:iconHelp><g:message code="project.details.orgGrantee.help"/></fc:iconHelp></label>
                         <div class="span6 controls">
                             <div class="input-append">
                                 <input id="searchText" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection" class="input-xxlarge" placeholder="Start typing a name here..." type="text"/>
@@ -451,6 +450,18 @@
                             <div class="margin-top-2"></div>
                             <div class="row-fluid">
                                 <g:render template="/shared/pagination"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span3"></div>
+                        <div class="span8">
+                            <div class="control-label span12 large-checkbox">
+                                <input type="checkbox" id="granteeOrganisationNotPresent" value="organisationNotOnList" data-bind="checked:organisationNotPresent, enable:displayNavigationControls() && allViewed()" />
+                                <label for="granteeOrganisationNotPresent"><span></span>&nbsp;<g:message code="project.details.organisation.notInList"/><fc:iconHelp><g:message code="project.details.organisation.notInList.help"/></fc:iconHelp></label>
+                            </div>
+                            <div style="display:none;" data-bind="visible:!selection() && allViewed() && organisationNotPresent()">
+                                <button class="btn btn-success" style="float:right" data-bind="enable: !selection() && allViewed() && organisationNotPresent(), click:function() {$parent.createOrganisation();}">Register my organisation</button>
                             </div>
                         </div>
                     </div>
@@ -485,6 +496,18 @@
                             <div class="margin-top-2"></div>
                             <div class="row-fluid">
                                 <g:render template="/shared/pagination"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span3"></div>
+                        <div class="span8">
+                            <div class="control-label span12 large-checkbox">
+                                <input type="checkbox" id="sponsoringOrganisationNotPresent" value="organisationNotOnList" data-bind="checked:organisationNotPresent, enable:displayNavigationControls() && allViewed()" />
+                                <label for="sponsoringOrganisationNotPresent"><span></span>&nbsp;<g:message code="project.details.organisation.notInList"/><fc:iconHelp><g:message code="project.details.organisation.notInList.help"/></fc:iconHelp></label>
+                            </div>
+                            <div style="display:none;" data-bind="visible:!selection() && allViewed() && organisationNotPresent()">
+                                <button class="btn btn-success" style="float:right" data-bind="enable: !selection() && allViewed() && organisationNotPresent(), click:function() {$parent.createOrganisation();}">Register my organisation</button>
                             </div>
                         </div>
                     </div>

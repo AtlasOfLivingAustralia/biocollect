@@ -1002,7 +1002,7 @@ function CreateEditProjectViewModel(project, isUserEditor, options) {
         return true;
     };
 
-    self.organisationSearch.createOrganisation = function() {
+    self.createOrganisation = function() {
         var projectData = self.modelAsJSON();
         amplify.store(config.storageKey, projectData);
         var here = document.location.href;
