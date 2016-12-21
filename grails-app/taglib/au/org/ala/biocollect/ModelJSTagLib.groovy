@@ -129,7 +129,10 @@ class ModelJSTagLib {
                 out << INDENT*4 << "}\n"
             } else if (mod.dataType == "geoMap") {
                 out << INDENT*4 << """
-                    self.data.${mod.name}(data.${mod.name});
+                    if (data.${mod.name} && typeof data.${mod.name} !== 'undefined') {
+                        self.data.${mod.name}(data.${mod.name});
+                    }
+                    
 //                    if (data.${mod.name}Feature && typeof data.${mod.name}Feature !== 'undefined') {
 //                        self.data.${mod.name}Feature(data.${mod.name}Feature);
 //                    }
