@@ -206,16 +206,6 @@ class MetadataService {
         outputTypes
     }
 
-    def organisationList() {
-        return cacheService.get('organisations',{
-            webService.getJson(grailsApplication.config.ecodata.service.url + "/organisation", 80000)
-        })
-    }
-
-    def clearOrganisationList() {
-        cacheService.clear('organisations')
-    }
-
     def getAccessLevels() {
         return cacheService.get('accessLevels',{
             webService.getJson(grailsApplication.config.ecodata.service.url +  "/permissions/getAllAccessLevels?baseLevel="+RoleService.PROJECT_PARTICIPANT_ROLE)
@@ -285,6 +275,25 @@ class MetadataService {
             result = [status:SC_OK, data:data.content.data]
         }
         result
+    }
+
+    List<Map> getOutputTargetScores() {
+        cacheService.get('output-targets', {
+            List<Map> scores = getScores(false)
+            scores.findAll { it.isOutputTarget }.collect {
+                [scoreId: it.scoreId, label: it.label, entityTypes: it.entityTypes, description: it.description, outputType: it.outputType]
+            }
+        })
+    }
+
+    List<Map> getScores(boolean includeConfig) {
+        cacheService.get("scores-${includeConfig}", {
+            String url = grailsApplication.config.ecodata.service.url + "/metadata/scores"
+            if (includeConfig) {
+                url+='?view=config'
+            }
+            webService.getJson(url)
+        })
     }
 
 

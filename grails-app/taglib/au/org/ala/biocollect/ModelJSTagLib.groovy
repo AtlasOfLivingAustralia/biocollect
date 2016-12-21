@@ -129,7 +129,13 @@ class ModelJSTagLib {
                 out << INDENT*4 << "}\n"
             } else if (mod.dataType == "geoMap") {
                 out << INDENT*4 << """
-                    self.data.${mod.name}(data.${mod.name});
+                    if (data.${mod.name} && typeof data.${mod.name} !== 'undefined') {
+                        self.data.${mod.name}(data.${mod.name});
+                    }
+                    
+//                    if (data.${mod.name}Feature && typeof data.${mod.name}Feature !== 'undefined') {
+//                        self.data.${mod.name}Feature(data.${mod.name}Feature);
+//                    }
                     if (data.${mod.name}Latitude && typeof data.${mod.name}Latitude !== 'undefined') {
                         self.data.${mod.name}Latitude(data.${mod.name}Latitude);
                     }
@@ -195,6 +201,19 @@ class ModelJSTagLib {
         }
     }
 
+    private void renderJSExpression(Map computed, String dependantContext) {
+        String expression = computed.expression
+        Map dependents = computed.dependents
+        int decimalPlaces = computed.rounding != null ? computed.rounding : 2
+        out << "var expression = Parser.parse('${expression}');\n"
+        out << "var variables = {};\n";
+        for(int i=0; i < dependents.source.size(); i++) {
+            out << "variables['${dependents.source[i]}'] = Number(${dependantContext}.${dependents.source[i]}());\n"
+        }
+        out << "var result = expression.evaluate(variables);\n"
+        out << "return neat_number(result, ${decimalPlaces});\n"
+    }
+
     def jsRemoveBeforeSave = { attrs ->
         attrs.model?.viewModel?.each({
             if (it.dataType == 'tableWithEditableRows' || it.type == 'photoPoints' || it.type == 'table') {
@@ -202,6 +221,8 @@ class ModelJSTagLib {
                 out << INDENT*4 << "delete jsData.${it.source}TableDataUploadOptions\n"
                 out << INDENT*4 << "delete jsData.${it.source}TableDataUploadVisible\n"
 
+            } else if (it.dataType == 'map') {
+                out << INDENT*4 << "delete jsData.${it.source}SitesArray;\n"
             }
 
 
@@ -257,12 +278,7 @@ class ModelJSTagLib {
             out << INDENT*4 << "return ${dependantContext}.${model.computed.dependents.source}().length;\n"
         }
         else if (model.computed.expression) {
-            out << "var expression = Parser.parse('${model.computed.expression}');\n"
-            out << "var variables = {};\n";
-            for(int i=0; i < model.computed.dependents.source.size(); i++) {
-                out << "variables['${model.computed.dependents.source[i]}'] = Number(${dependantContext}.${model.computed.dependents.source[i]}());\n"
-            }
-            out << "return expression.evaluate(variables);\n"
+            renderJSExpression(model.computed, dependantContext)
         }
         else if (model.computed.dependents.fromList) {
             out << INDENT*4 << "var total = 0;\n"
@@ -578,170 +594,57 @@ class ModelJSTagLib {
             }
         }
         out << "\n" << INDENT*3 << """
-            ${container}.${model.name} = ko.observable();
-            ${container}.${model.name}Name = ko.observable();
-            ${container}.${model.name}Latitude = ko.observable();
-            ${container}.${model.name}Longitude = ko.observable();
-
-            var mapOptions = {
-                wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
-                wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?",
-                draggableMarkers: ${!readonly},
-                drawControl: ${!readonly},
-                showReset: false,
-                singleDraw: true,
-                singleMarker: true,
-                markerOrShapeNotBoth: ${model.options ? !model.options.allowMarkerAndRegion : true},
-                useMyLocation: ${!readonly},
-                allowSearchLocationByAddress: ${!readonly},
-                allowSearchRegionByAddress: false,
-                zoomToObject: true,
-                drawOptions: {
-                    polyline: false,
-                    polygon: false,
-                    circle: false,
-                    rectangle: false,
-                    edit: false
-                }
-            };
-
-            var ${model.name}Map = new ALA.Map('${model.name}Map', mapOptions);
-
-            var ${model.name}LatSubscriber = ${container}.${model.name}Latitude.subscribe(update${model.name}MarkerPosition);
-            var ${model.name}LngSubscriber = ${container}.${model.name}Longitude.subscribe(update${model.name}MarkerPosition);
-
-            function updateFieldsFor${model.name}Map() {
-                ${model.name}LatSubscriber.dispose();
-                ${model.name}LngSubscriber.dispose();
-
-                var markerLocation = ${model.name}Map.getMarkerLocations();
-                if (markerLocation && markerLocation.length > 0) {
-                    markerLocation = markerLocation[0];
-                }
-
-                if (markerLocation) {
-                    ${container}.${model.name}Latitude(markerLocation.lat);
-                    ${container}.${model.name}Longitude(markerLocation.lng);
-                } else {
-                    ${container}.${model.name}Latitude(null);
-                    ${container}.${model.name}Longitude(null);
-                }
-
-                ${model.name}LatSubscriber = ${container}.${model.name}Latitude.subscribe(update${model.name}MarkerPosition);
-                ${model.name}LngSubscriber = ${container}.${model.name}Longitude.subscribe(update${model.name}MarkerPosition);
-            };
-
-            function update${model.name}MapForSite(siteId) {
-                ${model.name}Map.resetMap();
-                if (typeof siteId !== "undefined" && siteId) {
-                    var matchingSite = \$.grep(activityLevelData.pActivity.sites, function(site) { return siteId == site.siteId})[0];
-                    if (matchingSite) {
-                        ${model.name}Map.clearBoundLimits()
-                        if (matchingSite.extent.geometry.pid) {
-                            ${model.name}Map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(matchingSite.extent.geometry));
-                        } else {
-                            ${model.name}Map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
-                        }
-                    }
-                }
-            };
-
-            function update${model.name}MarkerPosition() {
-                if (${container}.${model.name}Latitude() && ${container}.${model.name}Longitude()) {
-                    ${model.name}Map.addMarker(${container}.${model.name}Latitude(), ${container}.${model.name}Longitude());
-                }
-            }
-
-            self.selectManyCombo = function(obj, event) {
-                if (event.originalEvent) {
-                    var item = event.originalEvent.target.attributes["combolist"].value.split(".")
-                    var list = self[item[0]][item[1]]()
-                    var value = event.originalEvent.target.value
-                    for (var k in list) {
-                        if (list[k] == value) return
-                    }
-                    list.push(value)
-                    self[item[0]][item[1]](list)
-                }
-            }
-
-            self.removeTag = function(obj, event) {
-                if (event.originalEvent) {
-                    event.originalEvent.preventDefault();
-
-                    var element = event.originalEvent.target
-                    while (!element.attributes["combolist"]) element = element.parentElement
-
-                    var combolist = element.attributes["combolist"]
-                    var value = element.firstChild.value
-                    var item = combolist.value.split(".")
-                    var list = self[item[0]][item[1]]()
-                    var found = false
-                    for (var k in list) {
-                        if (list[k] == value) {
-                            list.splice(k, 1)
-                            self[item[0]][item[1]](list)
-                            element.remove()
-                            return
-                        }
-                    }
-                }
-            }
-
-            ${container}.${model.name}.subscribe(update${model.name}MapForSite);
-            // make sure the lat/lng fields are cleared when the marker is removed by cancelling a new marker
-            ${model.name}Map.registerListener("layerremove", updateFieldsFor${model.name}Map);
-            ${model.name}Map.subscribe(updateFieldsFor${model.name}Map);
-            if (${!edit && !readonly}) {
-                ${model.name}Map.markMyLocation();
-            }
-
-            if (!${readonly}) {
-                ${model.name}Map.addButton("<span class='fa fa-refresh reset-map' title='Reset map'></span>", function () {
-                    ${model.name}Map.resetMap();
-                    if (activityLevelData.pActivity.sites.length == 1) {
-                        update${model.name}MapForSite(activityLevelData.pActivity.sites[0].siteId);
-                    }
-                }, "bottomleft");
-            }
-
-            if (activityLevelData.pActivity.sites.length == 1) {
-                self.data.${model.name}(activityLevelData.pActivity.sites[0].siteId);
-            } else if (activityLevelData.projectSite && activityLevelData.projectSite.extent) {
-                ${model.name}Map.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(activityLevelData.projectSite.extent.geometry));
-            }
-
+            enmapify({
+                  viewModel: self
+                , container: ${container}
+                , name: "${model.name}"
+                , edit: ${!!edit}
+                , readonly: ${!!readonly}
+                , markerOrShapeNotBoth: ${model.options ? !model.options.allowMarkerAndRegion : true}
+                , proxyFeatureUrl: '${createLink(controller: 'proxy', action: 'feature')}'
+                , spatialGeoserverUrl: '${grailsApplication.config.spatial.geoserverUrl}'
+                , updateSiteUrl: '${createLink(controller: 'site', action: 'ajaxUpdate')}'
+                , listSitesUrl: '${createLink(controller: 'site', action: 'ajaxList' )}'
+                , uniqueNameUrl: '${createLink(controller: 'site', action: 'checkSiteName' )}'
+                , activityLevelData: activityLevelData
+            });
         """
     }
 
 
     def computedObservable(model, propertyContext, dependantContext, out) {
         out << INDENT*5 << "${propertyContext}.${model.name} = ko.computed(function () {\n"
-        // must be at least one dependant
-        def numbers = []
-        def checkNumberness = []
-        model.computed.dependents.each {
-            def ref = it
-            def path = dependantContext
-            if (ref.startsWith('$')) {
-                ref = ref[1..-1]
-                path = "self.data"
-            }
-            numbers << "Number(${path}.${ref}())"
-            checkNumberness << "isNaN(Number(${path}.${ref}()))"
-        }
-        out << INDENT*6 << "if (" + checkNumberness.join(' || ') + ") { return 0; }\n"
-        if (model.computed.operation == 'divide') {
-            // can't divide by zero
-            out << INDENT*6 << "if (${numbers[-1]} === 0) { return 0; }\n"
-        }
-        def expression = numbers.join(" ${operators[model.computed.operation]} ")
-        if (model.computed.rounding) {
-            expression = "neat_number(${expression},${model.computed.rounding})"
-        }
-        out << INDENT*6 << "return " + expression + ";\n"
 
-        out << INDENT*5 << "});\n"
+        if (model.computed.expression) {
+            renderJSExpression(model.computed, "self")
+        }
+        else {
+            // must be at least one dependant
+            def numbers = []
+            def checkNumberness = []
+            model.computed.dependents.each {
+                def ref = it
+                def path = dependantContext
+                if (ref.startsWith('$')) {
+                    ref = ref[1..-1]
+                    path = "self.data"
+                }
+                numbers << "Number(${path}.${ref}())"
+                checkNumberness << "isNaN(Number(${path}.${ref}()))"
+            }
+            out << INDENT * 6 << "if (" + checkNumberness.join(' || ') + ") { return 0; }\n"
+            if (model.computed.operation == 'divide') {
+                // can't divide by zero
+                out << INDENT * 6 << "if (${numbers[-1]} === 0) { return 0; }\n"
+            }
+            def expression = numbers.join(" ${operators[model.computed.operation]} ")
+            if (model.computed.rounding) {
+                expression = "neat_number(${expression},${model.computed.rounding})"
+            }
+            out << INDENT * 6 << "return " + expression + ";\n"
+        }
+        out << INDENT * 5 << "});\n"
+
     }
 
     def listViewModel(attrs, model, out) {

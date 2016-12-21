@@ -26,7 +26,7 @@ function ProjectFinder() {
 
     var filterQuery
 
-    this.availableProjectTypes = new ProjectViewModel({}, false, []).transients.availableProjectTypes;
+    this.availableProjectTypes = new ProjectViewModel({}, false).transients.availableProjectTypes;
 
     this.sortKeys = [
         {name: 'Name', value: 'nameSort'},
@@ -277,10 +277,9 @@ function ProjectFinder() {
             },
             success: function (data) {
                 var projectVMs = [], facets;
-                var organisation = fcConfig.organisation || [];
                 total = data.total;
                 $.each(data.projects, function (i, project) {
-                    projectVMs.push(new ProjectViewModel(project, false, organisation));
+                    projectVMs.push(new ProjectViewModel(project, false));
                 });
                 self.pago.init(projectVMs);
                 pageWindow.filterViewModel.setFacets(data.facets)

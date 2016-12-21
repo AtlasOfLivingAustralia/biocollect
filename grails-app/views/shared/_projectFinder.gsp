@@ -1,7 +1,9 @@
 <div id="project-finder-container">
-    <div class="row-fluid">
-        <g:render template="/shared/projectFinderQueryInput"/>
-    </div>
+    <g:if test="${doNotShowSearchBtn != true}">
+        <div class="row-fluid">
+            <g:render template="/shared/projectFinderQueryInput"/>
+        </div>
+    </g:if>
 
     <div>
         <g:render template="/shared/projectFinderResultSummary"/>

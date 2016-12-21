@@ -231,6 +231,7 @@ modules = {
         resource url: 'js/projects.js'
         resource url: 'js/sites.js'
         resource url: 'js/meriPlan.js'
+        resource url: 'js/output-targets.js'
         resource url: 'vendor/moment/moment.min.js'
         resource url: 'css/surveys.css'
         resource url: 'css/project-tile-view.css'
@@ -357,6 +358,10 @@ modules = {
         resource url: 'vendor/leaflet/0.7.3/leaflet.css'
     }
 
+    leaflet_google_base {
+        resource url: 'vendor/leaflet-plugins-2.0.0/layer/tile/Google.js'
+    }
+
     font_awesome_44 {
         resource url: 'vendor/font-awesome/4.4.0/css/font-awesome.min.css', attrs: [media: 'all']
     }
@@ -404,7 +409,6 @@ modules = {
         resource url: 'js/audio.js'
         resource url: 'css/audio-control.css'
         resource url: 'vendor/recorderjs/recorder.js'
-//        resource url: 'vendor/libmp3lame/libmp3lame.min.js'
     }
 
     modernizr {
@@ -418,6 +422,7 @@ modules = {
 
     admin {
         resource url: 'js/hubs.js'
+        resource url: 'css/admin.css'
     }
 
     imageGallery{
@@ -460,5 +465,18 @@ modules = {
         resource url: 'css/common.css'
         resource url: [dir:'css', file:'Common_fonts.css']
         resource url: [dir:'css', file:'mdba-styles.css']
+    }
+
+    viewmodels {
+        resource url: 'js/viewModels.js'
+        resource url: 'js/modals.js'
+    }
+
+    configHubTemplate1 {
+        dependsOn 'bootstrap', 'font_awesome_44', 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
+        resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
+        resource url: 'css/bootstrap-combobox.css'
+        resource url: 'css/common.css'
+        resource url: [dir: 'css', file: 'Common_fonts.css']
     }
 }

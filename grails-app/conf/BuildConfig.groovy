@@ -65,6 +65,7 @@ grails.project.dependency.resolution = {
         compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
         compile "org.apache.httpcomponents:httpcore:4.4.1"
         compile "org.apache.httpcomponents:httpclient:4.4.1"
+        compile "com.vaadin:vaadin-sass-compiler:0.9.13"
 
 
         compile group: 'au.org.ala',

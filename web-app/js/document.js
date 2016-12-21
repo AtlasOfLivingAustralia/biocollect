@@ -277,10 +277,14 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
 
     // We are keeping the reference to the helper here rather than the view model as it doesn't serialize correctly
     // (i.e. calls to toJSON fail).
-    documentViewModel.save = function() {
+    documentViewModel.save = function(reload) {
+        if(!reload) reload = false;
         if (documentViewModel.filename() && fileUploadHelper !== undefined) {
             fileUploadHelper.submit();
             fileUploadHelper = null;
+            if(reload) {
+                location.reload();
+            }
         }
         else {
             // There is no file attachment but we can save the document anyway.

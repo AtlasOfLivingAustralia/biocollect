@@ -7,7 +7,9 @@ import org.springframework.context.MessageSource
 
 class ProjectService {
 
+    //TODO refactor project type
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE = 'survey'
+    public static final String PROJECT_TYPE_CITIZEN_SCIENCE_TYPE_2 = 'citizenScience'
     public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoscience'
     public static final String PROJECT_TYPE_WORKS = 'works'
         static  final MOBILE_APP_ROLE = [ "android",
@@ -278,13 +280,10 @@ class ProjectService {
 
         def scoresWithTargetsByOutput = [:]
         def scoresWithoutTargetsByOutputs = [:]
-        if (scores && scores instanceof List) {
-            // If there was an error, it would be returning a map containing the error.
+        if (scores && scores instanceof List) {  // If there was an error, it would be returning a map containing the error.
             // There are some targets that have been saved as Strings instead of numbers.
-            scoresWithTargetsByOutput = scores.grep { it.target && it.target != "0" }.groupBy { it.score.outputName }
-            scoresWithoutTargetsByOutputs = scores.grep { it.results && (!it.target || it.target == "0") }.groupBy {
-                it.score.outputName
-            }
+            scoresWithTargetsByOutput = scores.grep{ it.target && it.target != "0" }.groupBy { it.outputType }
+            scoresWithoutTargetsByOutputs = scores.grep{ it.result && it.result.count && (it.result.result || it.result.groups) && (!it.target || it.target == "0") }.groupBy { it.outputType }
         }
         [targets: scoresWithTargetsByOutput, other: scoresWithoutTargetsByOutputs]
     }
@@ -632,8 +631,6 @@ class ProjectService {
             project.tags.push('isSuitableForChildren')
         }
 
-        project.remove('isDIY')
-
         if (project.isDIY) {
             project.tags.push('isDIY')
         }
@@ -710,4 +707,17 @@ class ProjectService {
         }
         isMobileApp;
     }
+
+    public boolean isCitizenScience(project) {
+        project.projectType == PROJECT_TYPE_CITIZEN_SCIENCE || project.projectType == PROJECT_TYPE_CITIZEN_SCIENCE_TYPE_2
+    }
+
+    public boolean isEcoScience(project) {
+        project.projectType == PROJECT_TYPE_ECOSCIENCE
+    }
+
+    public boolean isWork(project){
+        !isCitizenScience(project) && !isEcoScience(project)
+    }
+
 }

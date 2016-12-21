@@ -1,6 +1,7 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
+import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
@@ -20,6 +21,7 @@ class ProjectController {
 
     ProjectService projectService
     MetadataService metadataService
+    OrganisationService organisationService
     CommonService commonService
     ActivityService activityService
     UserService userService
@@ -175,8 +177,7 @@ class ProjectController {
                 admins: admins,
                 activityTypes: projectService.activityTypesList(),
                 metrics: project.projectType == projectService.PROJECT_TYPE_WORKS ? projectService.summary(id): [],
-                outputTargetMetadata: metadataService.getOutputTargetsByOutputByActivity(),
-                organisations: metadataService.organisationList().list.collect { [organisationId: it.organisationId, name: it.name] },
+                outputTargetMetadata:  metadataService.getOutputTargetScores(),
                 programs: programs,
                 today:DateUtils.format(new DateTime()),
                 themes:metadataService.getThemesForProject(project),
@@ -215,22 +216,20 @@ class ProjectController {
     }
 
     protected Map projectContent(project, user, programs, params) {
-
-        boolean isSurveyProject = (project.projectType == ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE)
-        boolean isEcoScienceProject = (project.projectType == ProjectService.PROJECT_TYPE_ECOSCIENCE)
-        def model = isSurveyProject?surveyProjectContent(project, user, params):(isEcoScienceProject?ecoSurveyProjectContent(project, user):worksProjectContent(project, user))
-
+        def model, view
+        if(projectService.isCitizenScience(project)){
+            model = surveyProjectContent(project, user, params)
+            view = 'csProjectTemplate'
+        } else if(projectService.isEcoScience(project)) {
+            model = ecoSurveyProjectContent(project, user)
+            view = 'csProjectTemplate'
+        } else {
+            model = worksProjectContent(project, user)
+            view = 'worksProjectTemplate'
+        }
         blogService.getProjectBlog(project)
 
-        [view:projectView(project), model:model]
-    }
-
-    protected String projectView(project) {
-        if (project.isExternal) {
-            return 'externalCSProjectTemplate'
-        }
-
-        return project.projectType == ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE || project.projectType == ProjectService.PROJECT_TYPE_ECOSCIENCE ? 'csProjectTemplate' : 'worksProjectTemplate'
+        [view:view, model:model]
     }
 
     protected Map surveyProjectContent(project, user, params) {
@@ -241,12 +240,19 @@ class ProjectController {
         Boolean hasLegacyNewsAndEvents = project.newsAndEvents as Boolean
         Boolean hasLegacyProjectStories = project.projectStories as Boolean
 
-        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
+        def config = [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
          news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
+         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
-         admin:[label:'Admin', template:'internalCSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
+         admin:[label:'Admin', template:'CSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
+
+        if(project.isExternal) {
+            config.remove('data')
+            config.remove('activites')
+        }
+
+        config
     }
 
     protected Map ecoSurveyProjectContent(project, user) {
@@ -257,12 +263,19 @@ class ProjectController {
         Boolean hasLegacyNewsAndEvents = project.newsAndEvents as Boolean
         Boolean hasLegacyProjectStories = project.projectStories as Boolean
 
-        [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
+        def config = [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
          news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
+         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
-         admin:[label:'Admin', template:'internalCSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
+         admin:[label:'Admin', template:'CSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
+
+        if(project.isExternal) {
+            config.remove('data')
+            config.remove('activites')
+        }
+
+        config
     }
 
     protected Map worksProjectContent(project, user) {
@@ -277,7 +290,7 @@ class ProjectController {
 
         [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
          news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: !project.isExternal, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
+         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
          activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:true],
          //site:[label:'Sites', template:'/shared/sites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
          meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, type:'tab', template:'viewMeriPlan'],
@@ -293,8 +306,7 @@ class ProjectController {
         if (params.organisationId) {
             project.organisationId = params.organisationId
         }
-        def user = userService.getUser()
-        def groupedOrganisations = groupOrganisationsForUser(user.userId)
+
         def scienceTypes = projectService.getScienceTypes();
         def ecoScienceTypes = projectService.getEcoScienceTypes();
 
@@ -303,8 +315,6 @@ class ProjectController {
             [project: project,
              siteDocuments: siteInfo.documents?:'[]',
              site: siteInfo.site,
-             userOrganisations: groupedOrganisations.user ?: [],
-             organisations: groupedOrganisations.other ?: [],
              programs: metadataService.programsModel(),
              scienceTypes: scienceTypes,
              ecoScienceTypes: ecoScienceTypes
@@ -333,7 +343,6 @@ class ProjectController {
             redirect controller: 'home', action: 'index'
             return
         }
-        def groupedOrganisations = groupOrganisationsForUser(user.userId)
         def scienceTypes = projectService.getScienceTypes();
         def ecoScienceTypes = projectService.getEcoScienceTypes();
         // Prepopulate the project as appropriate.
@@ -359,39 +368,23 @@ class ProjectController {
             project.associatedProgram = hub.defaultProgram
         }
 
+        def userOrgIds = userService.getOrganisationIdsForUserId(user.userId)
+
         // Default the project organisation if the user is a member of a single organisation.
-        if (groupedOrganisations.user?.size() == 1) {
-            project.organisationId = groupedOrganisations.user[0].organisationId
+        if (userOrgIds?.size() == 1) {
+            def userOrganisation = organisationService.get(userOrgIds[0])
+            project.organisationId = userOrganisation.organisationId
+            project.organisationName = userOrganisation.name
         }
+
         [
                 organisationId: params.organisationId,
                 siteDocuments: '[]',
-                userOrganisations: groupedOrganisations.user ?: [],
-                organisations: groupedOrganisations.other ?: [],
                 programs: projectService.programsModel(),
                 project:project,
                 scienceTypes: scienceTypes,
                 ecoScienceTypes: ecoScienceTypes
         ]
-    }
-
-    /**
-     * Splits the list of organisations into two - one containing organisations that the user is a member of,
-     * the other containing the rest.
-     * @param the user id to use for the grouping.
-     * @return [user:[], other:[]]
-     */
-    private Map groupOrganisationsForUser(userId) {
-
-        def organisations = metadataService.organisationList().list ?: []
-        def userOrgIds = userService.getOrganisationIdsForUserId(userId)
-
-        organisations.groupBy{organisation ->
-            // remove projects since some organisation has projects embedded in them causing an exponential increase in organisation size.
-            // The huge size had caused an exception - java.lang.NegativeArraySizeException
-            organisation.remove('projects')
-            organisation.organisationId in userOrgIds ? "user" : "other"
-        }
     }
 
     def citizenScience() {

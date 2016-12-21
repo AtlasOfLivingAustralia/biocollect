@@ -74,7 +74,8 @@
         aekosSubmissionPostUrl: "${createLink(controller: 'projectActivity', action: 'aekosSubmission')}",
         createBlogEntryUrl: "${createLink(controller: 'blog', action:'create', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}%23overview",
         editBlogEntryUrl: "${createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}%23overview",
-        deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}"
+        deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}",
+        downloadTemplateFormUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}"
         },
         here = window.location.href;
 
@@ -126,12 +127,17 @@
 
 <r:script>
     $(function() {
+        // set project tab selection if a 'tab' parameter is set
+        var projectTab = getUrlParameterValue('tab');
+        if(projectTab && (typeof projectTab == 'string')){
+            amplify.store('ul-main-project-state', projectTab);
+        }
+
         $(".main-content").show();
-        var organisations = <fc:modelAsJavascript model="${organisations?:[]}"/>;
         var project = <fc:modelAsJavascript model="${project}"/>;
         var pActivities = <fc:modelAsJavascript model="${projectActivities}"/>;
         var pActivityForms = <fc:modelAsJavascript model="${pActivityForms}"/>;
-        var projectViewModel = new ProjectViewModel(project, ${user?.isEditor?:false}, organisations);
+        var projectViewModel = new ProjectViewModel(project, ${user?.isEditor?:false});
         var user = <fc:modelAsJavascript model="${user}"/>;
 
         var ViewModel = function() {
@@ -154,36 +160,38 @@
         params.organisationName = project.organisationName;
         params.project = projectViewModel;
 
-        var pActivitiesVM = new ProjectActivitiesViewModel(params);
-        initialiseProjectActivitiesList(pActivitiesVM);
-        initialiseData('project');
+        <g:if test="${!project.isExternal}">
+            var pActivitiesVM = new ProjectActivitiesViewModel(params);
+            initialiseProjectActivitiesList(pActivitiesVM);
+            initialiseData('project');
+            <g:if test="${projectContent.admin.visible}">initialiseProjectActivitiesSettings(pActivitiesVM);</g:if>
+        </g:if>
+        <g:if test="${projectContent.admin.visible}">
+            <g:if test="${!project.isExternal}">
+                var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
+                var projectStoriesViewModel = new window.projectStoriesViewModel(projectViewModel, projectStoriesMarkdown);
+                ko.applyBindings(projectStoriesViewModel, $('#editprojectStoriesContent')[0]);
+
+                var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
+                var newsAndEventsViewModel = new window.newsAndEventsViewModel(projectViewModel, newsAndEventsMarkdown);
+                ko.applyBindings(newsAndEventsViewModel, $('#editnewsAndEventsContent')[0]);
+            </g:if>
+
+            initialiseInternalCSAdmin();
+            populatePermissionsTable();
+        </g:if>
+
+
+        $('.validationEngineContainer').validationEngine();
+        $('.helphover').popover({animation: true, trigger:'hover'})
 
         //Main tab selection
         new RestoreTab('ul-main-project', 'about-tab');
-        if(amplify.store('traffic-from-project-finder-page')){
+        if(amplify.store('traffic-from-project-finder-page')) {
             amplify.store('traffic-from-project-finder-page',false)
             $('#about-tab').tab('show');
         }
-        <g:if test="${projectContent.admin.visible}">
-            initialiseProjectActivitiesSettings(pActivitiesVM);
-
-            var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
-            var projectStoriesViewModel = new window.projectStoriesViewModel(projectViewModel, projectStoriesMarkdown);
-            ko.applyBindings(projectStoriesViewModel, $('#editprojectStoriesContent')[0]);
-
-            var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
-            var newsAndEventsViewModel = new window.newsAndEventsViewModel(projectViewModel, newsAndEventsMarkdown);
-            ko.applyBindings(newsAndEventsViewModel, $('#editnewsAndEventsContent')[0]);
-
-            populatePermissionsTable();
-
-            initialiseInternalCSAdmin();
-        </g:if>
-
-        $('.validationEngineContainer').validationEngine();
-        $('.helphover').popover({animation: true, trigger:'hover'})    });
-
-
+    });
 </r:script>
 </body>
 </html>

@@ -1060,6 +1060,8 @@ var ProjectActivity = function (params) {
 
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
+    self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
+    self.baseLayersName = ko.observable(pActivity.baseLayersName);
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
     self.species = new SpeciesConstraintViewModel(pActivity.species);
     self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
@@ -1257,7 +1259,7 @@ var ProjectActivity = function (params) {
         else if (by == "info") {
             var ignore = self.ignore.concat(['current', 'pActivityForms', 'pActivityFormImages',
                 'access', 'species', 'sites', 'transients', 'endDate','visibility','pActivityFormName', 'restrictRecordToSites',
-                'aekosModalView', 'project']);
+                'allowAdditionalSurveySites', 'baseLayersName', 'aekosModalView', 'project']);
             ignore = $.grep(ignore, function (item, i) {
                 return item != "documents";
             });
@@ -1278,6 +1280,8 @@ var ProjectActivity = function (params) {
             });
             jsData.sites = sites;
             jsData.restrictRecordToSites = self.restrictRecordToSites();
+            jsData.allowAdditionalSurveySites = self.allowAdditionalSurveySites();
+            jsData.baseLayersName = self.baseLayersName();
         }
         else if (by == "visibility") {
             jsData = {};
@@ -1514,6 +1518,9 @@ var SpeciesListsViewModel = function (o) {
     var self = this;
     if (!o) o = {};
 
+    self.ascIconClass = "icon-arrow-up";
+    self.descIconClass = "icon-arrow-down";
+
     self.searchGuid = ko.observable();
     self.searchName = ko.observable();
 
@@ -1564,14 +1571,10 @@ var SpeciesListsViewModel = function (o) {
                 //toggle the order
                 if (order == "asc") {
                     self.transients.sortOrder("desc");
-                    $("#" + column + "_Hdr").removeClass("icon-arrow-up").addClass("icon-arrow-down");
                 } else {
                     self.transients.sortOrder("asc");
-                    $("#" + column + "_Hdr").removeClass("icon-arrow-down").addClass("icon-arrow-up");
                 }
             } else {
-                $("#" + self.transients.sortCol() + "_Hdr").removeClass("icon-arrow-up").removeClass("icon-arrow-down");
-                $("#" + column + "_Hdr").removeClass("icon-arrow-down").addClass("icon-arrow-up");
                 self.transients.sortCol(column)
                 self.transients.sortOrder("asc");
             }
@@ -1584,6 +1587,10 @@ var SpeciesListsViewModel = function (o) {
         var url = fcConfig.speciesListUrl + "?sort=" + sortCol + "&offset=" + self.offset() + "&max=" + self.max() + "&order=" + order;
         if (self.searchGuid()) {
             url += "&guid=" + self.searchGuid();
+        }
+
+        if (self.searchName() && self.searchName().trim() != ""){
+            url += "&searchTerm=" + self.searchName().trim();
         }
 
         var divId = 'project-activities-result-placeholder';
@@ -1618,12 +1625,10 @@ var SpeciesListsViewModel = function (o) {
     }
 
     self.setDefault = function() {
-        $("#" + self.transients.sortCol () + "_Hdr").removeClass("icon-arrow-up").removeClass("icon-arrow-down");
         self.transients.sortCol("listName");
         self.transients.sortOrder("asc");
         self.transients.loading(true);
         self.loadAllSpeciesLists(self.transients.sortCol(), self.transients.sortOrder());
-        $("#listName_Hdr").addClass("icon-arrow-up").removeClass("icon-arrow-down");
     }
 
 };

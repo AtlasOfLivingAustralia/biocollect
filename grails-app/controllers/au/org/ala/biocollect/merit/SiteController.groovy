@@ -5,6 +5,11 @@ import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
+import javax.servlet.http.HttpServletResponse
+
+import static javax.servlet.http.HttpServletResponse.SC_CONFLICT
+import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
+
 class SiteController {
 
     def siteService, projectService, projectActivityService, activityService, metadataService, userService,
@@ -101,6 +106,17 @@ class SiteController {
         } else {
             result
         }
+    }
+
+    def ajaxList(String id) {
+        def pActivity = projectActivityService.get(id, 'all')
+//        def sites = siteService.getSitesFromIdList(pActivity.sites, BRIEF)
+        if (!pActivity) {
+            response.sendError(404, "Couldn't find project activity $id")
+            return
+        }
+        log.info(pActivity.sites)
+        render pActivity.sites as JSON
     }
 
     def ajaxDeleteSitesFromProject(String id){
@@ -405,7 +421,7 @@ class SiteController {
         String userId = userService.getCurrentUserId()
         values.projects?.each { projectId ->
             if (!projectService.canUserEditProject(userId, projectId) && !userService.userIsAlaAdmin()) {
-                flash.message = "Error: access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
+                log.error("Error: access denied: User does not have *editor* permission for projectId ${projectId}")
                 result = [status: 'error']
                 //render result as JSON
             }
@@ -415,8 +431,11 @@ class SiteController {
             result = siteService.updateRaw(id, values)
             if(postBody?.pActivityId){
                 def pActivity = projectActivityService.get(postBody.pActivityId)
-                if(!projectService.canUserEditProject(userId, pActivity?.projectId) && !userService.userIsAlaAdmin()){
-                    flash.message = "Error: access denied: User does not have <b>editor</b> permission for pActivitityId ${postBody.pActivityId}"
+//                if(!projectService.canUserEditProject(userId, pActivity?.projectId) && !userService.userIsAlaAdmin()){
+                // TODO Check this - need to give users who are submitting a pactvitiy the ability to create new
+                // geometries for the pactvitiy.
+                if (!projectService.canUserViewProject(userId, pActivity?.projectId)) {
+                    log.error("Error: access denied: User does not have *viewer* permission for pActivitityId ${postBody.pActivityId}")
                     result = [status: 'error']
                 } else {
                     pActivity.sites.add(result.id)
@@ -425,6 +444,13 @@ class SiteController {
             }
         }
         render result as JSON
+    }
+
+    def checkSiteName(String id) {
+        log.debug "Name: ${params.name}"
+        def result = siteService.isSiteNameUnique(id, params.name)
+
+        response.sendError(result.value ? SC_NO_CONTENT : SC_CONFLICT)
     }
 
     def locationLookup(String id) {

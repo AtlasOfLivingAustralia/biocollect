@@ -6,7 +6,7 @@
     </div>
 </g:if>
 
-<div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}" data-bind="visible: activityLevelData.pActivity.sites.length > 1">
+<div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 1">
     <div class="well">
         <div class="span12">
             <div class="span3">
@@ -19,7 +19,7 @@
                 </g:if>
                 <g:else>
                     <select id="siteLocation"
-                            data-bind='options: activityLevelData.pActivity.sites, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Choose a site...", disable: ${readonly}'></select>
+                            data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Choose a site...", disable: ${readonly} || data.${source}Loading'></select>
                 </g:else>
             </div>
         </div>
@@ -34,6 +34,44 @@
 
 <div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}">
     <div class="well">
+        <!-- ko if: data.${source} -->
+
+        <div class="row-fluid">
+            <div class="span3">
+                <label for="${source}CentroidLatitude">Centroid Latitude</label>
+            </div>
+
+            <div class="span9">
+                <g:if test="${readonly}">
+                    <span data-bind="text: data.${source}CentroidLatitude"></span>
+                </g:if>
+                <g:else>
+                    <input id="${source}Latitude" type="text" data-bind="value: data.${source}CentroidLatitude"
+                        ${validation} disabled>
+                </g:else>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span3">
+                <label for="${source}CentroidLongitude">Centroid Longitude</label>
+            </div>
+
+            <div class="span9">
+                <g:if test="${readonly}">
+                    <span data-bind="text: data.${source}CentroidLongitude"></span>
+                </g:if>
+                <g:else>
+                    <input id="${source}CentroidLongitude" type="text" data-bind="value: data.${source}CentroidLongitude"
+                        ${validation} disabled>
+                </g:else>
+            </div>
+        </div>
+
+        <!-- /ko -->
+
+        <!-- ko if: data.${source}Longitude && data.${source}Latitude -->
+
         <div class="row-fluid">
             <div class="span3">
                 <label for="${source}Latitude">Latitude<g:if test="${validation?.contains('required')}"><i class="req-field"></i></g:if></label>
@@ -44,7 +82,7 @@
                     <span data-bind="text: data.${source}Latitude"></span>
                 </g:if>
                 <g:else>
-                    <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude"
+                    <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude, disable: data.${source}LatLonDisabled"
                            ${validation}>
                 </g:else>
             </div>
@@ -60,11 +98,13 @@
                     <span data-bind="text: data.${source}Longitude"></span>
                 </g:if>
                 <g:else>
-                    <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude"
+                    <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude, disable: data.${source}LatLonDisabled"
                            ${validation}>
                 </g:else>
             </div>
         </div>
+
+        <!-- /ko -->
 
         <g:if test="${includeAccuracy}">
             <div class="row-fluid">
@@ -164,6 +204,33 @@
         </g:if>
     </div>
 </div>
+
+<script type="text/html" id="AddSiteModal">
+<div class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-bind="click: cancel" aria-hidden="true">&times;</button>
+        <h3>Add Site</h3>
+    </div>
+    <div class="modal-body">
+        <form action="#" data-bind="submit: add">
+            <div class="control-group" data-bind="css: { warning: nameStatus() == 'conflict' }">
+                <label for="site-name" class="control-label">Site Name</label>
+                <div class="controls">
+                    <input id="site-name" type="text" class="input-xlarge" data-bind="value: name, valueUpdate: 'afterkeydown'">
+                    <i class="fa fa-cog fa-spin" data-bind="visible: nameStatus() == 'checking' "></i>
+                    <span class="help-block" data-bind="visible: nameStatus() == 'conflict' ">This name is already being used for a site</span>
+                </div>
+            </div>
+
+        </form>
+        <p class="muted"><small>Cancel this dialog to edit your area.</small></p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn" data-bind="click: cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" data-bind="click: add, enable: nameStatus() == 'ok' ">Save</button>
+    </div>
+</div>
+</script>
 <r:script>
 
     $(function () {

@@ -10,11 +10,11 @@ function ImageGalleryViewModel(config){
     },config);
 
     self.recordImages = ko.observableArray();
-    self.total = ko.observable();
-    self.pagesize = 10;
-    self.offset = ko.observable(0);
-    self.max = ko.observable(self.pagesize)
     self.error = ko.observable('');
+    self.total = ko.observable();
+    self.offset = ko.observable(0);
+    self.pagination = new PaginationViewModel({}, self);
+    self.max = ko.observable(self.pagination.resultsPerPage());
     self.isLoadMore = ko.computed(function(){
         return self.total() > self.max();
     });
@@ -22,10 +22,21 @@ function ImageGalleryViewModel(config){
     self.transients.loading = ko.observable(false);
 
     /**
-     * appends a list of images to the existing images.
+     * This function is called by the Pagination component everytime a new page needs to be displayed.*
+     * @param offset The number of records to skip, if ommitted the first page (offset 0) will be loaded.
+     */
+    self.refreshPage = function (offset) {
+        self.offset( offset || 0);
+        self.fetchRecordImages();
+
+    }
+
+    /**
+     * Replace VM images with current result retreived.
      * @param images
      */
-    self.addImages = function(images){
+    self.refreshRecordImages = function(images){
+        self.recordImages.removeAll();
         images && images.forEach(function(image){
             self.recordImages.push(new ImageViewModel(image, true));
         });
@@ -49,7 +60,7 @@ function ImageGalleryViewModel(config){
             },
             success: function(data){
                 if(data.documents){
-                    self.addImages(data.documents);
+                    self.refreshRecordImages(data.documents);
                     self.total(data.total);
                 }
             },
@@ -68,7 +79,7 @@ function ImageGalleryViewModel(config){
     self.getUrlParameter = function(){
         prop.data.fq = activitiesModel.urlFacetParameter();
         prop.data.searchTerm = activitiesModel.searchTerm();
-        prop.data.max = self.max();
+        prop.data.max = self.pagination.resultsPerPage();
         prop.data.offset = self.offset()
     }
 
@@ -77,31 +88,38 @@ function ImageGalleryViewModel(config){
      */
     self.reset = function(){
         self.offset(0)
-        self.max(self.pagesize)
+        self.max(self.pagination.resultsPerPage)
         self.recordImages.removeAll();
         self.total(0);
     }
 
-    self.firstPage = function(){
+    self.reloadRecordImages = function(){
         self.reset();
+        // Let's force a pagination reconfiguration asynchronously.
+        self.transients.paginationSubscription = self.transients.loading.subscribe(self.loadPagination);
         self.fetchRecordImages();
     }
 
-    self.nextPage = function(){
-        self.offset(self.offset() + self.pagesize);
-        self.max(self.offset() + self.pagesize);
-        self.fetchRecordImages();
+    self.loadPagination = function () {
+        if(!self.transients.loading()) { // Loading has finished
+            self.pagination.loadPagination(0, self.total());
+            // We only want this function on page load or when the filter has been updated, we don't want to be
+            // called when the actual pagination controls are used in the UI hence we unsubscribe after it has been
+            // (re)initialised - The subscription is created on self.reloadRecordImages()
+            self.transients.paginationSubscription.dispose();
+        }
     }
 
     // subscribe so that changes to filter and search text will trigger a image gallery update
     activitiesModel = prop.viewModel;
-    activitiesModel && activitiesModel.selectedFilters.subscribe(self.firstPage);
-    activitiesModel && activitiesModel.searchTerm.subscribe(self.firstPage);
+    activitiesModel && activitiesModel.selectedFilters.subscribe(self.reloadRecordImages);
+    activitiesModel && activitiesModel.searchTerm.subscribe(self.reloadRecordImages);
+
     // initialise images
     if(prop.images && prop.images.length){
-        self.addImages(prop.images);
+        self.refreshRecordImages(prop.images);
         self.total(prop.images.length);
     } else if (prop.recordUrl){
-        self.firstPage();
+        self.reloadRecordImages();
     }
 }

@@ -6,6 +6,8 @@ import au.org.ala.biocollect.merit.UserService
 import grails.converters.JSON
 import org.apache.http.HttpStatus
 
+import static javax.servlet.http.HttpServletResponse.*
+
 class RecordController {
 
     UserService userService
@@ -36,6 +38,24 @@ class RecordController {
         model.total = results?.total
 
         render model as JSON
+    }
+
+    def listProjectActivityAndUserRecords(String id) {
+        def userId = userService.getCurrentUserId(request)
+        if (!userId) {
+            return forbidden("Sorry mate, can't help you.")
+        }
+        final response = recordService.listProjectActivityAndUserRecords(id, userId)
+        if (response.error) {
+            if (response.statusCode == SC_NOT_FOUND) {
+                notFound("These are not the droids you're looking for")
+            } else {
+                log.error("Couldn't call ecodata listProjectActivityAndUserRecords: $response")
+                error("I dun goofed")
+            }
+        } else {
+            respond(response)
+        }
     }
 
     private def listUserRecords(params){
@@ -89,4 +109,22 @@ class RecordController {
         render ([guid: result.guid ?: ''] as JSON)
     }
 
+
+    static class Error {
+        String message;
+    }
+
+    private void forbidden(String message = '') {
+        error(message, SC_FORBIDDEN)
+    }
+
+    private void notFound(String message = '') {
+        error(message, SC_NOT_FOUND)
+    }
+
+    private void error(String message = '', int status = SC_INTERNAL_SERVER_ERROR) {
+        final error = new Error(message: message ?: '')
+        response.status = status // just for sng
+        respond error, status: status
+    }
 }

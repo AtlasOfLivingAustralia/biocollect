@@ -53,11 +53,11 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     self.pointsOfInterest = ko.observableArray();
     self.showPointAttributes = ko.observable(false);
     self.allowPointsOfInterest = ko.observable(mapOptions.allowPointsOfInterest || false);
-    self.displayAreaInReadableFormat = null
+    self.displayAreaInReadableFormat = null;
 
     self.site().extent().geometry().areaKmSq.subscribe(function(val){
         self.site().area(val)
-    })
+    });
 
     self.loadSite = function (site) {
         var siteModel = self.site();
@@ -68,7 +68,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         siteModel.area(exists(site, "area"));
         siteModel.description(exists(site, "description"));
         siteModel.notes(exists(site, "notes"));
-        siteModel.projects(site.projects || [])
+        siteModel.projects(site.projects || []);
 
         if (site.extent) {
             self.site().extent().source(exists(site.extent, "source"));
@@ -264,7 +264,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             self.map.addControl(regionSelector);
         }
 
-        self.map.addButton("<span class='fa fa-refresh reset-map' title='Reset map'></span>", function () {
+        self.map.addButton("<span class='fa fa-undo reset-map' title='Reset map'></span>", function () {
             self.map.resetMap();
             pointOfInterestMarkers.clearLayers();
             self.pointsOfInterest([]);
