@@ -708,15 +708,15 @@ class ProjectService {
         isMobileApp;
     }
 
-    private boolean isCitizenScience(project) {
+    public boolean isCitizenScience(project) {
         project.projectType == PROJECT_TYPE_CITIZEN_SCIENCE || project.projectType == PROJECT_TYPE_CITIZEN_SCIENCE_TYPE_2
     }
 
-    private boolean isEcoScience(project) {
+    public boolean isEcoScience(project) {
         project.projectType == PROJECT_TYPE_ECOSCIENCE
     }
 
-    private boolean isWork(project){
+    public boolean isWork(project){
         !isCitizenScience(project) && !isEcoScience(project)
     }
 

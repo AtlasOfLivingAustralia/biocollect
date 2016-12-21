@@ -43,6 +43,7 @@ class ProjectControllerSpec extends Specification {
         metadataServiceStub.activitiesModel() >> [activities: []]
         userServiceStub.getOrganisationIdsForUserId(_) >> ['1']
         projectServiceStub.getMembersForProjectId(_) >> []
+        
         userServiceStub.getOrganisationIdsForUserId(_) >> []
         userServiceStub.isProjectStarredByUser(_, _) >> [isProjectStarredByUser:true]
         roleServiceStub.getRoles() >> []
@@ -110,7 +111,9 @@ class ProjectControllerSpec extends Specification {
         def citizenScience = true
         def external = false
         userServiceStub.getUser() >> null
-        projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
+        projectServiceStub.isCitizenScience(_) >> true
+        projectServiceStub.get(projectId, _, _, _) >>
+                [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
 
         when:
         controller.index(projectId)
@@ -130,6 +133,7 @@ class ProjectControllerSpec extends Specification {
         def citizenScience = true
         def external = false
         stubProjectEditor('1234', projectId)
+        projectServiceStub.isCitizenScience(_) >> true
         projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
 
         when:
@@ -152,6 +156,7 @@ class ProjectControllerSpec extends Specification {
         def citizenScience = true
         def external = false
         stubProjectAdmin('1234', projectId)
+        projectServiceStub.isCitizenScience(_) >> true
         projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
 
         when:
@@ -171,6 +176,8 @@ class ProjectControllerSpec extends Specification {
         def citizenScience = true
         def external = false
         stubProjectEditor('1234', projectId)
+        projectServiceStub.isCitizenScience(_) >> false
+        projectServiceStub.isEcoScience(_) >> false
         projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'works', isExternal:external]
 
         when:
@@ -192,6 +199,7 @@ class ProjectControllerSpec extends Specification {
         def citizenScience = true
         def external = false
         stubProjectEditor('1234', projectId)
+        projectServiceStub.isCitizenScience(_) >> true
         projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
 
         when:
