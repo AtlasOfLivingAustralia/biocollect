@@ -29,7 +29,9 @@
             <li class="${(path ==~ /.*user\/index.*/) || (path ==~ /.*bioActivity\/list.*/) || (path ==~ /.*project\/myProjects.*/) ? 'active' : ''} dropdown-submenu pull-left" role="menu">
                 <a href="#" ><span class="fa fa-user"></span><fc:currentUserDisplayName/></a>
                 <ul>
+                    <!--
                     <li><a href="#" class="btnMyDashboard"><span class="fa fa-dashboard"></span>My Dashboard</a></li>
+                    -->
                     <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
                         <li><a href="#" class="btnMyData"><span class="fa fa-database"></span>My Data</a></li>
                     </g:if>

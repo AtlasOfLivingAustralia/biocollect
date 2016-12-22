@@ -546,8 +546,6 @@ class ModelTagLib {
     }
 
     def tableHeader(out, attrs, table) {
-
-
         out << INDENT*4 << "<thead><tr>"
         table.columns.eachWithIndex { col, i ->
             if (isRequired(attrs, col, attrs.edit)) {
@@ -557,7 +555,7 @@ class ModelTagLib {
             }
 
         }
-        if (table.source && attrs.edit && !attrs.printable) {
+        if (table.source && attrs.edit && !attrs.printable && (table.editableRows || getAllowRowDelete(attrs, table.source, null))) {
             out << "<th></th>"
         }
         out << '\n' << INDENT*4 << "</tr></thead>\n"
@@ -655,6 +653,7 @@ class ModelTagLib {
 
     def tableViewTemplate(out, attrs, model, edit) {
         def templateName = model.source ? "${model.source}viewTmpl" : "${getUnnamedTableCount(false)}viewTmpl"
+        def allowRowDelete = getAllowRowDelete(attrs, model.source, null)
         out << INDENT*4 << "<script id=\"${templateName}\" type=\"text/html\"><tr>\n"
         model.columns.eachWithIndex { col, i ->
             col.type = col.type ?: getType(attrs, col.source, model.source)
@@ -664,11 +663,15 @@ class ModelTagLib {
         if (model.editableRows) {
                 out << INDENT*5 << "<td >\n"
                 out << INDENT*6 << "<button class='btn btn-mini' data-bind='click:\$root.edit${model.source}Row, enable:!\$root.${model.source}Editing()' title='edit'><i class='icon-edit'></i> Edit</button>\n"
-                out << INDENT*6 << "<button class='btn btn-mini' data-bind='click:\$root.remove${model.source}Row, enable:!\$root.${model.source}Editing()' title='remove'><i class='icon-trash'></i> Remove</button>\n"
+                if (allowRowDelete) {
+                    out << INDENT * 6 << "<button class='btn btn-mini' data-bind='click:\$root.remove${model.source}Row, enable:!\$root.${model.source}Editing()' title='remove'><i class='icon-trash'></i> Remove</button>\n"
+                }
                 out << INDENT*5 << "</td>\n"
         } else {
-            if (edit && model.source) {
-                out << INDENT*5 << "<td><i data-bind='click:\$root.remove${model.source}Row' class='icon-remove'></i></td>\n"
+            if (edit && model.source && allowRowDelete) {
+                out << INDENT*5 << "<td>\n"
+                out << INDENT*6 << "<i data-bind='click:\$root.remove${model.source}Row' class='icon-remove'></i>\n"
+                out << INDENT*5 << "</td>\n"
             }
         }
         out << INDENT*4 << "</tr></script>\n"
@@ -804,6 +807,12 @@ class ModelTagLib {
     static String getComputed(attrs, name, context) {
         getAttribute(attrs, name, context, 'computed')
     }
+
+    static boolean getAllowRowDelete(attrs, name, context) {
+        def ard = getAttribute(attrs, name, context, 'allowRowDelete') ?: 'true'
+        return ard.toBoolean()
+    }
+
 
     static String getAttribute(attrs, name, context, attribute) {
         //println "getting ${attribute} for ${name} in ${context}"

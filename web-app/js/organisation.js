@@ -130,117 +130,78 @@ OrganisationViewModel = function (props) {
 };
 
 /**
- * Provides the ability to search a user's organisations and other organisations at the same time.  The results
- * are maintained as separate lists for ease of display (so a users existing organisations can be prioritised).
- * @param organisations the organisations not belonging to the user.
- * @param userOrganisations the organisations that belong to the user.
- * @param (optional) if present, this value should contain the organisationId of an organisation to pre-select.
+ * Provides the ability to search and navigate through organisations.
+ * @param inititialOrganisationId (optional) if present, this value should contain the organisation Id of an organisation to pre-select.
+ * @param inititialOrganisationName (optional) if present, this value should contain the organisation name of an organisation to pre-select.
  */
-OrganisationSelectionViewModel = function(organisations, userOrganisations, inititialSelection) {
+OrganisationSelectionViewModel = function(inititialOrganisationId, initialOrganisationName) {
 
-    var self = this;
-    var userOrgList = new SearchableList(userOrganisations, ['name']);
-    var otherOrgList = new SearchableList(organisations, ['name']);
+    var self = $.extend(this, new OrganisationsViewModel());
 
-    self.term = ko.observable('');
-    self.term.subscribe(function() {
-        userOrgList.term(self.term());
-        otherOrgList.term(self.term());
-    });
-
-    self.selection = ko.computed(function() {
-        return userOrgList.selection() || otherOrgList.selection();
-    });
-
-    self.userOrganisationResults = userOrgList.results;
-    self.otherResults = otherOrgList.results;
-
-    self.clearSelection = function() {
-        userOrgList.clearSelection();
-        otherOrgList.clearSelection();
-        self.term('');
-    };
+    self.selectedOrganisation = ko.observable({});
 
     self.isSelected = function(value) {
-        return userOrgList.isSelected(value) || otherOrgList.isSelected(value);
+        return self.selectedOrganisation()['name'] == value['name']();
     };
 
     self.select = function(value) {
-        self.term(value['name']);
-
-        userOrgList.select(value);
-        otherOrgList.select(value);
+        self.selectedOrganisation(value);
+        self.searchTerm(value['name']());
     };
 
-    self.allViewed = ko.observable(false);
-
-    self.scrolled = function(blah, event) {
-        var elem = event.target;
-        var scrollPos = elem.scrollTop;
-        var maxScroll = elem.scrollHeight - elem.clientHeight;
-
-        if ((maxScroll - scrollPos) < 9) {
-            self.allViewed(true);
-        }
+    self.clearSelection = function() {
+        self.selectedOrganisation({});
+        self.searchTerm('');
     };
 
-    self.visibleRows = ko.computed(function() {
-        var count = 0;
-        if (self.userOrganisationResults().length) {
-            count += self.userOrganisationResults().length+1; // +1 for the "user orgs" label.
-        }
-        if (self.otherResults().length) {
-            count += self.otherResults().length;
-            if (self.userOrganisationResults().length) {
-                count ++; // +1 for the "other orgs" label (it will only show if the my organisations label is also showing.
-            }
-        }
-        return count;
+    self.selection = ko.computed(function() {
+        return self.selectedOrganisation()['name'] !== undefined;
     });
 
-    self.visibleRows.subscribe(function() {
-        if (self.visibleRows() <= 4 && !self.selection()) {
-            self.allViewed(true);
-        }
+    self.navigationShouldBeVisible = ko.observable(false);
+    self.searchHasFocus.subscribe(function(){
+        self.navigationShouldBeVisible(true);
     });
-    self.visibleRows.notifySubscribers();
 
+    self.displayNavigationControls = ko.computed(function() {
+        return !self.selection() && self.navigationShouldBeVisible();
+    });
 
     self.organisationNotPresent = ko.observable();
 
-    var findByOrganisationId = function(list, organisationId) {
-        for (var i=0; i<list.length; i++) {
-            if (list[i].organisationId === organisationId) {
-                return list[i];
+    self.allViewed = ko.observable(false);
+
+    self.loading.subscribe(function() {
+        if(!self.loading()) { // Update allViewed only after results have been refreshed
+            if (self.pagination.currentPage() === self.pagination.lastPage() ||
+                self.pagination.totalResults() <= self.pagination.resultsPerPage() // Only one page to display
+            ) {
+                self.allViewed(true);
             }
         }
-        return null;
-    };
+    });
 
-    if (inititialSelection) {
-        var userOrg = findByOrganisationId(userOrganisations, inititialSelection);
-        var orgToSelect = userOrg ? userOrg : findByOrganisationId(organisations, inititialSelection);
-        if (orgToSelect) {
-            self.select(orgToSelect);
-        }
+    if (inititialOrganisationId && initialOrganisationName) {
+        self.searchTerm(initialOrganisationName);
+        self.selectedOrganisation({organisationId: inititialOrganisationId, name:initialOrganisationName});
     }
 
-    self.transients = {};
-    self.transients.showOrganisationSearchPanel = ko.observable(true);
-
-    self.toggleShowOrganisationSearchPanel = function() {
-        self.transients.showOrganisationSearchPanel(!self.transients.showOrganisationSearchPanel());
-    }
 };
 
-var OrganisationsViewModel = function() {
+var OrganisationsViewModel = function(eagerLoad) {
     var self = this;
+
+    eagerLoad = (eagerLoad !== undefined) ? eagerLoad : true;
+
     self.pagination = new PaginationViewModel({}, self);
+    self.loading = ko.observable(false);
+    self.searchHasFocus = ko.observable(false);
     self.organisations = ko.observableArray([]);
-    self.searchTerm = ko.observable('').extend({throttle:500});
+    self.searchTerm = ko.observable('').extend({throttle:400});
     self.searchTerm.subscribe(function(term) {
         self.refreshPage(0);
     });
+
     self.refreshPage = function(offset) {
         var url = fcConfig.organisationSearchUrl;
         var params = {offset:offset, max:self.pagination.resultsPerPage()};
@@ -250,25 +211,36 @@ var OrganisationsViewModel = function() {
         else {
             params.sort = "nameSort"; // Sort by name unless there is a search term, in which case we sort by relevence.
         }
-        $.get(url, params, function(data) {
-            if (data.hits) {
-                var orgs = data.hits.hits || [];
-                self.organisations($.map(orgs, function(hit) {
-                    if (hit._source.logoUrl) {
-                        hit._source.documents = [{
-                            role:'logo',
-                            status:'active',
-                            thumbnailUrl: hit._source.logoUrl
-                        }]
-                    }
-                    return new OrganisationViewModel(hit._source);
-                }));
-            }
-            if (offset == 0) {
-                self.pagination.loadPagination(0, data.hits.total);
-            }
 
+        $.ajax({
+            url:url,
+            data:params,
+            beforeSend: function () {
+                self.loading(true);
+            },
+            success:function(data) {
+                if (data.hits) {
+                    var orgs = data.hits.hits || [];
+                    self.organisations($.map(orgs, function(hit) {
+                        if (hit._source.logoUrl) {
+                            hit._source.documents = [{
+                                role:'logo',
+                                status:'active',
+                                thumbnailUrl: hit._source.logoUrl
+                            }]
+                        }
+                        return new OrganisationViewModel(hit._source);
+                    }));
+                }
+                if (offset == 0) {
+                    self.pagination.loadPagination(0, data.hits.total);
+                }
+            },
+            complete: function () {
+                self.loading(false);
+            }
         });
     };
+
     self.refreshPage(0);
 };

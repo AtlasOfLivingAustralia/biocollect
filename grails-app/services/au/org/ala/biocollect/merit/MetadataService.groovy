@@ -211,16 +211,6 @@ class MetadataService {
         outputTypes
     }
 
-    def organisationList() {
-        return cacheService.get('organisations',{
-            webService.getJson(grailsApplication.config.ecodata.service.url + "/organisation", 80000)
-        })
-    }
-
-    def clearOrganisationList() {
-        cacheService.clear('organisations')
-    }
-
     def getAccessLevels() {
         return cacheService.get('accessLevels',{
             webService.getJson(grailsApplication.config.ecodata.service.url +  "/permissions/getAllAccessLevels?baseLevel="+RoleService.PROJECT_PARTICIPANT_ROLE)

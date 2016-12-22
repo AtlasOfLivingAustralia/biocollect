@@ -294,20 +294,12 @@ function isValid(p, a) {
 	 return p;
 }
 
-function ProjectViewModel(project, isUserEditor, organisations) {
+function ProjectViewModel(project, isUserEditor) {
     var self = $.extend(this, new Documents());
 
     if (isUserEditor === undefined) {
         isUserEditor = false;
     }
-    if (!organisations) {
-        organisations = [];
-    }
-    var organisationsMap = {}, organisationsRMap = {};
-    $.map(organisations, function(org) {
-        organisationsMap[org.organisationId] = org;
-        organisationsRMap[org.name] = org.organisationId;
-    });
 
     self.name = ko.observable(project.name);
     self.aim = ko.observable(project.aim);
@@ -338,14 +330,18 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.projectStatus = [{id: 'active', name:'Active'},{id:'completed',name:'Completed'},{id:'deleted', name:'Deleted'}];
 
     self.organisationId = ko.observable(project.organisationId);
+    self.organisationName = ko.observable(project.organisationName ? project.organisationName : '');
+
     self.collectoryInstitutionId = ko.computed(function() {
-        var org = self.organisationId() && organisationsMap[self.organisationId()];
-        return org? org.collectoryInstitutionId: "";
+            var org;
+            if(self.organisationId() && self.organisationSearch) {
+                if (self.organisationSearch.selectedOrganisation['organisationId'] === self.organisationId()) {
+                    org = self.organisationSearch.selectedOrganisation;
+                }
+            }
+            return  org && org.collectoryInstitutionId ? org.collectoryInstitutionId: "";
     });
-    self.organisationName = ko.computed(function() {
-        var org = self.organisationId() && organisationsMap[self.organisationId()];
-        return org? org.name: project.organisationName;
-    });
+
 
     var truncate = function (string,  length) {
         if(string == undefined)
@@ -402,15 +398,15 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.getInvolved = ko.observable(project.getInvolved).extend({markdown:true});
     self.hasParticipantCost = ko.observable(project.hasParticipantCost);
     self.noCost = ko.observable(project.noCost);
-    self.hasTeachingMaterials = ko.observable(project.hasTeachingMaterials);
+    self.hasTeachingMaterials = ko.observable($.inArray("hasTeachingMaterials", project.tags) >= 0);
     self.isCitizenScience = ko.observable(project.isCitizenScience);
-    self.isDIY = ko.observable(project.isDIY);
-    self.isHome = ko.observable(project.isHome);
+    self.isDIY = ko.observable($.inArray("isDIY", project.tags) >= 0);
+    self.isHome = ko.observable($.inArray("isHome", project.tags) >= 0);
     self.mobileApp = ko.observable(project.mobileApp);
     self.isWorks = ko.observable(project.isWorks);
     self.isEcoScience = ko.observable(project.isEcoScience);
     self.isExternal = ko.observable(project.isExternal);
-    self.isSciStarter = ko.observable(project.isSciStarter)
+    self.isSciStarter = ko.observable(project.isSciStarter);
     self.isMERIT = ko.observable(project.isMERIT);
     self.isContributingDataToAla = ko.observable(project.isContributingDataToAla);
     self.isSuitableForChildren = ko.observable(project.isSuitableForChildren);
@@ -477,15 +473,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
         return true;
     };
 
-    self.orgIdGrantee.subscribe(function (id) {
-        var org = organisationsMap[id]
-        org && self.orgGrantee(org.name)
-    })
-
-    self.orgIdSponsor.subscribe(function (id) {
-        var org = organisationsMap[id]
-        org && self.orgSponsor(org.name)
-    })
 
     self.transients.daysRemaining = ko.pureComputed(function() {
         var end = self.plannedEndDate();
@@ -652,7 +639,6 @@ function ProjectViewModel(project, isUserEditor, organisations) {
     self.transients.subprogramsToDisplay = ko.computed(function () {
         return self.transients.subprograms[self.associatedProgram()];
     });
-    self.transients.organisations = organisations;
 
     self.transients.difficultyLevels = [ "Easy", "Medium", "Hard" ];
 
@@ -956,12 +942,10 @@ function ProjectViewModel(project, isUserEditor, organisations) {
  * for organisation search and selection as well as saving project information.
  * @param project pre-populated or existing project data.
  * @param isUserEditor true if the user can edit the project.
- * @param userOrganisations the list of organisations for which the user is a member.
- * @param organisations the list of organisations for which the user is not a member.
  * @constructor
  */
-function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, organisations, options) {
-    ProjectViewModel.apply(this, [project, isUserEditor, userOrganisations.concat(organisations)]);
+function CreateEditProjectViewModel(project, isUserEditor, options) {
+    ProjectViewModel.apply(this, [project, isUserEditor]);
 
     var defaults = {
         projectSaveUrl: fcConfig.projectUpdateUrl + '/' + (project.projectId || ''),
@@ -983,11 +967,15 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         }
     });
 
-    self.organisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations, project.organisationId);
-    self.associatedOrganisationSearch = new OrganisationSelectionViewModel(organisations, userOrganisations);
+    self.organisationSearch = new OrganisationSelectionViewModel(project.organisationId, project.organisationName);
+
+    self.associatedOrganisationSearch = new OrganisationSelectionViewModel();
     self.transients.associatedOrgNotInList = ko.observable(false);
     self.transients.associatedOrgUrl = ko.observable();
     self.transients.associatedOrgLogoUrl = ko.observable();
+
+    self.granteeOrganisation = new OrganisationSelectionViewModel(project.orgIdGrantee, project.orgGrantee);
+    self.sponsorOrganisation = new OrganisationSelectionViewModel(project.orgIdSponsor, project.orgSponsor);
 
     self.transients.termsOfUseClicked = ko.observable(false);
     
@@ -1014,55 +1002,92 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
         return true;
     };
 
-    self.organisationSearch.createOrganisation = function() {
+    self.createOrganisation = function() {
         var projectData = self.modelAsJSON();
         amplify.store(config.storageKey, projectData);
         var here = document.location.href;
         document.location.href = config.organisationCreateUrl+'?returnTo='+here+'&returning=true';
     };
 
-    self.organisationSearch.selection.subscribe(function(newSelection) {
-        if (newSelection) {
+    self.organisationSearch.selectedOrganisation.subscribe(function(newSelection) {
+        if (! $.isEmptyObject( newSelection)) {
             self.organisationId(newSelection.organisationId);
+            self.organisationName(newSelection.name());
+        } else {
+            self.organisationId('');
+            self.organisationName('');
         }
     });
 
+    self.granteeOrganisation.selectedOrganisation.subscribe(function(newSelection) {
+        if (! $.isEmptyObject( newSelection)) {
+            self.orgIdGrantee(newSelection.organisationId);
+            self.orgGrantee(newSelection.name());
+        } else {
+            self.orgIdGrantee('');
+            self.orgGrantee('');
+        }
+    });
+
+    self.sponsorOrganisation.selectedOrganisation.subscribe(function(newSelection) {
+        if (! $.isEmptyObject( newSelection)) {
+            self.orgIdSponsor(newSelection.organisationId);
+            self.orgSponsor(newSelection.name());
+        } else {
+            self.orgIdSponsor('');
+            self.orgSponsor('');
+        }
+    });
+
+    self.hasOrgAlreadyBeenAdded = function(newOrganisation) {
+        for(var i = 0; i<self.associatedOrgs().length; i++) {
+            var existingOrganisation=self.associatedOrgs()[i];
+            if(existingOrganisation.name === newOrganisation.name) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     self.associatedOrganisationSearch.addSelectedOrganisation = function() {
         var org = { id: self.associatedOrgs().length };
-
         if (self.transients.associatedOrgNotInList()) {
 
             if($('#associatedOrgLogo').validationEngine('validate')) {
                 //Invalid content, let validation engine pop up the error and we just stop processing
                 return;
             }
-            org.name = self.associatedOrganisationSearch.term();
+            org.name = self.associatedOrganisationSearch.searchTerm();
             org.url = self.transients.associatedOrgUrl() || null;
             org.logo = self.transients.associatedOrgLogoUrl() || null;
 
         } else {
-            var logoDocument = ko.utils.arrayFirst(self.associatedOrganisationSearch.selection().documents, function(document) {
-                return document.role === "logo"
-            });
+            var selectedOrganisation = self.associatedOrganisationSearch.selectedOrganisation();
 
-            org.organisationId = self.associatedOrganisationSearch.selection().organisationId || "";
-            org.name = self.associatedOrganisationSearch.selection().name;
-            org.url = self.associatedOrganisationSearch.selection().url || "";
-            org.logo = logoDocument && logoDocument.thumbnailUrl ? logoDocument.thumbnailUrl : "";
+            org.organisationId = selectedOrganisation.organisationId || "";
+            org.name = selectedOrganisation.name();
+            org.url = selectedOrganisation.url() || "";
+            org.logo = selectedOrganisation.logoUrl() || "";
         }
 
-        self.associatedOrgs.push(org);
-        self.associatedOrganisationSearch.clearSelection();
-        self.transients.associatedOrgLogoUrl(false);
-        self.transients.associatedOrgUrl(null);
-        self.transients.associatedOrgLogoUrl(null);
+        if(!self.hasOrgAlreadyBeenAdded(org)) {
+            self.associatedOrgs.push(org);
+            self.associatedOrganisationSearch.clearSelection();
+            self.transients.associatedOrgLogoUrl(false);
+            self.transients.associatedOrgUrl(null);
+            self.transients.associatedOrgLogoUrl(null);
+        } else {
+            showAlert("This organisation has already been added",  "alert-error", "orgAlreadyAddedMessage")
+        }
+
     };
+
 
     self.removeAssociatedOrganisation = function(org, event) {
         self.associatedOrgs.remove(org);
     };
 
-    self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch']);
+    self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch', 'granteeOrganisation', 'sponsorOrganisation']);
     self.transients.existingLinks = project.links;
 
     self.modelAsJSON = function() {
@@ -1090,8 +1115,8 @@ function CreateEditProjectViewModel(project, isUserEditor, userOrganisations, or
 function validateOrganisationSelection(field, rules, i, options) {
     var organisationSelectionViewModel = ko.dataFor(field[0]);
 
-    var selectedOrg = organisationSelectionViewModel.selection();
-    if (!selectedOrg || selectedOrg == null || _.isUndefined(selectedOrg)) {
+    var selectedOrg = organisationSelectionViewModel.selectedOrganisation();
+    if (!selectedOrg || selectedOrg == null || _.isUndefined(selectedOrg) || $.isEmptyObject(selectedOrg)) {
         // there is a bug with the funcCall option in JQuery Validation Engine where the rule is triggered but the
         // message is not raised unless the 'required' rule is also present.
         // The work-around for this is to manually add the 'required' rule when the message is raised.
@@ -1100,7 +1125,6 @@ function validateOrganisationSelection(field, rules, i, options) {
         return "You must select an organisation from the list"
     }
 }
-
 
 
 var EditableBlogEntryViewModel = function(blogEntry, options) {
