@@ -1,9 +1,14 @@
 package au.org.ala.biocollect.merit
 
 import org.springframework.web.multipart.MultipartFile
+
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 import static org.apache.commons.httpclient.HttpStatus.*
 
 class MetadataService {
+    static DateFormat ISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
 
     def grailsApplication, webService, cacheService, settingService
 
@@ -304,6 +309,43 @@ class MetadataService {
             }
             webService.getJson(url)
         })
+    }
+
+    /**
+     * Get a map of default values for a model.
+     * <p>
+     * Default values can be
+     *
+     * @param model
+     * @return
+     */
+    Map getDefaultData(outputModels) {
+        def defaults = [:]
+        outputModels.each { name, model ->
+            model.dataModel.each { dm ->
+                if (dm.defaultValue) {
+                    String now = ISO8601.clone().format(new Date())
+                    String value = dm.defaultValue
+                    while (value.contains('${now}')) {
+                        value = value.replace('${now}', now)
+                    }
+                    switch (dm.dataType) {
+                        case 'text':
+                            if (dm.constraints && value.matches(/\d+/)) {
+                                int index = value as Integer
+                                if (index < dm.constraints.size()) {
+                                    value = dm.constraints[index]
+                                }
+                            }
+                            break
+                        default:
+                            break
+                    }
+                    defaults[dm.name] = value
+                }
+            }
+        }
+        return defaults
     }
 
 

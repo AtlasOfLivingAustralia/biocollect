@@ -1,25 +1,17 @@
 package au.org.ala.biocollect
 
-import au.org.ala.biocollect.merit.ActivityService
-import au.org.ala.biocollect.merit.CommonService
-import au.org.ala.biocollect.merit.DocumentService
-import au.org.ala.biocollect.merit.MetadataService
-import au.org.ala.biocollect.merit.OutputService
-import au.org.ala.biocollect.merit.ProjectService
-import au.org.ala.biocollect.merit.SearchService
-import au.org.ala.biocollect.merit.SiteService
-import au.org.ala.biocollect.merit.UserService
+import au.org.ala.biocollect.merit.*
 import grails.converters.JSON
 import groovyx.net.http.ContentType
 import org.apache.commons.io.FilenameUtils
+import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.web.multipart.MultipartFile
 
-import static org.apache.http.HttpStatus.*
-import org.codehaus.groovy.grails.web.json.JSONArray
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST
+import static org.apache.http.HttpStatus.SC_OK
 
 class BioActivityController {
-
     ProjectService projectService
     MetadataService metadataService
     SiteService siteService
@@ -198,8 +190,8 @@ class BioActivityController {
             model.pActivity = pActivity
             model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', id: projectId)
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
-
             addOutputModel(model)
+            model.defaultData = metadataService.getDefaultData(model.outputModels)
         }
 
         model
@@ -501,7 +493,7 @@ class BioActivityController {
     private Map activityModel(activity, projectId, mode = '', version = null) {
         Map model = [activity: activity, returnTo: params.returnTo, mode: mode]
         model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view: 'brief', version: version]) : null
-        model.project = projectId ? projectService.get(model.activity.projectId, version) : null
+         model.project = projectId ? projectService.get(model.activity.projectId, version) : null
         model.projectSite = model.project.sites?.find { it.siteId == model.project.projectSiteId }
 
         // Add the species lists that are relevant to this activity.
@@ -537,6 +529,8 @@ class BioActivityController {
             [it, metadataService.getDataModelFromOutputName(it)]
         }
     }
+
+    def defaultData
 
     def extractDataFromExcelTemplate() {
 

@@ -1,7 +1,5 @@
 package au.org.ala.biocollect
 
-import grails.converters.JSON
-
 class ModelJSTagLib {
 
     static namespace = "md"
@@ -91,7 +89,10 @@ class ModelJSTagLib {
      */
     def jsLoadModel = { attrs ->
         boolean readonly = attrs.readonly?.toBoolean() ?: false
+        Map defaultData = attrs.defaultData
         attrs.model?.dataModel?.each { mod ->
+            String defaultValue = defaultData?.get(mod.name)
+            String collector = defaultValue ? "data['${mod.name}'] ? data['${mod.name}'] : '${defaultValue}'" : "data['${mod.name}']"
             if (mod.dataType == 'list') {
                 out << INDENT*4 << "self.load${mod.name}(data.${mod.name});\n"
                 loadColumnTotals out, attrs, mod
@@ -103,27 +104,27 @@ class ModelJSTagLib {
                 // MEW: Removed the 'orBlank' wrapper on the initial data which means missing data will be
                 // 'undefined'. This works better with dropdowns as the default value is undefined and
                 // therefore no data change occurs when the model is bound.
-                if(mod.name == 'recordedBy' && mod.dataType == 'text' && attrs.user?.displayName) {
+                if(mod.name == 'recordedBy' && mod.dataType == 'text' && attrs.user?.displayName && !defaultValue) {
                     out << INDENT*4 << "self.data['${mod.name}'](data['${mod.name}'] ? data['${mod.name}'] : '${attrs.user.displayName}');\n"
                 } else {
-                    out << INDENT*4 << "self.data['${mod.name}'](data['${mod.name}']);\n"
+                    out << INDENT*4 << "self.data['${mod.name}'](${collector});\n"
                 }
                 // This seemed to work ok for plain text too but if it causes an issue, just add an
                 // 'if (mode.constraints)' condition and return plain text to use orBlank.
             }
             else if (mod.dataType == 'number' && !mod.computed) {
-                out << INDENT*4 << "self.data['${mod.name}'](orZero(data['${mod.name}']));\n"
+                out << INDENT*4 << "self.data['${mod.name}'](orZero(${collector}));\n"
             }
             else if (mod.dataType == 'time' && !mod.computed) {
-                out << INDENT*4 << "self.data['${mod.name}'](data['${mod.name}']);\n"
+                out << INDENT*4 << "self.data['${mod.name}'](${collector});\n"
             }
             else if (mod.dataType in ['stringList', 'image', 'photoPoints', 'audio'] && !mod.computed) {
-                out << INDENT*4 << "self.load${mod.name}(data['${mod.name}']);\n"
+                out << INDENT*4 << "self.load${mod.name}(${collector});\n"
             }
             else if (mod.dataType == 'species') {
-                out << INDENT*4 << "self.data['${mod.name}'] = new SpeciesViewModel(data['${mod.name}'], speciesLists, ${mod.validate == 'required'});\n"
+                out << INDENT*4 << "self.data['${mod.name}'] = new SpeciesViewModel(${collector}, speciesLists, ${mod.validate == 'required'});\n"
             } else if (mod.dataType == 'document') {
-                out << INDENT*4 << "var doc = findDocumentById(documents, data['${mod.name}']);\n"
+                out << INDENT*4 << "var doc = findDocumentById(documents, ${collector});\n"
                 out << INDENT*4 << "if (doc) {\n"
                 out << INDENT*8 << "self.data['${mod.name}'](new DocumentViewModel(doc));\n"
                 out << INDENT*4 << "}\n"
