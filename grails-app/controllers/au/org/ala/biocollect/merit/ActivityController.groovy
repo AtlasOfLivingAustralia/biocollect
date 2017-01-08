@@ -115,7 +115,7 @@ class ActivityController {
             }
             def model = activityModel(activity, activity.projectId)
 
-            model.activityTypes = metadataService.activityTypesList()
+            model.activityTypes = metadataService.activityTypesList(model.project.associatedProgram)
             model.hasPhotopointData = activity.documents?.find {it.poiId}
             model
         } else {
