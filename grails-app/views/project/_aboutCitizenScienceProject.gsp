@@ -34,11 +34,6 @@
                     <div class="text-small-heading"><g:message code="project.display.description" /></div>
                     <span data-bind="html:description.markdownToHtml()"></span>
                 </div>
-                <div data-bind="visible: origin">
-                    <div class="text-small-heading"><g:message code="project.display.origin" /></div>
-                    <span data-bind="text:origin"></span>
-                    <p/>
-                </div>
                 <div data-bind="visible:isContributingDataToAla" class="margin-top-1 margin-bottom-1">
                     <img src="${resource([dir: "images", file: "ala-logo-small.png"])}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
 
@@ -56,81 +51,86 @@
                 <div class="row-fluid">
                     <div class="span6">
                         <div data-bind="visible:externalId">
-                            <div class="text-small-heading"><g:message code="project.display.externalId" /></div>
+                            <span class="text-small-heading-inline"><g:message code="project.display.externalId" />:</span>
                             <span data-bind="text:externalId"></span>
                             <p/>
                         </div>
                         <div data-bind="visible:grantId">
-                            <div class="text-small-heading"><g:message code="project.display.grantId" /></div>
+                            <span class="text-small-heading-inline"><g:message code="project.display.grantId" />:</span>
                             <span data-bind="text:grantId"></span>
                             <p/>
                         </div>
                         <div data-bind="visible:funding">
-                            <div class="text-small-heading"><g:message code="project.display.fundingValue" /></div>
+                            <span class="text-small-heading-inline"><g:message code="project.display.fundingValue" />:</span>
                             <span data-bind="text:funding.formattedCurrency"></span>
                             <p/>
                         </div>
                         <div data-bind="visible:associatedProgram">
-                            <div class="text-small-heading"><g:message code="project.display.program" /></div>
+                            <span class="text-small-heading-inline"><g:message code="project.display.program" />:</span>
                             <span data-bind="text:associatedProgram"></span>
                             <p/>
                         </div>
                         <div data-bind="visible:associatedSubProgram">
-                            <div class="text-small-heading"><g:message code="project.display.subprogram" /></div>
+                            <span class="text-small-heading-inline"><g:message code="project.display.subprogram" />:</span>
                             <span data-bind="text:associatedSubProgram"></span>
                             <p/>
                         </div>
                         <div data-bind="visible:orgGrantee">
-                            <div class="text-small-heading"><g:message code="project.display.orgGrantee" /></div>
+                            <span class="text-small-heading-inline"><g:message code="project.display.orgGrantee" />:</span>
                             <span data-bind="text:orgGrantee"></span>
                             <p/>
                         </div>
                         <div data-bind="visible:orgSponsor">
-                            <div class="text-small-heading"><g:message code="project.display.orgSponsor" /></div>
+                            <span class="text-small-heading-inline"><g:message code="project.display.orgSponsor" />:</span>
                             <span data-bind="text:orgSponsor"></span>
                             <p/>
                         </div>
                         <div data-bind="visible:gear">
-                            <div class="text-small-heading"><g:message code="project.display.gear" /></div>
+                            <span class="text-small-heading-inline"><g:message code="project.display.gear" />:</span>
                             <span data-bind="text:gear"></span>
                             <p/>
                         </div>
                         <div data-bind="visible:task">
-                            <div class="text-small-heading"><g:message code="project.display.task" /></div>
+                            <span class="text-small-heading-inline"><g:message code="project.display.task" />:</span>
                             <span data-bind="text:task"></span>
+                            <p/>
+                        </div>
+                        <div data-bind="visible: origin">
+                            <span class="text-small-heading-inline"><g:message code="project.display.origin" />:</span>
+                            <span data-bind="text:origin"></span>
                             <p/>
                         </div>
                     </div>
                     <div class="span6">
                         <div data-bind="visible: countries().length">
-                            <div class="text-small-heading">
+                            <span class="text-small-heading-inline">
                                 <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
                                     <g:message code="project.display.countries.ecoscience" />
                                 </g:if>
                                 <g:else>
                                     <g:message code="project.display.countries.citizenscience" />
                                 </g:else>
-                            </div>
+                            </span>:
                             <span data-bind="text:countries().join(', ')"></span>
                             <p/>
                         </div>
                         <div data-bind="visible: uNRegions().length">
-                            <div class="text-small-heading"><g:message code="project.display.unregions" /></div>
+                            <span class="text-small-heading-inline"><g:message code="project.display.unregions" />:</span>
                             <span data-bind="text:uNRegions().join(', ')"></span>
                             <p/>
                         </div>
                         %{-- TODO: swap fields. check issue - biocollect#667 --}%
                         <div data-bind="visible:managerEmail">
-                            <div class="text-small-heading"><g:message code="project.display.contact.name" /></div>
+                            <span class="text-small-heading-inline"><g:message code="project.display.contact.name" />:</span>
                             <span data-bind="text:managerEmail"></span>
                             <p/>
                         </div>
                         <div data-bind="visible:manager">
-                            <div class="text-small-heading"><g:message code="project.display.contact.email" /></div>
+                            <span class="text-small-heading-inline"><g:message code="project.display.contact.email" />:</span>
                             <a data-bind="attr:{href:'mailto:' + manager()}"><span data-bind="text:manager"></span></a>
                             <p/>
                         </div>
-                        %{-- TODO END--}%
+                         %{-- TODO END--}%
                     </div>
                 </div>
                 <hr/>
@@ -155,9 +155,36 @@
                     <g:render template="tags" />
                 </div>
             </div>
-        </div>
-        <div style="display: none">
-            <div data-bind="template:{name:'associated-orgs'}"></div>
+            <div class="well span12 margin-left-0" id="associatedOrgs" data-bind="visible: associatedOrgs().length > 0">
+                <div class="well-title"><g:message code="project.display.associatedOrgs"/></div>
+
+                <div class="row-fluid">
+                    <!-- ko foreach: associatedOrgs -->
+                    <div class="associated-org thumbnail">
+                        <div data-bind="visible: url" class=" clearfix">
+                            <a href="#" data-bind="attr: {href: url}" target="_blank" class="do-not-mark-external">
+
+                                <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
+
+                                %{--Use 'if' instead of 'visible' to prevent creating child elements that potentially will source non https content--}%
+                                <div data-bind="if: logo && logo.startsWith('https') "><img src="" data-bind="attr: {src: logo, title: name}"
+                                                                                            alt="Organisation logo" class="small-logo"></div>
+                                <div data-bind="visible: !logo || !logo.startsWith('https')" class="associated-org-no-logo"><span data-bind="text: name"></span></div>
+                            </a>
+                        </div>
+
+                        <div data-bind="visible: !url">
+                            <div data-bind="visible: logo"><img src="" data-bind="attr: {src: logo, title: name}"
+                                                                alt="Organisation logo" class="small-logo"></div>
+                            <div data-bind="visible: !logo" class="associated-org-no-logo"><span data-bind="text: name"></span></div>
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                    <!-- /ko -->
+                </div>
+            </div>
+
         </div>
     </div>
     <g:if test="${projectSite?.extent?.geometry}">
@@ -204,49 +231,4 @@
         }
     }
     </g:if>
-
-    // make sure the list of associated organisations are below the shorter of the two columns.
-    function placeAssociatedOrgs() {
-        if ($("#column1").height() > $("#column2").height()) {
-            $("#column2").append($("#associatedOrgs"));
-        } else {
-            $("#column1").append($("#associatedOrgs"));
-        }
-    }
-
-    setTimeout(placeAssociatedOrgs, 2000);
 </r:script>
-
-
-
-<script type="text/html" id="associated-orgs">
-<div class="well span12 margin-left-0" id="associatedOrgs" data-bind="visible: associatedOrgs().length > 0">
-    <div class="well-title"><g:message code="project.display.associatedOrgs"/></div>
-
-    <!-- ko foreach: associatedOrgs -->
-    <div class="span5 associated-org thumbnail">
-        <div data-bind="visible: url" class=" clearfix">
-            <a href="#" data-bind="attr: {href: url}" target="_blank" class="do-not-mark-external">
-
-                <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
-
-                    %{--Use 'if' instead of 'visible' to prevent creating child elements that potentially will source non https content--}%
-                    <div data-bind="if: logo && logo.startsWith('https') "><img src="" data-bind="attr: {src: logo, title: name}"
-                                                    alt="Organisation logo" class="small-logo"></div>
-
-                    <div data-bind="visible: !logo || !logo.startsWith('https')" class="associated-org-no-logo"><span data-bind="text: name"></span></div>
-            </a>
-        </div>
-
-        <div data-bind="visible: !url">
-            <div data-bind="visible: logo"><img src="" data-bind="attr: {src: logo, title: name}"
-                                                alt="Organisation logo" class="small-logo"></div>
-
-            <div data-bind="visible: !logo" class="associated-org-no-logo"><span data-bind="text: name"></span></div>
-        </div>
-
-        <div class="clearfix"></div>
-    </div>
-    <!-- /ko -->
-</div>
-</script>

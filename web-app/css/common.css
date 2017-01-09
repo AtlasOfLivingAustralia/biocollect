@@ -194,12 +194,20 @@
 }
 
 .small-logo {
-    width: 100%;
+    max-height: 60px;
+    max-width: 300px;
+    width: auto; /* Keeps aspect ratio */
+    height: auto;
 }
 
 .text-small-heading {
     font-weight: bold;
     text-decoration: underline;
+    padding-bottom: 5px;
+}
+
+.text-small-heading-inline {
+    font-weight: bold;
     padding-bottom: 5px;
 }
 
@@ -213,28 +221,26 @@
 }
 
 .associated-org {
+    display: inline-block;
     margin: 10px 10px 10px 0px;
 }
 
 .associated-org-no-logo {
-    width: 100%;
-    min-height: 135px;
+    display: table-cell;
+    min-height: 60px;
     max-height: 300px;
+    max-width: 120px;
     overflow: hidden;
     font-size: 18px;
     font-weight: bold;
     font-style: italic;
-    text-align: center;
-    position: relative;
     background: white;
+    text-align: center;
 }
 
 .associated-org-no-logo span {
-    display: inline-block;
+    padding: 10px;
     vertical-align: middle;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
 }
 
 .padding-top-none {
