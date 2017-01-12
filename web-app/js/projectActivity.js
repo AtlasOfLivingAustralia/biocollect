@@ -1413,6 +1413,17 @@ var SpeciesConstraintViewModel = function (o) {
         self.speciesLists.remove(lists);
     };
 
+    self.showSpeciesConfiguration = function() {
+        console.log("showSpeciesConfiguration Called");
+        $('#configureSpeciesField').modal({backdrop:'static'});
+    }
+
+    self.cancelConfigWindow = function() {
+        console.log("cancelConfigWindow Called");
+        $('#configureSpeciesField').modal('hide');
+        //ko.cleanNode($('#configureSpeciesField'));
+    }
+
     self.allSpeciesInfoVisible = ko.computed(function () {
         return (self.type() == "ALL_SPECIES");
     });

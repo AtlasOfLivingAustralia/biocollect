@@ -266,6 +266,7 @@ modules = {
         defaultBundle 'application'
         dependsOn 'knockout', 'projectActivityInfo', 'species'
         resource url: 'js/projectActivity.js'
+        resource url: 'css/project-activity-settings.css'
     }
 
     projectActivityInfo {

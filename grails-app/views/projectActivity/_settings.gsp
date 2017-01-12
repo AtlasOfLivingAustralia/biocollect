@@ -1,5 +1,4 @@
 <!-- ko stopBinding: true -->
-
 <h4>Survey settings</h4>
 <p>Each of your surveys can be configured differently depending on your needs. Project level settings are inherited as the default.</p>
 <p>Click on tabs to edit settings required. And new surveys to the project as required.</p>
@@ -67,8 +66,8 @@
                     <li class="active"><a href="#survey-info" id="survey-info-tab" data-toggle="tab">Survey Info</a></li>
                     <li data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a href="#survey-visibility" id="survey-visibility-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}, css:{disabled: !isSurveyInfoFormFilled()}">Visibility</a></li>
                     <li data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a href="#survey-alert" id="survey-alert-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Alert</a></li>
-                    <li data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a href="#survey-species" id="survey-species-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Species</a></li>
                     <li data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a href="#survey-form" id="survey-form-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Survey Form</a></li>
+                    <li data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a href="#survey-species" id="survey-species-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Species</a></li>
                     <li data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a href="#survey-locations" id="survey-locations-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Locations</a></li>
                     <li data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a href="#survey-publish" id="survey-publish-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Publish</a></li>
                 </ul>
@@ -92,17 +91,17 @@
                         </span>
                     </div>
 
+                    <div class="pill-pane" id="survey-form">
+                        <span class="validationEngineContainer" id="project-activities-form-validation">
+                            <g:render template="/projectActivity/survey"/>
+                        </span>
+                    </div>
                     <div class="pill-pane" id="survey-species">
                         <span class="validationEngineContainer" id="project-activities-species-validation">
                             <g:render template="/projectActivity/species"/>
                         </span>
                     </div>
 
-                    <div class="pill-pane" id="survey-form">
-                        <span class="validationEngineContainer" id="project-activities-form-validation">
-                            <g:render template="/projectActivity/survey"/>
-                        </span>
-                    </div>
 
                     <div class="pill-pane" id="survey-locations">
                         <span class="validationEngineContainer" id="project-activities-locations-validation">
