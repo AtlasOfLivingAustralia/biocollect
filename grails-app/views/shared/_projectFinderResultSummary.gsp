@@ -41,7 +41,7 @@
                         <button type="button" class="btn  btn-mini" data-value="500">500</button>
                     </div>
                 </div>
-                <div class="nowrap inline-block margin-bottom-5">
+                <div class="nowrap inline-block margin-bottom-5" id="pt-aus-world-block">
                     &nbsp;
                     <small><g:message
                             code="project.label"/>&nbsp;</small>
