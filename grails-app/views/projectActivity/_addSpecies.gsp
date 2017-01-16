@@ -44,8 +44,7 @@
                                                 name: transients.name,
                                                 guid: transients.guid
                                             }" data-validation-engine="validate[required]">
-            <button class="btn btn-small" data-bind="click: $parent.newSpeciesLists.removeNewSpeciesName"> X</button>
-
+            <button class="btn btn-small" data-bind="click: $parent.newSpeciesLists.removeNewSpeciesName">&times;</button>
         </div>
 
 
