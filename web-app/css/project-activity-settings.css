@@ -138,6 +138,6 @@ Modal settings copy pasted from bootstrap 3.3.7 and tweaked for species configur
 }
 
 .species-modal .modal-body {
-    max-height: 500px;
+    max-height: 700px;
     overflow-y: auto;
 }

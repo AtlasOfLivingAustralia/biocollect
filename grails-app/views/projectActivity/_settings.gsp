@@ -126,8 +126,8 @@
 
 <r:script>
     function initialiseProjectActivitiesSettings(pActivitiesVM) {
-        var pActivitiesVM = new ProjectActivitiesSettingsViewModel(pActivitiesVM, 'project-activities-result-placeholder');
-        ko.applyBindings(pActivitiesVM, document.getElementById('pActivities'));
+        var pActivitiesSettingsVM = new ProjectActivitiesSettingsViewModel(pActivitiesVM, 'project-activities-result-placeholder');
+        ko.applyBindings(pActivitiesSettingsVM, document.getElementById('pActivities'));
         new RestoreTab('ul-survey-constraint-citizen-science', 'survey-info');
     };
 </r:script>
