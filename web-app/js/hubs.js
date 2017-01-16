@@ -374,6 +374,7 @@ var ProjectFinderHomePageViewModel = function (config) {
     var self = this;
 
     self.defaultView = ko.observable(config.defaultView || 'grid');
+    self.showProjectRegionSwitch = ko.observable(config.showProjectRegionSwitch || false);
 };
 
 var HomePageViewModel = function (config) {

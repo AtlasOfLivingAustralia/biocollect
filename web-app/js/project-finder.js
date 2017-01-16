@@ -702,7 +702,8 @@ function ProjectFinder() {
 
 
     if (fcConfig.hideWorldWideBtn) {
-        $('#pt-aus-world').hide()
+        $('#pt-aus-world').hide();
+        $('#pt-aus-world-block').hide();
     }
 
     parseHash();
