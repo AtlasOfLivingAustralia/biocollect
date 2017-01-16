@@ -39,6 +39,7 @@ module.exports = function (config) {
             'web-app/js/projects.js',
             'web-app/vendor/moment/moment.min.js',
             'web-app/js/organisation.js',
+            'web-app/js/pagination.js',
             'web-app/js/sites.js',
             'web-app/js/speciesModel.js',
             'web-app/js/projectActivityInfo.js',

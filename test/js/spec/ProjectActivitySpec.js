@@ -129,19 +129,6 @@ describe("SpeciesListsViewModel Spec", function () {
         expect(listsVM.offset()).toEqual(0);
     });
 
-    it("previous selection should be available when offset is greater than 0", function () {
-        var listsVM = new SpeciesListsViewModel();
-        listsVM.offset(0);
-        expect(listsVM.isPrevious ()).toEqual(false);
-        listsVM.offset(2);
-        expect(listsVM.isPrevious ()).toEqual(true);
-    });
-
-    it("next selection should not be available when total species count is 0", function () {
-        var listsVM = new SpeciesListsViewModel();
-        listsVM.listCount(0);
-        expect(listsVM.isNext ()).toEqual(false);
-    });
 });
 
 
