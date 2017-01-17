@@ -89,10 +89,10 @@ Paths.get(xlsx).withInputStream { input ->
         def alreadyProcessed = processedIds.findAll { entry."uniqueId" == it }
         if (!alreadyProcessed) {
             def combinedRecords = values?.findAll {
-                it."observer_name" == entry."observer_name" &&
-                        it."survey_date" == entry."survey_date" &&
-                        it."plot_id" == entry."plot_id" &&
-                        it."survey_start_time" == entry."survey_start_time"
+                        it."collectedBy" == entry."collectedBy" &&
+                        it."surveyDate" == entry."surveyDate" &&
+                        it."plotId" == entry."plotId" &&
+                        it."surveyStartTime" == entry."surveyStartTime"
             }
 
             combinedRecords?.each {
@@ -126,7 +126,7 @@ Paths.get(xlsx).withInputStream { input ->
 
                 java.text.DateFormat time = new java.text.SimpleDateFormat("hh:mm a");
                 String isoDateTime = time.format(record."surveyStartTime")
-                String isoDateFinishTime = time.format(record."surveyFinishTime")
+
 
                 // Map generic fields
                 if (idx == 0) {
@@ -135,11 +135,11 @@ Paths.get(xlsx).withInputStream { input ->
                     activity.outputs[0].data.surveyDate = isoDate
                     activity.outputs[0].data.plotId = (record."plotId")?.trim()
                     activity.outputs[0].data.surveyStartTime = isoDateTime
-                    activity.outputs[0].data.surveyFinishTime = isoDateFinishTime
+                    activity.outputs[0].data.surveyFinishTime = ''
                     activity.outputs[0].data.sampleType = (record."sampleType") && (record."sampleType")?.trim() == 'Targeted' ? "Targeted (for particular species)" :  (record."sampleType")
                     activity.outputs[0].data.sampleSequence = (record."sampleSequence")?.trim()
-                    activity.outputs[0].data.eventRemarks = (record."eventRemarks")?.trim()
-                    activity.outputs[0].data.zone = (record."zone")?.trim()
+                    activity.outputs[0].data.eventRemarks = (record."eventRemarks") ?: ''
+                    activity.outputs[0].data.zone = (record."zone") ?: ''
                     activity.outputs[0].data.easting = (record."easting") ?: ''
                     activity.outputs[0].data.northing = (record."northing") ?: ''
                     activity.outputs[0].data.relativeLocation = (record."relativeLocation") ?: ''
@@ -157,8 +157,8 @@ Paths.get(xlsx).withInputStream { input ->
                     activity.outputs[0].data.trackingSurfaceContinuity = (record."trackingSurfaceContinuity") ?: ''
                     activity.outputs[0].data.locationLatitude = (record."locationLatitude")
                     activity.outputs[0].data.locationLongitude = (record."locationLongitude")
-                    activity.outputs[0].data.locationSitesArray = [] // For polygon
-
+                    //activity.outputs[0].data.locationSitesArray = [] // For polygon
+                    //activity.outputs[0].data.locationMap = [:]
 
                     activity.outputs[0].data.trackingSurfaceSuitabilityTable = []
                     activity.outputs[0].data.trackingSurfaceSuitabilityTable << [trackingSurfaceSuitabilityCategory:"Category 1 - could distinguish tracks of category 2 & 3 animals, plus hopping mice, rodents, small birds, insects etc",
@@ -172,9 +172,9 @@ Paths.get(xlsx).withInputStream { input ->
 
                     //TODO; check percentCover
                     activity.outputs[0].data.vegTypeTableOverstorey = []
-                    activity.outputs[0].data.vegTypeTableOverstorey << [vegTypeOverstorey: "Main vegetation overstorey", vegDescriptionOverstorey: record."vegDescriptionOverstorey", percentCover: record."per_cover"]
+                    activity.outputs[0].data.vegTypeTableOverstorey << [vegTypeOverstorey: "Main vegetation overstorey", vegDescriptionOverstorey: record."vegDescriptionOverstorey", percentCoverOverstorey: record."percentCoverOverstorey"]
                     activity.outputs[0].data.vegTypeTableUnderstorey = []
-                    activity.outputs[0].data.vegTypeTableUnderstorey << [vegTypeUnderstorey: "Main vegetation understorey", vegDescriptionUnderstorey: record."vegDescriptionUnderstorey", percentCover: record."undestorey_per_cover"]
+                    activity.outputs[0].data.vegTypeTableUnderstorey << [vegTypeUnderstorey: "Main vegetation understorey", vegDescriptionUnderstorey: record."vegDescriptionUnderstorey", percentCoverUnderstorey: record."percentCoverUnderstorey"]
 
                     // Map species multi rows
                     activity.outputs[0].data.sightingEvidenceTable = []
@@ -188,7 +188,7 @@ Paths.get(xlsx).withInputStream { input ->
                 // Get species name
                 def species = [name: '', guid: '', scientificName: '', commonName: '', outputSpeciesId: outputSpeciesId]
                 def rows = []
-                def speciesResponse = new URL(SERVER_URL + SPECIES_URL + "&q=${record.'species_name'}").text
+                def speciesResponse = new URL(SERVER_URL + SPECIES_URL + "&q=${record.'species'}").text
                 def speciesJSON = new groovy.json.JsonSlurper()
                 def autoCompleteList = speciesJSON.parseText(speciesResponse)?.autoCompleteList
 
@@ -231,15 +231,13 @@ Paths.get(xlsx).withInputStream { input ->
             connection.setRequestMethod("POST")
             connection.setDoOutput(true)
 
-            //java.io.OutputStreamWriter wr = new java.io.OutputStreamWriter(connection.getOutputStream(), 'utf-8')
-            //wr.write(new groovy.json.JsonBuilder( activity ).toString())
-            //wr.flush()
-            //wr.close()
+            java.io.OutputStreamWriter wr = new java.io.OutputStreamWriter(connection.getOutputStream(), 'utf-8')
+            wr.write(new groovy.json.JsonBuilder( activity ).toString())
+            wr.flush()
+            wr.close()
 
             // get the response code - automatically sends the request
-            // println connection.responseCode + ": " + connection.inputStream.text
-
-             println(new groovy.json.JsonBuilder( activity ).toString())
+            println connection.responseCode + ": " + connection.inputStream.text
          }
     }
 
