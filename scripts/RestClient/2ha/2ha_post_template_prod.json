@@ -797,8 +797,8 @@
         "locationLoading": false,
         "locationMap": {
           "DEFAULT_CENTRE": {
-            "lat": 0,
-            "lng": 0
+            "lat": -28,
+            "lng": 134
           }
         },
         "sightingEvidenceTable": [

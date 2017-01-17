@@ -111,7 +111,7 @@ Paths.get(xlsx).withInputStream { input ->
     // Loop through the activities
     nestedActivities?.eachWithIndex { activityRow, activityIndex ->
 
-         if (activityIndex == 0) {
+         //if (activityIndex == 0) {
 
             def jsonSlurper = new groovy.json.JsonSlurper()
             def activity = jsonSlurper.parseText(jsonStr)
@@ -206,8 +206,8 @@ Paths.get(xlsx).withInputStream { input ->
                 }
 
                 rows << [species         : species,
-                         tracksOnPlot    : record.'tracksOnPlot',
-                         tracksAdjacent  : record.'tracksAdjacent',
+                         tracksOnPlot    : record.'tracksOnPlot' ? "Yes" : "No",
+                         tracksAdjacent  : record.'tracksAdjacent' ? "Yes" : "No",
                          animalObserved  : record.'animalObserved',
                          diggingsObserved: record.'diggingsObserved',
                          scatsObserved   : record.'scatsObserved',
@@ -238,7 +238,7 @@ Paths.get(xlsx).withInputStream { input ->
 
             // get the response code - automatically sends the request
             println connection.responseCode + ": " + connection.inputStream.text
-         }
+         //}
     }
 
     println("Completed..")
