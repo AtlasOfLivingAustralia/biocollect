@@ -342,19 +342,6 @@ function ProjectViewModel(project, isUserEditor) {
             return  org && org.collectoryInstitutionId ? org.collectoryInstitutionId: "";
     });
 
-
-    var truncate = function (string,  length) {
-        if(string == undefined)
-        {
-            return undefined;
-        }
-
-        length = length || 30;
-        var truncation = '...';
-        return string.length > length ?
-        string.slice(0, length - truncation.length) + truncation : string;
-    };
-
     self.transients.truncatedOrganisationName = ko.computed(function () {
         return truncate(self.organisationName(), 50);
     });

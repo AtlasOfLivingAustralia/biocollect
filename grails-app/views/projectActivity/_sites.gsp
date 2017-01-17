@@ -140,7 +140,7 @@
     <div class="row-fluid">
         <div class="span12">
             <button class="btn-primary btn btn-small block" data-bind="click: $parent.saveSites, disable: !transients.saveOrUnPublishAllowed()"><i class="icon-white  icon-hdd" ></i>  Save </button>
-            <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-form-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
+            <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
             <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-publish-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
         </div>
     </div>
