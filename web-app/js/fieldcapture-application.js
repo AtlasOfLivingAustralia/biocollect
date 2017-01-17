@@ -1005,3 +1005,21 @@ function configureFloatingSave(dirtyFlag, options) {
         }
     });
 }
+
+/**
+ * Truncates a string adding and adds ... to the end of it.
+ * @param string The string to truncate if it  string.length > length
+ * @param length The maximum string length before it is truncated
+ * @returns the original string if string.length <= length or a truncated version of string ending in '...'
+ */
+function truncate (string,  length) {
+    if(string == undefined)
+    {
+        return undefined;
+    }
+
+    length = length || 30;
+    var truncation = '...';
+    return string.length > length ?
+        string.slice(0, length - truncation.length) + truncation : string;
+};

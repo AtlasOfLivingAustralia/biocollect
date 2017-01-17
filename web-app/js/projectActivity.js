@@ -1655,6 +1655,10 @@ var SpeciesList = function (o) {
     self.transients.bulkSpeciesNames = ko.observable(o.bulkSpeciesNames);
     self.transients.url = ko.observable(fcConfig.speciesListsServerUrl + "/speciesListItem/list/" + o.dataResourceUid);
     self.transients.check = ko.observable(false);
+    self.transients.truncatedListName = ko.computed(function () {
+        return truncate(self.listName(), 45);
+    });
+
 };
 
 var ImagesViewModel = function (image) {

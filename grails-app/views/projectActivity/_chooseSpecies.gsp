@@ -37,7 +37,7 @@
                             <span data-bind="css: allSpeciesLists.descIconClass, visible: allSpeciesLists.transients.sortCol()=='listName' && allSpeciesLists.transients.sortOrder()=='desc'"></span>
                         </button>
                     </th>
-                    <th width="10%" >
+                    <th width="15%" >
                         <button class="btn btn-link"
                                 data-bind="click: allSpeciesLists.sort('listType', allSpeciesLists.transients.sortOrder())">
                             List type
@@ -45,7 +45,7 @@
                             <span data-bind="css: allSpeciesLists.descIconClass, visible: allSpeciesLists.transients.sortCol()=='listType' && allSpeciesLists.transients.sortOrder()=='desc'"></span>
                         </button>
                     </th>
-                    <th width="20%">
+                    <th width="15%">
                         <button class="btn btn-link"
                                 data-bind="click: allSpeciesLists.sort('username', allSpeciesLists.transients.sortOrder())">
                             Owner
@@ -53,7 +53,7 @@
                             <span data-bind="css: allSpeciesLists.descIconClass, visible: allSpeciesLists.transients.sortCol()=='username' && allSpeciesLists.transients.sortOrder()=='desc'"></span>
                         </button>
                     </th>
-                    <th width="10%">
+                    <th width="17%">
                         <button class="btn btn-link"
                                 data-bind="click: allSpeciesLists.sort('count', allSpeciesLists.transients.sortOrder())">
                             Item Count&nbsp;
@@ -62,22 +62,25 @@
                         </button>
 
                     </th>
-                    <th width="20%"></th>
+                    <th width="13%"></th>
 
                     </thead>
 
                     <tbody>
                     <!-- ko foreach: allSpeciesLists.allSpeciesListsToSelect -->
                     <tr>
-                        <td data-bind="text: listName"></td>
-                        <td data-bind="text: listType"></td>
-                        <td data-bind="text: fullName"></td>
-                        <td data-bind="text: itemCount"></td>
-                        <td>
-                            <a target="_blank" data-bind="attr:{href: transients.url}">
-                                <span class="icon-eye-open"> </span> View
+                        <td><a target="_blank" data-bind="attr:{href: transients.url, title: listName}">
+                                <span data-bind="text: transients.truncatedListName"></span>
                             </a>
-
+                        </td>
+                        <td>
+                            <small data-bind="text: listType"></small>
+                        </td>
+                        <td data-bind="text: fullName"></td>
+                        %{--Why is bootstrap overriding any class element set here?--}%
+                        %{--I have to use inline styles instead, ugly but otherwise it does not work--}%
+                        <td style="text-align: right" data-bind="text: itemCount"></td>
+                        <td style="text-align: right">
                             <span data-bind="if: transients.check() == true">
                                 <span class="icon-check"> </span> Added
                             </span>

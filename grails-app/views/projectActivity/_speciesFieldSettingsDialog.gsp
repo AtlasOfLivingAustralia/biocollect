@@ -63,17 +63,16 @@
                         <h5>No lists selected</h5>
                     </div>
                     <div data-bind="visible: species.groupInfoVisible, if: species.speciesLists().length > 0">
-                        <h5>Selected</h5>
+                        <h5>Selected lists</h5>
                         <div class="row-fluid">
                             <div class="span12 text-left">
-
                                 <!-- ko foreach: species.speciesLists -->
-                                <small data-bind="text: $index()+1"></small>
-                                <a class="btn btn-link" target="_blank" data-bind="attr:{href: transients.url}">
-                                    <small data-bind="text: listName"></small>
+                                <small data-bind="text: $index()+1">&nbsp;</small>
+                                <a class="" target="_blank" data-bind="attr:{href: transients.url, title: listName }">
+                                    <small data-bind="text: transients.truncatedListName"></small>
                                 </a>
                                 <button data-bind="click: $parent.species.removeSpeciesLists" class="btn btn-link"><small>&times;</small></button>
-                            </br>
+                                </br>
                                 <!-- /ko -->
                             </div>
                         </br>
