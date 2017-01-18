@@ -19,7 +19,7 @@
                             <div class="btn-group btn-group-vertical margin-top-2" data-bind="visible: species.groupInfoVisible, if: species.groupInfoVisible" >
                                 <a class="btn btn-xs btn-default" data-bind="click: species.transients.toggleShowExistingSpeciesLists">Choose from existing species lists</a>
                                 (OR)
-                                <a class="btn btn-xs btn-default" target="blank" data-bind="click: species.transients.toggleShowAddSpeciesLists">Add new species lists</a>
+                                <a class="btn btn-xs btn-default" target="blank" data-bind="click: species.transients.toggleShowAddSpeciesLists">Create new species lists</a>
                             </div>
 
                             <div data-bind="visible: species.singleInfoVisible" class="margin-top-2">

@@ -3,23 +3,29 @@
     <button type="button" class="close margin-right-10 margin-top-10"  data-bind="click:transients.toggleShowExistingSpeciesLists">&times;</button>
     <div class="well">
         <div class="row-fluid margin-bottom-1">
-            <label for="speciesNameSearch">Enter a list name or select a species name to search for</label>
-            <input id="speciesNameSearch" class="input-xxlarge" type="text" placeholder="Search list or species"
-                   data-bind="value:allSpeciesLists.searchName,
-                                        fusedAutocomplete:{
-                                            source: transients.bioSearch,
-                                            name: allSpeciesLists.searchName,
-                                            guid: allSpeciesLists.searchGuid
-                                        }">
             <div class="input-append">
+                <label for="speciesNameSearch">Enter a list name or select a species name to search for</label>
+                <input id="speciesNameSearch" class="input-xxlarge" type="text" placeholder="Search list or species"
+                       data-bind="value:allSpeciesLists.searchName,
+                                            fusedAutocomplete:{
+                                                source: transients.bioSearch,
+                                                name: allSpeciesLists.searchName,
+                                                guid: allSpeciesLists.searchGuid
+                                            }">
+                <button id="clear" class="btn btn-default" data-bind="click: allSpeciesLists.clearSearch"><i class="icon-remove"></i></button>
+                <span class="margin-left-10">
                 <button id="search" class="btn btn-primary" data-bind="click: allSpeciesLists.refreshPage(0)">Search</button>
-            </div>
-            <div class="input-append">
-                <button id="clear" class="btn btn-default" data-bind="click: allSpeciesLists.clearSearch">Clear</button>
+
             </div>
         </div>
 
         <div class="row-fluid" data-bind="with: allSpeciesLists">
+            <div class="span12 text-left" data-bind="if: !pagination.info()">
+                <p class="hidden-xs pull-left nomargin">
+                    <span data-bind="if: searchGuid()">No lists found containing species <b data-bind="text: searchName"></b></span>
+                    <span data-bind="if: !searchGuid()">No lists containing text <b class="text-" data-bind="text: searchName"></b></span>
+                </p>
+            </div>
             <g:render template="/shared/pagination"/>
         </div>
 
@@ -81,10 +87,10 @@
                         %{--I have to use inline styles instead, ugly but otherwise it does not work--}%
                         <td style="text-align: right" data-bind="text: itemCount"></td>
                         <td style="text-align: right">
-                            <span data-bind="if: transients.check() == true">
+                            <span data-bind="if: transients.check()">
                                 <span class="icon-check"> </span> Added
                             </span>
-                            <span data-bind="if: transients.check() == false">
+                            <span data-bind="if: !transients.check()">
                                 <button class="btn btn-link" data-bind="click: $parent.addSpeciesLists">
                                     <span class="icon-plus-sign"> </span> Add
                                 </button>

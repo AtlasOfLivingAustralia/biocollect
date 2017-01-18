@@ -1231,11 +1231,6 @@ var ProjectActivity = function (params) {
         });
         return count;
     }
-    //
-    //self.isSpeciesDisplayFormatChecked = ko.computed(function(){
-    //    debugger;
-    //    $(this).val() == self.speciesDisplayFormat()
-    //})
 
     self.asJSAll = function () {
         var jsData = $.extend({},
@@ -1366,7 +1361,7 @@ var SpeciesConstraintViewModel = function (o) {
     self.speciesLists = ko.observableArray($.map(o.speciesLists ? o.speciesLists : [], function (obj, i) {
         return new SpeciesList(obj);
     }));
-    self.newSpeciesLists = new SpeciesList();
+    self.newSpeciesLists = new NewSpeciesListViewModel();
     self.speciesDisplayFormat = ko.observable(o.speciesDisplayFormat ||'SCIENTIFICNAME(COMMONNAME)')
 
     self.transients = {};
@@ -1404,22 +1399,34 @@ var SpeciesConstraintViewModel = function (o) {
         }
     };
 
-    self.addSpeciesLists = function (lists) {
-        lists.transients.check(true);
-        self.speciesLists.push(lists);
+    self.addSpeciesLists = function (list) {
+        if(!self.containsList(list)) {
+            self.speciesLists.push(list);
+            list.transients.check(true);
+        }
     };
 
-    self.removeSpeciesLists = function (lists) {
-        self.speciesLists.remove(lists);
+    self.containsList = function(list) {
+        var result = false;
+        ko.utils.arrayForEach(self.speciesLists(), function(existingList) {
+            if(existingList.dataResourceUid() == list.dataResourceUid()) {
+                result = existingList;
+            }
+        });
+
+        return result;
+    }
+
+    self.removeSpeciesLists = function (list) {
+        list.transients.check(false);
+        self.speciesLists.remove(list);
     };
 
     self.showSpeciesConfiguration = function() {
-        console.log("showSpeciesConfiguration Called");
         $('#configureSpeciesField').modal({backdrop:'static'});
     }
 
     self.cancelConfigWindow = function() {
-        console.log("cancelConfigWindow Called");
         $('#configureSpeciesField').modal('hide');
         //ko.cleanNode($('#configureSpeciesField'));
     }
@@ -1480,24 +1487,24 @@ var SpeciesConstraintViewModel = function (o) {
 
         var lists = ko.mapping.toJS(self.newSpeciesLists);
         $.each(lists.allSpecies, function (index, species) {
+            var UNMATCHED_TAXON = " (Unmatched taxon)";
+
+            var name = (species.guid) ? // Matched Taxon ?
+                species.name :
+                species.name.substr(0, species.name.indexOf(UNMATCHED_TAXON));
             if (index == 0) {
-                jsData.listItems = species.name;
+                jsData.listItems = name;
             } else {
-                jsData.listItems = jsData.listItems + "," + species.name;
+                jsData.listItems = jsData.listItems + "," + name;
             }
         });
-        // Add bulk species names.
-        if (jsData.listItems == "") {
-            jsData.listItems = self.newSpeciesLists.transients.bulkSpeciesNames();
-        } else {
-            jsData.listItems = jsData.listItems + "," + self.newSpeciesLists.transients.bulkSpeciesNames();
-        }
 
         var model = JSON.stringify(jsData, function (key, value) {
             return value === undefined ? "" : value;
         });
         var divId = 'project-activities-result-placeholder';
         $("#addNewSpecies-status").show();
+
         $.ajax({
             url: fcConfig.addNewSpeciesListsUrl,
             type: 'POST',
@@ -1511,7 +1518,7 @@ var SpeciesConstraintViewModel = function (o) {
                     showAlert("Successfully added the new species list - " + self.newSpeciesLists.listName() + " (" + data.id + ")", "alert-success", divId);
                     self.newSpeciesLists.dataResourceUid(data.id);
                     self.speciesLists.push(new SpeciesList(ko.mapping.toJS(self.newSpeciesLists)));
-                    self.newSpeciesLists = new SpeciesList();
+                    self.newSpeciesLists = new NewSpeciesListViewModel();
                     self.transients.toggleShowAddSpeciesLists();
                 }
                 $("#addNewSpecies-status").hide();
@@ -1640,24 +1647,53 @@ var SpeciesList = function (o) {
     self.fullName = ko.observable(o.fullName);
     self.itemCount = ko.observable(o.itemCount);
 
-    // Only used for new species.
-    self.description = ko.observable(o.description);
-    self.listType = ko.observable(o.listType);
-    self.allSpecies = ko.observableArray();
-    self.addNewSpeciesName = function () {
-        self.allSpecies.push(new SpeciesViewModel());
-    };
-    self.removeNewSpeciesName = function (species) {
-        self.allSpecies.remove(species);
-    };
 
     self.transients = {};
-    self.transients.bulkSpeciesNames = ko.observable(o.bulkSpeciesNames);
     self.transients.url = ko.observable(fcConfig.speciesListsServerUrl + "/speciesListItem/list/" + o.dataResourceUid);
     self.transients.check = ko.observable(false);
     self.transients.truncatedListName = ko.computed(function () {
         return truncate(self.listName(), 45);
     });
+};
+
+
+var NewSpeciesListViewModel = function (o) {
+    var self = this;
+    if (!o) o = {};
+
+    self.listName = ko.observable(o.listName);
+    self.dataResourceUid = ko.observable(o.dataResourceUid);
+    self.description = ko.observable(o.description);
+    self.listType = ko.observable(o.listType);
+    self.allSpecies = ko.observableArray();
+
+    self.inputSpeciesViewModel = new SpeciesViewModel();
+    self.inputSpeciesViewModel.transients.searchValue = ko.observable("");
+
+    self.inputSpeciesViewModel.transients.name.subscribe(function (newName) {
+        if(newName) {
+            var newSpecies = new SpeciesViewModel();
+            newSpecies.name(newName);
+            newSpecies.guid(self.inputSpeciesViewModel.transients.guid());
+            if(self.inputSpeciesViewModel.transients.guid()) {
+                newSpecies.transients.bieUrl(self.inputSpeciesViewModel.transients.bieUrl());
+            }
+            self.allSpecies.push(newSpecies);
+        }
+
+        self.clearSearchValue();
+    });
+
+    self.clearSearchValue  = function () {
+        self.inputSpeciesViewModel.transients.searchValue("");
+    };
+
+    self.removeNewSpeciesName = function (species) {
+        self.allSpecies.remove(species);
+    };
+
+    self.transients = {};
+    self.transients.url = ko.observable(fcConfig.speciesListsServerUrl + "/speciesListItem/list/" + o.dataResourceUid);
 
 };
 
