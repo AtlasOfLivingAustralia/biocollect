@@ -8,6 +8,8 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
         return organisationName + (surveyName ? (", " + surveyName) : "");
     };
 
+    self.transients = self.transients || {};
+
     self.projectActivityId = ko.observable(o.projectActivityId);
     self.name = ko.observable(o.name ? o.name : "Survey name");
     self.description = ko.observable(o.description);
@@ -20,7 +22,10 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     self.attribution = ko.observable(o.attribution ? o.attribution : self.formatAttribution(organisationName, self.name()));
     self.methodName = ko.observable(o.methodName);
     self.methodAbstract = ko.observable(o.methodAbstract);
+
     self.pActivityFormName = ko.observable(o.pActivityFormName ? o.pActivityFormName : "");
+
+
     self.downloadFormTemplateUrl = ko.observable(o.pActivityFormName ? fcConfig.downloadTemplateFormUrl + "?type=" + o.pActivityFormName + "&expandList=true" : "")
 
  /*   self.datasetVersion = ko.observable(o.datasetVersion ? o.datasetVersion : "");
@@ -51,7 +56,7 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
         }
     };
 
-    self.transients = self.transients || {};
+
     self.transients.organisationName = ko.observable(organisationName);
     self.transients.oldName = ko.observable(self.name());
 

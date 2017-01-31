@@ -1,5 +1,5 @@
 <!-- data-table select species list -->
-<span data-bind="if: transients.showExistingSpeciesLists">
+<span data-bind="visible: transients.showExistingSpeciesLists">
     <button type="button" class="close margin-right-10 margin-top-10"  data-bind="click:transients.toggleShowExistingSpeciesLists">&times;</button>
     <div class="well">
         <div class="row-fluid margin-bottom-1">
@@ -20,18 +20,16 @@
         </div>
 
         <div class="row-fluid" data-bind="with: allSpeciesLists">
-            <div class="span12 text-left" data-bind="if: !pagination.info()">
+            <div class="span12 text-left" data-bind="visible: !pagination.info()">
                 <p class="hidden-xs pull-left nomargin">
-                    <span data-bind="if: searchGuid()">No lists found containing species <b data-bind="text: searchName"></b></span>
-                    <span data-bind="if: !searchGuid()">No lists containing text <b class="text-" data-bind="text: searchName"></b></span>
+                    <span data-bind="visible: searchGuid()">No lists found containing species <b data-bind="text: searchName"></b></span>
+                    <span data-bind="visible: !searchGuid()">No lists containing text <b class="text-" data-bind="text: searchName"></b></span>
                 </p>
             </div>
             <g:render template="/shared/pagination"/>
         </div>
 
-
-        <!-- ko if: allSpeciesLists.listCount() > 0 -->
-        <div class="row-fluid">
+        <div data-bind="visible: allSpeciesLists.listCount() > 0 " class="row-fluid">
             <div class="span12 text-left">
                 <table class="table table-striped" id="select-species-list">
                     <thead>
@@ -87,10 +85,10 @@
                         %{--I have to use inline styles instead, ugly but otherwise it does not work--}%
                         <td style="text-align: right" data-bind="text: itemCount"></td>
                         <td style="text-align: right">
-                            <span data-bind="if: transients.check()">
+                            <span data-bind="visible: transients.check()">
                                 <span class="icon-check"> </span> Added
                             </span>
-                            <span data-bind="if: !transients.check()">
+                            <span data-bind="visible: !transients.check()">
                                 <button class="btn btn-link" data-bind="click: $parent.addSpeciesLists">
                                     <span class="icon-plus-sign"> </span> Add
                                 </button>
@@ -103,7 +101,7 @@
                 </table>
             </div>
         </div>
-        <!-- /ko -->
+
         <div class="row-fluid" data-bind="with: allSpeciesLists">
             <g:render template="/shared/pagination"/>
         </div>

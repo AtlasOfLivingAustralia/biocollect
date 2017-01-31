@@ -52,12 +52,12 @@
                     </div>
                     <div class="span5">
                         <span class="req-field">
-                            <select data-validation-engine="validate[required]" data-bind="disable: true, options: $root.speciesOptions, optionsText:'name', optionsValue:'id', value: species.type, optionsCaption: 'Please select'" ></select>
+                            <select data-validation-engine="validate[required]" data-bind="disable: true, options: species().speciesOptions, optionsText:'name', optionsValue:'id', value: species().type, optionsCaption: 'Please select'" ></select>
                         </span>
-                        <a target="_blank" class="btn btn-link" data-bind="click: species.showSpeciesConfiguration" ><small><g:message code="project.survey.species.configure"/></small></a>
+                        <a target="_blank" class="btn btn-link" data-bind="click: showSpeciesConfiguration" ><small><g:message code="project.survey.species.configure"/></small></a>
                     </div>
                     <div class="span4 text-left">
-                        <select data-bind="value: species.speciesDisplayFormat">
+                        <select data-bind="value: species().speciesDisplayFormat">
                             <option value="SCIENTIFICNAME(COMMONNAME)">Scientific name (Common name)</option>
                             <option value="COMMONNAME(SCIENTIFICNAME)">Common name (Scientific name)</option>
                             <option value="COMMONNAME">Common name</option>
@@ -69,7 +69,15 @@
 
             </div>
 
-            <g:render template="/projectActivity/speciesFieldSettingsDialog"></g:render>
+            <!-- ko stopBinding: true -->
+                <div  id="speciesFieldDialog" data-bind="template: {name:'speciesFieldDialogTemplate'}"></div>
+            <!-- /ko -->
+
+            <script type="text/html" id="speciesFieldDialogTemplate">
+                <g:render template="/projectActivity/speciesFieldSettingsDialog"></g:render>
+            </script>
+
+
 
             <div class="row-fluid">
 

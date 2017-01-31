@@ -665,7 +665,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
             showAlert("Survey end date must be after start date", "alert-error", self.placeHolder);
             $('#survey-info-tab').tab('show');
         } else if (current.isInfoValid() &&
-            current.species.isValid() &&
+            current.species().isValid() &&
             jsData.pActivityFormName &&
             (jsData.sites && jsData.sites.length > 0)
         ) {
@@ -1007,7 +1007,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         var sites = current.sites();
 
         return (current.isInfoValid() &&
-        current.species.isValid() &&
+        current.species().isValid() &&
         current.pActivityFormName() &&
         (sites && sites.length > 0))
     }
@@ -1062,8 +1062,50 @@ var ProjectActivity = function (params) {
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
     self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
     self.baseLayersName = ko.observable(pActivity.baseLayersName);
+
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
-    self.species = new SpeciesConstraintViewModel(pActivity.species);
+
+    self.transients.formName = self.pActivityFormName();
+    self.transients.formNameProgrammaticEvent = false;
+
+    self.pActivityFormName.extend({rateLimit: 100});
+    self.pActivityFormName.subscribe(function(oldValue) {
+        if(self.transients.formName !== oldValue) {
+            self.transients.formName = oldValue;
+            console.log("Old form name is " + oldValue);
+        }
+    }, null, "beforeChange");
+
+    self.pActivityFormName.subscribe(function(newValue) {
+        console.log("New form name is " + newValue);
+
+        if(!self.transients.formNameProgrammaticEvent) {
+            if(true) {
+
+                self.pActivityFormName(self.transients.formName);
+                self.transients.formNameProgrammaticEvent = true; // Prevent infinite event firing loop
+            }
+        } else {
+            self.transients.formNameProgrammaticEvent = false;
+        }
+    });
+
+    self.species = ko.observable(new SpeciesConstraintViewModel(pActivity.species));
+
+    self.showSpeciesConfiguration = function() {
+        showSpeciesFieldConfigInModal(new SpeciesConstraintViewModel(self.species().asJson()), '#configureSpeciesFieldModal', '#speciesFieldDialog')
+            .done(function(result){
+                self.species(new SpeciesConstraintViewModel(result));
+                }
+            );
+    }
+
+    // Default species configuration
+    self.transients.species = ko.observable(pActivity.species);
+
+    // Per field species configuration (if available)
+    self.transients.specificFieldSpecies = ko.observableArray(pActivity.specificFieldSpecies);
+
     self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
     self.alert = new AlertViewModel(pActivity.alert);
 
@@ -1263,7 +1305,7 @@ var ProjectActivity = function (params) {
         }
         else if (by == "species") {
             jsData = {};
-            jsData.species = self.species.asJson();
+            jsData.species = self.species().asJson();
         }
         else if (by == "sites") {
             jsData = {};
@@ -1348,187 +1390,6 @@ var SiteList = function (o, surveySites) {
         });
     };
     self.load(surveySites);
-
-};
-
-var SpeciesConstraintViewModel = function (o) {
-    var self = this;
-    if (!o) o = {};
-
-    self.type = ko.observable(o.type);
-    self.allSpeciesLists = new SpeciesListsViewModel();
-    self.singleSpecies = new SpeciesViewModel(o.singleSpecies);
-    self.speciesLists = ko.observableArray($.map(o.speciesLists ? o.speciesLists : [], function (obj, i) {
-        return new SpeciesList(obj);
-    }));
-    self.newSpeciesLists = new NewSpeciesListViewModel();
-    self.speciesDisplayFormat = ko.observable(o.speciesDisplayFormat ||'SCIENTIFICNAME(COMMONNAME)')
-
-    self.transients = {};
-    self.transients.bioProfileUrl = ko.computed(function () {
-        return fcConfig.bieUrl + '/species/' + self.singleSpecies.guid();
-    });
-
-    self.transients.bioSearch = ko.observable(fcConfig.speciesSearchUrl);
-    self.transients.allowedListTypes = [
-        {id: 'SPECIES_CHARACTERS', name: 'SPECIES_CHARACTERS'},
-        {id: 'CONSERVATION_LIST', name: 'CONSERVATION_LIST'},
-        {id: 'SENSITIVE_LIST', name: 'SENSITIVE_LIST'},
-        {id: 'LOCAL_LIST', name: 'LOCAL_LIST'},
-        {id: 'COMMON_TRAIT', name: 'COMMON_TRAIT'},
-        {id: 'COMMON_HABITAT', name: 'COMMON_HABITAT'},
-        {id: 'TEST', name: 'TEST'},
-        {id: 'OTHER', name: 'OTHER'}];
-
-    self.transients.showAddSpeciesLists = ko.observable(false);
-    self.transients.showExistingSpeciesLists = ko.observable(false);
-
-    self.transients.toggleShowAddSpeciesLists = function () {
-        self.transients.showAddSpeciesLists(!self.transients.showAddSpeciesLists());
-        if (self.transients.showAddSpeciesLists()) {
-            self.transients.showExistingSpeciesLists(false);
-        }
-    };
-
-    self.transients.toggleShowExistingSpeciesLists = function () {
-        self.allSpeciesLists.transients.loading(true);
-        self.transients.showExistingSpeciesLists(!self.transients.showExistingSpeciesLists());
-        if (self.transients.showExistingSpeciesLists()) {
-            self.allSpeciesLists.setDefault();
-            self.transients.showAddSpeciesLists(false);
-        }
-    };
-
-    self.addSpeciesLists = function (list) {
-        if(!self.containsList(list)) {
-            self.speciesLists.push(list);
-            list.transients.check(true);
-        }
-    };
-
-    self.containsList = function(list) {
-        var result = false;
-        ko.utils.arrayForEach(self.speciesLists(), function(existingList) {
-            if(existingList.dataResourceUid() == list.dataResourceUid()) {
-                result = existingList;
-            }
-        });
-
-        return result;
-    }
-
-    self.removeSpeciesLists = function (list) {
-        list.transients.check(false);
-        self.speciesLists.remove(list);
-    };
-
-    self.showSpeciesConfiguration = function() {
-        $('#configureSpeciesField').modal({backdrop:'static'});
-    }
-
-    self.cancelConfigWindow = function() {
-        $('#configureSpeciesField').modal('hide');
-        //ko.cleanNode($('#configureSpeciesField'));
-    }
-
-    self.allSpeciesInfoVisible = ko.computed(function () {
-        return (self.type() == "ALL_SPECIES");
-    });
-
-    self.groupInfoVisible = ko.computed(function () {
-        return (self.type() == "GROUP_OF_SPECIES");
-    });
-
-    self.singleInfoVisible = ko.computed(function () {
-        return (self.type() == "SINGLE_SPECIES");
-    });
-
-    self.type.subscribe(function (type) {
-        if (self.type() == "SINGLE_SPECIES") {
-        } else if (self.type() == "GROUP_OF_SPECIES") {
-        }
-    });
-
-    self.asJson = function () {
-        var jsData = {};
-        if (self.type() == "ALL_SPECIES") {
-            jsData.type = self.type();
-            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
-        }
-        else if (self.type() == "SINGLE_SPECIES") {
-            jsData.type = self.type();
-            jsData.singleSpecies = ko.mapping.toJS(self.singleSpecies, {ignore: ['transients']});
-            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
-        }
-        else if (self.type() == "GROUP_OF_SPECIES") {
-            jsData.type = self.type();
-            jsData.speciesLists = ko.mapping.toJS(self.speciesLists, {ignore: ['listType', 'fullName', 'itemCount', 'description', 'listType', 'allSpecies', 'transients']});
-            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
-        }
-
-        return jsData;
-    };
-
-    self.isValid = function(){
-        return ((self.type() == "ALL_SPECIES") || (self.type() == "SINGLE_SPECIES" && self.singleSpecies.guid()) ||
-        (self.type() == "GROUP_OF_SPECIES" && self.speciesLists().length > 0))
-    };
-
-    self.saveNewSpeciesName = function () {
-        if (!$('#project-activities-species-validation').validationEngine('validate')) {
-            return;
-        }
-
-        var jsData = {};
-        jsData.listName = self.newSpeciesLists.listName();
-        jsData.listType = self.newSpeciesLists.listType();
-        jsData.description = self.newSpeciesLists.description();
-        jsData.listItems = "";
-
-        var lists = ko.mapping.toJS(self.newSpeciesLists);
-        $.each(lists.allSpecies, function (index, species) {
-            var UNMATCHED_TAXON = " (Unmatched taxon)";
-
-            var name = (species.guid) ? // Matched Taxon ?
-                species.name :
-                species.name.substr(0, species.name.indexOf(UNMATCHED_TAXON));
-            if (index == 0) {
-                jsData.listItems = name;
-            } else {
-                jsData.listItems = jsData.listItems + "," + name;
-            }
-        });
-
-        var model = JSON.stringify(jsData, function (key, value) {
-            return value === undefined ? "" : value;
-        });
-        var divId = 'project-activities-result-placeholder';
-        $("#addNewSpecies-status").show();
-
-        $.ajax({
-            url: fcConfig.addNewSpeciesListsUrl,
-            type: 'POST',
-            data: model,
-            contentType: 'application/json',
-            success: function (data) {
-                if (data.error) {
-                    showAlert("Error :" + data.error, "alert-error", divId);
-                }
-                else {
-                    showAlert("Successfully added the new species list - " + self.newSpeciesLists.listName() + " (" + data.id + ")", "alert-success", divId);
-                    self.newSpeciesLists.dataResourceUid(data.id);
-                    self.speciesLists.push(new SpeciesList(ko.mapping.toJS(self.newSpeciesLists)));
-                    self.newSpeciesLists = new NewSpeciesListViewModel();
-                    self.transients.toggleShowAddSpeciesLists();
-                }
-                $("#addNewSpecies-status").hide();
-            },
-            error: function (data) {
-                showAlert("Error : An unhandled error occurred" + data.status, "alert-error", divId);
-                $("#addNewSpecies-status").hide();
-            }
-        });
-    };
 
 };
 

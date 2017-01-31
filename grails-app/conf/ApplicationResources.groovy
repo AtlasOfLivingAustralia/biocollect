@@ -281,6 +281,12 @@ modules = {
         resource url: 'js/speciesModel.js'
     }
 
+    speciesFieldsSettings {
+        defaultBundle 'application'
+        dependsOn 'knockout', 'species'
+        resource url: 'js/speciesFieldsSettings.js'
+    }
+
     imageViewer {
         dependsOn 'image-viewer', 'jquery'
         resource url: 'vendor/fancybox/jquery.fancybox.js'

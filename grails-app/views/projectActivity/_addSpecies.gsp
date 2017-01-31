@@ -1,4 +1,4 @@
-<span data-bind="if: transients.showAddSpeciesLists">
+<span data-bind="visible: transients.showAddSpeciesLists">
     <button type="button" class="close margin-right-10 margin-top-10"  data-bind="click: transients.toggleShowAddSpeciesLists">&times;</button>
     <div class="well">
 
@@ -21,10 +21,10 @@
             </div>
         </div>
 
-        <div data-bind="if: newSpeciesLists.allSpecies().length == 0">
+        <div data-bind="visible: newSpeciesLists.allSpecies().length == 0">
             <h5>No species added</h5>
         </div>
-        <div data-bind="if: newSpeciesLists.allSpecies().length > 0">
+        <div data-bind="visible: newSpeciesLists.allSpecies().length > 0">
             <h5>Selected species</h5>
             <div class="row-fluid">
                 <div class="span12 text-left">

@@ -27,7 +27,7 @@
 
             <div class="row-fluid">
                 <div class="span3 text-left">
-                    <label class="control-label" for="template"> Select a form template : <span class="req-field"></span></label>
+                    <label class="control-label" for="template"> Select a form template: <span class="req-field"></span></label>
                 </div>
                 <div class="span4 text-left">
                     <div class="controls">

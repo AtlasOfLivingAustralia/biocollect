@@ -89,6 +89,7 @@ class ActivityController {
         }
     }
 
+
     /**
      * A page that simply edits the activity data.
      * @param id activity id

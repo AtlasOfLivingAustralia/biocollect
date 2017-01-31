@@ -2,7 +2,7 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.ActivityService
 import au.org.ala.biocollect.merit.DocumentService
-import au.org.ala.biocollect.merit.MetadataService
+import au.org.ala.biocollect.merit.FormSpeciesFieldParserService
 import au.org.ala.biocollect.merit.PreAuthorise
 import au.org.ala.biocollect.merit.ProjectService
 import au.org.ala.biocollect.merit.SpeciesService
@@ -17,6 +17,7 @@ class ProjectActivityController {
     ProjectService projectService
     UserService userService
     ActivityService activityService
+    FormSpeciesFieldParserService formSpeciesFieldParserService
 
     static ignore = ['action', 'controller', 'id']
 
@@ -163,4 +164,20 @@ class ProjectActivityController {
 
         render result as JSON
     }
+
+
+    /**
+     * Get the list of species fields, for the specified survey, grouped by outputs
+     * This will enable the fine configuration of species by field
+     * @param id Survey name
+     * @return the list of species fields
+     */
+    def ajaxGetSpeciesFieldsForSurvey(String id) {
+
+        Map result = formSpeciesFieldParserService.getSpeciesFieldsForSurvey(id)
+
+        render result as JSON
+    }
+
+
 }

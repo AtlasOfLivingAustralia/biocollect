@@ -334,6 +334,8 @@ function showDocumentAttachInModal(uploadUrl, documentViewModel, modalSelector, 
         result.reject();
         closeModal();
     };
+
+
     documentViewModel.close = function() {
         result.resolve(ko.toJS(documentViewModel));
         closeModal();
