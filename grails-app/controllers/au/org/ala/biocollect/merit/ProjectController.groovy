@@ -3,6 +3,7 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.ProjectActivityService
+import au.org.ala.biocollect.VocabService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
 import au.org.ala.biocollect.projectresult.Initiator
@@ -36,6 +37,7 @@ class ProjectController {
     AuthService authService
     BlogService blogService
     MessageSource messageSource
+    VocabService vocabService
 
     def grailsApplication
 
@@ -190,6 +192,7 @@ class ProjectController {
             if(project.projectType in [ProjectService.PROJECT_TYPE_ECOSCIENCE, ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE]){
                 model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
                 model.pActivityForms = projectService.supportedActivityTypes(project).collect{[name: it.name, images: it.images]}
+                model.vocabList = vocabService.getVocabValues ()
                 println model.pActivityForms
             }
 

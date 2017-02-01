@@ -1,0 +1,29 @@
+{
+  "navTree": {
+    "nodes": [
+      {"name": "Agrochemical Management"},
+      {"name": "Animal Health"},
+      {"name": "Biosecurity"},
+      {"name": "Critical Habitat"},
+      {"name": "Environmental Water Management"},
+      {"name": "Fire Management"},
+      {"name": "Habitat Restoration"},
+      {"name": "Human Population Density"},
+      {"name": "Human Wildlife Interactions"},
+      {"name": "Landscape-Scale Management"},
+      {"name": "Market-Based Approaches"},
+      {"name": "Migratory Species"},
+      {"name": "National Reserve System"},
+      {"name": "None"},
+      {"name": "Other"},
+      {"name": "Special Management Populations"},
+      {"name": "Threatened Ecological Communities"},
+      {"name": "Threatened Species"},
+      {"name": "Translocation/Re-Introduction/Ex Situ Conservation"},
+      {"name": "Vertebrate/Invertebrate Pest Species Management"},
+      {"name": "Water Quality"},
+      {"name": "Weed Management"},
+      {"name": "Wildlife Corridors"}
+    ]
+  }
+}

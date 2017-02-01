@@ -1,0 +1,21 @@
+{
+  "navTree": {
+    "nodes": [
+      {"name": "Air Quality (9601)"},
+      {"name": "Atmosphere And Weather (9602)"},
+      {"name": "Climate And Climate Change (9603)"},
+      {"name": "Control Of Pests, Diseases And Exotic Species (9604)"},
+      {"name": "Ecosystem Assessment And Management (9605)"},
+      {"name": "Environmental And Natural Resource Evaluation (9606)"},
+      {"name": "Environmental Policy, Legislation And Standards (9607)"},
+      {"name": "Flora, Fauna And Biodiversity (9608)", "nodes": [{"name": "Flora, Fauna and Biodiversity at Regional or Larger Scales (960805)"}]},
+      {"name": "Land And Water Management (9609)"},
+      {"name": "Natural Hazards (9610)"},
+      {"name": "None"},
+      {"name": "Other Environment (9699)"},
+      {"name": "Physical And Chemical Conditions Of Water (9611)"},
+      {"name": "Rehabilitation Of Degraded Environments (9612)"},
+      {"name": "Soils (9614)"}
+    ]
+  }
+}
