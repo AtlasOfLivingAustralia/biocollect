@@ -42,7 +42,7 @@
         imageLocation:"${resource(dir:'/images')}",
         logoLocation:"${resource(dir:'/images/filetypes')}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
-        isUserPage: true,
+        isUserPage: false,
         <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
             isUserWorksPage: true,
         </g:if>
