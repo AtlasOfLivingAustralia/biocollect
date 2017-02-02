@@ -5,11 +5,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close"  data-bind="click:cancel">&times;</button>
-                <h4 class="modal-title">Configure Species</h4>
+                <h4 class="modal-title">Configure <span data-bind="visible: transients.fieldName, text: transients.fieldName()" > </span></h4>
                 <div id="species-dialog-alert-placeholder"></div>
             </div>
             <div class="modal-body">
-
                 <div class="row-fluid">
                     <div class="span4 text-left">
                         <div class="controls">
@@ -49,7 +48,7 @@
                     </div>
 
                     <div class="span8 text-left">
-                        <div data-bind="visible: allSpeciesInfoVisible">
+                        <div data-bind="visible: type() == 'ALL_SPECIES'">
                             <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.SURVEY_SPECIES_ALL}"/>
                         </div>
                         <div data-bind="visible: singleInfoVisible">
@@ -57,6 +56,9 @@
                         </div>
                         <div data-bind="visible: groupInfoVisible">
                             <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.SURVEY_SPECIES_GROUP}"/>
+                        </div>
+                        <div data-bind="visible: type() == 'DEFAULT'">
+                            <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.SURVEY_DEFAULT}"/>
                         </div>
                     </div>
                 </div>

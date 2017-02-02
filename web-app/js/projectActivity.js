@@ -629,7 +629,6 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     var self = $.extend(this, pActivitiesVM);
     var surveyInfoTab = '#survey-info-tab';
     self.placeHolder = placeHolder;
-    self.speciesOptions =  [{id: 'ALL_SPECIES', name:'All species'},{id:'SINGLE_SPECIES', name:'Single species'}, {id:'GROUP_OF_SPECIES',name:'A selection or group of species'}];
     self.datesOptions = [60, 90, 120, 180];
     self.formNames = ko.observableArray($.map(self.pActivityForms ? self.pActivityForms : [], function (obj, i) {
         return obj.name;
@@ -1076,14 +1075,43 @@ var ProjectActivity = function (params) {
         }
     }, null, "beforeChange");
 
+    self.transients.speciesFields = ko.observableArray();
+
     self.pActivityFormName.subscribe(function(newValue) {
-        console.log("New form name is " + newValue);
 
         if(!self.transients.formNameProgrammaticEvent) {
             if(true) {
-
+                console.log("New form name is " + self.transients.formName);
                 self.pActivityFormName(self.transients.formName);
                 self.transients.formNameProgrammaticEvent = true; // Prevent infinite event firing loop
+
+                var divId = 'project-activities-result-placeholder';
+                $.ajax({
+                    url: fcConfig.getSpeciesFieldsForSurveyUrl+'/' + self.pActivityFormName(),
+                    type: 'GET',
+                    // data: model,
+                    // contentType: 'application/json',
+                    success: function (data) {
+                        if (data.error) {
+                            showAlert("Error :" + data.error, "alert-error", divId);
+                        }
+                        else {
+                            self.transients.speciesFields.removeAll();
+                                $.map(data.result ? data.result : [], function (obj, i) {
+                                    self.transients.speciesFields.push(new SpeciesFieldViewModel(obj));
+                                });
+
+                            // showAlert("Successfully added the new species list - " + self.newSpeciesLists.listName() + " (" + data.id + ")", "alert-success", divId);
+
+                        }
+                        // $("#addNewSpecies-status").hide();
+                    },
+                    error: function (data) {
+                        showAlert("Error : An unhandled error occurred" + data.status, "alert-error", divId);
+                        // $("#addNewSpecies-status").hide();
+                    }
+                });
+
             }
         } else {
             self.transients.formNameProgrammaticEvent = false;
@@ -1092,10 +1120,22 @@ var ProjectActivity = function (params) {
 
     self.species = ko.observable(new SpeciesConstraintViewModel(pActivity.species));
 
-    self.showSpeciesConfiguration = function() {
-        showSpeciesFieldConfigInModal(new SpeciesConstraintViewModel(self.species().asJson()), '#configureSpeciesFieldModal', '#speciesFieldDialog')
+    self.showSpeciesConfiguration = function(speciesConstraintVM, fieldName, index) {
+        // Create a copy to bind to the field config dialog otherwise we may change the main screen values inadvertenly
+        speciesConstraintVM = new SpeciesConstraintViewModel(speciesConstraintVM.asJson(), fieldName);
+        if(index) {
+            speciesConstraintVM.speciesOptions.push({id: 'DEFAULT', name:'Use default configuration'});
+        }
+
+        showSpeciesFieldConfigInModal(speciesConstraintVM, '#configureSpeciesFieldModal', '#speciesFieldDialog')
             .done(function(result){
-                self.species(new SpeciesConstraintViewModel(result));
+                    if(index) { //Update a particular species field configuration
+                        var newSpeciesConstraintVM = new SpeciesConstraintViewModel(result)
+                         newSpeciesConstraintVM.speciesOptions.push({id: 'DEFAULT', name:'Use default configuration'});
+                        self.transients.speciesFields()[index()].config(newSpeciesConstraintVM);
+                    } else { // Update species default configuration
+                        self.species(new SpeciesConstraintViewModel(result));
+                    }
                 }
             );
     }
@@ -1104,7 +1144,7 @@ var ProjectActivity = function (params) {
     self.transients.species = ko.observable(pActivity.species);
 
     // Per field species configuration (if available)
-    self.transients.specificFieldSpecies = ko.observableArray(pActivity.specificFieldSpecies);
+    self.transients.speciesFields = ko.observableArray(pActivity.speciesFields);
 
     self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
     self.alert = new AlertViewModel(pActivity.alert);
@@ -1136,17 +1176,17 @@ var ProjectActivity = function (params) {
     });
 
     self.transients.availableSpeciesDisplayFormat = ko.observableArray([{
-        name:'SCIENTIFICNAME(COMMONNAME)',
-        displayName: 'Scientific name (Common name)'
+        id:'SCIENTIFICNAME(COMMONNAME)',
+        name: 'Scientific name (Common name)'
     },{
-        name:'COMMONNAME(SCIENTIFICNAME)',
-        displayName: 'Common name (Scientific name)'
+        id:'COMMONNAME(SCIENTIFICNAME)',
+        name: 'Common name (Scientific name)'
     },{
-        name:'COMMONNAME',
-        displayName: 'Common name'
+        id:'COMMONNAME',
+        name: 'Common name'
     },{
-        name:'SCIENTIFICNAME',
-        displayName: 'Scientific name'
+        id:'SCIENTIFICNAME',
+        name: 'Scientific name'
     }])
 
     var legalCustodianVal = ko.utils.unwrapObservable(project.legalCustodianOrganisation);

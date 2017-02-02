@@ -2,7 +2,7 @@
  * Created by mol109 on 27/1/17.
  */
 
-var SpeciesConstraintViewModel = function (o) {
+var SpeciesConstraintViewModel = function (o, fieldName) {
     var self = this;
     if (!o) o = {};
 
@@ -22,6 +22,7 @@ var SpeciesConstraintViewModel = function (o) {
         return fcConfig.bieUrl + '/species/' + self.singleSpecies.guid();
     });
 
+    self.transients.fieldName = ko.observable(fieldName);
     self.transients.bioSearch = ko.observable(fcConfig.speciesSearchUrl);
     self.transients.allowedListTypes = [
         {id: 'SPECIES_CHARACTERS', name: 'SPECIES_CHARACTERS'},
@@ -95,20 +96,17 @@ var SpeciesConstraintViewModel = function (o) {
 
     self.asJson = function () {
         var jsData = {};
-        if (self.type() == "ALL_SPECIES") {
-            jsData.type = self.type();
-            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
-        }
-        else if (self.type() == "SINGLE_SPECIES") {
-            jsData.type = self.type();
+        // Type specific parameters
+        if (self.type() == "SINGLE_SPECIES") {
             jsData.singleSpecies = ko.mapping.toJS(self.singleSpecies, {ignore: ['transients']});
-            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
         }
         else if (self.type() == "GROUP_OF_SPECIES") {
-            jsData.type = self.type();
             jsData.speciesLists = ko.mapping.toJS(self.speciesLists, {ignore: ['listType', 'fullName', 'itemCount', 'description', 'listType', 'allSpecies', 'transients']});
-            jsData.speciesDisplayFormat = self.speciesDisplayFormat()
         }
+
+        // Common parameters
+        jsData.type = self.type();
+        jsData.speciesDisplayFormat = self.speciesDisplayFormat()
 
         return jsData;
     };
@@ -261,3 +259,34 @@ function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, modalSelecto
     return result;
 }
 
+
+var SpeciesFieldViewModel = function (o) {
+
+    var self = this;
+    if (!o) o = {};
+
+    self.label = o.label;
+    self.dataFieldName = o.dataFieldName;
+    self.context = o.context;
+    self.output = o.output;
+
+    self.transients = {};
+    self.transients.fieldName = self.output + ' - ' + self.label
+
+    self.config = ko.observable(new SpeciesConstraintViewModel(o.config));
+    self.config().speciesOptions.push({id: 'DEFAULT', name:'Use default configuration'});
+
+    // if(!$.isEmptyObject(o) && !$.isEmptyObject(o.config) { // Existing survey let's add some defaults
+    //     self.config.type('DEFAULT');
+    // }
+
+    self.asJson = function () {
+        var jsData = {};
+
+        jsData.label = jsData.label;
+        jsData.dataFieldName = jsData.fieldName;
+        jsData.context = jsData.context;
+        jsData.config = self.config.asJson();
+        return jsData;
+    };
+}

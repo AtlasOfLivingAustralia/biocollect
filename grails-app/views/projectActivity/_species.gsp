@@ -42,29 +42,45 @@
                 </div>
                 <div class="row-fluid">
                     <div class="span3 text-left">
-                        <label><b><g:message code="project.survey.species.defaultConfiguration"/></b>
+                        <span><b><g:message code="project.survey.species.defaultConfiguration"/></b>
                             <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.defaultConfiguration"/>', content:'<g:message code="project.survey.species.defaultConfiguration.content"/>'}">
                                 <i class="icon-question-sign"></i>
                             </a>
                             <span class="right-padding"></span>
-                        </label>
+                        </span>
 
                     </div>
                     <div class="span5">
                         <span class="req-field">
                             <select data-validation-engine="validate[required]" data-bind="disable: true, options: species().speciesOptions, optionsText:'name', optionsValue:'id', value: species().type, optionsCaption: 'Please select'" ></select>
                         </span>
-                        <a target="_blank" class="btn btn-link" data-bind="click: showSpeciesConfiguration" ><small><g:message code="project.survey.species.configure"/></small></a>
+                        <a target="_blank" class="btn btn-link" data-bind="click: function() { showSpeciesConfiguration(species(), 'Default Configuration') }" ><small><g:message code="project.survey.species.configure"/></small></a>
                     </div>
                     <div class="span4 text-left">
-                        <select data-bind="value: species().speciesDisplayFormat">
-                            <option value="SCIENTIFICNAME(COMMONNAME)">Scientific name (Common name)</option>
-                            <option value="COMMONNAME(SCIENTIFICNAME)">Common name (Scientific name)</option>
-                            <option value="COMMONNAME">Common name</option>
-                            <option value="SCIENTIFICNAME">Scientific name</option>
+                        <select data-bind="options: transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  species().speciesDisplayFormat">
                         </select>
-
                     </div>
+                </div>
+                %{--Specific field configuration entries if more than one species field in the form--}%
+
+                <div databind="if: transients.speciesFields() && transients.speciesFields().length > 1 ">
+                    <!-- ko  foreach: transients.speciesFields -->
+                    <div class="row-fluid">
+                        <div class="span3 text-left">
+                            <span data-bind="text: transients.fieldName "></span>
+                        </div>
+                        <div class="span5">
+                            <span class="req-field">
+                                <select data-validation-engine="validate[required]" data-bind="disable: true, options: config().speciesOptions, optionsText:'name', optionsValue:'id', value: config().type, optionsCaption: 'Please select'" ></select>
+                            </span>
+                            <a target="_blank" data-bind="click: function() { $parent.showSpeciesConfiguration(config(), transients.fieldName, $index ) }" class="btn btn-link" ><small><g:message code="project.survey.species.configure"/></small></a>
+                        </div>
+                        <div class="span4 text-left">
+                            <select data-bind="options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">
+                            </select>
+                        </div>
+                    </div>
+                    <!-- /ko -->
                 </div>
 
             </div>
