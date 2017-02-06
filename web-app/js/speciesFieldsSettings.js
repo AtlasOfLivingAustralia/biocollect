@@ -104,15 +104,20 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
             jsData.speciesLists = ko.mapping.toJS(self.speciesLists, {ignore: ['listType', 'fullName', 'itemCount', 'description', 'listType', 'allSpecies', 'transients']});
         }
 
-        // Common parameters
-        jsData.type = self.type();
+        // Only generate output for known types
+        if ($.inArray(self.type(), ["SINGLE_SPECIES", "GROUP_OF_SPECIES", "ALL_SPECIES", "DEFAULT_SPECIES"]) >-1) {
+            // Common parameters
+            jsData.type = self.type();
+        }
+
+        // Display format is independent of type and derivate type fields
         jsData.speciesDisplayFormat = self.speciesDisplayFormat()
 
         return jsData;
     };
 
     self.isValid = function(){
-        return ((self.type() == "ALL_SPECIES") || (self.type() == "SINGLE_SPECIES" && self.singleSpecies.guid()) ||
+        return ((self.type() == "ALL_SPECIES") || (self.type() == "DEFAULT_SPECIES") || (self.type() == "SINGLE_SPECIES" && self.singleSpecies.guid()) ||
         (self.type() == "GROUP_OF_SPECIES" && self.speciesLists().length > 0))
     };
 
@@ -265,28 +270,25 @@ var SpeciesFieldViewModel = function (o) {
     var self = this;
     if (!o) o = {};
 
-    self.label = o.label;
-    self.dataFieldName = o.dataFieldName;
-    self.context = o.context;
-    self.output = o.output;
+    self.label = o.label || "";
+    self.dataFieldName = o.dataFieldName || "";
+    self.context = o.context || "";
+    self.output = o.output || "";
 
     self.transients = {};
     self.transients.fieldName = self.output + ' - ' + self.label
 
     self.config = ko.observable(new SpeciesConstraintViewModel(o.config));
-    self.config().speciesOptions.push({id: 'DEFAULT', name:'Use default configuration'});
-
-    // if(!$.isEmptyObject(o) && !$.isEmptyObject(o.config) { // Existing survey let's add some defaults
-    //     self.config.type('DEFAULT');
-    // }
+    self.config().speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
 
     self.asJson = function () {
         var jsData = {};
 
-        jsData.label = jsData.label;
-        jsData.dataFieldName = jsData.fieldName;
-        jsData.context = jsData.context;
-        jsData.config = self.config.asJson();
+        jsData.label = self.label;
+        jsData.dataFieldName = self.dataFieldName;
+        jsData.context = self.context;
+        jsData.output = self.output;
+        jsData.config = self.config().asJson();
         return jsData;
     };
 }

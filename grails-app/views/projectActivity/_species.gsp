@@ -48,7 +48,6 @@
                             </a>
                             <span class="right-padding"></span>
                         </span>
-
                     </div>
                     <div class="span5">
                         <span class="req-field">
@@ -62,27 +61,23 @@
                     </div>
                 </div>
                 %{--Specific field configuration entries if more than one species field in the form--}%
-
-                <div databind="if: transients.speciesFields() && transients.speciesFields().length > 1 ">
-                    <!-- ko  foreach: transients.speciesFields -->
-                    <div class="row-fluid">
-                        <div class="span3 text-left">
-                            <span data-bind="text: transients.fieldName "></span>
-                        </div>
-                        <div class="span5">
-                            <span class="req-field">
-                                <select data-validation-engine="validate[required]" data-bind="disable: true, options: config().speciesOptions, optionsText:'name', optionsValue:'id', value: config().type, optionsCaption: 'Please select'" ></select>
-                            </span>
-                            <a target="_blank" data-bind="click: function() { $parent.showSpeciesConfiguration(config(), transients.fieldName, $index ) }" class="btn btn-link" ><small><g:message code="project.survey.species.configure"/></small></a>
-                        </div>
-                        <div class="span4 text-left">
-                            <select data-bind="options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">
-                            </select>
-                        </div>
+                <!-- ko  foreach: transients.speciesFields() -->
+                <div class="row-fluid">
+                    <div class="span3 text-left">
+                        <span data-bind="text: transients.fieldName "></span>
                     </div>
-                    <!-- /ko -->
+                    <div class="span5">
+                        <span class="req-field">
+                            <select data-validation-engine="validate[required]" data-bind="disable: true, options: config().speciesOptions, optionsText:'name', optionsValue:'id', value: config().type, optionsCaption: 'Please select'" ></select>
+                        </span>
+                        <a target="_blank" data-bind="click: function() { $parent.showSpeciesConfiguration(config(), transients.fieldName, $index ) }" class="btn btn-link" ><small><g:message code="project.survey.species.configure"/></small></a>
+                    </div>
+                    <div class="span4 text-left">
+                        <select data-bind="options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">
+                        </select>
+                    </div>
                 </div>
-
+                <!-- /ko -->
             </div>
 
             <!-- ko stopBinding: true -->

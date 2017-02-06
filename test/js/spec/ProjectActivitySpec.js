@@ -12,7 +12,8 @@ describe("ProjectActivityViewModel Spec", function () {
         var projectActivity = new ProjectActivity();
         expect(projectActivity.projectId()).toEqual("");
         expect(projectActivity.sites()).toEqual([]);
-        expect(projectActivity.species).toEqual(jasmine.any(SpeciesConstraintViewModel));
+        expect(projectActivity.species()).toEqual(jasmine.any(SpeciesConstraintViewModel));
+        expect(projectActivity.transients.speciesFields()).toEqual([]);
         expect(projectActivity.visibility).toEqual(jasmine.any(SurveyVisibilityViewModel));
     });
 
@@ -24,6 +25,43 @@ describe("ProjectActivityViewModel Spec", function () {
     it("default survey status should be active", function () {
         var pActivity = new ProjectActivity([],[],[],[]);
         expect(pActivity.status()).toEqual("active");
+    });
+
+    it("species asJS('species') should return a map with species and speciesFields", function () {
+
+        var params = {
+            pActivity: {
+                species: {
+                    type: "DEFAULT_SPECIES",
+                    speciesDisplayFormat: "COMMONNAME"
+                },
+                speciesFields: [
+                    {
+                        label: "species field 1",
+                        output: "output 1",
+                        dataFieldName: "data field name 1",
+                        context: "",
+                        config: {
+                            type: "ALL_SPECIES",
+                            speciesDisplayFormat: "COMMONNAME"
+                        }
+                    },
+                    {
+                        label: "species field 2",
+                        output: "output 2",
+                        dataFieldName: "data field name 2",
+                        context: "",
+                        config: {
+                            type: "DEFAULT_SPECIES",
+                            speciesDisplayFormat: "SCIENTIFICNAME"
+                        }
+                    }
+                ]
+            }
+        }
+
+        var speciesVM = new ProjectActivity(params);
+        expect(speciesVM.asJS("species")).toEqual(params.pActivity);
     });
 
 });
@@ -101,10 +139,12 @@ describe("SpeciesConstraintViewModel Spec", function () {
         expect(speciesVM.groupInfoVisible()).toBe(true);
     });
 
-    it("invalid species options should return empty map", function () {
+    it("invalid species options should return and empty type configuration but default display format", function () {
         var speciesVM = new SpeciesConstraintViewModel();
         speciesVM.type("XYZ");
-        var map = {};
+        var map = {
+            speciesDisplayFormat: 'SCIENTIFICNAME(COMMONNAME)'
+        };
         expect(speciesVM.asJson()).toEqual(map);
 
         speciesVM.type("SINGLE_SPECIES");

@@ -57,7 +57,7 @@
                         <div data-bind="visible: groupInfoVisible">
                             <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.SURVEY_SPECIES_GROUP}"/>
                         </div>
-                        <div data-bind="visible: type() == 'DEFAULT'">
+                        <div data-bind="visible: type() == 'DEFAULT_SPECIES'">
                             <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.SURVEY_DEFAULT}"/>
                         </div>
                     </div>

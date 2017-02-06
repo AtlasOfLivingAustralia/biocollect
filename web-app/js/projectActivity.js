@@ -664,7 +664,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
             showAlert("Survey end date must be after start date", "alert-error", self.placeHolder);
             $('#survey-info-tab').tab('show');
         } else if (current.isInfoValid() &&
-            current.species().isValid() &&
+            current.areSpeciesValid() &&
             jsData.pActivityFormName &&
             (jsData.sites && jsData.sites.length > 0)
         ) {
@@ -1006,7 +1006,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         var sites = current.sites();
 
         return (current.isInfoValid() &&
-        current.species().isValid() &&
+        current.areSpeciesValid() &&
         current.pActivityFormName() &&
         (sites && sites.length > 0))
     }
@@ -1062,61 +1062,123 @@ var ProjectActivity = function (params) {
     self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
     self.baseLayersName = ko.observable(pActivity.baseLayersName);
 
+    var speciesFields = pActivity.speciesFields || [];
+    self.transients.speciesFields = ko.observableArray($.map(speciesFields, function (obj, i) {
+        return new SpeciesFieldViewModel(obj);
+    }));
+
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
-
-    self.transients.formName = self.pActivityFormName();
-    self.transients.formNameProgrammaticEvent = false;
-
     self.pActivityFormName.extend({rateLimit: 100});
-    self.pActivityFormName.subscribe(function(oldValue) {
-        if(self.transients.formName !== oldValue) {
-            self.transients.formName = oldValue;
-            console.log("Old form name is " + oldValue);
-        }
-    }, null, "beforeChange");
 
-    self.transients.speciesFields = ko.observableArray();
-
-    self.pActivityFormName.subscribe(function(newValue) {
-
-        if(!self.transients.formNameProgrammaticEvent) {
-            if(true) {
-                console.log("New form name is " + self.transients.formName);
-                self.pActivityFormName(self.transients.formName);
-                self.transients.formNameProgrammaticEvent = true; // Prevent infinite event firing loop
-
-                var divId = 'project-activities-result-placeholder';
-                $.ajax({
-                    url: fcConfig.getSpeciesFieldsForSurveyUrl+'/' + self.pActivityFormName(),
-                    type: 'GET',
-                    // data: model,
-                    // contentType: 'application/json',
-                    success: function (data) {
-                        if (data.error) {
-                            showAlert("Error :" + data.error, "alert-error", divId);
-                        }
-                        else {
-                            self.transients.speciesFields.removeAll();
-                                $.map(data.result ? data.result : [], function (obj, i) {
-                                    self.transients.speciesFields.push(new SpeciesFieldViewModel(obj));
-                                });
-
-                            // showAlert("Successfully added the new species list - " + self.newSpeciesLists.listName() + " (" + data.id + ")", "alert-success", divId);
-
-                        }
-                        // $("#addNewSpecies-status").hide();
-                    },
-                    error: function (data) {
-                        showAlert("Error : An unhandled error occurred" + data.status, "alert-error", divId);
-                        // $("#addNewSpecies-status").hide();
-                    }
-                });
-
-            }
-        } else {
-            self.transients.formNameProgrammaticEvent = false;
+    var images = [];
+    $.each(pActivityForms, function (index, form) {
+        if (form.name == self.pActivityFormName()) {
+            images = form.images ? form.images : [];
         }
     });
+
+    self.pActivityFormImages = ko.observableArray($.map(images, function (obj, i) {
+        return new ImagesViewModel(obj);
+    }));
+
+    self.pActivityForms = pActivityForms;
+
+    self.updateFormImages = function (formName) {
+        self.pActivityFormImages.removeAll();
+        $.each(self.pActivityForms, function (index, form) {
+            if (form.name == formName && form.images) {
+                for (var i = 0; i < form.images.length; i++) {
+                    self.pActivityFormImages.push(new ImagesViewModel(form.images[i]));
+                }
+            }
+        });
+    }
+
+    self.transients.oldFormName = self.pActivityFormName();
+    self.transients.allowFormNameChange = false;
+
+    // 1. There is no straightforward way to prevent/cancel a KO change in a beforeChange subscription
+    // 2. bootbox.confirm is totally asynchronous so by the time a user confirms or rejects a change, the change has already happened.
+    // 2a. There is no good reason to call standard confirm which would block the thread.
+    // 3. Trying to use jQuery to prevent event propagation might turn a pain as it would potentially get on the way with ko observables
+    // Hence the approach taken is to mimic a user rejection by reverting the old value.
+    // We can't prevent the value of the select to be changed from bootbox.confirm but we can update dependable properties
+    // only when a user has accepted the change.
+
+    self.pActivityFormName.subscribe(function(oldValue) {
+        console.log("Updating oldName to  " + oldValue);
+        self.transients.oldFormName = oldValue;
+    }, null, "beforeChange");
+
+    // Flag to prevent infinite event firing.
+    // self.pActivityFormName is changed within a subscription to it
+    self.transients.revertFormNameChange = false;
+
+    self.pActivityFormName.subscribe(function(newValue) {
+        console.log("New form name is " + self.pActivityFormName());
+
+        if(!self.transients.revertFormNameChange) { // Normal interaction of user with  UI select control
+            if(self.transients.speciesFields().length > 0) {
+                bootbox.confirm("There is specific fields configuration for this survey in the Species tab. Changing the form will override existing settings. Do you want to continue?", function (result) {
+                    // Asynchronous call, too late to prevent change but depending on the user response we either:
+                    // a) Restore the previous value in the select or
+                    // b) Let dependent pActivityFormName fields to be updated, ko already updated the pActivityFormName
+                    self.transients.allowFormNameChange = result
+                    if (result) {
+                        self.retrieveSpeciesFieldsForFormName(self.pActivityFormName());
+                        self.updateFormImages(self.pActivityFormName());
+                    } else {
+                        console.log("reverting form to previous value" + self.transients.oldFormName);
+                        self.pActivityFormName(self.transients.oldFormName);
+                        // Stop infinite loop propagation.
+                        self.transients.revertFormNameChange = true;
+                    }
+                });
+            } else { // No need of user confirmation, let's update pActivityFormName dependent properties
+                self.retrieveSpeciesFieldsForFormName(self.pActivityFormName());
+                self.updateFormImages(self.pActivityFormName());
+            }
+        } else {
+            // User chose to cancel change to pActivityFormName, self.pActivityFormName already had the old value
+            // let's just re-enable the normal event propagation behavior
+            self.transients.revertFormNameChange = false;
+        }
+    });
+
+
+    /**
+     * Retrieves the species fields and overrides self.transients.speciesFields with them
+     * If the species fields for this form is 0 or 1 only then  self.transients.speciesFields will be set to an empty array
+     * @param formName The new form name
+     */
+    self.retrieveSpeciesFieldsForFormName = function(formName) {
+        var divId = 'project-activities-result-placeholder';
+        $.ajax({
+            url: fcConfig.getSpeciesFieldsForSurveyUrl+'/' + formName,
+            type: 'GET',
+            // data: model,
+            // contentType: 'application/json',
+            success: function (data) {
+                if (data.error) {
+                    showAlert("Error :" + data.error, "alert-error", divId);
+                }
+                else {
+                    self.transients.speciesFields.removeAll();
+
+                    // Only one species field in the form, don't bother with its configuration
+                    if(data.result && data.result.length > 1) {
+                        $.map(data.result ? data.result : [], function (obj, i) {
+                            self.transients.speciesFields.push(new SpeciesFieldViewModel(obj));
+                        });
+                    }
+                }
+            },
+            error: function (data) {
+                showAlert("Error : An unhandled error occurred" + data.status, "alert-error", divId);
+            }
+        });
+    }
+
 
     self.species = ko.observable(new SpeciesConstraintViewModel(pActivity.species));
 
@@ -1124,14 +1186,14 @@ var ProjectActivity = function (params) {
         // Create a copy to bind to the field config dialog otherwise we may change the main screen values inadvertenly
         speciesConstraintVM = new SpeciesConstraintViewModel(speciesConstraintVM.asJson(), fieldName);
         if(index) {
-            speciesConstraintVM.speciesOptions.push({id: 'DEFAULT', name:'Use default configuration'});
+            speciesConstraintVM.speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
         }
 
         showSpeciesFieldConfigInModal(speciesConstraintVM, '#configureSpeciesFieldModal', '#speciesFieldDialog')
             .done(function(result){
                     if(index) { //Update a particular species field configuration
                         var newSpeciesConstraintVM = new SpeciesConstraintViewModel(result)
-                         newSpeciesConstraintVM.speciesOptions.push({id: 'DEFAULT', name:'Use default configuration'});
+                         newSpeciesConstraintVM.speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
                         self.transients.speciesFields()[index()].config(newSpeciesConstraintVM);
                     } else { // Update species default configuration
                         self.species(new SpeciesConstraintViewModel(result));
@@ -1139,12 +1201,28 @@ var ProjectActivity = function (params) {
                 }
             );
     }
+    /**
+     * Determine if each species defined in this survey are valid in order for the Survey to be Publishable
+     * This is an agregation of the SpeciesConstraintViewModel#isValid as now we have, potentially, more than
+     * one species configuration
+     */
+    self.areSpeciesValid = function() {
 
-    // Default species configuration
-    self.transients.species = ko.observable(pActivity.species);
+        // As soon as a field is not valid we stop
 
-    // Per field species configuration (if available)
-    self.transients.speciesFields = ko.observableArray(pActivity.speciesFields);
+        if(!self.species().isValid()){
+            return false;
+        }
+
+        var speciesFields = self.transients.speciesFields();
+
+        for (var i = 0; i < speciesFields.length; i++) {
+            if(!speciesFields[i].config().isValid()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
     self.alert = new AlertViewModel(pActivity.alert);
@@ -1250,30 +1328,6 @@ var ProjectActivity = function (params) {
 
      } */
 
-    var images = [];
-    $.each(pActivityForms, function (index, form) {
-        if (form.name == self.pActivityFormName()) {
-            images = form.images ? form.images : [];
-        }
-    });
-
-    self.pActivityFormImages = ko.observableArray($.map(images, function (obj, i) {
-        return new ImagesViewModel(obj);
-    }));
-
-    self.pActivityForms = pActivityForms;
-
-    self.pActivityFormName.subscribe(function (formName) {
-        self.pActivityFormImages.removeAll();
-        $.each(self.pActivityForms, function (index, form) {
-            if (form.name == formName && form.images) {
-                for (var i = 0; i < form.images.length; i++) {
-                    self.pActivityFormImages.push(new ImagesViewModel(form.images[i]));
-                }
-            }
-        });
-    });
-
     // New fields for Aekos Submission
     self.environmentalFeatures = ko.observableArray();
     self.environmentalFeaturesSuggest = ko.observable();
@@ -1346,6 +1400,10 @@ var ProjectActivity = function (params) {
         else if (by == "species") {
             jsData = {};
             jsData.species = self.species().asJson();
+
+            jsData.speciesFields = $.map(self.transients.speciesFields(), function (obj, i) {
+                return obj.asJson();
+            });
         }
         else if (by == "sites") {
             jsData = {};

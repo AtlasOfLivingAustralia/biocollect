@@ -45,7 +45,7 @@ class ProjectActivityService {
             if (published) {
                 if (!props?.species) {
                     attributesAdded.add("species")
-                    props.species = act.species
+                    species = act.species
                 }
                 if (!props?.sites) {
                     attributesAdded.add("sites")
@@ -95,37 +95,38 @@ class ProjectActivityService {
 
         //error, no species constraint
         if (props?.species) {
-            if (!(props.species instanceof Map)) {
-                return "species is not a map"
-            }
-
-            if (props.species?.type) {
-                if (props.species.type == 'SINGLE_SPECIES') {
-                    if (!props.species?.singleSpecies ||
-                            !(props.species.singleSpecies instanceof Map) ||
-                            !props.species.singleSpecies?.guid ||
-                            !props.species.singleSpecies?.name) {
-                        return "invalid single_species for species type SINGLE_SPECIES"
-                    }
-                } else if (props.species.type == 'GROUP_OF_SPECIES'){
-                    if (!props.species?.speciesLists ||
-                            !(props.species.speciesLists instanceof List)) {
-                        return "invalid speciesLists for species type GROUP_OF_SPECIES"
-                    }
-                    if (props.species.speciesLists.size() == 0) {
-                        return "no speciesLists defined for GROUP_OF_SPECIES"
-                    }
-                    props.species.speciesLists.each {
-                        if (!(it instanceof Map) || !it?.listName || !it?.dataResourceUid) {
-                            error = "invalid speciesLists item for species type GROUP_OF_SPECIES"
-                        }
-                    }
-                } else if (props.species.type != 'ALL_SPECIES') {
-                    return "\"${props.species.type}\" is not a vaild species type"
-                }
+            final species = props.species
+            String speciesTypeErrorMessage = validateSpeciesType(species);
+            if(speciesTypeErrorMessage) {
+                return speciesTypeErrorMessage
             }
         } else if (published) {
             return "species is missing"
+        }
+
+        if(props?.speciesFields) {
+            if(!props.speciesFields instanceof List ) {
+                return "speciesFields is not a list"
+            }
+
+            for(Object speciesField : props.speciesFields) {
+                if(!speciesField instanceof Map) {
+                    return "At least one speciesField is not a Map"
+                }
+
+                if(!speciesField?.dataFieldName){
+                    return "dataFieldName not set for speciesField " + speciesField?.label
+                }
+
+                if(!speciesField?.output){
+                    return "output not set for speciesField " + speciesField?.label
+                }
+
+                String speciesTypeErrorMessage = validateSpeciesType(speciesField?.config);
+                if(speciesTypeErrorMessage) {
+                    return speciesTypeErrorMessage
+                }
+            }
         }
 
         if (props?.pActivityFormName) {
@@ -163,6 +164,40 @@ class ProjectActivityService {
         }
 
         error
+    }
+
+    String validateSpeciesType(species) {
+        if (!(species instanceof Map)) {
+            return "species is not a map"
+        }
+
+        if (species?.type) {
+            if (species.type == 'SINGLE_SPECIES') {
+                if (!species?.singleSpecies ||
+                        !(species.singleSpecies instanceof Map) ||
+                        !species.singleSpecies?.guid ||
+                        !species.singleSpecies?.name) {
+                    return "invalid single_species for species type SINGLE_SPECIES"
+                }
+            } else if (species.type == 'GROUP_OF_SPECIES'){
+                if (!species?.speciesLists ||
+                        !(species.speciesLists instanceof List)) {
+                    return "invalid speciesLists for species type GROUP_OF_SPECIES"
+                }
+                if (species.speciesLists.size() == 0) {
+                    return "no speciesLists defined for GROUP_OF_SPECIES"
+                }
+                species.speciesLists.each {
+                    if (!(it instanceof Map) || !it?.listName || !it?.dataResourceUid) {
+                        error = "invalid speciesLists item for species type GROUP_OF_SPECIES"
+                    }
+                }
+            } else if (species.type != 'ALL_SPECIES' && species.type != 'DEFAULT_SPECIES') {
+                return "\"${species.type}\" is not a vaild species type"
+            }
+        }
+        // No return value, everything went ok
+        return null;
     }
 
     def create(pActivity) {

@@ -18,8 +18,7 @@
                     <li data-bind="visible:!isInfoValid()">
                         All mandatory fields in survey info tab needs to be filled. <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-info-tab'}">Fill survey info</div>
                     </li>
-                    %{--TODO: This validation now needs to consider the per species field configuration --}%
-                    <li data-bind="visible: !species().isValid()">
+                    <li data-bind="visible: !areSpeciesValid()">
                         Survey species constrain not set. <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}">Set species</div>
                     </li>
                     <li data-bind="visible: !$root.isPActivityFormNameFilled()">
