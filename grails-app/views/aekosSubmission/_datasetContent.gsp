@@ -1,3 +1,4 @@
+<g:render template="/aekosSubmission/treeviewTemplate" />
 <div id="datasetInfo" >
 
     <div class="row-fluid">
@@ -18,28 +19,8 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <div class="panel panel-default" >
-                    <div class="panel-body" style="max-width:500px; overflow: scroll; background:#ffffff;">
-
-                        <!-- ko foreach: aekosModalView().listFos -->
-                            <div>
-                                <input type="checkbox" data-bind="checkedValue: value, checked: $parent.typeFor" />
-
-                                <span data-bind="text: name"></span>
-                            </div>
-                        <!-- /ko -->
-
-                    </div>
-                </div>
-            </div>
-            <br/>
-            <div>
-                <label class="control-label"><g:message code="aekos.dataset.content.fos.extra"/></label>
-                <input data-bind="value: aekosModalView().extraFos" />
-                <button class="btn btn-small" data-bind="click: aekosModalView().addExtraFos">Add</button>
-            </div>
-            <br/>
+            <div data-bind="treeView: {data: aekosModalView().fieldsOfResearch,
+                                       extraFieldLabel: '<g:message code="aekos.dataset.content.fos.extra"/>'}" ></div>
         </div>
     </div>
 
@@ -55,28 +36,8 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <div class="panel panel-default" >
-                    <div class="panel-body" style="max-width:500px; overflow: scroll; background:#ffffff;">
-
-                        <!-- ko foreach: aekosModalView().listSeo -->
-                        <div>
-                            <input type="checkbox" data-bind="checkedValue: value, checked: $parent.typeSeo" />
-
-                            <span data-bind="text: name"></span>
-                        </div>
-                        <!-- /ko -->
-
-                    </div>
-                </div>
-            </div>
-            <br/>
-            <div>
-                <label class="control-label"><g:message code="aekos.dataset.content.seo.extra"/></label>
-                <input data-bind="value: aekosModalView().extraSeo" />
-                <button class="btn btn-small" data-bind="click: aekosModalView().addExtraSeo">Add</button>
-            </div>
-            <br/>
+            <div data-bind="treeView: {data: aekosModalView().socioEconomic,
+                                       extraFieldLabel: '<g:message code="aekos.dataset.content.seo.extra"/>'}" ></div>
         </div>
     </div>
 
@@ -92,28 +53,8 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <div class="panel panel-default" >
-                    <div class="panel-body" style="max-width:500px; overflow: scroll; background:#ffffff;">
-
-                        <!-- ko foreach: aekosModalView().listResearch -->
-                        <div>
-                            <input type="checkbox" data-bind="checkedValue: value, checked: $parent.typeResearch" />
-
-                            <span data-bind="text: name"></span>
-                        </div>
-                        <!-- /ko -->
-
-                    </div>
-                </div>
-            </div>
-            <br/>
-            <div>
-                <label class="control-label"><g:message code="aekos.dataset.content.research.extra"/></label>
-                <input data-bind="value: aekosModalView().extraResearch" />
-                <button class="btn btn-small" data-bind="click: aekosModalView().addExtraResearch">Add</button>
-            </div>
-            <br/>
+            <div data-bind="treeView: {data: aekosModalView().economicResearch,
+                                       extraFieldLabel: '<g:message code="aekos.dataset.content.research.extra"/>'}" ></div>
         </div>
     </div>
 
@@ -129,28 +70,8 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <div class="panel panel-default" >
-                    <div class="panel-body" style="max-width:500px; overflow: scroll; background:#ffffff;">
-
-                        <!-- ko foreach: aekosModalView().listThreat -->
-                        <div>
-                            <input type="checkbox" data-bind="checkedValue: value, checked: $parent.typeThreat" />
-
-                            <span data-bind="text: name"></span>
-                        </div>
-                        <!-- /ko -->
-
-                    </div>
-                </div>
-            </div>
-            <br/>
-            <div>
-                <label class="control-label"><g:message code="aekos.dataset.content.threat.extra"/></label>
-                <input data-bind="value: aekosModalView().extraThreat" />
-                <button class="btn btn-small" data-bind="click: aekosModalView().addExtraThreat">Add</button>
-            </div>
-            <br/>
+            <div data-bind="treeView: {data: aekosModalView().anthropogenic,
+                                       extraFieldLabel: '<g:message code="aekos.dataset.content.threat.extra"/>'}" ></div>
         </div>
     </div>
 
@@ -166,28 +87,8 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <div class="panel panel-default" >
-                    <div class="panel-body" style="max-width:500px; overflow: scroll; background:#ffffff;">
-
-                        <!-- ko foreach: aekosModalView().listConservation -->
-                        <div>
-                            <input type="checkbox" data-bind="checkedValue: value, checked: $parent.typeConservation" />
-
-                            <span data-bind="text: name"></span>
-                        </div>
-                        <!-- /ko -->
-
-                    </div>
-                </div>
-            </div>
-            <br/>
-            <div>
-                <label class="control-label"><g:message code="aekos.dataset.content.conservation.extra"/></label>
-                <input data-bind="value: aekosModalView().extraConservation" />
-                <button class="btn btn-small" data-bind="click: aekosModalView().addExtraConservation">Add</button>
-            </div>
-            <br/>
+            <div data-bind="treeView: {data: aekosModalView().conservationManagement,
+                                       extraFieldLabel: '<g:message code="aekos.dataset.content.conservation.extra"/>'}" ></div>
         </div>
     </div>
 </div>

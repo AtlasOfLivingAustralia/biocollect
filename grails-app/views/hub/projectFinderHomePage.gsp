@@ -42,12 +42,15 @@
         imageLocation:"${resource(dir:'/images')}",
         logoLocation:"${resource(dir:'/images/filetypes')}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
-        isUserPage: true,
+        isUserPage: false,
         <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
             isUserWorksPage: true,
         </g:if>
         <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
             isUserEcoSciencePage: true,
+        </g:if >
+        <g:if test="${hubConfig.defaultFacetQuery.contains('isCitizenScience:true')}">
+            isCitizenScience: true,
         </g:if>
         projectListUrl: "${createLink(controller: 'project', action: 'search', params:[initiator:'biocollect'])}",
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
@@ -56,7 +59,6 @@
         showAllProjects: false,
         meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
         meritProjectUrl: "${grailsApplication.config.merit.project.url}",
-        isCitizenScience: false,
         hideWorldWideBtn: ${!hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.showProjectRegionSwitch}
   }
     </r:script>

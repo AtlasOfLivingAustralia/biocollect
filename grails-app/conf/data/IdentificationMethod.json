@@ -1,0 +1,12 @@
+{
+  "navTree": {
+    "nodes": [{"name": "Genetic Material", "nodes": [{"name": "DNA"}]},
+              {"name": "Image", "nodes": [{"name": "Aerial"}, {"name": "Satellite"}, {"name": "Still"}]},
+      {"name": "None"},
+      {"name": "Other"},
+      {"name": "Recording", "nodes": [{"name": "Data Sensors"}, {"name": "Sound Recording"}, {"name": "Video"}]},
+      {"name": "Specimen", "nodes": [{"name": "Blood Sample"}, {"name": "Plant Material"}, {"name": "Soil Sample"}, {"name": "Tissue Sample"}, {"name": "Urine/Faecal Sample"}, {"name": "Water Sample"}]},
+      {"name": "Collection Accession Number"}
+    ]
+  }
+}

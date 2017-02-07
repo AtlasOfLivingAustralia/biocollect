@@ -182,6 +182,27 @@ log4j = {
     debug   'grails.app'
 }
 
+if (!grails.cache.config) {
+
+    grails.cache.config = {
+        defaults {
+            eternal false
+            overflowToDisk false
+            maxElementsInMemory 20000
+            timeToLiveSeconds 3600
+        }
+    }
+}
+
+if (grails.cache.config) {
+    grails.cache.config = {
+        cache {
+            name 'vocabListCache'
+            eternal true
+        }
+    }
+}
+
 if (!grails.cache.ehcache) {
     grails {
         cache {

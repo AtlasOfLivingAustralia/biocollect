@@ -1,6 +1,7 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.OrganisationService
+import au.org.ala.biocollect.VocabService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
 import grails.test.mixin.TestFor
@@ -26,6 +27,7 @@ class ProjectControllerSpec extends Specification {
     def authServiceStub = Stub(AuthService)
     def blogServiceStub = Stub(BlogService)
     def organisationStub = Stub(OrganisationService)
+    def vocabServiceStub = Stub(VocabService)
 
     void setup() {
         controller.userService = userServiceStub
@@ -39,6 +41,7 @@ class ProjectControllerSpec extends Specification {
         controller.authService = authServiceStub
         controller.blogService = blogServiceStub
         controller.organisationService = organisationStub
+        controller.vocabService = vocabServiceStub
         auditServiceStub.getAuditMessagesForProject(_) >> []
         metadataServiceStub.activitiesModel() >> [activities: []]
         userServiceStub.getOrganisationIdsForUserId(_) >> ['1']
@@ -50,6 +53,7 @@ class ProjectControllerSpec extends Specification {
         authServiceStub.getUserId() >> ''
         blogServiceStub.get(_, _) >> []
         organisationStub.get(_) >> [organisationId: "ABC123", name: "organisation name"]
+        vocabServiceStub.getVocabValues() >> []
     }
 
     void "creating a citizen science project should pre-populate the citizen science project type"() {

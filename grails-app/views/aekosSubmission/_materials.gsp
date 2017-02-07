@@ -18,46 +18,11 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <div id="environmentFeatures" class="panel panel-default" >
-                    <div class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
+            <div id="environmentFeatures" data-bind="treeView: {data: aekosModalView().environmentalFeatures,
+                                       extraFieldLabel: '<g:message code="aekos.other.environment.features"/>'}" ></div>
 
-                        <!-- ko foreach: aekosModalView().environmentFeaturesList -->
-
-                        <input type="checkbox" data-bind="checkedValue: $data, checked: $parent.environmentFeatures" />
-
-                        <span data-bind="text: $data"></span>
-
-                        <br>
-
-                        <!-- /ko -->
-
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
-
-    <br>
-
-    <div class="row-fluid">
-        <div class="span4 text-right">
-            <label class="control-label" for="otherEnvironmentFeatures"><g:message code="aekos.other.environment.features"/>
-                <a href="#" class="helphover"
-                   data-bind="popover: {title:'<g:message code="aekos.other.environment.features"/>',
-                              content:'<g:message code="aekos.other.environment.features.help"/>'}">
-                    <i class="icon-question-sign"></i>
-                </a>
-            </label>
-        </div>
-
-        <div class="span8">
-            <div class="controls">
-                <textarea id="otherEnvironmentFeatures" data-bind="value: aekosModalView().otherEnvironmentFeatures" rows="1" style="width: 90%"></textarea>
-            </div>
-        </div>
-    </div>
-
 
     <div class="row-fluid">
         <div class="span4 text-right">

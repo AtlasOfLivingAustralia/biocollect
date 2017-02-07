@@ -1,0 +1,28 @@
+{
+  "navTree": {
+    "nodes": [
+      {"name": "AEKOS Data Extraction"},
+      {"name": "Before-After, Control Impact (BACI)"},
+      {"name": "Census and Population Extrapolation"},
+      {"name": "Common garden experiment"},
+      {"name": "Completely Randomised"},
+      {"name": "Factorial Designs"},
+      {"name": "Gradient Designs"},
+      {"name": "Mark-Recapture"},
+      {"name": "Meta-analysis"},
+      {"name": "None"},
+      {"name": "Opportunistic Sampling"},
+      {"name": "Other"},
+      {"name": "Photo Data Capture"},
+      {"name": "Power Analyses"},
+      {"name": "Randomised Complete Block"},
+      {"name": "Randomised Line Transect"},
+      {"name": "Reciprocal transplant"},
+      {"name": "Repeated Measures"},
+      {"name": "Self-selected (Landscape Scale) Sampling"},
+      {"name": "Survival Analysis"},
+      {"name": "Systematic Sampling"},
+      {"name": "Semi Block Design"}
+    ]
+  }
+}

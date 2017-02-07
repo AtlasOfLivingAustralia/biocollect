@@ -140,6 +140,7 @@
         var pActivityForms = <fc:modelAsJavascript model="${pActivityForms}"/>;
         var projectViewModel = new ProjectViewModel(project, ${user?.isEditor?:false});
         var user = <fc:modelAsJavascript model="${user}"/>;
+        var vocabList = <fc:modelAsJavascript model="${vocabList}" />;
 
         var ViewModel = function() {
             var self = this;
@@ -160,6 +161,7 @@
         params.pActivityForms = pActivityForms;
         params.organisationName = project.organisationName;
         params.project = projectViewModel;
+        params.vocabList = vocabList;
 
         <g:if test="${!project.isExternal}">
             var pActivitiesVM = new ProjectActivitiesViewModel(params);

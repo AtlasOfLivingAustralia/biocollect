@@ -18,10 +18,16 @@ import java.nio.file.Paths
 import static java.util.UUID.randomUUID
 
 // Import Configuration
+def DEBUG_AND_VALIDATE = false;
 def PROJECT_ID = "0d37298f-f7a0-40e3-9a5c-5ff0b1caaeff"
 def PROJECT_ACTIVITY_ID = "9bf45b75-d7c6-4607-8c65-847fb0eb56bb"
-def USERNAME = "reece.pedler@sa.gov.au" // "ecologicaldirections@live.com.au"
+def USERNAME = "southgate@kin.net.au"
 def AUTH_KEY = ""
+def xlsx = "2ha/2ha_second_batch_v2.xlsx"
+
+//def USERNAME = "reece.pedler@sa.gov.au"
+//def AUTH_KEY = ""
+//def xlsx = "2ha/2ha_first_batch.xlsx"
 
 def SERVER_URL = "https://biocollect.ala.org.au"
 def SPECIES_URL = "/search/searchSpecies/${PROJECT_ACTIVITY_ID}?limit=1&hub=ecoscience"
@@ -29,7 +35,6 @@ def ADD_NEW_ACTIVITY_URL = "/ws/bioactivity/save?pActivityId=${PROJECT_ACTIVITY_
 
 def header = []
 def values = []
-def xlsx = "2ha/2ha_first_batch.xlsx"
 
 println("Reading ${xlsx} file")
 Paths.get(xlsx).withInputStream { input ->
@@ -115,44 +120,49 @@ Paths.get(xlsx).withInputStream { input ->
 
             def jsonSlurper = new groovy.json.JsonSlurper()
             def activity = jsonSlurper.parseText(jsonStr)
-            println("Building activity: ${activityIndex}")
+            println("Building activity: ${activityIndex}  with records : ${activityRow?.size()}")
 
             activity.projectId = PROJECT_ID
             activityRow?.eachWithIndex { record, idx ->
                 TimeZone tz = TimeZone.getTimeZone("UTC");
                 java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
                 df.setTimeZone(tz);
-                String isoDate = df.format(record."surveyDate");
-
                 java.text.DateFormat time = new java.text.SimpleDateFormat("hh:mm a");
-                String isoDateTime = time.format(record."surveyStartTime")
-
+                String isoDate = ''
+                String isoDateTime
+                try{
+                    isoDate = df.format(record."surveyDate");
+                    //isoDateTime = '12:00 AM' //record."surveyStartTime" ? time.format(record."surveyStartTime") : ''
+                    isoDateTime = time.format(record."surveyStartTime")
+                } catch (Exception ex){
+                    println("Date format error ${idx} >> ${record."plotId"} >> ${record."surveyStartTime"}")
+                }
 
                 // Map generic fields
                 if (idx == 0) {
                     activity.outputs[0].data.recordedBy = (record."recordedBy")?.trim()
-                    activity.outputs[0].data.collectedBy = (record."collectedBy")?.trim()
+                    activity.outputs[0].data.observedBy = (record."observedBy")?.trim()
                     activity.outputs[0].data.surveyDate = isoDate
                     activity.outputs[0].data.plotId = (record."plotId")?.trim()
                     activity.outputs[0].data.surveyStartTime = isoDateTime
                     activity.outputs[0].data.surveyFinishTime = ''
                     activity.outputs[0].data.sampleType = (record."sampleType") && (record."sampleType")?.trim() == 'Targeted' ? "Targeted (for particular species)" :  (record."sampleType")
                     activity.outputs[0].data.sampleSequence = (record."sampleSequence")?.trim()
-                    activity.outputs[0].data.eventRemarks = (record."eventRemarks") ?: ''
-                    activity.outputs[0].data.zone = (record."zone") ?: ''
-                    activity.outputs[0].data.easting = (record."easting") ?: ''
-                    activity.outputs[0].data.northing = (record."northing") ?: ''
+                    activity.outputs[0].data.eventRemarks = (record."eventRemarks") instanceof String ? (record."eventRemarks")?.trim() : ''
+                    activity.outputs[0].data.zone = (record."zone")
+                    activity.outputs[0].data.easting = (record."easting")
+                    activity.outputs[0].data.northing = (record."northing")
                     activity.outputs[0].data.relativeLocation = (record."relativeLocation") ?: ''
                     activity.outputs[0].data.distanceFromWater = (record."distanceFromWater") ?: ''
                     activity.outputs[0].data.distanceFromRoad = (record."distanceFromRoad") ?: ''
-                    activity.outputs[0].data.habitatType = record."habitatType"
-                    activity.outputs[0].data.habitatTypeOther = (record."habitatTypeOther") ?: ''
-                    activity.outputs[0].data.ephemeralVegPresent = (record."ephemeralVegPresent") ?: ''
-                    activity.outputs[0].data.timeSinceWeatherEvent = (record."timeSinceWeatherEvent") ?: ''
-                    activity.outputs[0].data.timeSinceFire = (record."timeSinceFire") ?: ''
-                    activity.outputs[0].data.visibility = (record."visibility") ?: ''
-                    activity.outputs[0].data.shadowLength = (record."shadowLength") ?: ''
-                    activity.outputs[0].data.trackingSurface = (record."trackingSurface") ?: ''
+                    activity.outputs[0].data.habitatType = (record."habitatType") instanceof String ? (record."habitatType")?.trim() : ''
+                    activity.outputs[0].data.habitatTypeOther = (record."habitatTypeOther") instanceof String ? (record."habitatTypeOther")?.trim() : ''
+                    activity.outputs[0].data.ephemeralVegPresent = (record."ephemeralVegPresent")?.trim()
+                    activity.outputs[0].data.timeSinceWeatherEvent = (record."timeSinceWeatherEvent")?.trim()
+                    activity.outputs[0].data.timeSinceFire = (record."timeSinceFire")?.trim()
+                    activity.outputs[0].data.visibility = (record."visibility")?.trim()
+                    activity.outputs[0].data.shadowLength = (record."shadowLength")?.trim()
+                    activity.outputs[0].data.trackingSurface = (record."trackingSurface")?.trim()
                     activity.outputs[0].data.trackingSurfaceSuitability = (record."trackingSurfaceSuitability") ?: ''
                     activity.outputs[0].data.trackingSurfaceContinuity = (record."trackingSurfaceContinuity") ?: ''
                     activity.outputs[0].data.locationLatitude = (record."locationLatitude")
@@ -231,13 +241,15 @@ Paths.get(xlsx).withInputStream { input ->
             connection.setRequestMethod("POST")
             connection.setDoOutput(true)
 
-            java.io.OutputStreamWriter wr = new java.io.OutputStreamWriter(connection.getOutputStream(), 'utf-8')
-            wr.write(new groovy.json.JsonBuilder( activity ).toString())
-            wr.flush()
-            wr.close()
+            if(!DEBUG_AND_VALIDATE) {
+                java.io.OutputStreamWriter wr = new java.io.OutputStreamWriter(connection.getOutputStream(), 'utf-8')
+                wr.write(new groovy.json.JsonBuilder( activity ).toString())
+                wr.flush()
+                wr.close()
+                // get the response code - automatically sends the request
+                println connection.responseCode + ": " + connection.inputStream.text
+            }
 
-            // get the response code - automatically sends the request
-            println connection.responseCode + ": " + connection.inputStream.text
          //}
     }
 

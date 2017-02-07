@@ -1,0 +1,26 @@
+{
+  "navTree": {
+    "nodes": [
+      {"name": "Atmospheric Sciences (0401)"},
+      {"name": "Biochemistry And Cell Biology (0601)"},
+      {"name": "Ecological Applications (0501)"},
+      {"name": "Ecology (0602)", "nodes": [{"name": "Terrestrial Ecology (060208)"}]},
+      {"name": "Environmental Science And Management (0502)", "nodes": [{"name": "Conservation and Biodiversity (050202)"}, {"name": "Wildlife and Habitat Management (050211)"}]},
+      {"name": "Evolutionary Biology (0603)"},
+      {"name": "Genetics (0604)"},
+      {"name": "Geochemistry (0402)"},
+      {"name": "Geology (0403)"},
+      {"name": "Microbiology (0605)"},
+      {"name": "None"},
+      {"name": "Oceanography (0405)"},
+      {"name": "Other Biological Sciences (0699)"},
+      {"name": "Other Earth Sciences (0499)"},
+      {"name": "Other Environmental Sciences (0599)"},
+      {"name": "Physical Geography And Environmental Geoscience (0406)"},
+      {"name": "Physiology (0606)"},
+      {"name": "Plant Biology (0607)"},
+      {"name": "Soil Sciences (0503)"},
+      {"name": "Zoology (0608)"}
+    ]
+  }
+}

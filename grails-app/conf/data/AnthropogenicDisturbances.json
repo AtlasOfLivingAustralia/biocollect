@@ -1,0 +1,31 @@
+{
+  "navTree": {
+    "nodes": [
+      {"name": "Agrochemicals", "nodes": [{"name": "Nutrients"}]},
+      {"name": "Altered Water Flows"},
+      {"name": "Changed Hydrology", "nodes": [{"name": "Sedimentation"}]},
+      {"name": "Climate Change"},
+      {"name": "Disease"},
+      {"name": "Exotic Animal Species"},
+      {"name": "Exotic Plant Species"},
+      {"name": "Famine"},
+      {"name": "Fire Regimes"},
+      {"name": "Habitat Fragmentation"},
+      {"name": "Human road kill"},
+      {"name": "Interacting Pressures"},
+      {"name": "Invasive Animal Species"},
+      {"name": "Invasive Plant Species"},
+      {"name": "Land-use change"},
+      {"name": "Natural Resource Use"},
+      {"name": "None"},
+      {"name": "Other"},
+      {"name": "Over-consumption"},
+      {"name": "Over-population"},
+      {"name": "Pollution"},
+      {"name": "Salinity"},
+      {"name": "Soil Erosion"},
+      {"name": "War"},
+      {"name": "Water Extraction"}
+    ]
+  }
+}

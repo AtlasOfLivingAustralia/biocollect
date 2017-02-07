@@ -1,0 +1,25 @@
+{
+  "navTree": {
+    "nodes": [
+      {"name": "Algae", "nodes": [{"name": "Freshwater algae"}]},
+      {"name": "Cryptogams"},
+      {"name": "Cycads"},
+      {"name": "Forbs"},
+      {"name": "Introduced Plants"},
+      {"name": "Lichens"},
+      {"name": "Monocots", "nodes": [{"name": "Grasses"}, {"name": "Lillies"}, {"name": "Orchids"}, {"name": "Others"}, {"name": "Reeds"}, {"name": "Rushes"}, {"name": "Sedges"}, {"name": "Vines"}]},
+      {"name": "Mosses"},
+      {"name": "Pest Plants"},
+      {"name": "Shrubs", "nodes": [{"name": "Medium 0.25m - 2m"}, {"name": "Small <0.25m"}, {"name": "Tall >2m"}]},
+      {"name": "Subshrubs"},
+      {"name": "Trees", "nodes": [{"name": "Conifers"}, {"name": "Flowering Trees"}]},
+      {"name": "Worts"},
+      {"name": "Ferns"},
+      {"name": "Perennials"},
+      {"name": "Annuals"},
+      {"name": "Epiphytes"},
+      {"name": "Chenopods"},
+      {"name": "Grass Trees"}
+    ]
+  }
+}

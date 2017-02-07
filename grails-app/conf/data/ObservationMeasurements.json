@@ -1,0 +1,20 @@
+{"navTree": {
+    "nodes": [{"name": "Derived",
+                "nodes": [{"name": "Derived - Binary Data"},
+                          {"name": "Derived - Categorical Data"},
+                          {"name": "Derived - Continuous Data"},
+                          {"name": "Derived - Count Data"},
+                          {"name": "Derived - Ordinal Data"}]},
+              {"name": "Human Census"},
+      {"name": "None"},
+      {"name": "Other"},
+      {"name": "Raw Observations",
+        "nodes": [{"name": "Raw Observations - Binary Data"},
+                  {"name": "Raw Observations - Categorical Data"},
+                  {"name": "Raw Observations - Continuous Data"},
+                  {"name": "Raw Observations - Count Data"},
+                  {"name": "Raw Observations - Ordinal Data"}]},
+      {"name": "Radiocarbon Dates"}
+    ]
+  }
+}
