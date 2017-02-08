@@ -192,18 +192,6 @@ class BioActivityController {
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
             addOutputModel(model)
             model.defaultData = metadataService.getDefaultData(model.outputModels)
-
-            def configFields = [];
-
-            model.outputModels.each {key, value ->
-                def speciesFields = value.dataModel.findAll {
-                    it.dataType == "species"
-                }
-
-
-            }
-
-
         }
 
         model

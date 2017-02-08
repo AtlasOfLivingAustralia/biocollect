@@ -30,9 +30,9 @@ class SearchController {
     }
 
     //Search species by project activity species constraint.
-    def searchSpecies(String id, String q, Integer limit){
+    def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName){
 
-        def result = projectActivityService.searchSpecies(id, q, limit)
+        def result = projectActivityService.searchSpecies(id, q, limit, output, dataFieldName)
         render result as JSON
     }
 

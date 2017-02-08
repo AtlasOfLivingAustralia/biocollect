@@ -46,7 +46,7 @@
                     $(function(){
                         var viewModelName = "${blockId}ViewModel", viewModelInstance = viewModelName + "Instance";
                         // load dynamic models - usually objects in a list
-                        <md:jsModelObjects model="${model}" site="${site}" edit="true" viewModelInstance="${blockId}ViewModelInstance"/>
+                        <md:jsModelObjects model="${model}"  output="${output.name}" site="${site}" edit="true" viewModelInstance="${blockId}ViewModelInstance"/>
 
                 this[viewModelName] = function (config, outputNotCompleted) {
                     var self = this;
@@ -87,7 +87,7 @@
 
                 self.loadData = function (data) {
                     // load dynamic data
-                <md:jsLoadModel model="${model}" defaultData="${defaultData}" user="${user}"/>
+                <md:jsLoadModel model="${model}" output="${output.name}" defaultData="${defaultData}" user="${user}"/>
 
                 // if there is no data in tables then add an empty row for the user to add data
                 if (typeof self.addRow === 'function' && self.rowCount() === 0) {
