@@ -46,10 +46,9 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button id="clearFilterByRegionButton" type="button" class="btn btn-small btn-info"
-                                                 ><g:message code="project.search.mapClear"/><i
-                                                class="pull-left toggleIndicator icon-remove icon-white"></i></button>
-                                        <button type="button" class="btn btn-primary btn-small" data-dismiss="modal"><g:message code="project.search.mapClose"/><i
-                                                class="pull-left toggleIndicator icon-remove icon-white"></i></button>
+                                                 ><i class="toggleIndicator icon-remove icon-white"></i> <g:message code="project.search.mapClear"/></button>
+                                        <button type="button" class="btn btn-primary btn-small" data-dismiss="modal"><i
+                                                class="toggleIndicator icon-chevron-right icon-white"></i> <g:message code="project.search.mapClose"/></button>
                                     </div>
                                 </div>
 
