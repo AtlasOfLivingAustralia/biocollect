@@ -122,7 +122,7 @@ class ModelJSTagLib {
                 out << INDENT*4 << "self.load${mod.name}(${collector});\n"
             }
             else if (mod.dataType == 'species') {
-                out << INDENT*4 << "self.data['${mod.name}'] = new SpeciesViewModel(${collector}, speciesLists, ${mod.validate == 'required'});\n"
+                out << INDENT*4 << "self.data['${mod.name}'] = new SpeciesViewModel(${collector}, ${mod.validate == 'required'}, '${attrs.output}', '${mod.name}');\n"
             } else if (mod.dataType == 'document') {
                 out << INDENT*4 << "var doc = findDocumentById(documents, ${collector});\n"
                 out << INDENT*4 << "if (doc) {\n"
@@ -516,7 +516,7 @@ class ModelJSTagLib {
                         out << INDENT*3 << "}\n"
                         break;
                     case 'species':
-                        out << INDENT*3 << "this.${col.name} =  new SpeciesViewModel(data['${col.name}'], speciesLists, ${col.validate == 'required'});\n"
+                        out << INDENT*3 << "this.${col.name} =  new SpeciesViewModel(data['${col.name}'], ${col.validate == 'required'}, '${attrs.output}', '${col.name}');\n"
                         break
                     case 'stringList':
                         out << INDENT*3 << "this.${col.name}=ko.observableArray(orEmptyArray(data['${col.name}']));\n";
@@ -825,7 +825,7 @@ class ModelJSTagLib {
     }
 
     def speciesModel(attrs, model, out) {
-        out << INDENT*3 << "self.data.${model.name} = new SpeciesViewModel({}, speciesLists);\n"
+        out << INDENT*3 << "self.data.${model.name} = new SpeciesViewModel({}, false, '${attrs.output}', '${model.name}');\n"
     }
 
     def modelConstraints(model, out) {

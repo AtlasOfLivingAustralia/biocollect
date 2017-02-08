@@ -227,14 +227,37 @@ class ProjectActivityService {
      * @param id the id of the ProjectActivity (survey) being completed
      * @param q query string to search for
      * @param limit the maximum number of results to return
+     * @param output Identity of field for specific configuration.
+     * @param dataFieldName Identity of field for specific configuration.
      * @return json structure containing search results suitable for use by the species autocomplete widget on a survey form.
      */
-    def searchSpecies(String id, String q, Integer limit){
+    def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName){
         def pActivity = get(id)
+
+
+        def specificFieldDefinition = pActivity?.speciesFields.find {
+            it.dataFieldName == dataFieldName && it.output == output
+        }
+
+
+        final Map defaultSpeciesFieldConfiguration = pActivity?.species
+
+        Map speciesConfig =  (!specificFieldDefinition || specificFieldDefinition?.config?.type == 'DEFAULT_SPECIES') ?
+                defaultSpeciesFieldConfiguration : specificFieldDefinition.config
+
+        def result = searchSpeciesForConfig(speciesConfig, q, limit)
+
+        // specific speciesDisplayFormat is applied if present, IE is not affected by config.type value
+        String speciesDisplayFormat = specificFieldDefinition? specificFieldDefinition.config?.speciesDisplayFormat : defaultSpeciesFieldConfiguration?.speciesDisplayFormat
+        formatSpeciesNameForSurvey(speciesDisplayFormat , result)
+        result
+    }
+
+    private Object searchSpeciesForConfig(Map speciesConfig, String q, Integer limit) {
         def result
-        switch(pActivity?.species?.type){
+        switch (speciesConfig?.type) {
             case 'SINGLE_SPECIES':
-                result = speciesService.searchForSpecies(pActivity?.species?.singleSpecies?.name, 1)
+                result = speciesService.searchForSpecies(speciesConfig?.singleSpecies?.name, 1)
                 break
 
             case 'ALL_SPECIES':
@@ -242,36 +265,33 @@ class ProjectActivityService {
                 break
 
             case 'GROUP_OF_SPECIES':
-                def lists = pActivity?.species?.speciesLists
+                def lists = speciesConfig?.speciesLists
                 result = speciesService.searchSpeciesInLists(q, lists, limit)
                 break
             default:
                 result = [autoCompleteList: []]
                 break
         }
-
-        // process according to setting
-        formatSpeciesNameForSurvey(pActivity, result)
-        result
+        return result
     }
 
-    List formatSpeciesNameForSurvey(Map pActivity, Map data){
+    List formatSpeciesNameForSurvey(String speciesDisplayFormat, Map data){
         data?.autoCompleteList?.each{
-            it.name = formatSpeciesName(pActivity.species.speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', it)
+            it.name = formatSpeciesName(speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', it)
         }
     }
 
     /**
      * formats a name into the specified format
      * if species does not match to a taxon, then mention it in name.
-     * @param type
+     * @param displayType
      * @param data
      * @return
      */
-    String formatSpeciesName(String type, Map data){
+    String formatSpeciesName(String displayType, Map data){
         String name
         if(data.guid){
-            switch (type){
+            switch (displayType){
                 case 'COMMONNAME(SCIENTIFICNAME)':
                     if(data.commonName){
                         name = "${data.commonName} (${data.scientificName})"
@@ -306,23 +326,39 @@ class ProjectActivityService {
         name
     }
 
-    /*
-     *  Look for SINGLE_SPECIES for the given project activity
-     *  @param projectActivityId project activity identifier
-     *  @return map containing species name, guid and isSingle field to indicate whether it's of a 'SINGLE_SPECIES' category.
+    /**
+     * Look for SINGLE_SPECIES for the given project activity
+     * @param projectActivityId project activity identifier
+     * @param output Identity of field for specific configuration.
+     * @param dataFieldName Identity of field for specific configuration.
+     * @return map containing species name, guid and isSingle field to indicate whether it's of a 'SINGLE_SPECIES' category.
      */
 
-    Map getSingleSpecies(String projectActivityId) {
+    Map getSingleSpecies(String projectActivityId, String output, String dataFieldName) {
         def pActivity = get(projectActivityId)
+
+        def specificFieldDefinition = pActivity?.speciesFields.find {
+            it.dataFieldName == dataFieldName && it.output == output
+        }
+
+        final Map defaultSpeciesFieldConfiguration = pActivity?.species
+
+        Map speciesFieldConfig =  (!specificFieldDefinition || specificFieldDefinition?.config?.type == 'DEFAULT_SPECIES') ?
+                defaultSpeciesFieldConfiguration : specificFieldDefinition.config
+
         Map result = [isSingle: false]
-        switch (pActivity?.species?.type) {
+
+        switch (speciesFieldConfig?.type) {
             case 'SINGLE_SPECIES':
                 result.isSingle = true
-                if (pActivity?.species?.singleSpecies?.guid) {
-                    result.name = formatSpeciesName(pActivity.species.speciesDisplayFormat, pActivity.species.singleSpecies)
-                    result.guid = pActivity?.species?.singleSpecies?.guid
-                    result.scientificName = pActivity.species.singleSpecies?.scientificName
-                    result.commonName = pActivity.species.singleSpecies?.commonName
+
+                if (speciesFieldConfig?.singleSpecies?.guid) {
+                    // specific speciesDisplayFormat is applied if present, IE is not affected by config.type value
+                    String speciesDisplayFormat = specificFieldDefinition? specificFieldDefinition.config?.speciesDisplayFormat : defaultSpeciesFieldConfiguration?.speciesDisplayFormat
+                    result.name = formatSpeciesName(speciesDisplayFormat, speciesFieldConfig.singleSpecies)
+                    result.guid = speciesFieldConfig.singleSpecies?.guid
+                    result.scientificName = speciesFieldConfig.singleSpecies?.scientificName
+                    result.commonName = speciesFieldConfig.singleSpecies?.commonName
                 }
                 break
         }
