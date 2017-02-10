@@ -374,3 +374,128 @@ var SpeciesFieldViewModel = function (o) {
         return jsData;
     };
 }
+
+
+var SpeciesListsViewModel = function (o) {
+    var self = this;
+    if (!o) o = {};
+
+    self.ascIconClass = "icon-chevron-up";
+    self.descIconClass = "icon-chevron-down";
+
+    self.searchGuid = ko.observable();
+    self.searchName = ko.observable();
+
+    self.pagination = new PaginationViewModel({}, self);
+    self.pagination.rppOptions = [10, 20, 30];
+
+    self.allSpeciesListsToSelect = ko.observableArray();
+    self.offset = ko.observable(0);
+    // self.max = ko.observable(100);
+    self.listCount = ko.observable();
+
+    self.transients = {};
+    self.transients.loading = ko.observable(false);
+    self.transients.sortCol = ko.observable("listName");
+    self.transients.sortOrder = ko.observable("asc");
+
+    self.sort = function(column, order) {
+        if (!self.transients.loading()) {
+            if (column == self.transients.sortCol()) {
+                //toggle the order
+                if (order == "asc") {
+                    self.transients.sortOrder("desc");
+                } else {
+                    self.transients.sortOrder("asc");
+                }
+            } else {
+                self.transients.sortCol(column)
+                self.transients.sortOrder("asc");
+            }
+            self.loadAllSpeciesLists(self.transients.sortCol(), self.transients.sortOrder())
+        }
+    }
+
+    self.loadAllSpeciesLists = function (sortCol, order) {
+        self.transients.loading(true);
+        var url = fcConfig.speciesListUrl + "?sort=" + sortCol + "&offset=" + self.offset() + "&max=" + self.pagination.resultsPerPage() + "&order=" + order;
+        if (self.searchGuid()) {
+            url += "&guid=" + self.searchGuid();
+        }
+
+        if (self.searchName() && self.searchName().trim() != ""){
+            url += "&searchTerm=" + self.searchName().trim();
+        }
+
+        var divId = 'project-activities-result-placeholder';
+        $.ajax({
+            url: url,
+            type: 'GET',
+            contentType: 'application/json',
+            beforeSend: function () {
+                self.transients.loading(true);
+            },
+            success: function (data) {
+                if (data.error) {
+                    showAlert("Error :" + data.text, "alert-error", divId);
+                }
+                else {
+                    self.listCount(data.listCount);
+                    self.allSpeciesListsToSelect($.map(data.lists ? data.lists : [], function (obj, i) {
+                            return new SpeciesList(obj);
+                        })
+                    );
+
+                    if (self.offset() == 0) {
+                        self.pagination.loadPagination(0, data.listCount);
+                    }
+                }
+            },
+            complete: function () {
+                self.transients.loading(false);
+            },
+            error: function (data) {
+                var status = data.status;
+                showAlert("Error : An unhandled error occurred" + data.status, "alert-error", divId);
+            }
+        });
+    };
+
+    self.clearSearch = function() {
+        self.searchGuid(null);
+        self.searchName(null);
+        self.setDefault()
+    }
+
+    self.setDefault = function() {
+        self.transients.sortCol("listName");
+        self.transients.sortOrder("asc");
+        self.transients.loading(true);
+        self.refreshPage(0);
+    }
+
+    self.refreshPage = function(offset) {
+        self.offset( offset || 0);
+        self.loadAllSpeciesLists(self.transients.sortCol(), self.transients.sortOrder());
+    }
+};
+
+var SpeciesList = function (o) {
+    var self = this;
+    if (!o) o = {};
+
+    self.listName = ko.observable(o.listName);
+    self.dataResourceUid = ko.observable(o.dataResourceUid);
+
+    self.listType = ko.observable(o.listType);
+    self.fullName = ko.observable(o.fullName);
+    self.itemCount = ko.observable(o.itemCount);
+
+
+    self.transients = {};
+    self.transients.url = ko.observable(fcConfig.speciesListsServerUrl + "/speciesListItem/list/" + o.dataResourceUid);
+    self.transients.check = ko.observable(false);
+    self.transients.truncatedListName = ko.computed(function () {
+        return truncate(self.listName(), 45);
+    });
+};

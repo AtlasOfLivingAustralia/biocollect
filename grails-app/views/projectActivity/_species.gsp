@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 %{--Specific field configuration entries if more than one species field in the form--}%
-                <!-- ko  foreach: transients.speciesFields() -->
+                <!-- ko  foreach: speciesFields() -->
                 <div class="row-fluid">
                     <div class="span3 text-left">
                         <span data-bind="text: transients.fieldName "></span>

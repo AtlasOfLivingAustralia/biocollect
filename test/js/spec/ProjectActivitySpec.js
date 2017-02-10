@@ -13,7 +13,7 @@ describe("ProjectActivityViewModel Spec", function () {
         expect(projectActivity.projectId()).toEqual("");
         expect(projectActivity.sites()).toEqual([]);
         expect(projectActivity.species()).toEqual(jasmine.any(SpeciesConstraintViewModel));
-        expect(projectActivity.transients.speciesFields()).toEqual([]);
+        expect(projectActivity.speciesFields()).toEqual([]);
         expect(projectActivity.visibility).toEqual(jasmine.any(SurveyVisibilityViewModel));
     });
 
