@@ -597,7 +597,11 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     };
 
     self.saveSpecies = function () {
-        return self.genericUpdate("species");
+        if(self.current().areSpeciesValid()) {
+            self.genericUpdate("species");
+        } else {
+            showAlert("All species field(s) must be configured before saving.", "alert-error", self.placeHolder);
+        }
     };
 
     self.saveAlert = function () {
@@ -1016,7 +1020,6 @@ var ProjectActivity = function (params) {
     // only when a user has accepted the change.
 
     self.pActivityFormName.subscribe(function(oldValue) {
-        console.log("Updating oldName to  " + oldValue);
         self.transients.oldFormName = oldValue;
     }, null, "beforeChange");
 
@@ -1025,8 +1028,6 @@ var ProjectActivity = function (params) {
     self.transients.revertFormNameChange = false;
 
     self.pActivityFormName.subscribe(function(newValue) {
-        console.log("New form name is " + self.pActivityFormName());
-
         if(!self.transients.revertFormNameChange) { // Normal interaction of user with  UI select control
             if(self.transients.speciesFields().length > 0) {
                 bootbox.confirm("There is specific fields configuration for this survey in the Species tab. Changing the form will override existing settings. Do you want to continue?", function (result) {
