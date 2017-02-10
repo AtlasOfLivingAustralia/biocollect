@@ -231,7 +231,45 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
 
 };
 
+var NewSpeciesListViewModel = function (o) {
+    var self = this;
+    if (!o) o = {};
 
+    self.listName = ko.observable(o.listName);
+    self.dataResourceUid = ko.observable(o.dataResourceUid);
+    self.description = ko.observable(o.description);
+    self.listType = ko.observable(o.listType);
+    self.allSpecies = ko.observableArray();
+
+    self.inputSpeciesViewModel = new SpeciesViewModel();
+    self.inputSpeciesViewModel.transients.searchValue = ko.observable("");
+
+    self.inputSpeciesViewModel.transients.name.subscribe(function (newName) {
+        if(newName) {
+            var newSpecies = new SpeciesViewModel();
+            newSpecies.name(newName);
+            newSpecies.guid(self.inputSpeciesViewModel.transients.guid());
+            if(self.inputSpeciesViewModel.transients.guid()) {
+                newSpecies.transients.bieUrl(self.inputSpeciesViewModel.transients.bieUrl());
+            }
+            self.allSpecies.push(newSpecies);
+        }
+
+        self.clearSearchValue();
+    });
+
+    self.clearSearchValue  = function () {
+        self.inputSpeciesViewModel.transients.searchValue("");
+    };
+
+    self.removeNewSpeciesName = function (species) {
+        self.allSpecies.remove(species);
+    };
+
+    self.transients = {};
+    self.transients.url = ko.observable(fcConfig.speciesListsServerUrl + "/speciesListItem/list/" + o.dataResourceUid);
+
+};
 
 
 /**
