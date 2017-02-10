@@ -22,6 +22,46 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
         return fcConfig.bieUrl + '/species/' + self.singleSpecies.guid();
     });
 
+    self.transients.inputSettingsTooltip = ko.computed(function () {
+        var type = self.type();
+
+        if(type === 'SINGLE_SPECIES') {
+            return 'Single species';
+        } else  if(type === 'GROUP_OF_SPECIES') {
+            if(self.speciesLists().length > 0) {
+                var speciesListsTooltip = '<p>Lists</p>';
+                for(var i =0 ; i < self.speciesLists().length; i++ ) {
+                    speciesListsTooltip += '<span class="pull-left text-left">' + self.speciesLists()[i].transients.truncatedListName() + '</span> <br/>\n';
+                }
+
+                speciesListsTooltip += '<br/>';
+                return speciesListsTooltip;
+            } else {
+                return "No lists configured yet";
+            }
+        } else {
+            return '';
+        }
+    });
+
+    self.transients.inputSettingsSummary = ko.computed(function () {
+        var type = self.type();
+        if(type === 'ALL_SPECIES'){
+            return 'All species';
+        } else if(type === 'SINGLE_SPECIES') {
+            return self.singleSpecies.name();
+        } else  if(type === 'GROUP_OF_SPECIES') {
+            if(self.speciesLists().length > 0) {
+                var moreListsMessage = (self.speciesLists().length > 1) ? ' and ' + (self.speciesLists().length - 1)  + ' more.' : '';
+                return 'List ' + self.speciesLists()[0].transients.truncatedListName() + moreListsMessage;
+            } else {
+                return "No lists configured yet"
+            }
+        } else {
+            return 'Not configured';
+        }
+    });
+
     self.transients.fieldName = ko.observable(fieldName);
     self.transients.bioSearch = ko.observable(fcConfig.speciesSearchUrl);
     self.transients.allowedListTypes = [
