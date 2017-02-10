@@ -1,7 +1,7 @@
 <span data-bind="visible: transients.showAddSpeciesLists">
     <button type="button" class="close margin-right-10 margin-top-10"  data-bind="click: transients.toggleShowAddSpeciesLists">&times;</button>
     <div class="well">
-
+    <h4>Create new species lists</h4>
         <div class="row-fluid">
             <div class="span4 text-left">
                 <label>New species lists name:</label>

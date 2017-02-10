@@ -2,6 +2,7 @@
 <span data-bind="visible: transients.showExistingSpeciesLists">
     <button type="button" class="close margin-right-10 margin-top-10"  data-bind="click:transients.toggleShowExistingSpeciesLists">&times;</button>
     <div class="well">
+        <h4>Choose from existing species lists</h4>
         <div class="row-fluid margin-bottom-1">
             <div class="input-append">
                 <label for="speciesNameSearch">Enter a list name or select a species name to search for</label>

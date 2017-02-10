@@ -239,6 +239,8 @@ function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, modalSelecto
     // Close the modal and tidy up the bindings.
     var closeModal = function() {
         $modal.modal('hide');
+        $modal.removeClass("modal-open");
+        $("body").removeClass("modal-open");
         $modal.find('form').validationEngine('detach');
         ko.cleanNode(template);
     };
@@ -255,6 +257,8 @@ function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, modalSelecto
             backdrop:'static',
             keyboard: false
         });
+    $modal.addClass("modal-open");
+    $("body").addClass("modal-open");
     $modal.modal('show');
 
     $modal.on('shown', function() {
