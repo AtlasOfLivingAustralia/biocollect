@@ -26,7 +26,12 @@
                     </div>
                 </div>
                 </br>
-                <div class="row-fluid">
+                <div class="row-fluid" data-bind="visible: speciesFields().length == 0">
+                    <span class="alert-success"><g:message code="project.survey.species.noSpeciesInSurvey"/></span>
+
+                </div>
+
+                <div class="row-fluid" data-bind="visible: speciesFields().length > 0">
                     <div class="span3 text-left">
                       <label class="control-label"><g:message code="project.survey.species.fieldName"/>
                           <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.fieldName"/>', content:'<g:message code="project.survey.species.fieldName.content"/>'}">
@@ -49,26 +54,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="row-fluid">
-                    <div class="span3 text-left">
-                        <span><b><g:message code="project.survey.species.defaultConfiguration"/></b>
-                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.defaultConfiguration"/>', content:'<g:message code="project.survey.species.defaultConfiguration.content"/>'}">
-                                <i class="icon-question-sign"></i>
-                            </a>
-                            <span class="right-padding"></span>
-                        </span>
-                    </div>
-                    <div class="span5">
-                        <span class="req-field">
-                            <select data-validation-engine="validate[required]" data-bind="disable: true, options: species().speciesOptions, optionsText:'name', optionsValue:'id', value: species().type, optionsCaption: 'Please select'" ></select>
-                        </span>
-                        <a target="_blank" class="btn btn-link" data-bind="click: function() { showSpeciesConfiguration(species(), 'Default Configuration') }" ><small><g:message code="project.survey.species.configure"/></small></a>
-                    </div>
-                    <div class="span4 text-left">
-                        <select data-bind="options: transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  species().speciesDisplayFormat">
-                        </select>
-                    </div>
-                </div>
+
                 %{--Specific field configuration entries if more than one species field in the form--}%
                 <!-- ko  foreach: speciesFields() -->
                 <div class="row-fluid">

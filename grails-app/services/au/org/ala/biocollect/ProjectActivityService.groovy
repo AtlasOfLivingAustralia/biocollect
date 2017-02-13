@@ -45,7 +45,11 @@ class ProjectActivityService {
             if (published) {
                 if (!props?.species) {
                     attributesAdded.add("species")
-                    species = act.species
+                    props.species = act.species
+                }
+                if (!props?.speciesFields) {
+                    attributesAdded.add("speciesFields")
+                    props.speciesFields = act.speciesFields
                 }
                 if (!props?.sites) {
                     attributesAdded.add("sites")
@@ -91,17 +95,6 @@ class ProjectActivityService {
         if (creating && !props?.startDate) {
             //error, no start date
             return "startDate is missing"
-        }
-
-        //error, no species constraint
-        if (props?.species) {
-            final species = props.species
-            String speciesTypeErrorMessage = validateSpeciesType(species);
-            if(speciesTypeErrorMessage) {
-                return speciesTypeErrorMessage
-            }
-        } else if (published) {
-            return "species is missing"
         }
 
         if(props?.speciesFields) {
@@ -192,7 +185,8 @@ class ProjectActivityService {
                         error = "invalid speciesLists item for species type GROUP_OF_SPECIES"
                     }
                 }
-            } else if (species.type != 'ALL_SPECIES' && species.type != 'DEFAULT_SPECIES') {
+            } else if (species.type != 'ALL_SPECIES' /*&& species.type != 'DEFAULT_SPECIES' */
+            ) {
                 return "\"${species.type}\" is not a vaild species type"
             }
         }
@@ -234,22 +228,18 @@ class ProjectActivityService {
     def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName){
         def pActivity = get(id)
 
-
         def specificFieldDefinition = pActivity?.speciesFields.find {
             it.dataFieldName == dataFieldName && it.output == output
         }
 
-
-        final Map defaultSpeciesFieldConfiguration = pActivity?.species
-
-        Map speciesConfig =  (!specificFieldDefinition || specificFieldDefinition?.config?.type == 'DEFAULT_SPECIES') ?
-                defaultSpeciesFieldConfiguration : specificFieldDefinition.config
+        Map speciesConfig =  (specificFieldDefinition) ?
+                //New species per field configuration
+                specificFieldDefinition.config :
+                // Legacy per survey species configuration
+                pActivity?.species
 
         def result = searchSpeciesForConfig(speciesConfig, q, limit)
-
-        // specific speciesDisplayFormat is applied if present, IE is not affected by config.type value
-        String speciesDisplayFormat = specificFieldDefinition? specificFieldDefinition.config?.speciesDisplayFormat : defaultSpeciesFieldConfiguration?.speciesDisplayFormat
-        formatSpeciesNameForSurvey(speciesDisplayFormat , result)
+        formatSpeciesNameForSurvey(speciesConfig.speciesDisplayFormat , result)
         result
     }
 
@@ -341,10 +331,12 @@ class ProjectActivityService {
             it.dataFieldName == dataFieldName && it.output == output
         }
 
-        final Map defaultSpeciesFieldConfiguration = pActivity?.species
+        Map speciesFieldConfig =  (specificFieldDefinition) ?
+                //New species per field configuration
+                specificFieldDefinition.config :
+                // Legacy per survey species configuration
+                pActivity?.species
 
-        Map speciesFieldConfig =  (!specificFieldDefinition || specificFieldDefinition?.config?.type == 'DEFAULT_SPECIES') ?
-                defaultSpeciesFieldConfiguration : specificFieldDefinition.config
 
         Map result = [isSingle: false]
 
@@ -353,9 +345,7 @@ class ProjectActivityService {
                 result.isSingle = true
 
                 if (speciesFieldConfig?.singleSpecies?.guid) {
-                    // specific speciesDisplayFormat is applied if present, IE is not affected by config.type value
-                    String speciesDisplayFormat = specificFieldDefinition? specificFieldDefinition.config?.speciesDisplayFormat : defaultSpeciesFieldConfiguration?.speciesDisplayFormat
-                    result.name = formatSpeciesName(speciesDisplayFormat, speciesFieldConfig.singleSpecies)
+                    result.name = formatSpeciesName(speciesFieldConfig.speciesDisplayFormat, speciesFieldConfig.singleSpecies)
                     result.guid = speciesFieldConfig.singleSpecies?.guid
                     result.scientificName = speciesFieldConfig.singleSpecies?.scientificName
                     result.commonName = speciesFieldConfig.singleSpecies?.commonName

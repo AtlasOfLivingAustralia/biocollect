@@ -21,13 +21,75 @@ var ProjectActivity = function (params) {
     self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
     self.baseLayersName = ko.observable(pActivity.baseLayersName);
 
-    var speciesFields = pActivity.speciesFields || [];
-    self.speciesFields = ko.observableArray($.map(speciesFields, function (obj, i) {
-        return new SpeciesFieldViewModel(obj);
-    }));
-
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
     self.pActivityFormName.extend({rateLimit: 100});
+
+
+    /**
+     * Retrieves the species fields and overrides self.speciesFields with them
+     * only if formName is not empty
+     * @param formName The new form name
+     * @param sync should the call be synchronous (default false)
+     */
+    self.retrieveSpeciesFieldsForFormName = function(formName, sync) {
+        sync = sync || false
+        if(formName) {
+            var divId = 'project-activities-result-placeholder';
+            $.ajax({
+                async: !sync,
+                url: fcConfig.getSpeciesFieldsForSurveyUrl + '/' + formName,
+                type: 'GET',
+                // data: model,
+                // contentType: 'application/json',
+                success: function (data) {
+                    if (data.error) {
+                        showAlert("Error :" + data.error, "alert-error", divId);
+                    }
+                    else {
+                        self.speciesFields.removeAll();
+
+                        // Only one species field in the form, don't bother with its configuration
+                        if (data.result) {
+                            $.map(data.result ? data.result : [], function (obj, i) {
+                                self.speciesFields.push(new SpeciesFieldViewModel(obj));
+                            });
+                        }
+                    }
+                },
+                error: function (data) {
+                    showAlert("Error : An unhandled error occurred" + data.status, "alert-error", divId);
+                }
+            });
+        }
+    }
+
+    /**
+     * Initialises new speciesField configuration, possibly from legacy species configuration
+     * If no pActivity.speciesField exist then retrieve the species fields list from the current form and then
+     * use the existing pActivity.species to populate defaults for each speciesField.
+     *
+     * self.species field then can be cleared.
+     * @param pActivity the project activity object model, it should not be null
+     */
+    self.initSpeciesConfig = function (pActivity) {
+        // New configuration in place, use new speciesFields to do initialisation
+        if($.isArray(pActivity.speciesFields) && pActivity.speciesFields.length > 0 ) {
+            self.speciesFields = ko.observableArray($.map(pActivity.speciesFields, function (obj, i) {
+                return new SpeciesFieldViewModel(obj);
+            }));
+        } else {
+            // Legacy functionality, revert to initialising from existing pActivity.species field
+            self.speciesFields = ko.observableArray([]);
+            self.retrieveSpeciesFieldsForFormName(self.pActivityFormName(), true);
+            for(var i = 0; i< self.speciesFields().length; i++) {
+                self.speciesFields()[i].config(new SpeciesConstraintViewModel(pActivity.species));
+            }
+        }
+    }
+
+    self.initSpeciesConfig(pActivity);
+
+
 
     var images = [];
     $.each(pActivityForms, function (index, form) {
@@ -74,7 +136,7 @@ var ProjectActivity = function (params) {
 
     self.pActivityFormName.subscribe(function(newValue) {
         if(!self.transients.revertFormNameChange) { // Normal interaction of user with  UI select control
-            if(self.speciesFields().length > 0) {
+            if(self.areSpeciesFieldsConfigured()) {
                 bootbox.confirm("There is specific fields configuration for this survey in the Species tab. Changing the form will override existing settings. Do you want to continue?", function (result) {
                     // Asynchronous call, too late to prevent change but depending on the user response we either:
                     // a) Restore the previous value in the select or
@@ -84,7 +146,6 @@ var ProjectActivity = function (params) {
                         self.retrieveSpeciesFieldsForFormName(self.pActivityFormName());
                         self.updateFormImages(self.pActivityFormName());
                     } else {
-                        console.log("reverting form to previous value" + self.transients.oldFormName);
                         self.pActivityFormName(self.transients.oldFormName);
                         // Stop infinite loop propagation.
                         self.transients.revertFormNameChange = true;
@@ -101,63 +162,37 @@ var ProjectActivity = function (params) {
         }
     });
 
+    self.areSpeciesFieldsConfigured = function () {
+        // As soon as a field is valid, we stop
+        var speciesFields = self.speciesFields();
 
-    /**
-     * Retrieves the species fields and overrides self.speciesFields with them
-     * If the species fields for this form is 0 or 1 only then  self.speciesFields will be set to an empty array
-     * @param formName The new form name
-     */
-    self.retrieveSpeciesFieldsForFormName = function(formName) {
-        var divId = 'project-activities-result-placeholder';
-        $.ajax({
-            url: fcConfig.getSpeciesFieldsForSurveyUrl+'/' + formName,
-            type: 'GET',
-            // data: model,
-            // contentType: 'application/json',
-            success: function (data) {
-                if (data.error) {
-                    showAlert("Error :" + data.error, "alert-error", divId);
-                }
-                else {
-                    self.speciesFields.removeAll();
-
-                    // Only one species field in the form, don't bother with its configuration
-                    if(data.result && data.result.length > 1) {
-                        $.map(data.result ? data.result : [], function (obj, i) {
-                            self.speciesFields.push(new SpeciesFieldViewModel(obj));
-                        });
-                    }
-                }
-            },
-            error: function (data) {
-                showAlert("Error : An unhandled error occurred" + data.status, "alert-error", divId);
+        for (var i = 0; i < speciesFields.length; i++) {
+            if(speciesFields[i].config().isValid()) {
+                return true;
             }
-        });
+        }
+        return false;
     }
 
-
-    /**
-     * @deprecated species was the original field were survey species configuration was stored.
-     * Since the introduction of per species field configuration the field to store information will be self.speciesFields
-     */
-    self.species = ko.observable(new SpeciesConstraintViewModel(pActivity.species));
 
     self.showSpeciesConfiguration = function(speciesConstraintVM, fieldName, index) {
         // Create a copy to bind to the field config dialog otherwise we may change the main screen values inadvertenly
         speciesConstraintVM = new SpeciesConstraintViewModel(speciesConstraintVM.asJson(), fieldName);
-        if(index) {
-            speciesConstraintVM.speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
-        }
+
+        // if(index) {
+        //     speciesConstraintVM.speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
+        // }
 
         showSpeciesFieldConfigInModal(speciesConstraintVM, '#configureSpeciesFieldModal', '#speciesFieldDialog')
             .done(function(result){
                     if(index) { //Update a particular species field configuration
                         var newSpeciesConstraintVM = new SpeciesConstraintViewModel(result)
-                         newSpeciesConstraintVM.speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
+                         // newSpeciesConstraintVM.speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
                         self.speciesFields()[index()].config(newSpeciesConstraintVM);
-                    } else { // Update species default configuration
-                        self.species(new SpeciesConstraintViewModel(result));
-                    }
+                     }
+                     // else { // Update species default configuration
+                    //     self.species(new SpeciesConstraintViewModel(result));
+                    // }
                 }
             );
     }
@@ -169,10 +204,6 @@ var ProjectActivity = function (params) {
     self.areSpeciesValid = function() {
 
         // As soon as a field is not valid we stop
-
-        if(!self.species().isValid()){
-            return false;
-        }
 
         var speciesFields = self.speciesFields();
 
@@ -359,7 +390,6 @@ var ProjectActivity = function (params) {
         }
         else if (by == "species") {
             jsData = {};
-            jsData.species = self.species().asJson();
 
             jsData.speciesFields = $.map(self.speciesFields(), function (obj, i) {
                 return obj.asJson();

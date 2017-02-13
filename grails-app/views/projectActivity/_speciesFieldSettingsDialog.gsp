@@ -92,7 +92,7 @@
                     </div>
                 </div>
                 <!-- Group species -->
-                <div class="species-modal-body" data-bind="visible: groupInfoVisible">
+                <div class="species-modal-body" data-bind="visible: groupInfoVisible() && (transients.showAddSpeciesLists() || transients.showExistingSpeciesLists())">
                     <span>
                         <g:render template="/projectActivity/addSpecies"/>
 

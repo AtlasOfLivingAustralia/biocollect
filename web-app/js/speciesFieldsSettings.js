@@ -157,7 +157,7 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
     };
 
     self.isValid = function(){
-        return ((self.type() == "ALL_SPECIES") || (self.type() == "DEFAULT_SPECIES") || (self.type() == "SINGLE_SPECIES" && self.singleSpecies.guid()) ||
+        return ((self.type() == "ALL_SPECIES") || (self.type() == "SINGLE_SPECIES" && self.singleSpecies.guid()) ||
         (self.type() == "GROUP_OF_SPECIES" && self.speciesLists().length > 0))
     };
 
@@ -305,8 +305,6 @@ function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, modalSelecto
 
         if(!error){
             result.resolve(speciesFieldConfigViewModel.asJson());
-            // Clean the template before we reuse it
-            speciesFieldConfigViewModel.speciesLists.removeAll();
             closeModal();
         } else {
             showAlert(error, 'alert-error', 'species-dialog-alert-placeholder')
@@ -361,7 +359,7 @@ var SpeciesFieldViewModel = function (o) {
     self.transients.fieldName = self.output + ' - ' + self.label
 
     self.config = ko.observable(new SpeciesConstraintViewModel(o.config));
-    self.config().speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
+    // self.config().speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
 
     self.asJson = function () {
         var jsData = {};
