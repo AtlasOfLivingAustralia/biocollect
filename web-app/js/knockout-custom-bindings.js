@@ -35,7 +35,10 @@ ko.bindingHandlers.popover = {
         placement: "right",
         animation: true,
         html: true,
-        trigger: "hover"
+        trigger: "hover",
+        delay: {
+            show: 250
+        }
     },
 
     initPopover: function (element, valueAccessor) {
@@ -52,6 +55,49 @@ ko.bindingHandlers.popover = {
             $(element).popover("destroy");
         });
         return options;
+    }
+};
+
+
+ko.bindingHandlers.tooltip = {
+    init: function(element, valueAccessor) {
+        var local = ko.utils.unwrapObservable(valueAccessor()),
+            options = {};
+
+        ko.utils.extend(options, ko.bindingHandlers.tooltip.options);
+        ko.utils.extend(options, local);
+
+        $(element).tooltip(options);
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+            $(element).tooltip("destroy");
+        });
+    },
+    update: function (element, valueAccessor) {
+
+        var $element = $(element);
+        $element.tooltip('destroy');
+
+        var local = ko.utils.unwrapObservable(valueAccessor()),
+            options = {};
+
+        ko.utils.extend(options, ko.bindingHandlers.tooltip.options);
+        ko.utils.extend(options, local);
+
+        $(element).tooltip(options);
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+            $(element).tooltip("destroy");
+        });
+
+    },
+    options: {
+        placement: "right",
+        trigger: "hover",
+        html: true,
+        delay: {
+            show: 250
+        }
     }
 };
 

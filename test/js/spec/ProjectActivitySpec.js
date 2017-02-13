@@ -12,8 +12,7 @@ describe("ProjectActivityViewModel Spec", function () {
         var projectActivity = new ProjectActivity();
         expect(projectActivity.projectId()).toEqual("");
         expect(projectActivity.sites()).toEqual([]);
-        expect(projectActivity.species()).toEqual(jasmine.any(SpeciesConstraintViewModel));
-        expect(projectActivity.transients.speciesFields()).toEqual([]);
+        expect(projectActivity.speciesFields()).toEqual([]);
         expect(projectActivity.visibility).toEqual(jasmine.any(SurveyVisibilityViewModel));
     });
 
@@ -31,10 +30,6 @@ describe("ProjectActivityViewModel Spec", function () {
 
         var params = {
             pActivity: {
-                species: {
-                    type: "DEFAULT_SPECIES",
-                    speciesDisplayFormat: "COMMONNAME"
-                },
                 speciesFields: [
                     {
                         label: "species field 1",
@@ -52,7 +47,7 @@ describe("ProjectActivityViewModel Spec", function () {
                         dataFieldName: "data field name 2",
                         context: "",
                         config: {
-                            type: "DEFAULT_SPECIES",
+                            type: "ALL_SPECIES",
                             speciesDisplayFormat: "SCIENTIFICNAME"
                         }
                     }

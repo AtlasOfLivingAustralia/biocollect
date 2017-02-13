@@ -26,49 +26,44 @@
                     </div>
                 </div>
                 </br>
-                <div class="row-fluid">
+                <div class="row-fluid" data-bind="visible: speciesFields().length == 0">
+                    <span class="alert-success"><g:message code="project.survey.species.noSpeciesInSurvey"/></span>
+
+                </div>
+
+                <div class="row-fluid" data-bind="visible: speciesFields().length > 0">
                     <div class="span3 text-left">
-                      <label class="control-label"><g:message code="project.survey.species.fieldName"/></label>
+                      <label class="control-label"><g:message code="project.survey.species.fieldName"/>
+                          <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.fieldName"/>', content:'<g:message code="project.survey.species.fieldName.content"/>'}">
+                              <i class="icon-question-sign"></i>
+                          </a>
+                      </label>
                     </div>
                     <div class="span5 text-left">
-                        <label class="control-label"><g:message code="project.survey.species.settings"/></label>
-                    </div>
-                    <div class="span4 text-left">
-                        <label class="control-label"><g:message code="project.survey.species.displayAs"/> <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.displayAs"/>', content:'<g:message code="project.survey.species.displayAs.content"/>'}">
-                            <i class="icon-question-sign"></i>
-                        </a>
-                            <span class="right-padding"></span></label>
-                    </div>
-                </div>
-                <div class="row-fluid">
-                    <div class="span3 text-left">
-                        <span><b><g:message code="project.survey.species.defaultConfiguration"/></b>
-                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.defaultConfiguration"/>', content:'<g:message code="project.survey.species.defaultConfiguration.content"/>'}">
+                        <label class="control-label"><g:message code="project.survey.species.settings"/>
+                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.settings"/>', content:'<g:message code="project.survey.species.settings.content"/>'}">
                                 <i class="icon-question-sign"></i>
                             </a>
-                            <span class="right-padding"></span>
-                        </span>
-                    </div>
-                    <div class="span5">
-                        <span class="req-field">
-                            <select data-validation-engine="validate[required]" data-bind="disable: true, options: species().speciesOptions, optionsText:'name', optionsValue:'id', value: species().type, optionsCaption: 'Please select'" ></select>
-                        </span>
-                        <a target="_blank" class="btn btn-link" data-bind="click: function() { showSpeciesConfiguration(species(), 'Default Configuration') }" ><small><g:message code="project.survey.species.configure"/></small></a>
+                        </label>
                     </div>
                     <div class="span4 text-left">
-                        <select data-bind="options: transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  species().speciesDisplayFormat">
-                        </select>
+                        <label class="control-label"><g:message code="project.survey.species.displayAs"/>
+                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.displayAs"/>', content:'<g:message code="project.survey.species.displayAs.content"/>'}">
+                                <i class="icon-question-sign"></i>
+                            </a>
+                        </label>
                     </div>
                 </div>
+
                 %{--Specific field configuration entries if more than one species field in the form--}%
-                <!-- ko  foreach: transients.speciesFields() -->
+                <!-- ko  foreach: speciesFields() -->
                 <div class="row-fluid">
                     <div class="span3 text-left">
                         <span data-bind="text: transients.fieldName "></span>
                     </div>
                     <div class="span5">
-                        <span class="req-field">
-                            <select data-validation-engine="validate[required]" data-bind="disable: true, options: config().speciesOptions, optionsText:'name', optionsValue:'id', value: config().type, optionsCaption: 'Please select'" ></select>
+                        <span class="req-field" data-bind="tooltip: {title:config().transients.inputSettingsTooltip()}">
+                            <input type="text" class="input-large" data-bind="disable: true, value: config().transients.inputSettingsSummary"> </input>
                         </span>
                         <a target="_blank" data-bind="click: function() { $parent.showSpeciesConfiguration(config(), transients.fieldName, $index ) }" class="btn btn-link" ><small><g:message code="project.survey.species.configure"/></small></a>
                     </div>
@@ -94,7 +89,7 @@
 
                 <div class="span12">
                     <button class="btn-primary btn block btn-small"
-                            data-bind="click: $parent.saveSpecies, disable: !transients.saveOrUnPublishAllowed()"><i class="icon-white  icon-hdd" ></i>  Save</button>
+                            data-bind="click: $parent.saveSpecies, disable: !transients.saveOrUnPublishAllowed()"><i class="icon-white  icon-hdd" ></i>Save</button>
                     <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-form-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
                     <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-locations-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
                 </div>

@@ -22,6 +22,46 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
         return fcConfig.bieUrl + '/species/' + self.singleSpecies.guid();
     });
 
+    self.transients.inputSettingsTooltip = ko.computed(function () {
+        var type = self.type();
+
+        if(type === 'SINGLE_SPECIES') {
+            return 'Single species';
+        } else  if(type === 'GROUP_OF_SPECIES') {
+            if(self.speciesLists().length > 0) {
+                var speciesListsTooltip = '<p>Lists</p>';
+                for(var i =0 ; i < self.speciesLists().length; i++ ) {
+                    speciesListsTooltip += '<span class="pull-left text-left">' + self.speciesLists()[i].transients.truncatedListName() + '</span> <br/>\n';
+                }
+
+                speciesListsTooltip += '<br/>';
+                return speciesListsTooltip;
+            } else {
+                return "No lists configured yet";
+            }
+        } else {
+            return '';
+        }
+    });
+
+    self.transients.inputSettingsSummary = ko.computed(function () {
+        var type = self.type();
+        if(type === 'ALL_SPECIES'){
+            return 'All species';
+        } else if(type === 'SINGLE_SPECIES') {
+            return self.singleSpecies.name();
+        } else  if(type === 'GROUP_OF_SPECIES') {
+            if(self.speciesLists().length > 0) {
+                var moreListsMessage = (self.speciesLists().length > 1) ? ' and ' + (self.speciesLists().length - 1)  + ' more.' : '';
+                return 'List ' + self.speciesLists()[0].transients.truncatedListName() + moreListsMessage;
+            } else {
+                return "No lists configured yet"
+            }
+        } else {
+            return 'Not configured';
+        }
+    });
+
     self.transients.fieldName = ko.observable(fieldName);
     self.transients.bioSearch = ko.observable(fcConfig.speciesSearchUrl);
     self.transients.allowedListTypes = [
@@ -117,7 +157,7 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
     };
 
     self.isValid = function(){
-        return ((self.type() == "ALL_SPECIES") || (self.type() == "DEFAULT_SPECIES") || (self.type() == "SINGLE_SPECIES" && self.singleSpecies.guid()) ||
+        return ((self.type() == "ALL_SPECIES") || (self.type() == "SINGLE_SPECIES" && self.singleSpecies.guid()) ||
         (self.type() == "GROUP_OF_SPECIES" && self.speciesLists().length > 0))
     };
 
@@ -191,7 +231,45 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
 
 };
 
+var NewSpeciesListViewModel = function (o) {
+    var self = this;
+    if (!o) o = {};
 
+    self.listName = ko.observable(o.listName);
+    self.dataResourceUid = ko.observable(o.dataResourceUid);
+    self.description = ko.observable(o.description);
+    self.listType = ko.observable(o.listType);
+    self.allSpecies = ko.observableArray();
+
+    self.inputSpeciesViewModel = new SpeciesViewModel();
+    self.inputSpeciesViewModel.transients.searchValue = ko.observable("");
+
+    self.inputSpeciesViewModel.transients.name.subscribe(function (newName) {
+        if(newName) {
+            var newSpecies = new SpeciesViewModel();
+            newSpecies.name(newName);
+            newSpecies.guid(self.inputSpeciesViewModel.transients.guid());
+            if(self.inputSpeciesViewModel.transients.guid()) {
+                newSpecies.transients.bieUrl(self.inputSpeciesViewModel.transients.bieUrl());
+            }
+            self.allSpecies.push(newSpecies);
+        }
+
+        self.clearSearchValue();
+    });
+
+    self.clearSearchValue  = function () {
+        self.inputSpeciesViewModel.transients.searchValue("");
+    };
+
+    self.removeNewSpeciesName = function (species) {
+        self.allSpecies.remove(species);
+    };
+
+    self.transients = {};
+    self.transients.url = ko.observable(fcConfig.speciesListsServerUrl + "/speciesListItem/list/" + o.dataResourceUid);
+
+};
 
 
 /**
@@ -227,8 +305,6 @@ function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, modalSelecto
 
         if(!error){
             result.resolve(speciesFieldConfigViewModel.asJson());
-            // Clean the template before we reuse it
-            speciesFieldConfigViewModel.speciesLists.removeAll();
             closeModal();
         } else {
             showAlert(error, 'alert-error', 'species-dialog-alert-placeholder')
@@ -239,6 +315,8 @@ function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, modalSelecto
     // Close the modal and tidy up the bindings.
     var closeModal = function() {
         $modal.modal('hide');
+        $modal.removeClass("modal-open");
+        $("body").removeClass("modal-open");
         $modal.find('form').validationEngine('detach');
         ko.cleanNode(template);
     };
@@ -255,6 +333,8 @@ function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, modalSelecto
             backdrop:'static',
             keyboard: false
         });
+    $modal.addClass("modal-open");
+    $("body").addClass("modal-open");
     $modal.modal('show');
 
     $modal.on('shown', function() {
@@ -279,7 +359,7 @@ var SpeciesFieldViewModel = function (o) {
     self.transients.fieldName = self.output + ' - ' + self.label
 
     self.config = ko.observable(new SpeciesConstraintViewModel(o.config));
-    self.config().speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
+    // self.config().speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
 
     self.asJson = function () {
         var jsData = {};
@@ -292,3 +372,128 @@ var SpeciesFieldViewModel = function (o) {
         return jsData;
     };
 }
+
+
+var SpeciesListsViewModel = function (o) {
+    var self = this;
+    if (!o) o = {};
+
+    self.ascIconClass = "icon-chevron-up";
+    self.descIconClass = "icon-chevron-down";
+
+    self.searchGuid = ko.observable();
+    self.searchName = ko.observable();
+
+    self.pagination = new PaginationViewModel({}, self);
+    self.pagination.rppOptions = [10, 20, 30];
+
+    self.allSpeciesListsToSelect = ko.observableArray();
+    self.offset = ko.observable(0);
+    // self.max = ko.observable(100);
+    self.listCount = ko.observable();
+
+    self.transients = {};
+    self.transients.loading = ko.observable(false);
+    self.transients.sortCol = ko.observable("listName");
+    self.transients.sortOrder = ko.observable("asc");
+
+    self.sort = function(column, order) {
+        if (!self.transients.loading()) {
+            if (column == self.transients.sortCol()) {
+                //toggle the order
+                if (order == "asc") {
+                    self.transients.sortOrder("desc");
+                } else {
+                    self.transients.sortOrder("asc");
+                }
+            } else {
+                self.transients.sortCol(column)
+                self.transients.sortOrder("asc");
+            }
+            self.loadAllSpeciesLists(self.transients.sortCol(), self.transients.sortOrder())
+        }
+    }
+
+    self.loadAllSpeciesLists = function (sortCol, order) {
+        self.transients.loading(true);
+        var url = fcConfig.speciesListUrl + "?sort=" + sortCol + "&offset=" + self.offset() + "&max=" + self.pagination.resultsPerPage() + "&order=" + order;
+        if (self.searchGuid()) {
+            url += "&guid=" + self.searchGuid();
+        }
+
+        if (self.searchName() && self.searchName().trim() != ""){
+            url += "&searchTerm=" + self.searchName().trim();
+        }
+
+        var divId = 'project-activities-result-placeholder';
+        $.ajax({
+            url: url,
+            type: 'GET',
+            contentType: 'application/json',
+            beforeSend: function () {
+                self.transients.loading(true);
+            },
+            success: function (data) {
+                if (data.error) {
+                    showAlert("Error :" + data.text, "alert-error", divId);
+                }
+                else {
+                    self.listCount(data.listCount);
+                    self.allSpeciesListsToSelect($.map(data.lists ? data.lists : [], function (obj, i) {
+                            return new SpeciesList(obj);
+                        })
+                    );
+
+                    if (self.offset() == 0) {
+                        self.pagination.loadPagination(0, data.listCount);
+                    }
+                }
+            },
+            complete: function () {
+                self.transients.loading(false);
+            },
+            error: function (data) {
+                var status = data.status;
+                showAlert("Error : An unhandled error occurred" + data.status, "alert-error", divId);
+            }
+        });
+    };
+
+    self.clearSearch = function() {
+        self.searchGuid(null);
+        self.searchName(null);
+        self.setDefault()
+    }
+
+    self.setDefault = function() {
+        self.transients.sortCol("listName");
+        self.transients.sortOrder("asc");
+        self.transients.loading(true);
+        self.refreshPage(0);
+    }
+
+    self.refreshPage = function(offset) {
+        self.offset( offset || 0);
+        self.loadAllSpeciesLists(self.transients.sortCol(), self.transients.sortOrder());
+    }
+};
+
+var SpeciesList = function (o) {
+    var self = this;
+    if (!o) o = {};
+
+    self.listName = ko.observable(o.listName);
+    self.dataResourceUid = ko.observable(o.dataResourceUid);
+
+    self.listType = ko.observable(o.listType);
+    self.fullName = ko.observable(o.fullName);
+    self.itemCount = ko.observable(o.itemCount);
+
+
+    self.transients = {};
+    self.transients.url = ko.observable(fcConfig.speciesListsServerUrl + "/speciesListItem/list/" + o.dataResourceUid);
+    self.transients.check = ko.observable(false);
+    self.transients.truncatedListName = ko.computed(function () {
+        return truncate(self.listName(), 45);
+    });
+};
