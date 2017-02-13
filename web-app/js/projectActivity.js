@@ -22,7 +22,7 @@ var ProjectActivity = function (params) {
     self.baseLayersName = ko.observable(pActivity.baseLayersName);
 
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
-    self.pActivityFormName.extend({rateLimit: 100});
+    // self.pActivityFormName.extend({rateLimit: 100});
 
 
     /**
@@ -127,6 +127,8 @@ var ProjectActivity = function (params) {
     // only when a user has accepted the change.
 
     self.pActivityFormName.subscribe(function(oldValue) {
+        console.log("pActivityFormName about to change old form: " + oldValue);
+        console.log("Survey: " + self.name());
         self.transients.oldFormName = oldValue;
     }, null, "beforeChange");
 
@@ -135,6 +137,8 @@ var ProjectActivity = function (params) {
     self.transients.revertFormNameChange = false;
 
     self.pActivityFormName.subscribe(function(newValue) {
+        console.log("pActivityFormName changed to: " + newValue +  "from: " + self.transients.oldFormName);
+        console.log("Survey: " + self.name());
         if(!self.transients.revertFormNameChange) { // Normal interaction of user with  UI select control
             if(self.areSpeciesFieldsConfigured()) {
                 bootbox.confirm("There is specific fields configuration for this survey in the Species tab. Changing the form will override existing settings. Do you want to continue?", function (result) {
@@ -149,6 +153,7 @@ var ProjectActivity = function (params) {
                         self.pActivityFormName(self.transients.oldFormName);
                         // Stop infinite loop propagation.
                         self.transients.revertFormNameChange = true;
+
                     }
                 });
             } else { // No need of user confirmation, let's update pActivityFormName dependent properties
