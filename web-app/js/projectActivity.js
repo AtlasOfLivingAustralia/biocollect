@@ -63,34 +63,6 @@ var ProjectActivity = function (params) {
         }
     }
 
-    /**
-     * Initialises new speciesField configuration, possibly from legacy species configuration
-     * If no pActivity.speciesField exist then retrieve the species fields list from the current form and then
-     * use the existing pActivity.species to populate defaults for each speciesField.
-     *
-     * self.species field then can be cleared.
-     * @param pActivity the project activity object model, it should not be null
-     */
-    self.initSpeciesConfig = function (pActivity) {
-        // New configuration in place, use new speciesFields to do initialisation
-        if($.isArray(pActivity.speciesFields) && pActivity.speciesFields.length > 0 ) {
-            self.speciesFields = ko.observableArray($.map(pActivity.speciesFields, function (obj, i) {
-                return new SpeciesFieldViewModel(obj);
-            }));
-        } else {
-            // Legacy functionality, revert to initialising from existing pActivity.species field
-            self.speciesFields = ko.observableArray([]);
-            self.retrieveSpeciesFieldsForFormName(self.pActivityFormName(), true);
-            for(var i = 0; i< self.speciesFields().length; i++) {
-                self.speciesFields()[i].config(new SpeciesConstraintViewModel(pActivity.species));
-            }
-        }
-    }
-
-    self.initSpeciesConfig(pActivity);
-
-
-
     var images = [];
     $.each(pActivityForms, function (index, form) {
         if (form.name == self.pActivityFormName()) {
@@ -115,9 +87,6 @@ var ProjectActivity = function (params) {
         });
     }
 
-    self.transients.oldFormName = self.pActivityFormName();
-    self.transients.allowFormNameChange = false;
-
     // 1. There is no straightforward way to prevent/cancel a KO change in a beforeChange subscription
     // 2. bootbox.confirm is totally asynchronous so by the time a user confirms or rejects a change, the change has already happened.
     // 2a. There is no good reason to call standard confirm which would block the thread.
@@ -126,46 +95,88 @@ var ProjectActivity = function (params) {
     // We can't prevent the value of the select to be changed from bootbox.confirm but we can update dependable properties
     // only when a user has accepted the change.
 
-    self.pActivityFormName.subscribe(function(oldValue) {
+    self.transients.beforePActivityFormNameUpdate = function(oldValue) {
         console.log("pActivityFormName about to change old form: " + oldValue);
-        console.log("Survey: " + self.name());
+        // console.log("Survey: " + self.name());
         self.transients.oldFormName = oldValue;
-    }, null, "beforeChange");
+    }
 
-    // Flag to prevent infinite event firing.
-    // self.pActivityFormName is changed within a subscription to it
-    self.transients.revertFormNameChange = false;
 
-    self.pActivityFormName.subscribe(function(newValue) {
-        console.log("pActivityFormName changed to: " + newValue +  "from: " + self.transients.oldFormName);
-        console.log("Survey: " + self.name());
-        if(!self.transients.revertFormNameChange) { // Normal interaction of user with  UI select control
+    self.transients.afterPActivityFormNameUpdate = function(newValue) {
+        console.log("pActivityFormName changed to: " + newValue +  " from: " + self.transients.oldFormName +
+        "for Survey: " + self.name());
             if(self.areSpeciesFieldsConfigured()) {
                 bootbox.confirm("There is specific fields configuration for this survey in the Species tab. Changing the form will override existing settings. Do you want to continue?", function (result) {
                     // Asynchronous call, too late to prevent change but depending on the user response we either:
-                    // a) Restore the previous value in the select or
-                    // b) Let dependent pActivityFormName fields to be updated, ko already updated the pActivityFormName
-                    self.transients.allowFormNameChange = result
+                    // a) Let dependent pActivityFormName fields to be updated, ko already updated the pActivityFormName or
+                    // b) Restore the previous value in the select
                     if (result) {
                         self.retrieveSpeciesFieldsForFormName(self.pActivityFormName());
                         self.updateFormImages(self.pActivityFormName());
                     } else {
-                        self.pActivityFormName(self.transients.oldFormName);
-                        // Stop infinite loop propagation.
-                        self.transients.revertFormNameChange = true;
-
+                        // Prevent infinite loop, let' dispose self subscription before making any changes.
+                        self.transients.afterPActivityFormNameSubscription.dispose();
+                            console.log("Reverting form name to: " + self.transients.oldFormName + " For survey: " + self.name());
+                            self.pActivityFormName(self.transients.oldFormName);
+                        // Restore subscription for future UI events.
+                        self.transients.afterPActivityFormNameSubscription = self.pActivityFormName.subscribe(self.afterPActivityFormNameUpdate);
                     }
                 });
             } else { // No need of user confirmation, let's update pActivityFormName dependent properties
                 self.retrieveSpeciesFieldsForFormName(self.pActivityFormName());
                 self.updateFormImages(self.pActivityFormName());
             }
+    }
+
+
+    self.transients.subscribeOrDisposePActivityFormName = function (selected) {
+        if(selected) {
+            console.log("Subscribing to activityFormName for survey: " + pActivity.name );
+            self.transients.beforePActivityFormNameSubscription = self.pActivityFormName.subscribe(self.transients.beforePActivityFormNameUpdate, null, "beforeChange");
+            self.transients.afterPActivityFormNameSubscription = self.pActivityFormName.subscribe(self.transients.afterPActivityFormNameUpdate);
         } else {
-            // User chose to cancel change to pActivityFormName, self.pActivityFormName already had the old value
-            // let's just re-enable the normal event propagation behavior
-            self.transients.revertFormNameChange = false;
+            console.log("Disposing subscription to activityFormName for survey: " + pActivity.name );
+            self.transients.beforePActivityFormNameSubscription && self.transients.beforePActivityFormNameSubscription.dispose();
+            self.transients.afterPActivityFormNameSubscription && self.transients.afterPActivityFormNameSubscription.dispose();
         }
-    });
+    }
+
+    /**
+     * Initialises new speciesField configuration, possibly from legacy species configuration
+     * If no pActivity.speciesField exist then retrieve the species fields list from the current form and then
+     * use the existing pActivity.species to populate defaults for each speciesField.
+     *
+     * self.species field then can be cleared.
+     * @param pActivity the project activity object model, it should not be null
+     * @param selected Is this the current displayed activity?
+     */
+    self.transients.initSpeciesConfig = function (pActivity, selected) {
+        self.transients.oldFormName = self.pActivityFormName();
+
+        console.log("Survey: " + self.name() +  "Form name: " + self.pActivityFormName());
+
+        // New configuration in place, use new speciesFields to do initialisation
+        if($.isArray(pActivity.speciesFields) && pActivity.speciesFields.length > 0 ) {
+            self.speciesFields = ko.observableArray($.map(pActivity.speciesFields, function (obj, i) {
+                return new SpeciesFieldViewModel(obj);
+            }));
+        } else {
+            // Legacy functionality, revert to initialising from existing pActivity.species field
+            self.speciesFields = ko.observableArray([]);
+            self.retrieveSpeciesFieldsForFormName(self.pActivityFormName(), true);
+            for(var i = 0; i< self.speciesFields().length; i++) {
+                self.speciesFields()[i].config(new SpeciesConstraintViewModel(pActivity.species));
+            }
+        }
+
+        if(selected) {
+            console.log("Initialising subscriptions for survey: " + pActivity.name);
+            self.transients.subscribeOrDisposePActivityFormName(true);
+        }
+    }
+
+    self.transients.initSpeciesConfig(pActivity, selected);
+
 
     self.areSpeciesFieldsConfigured = function () {
         // As soon as a field is valid, we stop

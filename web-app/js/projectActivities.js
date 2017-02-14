@@ -46,6 +46,7 @@ var ProjectActivitiesViewModel = function (params) {
     self.reset = function () {
         $.each(self.projectActivities(), function (i, obj) {
             obj.current(false);
+            obj.transients.subscribeOrDisposePActivityFormName(false);
         });
     };
 
@@ -63,6 +64,7 @@ var ProjectActivitiesViewModel = function (params) {
         self.isSurveySelected(true);
         self.reset();
         pActivity.current(true);
+        pActivity.transients.subscribeOrDisposePActivityFormName(true);
         self.isSurveySelected(false);
     };
 
@@ -126,6 +128,7 @@ var ProjectActivitiesListViewModel = function (pActivitiesVM) {
     self.setCurrent = function (pActivity) {
         self.reset();
         pActivity.current(true);
+        pActivity.transients.subscribeOrDisposePActivityFormName(true);
     };
 };
 
