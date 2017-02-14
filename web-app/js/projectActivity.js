@@ -119,7 +119,7 @@ var ProjectActivity = function (params) {
                             console.log("Reverting form name to: " + self.transients.oldFormName + " For survey: " + self.name());
                             self.pActivityFormName(self.transients.oldFormName);
                         // Restore subscription for future UI events.
-                        self.transients.afterPActivityFormNameSubscription = self.pActivityFormName.subscribe(self.afterPActivityFormNameUpdate);
+                        self.transients.afterPActivityFormNameSubscription = self.pActivityFormName.subscribe(self.transients.afterPActivityFormNameUpdate);
                     }
                 });
             } else { // No need of user confirmation, let's update pActivityFormName dependent properties
@@ -167,11 +167,6 @@ var ProjectActivity = function (params) {
             for(var i = 0; i< self.speciesFields().length; i++) {
                 self.speciesFields()[i].config(new SpeciesConstraintViewModel(pActivity.species));
             }
-        }
-
-        if(selected) {
-            console.log("Initialising subscriptions for survey: " + pActivity.name);
-            self.transients.subscribeOrDisposePActivityFormName(true);
         }
     }
 

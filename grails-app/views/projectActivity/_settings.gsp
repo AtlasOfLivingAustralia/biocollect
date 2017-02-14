@@ -128,6 +128,10 @@
     function initialiseProjectActivitiesSettings(pActivitiesVM) {
         var pActivitiesSettingsVM = new ProjectActivitiesSettingsViewModel(pActivitiesVM, 'project-activities-result-placeholder');
         ko.applyBindings(pActivitiesSettingsVM, document.getElementById('pActivities'));
+
+        // Delay subscription until the databinding has modified pActivity.pFormName if any
+        pActivitiesSettingsVM.current().transients.subscribeOrDisposePActivityFormName(true);
+
         new RestoreTab('ul-survey-constraint-citizen-science', 'survey-info');
     };
 </r:script>
