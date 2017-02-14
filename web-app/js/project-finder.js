@@ -246,7 +246,7 @@ function ProjectFinder() {
             geoSearchJSON: JSON.stringify(geoSearch),
             skipDefaultFilters:fcConfig.showAllProjects,
             isWorldWide: isWorldWide,
-            q: $('#pt-search').val().toLowerCase()
+            q: ($('#pt-search').val() || '' ).toLowerCase()
         };
 
         if (fcConfig.associatedPrograms) {

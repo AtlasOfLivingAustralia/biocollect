@@ -58,10 +58,13 @@ class ProjectController {
      */
     String[] getFacetListForProjectFinder(){
         String [] list
-        if(grailsApplication.config.facets.pf instanceof String){
-            list = grailsApplication.config.facets.pf.split(',')
-        } else {
-            list = searchFacetListProjectFinder.toArray()
+        list = projectService.getFacetListForHub()
+        if(!list || !list.size()) {
+            if (grailsApplication.config.facets.pf instanceof String) {
+                list = grailsApplication.config.facets.pf.split(',')
+            } else {
+                list = searchFacetListProjectFinder.toArray()
+            }
         }
 
         list
@@ -569,16 +572,8 @@ class ProjectController {
         if(searchResult.facets){
             String[] facetList = queryParams.facets?.split(',')
             facets = searchService.standardiseFacets (searchResult.facets, Arrays.asList(facetList))
-            // the below facets are added manually since they are dynamic
-            // eg. today's date is used to determine if a project is completed or active
-            List defaults = [
-                    [
-                            name:'status',
-                            total: 0,
-                            terms: [ [ term: 'active', count: 0], [ term: 'completed', count: 0 ]]
-                    ]
-            ]
-            facets = defaults + facets
+            facets = projectService.addSpecialFacets(facets)
+            facets = projectService.addFacetExpandCollapseState(facets)
             projectService.getDisplayNamesForFacets(facets)
         }
 
@@ -945,4 +940,12 @@ class ProjectController {
         render text: whiteList as JSON, contentType: 'application/json'
     }
 
+
+    /**
+     * Get list of facets for Elasticsearch's homepage index i.e. index used to search projects
+     */
+    def getFacets(){
+        List facets = projectService.getFacets()
+        render text: [facets: facets] as JSON, contentType: 'application/json'
+    }
 }

@@ -1,3 +1,7 @@
+var hubConfigs = {
+    availableProjectFacets: []
+};
+
 var HubSettingsViewModel = function (programsModel, options) {
 
     var self = this;
@@ -12,9 +16,6 @@ var HubSettingsViewModel = function (programsModel, options) {
     });
 
     self.transients = {
-        availableFacets: ['status', 'organisationFacet', 'associatedProgramFacet', 'associatedSubProgramFacet', 'mainThemeFacet', 'stateFacet', 'nrmFacet', 'lgaFacet', 'mvgFacet', 'ibraFacet', 'imcra4_pbFacet', 'otherFacet', 'gerSubRegionFacet', 'electFacet', 'cmzFacet', 'meriPlanAssetFacet', 'partnerOrganisationTypeFacet'],
-        availableMapFacets: ['status', 'organisationFacet', 'associatedProgramFacet', 'associatedSubProgramFacet', 'stateFacet', 'nrmFacet', 'lgaFacet', 'mvgFacet', 'ibraFacet', 'imcra4_pbFacet', 'electFacet', 'cmzFacet'],
-        adminFacets: ['electFacet', 'cmzFacet', 'meriPlanAssetFacet', 'partnerOrganisationTypeFacet'],
         programNames: programNames,
         availableSkins: ['nrm', 'ala2', 'mdba', 'ala', 'configurableHubTemplate1'],
         configurableTemplates: ['configurableHubTemplate1'],
@@ -41,6 +42,12 @@ var HubSettingsViewModel = function (programsModel, options) {
             self.message('Error loading hub details');
         });
     };
+    $.get(config.listProjectFacetUrl, function (data) {
+        var facets = $.map(data.facets, function (facet) {
+             return new FacetViewModel(facet);
+        });
+        hubConfigs.availableProjectFacets = facets;
+    }, 'json');
 
     $.get(config.listHubsUrl, function (data) {
         self.hubs(data);
@@ -63,9 +70,6 @@ var HubSettings = function (settings, config) {
     self.skin = ko.observable();
     self.title = ko.observable();
     self.supportedPrograms = ko.observableArray();
-    self.availableFacets = ko.observableArray();
-    self.adminFacets = ko.observableArray();
-    self.availableMapFacets = ko.observableArray();
     self.defaultFacetQuery = ko.observableArray();
     self.homePagePath = ko.observable();
     self.bannerUrl = ko.observable();
@@ -73,6 +77,7 @@ var HubSettings = function (settings, config) {
     self.documents = ko.observableArray();
     self.defaultProgram = ko.observable();
     self.templateConfiguration = ko.observable();
+    self.facets = ko.observableArray();
 
     /**
      * Set home page only if the configurable template is chosen. Otherwise, do nothing. If user had previously chosen
@@ -123,23 +128,6 @@ var HubSettings = function (settings, config) {
     self.addDefaultFacetQuery = function () {
         self.defaultFacetQuery.push({query: ko.observable()});
     };
-    self.facetOrder = function (facet) {
-        var facetList = self.availableFacets ? self.availableFacets : [];
-        var index = facetList.indexOf(facet);
-        return index >= 0 ? '(' + (index + 1) + ')' : '';
-    };
-
-    self.facetAdminOrder = function (facet) {
-        var facetList = self.adminFacets ? self.adminFacets : [];
-        var index = facetList.indexOf(facet);
-        return index >= 0 ? '(' + (index + 1) + ')' : '';
-    };
-
-    self.facetMapAdminOrder = function (facet) {
-        var facetList = self.availableMapFacets ? self.availableMapFacets : [];
-        var index = facetList.indexOf(facet);
-        return index >= 0 ? '(' + (index + 1) + ')' : '';
-    };
 
     self.toggleTemplateSettings = function () {
         self.transients.showTemplateSettings(!self.transients.showTemplateSettings());
@@ -164,6 +152,8 @@ var HubSettings = function (settings, config) {
             return self.isParameterConfigurableTemplate(self.skin());
         }),
         showTemplateSettings: ko.observable(false),
+        facetList: ko.observableArray(hubConfigs.availableProjectFacets.slice()),
+        selectedValue: ko.observable()
     };
 
     self.loadSettings = function (settings) {
@@ -173,9 +163,6 @@ var HubSettings = function (settings, config) {
         self.title(settings.title);
         self.supportedPrograms(self.orEmptyArray(settings.supportedPrograms));
         self.defaultProgram(settings.defaultProgram);
-        self.availableFacets(self.orEmptyArray(settings.availableFacets));
-        self.adminFacets(self.orEmptyArray(settings.adminFacets));
-        self.availableMapFacets(self.orEmptyArray(settings.availableMapFacets));
         self.bannerUrl(self.orBlank(settings.bannerUrl));
         self.logoUrl(self.orBlank(settings.logoUrl));
         self.homePagePath(self.orBlank(settings.homePagePath));
@@ -195,7 +182,28 @@ var HubSettings = function (settings, config) {
 
                 self.documents.remove(document);
             }
-        })
+        });
+
+        var facets = $.map(settings.facets || [], function (facet) {
+            var facetVMs =  $.grep(self.transients.facetList(), function (f) {
+                return f.name() == facet.name
+            });
+            var facetVM = facetVMs[0];
+
+            if(!facetVM){
+                facetVM = new FacetViewModel(facet);
+            } else {
+                facetVM.state(facet.state);
+                var index = self.transients.facetList.indexOf(facetVM);
+                if(index >= 0){
+                    self.transients.facetList.splice(index, 1);
+                }
+            }
+
+            return facetVM;
+        });
+
+        self.facets(facets);
     };
 
 
@@ -215,6 +223,31 @@ var HubSettings = function (settings, config) {
         return value;
     };
 
+
+    self.addFacet = function () {
+        var facet = self.transients.selectedValue();
+        self.facets.push(facet);
+        var index = self.transients.facetList.indexOf(facet);
+        if(index >= 0){
+            self.transients.facetList.splice(index, 1);
+        }
+    };
+
+    self.removeFacet = function (facet ) {
+        var facets = self.facets();
+        var index = facets.indexOf(facet);
+        if(index >= 0){
+            facets.splice(index, 1);
+            self.facets(facets);
+            index = self.transients.facetList.indexOf(facet);
+            if(index == -1){
+                self.transients.facetList.push(facet);
+                self.transients.facetList.sort(function (a,b) {
+                    return a.title() < b.title()? - 1 : 1;
+                })
+            }
+        }
+    };
 
     self.save = function () {
         if ($(config.formSelector).validationEngine('validate')) {
@@ -372,7 +405,6 @@ var ButtonsHomePageViewModel = function (config) {
 
 var ProjectFinderHomePageViewModel = function (config) {
     var self = this;
-
     self.defaultView = ko.observable(config.defaultView || 'grid');
     self.showProjectRegionSwitch = ko.observable(config.showProjectRegionSwitch || false);
 };
@@ -411,6 +443,19 @@ var ImageViewModel = function (config) {
     self.url = ko.observable(config.url || '')
     self.caption = ko.observable(config.caption || '')
 };
+
+var FacetViewModel = function(config){
+    var self = this;
+
+    self.title = ko.observable(config.title || '');
+    self.state = ko.observable(config.state || 'Collapsed');
+    self.name = ko.observable(config.name || '');
+
+    self.displayName = ko.computed(function () {
+        return self.title() + ' (' + self.name() + ')'
+    });
+};
+
 var colorScheme = {
     menuBackgroundColor: "#009080",
     menuTextColor: "#efefef",

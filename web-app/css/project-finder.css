@@ -205,3 +205,11 @@ input[type=checkbox] {
 .facet-label-width{
     width: 90%;
 }
+
+.vertical-align-top{
+    vertical-align: top;
+}
+
+button.btn.btn-text-left{
+    text-align: left;
+}

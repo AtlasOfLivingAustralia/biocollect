@@ -140,6 +140,22 @@ function FilterViewModel(){
         })
     }
 
+    /**
+     * Check if a facet is selected.
+     * @param facet
+     * @returns {boolean}
+     */
+    self.isFacetSelected = function (facet) {
+        var flag = false;
+        var selectedFacets = self.selectedFacets()
+        selectedFacets.forEach(function (term) {
+            if (facet.name() == term.facet.name()) {
+                flag = true
+            }
+        });
+
+        return flag;
+    };
 }
 
 /**
@@ -148,8 +164,9 @@ function FilterViewModel(){
  * @constructor
  */
 function FacetViewModel(facet) {
-    var self = this;
     if (!facet) facet = {};
+    var self = this;
+    var state = facet.state|| 'Expanded';
 
     self.name = ko.observable(facet.name);
     self.title = facet.title
@@ -160,6 +177,11 @@ function FacetViewModel(facet) {
     self.displayName = ko.computed(function(){
         return self.title || cleanName(self.name()) || 'Unknown';
     });
+    if(facet.ref.isFacetSelected(self)){
+        state = 'Expanded'
+    }
+    self.state = ko.observable(state);
+
 
     self.isAnyTermVisible = ko.computed(function () {
         var count = 0;
@@ -169,6 +191,16 @@ function FacetViewModel(facet) {
 
         return count > 0
     });
+    self.toggleState = function () {
+        switch (self.state()){
+            case 'Expanded':
+              self.state('Collapsed');
+              break;
+            case 'Collapsed':
+              self.state('Expanded');
+              break;
+        }
+    };
 
     self.ref = facet.ref;
 

@@ -8,7 +8,8 @@
         fcConfig = {
             listHubsUrl:"${createLink(controller: 'admin', action: 'listHubs')}",
             getHubUrl:"${createLink(controller: 'admin', action: 'loadHubSettings')}",
-            saveHubUrl:"${createLink(controller: 'admin', action: 'saveHubSettings')}"
+            saveHubUrl:"${createLink(controller: 'admin', action: 'saveHubSettings')}",
+            listProjectFacetUrl: "${createLink(controller: 'project', action: 'getFacets')}"
         };
     </r:script>
 </head>
@@ -93,32 +94,50 @@
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="available-facets">Available Facets (Only these facets will display on the home page)</label>
+                <label class="control-label" for="default-program">Configure project finder facets</label>
                 <div class="controls">
-                    <ul id="available-facets" data-bind="foreach:$parent.transients.availableFacets" class="unstyled">
-                        <li><label><input type="checkbox" data-bind="checked:$parent.availableFacets, attr:{value:$data}"> <span data-bind="text:$data"></span> <span data-bind="text:$parent.facetOrder($data)"></span></label></li>
-                    </ul>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Facet name</th>
+                            <th>Expand or Collapse</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- ko foreach: facets -->
+                        <tr>
+                            <td data-bind="text: displayName">
 
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="available-facets">Admin Facets (Only these facets will display on the home page)</label>
-                <div class="controls">
-                    <ul id="admin-facets" data-bind="foreach:$parent.transients.adminFacets" class="unstyled">
-                        <li><label><input type="checkbox" data-bind="checked:$parent.adminFacets, attr:{value:$data}"> <span data-bind="text:$data"></span> <span data-bind="text:$parent.facetAdminOrder($data)"></span></label></li>
-                    </ul>
-
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="available-facets">Available Map Facets (Only these facets will display on the home page map menu)</label>
-                <div class="controls">
-                    <ul id="admin-map-facets" data-bind="foreach:$parent.transients.availableMapFacets" class="unstyled">
-                        <li><label><input type="checkbox" data-bind="checked:$parent.availableMapFacets, attr:{value:$data}"> <span data-bind="text:$data"></span> <span data-bind="text:$parent.facetMapAdminOrder($data)"></span></label></li>
-                    </ul>
-
+                            </td>
+                            <td>
+                                <select data-bind="value: state">
+                                    <option value="Expanded">Expanded</option>
+                                    <option value="Collapsed">Collapsed</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-small btn-danger" data-bind="click: $parent.removeFacet"><i class="icon-remove icon-white"></i> Remove</button>
+                            </td>
+                        </tr>
+                        <!-- /ko -->
+                        <!-- ko ifnot: facets().length -->
+                        <tr>
+                            <td colspan="3">
+                                No Facets selected.
+                            </td>
+                        </tr>
+                        <!-- /ko -->
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="2">Pick a facet <select data-bind="options: transients.facetList, optionsText:'displayName', value: transients.selectedValue"></select></td>
+                            <td>
+                                <button class="btn btn-small btn-default" data-bind="click: addFacet"><i class="icon-plus"></i> Add</button>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
 
