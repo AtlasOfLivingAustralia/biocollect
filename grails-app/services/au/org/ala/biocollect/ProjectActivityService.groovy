@@ -47,6 +47,10 @@ class ProjectActivityService {
                     attributesAdded.add("species")
                     props.species = act.species
                 }
+                if (!props?.speciesFields) {
+                    attributesAdded.add("speciesFields")
+                    props.speciesFields = act.speciesFields
+                }
                 if (!props?.sites) {
                     attributesAdded.add("sites")
                     props.sites = act.sites
@@ -93,39 +97,29 @@ class ProjectActivityService {
             return "startDate is missing"
         }
 
-        //error, no species constraint
-        if (props?.species) {
-            if (!(props.species instanceof Map)) {
-                return "species is not a map"
+        if(props?.speciesFields) {
+            if(!props.speciesFields instanceof List ) {
+                return "speciesFields is not a list"
             }
 
-            if (props.species?.type) {
-                if (props.species.type == 'SINGLE_SPECIES') {
-                    if (!props.species?.singleSpecies ||
-                            !(props.species.singleSpecies instanceof Map) ||
-                            !props.species.singleSpecies?.guid ||
-                            !props.species.singleSpecies?.name) {
-                        return "invalid single_species for species type SINGLE_SPECIES"
-                    }
-                } else if (props.species.type == 'GROUP_OF_SPECIES'){
-                    if (!props.species?.speciesLists ||
-                            !(props.species.speciesLists instanceof List)) {
-                        return "invalid speciesLists for species type GROUP_OF_SPECIES"
-                    }
-                    if (props.species.speciesLists.size() == 0) {
-                        return "no speciesLists defined for GROUP_OF_SPECIES"
-                    }
-                    props.species.speciesLists.each {
-                        if (!(it instanceof Map) || !it?.listName || !it?.dataResourceUid) {
-                            error = "invalid speciesLists item for species type GROUP_OF_SPECIES"
-                        }
-                    }
-                } else if (props.species.type != 'ALL_SPECIES') {
-                    return "\"${props.species.type}\" is not a vaild species type"
+            for(Object speciesField : props.speciesFields) {
+                if(!speciesField instanceof Map) {
+                    return "At least one speciesField is not a Map"
+                }
+
+                if(!speciesField?.dataFieldName){
+                    return "dataFieldName not set for speciesField " + speciesField?.label
+                }
+
+                if(!speciesField?.output){
+                    return "output not set for speciesField " + speciesField?.label
+                }
+
+                String speciesTypeErrorMessage = validateSpeciesType(speciesField?.config);
+                if(speciesTypeErrorMessage) {
+                    return speciesTypeErrorMessage
                 }
             }
-        } else if (published) {
-            return "species is missing"
         }
 
         if (props?.pActivityFormName) {
@@ -165,6 +159,41 @@ class ProjectActivityService {
         error
     }
 
+    String validateSpeciesType(species) {
+        if (!(species instanceof Map)) {
+            return "species is not a map"
+        }
+
+        if (species?.type) {
+            if (species.type == 'SINGLE_SPECIES') {
+                if (!species?.singleSpecies ||
+                        !(species.singleSpecies instanceof Map) ||
+                        !species.singleSpecies?.guid ||
+                        !species.singleSpecies?.name) {
+                    return "invalid single_species for species type SINGLE_SPECIES"
+                }
+            } else if (species.type == 'GROUP_OF_SPECIES'){
+                if (!species?.speciesLists ||
+                        !(species.speciesLists instanceof List)) {
+                    return "invalid speciesLists for species type GROUP_OF_SPECIES"
+                }
+                if (species.speciesLists.size() == 0) {
+                    return "no speciesLists defined for GROUP_OF_SPECIES"
+                }
+                species.speciesLists.each {
+                    if (!(it instanceof Map) || !it?.listName || !it?.dataResourceUid) {
+                        error = "invalid speciesLists item for species type GROUP_OF_SPECIES"
+                    }
+                }
+            } else if (species.type != 'ALL_SPECIES' /*&& species.type != 'DEFAULT_SPECIES' */
+            ) {
+                return "\"${species.type}\" is not a vaild species type"
+            }
+        }
+        // No return value, everything went ok
+        return null;
+    }
+
     def create(pActivity) {
         update('', pActivity)
     }
@@ -192,14 +221,33 @@ class ProjectActivityService {
      * @param id the id of the ProjectActivity (survey) being completed
      * @param q query string to search for
      * @param limit the maximum number of results to return
+     * @param output Identity of field for specific configuration.
+     * @param dataFieldName Identity of field for specific configuration.
      * @return json structure containing search results suitable for use by the species autocomplete widget on a survey form.
      */
-    def searchSpecies(String id, String q, Integer limit){
+    def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName){
         def pActivity = get(id)
+
+        def specificFieldDefinition = pActivity?.speciesFields.find {
+            it.dataFieldName == dataFieldName && it.output == output
+        }
+
+        Map speciesConfig =  (specificFieldDefinition) ?
+                //New species per field configuration
+                specificFieldDefinition.config :
+                // Legacy per survey species configuration
+                pActivity?.species
+
+        def result = searchSpeciesForConfig(speciesConfig, q, limit)
+        formatSpeciesNameForSurvey(speciesConfig.speciesDisplayFormat , result)
+        result
+    }
+
+    private Object searchSpeciesForConfig(Map speciesConfig, String q, Integer limit) {
         def result
-        switch(pActivity?.species?.type){
+        switch (speciesConfig?.type) {
             case 'SINGLE_SPECIES':
-                result = speciesService.searchForSpecies(pActivity?.species?.singleSpecies?.name, 1)
+                result = speciesService.searchForSpecies(speciesConfig?.singleSpecies?.name, 1)
                 break
 
             case 'ALL_SPECIES':
@@ -207,36 +255,33 @@ class ProjectActivityService {
                 break
 
             case 'GROUP_OF_SPECIES':
-                def lists = pActivity?.species?.speciesLists
+                def lists = speciesConfig?.speciesLists
                 result = speciesService.searchSpeciesInLists(q, lists, limit)
                 break
             default:
                 result = [autoCompleteList: []]
                 break
         }
-
-        // process according to setting
-        formatSpeciesNameForSurvey(pActivity, result)
-        result
+        return result
     }
 
-    List formatSpeciesNameForSurvey(Map pActivity, Map data){
+    List formatSpeciesNameForSurvey(String speciesDisplayFormat, Map data){
         data?.autoCompleteList?.each{
-            it.name = formatSpeciesName(pActivity.species.speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', it)
+            it.name = formatSpeciesName(speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', it)
         }
     }
 
     /**
      * formats a name into the specified format
      * if species does not match to a taxon, then mention it in name.
-     * @param type
+     * @param displayType
      * @param data
      * @return
      */
-    String formatSpeciesName(String type, Map data){
+    String formatSpeciesName(String displayType, Map data){
         String name
         if(data.guid){
-            switch (type){
+            switch (displayType){
                 case 'COMMONNAME(SCIENTIFICNAME)':
                     if(data.commonName){
                         name = "${data.commonName} (${data.scientificName})"
@@ -271,23 +316,39 @@ class ProjectActivityService {
         name
     }
 
-    /*
-     *  Look for SINGLE_SPECIES for the given project activity
-     *  @param projectActivityId project activity identifier
-     *  @return map containing species name, guid and isSingle field to indicate whether it's of a 'SINGLE_SPECIES' category.
+    /**
+     * Look for SINGLE_SPECIES for the given project activity
+     * @param projectActivityId project activity identifier
+     * @param output Identity of field for specific configuration.
+     * @param dataFieldName Identity of field for specific configuration.
+     * @return map containing species name, guid and isSingle field to indicate whether it's of a 'SINGLE_SPECIES' category.
      */
 
-    Map getSingleSpecies(String projectActivityId) {
+    Map getSingleSpecies(String projectActivityId, String output, String dataFieldName) {
         def pActivity = get(projectActivityId)
+
+        def specificFieldDefinition = pActivity?.speciesFields.find {
+            it.dataFieldName == dataFieldName && it.output == output
+        }
+
+        Map speciesFieldConfig =  (specificFieldDefinition) ?
+                //New species per field configuration
+                specificFieldDefinition.config :
+                // Legacy per survey species configuration
+                pActivity?.species
+
+
         Map result = [isSingle: false]
-        switch (pActivity?.species?.type) {
+
+        switch (speciesFieldConfig?.type) {
             case 'SINGLE_SPECIES':
                 result.isSingle = true
-                if (pActivity?.species?.singleSpecies?.guid) {
-                    result.name = formatSpeciesName(pActivity.species.speciesDisplayFormat, pActivity.species.singleSpecies)
-                    result.guid = pActivity?.species?.singleSpecies?.guid
-                    result.scientificName = pActivity.species.singleSpecies?.scientificName
-                    result.commonName = pActivity.species.singleSpecies?.commonName
+
+                if (speciesFieldConfig?.singleSpecies?.guid) {
+                    result.name = formatSpeciesName(speciesFieldConfig.speciesDisplayFormat, speciesFieldConfig.singleSpecies)
+                    result.guid = speciesFieldConfig.singleSpecies?.guid
+                    result.scientificName = speciesFieldConfig.singleSpecies?.scientificName
+                    result.commonName = speciesFieldConfig.singleSpecies?.commonName
                 }
                 break
         }

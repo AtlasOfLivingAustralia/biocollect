@@ -21,7 +21,11 @@
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
-        imageLocation:"${resource(dir:'/images')}"
+        imageLocation:"${resource(dir:'/images')}",
+        // And this is the start of changes to make species work
+        getSingleSpeciesUrl : "${createLink(controller: 'projectActivity', action: 'getSingleSpecies', params: [id: '7d452be4-fd13-4a3e-8942-4b56645bdc91'])}",
+        speciesSearch: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: '7d452be4-fd13-4a3e-8942-4b56645bdc91', limit: 10])}"
+
         },
         here = document.location.href;
     </r:script>

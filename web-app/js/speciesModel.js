@@ -1,12 +1,17 @@
 /**
  * Manages the species data type in the output model.
  * Allows species information to be searched for and displayed.
+ * @param species If provided, populate SpeciesViewModel name, guid, scientificName, commonName and their transients from this object
+ * @param populate If true populate species information from fcConfig.getSingleSpeciesUrl
+ * @param output Identity of field for specific configuration.
+ * @param dataFieldName Identity of field for specific configuration.
  */
-var SpeciesViewModel = function (species, lists, populate) {
+var SpeciesViewModel = function (species, populate, output, dataFieldName) {
     var self = this;
     if (!species) species = {};
-    if (!lists) lists = {};
     if (!populate) populate = false;
+    if(!output) output = "";
+    if(!dataFieldName) dataFieldName = "";
     self.name = ko.observable(species.name);
     self.guid = ko.observable(species.guid);
     self.scientificName = ko.observable(species.scientificName);
@@ -21,7 +26,8 @@ var SpeciesViewModel = function (species, lists, populate) {
     self.transients.scientificName = ko.observable(species.scientificName);
     self.transients.speciesFieldIsReadOnly = ko.observable(false);
     self.transients.commonName = ko.observable(species.commonName);
-    self.transients.source = ko.observable(fcConfig.speciesSearch);
+    self.transients.source = ko.observable(fcConfig.speciesSearch +
+        '&output=' + output+ '&dataFieldName=' + dataFieldName);
     self.transients.bieUrl = ko.observable();
 
     self.transients.bioProfileUrl = ko.computed(function () {
@@ -47,7 +53,7 @@ var SpeciesViewModel = function (species, lists, populate) {
     self.populateSingleSpecies = function (populate) {
         if (!self.name() && !self.guid() && fcConfig.getSingleSpeciesUrl && populate) {
             $.ajax({
-                url: fcConfig.getSingleSpeciesUrl,
+                url: fcConfig.getSingleSpeciesUrl + '?output=' + output+ '&dataFieldName=' + dataFieldName ,
                 type: 'GET',
                 contentType: 'application/json',
                 success: function (data) {

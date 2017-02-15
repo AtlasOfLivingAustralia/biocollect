@@ -55,8 +55,9 @@ enum SettingPageType {
     CITIZEN_SCIENCE_WHAT_IS_THIS('citizenScienceWhatIsThis', 'What is project finder?', 'fielddata.citizenScience.whatIsThis'),
     ORGANISATION_LIST_PAGE_HEADER('organisationListHeader', 'Header content for the organisation list page', 'fielddata.organisationListHeader'),
     SURVEY_SPECIES_ALL("surveySpeciesAll", "Descriptive text for the 'all species' option on the Survey configuration's Species tab", "fielddata.survey.species.all"),
-    SURVEY_SPECIES_SINGLE("surveySpeciesSingle", "Descriptive text for the 'single species' option on the Survey configuration's Species tab", "fielddata.survey.species.single"),
-    SURVEY_SPECIES_GROUP("surveySpeciesGroup", "Descriptive text for the 'selection or group' option on the Survey configuration's Species tab", "fielddata.survey.species.group")
+    SURVEY_SPECIES_SINGLE("surveySpeciesSingle", "Descriptive text for the 'single species' option on the Survey configuration's Species dialog", "fielddata.survey.species.single"),
+    SURVEY_SPECIES_GROUP("surveySpeciesGroup", "Descriptive text for the 'selection or group' option on the Survey configuration's Species dialog", "fielddata.survey.species.group"),
+    SURVEY_DEFAULT("surveySpeciesDefault", "Descriptive text for the 'selection or default' option on the Survey configuration's Species dialog", "fielddata.survey.species.default")
 
     String name
     String title

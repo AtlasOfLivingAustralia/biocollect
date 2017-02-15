@@ -45,6 +45,7 @@
         projectActivityDeleteUrl: "${createLink(controller: 'projectActivity', action: 'delete')}",
         projectActivityUnpublishUrl: "${createLink(controller: 'projectActivity', action: 'unpublish')}",
         addNewSpeciesListsUrl: "${createLink(controller: 'projectActivity', action: 'ajaxAddNewSpeciesLists', params: [projectId:project.projectId])}",
+        getSpeciesFieldsForSurveyUrl: "${createLink(controller: 'projectActivity', action: 'ajaxGetSpeciesFieldsForSurvey')}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         speciesListUrl: "${createLink(controller: 'search', action: 'searchSpeciesList')}",
         speciesListsServerUrl: "${grailsApplication.config.lists.baseURL}",

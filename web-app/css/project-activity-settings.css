@@ -33,7 +33,7 @@ Modal settings copy pasted from bootstrap 3.3.7 and tweaked for species configur
     -o-transform: translate(0, 0);
     transform: translate(0, 0);
 }
-.modal-open .modal {
+.modal-open .species-modal {
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -82,7 +82,7 @@ Modal settings copy pasted from bootstrap 3.3.7 and tweaked for species configur
     margin: 0;
     line-height: 1.42857143;
 }
-.modal-body {
+.species-modal-body {
     position: relative;
     padding: 15px;
 }
@@ -137,7 +137,3 @@ Modal settings copy pasted from bootstrap 3.3.7 and tweaked for species configur
     opacity: 1;
 }
 
-.species-modal .modal-body {
-    max-height: 700px;
-    overflow-y: auto;
-}

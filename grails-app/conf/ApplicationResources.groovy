@@ -266,6 +266,8 @@ modules = {
         defaultBundle 'application'
         dependsOn 'knockout', 'projectActivityInfo', 'species'
         resource url: 'js/projectActivity.js'
+        resource url: 'js/aekosModel.js'
+        resource url: 'js/projectActivities.js'
         resource url: 'css/project-activity-settings.css'
     }
 
@@ -279,6 +281,12 @@ modules = {
         defaultBundle 'application'
         dependsOn 'knockout'
         resource url: 'js/speciesModel.js'
+    }
+
+    speciesFieldsSettings {
+        defaultBundle 'application'
+        dependsOn 'knockout', 'species'
+        resource url: 'js/speciesFieldsSettings.js'
     }
 
     imageViewer {

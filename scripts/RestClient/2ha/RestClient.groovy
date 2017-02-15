@@ -18,12 +18,12 @@ import java.nio.file.Paths
 import static java.util.UUID.randomUUID
 
 // Import Configuration
-def DEBUG_AND_VALIDATE = false;
-def PROJECT_ID = "0d37298f-f7a0-40e3-9a5c-5ff0b1caaeff"
-def PROJECT_ACTIVITY_ID = "9bf45b75-d7c6-4607-8c65-847fb0eb56bb"
-def USERNAME = "southgate@kin.net.au"
+def DEBUG_AND_VALIDATE = true;
+def PROJECT_ID = "f0caedd0-70fd-4388-adb8-8d26935fa6f7"
+def PROJECT_ACTIVITY_ID = "80b4274a-b771-49dd-abdf-89e9b01ea1bc"
+def USERNAME = ""
 def AUTH_KEY = ""
-def xlsx = "2ha/2ha_second_batch_v2.xlsx"
+def xlsx = "2ha_second_batch_v2.xlsx"
 
 //def USERNAME = "reece.pedler@sa.gov.au"
 //def AUTH_KEY = ""
@@ -94,7 +94,7 @@ Paths.get(xlsx).withInputStream { input ->
         def alreadyProcessed = processedIds.findAll { entry."uniqueId" == it }
         if (!alreadyProcessed) {
             def combinedRecords = values?.findAll {
-                        it."collectedBy" == entry."collectedBy" &&
+                it."collectedBy" == entry."collectedBy" &&
                         it."surveyDate" == entry."surveyDate" &&
                         it."plotId" == entry."plotId" &&
                         it."surveyStartTime" == entry."surveyStartTime"
@@ -111,12 +111,12 @@ Paths.get(xlsx).withInputStream { input ->
     println("Total activities = ${nestedActivities?.size()}")
 
     // Load default activity template file
-    String jsonStr = new File('2ha/2ha_post_template_prod.json').text
+    String jsonStr = new File('2ha_post_template_prod.json').text
 
     // Loop through the activities
     nestedActivities?.eachWithIndex { activityRow, activityIndex ->
 
-         //if (activityIndex == 0) {
+        if (activityIndex == 0) {
 
             def jsonSlurper = new groovy.json.JsonSlurper()
             def activity = jsonSlurper.parseText(jsonStr)
@@ -250,7 +250,7 @@ Paths.get(xlsx).withInputStream { input ->
                 println connection.responseCode + ": " + connection.inputStream.text
             }
 
-         //}
+        }
     }
 
     println("Completed..")
