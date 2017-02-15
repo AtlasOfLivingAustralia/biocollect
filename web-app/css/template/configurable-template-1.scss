@@ -54,8 +54,8 @@ a:focus {
 .btn-default.active,
 .btn-default.disabled,
 .btn-default[disabled] {
-  color: #ffffff;
-  background-color: $default-background-color;
+  color: $default-btn-color-active;
+  background-color: $default-btn-background-color-active;
   background-position: center center;
 }
 

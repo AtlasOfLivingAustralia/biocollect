@@ -170,6 +170,7 @@ function FilterViewModel(config){
     };
 
     self.getFacetTerms = function (facetVM) {
+        self.searchText('');
         self.showMoreFacet(facetVM);
         var promise = parent.getFacetTerms(facetVM.name());
         promise.then(function (data) {

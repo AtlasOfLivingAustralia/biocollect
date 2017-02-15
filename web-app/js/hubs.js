@@ -379,6 +379,8 @@ var StyleViewModel = function (config) {
     self.facetBackgroundColor= ko.observable(config.facetBackgroundColor || '');
     self.tileBackgroundColor= ko.observable(config.tileBackgroundColor || '');
     self.wellBackgroundColor= ko.observable(config.wellBackgroundColor || '');
+    self.defaultButtonColorActive= ko.observable(config.defaultButtonColorActive || '');
+    self.defaultButtonBackgroundColorActive= ko.observable(config.defaultButtonBackgroundColorActive || '');
 };
 
 var SocialMediaViewModel = function (config) {
@@ -478,5 +480,7 @@ var colorScheme = {
     hrefColor:'#009080',
     facetBackgroundColor: '#f5f5f5',
     tileBackgroundColor: '#f5f5f5',
-    wellBackgroundColor: '#f5f5f5'
+    wellBackgroundColor: '#f5f5f5',
+    defaultButtonColorActive: '#fff',
+    defaultButtonBackgroundColorActive: '#000'
 };

@@ -210,6 +210,8 @@ class SettingService {
         \$facet-background-color: ${styles?.facetBackgroundColor?: '#f5f5f5'};
         \$tile-background-color: ${styles?.tileBackgroundColor?: '#f5f5f5'};
         \$well-background-color: ${styles?.wellBackgroundColor?: '#f5f5f5'};
+        \$default-btn-color-active: ${styles?.defaultButtonColorActive?: '#fff'};
+        \$default-btn-background-color-active: ${styles?.defaultButtonBackgroundColorActive?: '#000'}
         \$primary-color: #009080;
         \$primary-color-hover: #007777;
         """;

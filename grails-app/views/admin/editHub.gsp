@@ -517,6 +517,16 @@
             <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonTextColor}"></div></td>
         </tr>
         <tr>
+            <td>Default button colour when hovering</td>
+            <td><input type="text" data-bind="value: defaultButtonColorActive"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonColorActive}"></div></td>
+        </tr>
+        <tr>
+            <td>Default button text colour when hovering</td>
+            <td><input type="text" data-bind="value: defaultButtonBackgroundColorActive"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonBackgroundColorActive}"></div></td>
+        </tr>
+        <tr>
             <td>Href colour</td>
             <td><input type="text" data-bind="value: hrefColor"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':hrefColor}"></div></td>
