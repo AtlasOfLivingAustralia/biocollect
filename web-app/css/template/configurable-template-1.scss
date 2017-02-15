@@ -1,19 +1,19 @@
 body {
   background-color: $body-background-color !important;
-  font-family: FFDINWeb, sans-serif;
+  font-family: Roboto,Helvetica,"Helvetica Neue",Arial,sans-serif;
   padding-top: 0px;
   padding-bottom: 0px;
   color: $body-text-color;
 }
 
 h1,h2,h3,h4,h5 {
-  font-family: FFDINWebLight, sans-serif;
+  font-family: Roboto,Helvetica,"Helvetica Neue",Arial,sans-serif;
 }
 
 input,button,
 select,
 textarea {
-  font-family: FFDINWeb, sans-serif;
+  font-family: Roboto,Helvetica,"Helvetica Neue",Arial,sans-serif;
 }
 
 #breadcrumb {
@@ -136,7 +136,7 @@ a:focus {
 
 body .navbar {
   min-height: 58px;
-  font-family: FFDINWeb, sans-serif;
+  font-family: Roboto,Helvetica,"Helvetica Neue",Arial,sans-serif;
 }
 
 .navbar-inverse .navbar-inner {

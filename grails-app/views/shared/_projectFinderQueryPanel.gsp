@@ -10,7 +10,7 @@
             <h4 data-bind="visible: selectedFacets().length"><g:message code="project.search.currentFilters"/></h4>
             <ul>
                 <!-- ko foreach:selectedFacets -->
-                <li><span data-bind="text: displayName"></span><a href="#" data-bind="click: remove"><i class="icon-remove"></i></a></li>
+                <li><strong data-bind="if: exclude">[EXCLUDE]</strong> <span data-bind="text: displayNameWithoutCount()"></span><a href="#" data-bind="click: remove"><i class="icon-remove"></i></a></li>
                 <!-- /ko  -->
             </ul>
         </div>

@@ -572,7 +572,11 @@ class ProjectController {
         if(searchResult.facets){
             String[] facetList = queryParams.facets?.split(',')
             facets = searchService.standardiseFacets (searchResult.facets, Arrays.asList(facetList))
-            facets = projectService.addSpecialFacets(facets)
+            // if facet is provided by client do not add special facets
+            if(!params.facets){
+                facets = projectService.addSpecialFacets(facets)
+            }
+
             facets = projectService.addFacetExpandCollapseState(facets)
             projectService.getDisplayNamesForFacets(facets)
         }
@@ -600,7 +604,7 @@ class ProjectController {
         List difficulty = [], status =[]
         Map trimmedParams = commonService.parseParams(params)
         trimmedParams.fsort = 'term'
-        trimmedParams.flimit = 20
+        trimmedParams.flimit = params.flimit?:15
         trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
         trimmedParams.offset = params.offset && params.offset.isNumber() ? params.offset : 0
         trimmedParams.status = [];
@@ -648,16 +652,18 @@ class ProjectController {
                 break;
         }
 
-        if (trimmedParams.isWorks) {
+        if(!trimmedParams.facets) {
+            if (trimmedParams.isWorks) {
                 // do nothing
-        } else if (trimmedParams.isBiologicalScience){
-            trimmedParams.facets = getFacetListForEcoScience()?.join (",")
-        } else if (trimmedParams.isUserPage || trimmedParams.isUserEcoSciencePage || trimmedParams.isUserWorksPage) {
-            trimmedParams.facets = getFacetListForMyProject()?.join (",")
-        } else if (trimmedParams.organisationName) {
-            trimmedParams.facets = getFacetListForOrganisation()?.join (",")
-        } else if (trimmedParams.isCitizenScience) {
-            trimmedParams.facets = getFacetListForProjectFinder()?.join (",")
+            } else if (trimmedParams.isBiologicalScience) {
+                trimmedParams.facets = getFacetListForEcoScience()?.join(",")
+            } else if (trimmedParams.isUserPage || trimmedParams.isUserEcoSciencePage || trimmedParams.isUserWorksPage) {
+                trimmedParams.facets = getFacetListForMyProject()?.join(",")
+            } else if (trimmedParams.organisationName) {
+                trimmedParams.facets = getFacetListForOrganisation()?.join(",")
+            } else if (trimmedParams.isCitizenScience) {
+                trimmedParams.facets = getFacetListForProjectFinder()?.join(",")
+            }
         }
 
         if(trimmedParams.isCitizenScience){
