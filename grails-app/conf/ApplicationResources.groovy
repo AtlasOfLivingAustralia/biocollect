@@ -289,6 +289,12 @@ modules = {
         resource url: 'js/speciesFieldsSettings.js'
     }
 
+    projectSpeciesFieldsConfiguration {
+        defaultBundle 'application'
+        dependsOn 'knockout', 'speciesFieldsSettings'
+        resource url: 'js/projectSpeciesFieldsConfiguration.js'
+    }
+
     imageViewer {
         dependsOn 'image-viewer', 'jquery'
         resource url: 'vendor/fancybox/jquery.fancybox.js'

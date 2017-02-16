@@ -954,4 +954,16 @@ class ProjectController {
         List facets = projectService.getFacets()
         render text: [facets: facets] as JSON, contentType: 'application/json'
     }
+
+    /**
+     * Configure species fields for Works project schedules
+     */
+    @PreAuthorise(projectIdParam = 'id')
+    def configureSpeciesFields(String id) {
+        def model = [returnTo: params.returnTo]
+        model.project = id ? projectService.get(id) : null
+        log.debug("configuring species fields")
+
+        model
+    }
 }
