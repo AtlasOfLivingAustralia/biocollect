@@ -45,96 +45,6 @@ class ProjectController {
     static ignore = ['action','controller','id']
     static allowedMethods = [listRecordImages: "POST"]
 
-    static final searchFacetListProjectFinder = ["scienceType", "countries", "organisationFacet", "tags", "difficulty", "origin", "uNRegions"]
-    static final searchFacetListMyProject = ["typeOfProject", "scienceType", "ecoScienceType", "difficulty", "tags", "organisationFacet" ]
-    static final searchFacetListOrganisation = ["typeOfProject","scienceType","ecoScienceType",  "associatedProgramFacet", "associatedSubProgramFacet", "organisationFacet" ]
-    static final searchFacetListEcoScience = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgramFacet", "associatedSubProgramFacet" ]
-    static final searchFacetListWorks = ["scienceType", "ecoScienceType", "organisationFacet", "associatedProgramFacet", "associatedSubProgramFacet" ]
-
-    /**
-     * Get the list of facets to be displayed on CS project finder. Also note the order of facets returned determines
-     * how facets are shown on page.
-     * @return
-     */
-    String[] getFacetListForProjectFinder(){
-        String [] list
-        list = projectService.getFacetListForHub()
-        if(!list || !list.size()) {
-            if (grailsApplication.config.facets.pf instanceof String) {
-                list = grailsApplication.config.facets.pf.split(',')
-            } else {
-                list = searchFacetListProjectFinder.toArray()
-            }
-        }
-
-        list
-    }
-
-    /**
-     * Get the list of facets to be displayed on my projects page. Also note the order of facets returned determines
-     * how facets are shown on page.
-     * @return
-     */
-    String[] getFacetListForMyProject(){
-        String [] list
-        if(grailsApplication.config.facets.myproject instanceof String){
-            list = grailsApplication.config.facets.myproject.split(',')
-        } else {
-            list = searchFacetListMyProject.toArray()
-        }
-
-        list
-    }
-
-    /**
-     * Get the list of facets to be displayed on organisation page. Also note the order of facets returned determines
-     * how facets are shown on page.
-     * @return
-     */
-    String[] getFacetListForOrganisation(){
-        String [] list
-        if(grailsApplication.config.facets.organisation instanceof String){
-            list = grailsApplication.config.facets.organisation.split(',')
-        } else {
-            list = searchFacetListOrganisation.toArray()
-        }
-
-        list
-    }
-
-    /**
-     * Get the list of facets to be displayed on Eco Science project finder. Also note the order of facets returned determines
-     * how facets are shown on page.
-     * @return
-     */
-    String[] getFacetListForEcoScience(){
-        String [] list
-        if(grailsApplication.config.facets.ecoscience instanceof String){
-            list = grailsApplication.config.facets.ecoscience.split(',')
-        } else {
-            list = searchFacetListEcoScience.toArray()
-        }
-
-        list
-    }
-
-    /**
-     * Get the list of facets to be displayed on Works project finder. Also note the order of facets returned determines
-     * how facets are shown on page.
-     * @return
-     */
-    String[] getFacetListForWorks(){
-        String [] list
-        if(grailsApplication.config.facets.pf instanceof String){
-            list = grailsApplication.config.facets.works.split(',')
-        } else {
-            list = searchFacetListWorks.toArray()
-        }
-
-        list
-    }
-
-
     def index(String id) {
         def project = projectService.get(id, 'brief', false, params?.version)
         def roles = roleService.getRoles()
@@ -653,17 +563,7 @@ class ProjectController {
         }
 
         if(!trimmedParams.facets) {
-            if (trimmedParams.isWorks) {
-                // do nothing
-            } else if (trimmedParams.isBiologicalScience) {
-                trimmedParams.facets = getFacetListForEcoScience()?.join(",")
-            } else if (trimmedParams.isUserPage || trimmedParams.isUserEcoSciencePage || trimmedParams.isUserWorksPage) {
-                trimmedParams.facets = getFacetListForMyProject()?.join(",")
-            } else if (trimmedParams.organisationName) {
-                trimmedParams.facets = getFacetListForOrganisation()?.join(",")
-            } else if (trimmedParams.isCitizenScience) {
-                trimmedParams.facets = getFacetListForProjectFinder()?.join(",")
-            }
+            trimmedParams.facets = projectService.getFacetListForHub()?.join(",")
         }
 
         if(trimmedParams.isCitizenScience){
