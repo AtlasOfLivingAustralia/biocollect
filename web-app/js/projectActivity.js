@@ -10,7 +10,6 @@ var ProjectActivity = function (params) {
     var organisationName = params.organisationName ? params.organisationName : "";
     var project = params.project ? params.project : {};
     var user = params.user ? params.user : {};
-    var vocabList = params.vocabList ? params.vocabList : {};
 
     var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
 
@@ -392,7 +391,7 @@ var ProjectActivity = function (params) {
         else if (by == "info") {
             var ignore = self.ignore.concat(['current', 'pActivityForms', 'pActivityFormImages',
                 'access', 'species', 'sites', 'transients', 'endDate','visibility','pActivityFormName', 'restrictRecordToSites',
-                'allowAdditionalSurveySites', 'baseLayersName', 'aekosModalView', 'project']);
+                'allowAdditionalSurveySites', 'baseLayersName', 'project']);
             ignore = $.grep(ignore, function (item, i) {
                 return item != "documents";
             });
@@ -433,34 +432,14 @@ var ProjectActivity = function (params) {
         return jsData;
     }
 
-    self.aekosModalView = ko.observable(new AekosViewModel (self, project, user, vocabList));
-
-    //self.aekosModal = ko.observable(false);
-
-    self.showModal = function () {
-        //  self.aekosModal(true);
-        self.aekosModalView().show(true);
+    self.showAekosModal = function (projectActivities, currentUser, vocabList, projectArea) {
+        AEKOS.Utility.openModal({
+            template: "aekosWorkflowModal",
+            viewModel: new AEKOS.AekosViewModel (self, project, projectActivities, currentUser, vocabList, projectArea),
+            context: self // Set context so we don't need to bind the callback function
+        })
     };
 
-};
-
-
-// Custom binding for modal dialog
-ko.bindingHandlers.bootstrapShowModal = {
-    init: function (element, valueAccessor) {
-    },
-    update: function (element, valueAccessor) {
-        var value = valueAccessor();
-
-        if (ko.utils.unwrapObservable(value)) {
-            $(element).modal('show');
-            // this is to focus input field inside dialog
-            $("input", element).focus();
-        }
-        else {
-            $(element).modal('hide');
-        }
-    }
 };
 
 var SiteList = function (o, surveySites) {

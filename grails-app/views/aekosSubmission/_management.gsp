@@ -23,7 +23,7 @@
             <div class="controls">
                 <span id="dataSharingLicense" data-bind="text: dataSharingLicense"></span>
                 %{--<select id="dataSharingLicense" data-bind="options: dataSharingLicenseOptions,--}%
-                                                      %{--value: aekosModalView().dataSharingLicense,--}%
+                                                      %{--value: dataSharingLicense,--}%
                                                       %{--optionsCaption: '--Please select--'"></select>--}%
             </div>
         </div>
@@ -42,7 +42,7 @@
 
         <div class="span8">
             <div class="controls">
-                <textarea id="acknowledgement" data-bind="value: aekosModalView().acknowledgement" rows="3" style="width: 90%"></textarea>
+                <textarea id="acknowledgement" data-bind="value: acknowledgement" rows="3" style="width: 90%"></textarea>
             </div>
         </div>
     </div>
@@ -60,7 +60,7 @@
 
         <div class="span8">
             <div class="controls">
-                <span id="embargoOption" data-bind="text: aekosModalView().embargoOption" ></span>
+                <span id="embargoOption" data-bind="text: embargoOption" ></span>
             </div>
         </div>
     </div>
@@ -83,7 +83,7 @@
 
                           <div class="span8">
                               <div class="controls">
-                                  <span id="legalCustodianOrganisation" data-bind="text: aekosModalView().legalCustodian" ></span>
+                                  <span id="legalCustodianOrganisation" data-bind="text: legalCustodian" ></span>
                               </div>
                           </div>
                       </div>
@@ -101,9 +101,9 @@
 
                           <div class="span8">
                               <div class="controls">
-                                  %{--<span id="legalCustodianOrganisationType" data-bind="text: aekosModalView().legalCustodianOrganisationType" ></span>--}%
-                                  <select id="legalCustodianOrganisationType" data-bind="options: aekosModalView().legalCustodianOrganisationTypeList,
-                                                      value: aekosModalView().legalCustodianOrganisationType,
+                                  %{--<span id="legalCustodianOrganisationType" data-bind="text: legalCustodianOrganisationType" ></span>--}%
+                                  <select id="legalCustodianOrganisationType" data-bind="options: legalCustodianOrganisationTypeList,
+                                                      value: legalCustodianOrganisationType,
                                                       optionsCaption: 'N/A'"></select>
                               </div>
                           </div>
@@ -134,8 +134,8 @@
 
                     <div class="span8">
                         <div class="controls">
-                            <select id="curationStatus" data-bind="options: aekosModalView().curationStatusList,
-                                                                  value: aekosModalView().curationStatus,
+                            <select id="curationStatus" data-bind="options: curationStatusList,
+                                                                  value: curationStatus,
                                                                   optionsCaption: 'N/A'"></select>
                         </div>
                     </div>
@@ -154,8 +154,8 @@
 
                     <div class="span8">
                         <div class="controls">
-                            <select id="curationActivitiesOther" data-bind="options: aekosModalView().curationActivitiesOtherList,
-                                                                      value: aekosModalView().curationActivitiesOther,
+                            <select id="curationActivitiesOther" data-bind="options: curationActivitiesOtherList,
+                                                                      value: curationActivitiesOther,
                                                                       optionsCaption: 'N/A'"></select>
                         </div>
                     </div>
@@ -174,9 +174,9 @@
 
                     <div class="span8">
                         <div class="controls">
-                            %{--<input id="lastUpdated" data-bind="value: aekosModalView().lastUpdated">--}%
+                            %{--<input id="lastUpdated" data-bind="value: lastUpdated">--}%
                             <div class="controls input-append">
-                                <input id="lastUpdated" data-bind="datepicker:aekosModalView().lastUpdated.date" type="text"/>
+                                <input id="lastUpdated" data-bind="datepicker:lastUpdated.date" type="text"/>
                                 <span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
                             </div>
                         </div>

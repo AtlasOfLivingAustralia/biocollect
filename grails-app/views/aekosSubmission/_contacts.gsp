@@ -21,7 +21,7 @@
             <div class="span8">
                 <div class="controls">
                     <select id="datasetContactDetails" data-validation-engine="validate[required]" data-bind="options: transients.titleOptions,
-                                                          value: aekosModalView().datasetContactDetails,
+                                                          value: datasetContactDetails,
                                                           optionsCaption: '--Please Select--'"></select>
                 </div>
             </div>
@@ -36,7 +36,7 @@
 
             <div class="span8">
                 <div class="controls">
-                    <input id="datasetContactName" data-bind="value: aekosModalView().datasetContactName" data-validation-engine="validate[required]">
+                    <input id="datasetContactName" data-bind="value: datasetContactName" data-validation-engine="validate[required]">
                 </div>
             </div>
         </div>
@@ -50,7 +50,7 @@
 
             <div class="span8">
                 <div class="controls">
-                    <input id="datasetContactRole" data-bind="value: aekosModalView().datasetContactRole" data-validation-engine="validate[required]">
+                    <input id="datasetContactRole" data-bind="value: datasetContactRole" data-validation-engine="validate[required]">
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
 
             <div class="span8">
                 <div class="controls">
-                    <input id="datasetContactPhone" data-bind="value: aekosModalView().datasetContactPhone" data-validation-engine="validate[required]">
+                    <input id="datasetContactPhone" data-bind="value: datasetContactPhone" data-validation-engine="validate[required]">
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@
 
             <div class="span8">
                 <div class="controls">
-                    <input id="datasetContactEmail" data-bind="value: aekosModalView().datasetContactEmail" data-validation-engine="validate[required]">
+                    <input id="datasetContactEmail" data-bind="value: datasetContactEmail" data-validation-engine="validate[required]">
                 </div>
             </div>
         </div>
@@ -92,7 +92,7 @@
 
             <div class="span8">
                 <div class="controls">
-                    <textarea id="datasetContactAddress" data-bind="value: aekosModalView().datasetContactAddress" style="width: 90%" data-validation-engine="validate[required]"></textarea>
+                    <textarea id="datasetContactAddress" data-bind="value: datasetContactAddress" style="width: 90%" data-validation-engine="validate[required]"></textarea>
                 </div>
             </div>
         </div>
@@ -106,7 +106,7 @@
 
             <div class="span8">
                 <div class="controls">
-                    <span id="organisationName" data-bind="text: aekosModalView().projectViewModel.organisationName" ></span>
+                    <span id="organisationName" data-bind="text: projectViewModel.organisationName" ></span>
                 </div>
             </div>
         </div>
@@ -128,7 +128,7 @@
 
                 <div class="span8">
                     <div class="controls">
-                        <input id="authorGivenNames" data-bind="value: aekosModalView().authorGivenNames" >
+                        <input id="authorGivenNames" data-bind="value: authorGivenNames" >
                     </div>
                 </div>
             </div>
@@ -142,7 +142,7 @@
 
                 <div class="span8">
                     <div class="controls">
-                        <input id="authorSurname" data-bind="value: aekosModalView().authorSurname" data-validation-engine="validate[required]">
+                        <input id="authorSurname" data-bind="value: authorSurname" data-validation-engine="validate[required]">
                     </div>
                 </div>
             </div>
@@ -156,7 +156,7 @@
 
                 <div class="span8">
                     <div class="controls">
-                        <input id="authorAffiliation" data-bind="value: aekosModalView().authorAffiliation" data-validation-engine="validate[required]">
+                        <input id="authorAffiliation" data-bind="value: authorAffiliation" data-validation-engine="validate[required]">
                     </div>
                 </div>
             </div>
