@@ -37,6 +37,8 @@
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
         spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
         spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
+        wmsFeaturesUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=", //"http://devt.ala.org.au:8087/biocollect/proxy/feature?featureId=",
+        wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?",
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
@@ -141,6 +143,7 @@
         var projectViewModel = new ProjectViewModel(project, ${user?.isEditor?:false});
         var user = <fc:modelAsJavascript model="${user}"/>;
         var vocabList = <fc:modelAsJavascript model="${vocabList}" />;
+        var projectArea = <fc:modelAsJavascript model="${projectSite.extent.geometry}"/>;
 
         var ViewModel = function() {
             var self = this;
@@ -162,6 +165,7 @@
         params.organisationName = project.organisationName;
         params.project = projectViewModel;
         params.vocabList = vocabList;
+        params.projectArea = projectArea;
 
         <g:if test="${!project.isExternal}">
             var pActivitiesVM = new ProjectActivitiesViewModel(params);

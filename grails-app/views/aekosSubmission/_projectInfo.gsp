@@ -8,7 +8,7 @@
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" data-bind="attr: {'for': 'submissionName' + $index()}"><g:message code="aekos.submission.info.name"/>
+            <label class="control-label" for="submissionName"><g:message code="aekos.submission.info.name"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.submission.info.name"/>',
                               content:'<g:message code="aekos.submission.info.name.help"/>'}">
@@ -19,7 +19,7 @@
 
         <div class="span8">
             <div class="controls">
-                <span data-bind="attr:{id: 'submissionName' + $index()}, text: aekosModalView().submissionName"></span>
+                <span id="submissionName" data-bind="text: submissionName"></span>
             </div>
         </div>
     </div>
@@ -37,7 +37,7 @@
 
         <div class="span8">
             <div class="controls">
-                <span id="projectName" data-bind="text: aekosModalView().projectViewModel.name"></span>
+                <span id="projectName" data-bind="text: projectViewModel.name"></span>
             </div>
         </div>
     </div>
@@ -55,7 +55,7 @@
 
         <div class="span8">
             <div class="controls">
-                <textarea id="projectDescription" data-bind="value: aekosModalView().projectViewModel.description"
+                <textarea id="projectDescription" data-bind="value: projectViewModel.description"
                           data-validation-engine="validate[required]" rows="20" style="width:90%;" class="input-xlarge"></textarea>
             </div>
         </div>

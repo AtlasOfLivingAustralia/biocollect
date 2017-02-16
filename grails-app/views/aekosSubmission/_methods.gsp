@@ -18,7 +18,7 @@
         </div>
 
         <div class="span8">
-            <div id="samplingDesign" data-bind="treeView: {data: aekosModalView().samplingDesign,
+            <div id="samplingDesign" data-bind="treeView: {data: samplingDesign,
                                                            extraFieldLabel: '<g:message code="aekos.sampling.design.suggest"/>'}" ></div>
        </div>
     </div>
@@ -35,7 +35,7 @@
         </div>
 
          <div class="span8">
-             <div id="measurementTheme" data-bind="treeView: {data: aekosModalView().observationMeasurements,
+             <div id="measurementTheme" data-bind="treeView: {data: observationMeasurements,
                                        extraFieldLabel: '<g:message code="aekos.measurement.theme.suggest"/>'}" ></div>
         </div>
     </div>
@@ -52,7 +52,7 @@
         </div>
 
         <div class="span8">
-            <div id="measurement" data-bind="treeView: {data: aekosModalView().observedAttributes,
+            <div id="measurement" data-bind="treeView: {data: observedAttributes,
                                        extraFieldLabel: '<g:message code="aekos.method.measurement.suggest"/>'}" ></div>
 
         </div>
@@ -72,7 +72,7 @@
 
         <div class="span8">
             <div class="controls">
-                <input id="methodName" data-bind="value: aekosModalView().methodName" data-validation-engine="validate[required]" style="width: 95%">
+                <input id="methodName" data-bind="value: methodName" data-validation-engine="validate[required]" style="width: 95%">
             </div>
         </div>
     </div>
@@ -91,7 +91,7 @@
 
         <div class="span8">
             <div class="controls">
-                <textarea id="methodAbstract" data-bind="value: aekosModalView().methodAbstract" data-validation-engine="validate[required]" rows="3" style="width: 90%"></textarea>
+                <textarea id="methodAbstract" data-bind="value: methodAbstract" data-validation-engine="validate[required]" rows="3" style="width: 90%"></textarea>
             </div>
         </div>
     </div>
@@ -109,7 +109,7 @@
 
         <div class="span8">
             <div class="controls">
-                <textarea id="methodDriftDescription" data-bind="value: aekosModalView().methodDriftDescription" rows="3" style="width: 90%"></textarea>
+                <textarea id="methodDriftDescription" data-bind="value: methodDriftDescription" rows="3" style="width: 90%"></textarea>
             </div>
         </div>
     </div>
@@ -126,7 +126,7 @@
         </div>
 
         <div class="span8">
-            <div id="artefacts" data-bind="treeView: {data: aekosModalView().identificationMethod,
+            <div id="artefacts" data-bind="treeView: {data: identificationMethod,
                                        extraFieldLabel: '<g:message code="aekos.other.artefacts.suggest"/>'}" ></div>
         </div>
     </div>

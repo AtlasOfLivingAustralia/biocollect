@@ -288,7 +288,7 @@ function ProjectFinder() {
                     projectVMs.push(new ProjectViewModel(project, false));
                 });
                 self.pago.init(projectVMs);
-                pageWindow.filterViewModel.setFacets(data.facets)
+                pageWindow.filterViewModel.setFacets(data.facets || [])
             },
             error: function () {
                 console.error("Could not load project data.");
