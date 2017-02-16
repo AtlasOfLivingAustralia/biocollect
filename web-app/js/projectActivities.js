@@ -9,11 +9,12 @@ var ProjectActivitiesViewModel = function (params) {
     self.projectStartDate = params.projectStartDate;
     self.project = params.project;
 
-    self.vocabList = params.vocabList
-
     self.projectId = ko.observable(params.projectId);
     self.projectActivities = ko.observableArray();
 
+    self.currentUser = user;
+    self.vocabList = params.vocabList;
+    self.projectArea = params.projectArea;
     self.user = user ? user : {isEditor: false, isAdmin: false};
 
     self.sortBy = ko.observable();
@@ -81,8 +82,9 @@ var ProjectActivitiesViewModel = function (params) {
                 organisationName: self.organisationName,
                 startDate: self.projectStartDate,
                 project: self.project,
-                user: self.user,
-                vocabList: self.vocabList
+                user: self.user /*,
+                 vocabList: params.vocabList,
+                 projectArea: params.projectArea*/
             };
             return self.projectActivities.push(new ProjectActivity(args));
         });
@@ -105,16 +107,6 @@ var ProjectActivitiesViewModel = function (params) {
     };
 
     self.loadProjectActivities(pActivities);
-
-   /* self.aekosTestModalView = ko.observable(new AekosViewModel (pActivity, project.name, project.description, project.status));
-
-    //self.aekosModal = ko.observable(false);
-
-    self.showModal = function () {
-        //  self.aekosModal(true);
-        self.aekosTestModalView().show(true);
-    };
-*/
 };
 
 var ProjectActivitiesListViewModel = function (pActivitiesVM) {

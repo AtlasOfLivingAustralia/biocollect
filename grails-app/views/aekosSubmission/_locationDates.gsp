@@ -1,4 +1,4 @@
-<div id="datasetInfo" >
+<div id="datasetInfo">
 
     <div class="row-fluid">
         <div class="span12">
@@ -8,7 +8,7 @@
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="sites"><g:message code="aekos.dataset.site"/>
+            <label class="control-label" for="geographicalExtentDescription"><g:message code="aekos.dataset.site"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.site"/>',
                               content:'<g:message code="aekos.dataset.site.help"/>'}">
@@ -19,10 +19,31 @@
         </div>
 
         <div class="span8">
+           %{-- <span data-bind="visible: transients.loadingMap()">
+                <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
+            </span>
+            <span data-bind="visible: transients.totalPoints() == 0 && !transients.loadingMap()">
+                <span class="text-left margin-bottom-five">
+                    <span data-bind="if: transients.loading()">
+                        <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
+                    </span>
+                    <span data-bind="if: !transients.loading()">No Results</span>
+                </span>
+            </span>--}%
+            %{--<span id="recordOrActivityMap" data-bind="visible: transients.totalPoints() > 0 && !transients.loadingMap() ">--}%
+            <textarea id="geographicalExtentDescription" data-bind="value: geographicalExtentDescription"  data-validation-engine="validate[required]" rows="3" style="width: 90%"></textarea>
+            <br>
+            <span id="recordOrActivityMap">
+                <m:map id="aekosDatasetMap" width="100%"/>
+            </span>
+        </div>
+
+
+        %{--<div class="span8">
             <div class="controls">
                 <div class="panel panel-default" >
                     <div id="sites" class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
-                        <!-- ko foreach: aekosModalView().sites() -->
+                        <!-- ko foreach: sites() -->
 
                         <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl()}, text: name"></a><br>
 
@@ -30,14 +51,14 @@
                     </div>
                  </div>
             </div>
-        </div>
+        </div>--}%
     </div>
 
     <br/>
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="ibraRegion"><g:message code="aekos.dataset.site.ibra"/>
+            <label class="control-label" ><g:message code="aekos.dataset.site.ibra"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.site.ibra"/>',
                               content:'<g:message code="aekos.dataset.site.ibra.help"/>'}">
@@ -46,18 +67,21 @@
             </label>
         </div>
 
-        <div class="span8">
+
+       <div class="span8">
             <div class="controls">
                 <div class="span8">
-                    <div class="controls">
+                    <span data-bind="text: selectedIbraRegion" />
+%{--                    <div class="controls">
                         <div class="panel panel-default" >
                             <div id="ibraRegion" class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
-                                <!-- ko foreach: aekosModalView().sites() -->
-                                <span data-bind="text: ibra"></span><br>
+                                <!-- ko foreach: transients.ibraRegions -->
+                                <input type="checkbox" data-bind="attr:{'id': name, 'name': name}, checkedValue: name, checked: $parent.selectedIbraRegion" /><br>
+                                <span data-bind="text: name"></span>
                                 <!-- /ko -->
                             </div>
                         </div>
-                    </div>
+                    </div>--}%
                 </div>
 
 
@@ -78,7 +102,7 @@
 
         <div class="span8">
             <div class="controls">
-                <span id="startDate" data-bind="value: aekosModalView().startDate"></span>
+                <span id="startDate" data-bind="value: startDate"></span>
             </div>
         </div>
     </div>
@@ -96,7 +120,7 @@
 
         <div class="span8">
             <div class="controls">
-                <span id="endDate" data-bind="value: aekosModalView().endDate"></span>
+                <span id="endDate" data-bind="value: endDate"></span>
             </div>
         </div>
     </div>

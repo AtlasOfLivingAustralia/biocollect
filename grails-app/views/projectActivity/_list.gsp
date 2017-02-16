@@ -1,3 +1,4 @@
+<g:render template="/aekosSubmission/aekosWorkflowModal"/>
 <!-- ko stopBinding: true -->
 <div class="container-fluid" id="pActivitiesList">
 
@@ -121,11 +122,9 @@
                                     <div>
                                         <br/>
                                         <!-- ko if: $parent.userIsAdmin() -->
-                                        <span><a href="#" data-bind="click:function() {showModal();}"
+                                        <span><a href="#" data-bind="click:function() {showAekosModal($parent.projectActivities, $parent.currentUser, $parent.vocabList, $parent.projectArea);}"
                                                  class="btn btn-success btn-sm">Submit current version to AEKOS</a></span>
                                         <!-- /ko -->
-                                        <g:render template="/aekosSubmission/aekosWorkflowModal"/>
-
                                     </div>
 
                                 </div>
@@ -160,6 +159,7 @@
                             <div><a href="#" class="btn btn-success btn-sm" data-bind="click: addActivity, visible: $parent.userCanEdit($data)" title="Click to add a record to this survey"> Add a record</a></div>
                             <div class="margin-top-1"><a href="#" class="btn btn-info btn-sm" data-bind="click: listActivityRecords" title="Click to view existing records from this survey"> View records</a></div>
                             <br><br>
+                            %{--<div class="margin-top-1"><a href="#" class="btn btn-primary btn-sm" data-bind="click: bulkDataLoad, visible: $parent.userCanEdit($data)" title="Opens bulk data loading page"> Load Data</a></div>--}%
                             <div><a data-bind="attr: { href: downloadFormTemplateUrl, title: 'Download survey form template for bulk data upload (.xlsx)', target: pActivityFormName }"  >
                                 Download form template (.xlsx)
                             </a></div>
