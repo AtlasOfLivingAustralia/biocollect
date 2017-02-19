@@ -28,7 +28,7 @@
 
 <g:if test="${orientation == 'vertical'}">
     <div class="row-fluid margin-bottom-1">
-        <m:map id="${source}Map" width="100%"/>
+        <m:map id="${source}Map" width="${mobile ? '90%': '90%'}"/>
     </div>
 </g:if>
 

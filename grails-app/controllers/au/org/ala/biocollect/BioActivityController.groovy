@@ -169,7 +169,19 @@ class BioActivityController {
      * @return
      */
     def create(String id) {
-        String userId = userService.getCurrentUserId()
+        addActivity(id)
+    }
+
+    def mobileCreate(String id) {
+        Map model = addActivity(id)
+        model.mobile = true
+        model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
+        model.authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
+        render (view: 'create', model: model)
+    }
+
+    private def addActivity (String id) {
+        String userId = userService.getCurrentUserId(request)
         Map pActivity = projectActivityService.get(id, "all")
         String projectId = pActivity?.projectId
         String type = pActivity?.pActivityFormName

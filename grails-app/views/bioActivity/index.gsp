@@ -73,7 +73,7 @@
             <h3 class="text-error text-center well-title">Site location: <span data-bind="text: transients.site.name"></span></h3>
             <div data-bind="if: transients.site">
                 <div class="output-block well text-center">
-                    <m:map id="activitySiteMap" width="100%" height="300px"/>
+                    <m:map id="activitySiteMap" width="90%" height="300px"/>
                 </div>
             </div>
         </g:if>
