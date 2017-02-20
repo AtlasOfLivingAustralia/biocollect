@@ -4,7 +4,6 @@
 <head>
     <title><g:layoutTitle /></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
     <r:require modules="ala2Skin, jquery_cookie"/>
     <r:layoutResources/>
     <g:layoutHead />
@@ -17,15 +16,12 @@
             height:40px;
             vertical-align: middle;
         }
+        body {
+            padding-top: 0px;
+        }
     </style>
 </head>
-
-<body>
-
-<div id="content" class="clearfix">
-    <g:layoutBody />
-</div>
-
+<body><g:layoutBody />
 <r:layoutResources/>
 </body>
 </html>
