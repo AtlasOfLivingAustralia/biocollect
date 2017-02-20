@@ -33,7 +33,8 @@
         hideWorldWideBtn: true,
         showAllProjects: false,
         meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
-        associatedPrograms: ${associatedPrograms}
+        associatedPrograms: ${associatedPrograms},
+        flimit: 15
     }
         <g:if test = "${grailsApplication.config.merit.projectLogo}" >
             fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";

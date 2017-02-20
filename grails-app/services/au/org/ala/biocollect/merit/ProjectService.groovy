@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.EmailService
 import au.org.ala.biocollect.OrganisationService
+import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
 import org.springframework.context.MessageSource
 
@@ -16,6 +17,14 @@ class ProjectService {
                                           "blackberry",
                                           "iTunes",
                                           "windowsPhone"]
+
+    public static final SPECIAL_FACETS = [
+            [
+                    name:'status',
+                    total: 0,
+                    terms: [ [ term: 'active', count: 0], [ term: 'completed', count: 0 ]]
+            ]
+    ]
 
 
     WebService webService
@@ -720,4 +729,120 @@ class ProjectService {
         !isCitizenScience(project) && !isEcoScience(project)
     }
 
+    /**
+     * Get list of all possible facets for citizen science project finder.
+     * @return
+     */
+    Map getFacetsFromUrl(){
+        cacheService.get("facets.project", {
+            String url =  grailsApplication.config.ecodata.service.url + '/project/getBiocollectFacets'
+            webService.getJson(url)
+        })
+    }
+
+    /**
+     * Get list of all possible facets for citizen science project finder. Then process it to a form it can be used
+     * on admin's hub page.
+     * @return
+     */
+    List getFacets(){
+        cacheService.get("facets.project.resolved", {
+            Map facets = getFacetsFromUrl()
+            if (facets.facets) {
+                List facetsMapList = facets.facets?.collect {
+                    [name: it]
+                }
+
+                facetsMapList = getDisplayNamesForFacets(facetsMapList)
+                facetsMapList.sort{ it.title }
+            } else if (facets.error) {
+                return []
+            }
+        })
+    }
+
+    /**
+     * Adds a property called state to all facets. State decides whether to expand or collapse a facet section.
+     * It is configured on the admin's hub panel.
+     * @param facets
+     * @return
+     */
+    List addFacetExpandCollapseState (List facets){
+        HubSettings hub = SettingService.getHubConfig()
+        Boolean checkState = false
+        List configurableFacets = []
+        if(hub.isFacetListConfigured()){
+            checkState = true
+            configurableFacets = hub.getConfigForFacets()
+        }
+
+        facets?.each {facet ->
+            String state = 'Expanded'
+            if(checkState){
+                Map cFacet = configurableFacets?.find {
+                    it.name == facet.name
+                }
+
+                if(cFacet){
+                    state = cFacet.state
+                }
+            }
+
+            facet.state = state
+        }
+
+        facets
+    }
+
+    /**
+     * Add facets that has special function like project status - completed or active.
+     * These two categories depends on today's date and hence dynamic.
+     * @param facets
+     * @return
+     */
+    List addSpecialFacets(List facets){
+        HubSettings hub = SettingService.getHubConfig()
+        if(hub.isFacetListConfigured()) {
+            List hubFacets = hub.getConfigForFacets()
+            SPECIAL_FACETS.each { specialFacet ->
+                int index = hubFacets?.findIndexOf{ it.name == specialFacet.name }
+                if(index >= 0){
+                    if(index >= facets?.size()){
+                        index = facets.size()
+                    }
+
+                    facets.add(index, specialFacet.clone())
+                }
+            }
+        } else {
+            facets = SPECIAL_FACETS + facets
+        }
+
+        facets
+    }
+
+    /**
+     * Get list of facets for the current hub.
+     * @return
+     */
+    String[] getFacetListForHub(){
+        HubSettings hub = SettingService.getHubConfig()
+
+        if(hub.isFacetListConfigured()) {
+            List facets = hub.getFacets()
+            // remove facets that have special meaning e.g. status facet which categorises a project as completed or active
+            // using the project's end date.
+            SPECIAL_FACETS.each { facet ->
+                int index = facets.findIndexOf {
+                    it == facet.name
+                }
+
+                if (index >= 0) {
+                    facets.remove(index)
+                }
+            }
+
+            facets.toArray();
+        }
+    }
 }

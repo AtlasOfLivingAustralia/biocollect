@@ -18,7 +18,7 @@
         </div>
 
         <div class="span8">
-            <div id="environmentFeatures" data-bind="treeView: {data: aekosModalView().environmentalFeatures,
+            <div id="environmentFeatures" data-bind="treeView: {data: environmentalFeatures,
                                        extraFieldLabel: '<g:message code="aekos.other.environment.features"/>'}" ></div>
 
         </div>
@@ -37,8 +37,8 @@
 
         <div class="span8">
             <div class="controls">
-                <select id="materialType" data-bind="options: aekosModalView().associatedMaterialTypes,
-                                                      value: aekosModalView().selectedMaterialType,
+                <select id="materialType" data-bind="options: associatedMaterialTypes,
+                                                      value: selectedMaterialType,
                                                       optionsCaption: 'N/A'"></select>
             </div>
         </div>
@@ -57,7 +57,7 @@
 
         <div class="span8">
             <div class="controls">
-                <input id="otherMaterials" data-bind="value: aekosModalView().otherMaterials">
+                <input id="otherMaterials" data-bind="value: otherMaterials">
             </div>
         </div>
     </div>
@@ -75,7 +75,7 @@
 
         <div class="span8">
             <div class="controls">
-                <textarea id="associatedMaterialName" data-bind="value: aekosModalView().associatedMaterialNane" rows="3" style="width: 90%"></textarea>
+                <textarea id="associatedMaterialName" data-bind="value: associatedMaterialNane" rows="3" style="width: 90%"></textarea>
             </div>
         </div>
     </div>
@@ -93,8 +93,8 @@
 
         <div class="span8">
             <div class="controls">
-                <select id="materialIdentifier" data-bind="options: aekosModalView().materialIdentifierTypes,
-                                                      value: aekosModalView().selectedMaterialIdentifier,
+                <select id="materialIdentifier" data-bind="options: materialIdentifierTypes,
+                                                      value: selectedMaterialIdentifier,
                                                       optionsCaption: 'N/A'"></select>
             </div>
         </div>
@@ -113,7 +113,7 @@
 
         <div class="span8">
             <div class="controls">
-                <input id="associatedMaterialIdentifier" data-bind="value: aekosModalView().associatedMaterialIdentifier">
+                <input id="associatedMaterialIdentifier" data-bind="value: associatedMaterialIdentifier">
             </div>
         </div>
     </div>

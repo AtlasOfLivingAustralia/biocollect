@@ -46,6 +46,9 @@ function ProjectFinder() {
         this.doSearch = function () {
             self.doSearch();
         }
+        this.getFacetTerms = function (facets) {
+            return self.getFacetTerms(facets);
+        }
 
         this.reset = function () {
             self.reset();
@@ -118,7 +121,10 @@ function ProjectFinder() {
             return dataIndex() % rowSize + 1 ;
         };
 
-        this.filterViewModel = new FilterViewModel()
+        this.filterViewModel = new FilterViewModel({
+            parent: self,
+            flimit: fcConfig.flimit
+        });
 
         this.filterViewModel.selectedFacets.subscribe(this.doSearch)
     }
@@ -246,7 +252,7 @@ function ProjectFinder() {
             geoSearchJSON: JSON.stringify(geoSearch),
             skipDefaultFilters:fcConfig.showAllProjects,
             isWorldWide: isWorldWide,
-            q: $('#pt-search').val().toLowerCase()
+            q: ($('#pt-search').val() || '' ).toLowerCase()
         };
 
         if (fcConfig.associatedPrograms) {
@@ -282,7 +288,7 @@ function ProjectFinder() {
                     projectVMs.push(new ProjectViewModel(project, false));
                 });
                 self.pago.init(projectVMs);
-                pageWindow.filterViewModel.setFacets(data.facets)
+                pageWindow.filterViewModel.setFacets(data.facets || [])
             },
             error: function () {
                 console.error("Could not load project data.");
@@ -292,6 +298,23 @@ function ProjectFinder() {
                 $('#search-spinner').hide();
             }
         })
+    };
+
+    /**
+     * this is the function calling server with the latest query.
+     */
+    this.getFacetTerms = function (facets) {
+        refreshSearch = false;
+        var params = self.getParams();
+        params.flimit = -1;
+        params.facets = facets;
+        params.max = 0;
+
+        return $.ajax({
+            url: fcConfig.projectListUrl,
+            data: params,
+            traditional: true
+        });
     };
     
     this.searchAndShowFirstPage = function () {

@@ -61,8 +61,8 @@
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             organisationName: '${organisation.name}',
             version: "${params.version?:''}",
-            hideWorldWideBtn: true
-
+            hideWorldWideBtn: true,
+            flimit: 15
         };
     </r:script>
     <style type="text/css">

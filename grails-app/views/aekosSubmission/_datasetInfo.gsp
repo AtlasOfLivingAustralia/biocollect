@@ -20,7 +20,7 @@
 
         <div class="span8">
             <div class="controls">
-                <input id="datasetTitle" data-bind="value: aekosModalView().datasetTitle" data-validation-engine="validate[required]" style="width: 90%">
+                <input id="datasetTitle" data-bind="value: datasetTitle" data-validation-engine="validate[required]" style="width: 90%">
             </div>
         </div>
     </div>
@@ -38,7 +38,7 @@
 
         <div class="span8">
             <div class="controls">
-                <span id="projectAim" data-bind="text: aekosModalView().projectViewModel.aim()"></span>
+                <span id="projectAim" data-bind="text: projectViewModel.aim()"></span>
             </div>
         </div>
     </div>
@@ -57,7 +57,7 @@
 
         <div class="span8">
             <div class="controls">
-                <textarea id="activityDescription" data-bind="value: aekosModalView().description"  data-validation-engine="validate[required]" rows="3" style="width: 90%"></textarea>
+                <textarea id="activityDescription" data-bind="value: description"  data-validation-engine="validate[required]" rows="3" style="width: 90%"></textarea>
             </div>
         </div>
     </div>
@@ -75,7 +75,7 @@
 
         <div class="span8">
             <div class="controls">
-                <span id="datasetVersion" data-bind="text: aekosModalView().currentDatasetVersion()"></span>
+                <span id="datasetVersion" data-bind="text: currentDatasetVersion()"></span>
             </div>
         </div>
     </div>
@@ -93,7 +93,7 @@
 
         <div class="span8">
             <div class="controls">
-                <textarea id="projectKeywords" data-bind="value: aekosModalView().projectViewModel.keywords()"rows="3" style="width: 90%"></textarea>
+                <textarea id="projectKeywords" data-bind="value: projectViewModel.keywords()"rows="3" style="width: 90%"></textarea>
             </div>
         </div>
     </div>
@@ -111,7 +111,7 @@
 
         <div class="span8">
             <div class="controls">
-                <textarea id="usageGuide" data-bind="value: aekosModalView().usageGuide" rows="3" style="width: 90%"></textarea>
+                <textarea id="usageGuide" data-bind="value: usageGuide" rows="3" style="width: 90%"></textarea>
             </div>
         </div>
     </div>
@@ -132,10 +132,10 @@
                 <div id="relatedDatasets" class="panel panel-default" >
                     <div class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
 
-                        <!-- ko foreach: $parent.projectActivities -->
+                        <!-- ko foreach: parentProjectActivities -->
 
-                        <!-- ko if: $parent.projectActivityId != aekosModalView().projectActivityId -->
-                        <input type="checkbox" data-bind="checkedValue: projectActivityId, checked: $parent.relatedDatasets" />
+                        <!-- ko if: $data.projectActivityId != $parent.projectActivityId -->
+                        <input type="checkbox" data-bind="checkedValue: projectActivityId, checked: relatedDatasets" />
 
                         <span data-bind="text: name"></span>
 
@@ -167,7 +167,7 @@
         <div class="span8">
             <div class="controls">
                 %{--<textarea id="urlImage" data-bind="value: aekosModalView().projectViewModel.urlImage" rows="3" style="width: 90%"></textarea>--}%
-                <input type="file" accept="text/csv" data-bind="aekosModalView().projectViewModel.urlImage" />
+                <input id="urlImage" type="file" accept="text/csv" data-bind="projectViewModel.urlImage" />
                 <!--textarea></textarea-->
             </div>
         </div>

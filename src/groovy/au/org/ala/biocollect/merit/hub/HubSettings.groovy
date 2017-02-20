@@ -36,4 +36,36 @@ class HubSettings extends JSONObject {
         }
         return [controller:'home', action:'index']
     }
+
+    /**
+     * List all facet names.
+     * @return
+     */
+    public List getFacets(){
+        List facets = getConfigForFacets()
+        facets?.collect { it.name }
+    }
+
+    /**
+     * List facets and their configuration settings
+     * @return
+     */
+    public List getConfigForFacets(){
+        if(this.facets){
+            this.facets;
+        }
+    }
+
+    /**
+     * Check if the hub has selected configurable template as its skin.
+     * @return
+     */
+    public boolean isFacetListConfigured(){
+        Boolean flag = false;
+        if(this.facets && this.facets.size()){
+            flag = true
+        }
+
+        flag
+    }
 }

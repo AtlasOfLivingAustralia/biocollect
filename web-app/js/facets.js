@@ -14,11 +14,17 @@
  * 
  * Created by Temi on 9/08/2016.
  */
-function FilterViewModel(){
+function FilterViewModel(config){
     var self = this;
+    var parent = config.parent;
+    self.flimit = config.flimit;
+
     self.facets = ko.observableArray()
     self.selectedFacets = ko.observableArray()
     self.tempListOfFacets = ko.observableArray()
+    self.showMoreTermList = ko.observableArray([]);
+    self.showMoreFacet  = ko.observable();
+    self.searchText = ko.observable();
 
     /**
      * Function for initialising facets.
@@ -31,7 +37,7 @@ function FilterViewModel(){
             self.setFacetTerm(facetVm)
             return facetVm;
         }))
-    }
+    };
 
 
     /**
@@ -45,7 +51,7 @@ function FilterViewModel(){
                 facet.setTermState (term.term())
             }
         })
-    }
+    };
 
     /**
      * add a facet term to list of facets. This will trigger an ajax call to update projects.
@@ -54,7 +60,7 @@ function FilterViewModel(){
     self.addToRefineList = function (term) {
         self.selectedFacets.push(term)
         term.refined(true)
-    }
+    };
 
     /**
      * remove a facet term from selected facets. This will trigger an ajax call to update projects.
@@ -72,7 +78,7 @@ function FilterViewModel(){
         })
 
         self.selectedFacets.removeAll(remove)
-    }
+    };
 
     /**
      * create mock facet view model and term view model. This is used when recovering a previous state from location hash.
@@ -86,7 +92,13 @@ function FilterViewModel(){
 
             fqs.forEach(function (fq) {
                 var nameAndValue = fq.split(':')
-                var facet = new FacetViewModel({ name: nameAndValue[0], terms: [{term:nameAndValue[1]}]})
+                var exclude = false;
+                if(nameAndValue[0] && nameAndValue[0].indexOf('-') == 0){
+                    exclude = true;
+                    nameAndValue[0] = nameAndValue[0].replace('-', '');
+                }
+
+                var facet = new FacetViewModel({ name: nameAndValue[0], terms: [{term:nameAndValue[1], exclude: exclude}], ref: self})
                 facet.ref = self
                 var term = facet.terms()[0]
                 self.addToRefineList (term)
@@ -140,6 +152,73 @@ function FilterViewModel(){
         })
     }
 
+    /**
+     * Check if a facet is selected.
+     * @param facet
+     * @returns {boolean}
+     */
+    self.isFacetSelected = function (facet) {
+        var flag = false;
+        var selectedFacets = self.selectedFacets()
+        selectedFacets.forEach(function (term) {
+            if (facet.name() == term.facet.name()) {
+                flag = true
+            }
+        });
+
+        return flag;
+    };
+
+    self.getFacetTerms = function (facetVM) {
+        self.searchText('');
+        self.showMoreFacet(facetVM);
+        var promise = parent.getFacetTerms(facetVM.name());
+        promise.then(function (data) {
+            var facets = data.facets;
+            var facet = facets && facets[0];
+            if(facet){
+                var terms = facetVM.getTerms(facet.terms);
+                self.showMoreTermList(terms);
+            }
+        })
+    };
+
+    self.displayTitle = function (title) {
+        if(self.showMoreFacet()){
+            return title + ' ' + self.showMoreFacet().displayName();
+        }
+
+        return title;
+    };
+
+    self.excludeSelection = function () {
+        var tempList = self.tempListOfFacets();
+        tempList.forEach(function (item) {
+            item.exclude = true;
+        });
+
+        self.mergeTempToRefine();
+    };
+
+    self.includeSelection = function () {
+        self.mergeTempToRefine();
+    };
+
+    /**
+     * search for a token and show terms matching the token.
+     */
+    self.searchText.subscribe(function(){
+        var terms = self.showMoreTermList(), text, regex;
+        regex = new RegExp(self.searchText(), 'i');
+        terms.forEach(function(term){
+            text = term.displayName();
+            if(text && text.match(regex, 'i')){
+                 term.showTerm(true);
+            } else {
+                term.showTerm(false);
+            }
+        });
+    });
 }
 
 /**
@@ -148,8 +227,9 @@ function FilterViewModel(){
  * @constructor
  */
 function FacetViewModel(facet) {
-    var self = this;
     if (!facet) facet = {};
+    var self = this;
+    var state = facet.state|| 'Expanded';
 
     self.name = ko.observable(facet.name);
     self.title = facet.title
@@ -160,6 +240,11 @@ function FacetViewModel(facet) {
     self.displayName = ko.computed(function(){
         return self.title || cleanName(self.name()) || 'Unknown';
     });
+    if(facet.ref.isFacetSelected(self)){
+        state = 'Expanded'
+    }
+    self.state = ko.observable(state);
+
 
     self.isAnyTermVisible = ko.computed(function () {
         var count = 0;
@@ -169,15 +254,29 @@ function FacetViewModel(facet) {
 
         return count > 0
     });
+    self.toggleState = function () {
+        switch (self.state()){
+            case 'Expanded':
+              self.state('Collapsed');
+              break;
+            case 'Collapsed':
+              self.state('Expanded');
+              break;
+        }
+    };
 
     self.ref = facet.ref;
 
-    var terms = $.map(facet.terms ? facet.terms : [], function (term, index) {
-        term.facet = self;
-        return new FacetTermViewModel(term);
-    });
+    self.getTerms = function (terms) {
+        var terms = $.map(terms || [], function (term, index) {
+            term.facet = self;
+            return new FacetTermViewModel(term);
+        });
 
-    self.terms(terms);
+        return terms;
+    };
+
+    self.terms(self.getTerms(facet.terms));
 
     /**
      * Set a flag on a term to indicate that it is selected. 
@@ -192,7 +291,23 @@ function FacetViewModel(facet) {
                 item.refined(true)
             }
         })
-    }
+    };
+
+    /**
+     * Get the whole set of terms for this facets. The list only shows first 15.
+     */
+    self.loadMoreTerms = function () {
+        self.ref.getFacetTerms(self);
+    };
+
+    self.showChooseMore = function () {
+        var terms = self.terms() || [];
+        if(terms.length >= self.ref.flimit){
+            return true;
+        }
+
+        return false
+    };
 };
 
 function FacetTermViewModel(term) {
@@ -203,27 +318,35 @@ function FacetTermViewModel(term) {
     self.facet = term.facet;
     self.count = ko.observable(term.count);
     self.term = ko.observable(term.term);
-    self.title = term.title
+    self.title = term.title;
     self.displayName = ko.computed(function(){
-        var label = self.title || decodeCamelCase(self.term()) || 'Unknown'
+        var label = self.title || decodeCamelCase(self.term()) || 'Unknown';
         if(self.count()){
             label += " (" + self.count() + ")";
         }
 
         return label
     });
+
     self.showTerm = ko.observable(term.showTerm || true);
     self.id = ko.observable(generateTermIdForFacetTerm(self));
     self.checked = ko.observable(false);
-    self.silent = ko.observable(false)
-    self.refined = ko.observable(false)
+    self.silent = ko.observable(false);
+    self.refined = ko.observable(false);
+    self.exclude = term.exclude || false;
+
+
+    self.displayNameWithoutCount = function(){
+        return self.title || decodeCamelCase(self.term()) || 'Unknown';
+    };
 
     /**
      * constructs a facet term so that it can be passed as fq value.
      * @returns {string}
      */
     self.getQueryText = function(){
-        return self.facet.name() +':'+ self.term();
+        var prefix = self.exclude? '-':'';
+        return prefix + self.facet.name() +':' + self.term();
     }
 
     /**

@@ -10,7 +10,7 @@
             <h4 data-bind="visible: selectedFacets().length"><g:message code="project.search.currentFilters"/></h4>
             <ul>
                 <!-- ko foreach:selectedFacets -->
-                <li><span data-bind="text: displayName"></span><a href="#" data-bind="click: remove"><i class="icon-remove"></i></a></li>
+                <li><strong data-bind="if: exclude">[EXCLUDE]</strong> <span data-bind="text: displayNameWithoutCount()"></span><a href="#" data-bind="click: remove"><i class="icon-remove"></i></a></li>
                 <!-- /ko  -->
             </ul>
         </div>
@@ -46,10 +46,9 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button id="clearFilterByRegionButton" type="button" class="btn btn-small btn-info"
-                                                 ><g:message code="project.search.mapClear"/><i
-                                                class="pull-left toggleIndicator icon-remove icon-white"></i></button>
-                                        <button type="button" class="btn btn-primary btn-small" data-dismiss="modal"><g:message code="project.search.mapClose"/><i
-                                                class="pull-left toggleIndicator icon-remove icon-white"></i></button>
+                                                 ><i class="toggleIndicator icon-remove icon-white"></i> <g:message code="project.search.mapClear"/></button>
+                                        <button type="button" class="btn btn-primary btn-small" data-dismiss="modal"><i
+                                                class="toggleIndicator icon-chevron-right icon-white"></i> <g:message code="project.search.mapClose"/></button>
                                     </div>
                                 </div>
 

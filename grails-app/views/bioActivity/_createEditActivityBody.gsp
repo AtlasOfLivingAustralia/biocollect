@@ -1,20 +1,22 @@
 <%@ page import="grails.converters.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
-
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-<g:if test="${!printView}">
-    <ul class="breadcrumb">
-        <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-        <li><a data-bind="click:goToProject" href="#" class="clickable">Project</a> <span class="divider">/</span></li>
-        <li class="active">
-            <span>${pActivity.name}</span>
-        </li>
-    </ul>
-</g:if>
-<div class="well text-center ">
-    <h1 class="text-error">Survey : ${pActivity?.name}</h1>
-    <small><a data-bind="click:goToProject" href="#" class="clickable">Project: ${project?.name?.toUpperCase()}</a></small>
-</div>
+        <g:if test="${!printView && !mobile}">
+            <ul class="breadcrumb">
+                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
+                <li><a data-bind="click:goToProject" href="#" class="clickable">Project</a> <span class="divider">/</span></li>
+                <li class="active">
+                    <span>${pActivity.name}</span>
+                </li>
+            </ul>
+        </g:if>
+        <g:if test="${!printView && !mobile}">
+            <div class="well text-center">
+
+                    <h2 class="text-error">${pActivity?.name}</h2>
+                    <small><a data-bind="click:goToProject" href="#" class="clickable">Project: ${project?.name?.toUpperCase()}</a></small>
+            </div>
+        </g:if>
 <!-- ko stopBinding: true -->
 <g:set var="user" value="${user}"/>
 <g:each in="${metaModel?.outputs}" var="outputName">
@@ -153,7 +155,7 @@
             <fc:select
                     data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
                     printable="${printView}"/>
-            <m:map id="activitySiteMap" width="100%" height="512px"/>
+            <m:map id="activitySiteMap" width="90%" height="512px"/>
         </div>
 
     </div>
@@ -303,6 +305,16 @@
                         url: fcConfig.bioActivityUpdate,
                         type: 'POST',
                         data: toSave,
+
+                        <g:if test="${mobile}">
+                            xhrFields: {
+                               withCredentials: true
+                            },
+                            beforeSend: function(xhr){
+                                xhr.setRequestHeader('userName', "${userName}");
+                                xhr.setRequestHeader('authKey', "${authKey}");
+                            },
+                        </g:if>
                         contentType: 'application/json',
                         success: function (data) {
                             var errorText = "";
@@ -346,7 +358,13 @@
             };
 
             this.saved = function () {
-                document.location.href = returnTo;
+                <g:if test="${mobile}">
+                    window.location = "#successfully-posted";
+                    location.reload();
+                </g:if>
+                <g:else>
+                    document.location.href = returnTo;
+                </g:else>
             };
 
             this.reset = function () {
@@ -541,7 +559,6 @@
             master.register('activityModel', viewModel.modelForSaving, viewModel.dirtyFlag.isDirty, viewModel.dirtyFlag.reset);
 
         });
-
 
 </r:script>
 </div>

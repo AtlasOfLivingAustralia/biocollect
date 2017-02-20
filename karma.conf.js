@@ -45,7 +45,8 @@ module.exports = function (config) {
             'web-app/js/projectActivityInfo.js',
             'web-app/js/projectActivity.js',
             'web-app/js/projectActivities.js',
-            'web-app/js/aekosModel.js',
+            'web-app/js/aekosWorkflow.js',
+            'web-app/js/aekosWorkflowUtility.js',
             'web-app/js/speciesFieldsSettings.js',
             'test/js/spec/**/*.js'
         ],
