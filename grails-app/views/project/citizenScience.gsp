@@ -38,7 +38,7 @@
     </g:if>
     </r:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <r:require modules="js_iso8601,knockout,jqueryValidationEngine,projects,projectFinder,map"/>
+    <r:require modules="js_iso8601,knockout,jqueryValidationEngine,projects,projectFinder,map,datepicker"/>
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">

@@ -14,6 +14,11 @@
  * 
  * Created by Temi on 9/08/2016.
  */
+
+var CONSTANT_VARIABLES = {
+    specialFacets: [{name: 'plannedStartDate', type: 'date'}]
+};
+
 function FilterViewModel(config){
     var self = this;
     var parent = config.parent;
@@ -25,6 +30,7 @@ function FilterViewModel(config){
     self.showMoreTermList = ko.observableArray([]);
     self.showMoreFacet  = ko.observable();
     self.searchText = ko.observable();
+    self.switchOffSearch = ko.observable(false);
 
     /**
      * Function for initialising facets.
@@ -62,6 +68,33 @@ function FilterViewModel(config){
         term.refined(true)
     };
 
+    self.replaceOrAddTermToRefineList = function (terms) {
+        var fqs = self.selectedFacets(), index = 0;
+        if(terms){
+            self.switchOffSearch(true);
+            $.each(terms, function (j, term) {
+                // make sure search is switched on before last update
+                if(j == (terms.length - 1 )){
+                    self.switchOffSearch(false);
+                }
+
+                var match = $.each(fqs, function (i, fq) {
+                    index = i;
+                    return fq.facet.name() == term.facet;
+                });
+
+                if(match.length > 0){
+                    fqs[index] = term;
+                    self.selectedFacets(fqs);
+                } else {
+                    self.selectedFacets.push(term)
+                }
+
+                term.refined(true);
+            })
+        }
+    };
+
     /**
      * remove a facet term from selected facets. This will trigger an ajax call to update projects.
      * @param term
@@ -86,25 +119,58 @@ function FilterViewModel(config){
      */
     self.setFilterQuery = function (fqs) {
         if(fqs){
+            var exceptions = {};
             if(typeof fqs  == 'string'){
                 fqs = [fqs]
             }
 
             fqs.forEach(function (fq) {
-                var nameAndValue = fq.split(':')
-                var exclude = false;
+                var nameAndValue = fq.split(':');
+                var exclude = false, facet;
                 if(nameAndValue[0] && nameAndValue[0].indexOf('-') == 0){
                     exclude = true;
                     nameAndValue[0] = nameAndValue[0].replace('-', '');
                 }
 
-                var facet = new FacetViewModel({ name: nameAndValue[0], terms: [{term:nameAndValue[1], exclude: exclude}], ref: self})
-                facet.ref = self
-                var term = facet.terms()[0]
-                self.addToRefineList (term)
-            })
+                var match = $.grep(CONSTANT_VARIABLES.specialFacets, function (item) {
+                   return  item.name == nameAndValue[0];
+                });
+
+                if(match){
+                    if(!exceptions[nameAndValue[0]]){
+                        exceptions[nameAndValue[0]] = []
+                    }
+
+                    exceptions[nameAndValue[0]].push(nameAndValue);
+                } else {
+                    facet = new FacetViewModel({ name: nameAndValue[0], terms: [{term:nameAndValue[1], exclude: exclude}], ref: self});
+                    facet.ref = self;
+                    var term = facet.terms()[0];
+                    self.addToRefineList (term)
+                }
+            });
+
+            for(var key in exceptions){
+                switch (key){
+                    case 'plannedStartDate':
+                        var filters = exceptions[key];
+                        var facet = key;
+                        var cleanedTerms = {};
+                        $.each(filters, function (index, fq) {
+                            if(fq[1] && (fq[1].indexOf('>=') > -1) ) {
+                                cleanedTerms.fromDate = fq[1].replace('>=', '');
+                            } else if(fq[1] && (fq[1].indexOf('<=') > -1) ) {
+                                cleanedTerms.toDate = fq[1].replace('<=', '');
+                            }
+                        });
+
+                        var dateVM = new FacetViewModel({ name: facet, terms: [cleanedTerms], ref: self, type: 'date'});
+                        dateVM.terms()[0].addToRefine();
+                        break;
+                }
+            }
         }
-    }
+    };
 
     /**
      * merges checked facet terms with selected facets. This will trigger an ajax call to update projects.
@@ -240,19 +306,25 @@ function FacetViewModel(facet) {
     self.displayName = ko.computed(function(){
         return self.title || cleanName(self.name()) || 'Unknown';
     });
+    self.type = facet.type;
+
     if(facet.ref.isFacetSelected(self)){
         state = 'Expanded'
     }
     self.state = ko.observable(state);
 
 
-    self.isAnyTermVisible = ko.computed(function () {
+    self.showTermPanel = ko.computed(function () {
         var count = 0;
-        self.terms().forEach(function (term) {
-            !term.refined()? count ++ : null;
-        })
+        if(self.type == 'date'){
+            return true;
+        } else {
+            self.terms().forEach(function (term) {
+                !term.refined()? count ++ : null;
+            });
 
-        return count > 0
+            return count > 0
+        }
     });
     self.toggleState = function () {
         switch (self.state()){
@@ -270,9 +342,15 @@ function FacetViewModel(facet) {
     self.getTerms = function (terms) {
         var terms = $.map(terms || [], function (term, index) {
             term.facet = self;
-            return new FacetTermViewModel(term);
+            switch (self.type){
+                case 'date':
+                    return new FacetDateViewModel(term);
+                    break;
+                default:
+                    return new FacetTermViewModel(term);
+                    break;
+            }
         });
-
         return terms;
     };
 
@@ -301,12 +379,16 @@ function FacetViewModel(facet) {
     };
 
     self.showChooseMore = function () {
-        var terms = self.terms() || [];
-        if(terms.length >= self.ref.flimit){
-            return true;
-        }
+        if(self.type == 'date'){
+            return false;
+        } else {
+            var terms = self.terms() || [];
+            if(terms.length >= self.ref.flimit){
+                return true;
+            }
 
-        return false
+            return false
+        }
     };
 };
 
@@ -390,6 +472,38 @@ function FacetTermViewModel(term) {
     }
 };
 
+function DatePickerViewModel(date) {
+    var self = this;
+    self.fromDate = ko.observable().extend({simpleDate:false});
+    if(date.fromDate){
+        self.fromDate.date(new Date(date.fromDate));
+    }
+
+    self.toDate = ko.observable().extend({simpleDate:false});
+    if(date.toDate){
+        self.toDate.date(new Date(date.toDate));
+    }
+
+    /**
+     * get from and to date in format yyyy-mm-dd
+     * @returns {string}
+     */
+    self.getParams = function(){
+        var params = {};
+
+        if(self.fromDate()){
+            params.fromDate = getYearMonthDate(self.fromDate.date());
+        }
+
+        if(self.toDate()){
+            params.toDate = getYearMonthDate(self.toDate.date());
+        }
+
+        return params;
+    };
+   
+};
+
 function generateTermIdForFacetTerm(facetTerm) {
     var name, term
     name = facetTerm.facet.name()
@@ -440,4 +554,11 @@ function findFacetTerm(list, checkMe) {
     })
 
     return found
+}
+
+function getYearMonthDate(date){
+    if(date){
+        var str = date.getFullYear() + '-' + pad(date.getMonth() + 1, 2) + '-' + pad(date.getDate(), 2);
+        return str;
+    }
 }

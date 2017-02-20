@@ -44,6 +44,7 @@ function ProjectFinder() {
         this.columns = ko.observable(2);
         self.columns = this.columns;
         this.doSearch = function () {
+
             self.doSearch();
         }
         this.getFacetTerms = function (facets) {
@@ -269,6 +270,10 @@ function ProjectFinder() {
      * this is the function calling server with the latest query.
      */
     this.doSearch = function () {
+        if(pageWindow.filterViewModel.switchOffSearch()){
+            return;
+        }
+
         refreshSearch = false;
         var params = self.getParams();
 
@@ -597,6 +602,11 @@ function ProjectFinder() {
         };
         for (var i = 0; i < hash.length; i++) {
             var keyAndValue = hash[i].split("=");
+            //sometimes it is possible to have more than one = symbol eg. fq=plannedStartDate:>=2017-12-20
+            if(keyAndValue.length > 2){
+                keyAndValue = [hash[i].substr(0,hash[i].indexOf('=')), hash[i].substr(hash[i].indexOf('=')+1)]
+            }
+
             if (keyAndValue.indexOf(",") > -1) {
                 params[keyAndValue[0]] = keyAndValue.split(",");
             } else {

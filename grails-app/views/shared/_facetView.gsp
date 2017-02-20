@@ -1,7 +1,7 @@
 <div class="row-fluid">
     <div class="span12">
         <!-- ko foreach: facets -->
-        <div class="row-fluid" data-bind="visible: isAnyTermVisible">
+        <div class="row-fluid" data-bind="visible: showTermPanel">
             <button data-bind="click: toggleState" class="btn btn-block btn-text-left">
                 &nbsp;
                 <i data-bind="css: {'icon-plus': state() == 'Collapsed', 'icon-minus': state() == 'Expanded'}"></i>
@@ -11,11 +11,36 @@
                 </a>
             </button>
             <div data-bind="slideVisible: state() == 'Expanded'" class="margin-top-5">
-                <!-- ko foreach: terms -->
-                <label class="control-label checkbox" data-bind="visible: !refined()">
-                    <input type="checkbox" data-bind="checked: checked" style="display: inline-block;">
-                    <span class="label-ellipsis" data-bind="text:displayName, click: filterNow, attr:{title: displayName}"></span>
-                </label>
+                <!-- ko ifnot: type == 'date' -->
+                    <!-- ko foreach: terms -->
+                    <label class="control-label checkbox" data-bind="visible: !refined()">
+                        <input type="checkbox" data-bind="checked: checked" style="display: inline-block;">
+                        <span class="label-ellipsis" data-bind="text:displayName, click: filterNow, attr:{title: displayName}"></span>
+                    </label>
+                    <!-- /ko -->
+                <!-- /ko -->
+                <!-- ko if: type == 'date' -->
+                    <!-- ko foreach: terms -->
+                    <div id="facet-dates" data-name="projectDates" class="validationEngineContainer in collapse" style="height: auto;">
+                        <div>
+                            <div>From:</div>
+                            <div class="input-append">
+                                <input data-bind="value: fromDate.formattedDate, datepicker: fromDate.date, datePickerOptions: { format: 'dd-mm-yyyy'}" name="fromDate" id="fromDate" type="text" size="16" class="input-small" placeholder="dd-mm-yyyy">
+                                <span class="add-on open-datepicker">
+                                    <i class="icon-th">&nbsp;</i>
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <div>To:</div>
+                            <div class="input-append"><input data-bind="datepicker: toDate, datePickerOptions: { format: 'dd-mm-yyyy'}" name="toDate" id="toDate" type="text" size="16" class="input-append input-small"  placeholder="dd-mm-yyyy">
+                            <span class="add-on open-datepicker">
+                                <i class="icon-th">&nbsp;</i>
+                            </span></div>
+                        </div>
+                        <div><button data-bind="click: addToRefine" class="btn"><i class="icon-plus"></i> Add dates</button></div>
+                    </div>
+                    <!-- /ko -->
                 <!-- /ko -->
                 <a href="#" role="button" class="moreFacets tooltips" data-toggle="modal" title="" data-target="#chooseMore"
                    data-original-title="View full list of values" data-bind="click: loadMoreTerms, visible: showChooseMore()">

@@ -63,7 +63,7 @@
         flimit: 15
   }
     </r:script>
-    <r:require modules="js_iso8601,projects,projectFinder,map"/>
+    <r:require modules="js_iso8601,projects,projectFinder,map,datepicker"/>
 </head>
 <body>
 <div id="headerBannerSpace" class="container-fluid">

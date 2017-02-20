@@ -518,6 +518,7 @@ class ProjectController {
         trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
         trimmedParams.offset = params.offset && params.offset.isNumber() ? params.offset : 0
         trimmedParams.status = [];
+        trimmedParams.startDate = [];
         trimmedParams.isCitizenScience = params.boolean('isCitizenScience');
         trimmedParams.isWorks = params.boolean('isWorks');
         trimmedParams.isBiologicalScience = params.boolean('isBiologicalScience')
@@ -535,6 +536,8 @@ class ProjectController {
         immutableFq.each {
             if(it?.startsWith('status:')){
                 trimmedParams.status?.push ( it.replace('status:',''))
+            } else if(it?.startsWith('plannedStartDate:')){
+                trimmedParams.startDate?.push ( it )
             } else {
                 it? fq.push(it):null;
             }
@@ -639,6 +642,12 @@ class ProjectController {
             }
             trimmedParams.status = null
         }
+
+        if(trimmedParams.startDate.size()){
+            trimmedParams.query += " AND (${trimmedParams.startDate.join(' AND ')})";
+            trimmedParams.startDate = null
+        }
+
         if (trimmedParams.isUserPage) {
             if (trimmedParams.mobile) {
                 String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
