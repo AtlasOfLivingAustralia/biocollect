@@ -269,7 +269,6 @@ modules = {
         resource url: 'js/aekosWorkflow.js'
         resource url: 'js/aekosWorkflowUtility.js'
         resource url: 'js/projectActivities.js'
-        resource url: 'css/project-activity-settings.css'
     }
 
     projectActivityInfo {
@@ -294,6 +293,7 @@ modules = {
         defaultBundle 'application'
         dependsOn 'knockout', 'speciesFieldsSettings'
         resource url: 'js/projectSpeciesFieldsConfiguration.js'
+        resource url: 'css/projectSpeciesFieldsConfiguration.css'
     }
 
     imageViewer {

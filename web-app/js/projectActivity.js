@@ -193,7 +193,7 @@ var ProjectActivity = function (params) {
         //     speciesConstraintVM.speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
         // }
 
-        showSpeciesFieldConfigInModal(speciesConstraintVM, '#configureSpeciesFieldModal', '#speciesFieldDialog')
+        showSpeciesFieldConfigInModal(speciesConstraintVM, '#speciesFieldDialog')
             .done(function(result){
                     if(index) { //Update a particular species field configuration
                         var newSpeciesConstraintVM = new SpeciesConstraintViewModel(result)
@@ -206,6 +206,7 @@ var ProjectActivity = function (params) {
                 }
             );
     }
+
     /**
      * Determine if each species defined in this survey are valid in order for the Survey to be Publishable
      * This is an agregation of the SpeciesConstraintViewModel#isValid as now we have, potentially, more than

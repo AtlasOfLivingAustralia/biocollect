@@ -38,6 +38,7 @@ class ProjectController {
     BlogService blogService
     MessageSource messageSource
     VocabService vocabService
+    FormSpeciesFieldParserService formSpeciesFieldParserService
 
     def grailsApplication
 
@@ -860,8 +861,57 @@ class ProjectController {
      */
     @PreAuthorise(projectIdParam = 'id')
     def configureSpeciesFields(String id) {
-        def model = [returnTo: params.returnTo]
-        model.project = id ? projectService.get(id) : null
+
+        def activities = activityService.activitiesForProject(id)
+        def project = projectService.get(id, 'all')
+
+        def model = [returnTo: params.returnTo, project: project]
+
+        if (!project.error) {
+            // Find the different surveys used in this project schedule
+            Set<String> surveys = new HashSet<>();
+
+            activities.each {
+                surveys << it.type
+            }
+
+            Map<String,Map> speciesFieldsBySurvey = [:]
+
+            surveys.each {
+                speciesFieldsBySurvey[it] = formSpeciesFieldParserService.getSpeciesFieldsForSurvey(it)?.result;
+            }
+
+            // Enrich the speciesFieldsBySurvey with any existing configuration already stored in the project object
+            // Discards any configuration that is no longer used.
+
+            List surveysSettings = project?.speciesFieldsSettings?.surveys ?: []
+
+            surveysSettings.each {projectSurveySettings ->
+                if(speciesFieldsBySurvey.containsKey(projectSurveySettings.name)) {
+                    projectSurveySettings?.fields?.each { projectFieldSettings ->
+                        def speciesField = speciesFieldsBySurvey[projectSurveySettings.name].find {
+                            return projectFieldSettings.label == it.label && projectFieldSettings.context == it.context && projectFieldSettings.output == it.output
+                        }
+
+                        // Let's add saved configuration
+                        if(speciesField) {
+                            speciesField.config = projectFieldSettings.config
+                        }
+                    }
+                }
+            }
+
+            List fieldsConfig = []
+
+            speciesFieldsBySurvey.each{surveyName, fields ->
+                fieldsConfig << [name:surveyName, fields:fields]
+            }
+
+            model.fieldsConfig = fieldsConfig
+        } else {
+            model.error = project.detail
+        }
+
         log.debug("configuring species fields")
 
         model

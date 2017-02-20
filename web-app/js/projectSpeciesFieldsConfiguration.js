@@ -1,18 +1,60 @@
+
+SurveySpeciesFieldsVM = function (surveySettings) {
+    var self = this;
+    surveySettings = surveySettings || {};
+
+    self.name = ko.observable(surveySettings.name);
+
+    self.speciesFields = ko.observableArray();
+
+    var speciesFields = surveySettings.fields || []
+    for(var i=0; i<speciesFields.length; i++) {
+        self.speciesFields.push(new SpeciesFieldViewModel(speciesFields[i]));
+    }
+
+}
 /**
  * Created by mol109 on 16/2/17.
  */
 
-function ProjectSpeciesFieldsConfigurationViewModel (project) {
+function ProjectSpeciesFieldsConfigurationViewModel (project, speciesFieldsConfigBySurvey) {
     var self = this;
+    speciesFieldsConfigBySurvey = speciesFieldsConfigBySurvey || [];
+    self.surveysConfig = ko.observableArray();
 
+    // Surveys that don't have species fields but need to be listed separately.
+    self.surveysWithoutFields = ko.observableArray();
+
+    // Surveys that have at least one species fields
+    self.surveysToConfigure = ko.observableArray();
+
+
+    for(var i=0; i<speciesFieldsConfigBySurvey.length; i++) {
+        var surveySpeciesFieldsVM = new SurveySpeciesFieldsVM(speciesFieldsConfigBySurvey[i]);
+        self.surveysConfig.push(surveySpeciesFieldsVM);
+
+        if(surveySpeciesFieldsVM.speciesFields().length > 0) {
+            self.surveysToConfigure.push(surveySpeciesFieldsVM);
+        } else {
+            self.surveysWithoutFields.push(surveySpeciesFieldsVM);
+        }
+    }
 
     self.species = ko.observable(new SpeciesConstraintViewModel(project.species));
 
-    self.speciesFields = ko.observableArray([new SpeciesFieldViewModel(project.species)]);
+
+
+    self.species().speciesDisplayFormat.subscribe(function () {
+
+        // Check every field to see if it is using default config
+        // If so update the display format to that of species().speciesDisplayFormat
+    });
 
 
     self.transients = self.transients || {};
     // self.transients.project = project;
+
+
 
 
     self.transients.availableSpeciesDisplayFormat = ko.observableArray([{
@@ -74,4 +116,27 @@ function ProjectSpeciesFieldsConfigurationViewModel (project) {
     self.notImplemented = function () {
         alert("Not implemented yet.")
     };
+
+    self.showSpeciesConfiguration = function(speciesConstraintVM, fieldName, surveyIndex,  speciesFieldIndex) {
+        // Create a copy to bind to the field config dialog otherwise we may change the main screen values inadvertenly
+        speciesConstraintVM = new SpeciesConstraintViewModel(speciesConstraintVM.asJson(), fieldName);
+
+        if(speciesFieldIndex) {
+            speciesConstraintVM.speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
+        }
+
+        showSpeciesFieldConfigInModal(speciesConstraintVM, '#speciesFieldDialog')
+            .done(function(result){
+                    if(surveyIndex && speciesFieldIndex) { //Update a particular species field configuration
+                        var newSpeciesConstraintVM = new SpeciesConstraintViewModel(result)
+                        newSpeciesConstraintVM.speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
+                        self.surveysToConfigure()[surveyIndex()].speciesFields()[speciesFieldIndex()].config(newSpeciesConstraintVM);
+                    }
+                    else { // Update species default configuration
+                        self.species(new SpeciesConstraintViewModel(result));
+                    }
+                }
+            );
+    }
 }
+

@@ -44,10 +44,13 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
         }
     });
 
+
+
     self.transients.inputSettingsSummary = ko.computed(function () {
         var type = self.type();
         if(type === 'ALL_SPECIES'){
             return 'All species';
+
         } else if(type === 'SINGLE_SPECIES') {
             return self.singleSpecies.name();
         } else  if(type === 'GROUP_OF_SPECIES') {
@@ -57,10 +60,14 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
             } else {
                 return "No lists configured yet"
             }
+        } else if(type === 'DEFAULT_SPECIES'){
+            return 'Default species';
+
         } else {
             return 'Not configured';
         }
     });
+
 
     self.transients.fieldName = ko.observable(fieldName);
     self.transients.bioSearch = ko.observable(fcConfig.speciesSearchUrl);
@@ -276,20 +283,17 @@ var NewSpeciesListViewModel = function (o) {
  * Creates a bootstrap modal from the supplied UI element to collect a species field configuration and returns a
  * jquery Deferred promise to access it.
   * @param speciesFieldConfigViewModel default model for the document.  can be used to populate role, etc.
- * @param modalSelector a selector identifying the ui element that contains the markup for the bootstrap modal dialog.
  * @param templateSelector a selector identifying the element that calls the ko template and where data binding will be applied
  * @returns an instance of jQuery.Deferred - the uploaded document will be supplied to a chained 'done' function.
  */
-function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, modalSelector, templateSelector) {
+function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, templateSelector) {
+
+    var modalSelector = '#configureSpeciesFieldModal';
     // Get the native object (index 0) rather than jquery wrapper, ko needs it.
     var template = $(templateSelector)[0];
 
-
     // Used to communicate the result back to the calling process.
     var result = $.Deferred();
-
-
-
 
     // Decorate the model so it can handle the button presses and close the modal window.
     speciesFieldConfigViewModel.cancel = function() {
