@@ -44,6 +44,7 @@ class ProjectController {
     static defaultAction = "index"
     static ignore = ['action','controller','id']
     static allowedMethods = [listRecordImages: "POST"]
+    static int MAX_FACET_TERMS = 500
 
     def index(String id) {
         def project = projectService.get(id, 'brief', false, params?.version)
@@ -564,6 +565,10 @@ class ProjectController {
 
         if(!trimmedParams.facets) {
             trimmedParams.facets = projectService.getFacetListForHub()?.join(",")
+        }
+
+        if(trimmedParams.flimit == "-1"){
+            trimmedParams.flimit = MAX_FACET_TERMS;
         }
 
         if(trimmedParams.isCitizenScience){
