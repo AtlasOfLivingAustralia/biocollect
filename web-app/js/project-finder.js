@@ -123,7 +123,7 @@ function ProjectFinder() {
         };
 
         this.filterViewModel = new FilterViewModel({
-            parent: self,
+            parent: this,
             flimit: fcConfig.flimit
         });
 
@@ -225,6 +225,7 @@ function ProjectFinder() {
         var isBiologicalScience = fcConfig.isBiologicalScience || false;
         var isMERIT = fcConfig.isMERIT || false;
         var isWorldWide, hideWorldWideBtn = fcConfig.hideWorldWideBtn || false;
+        var dates;
         if(!hideWorldWideBtn){
             isWorldWide= getActiveButtonValues($('#pt-aus-world'));
             isWorldWide = isWorldWide.length? isWorldWide[0] : false
@@ -235,7 +236,9 @@ function ProjectFinder() {
 
         pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
             fq.push(facet.getQueryText())
-        })
+        });
+
+        dates = pageWindow.filterViewModel.datePicker.getParams();
 
         var map = {
             fq: fq,
@@ -253,6 +256,8 @@ function ProjectFinder() {
             geoSearchJSON: JSON.stringify(geoSearch),
             skipDefaultFilters:fcConfig.showAllProjects,
             isWorldWide: isWorldWide,
+            toDate: dates.toDate,
+            fromDate: dates.fromDate,
             q: ($('#pt-search').val() || '' ).toLowerCase()
         };
 
@@ -622,7 +627,8 @@ function ProjectFinder() {
 
 
         setGeoSearch(params.geoSearch);
-        pageWindow.filterViewModel.setFilterQuery(params.fq)
+        pageWindow.filterViewModel.setFilterQuery(params.fq);
+        pageWindow.filterViewModel.setDatePicker(params.fromDate, params.toDate);
 
         if (fcConfig.associatedPrograms) {
             $.each(fcConfig.associatedPrograms, function (i, program) {

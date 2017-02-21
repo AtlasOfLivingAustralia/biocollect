@@ -518,7 +518,6 @@ class ProjectController {
         trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
         trimmedParams.offset = params.offset && params.offset.isNumber() ? params.offset : 0
         trimmedParams.status = [];
-        trimmedParams.startDate = [];
         trimmedParams.isCitizenScience = params.boolean('isCitizenScience');
         trimmedParams.isWorks = params.boolean('isWorks');
         trimmedParams.isBiologicalScience = params.boolean('isBiologicalScience')
@@ -536,8 +535,6 @@ class ProjectController {
         immutableFq.each {
             if(it?.startsWith('status:')){
                 trimmedParams.status?.push ( it.replace('status:',''))
-            } else if(it?.startsWith('plannedStartDate:')){
-                trimmedParams.startDate?.push ( it )
             } else {
                 it? fq.push(it):null;
             }
@@ -643,9 +640,19 @@ class ProjectController {
             trimmedParams.status = null
         }
 
-        if(trimmedParams.startDate.size()){
-            trimmedParams.query += " AND (${trimmedParams.startDate.join(' AND ')})";
-            trimmedParams.startDate = null
+        if(trimmedParams.fromDate || trimmedParams.toDate){
+            List dates = [];
+            if(trimmedParams.fromDate){
+                dates.push('plannedStartDate:>=' + trimmedParams.fromDate);
+            }
+
+            if(trimmedParams.toDate){
+                dates.push('plannedStartDate:<=' + trimmedParams.toDate)
+            }
+
+            trimmedParams.query += " AND (${dates.join(' AND ')})";
+            trimmedParams.toDate = null
+            trimmedParams.fromDate = null
         }
 
         if (trimmedParams.isUserPage) {

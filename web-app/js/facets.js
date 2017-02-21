@@ -15,10 +15,6 @@
  * Created by Temi on 9/08/2016.
  */
 
-var CONSTANT_VARIABLES = {
-    specialFacets: [{name: 'plannedStartDate', type: 'date'}]
-};
-
 function FilterViewModel(config){
     var self = this;
     var parent = config.parent;
@@ -31,6 +27,27 @@ function FilterViewModel(config){
     self.showMoreFacet  = ko.observable();
     self.searchText = ko.observable();
     self.switchOffSearch = ko.observable(false);
+    self.datePicker = new DatePickerViewModel(parent, self);
+
+    /**
+     * Set to and from date on the form.
+     */
+    self.setDatePicker = function (fromDate, toDate, silent) {
+        if(silent){
+            self.switchOffSearch(true);
+        }
+        if(fromDate){
+            self.datePicker.fromDate(new Date(fromDate));
+        }
+
+        if(toDate){
+            self.datePicker.toDate(new Date(toDate));
+        }
+
+        if(silent){
+            self.switchOffSearch(false);
+        }
+    };
 
     /**
      * Function for initialising facets.
@@ -38,9 +55,19 @@ function FilterViewModel(config){
      */
     self.setFacets = function (facets) {
         self.facets($.map(facets, function (facet) {
+            var facetVm;
             facet.ref = self;
-            var facetVm = new FacetViewModel(facet)
-            self.setFacetTerm(facetVm)
+            switch (facet.type){
+                case 'date':
+                    facetVm = self.datePicker;
+                    facetVm.loadFromConfig(facet);
+                    break;
+                default:
+                    facetVm = new FacetViewModel(facet);
+                    self.setFacetTerm(facetVm);
+                    break;
+            }
+
             return facetVm;
         }))
     };
@@ -68,33 +95,6 @@ function FilterViewModel(config){
         term.refined(true)
     };
 
-    self.replaceOrAddTermToRefineList = function (terms) {
-        var fqs = self.selectedFacets(), index = 0;
-        if(terms){
-            self.switchOffSearch(true);
-            $.each(terms, function (j, term) {
-                // make sure search is switched on before last update
-                if(j == (terms.length - 1 )){
-                    self.switchOffSearch(false);
-                }
-
-                var match = $.each(fqs, function (i, fq) {
-                    index = i;
-                    return fq.facet.name() == term.facet;
-                });
-
-                if(match.length > 0){
-                    fqs[index] = term;
-                    self.selectedFacets(fqs);
-                } else {
-                    self.selectedFacets.push(term)
-                }
-
-                term.refined(true);
-            })
-        }
-    };
-
     /**
      * remove a facet term from selected facets. This will trigger an ajax call to update projects.
      * @param term
@@ -119,7 +119,6 @@ function FilterViewModel(config){
      */
     self.setFilterQuery = function (fqs) {
         if(fqs){
-            var exceptions = {};
             if(typeof fqs  == 'string'){
                 fqs = [fqs]
             }
@@ -132,43 +131,11 @@ function FilterViewModel(config){
                     nameAndValue[0] = nameAndValue[0].replace('-', '');
                 }
 
-                var match = $.grep(CONSTANT_VARIABLES.specialFacets, function (item) {
-                   return  item.name == nameAndValue[0];
-                });
-
-                if(match){
-                    if(!exceptions[nameAndValue[0]]){
-                        exceptions[nameAndValue[0]] = []
-                    }
-
-                    exceptions[nameAndValue[0]].push(nameAndValue);
-                } else {
-                    facet = new FacetViewModel({ name: nameAndValue[0], terms: [{term:nameAndValue[1], exclude: exclude}], ref: self});
-                    facet.ref = self;
-                    var term = facet.terms()[0];
-                    self.addToRefineList (term)
-                }
+                facet = new FacetViewModel({ name: nameAndValue[0], terms: [{term:nameAndValue[1], exclude: exclude}], ref: self});
+                facet.ref = self;
+                var term = facet.terms()[0];
+                self.addToRefineList (term)
             });
-
-            for(var key in exceptions){
-                switch (key){
-                    case 'plannedStartDate':
-                        var filters = exceptions[key];
-                        var facet = key;
-                        var cleanedTerms = {};
-                        $.each(filters, function (index, fq) {
-                            if(fq[1] && (fq[1].indexOf('>=') > -1) ) {
-                                cleanedTerms.fromDate = fq[1].replace('>=', '');
-                            } else if(fq[1] && (fq[1].indexOf('<=') > -1) ) {
-                                cleanedTerms.toDate = fq[1].replace('<=', '');
-                            }
-                        });
-
-                        var dateVM = new FacetViewModel({ name: facet, terms: [cleanedTerms], ref: self, type: 'date'});
-                        dateVM.terms()[0].addToRefine();
-                        break;
-                }
-            }
         }
     };
 
@@ -316,15 +283,11 @@ function FacetViewModel(facet) {
 
     self.showTermPanel = ko.computed(function () {
         var count = 0;
-        if(self.type == 'date'){
-            return true;
-        } else {
-            self.terms().forEach(function (term) {
-                !term.refined()? count ++ : null;
-            });
+        self.terms().forEach(function (term) {
+            !term.refined()? count ++ : null;
+        });
 
-            return count > 0
-        }
+        return count > 0
     });
     self.toggleState = function () {
         switch (self.state()){
@@ -342,14 +305,7 @@ function FacetViewModel(facet) {
     self.getTerms = function (terms) {
         var terms = $.map(terms || [], function (term, index) {
             term.facet = self;
-            switch (self.type){
-                case 'date':
-                    return new FacetDateViewModel(term);
-                    break;
-                default:
-                    return new FacetTermViewModel(term);
-                    break;
-            }
+            return new FacetTermViewModel(term);
         });
         return terms;
     };
@@ -379,16 +335,12 @@ function FacetViewModel(facet) {
     };
 
     self.showChooseMore = function () {
-        if(self.type == 'date'){
-            return false;
-        } else {
-            var terms = self.terms() || [];
-            if(terms.length >= self.ref.flimit){
-                return true;
-            }
-
-            return false
+        var terms = self.terms() || [];
+        if(terms.length >= self.ref.flimit){
+            return true;
         }
+
+        return false
     };
 };
 
@@ -472,17 +424,61 @@ function FacetTermViewModel(term) {
     }
 };
 
-function DatePickerViewModel(date) {
+function DatePickerViewModel(pageVM, filterVM) {
     var self = this;
+    var element;
+    self.state = ko.observable('Collapsed');
+    self.displayName = ko.observable();
+    self.helpText = ko.observable();
     self.fromDate = ko.observable().extend({simpleDate:false});
-    if(date.fromDate){
-        self.fromDate.date(new Date(date.fromDate));
-    }
-
     self.toDate = ko.observable().extend({simpleDate:false});
-    if(date.toDate){
-        self.toDate.date(new Date(date.toDate));
-    }
+
+    self.fromDate.subscribe(validateAndSearch);
+    self.toDate.subscribe(validateAndSearch);
+
+
+    /**
+     * Check input date is valid and call the search function.
+     */
+    function validateAndSearch () {
+        if(element){
+            var el = $(element).parents('.facetDates');
+
+            if(el.validationEngine('validate')){
+                pageVM.doSearch();
+            } else if ((self.fromDate.date().toString() === "Invalid Date") && (self.toDate.date().toString() === "Invalid Date")){
+                // if both dates are empty i.e. clear button is clicked
+                pageVM.doSearch();
+            }
+        }
+    };
+
+    /**
+     * This function is called on blur event
+     * @param con
+     */
+    self.setContext = function (el) {
+        if(el){
+            element = el;
+        }
+    };
+
+    /**
+     * set properties of date picker view model.
+     * @param config
+     */
+    self.loadFromConfig = function (config) {
+        self.state(self.state() || config.state || 'Collapsed');
+        self.displayName(config.title);
+        self.helpText(config.helpText);
+        if(config.fromDate){
+            self.fromDate(new Date(config.fromDate));
+        }
+
+        if(config.toDate){
+            self.toDate(new Date(config.toDate));
+        }
+    };
 
     /**
      * get from and to date in format yyyy-mm-dd
@@ -491,17 +487,47 @@ function DatePickerViewModel(date) {
     self.getParams = function(){
         var params = {};
 
-        if(self.fromDate()){
+        if(self.fromDate.date().toString() !== "Invalid Date"){
             params.fromDate = getYearMonthDate(self.fromDate.date());
         }
 
-        if(self.toDate()){
+        if(self.toDate.date().toString() !== "Invalid Date"){
             params.toDate = getYearMonthDate(self.toDate.date());
         }
 
         return params;
     };
-   
+    
+    self.clearDates = function () {
+        var silent = false;
+        // because fromDate and toDate observables have subscribers, clear will trigger two search request.
+        // the below logic will only trigger it once.
+        if(!((self.fromDate.date().toString() !== "Invalid Date") && (self.toDate.date().toString() !== "Invalid Date"))){
+            silent = false;
+        } else {
+            silent = true;
+        }
+
+        filterVM.switchOffSearch(silent);
+        self.fromDate('');
+        filterVM.switchOffSearch(false);
+        self.toDate('');
+    };
+
+    self.showClearButton = function () {
+        return self.fromDate() || self.toDate()
+    };
+
+    self.toggleState = function () {
+        switch (self.state()){
+            case 'Expanded':
+                self.state('Collapsed');
+                break;
+            case 'Collapsed':
+                self.state('Expanded');
+                break;
+        }
+    };
 };
 
 function generateTermIdForFacetTerm(facetTerm) {

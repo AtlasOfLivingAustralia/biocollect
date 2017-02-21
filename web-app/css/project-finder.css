@@ -210,3 +210,7 @@ input[type=checkbox] {
 button.btn.btn-text-left{
     text-align: left;
 }
+
+#pt-selectors label.input-label{
+    color: #5f5d60;
+}
