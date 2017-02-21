@@ -23,6 +23,12 @@ class ProjectService {
                     name:'status',
                     total: 0,
                     terms: [ [ term: 'active', count: 0], [ term: 'completed', count: 0 ]]
+            ],
+            [
+                    name:'plannedStartDate',
+                    type: 'date',
+                    total: 0,
+                    terms: [ [ fromDate: '', toDate: ''] ]
             ]
     ]
 
