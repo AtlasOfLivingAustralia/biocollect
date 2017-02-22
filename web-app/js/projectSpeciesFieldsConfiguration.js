@@ -19,42 +19,58 @@ SurveySpeciesFieldsVM = function (surveySettings) {
 
 function ProjectSpeciesFieldsConfigurationViewModel (project, speciesFieldsConfigBySurvey) {
     var self = this;
-    speciesFieldsConfigBySurvey = speciesFieldsConfigBySurvey || [];
-    self.surveysConfig = ko.observableArray();
 
-    // Surveys that don't have species fields but need to be listed separately.
-    self.surveysWithoutFields = ko.observableArray();
+    self.init = function () {
 
-    // Surveys that have at least one species fields
-    self.surveysToConfigure = ko.observableArray();
+        // Default species configuration
+        self.species = ko.observable(new SpeciesConstraintViewModel(project.species));
+
+        speciesFieldsConfigBySurvey = speciesFieldsConfigBySurvey || [];
+        self.surveysConfig = ko.observableArray();
+
+        // Surveys that don't have species fields but need to be listed separately.
+        self.surveysWithoutFields = ko.observableArray();
+
+        // Surveys that have at least one species fields
+        self.surveysToConfigure = ko.observableArray();
 
 
-    for(var i=0; i<speciesFieldsConfigBySurvey.length; i++) {
-        var surveySpeciesFieldsVM = new SurveySpeciesFieldsVM(speciesFieldsConfigBySurvey[i]);
-        self.surveysConfig.push(surveySpeciesFieldsVM);
+        for(var i=0; i<speciesFieldsConfigBySurvey.length; i++) {
+            var surveySpeciesFieldsVM = new SurveySpeciesFieldsVM(speciesFieldsConfigBySurvey[i]);
+            self.surveysConfig.push(surveySpeciesFieldsVM);
 
-        if(surveySpeciesFieldsVM.speciesFields().length > 0) {
-            self.surveysToConfigure.push(surveySpeciesFieldsVM);
-        } else {
-            self.surveysWithoutFields.push(surveySpeciesFieldsVM);
+            if(surveySpeciesFieldsVM.speciesFields().length > 0) {
+                self.surveysToConfigure.push(surveySpeciesFieldsVM);
+            } else {
+                self.surveysWithoutFields.push(surveySpeciesFieldsVM);
+            }
         }
+
+        self.species().speciesDisplayFormat.subscribe(
+            /**
+             * Update the species display format for all species fields if they are using the default configuration
+             */
+            function (newSpeciesDisplayFormat) {
+
+                // Check every field to see if it is using default config
+                var surveys = self.surveysToConfigure()
+
+                for(var i = 0; i < surveys.length; i++) {
+                    var speciesFields = surveys[i].speciesFields()
+                    for(var j = 0; j<speciesFields.length; j++) {
+                        var speciesFieldConfig = speciesFields[j].config();
+                        if (speciesFieldConfig.type() == 'DEFAULT_SPECIES') {
+                            speciesFieldConfig.speciesDisplayFormat(newSpeciesDisplayFormat);
+                        }
+                    }
+                }
+            })
     }
 
-    self.species = ko.observable(new SpeciesConstraintViewModel(project.species));
-
-
-
-    self.species().speciesDisplayFormat.subscribe(function () {
-
-        // Check every field to see if it is using default config
-        // If so update the display format to that of species().speciesDisplayFormat
-    });
-
+    self.init();
 
     self.transients = self.transients || {};
     // self.transients.project = project;
-
-
 
 
     self.transients.availableSpeciesDisplayFormat = ko.observableArray([{
@@ -130,7 +146,16 @@ function ProjectSpeciesFieldsConfigurationViewModel (project, speciesFieldsConfi
                     if(surveyIndex && speciesFieldIndex) { //Update a particular species field configuration
                         var newSpeciesConstraintVM = new SpeciesConstraintViewModel(result)
                         newSpeciesConstraintVM.speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
-                        self.surveysToConfigure()[surveyIndex()].speciesFields()[speciesFieldIndex()].config(newSpeciesConstraintVM);
+
+                        // survey[i].speciesField[j]
+                        var currentSpeciesField = self.surveysToConfigure()[surveyIndex()].speciesFields()[speciesFieldIndex()];
+                        currentSpeciesField.config(newSpeciesConstraintVM);
+
+                        // For all species fields if the type is changed to DEFAULT_SPECIES then the speciesDisplayFormat
+                        // MUST be copied from the default configuration.
+                        if(currentSpeciesField.config().type() == 'DEFAULT_SPECIES') {
+                            currentSpeciesField.config().speciesDisplayFormat(self.species().speciesDisplayFormat());
+                        }
                     }
                     else { // Update species default configuration
                         self.species(new SpeciesConstraintViewModel(result));
