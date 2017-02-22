@@ -55,20 +55,13 @@
             <!-- ko if: surveysToConfigure().length > 0 -->
                 <div class="row-fluid title-block well input-block-level">
                     <div class="space-after">
-                        <p/>
-                        Each activity has a type. If the different activity types have species fields, they must be configured here.
-                        <p/>
-                        It is also possible to set a species field default configuration that can be reused in each species field.
-                        <p/>
-                        If only one species field is available across all activity types for this project then only the Default Configuration will be available.
-                        <p/>
-                        If no species fields are available for this project then this screen configuration can be skipped.
+                        <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.SPECIES_FIELDS_CONFIG_INTRO}"/>
                     </div>
                 </div>
                 <div class="well">
                     <h4><g:message code="project.survey.species.defaultConfiguration"/></h4>
                     <div class="row-fluid">
-                        <div class="span8">
+                        <div class="span6">
                             <div class="row-fluid">
                                 <div class="span4 text-right">
                                     <label class="control-label" for="defaultInputSettings"><g:message code="project.survey.species.settings"/>
@@ -100,6 +93,11 @@
                                         </select>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="span6">
+                            <div class="space-after">
+                                <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.SPECIES_FIELDS_CONFIG_DEFAULT_CONFIG}"/>
                             </div>
                         </div>
                     </div>

@@ -16,11 +16,17 @@
     <div id="activityContainer" class="space-before">
 
         <div class="row-fluid" data-bind="visible:planStatus()==='not approved'">
-            <div class="span6"><span class="badge badge-info">Planning Mode</span>
-                <fc:iconHelp>Use the "Add new activity" button to add a new activity to your plan.  When you have finished adding activities, use the "Finished planning" button to go into data entry mode.  You can toggle freely between planning and data entry modes.</fc:iconHelp>
+            <div class="row-fluid">
+                <div class="span6"><span class="badge badge-info">Planning Mode</span>
+                    <fc:iconHelp>Use the "Add new activity" button to add a new activity to your plan.  When you have finished adding activities, use the "Finished planning" button to go into data entry mode.  You can toggle freely between planning and data entry modes.</fc:iconHelp>
+                </div>
             </div>
             <g:if test="${user?.isEditor}">
-                <h5></h5>
+
+                    <div class="well">
+                        <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.WORKS_PLANNING_MODE_INTRO}"/>
+                    </div>
+
                 <div class="form-actions">
 
                     <span>Planning actions: </span>
