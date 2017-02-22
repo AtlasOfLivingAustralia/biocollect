@@ -28,7 +28,12 @@
                             data-bind="visible:planStatus()==='not approved',click:newActivity"
                             style="vertical-align: baseline"><i class="fa fa-plus"></i> Add new activity</a>
 
+                    <a class="btn btn-success" class="btn btn-link"
+                       data-bind="visible:planStatus()==='not approved',click:speciesFieldsConfiguration"
+                       style="vertical-align: baseline"><i class="fa fa-table"></i> Configure species fields</a>
+
                     <button class="btn btn-info" data-bind="click:finishedPlanning">Finished planning</button>
+
                 </div>
             </g:if>
 
@@ -704,8 +709,21 @@
                 } else if (siteId) {
                     context = '&siteId=' + siteId;
                 }
+
+                debugger;
+
                 document.location.href = fcConfig.activityCreateUrl + '?' + context + returnTo;
             };
+            self.speciesFieldsConfiguration = function () {
+                var context = '',
+                    projectId = project.projectId,
+                    returnTo = '&returnTo=' + document.location.href;
+                if (projectId) {
+                    context = '&projectId=' + projectId;
+                 }
+                document.location.href = fcConfig.configureSpeciesFieldsUrl + '?' + context + returnTo;
+            };
+
             self.openSite = function () {
                 var siteId = this.siteId;
                 if (siteId !== '') {
