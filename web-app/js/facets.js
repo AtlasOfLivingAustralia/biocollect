@@ -14,6 +14,7 @@
  * 
  * Created by Temi on 9/08/2016.
  */
+
 function FilterViewModel(config){
     var self = this;
     var parent = config.parent;
@@ -25,6 +26,28 @@ function FilterViewModel(config){
     self.showMoreTermList = ko.observableArray([]);
     self.showMoreFacet  = ko.observable();
     self.searchText = ko.observable();
+    self.switchOffSearch = ko.observable(false);
+    self.datePicker = new DatePickerViewModel(parent, self);
+
+    /**
+     * Set to and from date on the form.
+     */
+    self.setDatePicker = function (fromDate, toDate, silent) {
+        if(silent){
+            self.switchOffSearch(true);
+        }
+        if(fromDate){
+            self.datePicker.fromDate(new Date(fromDate));
+        }
+
+        if(toDate){
+            self.datePicker.toDate(new Date(toDate));
+        }
+
+        if(silent){
+            self.switchOffSearch(false);
+        }
+    };
 
     /**
      * Function for initialising facets.
@@ -32,9 +55,19 @@ function FilterViewModel(config){
      */
     self.setFacets = function (facets) {
         self.facets($.map(facets, function (facet) {
+            var facetVm;
             facet.ref = self;
-            var facetVm = new FacetViewModel(facet)
-            self.setFacetTerm(facetVm)
+            switch (facet.type){
+                case 'date':
+                    facetVm = self.datePicker;
+                    facetVm.loadFromConfig(facet);
+                    break;
+                default:
+                    facetVm = new FacetViewModel(facet);
+                    self.setFacetTerm(facetVm);
+                    break;
+            }
+
             return facetVm;
         }))
     };
@@ -91,20 +124,20 @@ function FilterViewModel(config){
             }
 
             fqs.forEach(function (fq) {
-                var nameAndValue = fq.split(':')
-                var exclude = false;
+                var nameAndValue = fq.split(':');
+                var exclude = false, facet;
                 if(nameAndValue[0] && nameAndValue[0].indexOf('-') == 0){
                     exclude = true;
                     nameAndValue[0] = nameAndValue[0].replace('-', '');
                 }
 
-                var facet = new FacetViewModel({ name: nameAndValue[0], terms: [{term:nameAndValue[1], exclude: exclude}], ref: self})
-                facet.ref = self
-                var term = facet.terms()[0]
+                facet = new FacetViewModel({ name: nameAndValue[0], terms: [{term:nameAndValue[1], exclude: exclude}], ref: self});
+                facet.ref = self;
+                var term = facet.terms()[0];
                 self.addToRefineList (term)
-            })
+            });
         }
-    }
+    };
 
     /**
      * merges checked facet terms with selected facets. This will trigger an ajax call to update projects.
@@ -240,17 +273,19 @@ function FacetViewModel(facet) {
     self.displayName = ko.computed(function(){
         return self.title || cleanName(self.name()) || 'Unknown';
     });
+    self.type = facet.type;
+
     if(facet.ref.isFacetSelected(self)){
         state = 'Expanded'
     }
     self.state = ko.observable(state);
 
 
-    self.isAnyTermVisible = ko.computed(function () {
+    self.showTermPanel = ko.computed(function () {
         var count = 0;
         self.terms().forEach(function (term) {
             !term.refined()? count ++ : null;
-        })
+        });
 
         return count > 0
     });
@@ -272,7 +307,6 @@ function FacetViewModel(facet) {
             term.facet = self;
             return new FacetTermViewModel(term);
         });
-
         return terms;
     };
 
@@ -390,6 +424,112 @@ function FacetTermViewModel(term) {
     }
 };
 
+function DatePickerViewModel(pageVM, filterVM) {
+    var self = this;
+    var element;
+    self.state = ko.observable('Collapsed');
+    self.displayName = ko.observable();
+    self.helpText = ko.observable();
+    self.fromDate = ko.observable().extend({simpleDate:false});
+    self.toDate = ko.observable().extend({simpleDate:false});
+
+    self.fromDate.subscribe(validateAndSearch);
+    self.toDate.subscribe(validateAndSearch);
+
+
+    /**
+     * Check input date is valid and call the search function.
+     */
+    function validateAndSearch () {
+        if(element){
+            var el = $(element).parents('.facetDates');
+
+            if(el.validationEngine('validate')){
+                pageVM.doSearch();
+            } else if ((self.fromDate.date().toString() === "Invalid Date") && (self.toDate.date().toString() === "Invalid Date")){
+                // if both dates are empty i.e. clear button is clicked
+                pageVM.doSearch();
+            }
+        }
+    };
+
+    /**
+     * This function is called on blur event
+     * @param con
+     */
+    self.setContext = function (el) {
+        if(el){
+            element = el;
+        }
+    };
+
+    /**
+     * set properties of date picker view model.
+     * @param config
+     */
+    self.loadFromConfig = function (config) {
+        self.state(self.state() || config.state || 'Collapsed');
+        self.displayName(config.title);
+        self.helpText(config.helpText);
+        if(config.fromDate){
+            self.fromDate(new Date(config.fromDate));
+        }
+
+        if(config.toDate){
+            self.toDate(new Date(config.toDate));
+        }
+    };
+
+    /**
+     * get from and to date in format yyyy-mm-dd
+     * @returns {string}
+     */
+    self.getParams = function(){
+        var params = {};
+
+        if(self.fromDate.date().toString() !== "Invalid Date"){
+            params.fromDate = getYearMonthDate(self.fromDate.date());
+        }
+
+        if(self.toDate.date().toString() !== "Invalid Date"){
+            params.toDate = getYearMonthDate(self.toDate.date());
+        }
+
+        return params;
+    };
+    
+    self.clearDates = function () {
+        var silent = false;
+        // because fromDate and toDate observables have subscribers, clear will trigger two search request.
+        // the below logic will only trigger it once.
+        if(!((self.fromDate.date().toString() !== "Invalid Date") && (self.toDate.date().toString() !== "Invalid Date"))){
+            silent = false;
+        } else {
+            silent = true;
+        }
+
+        filterVM.switchOffSearch(silent);
+        self.fromDate('');
+        filterVM.switchOffSearch(false);
+        self.toDate('');
+    };
+
+    self.showClearButton = function () {
+        return self.fromDate() || self.toDate()
+    };
+
+    self.toggleState = function () {
+        switch (self.state()){
+            case 'Expanded':
+                self.state('Collapsed');
+                break;
+            case 'Collapsed':
+                self.state('Expanded');
+                break;
+        }
+    };
+};
+
 function generateTermIdForFacetTerm(facetTerm) {
     var name, term
     name = facetTerm.facet.name()
@@ -440,4 +580,11 @@ function findFacetTerm(list, checkMe) {
     })
 
     return found
+}
+
+function getYearMonthDate(date){
+    if(date){
+        var str = date.getFullYear() + '-' + pad(date.getMonth() + 1, 2) + '-' + pad(date.getDate(), 2);
+        return str;
+    }
 }

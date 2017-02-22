@@ -44,6 +44,7 @@ function ProjectFinder() {
         this.columns = ko.observable(2);
         self.columns = this.columns;
         this.doSearch = function () {
+
             self.doSearch();
         }
         this.getFacetTerms = function (facets) {
@@ -122,7 +123,7 @@ function ProjectFinder() {
         };
 
         this.filterViewModel = new FilterViewModel({
-            parent: self,
+            parent: this,
             flimit: fcConfig.flimit
         });
 
@@ -224,6 +225,7 @@ function ProjectFinder() {
         var isBiologicalScience = fcConfig.isBiologicalScience || false;
         var isMERIT = fcConfig.isMERIT || false;
         var isWorldWide, hideWorldWideBtn = fcConfig.hideWorldWideBtn || false;
+        var dates;
         if(!hideWorldWideBtn){
             isWorldWide= getActiveButtonValues($('#pt-aus-world'));
             isWorldWide = isWorldWide.length? isWorldWide[0] : false
@@ -234,7 +236,9 @@ function ProjectFinder() {
 
         pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
             fq.push(facet.getQueryText())
-        })
+        });
+
+        dates = pageWindow.filterViewModel.datePicker.getParams();
 
         var map = {
             fq: fq,
@@ -252,6 +256,8 @@ function ProjectFinder() {
             geoSearchJSON: JSON.stringify(geoSearch),
             skipDefaultFilters:fcConfig.showAllProjects,
             isWorldWide: isWorldWide,
+            toDate: dates.toDate,
+            fromDate: dates.fromDate,
             q: ($('#pt-search').val() || '' ).toLowerCase()
         };
 
@@ -269,6 +275,10 @@ function ProjectFinder() {
      * this is the function calling server with the latest query.
      */
     this.doSearch = function () {
+        if(pageWindow.filterViewModel.switchOffSearch()){
+            return;
+        }
+
         refreshSearch = false;
         var params = self.getParams();
 
@@ -597,6 +607,11 @@ function ProjectFinder() {
         };
         for (var i = 0; i < hash.length; i++) {
             var keyAndValue = hash[i].split("=");
+            //sometimes it is possible to have more than one = symbol eg. fq=plannedStartDate:>=2017-12-20
+            if(keyAndValue.length > 2){
+                keyAndValue = [hash[i].substr(0,hash[i].indexOf('=')), hash[i].substr(hash[i].indexOf('=')+1)]
+            }
+
             if (keyAndValue.indexOf(",") > -1) {
                 params[keyAndValue[0]] = keyAndValue.split(",");
             } else {
@@ -612,7 +627,8 @@ function ProjectFinder() {
 
 
         setGeoSearch(params.geoSearch);
-        pageWindow.filterViewModel.setFilterQuery(params.fq)
+        pageWindow.filterViewModel.setFilterQuery(params.fq);
+        pageWindow.filterViewModel.setDatePicker(params.fromDate, params.toDate);
 
         if (fcConfig.associatedPrograms) {
             $.each(fcConfig.associatedPrograms, function (i, program) {

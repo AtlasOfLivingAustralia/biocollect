@@ -45,6 +45,7 @@ class ProjectController {
     static defaultAction = "index"
     static ignore = ['action','controller','id']
     static allowedMethods = [listRecordImages: "POST"]
+    static int MAX_FACET_TERMS = 500
 
     def index(String id) {
         def project = projectService.get(id, 'brief', false, params?.version)
@@ -567,6 +568,10 @@ class ProjectController {
             trimmedParams.facets = projectService.getFacetListForHub()?.join(",")
         }
 
+        if(trimmedParams.flimit == "-1"){
+            trimmedParams.flimit = MAX_FACET_TERMS;
+        }
+
         if(trimmedParams.isCitizenScience){
             projectType.push('isCitizenScience:true')
             trimmedParams.isCitizenScience = null
@@ -640,6 +645,22 @@ class ProjectController {
             }
             trimmedParams.status = null
         }
+
+        if(trimmedParams.fromDate || trimmedParams.toDate){
+            List dates = [];
+            if(trimmedParams.fromDate){
+                dates.push('plannedStartDate:>=' + trimmedParams.fromDate);
+            }
+
+            if(trimmedParams.toDate){
+                dates.push('plannedStartDate:<=' + trimmedParams.toDate)
+            }
+
+            trimmedParams.query += " AND (${dates.join(' AND ')})";
+            trimmedParams.toDate = null
+            trimmedParams.fromDate = null
+        }
+
         if (trimmedParams.isUserPage) {
             if (trimmedParams.mobile) {
                 String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)

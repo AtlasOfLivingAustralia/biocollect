@@ -242,7 +242,7 @@ modules = {
     }
 
     projectFinder {
-        dependsOn('knockout', 'projects','bootstrap', 'responsiveTable', 'zip', 'underscore','amplify')
+        dependsOn('knockout', 'projects','bootstrap', 'responsiveTable', 'zip', 'underscore','amplify', 'jqueryValidationEngine')
         resource url: 'js/button-toggle-events.js'
         resource url: 'js/project-finder.js'
         resource url: 'css/project-finder.css'
