@@ -9,8 +9,8 @@
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
-        projectUpdateUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
-        addNewSpeciesListsUrl: "${createLink(controller: 'projectActivity', action: 'ajaxAddNewSpeciesLists', params: [projectId:project.projectId])}",
+        projectUpdateUrl:"${createLink(action:'ajaxUpdate', id:projectId)}",
+        addNewSpeciesListsUrl: "${createLink(controller: 'projectActivity', action: 'ajaxAddNewSpeciesLists', params: [projectId:projectId])}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         speciesListUrl: "${createLink(controller: 'search', action: 'searchSpeciesList')}",
         speciesListsServerUrl: "${grailsApplication.config.lists.baseURL}",
@@ -29,19 +29,17 @@
         <div id="koActivityMainBlock">
             <ul class="breadcrumb">
                 <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-                <g:if test="${project}">
                     <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
-                </g:if>
                 <li class="active">Configure species fields</li>
             </ul>
             <div class="row-fluid">
                 <div class="header-text">
-                    <h2><g:if test="${project}">
-                        ${project.name?.encodeAsHTML()}
-                    </g:if></h2>
+                    <h2>${projectName?.encodeAsHTML()}</h2>
 
                 </div>
             </div>
+
+            <div id="validation-result-placeholder"></div>
 
             <!-- ko ifnot: surveysToConfigure().length > 0 -->
                 <div class="row-fluid">
@@ -68,11 +66,12 @@
                                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.settings"/>', content:'<g:message code="project.survey.species.settings.content"/>'}">
                                             <i class="icon-question-sign"></i>
                                         </a>
+                                        <span class="req-field"></span>
                                     </label>
                                 </div>
                                 <div class="span8">
                                     <div class="controls">
-                                        <span class="req-field" data-bind="tooltip: {title:species().transients.inputSettingsTooltip()}">
+                                        <span data-bind="tooltip: {title:species().transients.inputSettingsTooltip()}">
                                             <input id="defaultInputSettings" type="text" class="input-large" data-bind="disable: true, value: species().transients.inputSettingsSummary"> </input>
                                         </span>
                                         <a target="_blank" class="btn btn-link" data-bind="click: function() { showSpeciesConfiguration(species(), 'Default Configuration') }" ><small><g:message code="project.survey.species.configure"/></small></a>
@@ -85,6 +84,7 @@
                                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.displayAs"/>', content:'<g:message code="project.survey.species.displayAs.content"/>'}">
                                             <i class="icon-question-sign"></i>
                                         </a>
+                                        <span class="right-padding"></span>
                                     </label>
                                 </div>
                                 <div class="span6">
@@ -208,12 +208,10 @@
         <div class="expandable-debug">
             <h3>Debug</h3>
             <div>
-                <!--h4>KO model</h4>
-            <pre data-bind="text:ko.toJSON($root,null,2)"></pre-->
+                <h4>KO model</h4>
+                <pre data-bind="text:ko.toJSON($root,null,2)"></pre>
                 <h4>Fields Config</h4>
-                <pre>${fieldsConfig}</pre>
-                <h4>Project</h4>
-                %{--<pre>${project}</pre>--}%
+                <pre>${speciesFieldsSettings}</pre>
             </div>
         </div>
     </g:if>
@@ -237,8 +235,9 @@
 
 
         var viewModel = new ProjectSpeciesFieldsConfigurationViewModel(
-        <fc:modelAsJavascript model="${project}" />,
-        <fc:modelAsJavascript model="${fieldsConfig}"/>
+            '${projectId.encodeAsHTML()}',
+            <fc:modelAsJavascript model="${speciesFieldsSettings}"/>,
+            'validation-result-placeholder'
         );
 
         ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));

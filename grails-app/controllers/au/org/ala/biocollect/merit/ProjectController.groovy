@@ -886,7 +886,7 @@ class ProjectController {
         def activities = activityService.activitiesForProject(id)
         def project = projectService.get(id, 'all')
 
-        def model = [returnTo: params.returnTo, project: project]
+        def model = [returnTo: params.returnTo]
 
         if (!project.error) {
             // Find the different surveys used in this project schedule
@@ -905,11 +905,11 @@ class ProjectController {
             // Enrich the speciesFieldsBySurvey with any existing configuration already stored in the project object
             // Discards any configuration that is no longer used.
 
-            List surveysSettings = project?.speciesFieldsSettings?.surveys ?: []
+            List surveysSettings = project?.speciesFieldsSettings?.surveysConfig ?: []
 
             surveysSettings.each {projectSurveySettings ->
                 if(speciesFieldsBySurvey.containsKey(projectSurveySettings.name)) {
-                    projectSurveySettings?.fields?.each { projectFieldSettings ->
+                    projectSurveySettings?.speciesFields?.each { projectFieldSettings ->
                         def speciesField = speciesFieldsBySurvey[projectSurveySettings.name].find {
                             return projectFieldSettings.label == it.label && projectFieldSettings.context == it.context && projectFieldSettings.output == it.output
                         }
@@ -924,16 +924,21 @@ class ProjectController {
 
             List fieldsConfig = []
 
-            speciesFieldsBySurvey.each{surveyName, fields ->
-                fieldsConfig << [name:surveyName, fields:fields]
+            speciesFieldsBySurvey.each{surveyName, speciesFields ->
+                fieldsConfig << [name:surveyName, speciesFields:speciesFields]
             }
 
-            model.fieldsConfig = fieldsConfig
+            model.speciesFieldsSettings =
+                    [ defaultSpeciesConfig: project?.speciesFieldsSettings?.defaultSpeciesConfig,
+                            surveysConfig: fieldsConfig
+                    ]
+            model.projectId = project.projectId
+            model.projectName = project.name
         } else {
             model.error = project.detail
         }
 
-        log.debug("configuring species fields")
+
 
         model
     }
