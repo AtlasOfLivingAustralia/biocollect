@@ -237,4 +237,64 @@ class SettingService {
             return  [css: "An error occurred during compilation of SCSS file", status: 'failed'];
         }
     }
+
+    @Cacheable("styleSheetCache")
+    public Map getConfigurableHubTemplateALA(String urlPath, Map styles) {
+        String scssFilename = 'configurable-template-ala.scss'
+        SCSSErrorHandler errorHandler = new SCSSErrorHandler()
+        errorHandler.setWarningsAreErrors(true);
+        Resource input = grailsApplication.parentContext.getResource("css/template/${scssFilename}")
+        String filename = input?.file?.absolutePath + "${scssFilename}.${urlPath}.scss"
+        File writer = new File(filename)
+
+        String config = """
+        \$menu-background-color: ${styles?.menuBackgroundColor};
+        \$menu-text-color: ${styles?.menuTextColor};
+        \$banner-background-color: ${styles?.bannerBackgroundColor};
+        \$inset-background-color: ${styles?.insetBackgroundColor};
+        \$inset-text-color: ${styles?.insetTextColor};
+        \$body-background-color: ${styles?.bodyBackgroundColor?:'#fff'};
+        \$body-text-color: ${styles?.bodyTextColor?:'#637073'};
+        \$footer-background-color: ${styles?.footerBackgroundColor};
+        \$footer-text-color: ${styles?.footerTextColor};
+        \$social-text-color: ${styles?.socialTextColor};
+        \$title-text-color: ${styles?.titleTextColor};
+        \$header-banner-space-background-color: ${styles?.headerBannerBackgroundColor};
+        \$nav-background-color:  ${styles?.navBackgroundColor?:'#e5e6e7'};
+        \$nav-text-color:  ${styles?.navTextColor?:'#5f5d60'};
+        \$primary-background-color: ${styles?.primaryButtonBackgroundColor?:'#009080'};
+        \$primary-text-color: ${styles?.primaryButtonTextColor?:'#fff'};
+        \$default-background-color: ${styles?.defaultButtonBackgroundColor?:'#f5f5f5'};
+        \$default-text-color: ${styles?.defaultButtonTextColor?:'#000'};
+        \$href-color: ${styles?.hrefColor?:'#009080'};
+        \$facet-background-color: ${styles?.facetBackgroundColor?: '#f5f5f5'};
+        \$tile-background-color: ${styles?.tileBackgroundColor?: '#f5f5f5'};
+        \$well-background-color: ${styles?.wellBackgroundColor?: '#f5f5f5'};
+        \$default-btn-color-active: ${styles?.defaultButtonColorActive?: '#fff'};
+        \$default-btn-background-color-active: ${styles?.defaultButtonBackgroundColorActive?: '#000'}
+        \$primary-color: #009080;
+        \$primary-color-hover: #007777;
+        """;
+
+        writer.write(config.toString())
+        writer.append(input.inputStream.text)
+
+        try {
+            // Parse stylesheet
+            ScssStylesheet scss = ScssStylesheet.get(filename, null,
+                    new SCSSDocumentHandlerImpl(), errorHandler);
+            if (scss == null) {
+                System.err.println("The scss file " + input
+                        + " could not be found.");
+                System.exit(2);
+            }
+
+            // Compile scss -> css
+            scss.compile(ScssContext.UrlMode.MIXED);
+
+            return  [css: scss.printState(), status: 'success'];
+        } catch (Exception e) {
+            return  [css: "An error occurred during compilation of SCSS file", status: 'failed'];
+        }
+    }
 }

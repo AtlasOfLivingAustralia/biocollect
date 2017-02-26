@@ -27,6 +27,10 @@ class HubController {
                 Map map = settingService.getConfigurableHubTemplate1(urlPath, styles)
                 render text: map.css, contentType: 'text/css';
                 break;
+            case 'configurableHubTemplate-ALA':
+                Map map = settingService.getConfigurableHubTemplateALA(urlPath, styles)
+                render text: map.css, contentType: 'text/css';
+                break;
         }
     }
 }

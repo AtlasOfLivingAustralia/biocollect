@@ -1,0 +1,519 @@
+body {
+  background-color: $body-background-color !important;
+  font-family: Roboto,Helvetica,"Helvetica Neue",Arial,sans-serif;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  color: $body-text-color;
+}
+
+h1,h2,h3,h4,h5 {
+  font-family: Roboto,Helvetica,"Helvetica Neue",Arial,sans-serif;
+}
+
+.ftr-container .ftr-social{
+  margin-bottom: 0px;
+}
+
+input,button,
+select,
+textarea {
+  font-family: Roboto,Helvetica,"Helvetica Neue",Arial,sans-serif;
+}
+
+#breadcrumb {
+  margin-top: 10px;
+}
+
+#main-content #searchInfoRow #customiseFacetsButton > .dropdown-menu {
+  background-color: $body-background-color;
+}
+
+a {
+  color: $href-color;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  color: $href-color;
+  text-decoration: underline;
+}
+
+.btn.btn-default {
+  color: $default-text-color;
+  background-color: $default-background-color;
+  background-image: linear-gradient(to bottom, $default-background-color, $default-background-color);
+  border-color: $default-background-color $default-background-color $default-background-color $default-background-color;
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active,
+.btn.active,
+.btn.disabled,
+.btn[disabled],
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active,
+.btn-default.active,
+.btn-default.disabled,
+.btn-default[disabled] {
+  color: $default-btn-color-active;
+  background-color: $default-btn-background-color-active;
+  background-position: center center;
+}
+
+.btn-primary {
+  color: $primary-text-color;
+  background-color: $primary-background-color;
+  background-image: linear-gradient(to bottom, $primary-background-color, $primary-background-color);
+  border-color: $primary-background-color $primary-background-color $primary-background-color $primary-background-color;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary.disabled,
+.btn-primary[disabled] {
+  color: #ffffff;
+  background-color: $primary-background-color;
+}
+
+.btn-primary:active,
+.btn-primary.active {
+  background-color: $primary-background-color \9;
+}
+
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-success,
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-success {
+  background-color: $primary-color;
+  background-image: linear-gradient(to bottom, $primary-color,$primary-color);
+  border-color: $primary-color $primary-color $primary-color $primary-color;
+}
+
+/* Navbar */
+
+.nav {
+  margin-top: 20px;
+}
+
+#content .nav-tabs > li.active > a {
+  background-color: #ffffff;
+}
+
+.brand .headerLogo {
+  height: 36px;
+  padding-top: 10px;
+  margin-top: -3px;
+}
+
+#alaLink .headerLogo {
+  margin-top: -27px;
+}
+
+#mdbaLink .headerLogo {
+  margin-top: -12px;
+}
+
+#alaHeadingText {
+  display: inline-block;
+  margin-left: 5px;
+  margin-top: 4px;
+  line-height: 1.1em;
+}
+
+#mdbaHeadingText {
+  display: inline-block;
+  padding-top: 14px;
+  padding-left: 5px;
+}
+
+#poweredBy {
+  font-size: 11px;
+  display: block;
+}
+
+#alaBy {
+  font-size: 16px;
+}
+
+body .navbar {
+  min-height: 58px;
+  font-family: Roboto,Helvetica,"Helvetica Neue",Arial,sans-serif;
+}
+
+.navbar-inverse .navbar-inner {
+  background-color: $menu-background-color;
+  background-image: linear-gradient(to bottom, $menu-background-color, $menu-background-color);
+  background-repeat: repeat-x;
+  border-color: $menu-background-color;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff222222', endColorstr='#ff111111', GradientType=0);
+}
+
+.navbar-inverse .contain-to-grid {
+  min-height: 52px;
+  padding-top: 5px;
+}
+
+.navbar-inverse .brand {
+  color: $footer-text-color;
+  padding: 0;
+}
+
+.navbar-inner ul.nav li{
+  margin-top: 13px;
+  font-size: 18px;
+  min-height: 18px;
+}
+
+.navbar-inverse .nav > li.main-menu > a {
+  color: $menu-text-color;
+}
+
+.navbar-inner ul li:not(:last-child) {
+  border-right:2px solid $menu-text-color;
+  margin-right:14px;
+  padding-right:14px;
+}
+
+.navbar-inner a.brand {
+  color: white;
+  padding: 0 0;
+}
+
+.navbar-inner ul.nav > li > a {
+  padding: 0 0 0 0;
+}
+
+.navbar .brand {
+  font-size: 18px;
+  font-weight: normal;
+  margin: 0 10px 0 10px;
+}
+
+.brand .headerLogo {
+  max-height: 32px;
+}
+
+/* Footer */
+
+#footer {
+  background-color: $footer-background-color;
+  color: #efefef;
+  margin-top: 50px;
+  padding-top: 20px;
+  padding-bottom: 25px;
+  font-size: 16px;
+}
+
+#footer .container {
+  padding: 0 20px;
+}
+
+#footer .nav {
+  margin: 18px 0 20px 0;
+  font-size: 18px;
+  height: 18px;
+}
+
+#footer ul.nav > li {
+  float: left;
+}
+
+#footer .navbar-inverse .nav > li > a {
+  float: none;
+  padding: 0;
+  color: $footer-text-color;
+  text-decoration: none;
+}
+
+#footer .navbar-inverse .nav > li > a:hover {
+  text-decoration: underline;
+}
+
+#footer .navbar-inverse ul li:not(:last-child) {
+  border-right:2px solid $footer-text-color;
+  margin-right:14px;
+  padding-right:14px;
+}
+
+#footer #smlinks  {
+  margin-top: 5px;
+}
+
+#footer #smlinks a {
+  color: $social-text-color;
+  text-decoration: none;
+  margin-right: 5px;
+}
+
+/* Home page */
+
+#homeBanner {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: $banner-background-color;
+  height: 240px;
+  padding: 20px 40px;
+  margin-top: 0px;
+}
+
+#bannerImg {
+  max-height: 250px;
+  display: block;
+  margin-left: 25px;
+}
+.indexBuffer {
+  margin-top:50px;
+}
+
+.nav-well {
+  display: block;
+  width: 100%;
+}
+
+.homePageNav h4 {
+  font-size: 20px;
+  margin-bottom: 0;
+}
+
+.homePageNav h3 {
+  font-size: 36px;
+  margin-top: 0;
+  margin-bottom: 5px;
+  color: $nav-text-color;
+}
+
+.homePageNav h3.condensed {
+  font-size: 30px;
+  letter-spacing: -1px;
+  line-height: 35px;
+}
+
+.homePageNav .nav-well {
+  min-height: 135px;
+  background-color: $nav-background-color;
+  border: 0px solid $nav-background-color;
+  padding: 30px 15px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.nav-well {
+  min-height: 135px;
+  background-color: $well-background-color;
+  border: 0px solid $well-background-color;
+  padding: 30px 15px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.well {
+  background-color: $well-background-color;
+  border: 0px solid $well-background-color;
+}
+
+#pt-selectors.well{
+  background-color: $facet-background-color;
+  border: 0px solid $facet-background-color;
+}
+
+#pt-selectors.well{
+  background-color: $facet-background-color;
+  border: 0px solid $facet-background-color;
+}
+
+#pt-table .tile {
+  background-color: $tile-background-color;
+  border: 0px solid $tile-background-color;
+}
+
+#quickSearchBox {
+  margin-top: -46px;
+  margin-bottom: 10px;
+}
+
+#quickSearchBox .input-append input {
+  font-size: 20px;
+  padding: 14px 20px 12px 25px;
+  width: 200px;
+  -webkit-border-radius: 25px 0 0 25px;
+  -moz-border-radius: 25px 0 0 250px;
+  border-radius: 25px 0 0 25px;
+  height: 20px !important;
+  line-height: normal;
+}
+
+#quickSearchBox .input-append .btn:last-child,
+#quickSearchBox .input-append .btn-group:last-child > .dropdown-toggle {
+  font-size: 20px;
+  padding: 14px 12px 12px 10px;
+  -webkit-border-radius: 0 25px 25px 0;
+  -moz-border-radius: 25px 25px 0;
+  border-radius: 0 25px 25px 0;
+  line-height: 20px;
+}
+
+
+#main-content #customiseFacetsButton > .dropdown-menu,
+#main-content #resultsReturned .dropdown-menu {
+  background-color: $body-background-color;
+}
+
+.staticContent {
+  margin-top: 30px;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.staticContent h2, .staticContent h3, .staticContent h4 {
+  color:$primary-color;
+}
+
+.leaflet-container a {
+  color: $primary-color;
+}
+
+/* Responsive rules */
+
+@media (max-width: 979px) {
+  .navbar-inverse .nav-collapse .nav > li > a,
+  .navbar-inverse .nav-collapse .dropdown-menu a {
+    color: #efefef;
+  }
+
+  .navbar-inner ul li:not(:last-child), .navbar-inner ul li:last-child {
+    border-right: none;
+    margin:8px;
+    padding:0px;
+  }
+
+  #footer .nav {
+    font-size: 15px;
+  }
+
+
+}
+
+@media (max-width: 767px) {
+
+  #quickSearchBox .input-append input, #quickSearchBox .input-append .btn:last-child {
+    height: 20px;
+    padding: 4px 12px 2px 10px;
+    min-height: 30px;
+    box-sizing:inherit;
+  }
+}
+
+//Banner
+#bannerHub {
+  max-height: 350px;
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+#bannerHubOuter {
+  position: relative;
+  min-height: 100px;
+  max-height: 350px;
+}
+
+#bannerHubContainer{
+  background-color: $banner-background-color;
+  position: relative;
+  padding-top: 25px;
+}
+
+// home page
+#hubHomepageContent {
+  padding-top: 20px;
+}
+
+#main-content.homepage{
+  padding-top: 0px;
+}
+
+#main-content{
+  min-height: 1000px;
+}
+
+// carousel
+#bannerHub .carousel-caption {
+  position: absolute;
+  right: 80px;
+  bottom: auto;
+  top: 80px;
+  left: auto;
+  width: 15%;
+  min-height: 100px;
+  max-height: 200px;
+  background: $inset-background-color;
+  opacity: 0.75;
+}
+
+#bannerHub .carousel-caption h4, #bannerHub .carousel-caption p {
+  color: $inset-text-color;
+}
+
+#bannerHub .carousel-caption p {
+  Font-size: x-large;
+  Font-weight: bold;
+  Line-height: 1.2em;
+}
+
+#bannerHub .carousel-inner .item img {
+  width: 100%;
+  height: 100%;
+}
+
+//logo
+#bannerHubOuter .logo{
+  left: 80px;
+  top: -25px;
+  max-width: 250px;
+  max-height: 250px;
+  position: absolute;
+  z-index: 5;
+}
+
+// search button
+#pt-search {
+  Min-width: 150px;
+  Max-width: 300px;
+  Width: 20%;
+  Padding: 5px;
+}
+
+#pt-search-link {
+  Padding: 5px;
+}
+
+// title
+H1 {
+  Font-weight: 900;
+  color: $title-text-color;
+}
+
+// space between header & banner
+#headerBannerSpace{
+ background-color: $header-banner-space-background-color;
+}
+
+// form specific headers
+.output-section{
+  position: relative;
+  margin: 15px 0;
+  padding: 50px 15px 14px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
