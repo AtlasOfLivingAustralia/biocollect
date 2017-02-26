@@ -188,7 +188,7 @@
             <div class="output-block" id="ko${blockId}">
                 <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h3>
                 <!-- add the dynamic components -->
-                <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}" printable="${printView}" />
+                <md:modelView model="${model}" site="${site}" edit="true" printable="${printView}" surveyName="${metaModel?.name}" output="${output.name}"/>
         <r:script>
             $(function(){
 
@@ -196,7 +196,7 @@
                     viewModelInstance = viewModelName + "Instance";
 
                 // load dynamic models - usually objects in a list
-                <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}" edit="true" viewModelInstance="${blockId}ViewModelInstance"/>
+                <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}" edit="true" viewModelInstance="${blockId}ViewModelInstance" surveyName="${metaModel?.name}" output="${output.name}"/>
 
                 this[viewModelName] = function () {
                     var self = this;
@@ -207,7 +207,7 @@
                     self.transients.dummy = ko.observable();
 
                     // add declarations for dynamic data
-                    <md:jsViewModel model="${model}"  output="${output.name}"  edit="true" viewModelInstance="${blockId}ViewModelInstance"/>
+                    <md:jsViewModel model="${model}" edit="true" viewModelInstance="${blockId}ViewModelInstance" surveyName="${metaModel?.name}" output="${output.name}"/>
 
                     // this will be called when generating a savable model to remove transient properties
                     self.removeBeforeSave = function (jsData) {

@@ -851,4 +851,44 @@ class ProjectService {
             facets.toArray();
         }
     }
+
+    /**
+     * Look for SINGLE_SPECIES for the given project
+     * @param projectId project activity identifier
+     * @param output Identity of field for specific configuration.
+     * @param dataFieldName Identity of field for specific configuration.
+     * @return map containing species name, guid and isSingle field to indicate whether it's of a 'SINGLE_SPECIES' category.
+     */
+
+    Map getSingleSpecies(String projectId, String output, String dataFieldName, String survey) {
+        def pActivity = get(projectId)
+
+        def specificFieldDefinition = pActivity?.speciesFields.find {
+            it.dataFieldName == dataFieldName && it.output == output
+        }
+
+        Map speciesFieldConfig =  (specificFieldDefinition) ?
+                //New species per field configuration
+                specificFieldDefinition.config :
+                // Legacy per survey species configuration
+                pActivity?.species
+
+
+        Map result = [isSingle: false]
+
+        switch (speciesFieldConfig?.type) {
+            case 'SINGLE_SPECIES':
+                result.isSingle = true
+
+                if (speciesFieldConfig?.singleSpecies?.guid) {
+                    result.name = formatSpeciesName(speciesFieldConfig.speciesDisplayFormat, speciesFieldConfig.singleSpecies)
+                    result.guid = speciesFieldConfig.singleSpecies?.guid
+                    result.scientificName = speciesFieldConfig.singleSpecies?.scientificName
+                    result.commonName = speciesFieldConfig.singleSpecies?.commonName
+                }
+                break
+        }
+
+        result
+    }
 }

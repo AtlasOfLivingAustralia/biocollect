@@ -1,12 +1,17 @@
 /**
  * Manages the species data type in the output model.
  * Allows species information to be searched for and displayed.
+ * output, dataFieldName and survey are optional parameters and
+ * if present will be used to pinpoint either the projectActivity or project configuration to restrict the species values
+ * available for this field
+ *
  * @param species If provided, populate SpeciesViewModel name, guid, scientificName, commonName and their transients from this object
  * @param populate If true populate species information from fcConfig.getSingleSpeciesUrl
  * @param output Identity of field for specific configuration.
  * @param dataFieldName Identity of field for specific configuration.
+ * @param survey The survey where this field belongs for  specific configuration.
  */
-var SpeciesViewModel = function (species, populate, output, dataFieldName) {
+var SpeciesViewModel = function (species, populate, output, dataFieldName, survey) {
     var self = this;
     if (!species) species = {};
     if (!populate) populate = false;

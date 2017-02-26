@@ -164,7 +164,6 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
                     {defaultSpeciesConfig: self.species().asJson(),
                         surveysConfig: surveysConfigJsData}};
             var json = JSON.stringify(jsData);
-            debugger
             $.ajax({
                 url: fcConfig.projectUpdateUrl,
                 type: 'POST',
