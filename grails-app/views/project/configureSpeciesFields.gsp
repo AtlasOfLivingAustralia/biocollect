@@ -15,7 +15,6 @@
         speciesListUrl: "${createLink(controller: 'search', action: 'searchSpeciesList')}",
         speciesListsServerUrl: "${grailsApplication.config.lists.baseURL}",
         speciesSearchUrl: "${createLink(controller: 'search', action: 'species')}",
-        getSingleSpeciesUrl : "${createLink(controller: 'projectActivity', action: 'getSingleSpecies', params: [id: '7d452be4-fd13-4a3e-8942-4b56645bdc91'])}",
         speciesSearch: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: '7d452be4-fd13-4a3e-8942-4b56645bdc91', limit: 10])}"
         },
         here = document.location.href;

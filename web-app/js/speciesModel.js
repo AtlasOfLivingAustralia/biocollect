@@ -11,12 +11,14 @@
  * @param dataFieldName Identity of field for specific configuration.
  * @param survey The survey where this field belongs for  specific configuration.
  */
-var SpeciesViewModel = function (species, populate, output, dataFieldName, survey) {
+var SpeciesViewModel = function (species, populate, output, dataFieldName, surveyName) {
     var self = this;
     if (!species) species = {};
     if (!populate) populate = false;
     if(!output) output = "";
     if(!dataFieldName) dataFieldName = "";
+    if(!surveyName) surveyName = "";
+
     self.name = ko.observable(species.name);
     self.guid = ko.observable(species.guid);
     self.scientificName = ko.observable(species.scientificName);
@@ -32,7 +34,7 @@ var SpeciesViewModel = function (species, populate, output, dataFieldName, surve
     self.transients.speciesFieldIsReadOnly = ko.observable(false);
     self.transients.commonName = ko.observable(species.commonName);
     self.transients.source = ko.observable(fcConfig.speciesSearch +
-        '&output=' + output+ '&dataFieldName=' + dataFieldName);
+        '&output=' + output+ '&dataFieldName=' + dataFieldName + '&surveyName=' + surveyName);
     self.transients.bieUrl = ko.observable();
 
     self.transients.bioProfileUrl = ko.computed(function () {
@@ -58,7 +60,8 @@ var SpeciesViewModel = function (species, populate, output, dataFieldName, surve
     self.populateSingleSpecies = function (populate) {
         if (!self.name() && !self.guid() && fcConfig.getSingleSpeciesUrl && populate) {
             $.ajax({
-                url: fcConfig.getSingleSpeciesUrl + '?output=' + output+ '&dataFieldName=' + dataFieldName ,
+                url: fcConfig.getSingleSpeciesUrl + '?output=' + output+ '&dataFieldName=' + dataFieldName
+                +'&surveyName=' + surveyName,
                 type: 'GET',
                 contentType: 'application/json',
                 success: function (data) {

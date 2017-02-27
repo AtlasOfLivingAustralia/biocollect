@@ -45,6 +45,7 @@ class ProjectService {
     OrganisationService organisationService
     CacheService cacheService
     MessageSource messageSource
+    SpeciesService speciesService
 
     def list(brief = false, citizenScienceOnly = false) {
         def params = brief ? '?brief=true' : ''
@@ -857,38 +858,53 @@ class ProjectService {
      * @param projectId project activity identifier
      * @param output Identity of field for specific configuration.
      * @param dataFieldName Identity of field for specific configuration.
+     * @param surveyName Identity of field for specific configuration.
      * @return map containing species name, guid and isSingle field to indicate whether it's of a 'SINGLE_SPECIES' category.
      */
 
-    Map getSingleSpecies(String projectId, String output, String dataFieldName, String survey) {
-        def pActivity = get(projectId)
+    Map getSingleSpecies(String projectId, String output, String dataFieldName, String surveyName) {
 
-        def specificFieldDefinition = pActivity?.speciesFields.find {
+        Map speciesFieldConfig = findSpeciesFieldConfig(projectId, surveyName, dataFieldName, output)
+        speciesService.getSingleSpecies(speciesFieldConfig)
+    }
+
+
+    private Map findSpeciesFieldConfig(String projectId, String surveyName, String dataFieldName, String output) {
+        def project = get(projectId)
+
+        def survey = project?.speciesFieldsSettings?.surveysConfig?.find {
+            it.name == surveyName
+        }
+
+        def specificFieldDefinition = survey?.speciesFields?.find {
             it.dataFieldName == dataFieldName && it.output == output
         }
 
-        Map speciesFieldConfig =  (specificFieldDefinition) ?
+
+        Map speciesFieldConfig = (specificFieldDefinition?.config?.type != "DEFAULT_SPECIES") ?
                 //New species per field configuration
                 specificFieldDefinition.config :
                 // Legacy per survey species configuration
-                pActivity?.species
+                project?.speciesFieldsSettings?.defaultSpeciesConfig
+        return speciesFieldConfig
+    }
 
+    /**
+     * Searches for a species name taking into account the species constraints setup for the survey.
+     * @param id the id of the Project being completed
+     * @param q query string to search for
+     * @param limit the maximum number of results to return
+     * @param output Identity of field for specific configuration.
+     * @param dataFieldName Identity of field for specific configuration.
+     * @param surveyName Identity of field for specific configuration
+     * @return json structure containing search results suitable for use by the species autocomplete widget on a survey form.
+     */
+    def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName, String surveyName){
 
-        Map result = [isSingle: false]
+        Map speciesFieldConfig = findSpeciesFieldConfig(id, surveyName, dataFieldName, output)
 
-        switch (speciesFieldConfig?.type) {
-            case 'SINGLE_SPECIES':
-                result.isSingle = true
-
-                if (speciesFieldConfig?.singleSpecies?.guid) {
-                    result.name = formatSpeciesName(speciesFieldConfig.speciesDisplayFormat, speciesFieldConfig.singleSpecies)
-                    result.guid = speciesFieldConfig.singleSpecies?.guid
-                    result.scientificName = speciesFieldConfig.singleSpecies?.scientificName
-                    result.commonName = speciesFieldConfig.singleSpecies?.commonName
-                }
-                break
-        }
-
+        def result = speciesService.searchSpeciesForConfig(speciesFieldConfig, q, limit)
+        speciesService.formatSpeciesNameForSurvey(speciesFieldConfig.speciesDisplayFormat , result)
         result
     }
 }
