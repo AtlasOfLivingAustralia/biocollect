@@ -7,25 +7,66 @@ SurveySpeciesFieldsVM = function (surveySettings) {
 
     self.speciesFields = ko.observableArray();
 
-    var speciesFields = surveySettings.fields || []
+    var speciesFields = surveySettings.speciesFields || []
     for(var i=0; i<speciesFields.length; i++) {
         self.speciesFields.push(new SpeciesFieldViewModel(speciesFields[i]));
     }
+
+    self.asJson = function () {
+        var jsData = {};
+
+        jsData.name = self.name();
+        jsData.speciesFields = [];
+
+        var speciesFields = self.speciesFields();
+        for(var i=0; i<speciesFields.length; i++) {
+            jsData.speciesFields.push(speciesFields[i].asJson());
+        }
+
+        return jsData;
+    };
 
 }
 /**
  * Created by mol109 on 16/2/17.
  */
 
-function ProjectSpeciesFieldsConfigurationViewModel (project, speciesFieldsConfigBySurvey) {
+function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSettings,placeHolder) {
     var self = this;
+
+
+    /**
+     * Update the species display format for all species fields if they are using the default configuration
+     */
+    self.onDefaultSpeciesDisplayFormatChange = function (newSpeciesDisplayFormat) {
+
+        // Check every field to see if it is using default config
+        var surveys = self.surveysToConfigure()
+
+        for(var i = 0; i < surveys.length; i++) {
+            var speciesFields = surveys[i].speciesFields()
+            for(var j = 0; j<speciesFields.length; j++) {
+                var speciesFieldConfig = speciesFields[j].config();
+                if (speciesFieldConfig.type() == 'DEFAULT_SPECIES') {
+                    speciesFieldConfig.speciesDisplayFormat(newSpeciesDisplayFormat);
+                }
+            }
+        }
+    }
+
 
     self.init = function () {
 
+        speciesFieldsSettings = speciesFieldsSettings || {}
+        self.placeHolder = placeHolder;
+        self.projectId = projectId;
+        
         // Default species configuration
-        self.species = ko.observable(new SpeciesConstraintViewModel(project.species));
+        self.species = ko.observable(new SpeciesConstraintViewModel(speciesFieldsSettings.defaultSpeciesConfig));
 
-        speciesFieldsConfigBySurvey = speciesFieldsConfigBySurvey || [];
+
+        var surveysConfig = speciesFieldsSettings.surveysConfig || []
+
         self.surveysConfig = ko.observableArray();
 
         // Surveys that don't have species fields but need to be listed separately.
@@ -35,8 +76,8 @@ function ProjectSpeciesFieldsConfigurationViewModel (project, speciesFieldsConfi
         self.surveysToConfigure = ko.observableArray();
 
 
-        for(var i=0; i<speciesFieldsConfigBySurvey.length; i++) {
-            var surveySpeciesFieldsVM = new SurveySpeciesFieldsVM(speciesFieldsConfigBySurvey[i]);
+        for(var i=0; i<surveysConfig.length; i++) {
+            var surveySpeciesFieldsVM = new SurveySpeciesFieldsVM(surveysConfig[i]);
             self.surveysConfig.push(surveySpeciesFieldsVM);
 
             if(surveySpeciesFieldsVM.speciesFields().length > 0) {
@@ -46,28 +87,11 @@ function ProjectSpeciesFieldsConfigurationViewModel (project, speciesFieldsConfi
             }
         }
 
-        self.species().speciesDisplayFormat.subscribe(
-            /**
-             * Update the species display format for all species fields if they are using the default configuration
-             */
-            function (newSpeciesDisplayFormat) {
-
-                // Check every field to see if it is using default config
-                var surveys = self.surveysToConfigure()
-
-                for(var i = 0; i < surveys.length; i++) {
-                    var speciesFields = surveys[i].speciesFields()
-                    for(var j = 0; j<speciesFields.length; j++) {
-                        var speciesFieldConfig = speciesFields[j].config();
-                        if (speciesFieldConfig.type() == 'DEFAULT_SPECIES') {
-                            speciesFieldConfig.speciesDisplayFormat(newSpeciesDisplayFormat);
-                        }
-                    }
-                }
-            })
+        self.species().speciesDisplayFormat.subscribe(self.onDefaultSpeciesDisplayFormatChange)
     }
 
     self.init();
+
 
     self.transients = self.transients || {};
     // self.transients.project = project;
@@ -90,22 +114,50 @@ function ProjectSpeciesFieldsConfigurationViewModel (project, speciesFieldsConfi
 
     self.goToProject = function () {
         if (self.projectId) {
-            document.location.href = fcConfig.projectViewUrl + self.projectId();
-        }
-    };
-    self.goToSite = function() {
-        if (self.siteId) {
-            document.location.href = fcConfig.siteViewUrl + self.siteId();
+            document.location.href = fcConfig.projectViewUrl + self.projectId;
         }
     };
 
+    /**
+     * Determine if each species fields in this project are valid, this is a prerequisite to save the config
+     * This is an agregation of the SpeciesConstraintViewModel#isValid
+     */
+    self.areSpeciesValid = function() {
+
+        if(!self.species().isValid()) {
+            return false;
+        }
+
+        // As soon as a field is not valid we stop
+        var surveys = self.surveysToConfigure()
+        for(var i = 0; i < surveys.length; i++) {
+            var speciesFields = surveys[i].speciesFields()
+            for(var j = 0; j<speciesFields.length; j++) {
+                if(!speciesFields[j].config().isValid()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 
     self.save = function () {
-        if ($('#validation-container').validationEngine('validate')) {
-            var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
+        if (self.areSpeciesValid()) {
+
+            var surveysConfigJsData = [];
+
+            var surveysConfig = self.surveysConfig();
+            for(var i=0; i<surveysConfig.length; i++) {
+                surveysConfigJsData.push(surveysConfig[i].asJson());
+            }
+
+            var jsData = {speciesFieldsSettings:
+                    {defaultSpeciesConfig: self.species().asJson(),
+                        surveysConfig: surveysConfigJsData}};
             var json = JSON.stringify(jsData);
             $.ajax({
-                url: projectUpdateUrl,
+                url: fcConfig.projectUpdateUrl,
                 type: 'POST',
                 data: json,
                 contentType: 'application/json',
@@ -118,9 +170,11 @@ function ProjectSpeciesFieldsConfigurationViewModel (project, speciesFieldsConfi
                 },
                 error: function (data) {
                     var status = data.status;
-                    alert('An unhandled error occurred: ' + data.status);
+                    showAlert('An unhandled error occurred: ' + data.status, "alert-error", self.placeHolder);
                 }
             });
+        } else {
+            showAlert("Project default configuration and all species fields (if any) must be configured before saving.", "alert-error", self.placeHolder);
         }
     };
     self.removeActivity = function () {
@@ -159,6 +213,7 @@ function ProjectSpeciesFieldsConfigurationViewModel (project, speciesFieldsConfi
                     }
                     else { // Update species default configuration
                         self.species(new SpeciesConstraintViewModel(result));
+                        self.species().speciesDisplayFormat.subscribe(self.onDefaultSpeciesDisplayFormatChange)
                     }
                 }
             );

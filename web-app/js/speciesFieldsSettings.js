@@ -165,7 +165,7 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
 
     self.isValid = function(){
         return ((self.type() == "ALL_SPECIES") || (self.type() == "SINGLE_SPECIES" && self.singleSpecies.guid()) ||
-        (self.type() == "GROUP_OF_SPECIES" && self.speciesLists().length > 0))
+        (self.type() == "GROUP_OF_SPECIES" && self.speciesLists().length > 0)) || (self.type() == "DEFAULT_SPECIES")
     };
 
     self.hasErrors = function() {

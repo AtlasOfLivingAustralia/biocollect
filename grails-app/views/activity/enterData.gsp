@@ -23,13 +23,12 @@
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         imageLocation:"${resource(dir:'/images')}",
         // And this is the start of changes to make species work
-        getSingleSpeciesUrl : "${createLink(controller: 'projectActivity', action: 'getSingleSpecies', params: [id: '7d452be4-fd13-4a3e-8942-4b56645bdc91'])}",
-        speciesSearch: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: '7d452be4-fd13-4a3e-8942-4b56645bdc91', limit: 10])}"
-
+        getSingleSpeciesUrl : "${createLink(controller: 'project', action: 'getSingleSpecies', params: [id: project.projectId])}",
+        speciesSearch: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}"
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,map,activity,attachDocuments,species,amplify,imageViewer,bootstrap,viewmodels"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,map,activity,attachDocuments,species,amplify,imageDataType,imageViewer,bootstrap,viewmodels"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -188,15 +187,17 @@
             <div class="output-block" id="ko${blockId}">
                 <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h3>
                 <!-- add the dynamic components -->
-                <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}" printable="${printView}" />
+                <md:modelView model="${model}" site="${site}" edit="true" printable="${printView}" surveyName="${metaModel?.name}" output="${output.name}"/>
         <r:script>
+
+
             $(function(){
 
                 var viewModelName = "${blockId}ViewModel",
                     viewModelInstance = viewModelName + "Instance";
 
                 // load dynamic models - usually objects in a list
-                <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}" edit="true" viewModelInstance="${blockId}ViewModelInstance"/>
+                <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}" edit="true" viewModelInstance="${blockId}ViewModelInstance" surveyName="${metaModel?.name}" output="${output.name}"/>
 
                 this[viewModelName] = function () {
                     var self = this;
@@ -207,7 +208,7 @@
                     self.transients.dummy = ko.observable();
 
                     // add declarations for dynamic data
-                    <md:jsViewModel model="${model}"  output="${output.name}"  edit="true" viewModelInstance="${blockId}ViewModelInstance"/>
+                    <md:jsViewModel model="${model}" edit="true" viewModelInstance="${blockId}ViewModelInstance" surveyName="${metaModel?.name}" output="${output.name}"/>
 
                     // this will be called when generating a savable model to remove transient properties
                     self.removeBeforeSave = function (jsData) {
@@ -323,6 +324,16 @@
 <r:script>
 
     var returnTo = "${returnTo}";
+
+    function ActivityLevelData() {
+        var self = this;
+        self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
+        self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
+        self.pActivity = {sites: []};
+    }
+
+    var activityLevelData = new ActivityLevelData();
+
 
     /* Master controller for page. This handles saving each model as required. */
     var Master = function () {

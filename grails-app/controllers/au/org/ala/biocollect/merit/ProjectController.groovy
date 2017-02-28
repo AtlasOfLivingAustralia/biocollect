@@ -886,9 +886,11 @@ class ProjectController {
         def activities = activityService.activitiesForProject(id)
         def project = projectService.get(id, 'all')
 
-        def model = [returnTo: params.returnTo, project: project]
+        def model = [returnTo: params.returnTo]
 
-        if (!project.error) {
+        if(project?.planStatus != 'not approved') {
+            model.error = 'Species fields can only be configured when the project is in planning mode.'
+        } else if (!project.error) {
             // Find the different surveys used in this project schedule
             Set<String> surveys = new HashSet<>();
 
@@ -905,11 +907,11 @@ class ProjectController {
             // Enrich the speciesFieldsBySurvey with any existing configuration already stored in the project object
             // Discards any configuration that is no longer used.
 
-            List surveysSettings = project?.speciesFieldsSettings?.surveys ?: []
+            List surveysSettings = project?.speciesFieldsSettings?.surveysConfig ?: []
 
             surveysSettings.each {projectSurveySettings ->
                 if(speciesFieldsBySurvey.containsKey(projectSurveySettings.name)) {
-                    projectSurveySettings?.fields?.each { projectFieldSettings ->
+                    projectSurveySettings?.speciesFields?.each { projectFieldSettings ->
                         def speciesField = speciesFieldsBySurvey[projectSurveySettings.name].find {
                             return projectFieldSettings.label == it.label && projectFieldSettings.context == it.context && projectFieldSettings.output == it.output
                         }
@@ -924,17 +926,41 @@ class ProjectController {
 
             List fieldsConfig = []
 
-            speciesFieldsBySurvey.each{surveyName, fields ->
-                fieldsConfig << [name:surveyName, fields:fields]
+            speciesFieldsBySurvey.each{surveyName, speciesFields ->
+                fieldsConfig << [name:surveyName, speciesFields:speciesFields]
             }
 
-            model.fieldsConfig = fieldsConfig
+            model.speciesFieldsSettings =
+                    [ defaultSpeciesConfig: project?.speciesFieldsSettings?.defaultSpeciesConfig,
+                            surveysConfig: fieldsConfig
+                    ]
+            model.projectId = project.projectId
+            model.projectName = project.name
         } else {
             model.error = project.detail
         }
-
-        log.debug("configuring species fields")
-
         model
     }
+
+    /**
+     * Get Single Species name and guid for the given project identifier
+     * @param id project identifier
+     * @return
+     */
+    def getSingleSpecies(String id, String output, String dataFieldName, String surveyName) {
+        Map result = projectService.getSingleSpecies(id, output, dataFieldName, surveyName)
+        if(!result.isSingle){
+            result = [message: 'Not available']
+        }
+
+        render result as JSON
+    }
+
+    //Search species by project activity species constraint.
+    def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName, String surveyName){
+
+        def result = projectService.searchSpecies(id, q, limit, output, dataFieldName, surveyName)
+        render result as JSON
+    }
+
 }
