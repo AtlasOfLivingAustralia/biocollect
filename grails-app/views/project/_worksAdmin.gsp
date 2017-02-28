@@ -5,7 +5,6 @@
                 <li ${activeClass}><a href="#settings" id="settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project settings</a></li>
                 <g:set var="activeClass" value=""/>
             </g:if>
-            <li><a href="#activity-settings" id="activity-settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Activity Settings</a></li>
             <li><a href="#editMeriPlan" id="editMeriPlan-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Project Plan</a></li>
             <li><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Blog</a></li>
             <g:if test="${hasLegacyNewsAndEvents}">
@@ -29,22 +28,6 @@
                 <g:render template="editOrDeleteProject"/>
             </div>
             <g:set var="activeClass" value=""/>
-            <!-- Activity settings -->
-            <div id="activity-settings" class="pill-pane">
-                <div class="row-fluid">
-                    <div class="span12">
-                        <ul id="ul-survey-constraint-citizen-science" class="nav nav-pills">
-                            <li class="active"><a href="#species" id="species-tab" data-toggle="tab">Species</a></li>
-                        </ul>
-
-                        <div class="pill-content">
-                            <div class="pill-pane active" id="species">
-                                <g:render template="/species/species" model="[project:project, activityTypes:activityTypes]"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div id="editMeriPlan" class="pill-pane">
                 <h3>Edit Project Plan</h3>

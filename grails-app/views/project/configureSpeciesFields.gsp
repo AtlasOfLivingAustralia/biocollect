@@ -14,8 +14,7 @@
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         speciesListUrl: "${createLink(controller: 'search', action: 'searchSpeciesList')}",
         speciesListsServerUrl: "${grailsApplication.config.lists.baseURL}",
-        speciesSearchUrl: "${createLink(controller: 'search', action: 'species')}",
-        speciesSearch: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: '7d452be4-fd13-4a3e-8942-4b56645bdc91', limit: 10])}"
+        speciesSearchUrl: "${createLink(controller: 'search', action: 'species')}"
         },
         here = document.location.href;
     </r:script>

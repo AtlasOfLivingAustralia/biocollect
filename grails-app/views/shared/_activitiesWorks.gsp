@@ -716,8 +716,6 @@
                     context = '&siteId=' + siteId;
                 }
 
-                debugger;
-
                 document.location.href = fcConfig.activityCreateUrl + '?' + context + returnTo;
             };
             self.speciesFieldsConfiguration = function () {

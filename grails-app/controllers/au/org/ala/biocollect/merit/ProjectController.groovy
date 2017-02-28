@@ -888,7 +888,9 @@ class ProjectController {
 
         def model = [returnTo: params.returnTo]
 
-        if (!project.error) {
+        if(project?.planStatus != 'not approved') {
+            model.error = 'Species fields can only be configured when the project is in planning mode.'
+        } else if (!project.error) {
             // Find the different surveys used in this project schedule
             Set<String> surveys = new HashSet<>();
 

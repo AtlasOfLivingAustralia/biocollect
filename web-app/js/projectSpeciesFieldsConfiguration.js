@@ -33,7 +33,27 @@ SurveySpeciesFieldsVM = function (surveySettings) {
 
 function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSettings,placeHolder) {
     var self = this;
-    
+
+
+    /**
+     * Update the species display format for all species fields if they are using the default configuration
+     */
+    self.onDefaultSpeciesDisplayFormatChange = function (newSpeciesDisplayFormat) {
+
+        // Check every field to see if it is using default config
+        var surveys = self.surveysToConfigure()
+
+        for(var i = 0; i < surveys.length; i++) {
+            var speciesFields = surveys[i].speciesFields()
+            for(var j = 0; j<speciesFields.length; j++) {
+                var speciesFieldConfig = speciesFields[j].config();
+                if (speciesFieldConfig.type() == 'DEFAULT_SPECIES') {
+                    speciesFieldConfig.speciesDisplayFormat(newSpeciesDisplayFormat);
+                }
+            }
+        }
+    }
+
 
     self.init = function () {
 
@@ -45,7 +65,7 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
         self.species = ko.observable(new SpeciesConstraintViewModel(speciesFieldsSettings.defaultSpeciesConfig));
 
 
-        var surveysConfig = speciesFieldsSettings.surveysConfig
+        var surveysConfig = speciesFieldsSettings.surveysConfig || []
 
         self.surveysConfig = ko.observableArray();
 
@@ -67,28 +87,11 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
             }
         }
 
-        self.species().speciesDisplayFormat.subscribe(
-            /**
-             * Update the species display format for all species fields if they are using the default configuration
-             */
-            function (newSpeciesDisplayFormat) {
-
-                // Check every field to see if it is using default config
-                var surveys = self.surveysToConfigure()
-
-                for(var i = 0; i < surveys.length; i++) {
-                    var speciesFields = surveys[i].speciesFields()
-                    for(var j = 0; j<speciesFields.length; j++) {
-                        var speciesFieldConfig = speciesFields[j].config();
-                        if (speciesFieldConfig.type() == 'DEFAULT_SPECIES') {
-                            speciesFieldConfig.speciesDisplayFormat(newSpeciesDisplayFormat);
-                        }
-                    }
-                }
-            })
+        self.species().speciesDisplayFormat.subscribe(self.onDefaultSpeciesDisplayFormatChange)
     }
 
     self.init();
+
 
     self.transients = self.transients || {};
     // self.transients.project = project;
@@ -111,12 +114,7 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
 
     self.goToProject = function () {
         if (self.projectId) {
-            document.location.href = fcConfig.projectViewUrl + self.projectId();
-        }
-    };
-    self.goToSite = function() {
-        if (self.siteId) {
-            document.location.href = fcConfig.siteViewUrl + self.siteId();
+            document.location.href = fcConfig.projectViewUrl + self.projectId;
         }
     };
 
@@ -143,12 +141,6 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
 
         return true;
     }
-
-
-    self.validate = function () {
-
-    }
-
 
     self.save = function () {
         if (self.areSpeciesValid()) {
@@ -221,6 +213,7 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
                     }
                     else { // Update species default configuration
                         self.species(new SpeciesConstraintViewModel(result));
+                        self.species().speciesDisplayFormat.subscribe(self.onDefaultSpeciesDisplayFormatChange)
                     }
                 }
             );
