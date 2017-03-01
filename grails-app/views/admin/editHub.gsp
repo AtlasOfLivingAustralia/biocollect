@@ -82,7 +82,6 @@
                     <ul id="supported-programs" data-bind="foreach:$parent.transients.programNames" class="unstyled">
                         <li><label><input type="checkbox" data-bind="checked:$parent.supportedPrograms, attr:{value:$data}"> <span data-bind="text:$data"></span></label></li>
                     </ul>
-
                 </div>
             </div>
 

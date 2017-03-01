@@ -125,6 +125,98 @@ class SpeciesService {
 
     }
 
+
+    Map getSingleSpecies(Map speciesFieldConfig) {
+        Map result = [isSingle: false]
+
+        switch (speciesFieldConfig?.type) {
+            case 'SINGLE_SPECIES':
+                result.isSingle = true
+
+                if (speciesFieldConfig?.singleSpecies?.guid) {
+                    result.name = formatSpeciesName(speciesFieldConfig.speciesDisplayFormat, speciesFieldConfig.singleSpecies)
+                    result.guid = speciesFieldConfig.singleSpecies?.guid
+                    result.scientificName = speciesFieldConfig.singleSpecies?.scientificName
+                    result.commonName = speciesFieldConfig.singleSpecies?.commonName
+                }
+                break
+        }
+        result
+    }
+
+    /**
+     * formats a name into the specified format
+     * if species does not match to a taxon, then mention it in name.
+     * @param displayType
+     * @param data
+     * @return
+     */
+    String formatSpeciesName(String displayType, Map data){
+        String name
+        if(data.guid){
+            switch (displayType){
+                case 'COMMONNAME(SCIENTIFICNAME)':
+                    if(data.commonName){
+                        name = "${data.commonName} (${data.scientificName})"
+                    } else {
+                        name = "${data.scientificName}"
+                    }
+                    break;
+                case 'SCIENTIFICNAME(COMMONNAME)':
+                    if(data.commonName){
+                        name = "${data.scientificName} (${data.commonName})"
+                    } else {
+                        name = "${data.scientificName}"
+                    }
+
+                    break;
+                case 'COMMONNAME':
+                    if(data.commonName){
+                        name = "${data.commonName}"
+                    } else {
+                        name = "${data.scientificName}"
+                    }
+                    break;
+                case 'SCIENTIFICNAME':
+                    name = "${data.scientificName}"
+                    break;
+            }
+        } else {
+            // when no guid, append unmatched taxon string
+            name = "${data.name} (Unmatched taxon)"
+        }
+
+        name
+    }
+
+    Object searchSpeciesForConfig(Map speciesConfig, String q, Integer limit) {
+        def result
+        switch (speciesConfig?.type) {
+            case 'SINGLE_SPECIES':
+                result = searchForSpecies(speciesConfig?.singleSpecies?.name, 1)
+                break
+
+            case 'ALL_SPECIES':
+                result = searchForSpecies(q, limit)
+                break
+
+            case 'GROUP_OF_SPECIES':
+                def lists = speciesConfig?.speciesLists
+                result = searchSpeciesInLists(q, lists, limit)
+                break
+            default:
+                result = [autoCompleteList: []]
+                break
+        }
+        return result
+    }
+
+    List formatSpeciesNameForSurvey(String speciesDisplayFormat, Map data){
+        data?.autoCompleteList?.each{
+            it.name = formatSpeciesName(speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', it)
+        }
+    }
+
     def addSpeciesList(postBody) {
        webService.doPost("${grailsApplication.config.lists.baseURL}/ws/speciesList", postBody)
     }

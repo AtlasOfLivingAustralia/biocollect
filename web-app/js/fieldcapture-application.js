@@ -192,7 +192,9 @@ function formatBytes(bytes) {
  **/
 function showAlert(message, alerttype, target) {
 
-    $('#'+target).append('<div id="alertdiv" class="alert ' +  alerttype + '"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')
+    var alertAnchor = '#'+target;
+    $(alertAnchor).append('<div id="alertdiv" class="alert ' +  alerttype + '"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')
+    $(document).scrollTop( $(alertAnchor).offset().top - 15);
 
     setTimeout(function() { // this will automatically close the alert and remove this if the users doesnt close it in 5 secs
         $("#alertdiv").remove();

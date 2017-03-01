@@ -242,7 +242,7 @@ modules = {
     }
 
     projectFinder {
-        dependsOn('knockout', 'projects','bootstrap', 'responsiveTable', 'zip', 'underscore','amplify')
+        dependsOn('knockout', 'projects','bootstrap', 'responsiveTable', 'zip', 'underscore','amplify', 'jqueryValidationEngine')
         resource url: 'js/button-toggle-events.js'
         resource url: 'js/project-finder.js'
         resource url: 'css/project-finder.css'
@@ -269,7 +269,6 @@ modules = {
         resource url: 'js/aekosWorkflow.js'
         resource url: 'js/aekosWorkflowUtility.js'
         resource url: 'js/projectActivities.js'
-        resource url: 'css/project-activity-settings.css'
     }
 
     projectActivityInfo {
@@ -288,6 +287,13 @@ modules = {
         defaultBundle 'application'
         dependsOn 'knockout', 'species'
         resource url: 'js/speciesFieldsSettings.js'
+    }
+
+    projectSpeciesFieldsConfiguration {
+        defaultBundle 'application'
+        dependsOn 'knockout', 'speciesFieldsSettings'
+        resource url: 'js/projectSpeciesFieldsConfiguration.js'
+        resource url: 'css/projectSpeciesFieldsConfiguration.css'
     }
 
     imageViewer {

@@ -57,7 +57,10 @@ enum SettingPageType {
     SURVEY_SPECIES_ALL("surveySpeciesAll", "Descriptive text for the 'all species' option on the Survey configuration's Species tab", "fielddata.survey.species.all"),
     SURVEY_SPECIES_SINGLE("surveySpeciesSingle", "Descriptive text for the 'single species' option on the Survey configuration's Species dialog", "fielddata.survey.species.single"),
     SURVEY_SPECIES_GROUP("surveySpeciesGroup", "Descriptive text for the 'selection or group' option on the Survey configuration's Species dialog", "fielddata.survey.species.group"),
-    SURVEY_DEFAULT("surveySpeciesDefault", "Descriptive text for the 'selection or default' option on the Survey configuration's Species dialog", "fielddata.survey.species.default")
+    SURVEY_DEFAULT("surveySpeciesDefault", "Descriptive text for the 'selection or default' option on the Survey configuration's Species dialog", "fielddata.survey.species.default"),
+    WORKS_PLANNING_MODE_INTRO("worksprojectPlanningModeIntro", "Descriptive text for works project schedule page while in planning mode", "fielddata.works.projectPlanningModeIntro"),
+    SPECIES_FIELDS_CONFIG_INTRO("worksSpeciesFieldsIntro", "Descriptive text for the works species configuration page", "fielddata.works.speciesFieldsIntro"),
+    SPECIES_FIELDS_CONFIG_DEFAULT_CONFIG("worksSpeciesFieldsDefaultConfig", "Descriptive text for the project default configuration section of works species configuration page", "fielddata.works.speciesFieldsDefaultConfig")
 
     String name
     String title

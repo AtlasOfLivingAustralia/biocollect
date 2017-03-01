@@ -263,7 +263,7 @@ function stringToDate(date) {
             if (widget) {
                 var date = ko.utils.unwrapObservable(valueAccessor());
                 widget.date = date;
-                if (!isNaN(widget.date)) {
+                if (!isNaN(widget.date) ) {
                     widget.setDate(widget.date);
                 }
             }
