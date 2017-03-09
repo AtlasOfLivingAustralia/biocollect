@@ -94,7 +94,9 @@
                                                         <div>
                                                             <h6>Project name: <a
                                                                     data-bind="attr:{'href': projectUrl()}"><span
-                                                                        data-bind="text: projectName"></span></a></h6>
+                                                                        data-bind="text: projectName"></span></a>
+                                                                <span class="badge" data-bind="if: isWorksProject() ">Works</span>
+                                                            </h6>
                                                         </div>
 
                                                         <div>

@@ -14,6 +14,8 @@
             activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'delete')}",
             activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
+            worksActivityEditUrl: "${createLink(controller: 'activity', action: 'enterData')}",
+            worksActivityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
             searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
             downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
             getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params:[version: params.version])}",
