@@ -10,17 +10,19 @@
                 </li>
             </ul>
         </g:if>
-        <div class="row-fluid">
-            %{--page title--}%
-            <div class="span4">
-                <h2>${title}</h2>
+        <g:if test="${!mobile}">
+            <div class="row-fluid">
+                %{--page title--}%
+                <div class="span4">
+                    <h2>${title}</h2>
+                </div>
+                %{-- quick links --}%
+                <div class="span8">
+                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
+                </div>
+                %{--quick links END--}%
             </div>
-            %{-- quick links --}%
-            <div class="span8">
-                <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
-            </div>
-            %{--quick links END--}%
-        </div>
+        </g:if>
 <!-- ko stopBinding: true -->
 <g:set var="user" value="${user}"/>
 <g:each in="${metaModel?.outputs}" var="outputName">
@@ -303,8 +305,10 @@
 
                     amplify.store('activity-${activity.activityId}', toSave);
                     var unblock = true;
+                    var url = fcConfig.bioActivityUpdate
+                    <g:if test="${mobile}">url = url + "?mobile=true"</g:if>
                     $.ajax({
-                        url: fcConfig.bioActivityUpdate,
+                        url: url,
                         type: 'POST',
                         data: toSave,
 
@@ -329,6 +333,8 @@
                                 });
                                 errorText += "<p>Any other changes should have been saved.</p>";
                                 bootbox.alert(errorText);
+                            } else if(data.error) {
+                                   bootbox.alert(data.error);
                             } else {
                                 unblock = false; // We will be transitioning off this page.
                                 blockUIWithMessage("Successfully submitted the record.");
@@ -342,13 +348,11 @@
                             // This is to detect a redirect to CAS response due to session timeout, which is not
                             // 100% reliable using ajax (e.g. no network will give the same response).
                             if (jqXHR.readyState == 0) {
-
                                 bootbox.alert($('#timeoutMessage').html());
                             }
                             else {
                                 alert('An unhandled error occurred: ' + error);
                             }
-
                         },
                         complete: function () {
                             if (unblock) {
@@ -361,8 +365,7 @@
 
             this.saved = function () {
                 <g:if test="${mobile}">
-                    window.location = "#successfully-posted";
-                    location.reload();
+                    location.href = "${createLink(controller: 'mobile', action: 'status')}"+"#successfully-posted"
                 </g:if>
                 <g:else>
                     document.location.href = returnTo;
@@ -559,7 +562,6 @@
             ko.applyBindings(viewModel);
 
             master.register('activityModel', viewModel.modelForSaving, viewModel.dirtyFlag.isDirty, viewModel.dirtyFlag.reset);
-
         });
 
 </r:script>

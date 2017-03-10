@@ -121,7 +121,7 @@ class BioActivityController {
                 result = userAlreadyInRole
             }
         }
-
+        result.error = flash.message
         render result as JSON
     }
 
@@ -138,7 +138,7 @@ class BioActivityController {
      */
     def create(String id) {
         Map model = addActivity(id)
-        model.title = messageSource.getMessage('record.create.title', [].toArray(), '', Locale.default)
+        model?.title = messageSource.getMessage('record.create.title', [].toArray(), '', Locale.default)
 
         model
     }
@@ -151,12 +151,12 @@ class BioActivityController {
      */
     def edit(String id) {
         Map model = editActivity(id)
-        model.title = messageSource.getMessage('record.edit.title', [].toArray(), '', Locale.default)
+        model?.title = messageSource.getMessage('record.edit.title', [].toArray(), '', Locale.default)
         model
     }
 
     def mobileCreate(String id) {
-        Map model = addActivity(id, mobile)
+        Map model = addActivity(id, true)
         model.mobile = true
         model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
         model.authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
@@ -176,7 +176,7 @@ class BioActivityController {
         Map pActivity = projectActivityService.get(id, "all")
         String projectId = pActivity?.projectId
         String type = pActivity?.pActivityFormName
-        Map model = null
+        Map model = [:]
 
         if (!pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
             flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
@@ -200,7 +200,7 @@ class BioActivityController {
         }
 
         if (mobile && flash.message) {
-            model.error = flash.message
+            model?.error = flash.message
         }
 
         model
@@ -210,7 +210,7 @@ class BioActivityController {
         String userId = userService.getCurrentUserId(request)
         def activity = activityService.get(id)
         String projectId = activity?.projectId
-        def model = null
+        def model = [:]
 
         if (!userId) {
             flash.message = "Access denied: User has not been authenticated."
@@ -230,7 +230,7 @@ class BioActivityController {
         }
 
         if(mobile && flash.message) {
-            model.error = flash.message
+            model?.error = flash.message
         }
 
         model
