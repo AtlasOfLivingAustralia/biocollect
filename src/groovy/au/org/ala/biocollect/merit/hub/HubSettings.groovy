@@ -21,6 +21,20 @@ class HubSettings extends JSONObject {
     }
 
     /**
+     * Check if homePagePath is simple url (/controller/action) or complicated
+     * @return
+     */
+    public boolean isHomePagePathSimple(){
+        String path = optString('homePagePath', '')
+        List portions = path.split('/')
+        if(portions.size() == 3){
+            return true
+        } else if(portions.size() > 3) {
+            return false
+        }
+    }
+
+    /**
      * Returns a map [controller: , action: ] based on parsing the homePathPage.  If the homePathPath property
      * isn't set or doesn't match the expected pattern, the default home index page will be returned..
      */

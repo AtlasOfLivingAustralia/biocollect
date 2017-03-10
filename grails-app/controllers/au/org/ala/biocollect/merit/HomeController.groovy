@@ -28,8 +28,14 @@ class HomeController {
     def index() {
         HubSettings hubSettings = SettingService.hubConfig
         if (hubSettings.overridesHomePage()) {
-            forward(hubSettings.getHomePageControllerAndAction())
-            return
+            if(hubSettings.isHomePagePathSimple()){
+                Map result = hubSettings.getHomePageControllerAndAction()
+                forward(result)
+                return
+            } else {
+                redirect([uri: hubSettings['homePagePath'] ])
+                return;
+            }
         }
         return projectFinder()
     }
