@@ -27,16 +27,17 @@
 <body>
 
 <div class="container-fluid organisation-header organisation-banner image-box" data-bind="style:{'backgroundImage':asBackgroundImage(bannerUrl())}">
-
-    <div class="row-fluid">
-        <ul class="breadcrumb demphasise">
-            <li>
-                <g:link controller="home">Home</g:link> <span class="divider">/</span>
-            </li>
-            <li class="active">Organisations <span class="divider">/</span></li>
-            <li class="active" data-bind="text:name"/>
-        </ul>
-    </div>
+    <g:if test="${!hubConfig.hideBreadCrumbs}">
+        <div class="row-fluid">
+            <ul class="breadcrumb demphasise">
+                <li>
+                    <g:link controller="home">Home</g:link> <span class="divider">/</span>
+                </li>
+                <li class="active">Organisations <span class="divider">/</span></li>
+                <li class="active" data-bind="text:name"/>
+            </ul>
+        </div>
+    </g:if>
     <g:render template="organisationDetails"/>
 
     <div class="form-actions">

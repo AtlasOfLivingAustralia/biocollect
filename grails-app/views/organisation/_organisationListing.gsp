@@ -1,10 +1,12 @@
 <div class="container-fluid">
-    <ul class="breadcrumb">
-        <li>
-            <g:link controller="home">Home</g:link><span class="divider">/</span>
-        </li>
-        <li class="active">Organisations<span class="divider"></span></li>
-    </ul>
+    <g:if test="${!hubConfig.hideBreadCrumbs}">
+        <ul class="breadcrumb">
+            <li>
+                <g:link controller="home">Home</g:link><span class="divider">/</span>
+            </li>
+            <li class="active">Organisations<span class="divider"></span></li>
+        </ul>
+    </g:if>
     <g:if test="${allowOrganisationRegistration}">
         <div>
             <h2 style="display:inline">Registered

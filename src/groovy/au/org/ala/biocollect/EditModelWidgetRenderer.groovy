@@ -52,11 +52,14 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
         context.attributes.add 'style','text-align:center'
         context.databindAttrs.add 'value', context.source
 
-        context.writer << """
-            <div class="timefield input-append">
-                <input${context.attributes.toString()} id="${context.model.source}TimeField" data-bind='${context.databindAttrs.toString()}'${context.validationAttr} type='text' class='input-mini timepicker'/>
-            </div>
-        """
+        Map model = [:]
+        model.source = context.model.source
+        model.attr = context.attributes
+        model.databindAttrs = context.databindAttrs
+        model.validationAttr = context.validationAttr
+
+        context.writer << context.g.render(template: '/output/timeDataTypeEditModelTemplate', model: model)
+
     }
 
     @Override
@@ -109,6 +112,26 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderWordCloud(WidgetRenderContext context) {
+        context.databindAttrs.add 'options', 'transients.' + context.model.source + 'Constraints'
+        context.databindAttrs.add 'optionsCaption', '"Please select"'
+        context.databindAttrs.add 'value', "${context.source}.addWord"
+
+        context.writer <<  "<div class='row-fluid'><div class='span6'><select${context.attributes.toString()} comboList='${context.source}' data-bind='${context.databindAttrs.toString()}'${context.validationAttr}></select></div>"
+
+        def tagsBlock = "<div class='span6'><div id='tagsBlock' data-bind='foreach: ${context.source}'>" +
+                " <span class='tag label label-default'>" +
+                '<span data-bind="text: $data"></span>' +
+                '<a href="#" class="remove removeTag" title="remove this item">' +
+                " <i class=\"remove fa fa-close fa-inverse\" data-bind=\"click: function(data){ \$parent.${context.source}.removeWord(data) }\"></i></a>" +
+                '</span>' +
+                '</div></div>' +
+                '</div>'
+        context.writer << tagsBlock
+    }
+
+
+    @Override
     void renderAudio(WidgetRenderContext context) {
         context.databindAttrs.add 'fileUploadWithProgress', "{target:${context.source}.files, config:{}}"
         context.writer << context.g.render(template: '/output/audioDataTypeEditModelTemplate', model: [databindAttrs:context.databindAttrs.toString(), name: context.source])
@@ -152,7 +175,18 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
         newAttrs.add "disable", "transients.speciesFieldIsReadOnly"
         newAttrs.add "event", "{focusout:focusLost}"
         newAttrs.add "fusedAutocomplete", "{source:transients.source, name:transients.name, guid:transients.guid, scientificName:transients.scientificName, commonName:transients.commonName, matchUnknown: true}"
-        context.writer << context.g.render(template: '/output/speciesTemplate', plugin:'fieldcapture-plugin', model:[source: context.source, databindAttrs: newAttrs.toString(), validationAttrs:context.validationAttr])
+        context.writer << context.g.render(template: '/output/speciesTemplate', plugin:'fieldcapture-plugin', model:[source: context.source, databindAttrs: newAttrs.toString(), validationAttrs:context.validationAttr, attrs: context.attributes.toString()])
+    }
+
+    @Override
+    void renderSpeciesSearchWithImagePreview(WidgetRenderContext context) {
+        def newAttrs = new Databindings()
+        def source = context.g.createLink(controller: 'search', action:'species', absolute:'true')
+        newAttrs.add "value", "name"
+        newAttrs.add "disable", "transients.speciesFieldIsReadOnly"
+        newAttrs.add "event", "{focusout:focusLost}"
+        newAttrs.add "fusedAutocomplete", "{source:transients.source, name:transients.name, guid:transients.guid, scientificName:transients.scientificName, commonName:transients.commonName, matchUnknown: true}"
+        context.writer << context.g.render(template: '/output/speciesSearchWithImagePreviewTemplate', model:[source: context.source, databindAttrs: newAttrs.toString(), validationAttrs:context.validationAttr, attrs: context.attributes.toString()])
     }
 
     @Override
@@ -182,8 +216,12 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderDate(WidgetRenderContext context) {
-        context.writer << "<div class=\"input-append\"><input data-bind=\"datepicker:${context.source}.date\" type=\"text\" size=\"12\"${context.validationAttr}/>"
-        context.writer << "<span class=\"add-on open-datepicker\"><i class=\"icon-th\"></i></span></div>"
+        Map model = [:]
+        model.source = context.source
+        model.attr = context.attributes
+        model.validationAttr = context.validationAttr
+
+        context.writer << context.g.render(template: '/output/dateDataTypeEditModelTemplate', model: model)
     }
 
 

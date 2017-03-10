@@ -45,7 +45,7 @@
 
     <div id="koActivityMainBlock">
 
-        <g:if test="${!printView && !mobile}">
+        <g:if test="${!printView && !mobile  && !hubConfig.hideBreadCrumbs}">
             <ul class="breadcrumb">
                 <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
                 <li><a href="#" data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
@@ -55,9 +55,16 @@
             </ul>
         </g:if>
 
-        <div class="well text-center">
-            <h1 class="text-error">${pActivity?.name?.toUpperCase()}</h1>
-            <small><a data-bind="click:goToProject" href="#" class="clickable">Project: ${project?.name?.toUpperCase()}</a></small>
+        <div class="row-fluid">
+            %{--page title--}%
+            <div class="span4">
+                <h2><g:message code="record.view.title"></g:message></h2>
+            </div>
+            %{-- quick links --}%
+            <div class="span8">
+                <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
+            </div>
+            %{--quick links END--}%
         </div>
 
         <g:if test="${params?.version}">
@@ -94,7 +101,6 @@
                 <g:set var="output" value="[name: outputName]"/>
             </g:if>
 
-            <h3 class="text-center text-error well-title">${outputName}</h3>
             <div class="output-block well" id="ko${blockId}">
                 <div data-bind="if:outputNotCompleted">
                     <label class="checkbox" ><input type="checkbox" disabled="disabled" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>

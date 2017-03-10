@@ -68,15 +68,15 @@
 </head>
 <body>
 <div class="container-fluid">
-
-    <ul class="breadcrumb">
-        <li>
-            <g:link controller="home">Home</g:link> <span class="divider">/</span>
-        </li>
-        <li class="active">Projects <span class="divider">/</span></li>
-        <li class="active" data-bind="text:name"></li>
-    </ul>
-
+    <g:if test="${!hubConfig.hideBreadCrumbs}">
+        <ul class="breadcrumb">
+            <li>
+                <g:link controller="home">Home</g:link> <span class="divider">/</span>
+            </li>
+            <li class="active">Projects <span class="divider">/</span></li>
+            <li class="active" data-bind="text:name"></li>
+        </ul>
+    </g:if>
     <g:if test="${!user?.isEditor}">
         <div class="alert alert-info">
             This project is funded by a federal government programme and can only be edited in the <a href="${g.createLink(id:project.projectId, base:grailsApplication.config.merit.url)}">MERIT system</a>

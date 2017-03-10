@@ -50,23 +50,24 @@
 </head>
 <body>
     <div class="container-fluid validationEngineContainer" id="validation-container">
-        <ul class="breadcrumb">
-            <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-            <li><g:link controller="site" action="list">Sites</g:link><span class="divider">/</span></li>
-            <g:if test="${project}">
-                <li class="active">Create new site for ${project?.name?.encodeAsHTML()}</li>
-            </g:if>
-            <g:elseif test="${create}">
-                <li class="active">Create</li>
-            </g:elseif>
-            <g:else>
-                <li><g:link controller="site" action="index" id="${site?.siteId}">
-                    <span data-bind="text: name">${site?.name?.encodeAsHTML()}</span>
-                </g:link><span class="divider">/</span></li>
-                <li class="active">Edit</li>
-            </g:else>
-        </ul>
-
+        <g:if test="${!hubConfig.hideBreadCrumbs}">
+            <ul class="breadcrumb">
+                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
+                <li><g:link controller="site" action="list">Sites</g:link><span class="divider">/</span></li>
+                <g:if test="${project}">
+                    <li class="active">Create new site for ${project?.name?.encodeAsHTML()}</li>
+                </g:if>
+                <g:elseif test="${create}">
+                    <li class="active">Create</li>
+                </g:elseif>
+                <g:else>
+                    <li><g:link controller="site" action="index" id="${site?.siteId}">
+                        <span data-bind="text: name">${site?.name?.encodeAsHTML()}</span>
+                    </g:link><span class="divider">/</span></li>
+                    <li class="active">Edit</li>
+                </g:else>
+            </ul>
+        </g:if>
         <bs:form action="update" inline="true">
             <g:render template="siteDetails" />
             <div class="row-fluid">

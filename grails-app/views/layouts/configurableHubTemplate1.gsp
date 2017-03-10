@@ -88,15 +88,6 @@
 <div class="navbar navbar-inverse navbar-static-top">
     <div class="navbar-inner contain-to-grid">
         <div class="${fluidLayout?'container-fluid':'container'}">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            %{--<a class="brand do-not-mark-external" href="http://www.mdba.gov.au/" id="mdbaLink" title="MDBA home page">--}%
-                %{--<g:img dir="/images/mdba" file="MDBA-logo.png" alt="MDBA logo" class="headerLogo"/>--}%
-            %{--</a>--}%
             <div class="pull-right">
                 <div class="nav-collapse collapse pull-right">
                     <ul class="nav">

@@ -1,22 +1,26 @@
 <%@ page import="grails.converters.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <g:if test="${!printView && !mobile}">
+        <g:if test="${!printView && !mobile && !hubConfig.hideBreadCrumbs}">
             <ul class="breadcrumb">
                 <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-                <li><a data-bind="click:goToProject" href="#" class="clickable">Project</a> <span class="divider">/</span></li>
+                <li><a data-bind="click:goToProject" href="#" class="clickable">${projectName}</a> <span class="divider">/</span></li>
                 <li class="active">
                     <span>${pActivity.name}</span>
                 </li>
             </ul>
         </g:if>
-        <g:if test="${!printView && !mobile}">
-            <div class="well text-center">
-
-                    <h2 class="text-error">${pActivity?.name}</h2>
-                    <small><a data-bind="click:goToProject" href="#" class="clickable">Project: ${project?.name?.toUpperCase()}</a></small>
+        <div class="row-fluid">
+            %{--page title--}%
+            <div class="span4">
+                <h2>${title}</h2>
             </div>
-        </g:if>
+            %{-- quick links --}%
+            <div class="span8">
+                <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
+            </div>
+            %{--quick links END--}%
+        </div>
 <!-- ko stopBinding: true -->
 <g:set var="user" value="${user}"/>
 <g:each in="${metaModel?.outputs}" var="outputName">
@@ -32,8 +36,6 @@
         <md:modelStyles model="${model}" edit="true"/>
 
         <div class="output-block" id="ko${blockId}">
-
-            <h4 class="text-center text-error well-title" data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h4>
 
             <div data-bind="if:transients.optional || outputNotCompleted()">
                 <label class="checkbox" ><input type="checkbox" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>

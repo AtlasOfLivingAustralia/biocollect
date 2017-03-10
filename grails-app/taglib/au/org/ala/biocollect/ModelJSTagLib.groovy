@@ -61,6 +61,8 @@ class ModelJSTagLib {
                 numberViewModel(mod, out)
             } else if (mod.dataType == 'stringList') {
                 stringListModel(mod, out)
+            } else if (mod.dataType == 'set') {
+                setModel(mod, out)
             } else if (mod.dataType == 'image') {
                 imageModel(mod, out)
             } else if (mod.dataType == 'audio') {
@@ -118,7 +120,7 @@ class ModelJSTagLib {
             else if (mod.dataType == 'time' && !mod.computed) {
                 out << INDENT*4 << "self.data['${mod.name}'](${collector});\n"
             }
-            else if (mod.dataType in ['stringList', 'image', 'photoPoints', 'audio'] && !mod.computed) {
+            else if (mod.dataType in ['stringList', 'image', 'photoPoints', 'audio', 'set'] && !mod.computed) {
                 out << INDENT*4 << "self.load${mod.name}(${collector});\n"
             }
             else if (mod.dataType == 'species') {
@@ -521,6 +523,9 @@ class ModelJSTagLib {
                     case 'stringList':
                         out << INDENT*3 << "this.${col.name}=ko.observableArray(orEmptyArray(data['${col.name}']));\n";
                         break
+                    case 'set':
+                        out << INDENT*3 << "this.${col.name}=ko.observableArray(orEmptyArray(data['${col.name}'])).extend({set: true});\n";
+                        break
                     case 'image':
                         out << INDENT*3 << "this.${col.name}=ko.observableArray();\n";
                         out << INDENT*4 << """
@@ -769,6 +774,12 @@ class ModelJSTagLib {
         modelConstraints(model, out)
         populateList(model, out)
 
+    }
+
+    def setModel(model, out) {
+        out << INDENT*4 << "self.data.${model.name}=ko.observableArray([]).extend({set: null});\n"
+        modelConstraints(model, out)
+        populateList(model, out)
     }
 
     def populateList(model, out) {

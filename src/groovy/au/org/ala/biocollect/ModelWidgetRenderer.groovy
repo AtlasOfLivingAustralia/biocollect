@@ -15,6 +15,8 @@ public interface ModelWidgetRenderer {
     void renderSelectOne(WidgetRenderContext context)
     void renderSelectMany(WidgetRenderContext context)
     void renderSelectManyCombo(WidgetRenderContext context)
+    void renderWordCloud(WidgetRenderContext context)
+    void renderSpeciesSearchWithImagePreview(WidgetRenderContext context)
     void renderAudio(WidgetRenderContext context)
     void renderImage(WidgetRenderContext context)
     void renderImageDialog(WidgetRenderContext context)

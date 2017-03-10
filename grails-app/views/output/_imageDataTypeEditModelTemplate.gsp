@@ -2,93 +2,107 @@
 <div id="" class="fileupload-buttonbar">
     <!-- ko foreach: ${name} -->
     <!-- Images -->
-    <div data-bind="visible: $data.status() != 'deleted'">
+    <div data-bind="visible: $data.status() != 'deleted'" class="margin-bottom-20">
         <div class="row-fluid">
-            <div class="span12 text-left">
-                <a data-bind="attr:{href:url, title:'[click to expand] '+name()}"
-                   target="_photo" rel="gallery"><img data-bind="attr:{src:thumbnailUrl,  alt:name}"></a>
+            <div class="span2 text-left">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <a data-bind="attr:{href:url, title:'[click to expand] '+name()}"
+                           target="_photo" rel="gallery">
+                            <img data-bind="attr:{src:thumbnailUrl,  alt:name}"
+                                 class="imageDataTypePreview margin-bottom-10">
+                        </a>
+                    </div>
+                </div>
             </div>
+            <div class="span5">
+                <div class="row-fluid">
+                    <div class="span4 text-left control-group required">
+                        <label class="control-label" for="name">Title:</label>
+                    </div>
+                    <div class="span8">
+                        <input id="name" type="text" data-bind="value:name"
+                               data-validation-engine="validate[required]" class="form-control input-xlarge">
+                    </div>
+                </div>
 
-        </div>
-        <div class="margin-bottom-10"></div>
-        <div class="row-fluid">
-            <div class="span12 text-left control-group required">
+                <div class="row-fluid">
+                    <div class="span4 text-left control-group required">
+                        <label class="control-label" >Date Taken:</label>
+                    </div>
+                    <div class="span8">
+                        <fc:datePicker size="input-xlarge"
+                                       targetField="dateTaken"
+                                       name="dateTaken"
+                                       data-validation-engine="validate[required]" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="row-fluid">
+                    <div class="span4 text-left">
+                        <label class="control-label">Licence <i class="icon-question-sign"
+                                                                data-bind="popover:{content:'Creative Commons Attribution (CC BY), Creative Commons-Noncommercial (CC BY-NC), Creative Commons Attribution-Share Alike (CC BY-SA), Creative Commons Attribution-Noncommercial-Share Alike (CC BY-NC-SA)', placement:'top'}">&nbsp;</i>:
+                        </label>
+                    </div>
+                    <div class="span8">
+                        <select id="licence" data-bind="value:licence" class="form-control input-xlarge">
+                            <option value="CC BY">Creative Commons Attribution</option>
+                            <option value="CC BY-NC">Creative Commons Attribution-Noncommercial</option>
+                            <option value="CC BY-SA">Creative Commons Attribution-Share Alike</option>
+                            <option value="CC BY-NC-SA">Creative Commons Attribution-Noncommercial-Share Alike</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row-fluid">
+                    <div class="span4 text-left">
+                        <label class="control-label" for="attribution">
+                            Attribution <i class="icon-question-sign" data-bind="popover:{content:'The name of the photographer', placement:'top'}">&nbsp;</i>:
+                        </label>
+                    </div>
+                    <div class="span8">
+                        <input id="attribution" class="form-control input-xlarge" type="text" data-bind="value:attribution">
+                    </div>
+                </div>
 
 
-                    <label class="control-label" for="name">Title:</label>
-                    <input id="name" type="text" data-bind="value:name"
-                           data-validation-engine="validate[required]">
+                <div class="row-fluid">
+                    <div class="span4 text-left">
+                        <label class="control-label" for="notes">Notes:</label>
+                    </div>
+                    <div class="span8">
+                        <input id="notes" class="form-control input-xlarge" type="text" data-bind="value:notes">
+                    </div>
+                </div>
+
+                <div class="row-fluid readonly ">
+                    <div class="span4 text-left">
+                        <label class="control-label">File Name:</label>
+                    </div>
+                    <div class="span8">
+                        <small class="padding-top-5" data-bind="text:filename"></small>
+                        (<small class="padding-top-5" data-bind="text:formattedSize"></small>)
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4 text-left">
+                    </div>
+                    <div class="span8">
+                        <a class="btn btn-danger btn-small" data-bind="click: remove.bind($data,$parent.${name})"><i
+                                class="icon-remove icon-white"></i> Remove</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="span5">
 
             </div>
         </div>
-
-        <div class="row-fluid">
-            <div class="span12 text-left control-group required">
-                <label class="control-label" >Date Taken:</label>
-                <fc:datePicker size="input-small"
-                               targetField="dateTaken"
-                               name="dateTaken"
-                               data-validation-engine="validate[required]"/>
-            </div>
-        </div>
-
-        <div class="row-fluid">
-            <div class="span12 text-left">
-                <label class="control-label">Licence <i class="icon-question-sign"
-                                                        data-bind="popover:{content:'Creative Commons Attribution (CC BY), Creative Commons-Noncommercial (CC BY-NC), Creative Commons Attribution-Share Alike (CC BY-SA), Creative Commons Attribution-Noncommercial-Share Alike (CC BY-NC-SA)', placement:'top'}">&nbsp;</i>:
-                </label>
-                <select id="licence" data-bind="value:licence" class="form-control input-sm">
-                    <option>CC BY</option>
-                    <option>CC BY-NC</option>
-                    <option>CC BY-SA</option>
-                    <option>CC BY-NC-SA</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="row-fluid">
-            <div class="span12 text-left">
-                <label class="control-label" for="attribution">
-                    Attribution <i class="icon-question-sign" data-bind="popover:{content:'The name of the photographer', placement:'top'}">&nbsp;</i>:
-                </label>
-
-                <input id="attribution" type="text" data-bind="value:attribution">
-
-            </div>
-        </div>
-
-
-        <div class="row-fluid">
-            <div class="span12 text-left">
-            <label class="control-label" for="notes">Notes:</label>
-            <input id="notes" type="text" data-bind="value:notes">
-            </div>
-        </div>
-
-        <div class="row-fluid readonly ">
-            <div class="span12 text-left">
-            <label class="control-label">File Name:</label>
-            <small class="padding-top-5" data-bind="text:filename"></small> (<small class="padding-top-5" data-bind="text:formattedSize"></small>)
-            </div>
-        </div>
-        <div class="margin-bottom-10"></div>
-        <div class="row-fluid">
-            <div class="span12 text-left">
-            <a class="btn btn-danger" data-bind="click: remove.bind($data,$parent.${name})"><i
-                class="icon-remove icon-white"></i> Remove</a>
-            </div>
-        </div>
-        <div class="margin-bottom-10"></div>
-
-
     </div>
     <!-- /ko -->
 
-    <table class="table">
+    <table class="table table-custom-border borderless" data-bind="${databindAttrs}" data-url="<g:createLink controller='image' action='upload'/>">
         <tbody>
-
-        <tfoot data-bind="${databindAttrs}" data-url="<g:createLink controller='image' action='upload'/>">
-
         <tr data-bind="visible:!complete()">
             <td class="images-preview-width">
                 <span class="preview"></span>
@@ -110,15 +124,15 @@
                     <span class="alert alert-error" data-bind="text:error"></span>
                 </div>
             </td>
-
         </tr>
-
         <tr>
-            <td>
-                <span class="btn-sm btn-success fileinput-button"><i class="fa fa-plus"></i> <input type="file" accept="image/*" name="files"><span>Attach Photo</span>
+            <td colspan="2">
+                <span class="btn-small btn-success fileinput-button"><i class="fa fa-plus"></i> <input type="file" accept="image/*" name="files" multiple><span>Add files</span>
                 </span>
             </td>
         </tr>
+        </tbody>
+        <tfoot>
 
         </tfoot>
     </table>

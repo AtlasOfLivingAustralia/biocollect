@@ -45,6 +45,7 @@ class ModelTagLib {
                     break
                 case 'section':
                     section out, attrs, mod
+                    break
                 case 'row':
                     def span = LAYOUT_COLUMNS
                     row out, attrs, mod, span
@@ -71,18 +72,30 @@ class ModelTagLib {
      */
     def dataTag(attrs, model, context, editable, elementAttributes, databindAttrs, labelAttributes) {
         ModelWidgetRenderer renderer
-
+        def toEdit
         def validate = validationAttribute(attrs, model, editable)
 
         if (attrs.printable) {
             renderer = new PrintModelWidgetRenderer()
         } else {
-            def toEdit = editable && !model.computed && !model.noEdit
+            toEdit = editable && !model.computed && !model.noEdit
             if (toEdit) {
                 renderer = new EditModelWidgetRenderer()
             } else {
                 renderer = new ViewModelWidgetRenderer()
             }
+        }
+
+        // hack - sometimes span class are added to elementAttributes. It interferes with the rendering of input like
+        // selectOne since span12 or span8 is passed to it.
+        if(model.inline){
+            elementAttributes?.removeSpan()
+            labelAttributes?.removeSpan()
+        }
+
+        if(toEdit){
+            // controls padding, display and other css properties
+            elementAttributes.add('class', 'form-control')
         }
 
         def renderContext = new WidgetRenderContext(model, context, validate, databindAttrs, elementAttributes, labelAttributes, g, attrs)
@@ -111,6 +124,14 @@ class ModelTagLib {
                 renderer.renderBoolean(renderContext)
                 break
             case 'textarea':
+                if(toEdit){
+                    if(model.rows){
+                        renderContext.attributes.add('rows', model.rows)
+                    }
+
+                    elementAttributes.add('class', 'full-width')
+                }
+
                 renderer.renderTextArea(renderContext)
                 break
             case 'simpleDate':
@@ -124,6 +145,9 @@ class ModelTagLib {
                 break
             case 'selectManyCombo':
                 renderer.renderSelectManyCombo(renderContext)
+                break
+            case 'wordCloud':
+                renderer.renderWordCloud(renderContext)
                 break
             case 'audio':
                 renderer.renderAudio(renderContext)
@@ -142,6 +166,9 @@ class ModelTagLib {
                 break
             case 'autocomplete':
                 renderer.renderAutocomplete(renderContext)
+                break
+            case 'speciesSearchWithImagePreview':
+                renderer.renderSpeciesSearchWithImagePreview(renderContext)
                 break
             case 'fusedAutoComplete':
                 renderer.renderFusedAutocomplete(renderContext)
@@ -181,13 +208,23 @@ class ModelTagLib {
 
 
         if (model.preLabel) {
+            model.dataClass = model.dataClass?:''
             labelAttributes.addClass 'preLabel'
 
             if (isRequired(attrs, model, editable)) {
                 labelAttributes.addClass 'required'
             }
 
-            result = "<span ${labelAttributes.toString()}><label>${labelText(attrs, model, model.preLabel)}</label></span>" + result
+            if(model.preLabelClass ){
+                labelAttributes.add('class', model.preLabelClass)
+            }
+
+            if( model.inline ){
+                result = "<span class='row-fluid'><span ${labelAttributes.toString()}><label class='inline'>${labelText(attrs, model, model.preLabel)}</label></span>" +
+                        "<span class='${model.dataClass}'>${result}</span></span>"
+            } else {
+                result = "<span ${labelAttributes.toString()}><label>${labelText(attrs, model, model.preLabel)}</label></span>" + result
+            }
         }
 
         if (model.postLabel) {
@@ -347,10 +384,10 @@ class ModelTagLib {
     // form section
     def section(out, attrs, model) {
 
-        if (model.title) {
+        if (model.title && !model.boxed) {
             out << "<h4>${model.title}</h4>"
         }
-        out << "<div class=\"row-fluid space-after output-section\">\n"
+        out << "<div class=\"row-fluid space-after output-section boxed-heading\" data-content='${model.title}'>\n"
 
         viewModelItems(attrs, out, model.items)
 
@@ -375,7 +412,7 @@ class ModelTagLib {
 
     def items(out, attrs, model, parentSpan, context) {
 
-        def span = context == 'row'? (int)(parentSpan / model.items.size()) : LAYOUT_COLUMNS
+        def span = context == 'row'? (int)(LAYOUT_COLUMNS / model.items.size()) : LAYOUT_COLUMNS
 
         model.items.each { it ->
             AttributeMap at = new AttributeMap()
@@ -387,6 +424,8 @@ class ModelTagLib {
                 out << "<div class=\"span${span}\">\n"
                 items(out, attrs, it, span, 'col')
                 out << "</div>"
+            } else if (it.type == 'row') {
+                row out, attrs, it, span
             }
             else if (it.type == 'table') {
                 table out, attrs, it

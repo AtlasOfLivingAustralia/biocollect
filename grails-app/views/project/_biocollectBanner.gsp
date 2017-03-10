@@ -57,3 +57,102 @@
         </g:if>
     </ul>
 </nav>
+<r:script>
+    $(document).ready(function (e) {
+        $(".btnAdministration").click(function (e) {
+            window.location = "${createLink(controller: 'admin')}";
+        });
+        $('.btnNewProject').click(function(e) {
+    <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+        window.location = "${createLink(controller: 'project', action:'create', params: [citizenScience:true])}"
+    </g:if>
+    <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+        window.location = "${createLink(controller: 'project', action:'create', params: [works:true])}"
+    </g:if>
+    <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
+        window.location = "${createLink(controller: 'project', action:'create', params: [ecoScience:true])}"
+    </g:if>
+    });
+
+    $(".btnProfile").click(function (e) {
+        window.location = "${createLink(controller: 'myProfile')}";
+        });
+
+        $(".btnAllData").click(function (e) {
+            window.location = "${createLink(controller: 'bioActivity', action: 'allRecords')}";
+        });
+
+        $(".btnMyDashboard").click(function (e) {
+            window.location = "${createLink(controller: 'user', action: 'index')}";
+        });
+
+        $(".btnMyData").click(function (e) {
+            window.location = "${createLink(controller: 'bioActivity', action: 'list')}";
+        });
+
+        $(".btnMyProjects").click(function (e) {
+            window.location = "${createLink(controller: 'project', action: 'myProjects')}";
+        });
+
+        $(".btnMyOrganisation").click(function (e) {
+            window.location = "${createLink(controller: 'organisation', action: 'myOrganisations')}";
+        });
+
+        $(".btnMyFavouriteSites").click(function (e) {
+            window.location = "${createLink(controller: 'site', action: 'myFavourites')}";
+        });
+
+
+        $(".btnSearch").click(function(e){
+    <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+        window.location = "${createLink(controller: 'project', action: 'citizenScience')}";
+    </g:if>
+    <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+        window.location = "${createLink(controller: 'home', action: 'index')}";
+    </g:if>
+    <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
+        //TODO: redirect to ecoScience instead of index
+        window.location = "${createLink(controller: 'home', action: 'index')}";
+    </g:if>
+    })
+
+    $(".btnSite").click(function(e){
+         window.location = "${createLink(controller: 'site', action: 'list')}";
+        })
+    }); // end document ready
+
+</r:script>
+<r:script>
+    function calcWidth() {
+        var navwidth = 0;
+        var morewidth = $('#main .more').outerWidth(true);
+        $('#main > li:not(.more)').each(function() {
+            navwidth += $(this).outerWidth( true );
+        });
+        var availablespace = $('nav').outerWidth(true) - morewidth;
+
+        if (navwidth > availablespace) {
+            var lastItem = $('#main > li:not(.more)').last();
+            lastItem.attr('data-width', lastItem.outerWidth(true));
+            lastItem.prependTo($('#main .more ul.more-ul'));
+            calcWidth();
+        } else {
+            var firstMoreElement = $('#main li.more li').first();
+            while ((navwidth = navwidth + firstMoreElement.data('width')) < availablespace) {
+                firstMoreElement.insertBefore($('#main .more'));
+                firstMoreElement = $('#main li.more li').first();
+            }
+        }
+
+        if ($('.more li').length > 0) {
+            $('.more').css('display','inline-block');
+        } else {
+            $('.more').css('display','none');
+        }
+    }
+    $(window).on('resize',function(){
+        calcWidth();
+    });
+    $('#biocollectNav').show();
+    calcWidth();
+</r:script>

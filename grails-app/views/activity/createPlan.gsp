@@ -20,16 +20,18 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <ul class="breadcrumb">
-            <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-            <g:if test="${project}">
-                <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
-            </g:if>
-            <g:elseif test="${site}">
-                <li><a data-bind="click:goToSite" class="clickable">Site</a> <span class="divider">/</span></li>
-            </g:elseif>
-            <li class="active">Create new activity</li>
-        </ul>
+        <g:if test="${!hubConfig.hideBreadCrumbs}">
+            <ul class="breadcrumb">
+                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
+                <g:if test="${project}">
+                    <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
+                </g:if>
+                <g:elseif test="${site}">
+                    <li><a data-bind="click:goToSite" class="clickable">Site</a> <span class="divider">/</span></li>
+                </g:elseif>
+                <li class="active">Create new activity</li>
+            </ul>
+        </g:if>
 
         <div class="row-fluid title-block well input-block-level">
             <div class="space-after"><span>An activity is usually associated with a site and a project. Less commonly, the activity may just be

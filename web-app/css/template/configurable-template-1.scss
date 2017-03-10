@@ -316,6 +316,9 @@ body .navbar {
 .well {
   background-color: $well-background-color;
   border: 0px solid $well-background-color;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  -moz-box-shadow: none;
 }
 
 #pt-selectors.well{

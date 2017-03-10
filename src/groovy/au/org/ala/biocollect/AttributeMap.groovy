@@ -38,6 +38,15 @@ class AttributeMap {
         }
     }
 
+    def removeSpan() {
+        if (this.classHasSpan()) {
+            List classes = map.class.tokenize(' ');
+            List remove = classes.findAll{ it.startsWith('span') }
+            classes -= remove;
+            map.class = classes.join(separator);
+        }
+    }
+
     def classHasSpan() {
         return map.containsKey('class') && map.class.tokenize(' ').any {it.startsWith('span')}
     }
