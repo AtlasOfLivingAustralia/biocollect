@@ -6,6 +6,7 @@ import groovyx.net.http.ContentType
 import org.apache.commons.io.FilenameUtils
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST
@@ -21,7 +22,7 @@ class BioActivityController {
     ActivityService activityService
     CommonService commonService
     SearchService searchService
-    OutputService outputService
+    MessageSource messageSource
     RecordService recordService
 
     /**
@@ -154,6 +155,7 @@ class BioActivityController {
             model.pActivity = pActivity
             model.projectActivityId = pActivity.projectActivityId
             model.id = id
+            model.title = messageSource.getMessage('record.edit.title', [].toArray(), '', Locale.default)
         } else {
             flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
             redirect(controller: 'project', action: 'index', id: projectId)
@@ -169,7 +171,10 @@ class BioActivityController {
      * @return
      */
     def create(String id) {
-        addActivity(id)
+        Map model = addActivity(id)
+        model.title = messageSource.getMessage('record.create.title', [].toArray(), '', Locale.default)
+
+        model
     }
 
     def mobileCreate(String id) {
@@ -198,8 +203,10 @@ class BioActivityController {
             redirect(controller: 'project', action: 'index', id: projectId)
         } else {
             Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
+            Map project = projectService.get(projectId)
             model = activityModel(activity, projectId)
             model.pActivity = pActivity
+            model.projectName = project.name
             model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', id: projectId)
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
             addOutputModel(model)
@@ -278,10 +285,62 @@ class BioActivityController {
      * @return
      */
     def list() {
+        render(view: 'list',
+                model: [
+                        view: 'myrecords',
+                        user: userService.user,
+                        title: messageSource.getMessage('myrecords.title', [].toArray(), '', Locale.default),
+                        returnTo: g.createLink(controller: 'bioActivity', action: 'list')
+                ]
+        )
     }
 
+    /**
+     * List all activity recorded in biocollect.
+     * @param id activity id
+     * @return
+     */
     def allRecords() {
-        render(view: 'list', model: [view: 'allrecords', user: userService.user])
+        render(view: 'list',
+                model: [
+                        view: 'allrecords',
+                        title: messageSource.getMessage('allrecords.title', [].toArray(), '', Locale.default),
+                        returnTo: g.createLink(controller: 'bioActivity', action: 'allRecords')
+                ]
+        )
+    }
+
+    /**
+     * List all activity associated to a project.
+     * @param id activity id
+     * @return
+     */
+    def projectRecords(String id) {
+        render(view: 'list',
+                model: [
+                        view: 'project',
+                        projectId: id,
+                        title: messageSource.getMessage('project.records.title', [].toArray(), '', Locale.default),
+                        returnTo: g.createLink(controller: 'bioActivity', action: 'projectRecords') + '/' + id
+                ]
+        )
+    }
+
+    /**
+     * List all activity associated to a project by a user.
+     * @param id activity id
+     * @return
+     */
+    def myProjectRecords(String id) {
+        render(view: 'list',
+                model: [
+                        view: 'myprojectrecords',
+                        user:  userService.user,
+                        projectId: id,
+                        title: messageSource.getMessage('project.myrecords.title', [].toArray(), '', Locale.default),
+                        returnTo: g.createLink(controller: 'bioActivity', action: 'myProjectRecords') + '/' + id
+                ]
+        )
     }
 
     def ajaxList() {

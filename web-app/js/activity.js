@@ -153,6 +153,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         self.activities([]);
 
         activities = $.map(activities ? activities : [], function (activity, index) {
+            activity.parent = self;
             return new ActivityRecordViewModel(activity);
         });
         self.activities(activities);
@@ -616,7 +617,7 @@ var ActivityRecordViewModel = function (activity) {
     self.projectActivityId = ko.observable(activity.projectActivityId);
     self.name = ko.observable(activity.name);
     self.type = ko.observable(activity.type);
-    self.lastUpdated = ko.observable(activity.lastUpdated).extend({simpleDate: false});
+    self.lastUpdated = ko.observable(activity.lastUpdated).extend({simpleDate: true});
     self.ownerName = ko.observable(activity.activityOwnerName);
     self.userId = ko.observable(activity.userId);
     self.siteId = ko.observable(activity.siteId);
@@ -651,6 +652,7 @@ var ActivityRecordViewModel = function (activity) {
     self.transients.viewUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityViewUrl : fcConfig.activityViewUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo, dataVersion: fcConfig.version});
     self.transients.editUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityEditUrl : fcConfig.activityEditUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
     self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo: fcConfig.returnTo});
+    self.transients.parent = activity.parent;
 };
 
 var RecordVM = function (record) {
@@ -660,6 +662,11 @@ var RecordVM = function (record) {
     self.occurrenceID = ko.observable(record.occurrenceID);
     self.guid = ko.observable(record.guid);
     self.name = ko.observable(record.name);
+    self.commonName = record.commonName;
+    self.coordinates = record.coordinates;
+    self.multimedia = record.multimedia || [];
+    self.eventTime = record.eventTime;
+    self.eventDate =  ko.observable(record.eventDate).extend({simpleDate: false});
 };
 
 var DataFacetsVM = function (facet, availableFacets) {

@@ -7,12 +7,13 @@
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
-
-    <ul class="breadcrumb">
-        <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-        <li><g:link controller="project" action="index" id="${project.projectId}">${project.name}</g:link> <span class="divider">/</span></li>
-        <li>Species</li>
-    </ul>
+    <g:if test="${!hubConfig.hideBreadCrumbs}">
+        <ul class="breadcrumb">
+            <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
+            <li><g:link controller="project" action="index" id="${project.projectId}">${project.name}</g:link> <span class="divider">/</span></li>
+            <li>Species</li>
+        </ul>
+    </g:if>
     <div class="row-fluid">
         <div class="page-header">
             <h1>${project.name} - Species</h1>

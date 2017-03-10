@@ -10,15 +10,15 @@
 
 <body>
 <div class="container-fluid">
-
-    <ul class="breadcrumb">
-        <li><g:link controller="home"><g:message code="g.home"/></g:link> <span class="divider">/</span></li>
-        <li><g:link controller="project" action="index"
-                    id="${project.projectId}">${project.name?.encodeAsHTML()}</g:link> <span class="divider">/</span>
-        </li>
-        <li class="active"><g:message code="g.newProjectIntro"/></li>
-    </ul>
-
+    <g:if test="${!hubConfig.hideBreadCrumbs}">
+        <ul class="breadcrumb">
+            <li><g:link controller="home"><g:message code="g.home"/></g:link> <span class="divider">/</span></li>
+            <li><g:link controller="project" action="index"
+                        id="${project.projectId}">${project.name?.encodeAsHTML()}</g:link> <span class="divider">/</span>
+            </li>
+            <li class="active"><g:message code="g.newProjectIntro"/></li>
+        </ul>
+    </g:if>
     <div class="row-fluid">
         <div class="span1">
             <img class="logo" src="${project.documents?.find { it.role == 'logo' }?.thumbnailUrl}">

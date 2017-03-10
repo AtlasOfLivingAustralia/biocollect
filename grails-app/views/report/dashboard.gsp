@@ -48,12 +48,14 @@
 <body>
 
 <div class="container-fluid">
-    <ul class="breadcrumb">
-        <li>
-            <g:link controller="home">Home</g:link> <span class="divider">/</span>
-        </li>
-        <li class="active">Dashboard</li>
-    </ul>
+    <g:if test="${!hubConfig.hideBreadCrumbs}">
+        <ul class="breadcrumb">
+            <li>
+                <g:link controller="home">Home</g:link> <span class="divider">/</span>
+            </li>
+            <li class="active">Dashboard</li>
+        </ul>
+    </g:if>
 
     <h1 class="textcenter">MERI Data Dashboard</h1>
 

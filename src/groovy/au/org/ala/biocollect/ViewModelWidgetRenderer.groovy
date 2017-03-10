@@ -72,6 +72,16 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
     }
 
     @Override
+    void renderWordCloud(WidgetRenderContext context) {
+        def tagsBlock = "<div id='tagsBlock' data-bind='foreach: ${context.source}'>" +
+                "<span class='tag label label-default' comboList='${context.source}'>" +
+                '<input type="hidden" data-bind="value: $data" name="tags" class="tags group">' +
+                '<span data-bind="text: $data"></span>' +
+                '</span></div>'
+        context.writer << tagsBlock
+    }
+
+    @Override
     void renderAudio(WidgetRenderContext context) {
         context.writer << context.g.render(template: '/output/audioDataTypeViewModelTemplate',
                 model: [databindAttrs:context.databindAttrs.toString(), name: context.source, index: "''", hideFile: false])
@@ -154,5 +164,12 @@ class ViewModelWidgetRenderer implements ModelWidgetRenderer {
     void renderGeoMap(WidgetRenderContext context) {
         context.model.readonly = true
         context.writer << context.g.render(template: '/output/dataEntryMap', model: context.model)
+    }
+
+    @Override
+    void renderSpeciesSearchWithImagePreview(WidgetRenderContext context) {
+        def newAttrs = new Databindings()
+        newAttrs.add "text", "name"
+        context.writer << context.g.render(template: '/output/speciesSearchWithImagePreviewTemplate', model:[source: context.source, databindAttrs: newAttrs.toString(), validationAttrs:context.validationAttr, attrs: context.attributes.toString(), readonly: true])
     }
 }

@@ -80,12 +80,10 @@
             <h1 class="pull-left">${hubConfig.title}</h1>
         </div>
         <div class="span6">
-            <h1>
-                <div class="pull-right">
-                    <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</a>
-                    <a class="btn btn-info" href="${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</a>
-                </div>
-            </h1>
+            <div class="pull-right margin-top-10 margin-bottom-10">
+                <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</a>
+                <a class="btn btn-info" href="${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</a>
+            </div>
         </div>
     </div>
 

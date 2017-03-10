@@ -33,6 +33,7 @@ var SpeciesViewModel = function (species, populate, output, dataFieldName, surve
     self.transients.scientificName = ko.observable(species.scientificName);
     self.transients.speciesFieldIsReadOnly = ko.observable(false);
     self.transients.commonName = ko.observable(species.commonName);
+    self.transients.image = ko.observable(species.image || '');
     self.transients.source = ko.observable(fcConfig.speciesSearch +
         '&output=' + output+ '&dataFieldName=' + dataFieldName + '&surveyName=' + surveyName);
     self.transients.bieUrl = ko.observable();

@@ -42,7 +42,7 @@
 
 <div class="selected-hub form-horizontal" data-bind="visible:selectedHub(), with:selectedHub">
     <h2><span data-bind="visible:hubId">Editing: </span><span data-bind="visible:!hubId()">Creating: </span> <span data-bind="text:urlPath"></span></h2>
-    <ul class="nav nav-pills">
+    <ul class="nav nav-tabs">
         <li class="active">
             <a href="#hubPrograms" data-toggle="tab">Programs</a>
         </li>
@@ -50,10 +50,11 @@
         <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubHeader"  data-toggle="tab">Header</a></li>
         <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubFooter"  data-toggle="tab">Footer</a></li>
         <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubBanner"  data-toggle="tab">Banner</a></li>
+        <li><a href="#hubContent"  data-toggle="tab">Content</a></li>
         <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubHomepage"  data-toggle="tab">Homepage</a></li>
     </ul>
-    <div class="pill-content">
-        <div class="pill-pane active" id="hubPrograms">
+    <div class="tab-content">
+        <div class="tab-pane active" id="hubPrograms">
 
             <div class="control-group">
                 <label class="control-label" for="name">URL path (added to URL to select the hub)</label>
@@ -154,7 +155,7 @@
             </div>
         </div>
 
-        <div class="pill-pane" id="hubTemplate">
+        <div class="tab-pane" id="hubTemplate">
             <div class="control-group">
                 <label class="control-label" for="skin">Skin</label>
                 <div class="controls required">
@@ -183,10 +184,20 @@
                 <!-- /ko -->
             </div>
         </div>
-        <div class="pill-pane" id="hubHeader">
+        <div class="tab-pane" id="hubHeader">
             <div data-bind="visible: transients.isSkinAConfigurableTemplate">
                 <!-- ko with: templateConfiguration -->
                     <!-- ko with: header -->
+                        <h3>Header</h3>
+                        <div>
+                            Choose between the following header options: <select data-bind="value: type">
+                                <option value="">Please choose</option>
+                                <option value="ala">ALA</option>
+                                <option value="biocollect">Biocollect classic</option>
+                                <option value="custom">Custom header</option>
+                            </select>
+                        </div>
+                        <h3>Custom Header Settings</h3>
                         <!-- ko template: {name: 'templateLinkNotes'} -->
                         <!-- /ko -->
                         <table class="table">
@@ -222,12 +233,20 @@
                 <!-- /ko -->
             </div>
         </div>
-        <div class="pill-pane" id="hubFooter">
+        <div class="tab-pane" id="hubFooter">
             <div data-bind="visible: transients.isSkinAConfigurableTemplate">
                 <!-- ko with: templateConfiguration -->
                     <!-- ko with: footer -->
                     <div>
                         <h3>Footer</h3>
+                        <div>
+                            Choose between the following footer options: <select data-bind="value: type">
+                            <option value="">Please choose</option>
+                            <option value="ala">ALA</option>
+                            <option value="custom">Custom footer</option>
+                        </select>
+                        </div>
+                        <h3>Custom Footer Settings</h3>
                         <div class="">
                             <!-- ko template: {name: 'templateLinkNotes'} -->
                             <!-- /ko -->
@@ -293,7 +312,7 @@
                 <!-- /ko -->
             </div>
         </div>
-        <div class="pill-pane" id="hubBanner">
+        <div class="tab-pane" id="hubBanner">
             <div>
                 <h3>Logo image</h3>
                 <div class="row-fluid">
@@ -351,7 +370,44 @@
                 </div>
             </div>
         </div>
-        <div class="pill-pane" id="hubHomepage">
+        <div class="tab-pane" id="hubContent">
+            <div>
+                <h3>Settings</h3>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideBreadCrumbs"> Hide bread crumbs
+                </div>
+                <h3>Quick links</h3>
+                <small>Links that appear on certain content pages like create, view, all records etc.</small>
+                <!-- ko template: {name: 'templateLinkNotes'} -->
+                <!-- /ko -->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Display name</th>
+                        <th>Content type</th>
+                        <th>Href value</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- ko foreach: quickLinks -->
+                    <!-- ko template: { name: 'templateLink'} -->
+                    <!-- /ko -->
+                    <!-- /ko -->
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <button type="button" class="btn" data-bind="click: addLink"><i class="icon-plus"></i> Add link</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <div class="tab-pane" id="hubHomepage">
             <div data-bind="visible: transients.isSkinAConfigurableTemplate">
                 <div>
 

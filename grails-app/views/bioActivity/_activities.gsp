@@ -1,5 +1,6 @@
 <%@ page import="grails.converters.JSON" %>
 <r:require modules="map"></r:require>
+<g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
 <!-- ko stopBinding: true -->
 <div id="survey-all-activities-and-records-content">
     <div id="data-result-placeholder"></div>
@@ -67,103 +68,177 @@
                             </div>
 
                             <g:render template="../shared/pagination"/>
-                            <!-- ko foreach : activities -->
-                            <div class="row-fluid">
-                                <div class="span12">
-                                    <div data-bind="attr:{class: embargoed() ? 'searchResultSection locked' : 'searchResultSection'}">
-
-                                        <div class="span9 text-left">
-                                            <div>
-                                                <h4>
-                                                    <!-- ko if: embargoed() -->
-                                                    <a href="#" class="helphover"
-                                                       data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment(embargoUntil()).format('DD/MM/YYYY')}">
-                                                        <span class="icon-lock"></span>
-                                                    </a>
-                                                    <!--/ko -->
-                                                    Survey name:
-                                                    <a data-bind="attr:{'href': transients.viewUrl}">
-                                                        <span data-bind="text: name"></span>
-                                                    </a>
-                                                </h4>
+                            <table class="full-width table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Image
+                                        </th>
+                                        <th>
+                                            Identification
+                                        </th>
+                                        <th></th>
+                                        <th>
+                                            Details
+                                        </th>
+                                        <th>
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- ko foreach : activities -->
+                                    <!-- ko if: records().length > 0-->
+                                    <!-- ko foreach : records -->
+                                    <tr>
+                                        <td>
+                                            <div class="projectLogo">
+                                                    <img class="image-logo" data-bind="attr:{title:(multimedia[0] && multimedia[0].title) || 'No Image', src:(multimedia[0] && multimedia[0].identifier) || '${noImageUrl}'}" onload="findLogoScalingClass(this, 200, 150)">
                                             </div>
-
+                                        </td>
+                                        <td>
                                             <div class="row-fluid">
                                                 <div class="span12">
-                                                    <div class="span7">
-                                                        <div>
-                                                            <h6>Project name: <a
-                                                                    data-bind="attr:{'href': projectUrl()}"><span
-                                                                        data-bind="text: projectName"></span></a>
-                                                                <span class="badge" data-bind="if: isWorksProject() ">Works</span>
-                                                            </h6>
-                                                        </div>
-
-                                                        <div>
-                                                            <h6>Submitted by: <span
-                                                                    data-bind="text: ownerName"></span> on <span
-                                                                    data-bind="text: lastUpdated.formattedDate"></span>
-                                                            </h6>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="span5">
-                                                        <!-- ko if : records().length > 0 -->
-                                                        <div>
-                                                            <h6>
-
-                                                                <!-- ko foreach : records -->
-                                                                    <!-- ko if: name() -->
-                                                                    <span data-bind= "if: $index() == 0">Species :</span>
-                                                                    <a target="_blank"
-                                                                       data-bind="visible: guid, attr:{href: $root.transients.bieUrl + '/species/' + guid()}">
-                                                                        <span data-bind="text: name"></span>
-                                                                    </a>
-                                                                    <span data-bind="visible: !guid()">
-                                                                        <span data-bind="text: name"></span>
-                                                                    </span>
-                                                                    <span data-bind="if: $parent.records().length != $index()+1">
-                                                                        <b>|</b>
-                                                                    </span>
-                                                                    <!-- /ko -->
-                                                                <!-- /ko -->
-                                                            </h6>
-                                                        </div>
+                                                    <div>
+                                                        <!-- ko if: name() -->
+                                                        <a target="_blank"
+                                                           data-bind="visible: guid, attr:{href: $root.transients.bieUrl + '/species/' + guid()}">
+                                                            <span data-bind="text: name"></span>
+                                                        </a>
+                                                        <span data-bind="visible: !guid()">
+                                                            <span data-bind="text: name"></span>
+                                                        </span>
                                                         <!-- /ko -->
-
+                                                    </div>
+                                                    <div>
+                                                        <span data-bind="text: commonName"></span>
                                                     </div>
                                                 </div>
-
                                             </div>
-                                        </div>
-
-                                        <div class="span3 text-right">
-
-                                            <!-- looks awkward to show view eye icon by itself. Users can view the survey by clicking the survey title.-->
-                                            <div class="padding-top-0" data-bind="if: showCrud()">
-                                                <span class="margin-left-1">
-                                                    <a data-bind="attr:{'href': transients.viewUrl}"><i
-                                                            class="fa fa-eye" title="View survey"></i></a>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <!-- ko if: $parent.embargoed() -->
+                                                <a href="#" class="helphover"
+                                                   data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment($parent.embargoUntil()).format('DD/MM/YYYY')}">
+                                                    <span class="icon-lock"></span>
+                                                </a>
+                                                <!--/ko -->
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="row-fluid">
+                                                <div class="span12">
+                                                    <div data-bind="visible: eventDate">
+                                                        Recorded on: <span
+                                                            data-bind="text: eventDate.formattedDate"></span>
+                                                        <span data-bind="visible: eventTime, text: eventTime"></span>
+                                                    </div>
+                                                    <div data-bind="visible: $parent.lastUpdated">
+                                                        Submitted on: <span
+                                                            data-bind="text: $parent.lastUpdated.formattedDate"></span>
+                                                    </div>
+                                                    <div data-bind="visible: $parent.ownerName">
+                                                        Recorded by: <span
+                                                            data-bind="text: $parent.ownerName"></span>
+                                                    </div>
+                                                    <div data-bind="visible: coordinates && coordinates[0]">
+                                                        Coordinate: <span
+                                                            data-bind="text: coordinates[0] + ',' + coordinates[1]"></span>
+                                                    </div>
+                                                    <div data-bind="visible: $parent.name">
+                                                        Survey name:
+                                                        <a data-bind="attr:{'href': $parent.transients.addUrl}">
+                                                            <span data-bind="text: $parent.name"></span>
+                                                        </a>
+                                                    </div>
+                                                    <div data-bind="visible: $parent.projectName">
+                                                        Project name: <a
+                                                            data-bind="attr:{'href': $parent.projectUrl()}"><span
+                                                                data-bind="text: $parent.projectName"></span></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div data-bind="if: $parent.showCrud()">
+                                                <span>
+                                                    <a data-bind="attr:{'href': $parent.transients.viewUrl}" title="View record" class="btn btn-small editBtn btn-default"><i class="fa fa-file-o"></i> View</a>
                                                 </span>
-                                                <span class="margin-left-1" data-bind="visible: showAdd() && !readOnly()">
-                                                    <a data-bind="attr:{'href': transients.addUrl}"><i
-                                                            class="fa fa-plus" title="Add survey"></i></a>
+                                                <span data-bind="visible: !$parent.readOnly()">
+                                                    <a data-bind="attr:{'href': $parent.transients.editUrl}" title="Edit record" class="btn btn-small editBtn btn-default"><i class="fa fa-pencil"></i> Edit</a>
                                                 </span>
-                                                <span class="margin-left-1" data-bind="visible: !readOnly()">
-                                                    <a data-bind="attr:{'href': transients.editUrl}"><i
-                                                            class="fa fa-edit" title="Edit survey"></i></a>
-                                                </span>
-                                                <span class="margin-left-1" data-bind="visible: !readOnly()">
-                                                    <a href="#" data-bind="click: $parent.delete"><i
-                                                            class="fa fa-remove" title="Delete survey"></i></a>
+                                                <span data-bind="visible: !$parent.readOnly()">
+                                                    <button class="btn btn-small btn-default" data-bind="click: function(){ $parent.transients.parent.delete($parent) }" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
                                                 </span>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr/>
-                            <!-- /ko -->
+                                        </td>
+                                    </tr>
+                                    <!-- /ko -->
+                                    <!-- /ko -->
+                                    <!-- ko if: !records() || !records().length -->
+                                    <tr>
+                                        <td>
+                                            <div class="projectLogo">
+                                                <img class="image-logo wide" src="${noImageUrl}" title="No Image">
+                                            </div>
+                                        </td>
+                                        <td>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <!-- ko if: embargoed() -->
+                                                <a href="#" class="helphover"
+                                                   data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment(.embargoUntil()).format('DD/MM/YYYY')}">
+                                                    <span class="icon-lock"></span>
+                                                </a>
+                                                <!--/ko -->
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="row-fluid">
+                                                <div class="span12">
+                                                    <div data-bind="visible: lastUpdated">
+                                                        Submitted on: <span
+                                                            data-bind="text: lastUpdated.formattedDate"></span>
+                                                    </div>
+                                                    <div data-bind="visible: ownerName">
+                                                        Recorded by: <span
+                                                            data-bind="text: ownerName"></span>
+                                                    </div>
+                                                    <div data-bind="visible: name">
+                                                        Survey name:
+                                                        <a data-bind="attr:{'href': transients.addUrl}">
+                                                            <span data-bind="text: name"></span>
+                                                        </a>
+                                                    </div>
+                                                    <div data-bind="visible: projectName">
+                                                        Project name: <a
+                                                            data-bind="attr:{'href': projectUrl()}"><span
+                                                                data-bind="text: projectName"></span></a>
+                                                        <span class="badge" data-bind="if: isWorksProject() ">Works</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div data-bind="if: showCrud()">
+                                                <span>
+                                                    <a data-bind="attr:{'href': transients.viewUrl}" title="View record" class="btn btn-small editBtn btn-default"><i class="fa fa-file-o"></i> View</a>
+                                                </span>
+                                                <span data-bind="visible: !readOnly()">
+                                                    <a data-bind="attr:{'href': transients.editUrl}" title="Edit record" class="btn btn-small editBtn btn-default"><i class="fa fa-pencil"></i> Edit</a>
+                                                </span>
+                                                <span data-bind="visible: !readOnly()">
+                                                    <button class="btn btn-small btn-default" data-bind="click: $parent.delete" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- /ko -->
+                                    <!-- /ko -->
+                                </tbody>
+                            </table>
                             <div class="margin-top-2"></div>
                             <g:render template="../shared/pagination"/>
                             <!-- ko if : activities().length > 0 -->
