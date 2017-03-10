@@ -97,23 +97,19 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="row-fluid">
-                                                <div class="span12">
-                                                    <div>
-                                                        <!-- ko if: name() -->
-                                                        <a target="_blank"
-                                                           data-bind="visible: guid, attr:{href: $root.transients.bieUrl + '/species/' + guid()}">
-                                                            <span data-bind="text: name"></span>
-                                                        </a>
-                                                        <span data-bind="visible: !guid()">
-                                                            <span data-bind="text: name"></span>
-                                                        </span>
-                                                        <!-- /ko -->
-                                                    </div>
-                                                    <div>
-                                                        <span data-bind="text: commonName"></span>
-                                                    </div>
-                                                </div>
+                                            <div>
+                                                <!-- ko if: name() -->
+                                                <a target="_blank"
+                                                   data-bind="visible: guid, attr:{href: $root.transients.bieUrl + '/species/' + guid()}">
+                                                    <span data-bind="text: name"></span>
+                                                </a>
+                                                <span data-bind="visible: !guid()">
+                                                    <span data-bind="text: name"></span>
+                                                </span>
+                                                <!-- /ko -->
+                                            </div>
+                                            <div>
+                                                <span data-bind="text: commonName"></span>
                                             </div>
                                         </td>
                                         <td>
@@ -156,6 +152,7 @@
                                                         Project name: <a
                                                             data-bind="attr:{'href': $parent.projectUrl()}"><span
                                                                 data-bind="text: $parent.projectName"></span></a>
+                                                        <span class="badge" data-bind="if: isWorksProject() ">Works</span>
                                                     </div>
                                                 </div>
                                             </div>

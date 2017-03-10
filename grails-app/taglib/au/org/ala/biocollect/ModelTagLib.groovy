@@ -95,16 +95,16 @@ class ModelTagLib {
 
         if(toEdit){
             // controls padding, display and other css properties
-            elementAttributes.add('class', 'form-control')
+            elementAttributes?.add('class', 'form-control')
         }
 
         def renderContext = new WidgetRenderContext(model, context, validate, databindAttrs, elementAttributes, labelAttributes, g, attrs)
 
         if (model.visibility) {
-            renderContext.databindAttrs.add "visible", evalDependency(model.visibility)
+            renderContext.databindAttrs?.add "visible", evalDependency(model.visibility)
         }
         if (model.enabled) {
-            renderContext.databindAttrs.add "enable", evalDependency(model.enabled)
+            renderContext.databindAttrs?.add "enable", evalDependency(model.enabled)
         }
 
         switch (model.type) {
@@ -126,10 +126,10 @@ class ModelTagLib {
             case 'textarea':
                 if(toEdit){
                     if(model.rows){
-                        renderContext.attributes.add('rows', model.rows)
+                        renderContext.attributes?.add('rows', model.rows)
                     }
 
-                    elementAttributes.add('class', 'full-width')
+                    elementAttributes?.add('class', 'full-width')
                 }
 
                 renderer.renderTextArea(renderContext)
