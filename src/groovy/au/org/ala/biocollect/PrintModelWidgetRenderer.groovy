@@ -122,6 +122,16 @@ class PrintModelWidgetRenderer implements ModelWidgetRenderer {
 
     }
 
+    @Override
+    void renderWordCloud(WidgetRenderContext context) {
+        defaultRender(context)
+    }
+
+    @Override
+    void renderSpeciesSearchWithImagePreview(WidgetRenderContext context) {
+        defaultRender(context)
+    }
+
     private void defaultRender(WidgetRenderContext context) {
 
 
