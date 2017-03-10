@@ -1,17 +1,24 @@
 /**
  * Manages the species data type in the output model.
  * Allows species information to be searched for and displayed.
+ * output, dataFieldName and survey are optional parameters and
+ * if present will be used to pinpoint either the projectActivity or project configuration to restrict the species values
+ * available for this field
+ *
  * @param species If provided, populate SpeciesViewModel name, guid, scientificName, commonName and their transients from this object
  * @param populate If true populate species information from fcConfig.getSingleSpeciesUrl
  * @param output Identity of field for specific configuration.
  * @param dataFieldName Identity of field for specific configuration.
+ * @param survey The survey where this field belongs for  specific configuration.
  */
-var SpeciesViewModel = function (species, populate, output, dataFieldName) {
+var SpeciesViewModel = function (species, populate, output, dataFieldName, surveyName) {
     var self = this;
     if (!species) species = {};
     if (!populate) populate = false;
     if(!output) output = "";
     if(!dataFieldName) dataFieldName = "";
+    if(!surveyName) surveyName = "";
+
     self.name = ko.observable(species.name);
     self.guid = ko.observable(species.guid);
     self.scientificName = ko.observable(species.scientificName);
@@ -28,7 +35,7 @@ var SpeciesViewModel = function (species, populate, output, dataFieldName) {
     self.transients.commonName = ko.observable(species.commonName);
     self.transients.image = ko.observable(species.image || '');
     self.transients.source = ko.observable(fcConfig.speciesSearch +
-        '&output=' + output+ '&dataFieldName=' + dataFieldName);
+        '&output=' + output+ '&dataFieldName=' + dataFieldName + '&surveyName=' + surveyName);
     self.transients.bieUrl = ko.observable();
 
     self.transients.bioProfileUrl = ko.computed(function () {
@@ -54,7 +61,8 @@ var SpeciesViewModel = function (species, populate, output, dataFieldName) {
     self.populateSingleSpecies = function (populate) {
         if (!self.name() && !self.guid() && fcConfig.getSingleSpeciesUrl && populate) {
             $.ajax({
-                url: fcConfig.getSingleSpeciesUrl + '?output=' + output+ '&dataFieldName=' + dataFieldName ,
+                url: fcConfig.getSingleSpeciesUrl + '?output=' + output+ '&dataFieldName=' + dataFieldName
+                +'&surveyName=' + surveyName,
                 type: 'GET',
                 contentType: 'application/json',
                 success: function (data) {

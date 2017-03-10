@@ -286,9 +286,11 @@ class ActivityController {
             result = [status: 400, error: flash.message]
         }
 
+        String userId = userService.getCurrentUserId()
+
         // check user has permissions to edit/update site - user must have 'editor' access to
         // ALL linked projects to proceed.
-        if (!projectService.canUserEditProject(userService.getCurrentUserId(), projectId)) {
+        if (!projectService.canUserEditProject(userId, projectId)) {
             flash.message = "Error: access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
             response.status = 401
             result = [status:401, error: flash.message]
@@ -296,6 +298,7 @@ class ActivityController {
         }
 
         if (!result) {
+            values.userId = userId
             def photoPoints = values.remove('photoPoints')
             result = activityService.update(id, values)
             if (photoPoints) {

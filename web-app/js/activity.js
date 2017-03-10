@@ -625,6 +625,11 @@ var ActivityRecordViewModel = function (activity) {
     self.embargoUntil = ko.observable(activity.embargoUntil).extend({simpleDate: false});
     self.projectName = ko.observable(activity.projectName);
     self.projectId = ko.observable(activity.projectId);
+    self.projectType = ko.observable(activity.projectType);
+    self.isWorksProject = ko.pureComputed(function () {
+        return self.projectType() === "works"
+    });
+
     self.projectUrl = ko.pureComputed(function () {
         return fcConfig.projectIndexUrl + '/' + self.projectId() +
             (fcConfig.version !== undefined ? "?version=" + fcConfig.version : '');
@@ -644,8 +649,8 @@ var ActivityRecordViewModel = function (activity) {
     self.records(allRecords);
 
     self.transients = {};
-    self.transients.viewUrl = ko.observable(fcConfig.activityViewUrl + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo, dataVersion: fcConfig.version});
-    self.transients.editUrl = ko.observable(fcConfig.activityEditUrl + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
+    self.transients.viewUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityViewUrl : fcConfig.activityViewUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo, dataVersion: fcConfig.version});
+    self.transients.editUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityEditUrl : fcConfig.activityEditUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
     self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo: fcConfig.returnTo});
     self.transients.parent = activity.parent;
 };

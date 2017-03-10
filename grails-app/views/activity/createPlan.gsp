@@ -9,6 +9,7 @@
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
+        projectUpdateUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/"
         },
         here = document.location.href;

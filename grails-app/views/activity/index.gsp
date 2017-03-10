@@ -28,7 +28,7 @@
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,map,species,activity,comments,viewmodels"/>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,map,species,activity,comments,viewmodels"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -192,6 +192,15 @@
 <r:script>
 
     var returnTo = "${returnTo}";
+
+    function ActivityLevelData() {
+        var self = this;
+        self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
+        self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
+        self.pActivity = {sites: []};
+    }
+
+    var activityLevelData = new ActivityLevelData();
 
     $(function(){
 
