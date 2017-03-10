@@ -339,7 +339,7 @@ class BioActivityController {
     def projectRecords(String id) {
         render(view: 'list',
                 model: [
-                        view: 'project',
+                        view: 'projectrecords',
                         projectId: id,
                         title: messageSource.getMessage('project.records.title', [].toArray(), '', Locale.default),
                         returnTo: g.createLink(controller: 'bioActivity', action: 'projectRecords') + '/' + id
