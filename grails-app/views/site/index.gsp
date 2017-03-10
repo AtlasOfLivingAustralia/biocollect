@@ -50,41 +50,43 @@
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             <span data-bind="text: message"></span>
         </div>
-    <ul class="breadcrumb">
-        <li>
-            <g:link controller="home">Home</g:link> <span class="divider">/</span>
-        </li>
-        <li class="active"> <a href="${createLink(controller: 'site', action: 'list')}">Sites</a> <span class="divider">/</span></li>
-        <li class="active">${site.name?.encodeAsHTML()}</li>
-        <li class="pull-right">
-            <g:set var="disabled">${(!user) ? "disabled='disabled' title='login required'" : ''}</g:set>
-            %{--Favourite functionality only available to authenticated users --}%
-            <g:if test="${user}">
-                <g:if test="${isSiteStarredByUser}">
-                    <button class="btn btn-small" id="starBtn"><i
-                            class="icon-star"></i><span> Remove from favourites</span></button>
+    <g:if test="${!hubConfig.hideBreadCrumbs}">
+        <ul class="breadcrumb">
+            <li>
+                <g:link controller="home">Home</g:link> <span class="divider">/</span>
+            </li>
+            <li class="active"> <a href="${createLink(controller: 'site', action: 'list')}">Sites</a> <span class="divider">/</span></li>
+            <li class="active">${site.name?.encodeAsHTML()}</li>
+            <li class="pull-right">
+                <g:set var="disabled">${(!user) ? "disabled='disabled' title='login required'" : ''}</g:set>
+                %{--Favourite functionality only available to authenticated users --}%
+                <g:if test="${user}">
+                    <g:if test="${isSiteStarredByUser}">
+                        <button class="btn btn-small" id="starBtn"><i
+                                class="icon-star"></i><span> Remove from favourites</span></button>
+                    </g:if>
+                    <g:else>
+                        <button class="btn btn-small" id="starBtn" ${disabled}><i
+                                class="icon-star-empty"></i><span> Add to favourites</span></button>
+                    </g:else>
                 </g:if>
-                <g:else>
-                    <button class="btn btn-small" id="starBtn" ${disabled}><i
-                            class="icon-star-empty"></i><span> Add to favourites</span></button>
-                </g:else>
-            </g:if>
-            <g:link action="edit" id="${site.siteId}" class="btn btn-small"><i class="icon-edit"></i> Edit site</g:link>
-            <g:if test="${site?.extent?.geometry?.pid}">
-                <a href="${grailsApplication.config.spatial.layersUrl}/shape/shp/${site.extent.geometry.pid}"
-                   class="btn btn-small">
-                    <i class="icon-download"></i>
-                    Download ShapeFile
-                </a>
-                <a href="${grailsApplication.config.spatial.baseURL}/?pid=${site.extent.geometry.pid}"
-                   class="btn btn-small"><i class="fa fa-map"></i> View in Spatial Portal</a>
-            </g:if>
-            <g:if test="${fc.userIsAlaAdmin()}">
-                <div class="btn btn-small btn-danger" onclick="deleteSite()"><i class="fa fa-remove"></i> Delete site
-                </div>
-            </g:if>
-        </li>
-    </ul>
+                <g:link action="edit" id="${site.siteId}" class="btn btn-small"><i class="icon-edit"></i> Edit site</g:link>
+                <g:if test="${site?.extent?.geometry?.pid}">
+                    <a href="${grailsApplication.config.spatial.layersUrl}/shape/shp/${site.extent.geometry.pid}"
+                       class="btn btn-small">
+                        <i class="icon-download"></i>
+                        Download ShapeFile
+                    </a>
+                    <a href="${grailsApplication.config.spatial.baseURL}/?pid=${site.extent.geometry.pid}"
+                       class="btn btn-small"><i class="fa fa-map"></i> View in Spatial Portal</a>
+                </g:if>
+                <g:if test="${fc.userIsAlaAdmin()}">
+                    <div class="btn btn-small btn-danger" onclick="deleteSite()"><i class="fa fa-remove"></i> Delete site
+                    </div>
+                </g:if>
+            </li>
+        </ul>
+    </g:if>
     <div class="row-fluid space-after">
         <div class="span6"><!-- left block of header -->
             <g:if test="${flash.errorMessage || flash.message}">

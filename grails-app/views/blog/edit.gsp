@@ -19,15 +19,17 @@
 </head>
 <body>
 <div class="${containerType}">
-    <ul class="breadcrumb">
-        <li>
-            <g:link controller="home">Home</g:link> <span class="divider">/</span>
+    <g:if test="${!hubConfig.hideBreadCrumbs}">
+        <ul class="breadcrumb">
+            <li>
+        <g:link controller="home">Home</g:link> <span class="divider">/</span>
         </li>
         <g:if test="${params.projectId}">
             <g:link controller="project" id="${params.projectId}">Project </g:link>  <span class="divider"> / </span></li>
         </g:if>
         <li class="active">Edit blog entry</li>
-    </ul>
+        </ul>
+    </g:if>
 
     <g:render template="editBlogEntry"/>
 

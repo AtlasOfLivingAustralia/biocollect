@@ -29,13 +29,14 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <g:if test="${!printView}">
+        <g:if test="${!printView && !hubConfig.hideBreadCrumbs}">
             <ul class="breadcrumb">
                 <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
                 <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
                 <li class="active">
                     <span data-bind="text:type"></span>
-                    <span data-bind="text:startDate.formattedDate"></span><span data-bind="visible:endDate">/</span><span data-bind="text:endDate.formattedDate"></span>
+                    <span data-bind="text:startDate.formattedDate"></span>
+                    <span data-bind="visible:endDate">/</span><span data-bind="text:endDate.formattedDate"></span>
                 </li>
             </ul>
         </g:if>
@@ -70,7 +71,6 @@
                     </div>
                 </div>
 
-
                 <div class="row-fluid">
                     <div class="span6">
                         <label for="type">Type of activity</label>
@@ -100,13 +100,13 @@
                 </div>
 
                 <div class="row-fluid">
-                    <div class="span12">
-                        <fc:textArea data-bind="value: description" id="description" label="Description" class="span12" rows="2" />
+                    <div class="span12 required">
+                        <fc:textField data-bind="value: description" id="description" label="Description" class="span12"  data-validation-engine="validate[required]" />
                     </div>
                 </div>
 
                 <div class="row-fluid">
-                    <div class="span6">
+                    <div class="span6 required">
                         <label for="plannedStartDate">Planned start date
                         <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
                         </label>
@@ -114,7 +114,7 @@
                             <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
                         </div>
                     </div>
-                    <div class="span6">
+                    <div class="span6 required">
                         <label for="plannedEndDate">Planned end date
                         <fc:iconHelp title="Planned end date" printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
                         </label>
@@ -270,7 +270,7 @@
             self.activityId = act.activityId;
             self.description = ko.observable(act.description);
             self.notes = ko.observable(act.notes);
-            self.startDate = ko.observable(act.startDate).extend({simpleDate: false});
+            self.startDate = ko.observable(act.startDate || act.plannedStartDate).extend({simpleDate: false});
             self.endDate = ko.observable(act.endDate || act.plannedEndDate).extend({simpleDate: false});
             self.plannedStartDate = ko.observable(act.plannedStartDate).extend({simpleDate: false});
             self.plannedEndDate = ko.observable(act.plannedEndDate).extend({simpleDate: false});
@@ -330,11 +330,12 @@
                 var matchingSite = $.grep(self.transients.project.sites, function(site) { return siteId == site.siteId})[0];
 
                 if (matchingSite) {
-                    self.siteMap.clearFeatures();
-                    self.siteMap.replaceAllFeatures([matchingSite.extent.geometry]);
+                    self.siteMap.clearLayers();
+                    var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(matchingSite.extent.geometry);
+                    self.siteMap.setGeoJSON(geoJson);
                 }
                 else {
-                    self.siteMap.clearFeatures();
+                    self.siteMap.clearLayers();
                 }
                 self.transients.site(matchingSite);
             });

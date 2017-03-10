@@ -21,16 +21,18 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <ul class="breadcrumb">
-            <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-            <g:if test="${project}">
-                <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
-            </g:if>
-            <g:elseif test="${site}">
-                <li><a data-bind="click:goToSite" class="clickable">Site</a> <span class="divider">/</span></li>
-            </g:elseif>
-            <li class="active">Create new activity</li>
-        </ul>
+        <g:if test="${!hubConfig.hideBreadCrumbs}">
+            <ul class="breadcrumb">
+                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
+                <g:if test="${project}">
+                    <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
+                </g:if>
+                <g:elseif test="${site}">
+                    <li><a data-bind="click:goToSite" class="clickable">Site</a> <span class="divider">/</span></li>
+                </g:elseif>
+                <li class="active">Create new activity</li>
+            </ul>
+        </g:if>
 
         <div class="row-fluid title-block well input-block-level">
             <div class="space-after"><span>An activity is usually associated with a site and a project. Less commonly, the activity may just be
@@ -59,7 +61,7 @@
         </div>
 
         <div class="row-fluid">
-            <div class="span6">
+            <div class="span6 required">
                 <label for="type">Type of activity</label>
                 <select data-bind="value: type, popover:{title:'', content:transients.activityDescription, trigger:'manual', autoShow:true}" id="type" data-validation-engine="validate[required]" class="input-xlarge">
                     <g:each in="${activityTypes}" var="t" status="i">
@@ -87,13 +89,13 @@
         </div>
 
         <div class="row-fluid">
-            <div class="span12">
-                <fc:textArea data-bind="value: description" id="description" label="Description" class="span12" rows="2" />
+            <div class="span10 required">
+                <fc:textField data-bind="value: description" id="description" label="Description" class="span12" data-validation-engine="validate[required]" />
             </div>
         </div>
 
         <div class="row-fluid">
-            <div class="span6">
+            <div class="span6 required">
                 <label for="plannedStartDate">Planned start date
                 <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
                 </label>
@@ -101,7 +103,7 @@
                     <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
                 </div>
             </div>
-            <div class="span6">
+            <div class="span6 required">
                 <label for="plannedEndDate">Planned end date
                 <fc:iconHelp title="Planned end date" printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
                 </label>
@@ -115,8 +117,6 @@
             <button type="button" data-bind="click: save" class="btn btn-primary">Save changes</button>
             <button type="button" id="cancel" class="btn">Cancel</button>
         </div>
-
-
     </div>
 </div>
 

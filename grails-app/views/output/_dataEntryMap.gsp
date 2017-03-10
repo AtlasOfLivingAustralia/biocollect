@@ -1,14 +1,15 @@
 <g:set var="orientation" value="${orientation ?: 'horizontal'}"/>
+<g:set var="isHorizontal" value="${orientation == 'horizontal'}"/>
 
-<g:if test="${orientation == 'horizontal'}">
+<g:if test="${isHorizontal}">
     <div class="span6">
         <m:map id="${source}Map" width="100%"/>
     </div>
 </g:if>
 
-<div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 1">
-    <div class="well">
-        <div class="span12">
+<div class="${isHorizontal ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 1">
+    <div>
+        <div class="row-fluid">
             <div class="span3">
                 <label for="siteLocation">${readonly ? 'Location:' : 'Select a location'}</label>
             </div>
@@ -19,21 +20,22 @@
                 </g:if>
                 <g:else>
                     <select id="siteLocation"
-                            data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Choose a site...", disable: ${readonly} || data.${source}Loading'></select>
+                            data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Choose a site...", disable: ${readonly} || data.${source}Loading'
+                            class="form-control full-width"></select>
                 </g:else>
             </div>
         </div>
     </div>
 </div>
 
-<g:if test="${orientation == 'vertical'}">
+<g:if test="${!isHorizontal}">
     <div class="row-fluid margin-bottom-1">
         <m:map id="${source}Map" width="${mobile ? '90%': '90%'}"/>
     </div>
 </g:if>
 
-<div class="${orientation == 'horizontal' ? 'span6' : 'row-fluid'}">
-    <div class="well">
+<div class="${isHorizontal? 'span6' : 'row-fluid'}">
+    <div>
         <!-- ko if: data.${source} -->
 
         <div class="row-fluid">
@@ -47,7 +49,7 @@
                 </g:if>
                 <g:else>
                     <input id="${source}Latitude" type="text" data-bind="value: data.${source}CentroidLatitude"
-                        ${validation} disabled>
+                        ${validation} disabled class="form-control full-width-input">
                 </g:else>
             </div>
         </div>
@@ -63,7 +65,7 @@
                 </g:if>
                 <g:else>
                     <input id="${source}CentroidLongitude" type="text" data-bind="value: data.${source}CentroidLongitude"
-                        ${validation} disabled>
+                        ${validation} disabled class="form-control full-width-input">
                 </g:else>
             </div>
         </div>
@@ -83,7 +85,7 @@
                 </g:if>
                 <g:else>
                     <input id="${source}Latitude" type="text" data-bind="value: data.${source}Latitude, disable: data.${source}LatLonDisabled"
-                           ${validation}>
+                           ${validation} class="form-control full-width-input">
                 </g:else>
             </div>
         </div>
@@ -99,7 +101,7 @@
                 </g:if>
                 <g:else>
                     <input id="${source}Longitude" type="text" data-bind="value: data.${source}Longitude, disable: data.${source}LatLonDisabled"
-                           ${validation}>
+                           ${validation} class="form-control full-width-input">
                 </g:else>
             </div>
         </div>
@@ -120,7 +122,7 @@
                         <select data-bind="options: ['',0, 10, 50, 100, 500, 1000, 5000, 10000]
                            optionsCaption: 'Choose one...',
                            value: data.${source}Accuracy,
-                           valueAllowUnset: true">
+                           valueAllowUnset: true" class="form-control full-width">
                         </select>
                     </g:else>
                 </div>
@@ -140,7 +142,7 @@
                         <select data-bind="options: ['', 'Google maps', 'Google earth', 'GPS device', 'camera/phone', 'physical maps', 'other']
                            optionsCaption: 'Choose one...',
                            value: data.${source}Source,
-                           valueAllowUnset: true"></select>
+                           valueAllowUnset: true" class="form-control full-width"></select>
                     </g:else>
                 </div>
             </div>
@@ -152,16 +154,18 @@
                 </div>
 
                 <div class="span9">
-                    <div class="span9">
-                        <g:if test="${readonly}">
-                            <textarea id="${source}Locality" type="text" data-bind="value: data.${source}Locality" readonly></textarea>
-                        </g:if>
-                        <g:else>
-                            <form class="form-inline">
-                                <textarea id="${source}Locality" type="text" data-bind="value: data.${source}Locality"></textarea>
-                                <button id="reverseGeocodeLocality" class="btn btn-default">Search for locality match</button>
-                            </form>
-                        </g:else>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <g:if test="${readonly}">
+                                <textarea id="${source}Locality" type="text" data-bind="value: data.${source}Locality" readonly class="form-control full-width"></textarea>
+                            </g:if>
+                            <g:else>
+                                <form class="form-inline">
+                                    <textarea id="${source}Locality" type="text" data-bind="value: data.${source}Locality" class="form-control full-width"></textarea>
+                                    <button id="reverseGeocodeLocality" class="btn btn-default margin-top-1">Search for locality match</button>
+                                </form>
+                            </g:else>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -173,13 +177,15 @@
                 </div>
 
                 <div class="span9">
-                    <div class="span9">
-                        <g:if test="${readonly}">
-                            <textarea id="${source}Notes" type="text" data-bind="text: data.${source}Notes" readonly></textarea>
-                        </g:if>
-                        <g:else>
-                            <textarea id="${source}Notes" type="text" data-bind="value: data.${source}Notes"></textarea>
-                        </g:else>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <g:if test="${readonly}">
+                                <textarea id="${source}Notes" type="text" data-bind="text: data.${source}Notes" readonly class="form-control full-width"></textarea>
+                            </g:if>
+                            <g:else>
+                                <textarea id="${source}Notes" type="text" data-bind="value: data.${source}Notes" class="form-control full-width"></textarea>
+                            </g:else>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -193,10 +199,10 @@
                     </div>
                     <div class="span9">
                         <form class="form-inline">
-                            <select name="bookmarkedLocations" id="bookmarkedLocations" class="form-control ">
+                            <select name="bookmarkedLocations" id="bookmarkedLocations" class="form-control full-width">
                                 <option value="">-- saved locations --</option>
                             </select>
-                            <button id="saveBookmarkLocation" class="btn btn-default">Save this location</button>
+                            <button id="saveBookmarkLocation" class="btn btn-default margin-top-1">Save this location</button>
                         </form>
                     </div>
                 </g:if>
@@ -216,7 +222,7 @@
             <div class="control-group" data-bind="css: { warning: nameStatus() == 'conflict' }">
                 <label for="site-name" class="control-label">Site Name</label>
                 <div class="controls">
-                    <input id="site-name" type="text" class="input-xlarge" data-bind="value: name, valueUpdate: 'afterkeydown'">
+                    <input id="site-name" type="text" class="input-xlarge form-control" data-bind="value: name, valueUpdate: 'afterkeydown'">
                     <i class="fa fa-cog fa-spin" data-bind="visible: nameStatus() == 'checking' "></i>
                     <span class="help-block" data-bind="visible: nameStatus() == 'conflict' ">This name is already being used for a site</span>
                 </div>
@@ -235,6 +241,19 @@
 
     $(function () {
         loadBookmarks();
+
+        $(document).on('imagelocation', function(event, data) {
+            var el = document.getElementById("${source}Map"),
+                viewModel = ko.dataFor(el);
+
+            if(viewModel){
+                var long = viewModel.data.${source}Longitude,
+                    lat = viewModel.data.${source}Latitude;
+
+                lat && !lat() && lat(data.decimalLatitude);
+                long && !long() && long(data.decimalLongitude);
+            }
+        });
 
         // Save current location
         $('#reverseGeocodeLocality').click(function (e) {

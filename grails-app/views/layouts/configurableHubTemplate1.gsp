@@ -28,8 +28,7 @@
     <title><g:layoutTitle /></title>
     <r:require modules="configHubTemplate1" />
     <g:set var="styles" value="${hubConfig.templateConfiguration?.styles}"></g:set>
-
-    <r:script disposition='head'>
+    <r:script>
         // initialise plugins
         jQuery(function(){
             // autocomplete on navbar search input
@@ -85,72 +84,165 @@
 <body class="${pageProperty(name:'body.class')?:'nav-collections'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}"  data-offset="${pageProperty(name:'body.data-offset')}" data-target="${pageProperty(name:'body.data-target')}" data-spy="${pageProperty(name:'body.data-spy')}">
 %{--<g:set var="fluidLayout" value="${grailsApplication.config.skin.fluidLayout?.toBoolean()}"/>--}%
 <g:set var="fluidLayout" value="${true}"/>
-<div class="navbar navbar-inverse navbar-static-top">
-    <div class="navbar-inner contain-to-grid">
-        <div class="${fluidLayout?'container-fluid':'container'}">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            %{--<a class="brand do-not-mark-external" href="http://www.mdba.gov.au/" id="mdbaLink" title="MDBA home page">--}%
-                %{--<g:img dir="/images/mdba" file="MDBA-logo.png" alt="MDBA logo" class="headerLogo"/>--}%
-            %{--</a>--}%
-            <div class="pull-right">
-                <div class="nav-collapse collapse pull-right">
-                    <ul class="nav">
-                        <g:if test="${hubConfig.templateConfiguration?.header?.links}">
-                            <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
-                                    <config:getLinkFromConfig config="${link}" hubConfig="${hubConfig}"></config:getLinkFromConfig>
-                            </g:each>
-                        </g:if>
-                    </ul>
-                </div><!--/.nav-collapse -->
-            </div>
-        </div><!--/.container-fluid -->
-    </div><!--/.navbar-inner -->
-</div><!--/.navbar -->
+<g:if test="${hubConfig.templateConfiguration.header.type == 'ala'}">
+    <div id="ala-header-bootstrap2" class="do-not-mark-external">
+        <hf:banner logoutUrl="${g.createLink(controller:"logout", action:"logout", absolute: true)}"/>
+    </div>
+</g:if>
+<g:if test="${hubConfig.templateConfiguration.header.type == 'biocollect'}">
+    <div id="biocollect-header">
+        <g:render template="/project/biocollectBanner"></g:render>
+        <g:if test="${showCitizenScienceBanner}">
+            <g:render template="/shared/bannerCitizenScience"/>
+        </g:if>
+        <g:if test="${showWorksBanner}">
+            <g:render template="/shared/bannerWorks"/>
+        </g:if>
+        <g:if test="${showEcoScienceBanner}">
+            <g:render template="/shared/bannerEcoScience"/>
+        </g:if>
+    </div>
+</g:if>
+<g:elseif test="${hubConfig.templateConfiguration.header.type == 'custom'}">
+    <div id="custom-header" class="do-not-mark-external">
+        <div class="navbar navbar-inverse navbar-static-top">
+            <div class="navbar-inner contain-to-grid">
+                <div class="${fluidLayout?'container-fluid':'container'}">
+                    <div class="pull-right">
+                        <div class="nav-collapse collapse pull-right">
+                            <ul class="nav">
+                                <g:if test="${hubConfig.templateConfiguration?.header?.links}">
+                                    <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
+                                        <config:getLinkFromConfig config="${link}" hubConfig="${hubConfig}"></config:getLinkFromConfig>
+                                    </g:each>
+                                </g:if>
+                            </ul>
+                        </div><!--/.nav-collapse -->
+                    </div>
+                </div><!--/.container-fluid -->
+            </div><!--/.navbar-inner -->
+        </div><!--/.navbar -->
+    </div>
+</g:elseif>
+
 
 <g:pageProperty name="page.page-header"/> <%-- allows special content to be inserted --%>
 
-<div id="main-content" class="${homepage? 'homepage': ''}">
+<div id="main-content" class="${homepage? 'homepage': ''} ${hubConfig.templateConfiguration.header.type == 'ala'? 'padding-top-70':''}">
     <g:layoutBody />
 </div>
-<div id="footer">
-    <div class="${fluidLayout?'container-fluid':'container'}">
-        <div class="row-fluid  navbar-inverse">
-            <div class="span5">
-                <ul class="nav">
-                    <g:if test="${hubConfig.templateConfiguration?.footer?.links}">
-                        <g:each in="${hubConfig.templateConfiguration?.footer?.links}" var="link">
-                            <li>
-                                <config:getLinkFromConfig config="${link}"></config:getLinkFromConfig>
-                            </li>
-                        </g:each>
-                    </g:if>
-                </ul>
-            </div><!--/.spanX -->
-            <div class="span4 smlinks text-right">
-                <div id="smlinks">
-                    <g:if test="${hubConfig.templateConfiguration?.footer?.socials}">
-                        <g:each in="${hubConfig.templateConfiguration?.footer?.socials}" var="social">
-                            <config:getSocialMediaLinkFromConfig config="${social}"></config:getSocialMediaLinkFromConfig>
-                        </g:each>
-                    </g:if>
-                </div>
-        </div><!--/.spanX -->
-            <div class="span3">
-                <a class="brand" href="http://ala.org.au/" id="alaLink" title="ALA home page">
-                    <g:img dir="/images/mdba" file="ALA-logo-BW-124x109.png" alt="Powered by ALA logo" class="headerLogo"/>
-                    <div id="alaHeadingText"><div id="poweredBy">powered by</div><div id="alaBy" class="visible-desktop">Atlas of Living Australia</div>
-                        <div class="hidden-desktop">ALA</div></div>
-                </a>
-            </div>
-        </div><!--/.row -->
-    </div><!--/.contaier -->
-</div><!--/#footer -->
 
+<g:if test="${hubConfig.templateConfiguration.footer.type == 'ala'}">
+    <div id="ala-footer-bootstrap2">
+        <hf:footer/>
+    </div>
+</g:if>
+<g:elseif test="${hubConfig.templateConfiguration.footer.type == 'custom'}">
+    <div id="footer">
+        <div class="${fluidLayout?'container-fluid':'container'}">
+            <div class="row-fluid  navbar-inverse">
+                <div class="span5">
+                    <ul class="nav">
+                        <g:if test="${hubConfig.templateConfiguration?.footer?.links}">
+                            <g:each in="${hubConfig.templateConfiguration?.footer?.links}" var="link">
+                                <li>
+                                    <config:getLinkFromConfig config="${link}"></config:getLinkFromConfig>
+                                </li>
+                            </g:each>
+                        </g:if>
+                    </ul>
+                </div><!--/.spanX -->
+                <div class="span4 smlinks text-right">
+                    <div id="smlinks">
+                        <g:if test="${hubConfig.templateConfiguration?.footer?.socials}">
+                            <g:each in="${hubConfig.templateConfiguration?.footer?.socials}" var="social">
+                                <config:getSocialMediaLinkFromConfig config="${social}"></config:getSocialMediaLinkFromConfig>
+                            </g:each>
+                        </g:if>
+                    </div>
+                </div><!--/.spanX -->
+                <div class="span3">
+                    <a class="brand" href="http://ala.org.au/" id="alaLink" title="ALA home page">
+                        <g:img dir="/images/mdba" file="ALA-logo-BW-124x109.png" alt="Powered by ALA logo" class="headerLogo"/>
+                        <div id="alaHeadingText"><div id="poweredBy">powered by</div><div id="alaBy" class="visible-desktop">Atlas of Living Australia</div>
+                            <div class="hidden-desktop">ALA</div></div>
+                    </a>
+                </div>
+            </div><!--/.row -->
+        </div><!--/.contaier -->
+    </div><!--/#footer -->
+</g:elseif>
+<r:script>
+    // Prevent console.log() killing IE
+    if (typeof console == "undefined") {
+        this.console = {log: function() {}};
+    }
+
+    $(document).ready(function (e) {
+
+        $.ajaxSetup({ cache: false });
+
+        // Set up a timer that will periodically poll the server to keep the session alive
+        var intervalSeconds = 5 * 60;
+
+        setInterval(function() {
+            $.ajax("${createLink(controller: 'ajax', action:'keepSessionAlive')}").done(function(data) {});
+        }, intervalSeconds * 1000);
+
+    }); // end document ready
+
+</r:script>
+<g:if test="${userLoggedIn}">
+    <r:script>
+        $(document).ready(function (e) {
+            // Show introduction popup (with cookie check)
+            var cookieName = "hide-intro";
+            var introCookie = $.cookie(cookieName);
+            //  document.referrer is empty following login from AUTH
+            if (!introCookie && !document.referrer) {
+                $('#introPopup').modal('show');
+            } else {
+                $('#hideIntro').prop('checked', true);
+            }
+            // console.log("referrer", document.referrer);
+            // don't show popup if user has clicked checkbox on popup
+            $('#hideIntro').click(function() {
+                if ($(this).is(':checked')) {
+                    $.cookie(cookieName, 1);
+                } else {
+                    $.removeCookie(cookieName);
+                }
+            });
+        }); // end document ready
+    </r:script>
+</g:if>
+<g:if test="${java.lang.Boolean.parseBoolean(grailsApplication.config.bugherd.integration)}">
+    <r:script>
+        (function (d, t) {
+            var bh = d.createElement(t), s = d.getElementsByTagName(t)[0];
+            bh.type = 'text/javascript';
+            bh.src = '//www.bugherd.com/sidebarv2.js?apikey=2wgeczqfyixard6e9xxfnq';
+            s.parentNode.insertBefore(bh, s);
+        })(document, 'script');
+    </r:script>
+</g:if>
+
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<r:script>
+        var pageTracker = _gat._getTracker('${grailsApplication.config.googleAnalyticsID}');
+        pageTracker._initData();
+        pageTracker._trackPageview();
+        // show warning if using IE6
+        if ($.browser.msie && $.browser.version.slice(0,1) == '6') {
+            $('#header').prepend(
+                $('<div style="text-align:center;color:red;">WARNING: This page is not compatible with IE6.' +
+' Many functions will still work but layout and image transparency will be disrupted.</div>')
+            );
+        }
+</r:script>
 <!-- JS resources-->
 <r:layoutResources/>
 </body>

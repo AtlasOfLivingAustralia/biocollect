@@ -807,6 +807,29 @@ ko.bindingHandlers.expandable = {
     }
 };
 
+/**
+ * Get image of selected species
+ */
+ko.bindingHandlers.getImage = {
+    update: function (element, valueAccessor, allBindings, viewModel) {
+        if(viewModel.guid()){
+            viewModel.transients.image('');
+
+            $.ajax({
+                url: fcConfig.bieUrl + '/ws/species/guids/bulklookup',
+                method: 'post',
+                dataType: 'json',
+                data: JSON.stringify([ viewModel.guid() ]),
+                contentType: 'application/json',
+                success: function (data) {
+                    var image = data.searchDTOList[0] && data.searchDTOList[0].thumbnailUrl;
+                    viewModel.transients.image(image);
+                }
+            });
+        }
+    }
+};
+
 // the following code handles resize-sensitive truncation of the description field
 $.fn.textWidth = function(text, font) {
     if (!$.fn.textWidth.fakeEl) $.fn.textWidth.fakeEl = $('<span>').hide().appendTo(document.body);

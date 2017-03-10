@@ -14,17 +14,17 @@
             activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'delete')}",
             activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
+            searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities', params: [projectId: projectId])}",
             worksActivityEditUrl: "${createLink(controller: 'activity', action: 'enterData')}",
             worksActivityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
-            searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
             downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
             getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params:[version: params.version])}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
-            view: "${view == 'allrecords' ? view : 'myrecords'}",
-            returnTo: "${view == 'allrecords' ? createLink(controller: 'bioActivity', action:'allRecords') : createLink(controller: 'bioActivity', action:'list') }",
+            view: "${view}",
+            returnTo: "${returnTo}",
             projectLinkPrefix: "${createLink(controller: 'project')}/",
             recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
@@ -37,7 +37,18 @@
 <body>
 
 <div class="container-fluid">
-    <h2>${view == 'allrecords' ? 'All Records' : 'My Data'}</h2>
+    <div class="row-fluid">
+        %{--page title--}%
+        <div class="span4">
+            <h2>${title}</h2>
+        </div>
+        %{-- quick links --}%
+        <div class="span8">
+            <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
+        </div>
+        %{--quick links END--}%
+    </div>
+
     <div class="main-content" style="display:none;">
         <g:render template="../bioActivity/activities"/>
     </div>

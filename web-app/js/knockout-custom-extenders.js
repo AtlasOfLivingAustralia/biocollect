@@ -220,3 +220,49 @@ ko.extenders.numeric = function(target, precision) {
     //return the new computed observable
     return result;
 };
+
+/**
+ * Adds two utility functions to handle UI behaviour.
+ * addWord - insert the passed value to array only if it does not exist in array
+ * removeWord - remove a word from list
+ * @param target
+ * @returns target
+ */
+ko.extenders.set = function (target) {
+    //create a writable computed observable to intercept writes to our observable
+    target.addWord = ko.computed({
+        read: function () {
+            // it is not possible to delete/remove a value from array when combobox has the value selected in normal cases.
+            // returning empty string enables deletion.
+            return '';
+        },
+        write: function(newValue) {
+            var values = target() || [];
+
+            if(newValue && !newValue.push){
+                newValue = [newValue]
+            }
+
+            if(newValue){
+                for(var i in newValue){
+                    if(values.indexOf(newValue[i]) == -1){
+                        target.push(newValue[i]);
+                    }
+                }
+
+                target(values);
+            }
+        }
+    });
+
+    target.removeWord = ko.computed({
+        read: target,
+        write: function(toBeDeleted) {
+            var values = target() || [];
+            ko.utils.arrayRemoveItem(values, toBeDeleted);
+            target(values);
+        }
+    });
+
+    return target
+};

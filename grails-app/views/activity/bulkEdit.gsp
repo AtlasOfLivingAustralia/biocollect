@@ -33,13 +33,15 @@
 <body>
 
 <div class="container-fluid">
-    <ul class="breadcrumb">
-        <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-        <li><a href="${createLink(controller:'organisation', action:'index', id:organisation.organisationId)}" class="clickable">Organisation</a> <span class="divider">/</span></li>
-        <li class="active">
-            ${title}
-        </li>
-    </ul>
+    <g:if test="${!hubConfig.hideBreadCrumbs}">
+        <ul class="breadcrumb">
+            <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
+            <li><a href="${createLink(controller:'organisation', action:'index', id:organisation.organisationId)}" class="clickable">Organisation</a> <span class="divider">/</span></li>
+            <li class="active">
+                ${title}
+            </li>
+        </ul>
+    </g:if>
     <div class="row-fluid">
         <h2>${title}</h2>
     </div>

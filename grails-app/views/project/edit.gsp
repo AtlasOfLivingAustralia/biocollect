@@ -35,14 +35,15 @@
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
-
-<ul class="breadcrumb">
-    <li><g:link controller="home"><g:message code="g.home"/></g:link> <span class="divider">/</span></li>
-    <li><g:link controller="project" action="index"
-                id="${project.projectId}">${project.name?.encodeAsHTML()}</g:link> <span class="divider">/</span>
-    </li>
-    <li class="active"><g:message code="g.edit"/></li>
-</ul>
+<g:if test="${!hubConfig.hideBreadCrumbs}">
+    <ul class="breadcrumb">
+        <li><g:link controller="home"><g:message code="g.home"/></g:link> <span class="divider">/</span></li>
+        <li><g:link controller="project" action="index"
+                    id="${project.projectId}">${project.name?.encodeAsHTML()}</g:link> <span class="divider">/</span>
+        </li>
+        <li class="active"><g:message code="g.edit"/></li>
+    </ul>
+</g:if>
 <form id="projectDetails" class="form-horizontal">
     <g:render template="details" model="${pageScope.variables}"/>
     <div class="well">

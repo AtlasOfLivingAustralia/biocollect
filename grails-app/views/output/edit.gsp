@@ -9,23 +9,24 @@
 </head>
 <body>
 <div class="container-fluid">
-
-    <ul class="breadcrumb">
-        <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-        <li>Data entry<span class="divider">/</span></li>
-        <g:if test="${project}">
-            <li class="active">Create new site for ${project?.name}</li>
-        </g:if>
-        <g:elseif test="${create}">
-            <li class="active">Create</li>
-        </g:elseif>
-        <g:else>
-            <li>
-                <span data-bind="text:name"></span>
-                <span data-bind="text:assessmentDate.formattedDate"></span>
-            </li>
-        </g:else>
-    </ul>
+    <g:if test="${!hubConfig.hideBreadCrumbs}">
+        <ul class="breadcrumb">
+            <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
+            <li>Data entry<span class="divider">/</span></li>
+            <g:if test="${project}">
+                <li class="active">Create new site for ${project?.name}</li>
+            </g:if>
+            <g:elseif test="${create}">
+                <li class="active">Create</li>
+            </g:elseif>
+            <g:else>
+                <li>
+                    <span data-bind="text:name"></span>
+                    <span data-bind="text:assessmentDate.formattedDate"></span>
+                </li>
+            </g:else>
+        </ul>
+    </g:if>
 
     <div class="row-fluid title-block">
         <div class="span6 title-attribute">

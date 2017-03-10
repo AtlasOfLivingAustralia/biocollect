@@ -77,6 +77,8 @@ var HubSettings = function (settings, config) {
     self.documents = ko.observableArray();
     self.defaultProgram = ko.observable();
     self.templateConfiguration = ko.observable();
+    self.hideBreadCrumbs = ko.observable();
+    self.quickLinks = ko.observableArray();
     self.facets = ko.observableArray();
 
     /**
@@ -141,6 +143,10 @@ var HubSettings = function (settings, config) {
         return false;
     };
 
+    self.addLink = function () {
+        self.quickLinks.push(new LinkViewModel({}));
+    };
+
     self.transients = {
 
         /**
@@ -167,6 +173,8 @@ var HubSettings = function (settings, config) {
         self.logoUrl(self.orBlank(settings.logoUrl));
         self.homePagePath(self.orBlank(settings.homePagePath));
         self.defaultFacetQuery([]);
+        self.hideBreadCrumbs(settings.hideBreadCrumbs);
+        self.quickLinks(settings.quickLinks || []);
         self.templateConfiguration(new TemplateConfigurationViewModel(settings.templateConfiguration || {}));
         if (settings.defaultFacetQuery && settings.defaultFacetQuery instanceof Array) {
             $.each(settings.defaultFacetQuery, function (i, obj) {
@@ -308,6 +316,7 @@ var HeaderViewModel = function (config) {
     self.links = ko.observableArray(config.links);
     self.logo = ko.observable();
     self.style = ko.observable(config.style);
+    self.type = ko.observable(config.type||'');
 
     self.addLink = function () {
       self.links.push(new LinkViewModel({}));
@@ -331,6 +340,7 @@ var FooterViewModel = function (config) {
     self.links = ko.observableArray(config.links);
     self.socials = ko.observableArray(config.socials);
     self.style = ko.observable(config.style);
+    self.type = ko.observable(config.type||'');
 
     self.addLink = function () {
         self.links.push(new LinkViewModel({}));
@@ -338,12 +348,12 @@ var FooterViewModel = function (config) {
 
     self.addSocialMedia = function () {
         self.socials.push(new SocialMediaViewModel({}))
-    }
+    };
 
     self.removeLink = function (data) {
         self.links.remove(data);
         self.socials.remove(data);
-    }
+    };
 };
 
 var LinkViewModel = function (config) {

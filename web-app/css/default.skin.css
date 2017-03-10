@@ -25,7 +25,6 @@ body {
 
 #main-content {
     padding-bottom: 20px; /* matches .content bottom padding in merit */
-    padding-top: 20px;
 }
 
 #fixed-footer-wrapper {  /*FIXED FOOTER*/
@@ -33,19 +32,6 @@ body {
     height: auto !important; /* for IE6 */
     height: 100%;            /* for IE6 */
     margin: 0 auto -497px;
-}
-
-footer, .push {
-    height: 497px; /*FIXED FOOTER*/
-}
-
-footer {
-    width: 100%;
-    background-color: #efefef;
-}
-
-footer img {
-    max-width: inherit;
 }
 
 .map-box {
@@ -140,10 +126,6 @@ footer img {
     #pt-search-group {
         margin-top: 0px ;
     }
-}
-
-footer, .ftr-primary, .ftr-secondary, .ftr-social {
-    background-color: #F2F2F2;
 }
 
 .nowrap {

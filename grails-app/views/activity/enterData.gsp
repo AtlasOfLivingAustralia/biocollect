@@ -33,7 +33,7 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <g:if test="${!printView}">
+        <g:if test="${!printView && !hubConfig.hideBreadCrumbs}">
             <ul class="breadcrumb">
                 <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
                 <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
@@ -500,7 +500,7 @@
             self.activityId = act.activityId;
             self.description = ko.observable(act.description);
             self.notes = ko.observable(act.notes);
-            self.startDate = ko.observable(act.startDate).extend({simpleDate: false});
+            self.startDate = ko.observable(act.startDate || act.plannedStartDate).extend({simpleDate: false});
             self.endDate = ko.observable(act.endDate || act.plannedEndDate).extend({simpleDate: false});
             self.plannedStartDate = ko.observable(act.plannedStartDate).extend({simpleDate: false});
             self.plannedEndDate = ko.observable(act.plannedEndDate).extend({simpleDate: false});
@@ -544,10 +544,14 @@
                 }
                 var matchingSite = $.grep(self.transients.project.sites, function(site) { return siteId == site.siteId})[0];
 
-                self.siteMap.clearFeatures();
+
+                self.siteMap.clearLayers();
                 if (matchingSite) {
-                    self.siteMap.replaceAllFeatures([matchingSite.extent.geometry]);
+                    var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(matchingSite.extent.geometry);
+                    self.siteMap.setGeoJSON(geoJson);
                 }
+
+
                 self.transients.site(matchingSite);
                 self.updatePhotoPointModel(matchingSite);
 

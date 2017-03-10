@@ -248,19 +248,20 @@ ko.bindingHandlers.imageUpload = {
 
         var innerContext = bindingContext.createChildContext(bindingContext);
         ko.utils.extend(innerContext, uploadProperties);
+        var previewElem = $(element).parent().find(config.previewSelector);
 
 // Expected to be a ko.observableArray
         $(element).fileupload({
             url:config.url,
             autoUpload:true,
-            forceIframeTransport: true
+            forceIframeTransport: false
         }).on('fileuploadadd', function(e, data) {
+            previewElem.html('');
             complete(false);
             progress(1);
         }).on('fileuploadprocessalways', function(e, data) {
             if (data.files[0].preview) {
                 if (config.previewSelector !== undefined) {
-                    var previewElem = $(element).parent().find(config.previewSelector);
                     previewElem.append(data.files[0].preview);
                 }
             }
@@ -269,6 +270,7 @@ ko.bindingHandlers.imageUpload = {
             size(data.total);
         }).on('fileuploaddone', function(e, data) {
             var result = data.result;
+            var $doc = $(document);
             if (!result) {
                 result = {};
                 error('No response from server');
@@ -292,17 +294,19 @@ ko.bindingHandlers.imageUpload = {
 
                     target.push(new ImageViewModel(data));
 
-                    if (viewModel.data) {
-                        if (f.decimalLongitude && viewModel.data.locationLongitude && !viewModel.data.locationLongitude()) {
-                            viewModel.data.locationLongitude(f.decimalLongitude)
-                        }
-                        if (f.decimalLatitude && viewModel.data.locationLatitude && !viewModel.data.locationLatitude()) {
-                            viewModel.data.locationLatitude(f.decimalLatitude)
-                        }
-                        if (f.isoDate && viewModel.data.surveyDate && !viewModel.data.surveyDate()) {
-                            viewModel.data.surveyDate(f.isoDate)
-                        }
+                    if(f.decimalLongitude && f.decimalLatitude){
+                        $doc.trigger('imagelocation', {
+                            decimalLongitude: f.decimalLongitude,
+                            decimalLatitude: f.decimalLatitude
+                        });
                     }
+
+                    if(f.isoDate){
+                        $doc.trigger('imagedatetime', {
+                            date: f.isoDate
+                        });
+                    }
+
                 });
 
                 complete(true);

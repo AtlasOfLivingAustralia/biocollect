@@ -33,12 +33,13 @@
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
+    <g:if test="${!hubConfig.hideBreadCrumbs}">
+        <ul class="breadcrumb">
+            <li><g:link controller="home"><g:message code="g.home"/></g:link> <span class="divider">/</span></li>
 
-<ul class="breadcrumb">
-    <li><g:link controller="home"><g:message code="g.home"/></g:link> <span class="divider">/</span></li>
-
-    <li class="active">Create Project</li>
-</ul>
+            <li class="active">Create Project</li>
+        </ul>
+    </g:if>
     <h2>Register a new project</h2>
     <p>
     Please tell us about your project by completing the form below.  Questions marked with a * are mandatory.
