@@ -131,40 +131,6 @@ class BioActivityController {
     }
 
     /**
-     * Edit activity for the given activityId
-     * Project Site Admin / activity owner can edit the activity
-     * @param id activity id
-     * @return
-     */
-    def edit(String id) {
-
-        String userId = userService.getCurrentUserId()
-        def activity = activityService.get(id)
-        String projectId = activity?.projectId
-        def model = null
-
-        if (!userId) {
-            flash.message = "Access denied: User has not been authenticated."
-            redirect(controller: 'project', action: 'index', id: projectId)
-        } else if (!activity) {
-            flash.message = "Invalid activity - ${id}"
-            redirect(controller: 'project', action: 'index', id: projectId)
-        } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
-            def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
-            model = activityAndOutputModel(activity, activity.projectId)
-            model.pActivity = pActivity
-            model.projectActivityId = pActivity.projectActivityId
-            model.id = id
-            model.title = messageSource.getMessage('record.edit.title', [].toArray(), '', Locale.default)
-        } else {
-            flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
-            redirect(controller: 'project', action: 'index', id: projectId)
-        }
-
-        model
-    }
-
-    /**
      * Create activity for the given project activity
      * Users with project edit permission can create new activity for the projectActivity
      * @param id project activity
@@ -177,15 +143,35 @@ class BioActivityController {
         model
     }
 
+    /**
+     * Edit activity for the given activityId
+     * Project Site Admin / activity owner can edit the activity
+     * @param id activity id
+     * @return
+     */
+    def edit(String id) {
+        Map model = editActivity(id)
+        model.title = messageSource.getMessage('record.edit.title', [].toArray(), '', Locale.default)
+        model
+    }
+
     def mobileCreate(String id) {
-        Map model = addActivity(id)
+        Map model = addActivity(id, mobile)
         model.mobile = true
         model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
         model.authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
         render (view: 'create', model: model)
     }
 
-    private def addActivity (String id) {
+    def mobileEdit(String id) {
+        Map model = editActivity(id, true)
+        model.mobile = true
+        model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
+        model.authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
+        render (view: 'edit', model: model)
+    }
+
+    private def addActivity(String id, boolean mobile = false) {
         String userId = userService.getCurrentUserId(request)
         Map pActivity = projectActivityService.get(id, "all")
         String projectId = pActivity?.projectId
@@ -194,13 +180,13 @@ class BioActivityController {
 
         if (!pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
             flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
-            redirect(controller: 'project', action: 'index', id: projectId)
+            if (!mobile) redirect(controller: 'project', action: 'index', id: projectId)
         } else if (!type) {
             flash.message = "Invalid activity type"
-            redirect(controller: 'project', action: 'index', id: projectId)
+            if (!mobile) redirect(controller: 'project', action: 'index', id: projectId)
         } else if (isProjectActivityClosed(pActivity)) {
             flash.message = "Access denied: This survey is closed."
-            redirect(controller: 'project', action: 'index', id: projectId)
+            if (!mobile) redirect(controller: 'project', action: 'index', id: projectId)
         } else {
             Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
             Map project = projectService.get(projectId)
@@ -213,8 +199,43 @@ class BioActivityController {
             model.defaultData = metadataService.getDefaultData(model.outputModels)
         }
 
+        if (mobile && flash.message) {
+            model.error = flash.message
+        }
+
         model
     }
+
+    private editActivity(String id, boolean mobile = false){
+        String userId = userService.getCurrentUserId(request)
+        def activity = activityService.get(id)
+        String projectId = activity?.projectId
+        def model = null
+
+        if (!userId) {
+            flash.message = "Access denied: User has not been authenticated."
+            if(!mobile) redirect(controller: 'project', action: 'index', id: projectId)
+        } else if (!activity) {
+            flash.message = "Invalid activity - ${id}"
+            if(!mobile)  redirect(controller: 'project', action: 'index', id: projectId)
+        } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+            def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
+            model = activityAndOutputModel(activity, activity.projectId)
+            model.pActivity = pActivity
+            model.projectActivityId = pActivity.projectActivityId
+            model.id = id
+        } else {
+            flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
+            if(!mobile)  redirect(controller: 'project', action: 'index', id: projectId)
+        }
+
+        if(mobile && flash.message) {
+            model.error = flash.message
+        }
+
+        model
+    }
+
 
     /**
      * Delete activity for the given activityId

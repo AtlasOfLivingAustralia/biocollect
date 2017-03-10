@@ -7,7 +7,7 @@
         <title>Print | ${activity.type} | Bio Collect</title>
     </g:if>
     <g:else>
-        <meta name="layout" content="${hubConfig.skin}"/>
+        <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
         <title>Edit | ${activity.type} | Bio Collect</title>
     </g:else>
 
