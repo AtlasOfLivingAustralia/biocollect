@@ -833,6 +833,11 @@ class ProjectController {
             if (params?.hub == 'ecoscience') {
                 payload.fq.push("projectType:ecoscience");
             }
+
+            if (params?.hub == 'works') {
+                payload.fq.push("projectType:works");
+            }
+
             Map result = projectService.listImages(payload, params?.version) ?: [:];
             render contentType: 'application/json', text: result as JSON
         } catch (SocketTimeoutException sTimeout){

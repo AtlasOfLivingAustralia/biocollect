@@ -9,11 +9,9 @@
         <li class="${(path ==~ /.*project\/citizenScience.*/) ? 'active' : ''}">
             <a href="#" class="btnSearch"><span class="fa fa-search"></span>Search</a>
         </li>
-        <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-            <li class="${(path ==~ /.*bioActivity\/allRecords.*/) ? 'active' : ''}">
+        <li class="${(path ==~ /.*bioActivity\/allRecords.*/) ? 'active' : ''}">
                 <a href="#" class="btnAllData"><span class="fa fa-database"></span>All Records</a>
-            </li>
-        </g:if>
+        </li>
         <li class="${(path ==~ /.*site\/.*/) ? 'active' : ''}">
             <a href="#" class="btnSite"><span class="fa fa-map-marker"></span>Sites</a>
         </li>
