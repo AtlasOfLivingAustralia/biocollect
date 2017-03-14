@@ -10,7 +10,7 @@
         <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
         <title>View | ${activity.type} | Bio Collect</title>
     </g:else>
-%{-- this will ultimately follow through to the comment controller using url mapping --}%
+    %{-- this will ultimately follow through to the comment controller using url mapping --}%
     <g:set var="commentUrl" value="${resource(dir:'/bioActivity')}/${activity.activityId}/comment"></g:set>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
@@ -54,18 +54,19 @@
                 </li>
             </ul>
         </g:if>
-
-        <div class="row-fluid">
-            %{--page title--}%
-            <div class="span4">
-                <h2><g:message code="record.view.title"></g:message></h2>
+        <g:if test="${!mobile}">
+            <div class="row-fluid">
+                %{--page title--}%
+                <div class="span4">
+                    <h2><g:message code="record.view.title"></g:message></h2>
+                </div>
+                %{-- quick links --}%
+                <div class="span8">
+                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
+                </div>
+                %{--quick links END--}%
             </div>
-            %{-- quick links --}%
-            <div class="span8">
-                <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
-            </div>
-            %{--quick links END--}%
-        </div>
+        </g:if>
 
         <g:if test="${params?.version}">
             <div class="well">
