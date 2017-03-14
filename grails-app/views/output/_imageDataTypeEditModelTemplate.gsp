@@ -126,9 +126,14 @@
             </td>
         </tr>
         <tr>
-            <td colspan="2">
+            <td class="span4">
                 <span class="btn-small btn-success fileinput-button"><i class="fa fa-plus"></i> <input type="file" accept="image/*" name="files" multiple><span>Add files</span>
                 </span>
+            </td>
+            <td>
+                <div class="dropzone span4" id="${dropZone}">
+                    Or, drop files here
+                </div>
             </td>
         </tr>
         </tbody>

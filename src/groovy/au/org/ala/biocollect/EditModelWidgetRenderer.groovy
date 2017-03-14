@@ -139,8 +139,9 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
 
     @Override
     void renderImage(WidgetRenderContext context) {
-        context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"
-        context.writer << context.g.render(template: '/output/imageDataTypeEditModelTemplate', model: [databindAttrs:context.databindAttrs.toString(), name: context.source])
+        String dropZone = context.model.source + 'DropZone'
+        context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}, dropZone: '#${dropZone}'}"
+        context.writer << context.g.render(template: '/output/imageDataTypeEditModelTemplate', model: [databindAttrs:context.databindAttrs.toString(), name: context.source, dropZone: dropZone])
     }
 
     @Override

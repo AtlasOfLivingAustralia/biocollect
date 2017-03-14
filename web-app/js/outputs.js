@@ -238,7 +238,8 @@ ko.bindingHandlers.imageUpload = {
         var config = valueAccessor();
         config = $.extend({}, config, defaultConfig);
 
-        var target = config.target;
+        var target = config.target,
+            dropZone = $(config.dropZone);
         var uploadProperties = {
             size: size,
             progress: progress,
@@ -254,7 +255,8 @@ ko.bindingHandlers.imageUpload = {
         $(element).fileupload({
             url:config.url,
             autoUpload:true,
-            forceIframeTransport: false
+            forceIframeTransport: false,
+            dropZone: dropZone
         }).on('fileuploadadd', function(e, data) {
             previewElem.html('');
             complete(false);

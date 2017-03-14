@@ -601,6 +601,17 @@ body {
     color: #fff;
     background-color: #c44d34;
   }
+
+  .dropzone {
+    font-weight: 500;
+    font-size: 20px;
+    border: 1px solid #5F5D60;
+    padding: 20px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    background-color: #f5f5f5;
+  }
 }
 
 #ala-header-bootstrap2, #ala-footer-bootstrap2 {
