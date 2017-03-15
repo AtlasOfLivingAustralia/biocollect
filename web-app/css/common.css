@@ -458,7 +458,14 @@ input.padding-14, .padding-14{
 
 
 .speciesThumbnail {
-    height:75px;
+    height:150px;
+    width: auto;
+}
+.space-after{
+    margin-bottom:5px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
 .imageDataTypePreview{

@@ -6,27 +6,28 @@
         <m:map id="${source}Map" width="100%"/>
     </div>
 </g:if>
+<g:if test="${!hideSiteSelection}">
+    <div class="${isHorizontal ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 1">
+        <div>
+            <div class="row-fluid">
+                <div class="span3">
+                    <label for="siteLocation">${readonly ? 'Location:' : 'Select a location'}</label>
+                </div>
 
-<div class="${isHorizontal ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 1">
-    <div>
-        <div class="row-fluid">
-            <div class="span3">
-                <label for="siteLocation">${readonly ? 'Location:' : 'Select a location'}</label>
-            </div>
-
-            <div class="span9">
-                <g:if test="${readonly}">
-                    <span class="output-text" data-bind="text: data.${source}Name() "></span>
-                </g:if>
-                <g:else>
-                    <select id="siteLocation"
-                            data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Choose a site...", disable: ${readonly} || data.${source}Loading'
-                            class="form-control full-width"></select>
-                </g:else>
+                <div class="span9">
+                    <g:if test="${readonly}">
+                        <span class="output-text" data-bind="text: data.${source}Name() "></span>
+                    </g:if>
+                    <g:else>
+                        <select id="siteLocation"
+                                data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Choose a site...", disable: ${readonly} || data.${source}Loading'
+                                class="form-control full-width"></select>
+                    </g:else>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</g:if>
 
 <g:if test="${!isHorizontal}">
     <div class="row-fluid margin-bottom-1">
@@ -36,43 +37,45 @@
 
 <div class="${isHorizontal? 'span6' : 'row-fluid'}">
     <div>
-        <!-- ko if: data.${source} -->
+        <g:if test="${!hideSiteSelection}">
+            <!-- ko if: data.${source} -->
 
-        <div class="row-fluid">
-            <div class="span3">
-                <label for="${source}CentroidLatitude">Centroid Latitude</label>
+            <div class="row-fluid">
+                <div class="span3">
+                    <label for="${source}CentroidLatitude">Centroid Latitude</label>
+                </div>
+
+                <div class="span9">
+                    <g:if test="${readonly}">
+                        <span data-bind="text: data.${source}CentroidLatitude"></span>
+                    </g:if>
+                    <g:else>
+                        <input id="${source}Latitude" type="text" data-bind="value: data.${source}CentroidLatitude"
+                            ${validation} disabled class="form-control full-width-input">
+                    </g:else>
+                </div>
             </div>
 
-            <div class="span9">
-                <g:if test="${readonly}">
-                    <span data-bind="text: data.${source}CentroidLatitude"></span>
-                </g:if>
-                <g:else>
-                    <input id="${source}Latitude" type="text" data-bind="value: data.${source}CentroidLatitude"
-                        ${validation} disabled class="form-control full-width-input">
-                </g:else>
+            <div class="row-fluid">
+                <div class="span3">
+                    <label for="${source}CentroidLongitude">Centroid Longitude</label>
+                </div>
+
+                <div class="span9">
+                    <g:if test="${readonly}">
+                        <span data-bind="text: data.${source}CentroidLongitude"></span>
+                    </g:if>
+                    <g:else>
+                        <input id="${source}CentroidLongitude" type="text" data-bind="value: data.${source}CentroidLongitude"
+                            ${validation} disabled class="form-control full-width-input">
+                    </g:else>
+                </div>
             </div>
-        </div>
 
-        <div class="row-fluid">
-            <div class="span3">
-                <label for="${source}CentroidLongitude">Centroid Longitude</label>
-            </div>
+            <!-- /ko -->
+        </g:if>
 
-            <div class="span9">
-                <g:if test="${readonly}">
-                    <span data-bind="text: data.${source}CentroidLongitude"></span>
-                </g:if>
-                <g:else>
-                    <input id="${source}CentroidLongitude" type="text" data-bind="value: data.${source}CentroidLongitude"
-                        ${validation} disabled class="form-control full-width-input">
-                </g:else>
-            </div>
-        </div>
-
-        <!-- /ko -->
-
-        <!-- ko if: data.${source}Longitude && data.${source}Latitude -->
+        <!-- ko if: ko.isObservable(data.${source}Latitude) -->
 
         <div class="row-fluid">
             <div class="span3">
@@ -89,6 +92,9 @@
                 </g:else>
             </div>
         </div>
+        <!-- /ko -->
+
+        <!-- ko if: ko.isObservable(data.${source}Longitude) -->
 
         <div class="row-fluid">
             <div class="span3">
@@ -119,7 +125,7 @@
                         <span data-bind="text: data.${source}Accuracy"></span>
                     </g:if>
                     <g:else>
-                        <select data-bind="options: ['',0, 10, 50, 100, 500, 1000, 5000, 10000]
+                        <select data-bind="options: [0, 10, 50, 100, 500, 1000, 5000, 10000]
                            optionsCaption: 'Choose one...',
                            value: data.${source}Accuracy,
                            valueAllowUnset: true" class="form-control full-width">
@@ -147,29 +153,6 @@
                 </div>
             </div>
         </g:if>
-        <g:if test="${includeLocality}">
-            <div class="row-fluid">
-                <div class="span3">
-                    <label for="${source}Locality">Matched locality</label>
-                </div>
-
-                <div class="span9">
-                    <div class="row-fluid">
-                        <div class="span12">
-                            <g:if test="${readonly}">
-                                <textarea id="${source}Locality" type="text" data-bind="value: data.${source}Locality" readonly class="form-control full-width"></textarea>
-                            </g:if>
-                            <g:else>
-                                <form class="form-inline">
-                                    <textarea id="${source}Locality" type="text" data-bind="value: data.${source}Locality" class="form-control full-width"></textarea>
-                                    <button id="reverseGeocodeLocality" class="btn btn-default margin-top-1">Search for locality match</button>
-                                </form>
-                            </g:else>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </g:if>
         <g:if test="${includeNotes}">
             <div class="row-fluid">
                 <div class="span3">
@@ -190,7 +173,6 @@
                 </div>
             </div>
         </g:if>
-
         <g:if test="${includeLocality}">
             <div class="row-fluid">
                 <g:if test="${!readonly}">
@@ -202,10 +184,33 @@
                             <select name="bookmarkedLocations" id="bookmarkedLocations" class="form-control full-width">
                                 <option value="">-- saved locations --</option>
                             </select>
-                            <button id="saveBookmarkLocation" class="btn btn-default margin-top-1">Save this location</button>
                         </form>
                     </div>
                 </g:if>
+            </div>
+        </g:if>
+        <g:if test="${includeLocality}">
+            <div class="row-fluid" data-bind="slideVisible: data.${source}Latitude() && data.${source}Latitude()">
+                <div class="span3">
+                    <label for="${source}Locality">Matched locality</label>
+                </div>
+
+                <div class="span9">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <g:if test="${readonly}">
+                                <textarea id="${source}Locality" type="text" data-bind="value: data.${source}Locality" readonly class="form-control full-width"></textarea>
+                            </g:if>
+                            <g:else>
+                                <form class="form-inline">
+                                    <textarea id="${source}Locality" type="text" data-bind="value: data.${source}Locality" class="form-control full-width"></textarea>
+                                    <button id="reverseGeocodeLocality" class="btn btn-default margin-top-1">Search for locality match</button>
+                                    <button id="saveBookmarkLocation" class="btn btn-default margin-top-1">Save this location</button>
+                                </form>
+                            </g:else>
+                        </div>
+                    </div>
+                </div>
             </div>
         </g:if>
     </div>
@@ -240,8 +245,10 @@
 <r:script>
 
     $(function () {
+        var prevLat, prevLng;
         loadBookmarks();
 
+        // automatically update map location if image uploaded had location data
         $(document).on('imagelocation', function(event, data) {
             var el = document.getElementById("${source}Map"),
                 viewModel = ko.dataFor(el);
@@ -255,14 +262,28 @@
             }
         });
 
+        // call locality search functionality when map marker is updated
+        $(document).on('markerupdated', function(){
+            reverseGeocode();
+
+            var el = document.getElementById("${source}Map"),
+                viewModel = ko.dataFor(el);
+
+            if(viewModel){
+                var source = viewModel.data.${source}Source;
+                source && source('Google maps');
+            }
+
+        });
+
         // Save current location
-        $('#reverseGeocodeLocality').click(function (e) {
+        $('#koActivityMainBlock').on('click', '#reverseGeocodeLocality', function (e) {
             e.preventDefault();
             reverseGeocode()
         });
 
         // Save current location
-        $('#saveBookmarkLocation').click(function (e) {
+         $('#koActivityMainBlock').on('click', '#saveBookmarkLocation', function (e) {
             e.preventDefault();
             var bookmark = {
                 locality: $('#${source}Locality').val(),
@@ -349,18 +370,28 @@
          * Get address for a given lat/lng using openstreetmap
          */
         function reverseGeocode() {
-            var lat = $('#${source}Latitude').val();
-            var lng = $('#${source}Longitude').val();
-            $.ajax({
-                url: 'https://nominatim.openstreetmap.org/reverse?format=json&zoom=18&addressdetails=1' + '&lat=' + lat + '&lon=' + lng,
-                dataType: 'json',
-            }).done(function (data) {
-                console.log(data)
-                if (!data.error) {
-                    $('#${source}Locality').val(data.display_name)
-                    $('#${source}Locality').change()
+            var el = document.getElementById("${source}Map"),
+                viewModel = ko.dataFor(el);
+
+            if(viewModel){
+                var lng = viewModel.data.${source}Longitude(),
+                    lat = viewModel.data.${source}Latitude();
+                if((prevLat != lat) && (prevLng != lng)){
+                    $.ajax({
+                        url: 'https://nominatim.openstreetmap.org/reverse?format=json&zoom=18&addressdetails=1' + '&lat=' + lat + '&lon=' + lng,
+                        dataType: 'json',
+                    }).done(function (data) {
+                        console.log(data)
+                        if (!data.error) {
+                            $('#${source}Locality').val(data.display_name)
+                            $('#${source}Locality').change()
+                        }
+
+                        prevLat = lat;
+                        prevLng = lng;
+                    });
                 }
-            });
+            }
         }
     })
 </r:script>

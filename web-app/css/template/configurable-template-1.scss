@@ -92,6 +92,14 @@ body {
   ;
   }
 
+  .btn-danger:hover {
+    color: white;
+  }
+
+  .btn-danger {
+    color: white;
+  }
+
   .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-success,
   .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-success {
     background-color: $primary-color;
@@ -389,7 +397,7 @@ body {
   }
 
   .leaflet-container a {
-    color: $primary-color;
+    color: black;
   }
 
   /* Responsive rules */
@@ -603,6 +611,7 @@ body {
   }
 
   .dropzone {
+    width: 205px;
     font-weight: 500;
     font-size: 20px;
     border: 1px solid #5F5D60;
@@ -693,6 +702,15 @@ body {
   .navbar-inner img.brand {
     max-height: 20px;
     margin-top: 2px;
+  }
+  .navbar-inverse .nav>li>a {
+    color: #999;
+  }
+  .navbar-inverse .nav>li>a:hover {
+    color: white;
+  }
+  ul > li.dropdown > ul > li > a{
+    color: #555
   }
   .navbar-inner a.brand {
     display: block;
