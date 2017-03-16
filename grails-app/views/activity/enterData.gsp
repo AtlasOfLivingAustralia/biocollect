@@ -22,9 +22,11 @@
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         imageLocation:"${resource(dir:'/images')}",
-        // And this is the start of changes to make species work
         getSingleSpeciesUrl : "${createLink(controller: 'project', action: 'getSingleSpecies', params: [id: project.projectId])}",
-        speciesSearch: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}"
+        speciesSearch: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
+        getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
+        getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}"
+
         },
         here = document.location.href;
     </r:script>
@@ -231,7 +233,7 @@
 
                     self.loadData = function (data) {
                         // load dynamic data
-                        <md:jsLoadModel model="${model}"/>
+                        <md:jsLoadModel model="${model}" surveyName="${metaModel?.name}" output="${output.name}"/>
 
                         // if there is no data in tables then add an empty row for the user to add data
                         if (typeof self.addRow === 'function' && self.rowCount() === 0) {

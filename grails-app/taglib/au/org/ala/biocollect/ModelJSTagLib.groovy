@@ -838,7 +838,7 @@ class ModelJSTagLib {
     }
 
     def speciesModel(attrs, model, out) {
-        out << INDENT*3 << "self.data.${model.name} = new SpeciesViewModel({}, ${model.validate == 'required'}, '${attrs.output}', '${model.name}', '${attrs.surveyName}'); // Populate?\n"
+        out << INDENT*3 << "self.data.${model.name} = new SpeciesViewModel({}, ${model.validate == 'required'}, '${attrs.output}', '${model.name}', '${attrs.surveyName}');\n"
     }
 
     def modelConstraints(model, out) {
