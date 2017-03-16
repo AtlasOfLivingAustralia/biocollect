@@ -22,9 +22,9 @@
 
 </head>
 <body>
-<div class="container-fluid validationEngineContainer" id="validation-container">
+<div id="koActivityMainBlock" class="container-fluid validationEngineContainer" >
     <g:if test="${!error}">
-        <div id="koActivityMainBlock">
+        <div>
             <ul class="breadcrumb">
                 <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
                     <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
@@ -39,7 +39,7 @@
 
             <div id="validation-result-placeholder"></div>
 
-            <!-- ko ifnot: surveysToConfigure().length > 0 -->
+            <!-- ko ifnot: speciesFieldsCount() > 0 -->
                 <div class="row-fluid">
                     <div class="welll">
                         <div class="span8 title-attribute">
@@ -48,7 +48,7 @@
                     </div>
                 </div>
             <!-- /ko -->
-            <!-- ko if: surveysToConfigure().length > 0 -->
+            <!-- ko if: speciesFieldsCount() > 0 -->
                 <div class="row-fluid title-block well input-block-level">
                     <div class="space-after">
                         <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.SPECIES_FIELDS_CONFIG_INTRO}"/>
@@ -101,7 +101,7 @@
                     </div>
                 </div>
 
-                <!-- ko if: surveysToConfigure().length > 1 -->
+                <!-- ko if: speciesFieldsCount() > 1 -->
                     <div class="well">
                     <h4><g:message code="project.survey.species.configureSpeciesFields"/></h4>
                     <div class="row-fluid">

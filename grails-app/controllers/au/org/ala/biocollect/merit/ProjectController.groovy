@@ -351,13 +351,6 @@ class ProjectController {
         log.debug "Body: ${postBody}"
         log.debug "Params: ${params}"
 
-        Map project
-        String name = postBody.name
-        if (id && !name) {
-            project = projectService.get(id, 'brief')
-            name = project?.name
-        }
-
         def values = [:]
         // filter params to remove keys in the ignore list
         postBody.each { k, v ->
@@ -388,7 +381,16 @@ class ProjectController {
         def projectSite = values.remove("projectSite")
         def documents = values.remove('documents')
         def links = values.remove('links')
-        def projectType = id ? projectService.get(id).projectType : values?.projectType
+        final Map project = projectService.get(id)
+        def projectType = id ? project.projectType : values?.projectType
+
+        if(projectType == "works" && postBody?.size() == 2 && postBody?.planStatus == "approved") { // We need to validate that species fields are configured
+
+            if(!areWorksProjectSpeciesFieldConfigured(project)) {
+                render status: 400, text: "Species fields have not been configured for the project or the current configuration is outdated."
+                return
+            }
+        }
 
         String mainImageAttribution = values.remove("mainImageAttribution")
         String logoAttribution = values.remove("logoAttribution")
@@ -398,7 +400,7 @@ class ProjectController {
             siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
             if (siteResult.status == 'error') render status: 400, text: "SiteService failed."
             else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
-        } else if (projectService.get(id)?.sites?.isEmpty()) {
+        } else if (project?.sites?.isEmpty()) {
             render status: 400, text: "No project site is defined."
         }
 
@@ -443,6 +445,7 @@ class ProjectController {
             render result.resp as JSON
         }
     }
+
 
     @PreAuthorise
     def update(String id) {
@@ -888,7 +891,6 @@ class ProjectController {
     @PreAuthorise(projectIdParam = 'id')
     def configureSpeciesFields(String id) {
 
-        def activities = activityService.activitiesForProject(id)
         def project = projectService.get(id, 'all')
 
         def model = [returnTo: params.returnTo]
@@ -896,6 +898,7 @@ class ProjectController {
         if(project?.planStatus != 'not approved') {
             model.error = 'Species fields can only be configured when the project is in planning mode.'
         } else if (!project.error) {
+            def activities = activityService.activitiesForProject(id)
             // Find the different surveys used in this project schedule
             Set<String> surveys = new HashSet<>();
 
@@ -968,4 +971,61 @@ class ProjectController {
         render result as JSON
     }
 
+    private Boolean areWorksProjectSpeciesFieldConfigured(Map project) {
+        int speciesFieldsCount = 0
+        def activities = activityService.activitiesForProject(project.projectId)
+
+        // Find the different surveys used in this project schedule
+        Set<String> surveys = new HashSet<>();
+        activities.each {
+            surveys << it.type
+        }
+
+        Map<String,Map> speciesFieldsBySurvey = [:]
+
+        surveys.each {
+            List speciesFields = formSpeciesFieldParserService.getSpeciesFieldsForSurvey(it)?.result
+            speciesFieldsBySurvey[it] = speciesFields
+            speciesFieldsCount += speciesFields.size()
+        }
+
+        // The current project has no activity forms using species fields so there is nothing to validate
+        if(!speciesFieldsCount) {
+            return true
+        } else {
+            // Let's check that the current project configuration covers all fields and default configuration
+
+            if(!(project?.speciesFieldsSettings?.defaultSpeciesConfig?.type in ["SINGLE_SPECIES", "GROUP_OF_SPECIES", "ALL_SPECIES"])) {
+                return false
+            } else if(speciesFieldsCount > 1){ // We use more than the default configuration
+
+                List projectSurveysSettings = project?.speciesFieldsSettings?.surveysConfig ?: []
+
+                for(String surveyName : speciesFieldsBySurvey.keySet()) {
+                    def projectSurveySettings = projectSurveysSettings.find {
+                        it.name == surveyName
+                    }
+
+                    List expectedSpeciesFields = speciesFieldsBySurvey[surveyName]
+
+                    if(!projectSurveySettings && expectedSpeciesFields.size()) {
+                        return false // Missing survey configuration entry.
+                    }
+
+                    for(def expectedField :expectedSpeciesFields ) {
+                        def specificFieldDefinition = projectSurveySettings?.speciesFields?.find {
+                            it.dataFieldName == expectedField.dataFieldName && it.output == expectedField.output
+                        }
+
+                        if(!(specificFieldDefinition?.config?.type in ["SINGLE_SPECIES", "GROUP_OF_SPECIES", "ALL_SPECIES", "DEFAULT_SPECIES"])) {
+                            return false // No field configuration for survey or the field definition does not have a type
+                        }
+                    }
+                }
+            }
+            // All expected surveys and fields are already in project config
+            return true
+        }
+
+    }
 }
