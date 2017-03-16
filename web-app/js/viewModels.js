@@ -120,10 +120,7 @@ function enmapify(args) {
       latLonDisabledObservable(false);
       centroidLatObservable(null);
       centroidLonObservable(null);
-      // if (geo && geo.features && geo.features.length > 0) {
-      //   feature = geo.features[0];
-      //   // featureObservable(feature);
-      // }
+      $(document).trigger('markerupdated');
     } else if (geo && geo.features && geo.features.length > 0) {
       console.log("Computing centroid");
       latLonDisabledObservable(true);

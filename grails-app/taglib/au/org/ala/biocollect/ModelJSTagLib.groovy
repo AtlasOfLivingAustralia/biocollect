@@ -145,8 +145,12 @@ class ModelJSTagLib {
                     if (data.${mod.name}Longitude && typeof data.${mod.name}Longitude !== 'undefined') {
                         self.data.${mod.name}Longitude(data.${mod.name}Longitude);
                     }
-                    if (data.${mod.name}Accuracy && typeof data.${mod.name}Accuracy !== 'undefined') {
-                        self.data.${mod.name}Accuracy(data.${mod.name}Accuracy);
+                    if (data.${mod.name}Accuracy){
+                        if( typeof data.${mod.name}Accuracy !== 'undefined') {
+                            self.data.${mod.name}Accuracy(data.${mod.name}Accuracy);
+                        }
+                    } else if(typeof ${mod.defaultAccuracy} !== 'undefined'){
+                            self.data.${mod.name}Accuracy(${mod.defaultAccuracy});
                     }
                     if (data.${mod.name}Locality && typeof data.${mod.name}Locality !== 'undefined') {
                         self.data.${mod.name}Locality(data.${mod.name}Locality);
