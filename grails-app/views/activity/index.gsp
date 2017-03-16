@@ -24,7 +24,9 @@
         createCommentUrl : "${commentUrl}",
         commentListUrl:"${commentUrl}",
         updateCommentUrl:"${commentUrl}",
-        deleteCommentUrl:"${commentUrl}"
+        deleteCommentUrl:"${commentUrl}",
+        bieUrl: "${grailsApplication.config.bie.baseURL}",
+        getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}"
         },
         here = document.location.href;
     </r:script>
