@@ -136,9 +136,6 @@ class ModelJSTagLib {
                         self.data.${mod.name}(data.${mod.name});
                     }
                     
-//                    if (data.${mod.name}Feature && typeof data.${mod.name}Feature !== 'undefined') {
-//                        self.data.${mod.name}Feature(data.${mod.name}Feature);
-//                    }
                     if (data.${mod.name}Latitude && typeof data.${mod.name}Latitude !== 'undefined') {
                         self.data.${mod.name}Latitude(data.${mod.name}Latitude);
                     }
@@ -610,6 +607,7 @@ class ModelJSTagLib {
                 , name: "${model.name}"
                 , edit: ${!!edit}
                 , readonly: ${!!readonly}
+                , zoomToProjectArea: ${model.zoomToProjectArea}
                 , markerOrShapeNotBoth: ${model.options ? !model.options.allowMarkerAndRegion : true}
                 , proxyFeatureUrl: '${createLink(controller: 'proxy', action: 'feature')}'
                 , spatialGeoserverUrl: '${grailsApplication.config.spatial.geoserverUrl}'

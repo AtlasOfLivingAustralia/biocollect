@@ -204,7 +204,9 @@
                             <g:else>
                                 <form class="form-inline">
                                     <textarea id="${source}Locality" type="text" data-bind="value: data.${source}Locality" class="form-control full-width"></textarea>
-                                    <button id="reverseGeocodeLocality" class="btn btn-default margin-top-1">Search for locality match</button>
+                                    <g:if test="${!autoLocalitySearch}">
+                                        <button id="reverseGeocodeLocality" class="btn btn-default margin-top-1">Search for locality match</button>
+                                    </g:if>
                                     <button id="saveBookmarkLocation" class="btn btn-default margin-top-1">Save this location</button>
                                 </form>
                             </g:else>
@@ -262,9 +264,12 @@
             }
         });
 
-        // call locality search functionality when map marker is updated
+        // listen to marker movement. update source information and look up locality
         $(document).on('markerupdated', function(){
+        <g:if test="${autoLocalitySearch}">
+            // call locality search functionality when map marker is updated
             reverseGeocode();
+        </g:if>
 
             var el = document.getElementById("${source}Map"),
                 viewModel = ko.dataFor(el);
