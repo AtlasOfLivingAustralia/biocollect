@@ -484,6 +484,7 @@ class BioActivityController {
         queryParams.order = queryParams.order ?: 'DESC'
         queryParams.fq = queryParams.fq ?: ''
         queryParams.searchTerm = queryParams.searchTerm ?: ''
+        queryParams.view = queryParams.view
 
         Map searchResult = searchService.searchProjectActivity(queryParams)
         List activities = searchResult?.hits?.hits

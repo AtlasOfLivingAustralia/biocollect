@@ -463,6 +463,7 @@
                 <option value="login">Login / Logout</option>
                 <option value="newproject">New Project</option>
                 <option value="sites">Sites</option>
+                <option value="biocacheexplorer">Biocache Explorer</option>
             </select>
         </td>
         <td>

@@ -476,3 +476,8 @@ input.padding-14, .padding-14{
 .table-custom-border.borderless td{
     border: none;
 }
+
+.list-search-text-input{
+    max-width: 70%;
+    min-width: 50%;
+}

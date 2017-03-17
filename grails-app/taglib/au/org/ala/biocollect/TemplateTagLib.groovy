@@ -81,7 +81,13 @@ class TemplateTagLib {
                     out << "<a href=\"${url}\">${link.displayName?:'Sites'}</a>";
                     out << "</li>";
                     break;
+                case 'biocacheexplorer':
 
+
+                    out << "<li class=\"main-menu\">";
+                    out << "<a href=\"${ url }\">${link.displayName?:'Occurrence explorer'}</a>";
+                    out << "</li>";
+                    break;
             }
         }
     }
@@ -144,6 +150,14 @@ class TemplateTagLib {
                 break;
             case 'sites':
                 url = "${createLink(controller: 'site', action: 'list')}";
+                break;
+            case '':
+//                String url =
+                if(request.forwardURI?.contains('myProjectRecords')){
+
+                }
+
+                url = grailsApplication.config.biocache.baseURL + '/occurrences/search?q=*:*&fq=(data_resource_uid:dr364 OR data_resource_uid:dr1902 OR data_resource_uid:dr1903)&fq=alau_user_id:'
                 break;
         }
 

@@ -11,8 +11,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     doNotInit = !!doNotInit;
 
     self.sortOptions = [
-        {id: 'lastUpdated', name: 'Date', order: 'DESC'},
-        {id: 'activityOwnerName', name: 'Owner name', order: 'ASC'}];
+        {id: 'lastUpdated', name: 'Sort by Date', order: 'DESC'},
+        {id: 'activityOwnerName', name: 'Sort by Owner', order: 'ASC'}];
 
     var index = 0;
 

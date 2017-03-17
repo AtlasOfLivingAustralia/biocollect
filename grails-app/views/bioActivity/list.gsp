@@ -28,7 +28,8 @@
             projectLinkPrefix: "${createLink(controller: 'project')}/",
             recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
-            version: "${params?.version}"
+            version: "${params?.version}",
+            projectId: "${projectId}"
         },
         here = document.location.href;
     </r:script>

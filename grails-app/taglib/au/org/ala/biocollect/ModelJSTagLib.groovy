@@ -146,9 +146,10 @@ class ModelJSTagLib {
                         if( typeof data.${mod.name}Accuracy !== 'undefined') {
                             self.data.${mod.name}Accuracy(data.${mod.name}Accuracy);
                         }
-                    } else if(typeof ${mod.defaultAccuracy} !== 'undefined'){
-                            self.data.${mod.name}Accuracy(${mod.defaultAccuracy});
+                    } else if((typeof ${mod.defaultAccuracy} !== 'undefined') && self.data.${mod.name}Accuracy) {
+                        self.data.${mod.name}Accuracy(${mod.defaultAccuracy});
                     }
+                        
                     if (data.${mod.name}Locality && typeof data.${mod.name}Locality !== 'undefined') {
                         self.data.${mod.name}Locality(data.${mod.name}Locality);
                     }

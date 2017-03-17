@@ -217,3 +217,7 @@ if (!grails.cache.ehcache) {
 if (!acsaUrl){
     acsaUrl = 'http://csna.gaiaresources.com.au/wordpress/'
 }
+
+if(biocache.baseURL){
+    biocache.baseURL = "https://biocache.ala.org.au"
+}
