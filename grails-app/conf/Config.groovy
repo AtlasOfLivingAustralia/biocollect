@@ -218,6 +218,6 @@ if (!acsaUrl){
     acsaUrl = 'http://csna.gaiaresources.com.au/wordpress/'
 }
 
-if(biocache.baseURL){
+if(!biocache.baseURL){
     biocache.baseURL = "https://biocache.ala.org.au"
 }

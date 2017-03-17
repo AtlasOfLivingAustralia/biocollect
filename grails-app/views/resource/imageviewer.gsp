@@ -54,7 +54,7 @@
         minZoom: 1,
         maxZoom: 4,
         center: [0, 0],
-        zoom: 1,
+        zoom: 4,
         crs: L.CRS.Simple
     });
 
@@ -73,9 +73,6 @@
         // add the image overlay,
         // so that it covers the entire map
         L.imageOverlay(file, bounds).addTo(map);
-
-        // make sure small images are zoomed in to its original size
-        map.fitBounds(bounds);
 
         // tell leaflet that the map is exactly as big as the image
         map.setMaxBounds(bounds);

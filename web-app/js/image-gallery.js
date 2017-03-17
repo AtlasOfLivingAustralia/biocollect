@@ -113,7 +113,6 @@ function ImageGalleryViewModel(config){
     // subscribe so that changes to filter and search text will trigger a image gallery update
     activitiesModel = prop.viewModel;
     activitiesModel && activitiesModel.selectedFilters.subscribe(self.reloadRecordImages);
-    activitiesModel && activitiesModel.searchTerm.subscribe(self.reloadRecordImages);
 
     // initialise images
     if(prop.images && prop.images.length){

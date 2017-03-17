@@ -82,8 +82,6 @@ class TemplateTagLib {
                     out << "</li>";
                     break;
                 case 'biocacheexplorer':
-
-
                     out << "<li class=\"main-menu\">";
                     out << "<a href=\"${ url }\">${link.displayName?:'Occurrence explorer'}</a>";
                     out << "</li>";
@@ -151,13 +149,13 @@ class TemplateTagLib {
             case 'sites':
                 url = "${createLink(controller: 'site', action: 'list')}";
                 break;
-            case '':
-//                String url =
-                if(request.forwardURI?.contains('myProjectRecords')){
-
+            case 'biocacheexplorer':
+                String fq = ''
+                if(request.forwardURI?.contains('/bioActivity/myProjectRecords')){
+                    fq = "&fq=alau_user_id:${userService.getCurrentUserId(request)}";
                 }
 
-                url = grailsApplication.config.biocache.baseURL + '/occurrences/search?q=*:*&fq=(data_resource_uid:dr364 OR data_resource_uid:dr1902 OR data_resource_uid:dr1903)&fq=alau_user_id:'
+                url = grailsApplication.config.biocache.baseURL + '/occurrences/search?q=*:*&fq=(data_resource_uid:dr364 OR data_resource_uid:dr1902 OR data_resource_uid:dr1903)' + fq
                 break;
         }
 

@@ -72,13 +72,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.sort.subscribe(function (newValue) {
         self.refreshPage();
     });
-    
-    self.searchTerm.subscribe(function (newValue) {
-        self.refreshPage();
-    });
 
     self.search = function () {
         self.refreshPage();
+        self.getDataAndShowOnMap();
+        self.imageGallery && self.imageGallery.fetchRecordImages()
     };
 
     self.clearData = function() {

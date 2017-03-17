@@ -93,7 +93,7 @@
                                     <tr>
                                         <td>
                                             <div class="projectLogo">
-                                                    <img class="image-logo" data-bind="attr:{title:(multimedia[0] && multimedia[0].title) || 'No Image', src:(multimedia[0] && multimedia[0].identifier) || '${noImageUrl}'}" onload="findLogoScalingClass(this, 200, 150)">
+                                                <img class="image-logo" data-bind="attr:{title:(multimedia[0] && multimedia[0].title) || 'No Image', src:(multimedia[0] && multimedia[0].identifier) || '${noImageUrl}'}" onload="findLogoScalingClass(this, 200, 150)">
                                             </div>
                                         </td>
                                         <td>
@@ -311,7 +311,7 @@
             viewModel: activitiesAndRecordsViewModel
         }
 
-        initialiseImageGallery(configImageGallery);
+        activitiesAndRecordsViewModel.imageGallery = initialiseImageGallery(configImageGallery);
     }
 
 

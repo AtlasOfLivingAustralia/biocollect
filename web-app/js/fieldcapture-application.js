@@ -945,6 +945,8 @@ function initCarouselImages(image){
 function initialiseImageGallery(config){
     var vm = new ImageGalleryViewModel(config);
     ko.applyBindings(vm, config.element);
+
+    return vm;
 }
 
 /**

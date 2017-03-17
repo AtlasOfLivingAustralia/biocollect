@@ -3,7 +3,6 @@
         <div class="margin-bottom-10">
             <div class="row-fluid">
                 <div class="span12">
-                    <span id="search-spinner" class="spinner margin-left-1 pull-right"> <i class='fa fa-spin fa-spinner'></i> Searching...</span>
                     <div class="pull-right margin-left-1">
                         <div class="btn-group" data-toggle="buttons-radio">
                             <!-- ko foreach:sortOptions -->
@@ -18,6 +17,7 @@
                                 class="btn btn-primary form-control" type="button"><i
                                 class="icon-search icon-white"></i> Search</button>
                     </div>
+                    <span id="search-spinner" class="spinner margin-left-1 pull-right"> <i class='fa fa-spin fa-spinner'></i> Searching...</span>
                 </div>
             </div>
         </div>
