@@ -761,7 +761,7 @@
                 self.saveStatus('not approved')
                 .done(function (data) {
                     if (data.error) {
-                        showAlert("Unable to enter planing mode. An unhandled error occurred: " + data.detail + ' \n' + data.error,
+                        showAlert("Unable to enter planing mode. An error occurred: " + data.detail + ' \n' + data.error,
                             "alert-error","status-update-error-placeholder");
                     } else {
                         self.planStatus('approved');
@@ -773,7 +773,7 @@
                         showAlert("Unable to submit plan. You do not have editor rights for this project.",
                             "alert-error","status-update-error-placeholder");
                     } else {
-                        showAlert("Unable to submit plan. An unhandled error occurred: " + data.status,
+                        showAlert("Unable to submit plan. An error occurred: [" + data.status + "] " + (data.responseText || ""),
                             "alert-error","status-update-error-placeholder");
                     }
                 });
@@ -795,7 +795,8 @@
                         showAlert("Unable to leave planning mode.  You do not have administrator rights for this project.",
                             "alert-error","status-update-error-placeholder");
                     } else {
-                        showAlert("Unable to leave planning mode. An unhandled error occurred: " + data.status,
+
+                        showAlert("Unable to leave planning mode. An error occurred: [" + data.status + "] " + (data.responseText || ""),
                             "alert-error","status-update-error-placeholder");
                     }
                 });

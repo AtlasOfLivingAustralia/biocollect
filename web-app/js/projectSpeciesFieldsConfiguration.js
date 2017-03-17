@@ -75,13 +75,19 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
         // Surveys that have at least one species fields
         self.surveysToConfigure = ko.observableArray();
 
+        // How many species fields across the whole project are available to configure
+        // If it is only one we use only the default configuration
+        self.speciesFieldsCount = ko.observable(0);
+
 
         for(var i=0; i<surveysConfig.length; i++) {
             var surveySpeciesFieldsVM = new SurveySpeciesFieldsVM(surveysConfig[i]);
             self.surveysConfig.push(surveySpeciesFieldsVM);
 
-            if(surveySpeciesFieldsVM.speciesFields().length > 0) {
+            var surveySpeciesFieldCount = surveySpeciesFieldsVM.speciesFields().length;
+            if(surveySpeciesFieldCount > 0) {
                 self.surveysToConfigure.push(surveySpeciesFieldsVM);
+                self.speciesFieldsCount(self.speciesFieldsCount() + surveySpeciesFieldCount)
             } else {
                 self.surveysWithoutFields.push(surveySpeciesFieldsVM);
             }
@@ -128,13 +134,16 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
             return false;
         }
 
-        // As soon as a field is not valid we stop
-        var surveys = self.surveysToConfigure()
-        for(var i = 0; i < surveys.length; i++) {
-            var speciesFields = surveys[i].speciesFields()
-            for(var j = 0; j<speciesFields.length; j++) {
-                if(!speciesFields[j].config().isValid()) {
-                    return false;
+        // If it is speciesFieldsCount == 1 then we use default species so this section is not mandatory
+        if(self.speciesFieldsCount() > 1) {
+            // As soon as a field is not valid we stop
+            var surveys = self.surveysToConfigure()
+            for (var i = 0; i < surveys.length; i++) {
+                var speciesFields = surveys[i].speciesFields()
+                for (var j = 0; j < speciesFields.length; j++) {
+                    if (!speciesFields[j].config().isValid()) {
+                        return false;
+                    }
                 }
             }
         }
