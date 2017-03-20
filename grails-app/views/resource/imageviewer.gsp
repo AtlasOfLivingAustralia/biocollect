@@ -66,8 +66,8 @@
             h = this.height;
 
         // calculate the edges of the image, in coordinate space
-        var southWest = map.unproject([0, h], map.getMaxZoom()-1);
-        var northEast = map.unproject([w, 0], map.getMaxZoom()-1);
+        var southWest = map.unproject([0, h], map.getMaxZoom());
+        var northEast = map.unproject([w, 0], map.getMaxZoom());
         var bounds = new L.LatLngBounds(southWest, northEast);
 
         // add the image overlay,
@@ -76,6 +76,8 @@
 
         // tell leaflet that the map is exactly as big as the image
         map.setMaxBounds(bounds);
+
+        map.setZoom(4);
     };
     img.src = file;
 
