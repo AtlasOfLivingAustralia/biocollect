@@ -134,6 +134,8 @@ modules = {
         defaultBundle 'application'
         dependsOn 'knockout, pagination'
         resource url: 'js/activity.js'
+        resource url: 'js/facets.js'
+        resource url: 'css/facets-filter-view.css'
     }
 
     jstimezonedetect {
@@ -247,6 +249,7 @@ modules = {
         resource url: 'js/project-finder.js'
         resource url: 'css/project-finder.css'
         resource url: 'js/facets.js'
+        resource url: 'css/facets-filter-view.css'
     }
 
 

@@ -29,7 +29,8 @@
             recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             version: "${params?.version}",
-            projectId: "${projectId}"
+            projectId: "${projectId}",
+            flimit: 15
         },
         here = document.location.href;
     </r:script>

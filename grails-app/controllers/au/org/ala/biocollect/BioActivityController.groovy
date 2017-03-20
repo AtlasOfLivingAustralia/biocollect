@@ -25,6 +25,8 @@ class BioActivityController {
     MessageSource messageSource
     RecordService recordService
 
+    static int MAX_FLIMIT = 500
+
     /**
      * Update Activity by activityId or
      * Create Activity by projectActivity
@@ -399,6 +401,10 @@ class BioActivityController {
         queryParams.max = queryParams.max ?: 10
         queryParams.offset = queryParams.offset ?: 0
         queryParams.flimit = queryParams.flimit ?: 20
+//        if(queryParams.flimit ==  "-1"){
+//            queryParams.flimit = MAX_FLIMIT;
+//        }
+
         queryParams.sort = queryParams.sort ?: 'lastUpdated'
         queryParams.order = queryParams.order ?: 'DESC'
         queryParams.fq = queryParams.fq ?: ''

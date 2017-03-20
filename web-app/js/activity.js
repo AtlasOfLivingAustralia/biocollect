@@ -60,6 +60,12 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.order = ko.observable('DESC');
     self.sort = ko.observable('lastUpdated');
     self.selectedFilters = ko.observableArray(); // User selected facet filters.
+
+    self.filterViewModel = new FilterViewModel({
+        parent: self,
+        flimit: fcConfig.flimit
+    });
+
     self.transients = {};
     self.transients.totalPoints = ko.observable(0);
     self.transients.loadingMap = ko.observable(true);
@@ -88,8 +94,16 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     self.reset = function () {
         self.clearData();
-        self.selectedFilters([]);
-        self.refreshPage(0);
+        self.filterViewModel.selectedFacets.removeAll();
+    };
+
+    self.getFacetTerms = function (facets) {
+        var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, null, false);
+        url = url + ((url.indexOf('?') > -1) ? '&' : '?') + 'flimit=-1&max=0&facets=' + facets;
+
+        return $.ajax({
+            url: url
+        });
     };
 
     var facetsLocalStorageHandler = function (cmd) {
@@ -145,7 +159,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     self.load = function (data, page) {
         var activities = data.activities;
-        var facets = data.facets;
         var total = data.total;
 
         self.activities([]);
@@ -156,12 +169,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         });
         self.activities(activities);
 
-        facets = $.map(facets ? facets : [], createFacetModelAndSetVisibility);
-        self.facets(facets);
-
-        self.facets.sort(function (left, right) {
-            return left.order() == right.order() ? 0 : (left.order() < right.order() ? -1 : 1)
-        });
+        self.filterViewModel.setFacets(data.facets || []);
 
         // only initialise the pagination if we are on the first page load
         if (page == 0) {
@@ -228,7 +236,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 facetsLocalStorageHandler('store');
             },
             error: function (data) {
-                alert('An unhandled error occurred: ' + data);
+                alert('An error occurred: ' + data);
             },
             complete: function () {
                 $('#search-spinner').hide();
@@ -538,15 +546,21 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             order: self.order(),
             flimit: 1000,
             view: self.view
-        };
+        },
+            fq = [];
+
 
         var filters = '';
         if (_.isUndefined(facetOnly) || !facetOnly) {
             params.searchTerm = self.searchTerm().trim();
 
-            ko.utils.arrayForEach(self.selectedFilters(), function (term) {
-                filters = filters + '&fq=' + term.facetName() + ':' + term.term();
+            self.filterViewModel.selectedFacets().forEach(function (facet) {
+                fq.push(facet.getQueryText())
             });
+
+            if(fq.length){
+                filters = '&fq=' + fq.join('&fq=');
+            }
         }
 
         url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
@@ -571,7 +585,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     }
 
     // listen to facet change event so that map can be updated.
-    self.selectedFilters.subscribe(self.getDataAndShowOnMap);
     self.searchTerm.subscribe(self.getDataAndShowOnMap);
 
     self.sortButtonClick = function(data){
@@ -589,7 +602,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             facetName: "organisationNameFacet",
             facetDisplayName: 'Organisation'
         }));
-        self.refreshPage();
     } else if (restored && restored.length > 0) {
         $.each(restored, function (index, value) {
             self.selectedFilters.push(new TermFacetVM({
@@ -604,6 +616,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     else {
         !doNotInit && self.refreshPage();
     }
+
+    self.filterViewModel.selectedFacets.subscribe(function(){
+        self.refreshPage();
+    });
+    self.filterViewModel.selectedFacets.subscribe(function(){
+        self.getDataAndShowOnMap();
+    });
 };
 
 var ActivityRecordViewModel = function (activity) {

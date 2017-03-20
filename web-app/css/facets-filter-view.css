@@ -1,0 +1,34 @@
+.equal-height {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.equal-height > div[class*='span'] {
+    display: flex;
+    flex-direction: column;
+}
+
+.label-ellipsis{
+    max-width: 100%;
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.display-inline-block{
+    display: inline-block;
+}
+
+.facet-label-width{
+    width: 90%;
+}
+
+
+button.btn.btn-text-left{
+    text-align: left;
+}
+
+#pt-selectors label.input-label{
+    color: #5f5d60;
+}

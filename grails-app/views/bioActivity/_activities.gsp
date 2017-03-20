@@ -13,7 +13,8 @@
             <div class="span3 text-left">
 
                 <div class="well">
-                    <g:render template="../bioActivity/facets"/>
+                    %{--<g:render template="../bioActivity/facets"/>--}%
+                    <g:render template="/shared/simpleFacetsFilterView"></g:render>
                 </div>
 
             </div>
