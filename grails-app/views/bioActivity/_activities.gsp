@@ -13,7 +13,6 @@
             <div class="span3 text-left">
 
                 <div class="well">
-                    %{--<g:render template="../bioActivity/facets"/>--}%
                     <g:render template="/shared/simpleFacetsFilterView"></g:render>
                 </div>
 
@@ -94,7 +93,11 @@
                                     <tr>
                                         <td>
                                             <div class="projectLogo">
-                                                <img class="image-logo" data-bind="attr:{title:(multimedia[0] && multimedia[0].title) || 'No Image', src:(multimedia[0] && multimedia[0].identifier) || '${noImageUrl}'}" onload="findLogoScalingClass(this, 200, 150)">
+                                                <a href=""
+                                                   data-bind="attr:{href:fcConfig.imageLeafletViewer + '?file=' + encodeURIComponent((multimedia[0] && multimedia[0].identifier) || '${noImageUrl}')}, fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade', type: 'iframe', width:'80%'}"
+                                                   target="fancybox">
+                                                    <img class="image-logo image-window" data-bind="attr:{title:(multimedia[0] && multimedia[0].title) || 'No Image', src:(multimedia[0] && multimedia[0].identifier) || '${noImageUrl}'}"  onload="findLogoScalingClass(this, 200, 150)">
+                                                </a>
                                             </div>
                                         </td>
                                         <td>
