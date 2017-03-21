@@ -411,6 +411,35 @@ class BioActivityController {
         queryParams.fq = queryParams.fq ?: ''
         queryParams.searchTerm = queryParams.searchTerm ?: ''
 
+        if(!queryParams.facets){
+            String facets = "projectNameFacet,organisationNameFacet,projectActivityNameFacet,recordNameFacet,activityOwnerNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
+
+            switch (params.view) {
+
+                case 'myrecords':
+                    facets = "projectNameFacet,organisationNameFacet,projectActivityNameFacet,recordNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
+                    break
+
+                case 'project':
+                    facets = "projectActivityNameFacet,recordNameFacet,activityOwnerNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
+                    break
+
+                case 'projectrecords':
+                    facets = "projectActivityNameFacet,recordNameFacet,activityOwnerNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
+                    break
+
+                case 'myprojectrecords':
+                    facets = "projectActivityNameFacet,recordNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
+                    break
+
+                case 'allrecords':
+                default:
+                    break
+            }
+
+            queryParams.facets = facets
+        }
+
         queryParams
     }
 
@@ -451,14 +480,12 @@ class BioActivityController {
             ]
         }
 
-        searchResult?.facets?.each { k, v ->
-            Map facet = [:]
-            facet.name = k
-            facet.total = v.total
-            facet.terms = v.terms
-            facets << facet
+        if(queryParams.facets){
+            String[] facetList = queryParams.facets.split(',')
+            facets = searchService.standardiseFacets (searchResult.facets, Arrays.asList(facetList))
         }
 
+        facets = projectActivityService.getDisplayNamesForFacets(facets);
         render([activities: activities, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
     }
 

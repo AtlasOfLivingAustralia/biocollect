@@ -131,7 +131,6 @@ modules = {
     }
 
     myActivity {
-        defaultBundle 'application'
         dependsOn 'knockout, pagination'
         resource url: 'js/activity.js'
         resource url: 'js/facets.js'
@@ -200,7 +199,6 @@ modules = {
     }
 
     attachDocuments {
-        defaultBundle 'application'
         dependsOn 'jQueryFileUpload'
         resource url: 'js/document.js'
     }

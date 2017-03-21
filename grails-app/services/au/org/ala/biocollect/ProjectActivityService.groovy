@@ -5,6 +5,7 @@ import au.org.ala.biocollect.merit.ProjectService
 import au.org.ala.biocollect.merit.SiteService
 import au.org.ala.biocollect.merit.SpeciesService
 import au.org.ala.biocollect.merit.WebService
+import org.springframework.context.MessageSource
 
 class ProjectActivityService {
 
@@ -14,6 +15,7 @@ class ProjectActivityService {
     SiteService siteService
     ProjectService projectService
     MetadataService metadataService
+    MessageSource messageSource
 
     def getAllByProject(projectId, levelOfDetail = "", version = null){
         def params = '?'
@@ -358,5 +360,20 @@ class ProjectActivityService {
 
     boolean isEmbargoed(Map projectActivity) {
         projectActivity?.visibility?.embargoUntil && Date.parse("yyyy-MM-dd", projectActivity.visibility.embargoUntil).after(new Date())
+    }
+
+    /**
+     * Convert facet names and terms to a human understandable text.
+     * @param facets
+     * @return
+     */
+    List getDisplayNamesForFacets(facets){
+        facets?.each { facet ->
+            facet.title = messageSource.getMessage("projectActivity.facets."+facet.name, [].toArray(), facet.name, Locale.default)
+            facet.helpText = messageSource.getMessage("projectActivity.facets."+facet.name +".helpText", [].toArray(), "", Locale.default)
+            facet.terms?.each{ term ->
+                term.title = messageSource.getMessage("projectActivity.facets."+facet.name+"."+term.term, [].toArray(), term.name, Locale.default)
+            }
+        }
     }
 }

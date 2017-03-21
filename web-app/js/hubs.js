@@ -449,14 +449,14 @@ var BannerViewModel = function (config) {
     };
 };
 
-var ImageViewModel = function (config) {
+function ImageViewModel (config) {
     var self = this;
 
     self.url = ko.observable(config.url || '')
     self.caption = ko.observable(config.caption || '')
 };
 
-var FacetViewModel = function(config){
+function FacetViewModel(config){
     var self = this;
 
     self.title = ko.observable(config.title || '');

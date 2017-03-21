@@ -14,28 +14,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         {id: 'lastUpdated', name: 'Sort by Date', order: 'DESC'},
         {id: 'activityOwnerName', name: 'Sort by Owner', order: 'ASC'}];
 
-    var index = 0;
-
-    self.availableFacets = [
-        {name: 'projectNameFacet', displayName: 'Project', order: index++},
-        {name: 'organisationNameFacet', displayName: 'Organisation', order: index++},
-        {name: 'projectActivityNameFacet', displayName: 'Survey', order: index++},
-        {name: 'recordNameFacet', displayName: 'Species', order: index++},
-        {name: 'activityOwnerNameFacet', displayName: 'Owner', order: index++},
-        {name: 'embargoedFacet', displayName: 'Access', order: index++},
-        {name: 'activityLastUpdatedMonthFacet', displayName: 'Month', order: index++},
-        {name: 'activityLastUpdatedYearFacet', displayName: 'Year', order: index++}];
-
-    index=0;
-
-    self.projectAvailableFacets = [
-        {name: 'projectActivityNameFacet', displayName: 'Survey', order: index++},
-        {name: 'recordNameFacet', displayName: 'Species', order: index++},
-        {name: 'activityOwnerNameFacet', displayName: 'Owner', order: index++},
-        {name: 'embargoedFacet', displayName: 'Access', order: index++},
-        {name: 'activityLastUpdatedMonthFacet', displayName: 'Month', order: index++},
-        {name: 'activityLastUpdatedYearFacet', displayName: 'Year', order: index++}]
-
     self.orderOptions = [{id: 'ASC', name: 'ASC'}, {id: 'DESC', name: 'DESC'}];
     self.activities = ko.observableArray();
     self.pagination = new PaginationViewModel({}, self);
@@ -128,10 +106,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                     return amplify.store(key);
             }
         }
-    };
-
-    self.selectFacetTerm = function (term, facetGroup) {
-        self.resetFacetsAndSelect(term, facetGroup);
     };
 
     self.canFacetBeDisplayed = function(facetModel, whiteList){
@@ -241,60 +215,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     self.refinementSelected = function() {
         return getSelectedTermsForRefinement().length > 0;
-    };
-
-    self.resetFacetsAndSelect = function(term, facetGroup) {
-        var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, 0, true);
-
-        self.transients.loading(true);
-        $.ajax({
-            url: url,
-            type: 'GET',
-            contentType: 'application/json',
-            beforeSend: function () {
-                $('.search-spinner').show();
-            },
-            success: function (data) {
-                var facets = data.facets;
-
-                facets = $.map(facets ? facets : [], createFacetModelAndSetVisibility);
-                facets.sort(function (left, right) {
-                    return left.order() == right.order() ? 0 : (left.order() < right.order() ? -1 : 1)
-                });
-
-                self.facets(facets);
-
-                var selectedFacet = null;
-
-                self.facets().forEach(function (facet) {
-                    var match = facet.findTerm(term);
-
-                    if (match != null) {
-                        selectedFacet = match;
-                    }
-                });
-
-                if (selectedFacet == null) {
-                    selectedFacet = new TermFacetVM({
-                        term: term,
-                        facetName: facetGroup,
-                        facetDisplayName: facetGroup
-                    })
-                }
-
-                self.selectedFilters([selectedFacet]);
-
-                self.refreshPage();
-            },
-            error: function (data) {
-                alert('An unhandled error occurred: ' + data);
-            },
-            complete: function () {
-                $('.search-spinner').hide();
-                $('.main-content').show();
-                self.transients.loading(false);
-            }
-        });
     };
 
     self.delete = function (activity) {
@@ -545,22 +465,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return url + filters;
     }
 
-    function createFacetModelAndSetVisibility(facet, index) {
-        var displayableFacets, facetModel;
-        switch (self.view){
-            case 'project':
-                displayableFacets = self.projectAvailableFacets;
-                break;
-            default :
-                displayableFacets = self.availableFacets;
-                break;
-        }
-
-        facetModel = new DataFacetsVM(facet, displayableFacets);
-        self.canFacetBeDisplayed(facetModel, displayableFacets) ? facetModel.visible(true) : facetModel.visible(false);
-        return facetModel
-    }
-
     self.filterViewModel.selectedFacets.subscribe(function(){
         self.refreshPage();
         self.getDataAndShowOnMap();
@@ -667,112 +571,6 @@ var RecordVM = function (record) {
     self.multimedia = record.multimedia || [];
     self.eventTime = record.eventTime;
     self.eventDate =  ko.observable(record.eventDate).extend({simpleDate: false});
-};
-
-var DataFacetsVM = function (facet, availableFacets) {
-    var self = this;
-    var LIMIT = 15;
-    if (!facet) facet = {};
-
-    self.name = ko.observable(facet.name);
-    self.total = ko.observable(facet.total);
-    self.terms = ko.observableArray();
-    self.filter = ko.observable(false);
-    self.visible = ko.observable(true);
-
-    self.toggleFilter = function () {
-        self.filter(!self.filter())
-    };
-
-    self.displayText = ko.pureComputed(function () {
-        return getFacetName(self.name()) + " (" + self.total() + ")";
-    });
-
-    self.order = ko.pureComputed(function () {
-        return getFacetOrder(self.name());
-    });
-
-    self.searchTerm = ko.observable('');
-    /**
-     * search for a token and show terms matching the token.
-     */
-    self.search = function(){
-        var terms = self.terms(), text, regex;
-        regex = new RegExp(self.searchTerm(), 'i');
-        terms.forEach(function(term){
-            text = term.displayText();
-            if(text && text.match(regex, 'i')){
-                term.showTerm() || term.showTerm(true);
-            } else {
-                term.showTerm(false);
-            }
-        });
-    };
-
-    self.findTerm = function(termName) {
-        var match = null;
-
-        self.terms().forEach(function(term) {
-            if (term.term() == termName) {
-                match = term;
-            }
-        });
-
-        return match;
-    };
-
-    self.searchTerm.subscribe(self.search);
-
-    /**
-     * show filter input box only when facet terms are more than the specified limit.
-     * @returns {boolean}
-     */
-    self.showFilter = function(){
-        if(self.terms().length > LIMIT){
-            return true;
-        }
-
-        return false;
-    };
-
-    var getFacetName = function (name) {
-        var found = $.grep(availableFacets, function (obj, i) {
-            return (obj.name == name);
-        });
-        return found.length > 0 ? found[0].displayName : 'Not Categorized';
-    };
-
-    var getFacetOrder = function (name) {
-        var found = $.grep(availableFacets, function (obj, i) {
-            return (obj.name == name);
-        });
-        return found.length > 0 ? found[0].order : 0;
-
-    };
-
-    var terms = $.map(facet.terms ? facet.terms : [], function (term, index) {
-        term.facetName = self.name();
-        term.facetDisplayName = getFacetName(self.name());
-        return new TermFacetVM(term);
-    });
-
-    self.terms(terms);
-};
-
-var TermFacetVM = function (term) {
-    var self = this;
-    if (!term) term = {};
-
-    self.id = ko.observable(generateTermId(term));
-    self.selected = ko.observable(false);
-    self.facetName = ko.observable(term.facetName);
-    self.facetDisplayName = ko.observable(term.facetDisplayName);
-    self.count = ko.observable(term.count);
-    self.term = ko.observable(term.term);
-    self.showTerm = ko.observable(term.showTerm || true);
-    self.displayText = ko.pureComputed(function () {
-        return self.term() + " (" + self.count() + ")";
-    });
 };
 
 function generateTermId(term) {
