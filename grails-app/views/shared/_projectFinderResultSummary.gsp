@@ -12,7 +12,7 @@
                             <i class="icon-download icon-white"></i>&nbsp;<g:message code="g.download"/></a>
                     </g:if>
             </div>
-            <span id="search-spinner" class="spinner margin-left-1" style="display: none"> <i class='fa fa-spin fa-spinner'></i> Updating...</span>
+            <span class="search-spinner spinner margin-left-1" style="display: none"> <i class='fa fa-spin fa-spinner'></i> Updating...</span>
 
             <div class="text-right pull-right">
                 <div class="nowrap inline-block margin-bottom-5">

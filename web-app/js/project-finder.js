@@ -289,7 +289,7 @@ function ProjectFinder() {
             data: params,
             traditional: true,
             beforeSend: function () {
-                $('#search-spinner').show();
+                $('.search-spinner').show();
             },
             success: function (data) {
                 var projectVMs = [], facets;
@@ -305,7 +305,7 @@ function ProjectFinder() {
                 console.error(arguments)
             },
             complete: function () {
-                $('#search-spinner').hide();
+                $('.search-spinner').hide();
             }
         })
     };

@@ -62,6 +62,7 @@ function ImageGalleryViewModel(config){
                 if(data.documents){
                     self.refreshRecordImages(data.documents);
                     self.total(data.total);
+                    self.pagination.totalResults(data.total);
                 }
             },
             error: function(jxhr, status, message){
@@ -112,7 +113,6 @@ function ImageGalleryViewModel(config){
 
     // subscribe so that changes to filter and search text will trigger a image gallery update
     activitiesModel = prop.viewModel;
-    activitiesModel && activitiesModel.selectedFilters.subscribe(self.reloadRecordImages);
 
     // initialise images
     if(prop.images && prop.images.length){

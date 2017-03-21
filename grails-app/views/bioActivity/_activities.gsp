@@ -30,10 +30,10 @@
                         <!-- ko if: activities().length == 0 -->
                             <div class="row-fluid">
                                 <h3 class="text-left margin-bottom-five">
-                                    <span data-bind="if: $root.searchTerm() == '' && $root.selectedFilters().length == 0 && !$root.transients.loading()">
+                                    <span data-bind="if: $root.searchTerm() == '' && $root.filterViewModel.selectedFacets().length == 0 && !$root.transients.loading()">
                                         No data has been recorded for this project yet
                                     </span>
-                                    <span data-bind="if: $root.searchTerm() != '' || $root.selectedFilters().length > 0 && !$root.transients.loading()">No results</span>
+                                    <span data-bind="if: $root.searchTerm() != '' || $root.filterViewModel.selectedFacets().length > 0 && !$root.transients.loading()">No results</span>
                                 </h3>
                             </div>
                         <!-- /ko -->
@@ -159,14 +159,14 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div data-bind="if: $parent.showCrud()">
+                                            <div>
                                                 <span>
                                                     <button data-bind="click: function(){ window.location = $parent.transients.viewUrl() }" title="View record" class="btn btn-small editBtn btn-default margin-top-5"><i class="fa fa-file-o"></i> View</button>
                                                 </span>
-                                                <span data-bind="visible: !$parent.readOnly()">
+                                                <span data-bind="visible: !$parent.readOnly(), if: $parent.showCrud()">
                                                     <button data-bind="click: function(){ window.location = $parent.transients.editUrl() }" title="Edit record" class="btn btn-small editBtn btn-default margin-top-5"><i class="fa fa-pencil"></i> Edit</button>
                                                 </span>
-                                                <span data-bind="visible: !$parent.readOnly()">
+                                                <span data-bind="visible: !$parent.readOnly(), if: $parent.showCrud()">
                                                     <button class="btn btn-small btn-default margin-top-5" data-bind="click: function(){ $parent.transients.parent.delete($parent) }" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
                                                 </span>
                                             </div>

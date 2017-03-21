@@ -1,3 +1,4 @@
+<g:set var="modalName" value="${modalId?:'chooseMore'}"></g:set>
 <div class="row-fluid">
     <div class="span12">
         <!-- ko foreach: facets -->
@@ -18,7 +19,7 @@
                         <span class="label-ellipsis" data-bind="text:displayName, click: filterNow, attr:{title: displayName}"></span>
                     </label>
                     <!-- /ko -->
-                    <a href="#" role="button" class="moreFacets tooltips" data-toggle="modal" title="" data-target="#chooseMore"
+                    <a href="#" role="button" class="moreFacets tooltips" data-toggle="modal" title="" data-target="#${modalName}"
                        data-original-title="View full list of values" data-bind="click: loadMoreTerms, visible: showChooseMore()">
                         <i class="fa fa-hand-o-right"></i> choose more...
                     </a>
@@ -73,7 +74,7 @@
 <!-- Modal -->
 %{--inline style is required as the first time so the modal does not block other components on screen--}%
 %{--Looks like a bug in Bootstrap--}%
-<div id="chooseMore" class="modal fade" role="dialog" style="display: none; ">
+<div id="${modalName}" class="modal fade" role="dialog" style="">
     <div class="modal-dialog ">
 
         <!-- Modal content-->

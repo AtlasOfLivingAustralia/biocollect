@@ -53,13 +53,12 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     self.toggleSearchView = function () {
         self.searchView(!self.searchView());
-        $('#search-spinner').hide();
+        $('.search-spinner').hide();
     };
 
     self.searchTerm = ko.observable('');
     self.order = ko.observable('DESC');
     self.sort = ko.observable('lastUpdated');
-    self.selectedFilters = ko.observableArray(); // User selected facet filters.
 
     self.filterViewModel = new FilterViewModel({
         parent: self,
@@ -98,8 +97,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     };
 
     self.getFacetTerms = function (facets) {
-        var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, null, false);
-        url = url + ((url.indexOf('?') > -1) ? '&' : '?') + 'flimit=-1&max=0&facets=' + facets;
+        var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, null, false, -1);
+        url = url + ((url.indexOf('?') > -1) ? '&' : '?') + '&max=0&facets=' + facets;
 
         return $.ajax({
             url: url
@@ -113,11 +112,12 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             switch (cmd) {
                 case 'store':
                     var facets = [];
-                    ko.utils.arrayForEach(self.selectedFilters(), function (filter) {
+                    ko.utils.arrayForEach(self.filterViewModel.selectedFacets(), function (filter) {
                         var value = {};
                         value.term = filter.term();
-                        value.facetDisplayName = filter.facetDisplayName();
-                        value.facetName = filter.facetName();
+                        value.title = filter.facet.title;
+                        value.name = filter.facet.name();
+                        value.exclude = filter.exclude;
                         facets.push(value);
                     });
                     amplify.store(key, facets);
@@ -132,21 +132,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     self.selectFacetTerm = function (term, facetGroup) {
         self.resetFacetsAndSelect(term, facetGroup);
-    };
-
-    self.addUserSelectedFacet = function (facet) {
-        self.selectedFilters.push(facet);
-        self.refreshPage();
-    };
-
-    self.removeUserSelectedFacet = function () {
-        self.selectedFilters.removeAll();
-        self.refreshPage(0);
-    };
-
-    self.removeFilter = function (filter) {
-        self.selectedFilters.remove(filter);
-        self.refreshPage();
     };
 
     self.canFacetBeDisplayed = function(facetModel, whiteList){
@@ -229,7 +214,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             type: 'GET',
             contentType: 'application/json',
             beforeSend: function () {
-                $('#search-spinner').show();
+                $('.search-spinner').show();
             },
             success: function (data) {
                 self.load(data, Math.ceil(offset / self.pagination.resultsPerPage()));
@@ -239,19 +224,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 alert('An error occurred: ' + data);
             },
             complete: function () {
-                $('#search-spinner').hide();
+                $('.search-spinner').hide();
                 $('.main-content').show();
                 self.transients.loading(false);
             }
         });
-    };
-
-    self.refineSearch = function() {
-        var terms = getSelectedTermsForRefinement();
-        terms.forEach(function (term) {
-            self.selectedFilters.push(term);
-        });
-        self.refreshPage();
     };
 
     function getSelectedTermsForRefinement() {
@@ -275,7 +252,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             type: 'GET',
             contentType: 'application/json',
             beforeSend: function () {
-                $('#search-spinner').show();
+                $('.search-spinner').show();
             },
             success: function (data) {
                 var facets = data.facets;
@@ -313,7 +290,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 alert('An unhandled error occurred: ' + data);
             },
             complete: function () {
-                $('#search-spinner').hide();
+                $('.search-spinner').hide();
                 $('.main-content').show();
                 self.transients.loading(false);
             }
@@ -399,19 +376,20 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         var view = self.view;
         var url =fcConfig.getRecordsForMapping + '&max=10000&searchTerm='+ searchTerm+'&view=' + view;
         var facetFilters = [];
+        var fq;
+
         self.plotOnMap(null);
 
         if(fcConfig.projectId){
             url += '&projectId=' + fcConfig.projectId;
         }
 
-        ko.utils.arrayForEach(self.selectedFilters(), function (term) {
-            facetFilters.push(term.facetName() + ':' + term.term());
-        });
+        fq = self.urlFacetParameter();
 
-        if (facetFilters && facetFilters.length > 0) {
-            url += "&fq=" + facetFilters.join("&fq=");
+        if(fq.length){
+            url += '&fq=' + fq.join('&fq=');
         }
+
         alaMap.startLoading();
         $.getJSON(url, function(data) {
             results = data;
@@ -530,13 +508,14 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
      */
     self.urlFacetParameter = function(){
         var facetFilters = [];
-        ko.utils.arrayForEach(activitiesAndRecordsViewModel.selectedFilters(), function (term) {
-            facetFilters.push(term.facetName() + ':' + term.term());
+        self.filterViewModel.selectedFacets().forEach(function (facet) {
+            facetFilters.push(facet.getQueryText())
         });
+
         return facetFilters;
     };
 
-    function constructQueryUrl(prefix, offset, facetOnly) {
+    function constructQueryUrl(prefix, offset, facetOnly, flimit) {
         if (!offset) offset = 0;
 
         var params = {
@@ -544,7 +523,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             offset: offset,
             sort: self.sort(),
             order: self.order(),
-            flimit: 1000,
+            flimit: flimit || fcConfig.flimit,
             view: self.view
         },
             fq = [];
@@ -554,9 +533,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         if (_.isUndefined(facetOnly) || !facetOnly) {
             params.searchTerm = self.searchTerm().trim();
 
-            self.filterViewModel.selectedFacets().forEach(function (facet) {
-                fq.push(facet.getQueryText())
-            });
+            fq = self.urlFacetParameter();
 
             if(fq.length){
                 filters = '&fq=' + fq.join('&fq=');
@@ -584,6 +561,12 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return facetModel
     }
 
+    self.filterViewModel.selectedFacets.subscribe(function(){
+        self.refreshPage();
+        self.getDataAndShowOnMap();
+        self.imageGallery && self.imageGallery.fetchRecordImages()
+    });
+
     // listen to facet change event so that map can be updated.
     self.searchTerm.subscribe(self.getDataAndShowOnMap);
 
@@ -597,17 +580,24 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     var restored = facetsLocalStorageHandler("restore");
     var orgTerm = fcConfig.organisationName;
     if (orgTerm) {
-        self.selectedFilters.push(new TermFacetVM({
+        self.filterViewModel.selectedFacets.push(new FacetTermViewModel({
             term: orgTerm,
-            facetName: "organisationNameFacet",
-            facetDisplayName: 'Organisation'
+            facet: {
+                name: ko.observable( "organisationNameFacet" ),
+                title: ko.observable( 'Organisation' ),
+                ref: self.filterViewModel
+            }
         }));
     } else if (restored && restored.length > 0) {
         $.each(restored, function (index, value) {
-            self.selectedFilters.push(new TermFacetVM({
-                term: value.term ? value.term : '',
-                facetName: value.facetName ? value.facetName : '',
-                facetDisplayName: value.facetDisplayName ? value.facetDisplayName : ''
+            self.filterViewModel.selectedFacets.push(new FacetTermViewModel({
+                term: value.term || '',
+                exclude: value.exclude,
+                facet: {
+                    name: ko.observable(value.name || ''),
+                    title: ko.observable(value.title || ''),
+                    ref: self.filterViewModel
+                }
             }));
         });
 
@@ -616,13 +606,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     else {
         !doNotInit && self.refreshPage();
     }
-
-    self.filterViewModel.selectedFacets.subscribe(function(){
-        self.refreshPage();
-    });
-    self.filterViewModel.selectedFacets.subscribe(function(){
-        self.getDataAndShowOnMap();
-    });
 };
 
 var ActivityRecordViewModel = function (activity) {
