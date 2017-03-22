@@ -147,6 +147,10 @@ var HubSettings = function (settings, config) {
         self.quickLinks.push(new LinkViewModel({}));
     };
 
+    self.removeLink = function (data) {
+        self.quickLinks.remove(data);
+    }
+
     self.transients = {
 
         /**

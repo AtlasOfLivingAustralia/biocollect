@@ -17,7 +17,6 @@
                                 class="btn btn-primary form-control" type="button"><i
                                 class="icon-search icon-white"></i> Search</button>
                     </div>
-                    <span class="search-spinner spinner margin-left-1 pull-right"> <i class='fa fa-spin fa-spinner'></i> Searching...</span>
                 </div>
             </div>
         </div>

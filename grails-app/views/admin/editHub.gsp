@@ -464,6 +464,7 @@
                 <option value="newproject">New Project</option>
                 <option value="sites">Sites</option>
                 <option value="biocacheexplorer">Biocache Explorer</option>
+                <option value="recordSighting">Record a Sighting</option>
             </select>
         </td>
         <td>
@@ -732,6 +733,7 @@
         <strong>Static page</strong> Href value should be a word. This word should be unique to the hub e.g. 'contact'<br/>
         <strong>External link</strong> Href value should be the full address to a website e.g. 'https://www.ala.org.au'.<br/>
         <strong>Other settings</strong> Href value for content type such as 'home' is predefined. Hence it should be left empty.
+        One exception is 'Record a Sighting'. It is a button which requires href value.
     </div>
 </script>
 <script id="templatePreviewHomePage" type="text/html">

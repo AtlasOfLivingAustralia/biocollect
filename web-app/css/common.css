@@ -481,3 +481,7 @@ input.padding-14, .padding-14{
     max-width: 70%;
     min-width: 50%;
 }
+
+.searching-opacity{
+    opacity: 0.5;
+}

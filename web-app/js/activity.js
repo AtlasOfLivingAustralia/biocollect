@@ -1,4 +1,4 @@
-var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit) {
+var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit, doNotStoreFacetFiltering) {
     var self = this;
 
     var features, featureType = 'record', alaMap, results;
@@ -9,6 +9,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     // It is used to disable certain aspects like map and auto load feature
     ignoreMap = !!ignoreMap;
     doNotInit = !!doNotInit;
+    doNotStoreFacetFiltering = !!doNotStoreFacetFiltering;
 
     self.sortOptions = [
         {id: 'lastUpdated', name: 'Sort by Date', order: 'DESC'},
@@ -31,7 +32,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     self.toggleSearchView = function () {
         self.searchView(!self.searchView());
-        $('.search-spinner').hide();
     };
 
     self.searchTerm = ko.observable('');
@@ -84,26 +84,28 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     };
 
     var facetsLocalStorageHandler = function (cmd) {
-        var orgTerm = fcConfig.organisationName;
-        if (!orgTerm) {
-            var key = self.view.toUpperCase() + '_DATA_PAGE_FACET_KEY';
-            switch (cmd) {
-                case 'store':
-                    var facets = [];
-                    ko.utils.arrayForEach(self.filterViewModel.selectedFacets(), function (filter) {
-                        var value = {};
-                        value.term = filter.term();
-                        value.title = filter.facet.title;
-                        value.name = filter.facet.name();
-                        value.exclude = filter.exclude;
-                        facets.push(value);
-                    });
-                    amplify.store(key, facets);
-                    break;
+        if(!doNotStoreFacetFiltering){
+            var orgTerm = fcConfig.organisationName;
+            if (!orgTerm) {
+                var key = self.view.toUpperCase() + '_DATA_PAGE_FACET_KEY';
+                switch (cmd) {
+                    case 'store':
+                        var facets = [];
+                        ko.utils.arrayForEach(self.filterViewModel.selectedFacets(), function (filter) {
+                            var value = {};
+                            value.term = filter.term();
+                            value.title = filter.facet.title;
+                            value.name = filter.facet.name();
+                            value.exclude = filter.exclude;
+                            facets.push(value);
+                        });
+                        amplify.store(key, facets);
+                        break;
 
-                case 'restore':
-                default:
-                    return amplify.store(key);
+                    case 'restore':
+                    default:
+                        return amplify.store(key);
+                }
             }
         }
     };
@@ -188,7 +190,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             type: 'GET',
             contentType: 'application/json',
             beforeSend: function () {
-                $('.search-spinner').show();
+                $('.activities-search-panel').addClass('searching-opacity');
             },
             success: function (data) {
                 self.load(data, Math.ceil(offset / self.pagination.resultsPerPage()));
@@ -198,9 +200,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 alert('An error occurred: ' + data);
             },
             complete: function () {
-                $('.search-spinner').hide();
                 $('.main-content').show();
                 self.transients.loading(false);
+                $('.activities-search-panel').removeClass('searching-opacity');
             }
         });
     };
@@ -465,11 +467,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return url + filters;
     }
 
-    self.filterViewModel.selectedFacets.subscribe(function(){
+    function fetchDataForTabs(){
         self.refreshPage();
         self.getDataAndShowOnMap();
         self.imageGallery && self.imageGallery.fetchRecordImages()
-    });
+    }
+
+    self.filterViewModel.selectedFacets.subscribe(fetchDataForTabs);
 
     // listen to facet change event so that map can be updated.
     self.searchTerm.subscribe(self.getDataAndShowOnMap);
@@ -493,8 +497,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             }
         }));
     } else if (restored && restored.length > 0) {
+        var selectedFacets = []
         $.each(restored, function (index, value) {
-            self.filterViewModel.selectedFacets.push(new FacetTermViewModel({
+            selectedFacets.push(new FacetTermViewModel({
                 term: value.term || '',
                 exclude: value.exclude,
                 facet: {
@@ -505,10 +510,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             }));
         });
 
-        !doNotInit && self.refreshPage();
+        !doNotInit && self.filterViewModel.selectedFacets.push.apply(self.filterViewModel.selectedFacets, selectedFacets);
     }
     else {
-        !doNotInit && self.refreshPage();
+        !doNotInit && fetchDataForTabs();
     }
 };
 

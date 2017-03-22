@@ -86,6 +86,11 @@ class TemplateTagLib {
                     out << "<a href=\"${ url }\">${link.displayName?:'Occurrence explorer'}</a>";
                     out << "</li>";
                     break;
+                case 'recordSighting':
+                    out << "<li class=\"main-menu\">"
+                    out << "<button class=\"btn btn-primary\" style=\"font-size: 13px;\" title=\"Login required\" onclick=\"window.location = '${url}'\"><i class=\"fa fa-binoculars fa-inverse\"></i>&nbsp;&nbsp;Record a sighting</button>"
+                    out << "</li>"
+                    break;
             }
         }
     }
@@ -118,6 +123,21 @@ class TemplateTagLib {
             }
         }
     }
+
+    def occurrenceExplorerText = { attrs->
+        String url = getLinkUrl([contentType: 'biocacheexplorer']);
+        if(quickLinksContainsBiocacheExplorer(attrs.hubConfig)){
+            out << """
+                <div class="">
+                    <strong>Note:</strong>
+                    Sightings may take up to 24 hours to appear in the
+                    <a href="${url}">Occurrence explorer</a>
+                    pages.
+                </div>
+            """
+        }
+    }
+
 
     private String getLinkUrl (Map link){
         String url;
@@ -155,11 +175,22 @@ class TemplateTagLib {
                     fq = "&fq=alau_user_id:${userService.getCurrentUserId(request)}";
                 }
 
-                url = grailsApplication.config.biocache.baseURL + '/occurrences/search?q=*:*&fq=(data_resource_uid:dr364 OR data_resource_uid:dr1902 OR data_resource_uid:dr1903)' + fq
+                url = grailsApplication.config.biocache.baseURL + '/occurrences/search?q=*:*&fq=(data_resource_uid:dr364)' + fq
+                break;
+            case 'recordSighting':
+                url = "${createLink(uri: link.href)}"
                 break;
         }
 
         return url;
+    }
+
+    private quickLinksContainsBiocacheExplorer (Map hubConfig) {
+        if(hubConfig.quickLinks && hubConfig.quickLinks.size()){
+            return  (hubConfig.quickLinks.find{ it.contentType == 'biocacheexplorer' }?.size() > 0)
+        }
+
+        return false
     }
 
     private String getSpanClassForColumnNumber (Integer number){

@@ -42,7 +42,6 @@ body {
   a:hover,
   a:focus {
     color: $href-color;
-    text-decoration: underline;
   }
 
   .btn.btn-default {
@@ -110,6 +109,11 @@ body {
     background-color: $primary-color;
     background-image: linear-gradient(to bottom, $primary-color, $primary-color);
     border-color: $primary-color $primary-color $primary-color $primary-color;
+  }
+
+  //override bootstrap background colour for tab
+  .nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus{
+    background-color: white;
   }
 
   /* Navbar */

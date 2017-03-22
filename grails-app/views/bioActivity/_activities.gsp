@@ -17,7 +17,8 @@
                 </div>
 
             </div>
-            <div class="span9 text-left well">
+            <div class="span9 text-left well activities-search-panel">
+                <config:occurrenceExplorerText hubConfig="${hubConfig}"/>
                 <ul class="nav nav-tabs" id="tabDifferentViews">
                     <li class="active"><a id="recordVis-tab" href="#recordVis" data-toggle="tab" >List</a></li>
                     <li class=""><a href="#mapVis" id="dataMapTab" data-bind="attr:{'data-toggle': activities().length > 0 ? 'tab' : ''}">Map</a></li>
@@ -25,7 +26,6 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
-                        <span data-bind="if: $root.transients.loading()">Loading...</span>
                         <!-- ko if: activities().length == 0 -->
                             <div class="row-fluid">
                                 <h3 class="text-left margin-bottom-five">
@@ -129,7 +129,7 @@
                                         <td>
                                             <div class="row-fluid">
                                                 <div class="span12">
-                                                    <div data-bind="visible: eventDate">
+                                                    <div data-bind="visible: eventDate.formattedDate">
                                                         Recorded on: <span
                                                             data-bind="text: eventDate.formattedDate"></span>
                                                         <span data-bind="visible: eventTime, text: eventTime"></span>
@@ -143,8 +143,10 @@
                                                             data-bind="text: $parent.ownerName"></span>
                                                     </div>
                                                     <div data-bind="visible: coordinates && coordinates[0]">
-                                                        Coordinate: <span
-                                                            data-bind="text: coordinates[0] + ',' + coordinates[1]"></span>
+                                                        Coordinate: <span class="ellipsis-50 display-inline-block"
+                                                            data-bind="text: coordinates[0], attr: {title: coordinates[0]}"></span>
+                                                        <span class="ellipsis-50 display-inline-block"
+                                                            data-bind="text: ',' + coordinates[1], attr: {title: coordinates[1]}"></span>
                                                     </div>
                                                     <div data-bind="visible: $parent.name">
                                                         Survey name:
@@ -294,12 +296,11 @@
         } else {
             user = null;
         }
-        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user)
+        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false});
         ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('survey-all-activities-and-records-content'));
         $('#dataMapTab').on('shown',function(){
             activitiesAndRecordsViewModel.transients.alaMap.redraw();
         })
-        activitiesAndRecordsViewModel.getDataAndShowOnMap();
 
         configImageGallery = {
             recordUrl: fcConfig.recordImageListUrl,

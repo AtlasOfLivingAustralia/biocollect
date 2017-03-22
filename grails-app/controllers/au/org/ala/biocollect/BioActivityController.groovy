@@ -344,7 +344,8 @@ class BioActivityController {
                         view: 'projectrecords',
                         projectId: id,
                         title: messageSource.getMessage('project.records.title', [].toArray(), '', Locale.default),
-                        returnTo: g.createLink(controller: 'bioActivity', action: 'projectRecords') + '/' + id
+                        returnTo: g.createLink(controller: 'bioActivity', action: 'projectRecords') + '/' + id,
+                        doNotStoreFacetFilters: true
                 ]
         )
     }
@@ -355,15 +356,21 @@ class BioActivityController {
      * @return
      */
     def myProjectRecords(String id) {
-        render(view: 'list',
-                model: [
-                        view: 'myprojectrecords',
-                        user:  userService.user,
-                        projectId: id,
-                        title: messageSource.getMessage('project.myrecords.title', [].toArray(), '', Locale.default),
-                        returnTo: g.createLink(controller: 'bioActivity', action: 'myProjectRecords') + '/' + id
-                ]
-        )
+        if(userService.user){
+            render(view: 'list',
+                    model: [
+                            view: 'myprojectrecords',
+                            user:  userService.user,
+                            projectId: id,
+                            title: messageSource.getMessage('project.myrecords.title', [].toArray(), '', Locale.default),
+                            returnTo: g.createLink(controller: 'bioActivity', action: 'myProjectRecords') + '/' + id,
+                            doNotStoreFacetFilters: true
+                    ]
+            )
+        } else {
+            flash.message = "You need to be logged in to view your records"
+            forward(action: 'projectRecords', params: params)
+        }
     }
 
     def ajaxList() {

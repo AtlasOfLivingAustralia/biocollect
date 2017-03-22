@@ -1,21 +1,3 @@
-<!--
-/*
- * Copyright (C) 2016 Atlas of Living Australia
- * All Rights Reserved.
- *
- * The contents of this file are subject to the Mozilla Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
- * 
- * Created by Temi on 1/11/16.
- */
--->
 <g:set var="orgNameLong" value="${grailsApplication.config.skin.orgNameLong}"/>
 <g:set var="orgNameShort" value="${grailsApplication.config.skin.orgNameShort}"/>
 <!DOCTYPE html>
@@ -83,14 +65,13 @@
     <link href="http://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>
 </head>
 <body class="${pageProperty(name:'body.class')?:'nav-collections'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}"  data-offset="${pageProperty(name:'body.data-offset')}" data-target="${pageProperty(name:'body.data-target')}" data-spy="${pageProperty(name:'body.data-spy')}">
-%{--<g:set var="fluidLayout" value="${grailsApplication.config.skin.fluidLayout?.toBoolean()}"/>--}%
 <g:set var="fluidLayout" value="${true}"/>
 <g:if test="${hubConfig.templateConfiguration.header.type == 'ala'}">
     <div id="ala-header-bootstrap2" class="do-not-mark-external">
         <hf:banner logoutUrl="${g.createLink(controller:"logout", action:"logout", absolute: true)}"/>
     </div>
 </g:if>
-<g:if test="${hubConfig.templateConfiguration.header.type == 'biocollect'}">
+<g:elseif test="${hubConfig.templateConfiguration.header.type == 'biocollect'}">
     <div id="biocollect-header">
         <g:render template="/project/biocollectBanner"></g:render>
         <g:if test="${showCitizenScienceBanner}">
@@ -103,7 +84,7 @@
             <g:render template="/shared/bannerEcoScience"/>
         </g:if>
     </div>
-</g:if>
+</g:elseif>
 <g:elseif test="${hubConfig.templateConfiguration.header.type == 'custom'}">
     <div id="custom-header" class="do-not-mark-external">
         <div class="navbar navbar-inverse navbar-static-top">
@@ -130,6 +111,13 @@
 <g:pageProperty name="page.page-header"/> <%-- allows special content to be inserted --%>
 
 <div id="main-content" class="${homepage? 'homepage': ''} ${hubConfig.templateConfiguration.header.type == 'ala'? 'padding-top-70':''}">
+    <g:if test="${flash.message}">
+        <div class="container-fluid">
+            <div class="alert alert-info">
+                ${flash.message}
+            </div>
+        </div>
+    </g:if>
     <g:layoutBody />
 </div>
 

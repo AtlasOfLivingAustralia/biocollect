@@ -16,6 +16,14 @@
     overflow: hidden;
 }
 
+.ellipsis-50{
+    width: 50px;
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 .display-inline-block{
     display: inline-block;
     vertical-align: bottom;
