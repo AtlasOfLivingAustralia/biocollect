@@ -190,6 +190,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             type: 'GET',
             contentType: 'application/json',
             beforeSend: function () {
+                $('.search-spinner').show();
                 $('.activities-search-panel').addClass('searching-opacity');
             },
             success: function (data) {
@@ -200,6 +201,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 alert('An error occurred: ' + data);
             },
             complete: function () {
+                $('.search-spinner').hide();
                 $('.main-content').show();
                 self.transients.loading(false);
                 $('.activities-search-panel').removeClass('searching-opacity');

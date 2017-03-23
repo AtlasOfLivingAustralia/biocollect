@@ -830,6 +830,35 @@ ko.bindingHandlers.getImage = {
     }
 };
 
+/**
+ * Execute handler when enter key is pressed on input tag or similar elements
+ * return true from handler to allow default action.
+ */
+ko.bindingHandlers.enter = {
+    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        var handler = valueAccessor(),
+            newHandler = function (viewModel, event) {
+                var result = handler.apply(viewModel, arguments);
+                return result || true;
+            };
+        var newValueAccessor = function() {
+            var result = {};
+            result['keypress'] = function (viewModel, event) {
+                if (event.which == 13) {
+                    return newHandler.apply(viewModel, arguments);
+                }
+
+                // return true from handler to allow default action. Otherwise, input will not show pressed key.
+                return true;
+            };
+
+            return result;
+        };
+
+        return ko.bindingHandlers['event']['init'].call(this, element, newValueAccessor, allBindings, viewModel, bindingContext);
+    }
+};
+
 // the following code handles resize-sensitive truncation of the description field
 $.fn.textWidth = function(text, font) {
     if (!$.fn.textWidth.fakeEl) $.fn.textWidth.fakeEl = $('<span>').hide().appendTo(document.body);

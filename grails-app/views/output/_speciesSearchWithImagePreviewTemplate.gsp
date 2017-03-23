@@ -2,12 +2,14 @@
 <div class="row-fluid" data-bind="with:${source}">
     <div class="span6">
         <div class="row-fluid">
-            <g:if test="${readonly}">
-                <span data-bind="${databindAttrs}"></span>
-            </g:if>
-            <g:else>
-                <input class="span12 form-control" type="text" placeholder="Start typing a species name" data-bind="${databindAttrs}" ${validationAttrs} ${attrs}/>
-            </g:else>
+            <div class="span12">
+                <g:if test="${readonly}">
+                    <span data-bind="${databindAttrs}"></span>
+                </g:if>
+                <g:else>
+                    <input class="full-width-input content-box form-control" type="text" placeholder="Start typing a species name" data-bind="${databindAttrs}" ${validationAttrs} ${attrs}/>
+                </g:else>
+            </div>
         </div>
     </div>
     <g:if test="${!readonly}">
