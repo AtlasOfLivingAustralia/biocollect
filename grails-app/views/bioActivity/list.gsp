@@ -30,7 +30,7 @@
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             version: "${params?.version}",
             projectId: "${projectId}",
-            flimit: 15
+            flimit: ${grailsApplication.config.facets.flimit}
         },
         here = document.location.href;
     </r:script>

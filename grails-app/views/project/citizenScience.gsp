@@ -31,7 +31,7 @@
         isCitizenScience: true,
         showAllProjects: false,
         meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
-        flimit: 15
+        flimit: ${grailsApplication.config.facets.flimit}
     }
     <g:if test = "${grailsApplication.config.merit.projectLogo}" >
         fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";

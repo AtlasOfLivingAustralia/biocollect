@@ -221,3 +221,7 @@ if (!acsaUrl){
 if(!biocache.baseURL){
     biocache.baseURL = "https://biocache.ala.org.au"
 }
+
+if(!facets.flimit){
+    facets.flimit = 15
+}

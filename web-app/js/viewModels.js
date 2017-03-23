@@ -59,6 +59,7 @@ function enmapify(args) {
         allowSearchLocationByAddress: !readonly,
         allowSearchRegionByAddress: false,
         zoomToObject: true,
+        markerZoomToMax: true,
         drawOptions: readonly || !activityLevelData.pActivity.allowAdditionalSurveySites ?
             {
                 polyline: false,
@@ -78,11 +79,11 @@ function enmapify(args) {
     };
 
     if (activityLevelData.pActivity.baseLayersName === 'Google Maps') {
-        var googleLayer = new L.Google('ROADMAP');
+        var googleLayer = new L.Google('ROADMAP',{maxZoom: 21});
         var otherLayers = {
             Roadmap: googleLayer,
-            Hybrid: new L.Google('HYBRID'),
-            Terrain: new L.Google('TERRAIN')
+            Hybrid: new L.Google('HYBRID', {maxZoom: 21}),
+            Terrain: new L.Google('TERRAIN',{maxZoom: 15})
         };
 
         mapOptions.baseLayer = googleLayer;
@@ -428,7 +429,7 @@ function enmapify(args) {
             if (activityLevelData.pActivity.sites.length == 1) {
                 updateMapForSite(activityLevelData.pActivity.sites[0].siteId);
             }
-        }, "bottomleft");
+        }, "bottomright");
     }
 
     if (args.zoomToProjectArea) {

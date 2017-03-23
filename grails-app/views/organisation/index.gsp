@@ -62,7 +62,7 @@
             organisationName: '${organisation.name}',
             version: "${params.version?:''}",
             hideWorldWideBtn: true,
-            flimit: 15
+            flimit: ${grailsApplication.config.facets.flimit}
         };
     </r:script>
     <style type="text/css">

@@ -85,14 +85,7 @@ class ProjectActivityController {
             response.status = 401
             result = [status: 401, error: "Access denied: User is not an admin of this project - ${project?.projectId}"]
         } else if (pActivity) {
-            def code = activityService.deleteByProjectActivity(pActivity.projectActivityId)
-            if (code == HttpStatus.SC_OK) {
-                flash.message = "Successfully unpublished the survey."
-                result = projectActivityService.update(id, [published: false])
-            } else {
-                response.status = code
-                result = [status: code, error: "Error unpublishing the project activity ${pActivity.projectActivityId}"]
-            }
+            result = projectActivityService.update(id, [published: false])
         } else {
             response.status = 400
             result = [status: 400, error: "Invalid project activity id ${params.id}"]

@@ -424,7 +424,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
         var url =  fcConfig.projectActivityUnpublishUrl + "/" + pActivity.projectActivityId();
 
-        bootbox.confirm("Are you sure you want to unpublish this survey? All data associated with this survey will be lost.", function (result) {
+        bootbox.confirm("Are you sure you want to unpublish this survey?", function (result) {
             if (result) {
                 blockUIWithMessage("Unpublishing the survey");
                 $.ajax({
