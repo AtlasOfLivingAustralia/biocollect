@@ -100,7 +100,7 @@
                                                 </a>
                                             </div>
                                         </td>
-                                        <td>
+                                        <td class="span3">
                                             <div>
                                                 <!-- ko if: name() -->
                                                 <a target="_blank"
@@ -148,13 +148,13 @@
                                                         <span class="ellipsis-50 display-inline-block"
                                                             data-bind="text: ',' + coordinates[1], attr: {title: coordinates[1]}"></span>
                                                     </div>
-                                                    <div data-bind="visible: $parent.name">
+                                                    <div data-bind="visible: $parent.name() && !fcConfig.hideProjectAndSurvey">
                                                         Survey name:
                                                         <a data-bind="attr:{'href': $parent.transients.addUrl}">
                                                             <span data-bind="text: $parent.name"></span>
                                                         </a>
                                                     </div>
-                                                    <div data-bind="visible: $parent.projectName">
+                                                    <div data-bind="visible: $parent.projectName() && !fcConfig.hideProjectAndSurvey">
                                                         Project name: <a
                                                             data-bind="attr:{'href': $parent.projectUrl()}"><span
                                                                 data-bind="text: $parent.projectName"></span></a>
@@ -209,13 +209,13 @@
                                                         Recorded by: <span
                                                             data-bind="text: ownerName"></span>
                                                     </div>
-                                                    <div data-bind="visible: name">
+                                                    <div data-bind="visible: name() && !fcConfig.hideProjectAndSurvey">
                                                         Survey name:
                                                         <a data-bind="attr:{'href': transients.addUrl}">
                                                             <span data-bind="text: name"></span>
                                                         </a>
                                                     </div>
-                                                    <div data-bind="visible: projectName">
+                                                    <div data-bind="visible: projectName() && !fcConfig.hideProjectAndSurvey">
                                                         Project name: <a
                                                             data-bind="attr:{'href': projectUrl()}"><span
                                                                 data-bind="text: projectName"></span></a>

@@ -376,6 +376,9 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideBreadCrumbs"> Hide bread crumbs
                 </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectAndSurvey"> Hide project and survey when listing records on pages like all records
+                </div>
                 <h3>Quick links</h3>
                 <small>Links that appear on certain content pages like create, view, all records etc.</small>
                 <!-- ko template: {name: 'templateLinkNotes'} -->

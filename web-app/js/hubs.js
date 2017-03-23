@@ -78,6 +78,7 @@ var HubSettings = function (settings, config) {
     self.defaultProgram = ko.observable();
     self.templateConfiguration = ko.observable();
     self.hideBreadCrumbs = ko.observable();
+    self.hideProjectAndSurvey = ko.observable();
     self.quickLinks = ko.observableArray();
     self.facets = ko.observableArray();
 
@@ -178,6 +179,7 @@ var HubSettings = function (settings, config) {
         self.homePagePath(self.orBlank(settings.homePagePath));
         self.defaultFacetQuery([]);
         self.hideBreadCrumbs(settings.hideBreadCrumbs);
+        self.hideProjectAndSurvey(settings.hideProjectAndSurvey);
         self.quickLinks(settings.quickLinks || []);
         self.templateConfiguration(new TemplateConfigurationViewModel(settings.templateConfiguration || {}));
         if (settings.defaultFacetQuery && settings.defaultFacetQuery instanceof Array) {
