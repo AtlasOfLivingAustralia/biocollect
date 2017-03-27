@@ -7,21 +7,21 @@
     </div>
 </g:if>
 <g:if test="${!hideSiteSelection}">
-    <div class="${isHorizontal ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 1">
+    <div class="${isHorizontal ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 0">
         <div>
             <div class="row-fluid">
-                <div class="span3">
-                    <label for="siteLocation">${readonly ? 'Location:' : 'Select a location'}</label>
+                <div class="span4">
+                    <label for="siteLocation">${readonly ? 'Location:' : 'Select a location or drop a pin'}</label>
                 </div>
 
-                <div class="span9">
+                <div class="span8">
                     <g:if test="${readonly}">
                         <span class="output-text" data-bind="text: data.${source}Name() "></span>
                     </g:if>
                     <g:else>
                         <select id="siteLocation"
-                                data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Choose a site...", disable: ${readonly} || data.${source}Loading'
-                                class="form-control full-width"></select>
+                                data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Drop a pin.", disable: ${readonly} || data.${source}Loading'
+                                class="form-control input-xlarge full-width"></select>
                     </g:else>
                 </div>
             </div>

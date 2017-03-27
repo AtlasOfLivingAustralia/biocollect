@@ -38,6 +38,8 @@ function enmapify(args) {
         nameObservable = container[name + "Name"] = ko.observable(),
         latObservable = container[name + "Latitude"] = ko.observable(),
         lonObservable = container[name + "Longitude"] = ko.observable(),
+        hiddenLatObservable = container[name + "HiddenLatitude"] = ko.observable(),
+        hiddenLonObservable = container[name + "HiddenLongitude"] = ko.observable(),
         latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(),
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
@@ -97,7 +99,9 @@ function enmapify(args) {
     var latSubscriber = latObservable.subscribe(updateMarkerPosition);
     var lngSubscriber = lonObservable.subscribe(updateMarkerPosition);
 
-    function updateFieldsForMap() {
+    var siteIdSubscriber;
+
+    function updateFieldsForMap(params) {
         latSubscriber.dispose();
         lngSubscriber.dispose();
 
@@ -110,13 +114,28 @@ function enmapify(args) {
         var geo = map.getGeoJSON();
         var feature;
 
+        // When removing layers, events can also be fired, we want to avoid processing those
+        // otherwise we could override the siteId
+        var isRemoveEvent = params && params.type && params.type == "layerremove";
         if (markerLocation) {
-            latObservable(markerLocation.lat);
-            lonObservable(markerLocation.lng);
-            latLonDisabledObservable(false);
-            centroidLatObservable(null);
-            centroidLonObservable(null);
-            $(document).trigger('markerupdated');
+            // Prevent sitesubscriber from been reset, when we are in the process of clearing the map
+            // If the user dropped a pin or search a location then the select location should be deselected
+            if(!isRemoveEvent) {
+
+                siteSubscriber.dispose();
+
+                siteIdObservable(null);
+                latObservable(markerLocation.lat);
+                lonObservable(markerLocation.lng);
+                latLonDisabledObservable(false);
+                centroidLatObservable(null);
+                centroidLonObservable(null);
+
+                $(document).trigger('markerupdated');
+
+                siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
+            }
+
         } else if (geo && geo.features && geo.features.length > 0) {
             console.log("Computing centroid");
             latLonDisabledObservable(true);
@@ -171,8 +190,16 @@ function enmapify(args) {
     }
 
     function updateMapForSite(siteId) {
-        map.resetMap();
         if (typeof siteId !== "undefined" && siteId) {
+            if(lonObservable()) {
+                hiddenLonObservable(lonObservable());
+            }
+
+            if(latObservable()) {
+                hiddenLatObservable(latObservable());
+            }
+
+            map.resetMap();
             var matchingSite = $.grep(sitesObservable(), function (site) {
                 return siteId == site.siteId
             })[0];
@@ -183,6 +210,13 @@ function enmapify(args) {
                 } else {
                     map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
                 }
+            }
+        } else { // Drop a pin, restore previous coordinates if any
+            if(hiddenLatObservable() && hiddenLonObservable()) {
+                lonObservable(hiddenLonObservable());
+                latObservable(hiddenLatObservable());
+            } else {
+                map.resetMap();
             }
         }
     }
