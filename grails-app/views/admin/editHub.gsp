@@ -383,6 +383,9 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideCancelButtonOnForm"> Hide cancel button on form create page
                 </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: isContainer"> Content should be in a fixed width container
+                </div>
                 <!-- /ko -->
                 <h3>Quick links</h3>
                 <small>Links that appear on certain content pages like create, view, all records etc.</small>

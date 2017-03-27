@@ -316,6 +316,7 @@ function ContentViewModel(config) {
     self.hideBreadCrumbs = ko.observable(config.hideBreadCrumbs || false);
     self.hideProjectAndSurvey = ko.observable(config.hideProjectAndSurvey || false);
     self.hideCancelButtonOnForm = ko.observable(config.hideCancelButtonOnForm || false);
+    self.isContainer = ko.observable(config.isContainer || false);
 }
 
 var HeaderViewModel = function (config) {
