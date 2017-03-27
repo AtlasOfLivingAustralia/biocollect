@@ -4,7 +4,7 @@
 <head>
     <title>Image viewer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <r:require module="leaflet" />
+    <r:require module="leaflet_0.7.7" />
     <r:layoutResources disposition="head" />
     <style>
     body {

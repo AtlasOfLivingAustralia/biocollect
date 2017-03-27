@@ -35,7 +35,7 @@
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
-<g:if test="${!hubConfig.hideBreadCrumbs}">
+<g:if test="${!hubConfig.content?.hideBreadCrumbs}">
     <ul class="breadcrumb">
         <li><g:link controller="home"><g:message code="g.home"/></g:link> <span class="divider">/</span></li>
         <li><g:link controller="project" action="index"

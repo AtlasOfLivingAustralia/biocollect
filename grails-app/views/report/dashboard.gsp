@@ -48,7 +48,7 @@
 <body>
 
 <div class="container-fluid">
-    <g:if test="${!hubConfig.hideBreadCrumbs}">
+    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
         <ul class="breadcrumb">
             <li>
                 <g:link controller="home">Home</g:link> <span class="divider">/</span>

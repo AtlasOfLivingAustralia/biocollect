@@ -18,7 +18,7 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <g:if test="${!hubConfig.hideBreadCrumbs}">
+        <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
             <ul class="breadcrumb">
                 <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
                 <g:if test="${project}">

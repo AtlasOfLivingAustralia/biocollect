@@ -27,7 +27,7 @@
 
 </style>
 <div class="project-header project-banner" data-bind="style:{'backgroundImage':asBackgroundImage(bannerUrl())}">
-    <g:if test="${!hubConfig.hideBreadCrumbs}">
+    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
         <div class="row-fluid" style="margin-left:10px;">
             <ul class="breadcrumb">
                 <li>

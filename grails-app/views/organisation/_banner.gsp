@@ -1,5 +1,5 @@
 <div class="organisation-header banner" data-bind="style:{'backgroundImage':asBackgroundImage(bannerUrl())}">
-    <g:if test="${!hubConfig.hideBreadCrumbs}">
+    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
         <div class="row-fluid">
             <ul class="breadcrumb">
                 <li>

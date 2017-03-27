@@ -1,5 +1,4 @@
 modules = {
-
     ala2Skin {
         dependsOn 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
         resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
@@ -297,6 +296,86 @@ modules = {
         resource url: 'css/projectSpeciesFieldsConfiguration.css'
     }
 
+    "leaflet_0.7.7" {
+        resource url: [dir: "vendor/leaflet-0.7.7", file: "leaflet.js", plugin: "ala-map"]
+        resource url: [dir: "vendor/leaflet-0.7.7", file: "leaflet.css", plugin: "ala-map"]
+    }
+
+    'leaflet-fullscreen' {
+        dependsOn 'leaflet_0.7.7'
+        resource url: [plugin: "images-client-plugin", dir: 'js/leaflet', file: 'Control.FullScreen.css']
+        resource url: [plugin: "images-client-plugin", dir: 'js/leaflet', file: 'Control.FullScreen.js']
+    }
+
+    'leaflet-measure' {
+        dependsOn 'leaflet_0.7.7'
+        resource url: [plugin: "images-client-plugin", dir: 'js/leaflet', file: 'leaflet.measure.js']
+        resource url: [plugin: "images-client-plugin", dir: 'js/leaflet', file: 'leaflet.measure.css']
+    }
+
+    overrides {
+        'leaflet-draw' {
+            dependsOn 'leaflet_0.7.7'
+        }
+
+        'leaflet-loading' {
+            dependsOn 'leaflet_0.7.7'
+        }
+
+        'image-viewer' {
+            dependsOn 'jquery', 'bootstrap', 'leaflet_0.7.7', 'leaflet-measure', 'leaflet-draw', 'leaflet-loading', 'font-awesome'
+        }
+        
+        map {
+            dependsOn "underscore"
+            dependsOn "jquery"
+            dependsOn "jqueryScrollView"
+            dependsOn 'leaflet_0.7.7'
+            dependsOn "leaflet_draw"
+            dependsOn "leaflet_coords"
+            dependsOn "leaflet_easyButton"
+            dependsOn "leaflet_geocoder"
+            dependsOn "leaflet_cluster"
+            dependsOn "leaflet_loading"
+            dependsOn "turf"
+            dependsOn "custom_controls"
+            dependsOn "font-awesome"
+            dependsOn "leaflet_sleep"
+        }
+
+        custom_controls {
+            dependsOn 'leaflet_0.7.7'
+        }
+        
+        leaflet_draw {
+            dependsOn 'leaflet_0.7.7'
+        }
+
+        leaflet_coords {
+            dependsOn 'leaflet_0.7.7'
+        }
+
+        leaflet_easyButton {
+            dependsOn 'leaflet_0.7.7'
+        }
+
+        leaflet_geocoder {
+            dependsOn 'leaflet_0.7.7'
+        }
+
+        leaflet_cluster {
+            dependsOn 'leaflet_0.7.7'
+        }
+
+        leaflet_loading {
+            dependsOn 'leaflet_0.7.7'
+        }
+
+        leaflet_sleep {
+            dependsOn 'leaflet_0.7.7'
+        }
+    }
+
     imageViewer {
         dependsOn 'image-viewer', 'jquery'
         resource url: 'vendor/fancybox/jquery.fancybox.js'
@@ -368,11 +447,6 @@ modules = {
         resource url: 'vendor/prettytextdiff/jquery.pretty-text-diff.min.js'
         resource url: 'vendor/prettytextdiff/diff_match_patch.js'
         resource url: 'vendor/prettytextdiff/pretty_text_diff_basic.css'
-    }
-
-    leaflet {
-        resource url: 'vendor/leaflet/0.7.3/leaflet.js'
-        resource url: 'vendor/leaflet/0.7.3/leaflet.css'
     }
 
     leaflet_google_base {

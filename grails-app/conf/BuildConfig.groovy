@@ -24,6 +24,7 @@ grails.project.fork = [
 ]
 
 //grails.plugin.location["ala-map-plugin"] = '../ala-map-plugin'
+//grails.plugin.location["images-client-plugin"] = '../images-client-plugin'
 
 // settings for the development environment
 if (Environment.current == Environment.DEVELOPMENT) {
@@ -107,9 +108,8 @@ grails.project.dependency.resolution = {
         compile ":mail:1.0.7"
         compile ":excel-export:0.2.0"
         compile ":excel-import:1.0.1"
-        compile ":ala-map:1.3.3-SNAPSHOT"
-
         compile ":images-client-plugin:0.6.1"
+        compile ":ala-map:1.3.3-SNAPSHOT"
         compile ':cookie:1.4'
 
     }

@@ -497,3 +497,9 @@ input.padding-14, .padding-14{
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
+
+.leaflet-container a[href^="http"]:not([href*="ala.org.au"]):not(.do-not-mark-external)::after {
+    content: '';
+    padding-left: 0px;
+    vertical-align: baseline;
+}

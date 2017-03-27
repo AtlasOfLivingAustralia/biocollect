@@ -77,8 +77,7 @@ var HubSettings = function (settings, config) {
     self.documents = ko.observableArray();
     self.defaultProgram = ko.observable();
     self.templateConfiguration = ko.observable();
-    self.hideBreadCrumbs = ko.observable();
-    self.hideProjectAndSurvey = ko.observable();
+    self.content = ko.observable();
     self.quickLinks = ko.observableArray();
     self.facets = ko.observableArray();
 
@@ -178,8 +177,7 @@ var HubSettings = function (settings, config) {
         self.logoUrl(self.orBlank(settings.logoUrl));
         self.homePagePath(self.orBlank(settings.homePagePath));
         self.defaultFacetQuery([]);
-        self.hideBreadCrumbs(settings.hideBreadCrumbs);
-        self.hideProjectAndSurvey(settings.hideProjectAndSurvey);
+        self.content(new ContentViewModel(settings.content || {}));
         self.quickLinks(settings.quickLinks || []);
         self.templateConfiguration(new TemplateConfigurationViewModel(settings.templateConfiguration || {}));
         if (settings.defaultFacetQuery && settings.defaultFacetQuery instanceof Array) {
@@ -312,6 +310,13 @@ var TemplateConfigurationViewModel = function (config) {
     self.banner = ko.observable(new BannerViewModel(config.banner || {}));
     self.homePage = ko.observable(new HomePageViewModel(config.homePage || {}));
 };
+
+function ContentViewModel(config) {
+    var self = this;
+    self.hideBreadCrumbs = ko.observable(config.hideBreadCrumbs || false);
+    self.hideProjectAndSurvey = ko.observable(config.hideProjectAndSurvey || false);
+    self.hideCancelButtonOnForm = ko.observable(config.hideCancelButtonOnForm || false);
+}
 
 var HeaderViewModel = function (config) {
     var self = this;

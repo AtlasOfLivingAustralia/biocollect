@@ -373,12 +373,17 @@
         <div class="tab-pane" id="hubContent">
             <div>
                 <h3>Settings</h3>
+                <!-- ko with: content-->
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideBreadCrumbs"> Hide bread crumbs
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectAndSurvey"> Hide project and survey when listing records on pages like all records
                 </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideCancelButtonOnForm"> Hide cancel button on form create page
+                </div>
+                <!-- /ko -->
                 <h3>Quick links</h3>
                 <small>Links that appear on certain content pages like create, view, all records etc.</small>
                 <!-- ko template: {name: 'templateLinkNotes'} -->

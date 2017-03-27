@@ -45,7 +45,7 @@
 
     <div id="koActivityMainBlock">
 
-        <g:if test="${!printView && !mobile  && !hubConfig.hideBreadCrumbs}">
+        <g:if test="${!printView && !mobile  && !hubConfig.content?.hideBreadCrumbs}">
             <ul class="breadcrumb">
                 <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
                 <li><a href="#" data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
