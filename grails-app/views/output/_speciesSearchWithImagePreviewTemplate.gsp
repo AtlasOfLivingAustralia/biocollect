@@ -18,7 +18,7 @@
             <div class="span12" data-bind="slideVisible: transients.guid">
                 <div class="sciName">
                     <a href="" class="tooltips" title="view species page" target="BIE"
-                       data-bind="attr:{href: transients.bioProfileUrl}, text: transients.scientificName() +' (' + transients.commonName() + ')'"></a>
+                       data-bind="attr:{href: transients.bioProfileUrl}, text: name"></a>
                 </div>
             </div>
         </div>

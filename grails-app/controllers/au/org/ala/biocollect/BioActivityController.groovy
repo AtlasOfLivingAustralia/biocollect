@@ -905,7 +905,7 @@ class BioActivityController {
                 hub = grailsApplication.config.individualSightings.hub;
 
             Map species = [:]
-            Map result = speciesService.getSpeciesDetailsForTaxonId(params.taxonId);
+            Map result = speciesService.getSpeciesDetailsForTaxonId(params.taxonId, false);
             if(result.commonName){
                 species.name = "${result?.scientificName} (${result?.commonName})"
             } else {
