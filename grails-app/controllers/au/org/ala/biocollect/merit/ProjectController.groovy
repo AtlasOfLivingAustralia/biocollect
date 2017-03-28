@@ -842,6 +842,7 @@ class ProjectController {
             }
 
             Map result = projectService.listImages(payload, params?.version) ?: [:];
+            documentService.addLicenceDescription(result.documents);
             render contentType: 'application/json', text: result as JSON
         } catch (SocketTimeoutException sTimeout){
             render(status: SC_REQUEST_TIMEOUT, text: sTimeout.message)

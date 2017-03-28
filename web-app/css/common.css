@@ -207,6 +207,19 @@
     padding-bottom: 5px;
 }
 
+.display-inline-block{
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+.ellipsis-50{
+    width: 50px;
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 .left-aligned-label {
     margin-left: 0 !important;
     text-align: left !important;
@@ -502,4 +515,12 @@ input.padding-14, .padding-14{
     content: '';
     padding-left: 0px;
     vertical-align: baseline;
+}
+
+.label-ellipsis{
+    max-width: 100%;
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }

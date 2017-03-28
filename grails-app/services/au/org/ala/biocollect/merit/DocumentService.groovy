@@ -1,6 +1,7 @@
 package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
+import org.springframework.context.MessageSource
 
 /**
  * Proxies to the ecodata DocumentController/DocumentService.
@@ -9,6 +10,7 @@ class DocumentService {
     public String ROLE_LOGO = "logo"
 
     def webService, grailsApplication
+    MessageSource messageSource
 
     def get(String id) {
         def url = "${grailsApplication.config.ecodata.service.url}/document/${id}"
@@ -68,5 +70,21 @@ class DocumentService {
         link.type = "link"
         link.externalUrl = link.remove('url')
         updateDocument(link)
+    }
+
+
+    /**
+     * de reference licence code and adds the value to licenceDescription property
+     * @param documents
+     * @return
+     */
+    public List addLicenceDescription (List documents){
+        documents?.each{ document ->
+            if(document.licence){
+                document.licenceDescription = messageSource.getMessage('licence.' + document.licence.replace(' ', '_'), [].toArray(), '', Locale.default);
+            }
+        }
+
+        documents;
     }
 }

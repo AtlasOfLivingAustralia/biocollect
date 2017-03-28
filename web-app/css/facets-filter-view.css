@@ -8,32 +8,6 @@
     flex-direction: column;
 }
 
-.label-ellipsis{
-    max-width: 100%;
-    display: block;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.ellipsis-50{
-    width: 50px;
-    display: block;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.display-inline-block{
-    display: inline-block;
-    vertical-align: bottom;
-}
-
-.facet-label-width{
-    width: 90%;
-}
-
-
 button.btn.btn-text-left{
     text-align: left;
 }

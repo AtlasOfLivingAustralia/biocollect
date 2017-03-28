@@ -6,6 +6,7 @@ import org.apache.commons.io.FilenameUtils
 class ProxyController {
 
     def webService, commonService, projectService
+    SpeciesService speciesService
 
     def geojsonFromPid(String pid) {
         def shpUrl = "${grailsApplication.config.spatial.layersUrl}/shape/geojson/${pid}"
@@ -41,16 +42,7 @@ class ProxyController {
     }
 
     def speciesProfile(String id) {
-        // While the BIE is in the process of being cut over to the new version we have to handle both APIs.
-        def url = "${grailsApplication.config.bie.baseURL}/ws/species/info/${id.encodeAsURL()}.json"
-        Map result = webService.getJson(url)
-
-        if (!result || result.error || result.statusCode != 200) {
-            url = "${grailsApplication.config.bie.baseURL}/ws/species/shortProfile/${id.encodeAsURL()}.json"
-            result = webService.getJson(url)
-
-        }
-
+        Map result = speciesService.getSpeciesDetailsForTaxonId(id);
         render result
     }
 

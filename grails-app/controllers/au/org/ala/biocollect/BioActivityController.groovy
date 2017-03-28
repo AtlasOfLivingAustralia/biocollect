@@ -24,6 +24,7 @@ class BioActivityController {
     SearchService searchService
     MessageSource messageSource
     RecordService recordService
+    SpeciesService speciesService
 
     static int MAX_FLIMIT = 500
 
@@ -199,6 +200,14 @@ class BioActivityController {
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
             addOutputModel(model)
             model.defaultData = metadataService.getDefaultData(model.outputModels)
+
+            // added to override default values. This will enable pre-populating values in fields like species
+            // whereby passing taxon id will populate species field value. for example, look at action preFillSpeciesName
+            // on this controller.
+            if(params.overrideDefaultData){
+                model.defaultData = model.defaultData ?: [:]
+                model.defaultData.putAll(params.overrideDefaultData);
+            }
         }
 
         if (mobile && flash.message) {
@@ -655,6 +664,10 @@ class BioActivityController {
 
         model.mapFeatures = model.site ? siteService.getMapFeatures(model.site) : []
 
+        if(model.activity?.documents){
+            documentService.addLicenceDescription(model.activity?.documents);
+        }
+
         model
     }
 
@@ -885,4 +898,32 @@ class BioActivityController {
         render model as JSON
     }
 
+    public preFillSpeciesName(){
+        if(params.taxonId){
+            String pActivity = grailsApplication.config.individualSightings.pActivity,
+                speciesModelName = grailsApplication.config.individualSightings.modelName,
+                hub = grailsApplication.config.individualSightings.hub;
+
+            Map species = [:]
+            Map result = speciesService.getSpeciesDetailsForTaxonId(params.taxonId);
+            if(result.commonName){
+                species.name = "${result?.scientificName} (${result?.commonName})"
+            } else {
+                species.name = result?.scientificName
+            }
+
+            species.scientificName = result?.scientificName
+            species.commonName = result.commonName
+            species.guid = params.taxonId
+
+            params.id = pActivity
+            params.hub = hub
+            params.overrideDefaultData = [ : ]
+            params.overrideDefaultData[speciesModelName] = species
+
+            forward(action: 'create')
+        } else {
+            render status: SC_BAD_REQUEST, text: "You need to provide taxon id"
+        }
+    }
 }

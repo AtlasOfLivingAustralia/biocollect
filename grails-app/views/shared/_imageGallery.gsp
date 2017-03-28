@@ -14,12 +14,13 @@
                     </a>
                     <div class="hide">
                         <div class="metadata">
-                            <div data-bind="visible:name"><strong>Name:</strong> <span data-bind="text:name"></span></div>
+                            <div data-bind="visible:name"><strong>Name:</strong> <span class="label-ellipsis display-inline-block" data-bind="text:name, attr:{title:name}"></span></div>
                             <div data-bind="visible: attribution"><strong>Attribution:</strong> <span data-bind="text: attribution"></span></div>
+                            <div data-bind="visible: licenceDescription"><strong>Licence:</strong> <span data-bind="text: licenceDescription"></span></div>
                             <div data-bind="visible: dateTaken"><strong>Date:</strong> <span data-bind="text: convertToSimpleDate(dateTaken())"></span></div>
-                            <div data-bind="visible: notes"><strong>Date:</strong> <span data-bind="text: notes"></span></div>
-                            <div data-bind="visible: activityName"><strong>Activity name:</strong> <a data-bind="attr:{href:getActivityLink()}, text: activityName" target="_blank"></a></div>
-                            <div data-bind="visible: projectName"><strong>Project name:</strong> <a data-bind="attr:{href:getProjectLink()}, text: projectName" target="_blank"></a></div>
+                            <div data-bind="visible: notes"><strong>Notes:</strong> <span data-bind="text: notes"></span></div>
+                            <div data-bind="visible: activityName && !fcConfig.hideProjectAndSurvey"><strong>Activity name:</strong> <a data-bind="attr:{href:getActivityLink()}, text: activityName" target="_blank"></a></div>
+                            <div data-bind="visible: projectName && !fcConfig.hideProjectAndSurvey"><strong>Project name:</strong> <a data-bind="attr:{href:getProjectLink()}, text: projectName" target="_blank"></a></div>
                         </div>
                     </div>
                 </div>

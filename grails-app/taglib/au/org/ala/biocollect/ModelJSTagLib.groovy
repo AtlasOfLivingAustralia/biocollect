@@ -1,5 +1,7 @@
 package au.org.ala.biocollect
 
+import grails.converters.JSON
+
 class ModelJSTagLib {
 
     static namespace = "md"
@@ -93,8 +95,15 @@ class ModelJSTagLib {
         boolean readonly = attrs.readonly?.toBoolean() ?: false
         Map defaultData = attrs.defaultData
         attrs.model?.dataModel?.each { mod ->
-            String defaultValue = defaultData?.get(mod.name)
-            String collector = defaultValue ? "data['${mod.name}'] ? data['${mod.name}'] : '${defaultValue}'" : "data['${mod.name}']"
+            def defaultValue = defaultData?.get(mod.name)
+            // added to enable more complex default data like species pre selection
+            if(defaultValue instanceof Map || defaultValue instanceof  List){
+                defaultValue = "${(defaultValue as JSON).toString()}"
+            } else if(defaultValue != null) {
+                defaultValue = "'${defaultValue}'"
+            }
+
+            String collector = defaultValue ? "data['${mod.name}'] ? data['${mod.name}'] : ${defaultValue}" : "data['${mod.name}']"
             if (mod.dataType == 'list') {
                 out << INDENT*4 << "self.load${mod.name}(data.${mod.name});\n"
                 loadColumnTotals out, attrs, mod

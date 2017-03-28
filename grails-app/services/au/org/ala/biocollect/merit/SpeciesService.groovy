@@ -227,4 +227,19 @@ class SpeciesService {
         webService.getJson(url)
     }
 
+    /**
+     * Get species details from BIE for a taxon id
+     */
+    Map getSpeciesDetailsForTaxonId(String id){
+        // While the BIE is in the process of being cut over to the new version we have to handle both APIs.
+        def url = "${grailsApplication.config.bie.baseURL}/ws/species/info/${id.encodeAsURL()}.json"
+        Map result = webService.getJson(url)
+
+        if (!result || result.error || result.statusCode != 200) {
+            url = "${grailsApplication.config.bie.baseURL}/ws/species/shortProfile/${id.encodeAsURL()}.json"
+            result = webService.getJson(url)
+        }
+
+        result
+    }
 }

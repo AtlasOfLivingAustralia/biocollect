@@ -47,6 +47,8 @@ class UrlMappings {
                         action = [GET: 'get', POST: 'update', PUT: 'update', DELETE: 'delete']
                 }
 
+                "/sight/$taxonId**" (controller: 'bioActivity', action: 'preFillSpeciesName')
+
                 "/$controller/$id?"(parseRequest:true) {
 
                         action = [GET: "get", POST: "upload", PUT: "upload", DELETE: "delete"]

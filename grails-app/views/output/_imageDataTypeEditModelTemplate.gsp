@@ -46,10 +46,10 @@
                     </div>
                     <div class="span8">
                         <select id="licence" data-bind="value:licence" class="form-control input-xlarge">
-                            <option value="CC BY">Creative Commons Attribution</option>
+                            <option value="CC BY 3.0">Creative Commons Attribution 3.0</option>
+                            <option value="CC BY 0">Creative Commons Attribution 0</option>
+                            <option value="CC BY 4.0">Creative Commons Attribution 4.0</option>
                             <option value="CC BY-NC">Creative Commons Attribution-Noncommercial</option>
-                            <option value="CC BY-SA">Creative Commons Attribution-Share Alike</option>
-                            <option value="CC BY-NC-SA">Creative Commons Attribution-Noncommercial-Share Alike</option>
                         </select>
                     </div>
                 </div>
