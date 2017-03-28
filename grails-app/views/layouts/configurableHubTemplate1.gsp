@@ -65,7 +65,7 @@
     <link href="http://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>
 </head>
 <body class="${pageProperty(name:'body.class')?:'nav-collections'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}"  data-offset="${pageProperty(name:'body.data-offset')}" data-target="${pageProperty(name:'body.data-target')}" data-spy="${pageProperty(name:'body.data-spy')}">
-<g:set var="fluidLayout" value="${!hubConfig.content.isContainer}"/>
+<g:set var="fluidLayout" value="${!hubConfig.content?.isContainer}"/>
 <g:if test="${hubConfig.templateConfiguration.header.type == 'ala'}">
     <div id="ala-header-bootstrap2" class="do-not-mark-external">
         <hf:banner logoutUrl="${g.createLink(controller:"logout", action:"logout", absolute: true)}"/>
