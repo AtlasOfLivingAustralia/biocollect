@@ -28,6 +28,7 @@ class ProjectControllerSpec extends Specification {
     def blogServiceStub = Stub(BlogService)
     def organisationStub = Stub(OrganisationService)
     def vocabServiceStub = Stub(VocabService)
+    def documentServiceStub = Stub(DocumentService)
 
     void setup() {
         controller.userService = userServiceStub
@@ -42,6 +43,7 @@ class ProjectControllerSpec extends Specification {
         controller.blogService = blogServiceStub
         controller.organisationService = organisationStub
         controller.vocabService = vocabServiceStub
+        controller.documentService = documentServiceStub
         auditServiceStub.getAuditMessagesForProject(_) >> []
         metadataServiceStub.activitiesModel() >> [activities: []]
         userServiceStub.getOrganisationIdsForUserId(_) >> ['1']
@@ -226,7 +228,7 @@ class ProjectControllerSpec extends Specification {
         payload.sort = 'lastUpdated';
         payload.fq = ['surveyImage:true']
         payload.projectId = 'abs'
-        projectServiceStub.listImages(payload, _) >> [count:1,documents:[[documentId:'124']]]
+        projectServiceStub.listImages(payload, _) >> [count:1,documents:[[documentId:'124',licence: 'CC BY']]]
         when:
         request.method = "POST"
         request.json = '{"projectId":"abs"}'
