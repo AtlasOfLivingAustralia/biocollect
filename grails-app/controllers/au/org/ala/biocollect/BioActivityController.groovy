@@ -901,20 +901,23 @@ class BioActivityController {
     public preFillSpeciesName(){
         if(params.taxonId){
             String pActivity = grailsApplication.config.individualSightings.pActivity,
-                speciesModelName = grailsApplication.config.individualSightings.modelName,
-                hub = grailsApplication.config.individualSightings.hub;
+                speciesModelName = grailsApplication.config.individualSightings.dataTypeName,
+                hub = grailsApplication.config.individualSightings.hub,
+                output = grailsApplication.config.individualSightings.outputName,
+                speciesDisplayFormat;
 
             Map species = [:]
             Map result = speciesService.getSpeciesDetailsForTaxonId(params.taxonId, false);
-            if(result.commonName){
-                species.name = "${result?.scientificName} (${result?.commonName})"
-            } else {
-                species.name = result?.scientificName
+            Map pActivityDetails = projectActivityService.get(pActivity)
+            if(!pActivityDetails.error){
+                Map speciesConfig = projectActivityService.getSpeciesConfigForProjectActivity(pActivityDetails, output, speciesModelName)
+                speciesDisplayFormat = speciesConfig?.speciesDisplayFormat
             }
 
             species.scientificName = result?.scientificName
             species.commonName = result.commonName
             species.guid = params.taxonId
+            species.name = projectActivityService.formatSpeciesName(speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', species)
 
             params.id = pActivity
             params.hub = hub

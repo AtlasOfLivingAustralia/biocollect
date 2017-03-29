@@ -18,11 +18,11 @@
             <div class="span5">
                 <div class="row-fluid">
                     <div class="span4 text-left control-group required">
-                        <label class="control-label" for="name">Title:</label>
+                        <label class="control-label">Title:</label>
                     </div>
                     <div class="span8">
-                        <input id="name" type="text" data-bind="value:name"
-                               data-validation-engine="validate[required]" class="form-control input-xlarge">
+                        <input type="text" data-bind="value:name" ${validationAttrs?'data-validation-engine="data-validate[groupRequired['+source+']]"':''}
+                               class="form-control input-xlarge image-title-input">
                     </div>
                 </div>
 
@@ -127,7 +127,7 @@
         </tr>
         <tr>
             <td class="span4">
-                <span class="btn-small btn-success fileinput-button"><i class="fa fa-plus"></i> <input type="file" accept="image/*" name="files" multiple><span>Add files</span>
+                <span class="btn-small btn-success fileinput-button"><i class="fa fa-plus"></i> <input type="file" accept="image/*" name="files" ${validationAttrs?'data-validation-engine="data-validate[groupRequired['+source+']]"':''} ><span>Add files</span>
                 </span>
             </td>
             <td>

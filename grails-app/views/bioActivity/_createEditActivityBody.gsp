@@ -218,7 +218,7 @@
     <p>This could be because your login has timed out or the internet is unavailable.</p>
 
     <p>Your data has been saved on this computer but you may need to login again before the data can be sent to the server.</p>
-    <a href="${createLink(action: 'enterData', id: activity.activityId)}?returnTo=${returnTo}">Click here to refresh your login and reload this page.</a>
+    <a href="${createLink(action: 'create', id: activity.activityId)}?returnTo=${returnTo}">Click here to refresh your login and reload this page.</a>
 </div>
 
 
@@ -340,6 +340,7 @@
                                    bootbox.alert(data.error);
                             } else {
                                 unblock = false; // We will be transitioning off this page.
+                                returnTo = fcConfig.bioActivityView + data.resp.activityId;
                                 blockUIWithMessage("Successfully submitted the record.");
                                 self.reset();
                                 self.saved();

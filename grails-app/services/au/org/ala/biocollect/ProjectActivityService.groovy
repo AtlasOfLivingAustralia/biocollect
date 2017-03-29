@@ -219,6 +219,25 @@ class ProjectActivityService {
     }
 
     /**
+     * Get the species config for a field from project activity.
+     * @param pActivity project activity instance
+     * @param output Identity of field for specific configuration.
+     * @param dataFieldName Identity of field for specific configuration.
+     * @return Map - species config
+     */
+    Map getSpeciesConfigForProjectActivity(Map pActivity, String output, String dataFieldName){
+        def specificFieldDefinition = pActivity?.speciesFields.find {
+            it.dataFieldName == dataFieldName && it.output == output
+        }
+
+        (specificFieldDefinition) ?
+                //New species per field configuration
+                specificFieldDefinition.config :
+                // Legacy per survey species configuration
+                pActivity?.species
+    }
+
+    /**
      * Searches for a species name taking into account the species constraints setup for the survey.
      * @param id the id of the ProjectActivity (survey) being completed
      * @param q query string to search for
@@ -229,17 +248,7 @@ class ProjectActivityService {
      */
     def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName){
         def pActivity = get(id)
-
-        def specificFieldDefinition = pActivity?.speciesFields.find {
-            it.dataFieldName == dataFieldName && it.output == output
-        }
-
-        Map speciesConfig =  (specificFieldDefinition) ?
-                //New species per field configuration
-                specificFieldDefinition.config :
-                // Legacy per survey species configuration
-                pActivity?.species
-
+        Map speciesConfig =  getSpeciesConfigForProjectActivity(pActivity, output, dataFieldName)
         def result = searchSpeciesForConfig(speciesConfig, q, limit)
         formatSpeciesNameForSurvey(speciesConfig.speciesDisplayFormat , result)
         result
