@@ -42,7 +42,11 @@
 
             <div class="row-fluid">
                 <div class="span3">
-                    <label for="${source}CentroidLatitude">Centroid Latitude</label>
+                    <label for="${source}CentroidLatitude">Centroid Latitude
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="record.edit.map.centroidLatLon"/>', content:'<g:message code="record.edit.map.centroidLatLon.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                    </label>
                 </div>
 
                 <div class="span9">
@@ -79,7 +83,12 @@
 
         <div class="row-fluid">
             <div class="span3">
-                <label for="${source}Latitude">Latitude<g:if test="${validation?.contains('required')}"><i class="req-field"></i></g:if></label>
+                <label for="${source}Latitude">Latitude
+                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="record.edit.map.latLon"/>', content:'<g:message code="record.edit.map.latLon.content"/>'}">
+                        <i class="icon-question-sign"></i>
+                    </a>
+                    <g:if test="${validation?.contains('required')}"><span class="req-field"></span></g:if>
+                </label>
             </div>
 
             <div class="span9">
@@ -98,7 +107,7 @@
 
         <div class="row-fluid">
             <div class="span3">
-                <label for="${source}Longitude">Longitude<g:if test="${validation?.contains('required')}"><i class="req-field"></i></g:if></label>
+                <label for="${source}Longitude">Longitude<g:if test="${validation?.contains('required')}"><span class="req-field"></span></g:if></label>
             </div>
 
             <div class="span9">
