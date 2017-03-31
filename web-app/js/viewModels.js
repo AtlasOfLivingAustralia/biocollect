@@ -34,6 +34,8 @@ function enmapify(args) {
         listSitesUrl = args.listSitesUrl,
         activityLevelData = args.activityLevelData,
         uniqueNameUrl = args.uniqueNameUrl + "/" + activityLevelData.pActivity.projectActivityId,
+        hideSiteSelection = args.hideSiteSelection || false,
+        hideMyLocation = args.hideMyLocation || false,
         siteIdObservable = container[name] = ko.observable(),
         nameObservable = container[name + "Name"] = ko.observable(),
         latObservable = container[name + "Latitude"] = ko.observable(),
@@ -57,7 +59,7 @@ function enmapify(args) {
         singleDraw: true,
         singleMarker: true,
         markerOrShapeNotBoth: markerOrShapeNotBoth,
-        useMyLocation: !readonly,
+        useMyLocation: !readonly && !hideMyLocation,
         allowSearchLocationByAddress: !readonly,
         allowSearchRegionByAddress: false,
         zoomToObject: true,
@@ -460,8 +462,10 @@ function enmapify(args) {
     if (!readonly) {
         map.addButton("<span class='fa fa-undo reset-map' title='Reset map'></span>", function () {
             map.resetMap();
-            if (activityLevelData.pActivity.sites.length == 1) {
-                updateMapForSite(activityLevelData.pActivity.sites[0].siteId);
+            if(!hideSiteSelection){
+                if (activityLevelData.pActivity.sites.length == 1) {
+                    updateMapForSite(activityLevelData.pActivity.sites[0].siteId);
+                }
             }
         }, "bottomright");
     }

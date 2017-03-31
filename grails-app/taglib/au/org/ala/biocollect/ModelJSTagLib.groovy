@@ -625,6 +625,8 @@ class ModelJSTagLib {
                 , listSitesUrl: '${createLink(controller: 'site', action: 'ajaxList' )}'
                 , uniqueNameUrl: '${createLink(controller: 'site', action: 'checkSiteName' )}'
                 , activityLevelData: activityLevelData
+                , hideSiteSelection: ${model.hideSiteSelection}
+                , hideMyLocation: ${model.hideMyLocation}
             });
         """
     }
