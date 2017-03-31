@@ -119,6 +119,39 @@ class ProjectActivityController {
         render result as JSON
     }
 
+    /**
+     * Delete data for a project activity
+     * @param id
+     * @return
+     */
+    def deleteAllDataForProjectActivity(String id){
+        def pActivity = projectActivityService.get(id)
+        def project = projectService.get(pActivity?.projectId)
+        String userId = userService.getCurrentUserId()
+
+        Map result
+        if (!userId) {
+            response.status = 401
+            result = [status: 401, error: "Access denied: User has not been authenticated."]
+        } else if (!projectService.isUserAdminForProject(userId, project?.projectId)) {
+            response.status = 401
+            result = [status: 401, error: "Access denied: User is not an admin of this project - ${project?.projectId}"]
+        } else if (pActivity) {
+            def code = activityService.deleteByProjectActivity(pActivity.projectActivityId)
+            response.status = code
+            if (code == HttpStatus.SC_OK) {
+                result = [status: code, message: "Successfully deleted data for project activity."]
+            } else {
+                result = [status: code, error: "Error delete records for project activity ${pActivity.projectActivityId}"]
+            }
+        } else {
+            response.status = 400
+            result = [status: 400, error: "Invalid project activity id ${params.id}"]
+        }
+
+        render result as JSON
+    }
+
     @PreAuthorise(accessLevel = 'admin', projectIdParam = "projectId")
     def ajaxAddNewSpeciesLists() {
 

@@ -276,7 +276,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 activityUrl + version +"'>" +surveyName + " (record)</a></div>";
         }
 
-        if(projectName){
+        if(projectName && !fcConfig.hideProjectAndSurvey){
             html += "<div><a target='_blank' href="+projectLinkPrefix+projectId+version+"><i class='icon-map-marker'></i>&nbsp;" +projectName + " (project)</a></div>";
         }
 

@@ -22,10 +22,6 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     self.attribution = ko.observable(o.attribution ? o.attribution : self.formatAttribution(organisationName, self.name()));
     self.methodName = ko.observable(o.methodName);
     self.methodAbstract = ko.observable(o.methodAbstract);
-
-    self.pActivityFormName = ko.observable(o.pActivityFormName ? o.pActivityFormName : "");
-
-
     self.downloadFormTemplateUrl = ko.observable(o.pActivityFormName ? fcConfig.downloadTemplateFormUrl + "?type=" + o.pActivityFormName + "&expandList=true" : "")
 
  /*   self.datasetVersion = ko.observable(o.datasetVersion ? o.datasetVersion : "");
@@ -67,6 +63,9 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     // Publish is allowed only when no data's are associated with the survey
     // Survey Info & visibility can be saved regardless of the existence of the data.
     self.transients.saveOrUnPublishAllowed = ko.observable(false);
+    // This list will determine if a site can be removed from a survey even after removing it.
+    self.transients.sitesWithData = ko.observableArray([]);
+    self.transients.siteWithDataAjaxFlag = ko.observable(false);
     self.transients.imageUploadUrl  = ko.observable(fcConfig.imageUploadUrl);
     self.transients.logoUrl = ko.pureComputed(function(){
         return self.logoUrl() ? self.logoUrl() : fcConfig.imageLocation + "/no-image-2.png";
@@ -145,4 +144,27 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
         }
     });
 
+    /**
+     * get sites with data for a given survey/project activity
+     * @param obj
+     */
+    self.getSitesWithData = function () {
+        self.transients.sitesWithData.removeAll();
+        self.transients.siteWithDataAjaxFlag(false);
+        $.ajax({
+            url: fcConfig.sitesWithDataForProjectActivity + "/" + self.projectActivityId(),
+            type: 'GET',
+            timeout: 10000,
+            success: function (data) {
+                if(data.sites){
+                    self.transients.sitesWithData(data.sites)
+                }
+            },
+            error: function (data) {
+                console.log("Error retrieving sites with data for survey.", "alert-error");
+            }
+        }).done(function () {
+            self.transients.siteWithDataAjaxFlag(true);
+        });
+    };
 };

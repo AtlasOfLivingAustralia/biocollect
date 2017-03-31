@@ -13,8 +13,6 @@
 
     <g:render template="/projectActivity/warning"/>
 
-    <g:render template="/projectActivity/unpublishWarning"/>
-
     <div class="row-fluid">
         <div class="span12 text-left">
             <p>You can constrain the survey to a particular geographic area and/or to particular pre-determined sites.</p>
@@ -38,7 +36,7 @@
                 <tr data-bind="visible: added()">
                     <td>
                         <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
-                        <button class="btn btn-mini pull-right btn-default" data-bind="click: removeSite"  title="Remove this site from survey">
+                        <button class="btn btn-mini pull-right btn-default" data-bind="click: removeSite, disable: transients.isDataForSite"  title="Remove this site from survey">
                             <span class="icon-arrow-right"></span>
                         </button>
 
@@ -96,9 +94,9 @@
             <h3>Or, add custom site using the below options</h3>
             <div class="">
                 <div class="btn-group btn-group-justified" style="margin-bottom: 5px">
-                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToCreate, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"><i class="icon-plus"></i> Add new site </button>
-                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToSelect, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"><i class="icon-folder-open"></i> Choose existing sites </button>
-                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToUpload, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"><i class="icon-arrow-up"></i> Upload locations from shapefile </button>
+                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToCreate, disable: transients.warning()"><i class="icon-plus"></i> Add new site </button>
+                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToSelect, disable: transients.warning()"><i class="icon-folder-open"></i> Choose existing sites </button>
+                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToUpload, disable: transients.warning()"><i class="icon-arrow-up"></i> Upload locations from shapefile </button>
                 </div>
             </div>
         </div>
@@ -107,12 +105,12 @@
         <div class="span12">
             <h3>Additional site options</h3>
             <label class="checkbox">
-                <input type="checkbox" data-bind="checked: allowAdditionalSurveySites, disable: transients.warning() || !transients.saveOrUnPublishAllowed()"/> Allow Additional Survey Sites
+                <input type="checkbox" data-bind="checked: allowAdditionalSurveySites, disable: transients.warning()"/> Allow Additional Survey Sites
             </label>
             <span class="help-block">Check this box if you want to allow users to add or edit site polygons on the survey record.</span>
             <auth:ifAnyGranted roles="ROLE_ADMIN">
                 <label for="map-tiles">Map tiles</label>
-                <select id="map-tiles" data-bind="value: baseLayersName, optionsCaption: 'Choose...', disable: transients.warning() || !transients.saveOrUnPublishAllowed()">
+                <select id="map-tiles" data-bind="value: baseLayersName, optionsCaption: 'Choose...', disable: transients.warning()">
                     <option>Default</option>
                     <option>Google Maps</option>
                 </select>
@@ -139,7 +137,7 @@
     <!-- ko if: current -->
     <div class="row-fluid">
         <div class="span12">
-            <button class="btn-primary btn btn-small block" data-bind="click: $parent.saveSites, disable: !transients.saveOrUnPublishAllowed()"><i class="icon-white  icon-hdd" ></i>  Save </button>
+            <button class="btn-primary btn btn-small block" data-bind="click: $parent.saveSites"><i class="icon-white  icon-hdd" ></i>  Save </button>
             <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
             <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-publish-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
         </div>

@@ -2,7 +2,6 @@
 var ProjectActivity = function (params) {
     if(!params) params = {};
     var pActivity = params.pActivity ? params.pActivity : {};
-    var pActivityForms = params.pActivityForms ? params.pActivityForms : [];
     var projectId = params.projectId ? params.projectId : "";
     var selected = params.selected ? params.selected : false;
     var sites = params.sites ? params.sites : [];
@@ -19,10 +18,7 @@ var ProjectActivity = function (params) {
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
     self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
     self.baseLayersName = ko.observable(pActivity.baseLayersName);
-
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
-    // self.pActivityFormName.extend({rateLimit: 100});
-
 
     /**
      * Retrieves the species fields and overrides self.speciesFields with them
@@ -60,31 +56,7 @@ var ProjectActivity = function (params) {
                 }
             });
         }
-    }
-
-    var images = [];
-    $.each(pActivityForms, function (index, form) {
-        if (form.name == self.pActivityFormName()) {
-            images = form.images ? form.images : [];
-        }
-    });
-
-    self.pActivityFormImages = ko.observableArray($.map(images, function (obj, i) {
-        return new ImagesViewModel(obj);
-    }));
-
-    self.pActivityForms = pActivityForms;
-
-    self.updateFormImages = function (formName) {
-        self.pActivityFormImages.removeAll();
-        $.each(self.pActivityForms, function (index, form) {
-            if (form.name == formName && form.images) {
-                for (var i = 0; i < form.images.length; i++) {
-                    self.pActivityFormImages.push(new ImagesViewModel(form.images[i]));
-                }
-            }
-        });
-    }
+    };
 
     // 1. There is no straightforward way to prevent/cancel a KO change in a beforeChange subscription
     // 2. bootbox.confirm is totally asynchronous so by the time a user confirms or rejects a change, the change has already happened.
@@ -98,34 +70,106 @@ var ProjectActivity = function (params) {
         console.log("pActivityFormName about to change old form: " + oldValue);
         // console.log("Survey: " + self.name());
         self.transients.oldFormName = oldValue;
-    }
+    };
 
+    self.transients.isDataAvailable = function (){
+        return $.ajax({
+            url: fcConfig.activiyCountUrl + "/" + self.projectActivityId(),
+            type: 'GET'
+        });
+    };
 
+    self.transients.deleteAllData = function () {
+        return $.ajax({
+            url: fcConfig.deleteAllDataForProjectActivityUrl + "/" + self.projectActivityId(),
+            type: 'GET'
+        });
+    };
+
+    /**
+     * Seeks confirmation from user when form template was changed. The conditions checked are
+     * 1. does data exists current survey? seek confirmation
+     * 2. is/are species field(s) configured? seek confirmation
+     * @param amountOfDataToBeCleared - Total number of records currently existing for this survey
+     * @param speciesFieldConfigured - True if species field has been configured
+     */
+    self.transients.seekConfirmationForChangeOfFormName = function (amountOfDataToBeCleared, speciesFieldConfigured) {
+        var message = "";
+        if(amountOfDataToBeCleared && speciesFieldConfigured){
+            message = "This survey has " + amountOfDataToBeCleared + " record(s). And, there is specific fields configuration for this" +
+            " survey in the Species tab. Changing the form template will delete the existing data and override species settings. Do you want to continue?"
+        } else if (amountOfDataToBeCleared){
+            message =  "This survey has " + amountOfDataToBeCleared + "record(s). Changing the form template will delete the existing data. Do you want to continue?"
+        } else if( speciesFieldConfigured ){
+            message = "There is specific fields configuration for this survey in the Species tab. Changing the form will override existing settings. Do you want to continue?";
+        }
+
+        bootbox.confirm(message, function (result) {
+            // Asynchronous call, too late to prevent change but depending on the user response we either:
+            // a) Let dependent pActivityFormName fields to be updated, ko already updated the pActivityFormName or
+            // b) Restore the previous value in the select
+            if (result) {
+                // delete records in survey
+                var deletePromise = self.transients.deleteAllData();
+                deletePromise.then(function () {
+                    console.log('Successfully submitted deletion of records.');
+                    self.retrieveSpeciesFieldsForFormName(self.pActivityFormName());
+                }, function () {
+                    self.transients.revertFormNameToPreviousSelection();
+                    bootbox.alert("Failed to delete records. Are you authorized to do this operation? Reverting form template selection.");
+                });
+            } else {
+                self.transients.revertFormNameToPreviousSelection();
+            }
+        });
+    };
+
+    /**
+     * Reverts the current form selection to previous selection.
+     */
+    self.transients.revertFormNameToPreviousSelection = function () {
+        // Prevent infinite loop, let' dispose self subscription before making any changes.
+        self.transients.afterPActivityFormNameSubscription.dispose();
+        console.log("Reverting form name to: " + self.transients.oldFormName + " For survey: " + self.name());
+
+        self.pActivityFormName(self.transients.oldFormName);
+
+        // Restore subscription for future UI events.
+        self.transients.afterPActivityFormNameSubscription = self.pActivityFormName.subscribe(self.transients.afterPActivityFormNameUpdate);
+    };
+
+    /**
+     * triggered after form template selector has changed.
+     * It checks a series of rules to confirm the change in form template. The details are commented with code.
+     * @param newValue
+     */
     self.transients.afterPActivityFormNameUpdate = function(newValue) {
         console.log("pActivityFormName changed to: " + newValue +  " from: " + self.transients.oldFormName +
         "for Survey: " + self.name());
-            if(self.areSpeciesFieldsConfigured()) {
-                bootbox.confirm("There is specific fields configuration for this survey in the Species tab. Changing the form will override existing settings. Do you want to continue?", function (result) {
-                    // Asynchronous call, too late to prevent change but depending on the user response we either:
-                    // a) Let dependent pActivityFormName fields to be updated, ko already updated the pActivityFormName or
-                    // b) Restore the previous value in the select
-                    if (result) {
-                        self.retrieveSpeciesFieldsForFormName(self.pActivityFormName());
-                        self.updateFormImages(self.pActivityFormName());
-                    } else {
-                        // Prevent infinite loop, let' dispose self subscription before making any changes.
-                        self.transients.afterPActivityFormNameSubscription.dispose();
-                            console.log("Reverting form name to: " + self.transients.oldFormName + " For survey: " + self.name());
-                            self.pActivityFormName(self.transients.oldFormName);
-                        // Restore subscription for future UI events.
-                        self.transients.afterPActivityFormNameSubscription = self.pActivityFormName.subscribe(self.transients.afterPActivityFormNameUpdate);
-                    }
-                });
-            } else { // No need of user confirmation, let's update pActivityFormName dependent properties
-                self.retrieveSpeciesFieldsForFormName(self.pActivityFormName());
-                self.updateFormImages(self.pActivityFormName());
-            }
-    }
+
+        // check if survey has been newly added.
+        if(self.projectActivityId()){
+            blockUIWithMessage("Checking! Please wait...");
+            // check if survey has data in it
+            var ajax = self.transients.isDataAvailable();
+            ajax.done($.unblockUI).then(function (data) {
+                var speciesFieldConfigured = self.areSpeciesFieldsConfigured();
+                // if has data or has species field configured, ask user to confirm form name change.
+                if( data.total > 0 || speciesFieldConfigured){
+                    self.transients.seekConfirmationForChangeOfFormName(data.total, speciesFieldConfigured);
+                } else {
+                    // if no data or species field not configured, get species fields for form name
+                    self.retrieveSpeciesFieldsForFormName(self.pActivityFormName());
+                }
+            }, function () {
+                bootbox.alert("Reverting form template selection since an error occurred when checking existence of data in current survey.");
+                self.transients.revertFormNameToPreviousSelection();
+            });
+        } else {
+            // if new survey, get species fields for form name
+            self.retrieveSpeciesFieldsForFormName(self.pActivityFormName());
+        }
+    };
 
 
     self.transients.subscribeOrDisposePActivityFormName = function (selected) {
@@ -284,7 +328,7 @@ var ProjectActivity = function (params) {
         $.map(projectSites ? projectSites : [], function (obj, i) {
             var defaultSites = [];
             surveySites && surveySites.length > 0 ? $.merge(defaultSites, surveySites) : defaultSites.push(obj.siteId);
-            self.sites.push(new SiteList(obj, defaultSites));
+            self.sites.push(new SiteList(obj, defaultSites, self));
         });
     };
     self.loadSites(sites, pActivity.sites);
@@ -390,7 +434,7 @@ var ProjectActivity = function (params) {
             jsData.pActivityFormName = self.pActivityFormName();
         }
         else if (by == "info") {
-            var ignore = self.ignore.concat(['current', 'pActivityForms', 'pActivityFormImages',
+            var ignore = self.ignore.concat(['current',
                 'access', 'species', 'sites', 'transients', 'endDate','visibility','pActivityFormName', 'restrictRecordToSites',
                 'allowAdditionalSurveySites', 'baseLayersName', 'project']);
             ignore = $.grep(ignore, function (item, i) {
@@ -443,7 +487,7 @@ var ProjectActivity = function (params) {
 
 };
 
-var SiteList = function (o, surveySites) {
+var SiteList = function (o, surveySites, pActivity) {
     var self = this;
     if (!o) o = {};
     if (!surveySites) surveySites = {};
@@ -458,7 +502,9 @@ var SiteList = function (o, surveySites) {
         self.added(true);
     };
     self.removeSite = function () {
-        self.added(false);
+        if(!self.transients.isDataForSite()) {
+            self.added(false);
+        }
     };
 
     self.load = function (surveySites) {
@@ -470,6 +516,24 @@ var SiteList = function (o, surveySites) {
     };
     self.load(surveySites);
 
+    self.transients = {};
+
+    /**
+     * checks if this site has data associated for the provided project activity.
+     */
+    self.transients.isDataForSite = ko.computed(function(){
+        // if ajax call is not complete return has data so that the button is disabled
+        if(!pActivity.transients.siteWithDataAjaxFlag()){
+            return true
+        }
+
+        var sitesWithData = pActivity.transients.sitesWithData() || [];
+        var results = $.grep(sitesWithData,function (siteId) {
+            return siteId == self.siteId()
+        });
+
+        return results && results.length > 0
+    });
 };
 
 var ImagesViewModel = function (image) {

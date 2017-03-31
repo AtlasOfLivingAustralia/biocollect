@@ -898,6 +898,10 @@ class BioActivityController {
         render model as JSON
     }
 
+    /**
+     * This controller is used to pre-fill the species details if a taxon id is passed in the url.
+     * @return
+     */
     public preFillSpeciesName(){
         if(params.taxonId){
             String pActivity = grailsApplication.config.individualSightings.pActivity,
@@ -928,5 +932,15 @@ class BioActivityController {
         } else {
             render status: SC_BAD_REQUEST, text: "You need to provide taxon id"
         }
+    }
+
+    /**
+     * Get all sites that this project activity has record against.
+     * @param id
+     * @return
+     */
+    public getSitesWithDataForProjectActivity(String id){
+        def result = activityService.getSitesWithDataForProjectActivity(id)
+        render result as JSON
     }
 }

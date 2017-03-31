@@ -75,7 +75,6 @@ var ProjectActivitiesViewModel = function (params) {
         $.map(pActivities, function (pActivity, i) {
             var args = {
                 pActivity: pActivity,
-                pActivityForms: self.pActivityForms,
                 projectId: self.projectId(),
                 selected: (i == 0),
                 sites: self.sites,
@@ -143,16 +142,16 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         self.reset();
         var args = {
             pActivity: [],
-            pActivityForms: self.pActivityForms,
             projectId: self.projectId(),
             selected: true,
             sites: self.sites,
             organisationName: self.organisationName,
             startDate: self.projectStartDate
         };
-        self.projectActivities.push(new ProjectActivity(args));
+        var survey = new ProjectActivity(args)
+        self.projectActivities.push(survey);
+        survey.transients.subscribeOrDisposePActivityFormName(true);
         initialiseValidator();
-        self.refreshSurveyStatus();
         $(surveyInfoTab).tab('show');
         showAlert("Successfully added.", "alert-success", self.placeHolder);
     };
@@ -269,32 +268,9 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         } else if (caller == "info" && !pActivity.isEndDateAfterStartDate()){
             showAlert("Survey end date must be after start date", "alert-error", self.placeHolder);
             return false;
-        } else if(caller == "info" || caller == "visibility" || caller == "alert"){
+        } else {
             return true;
         }
-
-        return !isDataAvailable(pActivity);
-    };
-
-    var isDataAvailable = function(pActivity){
-        var result = true;
-        $.ajax({
-            url: fcConfig.activiyCountUrl + "/" + pActivity.projectActivityId(),
-            type: 'GET',
-            async: false,
-            timeout: 10000,
-            success: function (data) {
-                if(data.total == 0){
-                    result = false;
-                } else {
-                    showAlert("Error: Survey cannot be edited because records exist - to edit the survey, delete all records.", "alert-error", self.placeHolder);
-                }
-            },
-            error: function (data) {
-                showAlert("Un handled error, please try again later.", "alert-error", self.placeHolder);
-            }
-        });
-        return result;
     };
 
     self.updateLogo = function (data){
@@ -462,26 +438,13 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         pActivity.projectActivityId() ? self.update(pActivity, caller) : self.create(pActivity, caller);
     };
 
-    self.refreshSurveyStatus = function() {
+    /**
+     * get sites with data for all project activities in this project.
+     */
+    self.getSitesWithDataForProjectActivitiesInProject = function() {
         $.each(self.projectActivities(), function (i, obj) {
-            var allowed = false;
-            $.ajax({
-                url: fcConfig.activiyCountUrl + "/" + obj.projectActivityId(),
-                type: 'GET',
-                async: false,
-                timeout: 10000,
-                success: function (data) {
-                    if(data.total == 0){
-                        allowed = true;
-                    }
-                },
-                error: function (data) {
-                    console.log("Error retrieving survey status.", "alert-error", self.placeHolder);
-                }
-            });
-            obj.transients.saveOrUnPublishAllowed(allowed);
+            obj.getSitesWithData();
         });
-
     };
 
     /**
@@ -547,6 +510,6 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         }
     })
 
-    self.refreshSurveyStatus();
+    self.getSitesWithDataForProjectActivitiesInProject();
 };
 

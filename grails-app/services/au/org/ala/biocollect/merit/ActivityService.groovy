@@ -58,6 +58,10 @@ class ActivityService {
         webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/countByProjectActivity/'+ id)
     }
 
+    def getSitesWithDataForProjectActivity(id){
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDistinctSitesForProjectActivity/'+ id)
+    }
+
     def get(id, version = null) {
         def params = version ? '?version=' + version : ''
         def activity = webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/' + id + params)

@@ -1,4 +1,4 @@
-<span data-bind="if: !transients.saveOrUnPublishAllowed()">
+<span>
     <div class="row-fluid">
         <div class="span4 text-right"></div>
         <div class="span8 text-right">
