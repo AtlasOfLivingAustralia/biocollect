@@ -327,6 +327,7 @@
                         contentType: 'application/json',
                         success: function (data) {
                             var errorText = "";
+                            var activityId;
                             if (data.errors) {
                                 errorText = "<span class='label label-important'>Important</span><h4>There was an error while trying to save your changes.</h4>";
                                 $.each(data.errors, function (i, error) {
@@ -340,7 +341,8 @@
                                    bootbox.alert(data.error);
                             } else {
                                 unblock = false; // We will be transitioning off this page.
-                                returnTo = fcConfig.bioActivityView + data.resp.activityId;
+                                activityId = fcConfig.activityId || data.resp.activityId;
+                                returnTo = fcConfig.bioActivityView + activityId;
                                 blockUIWithMessage("Successfully submitted the record.");
                                 self.reset();
                                 self.saved();
