@@ -489,6 +489,7 @@ modules = {
     
     activities{
         resource url: 'css/activities.css'
+        resource url: 'css/map.css'
     }
 
     largeCheckbox{

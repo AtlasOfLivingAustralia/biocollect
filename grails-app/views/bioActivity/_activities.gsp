@@ -260,6 +260,9 @@
                     </div>
 
                     <div class="tab-pane" id="mapVis">
+                        <div class="alert alert-info">
+                            <g:message code="data.map.message"></g:message>
+                        </div>
                         <span data-bind="visible: transients.loadingMap()">
                             <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
                         </span>

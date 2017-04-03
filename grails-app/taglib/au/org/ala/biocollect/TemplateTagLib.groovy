@@ -87,8 +87,11 @@ class TemplateTagLib {
                     out << "</li>";
                     break;
                 case 'recordSighting':
+                    String disabled = isRequestForRecordASighting(link)?"disabled":"";
                     out << "<li class=\"main-menu\">"
-                    out << "<button class=\"btn btn-primary\" style=\"font-size: 13px;\" title=\"Login required\" onclick=\"window.location = '${url}'\"><i class=\"fa fa-binoculars fa-inverse\"></i>&nbsp;&nbsp;Record a sighting</button>"
+                    out << "<button class=\"btn btn-primary\" style=\"font-size: 13px;\" title=\"Login required\" " +
+                            "${disabled} onclick=\"window.location = '${url}'\"><i class=\"fa fa-binoculars fa-inverse\">" +
+                            "</i>&nbsp;&nbsp;Record a sighting</button>"
                     out << "</li>"
                     break;
             }
@@ -183,6 +186,21 @@ class TemplateTagLib {
         }
 
         return url;
+    }
+
+    private isRequestForRecordASighting(Map link){
+        if(link){
+            String normalisedUrl = "${createLink(uri: link.href)}"
+            normalisedUrl = normalisedUrl?.indexOf('?') >= 0 ? normalisedUrl.split('\\?')[0] : normalisedUrl
+            String sightUrl = createLink(uri: '/sight/')
+            sightUrl = sightUrl?.indexOf('?') >= 0 ? sightUrl.split('\\?')[0] : sightUrl
+
+            if((normalisedUrl == request.forwardURI) || (request.forwardURI.startsWith(sightUrl))){
+                return true
+            }
+        }
+
+        false
     }
 
     private quickLinksContainsBiocacheExplorer (Map hubConfig) {

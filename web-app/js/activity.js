@@ -408,6 +408,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
         self.transients.totalPoints(features && features.length ? features.length : 0);
         features && features.length && alaMap.addClusteredPoints(features);
+        self.invalidateSize();
     };
 
     /**
