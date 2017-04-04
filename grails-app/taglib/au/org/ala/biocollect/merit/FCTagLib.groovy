@@ -122,7 +122,7 @@ class FCTagLib {
 
         if (!attrs.printable) {
             Map inputAppend = [
-                class: 'input-append'
+                class: 'input-append datepicker'
             ]
 
             def inputAttrs = [

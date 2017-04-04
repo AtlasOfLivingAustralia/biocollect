@@ -239,7 +239,7 @@ ko.bindingHandlers.imageUpload = {
         config = $.extend({}, config, defaultConfig);
 
         var target = config.target,
-            dropZone = $(config.dropZone);
+            dropZone = $(element).find('.dropzone');
         var uploadProperties = {
             size: size,
             progress: progress,

@@ -4,7 +4,7 @@
     <!-- Images -->
     <div data-bind="visible: $data.status() != 'deleted'" class="margin-bottom-20">
         <div class="row-fluid">
-            <div class="span2 text-left">
+            <div class="span4 text-left">
                 <div class="row-fluid">
                     <div class="span12">
                         <a data-bind="attr:{href:url, title:'[click to expand] '+name()}"
@@ -15,14 +15,14 @@
                     </div>
                 </div>
             </div>
-            <div class="span5">
+            <div class="span8">
                 <div class="row-fluid">
                     <div class="span4 text-left control-group required">
                         <label class="control-label">Title:</label>
                     </div>
                     <div class="span8">
                         <input type="text" data-bind="value:name" ${validationAttrs?'data-validation-engine="data-validate[groupRequired['+source+']]"':''}
-                               class="form-control input-xlarge image-title-input">
+                               class="form-control full-width-input image-title-input">
                     </div>
                 </div>
 
@@ -31,10 +31,10 @@
                         <label class="control-label" >Date Taken:</label>
                     </div>
                     <div class="span8">
-                        <fc:datePicker size="input-xlarge"
+                        <fc:datePicker size=""
                                        targetField="dateTaken"
                                        name="dateTaken"
-                                       data-validation-engine="validate[required]" class="form-control"/>
+                                       data-validation-engine="validate[required]" class="form-control span10"/>
                     </div>
                 </div>
 
@@ -45,7 +45,7 @@
                         </label>
                     </div>
                     <div class="span8">
-                        <select id="licence" data-bind="value:licence" class="form-control input-xlarge">
+                        <select id="licence" data-bind="value:licence" class="form-control span12">
                             <option value="CC BY 3.0">Creative Commons Attribution 3.0</option>
                             <option value="CC BY 0">Creative Commons Attribution 0</option>
                             <option value="CC BY 4.0">Creative Commons Attribution 4.0</option>
@@ -61,7 +61,7 @@
                         </label>
                     </div>
                     <div class="span8">
-                        <input id="attribution" class="form-control input-xlarge" type="text" data-bind="value:attribution">
+                        <input id="attribution" class="form-control full-width-input" type="text" data-bind="value:attribution">
                     </div>
                 </div>
 
@@ -71,7 +71,7 @@
                         <label class="control-label" for="notes">Notes:</label>
                     </div>
                     <div class="span8">
-                        <input id="notes" class="form-control input-xlarge" type="text" data-bind="value:notes">
+                        <input id="notes" class="form-control  full-width-input" type="text" data-bind="value:notes">
                     </div>
                 </div>
 
@@ -92,9 +92,6 @@
                                 class="icon-remove icon-white"></i> Remove</a>
                     </div>
                 </div>
-
-            </div>
-            <div class="span5">
 
             </div>
         </div>
@@ -131,7 +128,7 @@
                 </span>
             </td>
             <td>
-                <div class="dropzone span4" id="${dropZone}">
+                <div class="dropzone span12">
                     Or, drop files here
                 </div>
             </td>

@@ -524,3 +524,18 @@ input.padding-14, .padding-14{
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+input.full-width-input {
+    width: 100%;
+    height: 34px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.datepicker input, .datepicker .add-on{
+    height: 34px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}

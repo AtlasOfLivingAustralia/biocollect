@@ -219,7 +219,7 @@ class ProjectController {
     @PreAuthorise
     def edit(String id) {
 
-        def project = projectService.get(id, 'all')
+        def project = projectService.get(id, 'brief')
         // This will happen if we are returning from the organisation create page during an edit workflow.
         if (params.organisationId) {
             project.organisationId = params.organisationId
