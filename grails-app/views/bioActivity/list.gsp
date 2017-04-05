@@ -31,7 +31,7 @@
             version: "${params?.version}",
             projectId: "${projectId}",
             flimit: ${grailsApplication.config.facets.flimit},
-            hideProjectAndSurvey: ${hubConfig.hideProjectAndSurvey?:false}
+            hideProjectAndSurvey: ${hubConfig.content?.hideProjectAndSurvey?:false}
         },
         here = document.location.href;
     </r:script>
