@@ -127,21 +127,6 @@ class TemplateTagLib {
         }
     }
 
-    def occurrenceExplorerText = { attrs->
-        String url = getLinkUrl([contentType: 'biocacheexplorer']);
-        if(quickLinksContainsBiocacheExplorer(attrs.hubConfig)){
-            out << """
-                <div class="">
-                    <strong>Note:</strong>
-                    Sightings may take up to 24 hours to appear in the
-                    <a href="${url}">Occurrence explorer</a>
-                    pages.
-                </div>
-            """
-        }
-    }
-
-
     private String getLinkUrl (Map link){
         String url;
         switch (link.contentType){
@@ -201,14 +186,6 @@ class TemplateTagLib {
         }
 
         false
-    }
-
-    private quickLinksContainsBiocacheExplorer (Map hubConfig) {
-        if(hubConfig.quickLinks && hubConfig.quickLinks.size()){
-            return  (hubConfig.quickLinks.find{ it.contentType == 'biocacheexplorer' }?.size() > 0)
-        }
-
-        return false
     }
 
     private String getSpanClassForColumnNumber (Integer number){

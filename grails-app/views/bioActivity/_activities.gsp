@@ -18,7 +18,11 @@
 
             </div>
             <div class="span9 text-left well activities-search-panel">
-                <config:occurrenceExplorerText hubConfig="${hubConfig}"/>
+                <g:if test="${hubConfig.content?.showNote}">
+                    <div class="alert alert-info">
+                        <strong>Note!</strong> ${hubConfig.content?.recordNote?.encodeAsHTML()}
+                    </div>
+                </g:if>
                 <ul class="nav nav-tabs" id="tabDifferentViews">
                     <li class="active"><a id="recordVis-tab" href="#recordVis" data-toggle="tab" >List</a></li>
                     <li class=""><a href="#mapVis" id="dataMapTab" data-bind="attr:{'data-toggle': activities().length > 0 ? 'tab' : ''}">Map</a></li>
