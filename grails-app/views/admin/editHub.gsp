@@ -386,6 +386,14 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: isContainer"> Content should be in a fixed width container
                 </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: showNote"> Show note on record listing page
+                </div>
+                <div class="margin-top-1 row-fluid" data-bind="slideVisible: showNote">
+                    <textarea class="span6" data-bind="value: recordNote">
+
+                    </textarea>
+                </div>
                 <!-- /ko -->
                 <h3>Quick links</h3>
                 <small>Links that appear on certain content pages like create, view, all records etc.</small>
