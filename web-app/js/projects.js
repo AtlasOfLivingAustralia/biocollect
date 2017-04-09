@@ -408,7 +408,32 @@ function ProjectViewModel(project, isUserEditor) {
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
     self.imageUrl = ko.observable(project.urlImage);
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
-    
+    self.alaHarvest = ko.observable(project.alaHarvest ? 'Yes' : 'No');
+    self.harvestOptions = ["Yes","No"];
+    self.alaHarvest.subscribe(function(newValue) {
+        self.updateHarvest();
+    });
+
+    self.updateHarvest = function(){
+        return $.ajax({
+            url: fcConfig.projectUpdateUrl,
+            type: 'POST',
+            data: JSON.stringify({alaHarvest: self.alaHarvest() == 'Yes' ? true : false}),
+            contentType: 'application/json',
+            success: function (data) {
+                if (data.error) {
+                    bootbox.alert("Error "+ data.error);
+                }
+                else {
+                    bootbox.alert("Successfully updated");
+                }
+            },
+            error: function (data) {
+                bootbox.alert("Error updating, try again later");
+            }
+        });
+    };
+
     self.associatedOrgs = ko.observableArray();
     ko.utils.arrayMap(project.associatedOrgs || [], function(org) {
         var tmpOrg = org || {};
@@ -626,7 +651,6 @@ function ProjectViewModel(project, isUserEditor) {
     self.transients.subprogramsToDisplay = ko.computed(function () {
         return self.transients.subprograms[self.associatedProgram()];
     });
-
     self.transients.difficultyLevels = [ "Easy", "Medium", "Hard" ];
 
     var scienceTypesList = [
