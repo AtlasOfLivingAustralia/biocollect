@@ -130,7 +130,9 @@
         ko.applyBindings(pActivitiesSettingsVM, document.getElementById('pActivities'));
 
         // Delay subscription until the databinding has modified pActivity.pFormName if any
-        pActivitiesSettingsVM.current().transients.subscribeOrDisposePActivityFormName(true);
+        if(pActivitiesSettingsVM.current()) {
+            pActivitiesSettingsVM.current().transients.subscribeOrDisposePActivityFormName(true);
+        }
 
         new RestoreTab('ul-survey-constraint-citizen-science', 'survey-info');
     };
