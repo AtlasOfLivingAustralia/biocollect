@@ -21,8 +21,14 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Homepage</title>
+    <style>
+    %{-- Added to this page only to make image slider full page width --}%
+    #main-content, #bannerHubContainer{
+        padding-right: 0px;
+        padding-left: 0px;
+    }
+    </style>
 </head>
-
 <body>
 <g:if test="${hubConfig.title}">
     <div class="container-fluid" id="headerBannerSpace">
