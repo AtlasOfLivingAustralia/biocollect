@@ -184,6 +184,42 @@ class ModelJSTagLib {
         }
     }
 
+    /**
+     * This js is inserted into the 'reloadGeodata()' function of the view model.
+     *
+     * It re-loads the existing geo values (or default values) into the model in order to force a Map redraw.
+     */
+    def jsReloadGeoModel = { attrs ->
+        List  geoFields = attrs.model?.dataModel?.findAll {it.dataType == "geoMap"}
+        geoFields.each { fieldModel ->
+
+            if (fieldModel.dataType == "geoMap") {
+                out << INDENT*4 << """                
+                var old${fieldModel.name} = self.data.${fieldModel.name}()
+                if(old${fieldModel.name}) {
+                    self.data.${fieldModel.name}(null)
+                    self.data.${fieldModel.name}(old${fieldModel.name});                                             
+                }                 
+    
+                var old${fieldModel.name}Latitude = self.data.${fieldModel.name}Latitude()
+                var old${fieldModel.name}Longitude = self.data.${fieldModel.name}Longitude()               
+
+                if(old${fieldModel.name}Latitude) {
+                    self.data.${fieldModel.name}Latitude(null)
+                    self.data.${fieldModel.name}Latitude(old${fieldModel.name}Latitude)
+                } 
+                    
+                if(old${fieldModel.name}Longitude) {
+                    self.data.${fieldModel.name}Longitude(null)
+                    self.data.${fieldModel.name}Longitude(old${fieldModel.name}Longitude)
+                } 
+                    
+                """
+            }
+        }
+    }
+
+
     def jsSaveModel = { attrs ->
 
         out << INDENT*4 << "self.modelForSaving = function() {\n"
