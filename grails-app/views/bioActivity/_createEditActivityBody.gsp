@@ -5,7 +5,7 @@
         <g:if test="${!printView && !mobile && !hubConfig.content?.hideBreadCrumbs}">
             <ul class="breadcrumb">
                 <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-                <li><a data-bind="click:goToProject" href="#" class="clickable">${projectName}</a> <span class="divider">/</span></li>
+                <li><a data-bind="click:goToProject" href="#" class="clickable">Project</a> <span class="divider">/</span></li>
                 <li class="active">
                     <span>${pActivity.name}</span>
                 </li>
@@ -50,32 +50,33 @@
             </div>
 
             <r:script>
-                    $(function(){
-                        var viewModelName = "${blockId}ViewModel", viewModelInstance = viewModelName + "Instance";
-                        // load dynamic models - usually objects in a list
-                        <md:jsModelObjects model="${model}"  output="${output.name}" site="${site}" edit="true" viewModelInstance="${blockId}ViewModelInstance"/>
+    $(function(){
+        var viewModelName = "${blockId}ViewModel", viewModelInstance = viewModelName + "Instance";
+        // load dynamic models - usually objects in a list
+        <md:jsModelObjects model="${model}"  output="${output.name}" site="${site}" edit="true" viewModelInstance="${blockId}ViewModelInstance"/>
 
-                this[viewModelName] = function (config, outputNotCompleted) {
-                    var self = this;
-                    self.name = "${output.name}";
-                    self.outputId = "${output.outputId}";
-                    self.data = {};
-                    self.transients = {};
+        this[viewModelName] = function (config, outputNotCompleted) {
+            var self = this;
+            self.name = "${output.name}";
+            self.outputId = "${output.outputId}";
+            self.data = {};
+            self.transients = {};
 
-                    var notCompleted = outputNotCompleted;
-                    if (notCompleted === undefined) {
-                        notCompleted = config.collapsedByDefault;
-                    }
-                    self.outputNotCompleted = ko.observable(notCompleted);
-                    self.transients.optional = config.optional || false;
-                    self.transients.questionText = config.optionalQuestionText || 'Not applicable';
-                    self.transients.dummy = ko.observable();
-                            // add declarations for dynamic data
-                <md:jsViewModel model="${model}" output="${output.name}" edit="true"
-                                viewModelInstance="${blockId}ViewModelInstance"/>
-                // this will be called when generating a savable model to remove transient properties
-                self.removeBeforeSave = function (jsData) {
-                    // add code to remove any transients added by the dynamic tags
+            var notCompleted = outputNotCompleted;
+            if (notCompleted === undefined) {
+                notCompleted = config.collapsedByDefault;
+            }
+            self.outputNotCompleted = ko.observable(notCompleted);
+            self.transients.optional = config.optional || false;
+            self.transients.questionText = config.optionalQuestionText || 'Not applicable';
+            self.transients.dummy = ko.observable();
+
+            // add declarations for dynamic data
+            <md:jsViewModel model="${model}" output="${output.name}" edit="true"
+                            viewModelInstance="${blockId}ViewModelInstance"/>
+            // this will be called when generating a savable model to remove transient properties
+            self.removeBeforeSave = function (jsData) {
+                // add code to remove any transients added by the dynamic tags
                 <md:jsRemoveBeforeSave model="${model}"/>
                 delete jsData.activityType;
                 delete jsData.transients;
@@ -83,18 +84,18 @@
             };
 
             // this returns a JS object ready for saving
-                <md:jsSaveModel model="${model}" output="${output}"/>
+            <md:jsSaveModel model="${model}" output="${output}"/>
 
-                // this is a version of toJSON that just returns the model as it will be saved
-                // it is used for detecting when the model is modified (in a way that should invoke a save)
-                // the ko.toJSON conversion is preserved so we can use it to view the active model for debugging
-                self.modelAsJSON = function () {
-                    return JSON.stringify(self.modelForSaving());
-                };
+            // this is a version of toJSON that just returns the model as it will be saved
+            // it is used for detecting when the model is modified (in a way that should invoke a save)
+            // the ko.toJSON conversion is preserved so we can use it to view the active model for debugging
+            self.modelAsJSON = function () {
+                return JSON.stringify(self.modelForSaving());
+            };
 
-                self.loadData = function (data) {
-                    // load dynamic data
-                <md:jsLoadModel model="${model}" output="${output.name}" defaultData="${defaultData}" user="${user}"/>
+            self.loadData = function (data) {
+                // load dynamic data
+            <md:jsLoadModel model="${model}" output="${output.name}" defaultData="${defaultData}" user="${user}"/>
 
                 // if there is no data in tables then add an empty row for the user to add data
                 if (typeof self.addRow === 'function' && self.rowCount() === 0) {
@@ -102,6 +103,12 @@
                 }
                 self.transients.dummy.notifySubscribers();
             };
+
+            self.reloadGeodata = function() {
+                console.log('Reloading geo fields')
+                // load dynamic data
+                <md:jsReloadGeoModel model="${model}" output="${output.name}" />
+            }
         };
 
         var config = ${fc.modelAsJavascript(model:metaModel.outputConfig?.find{it.outputName == outputName}, default:'{}')};
@@ -112,40 +119,48 @@
         var output = ${output.data ?: '{}'};
         window[viewModelInstance].loadData(output);
 
-                        // dirtyFlag must be defined after data is loaded
-                <md:jsDirtyFlag model="${model}"/>
+        // dirtyFlag must be defined after data is loaded
+        <md:jsDirtyFlag model="${model}"/>
 
-                ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
+        ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
 
-                        // this resets the baseline for detecting changes to the model
-                        // - shouldn't be required if everything behaves itself but acts as a backup for
-                        //   any binding side-effects
-                        // - note that it is not foolproof as applying the bindings happens asynchronously and there
-                        //   is no easy way to detect its completion
-                        window[viewModelInstance].dirtyFlag.reset();
 
-                        // register with the master controller so this model can participate in the save cycle
-                        master.register(window[viewModelInstance], window[viewModelInstance].modelForSaving,
-                            window[viewModelInstance].dirtyFlag.isDirty, window[viewModelInstance].dirtyFlag.reset);
+        // this resets the baseline for detecting changes to the model
+        // - shouldn't be required if everything behaves itself but acts as a backup for
+        //   any binding side-effects
+        // - note that it is not foolproof as applying the bindings happens asynchronously and there
+        //   is no easy way to detect its completion
+        window[viewModelInstance].dirtyFlag.reset();
 
-                        // Check for locally saved data for this output - this will happen in the event of a session timeout
-                        // for example.
-                        var savedData = amplify.store('activity-${activity.activityId}');
-                        var savedOutput = null;
-                        if (savedData) {
-                            var outputData = $.parseJSON(savedData);
-                            $.each(outputData.outputs, function(i, tmpOutput) {
-                                if (tmpOutput.name === '${output.name}') {
-                                    if (tmpOutput.data) {
-                                        savedOutput = tmpOutput.data;
-                                    }
-                                }
-                            });
-                        }
-                        if (savedOutput) {
-                            window[viewModelInstance].loadData(savedOutput);
-                        }
-                    });
+        // register with the master controller so this model can participate in the save cycle
+        master.register(window[viewModelInstance], window[viewModelInstance].modelForSaving,
+            window[viewModelInstance].dirtyFlag.isDirty, window[viewModelInstance].dirtyFlag.reset);
+
+        console.log("Instance name " + viewModelInstance)
+        setTimeout(function(){
+            // Forcing map refresh because of tricky race condition that resets the map
+            // to the project area. This refresh needs to happen after everything else has run.
+            window[viewModelInstance].reloadGeodata();
+        }, 0)
+
+        // Check for locally saved data for this output - this will happen in the event of a session timeout
+        // for example.
+        var savedData = amplify.store('activity-${activity.activityId}');
+        var savedOutput = null;
+        if (savedData) {
+            var outputData = $.parseJSON(savedData);
+            $.each(outputData.outputs, function(i, tmpOutput) {
+                if (tmpOutput.name === '${output.name}') {
+                    if (tmpOutput.data) {
+                        savedOutput = tmpOutput.data;
+                    }
+                }
+            });
+        }
+        if (savedOutput) {
+            window[viewModelInstance].loadData(savedOutput);
+        }
+    });
             </r:script>
         </div>
     </g:if>

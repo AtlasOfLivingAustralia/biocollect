@@ -22,6 +22,7 @@
 function enmapify(args) {
     "use strict";
 
+
     var viewModel = args.viewModel,
         container = args.container,
         name = args.name,
@@ -40,8 +41,8 @@ function enmapify(args) {
         nameObservable = container[name + "Name"] = ko.observable(),
         latObservable = container[name + "Latitude"] = ko.observable(),
         lonObservable = container[name + "Longitude"] = ko.observable(),
-        hiddenLatObservable = container[name + "HiddenLatitude"] = ko.observable(),
-        hiddenLonObservable = container[name + "HiddenLongitude"] = ko.observable(),
+        previousLatObservable = container[name + "HiddenLatitude"] = ko.observable(),
+        previousLonObservable = container[name + "HiddenLongitude"] = ko.observable(),
         latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(),
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
@@ -126,6 +127,7 @@ function enmapify(args) {
 
                 siteSubscriber.dispose();
 
+                console.log("Updating location fields to pin");
                 siteIdObservable(null);
                 latObservable(markerLocation.lat);
                 lonObservable(markerLocation.lng);
@@ -139,7 +141,7 @@ function enmapify(args) {
             }
 
         } else if (geo && geo.features && geo.features.length > 0) {
-            console.log("Computing centroid");
+            console.log("Updating location fields to area");
             latLonDisabledObservable(true);
             feature = geo.features[0];
             var c = centroid(feature);
@@ -148,6 +150,7 @@ function enmapify(args) {
             centroidLonObservable(c[0]);
             centroidLatObservable(c[1]);
         } else {
+            console.log("Clearing location fields");
             latLonDisabledObservable(false);
             latObservable(null);
             lonObservable(null);
@@ -194,13 +197,14 @@ function enmapify(args) {
     function updateMapForSite(siteId) {
         if (typeof siteId !== "undefined" && siteId) {
             if(lonObservable()) {
-                hiddenLonObservable(lonObservable());
+                previousLonObservable(lonObservable());
             }
 
             if(latObservable()) {
-                hiddenLatObservable(latObservable());
+                previousLatObservable(latObservable());
             }
 
+            console.log("Resetting map before displaying a new shape")
             map.resetMap();
             var matchingSite = $.grep(sitesObservable(), function (site) {
                 return siteId == site.siteId
@@ -208,16 +212,20 @@ function enmapify(args) {
             if (matchingSite) {
                 map.clearBoundLimits();
                 if (matchingSite.extent.geometry.pid) {
+                    console.log("Displaying site with geometry.")
                     map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(matchingSite.extent.geometry));
                 } else {
+                    console.log("Displaying site without geometry.")
                     map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
                 }
             }
         } else { // Drop a pin, restore previous coordinates if any
-            if(hiddenLatObservable() && hiddenLonObservable()) {
-                lonObservable(hiddenLonObservable());
-                latObservable(hiddenLatObservable());
+            console.log("Displaying pin")
+            if(previousLatObservable() && previousLonObservable()) {
+                lonObservable(previousLonObservable());
+                latObservable(previousLatObservable());
             } else {
+                console.log("Resetting map because of non-previous lat long")
                 map.resetMap();
             }
         }
@@ -260,7 +268,10 @@ function enmapify(args) {
 
     function updateMarkerPosition() {
         if ((!siteIdObservable() || !args.markerOrShapeNotBoth) && latObservable() && lonObservable()) {
+            console.log("Displaying new marker")
             map.addMarker(latObservable(), lonObservable());
+            previousLatObservable(latObservable())
+            previousLonObservable(lonObservable())
         }
     }
 
