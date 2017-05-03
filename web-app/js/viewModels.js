@@ -141,7 +141,7 @@ function enmapify(args) {
             }
 
         } else if (geo && geo.features && geo.features.length > 0) {
-            console.log("Updating location fields to area");
+            console.log("Updating location fields to site");
             latLonDisabledObservable(true);
             feature = geo.features[0];
             var c = centroid(feature);
@@ -204,12 +204,13 @@ function enmapify(args) {
                 previousLatObservable(latObservable());
             }
 
-            console.log("Resetting map before displaying a new shape")
-            map.resetMap();
+
+
             var matchingSite = $.grep(sitesObservable(), function (site) {
                 return siteId == site.siteId
             })[0];
             if (matchingSite) {
+                console.log("Clearing map before displaying a new shape")
                 map.clearBoundLimits();
                 if (matchingSite.extent.geometry.pid) {
                     console.log("Displaying site with geometry.")
@@ -226,7 +227,7 @@ function enmapify(args) {
                 latObservable(previousLatObservable());
             } else {
                 console.log("Resetting map because of non-previous lat long")
-                map.resetMap();
+                map.resetMap()
             }
         }
     }
@@ -246,6 +247,7 @@ function enmapify(args) {
     }
 
     function zoomToProjectArea() {
+        console.log('Zooming to project area')
         if (activityLevelData.pActivity.sites) {
             var site = getProjectArea(),
                 geojson;
@@ -385,6 +387,7 @@ function enmapify(args) {
     }
 
     function enableEditMode() {
+        console.log('Init edit mode')
         // this is gross hack around the map plugin not giving access to the Draw Control
         var event = document.createEvent('Event');
         event.initEvent('click', true, true);
@@ -482,10 +485,13 @@ function enmapify(args) {
     }
 
     if (args.zoomToProjectArea) {
+        console.log('Zooming to project area original config')
         zoomToProjectArea();
     } else if (activityLevelData.pActivity.sites.length == 1) {
+        console.log('One site for activity')
         container[name](activityLevelData.pActivity.sites[0].siteId);
     } else if (activityLevelData.projectSite && activityLevelData.projectSite.extent) {
+        console.log('Will display project site')
         map.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(activityLevelData.projectSite.extent.geometry));
     }
 
