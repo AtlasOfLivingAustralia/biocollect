@@ -572,4 +572,7 @@ modules = {
         resource url: 'css/common.css'
         resource url: [dir: 'css', file: 'Common_fonts.css']
     }
+    mobile{
+        resource url: 'css/mobile_activity.css'
+    }
 }

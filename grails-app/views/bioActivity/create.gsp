@@ -37,6 +37,7 @@
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
     <r:require
             modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,activity,attachDocuments,amplify,imageViewer,projectActivityInfo,species,map,leaflet_google_base,responsiveTableStacked,viewmodels"/>
+    <g:if test="${mobile}"><r:require modules="mobile"/></g:if>
 </head>
 
 <body>
