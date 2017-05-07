@@ -111,8 +111,8 @@
             <auth:ifAnyGranted roles="ROLE_ADMIN">
                 <label for="map-tiles">Map tiles</label>
                 <select id="map-tiles" data-bind="value: baseLayersName, optionsCaption: 'Choose...', disable: transients.warning()">
-                    <option>Default</option>
                     <option>Google Maps</option>
+                    <option>Open Layers</option>
                 </select>
             </auth:ifAnyGranted>
         </div>

@@ -83,7 +83,8 @@ function enmapify(args) {
             }
     };
 
-    if (activityLevelData.pActivity.baseLayersName === 'Google Maps') {
+    // undefined/null, Google Maps or Default should enable Google Maps view
+    if (activityLevelData.pActivity.baseLayersName !== 'Open Layers') {
         var googleLayer = new L.Google('ROADMAP',{maxZoom: 21, nativeMaxZoom: 21});
         var otherLayers = {
             Roadmap: googleLayer,
