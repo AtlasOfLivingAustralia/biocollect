@@ -65,7 +65,7 @@ function enmapify(args) {
         allowSearchRegionByAddress: false,
         zoomToObject: true,
         markerZoomToMax: true,
-        drawOptions: readonly || !activityLevelData.pActivity.allowAdditionalSurveySites ?
+        drawOptions:  activityLevelData.mobile || readonly || !activityLevelData.pActivity.allowAdditionalSurveySites ?
             {
                 polyline: false,
                 polygon: false,

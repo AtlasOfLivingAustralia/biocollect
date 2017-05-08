@@ -410,6 +410,7 @@
             self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
             self.pActivity = JSON.parse('${(pActivity as JSON).toString().encodeAsJavaScript()}');
             self.projectSite = JSON.parse('${(projectSite as JSON).toString().encodeAsJavaScript()}');
+            self.mobile = ${mobile ?: false};
         }
 
         var activityLevelData = new ActivityLevelData();
