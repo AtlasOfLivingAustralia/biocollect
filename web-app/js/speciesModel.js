@@ -56,6 +56,9 @@ var SpeciesViewModel = function (species, populate, output, dataFieldName, surve
         self.scientificName(self.transients.scientificName());
         self.commonName(self.transients.commonName());
         self.transients.bieUrl(fcConfig.bieUrl + '/species/' + self.guid());
+        if (!self.outputSpeciesId()) {
+            self.assignOutputSpeciesId();
+        }
     });
 
     self.populateSingleSpecies = function (populate) {
@@ -67,15 +70,11 @@ var SpeciesViewModel = function (species, populate, output, dataFieldName, surve
                 contentType: 'application/json',
                 success: function (data) {
                     if (data.name && data.guid) {
-                        self.name(data.name);
-                        self.guid(data.guid);
-                        self.scientificName(data.scientificName);
-                        self.commonName(data.commonName);
                         self.transients.name(data.name);
-                        self.transients.guid(data.guid);
                         self.transients.scientificName(data.scientificName);
                         self.transients.commonName(data.commonName);
-                        self.transients.speciesFieldIsReadOnly(true)
+                        self.transients.speciesFieldIsReadOnly(true);
+                        self.transients.guid(data.guid); // This will update the non-transient data.
                     }
                 },
                 error: function (data) {
@@ -96,9 +95,7 @@ var SpeciesViewModel = function (species, populate, output, dataFieldName, surve
         self.transients.commonName("");
     };
 
-
-    self.loadOutputSpeciesId = function(species) {
-        var idRequired = fcConfig.getOutputSpeciesIdUrl;
+    self.guidFromOutputSpeciesId = function(species) {
         if (species.outputSpeciesId) {
             self.outputSpeciesId(species.outputSpeciesId);
             $.ajax({
@@ -113,7 +110,16 @@ var SpeciesViewModel = function (species, populate, output, dataFieldName, surve
                 }
             });
 
-        } else if (idRequired) {
+        }
+    };
+
+    /**
+     * Obtain a unique id for this species to correlate the form data with occurance
+     * records produced for export to the ALA
+     */
+    self.assignOutputSpeciesId = function() {
+        var idRequired = fcConfig.getOutputSpeciesIdUrl;
+        if (idRequired && !self.outputSpeciesId() && self.guid()) {
             self.transients.bieUrl(fcConfig.bieUrl + '/species/' + self.guid());
             $.ajax({
                 url: fcConfig.getOutputSpeciesIdUrl,
@@ -131,7 +137,7 @@ var SpeciesViewModel = function (species, populate, output, dataFieldName, surve
         }
     };
 
-    self.loadOutputSpeciesId(species);
+    self.guidFromOutputSpeciesId(species);
     self.populateSingleSpecies(populate);
 };
 
