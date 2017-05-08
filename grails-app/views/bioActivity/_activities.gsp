@@ -196,7 +196,7 @@
                                             <div>
                                                 <!-- ko if: embargoed() -->
                                                 <a href="#" class="helphover"
-                                                   data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment(.embargoUntil()).format('DD/MM/YYYY')}">
+                                                   data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment(embargoUntil()).format('DD/MM/YYYY')}">
                                                     <span class="icon-lock"></span>
                                                 </a>
                                                 <!--/ko -->
