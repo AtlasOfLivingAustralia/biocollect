@@ -22,6 +22,21 @@
     </style>
 </head>
 <body><g:layoutBody />
+
+<r:script>
+    $(function() {
+        $.ajaxSetup({
+            cache: false,
+            xhrFields: {
+                withCredentials: true
+            },
+            beforeSend: function(xhr){
+                xhr.setRequestHeader('authKey', "${authKey}");
+                xhr.setRequestHeader('userName', "${userName}");
+            }
+        });
+    });
+</r:script>
 <r:layoutResources/>
 </body>
 </html>

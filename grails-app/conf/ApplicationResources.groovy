@@ -45,6 +45,7 @@ modules = {
         resource url: 'vendor/jquery.shorten/jquery.shorten.js'
         resource url: 'vendor/jquery.columnizer/jquery.columnizer.js'
         resource url: 'vendor/jquery.blockUI/jquery.blockUI.js'
+        resource url: 'vendor/polyfill/es6-promise.auto.js'
     }
 
     bootbox {
@@ -570,5 +571,8 @@ modules = {
         resource url: 'css/bootstrap-combobox.css'
         resource url: 'css/common.css'
         resource url: [dir: 'css', file: 'Common_fonts.css']
+    }
+    mobile{
+        resource url: 'css/mobile_activity.css'
     }
 }

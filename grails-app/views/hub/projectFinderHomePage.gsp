@@ -64,6 +64,13 @@
   }
     </r:script>
     <r:require modules="js_iso8601,projects,projectFinder,map,datepicker"/>
+    <style>
+        %{-- Added to this page only to make image slider full page width --}%
+        #main-content, #bannerHubContainer{
+            padding-right: 0px;
+            padding-left: 0px;
+        }
+    </style>
 </head>
 <body>
 <div id="headerBannerSpace" class="container-fluid">

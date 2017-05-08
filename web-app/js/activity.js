@@ -316,10 +316,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
         alaMap.startLoading();
         $.getJSON(url, function(data) {
+            self.transients.loadingMap(false)
             results = data;
             self.generateDotsFromResult(data);
             alaMap.finishLoading();
-            self.transients.loadingMap(false)
         }).error(function (request, status, error) {
             console.error("AJAX error", status, error);
             alaMap.finishLoading();
@@ -408,7 +408,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
         self.transients.totalPoints(features && features.length ? features.length : 0);
         features && features.length && alaMap.addClusteredPoints(features);
-        self.invalidateSize();
+        alaMap.redraw()
     };
 
     /**

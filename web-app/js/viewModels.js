@@ -22,6 +22,7 @@
 function enmapify(args) {
     "use strict";
 
+
     var viewModel = args.viewModel,
         container = args.container,
         name = args.name,
@@ -40,8 +41,8 @@ function enmapify(args) {
         nameObservable = container[name + "Name"] = ko.observable(),
         latObservable = container[name + "Latitude"] = ko.observable(),
         lonObservable = container[name + "Longitude"] = ko.observable(),
-        hiddenLatObservable = container[name + "HiddenLatitude"] = ko.observable(),
-        hiddenLonObservable = container[name + "HiddenLongitude"] = ko.observable(),
+        previousLatObservable = container[name + "HiddenLatitude"] = ko.observable(),
+        previousLonObservable = container[name + "HiddenLongitude"] = ko.observable(),
         latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(),
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
@@ -64,7 +65,7 @@ function enmapify(args) {
         allowSearchRegionByAddress: false,
         zoomToObject: true,
         markerZoomToMax: true,
-        drawOptions: readonly || !activityLevelData.pActivity.allowAdditionalSurveySites ?
+        drawOptions:  activityLevelData.mobile || readonly || !activityLevelData.pActivity.allowAdditionalSurveySites ?
             {
                 polyline: false,
                 polygon: false,
@@ -82,7 +83,8 @@ function enmapify(args) {
             }
     };
 
-    if (activityLevelData.pActivity.baseLayersName === 'Google Maps') {
+    // undefined/null, Google Maps or Default should enable Google Maps view
+    if (activityLevelData.pActivity.baseLayersName !== 'Open Layers') {
         var googleLayer = new L.Google('ROADMAP',{maxZoom: 21, nativeMaxZoom: 21});
         var otherLayers = {
             Roadmap: googleLayer,
@@ -126,6 +128,7 @@ function enmapify(args) {
 
                 siteSubscriber.dispose();
 
+                console.log("Updating location fields to pin");
                 siteIdObservable(null);
                 latObservable(markerLocation.lat);
                 lonObservable(markerLocation.lng);
@@ -139,7 +142,7 @@ function enmapify(args) {
             }
 
         } else if (geo && geo.features && geo.features.length > 0) {
-            console.log("Computing centroid");
+            console.log("Updating location fields to site");
             latLonDisabledObservable(true);
             feature = geo.features[0];
             var c = centroid(feature);
@@ -148,6 +151,7 @@ function enmapify(args) {
             centroidLonObservable(c[0]);
             centroidLatObservable(c[1]);
         } else {
+            console.log("Clearing location fields");
             latLonDisabledObservable(false);
             latObservable(null);
             lonObservable(null);
@@ -194,31 +198,37 @@ function enmapify(args) {
     function updateMapForSite(siteId) {
         if (typeof siteId !== "undefined" && siteId) {
             if(lonObservable()) {
-                hiddenLonObservable(lonObservable());
+                previousLonObservable(lonObservable());
             }
 
             if(latObservable()) {
-                hiddenLatObservable(latObservable());
+                previousLatObservable(latObservable());
             }
 
-            map.resetMap();
+
+
             var matchingSite = $.grep(sitesObservable(), function (site) {
                 return siteId == site.siteId
             })[0];
             if (matchingSite) {
+                console.log("Clearing map before displaying a new shape")
                 map.clearBoundLimits();
                 if (matchingSite.extent.geometry.pid) {
+                    console.log("Displaying site with geometry.")
                     map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(matchingSite.extent.geometry));
                 } else {
+                    console.log("Displaying site without geometry.")
                     map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
                 }
             }
         } else { // Drop a pin, restore previous coordinates if any
-            if(hiddenLatObservable() && hiddenLonObservable()) {
-                lonObservable(hiddenLonObservable());
-                latObservable(hiddenLatObservable());
+            console.log("Displaying pin")
+            if(previousLatObservable() && previousLonObservable()) {
+                lonObservable(previousLonObservable());
+                latObservable(previousLatObservable());
             } else {
-                map.resetMap();
+                console.log("Resetting map because of non-previous lat long")
+                map.resetMap()
             }
         }
     }
@@ -238,6 +248,7 @@ function enmapify(args) {
     }
 
     function zoomToProjectArea() {
+        console.log('Zooming to project area')
         if (activityLevelData.pActivity.sites) {
             var site = getProjectArea(),
                 geojson;
@@ -260,7 +271,10 @@ function enmapify(args) {
 
     function updateMarkerPosition() {
         if ((!siteIdObservable() || !args.markerOrShapeNotBoth) && latObservable() && lonObservable()) {
+            console.log("Displaying new marker")
             map.addMarker(latObservable(), lonObservable());
+            previousLatObservable(latObservable())
+            previousLonObservable(lonObservable())
         }
     }
 
@@ -374,6 +388,7 @@ function enmapify(args) {
     }
 
     function enableEditMode() {
+        console.log('Init edit mode')
         // this is gross hack around the map plugin not giving access to the Draw Control
         var event = document.createEvent('Event');
         event.initEvent('click', true, true);
@@ -471,10 +486,13 @@ function enmapify(args) {
     }
 
     if (args.zoomToProjectArea) {
+        console.log('Zooming to project area original config')
         zoomToProjectArea();
     } else if (activityLevelData.pActivity.sites.length == 1) {
+        console.log('One site for activity')
         container[name](activityLevelData.pActivity.sites[0].siteId);
     } else if (activityLevelData.projectSite && activityLevelData.projectSite.extent) {
+        console.log('Will display project site')
         map.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(activityLevelData.projectSite.extent.geometry));
     }
 
