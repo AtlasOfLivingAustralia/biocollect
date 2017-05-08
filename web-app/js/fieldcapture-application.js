@@ -215,7 +215,6 @@ function blockUIWithMessage(message) {
 }
 
 
-
 /**
  * Attaches a simple dirty flag (one shot change detection) to the supplied model, then once the model changes,
  * auto-saves the model using the supplied key every autoSaveIntervalInSeconds seconds.
@@ -233,7 +232,7 @@ function autoSaveModel(viewModel, saveUrl, options) {
         storageKey:window.location.href+'.autosaveData',
         autoSaveIntervalInSeconds:60,
         restoredDataWarningSelector:"#restoredData",
-        resultsMessageId:"save-result-placeholder",
+        resultsMessageSelector:"#save-result-placeholder",
         timeoutMessageSelector:"#timeoutMessage",
         errorMessage:"Failed to save your data: ",
         successMessage:"Save successful!",
@@ -245,7 +244,7 @@ function autoSaveModel(viewModel, saveUrl, options) {
         serializeModel:serializeModel,
         pageExitMessage: 'You have unsaved data.  If you leave the page this data will be lost.',
         preventNavigationIfDirty: false,
-        defaultDirtyFlag:ko.simpleDirtyFlag
+        defaultDirtyFlag:ko.dirtyFlag
     };
     var config = $.extend(defaults, options);
 
@@ -329,11 +328,11 @@ function autoSaveModel(viewModel, saveUrl, options) {
         amplify.store(config.storageKey, json);
 
         return $.ajax({
-                url: saveUrl,
-                type: 'POST',
-                data: json,
-                contentType: 'application/json'
-            }).done(function (data) {
+            url: saveUrl,
+            type: 'POST',
+            data: json,
+            contentType: 'application/json'
+        }).done(function (data) {
                 if (data.error) {
                     if (config.blockUIOnSave) {
                         $.unblockUI();
@@ -364,10 +363,20 @@ function autoSaveModel(viewModel, saveUrl, options) {
                 }
             })
             .fail(function (data) {
+                if (config.preventNavigationIfDirty) {
+                    window.onbeforeunload = null;
+                }
                 if (config.blockUIOnSave) {
                     $.unblockUI();
                 }
-                bootbox.alert($(config.timeoutMessageSelector).html());
+                var message = $(config.timeoutMessageSelector).html();
+                if (message) {
+                    bootbox.alert(message, function() {
+                        if (config.preventNavigationIfDirty) {
+                            window.onbeforeunload = onunloadHandler;
+                        }
+                    });
+                }
                 if (typeof errorCallback === 'function') {
                     errorCallback(data);
                 }

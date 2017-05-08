@@ -226,7 +226,7 @@ class ModelJSTagLib {
         out << INDENT*8 << "var outputData = {};\n"
         out << INDENT*8 << "ko.utils.extend(outputData, ko.mapping.toJS(self, {'ignore':['transients']}));\n"
 
-        out << INDENT*8 << "return outputData;\n"
+        out << INDENT*8 << "return self.removeBeforeSave(outputData);;\n"
         out << INDENT*4 << "}\n"
 
     }
@@ -265,22 +265,23 @@ class ModelJSTagLib {
     }
 
     def jsRemoveBeforeSave = { attrs ->
-        attrs.model?.viewModel?.each({
-            if (it.dataType == 'tableWithEditableRows' || it.type == 'photoPoints' || it.type == 'table') {
-                out << INDENT*4 << "delete jsData.selected${it.source}Row;\n"
-                out << INDENT*4 << "delete jsData.${it.source}TableDataUploadOptions\n"
-                out << INDENT*4 << "delete jsData.${it.source}TableDataUploadVisible\n"
 
-            } else if (it.dataType == 'map') {
-                out << INDENT*4 << "delete jsData.${it.source}SitesArray;\n"
-            }
-
-
-        })
+        // This won't pick up documents embedded in lists.
         attrs.model?.dataModel?.each({
             if (it.dataType == 'document') {
                 // Convert an embedded document into a document id.
                 out << INDENT*4 << "if (jsData.data && jsData.data.${it.name}) { jsData.data.${it.name} = jsData.data.${it.name}.documentId; }"
+            }
+            else if (it.dataType == 'geoMap') {
+                out << INDENT*4 << "delete jsData.data.${it.name}LatLonDisabled;\n"
+                out << INDENT*4 << "delete jsData.data.${it.name}SitesArray;\n"
+                out << INDENT*4 << "delete jsData.data.${it.name}Loading;\n"
+                out << INDENT*4 << "delete jsData.data.${it.name}Map;\n"
+            }
+            else if (it.dataType == 'list') {
+                out << INDENT*4 << "delete jsData.selected${it.name}Row;\n"
+                out << INDENT*4 << "delete jsData.${it.name}TableDataUploadOptions\n"
+                out << INDENT*4 << "delete jsData.${it.name}TableDataUploadVisible\n"
             }
         })
     }

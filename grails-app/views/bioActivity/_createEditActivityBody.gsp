@@ -80,6 +80,7 @@
                 <md:jsRemoveBeforeSave model="${model}"/>
                 delete jsData.activityType;
                 delete jsData.transients;
+                delete jsData.data.locationSitesArray;
                 return jsData;
             };
 
@@ -257,6 +258,29 @@
                     isDirty: isDirtyMethod,
                     reset: resetMethod
                 });
+
+                if (ko.isObservable(isDirtyMethod)) {
+                    isDirtyMethod.subscribe(function() {
+                        self.dirtyCheck();
+                    });
+                }
+            };
+
+            self.dirtyCheck = function() {
+                self.dirtyFlag.isDirty(self.isDirty());
+            };
+
+            /**
+             *  Takes into account changes to the photo point photo's as the default knockout dependency
+             *  detection misses edits to some of the fields.
+             */
+            self.dirtyFlag = {
+                isDirty: ko.observable(false),
+                reset: function() {
+                    $.each(self.subscribers, function(i, obj) {
+                        obj.reset();
+                    });
+                }
             };
 
             // master isDirty flag for the whole page - can control button enabling
@@ -265,6 +289,7 @@
                 $.each(this.subscribers, function(i, obj) {
                     dirty = dirty || obj.isDirty();
                 });
+
                 return dirty;
             };
 
@@ -400,6 +425,8 @@
                     }
                 });
             };
+
+            autoSaveModel(self, null, {preventNavigationIfDirty:true});
         };
 
         var master = new Master();
@@ -582,6 +609,7 @@
             </g:if>
 
             ko.applyBindings(viewModel);
+            viewModel.dirtyFlag.reset();
 
             master.register('activityModel', viewModel.modelForSaving, viewModel.dirtyFlag.isDirty, viewModel.dirtyFlag.reset);
         });
