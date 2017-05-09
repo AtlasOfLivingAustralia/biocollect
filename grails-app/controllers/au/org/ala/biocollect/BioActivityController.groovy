@@ -464,14 +464,21 @@ class BioActivityController {
      */
 
     def searchProjectActivities() {
+        long startTime = System.currentTimeMillis()
+
         GrailsParameterMap queryParams = constructDefaultSearchParams(params)
 
         Map searchResult = searchService.searchProjectActivity(queryParams)
+
+        long searchStarttime = System.currentTimeMillis()
+        long searchTime = searchStarttime - startTime
+
         List activities = searchResult?.hits?.hits
         List facets = []
         activities = activities?.collect {
             Map doc = it._source
-            def projectActivity = projectActivityService.get(doc.projectActivityId, "all", params?.version)
+
+            Map result =
             [
                     activityId       : doc.activityId,
                     projectActivityId: doc.projectActivityId,
@@ -489,12 +496,20 @@ class BioActivityController {
                     projectName      : doc.projectActivity?.projectName,
                     projectType      : doc.projectActivity?.projectType,
                     projectId        : doc.projectActivity?.projectId,
-                    showCrud         : ((queryParams.userId && doc.projectId && projectService.canUserEditProject(queryParams.userId, doc.projectId, false) || (doc.userId == queryParams.userId))),
-                    thumbnailUrl     : projectActivity?.documents?.find {
-                        it.status == 'active' && it.thumbnailUrl
-                    }?.thumbnailUrl
+                    showCrud         : (doc.userId == queryParams.userId) ||
+                                        (queryParams.userId && doc.projectId && (projectService.isUserAdminForProject(queryParams.userId, doc.projectId)))
             ]
+
+            if(!queryParams.ignoreThumnails) {
+                log.debug('Adding thumbnail')
+                def projectActivity = projectActivityService.get(doc.projectActivityId, "docs", params?.version)
+                result.thumbnailUrl = projectActivity?.documents?.find { it.thumbnailUrl }?.thumbnailUrl
+            }
+
+            result
         }
+
+        long permissionCheckTime = System.currentTimeMillis() - searchStarttime
 
         if(queryParams.facets){
             String[] facetList = queryParams.facets.split(',')
@@ -503,6 +518,14 @@ class BioActivityController {
 
         facets = projectActivityService.getDisplayNamesForFacets(facets);
         render([activities: activities, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
+
+        long totalTime = System.currentTimeMillis() - startTime
+
+        log.debug ("Activities: ${activities?.size()} ")
+        log.debug ("Total time: ${totalTime}ms")
+        log.debug ("Search time: ${searchTime}ms")
+        log.debug ("Permission time: ${permissionCheckTime}ms")
+
     }
 
     /**
@@ -510,6 +533,10 @@ class BioActivityController {
      * function to points.
      */
     def getProjectActivitiesRecordsForMapping() {
+        log.debug('Starting getProjectActivitiesRecordsForMapping')
+
+        long startTime = System.currentTimeMillis()
+
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
         Map parsed = commonService.parseParams(params)
         parsed.userId = userService.getCurrentUserId()
@@ -542,15 +569,20 @@ class BioActivityController {
             it.project?.projectId
         } : []
 
+        Boolean userIsAlaOrFcAdmin = userService.userIsAlaOrFcAdmin()
+
         activities = activities?.collect {
             Map doc = it._source
 
             //Sensitive species coordinate adjustments.
-            boolean projectMember = projectIds && projectIds.find { it == doc?.projectId }
-            if (!userService.userIsAlaOrFcAdmin() && !projectMember) {
-                doc.projectActivity?.records?.each {
-                    if (it.generalizedCoordinates) {
-                        it.coordinates = it.generalizedCoordinates
+
+            if (!userIsAlaOrFcAdmin ) {
+                boolean projectMember = projectIds && projectIds.find { it == doc?.projectId }
+                if(!projectMember) {
+                    doc.projectActivity?.records?.each {
+                        if (it.generalizedCoordinates) {
+                            it.coordinates = it.generalizedCoordinates
+                        }
                     }
                 }
             }
@@ -577,6 +609,10 @@ class BioActivityController {
         }
 
         render([activities: activities, total: searchResult.hits?.total ?: activities.size()] as JSON)
+
+        long totalTime = System.currentTimeMillis() - startTime
+
+        log.debug("getProjectActivitiesRecordsForMapping time ${totalTime}ms")
     }
 
     def ajaxListForProject(String id) {
