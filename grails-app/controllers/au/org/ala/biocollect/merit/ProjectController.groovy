@@ -668,9 +668,9 @@ class ProjectController {
             if (trimmedParams.mobile) {
                 String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
                 String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
-                fq.push('admins:' + (username && key ? userService.getUserFromAuthKey(username, key)?.userId : ''))
+                fq.push('allParticipants:' + (username && key ? userService.getUserFromAuthKey(username, key)?.userId : ''))
             } else {
-                fq.push('admins:' + userService.getUser()?.userId);
+                fq.push('allParticipants:' + userService.getUser()?.userId);
             }
             trimmedParams.isUserPage = null
         }
