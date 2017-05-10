@@ -17,11 +17,8 @@
     <div class="${isHorizontal ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 0">
         <div>
             <div class="row-fluid">
-                <div class="span4">
-                    <label for="siteLocation">${readonly ? 'Location:' : 'Select a location or drop a pin'}</label>
-                </div>
-
-                <div class="span8">
+                <div class="span12">
+                    <label for="siteLocation">${readonly ? 'Location:' : 'Select a location or drop a pin:'}</label>
                     <g:if test="${readonly}">
                         <span class="output-text" data-bind="text: data.${source}Name() "></span>
                     </g:if>
