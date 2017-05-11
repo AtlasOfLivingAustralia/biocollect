@@ -174,11 +174,9 @@ var ProjectActivity = function (params) {
 
     self.transients.subscribeOrDisposePActivityFormName = function (selected) {
         if(selected) {
-            console.log("Subscribing to activityFormName for survey: " + pActivity.name );
             self.transients.beforePActivityFormNameSubscription = self.pActivityFormName.subscribe(self.transients.beforePActivityFormNameUpdate, null, "beforeChange");
             self.transients.afterPActivityFormNameSubscription = self.pActivityFormName.subscribe(self.transients.afterPActivityFormNameUpdate);
         } else {
-            console.log("Disposing subscription to activityFormName for survey: " + pActivity.name );
             self.transients.beforePActivityFormNameSubscription && self.transients.beforePActivityFormNameSubscription.dispose();
             self.transients.afterPActivityFormNameSubscription && self.transients.afterPActivityFormNameSubscription.dispose();
         }
@@ -195,8 +193,6 @@ var ProjectActivity = function (params) {
      */
     self.transients.initSpeciesConfig = function (pActivity, selected) {
         self.transients.oldFormName = self.pActivityFormName();
-
-        console.log("Survey: " + self.name() +  "Form name: " + self.pActivityFormName());
 
         // New configuration in place, use new speciesFields to do initialisation
         if($.isArray(pActivity.speciesFields) && pActivity.speciesFields.length > 0 ) {
