@@ -464,14 +464,14 @@ class BioActivityController {
      */
 
     def searchProjectActivities() {
-        long startTime = System.currentTimeMillis()
+//        long startTime = System.currentTimeMillis()
 
         GrailsParameterMap queryParams = constructDefaultSearchParams(params)
 
         Map searchResult = searchService.searchProjectActivity(queryParams)
 
-        long searchStarttime = System.currentTimeMillis()
-        long searchTime = searchStarttime - startTime
+//        long searchStarttime = System.currentTimeMillis()
+//        long searchTime = searchStarttime - startTime
 
         List activities = searchResult?.hits?.hits
         List facets = []
@@ -509,7 +509,7 @@ class BioActivityController {
             result
         }
 
-        long permissionCheckTime = System.currentTimeMillis() - searchStarttime
+//        long permissionCheckTime = System.currentTimeMillis() - searchStarttime
 
         if(queryParams.facets){
             String[] facetList = queryParams.facets.split(',')
@@ -519,12 +519,12 @@ class BioActivityController {
         facets = projectActivityService.getDisplayNamesForFacets(facets);
         render([activities: activities, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
 
-        long totalTime = System.currentTimeMillis() - startTime
-
-        log.debug ("Activities: ${activities?.size()} ")
-        log.debug ("Total time: ${totalTime}ms")
-        log.debug ("Search time: ${searchTime}ms")
-        log.debug ("Permission time: ${permissionCheckTime}ms")
+//        long totalTime = System.currentTimeMillis() - startTime
+//
+//        log.debug ("Activities: ${activities?.size()} ")
+//        log.debug ("Total time: ${totalTime}ms")
+//        log.debug ("Search time: ${searchTime}ms")
+//        log.debug ("Permission time: ${permissionCheckTime}ms")
 
     }
 
@@ -533,9 +533,7 @@ class BioActivityController {
      * function to points.
      */
     def getProjectActivitiesRecordsForMapping() {
-        log.debug('Starting getProjectActivitiesRecordsForMapping')
-
-        long startTime = System.currentTimeMillis()
+//        long startTime = System.currentTimeMillis()
 
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
         Map parsed = commonService.parseParams(params)
@@ -610,9 +608,8 @@ class BioActivityController {
 
         render([activities: activities, total: searchResult.hits?.total ?: activities.size()] as JSON)
 
-        long totalTime = System.currentTimeMillis() - startTime
-
-        log.debug("getProjectActivitiesRecordsForMapping time ${totalTime}ms")
+//        long totalTime = System.currentTimeMillis() - startTime
+//        log.debug("getProjectActivitiesRecordsForMapping time ${totalTime}ms")
     }
 
     def ajaxListForProject(String id) {
