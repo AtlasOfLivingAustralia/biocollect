@@ -513,6 +513,11 @@ modules = {
         resource url: 'css/images.css'
     }
 
+    phoyoPoint {
+        dependsOn ('attachDocuments', 'imageDataType')
+        resource url: 'js/photoPoint.js'
+    }
+
     admin {
         resource url: 'js/hubs.js'
         resource url: 'css/admin.css'
