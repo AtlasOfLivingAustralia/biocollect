@@ -102,11 +102,6 @@
     <g:render template="/shared/imagerViewerModal"></g:render>
 
     <script type="text/html" id="readOnlyPhotoPoint">
-    <g:if test="${!readOnly}">
-        <div class="floatright">
-            <a class="btn" data-bind="click:$parent.removePhotoPoint"><i class="icon-remove"></i> Remove</a>
-        </div>
-    </g:if>
 
     <div><b><span data-bind="text:photoPoint.name"/></b></div>
 
