@@ -133,14 +133,14 @@ class SearchService {
 
     def allProjectsWithSites(params, String searchTerm = null) {
         addDefaultFacetQuery(params)
-        //params.max = 9999
-        params.flimit = 999
-        params.fsort = "term"
-        //params.offset = 0
+        params.flimit =  params.flimit ?: 999
+        params.fsort =  params.fsort ?: "term"
 
-        params.query = "docType:project"
-        if (searchTerm) {
-            params.query += " AND " + searchTerm
+        if(!params.query) {
+            params.query = "docType:project"
+            if (searchTerm) {
+                params.query += " AND " + searchTerm
+            }
         }
 
         def url = grailsApplication.config.ecodata.service.url + '/search/elasticGeo' + commonService.buildUrlParamsFromMap(params)

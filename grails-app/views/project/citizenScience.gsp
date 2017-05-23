@@ -7,14 +7,14 @@
     <r:script disposition="head">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
-        spatialService: '${createLink(controller:'proxy',action:'feature')}',
+        spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         geocodeUrl: "${grailsApplication.config.google.geocode.url}",
-        siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
+        siteMetaDataUrl: "${createLink(controller: 'site', action: 'locationMetadataForPoint')}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
         spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
         spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
@@ -22,16 +22,19 @@
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
-        imageLocation:"${resource(dir:'/images')}",
-        logoLocation:"${resource(dir:'/images/filetypes')}",
+        imageLocation:"${resource(dir: '/images')}",
+        logoLocation:"${resource(dir: '/images/filetypes')}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
-        projectListUrl: "${createLink(controller: 'project', action: 'search', params:[initiator:'biocollect'])}",
-        projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
-        organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
+        projectListUrl: "${createLink(controller: 'project', action: 'search', params: [initiator: 'biocollect'])}",
+        projectIndexBaseUrl : "${createLink(controller: 'project', action: 'index')}/",
+        organisationBaseUrl : "${createLink(controller: 'organisation', action: 'index')}/",
         isCitizenScience: true,
         showAllProjects: false,
-        meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
-        flimit: ${grailsApplication.config.facets.flimit}
+        meritProjectLogo:"${resource(dir: '/images', file: 'merit_project_logo.jpg')}",
+        flimit: ${grailsApplication.config.facets.flimit},
+        projectLinkPrefix : "${createLink(controller: 'project')}/",
+        siteLinkPrefix : "${createLink(controller: 'site')}/",
+        projectMapSearchUrl : "${createLink(controller: 'project', action: 'mapSearch')}"
     }
     <g:if test = "${grailsApplication.config.merit.projectLogo}" >
         fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";
@@ -59,21 +62,7 @@
             <div id="filterPanel" class="span3" style="display: none">
                 <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
             </div>
-
-            <div id="pt-table" class="span9 no-sidebar">
-                <bc:koLoading>
-                    <div data-bind="if: listView">
-                        <g:render template="/shared/projectFinderResultPanelList"></g:render>
-                    </div>
-
-                    <div data-bind="ifnot: listView">
-                        <g:render template="/shared/projectFinderResultPanelTile"></g:render>
-                    </div>
-                    <div id="pt-searchNavBar" class="clearfix">
-                        <div id="pt-navLinks"></div>
-                    </div>
-                </bc:koLoading>
-            </div>
+            <g:render template="/shared/projectFinderResultPanel" />
         </div>
     </div>
 </div>

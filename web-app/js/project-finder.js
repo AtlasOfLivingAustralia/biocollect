@@ -35,6 +35,8 @@ function ProjectFinder() {
         {name: 'Status', value: 'status'}
     ];
 
+    var alaMap;
+
     /* window into current page */
     function PageVM() {
         this.self = this;
@@ -42,7 +44,7 @@ function ProjectFinder() {
         this.facets = ko.observableArray();
         this.selectedFacets = ko.observableArray();
         this.columns = ko.observable(2);
-        self.columns = this.columns;
+        self.columns = this.columns
         this.doSearch = function () {
 
             self.doSearch();
@@ -85,7 +87,9 @@ function ProjectFinder() {
 
         self.resizeGrid();
 
-        this.listView = ko.observable(true);
+        // this.listView = ko.observable(true);
+        this.viewMode = ko.observable("tileView");
+
 
         /**
          * this function is used to tell project/index or citizenscience page that the traffic is coming from
@@ -231,7 +235,7 @@ function ProjectFinder() {
             isWorldWide = isWorldWide.length? isWorldWide[0] : false
         }
 
-        sortBy = getActiveButtonValues($("#pt-sort"));
+        var sortBy = getActiveButtonValues($("#pt-sort"));
         perPage = getActiveButtonValues($("#pt-per-page"));
 
         pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
@@ -251,8 +255,6 @@ function ProjectFinder() {
             isUserWorksPage: isUserWorksPage,
             isUserEcoSciencePage: isUserEcoSciencePage,
             organisationName: organisationName,
-            max: perPage, // page size
-            sort: sortBy,
             geoSearchJSON: JSON.stringify(geoSearch),
             skipDefaultFilters:fcConfig.showAllProjects,
             isWorldWide: isWorldWide,
@@ -260,6 +262,14 @@ function ProjectFinder() {
             fromDate: dates.fromDate,
             q: ($('#pt-search').val() || '' ).toLowerCase()
         };
+
+        if(perPage.length == 1) {
+            map.max =  perPage[0] // Page size
+        }
+
+        if(sortBy .length == 1) {
+            map.sort = sortBy[0]
+        }
 
         if (fcConfig.associatedPrograms) {
             $.each(fcConfig.associatedPrograms, function (i, program) {
@@ -283,8 +293,7 @@ function ProjectFinder() {
         var params = self.getParams();
 
         window.location.hash = constructHash();
-
-        return $.ajax({
+        $.ajax({
             url: fcConfig.projectListUrl,
             data: params,
             traditional: true,
@@ -308,6 +317,11 @@ function ProjectFinder() {
                 $('.search-spinner').hide();
             }
         })
+
+        // Issue map search in parallel to 'standard' search
+        // standard search is required to drive facet display
+        self.doMapSearch();
+
     };
 
     /**
@@ -425,13 +439,31 @@ function ProjectFinder() {
         savedViewMode = savedViewMode || "tileView"; //Default is the new tile view
         checkButton($("#pt-view"), savedViewMode);
         var viewMode = getActiveButtonValues($("#pt-view"));
-        pageWindow.listView(viewMode[0] == "listView");
+        pageWindow.viewMode(viewMode[0]);
+        // pageWindow.listView(viewMode[0] == "listView");
 
         // Filters view
         var showPanel = amplify.store('pt-filter');
         showPanel = showPanel === undefined ? true : showPanel;
         toggleFilterPanel(showPanel);
     };
+
+
+    self.siteDisplay = new Biocollect.SiteDisplay();
+
+    /**
+     * creates the map and plots the points on map
+     * @param features
+     */
+    self.doMapSearch = function (){
+
+        var url = fcConfig.projectMapSearchUrl;
+        var projectLinkPrefix = fcConfig.projectLinkPrefix;
+        var siteLinkPrefix = fcConfig.siteLinkPrefix;
+        var params = self.getParams();
+        self.siteDisplay.generateMap(url, projectLinkPrefix, siteLinkPrefix, params);
+    };
+
 
     function toggleFilterPanel(showPanel) {
         if(showPanel) {
@@ -474,8 +506,10 @@ function ProjectFinder() {
 
     $("#pt-view").on('statechange', function () {
         var viewMode = getActiveButtonValues($("#pt-view"));
-        pageWindow.listView(viewMode[0] == "listView");
+        // pageWindow.listView(viewMode[0] == "listView");
+        pageWindow.viewMode(viewMode[0])
         amplify.store('pt-view-state', viewMode[0]);
+
     });
     
     $("#pt-aus-world").on('statechange', function(){

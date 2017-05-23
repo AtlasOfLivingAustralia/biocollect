@@ -52,14 +52,18 @@
                                 data-toggle="button" data-value="true">${message(code: 'project.worldwide.text')}</button>
                     </div>
                 </div>
-            <div class="btn-group margin-bottom-5 margin-left-10" data-toggle="buttons-radio" id="pt-view">
-                <button class="btn btn-small" title="${message(code: 'project.tile.view.tooltip')}"
-                        data-toggle="button" data-value="tileView"><i
-                        class="icon-th"></i></button>
-                <button class="btn btn-small" title="${message(code: 'project.list.view.tooltip')}"
-                        data-toggle="button" data-value="listView"><i
-                        class="icon-th-list"></i></button>
-            </div>
+                <div class="btn-group margin-bottom-5 margin-left-10" data-toggle="buttons-radio" id="pt-view">
+                    <button class="btn btn-small" title="${message(code: 'project.tile.view.tooltip')}"
+                            data-toggle="button" data-value="tileView"><i
+                            class="icon-th"></i></button>
+                    <button class="btn btn-small" title="${message(code: 'project.list.view.tooltip')}"
+                            data-toggle="button" data-value="listView"><i
+                            class="icon-th-list"></i></button>
+                    <button class="btn btn-small" title="${message(code: 'project.map.view.tooltip')}"
+                            data-toggle="button" data-value="mapView"><i
+                            class="icon-globe"></i></button>
+                </div>
+                <div></div>
             </div>
         </div>
 

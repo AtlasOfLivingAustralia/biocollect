@@ -2,8 +2,9 @@ var Biocollect = Biocollect || {};
 
 Biocollect.SiteDisplay = function() {
     var self = this;
-    self.generateMap = function(url, projectLinkPrefix, siteLinkPrefix) {
-        $.getJSON(url, function (data) {
+    self.alaMap
+    self.generateMap = function(url, projectLinkPrefix, siteLinkPrefix, data) {
+        $.getJSON(url, data, function (data) {
             var features = [];
             var geoPoints = data;
 
@@ -34,7 +35,7 @@ Biocollect.SiteDisplay = function() {
                 }
             }
 
-            initialiseMap(features);
+            self.initialiseMap(features);
         }).error(function (request, status, error) {
                 console.error("AJAX error", status, error);
             }
@@ -45,23 +46,29 @@ Biocollect.SiteDisplay = function() {
         return !isNaN(point.lat) && !isNaN(point.lng) && point.lat >= -90 && point.lat <= 90 && point.lng >= -180 && point.lng <= 180
     }
 
-    function initialiseMap(features) {
-        var mapOptions = {
-            drawControl: false,
-            singleMarker: false,
-            singleDraw: false,
-            useMyLocation: false,
-            allowSearchLocationByAddress: false,
-            allowSearchRegionByAddress: false,
-            draggableMarkers: false,
-            showReset: false,
-            zoomToObject: true,
-            wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
-            wmsFeatureUrl: fcConfig.featureService + "?featureId="
-        };
-        var map = new ALA.Map("siteMap", mapOptions);
+    self.initialiseMap = function(features) {
 
-        map.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", map.fitBounds, "bottomleft");
+        if(!self.alaMap) {
+            var mapOptions = {
+                drawControl: false,
+                singleMarker: false,
+                singleDraw: false,
+                useMyLocation: false,
+                allowSearchLocationByAddress: false,
+                allowSearchRegionByAddress: false,
+                draggableMarkers: false,
+                showReset: false,
+                zoomToObject: true,
+                wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
+                wmsFeatureUrl: fcConfig.featureService + "?featureId="
+            };
+
+            self.alaMap = new ALA.Map("siteMap", mapOptions);
+
+            self.alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", self.alaMap.fitBounds, "bottomleft");
+        } else {
+            self.alaMap.resetMap()
+        }
 
         features.forEach(function (feature) {
             if (feature.geometry) {
@@ -73,7 +80,7 @@ Biocollect.SiteDisplay = function() {
                     popup: feature.popup
                 };
 
-                map.setGeoJSON(geometry, options);
+                self.alaMap.setGeoJSON(geometry, options);
             }
         });
 

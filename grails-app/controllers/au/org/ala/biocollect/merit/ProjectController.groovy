@@ -9,6 +9,7 @@ import au.org.ala.biocollect.projectresult.Builder
 import au.org.ala.biocollect.projectresult.Initiator
 import au.org.ala.web.AuthService
 import grails.converters.JSON
+import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
@@ -512,6 +513,14 @@ class ProjectController {
         render( text: [ projects:  projects, total: searchResult.hits?.total?:0, facets: facets ] as JSON );
     }
 
+    /**
+     *
+     * Uses same criteria as search to retreive the projects with site information suitable to render a shared/_sites.gsp map
+     */
+    def mapSearch() {
+        GrailsParameterMap queryParams = buildProjectSearch(params)
+        render searchService.allProjectsWithSites(queryParams) as JSON
+    }
 
     private GrailsParameterMap buildProjectSearch(GrailsParameterMap params){
         Builder.override(params)
