@@ -565,6 +565,8 @@ var ActivityRecordViewModel = function (activity) {
     self.transients.editUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityEditUrl : fcConfig.activityEditUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
     self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo: fcConfig.returnTo});
     self.transients.parent = activity.parent;
+    self.transients.thumbnailUrl = ko.observable(activity.thumbnailUrl ||  fcConfig.imageLocation + "/no-image-2.png");
+    self.transients.imageTitle = ko.observable(activity.thumbnailUrl? '' : 'No image' );
 };
 
 var RecordVM = function (record) {
