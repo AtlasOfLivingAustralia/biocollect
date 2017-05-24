@@ -139,6 +139,9 @@ var SpeciesViewModel = function (species, populate, output, dataFieldName, surve
 
     self.guidFromOutputSpeciesId(species);
     self.populateSingleSpecies(populate);
+    if (species.guid && !self.outputSpeciesId()) {
+        self.assignOutputSpeciesId(); // This will result in the data being marked as dirty.
+    }
 };
 
 function validateSpeciesLookup(element) {
