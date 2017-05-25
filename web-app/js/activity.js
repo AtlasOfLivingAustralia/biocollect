@@ -449,7 +449,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             sort: self.sort(),
             order: self.order(),
             flimit: flimit || fcConfig.flimit,
-            view: self.view
+            view: self.view,
+            clientTimezoneOffset : new Date().getTimezoneOffset()
         },
             fq = [];
 
