@@ -187,7 +187,7 @@
                                     <tr>
                                         <td>
                                             <div class="projectLogo">
-                                                <img class="image-logo wide" src="${noImageUrl}" title="No Image">
+                                                <img class="image-logo wide" data-bind="attr:{title:transients.imageTitle, src:transients.thumbnailUrl} " />
                                             </div>
                                         </td>
                                         <td>
