@@ -192,7 +192,7 @@
 <g:if test="${!printView}">
     <div class="form-actions">
         <button type="button" id="save" class="btn btn-primary">Submit</button>
-        <g:if test="${showCreate}">
+        <g:if test="${showCreate && !mobile}">
             <button type="button" id="cancel" class="btn">Cancel</button>
         </g:if>
     </div>

@@ -496,16 +496,11 @@ class BioActivityController {
                     projectName      : doc.projectActivity?.projectName,
                     projectType      : doc.projectActivity?.projectType,
                     projectId        : doc.projectActivity?.projectId,
+                    thumbnailUrl     : doc.thumbnailUrl,
                     showCrud         : (doc.userId == queryParams.userId) ||
                                         (queryParams.userId && doc.projectId && (projectService.isUserAdminForProject(queryParams.userId, doc.projectId)))
+
             ]
-
-            if(!queryParams.ignoreThumnails) {
-                log.debug('Adding thumbnail')
-                def projectActivity = projectActivityService.get(doc.projectActivityId, "docs", params?.version)
-                result.thumbnailUrl = projectActivity?.documents?.find { it.thumbnailUrl }?.thumbnailUrl
-            }
-
             result
         }
 
