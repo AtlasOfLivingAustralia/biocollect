@@ -56,7 +56,10 @@ var SpeciesViewModel = function (species, populate, output, dataFieldName, surve
         self.scientificName(self.transients.scientificName());
         self.commonName(self.transients.commonName());
         self.transients.bieUrl(fcConfig.bieUrl + '/species/' + self.guid());
-        if (!self.outputSpeciesId()) {
+    });
+
+    self.name.subscribe(function (newName) {
+        if (!self.outputSpeciesId() && newName != species.name) {
             self.assignOutputSpeciesId();
         }
     });
@@ -139,6 +142,9 @@ var SpeciesViewModel = function (species, populate, output, dataFieldName, surve
 
     self.guidFromOutputSpeciesId(species);
     self.populateSingleSpecies(populate);
+    if (species.name && !self.outputSpeciesId()) {
+        self.assignOutputSpeciesId(); // This will result in the data being marked as dirty.
+    }
 };
 
 function validateSpeciesLookup(element) {
