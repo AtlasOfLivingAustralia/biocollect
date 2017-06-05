@@ -34,7 +34,8 @@
         showAllProjects: false,
         meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
         associatedPrograms: ${associatedPrograms},
-        flimit: ${grailsApplication.config.facets.flimit}
+        flimit: ${grailsApplication.config.facets.flimit},
+        projectMapSearchUrl : "${createLink(controller: 'project', action: 'mapSearch')}"
     }
         <g:if test = "${grailsApplication.config.merit.projectLogo}" >
             fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";

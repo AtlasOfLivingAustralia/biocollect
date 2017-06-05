@@ -60,7 +60,8 @@
         meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
         meritProjectUrl: "${grailsApplication.config.merit.project.url}",
         hideWorldWideBtn: ${!hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.showProjectRegionSwitch},
-        flimit: ${grailsApplication.config.facets.flimit}
+        flimit: ${grailsApplication.config.facets.flimit},
+        projectMapSearchUrl : "${createLink(controller: 'project', action: 'mapSearch')}"
   }
     </r:script>
     <r:require modules="js_iso8601,projects,projectFinder,map,datepicker"/>
