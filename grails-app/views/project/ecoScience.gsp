@@ -34,7 +34,8 @@
         showAllProjects: false,
         meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
         associatedPrograms: ${associatedPrograms},
-        flimit: ${grailsApplication.config.facets.flimit}
+        flimit: ${grailsApplication.config.facets.flimit},
+        projectMapSearchUrl : "${createLink(controller: 'project', action: 'mapSearch')}"
     }
         <g:if test = "${grailsApplication.config.merit.projectLogo}" >
             fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";
@@ -62,20 +63,7 @@
         <div id="filterPanel" class="span3" style="display: none">
             <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
         </div>
-        <div id="pt-table" class="span9 no-sidebar">
-            <bc:koLoading>
-                <div data-bind="if: listView">
-                    <g:render template="/shared/projectFinderResultPanelList"></g:render>
-                </div>
-
-                <div data-bind="ifnot: listView">
-                    <g:render template="/shared/projectFinderResultPanelTile"></g:render>
-                </div>
-                <div id="pt-searchNavBar" class="clearfix">
-                    <div id="pt-navLinks"></div>
-                </div>
-            </bc:koLoading>
-        </div>
+        <g:render template="/shared/projectFinderResultPanel" />
     </div>
 </div>
 <r:script>

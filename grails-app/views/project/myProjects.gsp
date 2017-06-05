@@ -44,7 +44,8 @@
         meritProjectUrl: "${grailsApplication.config.merit.project.url}",
         isCitizenScience: false,
         hideWorldWideBtn: true,
-        flimit: ${grailsApplication.config.facets.flimit}
+        flimit: ${grailsApplication.config.facets.flimit},
+        projectMapSearchUrl : "${createLink(controller: 'project', action: 'mapSearch')}"
   }
     </r:script>
     <r:require modules="js_iso8601,projects,projectFinder,map"/>
