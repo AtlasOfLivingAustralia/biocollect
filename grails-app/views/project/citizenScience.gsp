@@ -34,7 +34,9 @@
         flimit: ${grailsApplication.config.facets.flimit},
         projectLinkPrefix : "${createLink(controller: 'project')}/",
         siteLinkPrefix : "${createLink(controller: 'site')}/",
-        projectMapSearchUrl : "${createLink(controller: 'project', action: 'mapSearch')}"
+        projectMapSearchUrl : "${createLink(controller: 'project', action: 'mapSearch')}",
+        noImageUrl: '${resource([dir: "images", file: "no-image-2.png"])}',
+        sciStarterImageUrl: '${resource(dir: 'images', file: 'robot.png')}'
     }
     <g:if test = "${grailsApplication.config.merit.projectLogo}" >
         fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";

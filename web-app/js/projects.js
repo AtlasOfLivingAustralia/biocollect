@@ -317,6 +317,8 @@ function ProjectViewModel(project, isUserEditor) {
 
     self.facets = ko.observableArray();
 
+    self.coverage = project.coverage
+
     self.regenerateProjectTimeline = ko.observable(false);
     self.projectDatesChanged = ko.computed(function() {
         return project.plannedStartDate != self.plannedStartDate() ||

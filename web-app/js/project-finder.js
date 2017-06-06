@@ -293,7 +293,7 @@ function ProjectFinder() {
         var params = self.getParams();
 
         window.location.hash = constructHash();
-        $.ajax({
+        return $.ajax({
             url: fcConfig.projectListUrl,
             data: params,
             traditional: true,
@@ -308,6 +308,10 @@ function ProjectFinder() {
                 });
                 self.pago.init(projectVMs);
                 pageWindow.filterViewModel.setFacets(data.facets || [])
+
+                // Issue map search in parallel to 'standard' search
+                // standard search is required to drive facet display
+                self.doMapSearch(projectVMs);
             },
             error: function () {
                 console.error("Could not load project data.");
@@ -317,11 +321,6 @@ function ProjectFinder() {
                 $('.search-spinner').hide();
             }
         })
-
-        // Issue map search in parallel to 'standard' search
-        // standard search is required to drive facet display
-        self.doMapSearch();
-
     };
 
     /**
@@ -440,7 +439,6 @@ function ProjectFinder() {
         checkButton($("#pt-view"), savedViewMode);
         var viewMode = getActiveButtonValues($("#pt-view"));
         pageWindow.viewMode(viewMode[0]);
-        // pageWindow.listView(viewMode[0] == "listView");
 
         // Filters view
         var showPanel = amplify.store('pt-filter');
@@ -449,21 +447,153 @@ function ProjectFinder() {
     };
 
 
-    self.siteDisplay = new Biocollect.SiteDisplay();
-
     /**
      * creates the map and plots the points on map
      * @param features
      */
-    self.doMapSearch = function (){
+    self.doMapSearch = function (projects){
 
-        var url = fcConfig.projectMapSearchUrl;
-        var projectLinkPrefix = fcConfig.projectLinkPrefix;
-        var siteLinkPrefix = fcConfig.siteLinkPrefix;
-        var params = self.getParams();
-        self.siteDisplay.generateMap(url, projectLinkPrefix, siteLinkPrefix, params);
+        var mapOptions = {
+            drawControl: false,
+            showReset: false,
+            draggableMarkers: false,
+            useMyLocation: false,
+            allowSearchLocationByAddress: false,
+            allowSearchRegionByAddress: false,
+        };
+
+        if(!self.pfMap){
+            self.pfMap = new ALA.Map("pfMap", mapOptions);
+
+            self.pfMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", self.pfMap.fitBounds, "bottomleft");
+        }
+
+        var features = [];
+        // var geoPoints = data;
+
+        if (projects) {
+            $.each(projects, function (j, project) {
+                var projectId = project.projectId;
+                var projectName = project.name;
+
+                if (project.coverage) {
+
+                        var point = {
+                            // siteId: el.siteId,
+                            lat: parseFloat(project.coverage.decimalLatitude),
+                            lng: parseFloat(project.coverage.decimalLongitude),
+                            geometry: Biocollect.MapUtilities.featureToValidGeoJson(project.coverage),
+                            popup: generatePopup(project)
+                        };
+
+                        if (isValidPoint(point)) {
+                            features.push(point);
+                        }
+                }
+            });
+        }
+
+        features && features.length && self.pfMap.addClusteredPoints(features);
+        self.pfMap.redraw()
+
     };
 
+    function generatePopup(project) {
+        var imageUrl = project.transients.imageUrl || fcConfig.noImageUrl
+        var html =
+
+            "<div >" +
+            "            <div>" +
+            "            <a href='transients.indexUrl' click='setTrafficFromProjectFinderFlag()'>" +
+            "            <img class='image-logo' alt='No image provided' title='" + project.transients.truncatedName() + "' src='" + imageUrl + "'/>" +
+            "            </a>" +
+            "            </div>"
+        if (project.isSciStarter()) {
+
+            html = html +
+            "        <div class='inline-block'><img class='logo-small'" +
+            "        src='" + fcConfig.sciStarterImageUrl  + "'" +
+            "        title='Project is sourced from SciStarter'></div>"
+        }
+
+        html = html +
+            "        <div class='tile-title'"+
+            "         click='setTrafficFromProjectFinderFlag()'>"+
+            "            <a " +
+            " href='"+project.transients.indexUrl + "'  click='setTrafficFromProjectFinderFlag()'>"+
+            "            <span>" + project.transients.truncatedName() +
+            "</span>"+
+            "            </a>"+
+            "            </div>"
+
+
+        if(project.transients.daysSince() >= 0) {
+            html = html +
+            "            <div class='tile-small'>"+
+            "            <span>Started "+project.transients.since() + "&nbsp;</span>"+
+            "        </div>"
+
+        }
+
+
+        html = html +
+
+            "<div>" +
+                "<a class='tile-organisation' href='"+ project.transients.orgUrl +"'>" +
+                 project.transients.truncatedOrganisationName() +
+                "</a>" +
+            "</div>" +
+
+
+
+            "   <div>"+ project.transients.truncatedAim() + "</div>"+
+
+            "            <div class='tile-small'>"+
+                    daysToGoHtml(project) +
+            "            </div>"+
+            "            </div>"
+
+
+        return html;
+    }
+
+    function daysToGoHtml(project) {
+
+        var html = "<div class='dayscount'>"
+
+        if(project.transients.daysSince() >= 0 && project.transients.daysRemaining() > 0) {
+            html = html + "<strong>Status: </strong> <span>"+ transients.daysRemaining +  "days to go</span>"
+        } else if (project.transients.daysSince() >= 0 && project.transients.daysRemaining() == 0) {
+            html = html + "<strong>Status: </strong> <span>Project Ended</span>"
+        } else if(project.transients.daysSince() >= 0 && project.transients.daysRemaining() < 0) {
+            html = html + "<strong>Status: </strong> <span>Project Ongoing</span>"
+        } else if(project.transients.daysSince() < 0) {
+            html = html + "<strong>Status: </strong> <span>Starts in </span> <span>"+ -project.transients.daysSince() +" </span><span> days</span> "
+        }
+
+        html = html + "</div>"
+
+        if(project.plannedStartDate()) {
+            html = html +
+                "<span class='dayscount'>" +
+                "   <small>Start date: " +  moment(project.plannedStartDate()).format('DD MMMM, YYYY') +"</small>" +
+                "</span>"
+        }
+
+        if(project.plannedEndDate()) {
+            html = html +
+                "<span class='dayscount'>" +
+                "<br/><small>End date: " + moment(project.plannedEndDate()).format('DD MMMM, YYYY') + "</small> " +
+                "</span>"
+        }
+
+        return html
+    }
+
+
+    function isValidPoint(point) {
+        return !isNaN(point.lat) && !isNaN(point.lng) && point.lat >= -90 && point.lat <= 90 && point.lng >= -180 && point.lng <= 180
+    }
 
     function toggleFilterPanel(showPanel) {
         if(showPanel) {
@@ -509,6 +639,10 @@ function ProjectFinder() {
         // pageWindow.listView(viewMode[0] == "listView");
         pageWindow.viewMode(viewMode[0])
         amplify.store('pt-view-state', viewMode[0]);
+
+        if(pageWindow.viewMode() == 'mapView') {
+            self.pfMap.redraw()
+        }
 
     });
     

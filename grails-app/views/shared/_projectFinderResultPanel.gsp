@@ -1,6 +1,5 @@
 <div id="pt-table" class="span9 no-sidebar">
     <bc:koLoading>
-        <div data-bind="if: console.log(viewMode())"></div>
         <div data-bind="if: viewMode() == 'listView'">
             <g:render template="/shared/projectFinderResultPanelList"></g:render>
         </div>
