@@ -32,45 +32,51 @@
         showAllProjects: false,
         meritProjectLogo:"${resource(dir: '/images', file: 'merit_project_logo.jpg')}",
         flimit: ${grailsApplication.config.facets.flimit},
-        projectLinkPrefix : "${createLink(controller: 'project')}/",
-        siteLinkPrefix : "${createLink(controller: 'site')}/",
-        projectMapSearchUrl : "${createLink(controller: 'project', action: 'mapSearch')}",
         noImageUrl: '${resource([dir: "images", file: "no-image-2.png"])}',
-        sciStarterImageUrl: '${resource(dir: 'images', file: 'robot.png')}'
+        sciStarterImageUrl: '${resource(dir: 'images', file: 'robot.png')}',
+        projectLinkPrefix : "${createLink(controller: 'project')}/",
+        siteLinkPrefix : "${createLink(controller: 'site')}/"
+
     }
-    <g:if test = "${grailsApplication.config.merit.projectLogo}" >
-        fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";
-    </g:if>
+        <g:if test="${grailsApplication.config.merit.projectLogo}">
+            fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";
+        </g:if>
     </r:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <r:require modules="js_iso8601,knockout,jqueryValidationEngine,projects,projectFinder,map,datepicker"/>
+    <r:require modules="js_iso8601,knockout,jqueryValidationEngine,map,datepicker,projects,projectFinder"/>
 </head>
+
 <body>
 <div id="wrapper" class="content container-fluid">
     <div id="project-finder-container">
         <div class="row-fluid">
             <div class="span12 padding10-small-screen" id="heading">
                 <h1 class="pull-left"><g:message code="project.citizenScience.heading"/></h1>
+
                 <div class="pull-right">
-                    <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</a>
-                    <a class="btn btn-info" href="${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</a>
+                    <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i
+                            class="icon-info-sign icon-white"></i> Getting started</a>
+                    <a class="btn btn-info" href="${createLink(controller: 'home', action: 'whatIsThis')}"><i
+                            class="icon-question-sign icon-white"></i> What is this?</a>
                 </div>
             </div>
         </div>
+
         <div>
             <g:render template="/shared/projectFinderResultSummary"/>
         </div>
+
         <div class="row-fluid">
             <div id="filterPanel" class="span3" style="display: none">
-                <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
+                <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch: false]}"/>
             </div>
-            <g:render template="/shared/projectFinderResultPanel" />
+            <g:render template="/shared/projectFinderResultPanel"/>
         </div>
     </div>
 </div>
 <r:script>
     $("#newPortal").on("click", function() {
-        document.location.href = "${createLink(controller:'project',action:'create',params:[citizenScience:true])}";
+        document.location.href = "${createLink(controller: 'project', action: 'create', params: [citizenScience: true])}";
     });
 
     var projectFinder = new ProjectFinder();

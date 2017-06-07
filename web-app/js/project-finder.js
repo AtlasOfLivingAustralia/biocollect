@@ -429,13 +429,13 @@ function ProjectFinder() {
     /**
      * Initialises user default (saved) view for filter and results
      * Filter can be shown/hidden
-     * Results can be displayed as list or tile (grid)
+     * Results can be displayed as list or map-popup (grid)
      */
     this.initViewMode = function () {
 
         // Results view
         var savedViewMode = amplify.store('pt-view-state');
-        savedViewMode = savedViewMode || "tileView"; //Default is the new tile view
+        savedViewMode = savedViewMode || "tileView"; //Default is the new map-popup view
         checkButton($("#pt-view"), savedViewMode);
         var viewMode = getActiveButtonValues($("#pt-view"));
         pageWindow.viewMode(viewMode[0]);
@@ -502,24 +502,32 @@ function ProjectFinder() {
         var imageUrl = project.transients.imageUrl || fcConfig.noImageUrl
         var html =
 
-            "<div >" +
+            "<div class='map-popups'>" +
+            "<div class='map-popup'>" +
             "            <div>" +
+            "            <div class='text-center'>" +
             "            <a href='transients.indexUrl' click='setTrafficFromProjectFinderFlag()'>" +
-            "            <img class='image-logo' alt='No image provided' title='" + project.transients.truncatedName() + "' src='" + imageUrl + "'/>" +
-            "            </a>" +
-            "            </div>"
+            "            <img class='map-popup-image' alt='No image provided' title='" + project.transients.truncatedName() + "' src='" + imageUrl + "' " +
+            "onerror='imageError(this, fcConfig.noImageUrl);' />" +
+            "            </a>"
+
         if (project.isSciStarter()) {
 
             html = html +
-            "        <div class='inline-block'><img class='logo-small'" +
+            "        <img class='display-inline-block logo-small'" +
             "        src='" + fcConfig.sciStarterImageUrl  + "'" +
-            "        title='Project is sourced from SciStarter'></div>"
+            "        title='Project is sourced from SciStarter'>"
         }
 
         html = html +
-            "        <div class='tile-title'"+
+        "            </div>" +
+        "            </div>"
+
+
+        html = html +
+            "        <div "+
             "         click='setTrafficFromProjectFinderFlag()'>"+
-            "            <a " +
+            "            <a class='map-popup-title'" +
             " href='"+project.transients.indexUrl + "'  click='setTrafficFromProjectFinderFlag()'>"+
             "            <span>" + project.transients.truncatedName() +
             "</span>"+
@@ -529,17 +537,16 @@ function ProjectFinder() {
 
         if(project.transients.daysSince() >= 0) {
             html = html +
-            "            <div class='tile-small'>"+
+            "            <div class='map-popup-small'>"+
             "            <span>Started "+project.transients.since() + "&nbsp;</span>"+
             "        </div>"
 
         }
 
-
         html = html +
 
             "<div>" +
-                "<a class='tile-organisation' href='"+ project.transients.orgUrl +"'>" +
+                "<a class='map-popup-organisation' href='"+ project.transients.orgUrl +"'>" +
                  project.transients.truncatedOrganisationName() +
                 "</a>" +
             "</div>" +
@@ -548,10 +555,9 @@ function ProjectFinder() {
 
             "   <div>"+ project.transients.truncatedAim() + "</div>"+
 
-            "            <div class='tile-small'>"+
-                    daysToGoHtml(project) +
-            "            </div>"+
-            "            </div>"
+            "   <div class='map-popup-small'>"+ daysToGoHtml(project) + "</div>"+
+            "</div>" +
+            "</div>"
 
 
         return html;
@@ -562,7 +568,7 @@ function ProjectFinder() {
         var html = "<div class='dayscount'>"
 
         if(project.transients.daysSince() >= 0 && project.transients.daysRemaining() > 0) {
-            html = html + "<strong>Status: </strong> <span>"+ transients.daysRemaining +  "days to go</span>"
+            html = html + "<strong>Status: </strong> <span>"+ project.transients.daysRemaining() +  "days to go</span>"
         } else if (project.transients.daysSince() >= 0 && project.transients.daysRemaining() == 0) {
             html = html + "<strong>Status: </strong> <span>Project Ended</span>"
         } else if(project.transients.daysSince() >= 0 && project.transients.daysRemaining() < 0) {

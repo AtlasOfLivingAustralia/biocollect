@@ -1,0 +1,87 @@
+/*
+map-popups and map-popup styles are based on
+statistics and stat styles from Merit project
+*/
+
+.map-popups .map-popup {
+    min-height: 160px !important;
+    background-image: none !important;
+}
+
+.map-popups .map-popup-organisation,.map-popups .map-popup-text {
+    padding-left: 0 !important;
+}
+
+@media (max-width: 767px) {
+    body {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .map-popups .map-popup {
+        min-height: 130px !important;
+        background-image: none !important;
+    }
+
+}
+
+.map-popups .map-popup {
+    font-family: 'Oswald',sans-serif;
+    background-color: #ffffff;
+    /*margin-bottom: 30px;*/
+    /*padding: 5px;*/
+    border-radius: 4px;
+    min-height: 155px;
+    background-repeat: no-repeat;
+    background-size: 100px;
+    background-position: 20px 60px;
+}
+
+.map-popups .map-popup-title {
+    font-family: 'Source Sans Pro',sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    color: #C44D34 !important;
+}
+
+.map-popups .map-popup-organisation {
+    font-size: 14px;
+    color: #C44D34 !important;
+}
+
+.map-popups .map-popup-small {
+    font-size: 12px;
+}
+
+
+.map-popup-overlay {
+    width:80px;
+    height:80px;
+    box-shadow:inset 1px 1px 40px 0 rgba(0,0,0,0.5);
+    bottom:0;
+    left: 0px;
+    top:0px;
+    position: absolute;
+    z-index: 1;
+}
+.map-popup-image{
+    position:relative;
+    width:80px;
+    height:80px;
+}
+
+.map-popup-thumb {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    background-position: center center;
+    background-size: cover;
+}
+
+.leaflet-container .map-popup-image {
+    max-width: 80% !important;
+    max-height: 80%;
+}
+
