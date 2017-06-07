@@ -45,7 +45,8 @@
         isCitizenScience: false,
         hideWorldWideBtn: true,
         flimit: ${grailsApplication.config.facets.flimit},
-        projectMapSearchUrl : "${createLink(controller: 'project', action: 'mapSearch')}"
+        noImageUrl: '${resource([dir: "images", file: "no-image-2.png"])}',
+        sciStarterImageUrl: '${resource(dir: 'images', file: 'robot.png')}'
   }
     </r:script>
     <r:require modules="js_iso8601,projects,projectFinder,map"/>
