@@ -160,7 +160,14 @@ log4j = {
                 console name: "stdout", layout: pattern(conversionPattern: "%d %-5p [%c{1}] %m%n"), threshold: org.apache.log4j.Level.DEBUG
             }
             test {
-                rollingFile name: "tomcatLog", maxFileSize: '1MB', file: "${loggingDir}/${appName}.log", threshold: org.apache.log4j.Level.DEBUG, layout: pattern(conversionPattern: "%d %-5p [%c{1}] %m%n")
+                rollingFile name: "biocollect",
+                        maxFileSize: 104857600,
+                        file: loggingDir+"/${appName}.log",
+                        threshold: org.apache.log4j.Level.DEBUG,
+                        layout: pattern(conversionPattern: "%d %-5p [%c{1}]  %m%n")
+                rollingFile name: "stacktrace",
+                        maxFileSize: 104857600,
+                        file: loggingDir+"/${appName}-log-stacktrace.log"
             }
         }
     }
