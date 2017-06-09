@@ -30,7 +30,8 @@
         imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
-        getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}"
+        getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
+        uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
 
         ${(params?.version) ? ',version: ' + params?.version : ''}
         },

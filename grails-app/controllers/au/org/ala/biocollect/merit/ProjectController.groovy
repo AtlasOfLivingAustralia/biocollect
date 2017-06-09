@@ -9,6 +9,7 @@ import au.org.ala.biocollect.projectresult.Builder
 import au.org.ala.biocollect.projectresult.Initiator
 import au.org.ala.web.AuthService
 import grails.converters.JSON
+import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
@@ -305,37 +306,38 @@ class ProjectController {
         ]
     }
 
-    def citizenScience() {
-        [
-                user                    : userService.getUser(),
-                showTag                 : params.tag,
-                downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
-                showCitizenScienceBanner: true
-        ]
-    }
-
-    def works() {
-        [
-                user                    : userService.getUser(),
-                showTag                 : params.tag,
-                downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
-                associatedPrograms      : projectService.programsModel().programs.findAll{!it?.readOnly},
-                showWorksBanner: true
-        ]
-    }
-
-    def ecoScience() {
-        [
-                user                    : userService.getUser(),
-                showTag                 : params.tag,
-                downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
-                associatedPrograms      : projectService.programsModel().programs.findAll{!it?.readOnly},
-                showEcoScienceBanner: true
-        ]
-    }
 
     def myProjects() {
-        [user: userService.getUser()]
+        Map result = projectFinder()
+        result.isUserPage = true
+
+        render view: 'projectFinder',  model:  result
+    }
+
+    def projectFinder() {
+        Map result =
+        [
+                user                    : userService.getUser(),
+                showTag                 : params.tag,
+                downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true])
+        ]
+
+        HubSettings hubConfig = SettingService.hubConfig
+        if(hubConfig.defaultFacetQuery.contains('isWorks:true')) {
+            result.isWorks = true
+            result.associatedPrograms = projectService.programsModel().programs.findAll{!it?.readOnly}
+        }
+
+        if(hubConfig.defaultFacetQuery.contains('isEcoScience:true')) {
+            result.isEcoScience = true
+            result.associatedPrograms = projectService.programsModel().programs.findAll{!it?.readOnly}
+        }
+
+        if(hubConfig.defaultFacetQuery.contains('isCitizenScience:true')) {
+            result.isCitizenScience = true
+        }
+
+        result
     }
 
     /**
@@ -512,6 +514,14 @@ class ProjectController {
         render( text: [ projects:  projects, total: searchResult.hits?.total?:0, facets: facets ] as JSON );
     }
 
+    /**
+     *
+     * Uses same criteria as search to retreive the projects with site information suitable to render a shared/_sites.gsp map
+     */
+    def mapSearch() {
+        GrailsParameterMap queryParams = buildProjectSearch(params)
+        render searchService.allProjectsWithSites(queryParams) as JSON
+    }
 
     private GrailsParameterMap buildProjectSearch(GrailsParameterMap params){
         Builder.override(params)

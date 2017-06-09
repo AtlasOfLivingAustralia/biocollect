@@ -236,6 +236,7 @@ modules = {
         resource url: 'vendor/moment/moment-timezone-with-data.min.js'
         resource url: 'css/surveys.css'
         resource url: 'css/project-tile-view.css'
+        resource url: 'css/project-map-view.css'
         resource url: 'css/works-project.css'
         resource url: 'css/blog.css'
         resource url: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700", attrs:[type:"css"]
@@ -512,6 +513,11 @@ modules = {
     imageDataType{
         resource url: 'js/images.js'
         resource url: 'css/images.css'
+    }
+
+    phoyoPoint {
+        dependsOn ('attachDocuments', 'imageDataType')
+        resource url: 'js/photoPoint.js'
     }
 
     admin {

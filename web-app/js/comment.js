@@ -308,7 +308,7 @@ function CommentListViewModel() {
 
     // adds each comment from list
     self.addItems = function (items) {
-        $.map(items, function (item) {
+        items && $.map(items, function (item) {
             var comment = new CommentViewModel(item)
             comment.children(self.createChildrenComment(comment))
             self.comments.push(comment);

@@ -35,6 +35,8 @@ function ProjectFinder() {
         {name: 'Status', value: 'status'}
     ];
 
+    var alaMap;
+
     /* window into current page */
     function PageVM() {
         this.self = this;
@@ -42,7 +44,7 @@ function ProjectFinder() {
         this.facets = ko.observableArray();
         this.selectedFacets = ko.observableArray();
         this.columns = ko.observable(2);
-        self.columns = this.columns;
+        self.columns = this.columns
         this.doSearch = function () {
 
             self.doSearch();
@@ -85,7 +87,9 @@ function ProjectFinder() {
 
         self.resizeGrid();
 
-        this.listView = ko.observable(true);
+        // this.listView = ko.observable(true);
+        this.viewMode = ko.observable("tileView");
+
 
         /**
          * this function is used to tell project/index or citizenscience page that the traffic is coming from
@@ -231,7 +235,7 @@ function ProjectFinder() {
             isWorldWide = isWorldWide.length? isWorldWide[0] : false
         }
 
-        sortBy = getActiveButtonValues($("#pt-sort"));
+        var sortBy = getActiveButtonValues($("#pt-sort"));
         perPage = getActiveButtonValues($("#pt-per-page"));
 
         pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
@@ -251,8 +255,6 @@ function ProjectFinder() {
             isUserWorksPage: isUserWorksPage,
             isUserEcoSciencePage: isUserEcoSciencePage,
             organisationName: organisationName,
-            max: perPage, // page size
-            sort: sortBy,
             geoSearchJSON: JSON.stringify(geoSearch),
             skipDefaultFilters:fcConfig.showAllProjects,
             isWorldWide: isWorldWide,
@@ -260,6 +262,14 @@ function ProjectFinder() {
             fromDate: dates.fromDate,
             q: ($('#pt-search').val() || '' ).toLowerCase()
         };
+
+        if(perPage.length == 1) {
+            map.max =  perPage[0] // Page size
+        }
+
+        if(sortBy .length == 1) {
+            map.sort = sortBy[0]
+        }
 
         if (fcConfig.associatedPrograms) {
             $.each(fcConfig.associatedPrograms, function (i, program) {
@@ -283,7 +293,6 @@ function ProjectFinder() {
         var params = self.getParams();
 
         window.location.hash = constructHash();
-
         return $.ajax({
             url: fcConfig.projectListUrl,
             data: params,
@@ -299,6 +308,10 @@ function ProjectFinder() {
                 });
                 self.pago.init(projectVMs);
                 pageWindow.filterViewModel.setFacets(data.facets || [])
+
+                // Issue map search in parallel to 'standard' search
+                // standard search is required to drive facet display
+                self.doMapSearch(projectVMs);
             },
             error: function () {
                 console.error("Could not load project data.");
@@ -416,22 +429,184 @@ function ProjectFinder() {
     /**
      * Initialises user default (saved) view for filter and results
      * Filter can be shown/hidden
-     * Results can be displayed as list or tile (grid)
+     * Results can be displayed as list or map-popup (grid)
      */
     this.initViewMode = function () {
 
         // Results view
         var savedViewMode = amplify.store('pt-view-state');
-        savedViewMode = savedViewMode || "tileView"; //Default is the new tile view
+        savedViewMode = savedViewMode || "tileView"; //Default is the new map-popup view
         checkButton($("#pt-view"), savedViewMode);
         var viewMode = getActiveButtonValues($("#pt-view"));
-        pageWindow.listView(viewMode[0] == "listView");
+        pageWindow.viewMode(viewMode[0]);
 
         // Filters view
         var showPanel = amplify.store('pt-filter');
         showPanel = showPanel === undefined ? true : showPanel;
         toggleFilterPanel(showPanel);
     };
+
+
+    /**
+     * creates the map and plots the points on map
+     * @param features
+     */
+    self.doMapSearch = function (projects){
+
+        var mapOptions = {
+            drawControl: false,
+            showReset: false,
+            draggableMarkers: false,
+            useMyLocation: false,
+            allowSearchLocationByAddress: false,
+            allowSearchRegionByAddress: false,
+        };
+
+        if(!self.pfMap){
+            self.pfMap = new ALA.Map("pfMap", mapOptions);
+
+            self.pfMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", self.pfMap.fitBounds, "bottomleft");
+        }
+
+        var features = [];
+        // var geoPoints = data;
+
+        if (projects) {
+            $.each(projects, function (j, project) {
+                var projectId = project.projectId;
+                var projectName = project.name;
+
+                if (project.coverage) {
+
+                        var point = {
+                            geometry: Biocollect.MapUtilities.featureToValidGeoJson(project.coverage),
+                            popup: generatePopup(project)
+                        };
+
+                        if(project.coverage.centre && project.coverage.centre.length == 2) {
+                            point.lat = parseFloat(project.coverage.centre[1])
+                            point.lng = parseFloat(project.coverage.centre[0])
+                        } else {
+                            point.lat = parseFloat(project.coverage.decimalLatitude)
+                            point.lng = parseFloat(project.coverage.decimalLongitude)
+                        }
+
+                        if (isValidPoint(point)) {
+                            features.push(point);
+                        } else {
+                            console.warn('Project ' + project.name() + 'does not have valid coordinates');
+                        }
+                }
+            });
+        }
+
+        features && features.length && self.pfMap.addClusteredPoints(features);
+        self.pfMap.redraw()
+
+    };
+
+    function generatePopup(project) {
+        var imageUrl = project.transients.imageUrl || fcConfig.noImageUrl
+        var html =
+
+            "<div class='map-popups'>" +
+            "<div class='map-popup'>" +
+            "            <div>" +
+            "            <div class='text-center'>" +
+            "            <a href='transients.indexUrl' click='setTrafficFromProjectFinderFlag()'>" +
+            "            <img class='map-popup-image' alt='No image provided' title='" + project.transients.truncatedName() + "' src='" + imageUrl + "' " +
+            "onerror='imageError(this, fcConfig.noImageUrl);' />" +
+            "            </a>"
+
+        if (project.isSciStarter()) {
+
+            html = html +
+            "        <img class='display-inline-block logo-small'" +
+            "        src='" + fcConfig.sciStarterImageUrl  + "'" +
+            "        title='Project is sourced from SciStarter'>"
+        }
+
+        html = html +
+        "            </div>" +
+        "            </div>"
+
+
+        html = html +
+            "        <div "+
+            "         click='setTrafficFromProjectFinderFlag()'>"+
+            "            <a class='map-popup-title'" +
+            " href='"+project.transients.indexUrl + "'  click='setTrafficFromProjectFinderFlag()'>"+
+            "            <span>" + project.transients.truncatedName() +
+            "</span>"+
+            "            </a>"+
+            "            </div>"
+
+
+        if(project.transients.daysSince() >= 0) {
+            html = html +
+            "            <div class='map-popup-small'>"+
+            "            <span>Started "+project.transients.since() + "&nbsp;</span>"+
+            "        </div>"
+
+        }
+
+        html = html +
+
+            "<div>" +
+                "<a class='map-popup-organisation' href='"+ project.transients.orgUrl +"'>" +
+                 project.transients.truncatedOrganisationName() +
+                "</a>" +
+            "</div>" +
+
+
+
+            "   <div>"+ project.transients.truncatedAim() + "</div>"+
+
+            "   <div class='map-popup-small'>"+ daysToGoHtml(project) + "</div>"+
+            "</div>" +
+            "</div>"
+
+
+        return html;
+    }
+
+    function daysToGoHtml(project) {
+
+        var html = "<div class='dayscount'>"
+
+        if(project.transients.daysSince() >= 0 && project.transients.daysRemaining() > 0) {
+            html = html + "<strong>Status: </strong> <span>"+ project.transients.daysRemaining() +  "days to go</span>"
+        } else if (project.transients.daysSince() >= 0 && project.transients.daysRemaining() == 0) {
+            html = html + "<strong>Status: </strong> <span>Project Ended</span>"
+        } else if(project.transients.daysSince() >= 0 && project.transients.daysRemaining() < 0) {
+            html = html + "<strong>Status: </strong> <span>Project Ongoing</span>"
+        } else if(project.transients.daysSince() < 0) {
+            html = html + "<strong>Status: </strong> <span>Starts in </span> <span>"+ -project.transients.daysSince() +" </span><span> days</span> "
+        }
+
+        html = html + "</div>"
+
+        if(project.plannedStartDate()) {
+            html = html +
+                "<span class='dayscount'>" +
+                "   <small>Start date: " +  moment(project.plannedStartDate()).format('DD MMMM, YYYY') +"</small>" +
+                "</span>"
+        }
+
+        if(project.plannedEndDate()) {
+            html = html +
+                "<span class='dayscount'>" +
+                "<br/><small>End date: " + moment(project.plannedEndDate()).format('DD MMMM, YYYY') + "</small> " +
+                "</span>"
+        }
+
+        return html
+    }
+
+
+    function isValidPoint(point) {
+        return !isNaN(point.lat) && !isNaN(point.lng) && point.lat >= -90 && point.lat <= 90 && point.lng >= -180 && point.lng <= 180
+    }
 
     function toggleFilterPanel(showPanel) {
         if(showPanel) {
@@ -474,8 +649,14 @@ function ProjectFinder() {
 
     $("#pt-view").on('statechange', function () {
         var viewMode = getActiveButtonValues($("#pt-view"));
-        pageWindow.listView(viewMode[0] == "listView");
+        // pageWindow.listView(viewMode[0] == "listView");
+        pageWindow.viewMode(viewMode[0])
         amplify.store('pt-view-state', viewMode[0]);
+
+        if(pageWindow.viewMode() == 'mapView') {
+            self.pfMap.redraw()
+        }
+
     });
     
     $("#pt-aus-world").on('statechange', function(){
