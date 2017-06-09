@@ -28,13 +28,13 @@
     </g:if>
 
     <g:render template="/project/biocollectBanner" model="${[fc:fc, hf: hf]}"></g:render>
-    <g:if test="${showCitizenScienceBanner}" model="${[hubConfig:hubConfig]}">
+    <g:if test="${isCitizenScience && !isUserPage}" model="${[hubConfig:hubConfig]}">
         <g:render template="/shared/bannerCitizenScience"/>
     </g:if>
-    <g:if test="${showWorksBanner}">
+    <g:if test="${isWorks && !isUserPage}">
         <g:render template="/shared/bannerWorks"/>
     </g:if>
-    <g:if test="${showEcoScienceBanner}">
+    <g:if test="${isEcoScience && !isUserPage}">
         <g:render template="/shared/bannerEcoScience"/>
     </g:if>
 
@@ -141,16 +141,7 @@
 
 
         $(".btnSearch").click(function(e){
-            <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-                window.location = "${createLink(controller: 'project', action: 'citizenScience')}";
-            </g:if>
-            <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-                window.location = "${createLink(controller: 'home', action: 'index')}";
-            </g:if>
-            <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
-                //TODO: redirect to ecoScience instead of index
-                window.location = "${createLink(controller: 'home', action: 'index')}";
-            </g:if>
+            window.location = "${createLink(controller: 'home', action: 'index')}";
         })
 
         $(".btnSite").click(function(e){

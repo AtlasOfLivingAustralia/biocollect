@@ -97,7 +97,7 @@ $(function(){
     <g:if test="${citizenScience}">
     viewModel.transients.kindOfProject("citizenScience");
     $('#cancel').click(function () {
-        document.location.href = "${createLink(action: 'citizenScience')}";
+        document.location.href = "${createLink(action: 'projectFinder')}";
     });
     </g:if>
     <g:else>

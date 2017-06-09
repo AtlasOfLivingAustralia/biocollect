@@ -4,51 +4,41 @@
             <button id="pt-filter" class="btn btn-mini margin-right-10" title="${message(code: 'project.search.filter.tooltip')}"
                     data-status="1"
                     data-toggle="button"><i class="icon-align-justify"></i></button>
-            <div class="inline-block">
-                <span id="pt-resultsReturned"></span>
-                    <g:if test="${fc.userIsAlaOrFcAdmin()}">
-                        <a href="${downloadLink}" id="pt-downloadLink" class="btn btn-warning btn-mini"
-                           title="${message(code: 'project.download.tooltip')}" data-bind="click: download">
-                            <i class="icon-download icon-white"></i>&nbsp;<g:message code="g.download"/></a>
-                    </g:if>
-            </div>
-            <span class="search-spinner spinner margin-left-1" style="display: none"> <i class='fa fa-spin fa-spinner'></i> Updating...</span>
-
             <div class="text-right pull-right">
                 <div class="nowrap inline-block margin-bottom-5">
-                    <small><g:message code="g.sortBy"></g:message>&nbsp;</small>
+                    <span><g:message code="g.sortBy"></g:message>&nbsp;</span>
 
                     <div class="btn-group " data-toggle="buttons-radio" id="pt-sort">
-                        <button type="button" class="btn  btn-mini active"
+                        <button type="button" class="btn active"
                                 data-value="dateCreatedSort">Most recent</button>
-                        <button type="button" class="btn  btn-mini"
+                        <button type="button" class="btn "
                                 data-value="nameSort">Name</button>
-                        <button type="button" class="btn  btn-mini"
+                        <button type="button" class="btn "
                                 data-value="_score">Relevance</button>
-                        <button type="button" class="btn  btn-mini"
+                        <button type="button" class="btn "
                                 data-value="organisationSort">Organisation</button>
                     </div>
                 </div>
                 <div class="nowrap inline-block margin-bottom-5">
                     &nbsp;
-                    <small><g:message code="g.projects"/>&nbsp;<g:message
-                            code="g.perPage"/>&nbsp;</small>
+                    <span><g:message code="g.projects"/>&nbsp;<g:message
+                            code="g.perPage"/>&nbsp;</span>
 
                     <div class="btn-group" data-toggle="buttons-radio" id="pt-per-page">
-                        <button type="button" class="btn  btn-mini active" data-value="20">20</button>
-                        <button type="button" class="btn  btn-mini" data-value="50">50</button>
-                        <button type="button" class="btn  btn-mini" data-value="100">100</button>
-                        <button type="button" class="btn  btn-mini" data-value="500">500</button>
+                        <button type="button" class="btn active" data-value="20">20</button>
+                        <button type="button" class="btn " data-value="50">50</button>
+                        <button type="button" class="btn " data-value="100">100</button>
+                        <button type="button" class="btn " data-value="500">500</button>
                     </div>
                 </div>
                 <div class="nowrap inline-block margin-bottom-5" id="pt-aus-world-block">
                     &nbsp;
-                    <small><g:message
-                            code="project.label"/>&nbsp;</small>
+                    <span><g:message
+                            code="project.label"/>&nbsp;</span>
                     <div class="btn-group margin-bottom-5 margin-left-10" data-toggle="buttons-radio" id="pt-aus-world">
-                        <button class="btn btn-small btn-mini active" title="${message(code: 'project.australia.title')}"
+                        <button class="btn btn-small  active" title="${message(code: 'project.australia.title')}"
                                 data-toggle="button" data-value="false">${message(code: 'project.australia.text')}</button>
-                        <button class="btn btn-small btn-mini" title="${message(code: 'project.worldwide.title')}"
+                        <button class="btn btn-small " title="${message(code: 'project.worldwide.title')}"
                                 data-toggle="button" data-value="true">${message(code: 'project.worldwide.text')}</button>
                     </div>
                 </div>
