@@ -54,6 +54,11 @@ class BioActivityController {
 
         Map result
 
+        log.debug("pActivityId = ${pActivityId}")
+        log.debug("id = ${id}")
+        log.debug("projectId = ${projectId}")
+        log.debug("postBody = ${postBody}")
+
         String userId = userService.getCurrentUserId(request)
         if (!userId) {
             flash.message = "Access denied: User has not been authenticated."
