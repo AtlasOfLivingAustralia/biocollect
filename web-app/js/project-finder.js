@@ -479,15 +479,22 @@ function ProjectFinder() {
                 if (project.coverage) {
 
                         var point = {
-                            // siteId: el.siteId,
-                            lat: parseFloat(project.coverage.decimalLatitude),
-                            lng: parseFloat(project.coverage.decimalLongitude),
                             geometry: Biocollect.MapUtilities.featureToValidGeoJson(project.coverage),
                             popup: generatePopup(project)
                         };
 
+                        if(project.coverage.centre && project.coverage.centre.length == 2) {
+                            point.lat = parseFloat(project.coverage.centre[1])
+                            point.lng = parseFloat(project.coverage.centre[0])
+                        } else {
+                            point.lat = parseFloat(project.coverage.decimalLatitude)
+                            point.lng = parseFloat(project.coverage.decimalLongitude)
+                        }
+
                         if (isValidPoint(point)) {
                             features.push(point);
+                        } else {
+                            console.warn('Project ' + project.name() + 'does not have valid coordinates');
                         }
                 }
             });

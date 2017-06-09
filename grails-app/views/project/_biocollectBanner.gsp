@@ -6,7 +6,7 @@
         <li class="pull-left">
             <a id="biocollectlogo" class="white-background" href="${grailsApplication.config.biocollect.homepageUrl}"><img src="${resource(dir: 'images/icons', file: 'BioCollect24.jpg')}" width="193"></a>
         </li>
-        <li class="${(path ==~ /.*project\/citizenScience.*/) ? 'active' : ''}">
+        <li class="${(path ==~ /.*project\/projectFinder.*/) ? 'active' : ''}">
             <a href="#" class="btnSearch"><span class="fa fa-search"></span>Search</a>
         </li>
         <li class="${(path ==~ /.*bioActivity\/allRecords.*/) ? 'active' : ''}">
@@ -102,17 +102,8 @@
 
 
         $(".btnSearch").click(function(e){
-    <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-        window.location = "${createLink(controller: 'project', action: 'citizenScience')}";
-    </g:if>
-    <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-        window.location = "${createLink(controller: 'home', action: 'index')}";
-    </g:if>
-    <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
-        //TODO: redirect to ecoScience instead of index
-        window.location = "${createLink(controller: 'home', action: 'index')}";
-    </g:if>
-    })
+            window.location = "${createLink(controller: 'home', action: 'index')}";
+        })
 
     $(".btnSite").click(function(e){
          window.location = "${createLink(controller: 'site', action: 'list')}";

@@ -306,37 +306,38 @@ class ProjectController {
         ]
     }
 
-    def citizenScience() {
-        [
-                user                    : userService.getUser(),
-                showTag                 : params.tag,
-                downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
-                showCitizenScienceBanner: true
-        ]
-    }
-
-    def works() {
-        [
-                user                    : userService.getUser(),
-                showTag                 : params.tag,
-                downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
-                associatedPrograms      : projectService.programsModel().programs.findAll{!it?.readOnly},
-                showWorksBanner: true
-        ]
-    }
-
-    def ecoScience() {
-        [
-                user                    : userService.getUser(),
-                showTag                 : params.tag,
-                downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true]),
-                associatedPrograms      : projectService.programsModel().programs.findAll{!it?.readOnly},
-                showEcoScienceBanner: true
-        ]
-    }
 
     def myProjects() {
-        [user: userService.getUser()]
+        Map result = projectFinder()
+        result.isUserPage = true
+
+        render view: 'projectFinder',  model:  result
+    }
+
+    def projectFinder() {
+        Map result =
+        [
+                user                    : userService.getUser(),
+                showTag                 : params.tag,
+                downloadLink            : createLink(controller: 'project', action: 'search', params: [initiator:Initiator.biocollect.name(),'download': true])
+        ]
+
+        HubSettings hubConfig = SettingService.hubConfig
+        if(hubConfig.defaultFacetQuery.contains('isWorks:true')) {
+            result.isWorks = true
+            result.associatedPrograms = projectService.programsModel().programs.findAll{!it?.readOnly}
+        }
+
+        if(hubConfig.defaultFacetQuery.contains('isEcoScience:true')) {
+            result.isEcoScience = true
+            result.associatedPrograms = projectService.programsModel().programs.findAll{!it?.readOnly}
+        }
+
+        if(hubConfig.defaultFacetQuery.contains('isCitizenScience:true')) {
+            result.isCitizenScience = true
+        }
+
+        result
     }
 
     /**

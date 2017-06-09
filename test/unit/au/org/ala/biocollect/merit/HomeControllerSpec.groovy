@@ -41,14 +41,14 @@ class HomeControllerSpec extends Specification {
     def "a hub with a valid homePagePath property overrides the hub homepage"() {
 
         given:
-        HubSettings settings = new HubSettings([homePagePath:'/project/citizenScience'])
+        HubSettings settings = new HubSettings([homePagePath:'/aController/anAction'])
         SettingService.setHubConfig(settings)
 
         when:
         controller.index()
 
         then:
-        response.forwardedUrl == '/project/citizenScience'
+        response.forwardedUrl == '/aController/anAction'
     }
 
 

@@ -74,13 +74,13 @@
 <g:elseif test="${hubConfig.templateConfiguration.header.type == 'biocollect'}">
     <div id="biocollect-header">
         <g:render template="/project/biocollectBanner"></g:render>
-        <g:if test="${showCitizenScienceBanner}">
+        <g:if test="${isCitizenScience && !isUserPage}">
             <g:render template="/shared/bannerCitizenScience"/>
         </g:if>
-        <g:if test="${showWorksBanner}">
+        <g:if test="${isWorks && !isUserPage}">
             <g:render template="/shared/bannerWorks"/>
         </g:if>
-        <g:if test="${showEcoScienceBanner}">
+        <g:if test="${isEcoScience && !isUserPage}">
             <g:render template="/shared/bannerEcoScience"/>
         </g:if>
     </div>
