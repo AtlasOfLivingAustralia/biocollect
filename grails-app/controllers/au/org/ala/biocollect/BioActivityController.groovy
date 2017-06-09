@@ -57,7 +57,7 @@ class BioActivityController {
         log.debug("pActivityId = ${pActivityId}")
         log.debug("id = ${id}")
         log.debug("projectId = ${projectId}")
-        log.debug("postBody = ${postBody}")
+        log.debug (postBody as JSON).toString()
 
         String userId = userService.getCurrentUserId(request)
         if (!userId) {
