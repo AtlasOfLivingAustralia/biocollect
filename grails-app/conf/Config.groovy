@@ -160,14 +160,14 @@ log4j = {
                 console name: "stdout", layout: pattern(conversionPattern: "%d %-5p [%c{1}] %m%n"), threshold: org.apache.log4j.Level.DEBUG
             }
             test {
-                rollingFile name: "biocollect",
+                rollingFile name: "biocollectLog",
                         maxFileSize: 104857600,
-                        file: loggingDir+"/${appName}.log",
+                        file: loggingDir+"/biocollect.log",
                         threshold: org.apache.log4j.Level.DEBUG,
                         layout: pattern(conversionPattern: "%d %-5p [%c{1}]  %m%n")
                 rollingFile name: "stacktrace",
                         maxFileSize: 104857600,
-                        file: loggingDir+"/${appName}-log-stacktrace.log"
+                        file: loggingDir+"/biocollect-log-stacktrace.log"
             }
         }
     }
