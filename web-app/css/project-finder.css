@@ -48,8 +48,8 @@ input[type=checkbox] {
     margin-right: 5px;
 }
 #pt-downloadLink {
-    margin-bottom: 10px;
-    margin-top: 10px;
+    margin-bottom: 0px;
+    margin-top: 0px;
 }
 
 #pt-tags button {
@@ -180,3 +180,6 @@ input[type=checkbox] {
     /* Very important */
 }
 
+.project-results {
+    font-size: 20px;
+}
