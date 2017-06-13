@@ -6,39 +6,39 @@
                     data-toggle="button"><i class="icon-align-justify"></i></button>
             <div class="text-right pull-right">
                 <div class="nowrap inline-block margin-bottom-5">
-                    <span><g:message code="g.sortBy"></g:message>&nbsp;</span>
+                    <small><g:message code="g.sortBy"></g:message>&nbsp;</small>
 
                     <div class="btn-group " data-toggle="buttons-radio" id="pt-sort">
-                        <button type="button" class="btn active"
+                        <button type="button" class="btn  btn-mini active"
                                 data-value="dateCreatedSort">Most recent</button>
-                        <button type="button" class="btn "
+                        <button type="button" class="btn  btn-mini"
                                 data-value="nameSort">Name</button>
-                        <button type="button" class="btn "
+                        <button type="button" class="btn  btn-mini"
                                 data-value="_score">Relevance</button>
-                        <button type="button" class="btn "
+                        <button type="button" class="btn  btn-mini"
                                 data-value="organisationSort">Organisation</button>
                     </div>
                 </div>
                 <div class="nowrap inline-block margin-bottom-5">
                     &nbsp;
-                    <span><g:message code="g.projects"/>&nbsp;<g:message
-                            code="g.perPage"/>&nbsp;</span>
+                    <small><g:message code="g.projects"/>&nbsp;<g:message
+                            code="g.perPage"/>&nbsp;</small>
 
                     <div class="btn-group" data-toggle="buttons-radio" id="pt-per-page">
-                        <button type="button" class="btn active" data-value="20">20</button>
-                        <button type="button" class="btn " data-value="50">50</button>
-                        <button type="button" class="btn " data-value="100">100</button>
-                        <button type="button" class="btn " data-value="500">500</button>
+                        <button type="button" class="btn  btn-mini active" data-value="20">20</button>
+                        <button type="button" class="btn  btn-mini" data-value="50">50</button>
+                        <button type="button" class="btn  btn-mini" data-value="100">100</button>
+                        <button type="button" class="btn  btn-mini" data-value="500">500</button>
                     </div>
                 </div>
                 <div class="nowrap inline-block margin-bottom-5" id="pt-aus-world-block">
                     &nbsp;
-                    <span><g:message
-                            code="project.label"/>&nbsp;</span>
-                    <div class="btn-group margin-bottom-5 margin-left-10" data-toggle="buttons-radio" id="pt-aus-world">
-                        <button class="btn btn-small  active" title="${message(code: 'project.australia.title')}"
+                    <small><g:message
+                            code="project.label"/>&nbsp;</small>
+                    <div class="btn-group margin-bottom-5" data-toggle="buttons-radio" id="pt-aus-world">
+                        <button class="btn btn-small btn-mini active" title="${message(code: 'project.australia.title')}"
                                 data-toggle="button" data-value="false">${message(code: 'project.australia.text')}</button>
-                        <button class="btn btn-small " title="${message(code: 'project.worldwide.title')}"
+                        <button class="btn btn-small btn-mini" title="${message(code: 'project.worldwide.title')}"
                                 data-toggle="button" data-value="true">${message(code: 'project.worldwide.text')}</button>
                     </div>
                 </div>
