@@ -263,9 +263,7 @@ function ProjectFinder() {
             q: ($('#pt-search').val() || '' ).toLowerCase()
         };
 
-        if(perPage.length == 1) {
-            map.max =  perPage // Page size
-        }
+        map.max =  perPage // Page size
 
         if(sortBy .length == 1) {
             map.sort = sortBy[0]
@@ -729,8 +727,14 @@ function ProjectFinder() {
 
     $('#pt-sort').on('statechange', self.searchAndShowFirstPage);
 
-    $('#pt-per-page').on('statechange', self.searchAndShowFirstPage);
+    $('#pt-per-page').on('statechange', function() {
+        perPage = parseInt(getActiveButtonValues($("#pt-per-page"))[0]);
+        self.searchAndShowFirstPage()
+        });
+
     $('#pt-aus-world').on('statechange', self.searchAndShowFirstPage);
+
+
 
 
     pago = this.pago = {
