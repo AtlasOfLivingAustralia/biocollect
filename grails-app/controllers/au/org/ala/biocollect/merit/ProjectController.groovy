@@ -211,7 +211,7 @@ class ProjectController {
          news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
          activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:true],
-         //site:[label:'Sites', template:'/shared/sites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
+         site:[label:'Sites', template:'/shared/sites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
          meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, type:'tab', template:'viewMeriPlan'],
          dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab'],
          admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
@@ -906,9 +906,9 @@ class ProjectController {
 
         def model = [returnTo: params.returnTo]
 
-        if(project?.planStatus != 'not approved') {
-            model.error = 'Species fields can only be configured when the project is in planning mode.'
-        } else if (!project.error) {
+        if(project.error) {
+            model.error = project.detail
+        } else if( !project?.planStatus || project?.planStatus == 'not approved') {
             def activities = activityService.activitiesForProject(id)
             // Find the different surveys used in this project schedule
             Set<String> surveys = new HashSet<>();
@@ -956,7 +956,7 @@ class ProjectController {
             model.projectId = project.projectId
             model.projectName = project.name
         } else {
-            model.error = project.detail
+            model.error = 'Species fields can only be configured when the project is in planning mode.'
         }
         model
     }

@@ -515,7 +515,7 @@ modules = {
         resource url: 'css/images.css'
     }
 
-    phoyoPoint {
+    photoPoint {
         dependsOn ('attachDocuments', 'imageDataType')
         resource url: 'js/photoPoint.js'
     }

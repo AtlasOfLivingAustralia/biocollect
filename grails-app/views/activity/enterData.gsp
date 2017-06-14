@@ -30,7 +30,8 @@
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,map,activity,attachDocuments,species,amplify,imageDataType,imageViewer,bootstrap,viewmodels,phoyoPoint"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,map,leaflet_google_base,activity,attachDocuments,species,amplify,imageDataType,imageViewer,bootstrap,viewmodels,photoPoint"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
