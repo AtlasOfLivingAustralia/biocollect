@@ -76,7 +76,9 @@
         aekosSubmissionPostUrl: "${createLink(controller: 'projectActivity', action: 'aekosSubmission')}",
         createBlogEntryUrl: "${createLink(controller: 'blog', action:'create', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}",
         editBlogEntryUrl: "${createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}",
-        deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}"
+        deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}",
+        shapefileDownloadUrl: "${createLink(controller:'project', action:'downloadShapefile', id:project.projectId)}",
+        sitesPhotoPointsUrl:"${createLink(controller:'project', action:'projectSitePhotos', id:project.projectId)}",
         },
         here = window.location.href;
 
@@ -96,7 +98,8 @@
             }
         </style>
     <![endif]-->
-    <r:require modules="knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, map"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <r:require modules="knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, map, mapWithFeatures, leaflet_google_base"/>
 </head>
 <body>
 
@@ -141,6 +144,7 @@
             var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
             var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
             var viewModel = new WorksProjectViewModel(project, ${user?.isEditor?:false}, organisations, {});
+            var map
 
             ko.applyBindings(viewModel);
 
@@ -150,10 +154,137 @@
 
             var dashboardInitialised = false;
 
-            new RestoreTab('ul-main-project', 'about-tab');
-
             $('#ul-main-project a[data-toggle="tab"]').on('shown', function (e) {
                 var tab = e.currentTarget.hash;
+                // only init map when the tab is first shown
+                if (tab === '#site' && map === undefined) {
+                    var mapOptions = {
+                        zoomToBounds:true,
+                        zoomLimit:16,
+                        highlightOnHover:true,
+                        features:[],
+                        featureService: "${createLink(controller: 'proxy', action:'feature')}",
+                        wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+                    };
+
+                    map = init_map_with_features({
+                            mapContainer: "map",
+                            scrollwheel: false,
+                            featureService: "${createLink(controller: 'proxy', action:'feature')}",
+                            wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+                        },
+                        mapOptions
+                    );
+                    var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
+                    var sitesViewModel = new SitesViewModel(project.sites, map, mapFeatures, ${user?.isEditor?:false}, project.projectId);
+                    ko.applyBindings(sitesViewModel, document.getElementById('sitesList'));
+                    var tableApi = $('#sites-table').DataTable( {
+                        "columnDefs": [
+                        {
+                            "targets": 0,
+                            "orderable": false,
+                            "searchable": false,
+                            "width":"1.2em"
+                        },
+                        {
+                            "targets": 1,
+                            "orderable": false,
+                            "searchable": false,
+                            "width":"7em"
+                        },
+                        {
+                            "targets":3,
+                            "sort":4
+
+                        },
+                        {
+                            "targets":4,
+                            "visible":false,
+                            "width":"8em"
+
+                        }
+                        ],
+                        "order":[3, "desc"],
+                        "language": {
+                            "search":'<div class="input-prepend"><span class="add-on"><i class="fa fa-search"></i></span>_INPUT_</div>',
+                            "searchPlaceholder":"Search sites..."
+
+                        },
+                        "searchDelay":350
+                        }
+                    );
+
+                    var visibleIndicies = function() {
+                        var settings = tableApi.settings()[0];
+                        var start = settings._iDisplayStart;
+                        var count = settings._iDisplayLength;
+
+                        var visibleIndicies = [];
+                        for (var i=start; i<Math.min(start+count, settings.aiDisplay.length); i++) {
+                            visibleIndicies.push(settings.aiDisplay[i]);
+                        }
+                        return visibleIndicies;
+                    };
+                    $('#sites-table').dataTable().on('draw.dt', function(e) {
+                        sitesViewModel.sitesFiltered(visibleIndicies());
+                    });
+                    $('#sites-table tbody').on( 'mouseenter', 'td', function () {
+                            var table = $('#sites-table').DataTable();
+                            var rowIdx = table.cell(this).index().row;
+                            sitesViewModel.highlightSite(rowIdx);
+
+                        } ).on('mouseleave', 'td', function() {
+                            var table = $('#sites-table').DataTable();
+                            var rowIdx = table.cell(this).index().row;
+                            sitesViewModel.unHighlightSite(rowIdx);
+                        });
+                    $('#select-all-sites').change(function() {
+                        var checkbox = this;
+                        // This lets knockout update the bindings correctly.
+                        $('#sites-table tbody tr :checkbox').trigger('click');
+                    });
+                    sitesViewModel.sitesFiltered(visibleIndicies());
+
+                    $('#site-photo-points a').click(function(e) {
+                        e.preventDefault();
+                        $('#site-photo-points').html('<span class="search-spinner spinner margin-left-1"> <i class="fa fa-spin fa-spinner"></i> Loading...</span>');
+                        $.get(fcConfig.sitesPhotoPointsUrl).done(function(data) {
+
+                            $('#site-photo-points').html($(data));
+                            $('#site-photo-points img').on('load', function() {
+
+                                var parent = $(this).parents('.thumb');
+                                var $caption = $(parent).find('.caption');
+                                $caption.outerWidth($(this).width());
+
+                            });
+                            $( '.photo-slider' ).mThumbnailScroller({theme:'hover-classic'});
+                            $('.photo-slider .fancybox').fancybox({
+                                helpers : {
+                                    title: {
+                                        type: 'inside'
+                                    }
+                                },
+                                beforeLoad: function() {
+                                    var el, id = $(this.element).data('caption');
+
+                                    if (id) {
+                                        el = $('#' + id);
+
+                                        if (el.length) {
+                                            this.title = el.html();
+                                        }
+                                    }
+                                },
+                                nextEffect:'fade',
+                                previousEffect:'fade'
+                            });
+                            $(window).load(function() {
+
+                            });
+                        });
+                    });
+                }
                 if (tab === '#plan' && !planTabInitialised) {
                     $.event.trigger({type:'planTabShown'});
                     planTabInitialised = true;
@@ -167,6 +298,8 @@
             // Non-editors should get tooltip and popup when trying to click other tabs
             $('#projectTabs li a').not('[data-toggle="tab"]').css('cursor', 'not-allowed') //.data('placement',"right")
             .attr('title','Only available to project members').addClass('tooltips');
+
+            new RestoreTab('ul-main-project', 'about-tab');
 
             // Star button click event
             $("#starBtn").click(function(e) {

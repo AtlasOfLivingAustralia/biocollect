@@ -70,6 +70,11 @@ modules = {
         resource url: 'css/print.css', attrs: [media: 'screen,print']
     }
 
+    mapWithFeatures {
+        resource url: 'js/wms.js'
+        resource url: 'js/mapWithFeatures.js'
+    }
+
     knockout {
         resource url: 'vendor/knockout.js/knockout-3.3.0.debug.js'
         resource url: 'vendor/knockout.js/knockout.mapping-latest.js'
