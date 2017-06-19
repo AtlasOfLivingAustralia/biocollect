@@ -249,42 +249,43 @@
             }
 
             var viewModel = new ViewModel(
-    ${(activity as JSON).toString()},
-    ${site ?: 'null'},
-    ${project ?: 'null'},
-    ${metaModel ?: 'null'},
-    ${pActivity ?: 'null'});
+                ${(activity as JSON).toString()},
+                ${site ?: 'null'},
+                ${project ?: 'null'},
+                ${metaModel ?: 'null'},
+                ${pActivity ?: 'null'}
+                );
 
             ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
-    <g:if test="${pActivity.commentsAllowed}">
-        ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
-    </g:if>
-    <g:if test="${metaModel?.supportsSites?.toBoolean()}">
-        var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
+            <g:if test="${pActivity.commentsAllowed}">
+                ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
+            </g:if>
+            <g:if test="${metaModel?.supportsSites?.toBoolean()}">
+                var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
 
-        if (mapFeatures && mapFeatures.features) {
-            var mapOptions = {
-                drawControl: false,
-                showReset: false,
-                draggableMarkers: false,
-                useMyLocation: false,
-                allowSearchLocationByAddress: false,
-                allowSearchRegionByAddress: false,
-                wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
-                wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
-            }
+                if (mapFeatures && mapFeatures.features) {
+                    var mapOptions = {
+                        drawControl: false,
+                        showReset: false,
+                        draggableMarkers: false,
+                        useMyLocation: false,
+                        allowSearchLocationByAddress: false,
+                        allowSearchRegionByAddress: false,
+                        wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
+                        wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
+                    }
 
-            viewModel.siteMap = new ALA.Map("activitySiteMap", mapOptions);
+                    viewModel.siteMap = new ALA.Map("activitySiteMap", mapOptions);
 
-            if (mapFeatures.features[0].pid) {
-                viewModel.siteMap.addWmsLayer(mapFeatures.features[0].pid);
-            } else {
-                var geometry = _.pick(mapFeatures.features[0], "type", "coordinates");
-                var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
-                viewModel.siteMap.setGeoJSON(geoJson);
-            }
-        }
-    </g:if>
+                    if (mapFeatures.features[0].pid) {
+                        viewModel.siteMap.addWmsLayer(mapFeatures.features[0].pid);
+                    } else {
+                        var geometry = _.pick(mapFeatures.features[0], "type", "coordinates");
+                        var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                        viewModel.siteMap.setGeoJSON(geoJson);
+                    }
+                }
+            </g:if>
     });
 
     var versionMsg = $('#versionMsg')

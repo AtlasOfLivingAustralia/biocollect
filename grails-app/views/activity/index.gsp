@@ -8,7 +8,7 @@
     </g:if>
     <g:else>
         <meta name="layout" content="${hubConfig.skin}"/>
-        <title>Edit | ${activity.type} | Field Capture</title>
+        <title>View | ${activity.type} | Field Capture</title>
     </g:else>
     <g:set var="commentUrl" value="${resource(dir:'/activity')}/${activity.activityId}/comment"></g:set>
 
@@ -32,6 +32,7 @@
     </r:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
     <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,map,leaflet_google_base,species,activity,comments,viewmodels"/>
+    <g:set var="pActivity" value="${[commentsAllowed:false]}"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -119,7 +120,8 @@
         </g:if>
     </div>
 
-    <g:each in="${metaModel?.outputs}" var="outputName">
+    <!-- ko stopBinding:true -->
+        <g:each in="${metaModel?.outputs}" var="outputName">
         <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
         <g:set var="model" value="${outputModels[outputName]}"/>
         <g:set var="output" value="${activity.outputs.find {it.name == outputName}}"/>
@@ -129,7 +131,7 @@
         <div class="output-block" id="ko${blockId}">
             <h3>${outputName}</h3>
             <!-- add the dynamic components -->
-            <md:modelView model="${model}" site="${site}"/>
+            <md:modelView model="${model}" site="${site}" readonly="true"/>
             <r:script>
         $(function(){
 
@@ -149,7 +151,7 @@
                 self.transients.dummy = ko.observable();
 
                 // add declarations for dynamic data
-                <md:jsViewModel model="${model}" output="${output.name}" viewModelInstance="${blockId}ViewModelInstance"/>
+                <md:jsViewModel model="${model}" output="${output.name}" viewModelInstance="${blockId}ViewModelInstance" readonly="true"/>
 
                 // this will be called when generating a savable model to remove transient properties
                 self.removeBeforeSave = function (jsData) {
@@ -162,7 +164,7 @@
 
                 self.loadData = function (data) {
                     // load dynamic data
-                <md:jsLoadModel model="${model}"/>
+                <md:jsLoadModel model="${model}" readonly="true"/>
 
                 // if there is no data in tables then add an empty row for the user to add data
                 if (typeof self.addRow === 'function' && self.rowCount() === 0) {
@@ -181,7 +183,7 @@
             </r:script>
         </div>
     </g:each>
-
+    <!-- /ko -->
     <g:if test="${projectActivity?.commentsAllowed}">
         <g:render template="/comment/comment"></g:render>
     </g:if>
@@ -200,7 +202,8 @@
         var self = this;
         self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
         self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
-        self.pActivity = {sites: []};
+        // We only need the sites from a pActivity within works projects
+        self.pActivity = JSON.parse('${(project as JSON).toString().encodeAsJavaScript()}');
     }
 
     var activityLevelData = new ActivityLevelData();
@@ -260,7 +263,9 @@
 
         ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
 
-        ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'))
+        <g:if test="${pActivity.commentsAllowed}">
+            ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
+        </g:if>
 
         var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
         if(mapFeatures !=null && mapFeatures.features !== undefined && mapFeatures.features.length >0){
