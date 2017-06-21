@@ -117,7 +117,6 @@ class ActivityController {
             def model = activityModel(activity, activity.projectId)
 
             model.activityTypes = metadataService.activityTypesList(model.project.associatedProgram)
-            model.hasPhotopointData = activity.documents?.find {it.poiId}
             model
         } else {
             forward(action: 'list', model: [error: 'no such id'])
@@ -227,12 +226,10 @@ class ActivityController {
                      projectStages:projectStages()]
         model.project = projectId ? projectService.get(projectId) : null
         model.activityTypes = metadataService.activityTypesList(model.project.associatedProgram)
-        model.site = siteId ? siteService.get(siteId) : null
         if (projectId) {
             model.themes = metadataService.getThemesForProject(model.project)
         }
-        if (!model.project && !model.site) {
-            model.sites = siteService.list().collect({[name:it.name,siteId:it.siteId]})
+        if (!model.project) {
             model.projects = projectService.list().collect({[name:it.name,projectId:it.projectId]})
         }
         model

@@ -148,7 +148,7 @@ class ReportService {
         if (!reportId) {
             throw new IllegalArgumentException("Missing parameter reportId")
         }
-        def resp = webService.getJson(grailsApplication.config.ecodata.baseURL+"report/${reportId}")
+        def resp = webService.getJson(grailsApplication.config.ecodata.baseURL+"/ws/report/${reportId}")
         resp
     }
 
@@ -156,11 +156,11 @@ class ReportService {
         if (!reportId) {
             throw new IllegalArgumentException("Missing parameter reportId")
         }
-        webService.doDelete(grailsApplication.config.ecodata.baseURL+"report/${reportId}")
+        webService.doDelete(grailsApplication.config.ecodata.baseURL+"/ws/report/${reportId}")
     }
 
     def getReportsForProject(String projectId) {
-        webService.getJson(grailsApplication.config.ecodata.baseURL+"project/${projectId}/reports")
+        webService.getJson(grailsApplication.config.ecodata.baseURL+"/ws/project/${projectId}/reports")
     }
 
     def getReportingHistoryForProject(String projectId) {
@@ -184,28 +184,28 @@ class ReportService {
     }
 
     def submit(String reportId) {
-        webService.doPost(grailsApplication.config.ecodata.baseURL+"report/submit/${reportId}", [:])
+        webService.doPost(grailsApplication.config.ecodata.baseURL+"/ws/report/submit/${reportId}", [:])
     }
 
     def approve(String reportId, String reason) {
-        webService.doPost(grailsApplication.config.ecodata.baseURL+"report/approve/${reportId}", [comment:reason])
+        webService.doPost(grailsApplication.config.ecodata.baseURL+"/ws/report/approve/${reportId}", [comment:reason])
     }
 
     def reject(String reportId, String category, String reason) {
-        webService.doPost(grailsApplication.config.ecodata.baseURL+"report/returnForRework/${reportId}", [comment:reason, category:category])
+        webService.doPost(grailsApplication.config.ecodata.baseURL+"/ws/report/returnForRework/${reportId}", [comment:reason, category:category])
     }
 
     def create(report) {
-        webService.doPost(grailsApplication.config.ecodata.baseURL+"report/", report)
+        webService.doPost(grailsApplication.config.ecodata.baseURL+"/ws/report/", report)
     }
 
     def update(report) {
-        webService.doPost(grailsApplication.config.ecodata.baseURL+"report/"+report.reportId, report)
+        webService.doPost(grailsApplication.config.ecodata.baseURL+"/ws/report/"+report.reportId, report)
     }
 
     def findReportsForUser(String userId) {
 
-        def reports = webService.doPost(grailsApplication.config.ecodata.baseURL+"user/${userId}/reports", [:])
+        def reports = webService.doPost(grailsApplication.config.ecodata.baseURL+"/ws/user/${userId}/reports", [:])
 
 
         if (reports.resp && !reports.error) {
@@ -216,7 +216,7 @@ class ReportService {
 
     def findReportsForOrganisation(String organisationId) {
 
-        def reports = webService.doPost(grailsApplication.config.ecodata.baseURL+"organisation/${organisationId}/reports", [:])
+        def reports = webService.doPost(grailsApplication.config.ecodata.baseURL+"/ws/organisation/${organisationId}/reports", [:])
 
         if (reports.resp && !reports.error) {
             return reports.resp
@@ -322,7 +322,7 @@ class ReportService {
         if (filters) {
             reportParams.fq = filters
         }
-        def url = grailsApplication.config.ecodata.baseURL + 'search/targetsReportByScoreLabel' + commonService.buildUrlParamsFromMap(reportParams)
+        def url = grailsApplication.config.ecodata.baseURL + '/ws/search/targetsReportByScoreLabel' + commonService.buildUrlParamsFromMap(reportParams)
         def results = webService.getJson(url, 300000)
         if (!results || !results.targets) {
             return 0
@@ -473,7 +473,7 @@ class ReportService {
 
         Map searchCriteria = [type:['Performance Management Framework - Self Assessment', 'Performance Management Framework - Self Assessment v2'], publicationStatus:REPORT_APPROVED, dateProperty:'toDate', 'startDate':(year-1)+'-07-01T10:00:00Z', 'endDate':year+'-07-01T10:00:00Z']
 
-        String url =  grailsApplication.config.ecodata.baseURL+"report/runReport"
+        String url =  grailsApplication.config.ecodata.baseURL+"/ws/report/runReport"
 
         webService.doPost(url, [searchCriteria: searchCriteria, reportConfig: config])
     }
@@ -531,7 +531,7 @@ class ReportService {
         Map activityTypeFilter = [type:'DISCRETE', filterValue: REEF_2050_PLAN_ACTION_REPORTING_ACTIVITY_TYPE, property:'activity.type']
         Map config = [filter:activityTypeFilter, childAggregations: [dateGroupingConfig], label:'Action Status by Year']
 
-        String url =  grailsApplication.config.ecodata.baseURL+"search/activityReport"
+        String url =  grailsApplication.config.ecodata.baseURL+"/ws/search/activityReport"
         List searchCriteriaForReport = ["associatedSubProgramFacet:"+REEF_2050_PLAN_ACTION_REPORTING_ACTIVITY_TYPE]
 
         Map report = webService.doPost(url, [fq:searchCriteriaForReport, reportConfig: config])

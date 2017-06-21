@@ -492,12 +492,6 @@ class SiteController {
         render metadataService.getLocationMetadataForPoint(lat, lon) as JSON
     }
 
-    def projectsForSite(String id) {
-        def projects = siteService.projectsForSite(id) ?: []
-        //log.debug projects
-        render projects as JSON
-    }
-
     /**
      * Re-marshalls a map of arrays to an array of maps.
      *

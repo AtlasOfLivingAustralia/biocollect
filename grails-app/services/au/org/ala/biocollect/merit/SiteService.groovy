@@ -24,10 +24,6 @@ class SiteService {
         webService.getJson(grailsApplication.config.ecodata.service.url + '/site/').list
     }
 
-    def projectsForSite(siteId) {
-        get(siteId)?.projects
-    }
-
     /**
      * Creates a site extent object from a supplied latitude and longitude in the correct format, and populates the facet metadata for the extent.
      * @param lat the latitude of the point.

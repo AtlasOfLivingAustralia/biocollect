@@ -50,17 +50,6 @@
         <div class="row-fluid title-block well well-small input-block-level">
             <div class="span12 title-attribute">
                 <h1><span data-bind="click:goToProject" class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
-                    <div class="row-fluid">
-                        <div class="span1">
-                            Site:
-                        </div>
-                        <div class="span2">
-                            <fc:select data-bind='options:transients.project.sites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."' printable="${printView}"/>
-                        </div>
-                        <div class="span6">
-                            Leave blank if this activity is not associated with a specific site.
-                        </div>
-                    </div>
                 <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">Activity: <span data-bind="text:type"></span></h3>
                 <h4><span>${project.associatedProgram?.encodeAsHTML()}</span> <span>${project.associatedSubProgram?.encodeAsHTML()}</span></h4>
             </div>
@@ -142,11 +131,6 @@
 
 
             </div>
-
-            <div class="span3">
-                <div id="smallMap" style="width:100%"></div>
-            </div>
-
         </div>
 
         <g:if env="development" test="${!printView}">
@@ -518,7 +502,6 @@
             self.type = ko.observable(act.type);
             self.projectId = act.projectId;
             self.transients = {};
-            self.transients.site = ko.observable(site);
             self.transients.project = project;
             self.transients.outputs = [];
             self.transients.metaModel = metaModel || {};
@@ -529,45 +512,9 @@
                 self.progress(finished ? 'finished' : 'started');
             });
 
-            self.confirmSiteChange = function() {
-
-                if (self.transients.photoPointModel().isDirty()) {
-                    return window.confirm(
-                        "This activity has photos attached to photo points.\n  Changing the site will delete these photos.\n  This cannot be undone.  Are you sure?"
-                    );
-                }
-                return true;
-            };
-
-            self.siteMap = null;
-            self.siteId = ko.vetoableObservable(act.siteId, self.confirmSiteChange);
-
-            self.siteId.subscribe(function(siteId) {
-                if (!self.siteMap) {
-                    return;
-                }
-                var matchingSite = $.grep(self.transients.project.sites, function(site) { return siteId == site.siteId})[0];
-
-
-                self.siteMap.clearLayers();
-                if (matchingSite) {
-                    var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(matchingSite.extent.geometry);
-                    self.siteMap.setGeoJSON(geoJson);
-                }
-
-
-                self.transients.site(matchingSite);
-                self.updatePhotoPointModel(matchingSite);
-
-            });
             self.goToProject = function () {
                 if (self.projectId) {
                     document.location.href = fcConfig.projectViewUrl + self.projectId;
-                }
-            };
-            self.goToSite = function () {
-                if (self.siteId()) {
-                    document.location.href = fcConfig.siteViewUrl + self.siteId();
                 }
             };
 
@@ -581,9 +528,9 @@
                 var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
                 jsData.photoPoints = self.transients.photoPointModel().modelForSaving();
 
-                 // If we leave the site or theme undefined, it will be ignored during JSON serialisation and hence
+                 // If we leave the theme undefined, it will be ignored during JSON serialisation and hence
                 // will not overwrite the current value on the server.
-                var possiblyUndefinedProperties = ['siteId', 'mainTheme'];
+                var possiblyUndefinedProperties = ['mainTheme'];
 
                 $.each(possiblyUndefinedProperties, function(i, propertyName) {
                     if (jsData[propertyName] === undefined) {
@@ -629,14 +576,6 @@
         var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
         if (!mapFeatures) {
             mapFeatures = {zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []};
-        }
-
-        var mapOptions = {
-            mapContainer: "smallMap",
-            zoomToBounds:true,
-            zoomLimit:16,
-            featureService: "${createLink(controller: 'proxy', action:'feature')}",
-            wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
         }
 
         ko.applyBindings(viewModel);

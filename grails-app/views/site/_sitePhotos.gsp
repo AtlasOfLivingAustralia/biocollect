@@ -4,7 +4,7 @@
 
     <ul>
         <g:each in="${photos}" var="image" status="i">
-            <g:set var="title" value="${(image.dateTaken ? au.org.ala.fieldcapture.DateUtils.isoToDisplayFormat(image.dateTaken)+" - " : "") +image.name}"/>
+            <g:set var="title" value="${(image.dateTaken ? DateUtils.isoToDisplayFormat(image.dateTaken)+" - " : "") +image.name}"/>
 
 
             <div id="caption-${i}" style="display:none;">
@@ -12,7 +12,7 @@
                     <g:if test="${image.attribution}"><br/> ${image.attribution}</g:if>
                     <br/><b>POI: </b> ${image.poiName}
                     <g:if test="${image.dateTaken}">
-                        <br/><b>Date taken: </b>${au.org.ala.fieldcapture.DateUtils.isoToDisplayFormat(image.dateTaken)}
+                        <br/><b>Date taken: </b>${DateUtils.isoToDisplayFormat(image.dateTaken)}
                     </g:if>
                     <br/><b>Site: </b> ${image.siteName}
                     <br/><b>Project: </b> ${image.projectName}
@@ -30,10 +30,12 @@
                     <div class="caption large">
                         <div style="text-overflow: ellipsis; height: 40px; overflow-y:hidden;"><b>${image.name}</b></div>
                         <g:if test="${image.dateTaken}">
-                            <b>Date taken: </b>${au.org.ala.fieldcapture.DateUtils.isoToDisplayFormat(image.dateTaken)}
+                            <b>Date taken: </b>${DateUtils.isoToDisplayFormat(image.dateTaken)}
                         </g:if>
                         <g:if test="${image.activity}">
-                            ( ${image.stage} )
+                            <g:if test="${image.stage}">
+                                ( ${image.stage} )
+                            </g:if>
                             <br/><b>Activity type: </b> ${image.activity.type}
                         </g:if>
                     </div>
