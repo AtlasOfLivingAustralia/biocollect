@@ -156,9 +156,13 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
 
             var surveysConfigJsData = [];
 
-            var surveysConfig = self.surveysConfig();
-            for(var i=0; i<surveysConfig.length; i++) {
-                surveysConfigJsData.push(surveysConfig[i].asJson());
+            // Only save the configuration for specific fields if configured
+            // if 1 or less only the default config is validated and used.
+            if(self.speciesFieldsCount() > 1) {
+                var surveysConfig = self.surveysConfig();
+                for (var i = 0; i < surveysConfig.length; i++) {
+                    surveysConfigJsData.push(surveysConfig[i].asJson());
+                }
             }
 
             var jsData = {speciesFieldsSettings:
