@@ -480,9 +480,9 @@ class SiteService {
         return false
     }
 
-    Boolean isSiteNameUnique(String id, String name) {
+    Boolean isSiteNameUnique(String id, String entityType, String name) {
 
-        def response = webService.getJson(grailsApplication.config.ecodata.service.url + "/site/uniqueName/${enc(id)}?name=${enc(name)}")
+        def response = webService.getJson(grailsApplication.config.ecodata.service.url + "/site/uniqueName/${enc(id)}?name=${enc(name)}&entityType=${enc(entityType)}")
         // convert an exception to a string and back again...
         if(response.error){
             if(response.error.contains('Timed out')){

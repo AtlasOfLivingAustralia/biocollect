@@ -318,6 +318,7 @@
         self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
         // We only need the sites from a pActivity within works projects
         self.pActivity = JSON.parse('${(project as JSON).toString().encodeAsJavaScript()}');
+        self.pActivity.allowAdditionalSurveySites =  true
     }
 
     var activityLevelData = new ActivityLevelData();

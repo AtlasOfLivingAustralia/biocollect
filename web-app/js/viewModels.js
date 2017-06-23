@@ -34,7 +34,7 @@ function enmapify(args) {
         updateSiteUrl = args.updateSiteUrl,
         listSitesUrl = args.listSitesUrl,
         activityLevelData = args.activityLevelData,
-        uniqueNameUrl = args.uniqueNameUrl + "/" + activityLevelData.pActivity.projectActivityId,
+        uniqueNameUrl = args.uniqueNameUrl + "/" + ( activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId),
         hideSiteSelection = args.hideSiteSelection || false,
         hideMyLocation = args.hideMyLocation || false,
         siteIdObservable = container[name] = ko.observable(),
@@ -49,7 +49,6 @@ function enmapify(args) {
         sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
         loadingObservable = container[name + "Loading"] = ko.observable(false)
         ;
-
 
     var mapOptions = {
         wmsFeatureUrl: proxyFeatureUrl + "?featureId=",
@@ -407,7 +406,7 @@ function enmapify(args) {
     }
 
     function saveSiteFailed(jqXHR, textStatus, errorThrown) {
-        bootbox.alert("An error occured while attempting to save your geometry. 😠");
+        bootbox.alert("An error occured while attempting to save the site.");
         map.clearLayers();
     }
 
@@ -465,7 +464,8 @@ function enmapify(args) {
     }
 
     function reloadSiteData() {
-        return $.getJSON(listSitesUrl + '/' + activityLevelData.pActivity.projectActivityId).then(function (data, textStatus, jqXHR) {
+        var entityType=  activityLevelData.pActivity.projectActivityId? "projectActivity" : "project"
+        return $.getJSON(listSitesUrl + '/' + (activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId) + "?entityType=" + entityType ).then(function (data, textStatus, jqXHR) {
             sitesObservable(data);
         });
     }
@@ -549,7 +549,7 @@ AddSiteViewModel.prototype.checkUniqueName = function (name) {
 
     if (name === '') return;
 
-    self.inflight = $.getJSON(self.uniqueNameUrl + "?name=" + encodeURIComponent(name))
+    self.inflight = $.getJSON(self.uniqueNameUrl + "?name=" + encodeURIComponent(name) + "&entityType=" + (activityLevelData.pActivity.projectActivityId ? "projectActivity" : "project"))
         .done(function (data, textStatus, jqXHR) {
             self.nameStatus(AddSiteViewModel.NAME_STATUS.OK);
         }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -564,7 +564,7 @@ AddSiteViewModel.prototype.checkUniqueName = function (name) {
                     break;
                 default:
                     self.nameStatus(AddSiteViewModel.NAME_STATUS.ERROR);
-                    bootbox.alert("An error occured checking your name. 😠");
+                    bootbox.alert("An error occured checking your name.");
                     console.error("Error checking unique status", jqXHR, textStatus, errorThrown);
             }
         });
