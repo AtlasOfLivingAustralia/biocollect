@@ -170,7 +170,7 @@ function enmapify(args) {
             rcoords.push(rcoords.shift());
             var zipped = _.chain(coords).zip(rcoords);
             var a = zipped.map(function (c) {
-                return c[0][0] * c[1][1] - c[1][0] * c[0][1];
+                return parseFloat(c[0][0]) * parseFloat(c[1][1]) - parseFloat(c[1][0]) * parseFloat(c[0][1]);
             });
             var sum = function (memo, v) {
                 return memo + v;
@@ -178,15 +178,15 @@ function enmapify(args) {
             var sixA = 6 * (a.reduce(sum, 0).value() / 2);
             var zippedAValue = zipped.zip(a.value());
             var cx = zippedAValue.map(function (c) {
-                    return ( c[0][0][0] + c[0][1][0] ) * c[1];
+                    return ( parseFloat(c[0][0][0]) + parseFloat(c[0][1][0]) ) * parseFloat(c[1]);
                 }).reduce(sum, 0).value() / sixA;
             var cy = zippedAValue.map(function (c) {
-                    return ( c[0][0][1] + c[0][1][1] ) * c[1];
+                    return ( parseFloat(c[0][0][1]) + parseFloat(c[0][1][1]) ) * parseFloat(c[1]);
                 }).reduce(sum, 0).value() / sixA;
             return [cx, cy];
         } else if (feature.geometry.type == 'Point') {
             coords = feature.geometry.coordinates;
-            return [coords[0], coords[1]];
+            return [parseFloat(coords[0]), parseFloat(coords[1])];
         } else {
             console.log(feature.geometry.type + ' is not a supported type for centroid()');
             return [0, 0];
