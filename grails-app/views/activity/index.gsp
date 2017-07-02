@@ -8,7 +8,7 @@
     </g:if>
     <g:else>
         <meta name="layout" content="${hubConfig.skin}"/>
-        <title>Edit | ${activity.type} | Field Capture</title>
+        <title>View | ${activity.type} | Field Capture</title>
     </g:else>
     <g:set var="commentUrl" value="${resource(dir:'/activity')}/${activity.activityId}/comment"></g:set>
 
@@ -30,7 +30,9 @@
         },
         here = document.location.href;
     </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,map,species,activity,comments,viewmodels"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,map,leaflet_google_base,species,activity,comments,viewmodels"/>
+    <g:set var="pActivity" value="${[commentsAllowed:false]}"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -56,9 +58,6 @@
         <div class="row-fluid title-block well well-small input-block-level">
             <div class="span12 title-attribute">
                 <h1><span data-bind="click:goToProject" class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
-                <g:if test="${site}">
-                    <h2><span data-bind="click:goToSite" class="clickable">Site: ${site.name?.encodeAsHTML()}</span></h2>
-                </g:if>
                 <h3>Activity: <span data-bind="text:type"></span></h3>
                 <h4><span>${project.associatedProgram?.encodeAsHTML()}</span> <span>${project.associatedSubProgram?.encodeAsHTML()}</span></h4>
             </div>
@@ -83,11 +82,6 @@
                     <span class="span6"><span class="label">Activity status:</span> <span data-bind="text:progress"></span></span>
                 </div>
             </div>
-            <g:if test="${mapFeatures.toString() != '{}'}">
-                <div class="span3">
-                    <div id="smallMap" style="width:100%"></div>
-                </div>
-            </g:if>
         </div>
 
         <g:if env="development" test="${!printView}">
@@ -118,7 +112,8 @@
         </g:if>
     </div>
 
-    <g:each in="${metaModel?.outputs}" var="outputName">
+    <!-- ko stopBinding:true -->
+        <g:each in="${metaModel?.outputs}" var="outputName">
         <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
         <g:set var="model" value="${outputModels[outputName]}"/>
         <g:set var="output" value="${activity.outputs.find {it.name == outputName}}"/>
@@ -128,7 +123,7 @@
         <div class="output-block" id="ko${blockId}">
             <h3>${outputName}</h3>
             <!-- add the dynamic components -->
-            <md:modelView model="${model}" site="${site}"/>
+            <md:modelView model="${model}" site="${site}" readonly="true"/>
             <r:script>
         $(function(){
 
@@ -148,7 +143,7 @@
                 self.transients.dummy = ko.observable();
 
                 // add declarations for dynamic data
-                <md:jsViewModel model="${model}" output="${output.name}" viewModelInstance="${blockId}ViewModelInstance"/>
+                <md:jsViewModel model="${model}" output="${output.name}" viewModelInstance="${blockId}ViewModelInstance" readonly="true"/>
 
                 // this will be called when generating a savable model to remove transient properties
                 self.removeBeforeSave = function (jsData) {
@@ -161,7 +156,7 @@
 
                 self.loadData = function (data) {
                     // load dynamic data
-                <md:jsLoadModel model="${model}"/>
+                <md:jsLoadModel model="${model}" readonly="true"/>
 
                 // if there is no data in tables then add an empty row for the user to add data
                 if (typeof self.addRow === 'function' && self.rowCount() === 0) {
@@ -180,7 +175,7 @@
             </r:script>
         </div>
     </g:each>
-
+    <!-- /ko -->
     <g:if test="${projectActivity?.commentsAllowed}">
         <g:render template="/comment/comment"></g:render>
     </g:if>
@@ -199,7 +194,8 @@
         var self = this;
         self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
         self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
-        self.pActivity = {sites: []};
+        // We only need the sites from a pActivity within works projects
+        self.pActivity = JSON.parse('${(project as JSON).toString().encodeAsJavaScript()}');
     }
 
     var activityLevelData = new ActivityLevelData();
@@ -227,7 +223,6 @@
             self.progress = ko.observable(act.progress || 'started');
             self.mainTheme = ko.observable(act.mainTheme);
             self.type = ko.observable(act.type);
-            self.siteId = ko.observable(act.siteId);
             self.projectId = act.projectId;
             self.transients = {};
             self.transients.site = site;
@@ -240,11 +235,7 @@
                     document.location.href = fcConfig.projectViewUrl + self.projectId;
                 }
             };
-            self.goToSite = function () {
-                if (self.siteId()) {
-                    document.location.href = fcConfig.siteViewUrl + self.siteId();
-                }
-            };
+
             self.notImplemented = function () {
                 alert("Not implemented yet.")
             };
@@ -259,20 +250,10 @@
 
         ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
 
-        ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'))
+        <g:if test="${pActivity.commentsAllowed}">
+            ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
+        </g:if>
 
-        var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
-        if(mapFeatures !=null && mapFeatures.features !== undefined && mapFeatures.features.length >0){
-           var mapOptions ={
-                    mapContainer: "smallMap",
-                    zoomToBounds:true,
-                    zoomLimit:16,
-                    featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                    wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-                };
-
-            viewModel.siteMap = new new ALA.Map("smallMap", {});
-        }
     });
 </r:script>
 </body>

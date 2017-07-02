@@ -1,4 +1,4 @@
-<r:require modules="sites,phoyoPoint"></r:require>
+<r:require modules="sites,photoPoint"></r:require>
 
 <g:if test="${!printView}">
     <div data-bind="visible:!site">

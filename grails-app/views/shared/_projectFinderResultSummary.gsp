@@ -4,16 +4,6 @@
             <button id="pt-filter" class="btn btn-mini margin-right-10" title="${message(code: 'project.search.filter.tooltip')}"
                     data-status="1"
                     data-toggle="button"><i class="icon-align-justify"></i></button>
-            <div class="inline-block">
-                <span id="pt-resultsReturned"></span>
-                    <g:if test="${fc.userIsAlaOrFcAdmin()}">
-                        <a href="${downloadLink}" id="pt-downloadLink" class="btn btn-warning btn-mini"
-                           title="${message(code: 'project.download.tooltip')}" data-bind="click: download">
-                            <i class="icon-download icon-white"></i>&nbsp;<g:message code="g.download"/></a>
-                    </g:if>
-            </div>
-            <span class="search-spinner spinner margin-left-1" style="display: none"> <i class='fa fa-spin fa-spinner'></i> Updating...</span>
-
             <div class="text-right pull-right">
                 <div class="nowrap inline-block margin-bottom-5">
                     <small><g:message code="g.sortBy"></g:message>&nbsp;</small>
@@ -45,7 +35,7 @@
                     &nbsp;
                     <small><g:message
                             code="project.label"/>&nbsp;</small>
-                    <div class="btn-group margin-bottom-5 margin-left-10" data-toggle="buttons-radio" id="pt-aus-world">
+                    <div class="btn-group margin-bottom-5" data-toggle="buttons-radio" id="pt-aus-world">
                         <button class="btn btn-small btn-mini active" title="${message(code: 'project.australia.title')}"
                                 data-toggle="button" data-value="false">${message(code: 'project.australia.text')}</button>
                         <button class="btn btn-small btn-mini" title="${message(code: 'project.worldwide.title')}"

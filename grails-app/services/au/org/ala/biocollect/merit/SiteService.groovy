@@ -18,13 +18,10 @@ class SiteService {
     ActivityService activityService
     ProjectService projectService
     LinkGenerator grailsLinkGenerator
+    ReportService reportService
 
     def list() {
         webService.getJson(grailsApplication.config.ecodata.service.url + '/site/').list
-    }
-
-    def projectsForSite(siteId) {
-        get(siteId)?.projects
     }
 
     /**
@@ -483,9 +480,9 @@ class SiteService {
         return false
     }
 
-    Boolean isSiteNameUnique(String id, String name) {
+    Boolean isSiteNameUnique(String id, String entityType, String name) {
 
-        def response = webService.getJson(grailsApplication.config.ecodata.service.url + "/site/uniqueName/${enc(id)}?name=${enc(name)}")
+        def response = webService.getJson(grailsApplication.config.ecodata.service.url + "/site/uniqueName/${enc(id)}?name=${enc(name)}&entityType=${enc(entityType)}")
         // convert an exception to a string and back again...
         if(response.error){
             if(response.error.contains('Timed out')){
@@ -500,5 +497,49 @@ class SiteService {
 
     def enc(String value) {
         URLEncoder.encode(value, 'UTF-8')
+    }
+
+    void addPhotoPointPhotosForSites(List<Map> sites, List activities, List projects) {
+
+        long start = System.currentTimeMillis()
+        List siteIds = sites.collect{it.siteId}
+        List pois = sites.collect{it.poi?it.poi.collect{poi->poi.poiId}:[]}.flatten()
+        if (pois) {
+
+
+            Map documents = documentService.search(siteId: siteIds)
+
+            if (documents.documents) {
+
+                Map docsByPOI = documents.documents.groupBy{it.poiId}
+                sites.each { site->
+
+                    site.poi?.each { poi ->
+                        poi.photos = docsByPOI[poi.poiId]
+                        poi.photos?.each{ photo ->
+                            photo.activity = activities?.find{it.activityId == photo.activityId}
+                            photo.projectId = photo.activity?.projectId ?: photo.projectId
+                            Map project = projects.find{it.projectId == photo.projectId}
+                            if (photo.activity) {
+
+                                if (!project.reports) {
+                                    project.reports = reportService.getReportsForProject(photo.projectId)
+                                }
+                                Map report = reportService.findReportForDate(photo.activity.plannedEndDate, project.reports)
+                                photo.stage = report?report.name:''
+                            }
+                            photo.projectName = project?.name?:''
+                            photo.siteName = site.name
+                            photo.poiName = poi.name
+
+                        }
+                        poi.photos?.sort{it.dateTaken || ''}
+                        poi.photos = poi.photos?.findAll{it.projectId} // Remove photos not associated with a supplied project
+                    }
+                }
+            }
+        }
+        long end = System.currentTimeMillis()
+        log.debug "Photopoint initialisation took ${(end-start)} millis"
     }
 }

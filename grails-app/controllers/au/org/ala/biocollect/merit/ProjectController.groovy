@@ -9,7 +9,6 @@ import au.org.ala.biocollect.projectresult.Builder
 import au.org.ala.biocollect.projectresult.Initiator
 import au.org.ala.web.AuthService
 import grails.converters.JSON
-import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
@@ -210,8 +209,8 @@ class ProjectController {
         [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
          news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
-         activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:true],
-         //site:[label:'Sites', template:'/shared/sites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
+         activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:false],
+         site:[label:'Sites', template:'/site/worksSites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
          meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, type:'tab', template:'viewMeriPlan'],
          dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab'],
          admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
@@ -906,9 +905,9 @@ class ProjectController {
 
         def model = [returnTo: params.returnTo]
 
-        if(project?.planStatus != 'not approved') {
-            model.error = 'Species fields can only be configured when the project is in planning mode.'
-        } else if (!project.error) {
+        if(project.error) {
+            model.error = project.detail
+        } else if( !project?.planStatus || project?.planStatus == 'not approved') {
             def activities = activityService.activitiesForProject(id)
             // Find the different surveys used in this project schedule
             Set<String> surveys = new HashSet<>();
@@ -956,7 +955,7 @@ class ProjectController {
             model.projectId = project.projectId
             model.projectName = project.name
         } else {
-            model.error = project.detail
+            model.error = 'Species fields can only be configured when the project is in planning mode.'
         }
         model
     }
@@ -1039,4 +1038,26 @@ class ProjectController {
         }
 
     }
+
+    @PreAuthorise(accessLevel = 'admin', redirectController ='home', redirectAction = 'index')
+    def downloadShapefile(String id) {
+
+        def url = grailsApplication.config.ecodata.baseURL + "/ws/project/${id}.shp"
+        def resp = webService.proxyGetRequest(response, url, true, true,960000)
+        if (resp.status != 200) {
+            render view:'/error', model:[error:resp.error]
+        }
+    }
+
+    @PreAuthorise(accessLevel = 'admin')
+    def projectSitePhotos(String id) {
+
+        Map project = projectService.get(id)
+        List activities = activityService.activitiesForProject(id)
+        siteService.addPhotoPointPhotosForSites(project.sites?:[], activities, [project])
+
+        render template: 'sitessPhotoPoints', model:[project:project]
+
+    }
+
 }

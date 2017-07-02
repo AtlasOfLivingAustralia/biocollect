@@ -27,28 +27,11 @@
                 <g:if test="${project}">
                     <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
                 </g:if>
-                <g:elseif test="${site}">
-                    <li><a data-bind="click:goToSite" class="clickable">Site</a> <span class="divider">/</span></li>
-                </g:elseif>
                 <li class="active">Create new activity</li>
             </ul>
         </g:if>
 
         <div class="row-fluid title-block well input-block-level">
-            <div class="space-after"><span>An activity is usually associated with a site and a project. Less commonly, the activity may just be
-            linked to a project (usually planning activities).</span></div>
-            <div class="span6 title-attribute">
-                <span class="pull-right" style="padding:10px 20px 0 0;">${create ? 'OR' : ''}</span>
-                <div class="">
-                    <h2>Site:</h2>
-                    <g:if test="${site}">
-                        <h2>${site.name?.encodeAsHTML()}</h2>
-                    </g:if>
-                    <g:else>
-                        <select data-bind="options:transients.sites,optionsText:'name',optionsValue:'siteId',value:siteId,optionsCaption:'Choose a site...'"></select>
-                    </g:else>
-                </div>
-            </div>
             <div class="span5 title-attribute">
                 <h2>Project: </h2>
                 <g:if test="${project}">
@@ -143,15 +126,7 @@
             document.location.href = returnTo;
         });
 
-        function getProjectsForSite(siteId) {
-            if (siteId) {
-                return $.getJSON("${createLink(controller:'site', action:'projectsForSite')}/" + siteId);
-            } else {
-                return [];
-            }
-        }
-
-        function ViewModel (act, sites, projects, site, project, activityTypes) {
+        function ViewModel (act, projects, project, activityTypes) {
             var self = this;
 
             self.description = ko.observable(act.description);
@@ -167,14 +142,11 @@
             self.methodAccuracy = ko.observable(act.methodAccuracy);
             self.collector = ko.observable(act.collector)/*.extend({ required: true })*/;
             self.fieldNotes = ko.observable(act.fieldNotes);
-            self.siteId = ko.observable(act.siteId);
             self.projectId = ko.observable(act.projectId);
             self.mainTheme = ko.observable(act.mainTheme);
             self.transients = {};
-            self.transients.site = site;
             self.transients.project = project;
-            self.transients.sites = project ? project.sites : sites;
-            self.transients.projects = site ? site.projects : projects;
+            self.transients.projects = projects;
             self.transients.themes = $.map(${themes ?: '[]'}, function (obj, i) { return obj.name });
             if (!act.mainTheme && self.transients.themes.length == 1) {
                 self.mainTheme(self.tranients.themes[0]);
@@ -182,11 +154,6 @@
             self.goToProject = function () {
                 if (self.projectId) {
                     document.location.href = fcConfig.projectViewUrl + self.projectId();
-                }
-            };
-            self.goToSite = function() {
-                if (self.siteId) {
-                    document.location.href = fcConfig.siteViewUrl + self.siteId();
                 }
             };
 
@@ -252,12 +219,10 @@
         }
 
         var viewModel = new ViewModel(
-    ${(activity as JSON).toString()},
-    ${((sites ?: []) as JSON).toString()},
-    ${((projects ?: []) as JSON).toString()},
-    ${site ?: 'null'},
-    ${project ?: 'null'},
-    ${(activityTypes as JSON).toString()});
+            ${(activity as JSON).toString()},
+            ${((projects ?: []) as JSON).toString()},
+            ${project ?: 'null'},
+            ${(activityTypes as JSON).toString()});
         ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
 
 

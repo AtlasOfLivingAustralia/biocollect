@@ -881,7 +881,7 @@ class ProjectService {
         }
 
 
-        Map speciesFieldConfig = (specificFieldDefinition?.config?.type != "DEFAULT_SPECIES") ?
+        Map speciesFieldConfig = (specificFieldDefinition?.config !=null &&  specificFieldDefinition?.config?.type != "DEFAULT_SPECIES") ?
                 //New species per field configuration
                 specificFieldDefinition.config :
                 // Legacy per survey species configuration

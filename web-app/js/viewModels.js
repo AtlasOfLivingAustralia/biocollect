@@ -34,7 +34,7 @@ function enmapify(args) {
         updateSiteUrl = args.updateSiteUrl,
         listSitesUrl = args.listSitesUrl,
         activityLevelData = args.activityLevelData,
-        uniqueNameUrl = args.uniqueNameUrl + "/" + activityLevelData.pActivity.projectActivityId,
+        uniqueNameUrl = args.uniqueNameUrl + "/" + ( activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId),
         hideSiteSelection = args.hideSiteSelection || false,
         hideMyLocation = args.hideMyLocation || false,
         siteIdObservable = container[name] = ko.observable(),
@@ -49,7 +49,6 @@ function enmapify(args) {
         sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
         loadingObservable = container[name + "Loading"] = ko.observable(false)
         ;
-
 
     var mapOptions = {
         wmsFeatureUrl: proxyFeatureUrl + "?featureId=",
@@ -171,7 +170,7 @@ function enmapify(args) {
             rcoords.push(rcoords.shift());
             var zipped = _.chain(coords).zip(rcoords);
             var a = zipped.map(function (c) {
-                return c[0][0] * c[1][1] - c[1][0] * c[0][1];
+                return parseFloat(c[0][0]) * parseFloat(c[1][1]) - parseFloat(c[1][0]) * parseFloat(c[0][1]);
             });
             var sum = function (memo, v) {
                 return memo + v;
@@ -179,15 +178,15 @@ function enmapify(args) {
             var sixA = 6 * (a.reduce(sum, 0).value() / 2);
             var zippedAValue = zipped.zip(a.value());
             var cx = zippedAValue.map(function (c) {
-                    return ( c[0][0][0] + c[0][1][0] ) * c[1];
+                    return ( parseFloat(c[0][0][0]) + parseFloat(c[0][1][0]) ) * parseFloat(c[1]);
                 }).reduce(sum, 0).value() / sixA;
             var cy = zippedAValue.map(function (c) {
-                    return ( c[0][0][1] + c[0][1][1] ) * c[1];
+                    return ( parseFloat(c[0][0][1]) + parseFloat(c[0][1][1]) ) * parseFloat(c[1]);
                 }).reduce(sum, 0).value() / sixA;
             return [cx, cy];
         } else if (feature.geometry.type == 'Point') {
             coords = feature.geometry.coordinates;
-            return [coords[0], coords[1]];
+            return [parseFloat(coords[0]), parseFloat(coords[1])];
         } else {
             console.log(feature.geometry.type + ' is not a supported type for centroid()');
             return [0, 0];
@@ -407,7 +406,7 @@ function enmapify(args) {
     }
 
     function saveSiteFailed(jqXHR, textStatus, errorThrown) {
-        bootbox.alert("An error occured while attempting to save your geometry. 😠");
+        bootbox.alert("An error occured while attempting to save the site.");
         map.clearLayers();
     }
 
@@ -465,7 +464,8 @@ function enmapify(args) {
     }
 
     function reloadSiteData() {
-        return $.getJSON(listSitesUrl + '/' + activityLevelData.pActivity.projectActivityId).then(function (data, textStatus, jqXHR) {
+        var entityType=  activityLevelData.pActivity.projectActivityId? "projectActivity" : "project"
+        return $.getJSON(listSitesUrl + '/' + (activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId) + "?entityType=" + entityType ).then(function (data, textStatus, jqXHR) {
             sitesObservable(data);
         });
     }
@@ -549,7 +549,7 @@ AddSiteViewModel.prototype.checkUniqueName = function (name) {
 
     if (name === '') return;
 
-    self.inflight = $.getJSON(self.uniqueNameUrl + "?name=" + encodeURIComponent(name))
+    self.inflight = $.getJSON(self.uniqueNameUrl + "?name=" + encodeURIComponent(name) + "&entityType=" + (activityLevelData.pActivity.projectActivityId ? "projectActivity" : "project"))
         .done(function (data, textStatus, jqXHR) {
             self.nameStatus(AddSiteViewModel.NAME_STATUS.OK);
         }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -564,7 +564,7 @@ AddSiteViewModel.prototype.checkUniqueName = function (name) {
                     break;
                 default:
                     self.nameStatus(AddSiteViewModel.NAME_STATUS.ERROR);
-                    bootbox.alert("An error occured checking your name. 😠");
+                    bootbox.alert("An error occured checking your name.");
                     console.error("Error checking unique status", jqXHR, textStatus, errorThrown);
             }
         });

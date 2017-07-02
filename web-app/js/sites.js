@@ -473,3 +473,237 @@ var PointOfInterest = function (data, hasDocuments) {
         return js;
     };
 };
+
+
+
+var SitesViewModel =  function(sites, map, mapFeatures, isUserEditor, projectId) {
+
+    var self = this;
+    // sites
+    var features = [];
+    if (mapFeatures.features) {
+        features = mapFeatures.features;
+    }
+
+    self.sites = $.map(sites, function (site, i) {
+        var feature = features[i] || site.extent ? site.extent.geometry : null;
+        site.feature = feature;
+        site.selected = ko.observable(false);
+        return site;
+    });
+    self.selectedSiteIds = ko.computed(function() {
+        var siteIds = [];
+        $.each(self.sites, function(i, site) {
+            if (site.selected()) {
+                siteIds.push(site.siteId);
+            }
+        });
+        return siteIds;
+    });
+    self.sitesFilter = ko.observable("");
+    self.throttledFilter = ko.computed(self.sitesFilter).extend({throttle: 400});
+    self.filteredSites = ko.observableArray(self.sites);
+    self.displayedSites = ko.observableArray();
+    self.offset = ko.observable(0);
+    self.pageSize = 10;
+    self.isUserEditor = ko.observable(isUserEditor);
+    self.getSiteName = function (siteId) {
+        var site;
+        if (siteId !== undefined && siteId !== '') {
+            site = $.grep(self.sites, function (obj, i) {
+                return (obj.siteId === siteId);
+            });
+            if (site.length > 0) {
+                return site[0].name();
+            }
+        }
+        return '';
+    };
+    // Animation callbacks for the lists
+    self.showElement = function (elem) {
+        if (elem.nodeType === 1) $(elem).hide().slideDown()
+    };
+    self.hideElement = function (elem) {
+        if (elem.nodeType === 1) $(elem).slideUp(function () {
+            $(elem).remove();
+        })
+    };
+
+    var previousIndicies = [];
+    function compareIndicies(indicies1, indicies2) {
+
+        if (indicies1 == indicies2) {
+            return true;
+        }
+
+        if (indicies1.length != indicies2.length) {
+            return false;
+        }
+        for (var i=0; i<indicies1.length; i++) {
+            if (indicies1[i] != indicies2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /** Callback from datatables event listener so we can keep the map in sync with the table filter / pagination */
+    self.sitesFiltered = function(indicies) {
+        if (compareIndicies(indicies || [], previousIndicies)) {
+            return;
+        }
+        self.displayedSites([]);
+        if (indicies) {
+            for (var i=0; i<indicies.length; i++) {
+                self.displayedSites.push(self.sites[indicies[i]]);
+            }
+        }
+        self.displaySites();
+        previousIndicies.splice(0, previousIndicies.length);
+        Array.prototype.push.apply(previousIndicies, indicies);
+
+    };
+
+    self.highlightSite = function(index) {
+        map.highlightFeatureById(self.sites[index].siteId);
+    };
+
+    self.unHighlightSite = function(index) {
+        map.unHighlightFeatureById(self.sites[index].siteId);
+    };
+
+    self.displaySites = function () {
+        map.clearFeatures();
+
+        var features = $.map(self.displayedSites(), function (obj, i) {
+            var f = obj.feature;
+            if (f) {
+                f.popup = obj.name;
+                f.id = obj.siteId;
+            }
+            return f;
+        });
+        map.replaceAllFeatures(features);
+        self.removeMarkers();
+
+        $.each(self.displayedSites(), function(i, site) {
+            if (site.poi) {
+                $.each(site.poi, function(j, poi) {
+                    if (poi.geometry) {
+                        self.addMarker(poi.geometry.decimalLatitude, poi.geometry.decimalLongitude, poi.name);
+                    }
+
+                });
+            }
+        });
+
+    };
+
+    var markersArray = [];
+
+    self.addMarker = function(lat, lng, name) {
+
+        var infowindow = new google.maps.InfoWindow({
+            content: '<span class="poiMarkerPopup">' + name +'</span>'
+        });
+
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(lat,lng),
+            title:name,
+            draggable:false,
+            map:map.map
+        });
+
+        marker.setIcon('https://maps.google.com/mapfiles/marker_yellow.png');
+
+        google.maps.event.addListener(marker, 'click', function() {
+            infowindow.open(map.map, marker);
+        });
+
+        markersArray.push(marker);
+    };
+
+    self.removeMarkers = function() {
+        if (markersArray) {
+            for (var i in markersArray) {
+                markersArray[i].setMap(null);
+            }
+        }
+        markersArray = [];
+    };
+
+
+    this.removeSelectedSites = function () {
+        bootbox.confirm("Are you sure you want to remove these sites?", function (result) {
+            if (result) {
+                var siteIds = self.selectedSiteIds();
+
+                $.ajax({
+                    url: fcConfig.sitesDeleteUrl,
+                    type: 'POST',
+                    data: JSON.stringify({siteIds:siteIds}),
+                    contentType: 'application/json'
+                }).done(function(data) {
+                    if (data.warnings && data.warnings.length) {
+                        bootbox.alert("Not all sites were able to be deleted.  Sites associated with an activity were not deleted.", function() {
+                            document.location.href = here;
+                        });
+                    }
+                    else {
+                        document.location.href = here;
+                    }
+                }).fail(function(data) {
+                    bootbox.alert("An error occurred while deleting the sites.  Please contact support if the problem persists.", function() {
+                        document.location.href = here;
+                    })
+                });
+            }
+        });
+    };
+    this.editSite = function (site) {
+        var url = fcConfig.siteEditUrl + '/' + site.siteId + '?returnTo=' + encodeURIComponent(fcConfig.returnTo);
+        document.location.href = url;
+    };
+    this.deleteSite = function (site) {
+        bootbox.confirm("Are you sure you want to remove this site from this project?", function (result) {
+            if (result) {
+
+                $.get(fcConfig.siteDeleteUrl + '?siteId=' + site.siteId, function (data) {
+                    if (data.warnings && data.warnings.length) {
+                        bootbox.alert("The site could not be deleted as it is used by a project activity.");
+                    }
+                    else {
+                        document.location.href = here;
+                    }
+                });
+
+            }
+        });
+    };
+    this.viewSite = function (site) {
+        var url = fcConfig.siteViewUrl + '/' + site.siteId + '?returnTo=' + encodeURIComponent(fcConfig.returnTo);
+        if (projectId) {
+            url += '&projectId='+projectId;
+        }
+        document.location.href = url;
+    };
+    this.addSite = function () {
+        document.location.href = fcConfig.siteCreateUrl;
+    };
+    this.addExistingSite = function () {
+        document.location.href = fcConfig.siteSelectUrl;
+    };
+    this.uploadShapefile = function () {
+        document.location.href = fcConfig.siteUploadUrl;
+    };
+    this.downloadShapefile = function() {
+        window.open(fcConfig.shapefileDownloadUrl, '_blank');
+    };
+    self.triggerGeocoding = function () {
+        ko.utils.arrayForEach(self.sites, function (site) {
+            map.getAddressById(site.name(), site.setAddress);
+        });
+    };
+
+    self.displaySites();
+};
+

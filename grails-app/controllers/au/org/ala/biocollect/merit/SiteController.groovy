@@ -109,14 +109,26 @@ class SiteController {
     }
 
     def ajaxList(String id) {
-        def pActivity = projectActivityService.get(id, 'all')
+        if(params.entityType == "projectActivity") {
+            def pActivity = projectActivityService.get(id, 'all')
 //        def sites = siteService.getSitesFromIdList(pActivity.sites, BRIEF)
-        if (!pActivity) {
-            response.sendError(404, "Couldn't find project activity $id")
-            return
+            if (!pActivity) {
+                response.sendError(404, "Couldn't find project activity $id")
+                return
+            }
+            log.info(pActivity.sites)
+            render pActivity.sites as JSON
+
+        } else if (params.entityType == "project") {
+            def project = projectService.get(id, "brief")
+            if (!project) {
+                response.sendError(404, "Couldn't find project $id")
+                return
+            }
+
+            render project?.sites  as JSON
         }
-        log.info(pActivity.sites)
-        render pActivity.sites as JSON
+
     }
 
     def ajaxDeleteSitesFromProject(String id){
@@ -448,7 +460,7 @@ class SiteController {
 
     def checkSiteName(String id) {
         log.debug "Name: ${params.name}"
-        def result = siteService.isSiteNameUnique(id, params.name)
+        def result = siteService.isSiteNameUnique(id, params.entityType, params.name)
 
         response.sendError(result.value ? SC_NO_CONTENT : SC_CONFLICT)
     }
@@ -490,12 +502,6 @@ class SiteController {
         }
 
         render metadataService.getLocationMetadataForPoint(lat, lon) as JSON
-    }
-
-    def projectsForSite(String id) {
-        def projects = siteService.projectsForSite(id) ?: []
-        //log.debug projects
-        render projects as JSON
     }
 
     /**

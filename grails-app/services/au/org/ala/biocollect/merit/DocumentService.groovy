@@ -72,6 +72,14 @@ class DocumentService {
         updateDocument(link)
     }
 
+    Map search(Map params) {
+        def url = "${grailsApplication.config.ecodata.baseURL}/ws/document/search"
+        def resp = webService.doPost(url, params)
+        if (resp && !resp.error) {
+            return resp.resp
+        }
+        return resp
+    }
 
     /**
      * de reference licence code and adds the value to licenceDescription property

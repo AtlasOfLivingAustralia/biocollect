@@ -539,3 +539,29 @@ input.full-width-input {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
+
+.photo-slider li{ margin: 0 4px; }
+
+
+.photo-slider{
+    overflow: hidden;
+    position: relative;
+    padding: 10px;
+    background: #f6f6f6;
+    border: 1px solid lightgrey;
+    margin: 10px auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+.photo-slider img {
+    height: 180px;
+    width:auto;
+    width:auto;
+}
+
+.photo-slider p {
+    padding-left:10px;
+    background-color:lightgrey;
+    color:black;
+    margin-bottom:0px;
+}

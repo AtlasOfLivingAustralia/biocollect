@@ -44,26 +44,13 @@
         <div class="row-fluid title-block well well-small input-block-level">
             <div class="span12 title-attribute">
                 <h1><span data-bind="click:goToProject" class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
-                <g:if test="${hasPhotopointData}">
-                    <div class="row-fluid"  style="margin-bottom: 10px;">
-                        <span class="alert alert-warning">
-                            This activity has photo point data recorded.  The site can only be changed on the full activity data entry page.
-                        </span>
-                    </div>
-                    <h2><span class="span12" data-bind="click:goToSite" class="clickable">Site: ${site.name?.encodeAsHTML()}</span></h2>
-
-                </g:if>
-                <g:else>
-                    <select data-bind="options:transients.project.sites,optionsText:'name',optionsValue:'siteId',value:siteId,optionsCaption:'Choose a site...'"></select>
-                    Leave blank if this activity is not associated with a specific site.
-                </g:else>
                 <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">Activity: <span data-bind="text:type"></span><i class="icon-asterisk modified-icon" data-bind="visible:dirtyFlag.isDirty" title="Has been modified"></i></h3>
                 <h4><span>${project.associatedProgram?.encodeAsHTML()}</span> <span>${project.associatedSubProgram?.encodeAsHTML()}</span></h4>
             </div>
         </div>
 
         <div class="row-fluid">
-            <div class="span8">
+            <div class="span12">
                 <!-- Common activity fields -->
                 <div class="row-fluid" data-bind="visible:transients.typeWarning()" style="display:none">
                     <div class="alert alert-error">
@@ -100,7 +87,7 @@
                 </div>
 
                 <div class="row-fluid">
-                    <div class="span12 required">
+                    <div class="span10 required">
                         <fc:textField data-bind="value: description" id="description" label="Description" class="span12"  data-validation-engine="validate[required]" />
                     </div>
                 </div>
@@ -123,12 +110,7 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-            <div class="span4">
-                    <div id="smallMap" style="width:100%; height:300px;"></div>
-            </div>
-
         </div>
     </div>
 
@@ -265,7 +247,7 @@
             master.reset();
         });
 
-        function ViewModel (act, site, project, activityTypes, themes) {
+        function ViewModel (act, project, activityTypes, themes) {
             var self = this;
             self.activityId = act.activityId;
             self.description = ko.observable(act.description);
@@ -281,10 +263,8 @@
             self.progress = ko.observable(act.progress || 'started');
             self.mainTheme = ko.observable(act.mainTheme);
             self.type = ko.observable(act.type);
-            self.siteId = ko.observable(act.siteId);
             self.projectId = act.projectId;
             self.transients = {};
-            self.transients.site = ko.observable(site);
             self.transients.project = project;
             self.transients.themes = $.map(themes, function (obj, i) { return obj.name });
             if (!act.mainTheme && self.transients.themes.length == 1) {
@@ -319,44 +299,19 @@
                 return result;
             });
 
-            self.siteMap = null;
-            self.siteId = ko.observable(act.siteId);
-
-            self.siteId.subscribe(function(siteId) {
-                if (!self.siteMap) {
-                    return;
-                }
-
-                var matchingSite = $.grep(self.transients.project.sites, function(site) { return siteId == site.siteId})[0];
-
-                if (matchingSite) {
-                    self.siteMap.clearLayers();
-                    var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(matchingSite.extent.geometry);
-                    self.siteMap.setGeoJSON(geoJson);
-                }
-                else {
-                    self.siteMap.clearLayers();
-                }
-                self.transients.site(matchingSite);
-            });
-
             self.goToProject = function () {
                 if (self.projectId) {
                     document.location.href = fcConfig.projectViewUrl + self.projectId;
                 }
             };
-            self.goToSite = function () {
-                if (self.siteId()) {
-                    document.location.href = fcConfig.siteViewUrl + self.siteId();
-                }
-            };
+
             self.modelForSaving = function () {
                 // get model as a plain javascript object
                 var jsData = ko.toJS(self);
                 delete jsData.transients;
-                // If we leave the site or theme undefined, it will be ignored during JSON serialisation and hence
+                // If we leave the theme undefined, it will be ignored during JSON serialisation and hence
                 // will not overwrite the current value on the server.
-                var possiblyUndefinedProperties = ['siteId', 'mainTheme'];
+                var possiblyUndefinedProperties = ['mainTheme'];
 
                 $.each(possiblyUndefinedProperties, function(i, propertyName) {
                     if (jsData[propertyName] === undefined) {
@@ -378,26 +333,9 @@
 
         var viewModel = new ViewModel(
             ${(activity as JSON).toString()},
-            ${site ?: 'null'},
             ${project ?: 'null'},
             ${(activityTypes as JSON).toString()},
             ${themes});
-
-
-        var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
-        if (!mapFeatures) {
-            mapFeatures = {zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []};
-        }
-
-        var mapOptions = {
-            mapContainer: "smallMap",
-            zoomToBounds:true,
-            zoomLimit:16,
-            featureService: "${createLink(controller: 'proxy', action:'feature')}",
-            wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
-        };
-
-        viewModel.siteMap = new ALA.Map("smallMap", {});
 
 
         ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));

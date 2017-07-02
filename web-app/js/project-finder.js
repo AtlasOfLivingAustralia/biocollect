@@ -236,7 +236,7 @@ function ProjectFinder() {
         }
 
         var sortBy = getActiveButtonValues($("#pt-sort"));
-        perPage = getActiveButtonValues($("#pt-per-page"));
+        perPage = parseInt(getActiveButtonValues($("#pt-per-page"))[0]);
 
         pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
             fq.push(facet.getQueryText())
@@ -263,9 +263,7 @@ function ProjectFinder() {
             q: ($('#pt-search').val() || '' ).toLowerCase()
         };
 
-        if(perPage.length == 1) {
-            map.max =  perPage[0] // Page size
-        }
+        map.max =  perPage // Page size
 
         if(sortBy .length == 1) {
             map.sort = sortBy[0]
@@ -298,7 +296,9 @@ function ProjectFinder() {
             data: params,
             traditional: true,
             beforeSend: function () {
+                $('#pt-result-heading').hide();
                 $('.search-spinner').show();
+
             },
             success: function (data) {
                 var projectVMs = [], facets;
@@ -319,6 +319,7 @@ function ProjectFinder() {
             },
             complete: function () {
                 $('.search-spinner').hide();
+                $('#pt-result-heading').fadeIn();
             }
         })
     };
@@ -368,7 +369,8 @@ function ProjectFinder() {
 
     /** display the current size of the filtered list **/
     this.updateTotal = function () {
-        $('#pt-resultsReturned').html("Found <strong>" + total + "</strong> " + (total == 1 ? 'project.' : 'projects.'));
+        // $('#pt-resultsReturned').html("Found <strong>" + total + "</strong> " + (total == 1 ? 'project.' : 'projects.'));
+        $('#pt-resultsReturned').html(this.paginationInfo());
     };
 
     /*************************************************\
@@ -399,9 +401,20 @@ function ProjectFinder() {
         if ((offset + perPage) < total)
             $ul.append('<li><a href="javascript:pago.nextPage();">&gt;</a></li>');
 
-        var $pago = $("<div class='pagination'></div>");
+        var $pago = $("<div class='pagination margin-bottom-5 margin-top-5'></div>");
         $pago.append($ul);
         $('div#pt-navLinks').html($pago);
+    };
+
+
+    this.paginationInfo = function () {
+        if (total > 0) {
+            var start = offset + 1
+            var end = Math.min(total, start + perPage - 1);
+            return "Showing " + start + " to " + end + " of " + total + " " + (total > 1 ? "projects.": "project.");
+        } else {
+            return "No projects found."
+        }
     };
 
     this.augmentVM = function (vm) {
@@ -714,8 +727,14 @@ function ProjectFinder() {
 
     $('#pt-sort').on('statechange', self.searchAndShowFirstPage);
 
-    $('#pt-per-page').on('statechange', self.searchAndShowFirstPage);
+    $('#pt-per-page').on('statechange', function() {
+        perPage = parseInt(getActiveButtonValues($("#pt-per-page"))[0]);
+        self.searchAndShowFirstPage()
+        });
+
     $('#pt-aus-world').on('statechange', self.searchAndShowFirstPage);
+
+
 
 
     pago = this.pago = {
