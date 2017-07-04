@@ -260,9 +260,9 @@
 		</div>
 	</div>
 
-	%{--<div class="row-fluid space-after">--}%
-		%{--<g:render template="riskTable"></g:render>--}%
-	%{--</div>--}%
+	<div class="row-fluid space-after">
+		<g:render template="riskTable"></g:render>
+	</div>
 
 	<div id="save-details-result-placeholder"></div>
 

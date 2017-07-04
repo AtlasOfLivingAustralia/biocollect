@@ -216,7 +216,7 @@ class ProjectController {
          site:[label:'Sites', template:'/site/worksSites', visible: !project.isExternal, disabled:!user?.hasViewAccess, editable:user?.isEditor == true, type:'tab',  wordForSite:'Site'],
          meriPlan:[label:'Project Plan', template:'viewMeriPlan', disable:false, visible:user?.isEditor, type:'tab', meriPlanVisibleToUser: user?.isEditor,  risksAndThreatsVisible:canViewRisks],
          dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab'],
-         risks:[label: 'Project Risks & Threats', template: 'riskTable', visible: true, disable: false, type: 'tab'],
+//         risks:[label: 'Project Risks & Threats', template: 'riskTable', visible: true, disable: false, type: 'tab'],
          admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
     }
 
