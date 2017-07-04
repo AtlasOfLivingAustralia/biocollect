@@ -330,7 +330,8 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
         meriPlanSelector: '#edit-meri-plan',
         saveToolbarSelector: '#project-details-save',
         floatingSaveSelector: '#floating-save',
-        storageKey:'meri-plan-'+project.projectId,
+        meriPlanStorageKey: 'meri-plan-'+project.projectId,
+        risksStorageKey: 'risks-'+project.projectId,
         autoSaveIntervalInSeconds:60,
         restoredDataWarningSelector:'#restoredData',
         resultsMessageId:'save-details-result-placeholder',
@@ -344,9 +345,11 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
 
     $.extend(self, new ProjectViewModel(project, isEditor, organisations));
     var themes = [];
-    $.extend(self, new MERIPlan(project, themes, ''));
+    $.extend(self, new MERIPlan(project, themes, config.meriPlanStorageKey));
+    $.extend(self, new Risks(project.risks, config.risksStorageKey));
 
-    autoSaveModel(self.details, config.saveUrl, config);
+    autoSaveModel(self.details, config.saveUrl, $.extend(config, {storageKey: config.meriPlanStorageKey}));
+    autoSaveModel(self.risks, config.saveUrl, $.extend(config, {storageKey: config.risksStorageKey}));
     configureFloatingSave(self.details.dirtyFlag, {floatingSaveSelector:config.floatingSaveSelector, saveButtonSelector:config.saveToolbarSelector});
 
     // Save MERI plan

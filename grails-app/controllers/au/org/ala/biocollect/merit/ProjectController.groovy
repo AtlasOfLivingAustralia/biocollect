@@ -199,6 +199,9 @@ class ProjectController {
     protected Map worksProjectContent(project, user) {
         def activities = activityService.activitiesForProject(project.projectId)
 
+        def risksAndThreatsVisible = metadataService.isOptionalContent('Risks and Threats', project.associatedProgram, project.associatedSubProgram)
+        def canViewRisks = risksAndThreatsVisible && (user?.hasViewAccess || user?.isEditor)
+
         List blog = blogService.getProjectBlog(project)
         Boolean hasNewsAndEvents = blog.find{it.type == 'News and Events'}
         Boolean hasProjectStories = blog.find{it.type == 'Project Stories'}
@@ -210,9 +213,10 @@ class ProjectController {
          news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
          documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
          activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:false],
-         site:[label:'Sites', template:'/site/worksSites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
-         meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, type:'tab', template:'viewMeriPlan'],
+         site:[label:'Sites', template:'/site/worksSites', visible: !project.isExternal, disabled:!user?.hasViewAccess, editable:user?.isEditor == true, type:'tab',  wordForSite:'Site'],
+         meriPlan:[label:'Project Plan', template:'viewMeriPlan', disable:false, visible:user?.isEditor, type:'tab', meriPlanVisibleToUser: user?.isEditor,  risksAndThreatsVisible:canViewRisks],
          dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab'],
+         risks:[label: 'Project Risks & Threats', template: 'riskTable', visible: true, disable: false, type: 'tab'],
          admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
     }
 

@@ -133,8 +133,7 @@
 				</table>
 			</div>
 		</div>
-
-		<g:if test="${includeRisksAndThreats}">
+		<g:if test="${projectContent.meriPlan.risksAndThreatsVisible}">
 		<div class="row-fluid space-after">
 			<div class="required">
 			        <div id="project-risks-threats" class="well well-small">
