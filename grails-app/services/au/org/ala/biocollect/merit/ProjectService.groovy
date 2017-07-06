@@ -11,7 +11,7 @@ class ProjectService {
     //TODO refactor project type
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE = 'survey'
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE_TYPE_2 = 'citizenScience'
-    public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoscience'
+    public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoScience'
     public static final String PROJECT_TYPE_WORKS = 'works'
         static  final MOBILE_APP_ROLE = [ "android",
                                           "blackberry",
@@ -86,9 +86,10 @@ class ProjectService {
     def validate(props, projectId = null) {
         def error = null
         def updating = projectId != null
-        def projectType = ((updating && !props?.projectType) ? get(projectId)?.projectType : props?.projectType)
-        def isWorks = projectType == 'works'
-        def isEcoScience = projectType == 'ecoscience'
+        def project = get(projectId)
+        def projectType = ((updating && !props?.projectType) ? project?.projectType : props?.projectType)
+        def isWorks = projectType == PROJECT_TYPE_WORKS
+        def isEcoScience = projectType == PROJECT_TYPE_ECOSCIENCE
         def termsNeeded = !(props.containsKey("isExternal") && props.isExternal)
 
         if (!updating && !props.containsKey("isExternal") && !isWorks) {
@@ -97,13 +98,8 @@ class ProjectService {
         }
 
         if (updating) {
-            def project = get(projectId)
             if (project?.error) {
                 return "invalid projectId"
-            }
-
-            if (!projectType) {
-                projectType = project?.projectType
             }
         }
 

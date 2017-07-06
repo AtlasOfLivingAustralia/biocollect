@@ -837,13 +837,26 @@ function ProjectViewModel(project, isUserEditor) {
             }
         },
         write: function(value) {
-            if (value === 'citizenScience') {
-                self.isCitizenScience(true);
-                self.projectType('survey');
-            }
-            else {
-                self.isCitizenScience(false);
-                self.projectType(value);
+            switch (value){
+                case 'citizenScience':
+                case 'survey':
+                    self.isCitizenScience(true);
+                    self.isWorks(false);
+                    self.isEcoScience(false);
+                    self.projectType('survey');
+                    break;
+                case 'works':
+                    self.isWorks(true);
+                    self.isCitizenScience(false);
+                    self.isEcoScience(false);
+                    self.projectType(value);
+                    break;
+                case 'ecoScience':
+                    self.isEcoScience(true);
+                    self.isWorks(false);
+                    self.isCitizenScience(false);
+                    self.projectType(value);
+                    break;
             }
         }
     });

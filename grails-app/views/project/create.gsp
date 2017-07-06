@@ -1,4 +1,5 @@
 <%@ page import="net.sf.json.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<g:set var="projectService" bean="projectService"></g:set>
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
@@ -128,7 +129,7 @@ $(function(){
                     }]
                 );
             } else {
-                if (viewModel.transients.kindOfProject() == 'ecoscience' || viewModel.transients.siteViewModel.isValid(true)) {
+                if (viewModel.transients.kindOfProject() == "${projectService.PROJECT_TYPE_ECOSCIENCE}" || viewModel.transients.siteViewModel.isValid(true)) {
                     viewModel.saveWithErrorDetection(function(data) {
                         var projectId = "${project?.projectId}" || data.projectId;
 

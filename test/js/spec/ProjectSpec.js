@@ -44,16 +44,28 @@ describe("ProjectViewModel Spec", function () {
         project = new ProjectViewModel({});
         project.transients.kindOfProject('citizenScience');
         expect(project.isCitizenScience()).toBe(true);
+        expect(project.isWorks()).toBe(false);
+        expect(project.isEcoScience()).toBe(false);
         expect(project.projectType()).toBe('survey');
 
 
         project.transients.kindOfProject('survey');
-        expect(project.isCitizenScience()).toBe(false);
+        expect(project.isCitizenScience()).toBe(true);
+        expect(project.isWorks()).toBe(false);
+        expect(project.isEcoScience()).toBe(false);
         expect(project.projectType()).toBe('survey');
 
         project.transients.kindOfProject('works');
         expect(project.isCitizenScience()).toBe(false);
+        expect(project.isWorks()).toBe(true);
+        expect(project.isEcoScience()).toBe(false);
         expect(project.projectType()).toBe('works');
+
+        project.transients.kindOfProject('ecoScience');
+        expect(project.isCitizenScience()).toBe(false);
+        expect(project.isWorks()).toBe(false);
+        expect(project.isEcoScience()).toBe(true);
+        expect(project.projectType()).toBe('ecoScience');
 
     });
 

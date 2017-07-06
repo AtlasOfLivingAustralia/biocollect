@@ -604,7 +604,7 @@ class ProjectController {
         }
 
         if(trimmedParams.isEcoScience){
-            projectType.push('(projectType:ecoscience)')
+            projectType.push('(projectType:ecoScience)')
             trimmedParams.isEcoScience = null
         }
 
@@ -847,7 +847,7 @@ class ProjectController {
             payload.fq = payload.fq ?: []
             payload.fq.push('surveyImage:true');
             if (params?.hub == 'ecoscience') {
-                payload.fq.push("projectType:ecoscience");
+                payload.fq.push("projectType:ecoScience");
             }
 
             if (params?.hub == 'works') {

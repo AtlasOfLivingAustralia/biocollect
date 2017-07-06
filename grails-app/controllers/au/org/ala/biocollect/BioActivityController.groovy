@@ -406,7 +406,7 @@ class BioActivityController {
         parsed.userId = userService.getCurrentUserId(parsed.mobile ? request : null)
 
         if (params?.hub == 'ecoscience') {
-            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectActivity.projectType:ecoscience"
+            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectActivity.projectType:ecoScience"
         }
 
         if (params?.hub == 'works') {
@@ -545,7 +545,7 @@ class BioActivityController {
         }
 
         if (params?.hub == 'ecoscience') {
-            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectActivity.projectType:ecoscience"
+            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectActivity.projectType:ecoScience"
         }
 
         if (params?.hub == 'works') {
