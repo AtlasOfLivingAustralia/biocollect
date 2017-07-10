@@ -6,7 +6,7 @@
     <title>Create | Project | <g:message code="g.fieldCapture"/></title>
     <r:script disposition="head">
     var fcConfig = {
-        projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
+        projectUpdateUrl: "${createLink(action:'ajaxCreate')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
         organisationSearchUrl: "${createLink(controller: 'organisation', action: 'search')}",

@@ -457,6 +457,30 @@ class ProjectService {
         userCanView
     }
 
+    /**
+      * Does the current user have editor permission for the requested projectId?
+      *
+      * @param userId
+      * @param projectId
+      * @return
+      */
+    def isUserEditorForProject(userId, projectId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserEditorForProject?projectId=${projectId}&userId=${userId}"
+        webService.getJson(url)?.userIsEditor // either will be true or false
+    }
+
+/**
+  * Does the current user have project participant permission for the requested projectId?
+  *
+  * @param userId
+  * @param projectId
+  * @return
+  */
+    def isUserParticipantForProject(userId, projectId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserParticipantForProject?projectId=${projectId}&userId=${userId}"
+        webService.getJson(url)?.userIsParticipant // either will be true or false
+    }
+
 
     /**
      * Returns the programs model for use by a particular project.  At the moment, this method just delegates to the metadataservice,
@@ -729,7 +753,7 @@ class ProjectService {
     }
 
     public boolean isWork(project){
-        !isCitizenScience(project) && !isEcoScience(project)
+        project.projectType == PROJECT_TYPE_WORKS
     }
 
     /**
