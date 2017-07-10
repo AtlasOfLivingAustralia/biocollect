@@ -429,6 +429,8 @@ class ModelTagLib {
             }
             else if (it.type == 'table') {
                 table out, attrs, it
+            } else if (it.type == 'section') {
+                section out, attrs, it
             } else {
                 // Wrap data elements in rows to reset the bootstrap indentation on subsequent spans to save the
                 // model definition from needing to do so.

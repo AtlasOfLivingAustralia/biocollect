@@ -47,34 +47,16 @@ class FormSpeciesFieldParserService {
                     table attrs, viewModel
                     break
                 case 'section':
-                    section attrs, viewModel
                 case 'row':
-                    row attrs, viewModel
-                    break
-            }
-        }
-    }
-
-    // form section
-    private section(attrs, model) {
-        viewModelItems(attrs, model.items)
-    }
-
-    // row model
-    private row(attrs, model) {
-        items(attrs, model)
-    }
-
-    private items(attrs, model) {
-        model.items.each { it ->
-
-            if (it.type == 'col') {
-                items(attrs, it)
-            }
-            else if (it.type == 'table') {
-                table attrs, it
-            } else {
-                addIfSpeciesDatatype(attrs, it, "")
+                case 'col':
+                    viewModelItems(attrs, viewModel.items)
+                    break;
+                case 'grid':
+                    viewModelItems(attrs, viewModel.rows)
+                    break;
+                default:
+                    addIfSpeciesDatatype(attrs, viewModel, "")
+                    break;
             }
         }
     }
