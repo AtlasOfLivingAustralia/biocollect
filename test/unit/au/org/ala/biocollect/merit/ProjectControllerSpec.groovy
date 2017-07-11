@@ -29,6 +29,7 @@ class ProjectControllerSpec extends Specification {
     def organisationStub = Stub(OrganisationService)
     def vocabServiceStub = Stub(VocabService)
     def documentServiceStub = Stub(DocumentService)
+    def settingServiceStub = Stub(SettingService)
 
     void setup() {
         controller.userService = userServiceStub
@@ -44,6 +45,7 @@ class ProjectControllerSpec extends Specification {
         controller.organisationService = organisationStub
         controller.vocabService = vocabServiceStub
         controller.documentService = documentServiceStub
+        controller.settingService = settingServiceStub
         auditServiceStub.getAuditMessagesForProject(_) >> []
         metadataServiceStub.activitiesModel() >> [activities: []]
         userServiceStub.getOrganisationIdsForUserId(_) >> ['1']
@@ -56,6 +58,8 @@ class ProjectControllerSpec extends Specification {
         blogServiceStub.get(_, _) >> []
         organisationStub.get(_) >> [organisationId: "ABC123", name: "organisation name"]
         vocabServiceStub.getVocabValues() >> []
+        settingServiceStub.isWorksHub() >> false
+        settingServiceStub.isEcoScienceHub() >> false
     }
 
     void "creating a citizen science project should pre-populate the citizen science project type"() {
