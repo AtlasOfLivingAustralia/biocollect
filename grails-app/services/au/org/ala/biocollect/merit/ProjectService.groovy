@@ -13,6 +13,8 @@ class ProjectService {
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE_TYPE_2 = 'citizenScience'
     public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoScience'
     public static final String PROJECT_TYPE_WORKS = 'works'
+    public static final String PROJECT_PLAN_STATUS_APPROVED = 'approved'
+    public static final String PROJECT_PLAN_STATUS_NOTAPPROVED = 'not approved'
         static  final MOBILE_APP_ROLE = [ "android",
                                           "blackberry",
                                           "iTunes",
@@ -926,5 +928,17 @@ class ProjectService {
         def result = speciesService.searchSpeciesForConfig(speciesFieldConfig, q, limit)
         speciesService.formatSpeciesNameForSurvey(speciesFieldConfig.speciesDisplayFormat , result)
         result
+    }
+
+    /**
+     * Check if work project plan has been approved.
+     * @param projectId
+     * @return
+     */
+    boolean isWorksProjectPlanStatusApproved(String projectId){
+        Map project = get(projectId)
+        if(!project?.error){
+            project.planStatus == PROJECT_PLAN_STATUS_APPROVED
+        }
     }
 }

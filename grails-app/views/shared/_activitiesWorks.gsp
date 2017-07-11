@@ -11,12 +11,12 @@
          to the main viewModel. -->
 <!-- ko stopBinding: true -->
 <div class="row-fluid" id="planContainer">
-    %{--<g:if test="${(project.planStatus == 'not approved') && params.userIsProjectEditor}">--}%
-        %{--<div class="alert alert-info">--}%
-            %{--<g:message code="project.works.workschedule.notapproved.message"></g:message>--}%
-        %{--</div>--}%
-    %{--</g:if>--}%
-    %{--<g:else>--}%
+    <g:if test="${(project.planStatus == 'not approved') && params.userIsProjectEditor}">
+        <div class="alert alert-info">
+            <g:message code="project.works.workschedule.notapproved.message"></g:message>
+        </div>
+    </g:if>
+    <g:else>
         <div id="status-update-error-placeholder"></div>
 
         <div id="activityContainer" class="space-before">
@@ -198,7 +198,7 @@
             </table>
 
         </form>
-    %{--</g:else>--}%
+    </g:else>
 
     <g:if env="development">
         <hr/>

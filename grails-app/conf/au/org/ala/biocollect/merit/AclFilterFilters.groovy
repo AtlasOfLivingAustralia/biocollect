@@ -103,6 +103,7 @@ class AclFilterFilters {
                     }
                 }
 
+                // get the permissions of the user with respect to a project.
                 if(userId && projectId){
                     if (projectService.isUserCaseManagerForProject(userId, projectId)) {
                         params.userIsProjectCaseManager = true
@@ -138,6 +139,7 @@ class AclFilterFilters {
                     params.userIsProjectCaseManager = false
                     params.userIsProjectEditor = false
                     params.userIsProjectParticipant = false
+                    params.userCanEditProject = false
                 }
 
                 return true
