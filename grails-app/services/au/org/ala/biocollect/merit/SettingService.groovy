@@ -237,4 +237,28 @@ class SettingService {
             return  [css: "An error occurred during compilation of SCSS file", status: 'failed'];
         }
     }
+
+    /**
+     * Is the current hub a works hub
+     * @return
+     */
+    public boolean isWorksHub() {
+        hubConfig?.defaultFacetQuery?.contains('isWorks:true')
+    }
+
+    /**
+     * Is the current hub a eco science hub
+     * @return
+     */
+    public boolean isEcoScienceHub() {
+        hubConfig?.defaultFacetQuery?.contains('isEcoScience:true')
+    }
+
+    /**
+     * Is the current hub a citizen science hub
+     * @return
+     */
+    public boolean isCitizenScienceHub() {
+        hubConfig.defaultFacetQuery.contains('isCitizenScience:true')
+    }
 }

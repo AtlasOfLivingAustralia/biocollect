@@ -25,6 +25,7 @@ class BioActivityController {
     MessageSource messageSource
     RecordService recordService
     SpeciesService speciesService
+    SettingService settingService
 
     static int MAX_FLIMIT = 500
 
@@ -405,11 +406,11 @@ class BioActivityController {
         Map parsed = commonService.parseParams(params)
         parsed.userId = userService.getCurrentUserId(parsed.mobile ? request : null)
 
-        if (params?.hub == 'ecoscience') {
+        if (settingService.isEcoScienceHub()) {
             queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectActivity.projectType:ecoScience"
         }
 
-        if (params?.hub == 'works') {
+        if (settingService.isWorksHub()) {
             queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectActivity.projectType:works"
         }
 
@@ -544,11 +545,11 @@ class BioActivityController {
             }
         }
 
-        if (params?.hub == 'ecoscience') {
+        if (settingService.isEcoScienceHub()) {
             queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectActivity.projectType:ecoScience"
         }
 
-        if (params?.hub == 'works') {
+        if (settingService.isWorksHub()) {
             queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectActivity.projectType:works"
         }
 

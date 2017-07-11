@@ -1,3 +1,4 @@
+<g:set var="settingService" bean="settingService"></g:set>
 <nav role='navigation' id="biocollectNav"
     ${hubConfig.defaultFacetQuery.contains('isEcoScience:true') ? 'class="ecoScienceNav"' : ''}
 >
@@ -30,7 +31,7 @@
                     <!--
                     <li><a href="#" class="btnMyDashboard"><span class="fa fa-dashboard"></span>My Dashboard</a></li>
                     -->
-                    <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
+                    <g:if test="${!settingService.isWorksHub()}">
                         <li><a href="#" class="btnMyData"><span class="fa fa-database"></span>My Data</a></li>
                     </g:if>
                     <li><a href="#" class="btnMyProjects"><span class="fa fa-folder"></span>My Projects</a></li>

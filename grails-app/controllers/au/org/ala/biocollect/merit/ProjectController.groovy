@@ -857,11 +857,11 @@ class ProjectController {
             payload.sort = payload.sort ?: 'lastUpdated';
             payload.fq = payload.fq ?: []
             payload.fq.push('surveyImage:true');
-            if (params?.hub == 'ecoscience') {
+            if (settingService.isEcoScienceHub()) {
                 payload.fq.push("projectType:ecoScience");
             }
 
-            if (params?.hub == 'works') {
+            if (settingService.isWorksHub()) {
                 payload.fq.push("projectType:works");
             }
 
