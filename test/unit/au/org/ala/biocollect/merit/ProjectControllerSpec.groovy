@@ -184,6 +184,8 @@ class ProjectControllerSpec extends Specification {
         stubProjectEditor('1234', projectId)
         projectServiceStub.isCitizenScience(_) >> false
         projectServiceStub.isEcoScience(_) >> false
+        params.userCanEditProject = true
+        params.userIsProjectAdmin = true
         projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'works', isExternal:external]
 
         when:
