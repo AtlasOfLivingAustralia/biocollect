@@ -1,13 +1,13 @@
-<label><h4>Project risks & threats <span style="color: red;"><b>*</b></span></h4></label>
+<label><b>Project risks & threats <span style="color: red;"><b>*</b></span></b></label>
 <g:render template="/shared/restoredData"  model="[id:'restoredRiskData', saveButton:'Save risks & threats', cancelButton:'Cancel edits to risks & threats']"/>
 
 <div class="row-fluid space-after">
 	<div class="required">
+		<p>Please enter the details of risks and threats to the project and the mitigation strategies being used to address them. These should be updated at each reporting period:</p>
 	        <div id="project-risks-threats" class="well well-small">
-			  <p>Please enter the details of risks and threats to the project and the mitigation strategies being used to address them. These should be updated at each reporting period:</p>
-			  <div align="right"> Overall project risk profile : <span style="color: red;">*</span> 
+			  <div align="right"><b>Overall project risk profile:</b> <span style="color: red;">*</span>
 					<span class="ratingStyling">
-						<select data-validation-engine="validate[required]" data-bind="options: ratingOptions, value:risks.overallRisk, optionsCaption: 'Please select', css: overAllRiskHighlight" id="overall-risk"></select>
+						<select data-validation-engine="validate[required]" data-bind="options: $parent.ratingOptions, value:risks.overallRisk, optionsCaption: 'Please select', css: overAllRiskHighlight" id="overall-risk"></select>
 					 </span>
 			  </div>
 			  <table style="width:100%;">
@@ -26,16 +26,16 @@
 			      <tbody data-bind="foreach : risks.rows" >
 			              <tr>
 			                  <td width="18%">
-			                  	<select style="width:98%;" data-validation-engine="validate[required]" data-bind="options: $parent.threatOptions, value: threat, optionsCaption: 'Please select'" ></select>
+			                  	<select style="width:98%;" data-validation-engine="validate[required]" data-bind="options: $root.threatOptions, value: threat, optionsCaption: 'Please select'" ></select>
 			                  </td>
 			                  <td width="20%">
 			                  	<textarea style="width:97%;" data-validation-engine="validate[required]" class="input-xlarge" data-bind="value: description"  rows="5"></textarea>
 			                  </td>
 			                  <td width="10%">
-			                  	<select style="width:98%;" data-validation-engine="validate[required]" data-bind="options: $parent.likelihoodOptions, value: likelihood, optionsCaption: 'Please select'" ></select>
+			                  	<select style="width:98%;" data-validation-engine="validate[required]" data-bind="options: $root.likelihoodOptions, value: likelihood, optionsCaption: 'Please select'" ></select>
 			                  </td>
 			                  <td width="10%">
-								<select style="width:98%;"  data-validation-engine="validate[required]" data-bind="options: $parent.consequenceOptions, value: consequence,  optionsCaption: 'Please select'"></select>
+								<select style="width:98%;"  data-validation-engine="validate[required]" data-bind="options: $root.consequenceOptions, value: consequence,  optionsCaption: 'Please select'"></select>
 			                  </td>
 			                  <td width="8%">
 								<b> <span style="width:98%;" data-bind="text:riskRating"></span></b>  
@@ -45,7 +45,7 @@
 			                   </td>
 			                  <td width="10%">
 			                   <!-- Residual risk -->
-			                   <select style="width:98%;" data-validation-engine="validate[required]" data-bind="options: $parent.ratingOptions, value: residualRisk, optionsCaption: 'Please select'" ></select>
+			                   <select style="width:98%;" data-validation-engine="validate[required]" data-bind="options: $root.ratingOptions, value: residualRisk, optionsCaption: 'Please select'" ></select>
 			                   </td>
 			                 <td width="4%">
 			                 	<span data-bind="if: $index()"><i class="icon-remove" data-bind="click: $parent.removeRisk"></i></span>
@@ -62,8 +62,6 @@
 			       
 			   </table>
 			   <br/>
-			   <button type="button" data-bind="click: saveRisks" class="btn btn-primary">Save risks & threats</button>
-               <button type="button" id="risks-cancel" class="btn">Cancel edits to risks & threats</button>
         </div>
 	    </div>
 </div>

@@ -7,13 +7,13 @@
 	<h4>Project Plan not available.</h4>
 </div>
 
-<div data-bind="if: details.status() == 'active'">
+<div class="edit-view-meri-plan" data-bind="if: details.status() == 'active'">
 	<span style="float:right;" data-bind="if:detailsLastUpdated">Last update date : <span data-bind="text:detailsLastUpdated.formattedDate"></span></span>
 		<h3>Project Plan Information</h3>
 		<div class="row-fluid space-after">
 			    <div class="span6">
 			        <div id="project-objectives" class="well well-small">
-			 			<label><b>Project Outcomes:</b></label>
+			 			<label><b>Project Outcomes</b></label>
 						<table style="width: 100%;">
 					        <thead>
 					            <tr>
@@ -51,7 +51,7 @@
 			    </div>
 			    <div class="span6">
 		        <div id="project-partnership" class="well well-small">
-		 			<label><b>Project partnership:</b></label> 
+		 			<label><b>Project partnership</b></label>
 		 			<table style="width: 100%;">
 					        <thead>
 					            <tr>
@@ -77,7 +77,7 @@
 		<div class="row-fluid space-after">
 		    <div class="span6">
 		        <div id="project-implementation" class="well well-small">
-		 			<label><b>Project implementation / delivery mechanism:</b></label>
+		 			<label><b>Project implementation / delivery mechanism</b></label>
 		 			<span style="white-space: pre-wrap;" data-bind="text: details.implementation.description"> </span>
 		        </div>
 		    </div>
@@ -112,7 +112,7 @@
 		
 		<div class="row-fluid space-after">
 			<div id="national-priorities" class="well well-small">
-	 			<label><b>National and regional priorities:</b></label>
+	 			<label><b>National and regional priorities</b></label>
 	 			<table style="width: 100%;">
 			        <thead>
 			            <tr>
@@ -184,6 +184,7 @@
 		</g:if>
 
 		<g:if test="${projectContent.meriPlan.risksAndThreatsVisible}">
+		<!-- ko with: details -->
 		<div class="row-fluid space-after">
 			<div class="required">
 			        <div id="project-risks-threats" class="well well-small">
@@ -232,9 +233,6 @@
 		        </div>
 			    </div>
 		</div>
+		<!-- /ko -->
 		</g:if>
-
-
-	
-	
 </div>
