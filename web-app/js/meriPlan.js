@@ -97,22 +97,23 @@ function MERIPlan(project, themes, key) {
 
 };
 
-function DetailsViewModel(o, period) {
+function DetailsViewModel(projectDetails, period) {
     var self = this;
-    self.status = ko.observable(o.status);
-    self.obligations = ko.observable(o.obligations);
-    self.policies = ko.observable(o.policies);
-    self.caseStudy = ko.observable(o.caseStudy ? o.caseStudy : false);
-    self.keq = new GenericViewModel(o.keq);
-    self.objectives = new ObjectiveViewModel(o.objectives);
-    self.priorities = new GenericViewModel(o.priorities);
-    self.implementation = new ImplementationViewModel(o.implementation);
-    self.partnership = new GenericViewModel(o.partnership);
-    self.lastUpdated = ko.observable(o.lastUpdated ? o.lastUpdated : moment().format());
-    self.budget = new BudgetViewModel(o.budget, period);
+    self.status = ko.observable(projectDetails.status);
+    self.obligations = ko.observable(projectDetails.obligations);
+    self.policies = ko.observable(projectDetails.policies);
+    self.caseStudy = ko.observable(projectDetails.caseStudy ? projectDetails.caseStudy : false);
+    self.keq = new GenericViewModel(projectDetails.keq);
+    self.objectives = new ObjectiveViewModel(projectDetails.objectives);
+    self.priorities = new GenericViewModel(projectDetails.priorities);
+    self.implementation = new ImplementationViewModel(projectDetails.implementation);
+    self.partnership = new GenericViewModel(projectDetails.partnership);
+    self.lastUpdated = ko.observable(projectDetails.lastUpdated ? projectDetails.lastUpdated : moment().format());
+    self.budget = new BudgetViewModel(projectDetails.budget, period);
+    $.extend(self, new Risks(projectDetails.risks));
 
     var row = [];
-    o.events ? row = o.events : row.push(ko.mapping.toJS(new EventsRowViewModel()));
+    projectDetails.events ? row = projectDetails.events : row.push(ko.mapping.toJS(new EventsRowViewModel()));
     self.events = ko.observableArray($.map(row, function (obj, i) {
         return new EventsRowViewModel(obj);
     }));
@@ -330,8 +331,7 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
         meriPlanSelector: '#edit-meri-plan',
         saveToolbarSelector: '#project-details-save',
         floatingSaveSelector: '#floating-save',
-        meriPlanStorageKey: 'meri-plan-'+project.projectId,
-        risksStorageKey: 'risks-'+project.projectId,
+        storageKey: 'meri-plan-'+project.projectId,
         autoSaveIntervalInSeconds:60,
         restoredDataWarningSelector:'#restoredData',
         resultsMessageId:'save-details-result-placeholder',
@@ -345,22 +345,25 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
 
     $.extend(self, new ProjectViewModel(project, isEditor, organisations));
     var themes = [];
-    $.extend(self, new MERIPlan(project, themes, config.meriPlanStorageKey));
-    $.extend(self, new Risks(project.risks, config.risksStorageKey));
+    $.extend(self, new MERIPlan(project, themes, config.storageKey));
 
-    autoSaveModel(self.details, config.saveUrl, $.extend(config, {storageKey: config.meriPlanStorageKey}));
-    autoSaveModel(self.risks, config.saveUrl, $.extend(config, {storageKey: config.risksStorageKey}));
+    $(config.meriPlanSelector).validationEngine();
+
+    autoSaveModel(self.details, config.saveUrl, config);
+    // autoSaveModel(self.risks, config.saveUrl, $.extend(config, {storageKey: config.risksStorageKey}));
     configureFloatingSave(self.details.dirtyFlag, {floatingSaveSelector:config.floatingSaveSelector, saveButtonSelector:config.saveToolbarSelector});
 
     // Save MERI plan
     self.saveMeriPlan = function(){
-        if ($(options.meriPlanSelector).validationEngine('validate')) {
+        if ($(config.meriPlanSelector).validationEngine('validate', {
+                'showPrompts':true
+            })) {
             self.details.status('active');
             var now = moment().toDate().toISOStringNoMillis();
             self.details.lastUpdated(now);
             self.detailsLastUpdated(now);
             self.details.saveWithErrorDetection();
-        }
+        } 
     };
 
     self.cancelMeriPlanEdits = function() {
