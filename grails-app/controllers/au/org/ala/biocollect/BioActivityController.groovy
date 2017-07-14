@@ -406,14 +406,6 @@ class BioActivityController {
         Map parsed = commonService.parseParams(params)
         parsed.userId = userService.getCurrentUserId(parsed.mobile ? request : null)
 
-        if (settingService.isEcoScienceHub()) {
-            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectActivity.projectType:ecoScience"
-        }
-
-        if (settingService.isWorksHub()) {
-            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectActivity.projectType:works"
-        }
-
         parsed.each { key, value ->
             if (value != null && value) {
                 queryParams.put(key, value)
@@ -534,7 +526,8 @@ class BioActivityController {
      * function to points.
      */
     def getProjectActivitiesRecordsForMapping() {
-//        long startTime = System.currentTimeMillis()
+//
+//  long startTime = System.currentTimeMillis()
 
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
         Map parsed = commonService.parseParams(params)
@@ -543,14 +536,6 @@ class BioActivityController {
             if (value != null && value) {
                 queryParams.put(key, value)
             }
-        }
-
-        if (settingService.isEcoScienceHub()) {
-            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectActivity.projectType:ecoScience"
-        }
-
-        if (settingService.isWorksHub()) {
-            queryParams.searchTerm = (queryParams?.searchTerm ? queryParams.searchTerm + ' AND ' : '') + "projectActivity.projectType:works"
         }
 
         queryParams.max = queryParams.max ?: 10
@@ -679,7 +664,7 @@ class BioActivityController {
         Map model = [activity: activity, returnTo: params.returnTo, mode: mode]
         model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view: 'brief', version: version]) : null
          model.project = projectId ? projectService.get(model.activity.projectId, version) : null
-        model.projectSite = model.project.sites?.find { it.siteId == model.project.projectSiteId }
+        model.projectSite = model.project?.sites?.find { it.siteId == model.project.projectSiteId }
 
         // Add the species lists that are relevant to this activity.
         model.speciesLists = new JSONArray()

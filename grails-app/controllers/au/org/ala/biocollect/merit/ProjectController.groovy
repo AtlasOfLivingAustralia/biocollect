@@ -857,13 +857,7 @@ class ProjectController {
             payload.sort = payload.sort ?: 'lastUpdated';
             payload.fq = payload.fq ?: []
             payload.fq.push('surveyImage:true');
-            if (settingService.isEcoScienceHub()) {
-                payload.fq.push("projectType:ecoScience");
-            }
-
-            if (settingService.isWorksHub()) {
-                payload.fq.push("projectType:works");
-            }
+            payload.hub = params.hub
 
             Map result = projectService.listImages(payload, params?.version) ?: [:];
             documentService.addLicenceDescription(result.documents);

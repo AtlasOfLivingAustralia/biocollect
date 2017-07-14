@@ -49,6 +49,7 @@ class SettingService {
 
         if (!hub) {
             hub = grailsApplication.config.app.default.hub?:'default'
+            GrailsWebRequest.lookup()?.params.hub = hub
             String previousHub = cookieService.getCookie(LAST_ACCESSED_HUB)
             if (!previousHub) {
                 cookieService.setCookie(LAST_ACCESSED_HUB, hub, -1 /* -1 means the cookie expires when the browser is closed */)
