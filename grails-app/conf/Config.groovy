@@ -34,18 +34,18 @@ grails.project.groupId = "au.org.ala" // change this to alter the default packag
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.use.accept.header = true
 grails.mime.types = [
-    all:           '*/*',
-    atom:          'application/atom+xml',
-    css:           'text/css',
-    csv:           'text/csv',
-    form:          'application/x-www-form-urlencoded',
-    html:          ['text/html','application/xhtml+xml'],
-    js:            'text/javascript',
-    json:          ['application/json', 'text/json'],
-    multipartForm: 'multipart/form-data',
-    rss:           'application/rss+xml',
-    text:          'text/plain',
-    xml:           ['text/xml', 'application/xml']
+        all:           '*/*',
+        atom:          'application/atom+xml',
+        css:           'text/css',
+        csv:           'text/csv',
+        form:          'application/x-www-form-urlencoded',
+        html:          ['text/html','application/xhtml+xml'],
+        js:            'text/javascript',
+        json:          ['application/json', 'text/json'],
+        multipartForm: 'multipart/form-data',
+        rss:           'application/rss+xml',
+        text:          'text/plain',
+        xml:           ['text/xml', 'application/xml']
 ]
 
 grails.resources.resourceLocatorEnabled = true
@@ -149,117 +149,38 @@ if(!(new File(loggingDir).exists())){
     loggingDir = "/tmp"
 }
 
+// log4j configuration
 log4j = {
     appenders {
-        environments{
+        environments {
+            production {
+                rollingFile name: "tomcatLog", maxFileSize: '1MB', file: "${loggingDir}/${appName}.log", threshold: org.apache.log4j.Level.ERROR, layout: pattern(conversionPattern: "%d %-5p [%c{1}] %m%n")
+            }
             development {
-                console name: "stdout",
-                        layout: pattern(conversionPattern: "%d %-5p [%c{1}]  %m%n"),
-                        threshold: org.apache.log4j.Level.DEBUG
-                rollingFile name: "biocollectLog",
-                        maxFileSize: 104857600,
-                        file: loggingDir+"/biocollect.log",
-                        threshold: org.apache.log4j.Level.INFO,
-                        layout: pattern(conversionPattern: "%d %-5p [%c{1}]  %m%n")
-                rollingFile name: "stacktrace",
-                        maxFileSize: 104857600,
-                        file: loggingDir+"/biocollect-stacktrace.log"
+                console name: "stdout", layout: pattern(conversionPattern: "%d %-5p [%c{1}] %m%n"), threshold: org.apache.log4j.Level.DEBUG
             }
             test {
-                rollingFile name: "biocollectLog",
-                        maxFileSize: 104857600,
-                        file: loggingDir+"/biocollect.log",
-                        threshold: org.apache.log4j.Level.DEBUG,
-                        layout: pattern(conversionPattern: "%d %-5p [%c{1}]  %m%n")
-                rollingFile name: "stacktrace",
-                        maxFileSize: 104857600,
-                        file: loggingDir+"/biocollect-stacktrace.log"
-            }
-            production {
-                rollingFile name: "biocollectLog",
-                        maxFileSize: 104857600,
-                        file: loggingDir+"/biocollect.log",
-                        threshold: org.apache.log4j.Level.INFO,
-                        layout: pattern(conversionPattern: "%d %-5p [%c{1}]  %m%n")
-                rollingFile name: "stacktrace",
-                        maxFileSize: 104857600,
-                        file: loggingDir+"/biocollect-stacktrace.log"
-                rollingFile name: "sessionActivity",
-                        maxFileSize: 104857600,
-                        file: loggingDir+'/biocollect-sessions.log',
-                        threshold: org.apache.log4j.Level.INFO,
-                        layout: pattern(conversionPattern: "%d %-5p [%c{1}]  %m%n")
-
+                rollingFile name: "tomcatLog", maxFileSize: '1MB', file: "/tmp/${appName}", threshold: org.apache.log4j.Level.DEBUG, layout: pattern(conversionPattern: "%d %-5p [%c{1}] %m%n")
             }
         }
     }
-
-    environments {
-        development {
-            all additivity: false, stdout: [
-                    'grails.app.controllers.au.org.ala.biocollect',
-                    'grails.app.controllers.au.org.ala.merit',
-                    'grails.app.domain.au.org.ala.biocollect',
-                    'grails.app.services.au.org.ala.biocollect',
-                    'grails.app.services.au.org.ala.biocollect',
-                    'grails.app.taglib.au.org.ala.biocollect',
-                    'grails.app.conf.au.org.ala.biocollect',
-                    'grails.app.filters.au.org.ala.biocollect',
-                    'au.org.ala.cas.client',
-                    'au.org.ala.merit.SessionLogger'
-
-            ]
-        }
-        test {
-            all additivity: false, stdout: [
-                    'grails.app.controllers.au.org.ala.biocollect',
-                    'grails.app.controllers.au.org.ala.merit',
-                    'grails.app.domain.au.org.ala.biocollect',
-                    'grails.app.services.au.org.ala.biocollect',
-                    'grails.app.services.au.org.ala.merit',
-                    'grails.app.taglib.au.org.ala.biocollect',
-                    'grails.app.conf.au.org.ala.biocollect',
-                    'grails.app.filters.au.org.ala.biocollect',
-                    'au.org.ala.cas.client',
-                    'au.org.ala.merit.SessionLogger'
-            ]
-        }
-        production {
-            all additivity: false, sessionActivity: [
-                    'au.org.ala.merit.SessionLogger'
-            ]
-        }
+    root {
+        // change the root logger to my tomcatLog file
+        error 'tomcatLog'
+        warn 'tomcatLog'
+        additivity = true
     }
 
-    all additivity: false, biocollectLog: [
-            'grails.app.controllers.au.org.ala.biocollect',
-            'grails.app.controllers.au.org.ala.merit',
-            'grails.app.domain.au.org.ala.biocollect',
-            'grails.app.services.au.org.ala.biocollect',
-            'grails.app.services.au.org.ala.merit',
-            'grails.app.taglib.au.org.ala.biocollect',
-            'grails.app.conf.au.org.ala.biocollect',
-            'grails.app.filters.au.org.ala.biocollect'
-    ]
+    error   'au.org.ala.cas.client',
+            'grails.spring.BeanBuilder',
+            'grails.plugin.webxml',
+            'grails.plugin.cache.web.filter',
+            'grails.app.services.org.grails.plugin.resource',
+            'grails.app.taglib.org.grails.plugin.resource',
+            'grails.app.resourceMappers.org.grails.plugin.resource'
 
-    debug 'grails.app.controllers.au.org.ala',
-            'ala','au.org.ala.web',
-            'au.org.ala.merit'
-
-    error  'org.codehaus.groovy.grails.web.servlet',        // controllers
-            'org.codehaus.groovy.grails.web.pages',          // GSP
-            'org.codehaus.groovy.grails.web.sitemesh',       // layouts
-            'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-            'org.codehaus.groovy.grails.web.mapping',        // URL mapping
-            'org.codehaus.groovy.grails.commons',            // core / classloading
-            'org.codehaus.groovy.grails.plugins',            // plugins
-            'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
-            'org.springframework',
-            'org.hibernate',
-            'net.sf.ehcache.hibernate',
-            'org.xhtmlrenderer'
+    debug   'grails.app'
 }
-
 
 if (!grails.cache.config) {
 
