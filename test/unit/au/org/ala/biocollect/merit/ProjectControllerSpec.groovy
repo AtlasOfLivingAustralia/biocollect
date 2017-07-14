@@ -234,6 +234,7 @@ class ProjectControllerSpec extends Specification {
         payload.sort = 'lastUpdated';
         payload.fq = ['surveyImage:true']
         payload.projectId = 'abs'
+        payload.hub = params.hub = 'ala'
         projectServiceStub.listImages(payload, _) >> [count:1,documents:[[documentId:'124',licence: 'CC BY']]]
         when:
         request.method = "POST"
@@ -257,6 +258,7 @@ class ProjectControllerSpec extends Specification {
         payload.sort = 'lastUpdated';
         payload.fq = ['surveyImage:true']
         payload.projectId = 'abs'
+        payload.hub = params.hub = 'ala'
         projectServiceStub.listImages(payload, _) >> {throw new SocketTimeoutException('timed out')}
         when:
         request.method = "POST"
