@@ -1,7 +1,7 @@
 <div class="row-fluid">
     <div class="span2 large-space-before">
         <ul id="adminNav" class="nav nav-tabs nav-stacked ">
-            <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole)}">
+            <g:if test="${params.userIsProjectAdmin}">
                 <li ${activeClass}><a href="#settings" id="settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project settings</a></li>
                 <g:set var="activeClass" value=""/>
             </g:if>
