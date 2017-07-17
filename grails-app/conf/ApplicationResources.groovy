@@ -277,6 +277,7 @@ modules = {
         resource url: 'js/projectActivity.js'
         resource url: 'js/aekosWorkflow.js'
         resource url: 'js/aekosWorkflowUtility.js'
+        resource url: 'js/aekosPreQualification.js'
         resource url: 'js/projectActivities.js'
     }
 

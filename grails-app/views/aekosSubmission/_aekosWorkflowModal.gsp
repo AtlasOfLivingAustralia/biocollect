@@ -35,6 +35,31 @@
 
         <div class="modal-body" >
 
+        <div data-bind="if: !transients.showAekosWorkflow()">
+
+            <!-- ko foreach: transients.questions() -->
+                <div class="row-fluid">
+                    <div class="span2"></div>
+
+                    <div class="span8">
+                        <div data-bind="if: ($index()+ 1) <= $root.transients.currentQuestion()" class="text-left">
+                            <span data-bind="text: question" ></span> <b><i><span data-bind="text: answer" ></span></i></b>
+                        </div>
+                    </div>
+                </div>
+            <!-- /ko -->
+
+            <div data-bind="if: transients.cannotSubmitError()" class="row-fluid">
+                <div class="span2"></div>
+                <div class="span8 text-left">
+                    <b><i><span data-bind="text: transients.cannotSubmitError" ></span></i></b>
+                </div>
+            </div>
+
+        </div>
+
+        <div data-bind="if: transients.showAekosWorkflow()">
+
             <div class="aekosAlert" id='alert-placeholder'>
             </div>
             <br/>
@@ -87,20 +112,29 @@
                 <div class="tab-pane" data-bind="attr: {id: 'management' }">
                     <g:render template="/aekosSubmission/management" />
                 </div>
-
             </div>
         </div>
 
+        </div>
 
         <div class="modal-footer">
-            <span class="alert alert-info" data-bind="visible: !isValidationValid()">Enable Submit/Next button by filling all mandatory fields on this page.</span>
-            <button class="btn-primary btn btn-small block" data-bind="disable: !isValidationValid(), click: function() {submit();}"><i class="icon-white  icon-hdd" ></i>  Submit </button>
-            <!-- ko if: (parseInt(selectedTab().slice(-1)) < 9) -->
-            <button class="btn-primary btn btn-small block" data-bind="disable: !isValidationValid(), click: function() {selectNextTab('#' + nextTab())}">Next <i class="icon-white icon-chevron-right" ></i></button>
+            <!-- ko if: !transients.showAekosWorkflow() && !transients.cannotSubmitError() -->
+            <button class="btn-primary btn btn-small block" data-bind="click: yes">Yes</button>
+            <button class="btn-primary btn btn-small block" data-bind="click: no">No</button>
             <!-- /ko -->
+            <!-- ko if: transients.showAekosWorkflow() -->
+            <span class="alert alert-info" data-bind="visible: message() != '', text: message"></span>
+            <button class="btn-primary btn btn-small block" data-bind="click: function() {save();}"><i class="icon-white  icon-hdd" ></i>  Save </button>
+            <!-- ko if: (parseInt(selectedTab().slice(-1)) < 9) -->
+            <button class="btn-primary btn btn-small block" data-bind="click: function() {selectNextTab()}">Next <i class="icon-white icon-chevron-right" ></i></button>
+            <!-- /ko -->
+            <button class="btn-primary btn btn-small block" data-bind="click: function() {submit();}"><i class="icon-white  icon-envelope" ></i>  Submit </button>
+            <!-- /ko -->
+            <button class="btn-primary btn btn-small block" data-bind="click: hideModal">Cancel</button>
         </div>
 
     </div>
+
 </div>
 
 </script>

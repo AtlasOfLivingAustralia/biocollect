@@ -14,6 +14,49 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
     self.user = user;
     self.parentProjectActivities = projectActivities;
 
+    self.transients.preQ = new AEKOS.PreQualification();
+
+    self.transients.questions = self.transients.preQ.questions;
+
+    qArray = self.transients.questions();
+
+    self.transients.showAekosWorkflow = ko.observable(false);
+
+    self.transients.cannotSubmitError = ko.observable('');
+
+    self.transients.currentQuestion = ko.observable(1);
+
+    self.yes = function () {
+        if (qArray[self.transients.currentQuestion() - 1].exitAnswer != 'yes') {
+            self.proceed ('Yes');
+        } else {
+            self.exitPreQualification ('Yes');
+        }
+    };
+
+    self.no = function () {
+        if (qArray[self.transients.currentQuestion() - 1].exitAnswer != 'no') {
+            self.proceed ('No');
+        } else {
+            self.exitPreQualification ("No");
+        }
+    };
+
+    self.proceed = function (answer) {
+        if (qArray.length > self.transients.currentQuestion()) {
+            self.transients.questions()[self.transients.currentQuestion() - 1].answer(answer);
+            self.transients.currentQuestion(self.transients.currentQuestion() + 1);
+        } else {
+            self.loadAekosData();
+            self.transients.showAekosWorkflow(true);
+        };
+    };
+
+    self.exitPreQualification = function (answer) {
+        self.transients.questions()[self.transients.currentQuestion() - 1].answer(answer);
+        self.transients.cannotSubmitError(qArray[self.transients.currentQuestion() - 1].exitAnswerMsg);
+    };
+
     self.submissionName = self.projectViewModel.name() + ' - ' + self.name();
 
     self.validationFailed = ko.observable(false);
