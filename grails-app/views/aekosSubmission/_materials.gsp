@@ -1,4 +1,4 @@
-<div id="datasetInfo" >
+<div id="environmentFeaturesAndMaterials" >
 
     <div class="row-fluid">
         <div class="span12">
@@ -8,7 +8,7 @@
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="environmentFeatures"><g:message code="aekos.environment.features"/>
+            <label class="control-label" for="environmentFeaturesSelection"><g:message code="aekos.environment.features"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.environment.features"/>',
                               content:'<g:message code="aekos.environment.features.help"/>'}">
@@ -18,12 +18,11 @@
         </div>
 
         <div class="span8">
-            <div id="environmentFeatures" data-bind="treeView: {data: environmentalFeatures,
+            <div id="environmentFeaturesSelection" data-bind="treeView: {data: transients.environmentalFeatures,
                                        extraFieldLabel: '<g:message code="aekos.other.environment.features"/>'}" ></div>
 
         </div>
     </div>
-
     <div class="row-fluid">
         <div class="span4 text-right">
             <label class="control-label" for="materialType"><g:message code="aekos.supplementary.material.type"/>
@@ -36,11 +35,9 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <select id="materialType" data-bind="options: associatedMaterialTypes,
-                                                      value: selectedMaterialType,
+            <select id="materialType" data-bind="options: transients.associatedMaterialTypes,
+                                                      value: currentSubmissionPackage.selectedMaterialType,
                                                       optionsCaption: 'N/A'"></select>
-            </div>
         </div>
     </div>
 
@@ -56,9 +53,7 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <input id="otherMaterials" data-bind="value: otherMaterials">
-            </div>
+            <input id="otherMaterials" data-bind="value: currentSubmissionPackage.otherMaterials">
         </div>
     </div>
 
@@ -74,9 +69,7 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <textarea id="associatedMaterialName" data-bind="value: associatedMaterialNane" rows="3" style="width: 90%"></textarea>
-            </div>
+            <textarea id="associatedMaterialName" data-bind="value: currentSubmissionPackage.associatedMaterialNane" rows="3" style="width: 90%"></textarea>
         </div>
     </div>
 
@@ -92,11 +85,9 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <select id="materialIdentifier" data-bind="options: materialIdentifierTypes,
-                                                      value: selectedMaterialIdentifier,
+            <select id="materialIdentifier" data-bind="options: transients.materialIdentifierTypes,
+                                                      value: currentSubmissionPackage.selectedMaterialIdentifier,
                                                       optionsCaption: 'N/A'"></select>
-            </div>
         </div>
     </div>
 
@@ -112,9 +103,7 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <input id="associatedMaterialIdentifier" data-bind="value: associatedMaterialIdentifier">
-            </div>
+            <input id="associatedMaterialIdentifier" data-bind="value: currentSubmissionPackage.associatedMaterialIdentifier">
         </div>
     </div>
 

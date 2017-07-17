@@ -5,6 +5,7 @@ import grails.converters.JSON
 import groovyx.net.http.ContentType
 import org.apache.commons.io.FilenameUtils
 import org.codehaus.groovy.grails.web.json.JSONArray
+import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
@@ -25,6 +26,7 @@ class BioActivityController {
     MessageSource messageSource
     RecordService recordService
     SpeciesService speciesService
+    LinkGenerator grailsLinkGenerator
     SettingService settingService
 
     static int MAX_FLIMIT = 500
@@ -392,6 +394,36 @@ class BioActivityController {
         render listUserActivities(params) as JSON
     }
 
+    def aekosSubmission() {
+        def postBody = request.JSON
+        log.debug "Body: " + postBody
+        log.debug "Params:"
+        params.each { println it }
+
+        def jsonBody = new grails.web.JSONBuilder().build {postBody?.submissionBody}
+
+        params["max"] = "10"
+        params["offset"] = "0"
+        params["sort"] = "lastUpdated"
+        params["order"] = "DESC"
+        params["flimit"] = "15"
+        params["view"] = "project"
+        params["projectId"] = postBody?.aekosActivityRec?.projectId
+        params["fq"] = "projectActivityNameFacet:" + URLEncoder.encode(postBody?.aekosActivityRec?.activityName, "UTF-8")
+
+        String downloadDataUrl = grailsLinkGenerator.link(uri: "/bioActivity/downloadProjectData?projectId=" + postBody?.aekosActivityRec?.projectId + "&fq=projectActivityNameFacet:" + URLEncoder.encode(postBody?.aekosActivityRec?.activityName, "UTF-8") + "&max=10&offset=0&sort=lastUpdated&order=DESC&flimit=15&view=project&searchTerm", absolute: true)
+
+        def response = projectActivityService.sendAekosDataset(downloadDataUrl, jsonBody.toString())
+
+        def result
+        if (response?.status == 200) {
+            result = [status: "ok"]
+        } else {
+            result = [status: 'error', error: "Error submitting data to AEKOS. Return code: " +  response?.status]
+        }
+        render result as JSON
+    }
+
     def downloadProjectData() {
         response.setContentType(ContentType.BINARY.toString())
         response.setHeader('Content-Disposition', 'Attachment;Filename="data.zip"')
@@ -592,7 +624,7 @@ class BioActivityController {
             result
         }
 
-        render([activities: activities, total: searchResult.hits?.total ?: activities.size()] as JSON)
+        render([activities: activities, total: searchResult.hits?.total ?: activities?.size()] as JSON)
 
 //        long totalTime = System.currentTimeMillis() - startTime
 //        log.debug("getProjectActivitiesRecordsForMapping time ${totalTime}ms")
@@ -663,7 +695,7 @@ class BioActivityController {
     private Map activityModel(activity, projectId, mode = '', version = null) {
         Map model = [activity: activity, returnTo: params.returnTo, mode: mode]
         model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view: 'brief', version: version]) : null
-         model.project = projectId ? projectService.get(model.activity.projectId, version) : null
+        model.project = projectId ? projectService.get(model.activity.projectId, version) : null
         model.projectSite = model.project?.sites?.find { it.siteId == model.project.projectSiteId }
 
         // Add the species lists that are relevant to this activity.

@@ -35,6 +35,11 @@ class ProjectActivityController {
         }
     }
 
+    def ajaxGet(String id) {
+        def pActivity = projectActivityService.get(params.id)
+        render pActivity as JSON
+    }
+
     def ajaxUpdate(String id) {
         def values = request.JSON
         def pActivity = projectActivityService.get(params.id)

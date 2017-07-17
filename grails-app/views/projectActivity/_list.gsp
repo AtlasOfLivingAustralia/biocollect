@@ -109,7 +109,7 @@
                                                 <!-- ko foreach: submissionRecords -->
                                                     <tr style="border-bottom: none !important;">
                                                         <td><span data-bind="text: displayDate()"></span></td>
-                                                        <td><span data-bind="text: datasetSubmitter().displayName"></span></td>
+                                                        <td><span data-bind="text: datasetSubmitter() ? datasetSubmitter().displayName : ''"></span></td>
                                                         <td><span data-bind="text: datasetVersion"></span></td>
                                                         <td><span data-bind="text: submissionDoi"></span></td>
                                                     </tr>
