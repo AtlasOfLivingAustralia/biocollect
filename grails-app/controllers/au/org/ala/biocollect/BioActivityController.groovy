@@ -415,11 +415,11 @@ class BioActivityController {
 
         def response = projectActivityService.sendAekosDataset(downloadDataUrl, jsonBody.toString())
 
-        def result
-        if (response?.status == 200) {
-            result = [status: "ok"]
+        def result = [:]
+        if (response?.status == 200 && response.content?.submissionid) {
+            result = [status: "ok", submissionId: response.content?.submissionid]
         } else {
-            result = [status: 'error', error: "Error submitting data to AEKOS. Return code: " +  response?.status]
+            result = [status: 'error', error: "Error submitting data to AEKOS. SubmissionId cannot be obtained. Return code: " +  response?.status]
         }
         render result as JSON
     }

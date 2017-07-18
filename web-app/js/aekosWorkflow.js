@@ -374,7 +374,9 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
     }
 
     self.showMap = function (data, event) {
-        self.transients.aekosMap.showMap()
+        if (self.transients.aekosMap) {
+            self.transients.aekosMap.showMap()
+        }
     };
 
     self.findLogoScalingClass = function (imageElement, givenWidth, givenHeight) {
@@ -751,7 +753,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
 
     };
 
-    self.save = function(index){
+    self.save = function(){
 
         if (self.transients.newDraft) {
             self.currentSubmissionRecord.submissionPackage = self.currentSubmissionPackage
@@ -760,6 +762,10 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
             $.map(self.submissionRecords() ? self.submissionRecords() : [], function (obj, i) {
                 if (obj.datasetVersion() == self.currentSubmissionRecord.datasetVersion()) {
                     obj.submissionPackage = self.currentSubmissionPackage;
+                    obj.submissionId(self.currentSubmissionRecord.submissionId());
+                    obj.submissionDoi(self.currentSubmissionRecord.submissionDoi());
+                    obj.datasetSubmitter(self.currentSubmissionRecord.datasetSubmitter());
+                    obj.submissionPublicationDate(self.currentSubmissionRecord.submissionPublicationDate());
                 }
             });
 
@@ -767,11 +773,18 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
 
         self.transients.newDraft = false;
 
+        var promise = $.Deferred ();
+
         $.when(self.update ()).done(function (result) {
             if (result.message == 'updated') {
                 showAlert("Successfully updated", "alert-success", 'alert-placeholder');
+                promise.resolve(result);
+            } else {
+                promise.resolve({status: "error", error: "An error occurred while to save Aekos data" });
             }
         });
+
+        return promise;
     };
 
     var jsonEscapeValue = function (value) {
@@ -847,12 +860,13 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
             data: json,
             contentType: 'application/json',
             success: function (data) {
-                var result = data;
+                promise.resolve(data)
+               /* var result = data;
                 if (result && result.status == 'ok') {
                     promise.resolve(result);
                 } else {
                     promise.resolve(result);
-                }
+                }*/
             },
             error: function (data) {
                 promise.resolve({status: "error", error: "An error occurred prior to sending data to Aekos" });
@@ -890,23 +904,24 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
                         // First save is done in case, the Submit fails
                         $.when(saveDataset, submitToAekos).done(function (result1, result2) {
                             if (result2 && result2.status == "ok") {
-                                showAlert("Successful submission to Aekos.", "alert-success", 'alert-placeholder');
+                                showAlert("Successful submission to Aekos. Submission Id: " + result2.submissionId, "alert-success", 'alert-placeholder');
                                 var current_time = Date.now();
                                 var submissionDate = moment(current_time).format("YYYY-MM-DDTHH:mm:ssZZ"); //moment(new Date(), 'YYYY-MM-DDThh:mm:ssZ').isValid() ? self.endDate() : "";
 
+                                self.currentSubmissionRecord.submissionId(result2.submissionId);
                                 self.currentSubmissionRecord.submissionDoi("Pending");
                                 self.currentSubmissionRecord.datasetSubmitter(self.user.userId);
                                 self.currentSubmissionRecord.submissionPublicationDate(submissionDate);
 
-                                $.when(saveDataset).done(function (result2) {
-                                    if (result2.message == 'updated') {
+                                $.when(self.save()).done(function (result3) {
+                                    if (result3.message == 'updated') {
                                         showAlert("Submission DOI status is now pending. This status will be updated once the dataset is minted.",
                                                        "alert-success", 'alert-placeholder');
                                     }
                                 });
 
-                            } else {
-                                showAlert("Error submitting dataset to Aekos. Resonse error: " + result2.error, "alert-error", 'alert-placeholder');
+                            } else if (result2) {
+                                showAlert("Error submitting dataset to Aekos. Error: " + result2.error, "alert-error", 'alert-placeholder');
                             }
                         });
 
@@ -1011,13 +1026,18 @@ var SubmissionRec = function (params) {
     self.datasetSubmitter = ko.observable(params.datasetSubmitter ? params.datasetSubmitter : "");
     self.datasetVersion = ko.observable(params.datasetVersion ? params.datasetVersion : "");
     self.submissionDoi = ko.observable(params.submissionDoi ? params.submissionDoi : "Draft");
-    self.submissionRecordId = ko.observable(params.submissionRecordId ? params.submissionRecordId : null);
+    self.submissionRecordId = ko.observable(params.submissionRecordId ? params.submissionRecordId : "");
+    self.submissionId = ko.observable(params.submissionId ? params.submissionId : "");
 
     self.submissionPackage =  new SubmissionPackage(params.submissionPackage ? params : {});
 
     self.displayDate = ko.computed (function(){
         return self.submissionPublicationDate() ? moment(self.submissionPublicationDate()).format("DD-MM-YYYY") : '';
-    })
+    });
+
+    //self.datasetSubmmiterUser = {};
+
+    self.datasetSubmitterUser = params.datasetSubmitterUser? params.datasetSubmitterUser : {};
 };
 
 var NodeModel = function(data) {
