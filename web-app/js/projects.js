@@ -367,6 +367,8 @@ function ProjectViewModel(project, isUserEditor) {
         }
     };
 
+    self.transients = self.transients || {};
+
     var legalCustodianOrganisationTypeVal = project.legalCustodianOrganisationType? project.legalCustodianOrganisationType: "";
     self.legalCustodianOrganisationType = ko.observable(legalCustodianOrganisationTypeVal);
 
@@ -411,19 +413,17 @@ function ProjectViewModel(project, isUserEditor) {
     self.imageUrl = ko.observable(project.urlImage);
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
     self.alaHarvest = ko.observable(project.alaHarvest ? 'Yes' : 'No');
-    self.harvestOptions = ["Yes","No"];
-    self.alaHarvest.subscribe(function(newValue) {
-        self.updateHarvest();
-    });
+    self.transients.yesNoOptions = ["Yes","No"];
 
-    self.updateHarvest = function(){
+    self.updateProject = function(jsonData){
         return $.ajax({
             url: fcConfig.projectUpdateUrl,
             type: 'POST',
-            data: JSON.stringify({alaHarvest: self.alaHarvest() == 'Yes' ? true : false}),
+            data: JSON.stringify(jsonData),
             contentType: 'application/json',
             success: function (data) {
                 if (data.error) {
+                    console.error(data)
                     bootbox.alert("Error "+ data.error);
                 }
                 else {
@@ -431,10 +431,25 @@ function ProjectViewModel(project, isUserEditor) {
                 }
             },
             error: function (data) {
+                console.error(data)
                 bootbox.alert("Error updating, try again later");
+
             }
         });
     };
+
+    self.alaHarvest.subscribe(function(newValue) {
+        var data = {alaHarvest: newValue == 'Yes' ? true : false}
+        self.updateProject(data);
+    });
+
+    self.canEditorCreateSites = ko.observable(project.canEditorCreateSites ? 'Yes' : 'No');
+
+    self.canEditorCreateSites.subscribe(function(newValue) {
+        var data = {canEditorCreateSites: newValue == 'Yes' ? true : false}
+        self.updateProject(data);
+    });
+
 
     self.associatedOrgs = ko.observableArray();
     ko.utils.arrayMap(project.associatedOrgs || [], function(org) {
@@ -453,8 +468,6 @@ function ProjectViewModel(project, isUserEditor) {
             self.isContributingDataToAla(true)
         }
     });
-
-    self.transients = self.transients || {};
 
     var isBeforeToday = function(date) {
         return moment(date) < moment().startOf('day');

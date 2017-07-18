@@ -153,8 +153,10 @@ class ActivityController {
                 activity.progress = params.progress
             }
 
-            activityAndOutputModel(activity, activity.projectId)
+            Map model = activityAndOutputModel(activity, activity.projectId)
+            model.canEditSites = projectService.canUserEditSitesForProject(userId, activity.projectId)
 
+            model
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }

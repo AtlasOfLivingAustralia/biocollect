@@ -366,8 +366,7 @@ class ProjectService {
         if (userService.userIsSiteAdmin()) {
             userCanEdit = true
         } else {
-            def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProject?projectId=${projectId}&userId=${userId}"
-            userCanEdit = webService.getJson(url)?.userIsEditor ?: false
+            userCanEdit = userService.canUserEditProject(userId, projectId)
         }
 
         // Merit projects are not allowed to be edited.
@@ -378,6 +377,27 @@ class ProjectService {
         }
 
         userCanEdit
+    }
+
+    /**
+     * Check whether a works project has the canEditorCreateSites and the user has permission to edit the project
+     * If the project is not Works the default behaviour is to just call canUserEditProject.
+     * @param userId The user calling the controller
+     * @param projectId The project to check
+     * @param merit Is this a merit project?
+     */
+    def canUserEditSitesForProject(String userId, String projectId, boolean merit = true) {
+        boolean canManageSites = true
+
+        Map project = get(projectId)
+
+        if(project.projectType == "works") {
+            canManageSites = userService.userIsSiteAdmin() || userService.isUserAdminForProject(userId, projectId)  ||
+                    project?.canEditorCreateSites && userService.isUserEditorForProject(userId, projectId)
+        }
+
+        // Not sure if merit check is still relevant but just in case we rely on canUserEditProject behaviour
+        canManageSites && canUserEditProject(userId, projectId, merit)
     }
 
     /**
