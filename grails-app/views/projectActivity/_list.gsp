@@ -96,6 +96,14 @@
                                                         </a>
                                                     </td>
                                                     <td>
+                                                        <g:message code="project.survey.info.submissionId"/>
+                                                        <a href="#" class="helphover"
+                                                           data-bind="popover: {title:'<g:message code="project.survey.info.submissionId"/>',
+                                                                                content:'<g:message code="project.survey.info.submissionId.content"/>'}">
+                                                            <i class="icon-question-sign"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td>
                                                         <g:message code="project.survey.info.submissionDoi"/>
                                                         <a href="#" class="helphover"
                                                            data-bind="popover: {title:'<g:message code="project.survey.info.submissionDoi"/>',
@@ -109,8 +117,9 @@
                                                 <!-- ko foreach: submissionRecords -->
                                                     <tr style="border-bottom: none !important;">
                                                         <td><span data-bind="text: displayDate()"></span></td>
-                                                        <td><span data-bind="text: datasetSubmitter() ? datasetSubmitter().displayName : ''"></span></td>
+                                                        <td><span data-bind="text: datasetSubmitterUser ? datasetSubmitterUser.displayName : ''"></span></td>
                                                         <td><span data-bind="text: datasetVersion"></span></td>
+                                                        <td><span data-bind="text: submissionId"></span></td>
                                                         <td><span data-bind="text: submissionDoi"></span></td>
                                                     </tr>
                                                 <!-- /ko -->
