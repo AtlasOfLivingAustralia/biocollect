@@ -120,6 +120,7 @@ body {
 
   .form-actions{
     border: 0px;
+    background-color: inherit;
   }
 
   /* Navbar */
@@ -529,6 +530,12 @@ body {
   a, .link-list .heading a {
     color: #C44D34;
   }
+
+  .alert-text.text-creativecommons a{
+    color: white;
+    text-decoration: none;
+  }
+
   .link-list .heading {
     font-weight: 700;
     margin-bottom: 10px;

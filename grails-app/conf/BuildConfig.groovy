@@ -93,7 +93,7 @@ grails.project.dependency.resolution = {
         runtime (":rest:0.8") {
             excludes "httpclient", "httpcore"
         }
-        runtime ":ala-bootstrap2:2.2"
+        runtime ":ala-bootstrap2:2.4.5"
         runtime ":csv:0.3.1"
         runtime ":lesscss-resources:1.3.3"
         runtime ":ala-admin-plugin:1.2"

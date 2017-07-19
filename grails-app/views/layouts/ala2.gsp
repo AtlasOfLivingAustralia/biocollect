@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="au.org.ala.biocollect.merit.SettingPageType" %>
+<%@ page import="grails.util.Environment; au.org.ala.biocollect.merit.SettingPageType" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +12,7 @@
     <link href="https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>
 
    <title><g:layoutTitle /></title>
-   <r:require modules="ala2Skin, jquery_cookie" />
+   <r:require modules="ala, ala2Skin, jquery_cookie" />
     <r:layoutResources/>
     <g:layoutHead />
 </head>
@@ -48,23 +48,27 @@
         %{--<a class="btn btn-small toggleResponsive"><i class="icon-resize-full"></i> Desktop version</a>--}%
     </div>
 
-    <hf:footer/>
+    <div id="ala-footer">
+        <hf:footer/>
+    </div>
 
-    <div id="footer">
-        <div id="footer-wrapper">
-            <div class="container-fluid">
-                <fc:footerContent />
-            </div>
-            <div class="container-fluid">
-                <div class="large-space-before">
-                    <button class="btn btn-mini" id="toggleFluid">toggle fixed/fluid width</button>
-                    <g:if test="${userLoggedIn && introText}">
-                        <button class="btn btn-mini" type="button" data-toggle="modal" data-target="#introPopup">display user intro</button>
-                    </g:if>
+    <g:if test="${Environment.current == Environment.DEVELOPMENT}">
+        <div id="footer">
+            <div id="footer-wrapper">
+                <div class="container-fluid">
+                    <fc:footerContent />
+                </div>
+                <div class="container-fluid">
+                    <div class="large-space-before">
+                        <button class="btn btn-mini" id="toggleFluid">toggle fixed/fluid width</button>
+                        <g:if test="${userLoggedIn && introText}">
+                            <button class="btn btn-mini" type="button" data-toggle="modal" data-target="#introPopup">display user intro</button>
+                        </g:if>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div
+    </g:if>
 </div><!-- /#body-wrapper -->
 <g:if test="${userLoggedIn && introText}">
 %{-- User Intro Popup --}%
@@ -165,6 +169,9 @@
         setInterval(function() {
             $.ajax("${createLink(controller: 'ajax', action:'keepSessionAlive')}").done(function(data) {});
         }, intervalSeconds * 1000);
+
+        //make sure external link icon is not added to links in footer.
+        $('#ala-footer').find('a').addClass('do-not-mark-external')
 
     }); // end document ready
 

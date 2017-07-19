@@ -178,6 +178,8 @@
             $.ajax("${createLink(controller: 'ajax', action:'keepSessionAlive')}").done(function(data) {});
         }, intervalSeconds * 1000);
 
+        //make sure external link icon is not added to links in footer.
+        $('#ala-footer-bootstrap2').find('a').addClass('do-not-mark-external')
     }); // end document ready
 
 </r:script>
