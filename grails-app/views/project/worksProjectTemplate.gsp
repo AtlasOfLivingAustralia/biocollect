@@ -4,6 +4,7 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${project?.name.encodeAsHTML()} | Project | Field Capture</title>
+    <script src="${grailsApplication.config.google.maps.url}"></script>
     <r:script disposition="head">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -98,7 +99,7 @@
             }
         </style>
     <![endif]-->
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+
     <r:require modules="knockout,datepicker, jqueryValidationEngine, jquery_bootstrap_datatable, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, map, mapWithFeatures, leaflet_google_base"/>
 </head>
 <body>
