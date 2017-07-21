@@ -28,7 +28,7 @@
                     <label class="control-label span3"><g:message code="project.details.organisationNameSearch"/><fc:iconHelp><g:message code="project.details.organisationName.help"/></fc:iconHelp><i class="req-field"></i></label>
                     <div class="span6 controls">
                         <div class="input-append">
-                            <input id="searchText" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection" class="input-xxlarge" placeholder="Start typing a name here..." type="text" data-validation-engine="validate[funcCall[validateOrganisationSelection]]"/>
+                            <input id="searchText1" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection" class="input-xxlarge" placeholder="Start typing a name here..." type="text" data-validation-engine="validate[funcCall[validateOrganisationSelection]]"/>
                             <button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!searchTerm(), 'icon-remove':searchTerm()}"></i></button>
                         </div>
                     </div>
@@ -373,6 +373,7 @@
             </div>
         </div>
     </div>
+    </div>
 
     <div class="row-fluid">
         <div class="well">
@@ -428,7 +429,7 @@
                         <label class="control-label span3" ><g:message code="project.details.orgGrantee"/><fc:iconHelp><g:message code="project.details.orgGrantee.help"/></fc:iconHelp></label>
                         <div class="span6 controls">
                             <div class="input-append">
-                                <input id="searchText" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection" class="input-xxlarge" placeholder="Start typing a name here..." type="text"/>
+                                <input id="searchText2" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection" class="input-xxlarge" placeholder="Start typing a name here..." type="text"/>
                                 <button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!searchTerm(), 'icon-remove':searchTerm()}"></i></button>
                             </div>
                         </div>
@@ -474,7 +475,7 @@
                         <label class="control-label span3" ><g:message code="project.details.orgSponsor"/><fc:iconHelp><g:message code="project.details.orgSponsor.help"/></fc:iconHelp></label>
                         <div class="span6 controls">
                             <div class="input-append">
-                                <input id="searchText" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection" class="input-xxlarge" placeholder="Start typing a name here..." type="text"/>
+                                <input id="searchText3" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection" class="input-xxlarge" placeholder="Start typing a name here..." type="text"/>
                                 <button class="btn" type="button" data-bind="click:clearSelection"><i class='icon-search' data-bind="css:{'icon-search':!searchTerm(), 'icon-remove':searchTerm()}"></i></button>
                             </div>
                         </div>

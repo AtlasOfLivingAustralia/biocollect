@@ -212,7 +212,8 @@ class SettingService {
         \$tile-background-color: ${styles?.tileBackgroundColor?: '#f5f5f5'};
         \$well-background-color: ${styles?.wellBackgroundColor?: '#f5f5f5'};
         \$default-btn-color-active: ${styles?.defaultButtonColorActive?: '#fff'};
-        \$default-btn-background-color-active: ${styles?.defaultButtonBackgroundColorActive?: '#000'}
+        \$default-btn-background-color-active: ${styles?.defaultButtonBackgroundColorActive?: '#000'};
+        \$bread-crumb-background-colour: ${styles?.breadCrumbBackGroundColour ?: '#E7E7E7'};
         \$primary-color: #009080;
         \$primary-color-hover: #007777;
         """;
@@ -260,6 +261,23 @@ class SettingService {
      * @return
      */
     public boolean isCitizenScienceHub() {
-        hubConfig.defaultFacetQuery.contains('isCitizenScience:true')
+        hubConfig?.defaultFacetQuery?.contains('isCitizenScience:true')
+    }
+
+    /**
+     *
+     * @param controller
+     * @param action
+     * @return
+     */
+    public List getCustomBreadCrumbsSetForControllerAction(String controller, String action){
+        List customBreadCrumbs = hubConfig?.customBreadCrumbs
+        Map item = customBreadCrumbs?.find { page ->
+            if(page.controllerName == controller && page.actionName == action){
+                page.breadCrumbs
+            }
+        }
+
+        item?.breadCrumbs
     }
 }

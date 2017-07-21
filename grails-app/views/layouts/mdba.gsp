@@ -14,7 +14,7 @@
         // initialise plugins
         jQuery(function(){
             // autocomplete on navbar search input
-            jQuery("form#search-form-2011 input#search-2011, form#search-inpage input#search, input#search-2013").autocomplete('http://bie.ala.org.au/search/auto.jsonp', {
+            jQuery("form#search-form-2011 input#search-2011, form#search-inpage input#search, input#search-2013").autocomplete('https://bie.ala.org.au/search/auto.jsonp', {
                 extraParams: {limit: 100},
                 dataType: 'jsonp',
                 parse: function(data) {
@@ -74,11 +74,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="brand do-not-mark-external" href="http://www.mdba.gov.au/" id="mdbaLink" title="MDBA home page">
+            <a class="brand do-not-mark-external" href="https://www.mdba.gov.au/" id="mdbaLink" title="MDBA home page">
                 <g:img dir="/images/mdba" file="MDBA-logo.png" alt="MDBA logo" class="headerLogo"/>
                 <div id="mdbaHeadingText">MDBA</div>
             </a>
-            <a class="brand" href="http://ala.org.au/" id="alaLink" title="ALA home page">
+            <a class="brand" href="https://ala.org.au/" id="alaLink" title="ALA home page">
                 <g:img dir="/images/mdba" file="ALA-logo-BW-124x109.png" alt="Powered by ALA logo" class="headerLogo"/>
                 <div id="alaHeadingText"><div id="poweredBy">powered by</div><div id="alaBy" class="visible-desktop">Atlas of Living Australia</div>
                     <div class="hidden-desktop">ALA</div></div>

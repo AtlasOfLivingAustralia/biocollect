@@ -4,6 +4,11 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title> Upload | Sites | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2"
+          content="${createLink(controller: 'site', action: 'list')},Sites"/>
+    <meta name="breadcrumb" content="Upload Sites"/>
+
     <r:script disposition="head">
             var fcConfig = {
                 serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -21,16 +26,6 @@
     <r:require modules="knockout,amplify,jqueryValidationEngine"/>
 </head>
 <body>
-<div class="container-fluid validationEngineContainer" id="validation-container">
-    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-        <ul class="breadcrumb">
-            <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-            <li>Sites<span class="divider">/</span></li>
-            <li class="active">Upload Sites</li>
-        </ul>
-    </g:if>
-</div>
-
 <div class="container-fluid">
 
     <g:if test="${!shapeFileId}">

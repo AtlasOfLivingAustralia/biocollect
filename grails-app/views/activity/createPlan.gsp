@@ -4,6 +4,10 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Create | Activity | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2"
+          content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
+    <meta name="breadcrumb" content="Create new activity"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <r:script disposition="head">
     var fcConfig = {
@@ -21,16 +25,6 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-            <ul class="breadcrumb">
-                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-                <g:if test="${project}">
-                    <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
-                </g:if>
-                <li class="active">Create new activity</li>
-            </ul>
-        </g:if>
-
         <div class="row-fluid title-block well input-block-level">
             <div class="span5 title-attribute">
                 <h2>Project: </h2>

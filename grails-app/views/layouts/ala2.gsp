@@ -38,6 +38,26 @@
         <g:render template="/shared/bannerEcoScience"/>
     </g:if>
 
+    <g:set var="index" value="1"></g:set>
+    <g:set var="metaName" value="${'meta.breadcrumbParent' + index}"/>
+    <g:if test="${pageProperty(name: "meta.breadcrumb")}">
+        <section id="breadcrumb" class="${cssClassName}">
+            <div class="container-fluid">
+                <div class="row">
+                    <ul class="breadcrumb-list">
+                        <g:while test="${pageProperty(name: metaName)}">
+                            <g:set value="${pageProperty(name: metaName).tokenize(',')}" var="parentArray"/>
+                            <li><a href="${parentArray[0]}">${parentArray[1]}</a></li>
+                            <% index++ %>
+                            <g:set var="metaName" value="${'meta.breadcrumbParent' + index}"/>
+                        </g:while>
+                        <li class="active">${pageProperty(name: "meta.breadcrumb")}</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </g:if>
+
     <div class="container-fluid" id="main-content">
         <g:layoutBody />
     </div><!--/.container-->

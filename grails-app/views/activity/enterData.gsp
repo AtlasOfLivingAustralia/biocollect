@@ -10,6 +10,10 @@
         <meta name="layout" content="${hubConfig.skin}"/>
         <title>Edit | ${activity.type} | Field Capture</title>
     </g:else>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2"
+          content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
+    <meta name="breadcrumb" content="Enter data"/>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <r:script disposition="head">
@@ -36,17 +40,6 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <g:if test="${!printView && !hubConfig.content?.hideBreadCrumbs}">
-            <ul class="breadcrumb">
-                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-                <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
-                <li class="active">
-                    <span data-bind="text:type"></span>
-                    <span data-bind="text:startDate.formattedDate"></span><span data-bind="visible:endDate">/</span><span data-bind="text:endDate.formattedDate"></span>
-                </li>
-            </ul>
-        </g:if>
-
         <div class="row-fluid title-block well well-small input-block-level">
             <div class="span12 title-attribute">
                 <h1><span data-bind="click:goToProject" class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>

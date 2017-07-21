@@ -565,3 +565,12 @@ input.full-width-input {
     color:black;
     margin-bottom:0px;
 }
+
+/** copied from ala-styles bootstrap3 since bootstrap2 did not have this style **/
+section#breadcrumb li + li::before {
+    content: "\f105";
+    font-family: FontAwesome;
+    margin: 0 .6em;
+    height: .8em;
+    opacity: .6;
+}

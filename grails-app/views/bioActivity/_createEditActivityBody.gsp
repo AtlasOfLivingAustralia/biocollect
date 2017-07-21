@@ -2,15 +2,6 @@
 <g:set var="showCreate" value="${activity.activityId ||  (!activity.activityId && !hubConfig.content?.hideCancelButtonOnForm)}"></g:set>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <g:if test="${!printView && !mobile && !hubConfig.content?.hideBreadCrumbs}">
-            <ul class="breadcrumb">
-                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-                <li><a data-bind="click:goToProject" href="#" class="clickable">Project</a> <span class="divider">/</span></li>
-                <li class="active">
-                    <span>${pActivity.name}</span>
-                </li>
-            </ul>
-        </g:if>
         <g:if test="${!mobile}">
             <div class="row-fluid">
                 %{--page title--}%

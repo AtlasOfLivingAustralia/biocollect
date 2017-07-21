@@ -4,6 +4,9 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Create | Project | <g:message code="g.fieldCapture"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumb" content="Create Project"/>
+
     <r:script disposition="head">
     var fcConfig = {
         projectUpdateUrl: "${createLink(action:'ajaxCreate')}",
@@ -34,13 +37,6 @@
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
-    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-        <ul class="breadcrumb">
-            <li><g:link controller="home"><g:message code="g.home"/></g:link> <span class="divider">/</span></li>
-
-            <li class="active">Create Project</li>
-        </ul>
-    </g:if>
     <h2>Register a new project</h2>
     <p>
     Please tell us about your project by completing the form below.  Questions marked with a * are mandatory.

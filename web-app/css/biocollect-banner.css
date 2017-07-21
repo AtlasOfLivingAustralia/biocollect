@@ -177,3 +177,8 @@ nav#biocollectNav > ul > li#acsa-text {
     content: url(/images/acsa_icon.png);
     height: 20px;
 }
+
+section#breadcrumb {
+    background-color: white;
+    border-bottom: 0px;
+}
