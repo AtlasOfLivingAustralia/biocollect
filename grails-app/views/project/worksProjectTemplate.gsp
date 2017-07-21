@@ -145,6 +145,8 @@
             var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
             var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
             var viewModel = new WorksProjectViewModel(project, ${user?.isEditor?:false}, organisations, {});
+
+            viewModel.loadPrograms(<fc:modelAsJavascript model="${programs}"/>);
             var map
 
             ko.applyBindings(viewModel);

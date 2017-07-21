@@ -101,11 +101,15 @@ $(function(){
             }]);
     } else {
         if ($('#projectDetails').validationEngine('validate')) {
-
-            viewModel.saveWithErrorDetection(function(data) {
-                var projectId = "${project?.projectId}" || data.projectId;
-                document.location.href = "${createLink(action: 'index')}/" + projectId;
-            });
+            var projectErrors = viewModel.transients.projectHasErrors()
+                if (!projectErrors) {
+                    viewModel.saveWithErrorDetection(function(data) {
+                        var projectId = "${project?.projectId}" || data.projectId;
+                        document.location.href = "${createLink(action: 'index')}/" + projectId;
+                    });
+                } else {
+                    bootbox.alert(projectErrors);
+                }
         }
     }
     });

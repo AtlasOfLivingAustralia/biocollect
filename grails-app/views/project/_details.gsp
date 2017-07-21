@@ -306,7 +306,7 @@
             <div class="margin-top-2"></div>
             <div class="row-fluid">
                 <div class="clearfix control-group">
-                    <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.countries.label"/>:<fc:iconHelp><g:message code="project.details.countries.help"/></fc:iconHelp></label>
+                    <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.countries.label"/>:<fc:iconHelp><g:message code="project.details.countries.help"/></fc:iconHelp><i class="req-field"></i></label>
                     <div class="span9">
                         <div class="row-fluid">
                             <div class="span4">
@@ -323,7 +323,7 @@
                             <div class="span8">
                                 <div class="row-fluid">
                                     <div class="clearfix control-group">
-                                        <label class="control-label span3" ><g:message code="project.details.uNRegions.label"/>:<fc:iconHelp><g:message code="project.details.uNRegions.help"/></fc:iconHelp></label>
+                                        <label class="control-label span3" ><g:message code="project.details.uNRegions.label"/>:<fc:iconHelp><g:message code="project.details.uNRegions.help"/></fc:iconHelp><i class="req-field"></i></label>
                                         <div class="span9">
                                             <!-- ko foreach: uNRegions -->
                                             <div class="span12 margin-left-0 margin-bottom-1" >
@@ -374,11 +374,11 @@
         </div>
     </div>
 
-    <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="row-fluid">
+    <div class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.associations"/></h4>
 
-            <div class="clearfix control-group">
+            <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="clearfix control-group">
                 <label class="control-label span3" for="externalId"><g:message code="project.details.externalId"/><fc:iconHelp><g:message code="project.details.externalId.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
@@ -386,7 +386,7 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="clearfix control-group">
                 <label class="control-label span3" for="grantId"><g:message code="project.details.grantId"/><fc:iconHelp><g:message code="project.details.grantId.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
@@ -394,7 +394,7 @@
                 </div>
             </div>
 
-            <div class="clearfix control-group">
+            <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="clearfix control-group">
                 <label class="control-label span3" for="funding"><g:message code="project.details.funding"/><fc:iconHelp><g:message code="project.details.funding.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
@@ -403,17 +403,17 @@
                 </div>
             </div>
 
-            <div data-bind="visible:!isWorks()" class="clearfix control-group">
+            <div class="clearfix control-group">
                 <label class="control-label span3" for="program"><g:message code="project.details.program"/><fc:iconHelp><g:message code="project.details.program.help"/></fc:iconHelp><i class="req-field"></i></label>
 
                 <div class="controls span9">
                     <select class="span12" id="program"
-                            data-bind="value:associatedProgram,options:transients.programs,optionsCaption: 'Choose...'"
+                            data-bind="disable: transients.programs.length == 1,  value:associatedProgram,options:transients.programs,optionsCaption: 'Choose...'"
                             data-validation-engine="validate[required]"></select>
                 </div>
             </div>
 
-            <div data-bind="visible:!isWorks()" class="clearfix control-group">
+            <div class="clearfix control-group">
                 <label class="control-label span3" for="subProgram"><g:message code="project.details.subprogram"/><fc:iconHelp><g:message code="project.details.subprogram.help"/></fc:iconHelp></label>
 
                 <div class="controls span9">
@@ -422,7 +422,7 @@
                 </div>
             </div>
 
-            <div data-bind="visible:!isWorks(), with: granteeOrganisation">
+            <div data-bind="visible:!isCitizenScience() && !isWorks() && (isEcoScience() || !isExternal()), with: granteeOrganisation">
                 <div class="row-fluid">
                     <div class="clearfix control-group">
                         <label class="control-label span3" ><g:message code="project.details.orgGrantee"/><fc:iconHelp><g:message code="project.details.orgGrantee.help"/></fc:iconHelp></label>
@@ -468,7 +468,7 @@
                 </div>
             </div>
 
-            <div data-bind="visible:!isWorks(), with: sponsorOrganisation">
+            <div data-bind="visible:!isCitizenScience() && !isWorks() && (isEcoScience() || !isExternal()), with: sponsorOrganisation">
                 <div class="row-fluid">
                     <div class="clearfix control-group">
                         <label class="control-label span3" ><g:message code="project.details.orgSponsor"/><fc:iconHelp><g:message code="project.details.orgSponsor.help"/></fc:iconHelp></label>
@@ -514,7 +514,8 @@
                 </div>
             </div>
 
-            <div data-bind="visible:!isWorks() && !isEcoScience()" class="clearfix control-group">
+            %{--When is the service prodider organisatioh going to show?--}%
+            <div data-bind="visible:!isCitizenScience() && !isWorks() && !isEcoScience()" class="clearfix control-group">
                 <label class="control-label span3"
                        for="orgSvcProvider"><g:message code="project.details.orgSvcProvider"/></label>
 

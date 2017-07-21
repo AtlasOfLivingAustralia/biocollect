@@ -311,8 +311,10 @@ function ProjectViewModel(project, isUserEditor) {
     self.plannedStartDate = ko.observable(project.plannedStartDate).extend({simpleDate: false});
     self.plannedEndDate = ko.observable(project.plannedEndDate).extend({simpleDate: false});
     self.funding = ko.observable(project.funding).extend({currency:{currencySymbol:"AUD $ "}});
-    self.countries = ko.observableArray(project.countries)
-    self.uNRegions = ko.observableArray(project.uNRegions)
+    var initialCountries = project.countries && $.isArray(project.countries) && project.countries.length > 0 ? project.countries : ['Australia']
+    self.countries = ko.observableArray(initialCountries)
+    var initialUNRegions = project.uNRegions && $.isArray(project.uNRegions) && project.uNRegions.length > 0 ? project.uNRegions : ['Oceania']
+    self.uNRegions = ko.observableArray(initialUNRegions)
     self.origin = ko.observable(project.origin)
 
     self.facets = ko.observableArray();
@@ -799,7 +801,7 @@ function ProjectViewModel(project, isUserEditor) {
             }
         })
 
-        valid && self.uNRegions.push (region)
+        valid && $.inArray(region, self.uNRegions()) == -1 && self.uNRegions.push (region)
     }
 
     /**
@@ -817,10 +819,59 @@ function ProjectViewModel(project, isUserEditor) {
                 }
             })
 
-            valid && self.countries.push (country)
+            valid && $.inArray(country, self.countries()) == -1 && self.countries.push (country)
         }
     }
 
+
+    self.transients.validateCountries = function() {
+        if(self.countries().length < 1) {
+            return "Countries field is required"
+        }
+    }
+
+    self.transients.validateUNRegions = function () {
+        if(self.uNRegions().length < 1) {
+            return "UN Regions field is required"
+        }
+    }
+
+    self.transients.validateSiteViewModel  = function () {
+        if(!self.transients.siteViewModel.isValid(true)) {
+            return "You must define the spatial extent of the project area"
+        }
+    }
+
+    /**
+     * Validates project fields that are not covered by jQuery Vaiidation Engine
+     * @returns an HTML string with the list of errors if the validation fails
+     */
+    self.transients.projectHasErrors  = function () {
+        var errors = []
+
+        // Countries and uNRegions could easily be managed as jQuery validation engine callFunc functions
+        // however it is buggy and won't display error messages unless accompained by required which stuff the logic.
+        // hence the overcomplicated approach.
+        var countriesError = self.transients.validateCountries()
+        countriesError && errors.push(countriesError)
+
+        var uNRegionsError = self.transients.validateUNRegions()
+        uNRegionsError && errors.push(uNRegionsError)
+
+        var siteError = self.transients.validateSiteViewModel()
+        siteError && errors.push(siteError)
+
+        if(errors.length > 0) {
+            var result = "<ul>"
+
+            errors.forEach(function(item){
+                result += "<li>" + item + "</li>"
+
+                })
+            result += "</ul>"
+            return result
+        }
+    }
 
     var availableProjectTypes = [
         {name:'Citizen Science Project', display:'Citizen\nScience', value:'citizenScience'},

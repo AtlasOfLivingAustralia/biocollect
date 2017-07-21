@@ -129,7 +129,8 @@ $(function(){
                     }]
                 );
             } else {
-                if (viewModel.transients.kindOfProject() == "${projectService.PROJECT_TYPE_ECOSCIENCE}" || viewModel.transients.siteViewModel.isValid(true)) {
+                var projectErrors = viewModel.transients.projectHasErrors()
+                if (!projectErrors) {
                     viewModel.saveWithErrorDetection(function(data) {
                         var projectId = "${project?.projectId}" || data.projectId;
 
@@ -140,7 +141,7 @@ $(function(){
                         }
                     });
                 } else {
-                    bootbox.alert("You must define the spatial extent of the project area");
+                    bootbox.alert(projectErrors);
                 }
             }
         }
