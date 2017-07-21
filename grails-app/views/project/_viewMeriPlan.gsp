@@ -183,7 +183,7 @@
 		</div>
 		</g:if>
 
-		<g:if test="${projectContent.meriPlan.risksAndThreatsVisible}">
+		<g:if test="${projectContent.meriPlan.canViewRisks}">
 		<!-- ko with: details -->
 		<div class="row-fluid space-after">
 			<div class="required">
