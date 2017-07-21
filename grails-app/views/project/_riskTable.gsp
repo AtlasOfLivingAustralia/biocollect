@@ -4,7 +4,7 @@
 <div class="row-fluid space-after">
 	<div class="required">
 		<p>Please enter the details of risks and threats to the project and the mitigation strategies being used to address them. These should be updated at each reporting period:</p>
-	        <div id="project-risks-threats" class="well well-small">
+	        <div id="project-risks-threats" class="margin-bottom-10 margin-right-20">
 			  <div align="right"><b>Overall project risk profile:</b> <span style="color: red;">*</span>
 					<span class="ratingStyling">
 						<select data-validation-engine="validate[required]" data-bind="options: $parent.ratingOptions, value:risks.overallRisk, optionsCaption: 'Please select', css: overAllRiskHighlight" id="overall-risk"></select>

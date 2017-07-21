@@ -12,7 +12,7 @@
 		<h3>Project Plan Information</h3>
 		<div class="row-fluid space-after">
 			    <div class="span6">
-			        <div id="project-objectives" class="well well-small">
+			        <div id="project-objectives" class="margin-bottom-10 margin-right-20">
 			 			<label><b>Project Outcomes</b></label>
 						<table style="width: 100%;">
 					        <thead>
@@ -50,7 +50,7 @@
 			        </div>
 			    </div>
 			    <div class="span6">
-		        <div id="project-partnership" class="well well-small">
+		        <div id="project-partnership" class="margin-bottom-10 margin-right-20">
 		 			<label><b>Project partnership</b></label>
 		 			<table style="width: 100%;">
 					        <thead>
@@ -76,7 +76,7 @@
 		
 		<div class="row-fluid space-after">
 		    <div class="span6">
-		        <div id="project-implementation" class="well well-small">
+		        <div id="project-implementation" class="margin-bottom-10 margin-right-20">
 		 			<label><b>Project implementation / delivery mechanism</b></label>
 		 			<span style="white-space: pre-wrap;" data-bind="text: details.implementation.description"> </span>
 		        </div>
@@ -89,7 +89,7 @@
 
 
 		<div class="row-fluid space-after">
-			<div class="well well-small">
+			<div class="margin-bottom-10 margin-right-20">
  				<label><b>Key evaluation question</b></label>
 	 			<table style="width: 100%;">
 			        <thead>
@@ -111,7 +111,7 @@
 		</div>		
 		
 		<div class="row-fluid space-after">
-			<div id="national-priorities" class="well well-small">
+			<div id="national-priorities" class="margin-bottom-10 margin-right-20">
 	 			<label><b>National and regional priorities</b></label>
 	 			<table style="width: 100%;">
 			        <thead>
@@ -137,7 +137,7 @@
 		<g:if test="${user?.isAdmin}">
 		<div class="row-fluid space-after">
 			<div class="required">
-				<div id="keq" class="well well-small">
+				<div id="keq" class="margin-bottom-10 margin-right-20">
 					<label><b>Project Budget</b></label>
 					<table style="width: 100%;">
 						<thead>
@@ -187,7 +187,7 @@
 		<!-- ko with: details -->
 		<div class="row-fluid space-after">
 			<div class="required">
-			        <div id="project-risks-threats" class="well well-small">
+			        <div id="project-risks-threats" class="margin-bottom-10 margin-right-20">
 					<label><b>Project risks & threats</b></label> 
 					<div align="right">
 				  		<b> Overall project risk profile : <span data-bind="text: risks.overallRisk, css: overAllRiskHighlight" ></span></b>

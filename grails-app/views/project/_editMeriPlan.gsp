@@ -3,7 +3,7 @@
 
 	<div class="row-fluid space-after">
 		<div>
-			<div class="well well-small">
+			<div class="margin-bottom-10 margin-right-20">
 				<label><b>Project Outcomes</b></label>
 				<table style="width: 100%;">
 					<thead>
@@ -74,7 +74,7 @@
 
 	<div class="row-fluid space-after">
 		<div>
-			<div id="national-priorities" class="well well-small">
+			<div id="national-priorities" class="margin-bottom-10 margin-right-20">
 				<label><b>National and regional priorities</b></label>
 				<p>Explain how the project aligns with all applicable national and regional priorities, plans and strategies.</p>
 				<table style="width: 100%;">
@@ -114,7 +114,7 @@
 
 	<div class="row-fluid space-after">
 		<div>
-			<div id="project-implementation" class="well well-small">
+			<div id="project-implementation" class="margin-bottom-10 margin-right-20">
 				<label><b>Project implementation / delivery mechanism</b></label>
 				<p>Explain how the project will be implemented, including methods, approaches, collaborations, etc. (5000 character limit) <b><fc:iconHelp title="Project implementation / delivery mechanism">How is the project to be delivered? Briefly describe the high level method/s to be used. The delivery mechanism/s should provide sufficient detail to understand how the project's outcomes will be achieved.</fc:iconHelp></b></p>
 				<textarea style="width: 98%;" maxlength="5000"
@@ -125,7 +125,7 @@
 	</div>
 
 	<div class="row-fluid space-after">
-		<div id="project-partnership" class="well well-small">
+		<div id="project-partnership" class="margin-bottom-10 margin-right-20">
 			<label><b>Project partnerships</b></label>
 			<p>Provide details on all project partners and the nature and scope of their participation in the project.</p>
 			<table style="width: 100%;">
@@ -164,7 +164,7 @@
 
 	<div class="row-fluid space-after">
 		<div>
-			<div id="keq" class="well well-small">
+			<div id="keq" class="margin-bottom-10 margin-right-20">
 				<label><b>Key evaluation question</b>  <fc:iconHelp title="Key evaluation question">Please list the Key Evaluation Questions for your project. Evaluation questions should cover the effectiveness of the project and whether it delivered what was intended; the impact of the project; the efficiency of the delivery mechanism/s; and the appropriateness of the methodology. These need to be answerable within the resources and time available to the project.</fc:iconHelp></label>
 				<table style="width: 100%;">
 					<thead>
@@ -208,7 +208,7 @@
 	<!-- Budget table -->
 	<div class="row-fluid space-after">
 		<div>
-			<div class="well well-small">
+			<div class="margin-bottom-10 margin-right-20">
 				<label><b>Project Budget</b><fc:iconHelp title="Project Budget">Include the planned budget expenditure against each programme objective. This information will be used to report on the use of public money.</fc:iconHelp></label>
 				<table style="width: 100%;">
 					<thead>
