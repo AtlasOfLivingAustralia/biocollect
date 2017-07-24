@@ -350,7 +350,6 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
     $(config.meriPlanSelector).validationEngine();
 
     autoSaveModel(self.details, config.saveUrl, config);
-    // autoSaveModel(self.risks, config.saveUrl, $.extend(config, {storageKey: config.risksStorageKey}));
     configureFloatingSave(self.details.dirtyFlag, {floatingSaveSelector:config.floatingSaveSelector, saveButtonSelector:config.saveToolbarSelector});
 
     // Save MERI plan
