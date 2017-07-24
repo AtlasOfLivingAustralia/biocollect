@@ -60,13 +60,19 @@
                         <input id="description" type="text" class="input-xxlarge" data-bind="value:description" data-validation-engine="validate[required]"></span>
                     </div>
                 </div>
-
                 <div class="row-fluid space-after">
-                    <div class="span6">
-                        <label for="theme" class="for-readonly">Major theme</label>
+                    <div class="span6" data-bind="visible:transients.themes && transients.themes.length > 1">
+                        <label for="theme">Major theme</label>
                         <select id="theme" data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'" class="input-xlarge">
                         </select>
                     </div>
+                    <div class="span6" data-bind="visible:transients.themes && transients.themes.length == 1">
+                        <label for="theme">Major theme</label>
+                        <span data-bind="text:mainTheme">
+                        </span>
+                    </div>
+                </div>
+                <div class="row-fluid space-after">
                     <div class="span6">
                         <label class="for-readonly inline">Activity progress</label>
                         <button type="button" class="btn btn-small"
