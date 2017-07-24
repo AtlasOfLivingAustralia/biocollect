@@ -119,16 +119,16 @@
 
         <div class="modal-footer">
             <!-- ko if: !transients.showAekosWorkflow() && !transients.cannotSubmitError() -->
-            <button class="btn-primary btn btn-small block" data-bind="click: yes">Yes</button>
-            <button class="btn-primary btn btn-small block" data-bind="click: no">No</button>
+                <button class="btn-primary btn btn-small block" data-bind="click: yes">Yes</button>
+                <button class="btn-primary btn btn-small block" data-bind="click: no">No</button>
             <!-- /ko -->
             <!-- ko if: transients.showAekosWorkflow() -->
-            <span class="alert alert-info" data-bind="visible: message() != '', text: message"></span>
-            <button class="btn-primary btn btn-small block" data-bind="click: function() {save();}"><i class="icon-white  icon-hdd" ></i>  Save </button>
-            <!-- ko if: (parseInt(selectedTab().slice(-1)) < 9) -->
-            <button class="btn-primary btn btn-small block" data-bind="click: function() {selectNextTab()}">Next <i class="icon-white icon-chevron-right" ></i></button>
-            <!-- /ko -->
-            <button class="btn-primary btn btn-small block" data-bind="click: function() {submit();}"><i class="icon-white  icon-envelope" ></i>  Submit </button>
+                <span class="alert alert-info" data-bind="visible: message() != '', text: message"></span>
+                <button class="btn-primary btn btn-small block" data-bind="click: function() {save();}, enable: transients.enableSubmission()"><i class="icon-white  icon-hdd" ></i>  Save </button>
+                <!-- ko if: (parseInt(selectedTab().slice(-1)) < 9) -->
+                    <button class="btn-primary btn btn-small block" data-bind="click: function() {selectNextTab()}">Next <i class="icon-white icon-chevron-right" ></i></button>
+                <!-- /ko -->
+                <button class="btn-primary btn btn-small block" data-bind="click: function() {submit()}, enable: transients.enableSubmission()"><i class="icon-white  icon-envelope" ></i>  Submit </button>
             <!-- /ko -->
             <button class="btn-primary btn btn-small block" data-bind="click: hideModal">Cancel</button>
         </div>

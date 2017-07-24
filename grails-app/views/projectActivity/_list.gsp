@@ -128,6 +128,7 @@
 
                                     </div>
 
+                                    <g:if test="${grailsApplication.config.aekosSubmission?.url? true: false}">
                                     <div>
                                         <br/>
                                         <!-- ko if: $parent.userIsAdmin() -->
@@ -135,7 +136,7 @@
                                                  class="btn btn-success btn-sm">Submit current version to AEKOS</a></span>
                                         <!-- /ko -->
                                     </div>
-
+                                    </g:if>
                                 </div>
                             </g:if>
                         </div>

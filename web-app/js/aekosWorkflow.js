@@ -124,6 +124,8 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
 
     });
 
+    self.transients.enableSubmission = ko.observable(true);
+    
     self.transients.fieldsOfResearch = [];
     self.transients.socioEconomic = [];
     self.transients.economicResearch = [];
@@ -876,60 +878,111 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
         return promise;
     };
 
+    self.proceedSubmission = function (previousPendingSubmissions) {
+        var userDetails = {};
+
+       // self.transients.enableSubmission = ko.observable(false);
+
+        bootbox.confirm("<h4>Please enter your SHaRED Login: </h4><hr style='color: grey'/><br><form id='infos' action=''>\
+        User:&emsp;&emsp;&emsp;&emsp;<input type='text' name='username' /><br/>\
+        Password:&emsp;&nbsp;&nbsp;&nbsp;<input type='password' name='password' /><br/>\
+        Email:&emsp;&emsp;&emsp;&emsp;<input type='text' name='emailAddress' />\
+        </form>", function(result1) {
+            if(result1) {
+
+                if (previousPendingSubmissions) {
+                    previousPendingSubmissions.forEach(function (submissionRecord) {
+                        submissionRecord.submissionDoi('Cancelled')
+                    });
+                }
+
+                var invalidUser = false;
+                $('#infos :input').each(function() {
+                    if (!invalidUser && $(this).val() && $(this).val().trim() != "") {
+                        if (this.name == 'emailAddress' && $(this).val().indexOf('@') < 0) {
+                            invalidUser = true;
+                        } else {
+                            userDetails[this.name] = $(this).val();
+                        }
+                    } else {
+                        invalidUser = true;
+                    }
+                    // userDetails.push(a);
+                    //values[this.name] = $(this).val();
+                });
+
+                if (!invalidUser && userDetails && Object.keys(userDetails).length > 0) {
+
+                    var saveDataset = self.save();
+
+                    var submitToAekos = self.postJsonSubmission(userDetails);
+
+                    // First save is needed in case this submission fails
+                    $.when(saveDataset, submitToAekos).done(function (result1, result2) {
+                        if (result2 && result2.status == "ok") {
+                            showAlert("Successful submission to Aekos. Submission Id: " + result2.submissionId, "alert-success", 'alert-placeholder');
+                            var current_time = Date.now();
+                            var submissionDate = moment(current_time).format("YYYY-MM-DDTHH:mm:ssZZ"); //moment(new Date(), 'YYYY-MM-DDThh:mm:ssZ').isValid() ? self.endDate() : "";
+
+                            self.currentSubmissionRecord.submissionId(result2.submissionId);
+                            self.currentSubmissionRecord.submissionDoi("Pending");
+                            self.currentSubmissionRecord.datasetSubmitter(self.user.userId);
+                            self.currentSubmissionRecord.submissionPublicationDate(submissionDate);
+
+                            $.when(self.save()).done(function (result3) {
+                                if (result3.message == 'updated') {
+                                    showAlert("Submission DOI status is now pending. This status will be updated once the dataset is minted.",
+                                        "alert-success", 'alert-placeholder');
+                                }
+                            });
+
+                            self.transients.enableSubmission(false);
+
+                        } else if (result2) {
+                            showAlert("Error submitting dataset to Aekos. Error: " + result2.error, "alert-error", 'alert-placeholder');
+                            self.transients.enableSubmission(true);
+                        }
+                    });
+                } else if (invalidUser) {
+                    bootbox.alert("Please enter Username, Password and a valid Email(must contain @) in order to submit.")
+                    self.transients.enableSubmission(true);
+                }
+            } else {
+                self.transients.enableSubmission(true);
+            }
+        });
+    };
+
     self.submit = function(index){
 
         if (self.isAllValidationValid()) {
 
-            var userDetails = {};
-            bootbox.confirm("<h4>Please enter your SHaRED Login: </h4><hr style='color: grey'/><br><form id='infos' action=''>\
-    User:&emsp;&emsp;&emsp;&emsp;<input type='text' name='username' /><br/>\
-    Password:&emsp;&nbsp;&nbsp;&nbsp;<input type='password' name='password' /><br/>\
-    Email:&emsp;&emsp;&emsp;&emsp;<input type='text' name='emailAddress' />\
-    </form>", function(result) {
-                if(result) {
+            self.transients.enableSubmission(false);
 
-                    $('#infos :input').each(function() {
-                        userDetails[this.name] = $(this).val();
-                       // userDetails.push(a);
-                        //values[this.name] = $(this).val();
-                    });
+            var previousSubmissionExist = false;
+            var previousPendingSubmissions = [];
 
+            self.submissionRecords().forEach (function (submissionRecord) {
+                if (submissionRecord.datasetVersion() != self.currentSubmissionRecord.datasetVersion() && submissionRecord.submissionDoi() == 'Pending') {
+                    previousSubmissionExist = true;
+                    bootbox.confirm("There is another submission that is still pending. In order to cancel previous submission in SHaRED, you must login into SHaRED and manually cancel the previous submission before you re-submit. Click OK if you want to continue to re-submit.", function (result) {
+                        if (result) {
+                            previousPendingSubmissions.push(submissionRecord);
+                            self.proceedSubmission(previousPendingSubmissions);
+                        } else {
+                            self.transients.enableSubmission(true);
+                        }
 
-                    if (userDetails && Object.keys(userDetails).length > 0) {
-
-                        var saveDataset = self.save();
-
-                        var submitToAekos = self.postJsonSubmission(userDetails);
-
-                        // First save is done in case, the Submit fails
-                        $.when(saveDataset, submitToAekos).done(function (result1, result2) {
-                            if (result2 && result2.status == "ok") {
-                                showAlert("Successful submission to Aekos. Submission Id: " + result2.submissionId, "alert-success", 'alert-placeholder');
-                                var current_time = Date.now();
-                                var submissionDate = moment(current_time).format("YYYY-MM-DDTHH:mm:ssZZ"); //moment(new Date(), 'YYYY-MM-DDThh:mm:ssZ').isValid() ? self.endDate() : "";
-
-                                self.currentSubmissionRecord.submissionId(result2.submissionId);
-                                self.currentSubmissionRecord.submissionDoi("Pending");
-                                self.currentSubmissionRecord.datasetSubmitter(self.user.userId);
-                                self.currentSubmissionRecord.submissionPublicationDate(submissionDate);
-
-                                $.when(self.save()).done(function (result3) {
-                                    if (result3.message == 'updated') {
-                                        showAlert("Submission DOI status is now pending. This status will be updated once the dataset is minted.",
-                                                       "alert-success", 'alert-placeholder');
-                                    }
-                                });
-
-                            } else if (result2) {
-                                showAlert("Error submitting dataset to Aekos. Error: " + result2.error, "alert-error", 'alert-placeholder');
-                            }
-                        });
-
-                    }
-
-                }
+                    })
+                };
             });
 
+            if (!previousSubmissionExist) {
+                self.proceedSubmission();
+            }
+
+        } else {
+            self.transients.enableSubmission(true);
         };
     };
 
