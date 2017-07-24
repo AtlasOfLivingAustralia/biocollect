@@ -57,8 +57,6 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
         self.transients.cannotSubmitError(qArray[self.transients.currentQuestion() - 1].exitAnswerMsg);
     };
 
-    self.submissionName = self.projectViewModel.name() + ' - ' + self.name();
-
     self.validationFailed = ko.observable(false);
 
     self.datasetTitle = ko.computed(function() {
@@ -111,6 +109,8 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
     } else {
         self.transients.newDraft = false;
     };
+
+    self.submissionName = self.projectViewModel.name() + " - " + self.name() + " - " + self.currentSubmissionRecord.datasetVersion();
 
     var today = moment().format('DD-MM-YYYY');
 
@@ -906,9 +906,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
                         }
                     } else {
                         invalidUser = true;
-                    }
-                    // userDetails.push(a);
-                    //values[this.name] = $(this).val();
+                    };
                 });
 
                 if (!invalidUser && userDetails && Object.keys(userDetails).length > 0) {
@@ -965,7 +963,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
             self.submissionRecords().forEach (function (submissionRecord) {
                 if (submissionRecord.datasetVersion() != self.currentSubmissionRecord.datasetVersion() && submissionRecord.submissionDoi() == 'Pending') {
                     previousSubmissionExist = true;
-                    bootbox.confirm("There is another submission that is still pending. In order to cancel previous submission in SHaRED, you must login into SHaRED and manually cancel the previous submission before you re-submit. Click OK if you want to continue to re-submit.", function (result) {
+                    bootbox.confirm("There is another submission that is still pending. In order to cancel previous submission in SHaRED, you must login into SHaRED and manually cancel the previous submission before you re-submit. Click OK if you want to continue and cancel previous pending submission.", function (result) {
                         if (result) {
                             previousPendingSubmissions.push(submissionRecord);
                             self.proceedSubmission(previousPendingSubmissions);
@@ -1090,7 +1088,13 @@ var SubmissionRec = function (params) {
 
     //self.datasetSubmmiterUser = {};
 
-    self.datasetSubmitterUser = params.datasetSubmitterUser? params.datasetSubmitterUser : {};
+    if (params.datasetSubmitterUser) {
+        self.datasetSubmitterUser = ko.observable(params.datasetSubmitterUser);
+        self.datasetSubmitterUser().displayName = ko.observable(params.datasetSubmitterUser.displayName? params.datasetSubmitterUser.displayName: '');
+    } else {
+        self.datasetSubmitterUser = ko.observable({});
+
+    }
 };
 
 var NodeModel = function(data) {
