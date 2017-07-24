@@ -589,4 +589,10 @@ modules = {
     mobile{
         resource url: 'css/mobile_activity.css'
     }
+
+    // This module is used by ala-bootstrap2 plugin. Removed application.js file from module.
+    core {
+        dependsOn 'jquery', 'autocomplete'
+        resource url:[plugin: 'ala-bootstrap2', dir: 'js',file:'html5.js'], wrapper: { s -> "<!--[if lt IE 9]>$s<![endif]-->" }
+    }
 }
