@@ -125,8 +125,8 @@
                                                             <td><span data-bind="text: submissionDoi"></span></td>
                                                         <!-- /ko -->
                                                         <!-- ko ifnot: submissionDoi() == 'Draft' || submissionDoi() == 'Pending' || submissionDoi() == 'Cancelled' -->
-                                                            <td><a data-bind='attr: { href: ${grailsApplication.config.aekosMintedDoi.url} + "/" + submissionId(),
-                                                                              title:  ${grailsApplication.config.aekosMintedDoi.url} + "/" + submissionId()}', target="_blank"><span data-bind="text: submissionDoi"></span></a></td>
+                                                            <td><a data-bind='attr: { href: "${grailsApplication.config.aekosMintedDoi.url}/" + submissionId(),
+                                                                              title:  "${grailsApplication.config.aekosMintedDoi.url}/" + submissionId()}', target="_blank"><span data-bind="text: submissionDoi"></span></a></td>
                                                         <!-- /ko -->
                                                     </tr>
                                                 <!-- /ko -->
