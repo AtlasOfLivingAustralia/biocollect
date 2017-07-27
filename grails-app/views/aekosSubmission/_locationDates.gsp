@@ -1,4 +1,4 @@
-<div id="datasetInfo">
+<div id="spatialInfoCollectionDates">
 
     <div class="row-fluid">
         <div class="span12">
@@ -14,7 +14,7 @@
                               content:'<g:message code="aekos.dataset.site.help"/>'}">
                     <i class="icon-question-sign"></i>
                 </a>
-                <span class="req-field"></span></label>
+                <span class="req-field"></span>
             </label>
         </div>
 
@@ -31,11 +31,11 @@
                 </span>
             </span>--}%
             %{--<span id="recordOrActivityMap" data-bind="visible: transients.totalPoints() > 0 && !transients.loadingMap() ">--}%
-            <textarea id="geographicalExtentDescription" data-bind="value: geographicalExtentDescription"  data-validation-engine="validate[required]" rows="3" style="width: 90%"></textarea>
+            <textarea id="geographicalExtentDescription" data-bind="value: currentSubmissionPackage.geographicalExtentDescription"  data-validation-engine="validate[required]" rows="3" style="width: 90%"></textarea>
             <br>
-            <span id="recordOrActivityMap">
+            <div id="recordOrActivityMap">
                 <m:map id="aekosDatasetMap" width="100%"/>
-            </span>
+            </div>
         </div>
 
 
@@ -69,9 +69,7 @@
 
 
        <div class="span8">
-            <div class="controls">
-                <div class="span8">
-                    <span data-bind="text: selectedIbraRegion" />
+            <span id="selectedIbraRegion" data-bind="text: selectedIbraRegion" />
 %{--                    <div class="controls">
                         <div class="panel panel-default" >
                             <div id="ibraRegion" class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
@@ -82,46 +80,69 @@
                             </div>
                         </div>
                     </div>--}%
+%{--
                 </div>
-
-
             </div>
+--}%
         </div>
     </div>
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="startDate"><g:message code="aekos.activity.startDate"/>
+            <label class="control-label" ><g:message code="aekos.dataset.site.coordinate"/>
+                <a href="#" class="helphover"
+                   data-bind="popover: {title:'<g:message code="aekos.dataset.site.coordinate"/>'}">
+                    <i class="icon-question-sign"></i>
+                </a>
+            </label>
+        </div>
+
+
+        <div class="span8">
+            <span id="siteCoordinates" data-bind="text: siteCoordinates" />
+         </div>
+    </div>
+
+    <br>
+ %{--   </div>
+
+<div id="collectionDates">
+--}%
+    <div class="row-fluid">
+        <div class="span4 text-right">
+            <label class="control-label" for="collectionStartDate"><g:message code="aekos.activity.startDate"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.activity.startDate"/>',
                               content:'<g:message code="aekos.activity.startDate.help"/>'}">
                     <i class="icon-question-sign"></i>
                 </a>
+                <span class="req-field"></span>
             </label>
         </div>
 
-        <div class="span8">
-            <div class="controls">
-                <span id="startDate" data-bind="value: startDate"></span>
-            </div>
+        <div class="span8 input-append">
+            <input id="collectionStartDate" class="datepicker" data-bind="datepicker: currentSubmissionPackage.collectionStartDate.date, value: currentSubmissionPackage.collectionStartDate" type="text"/>
+            <span class="add-on open-datepicker"><i class="icon-calendar"></i></span>
+            %{--<span id="collectionStartDate" data-bind="value: startDate"></span>--}%
         </div>
     </div>
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="startDate"><g:message code="aekos.activity.endDate"/>
+            <label class="control-label" for="collectionEndDate"><g:message code="aekos.activity.endDate"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.activity.endDate"/>',
                               content:'<g:message code="aekos.activity.endDate.help"/>'}">
                     <i class="icon-question-sign"></i>
                 </a>
+                <span class="req-field"></span>
             </label>
         </div>
 
-        <div class="span8">
-            <div class="controls">
-                <span id="endDate" data-bind="value: endDate"></span>
-            </div>
+        <div class="span8 input-append">
+            <input id="collectionEndDate" class="datepicker" data-bind="datepicker: currentSubmissionPackage.collectionEndDate.date, value: currentSubmissionPackage.collectionEndDate" type="text"/>
+            <span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
+           %{-- <span id="collectionEndDate" data-bind="value: endDate"></span>--}%
         </div>
     </div>
 

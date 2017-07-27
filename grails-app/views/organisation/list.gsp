@@ -4,6 +4,9 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Organisations | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumb" content="Organisations"/>
+
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>
     <r:script disposition="head">
         var fcConfig = {

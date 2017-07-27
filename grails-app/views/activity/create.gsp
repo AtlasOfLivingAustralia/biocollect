@@ -4,6 +4,17 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Create | Activity | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <g:if test="${project}">
+        <meta name="breadcrumbParent2"
+              content="${createLink(controller: 'project', action: 'index')}/${project?.projectId},Project"/>
+    </g:if>
+    <g:elseif test="${site}">
+        <meta name="breadcrumbParent2"
+              content="${createLink(controller: 'site', action: 'index')}/${site.siteId},Site"/>
+        <li><a data-bind="click:goToSite" class="clickable">Site</a> <span class="divider">/</span></li>
+    </g:elseif>
+    <meta name="breadcrumb" content="Create new activity"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <r:script disposition="head">
     var fcConfig = {
@@ -18,19 +29,6 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-            <ul class="breadcrumb">
-                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-                <g:if test="${project}">
-                    <li><a href="#" data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
-                </g:if>
-                <g:elseif test="${site}">
-                    <li><a data-bind="click:goToSite" class="clickable">Site</a> <span class="divider">/</span></li>
-                </g:elseif>
-                <li class="active">Create new activity</li>
-            </ul>
-        </g:if>
-
         <div class="row-fluid">
             <div class="span6">
                 <label for="type">Type of activity</label>
@@ -78,9 +76,6 @@
 
             self.type = ko.observable();
 
-            self.goToProject = function () {
-                document.location.href = fcConfig.projectViewUrl + projectId;
-            };
             self.transients = {};
             self.transients.activityDescription = ko.computed(function() {
                 var result = "";

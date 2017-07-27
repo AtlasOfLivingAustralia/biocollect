@@ -18,9 +18,9 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
+            %{--<div class="controls">--}%
                 <span id="submissionName" data-bind="text: submissionName"></span>
-            </div>
+            %{--</div>--}%
         </div>
     </div>
 
@@ -36,28 +36,29 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
+            %{--<div class="controls">--}%
                 <span id="projectName" data-bind="text: projectViewModel.name"></span>
-            </div>
+            %{--</div>--}%
         </div>
     </div>
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="projectDescription"><g:message code="aekos.project.info.description"/>
+            <label class="control-label" %{--for="projectDescription"--}%><g:message code="aekos.project.info.description"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.project.info.description"/>',
                               content:'<g:message code="aekos.project.info.description.help"/>'}">
                     <i class="icon-question-sign"></i>
                 </a>
-                <span class="req-field"></span></label>
+                %{--<span class="req-field"></span>--}%</label>
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <textarea id="projectDescription" data-bind="value: projectViewModel.description"
-                          data-validation-engine="validate[required]" rows="20" style="width:90%;" class="input-xlarge"></textarea>
-            </div>
+           %{-- <div class="controls">--}%
+                <span id="projectDescription" data-bind="text: projectViewModel.description"></span>
+%{--                <textarea id="projectDescription" data-bind="value: projectViewModel.description"
+                          data-validation-engine="validate[required]" rows="20" style="width:90%;" class="input-xlarge"></textarea>--}%
+           %{-- </div>--}%
         </div>
     </div>
 

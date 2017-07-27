@@ -273,12 +273,6 @@ var ProjectActivity = function (params) {
 
     self.relatedDatasets = ko.observableArray (pActivity.relatedDatasets ? pActivity.relatedDatasets : []);
 
-    self.typeFor = ko.observableArray(pActivity.typeFor ? pActivity.typeFor : [])
-    self.typeSeo = ko.observableArray(pActivity.typeSeo ? pActivity.typeSeo : [])
-    self.typeResearch = ko.observableArray(pActivity.typeResearch ? pActivity.typeResearch : [])
-    self.typeThreat = ko.observableArray(pActivity.typeThreat ? pActivity.typeThreat : [])
-    self.typeConservation = ko.observableArray(pActivity.typeConservation ? pActivity.typeConservation : [])
-
     self.lastUpdated = ko.observable(pActivity.lastUpdated ? pActivity.lastUpdated : "");
 
     self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "CC BY");
@@ -329,33 +323,50 @@ var ProjectActivity = function (params) {
     };
     self.loadSites(sites, pActivity.sites);
 
-    // AEKOS submission records
-    var submissionRecs = pActivity.submissionRecords ? pActivity.submissionRecords : [];
-
-    submissionRecs.sort(function(b, a) {
-        var v1 = parseInt(a.datasetVersion.substr(7, 8))
-        var v2 = parseInt(b.datasetVersion.substr(7, 8))
-        if (v1 < v2) {
-            return -1;
-        }
-        if (v1 > v2) {
-            return 1;
-        }
-
-        // names must be equal
-        return 0;
-    });
-
-    var sortedSubmissionRecs = submissionRecs.sort();
-
     self.submissionRecords = ko.observableArray();
 
-    self.loadSubmissionRecords = function (submissionRecs) {
+    self.loadSubmissionRecords = function (pActvitySubmissionRecs) {
+        if (!pActvitySubmissionRecs || pActvitySubmissionRecs.length == 0) {
+            return;
+        }
+
+        var submissionRecs = pActvitySubmissionRecs;
+
+        if (pActvitySubmissionRecs.length > 1) {
+
+            submissionRecs.sort(function (b, a) {
+                if (a && b) {
+                    var v1 = parseInt(a.datasetVersion.substr(7, 8))
+                    var v2 = parseInt(b.datasetVersion.substr(7, 8))
+                    if (v1 < v2) {
+                        return -1;
+                    }
+                    if (v1 > v2) {
+                        return 1;
+                    }
+                }
+                // names must be equal
+                return 0;
+
+            });
+
+            var sortedSubmissionRecs = submissionRecs.sort();
+            submissionRecs = sortedSubmissionRecs;
+        }
+
+        if (ko.utils.unwrapObservable(self.submissionRecords)) {
+            ko.utils.unwrapObservable(self.submissionRecords).splice (0);
+        }
+
         $.map(submissionRecs ? submissionRecs : [], function (obj, i) {
-            self.submissionRecords.push(new SubmissionRec(obj.submissionPublicationDate, obj.datasetSubmitter, obj.datasetVersion, obj.submissionDoi));
-        });
+            var submissionRec = new SubmissionRec(obj);
+            ko.utils.unwrapObservable(self.submissionRecords).push(submissionRec);
+         });
     };
-    self.loadSubmissionRecords(sortedSubmissionRecs);
+
+    if (pActivity.submissionRecords && pActivity.submissionRecords.length > 0) {
+        self.loadSubmissionRecords(pActivity.submissionRecords);
+    }
 
     var methodName = pActivity.methodName? pActivity.methodName : "";
 
@@ -364,36 +375,6 @@ var ProjectActivity = function (params) {
     } else {
         self.transients.isAekosData = ko.observable(false);
     }
-
-    /*   self.showModal = function (pActivity) {
-     self.modal = ko.observable(new AekosWorkflowViewModel(pActivity));
-
-     } */
-
-    // New fields for Aekos Submission
-    self.environmentalFeatures = ko.observableArray();
-    self.environmentalFeaturesSuggest = ko.observable();
-
-    self.transients.titleOptions = ['Assoc Prof', 'Dr', 'Miss', 'Mr', 'Mrs', 'Miss', 'Prof'];
-
-    self.datasetContactRole = ko.observable('');
-    self.datasetContactDetails = ko.observable('');
-    self.datasetContactEmail = ko.observable('');
-    self.datasetContactName = ko.observable('');
-    self.datasetContactPhone = ko.observable('');
-    self.datasetContactAddress = ko.observable('');
-
-    self.authorGivenNames = ko.observable('');
-    self.authorSurname = ko.observable('');
-    self.authorAffiliation = ko.observable('');
-
-   /* self.showModal = function () {
-        //  self.aekosModal(true);
-        self.aekosModalView().show(true);
-        $('.modal')[0].style.width = '90%'
-        $('.modal')[0].style.height = '80%'
-    };
-*/
 
     /**
      * get number of sites selected for a survey
@@ -476,7 +457,7 @@ var ProjectActivity = function (params) {
     self.showAekosModal = function (projectActivities, currentUser, vocabList, projectArea) {
         AEKOS.Utility.openModal({
             template: "aekosWorkflowModal",
-            viewModel: new AEKOS.AekosViewModel (self, project, projectActivities, currentUser, vocabList, projectArea),
+            viewModel: new AEKOS.AekosViewModel (self, pActivity, project, projectActivities, currentUser, vocabList, projectArea),
             context: self // Set context so we don't need to bind the callback function
         })
     };

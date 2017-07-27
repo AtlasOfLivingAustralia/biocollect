@@ -4,6 +4,11 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Edit | Blog Entry | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2"
+          content="${createLink(controller: 'project', action: 'index')}/${blogEntry.projectId},Project"/>
+    <meta name="breadcrumb" content="Edit blog entry"/>
+
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>
     <r:script disposition="head">
         var fcConfig = {
@@ -19,18 +24,6 @@
 </head>
 <body>
 <div class="${containerType}">
-    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-        <ul class="breadcrumb">
-            <li>
-        <g:link controller="home">Home</g:link> <span class="divider">/</span>
-        </li>
-        <g:if test="${params.projectId}">
-            <g:link controller="project" id="${params.projectId}">Project </g:link>  <span class="divider"> / </span></li>
-        </g:if>
-        <li class="active">Edit blog entry</li>
-        </ul>
-    </g:if>
-
     <g:render template="editBlogEntry"/>
 
     <div class="form-actions">

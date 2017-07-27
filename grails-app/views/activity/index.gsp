@@ -10,6 +10,11 @@
         <meta name="layout" content="${hubConfig.skin}"/>
         <title>View | ${activity.type} | Field Capture</title>
     </g:else>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2"
+          content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
+    <meta name="breadcrumb" content="${activity.type}"/>
+
     <g:set var="commentUrl" value="${resource(dir:'/activity')}/${activity.activityId}/comment"></g:set>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
@@ -37,17 +42,6 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <g:if test="${!printView && !hubConfig.content?.hideBreadCrumbs}">
-            <ul class="breadcrumb">
-                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-                <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
-                <li class="active">
-                    <span data-bind="text:type"></span>
-                    <span data-bind="text:startDate.formattedDate"></span><span data-bind="visible:endDate">/</span><span data-bind="text:endDate.formattedDate"></span>
-                </li>
-            </ul>
-        </g:if>
-
         <g:if test="${editInMerit}">
             <div class="alert alert-error">
                 <strong>Note:</strong> This activity can only be edited in the <a href="${g.createLink(action:'edit',  id:activity.activityId, base:grailsApplication.config.merit.url)}" target="_merit">MERIT system</a>

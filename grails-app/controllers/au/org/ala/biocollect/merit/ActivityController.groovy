@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.ss.util.CellReference
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.grails.plugins.excelimport.ExcelImportService
+import org.springframework.context.MessageSource
 
 class ActivityController {
 
@@ -21,6 +22,7 @@ class ActivityController {
     SpeciesService speciesService
     DocumentService documentService
     ProjectActivityService projectActivityService
+    MessageSource messageSource
 
 
     static ignore = ['action','controller','id']
@@ -151,8 +153,10 @@ class ActivityController {
                 activity.progress = params.progress
             }
 
-            activityAndOutputModel(activity, activity.projectId)
+            Map model = activityAndOutputModel(activity, activity.projectId)
+            model.canEditSites = projectService.canUserEditSitesForProject(userId, activity.projectId)
 
+            model
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }
@@ -291,24 +295,30 @@ class ActivityController {
             flash.message = "Error: access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
             response.status = 401
             result = [status:401, error: flash.message]
-            //render result as JSON
         }
 
         if (!result) {
-            values.userId = userId
-            def photoPoints = values.remove('photoPoints')
-            result = activityService.update(id, values)
-            if (photoPoints) {
-                updatePhotoPoints(id ?: result.activityId, photoPoints)
+            // checking to prevent an editor from entering data when administrator is editing work schedule.
+            // But if admin is editing the activity, then let the activity be updated.
+            if(projectService.isWorksProjectPlanStatusApproved(projectId) || projectService.isUserAdminForProject(userId, projectId)){
+                values.userId = userId
+                def photoPoints = values.remove('photoPoints')
+                result = activityService.update(id, values)
+                if (photoPoints) {
+                    updatePhotoPoints(id ?: result.activityId, photoPoints)
+                }
+            } else {
+                log.debug("Error: Trying to enter data to a works project not approved by Administrator - ${projectId}")
+                flash.message = messageSource.getMessage("project.works.workschedule.notapproved.message", [].toArray(), '', Locale.default)
+                response.status = 409
+                result = [status:409, error: flash.message]
             }
 
         }
-        //log.debug "result is " + result
 
         if (result.error) {
             render result as JSON
         } else {
-            //log.debug "json result is " + (result as JSON)
             render result.resp as JSON
         }
     }

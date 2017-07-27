@@ -1,9 +1,9 @@
-<div id="edit-meri-plan">
+<div class="validationEngineContainer edit-view-meri-plan"  id="edit-meri-plan">
 	<span data-bind="if:detailsLastUpdated"> <br/>Last update date : <span data-bind="text:detailsLastUpdated.formattedDate"></span></span>
 
 	<div class="row-fluid space-after">
 		<div>
-			<div class="well well-small">
+			<div class="margin-bottom-10 margin-right-20">
 				<label><b>Project Outcomes</b></label>
 				<table style="width: 100%;">
 					<thead>
@@ -14,6 +14,7 @@
 							Asset(s) addressed <fc:iconHelp title="Asset(s) addressed">Select the most appropriate natural/cultural asset or assets being addressed by this project from the drop down list. Note that multiple selections can be made. </fc:iconHelp>
 						</br> (Hold down the Ctrl key and click to select multiple values.)
 						</th>
+						<th></th>
 					</tr>
 					</thead>
 					<tbody data-bind="foreach : details.objectives.rows1">
@@ -34,8 +35,6 @@
 							<button type="button" class="btn btn-small" data-bind="disable:isProjectDetailsLocked(), click: addOutcome">
 								<i class="icon-plus"></i> Add a row</button>
 						</td>
-						<td></td>
-						<td></td>
 					</tr>
 					</tfoot>
 				</table>
@@ -52,7 +51,7 @@
 					<tbody data-bind="foreach : details.objectives.rows">
 					<tr>
 						<td width="2%"> <span data-bind="text:$index()+1"></span></td>
-						<td width="30%"> <textarea style="width: 97%;" data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="3"> </textarea></td>
+						<td width="30%"> <textarea style="width: 97%;" data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="5"> </textarea></td>
 						<td width="64%"> <textarea style="width: 97%;" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea> </td>
 						<td width="4%">
 							<span data-bind="if: $index() && !$parent.isProjectDetailsLocked()"><i class="icon-remove" data-bind="click: $parent.removeObjectives"></i></span>
@@ -73,10 +72,9 @@
 		</div>
 	</div>
 
-
 	<div class="row-fluid space-after">
 		<div>
-			<div id="national-priorities" class="well well-small">
+			<div id="national-priorities" class="margin-bottom-10 margin-right-20">
 				<label><b>National and regional priorities</b></label>
 				<p>Explain how the project aligns with all applicable national and regional priorities, plans and strategies.</p>
 				<table style="width: 100%;">
@@ -92,7 +90,7 @@
 					<tbody data-bind="foreach : details.priorities.rows">
 					<tr>
 						<td width="2%"> <span data-bind="text:$index()+1"></span></td>
-						<td width="30%"> <textarea style="width: 97%;" class="input-xlarge"  data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="3"> </textarea></td>
+						<td width="30%"> <textarea style="width: 97%;" class="input-xlarge"  data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="5"> </textarea></td>
 						<td width="32%"> <textarea style="width: 97%;" class="input-xlarge" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea></td>
 						<td width="32%"> <textarea style="width: 97%;" class="input-xlarge" data-bind="value: data3, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea></td>
 						<td width="4%">
@@ -116,7 +114,7 @@
 
 	<div class="row-fluid space-after">
 		<div>
-			<div id="project-implementation" class="well well-small">
+			<div id="project-implementation" class="margin-bottom-10 margin-right-20">
 				<label><b>Project implementation / delivery mechanism</b></label>
 				<p>Explain how the project will be implemented, including methods, approaches, collaborations, etc. (5000 character limit) <b><fc:iconHelp title="Project implementation / delivery mechanism">How is the project to be delivered? Briefly describe the high level method/s to be used. The delivery mechanism/s should provide sufficient detail to understand how the project's outcomes will be achieved.</fc:iconHelp></b></p>
 				<textarea style="width: 98%;" maxlength="5000"
@@ -127,7 +125,7 @@
 	</div>
 
 	<div class="row-fluid space-after">
-		<div id="project-partnership" class="well well-small">
+		<div id="project-partnership" class="margin-bottom-10 margin-right-20">
 			<label><b>Project partnerships</b></label>
 			<p>Provide details on all project partners and the nature and scope of their participation in the project.</p>
 			<table style="width: 100%;">
@@ -144,7 +142,7 @@
 				<tbody data-bind="foreach : details.partnership.rows">
 				<tr>
 					<td width="2%"> <span data-bind="text:$index()+1"></span></td>
-					<td width="20%"> <textarea style="width: 97%;" class="input-xlarge"  data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="3"></textarea> </td>
+					<td width="20%"> <textarea style="width: 97%;" class="input-xlarge"  data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="5"></textarea> </td>
 					<td width="54%"><textarea style="width: 97%;" class="input-xlarge" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea></td>
 					<td width="20%"><select style="width: 97%;" class="input-xlarge" data-bind="options: $parent.organisations, value:data3,optionsCaption: 'Please select',disable: $parent.isProjectDetailsLocked()"></select></td>
 					<td width="4%">
@@ -166,7 +164,7 @@
 
 	<div class="row-fluid space-after">
 		<div>
-			<div id="keq" class="well well-small">
+			<div id="keq" class="margin-bottom-10 margin-right-20">
 				<label><b>Key evaluation question</b>  <fc:iconHelp title="Key evaluation question">Please list the Key Evaluation Questions for your project. Evaluation questions should cover the effectiveness of the project and whether it delivered what was intended; the impact of the project; the efficiency of the delivery mechanism/s; and the appropriateness of the methodology. These need to be answerable within the resources and time available to the project.</fc:iconHelp></label>
 				<table style="width: 100%;">
 					<thead>
@@ -183,10 +181,12 @@
 					<tr>
 						<td width="2%"> <span data-bind="text:$index()+1"></span></td>
 						<td width="32%">
-							<textarea style="width: 97%;" rows="3"  class="input-xlarge"  data-bind="value: data1, disable: $parent.isProjectDetailsLocked()">
+							<textarea style="width: 97%;" class="input-xlarge"  data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="5">
 							</textarea>
 						</td>
-						<td width="52%"><textarea style="width: 97%;" class="input-xlarge" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea></td>
+						<td width="52%">
+							<textarea style="width: 97%;" class="input-xlarge" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea>
+						</td>
 						<td width="4%">
 							<span data-bind="if: $index() && !$parent.isProjectDetailsLocked()" ><i class="icon-remove" data-bind="click: $parent.removeKEQ"></i></span>
 						</td>
@@ -205,6 +205,66 @@
 		</div>
 	</div>
 
+	<!-- Budget table -->
+	<div class="row-fluid space-after">
+		<div>
+			<div class="margin-bottom-10 margin-right-20">
+				<label><b>Project Budget</b><fc:iconHelp title="Project Budget">Include the planned budget expenditure against each programme objective. This information will be used to report on the use of public money.</fc:iconHelp></label>
+				<table style="width: 100%;">
+					<thead>
+					<tr>
+						<th width="2%"></th>
+						<th width="10%">Investment/Priority Area <fc:iconHelp title="Investment/Priority Area">Select the appropriate investment area and indicate the funding distribution across the project to this. Add rows as required for different investment priority areas.</fc:iconHelp></th>
+						<th width="30%">Description <fc:iconHelp title="Description">Describe how funding distribution will address this investment priority</fc:iconHelp></th>
+						<!-- ko foreach: details.budget.headers -->
+						<th style="text-align: center;" width="10%" ><div style="text-align: center;" data-bind="text:data"></div>$</th>
+						<!-- /ko -->
+						<th  style="text-align: center;" width="10%">Total</th>
+						<th width="4%"></th>
+					</tr>
+					</thead>
+					<tbody data-bind="foreach : details.budget.rows">
+					<tr>
+						<td><span data-bind="text:$index()+1"></span></td>
+						<td><select style="width: 97%;" data-bind="options: $parent.projectThemes, optionsCaption: 'Please select', value:shortLabel, disable: $parent.isProjectDetailsLocked()"> </select></td>
+						<td><textarea style="width: 95%;" data-bind="value: description, disable: $parent.isProjectDetailsLocked()" rows="3"></textarea></td>
+
+						<!-- ko foreach: costs -->
+						<td><div style="text-align: center;">
+							<input style="text-align: center; width: 98%;" class="input-xlarge" data-bind="value: dollar, numeric: $root.number, disable: $root.isProjectDetailsLocked()" data-validation-engine="validate[custom[number]]"/>
+						</div>
+						</td>
+						<!-- /ko -->
+
+						<td style="text-align: center;" ><span style="text-align: center;" data-bind="text: rowTotal.formattedCurrency, disable: $parent.isProjectDetailsLocked()"></span></td>
+						<td>
+							<span data-bind="if: $index() && !$parent.isProjectDetailsLocked()" ><i class="icon-remove" data-bind="click: $parent.removeBudget"></i></span>
+						</td>
+					</tr>
+					</tbody>
+					<tfoot>
+					<tr>
+						<td></td>
+						<td colspan="0" style="text-align:left;">
+							<button type="button" class="btn btn-small" data-bind="disable: isProjectDetailsLocked(), click: addBudget">
+								<i class="icon-plus"></i> Add a row</button></td>
+						<td style="text-align: right;" ><b>Total </b></td>
+						<!-- ko foreach: details.budget.columnTotal -->
+						<td style="text-align: center;" width="10%"><span data-bind="text:data.formattedCurrency"></span></td>
+						<!-- /ko -->
+						<td style="text-align: center;"><b><span data-bind="text:details.budget.overallTotal.formattedCurrency"></span></b></td>
+					</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="row-fluid space-after">
+		<!-- ko with: details -->
+		<g:render template="riskTable"></g:render>
+		<!-- /ko -->
+	</div>
 
 	<div id="save-details-result-placeholder"></div>
 

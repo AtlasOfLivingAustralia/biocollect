@@ -2,8 +2,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="layout" content="${hubConfig.skin}"/>
-  <title>${site?.name?.encodeAsHTML()} | Field Capture</title>
+    <meta name="layout" content="${hubConfig.skin}"/>
+    <title>${site?.name?.encodeAsHTML()} | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2"
+          content="${createLink(controller: 'site', action: 'list')},Sites"/>
+    <meta name="breadcrumb" content="${site.name?.encodeAsHTML()}"/>
+
     <r:script disposition="head">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -40,60 +45,56 @@
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/"
             },
-            here = "${createLink(controller:'site', action:'index', id:site.siteId)}";
+            here = "${createLink(controller: 'site', action: 'index', id: site.siteId)}";
     </r:script>
-  <r:require modules="knockout,amplify,map,sites"/>
+    <r:require modules="knockout,amplify,map,sites"/>
 </head>
+
 <body>
-    <div class="container-fluid">
-        <div class="alert alert-block hide well" data-bind="slideVisible: message" id="message">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <span data-bind="text: message"></span>
-        </div>
-    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-        <ul class="breadcrumb">
-            <li>
-                <g:link controller="home">Home</g:link> <span class="divider">/</span>
-            </li>
-            <li class="active"> <a href="${createLink(controller: 'site', action: 'list')}">Sites</a> <span class="divider">/</span></li>
-            <li class="active">${site.name?.encodeAsHTML()}</li>
-            <li class="pull-right">
-                <g:set var="disabled">${(!user) ? "disabled='disabled' title='login required'" : ''}</g:set>
-                %{--Favourite functionality only available to authenticated users --}%
-                <g:if test="${user}">
-                    <g:if test="${isSiteStarredByUser}">
-                        <button class="btn btn-small" id="starBtn"><i
-                                class="icon-star"></i><span> Remove from favourites</span></button>
-                    </g:if>
-                    <g:else>
-                        <button class="btn btn-small" id="starBtn" ${disabled}><i
-                                class="icon-star-empty"></i><span> Add to favourites</span></button>
-                    </g:else>
+<div class="container-fluid">
+    <div class="alert alert-block hide well" data-bind="slideVisible: message" id="message">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <span data-bind="text: message"></span>
+    </div>
+    <ul class="breadcrumb pull-right">
+        <li>
+            <g:set var="disabled">${(!user) ? "disabled='disabled' title='login required'" : ''}</g:set>
+        %{--Favourite functionality only available to authenticated users --}%
+            <g:if test="${user}">
+                <g:if test="${isSiteStarredByUser}">
+                    <button class="btn btn-small" id="starBtn"><i
+                            class="icon-star"></i><span>Remove from favourites</span></button>
                 </g:if>
-                <g:link action="edit" id="${site.siteId}" class="btn btn-small"><i class="icon-edit"></i> Edit site</g:link>
-                <g:if test="${site?.extent?.geometry?.pid}">
-                    <a href="${grailsApplication.config.spatial.layersUrl}/shape/shp/${site.extent.geometry.pid}"
-                       class="btn btn-small">
-                        <i class="icon-download"></i>
-                        Download ShapeFile
-                    </a>
-                    <a href="${grailsApplication.config.spatial.baseURL}/?pid=${site.extent.geometry.pid}"
-                       class="btn btn-small"><i class="fa fa-map"></i> View in Spatial Portal</a>
-                </g:if>
-                <g:if test="${fc.userIsAlaAdmin()}">
-                    <div class="btn btn-small btn-danger" onclick="deleteSite()"><i class="fa fa-remove"></i> Delete site
-                    </div>
-                </g:if>
-            </li>
-        </ul>
-    </g:if>
+                <g:else>
+                    <button class="btn btn-small" id="starBtn" ${disabled}><i
+                            class="icon-star-empty"></i><span>Add to favourites</span></button>
+                </g:else>
+            </g:if>
+            <g:link action="edit" id="${site.siteId}" class="btn btn-small"><i
+                    class="icon-edit"></i> Edit site</g:link>
+            <g:if test="${site?.extent?.geometry?.pid}">
+                <a href="${grailsApplication.config.spatial.layersUrl}/shape/shp/${site.extent.geometry.pid}"
+                   class="btn btn-small">
+                    <i class="icon-download"></i>
+                    Download ShapeFile
+                </a>
+                <a href="${grailsApplication.config.spatial.baseURL}/?pid=${site.extent.geometry.pid}"
+                   class="btn btn-small"><i class="fa fa-map"></i> View in Spatial Portal</a>
+            </g:if>
+            <g:if test="${fc.userIsAlaAdmin()}">
+                <div class="btn btn-small btn-danger" onclick="deleteSite()"><i
+                        class="fa fa-remove"></i> Delete site
+                </div>
+            </g:if>
+        </li>
+    </ul>
     <div class="row-fluid space-after">
         <div class="span6"><!-- left block of header -->
             <g:if test="${flash.errorMessage || flash.message}">
                 <div>
                     <div class="alert alert-error">
                         <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-                        ${flash.errorMessage?:flash.message}
+                        ${flash.errorMessage ?: flash.message}
                     </div>
                 </div>
             </g:if>
@@ -108,12 +109,13 @@
                     </dl>
                 </g:if>
             </div>
+
             <h3>Site metadata</h3>
             <dl class="dl-horizontal">
                 <dt>External Id</dt>
-                <dd>${site.externalId?:'Not specified'}</dd>
+                <dd>${site.externalId ?: 'Not specified'}</dd>
                 <dt>Type</dt>
-                <dd>${site.type?:'Not specified'}</dd>
+                <dd>${site.type ?: 'Not specified'}</dd>
                 <dt>Area</dt>
                 <dd>
                     <g:if test="${site?.extent?.geometry?.area}">
@@ -124,15 +126,15 @@
                     </g:else>
                 </dd>
                 <g:if test="${site.extent?.geometry}">
-                <fc:siteFacet site="${site}" label="State/territory" facet="state"/>
-                <fc:siteFacet label="Local government area" site="${site}" facet="lga"/>
-                <fc:siteFacet label="NRM" site="${site}" facet="nrm"/>
-                <dt>Locality</dt>
-                <dd>${site.extent.geometry.locality?:'Not specified'}</dd>
-                <dt data-toggle="tooltip" title="NVIS major vegetation group">NVIS major vegetation group</dt>
-                <dd>${site.extent.geometry.mvg?:'Not specified'}</dd>
-                <dt data-toggle="tooltip" title="NVIS major vegetation subgroup">NVIS major vegetation subgroup</dt>
-                <dd>${site.extent.geometry.mvs?:'Not specified'}</dd>
+                    <fc:siteFacet site="${site}" label="State/territory" facet="state"/>
+                    <fc:siteFacet label="Local government area" site="${site}" facet="lga"/>
+                    <fc:siteFacet label="NRM" site="${site}" facet="nrm"/>
+                    <dt>Locality</dt>
+                    <dd>${site.extent.geometry.locality ?: 'Not specified'}</dd>
+                    <dt data-toggle="tooltip" title="NVIS major vegetation group">NVIS major vegetation group</dt>
+                    <dd>${site.extent.geometry.mvg ?: 'Not specified'}</dd>
+                    <dt data-toggle="tooltip" title="NVIS major vegetation subgroup">NVIS major vegetation subgroup</dt>
+                    <dd>${site.extent.geometry.mvs ?: 'Not specified'}</dd>
                 </g:if>
                 <g:if test="${site.notes}">
                     <dt>Notes</dt>
@@ -143,6 +145,7 @@
                 $('.dl-horizontal').tooltip()
             </script>
         </div>
+
         <div class="span6">
             <div id="siteNotDefined" class="hide pull-right">
                 <span class="label label-important">This site does not have a geoference associated with it.</span>
@@ -150,11 +153,12 @@
             <m:map id="smallMap" width="100%" height="500px"/>
         </div>
     </div>
+
     <div id="detailsLinkedToSite">
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a href="#sitePhotopoints" data-toggle="tab">Photo points</a></li>
             <g:if test="${site.projects}">
-            <li><a href="#siteProjects" data-toggle="tab">Projects</a></li>
+                <li><a href="#siteProjects" data-toggle="tab">Projects</a></li>
             </g:if>
             <li><a href="#siteActivities" data-toggle="tab">Records</a></li>
         </ul>
@@ -162,7 +166,8 @@
         <div class="tab-content">
             <!-- ko stopBinding: true -->
             <div class="tab-pane active" id="sitePhotopoints">
-                <g:render template="poiGallery" model="${[siteId:site.siteId, siteElementId:'sitePhotopoints']}"></g:render>
+                <g:render template="poiGallery"
+                          model="${[siteId: site.siteId, siteElementId: 'sitePhotopoints']}"></g:render>
             </div>
             <!-- /ko -->
             <div class="tab-pane" id="siteProjects">
@@ -172,13 +177,15 @@
                         <ol>
                             <g:each in="${site.projects}" var="p" status="count">
                                 <li>
-                                    <g:link controller="project" action="index" id="${p.projectId}">${p.name?.encodeAsHTML()}</g:link>
+                                    <g:link controller="project" action="index"
+                                            id="${p.projectId}">${p.name?.encodeAsHTML()}</g:link>
                                 </li>
                             </g:each>
                         </ol>
                     </div>
                 </g:if>
             </div>
+
             <div class="tab-pane" id="siteActivities">
                 <!-- ko if: activities().length == 0 -->
                 <div class="row-fluid">
@@ -192,11 +199,13 @@
 
                 <!-- ko if: activities().length > 0 -->
 
-                <div class="alert alert-info hide" id="downloadStartedMsg"><i class="fa fa-spin fa-spinner">&nbsp;&nbsp;</i>Preparing download, please wait...</div>
+                <div class="alert alert-info hide" id="downloadStartedMsg"><i
+                        class="fa fa-spin fa-spinner">&nbsp;&nbsp;</i>Preparing download, please wait...</div>
 
                 <div class="row-fluid">
                     <div class="span9">
-                        <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record(s)</h3>
+                        <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record(s)
+                        </h3>
                     </div>
                 </div>
                 <g:render template="../shared/pagination"/>
@@ -313,32 +322,33 @@
             </div>
         </div>
     </div>
-        <small class="pull-right"><em>Created on <fc:formatDateString date="${site.dateCreated}" inputFormat="yyyy-MM-dd'T'HH:mm:ss'Z'"
-                                                   format="dd-MM-yyyy"/>
-            and last updated on <fc:formatDateString date="${site.lastUpdated}" inputFormat="yyyy-MM-dd'T'HH:mm:ss'Z'"
-                                                     format="dd-MM-yyyy"/></em></small>
-        <g:if env="development">
-            <div class="expandable-debug">
-                <hr/>
+    <small class="pull-right"><em>Created on <fc:formatDateString date="${site.dateCreated}"
+                                                                  inputFormat="yyyy-MM-dd'T'HH:mm:ss'Z'"
+                                                                  format="dd-MM-yyyy"/>
+    and last updated on <fc:formatDateString date="${site.lastUpdated}" inputFormat="yyyy-MM-dd'T'HH:mm:ss'Z'"
+                                             format="dd-MM-yyyy"/></em></small>
+    <g:if env="development">
+        <div class="expandable-debug">
+            <hr/>
 
-                <h3>Debug</h3>
+            <h3>Debug</h3>
 
-                <div>
-                    <h4>KO model</h4>
-                    <pre data-bind="text:ko.toJSON($root,null,2)"></pre>
-                    <h4>Activities</h4>
-                    <pre>${site.activities?.encodeAsHTML()}</pre>
-                    <h4>Site</h4>
-                    <pre>${site}</pre>
-                    <h4>Projects</h4>
-                    <pre>${projects?.encodeAsHTML()}</pre>
-                    <h4>Features</h4>
-                    <pre>${mapFeatures}</pre>
-                </div>
+            <div>
+                <h4>KO model</h4>
+                <pre data-bind="text:ko.toJSON($root,null,2)"></pre>
+                <h4>Activities</h4>
+                <pre>${site.activities?.encodeAsHTML()}</pre>
+                <h4>Site</h4>
+                <pre>${site}</pre>
+                <h4>Projects</h4>
+                <pre>${projects?.encodeAsHTML()}</pre>
+                <h4>Features</h4>
+                <pre>${mapFeatures}</pre>
             </div>
-        </g:if>
-    </div>
-    <r:script>
+        </div>
+    </g:if>
+</div>
+<r:script>
         $(function(){
             var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
 
@@ -447,6 +457,6 @@
             }
         }
 
-    </r:script>
+</r:script>
 </body>
 </html>

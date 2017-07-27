@@ -48,6 +48,11 @@ class TemplateTagLib {
                     out << "<a href=\"${url}\" >${link.displayName}</a>";
                     out << "</li>";
                     break;
+                case 'nolink':
+                    out << "<li class=\"main-menu\">";
+                    out << link.displayName;
+                    out << "</li>";
+                    break;
                 case 'admin':
                     if(userService.userIsAlaAdmin()){
                         out << "<li class=\"main-menu\">";

@@ -10,6 +10,10 @@
         <meta name="layout" content="${hubConfig.skin}"/>
         <title>Edit | ${activity.type} | Field Capture</title>
     </g:else>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2"
+          content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
+    <meta name="breadcrumb" content="Enter data"/>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <r:script disposition="head">
@@ -36,17 +40,6 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <g:if test="${!printView && !hubConfig.content?.hideBreadCrumbs}">
-            <ul class="breadcrumb">
-                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-                <li><a data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
-                <li class="active">
-                    <span data-bind="text:type"></span>
-                    <span data-bind="text:startDate.formattedDate"></span><span data-bind="visible:endDate">/</span><span data-bind="text:endDate.formattedDate"></span>
-                </li>
-            </ul>
-        </g:if>
-
         <div class="row-fluid title-block well well-small input-block-level">
             <div class="span12 title-attribute">
                 <h1><span data-bind="click:goToProject" class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
@@ -67,13 +60,19 @@
                         <input id="description" type="text" class="input-xxlarge" data-bind="value:description" data-validation-engine="validate[required]"></span>
                     </div>
                 </div>
-
                 <div class="row-fluid space-after">
-                    <div class="span6">
-                        <label for="theme" class="for-readonly">Major theme</label>
+                    <div class="span6" data-bind="visible:transients.themes && transients.themes.length > 1">
+                        <label for="theme">Major theme</label>
                         <select id="theme" data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'" class="input-xlarge">
                         </select>
                     </div>
+                    <div class="span6" data-bind="visible:transients.themes && transients.themes.length == 1">
+                        <label for="theme">Major theme</label>
+                        <span data-bind="text:mainTheme">
+                        </span>
+                    </div>
+                </div>
+                <div class="row-fluid space-after">
                     <div class="span6">
                         <label class="for-readonly inline">Activity progress</label>
                         <button type="button" class="btn btn-small"
@@ -318,7 +317,7 @@
         self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
         // We only need the sites from a pActivity within works projects
         self.pActivity = JSON.parse('${(project as JSON).toString().encodeAsJavaScript()}');
-        self.pActivity.allowAdditionalSurveySites =  true
+        self.pActivity.allowAdditionalSurveySites =  ${canEditSites}
     }
 
     var activityLevelData = new ActivityLevelData();

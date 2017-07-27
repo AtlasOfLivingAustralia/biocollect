@@ -4,6 +4,11 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Edit | ${organisation.name.encodeAsHTML()} | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2"
+          content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
+    <meta name="breadcrumb" content="${organisation.name}"/>
+
     <r:script disposition="head">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -27,17 +32,6 @@
 <body>
 
 <div class="container-fluid organisation-header organisation-banner image-box" data-bind="style:{'backgroundImage':asBackgroundImage(bannerUrl())}">
-    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-        <div class="row-fluid">
-            <ul class="breadcrumb demphasise">
-                <li>
-                    <g:link controller="home">Home</g:link> <span class="divider">/</span>
-                </li>
-                <li class="active">Organisations <span class="divider">/</span></li>
-                <li class="active" data-bind="text:name"/>
-            </ul>
-        </div>
-    </g:if>
     <g:render template="organisationDetails"/>
 
     <div class="form-actions">

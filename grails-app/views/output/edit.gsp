@@ -4,30 +4,14 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Edit | ${activity.activityId ?: 'new'} | ${site.name} | ${site.projectName} | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumb" content="Edit output"/>
+
     <md:modelStyles model="${model}" edit="true"/>
     <r:require modules="jstimezonedetect,knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,viewmodels"/>
 </head>
 <body>
 <div class="container-fluid">
-    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-        <ul class="breadcrumb">
-            <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-            <li>Data entry<span class="divider">/</span></li>
-            <g:if test="${project}">
-                <li class="active">Create new site for ${project?.name}</li>
-            </g:if>
-            <g:elseif test="${create}">
-                <li class="active">Create</li>
-            </g:elseif>
-            <g:else>
-                <li>
-                    <span data-bind="text:name"></span>
-                    <span data-bind="text:assessmentDate.formattedDate"></span>
-                </li>
-            </g:else>
-        </ul>
-    </g:if>
-
     <div class="row-fluid title-block">
         <div class="span6 title-attribute">
             <h2 class="inline">Project: </h2>

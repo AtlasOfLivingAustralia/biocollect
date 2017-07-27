@@ -199,6 +199,9 @@ class ProjectController {
     protected Map worksProjectContent(project, user) {
         def activities = activityService.activitiesForProject(project.projectId)
 
+        def risksAndThreatsVisible = metadataService.isOptionalContent('Risks and Threats', project.associatedProgram, project.associatedSubProgram)
+        def canViewRisks = risksAndThreatsVisible && (user?.hasViewAccess || user?.isEditor)
+
         List blog = blogService.getProjectBlog(project)
         Boolean hasNewsAndEvents = blog.find{it.type == 'News and Events'}
         Boolean hasProjectStories = blog.find{it.type == 'Project Stories'}
@@ -206,17 +209,33 @@ class ProjectController {
         Boolean hasLegacyNewsAndEvents = project.newsAndEvents as Boolean
         Boolean hasLegacyProjectStories = project.projectStories as Boolean
 
-        [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
-         news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
-         activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:false],
-         site:[label:'Sites', template:'/site/worksSites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', editable:user?.isEditor == true, type:'tab'],
-         meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, type:'tab', template:'viewMeriPlan'],
-         dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab'],
-         admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
+        Boolean canEditSites = projectService.canUserEditSitesForProject(user?.userId, project.projectId)
+
+        Map content = [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
+                       news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
+                       documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
+                       activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:false],
+                       site:[label:'Sites', template:'/site/worksSites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', canEditSites: canEditSites, type:'tab'],
+                       meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, canViewRisks: canViewRisks, type:'tab', template:'viewMeriPlan'],
+                       dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab'],
+                       admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
+                       ]
+
+        if(!params.userIsProjectAdmin){
+            content.remove('admin')
+        }
+
+        if(!params.userCanEditProject){
+            content.remove('activities')
+            content.remove('site')
+            content.remove('meriPlan')
+            content.remove('dashboard')
+        }
+
+        content
     }
 
-    @PreAuthorise
+    @PreAuthorise(accessLevel = 'admin')
     def edit(String id) {
 
         def project = projectService.get(id, 'brief')
@@ -340,14 +359,26 @@ class ProjectController {
     }
 
     /**
-     * Updates existing or creates new output.
-     *
-     * If id is blank, a new project will be created
+     * Updates existing project metadata. Only project admin can edit this information.
      *
      * @param id projectId
      * @return
      */
+    @PreAuthorise(accessLevel='admin')
     def ajaxUpdate(String id) {
+        createOrUpdate(id)
+    }
+
+    /**
+     * Create a new project. Any logged in user can create a new project.
+     * @return
+     */
+    @PreAuthorise(accessLevel="loggedInUser")
+    def ajaxCreate(){
+        createOrUpdate();
+    }
+
+    private void createOrUpdate(String id) {
         def postBody = request.JSON
         log.debug "Body: ${postBody}"
         log.debug "Params: ${params}"
@@ -362,20 +393,6 @@ class ProjectController {
 
         projectService.buildTags(values)
 
-        // The rule currently is that anyone is allowed to create a project so we only do these checks for
-        // existing projects.
-        def userId = userService.getUser()?.userId
-        if (id) {
-            if (!projectService.canUserEditProject(userId, id)) {
-                render status:401, text: "User ${userId} does not have edit permissions for project ${id}"
-                log.debug "user not caseManager"
-                return
-            }
-
-        } else if (!userId) {
-            render status: 401, text: 'You do not have permission to create a project'
-        }
-
 
         log.debug "json=" + (values as JSON).toString()
         log.debug "id=${id} class=${id?.getClass()}"
@@ -385,9 +402,10 @@ class ProjectController {
         final Map project = projectService.get(id)
         def projectType = id ? project.projectType : values?.projectType
 
-        if(projectType == "works" && postBody?.size() == 2 && postBody?.planStatus == "approved") { // We need to validate that species fields are configured
+        if (projectType == "works" && postBody?.size() == 2 && postBody?.planStatus == "approved") {
+            // We need to validate that species fields are configured
 
-            if(!areWorksProjectSpeciesFieldConfigured(project)) {
+            if (!areWorksProjectSpeciesFieldConfigured(project)) {
                 render status: 400, text: "Species fields have not been configured for the project or the current configuration is outdated."
                 return
             }
@@ -407,7 +425,7 @@ class ProjectController {
 
         if (!values?.associatedOrgs) values.put('associatedOrgs', [])
 
-        def result = id? projectService.update(id, values): projectService.create(values)
+        def result = id ? projectService.update(id, values) : projectService.create(values)
         log.debug "result is " + result
         if (documents && !result.error) {
             if (!id) id = result.resp.projectId
@@ -446,7 +464,6 @@ class ProjectController {
             render result.resp as JSON
         }
     }
-
 
     @PreAuthorise
     def update(String id) {
@@ -600,7 +617,7 @@ class ProjectController {
         }
 
         if(trimmedParams.isEcoScience){
-            projectType.push('(projectType:ecoscience)')
+            projectType.push('(projectType:ecoScience)')
             trimmedParams.isEcoScience = null
         }
 
@@ -842,13 +859,7 @@ class ProjectController {
             payload.sort = payload.sort ?: 'lastUpdated';
             payload.fq = payload.fq ?: []
             payload.fq.push('surveyImage:true');
-            if (params?.hub == 'ecoscience') {
-                payload.fq.push("projectType:ecoscience");
-            }
-
-            if (params?.hub == 'works') {
-                payload.fq.push("projectType:works");
-            }
+            payload.hub = params.hub
 
             Map result = projectService.listImages(payload, params?.version) ?: [:];
             documentService.addLicenceDescription(result.documents);

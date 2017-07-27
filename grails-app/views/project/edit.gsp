@@ -3,6 +3,10 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${project?.name?.encodeAsHTML()} | <g:message code="g.projects"/> | <g:message code="g.fieldCapture"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${project.name?.encodeAsHTML()}"/>
+    <meta name="breadcrumb" content="Edit"/>
+
     <r:script disposition="head">
     var fcConfig = {
         projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
@@ -35,15 +39,6 @@
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
-<g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-    <ul class="breadcrumb">
-        <li><g:link controller="home"><g:message code="g.home"/></g:link> <span class="divider">/</span></li>
-        <li><g:link controller="project" action="index"
-                    id="${project.projectId}">${project.name?.encodeAsHTML()}</g:link> <span class="divider">/</span>
-        </li>
-        <li class="active"><g:message code="g.edit"/></li>
-    </ul>
-</g:if>
 <form id="projectDetails" class="form-horizontal">
     <g:render template="details" model="${pageScope.variables}"/>
     <div class="well">
@@ -101,11 +96,15 @@ $(function(){
             }]);
     } else {
         if ($('#projectDetails').validationEngine('validate')) {
-
-            viewModel.saveWithErrorDetection(function(data) {
-                var projectId = "${project?.projectId}" || data.projectId;
-                document.location.href = "${createLink(action: 'index')}/" + projectId;
-            });
+            var projectErrors = viewModel.transients.projectHasErrors()
+                if (!projectErrors) {
+                    viewModel.saveWithErrorDetection(function(data) {
+                        var projectId = "${project?.projectId}" || data.projectId;
+                        document.location.href = "${createLink(action: 'index')}/" + projectId;
+                    });
+                } else {
+                    bootbox.alert(projectErrors);
+                }
         }
     }
     });

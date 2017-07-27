@@ -80,7 +80,7 @@ var HubSettings = function (settings, config) {
     self.content = ko.observable();
     self.quickLinks = ko.observableArray();
     self.facets = ko.observableArray();
-
+    self.customBreadCrumbs = ko.observableArray();
     /**
      * Set home page only if the configurable template is chosen. Otherwise, do nothing. If user had previously chosen
      * configurable template but not anymore, then do not change homepage.
@@ -149,7 +149,15 @@ var HubSettings = function (settings, config) {
 
     self.removeLink = function (data) {
         self.quickLinks.remove(data);
-    }
+    };
+
+    self.addCustomBreadCrumb = function () {
+        self.customBreadCrumbs.push(new CustomBreadCrumbsViewModel({}));
+    };
+
+    self.removeCustomBreadCrumb = function (data) {
+        self.customBreadCrumbs.remove(data);
+    };
 
     self.transients = {
 
@@ -194,6 +202,10 @@ var HubSettings = function (settings, config) {
 
                 self.documents.remove(document);
             }
+        });
+        settings.customBreadCrumbs = settings.customBreadCrumbs || [];
+        settings.customBreadCrumbs.forEach(function (breadcrumb) {
+            self.customBreadCrumbs.push(new CustomBreadCrumbsViewModel(breadcrumb));
         });
 
         var facets = $.map(settings.facets || [], function (facet) {
@@ -405,6 +417,7 @@ var StyleViewModel = function (config) {
     self.wellBackgroundColor= ko.observable(config.wellBackgroundColor || '');
     self.defaultButtonColorActive= ko.observable(config.defaultButtonColorActive || '');
     self.defaultButtonBackgroundColorActive= ko.observable(config.defaultButtonBackgroundColorActive || '');
+    self.breadCrumbBackGroundColour = ko.observable(config.breadCrumbBackGroundColour || '');
 };
 
 var SocialMediaViewModel = function (config) {
@@ -482,6 +495,21 @@ function FacetViewModel(config){
     });
 };
 
+function CustomBreadCrumbsViewModel(config) {
+    var self = this;
+    self.controllerName = ko.observable(config.controllerName || '');
+    self.actionName = ko.observable(config.actionName || '');
+    self.breadCrumbs = ko.observableArray(config.breadCrumbs || []);
+
+    self.addBreadCrumb = function () {
+        self.breadCrumbs.push(new LinkViewModel({}));
+    };
+
+    self.removeLink = function (data) {
+        self.breadCrumbs.remove(data);
+    };
+};
+
 var colorScheme = {
     menuBackgroundColor: "#009080",
     menuTextColor: "#efefef",
@@ -506,5 +534,6 @@ var colorScheme = {
     tileBackgroundColor: '#f5f5f5',
     wellBackgroundColor: '#f5f5f5',
     defaultButtonColorActive: '#fff',
-    defaultButtonBackgroundColorActive: '#000'
+    defaultButtonBackgroundColorActive: '#000',
+    breadCrumbBackGroundColour: '#E7E7E7'
 };
