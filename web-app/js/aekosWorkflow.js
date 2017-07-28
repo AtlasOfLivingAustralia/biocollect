@@ -117,14 +117,18 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
     self.currentSubmissionPackage.collectionStartDate = self.startDate()? moment(self.startDate()).format('DD-MM-YYYY') : today;
     self.currentSubmissionPackage.collectionEndDate = self.endDate()? moment(self.endDate()).format('DD-MM-YYYY') : today;
 
-    self.transients.logoUrl = ko.pureComputed(function(){
-        //    return self.logoUrl() ? self.logoUrl() : fcConfig.imageLocation + "/no-image-2.png";
-        return "https://ecodata.ala.org.au/uploads/2016-10/thumb_0_Banksia_Logo.jpg"
-        //self.logoUrl() ? self.mainImageUrl() : fcConfig.imageLocation + "/no-image-2.png";
-
+    self.transients.getImageUrl = ko.pureComputed(function(){
+        if (self.logoUrl()) {
+            return self.logoUrl();
+        } else if (self.mainImageUrl()) {
+            return self.mainImageUrl();
+        } else {
+            return "";
+        }
     });
 
     self.transients.enableSubmission = ko.observable(true);
+    self.transients.submissionInProgress = ko.observable(false);
     
     self.transients.fieldsOfResearch = [];
     self.transients.socioEconomic = [];
@@ -250,7 +254,8 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
         }
 
         $.ajax({
-            url: 'http://spatial.ala.org.au/ws/shape/wkt/' + projectArea.pid
+            //'http://spatial.ala.org.au/ws/shape/wkt/' + projectArea.pid
+            url: fcConfig.spatialBaseUrl + '/ws/shape/wkt/' + projectArea.pid
         }).done(function (data) {
             self.siteCoordinates(data);
         });
@@ -301,15 +306,15 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
 
                 if (getIbraRegion) {
                     $.ajax({
-                        url: 'http://spatial.ala.org.au/ws/intersect/cl1048/' + lat + "/" + lng,
-                        dataType: 'json'
+                        // cl1048 is Ibra 7 region //'https://spatial.ala.org.au/ws/intersect/cl1048/' + lat + "/" + lng
+                        url: fcConfig.spatialBaseUrl + "/ws/intersect/cl1048/" + lat + "/" + lng
                     }).done(function (ibraRegion) {
                         self.selectedIbraRegion(ibraRegion[0].value);
                         aekosMap.plotOnAekosMap(features, projectArea, ibraRegion)
                     });
                 } else {
                     self.selectedIbraRegion(null);
-                    aekosMap.plotOnAekosMap(null, projectArea, null)
+                    aekosMap.plotOnAekosMap(features, projectArea, null)
                 }
 
             });
@@ -327,9 +332,8 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
      */
     var extractDataFromRecords = function (dataset){
         var deferredElement = $.Deferred();
-        result = {};
-        features = [];
-        var speciesInfo = {};
+        var result = {};
+        var features = [];
         var speciesGuids = [];
         if (dataset.activities) {
             $.each(dataset.activities, function(index, activity) {
@@ -342,31 +346,30 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
                     }));
                };
             });
-            if (speciesGuids.length > 0) {
-                var url = "http://bie.ala.org.au/ws/species/guids/bulklookup.json";
-                //"http://dev.ala.org.au:8089/bie-index/species/guids/bulklookup.json"
 
+            result.features = features;
+            result.speciesInfo = {};
+            if (speciesGuids.length > 0) {
+                var url = fcConfig.bieUrl + '/ws/species/guids/bulklookup'; //"http://bie.ala.org.au/ws/species/guids/bulklookup.json";
                 $.ajax({
                     url: url,
                     type: 'POST',
                     data: JSON.stringify(speciesGuids),
                     contentType: 'application/json',
                     success: function (data) {
-                        speciesInfo = data.searchDTOList;
-                        result.features = features;
-                        result.speciesInfo = speciesInfo;
+                        result.speciesInfo = data.searchDTOList;
                         deferredElement.resolve(result);
                     },
                     error: function (data) {
-                        result.features = features;
-                        result.speciesInfo = speciesInfo;
                         deferredElement.resolve(result);
                     }
                 });
+            } else {
+                deferredElement.resolve(result);
             }
-        }// else {
-         //   return null;
-       // }
+        } else {
+            deferredElement.resolve(result);
+        };
         return deferredElement;
     };
 
@@ -381,10 +384,10 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
         }
     };
 
-    self.findLogoScalingClass = function (imageElement, givenWidth, givenHeight) {
+    self.findLogoScalingClass = function (imageElement, parentElement) {
         var $elem = $(imageElement);
-        var parentHeight = givenHeight || $elem.parent().height();
-        var parentWidth = givenWidth || $elem.parent().width();
+        var parentHeight = $(parentElement).height();
+        var parentWidth = $(parentElement).width();
         var height = imageElement.height;
         var width = imageElement.width;
 
@@ -660,7 +663,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
         var multiselectArray = {};
         var thisElement;
         if (findChildElements) {
-            thisElement = el.find('textarea, select, input:not(.extrafield), span:not(.multiselect):not(.tree-item):not(.add-on open-datepicker)');
+            thisElement = el.find('textarea, select, img, input:not(.extrafield), span:not(.multiselect):not(.tree-item):not(.add-on open-datepicker)');
         } else {
             thisElement = el;
         }
@@ -718,6 +721,8 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
                // a[it.id] = jsonEscapeValue(it.innerHTML);
                // array.push(a);
                 formData[it.id] = jsonEscapeValue(it.innerHTML);
+            } else if ($(it).is("img#urlImage.image-logo.wide")) {
+                formData[it.id] = it.src;
             } else {
               //  a[it.id] = it.value;
               //  array.push(a);
@@ -863,12 +868,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
             contentType: 'application/json',
             success: function (data) {
                 promise.resolve(data)
-               /* var result = data;
-                if (result && result.status == 'ok') {
-                    promise.resolve(result);
-                } else {
-                    promise.resolve(result);
-                }*/
+
             },
             error: function (data) {
                 promise.resolve({status: "error", error: "An error occurred prior to sending data to Aekos" });
@@ -881,9 +881,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
     self.proceedSubmission = function (previousPendingSubmissions) {
         var userDetails = {};
 
-       // self.transients.enableSubmission = ko.observable(false);
-
-        bootbox.confirm("<h4>Please enter your SHaRED Login: </h4><hr style='color: grey'/><br><form id='infos' action=''>\
+         bootbox.confirm("<h4>Please enter your SHaRED Login: </h4><hr style='color: grey'/><br><form id='infos' action=''>\
         User:&emsp;&emsp;&emsp;&emsp;<input type='text' name='username' /><br/>\
         Password:&emsp;&nbsp;&nbsp;&nbsp;<input type='password' name='password' /><br/>\
         Email:&emsp;&emsp;&emsp;&emsp;<input type='text' name='emailAddress' />\
@@ -911,6 +909,8 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
 
                 if (!invalidUser && userDetails && Object.keys(userDetails).length > 0) {
 
+                    self.transients.submissionInProgress(true);
+
                     var saveDataset = self.save();
 
                     var submitToAekos = self.postJsonSubmission(userDetails);
@@ -931,6 +931,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
                                 if (result3.message == 'updated') {
                                     showAlert("Submission DOI status is now pending. This status will be updated once the dataset is minted.",
                                         "alert-success", 'alert-placeholder');
+                                    self.transients.submissionInProgress(false);
                                 }
                             });
 
@@ -939,6 +940,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
                         } else if (result2) {
                             showAlert("Error submitting dataset to Aekos. Error: " + result2.error, "alert-error", 'alert-placeholder');
                             self.transients.enableSubmission(true);
+                            self.transients.submissionInProgress(false);
                         }
                     });
                 } else if (invalidUser) {

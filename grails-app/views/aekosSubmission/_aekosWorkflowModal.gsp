@@ -29,7 +29,7 @@
 <div class="modal fade aekosModal validationEngineContainer" id="aekosModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" >
     <div class="modal-dialog">
         <div class="modal-header">
-            <button type="button" class="close" data-bind="click: hideModal" aria-hidden="true">&times;</button>
+           %{-- <button type="button" class="close" data-bind="click: hideModal" aria-hidden="true">&times;</button>--}%
             <h4 class="modal-title">Dataset: <span data-bind="text: name"></span></h4>
         </div>
 
@@ -130,7 +130,7 @@
                 <!-- /ko -->
                 <button class="btn-primary btn btn-small block" data-bind="click: function() {submit()}, enable: transients.enableSubmission()"><i class="icon-white  icon-envelope" ></i>  Submit </button>
             <!-- /ko -->
-            <button class="btn-primary btn btn-small block" data-bind="click: hideModal">Cancel</button>
+            <button class="btn-primary btn btn-small block" data-bind="click: hideModal, disable: transients.submissionInProgress()">Cancel</button>
         </div>
 
     </div>
