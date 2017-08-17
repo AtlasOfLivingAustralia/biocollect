@@ -11,7 +11,7 @@ class ProjectService {
     //TODO refactor project type
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE = 'survey'
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE_TYPE_2 = 'citizenScience'
-    public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoScience'
+    public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoscience'
     public static final String PROJECT_TYPE_WORKS = 'works'
     public static final String PROJECT_PLAN_STATUS_APPROVED = 'approved'
     public static final String PROJECT_PLAN_STATUS_NOTAPPROVED = 'not approved'
