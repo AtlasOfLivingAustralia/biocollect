@@ -178,6 +178,10 @@
     margin-bottom: 20px;
 }
 
+.margin-bottom-50 {
+    margin-bottom: 50px;
+}
+
 .margin-top-1 {
     display: inline-block;
     margin-top: 10px;
@@ -573,4 +577,25 @@ section#breadcrumb li + li::before {
     margin: 0 .6em;
     height: .8em;
     opacity: .6;
+}
+
+@media (max-width: 767px) {
+    .hidden-xs {
+        display: none !important;
+    }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+    .hidden-sm {
+        display: none !important;
+    }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+    .hidden-md {
+        display: none !important;
+    }
+}
+@media (min-width: 1200px) {
+    .hidden-lg {
+        display: none !important;
+    }
 }

@@ -169,11 +169,7 @@
 
         <div class="span8">
             <div class="controls">
-                %{--<img id="urlImage" class="image-logo wide" data-bind="attr:{alt: name, src: transients.logoUrl(), onload: findLogoScalingClass(element)}" />--}%
-                <span id="urlImage" data-bind="text: transients.logoUrl()" />
-                %{--<textarea id="urlImage" data-bind="value: aekosModalView().projectViewModel.urlImage" rows="3" style="width: 90%"></textarea>--}%
-               %{-- <input id="urlImage" type="file" accept="text/csv" data-bind="projectViewModel.urlImage" />--}%
-                <!--textarea></textarea-->
+                <img id="urlImage" class="image-logo" data-bind="attr:{alt:transients.getImageUrl(), src: transients.getImageUrl(), onload: findLogoScalingClass(urlImage, aekosModal)}" />
             </div>
         </div>
     </div>
