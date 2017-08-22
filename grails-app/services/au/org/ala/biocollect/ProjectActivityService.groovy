@@ -390,43 +390,50 @@ class ProjectActivityService {
     def sendAekosDataset(String downloadUrl, String jsonSubmissionPayload) {
 
         URLConnection conn = new URL(downloadUrl).openConnection()
+        conn.setConnectTimeout(10*1000);
+        conn.setReadTimeout(10*1000);
 
         def contentType = conn.getContentType()
         def len = conn.getContentLength()
         def status = conn.responseCode
 
-     //   File tempFile = new File ("temp.zip")
-      //  Files.copy (conn.getInputStream(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
-      //  def is = StreamUtils.copyToByteArray(conn.getInputStream())
-       def is = conn.getInputStream().getBytes()
+        def result = [:]
+        if (status == 200 && grailsApplication.config.aekosSubmission?.url) {
+            //   File tempFile = new File ("temp.zip")
+            //  Files.copy (conn.getInputStream(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+            //  def is = StreamUtils.copyToByteArray(conn.getInputStream())
+            def is = conn.getInputStream().getBytes()
 
-        // External Aekos Submission Url
-        def aekosUrl = grailsApplication.config.aekosSubmission?.url ?: "http://shared-uat.ecoinformatics.org.au:8080/shared-web/api/submission/create"
+            // External Aekos Submission Url
+            def aekosUrl = grailsApplication.config.aekosSubmission?.url //?: "http://shared-uat.ecoinformatics.org.au:8080/shared-web/api/submission/create"
 
-        Map aekosParamMap = [:]
-        List<Map> contentListMap = new ArrayList<Map>()
+            Map aekosParamMap = [:]
+            List<Map> contentListMap = new ArrayList<Map>()
 
-        Map jsonInputStreamMap = [:]
-        //jsonInputStreamMap.put("contentIn", new ByteArrayInputStream(jsonSubmissionPayload.getBytes()))
-        jsonInputStreamMap.put("contentIn", jsonSubmissionPayload)
-        Map jsonInputInfo = [:]
-        jsonInputInfo.put("contentType", "application/json")
-        jsonInputInfo.put("contentName", "submissionJson")
-        jsonInputStreamMap.put("contentInfo", jsonInputInfo)
+            Map jsonInputStreamMap = [:]
+            //jsonInputStreamMap.put("contentIn", new ByteArrayInputStream(jsonSubmissionPayload.getBytes()))
+            jsonInputStreamMap.put("contentIn", jsonSubmissionPayload)
+            Map jsonInputInfo = [:]
+            jsonInputInfo.put("contentType", "application/json")
+            jsonInputInfo.put("contentName", "submissionJson")
+            jsonInputStreamMap.put("contentInfo", jsonInputInfo)
 
-        Map fileInputStreamMap = [:]
-        Map fileInputStreamInfo = [:]
-        fileInputStreamInfo.put("contentType", "application/zip")
-        fileInputStreamInfo.put("contentName", "datasetZipFile")
-        fileInputStreamMap.put("contentIn", is)
-        //fileInputStreamMap.put("contentIn", tempFile)
-        fileInputStreamMap.put("contentInfo", fileInputStreamInfo)
+            Map fileInputStreamMap = [:]
+            Map fileInputStreamInfo = [:]
+            fileInputStreamInfo.put("contentType", "application/zip")
+            fileInputStreamInfo.put("contentName", "datasetZipFile")
+            fileInputStreamMap.put("contentIn", is)
+            //fileInputStreamMap.put("contentIn", tempFile)
+            fileInputStreamMap.put("contentInfo", fileInputStreamInfo)
 
-        contentListMap.add(jsonInputStreamMap)
-        contentListMap.add(fileInputStreamMap)
+            contentListMap.add(jsonInputStreamMap)
+            contentListMap.add(fileInputStreamMap)
 
-        def result = utilService.postMultipart(aekosUrl, aekosParamMap, contentListMap, null)
+            result = utilService.postMultipart(aekosUrl, aekosParamMap, contentListMap, null)
 
+        } else {
+            result = [status: 504, error: "Timeout downloading data.zip."]
+        }
         result
     }
 

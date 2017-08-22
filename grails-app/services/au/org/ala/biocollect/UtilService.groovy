@@ -55,11 +55,13 @@ class UtilService {
                 result.content = message
             }
 
-            response.failure = {resp ->
+            response.failure = {resp, message ->
                 result.status = resp.status
-                result.error = "Error POSTing to ${url}"
+                result.content = "Error submitting to ${url}. Shared code: " + message?.sharedErrorCode?:'' + " Shared message: " + message?.message?:""
             }
         }
+        log.info("Submission to Aekos: " + result)
         result
+
     }
 }

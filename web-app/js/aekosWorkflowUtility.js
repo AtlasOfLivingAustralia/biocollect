@@ -45,7 +45,7 @@ AEKOS.Utility = {
                 .pipe(function(modalElement) {
                    var deferredModalResult = $.Deferred();
                    $(modalElement).modal();
-               //    viewModel.loadAekosData();
+             //    viewModel.loadAekosData();
                    AEKOS.Utility.whenUIHiddenThenRemoveUI($(modalElement));
                    return deferredModalResult;
         });

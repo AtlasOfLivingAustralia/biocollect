@@ -455,11 +455,52 @@ var ProjectActivity = function (params) {
     }
 
     self.showAekosModal = function (projectActivities, currentUser, vocabList, projectArea) {
-        AEKOS.Utility.openModal({
-            template: "aekosWorkflowModal",
-            viewModel: new AEKOS.AekosViewModel (self, pActivity, project, projectActivities, currentUser, vocabList, projectArea),
-            context: self // Set context so we don't need to bind the callback function
-        })
+
+        var url = fcConfig.getRecordsForMapping + '&max=10000' +'&view=project' ;
+
+        if(fcConfig.projectId){
+            url += '&projectId=' + fcConfig.projectId + "&fq=projectActivityNameFacet:" + self.name();
+        }
+
+        $.getJSON(url, function(data) {
+
+            var inValidDataset = false;
+            if (data && data.activities && data.activities instanceof Array && data.activities.length > 0) {
+
+                  //  var i, len, myStringArray = [ "Hello", "World" ];
+                for (len = data.activities.length, i=0; i<len; ++i) {
+                    var activity = data.activities[i];
+                   // for (var record in activity.records) {
+                    for (activityRecLen = activity.records.length, j=0; j<activityRecLen; ++j) {
+                        var record = activity.records[j];
+                        if (record.name && record.name.toLowerCase().indexOf('unmatched taxon') > 0) {
+                            inValidDataset = true;
+                            break;
+                        }
+                    }
+                    if (inValidDataset) {break;}
+
+                }
+
+                if (!inValidDataset) {
+                    AEKOS.Utility.openModal({
+                        template: "aekosWorkflowModal",
+                        viewModel: new AEKOS.AekosViewModel(self, pActivity, project, projectActivities, currentUser, vocabList, projectArea, data),
+                        context: self // Set context so we don't need to bind the callback function
+                    })
+                } else {
+                    bootbox.alert("This dataset contains records with UnMatched Taxon. You cannot submit records with Unmatched taxons. ");
+                }
+
+
+            } else {
+                bootbox.alert("There are no records for this dataset or records cannot be retrieved.");
+            }
+
+        }).error(function (request, status, error) {
+            bootbox.alert("Something went wrong when retrieving activity records.");
+        });
+
     };
 
 };

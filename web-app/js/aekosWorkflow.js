@@ -3,7 +3,7 @@
  */
 var AEKOS = {};
 
-AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, projectActivities, user, vocabList, projectArea) {
+AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, projectActivities, user, vocabList, projectArea, activityRecords) {
 
     var self = $.extend(this, pActivityVM);
 
@@ -222,7 +222,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
         if (self.transients.showAekosWorkflow()) {
             bootbox.confirm("You will lose unsaved changes. Are you sure you want to close this window?", function (result) {
                 if (result) {
-                    //  alaMap = null;
+                    alaMap = null;
                     $("#aekosModal").modal('hide');
                     self.get();
                     // window.location.reload();
@@ -244,14 +244,62 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
     self.animalSpecies = ko.observableArray();
     self.plantSpecies = ko.observableArray();
     self.noSpeciesClassification = ko.observableArray();
-    self.loadAekosData = function() {
-        self.transients.aekosMap = aekosMap = new AEKOS.Map ();
+
+ /*   self.preCheckActivityRecords = function() {
+
+        var deferredElement = $.Deferred();
 
         var url = fcConfig.getRecordsForMapping + '&max=10000' +'&view=project' ;
 
         if(fcConfig.projectId){
             url += '&projectId=' + fcConfig.projectId + "&fq=projectActivityNameFacet:" + self.name();
         }
+
+        $.getJSON(url, function(data) {
+
+            if (data && data.activities && data.activities instanceof Array && data.length > 0) {
+
+                for (var activity in data.activities) {
+                    for (var record in activity.records) {
+                        if (record.name && record.name.toLowerCase().indexOf('unmatched taxon') <= 0) {
+                            self.transients.activityRecords = data;
+                            deferredElement.resolve(true);
+                        } else {
+                            deferredElement.resolve(false);
+                        }
+
+                    }
+                }
+
+            } else {
+                deferredElement.resolve(false);
+            }
+
+        }).error(function (request, status, error) {
+            log.error("AJAX error", status, error);
+
+            deferredElement.resolve(false);
+            //      alaMap.finishLoading();
+            //          return null;
+        });
+
+        return deferredElement;
+
+    };
+*/
+
+    self.loadAekosData = function() {
+        self.transients.aekosMap = aekosMap = new AEKOS.Map ();
+
+
+
+/*
+        var url = fcConfig.getRecordsForMapping + '&max=10000' +'&view=project' ;
+
+        if(fcConfig.projectId){
+            url += '&projectId=' + fcConfig.projectId + "&fq=projectActivityNameFacet:" + self.name();
+        }
+*/
 
         $.ajax({
             //'http://spatial.ala.org.au/ws/shape/wkt/' + projectArea.pid
@@ -261,11 +309,15 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
         });
 
 
-        $.getJSON(url, function(data) {
+//        $.getJSON(url, function(data) {
             //self.activityRecords = data;
             //self.datasetSpecies = getRecordSpecies(data);
 
             //var result = extractDataFromRecords(data)
+
+            var data = activityRecords; //self.transients.activityRecords;
+
+
             extractDataFromRecords(data).done (function (result) {
                 var features = (result && result.features)? result.features : null;
                 var speciesInfo = (result && result.speciesInfo)? result.speciesInfo: null;
@@ -319,11 +371,11 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
 
             });
             self.showTab('tab-1');
-        }).error(function (request, status, error) {
+ /*       }).error(function (request, status, error) {
             console.error("AJAX error", status, error);
             //      alaMap.finishLoading();
   //          return null;
-        });
+        });*/
     };
 
     /**
@@ -872,7 +924,8 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
             },
             error: function (data) {
                 promise.resolve({status: "error", error: "An error occurred prior to sending data to Aekos" });
-            }
+            },
+            timeout: 15*1000
         });
 
         return promise;
@@ -944,7 +997,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
                         }
                     });
                 } else if (invalidUser) {
-                    bootbox.alert("Please enter Username, Password and a valid Email(must contain @) in order to submit.")
+                    bootbox.alert("Please enter Username, Password and a valid Email(must contain @) in order to submit.");
                     self.transients.enableSubmission(true);
                 }
             } else {

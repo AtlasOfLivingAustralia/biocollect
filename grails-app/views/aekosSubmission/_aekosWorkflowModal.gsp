@@ -60,9 +60,9 @@
 
         <div data-bind="if: transients.showAekosWorkflow()">
 
-            <div class="aekosAlert" id='alert-placeholder'>
-            </div>
-            <br/>
+           %{-- <div class="aekosAlert" id='alert-placeholder'>
+            </div>--}%
+          %{--  <br/>--}%
 
             <ul  data-bind="attr: {id: 'ul_submission_info' }" class="nav nav-pills">
                 <li data-bind="css: { active: selectedTab() == 'tab-1' }"><a data-bind="attr: {href: '#project-info', id: 'tab-1'}, click: selectTab" data-toggle="tab" >Project<br>Info</a></li>
@@ -118,6 +118,9 @@
         </div>
 
         <div class="modal-footer">
+            <div class="aekosAlert" id='alert-placeholder'>
+            </div>
+
             <!-- ko if: !transients.showAekosWorkflow() && !transients.cannotSubmitError() -->
                 <button class="btn-primary btn btn-small block" data-bind="click: yes">Yes</button>
                 <button class="btn-primary btn btn-small block" data-bind="click: no">No</button>

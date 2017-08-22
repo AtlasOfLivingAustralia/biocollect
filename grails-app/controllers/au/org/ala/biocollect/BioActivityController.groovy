@@ -396,9 +396,7 @@ class BioActivityController {
 
     def aekosSubmission() {
         def postBody = request.JSON
-        log.debug "Body: " + postBody
-        log.debug "Params:"
-        params.each { println it }
+        log.info "aekosSubmission Body: " + postBody
 
         def jsonBody = new grails.web.JSONBuilder().build {postBody?.submissionBody}
 
@@ -413,13 +411,17 @@ class BioActivityController {
 
         String downloadDataUrl = grailsLinkGenerator.link(uri: "/bioActivity/downloadProjectData?projectId=" + postBody?.aekosActivityRec?.projectId + "&fq=projectActivityNameFacet:" + URLEncoder.encode(postBody?.aekosActivityRec?.activityName, "UTF-8") + "&max=10&offset=0&sort=lastUpdated&order=DESC&flimit=15&view=project&searchTerm", absolute: true)
 
+        log.info "aekosSubmission downloading data from: " + downloadDataUrl
+
         def response = projectActivityService.sendAekosDataset(downloadDataUrl, jsonBody.toString())
 
         def result = [:]
         if (response?.status == 200 && response.content?.submissionid) {
             result = [status: "ok", submissionId: response.content?.submissionid]
+            log.info ("Submission to Aekos is successful: " + result)
         } else {
-            result = [status: 'error', error: "Error submitting data to AEKOS. SubmissionId cannot be obtained. Return code: " +  response?.status]
+            result = [status: 'error', error: "Error submitting data to AEKOS. Return code: " +  response?.status + ". Reason: " + response?.content?:"Unknown"]
+            log.info ("Submission to Aekos has failed: " + result)
         }
         render result as JSON
     }
