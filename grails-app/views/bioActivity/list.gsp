@@ -43,6 +43,10 @@
 <body>
 
 <div class="container-fluid">
+    <div class="hidden-sm hidden-xs">
+        <div class="margin-bottom-50"></div>
+    </div>
+
     <div class="row-fluid">
         %{--page title--}%
         <div class="span4">
