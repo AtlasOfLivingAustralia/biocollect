@@ -402,10 +402,13 @@ class ProjectActivityService {
             //   File tempFile = new File ("temp.zip")
             //  Files.copy (conn.getInputStream(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
             //  def is = StreamUtils.copyToByteArray(conn.getInputStream())
+
             def is = conn.getInputStream().getBytes()
 
             // External Aekos Submission Url
             def aekosUrl = grailsApplication.config.aekosSubmission?.url //?: "http://shared-uat.ecoinformatics.org.au:8080/shared-web/api/submission/create"
+
+            log.info("Sending data to SHaRED url: " + aekosUrl)
 
             Map aekosParamMap = [:]
             List<Map> contentListMap = new ArrayList<Map>()
@@ -431,8 +434,14 @@ class ProjectActivityService {
 
             result = utilService.postMultipart(aekosUrl, aekosParamMap, contentListMap, null)
 
-        } else {
+            log.info("Result from service: " + result)
+
+        } else if (grailsApplication.config.aekosSubmission?.url) {
             result = [status: 504, error: "Timeout downloading data.zip."]
+            log.info("Error occurred while downloading data: " + result + " Download status error: " + status)
+        } else {
+            result = [status: 404, error: "Aekos Submission Url is not configured"]
+            log.info(result)
         }
         result
     }

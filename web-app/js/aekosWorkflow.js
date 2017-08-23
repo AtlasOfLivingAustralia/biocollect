@@ -245,61 +245,8 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
     self.plantSpecies = ko.observableArray();
     self.noSpeciesClassification = ko.observableArray();
 
- /*   self.preCheckActivityRecords = function() {
-
-        var deferredElement = $.Deferred();
-
-        var url = fcConfig.getRecordsForMapping + '&max=10000' +'&view=project' ;
-
-        if(fcConfig.projectId){
-            url += '&projectId=' + fcConfig.projectId + "&fq=projectActivityNameFacet:" + self.name();
-        }
-
-        $.getJSON(url, function(data) {
-
-            if (data && data.activities && data.activities instanceof Array && data.length > 0) {
-
-                for (var activity in data.activities) {
-                    for (var record in activity.records) {
-                        if (record.name && record.name.toLowerCase().indexOf('unmatched taxon') <= 0) {
-                            self.transients.activityRecords = data;
-                            deferredElement.resolve(true);
-                        } else {
-                            deferredElement.resolve(false);
-                        }
-
-                    }
-                }
-
-            } else {
-                deferredElement.resolve(false);
-            }
-
-        }).error(function (request, status, error) {
-            log.error("AJAX error", status, error);
-
-            deferredElement.resolve(false);
-            //      alaMap.finishLoading();
-            //          return null;
-        });
-
-        return deferredElement;
-
-    };
-*/
-
     self.loadAekosData = function() {
         self.transients.aekosMap = aekosMap = new AEKOS.Map ();
-
-
-
-/*
-        var url = fcConfig.getRecordsForMapping + '&max=10000' +'&view=project' ;
-
-        if(fcConfig.projectId){
-            url += '&projectId=' + fcConfig.projectId + "&fq=projectActivityNameFacet:" + self.name();
-        }
-*/
 
         $.ajax({
             //'http://spatial.ala.org.au/ws/shape/wkt/' + projectArea.pid
@@ -308,74 +255,59 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
             self.siteCoordinates(data);
         });
 
+       extractDataFromRecords(activityRecords).done (function (result) {
+            var features = (result && result.features)? result.features : null;
+            var speciesInfo = (result && result.speciesInfo)? result.speciesInfo: null;
+            if (speciesInfo) {
+                self.noSpeciesClassification($.grep (speciesInfo, function (it) {
+                    return it && it.kingdom == null;
+                }));
+                self.animalSpecies($.grep (speciesInfo, function (it) {
+                    if  (it && it.kingdom && it.kingdom.toUpperCase() == "ANIMALIA") {
+                        if (!it.commonName) {
+                            it.commonName = it.commonNameSingle? it.commonNameSingle : '';
+                            return it;
+                        }
+                    };
+                }));
+                self.plantSpecies($.grep (speciesInfo, function (it) {
+                    if  (it && it.kingdom && it.kingdom.toUpperCase() == "PLANTAE") {
+                        if (!it.commonName) {
+                            it.commonName = it.commonNameSingle? it.commonNameSingle : '';
+                            return it;
+                        }
+                    };
+                }));
+            };
 
-//        $.getJSON(url, function(data) {
-            //self.activityRecords = data;
-            //self.datasetSpecies = getRecordSpecies(data);
+            var lat = '';
+            var lng = '';
+            var getIbraRegion = false;
+            if (projectArea.decimalLatitude && projectArea.decimalLongitude) {
+                lat = projectArea.decimalLatitude.toString();
+                lng = projectArea.decimalLongitude.toString();
+                getIbraRegion = true;
+            } else if (features && features.length > 0 && features[0] != undefined) {
+                lat = features[0].lat.toString();
+                lng = features[0].lng.toString();
+                getIbraRegion = true;
+            }
 
-            //var result = extractDataFromRecords(data)
+            if (getIbraRegion) {
+                $.ajax({
+                    // cl1048 is Ibra 7 region //'https://spatial.ala.org.au/ws/intersect/cl1048/' + lat + "/" + lng
+                    url: fcConfig.spatialBaseUrl + "/ws/intersect/cl1048/" + lat + "/" + lng
+                }).done(function (ibraRegion) {
+                    self.selectedIbraRegion(ibraRegion[0].value);
+                    aekosMap.plotOnAekosMap(features, projectArea, ibraRegion)
+                });
+            } else {
+                self.selectedIbraRegion(null);
+                aekosMap.plotOnAekosMap(features, projectArea, null)
+            }
 
-            var data = activityRecords; //self.transients.activityRecords;
-
-
-            extractDataFromRecords(data).done (function (result) {
-                var features = (result && result.features)? result.features : null;
-                var speciesInfo = (result && result.speciesInfo)? result.speciesInfo: null;
-                if (speciesInfo) {
-                    self.noSpeciesClassification($.grep (speciesInfo, function (it) {
-                        return it && it.kingdom == null;
-                    }));
-                    self.animalSpecies($.grep (speciesInfo, function (it) {
-                        if  (it && it.kingdom && it.kingdom.toUpperCase() == "ANIMALIA") {
-                            if (!it.commonName) {
-                                it.commonName = it.commonNameSingle? it.commonNameSingle : '';
-                                return it;
-                            }
-                        };
-                    }));
-                    self.plantSpecies($.grep (speciesInfo, function (it) {
-                        if  (it && it.kingdom && it.kingdom.toUpperCase() == "PLANTAE") {
-                            if (!it.commonName) {
-                                it.commonName = it.commonNameSingle? it.commonNameSingle : '';
-                                return it;
-                            }
-                        };
-                    }));
-                };
-
-                var lat = '';
-                var lng = '';
-                var getIbraRegion = false;
-                if (projectArea.decimalLatitude && projectArea.decimalLongitude) {
-                    lat = projectArea.decimalLatitude.toString();
-                    lng = projectArea.decimalLongitude.toString();
-                    getIbraRegion = true;
-                } else if (features && features.length > 0 && features[0] != undefined) {
-                    lat = features[0].lat.toString();
-                    lng = features[0].lng.toString();
-                    getIbraRegion = true;
-                }
-
-                if (getIbraRegion) {
-                    $.ajax({
-                        // cl1048 is Ibra 7 region //'https://spatial.ala.org.au/ws/intersect/cl1048/' + lat + "/" + lng
-                        url: fcConfig.spatialBaseUrl + "/ws/intersect/cl1048/" + lat + "/" + lng
-                    }).done(function (ibraRegion) {
-                        self.selectedIbraRegion(ibraRegion[0].value);
-                        aekosMap.plotOnAekosMap(features, projectArea, ibraRegion)
-                    });
-                } else {
-                    self.selectedIbraRegion(null);
-                    aekosMap.plotOnAekosMap(features, projectArea, null)
-                }
-
-            });
-            self.showTab('tab-1');
- /*       }).error(function (request, status, error) {
-            console.error("AJAX error", status, error);
-            //      alaMap.finishLoading();
-  //          return null;
-        });*/
+        });
+        self.showTab('tab-1');
     };
 
     /**

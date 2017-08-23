@@ -60,7 +60,7 @@ class UtilService {
                 result.content = "Error submitting to ${url}. Shared code: " + message?.sharedErrorCode?:'' + " Shared message: " + message?.message?:""
             }
         }
-        log.info("Submission to Aekos: " + result)
+        log.info("Result of Submission to Aekos: " + result)
         result
 
     }

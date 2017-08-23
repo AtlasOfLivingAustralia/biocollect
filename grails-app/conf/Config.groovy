@@ -155,12 +155,25 @@ log4j = {
         environments {
             production {
                 rollingFile name: "tomcatLog", maxFileSize: '1MB', file: "${loggingDir}/${appName}.log", threshold: org.apache.log4j.Level.ERROR, layout: pattern(conversionPattern: "%d %-5p [%c{1}] %m%n")
+                rollingFile name: 'aekosSubmissionLog',
+                        maxFileSize: '1MB',
+                        file: loggingDir + "/aekosSubmissionLog.log",
+                        layout: pattern(conversionPattern: "%d %-5p [%c{1}]  %m%n")
             }
             development {
                 console name: "stdout", layout: pattern(conversionPattern: "%d %-5p [%c{1}] %m%n"), threshold: org.apache.log4j.Level.DEBUG
+                rollingFile name: 'aekosSubmissionLog',
+                        maxFileSize: '1MB',
+                        file: "/tmp/aekosSubmissionLog.log",
+                        layout: pattern(conversionPattern: "%d %-5p [%c{1}]  %m%n")
             }
             test {
                 rollingFile name: "tomcatLog", maxFileSize: '1MB', file: "/tmp/${appName}", threshold: org.apache.log4j.Level.DEBUG, layout: pattern(conversionPattern: "%d %-5p [%c{1}] %m%n")
+                rollingFile name: 'aekosSubmissionLog',
+                        maxFileSize: '1MB',
+                        file:  '/tmp/aekosSubmissionLog.log',
+                        layout: pattern(conversionPattern: "%d %-5p [%c{1}]  %m%n")
+
             }
         }
     }
@@ -170,6 +183,12 @@ log4j = {
         warn 'tomcatLog'
         additivity = true
     }
+
+    all additivity: false, aekosSubmissionLog: [
+            'grails.app.controllers.au.org.ala.biocollect.BioActivityController',
+            'grails.app.services.au.org.ala.biocollect.ProjectActivityService',
+            'grails.app.services.au.org.ala.biocollect.UtilService'
+    ]
 
     error   'au.org.ala.cas.client',
             'grails.spring.BeanBuilder',
