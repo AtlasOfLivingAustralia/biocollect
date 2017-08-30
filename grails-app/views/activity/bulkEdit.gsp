@@ -1,47 +1,73 @@
-
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <meta name="layout" content="${hubConfig.skin}"/>
-  <title>Create | Activity | Field Capture</title>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-  <r:script disposition="head">
+    <meta name="layout" content="${hubConfig.skin}"/>
+    <title>Create | Activity | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2"
+          content="${createLink(controller: 'project', action: 'index')}/${activity.projectId},Project"/>
+    <meta name="breadcrumb" content="${title}"/>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
+    <r:script disposition="head">
     var fcConfig = {
-        organisationViewUrl: "${createLink(controller:'organisation', action:'index', id:organisation.organisationId)}",
+        organisationViewUrl: "${createLink(controller: 'organisation', action: 'index', id: organisation.organisationId)}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
-        saveUrl: "${createLink(controller:'activity', action:'ajaxUpdate')}",
+        saveUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         returnTo: "${params.returnTo}"
         },
         here = document.location.href;
-  </r:script>
-  <r:require modules="knockout,jqueryValidationEngine,datepicker,slickgrid,jQueryFileUpload,jQueryFileDownload,amplify,viewmodels"/>
+    </r:script>
+    <r:require
+            modules="knockout,jqueryValidationEngine,datepicker,slickgrid,jQueryFileUpload,jQueryFileDownload,amplify,viewmodels"/>
     <style type="text/css">
-        input.editor-text {box-sizing:border-box; width: 100%;}
-        .slick-column-name { white-space: normal; }
-        .slick-header-column.ui-state-default { background: #DAE0B9; height: 100%; font-weight: bold;}
-        .slick-header { background: #DAE0B9; }
-        input[type=checkbox].progress-checkbox { margin-left: 10px; margin-right: 10px;}
-        .finish-all-container { position:absolute; font-weight: normal; bottom: 0; padding-top: 5px; padding-bottom: 5px; border-top: 1px solid silver}
-        .finish-all-container input[type='checkbox'] { margin-bottom:5px; }
+    input.editor-text {
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .slick-column-name {
+        white-space: normal;
+    }
+
+    .slick-header-column.ui-state-default {
+        background: #DAE0B9;
+        height: 100%;
+        font-weight: bold;
+    }
+
+    .slick-header {
+        background: #DAE0B9;
+    }
+
+    input[type=checkbox].progress-checkbox {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .finish-all-container {
+        position: absolute;
+        font-weight: normal;
+        bottom: 0;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-top: 1px solid silver
+    }
+
+    .finish-all-container input[type='checkbox'] {
+        margin-bottom: 5px;
+    }
 
     </style>
-    <g:set var="thisPage" value="${g.createLink(absolute: true, action:'report', params:params)}"/>
-    <g:set var="loginUrl" value="${grailsApplication.config.security.cas.loginUrl ?: 'https://auth.ala.org.au/cas/login'}?service=${thisPage.encodeAsURL()}"/>
+    <g:set var="thisPage" value="${g.createLink(absolute: true, action: 'report', params: params)}"/>
+    <g:set var="loginUrl"
+           value="${grailsApplication.config.security.cas.loginUrl ?: 'https://auth.ala.org.au/cas/login'}?service=${thisPage.encodeAsURL()}"/>
 </head>
+
 <body>
 
 <div class="container-fluid">
-    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-        <ul class="breadcrumb">
-            <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-            <li><a href="${createLink(controller:'organisation', action:'index', id:organisation.organisationId)}" class="clickable">Organisation</a> <span class="divider">/</span></li>
-            <li class="active">
-                ${title}
-            </li>
-        </ul>
-    </g:if>
     <div class="row-fluid">
         <h2>${title}</h2>
     </div>
@@ -51,24 +77,27 @@
     </div>
 
     <div id="load-xlsx-result-placeholder"></div>
-    <g:render template="/shared/restoredData" model="[id:'restoredData', cancelButton:'Cancel']"/>
+    <g:render template="/shared/restoredData" model="[id: 'restoredData', cancelButton: 'Cancel']"/>
 
 
     <div class="row-fluid">
         <span class="span12">
-        <div id="myGrid" class="validationEngineContainer" style="width:100%;"></div>
+            <div id="myGrid" class="validationEngineContainer" style="width:100%;"></div>
         </span>
     </div>
 
 
     <div class="row-fluid">
 
-        <div class="form-actions" >
+        <div class="form-actions">
             <span class="span3">
-                <button type="button" id ="bulkUploadTrigger" class="btn btn-small"><i class="icon-upload"></i> Upload data for this table</button>
+                <button type="button" id="bulkUploadTrigger" class="btn btn-small"><i
+                        class="icon-upload"></i> Upload data for this table</button>
+
                 <div id="bulkUpload" style="display:none;">
                     <div class="text-left" style="margin:5px">
-                        <a target="_blank" id="downloadTemplate" class="btn btn-small">Step 1 - Download template (.xlsx)</a>
+                        <a target="_blank" id="downloadTemplate"
+                           class="btn btn-small">Step 1 - Download template (.xlsx)</a>
                     </div>
 
                     <div class="text-left" style="margin:5px">
@@ -78,16 +107,18 @@
                     </div>
                 </div>
             </span>
-            <span class="span9"style="text-align:right">
-                <button type="button" id="save" class="btn btn-primary" title="Save edits and return to the previous page">Save</button>
-                <buttom type="button" id="cancel" class="btn btn" title="Cancel edits and return to previous page">Cancel</buttom>
+            <span class="span9" style="text-align:right">
+                <button type="button" id="save" class="btn btn-primary"
+                        title="Save edits and return to the previous page">Save</button>
+                <buttom type="button" id="cancel" class="btn btn"
+                        title="Cancel edits and return to previous page">Cancel</buttom>
             </span>
         </div>
     </div>
 
 </div>
 
-<g:render template="/shared/timeoutMessage" model="${[url:loginUrl]}"/>
+<g:render template="/shared/timeoutMessage" model="${[url: loginUrl]}"/>
 
 <r:script>
 
@@ -97,19 +128,19 @@
         return val || "0";
     }
     <g:each in="${outputModels}" var="outputModel">
-        <g:if test="${outputModel.name != 'Photo Points'}">
-            <g:set var="blockId" value="${fc.toSingleWord([name: outputModel.name])}"/>
-            <g:set var="model" value="${outputModel.dataModel}"/>
+    <g:if test="${outputModel.name != 'Photo Points'}">
+        <g:set var="blockId" value="${fc.toSingleWord([name: outputModel.name])}"/>
+        <g:set var="model" value="${outputModel.dataModel}"/>
 
-            var viewModelName = "${blockId}ViewModel",
+        var viewModelName = "${blockId}ViewModel",
                 viewModelInstance = viewModelName + "Instance";
                 //load dynamic models - usually objects in a list
-                <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}" edit="true"
-                                   viewModelInstance="${blockId}ViewModelInstance"/>
+        <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}" edit="true"
+                           viewModelInstance="${blockId}ViewModelInstance"/>
 
-                this[viewModelName] = function (output) {
-                    var self = this;
-                    self.name = "${outputModel.name}";
+        this[viewModelName] = function (output) {
+            var self = this;
+            self.name = "${outputModel.name}";
                 self.outputId = orBlank(output.outputId);
 
                 self.data = {};
@@ -117,53 +148,54 @@
                 self.transients.dummy = ko.observable();
 
                 // add declarations for dynamic data
-                <md:jsViewModel model="${model}" output="${outputModel.name}" edit="true"
-                                viewModelInstance="${blockId}ViewModelInstance"/>
+        <md:jsViewModel model="${model}" output="${outputModel.name}" edit="true"
+                        viewModelInstance="${blockId}ViewModelInstance"/>
 
-                // this will be called when generating a savable model to remove transient properties
-                self.removeBeforeSave = function (jsData) {
-                    // add code to remove any transients added by the dynamic tags
-                    <md:jsRemoveBeforeSave model="${model}"/>
-                    delete jsData.activityType;
-                    delete jsData.transients;
-                    return jsData;
-                };
+        // this will be called when generating a savable model to remove transient properties
+        self.removeBeforeSave = function (jsData) {
+            // add code to remove any transients added by the dynamic tags
+        <md:jsRemoveBeforeSave model="${model}"/>
+        delete jsData.activityType;
+        delete jsData.transients;
+        return jsData;
+    };
 
-            // this returns a JS object ready for saving
-            self.modelForSaving = function () {
-                // get model as a plain javascript object
-                var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
-                // get rid of any transient observables
-                return self.removeBeforeSave(jsData);
-            };
+// this returns a JS object ready for saving
+self.modelForSaving = function () {
+    // get model as a plain javascript object
+    var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
+    // get rid of any transient observables
+    return self.removeBeforeSave(jsData);
+};
 
-            // this is a version of toJSON that just returns the model as it will be saved
-            // it is used for detecting when the model is modified (in a way that should invoke a save)
-            // the ko.toJSON conversion is preserved so we can use it to view the active model for debugging
-            self.modelAsJSON = function () {
-                return JSON.stringify(self.modelForSaving());
-            };
+// this is a version of toJSON that just returns the model as it will be saved
+// it is used for detecting when the model is modified (in a way that should invoke a save)
+// the ko.toJSON conversion is preserved so we can use it to view the active model for debugging
+self.modelAsJSON = function () {
+    return JSON.stringify(self.modelForSaving());
+};
 
-            self.loadData = function (data) {// load dynamic data
-                <md:jsLoadModel model="${model}"/>
+self.loadData = function (data) {// load dynamic data
+        <md:jsLoadModel model="${model}"/>
 
-                // if there is no data in tables then add an empty row for the user to add data
-                if (typeof self.addRow === 'function' && self.rowCount() === 0) {
-                    self.addRow();
-                }
-                self.transients.dummy.notifySubscribers();
-            };
+        // if there is no data in tables then add an empty row for the user to add data
+        if (typeof self.addRow === 'function' && self.rowCount() === 0) {
+            self.addRow();
+        }
+        self.transients.dummy.notifySubscribers();
+    };
 
-            if (output && output.data) {
-                self.loadData(output.data);
-            }
-            self.dirtyFlag = ko.dirtyFlag(self, false);
-        };
+    if (output && output.data) {
+        self.loadData(output.data);
+    }
+    self.dirtyFlag = ko.dirtyFlag(self, false);
+};
     </g:if>
 </g:each>
 
-        var activityLinkFormatter = function( row, cell, value, columnDef, dataContext ) {
-            return '<a title="'+dataContext.projectName+'" target="project" href="'+fcConfig.projectViewUrl+dataContext.projectId+'">'+value+'</a>';
+    var activityLinkFormatter = function( row, cell, value, columnDef, dataContext ) {
+        return '<a title="'+dataContext.projectName+'" target="project"
+                       href="'+fcConfig.projectViewUrl+dataContext.projectId+'">'+value+'</a>';
         };
 
         var activities = <fc:modelAsJavascript model="${activities}"/>;

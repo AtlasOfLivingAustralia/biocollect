@@ -13,6 +13,8 @@ class ProjectService {
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE_TYPE_2 = 'citizenScience'
     public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoScience'
     public static final String PROJECT_TYPE_WORKS = 'works'
+    public static final String PROJECT_PLAN_STATUS_APPROVED = 'approved'
+    public static final String PROJECT_PLAN_STATUS_NOTAPPROVED = 'not approved'
         static  final MOBILE_APP_ROLE = [ "android",
                                           "blackberry",
                                           "iTunes",
@@ -86,9 +88,10 @@ class ProjectService {
     def validate(props, projectId = null) {
         def error = null
         def updating = projectId != null
-        def projectType = ((updating && !props?.projectType) ? get(projectId)?.projectType : props?.projectType)
-        def isWorks = projectType == 'works'
-        def isEcoScience = projectType == 'ecoscience'
+        def project = get(projectId)
+        def projectType = ((updating && !props?.projectType) ? project?.projectType : props?.projectType)
+        def isWorks = projectType == PROJECT_TYPE_WORKS
+        def isEcoScience = projectType == PROJECT_TYPE_ECOSCIENCE
         def termsNeeded = !(props.containsKey("isExternal") && props.isExternal)
 
         if (!updating && !props.containsKey("isExternal") && !isWorks) {
@@ -97,13 +100,8 @@ class ProjectService {
         }
 
         if (updating) {
-            def project = get(projectId)
             if (project?.error) {
                 return "invalid projectId"
-            }
-
-            if (!projectType) {
-                projectType = project?.projectType
             }
         }
 
@@ -368,8 +366,7 @@ class ProjectService {
         if (userService.userIsSiteAdmin()) {
             userCanEdit = true
         } else {
-            def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProject?projectId=${projectId}&userId=${userId}"
-            userCanEdit = webService.getJson(url)?.userIsEditor ?: false
+            userCanEdit = userService.canUserEditProject(userId, projectId)
         }
 
         // Merit projects are not allowed to be edited.
@@ -380,6 +377,27 @@ class ProjectService {
         }
 
         userCanEdit
+    }
+
+    /**
+     * Check whether a works project has the canEditorCreateSites and the user has permission to edit the project
+     * If the project is not Works the default behaviour is to just call canUserEditProject.
+     * @param userId The user calling the controller
+     * @param projectId The project to check
+     * @param merit Is this a merit project?
+     */
+    def canUserEditSitesForProject(String userId, String projectId, boolean merit = true) {
+        boolean canManageSites = true
+
+        Map project = get(projectId)
+
+        if(project.projectType == "works") {
+            canManageSites = userService.userIsSiteAdmin() || userService.isUserAdminForProject(userId, projectId)  ||
+                    project?.canEditorCreateSites && userService.isUserEditorForProject(userId, projectId)
+        }
+
+        // Not sure if merit check is still relevant but just in case we rely on canUserEditProject behaviour
+        canManageSites && canUserEditProject(userId, projectId, merit)
     }
 
     /**
@@ -459,6 +477,30 @@ class ProjectService {
             userCanView = canUserEditProject(userId, projectId)
         }
         userCanView
+    }
+
+    /**
+      * Does the current user have editor permission for the requested projectId?
+      *
+      * @param userId
+      * @param projectId
+      * @return
+      */
+    def isUserEditorForProject(userId, projectId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserEditorForProject?projectId=${projectId}&userId=${userId}"
+        webService.getJson(url)?.userIsEditor // either will be true or false
+    }
+
+/**
+  * Does the current user have project participant permission for the requested projectId?
+  *
+  * @param userId
+  * @param projectId
+  * @return
+  */
+    def isUserParticipantForProject(userId, projectId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserParticipantForProject?projectId=${projectId}&userId=${userId}"
+        webService.getJson(url)?.userIsParticipant // either will be true or false
     }
 
 
@@ -733,7 +775,7 @@ class ProjectService {
     }
 
     public boolean isWork(project){
-        !isCitizenScience(project) && !isEcoScience(project)
+        project.projectType == PROJECT_TYPE_WORKS
     }
 
     /**
@@ -906,5 +948,17 @@ class ProjectService {
         def result = speciesService.searchSpeciesForConfig(speciesFieldConfig, q, limit)
         speciesService.formatSpeciesNameForSurvey(speciesFieldConfig.speciesDisplayFormat , result)
         result
+    }
+
+    /**
+     * Check if work project plan has been approved.
+     * @param projectId
+     * @return
+     */
+    boolean isWorksProjectPlanStatusApproved(String projectId){
+        Map project = get(projectId)
+        if(!project?.error){
+            project.planStatus == PROJECT_PLAN_STATUS_APPROVED
+        }
     }
 }

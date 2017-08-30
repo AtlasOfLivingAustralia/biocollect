@@ -3,17 +3,15 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${project.name} | Species | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2"
+          content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${project.name}"/>
+    <meta name="breadcrumb" content="Species"/>
+
     <r:require modules="knockout, a-jquery-ui, jquery_bootstrap_datatable"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
-    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-        <ul class="breadcrumb">
-            <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-            <li><g:link controller="project" action="index" id="${project.projectId}">${project.name}</g:link> <span class="divider">/</span></li>
-            <li>Species</li>
-        </ul>
-    </g:if>
     <div class="row-fluid">
         <div class="page-header">
             <h1>${project.name} - Species</h1>

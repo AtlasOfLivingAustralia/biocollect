@@ -4,6 +4,11 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${organisation.name.encodeAsHTML()} | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2"
+          content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
+    <meta name="breadcrumb" content="${organisation.name}"/>
+
     <g:set var="loadPermissionsUrl" value="${createLink(controller: 'organisation', action: 'getMembersForOrganisation', id:organisation.organisationId)}"/>
 
     <r:script disposition="head">

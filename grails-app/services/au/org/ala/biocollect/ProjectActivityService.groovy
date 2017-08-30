@@ -16,6 +16,7 @@ class ProjectActivityService {
     ProjectService projectService
     MetadataService metadataService
     MessageSource messageSource
+    UtilService utilService
 
     def getAllByProject(projectId, levelOfDetail = "", version = null){
         def params = '?'
@@ -385,4 +386,48 @@ class ProjectActivityService {
             }
         }
     }
+
+    def sendAekosDataset(String downloadUrl, String jsonSubmissionPayload) {
+
+        URLConnection conn = new URL(downloadUrl).openConnection()
+
+        def contentType = conn.getContentType()
+        def len = conn.getContentLength()
+        def status = conn.responseCode
+
+     //   File tempFile = new File ("temp.zip")
+      //  Files.copy (conn.getInputStream(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+      //  def is = StreamUtils.copyToByteArray(conn.getInputStream())
+       def is = conn.getInputStream().getBytes()
+
+        // External Aekos Submission Url
+        def aekosUrl = grailsApplication.config.aekosSubmission?.url ?: "http://shared-uat.ecoinformatics.org.au:8080/shared-web/api/submission/create"
+
+        Map aekosParamMap = [:]
+        List<Map> contentListMap = new ArrayList<Map>()
+
+        Map jsonInputStreamMap = [:]
+        //jsonInputStreamMap.put("contentIn", new ByteArrayInputStream(jsonSubmissionPayload.getBytes()))
+        jsonInputStreamMap.put("contentIn", jsonSubmissionPayload)
+        Map jsonInputInfo = [:]
+        jsonInputInfo.put("contentType", "application/json")
+        jsonInputInfo.put("contentName", "submissionJson")
+        jsonInputStreamMap.put("contentInfo", jsonInputInfo)
+
+        Map fileInputStreamMap = [:]
+        Map fileInputStreamInfo = [:]
+        fileInputStreamInfo.put("contentType", "application/zip")
+        fileInputStreamInfo.put("contentName", "datasetZipFile")
+        fileInputStreamMap.put("contentIn", is)
+        //fileInputStreamMap.put("contentIn", tempFile)
+        fileInputStreamMap.put("contentInfo", fileInputStreamInfo)
+
+        contentListMap.add(jsonInputStreamMap)
+        contentListMap.add(fileInputStreamMap)
+
+        def result = utilService.postMultipart(aekosUrl, aekosParamMap, contentListMap, null)
+
+        result
+    }
+
 }

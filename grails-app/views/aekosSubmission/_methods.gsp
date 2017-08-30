@@ -1,4 +1,4 @@
-<div id="datasetInfo" >
+<div id="collectionMethods" >
 
     <div class="row-fluid">
         <div class="span12">
@@ -18,7 +18,7 @@
         </div>
 
         <div class="span8">
-            <div id="samplingDesign" data-bind="treeView: {data: samplingDesign,
+            <div id="samplingDesign" data-bind="treeView: {data: transients.samplingDesign,
                                                            extraFieldLabel: '<g:message code="aekos.sampling.design.suggest"/>'}" ></div>
        </div>
     </div>
@@ -35,7 +35,7 @@
         </div>
 
          <div class="span8">
-             <div id="measurementTheme" data-bind="treeView: {data: observationMeasurements,
+             <div id="measurementTheme" data-bind="treeView: {data: transients.observationMeasurements,
                                        extraFieldLabel: '<g:message code="aekos.measurement.theme.suggest"/>'}" ></div>
         </div>
     </div>
@@ -52,7 +52,7 @@
         </div>
 
         <div class="span8">
-            <div id="measurement" data-bind="treeView: {data: observedAttributes,
+            <div id="measurement" data-bind="treeView: {data: transients.observedAttributes,
                                        extraFieldLabel: '<g:message code="aekos.method.measurement.suggest"/>'}" ></div>
 
         </div>
@@ -71,9 +71,7 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <input id="methodName" data-bind="value: methodName" data-validation-engine="validate[required]" style="width: 95%">
-            </div>
+            <input id="methodName" data-bind="value: methodName" data-validation-engine="validate[required]" style="width: 95%">
         </div>
     </div>
 
@@ -90,9 +88,7 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <textarea id="methodAbstract" data-bind="value: methodAbstract" data-validation-engine="validate[required]" rows="3" style="width: 90%"></textarea>
-            </div>
+           <textarea id="methodAbstract" data-bind="value: methodAbstract" data-validation-engine="validate[required]" rows="3" style="width: 90%"></textarea>
         </div>
     </div>
 
@@ -108,9 +104,7 @@
         </div>
 
         <div class="span8">
-            <div class="controls">
-                <textarea id="methodDriftDescription" data-bind="value: methodDriftDescription" rows="3" style="width: 90%"></textarea>
-            </div>
+            <textarea id="methodDriftDescription" data-bind="value: currentSubmissionPackage.methodDriftDescription" rows="3" style="width: 90%"></textarea>
         </div>
     </div>
 
@@ -126,7 +120,7 @@
         </div>
 
         <div class="span8">
-            <div id="artefacts" data-bind="treeView: {data: identificationMethod,
+            <div id="artefacts" data-bind="treeView: {data: transients.identificationMethod,
                                        extraFieldLabel: '<g:message code="aekos.other.artefacts.suggest"/>'}" ></div>
         </div>
     </div>

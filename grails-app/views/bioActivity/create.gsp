@@ -10,6 +10,9 @@
         <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
         <title>Create | ${activity.type} | Bio Collect</title>
     </g:else>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${pActivity.projectId},Project"/>
+    <meta name="breadcrumb" content="${pActivity.name}"/>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <r:script disposition="head">

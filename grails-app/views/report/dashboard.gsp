@@ -11,6 +11,8 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Dashboard | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumb" content="Dashboard"/>
 
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script src="http://dev.openlayers.org/releases/OpenLayers-2.12/OpenLayers.js" type="text/javascript"></script>
@@ -48,15 +50,6 @@
 <body>
 
 <div class="container-fluid">
-    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-        <ul class="breadcrumb">
-            <li>
-                <g:link controller="home">Home</g:link> <span class="divider">/</span>
-            </li>
-            <li class="active">Dashboard</li>
-        </ul>
-    </g:if>
-
     <h1 class="textcenter">MERI Data Dashboard</h1>
 
 

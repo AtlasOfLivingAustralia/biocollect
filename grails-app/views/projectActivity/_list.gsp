@@ -96,6 +96,14 @@
                                                         </a>
                                                     </td>
                                                     <td>
+                                                        <g:message code="project.survey.info.submissionId"/>
+                                                        <a href="#" class="helphover"
+                                                           data-bind="popover: {title:'<g:message code="project.survey.info.submissionId"/>',
+                                                                                content:'<g:message code="project.survey.info.submissionId.content"/>'}">
+                                                            <i class="icon-question-sign"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td>
                                                         <g:message code="project.survey.info.submissionDoi"/>
                                                         <a href="#" class="helphover"
                                                            data-bind="popover: {title:'<g:message code="project.survey.info.submissionDoi"/>',
@@ -109,9 +117,17 @@
                                                 <!-- ko foreach: submissionRecords -->
                                                     <tr style="border-bottom: none !important;">
                                                         <td><span data-bind="text: displayDate()"></span></td>
-                                                        <td><span data-bind="text: datasetSubmitter().displayName"></span></td>
+                                                        <td><span data-bind="text: datasetSubmitterUser() ? datasetSubmitterUser().displayName : ''"></span></td>
                                                         <td><span data-bind="text: datasetVersion"></span></td>
-                                                        <td><span data-bind="text: submissionDoi"></span></td>
+                                                        <td><span data-bind="text: submissionId"></span></td>
+
+                                                        <!-- ko if: submissionDoi() == 'Draft' || submissionDoi() == 'Pending' || submissionDoi() == 'Cancelled' -->
+                                                            <td><span data-bind="text: submissionDoi"></span></td>
+                                                        <!-- /ko -->
+                                                        <!-- ko ifnot: submissionDoi() == 'Draft' || submissionDoi() == 'Pending' || submissionDoi() == 'Cancelled' -->
+                                                            <td><a data-bind='attr: { href: "${grailsApplication.config.aekosMintedDoi.url}/" + submissionId(),
+                                                                              title:  "${grailsApplication.config.aekosMintedDoi.url}/" + submissionId()}', target="_blank"><span data-bind="text: submissionDoi"></span></a></td>
+                                                        <!-- /ko -->
                                                     </tr>
                                                 <!-- /ko -->
                                             </tbody>
@@ -119,6 +135,7 @@
 
                                     </div>
 
+                                    <g:if test="${grailsApplication.config.aekosSubmission?.url? true: false}">
                                     <div>
                                         <br/>
                                         <!-- ko if: $parent.userIsAdmin() -->
@@ -126,7 +143,7 @@
                                                  class="btn btn-success btn-sm">Submit current version to AEKOS</a></span>
                                         <!-- /ko -->
                                     </div>
-
+                                    </g:if>
                                 </div>
                             </g:if>
                         </div>

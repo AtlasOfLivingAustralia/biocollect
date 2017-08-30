@@ -45,7 +45,7 @@ AEKOS.Utility = {
                 .pipe(function(modalElement) {
                    var deferredModalResult = $.Deferred();
                    $(modalElement).modal();
-                   viewModel.loadAekosData();
+               //    viewModel.loadAekosData();
                    AEKOS.Utility.whenUIHiddenThenRemoveUI($(modalElement));
                    return deferredModalResult;
         });
@@ -64,7 +64,6 @@ AEKOS.Utility = {
             };
         })
     }
-    
 };
 
 AEKOS.Map = function () {
@@ -93,7 +92,7 @@ AEKOS.Map = function () {
      * @param speciesName
      * @returns {string}
      */
-    self.generatePopup = function (projectLinkPrefix, projectId, projectName, activityUrl, surveyName, speciesName){
+    var generatePopup = function (projectLinkPrefix, projectId, projectName, activityUrl, surveyName, speciesName){
         var html = "<div class='projectInfoWindow'>";
         var version = fcConfig.version === undefined ? "" : "?version=" + fcConfig.version
 
@@ -113,39 +112,18 @@ AEKOS.Map = function () {
         return html;
     };
 
-    /**
-     * converts ajax data to activities or records according to selection.
-     * @param data
-     */
-    self.generateDotsFromRecords = function (data){
-        features = [];
-        var geoPoints = data;
-
-        if (geoPoints.activities) {
-            $.each(geoPoints.activities, function(index, activity) {
-                var projectId = activity.projectId;
-                var projectName = activity.name;
-                var activityUrl = fcConfig.activityViewUrl+'/'+activity.activityId;
-
-                /*switch (featureType){
-                 case 'record':*/
-                if (activity.records && activity.records.length > 0) {
-                    $.each(activity.records, function(k, el) {
-                        if(el.coordinates && el.coordinates.length && el.coordinates[1] && !isNaN(el.coordinates[1]) && el.coordinates[0] && !isNaN(el.coordinates[0])){
-                            features.push({
-                                // the ES index always returns the coordinate array in [lat, lng] order
-                                lat: el.coordinates[0],
-                                lng: el.coordinates[1],
-                                popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, el.name)
-                            });
-                        }
-                    });
-                }
-            });
-            return features;
-        } else {
-            return null;
-        }
+    self.getPointFeatures = function (activity, record) {
+        var projectId = activity.projectId;
+        var projectName = activity.name;
+        var activityUrl = fcConfig.activityViewUrl+'/'+activity.activityId;
+        if(record.coordinates && record.coordinates.length && record.coordinates[1] && !isNaN(record.coordinates[1]) && record.coordinates[0] && !isNaN(record.coordinates[0])){
+            return {
+                // the ES index always returns the coordinate array in [lat, lng] order
+                lat: record.coordinates[0],
+                lng: record.coordinates[1],
+                popup: generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, record.name)
+            };
+        };
     };
 
     self.showMap = function (data, event) {
@@ -175,7 +153,7 @@ AEKOS.Map = function () {
     };
 
     /**
-     * creates the map and plots the points on map
+     * creates the map and plots the points on map  
      * @param features
      */
     self.plotOnAekosMap = function (recordPoints, projectArea, ibraRegion){
@@ -185,7 +163,9 @@ AEKOS.Map = function () {
             alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomleft");
         }
 
-        addRecordsLayer (recordPoints);
+        if (recordPoints && recordPoints[0] != undefined) {
+            addRecordsLayer(recordPoints);
+        }
 
         if (ibraRegion && ibraRegion.length > 0) {
             addIbraRegionLayer(ibraRegion[0].pid, true);
@@ -240,7 +220,7 @@ AEKOS.Map = function () {
         }
 
         if (self.projectArea) {
-            self.projectAreaChecked = true
+            self.projectAreaChecked = true;
             alaMap.addWmsLayer(self.projectArea);
         }
     };

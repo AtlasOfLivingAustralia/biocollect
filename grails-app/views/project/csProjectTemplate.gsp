@@ -4,6 +4,9 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${project?.name.encodeAsHTML()} | Project | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumb" content="${project?.name}"/>
+
     <r:script disposition="head">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -45,6 +48,7 @@
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         projectActivityCreateUrl: "${createLink(controller: 'projectActivity', action: 'ajaxCreate', params: [projectId:project.projectId])}",
         projectActivityUpdateUrl: "${createLink(controller: 'projectActivity', action: 'ajaxUpdate')}",
+        projectActivityGetUrl: "${createLink(controller: 'projectActivity', action: 'ajaxGet')}",
         projectActivityDeleteUrl: "${createLink(controller: 'projectActivity', action: 'delete')}",
         projectActivityUnpublishUrl: "${createLink(controller: 'projectActivity', action: 'unpublish')}",
         deleteAllDataForProjectActivityUrl: "${createLink(controller: 'projectActivity', action: 'deleteAllDataForProjectActivity')}",
@@ -76,7 +80,7 @@
         view: 'project',
         imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
         version: "${params.version}",
-        aekosSubmissionPostUrl: "${createLink(controller: 'projectActivity', action: 'aekosSubmission')}",
+        aekosSubmissionUrl: "${createLink(controller: 'bioActivity', action: 'aekosSubmission')}",
         createBlogEntryUrl: "${createLink(controller: 'blog', action:'create', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}",
         editBlogEntryUrl: "${createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}",
         deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}",

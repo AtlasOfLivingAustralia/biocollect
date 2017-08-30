@@ -1,28 +1,29 @@
 <g:set var="orgNameLong" value="${grailsApplication.config.skin.orgNameLong}"/>
 <g:set var="orgNameShort" value="${grailsApplication.config.skin.orgNameShort}"/>
+<g:set var="settingService" bean="settingService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="app.version" content="${g.meta(name:'app.version')}"/>
-    <meta name="app.build" content="${g.meta(name:'app.build')}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="app.version" content="${g.meta(name: 'app.version')}"/>
+    <meta name="app.build" content="${g.meta(name: 'app.build')}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><g:layoutTitle /></title>
-    <r:require modules="configHubTemplate1" />
+    <title><g:layoutTitle/></title>
+    <r:require modules="configHubTemplate1"/>
     <g:set var="styles" value="${hubConfig.templateConfiguration?.styles}"></g:set>
     <r:script>
         // initialise plugins
-        jQuery(function(){
+        jQuery(function () {
             // autocomplete on navbar search input
-            jQuery("form#search-form-2011 input#search-2011, form#search-inpage input#search, input#search-2013").autocomplete('http://bie.ala.org.au/search/auto.jsonp', {
+            jQuery("#biesearch").autocomplete('https://bie.ala.org.au/ws/search/auto.jsonp', {
                 extraParams: {limit: 100},
                 dataType: 'jsonp',
-                parse: function(data) {
+                parse: function (data) {
                     var rows = new Array();
                     data = data.autoCompleteList;
-                    for(var i=0; i<data.length; i++) {
+                    for (var i = 0; i < data.length; i++) {
                         rows[i] = {
-                            data:data[i],
+                            data: data[i],
                             value: data[i].matchedNames[0],
                             result: data[i].matchedNames[0]
                         };
@@ -30,7 +31,7 @@
                     return rows;
                 },
                 matchSubset: false,
-                formatItem: function(row, i, n) {
+                formatItem: function (row, i, n) {
                     return row.matchedNames[0];
                 },
                 cacheLength: 10,
@@ -43,7 +44,7 @@
             // Mobile/desktop toggle
             // TODO: set a cookie so user's choice is remembered across pages
             var responsiveCssFile = $("#responsiveCss").attr("href"); // remember set href
-            $(".toggleResponsive").click(function(e) {
+            $(".toggleResponsive").click(function (e) {
                 e.preventDefault();
                 $(this).find("i").toggleClass("icon-resize-small icon-resize-full");
                 var currentHref = $("#responsiveCss").attr("href");
@@ -56,19 +57,24 @@
                 }
             });
 
-            $('.helphover').popover({animation: true, trigger:'hover'});
+            $('.helphover').popover({animation: true, trigger: 'hover'});
         });
     </r:script>
     <r:layoutResources/>
-    <g:layoutHead />
-    <link rel="stylesheet" type="text/css" href="${createLink(controller:'hub', action: 'getStyleSheet')}?hub=${hubConfig.urlPath}">
-    <link href="http://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>
+    <g:layoutHead/>
+    <link rel="stylesheet" type="text/css"
+          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?hub=${hubConfig.urlPath}">
+    <link href="https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"
+          type="image/x-icon"/>
 </head>
-<body class="${pageProperty(name:'body.class')?:'nav-collections'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}"  data-offset="${pageProperty(name:'body.data-offset')}" data-target="${pageProperty(name:'body.data-target')}" data-spy="${pageProperty(name:'body.data-spy')}">
+
+<body class="${pageProperty(name: 'body.class') ?: 'nav-collections'}" id="${pageProperty(name: 'body.id')}"
+      onload="${pageProperty(name: 'body.onload')}" data-offset="${pageProperty(name: 'body.data-offset')}"
+      data-target="${pageProperty(name: 'body.data-target')}" data-spy="${pageProperty(name: 'body.data-spy')}">
 <g:set var="fluidLayout" value="${!hubConfig.content?.isContainer}"/>
 <g:if test="${hubConfig.templateConfiguration.header.type == 'ala'}">
     <div id="ala-header-bootstrap2" class="do-not-mark-external">
-        <hf:banner logoutUrl="${g.createLink(controller:"logout", action:"logout", absolute: true)}"/>
+        <hf:banner logoutUrl="${g.createLink(controller: "logout", action: "logout", absolute: true)}"/>
     </div>
 </g:if>
 <g:elseif test="${hubConfig.templateConfiguration.header.type == 'biocollect'}">
@@ -89,13 +95,14 @@
     <div id="custom-header" class="do-not-mark-external">
         <div class="navbar navbar-inverse navbar-static-top">
             <div class="navbar-inner contain-to-grid">
-                <div class="${fluidLayout?'container-fluid':'container'}">
+                <div class="${fluidLayout ? 'container-fluid' : 'container'}">
                     <div class="pull-right">
                         <div class="nav-collapse collapse pull-right">
                             <ul class="nav">
                                 <g:if test="${hubConfig.templateConfiguration?.header?.links}">
                                     <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
-                                        <config:getLinkFromConfig config="${link}" hubConfig="${hubConfig}"></config:getLinkFromConfig>
+                                        <config:getLinkFromConfig config="${link}"
+                                                                  hubConfig="${hubConfig}"></config:getLinkFromConfig>
                                     </g:each>
                                 </g:if>
                             </ul>
@@ -106,11 +113,52 @@
         </div><!--/.navbar -->
     </div>
 </g:elseif>
-
+<!-- Breadcrumb -->
+<g:if test="${!printView && !mobile && !hubConfig.content?.hideBreadCrumbs}">
+    <g:set var="cssClassName" value="${hubConfig?.templateConfiguration?.header?.type == 'ala'?'margin-top-70':''}"/>
+    <g:set var="breadCrumbs"
+           value="${settingService.getCustomBreadCrumbsSetForControllerAction(controllerName, actionName)}"/>
+    <g:if test="${breadCrumbs}">
+        <section id="breadcrumb" class="${cssClassName}">
+            <div class="${fluidLayout ? 'container-fluid' : 'container'}">
+                <div class="row">
+                    <ul class="breadcrumb-list">
+                        <g:each in="${breadCrumbs}" var="item" status="index">
+                            <config:getLinkFromConfig config="${item}"></config:getLinkFromConfig>
+                        </g:each>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </g:if>
+    <g:else>
+        <g:set var="index" value="1"></g:set>
+        <g:set var="metaName" value="${'meta.breadcrumbParent' + index}"/>
+        <g:if test="${pageProperty(name: "meta.breadcrumb")}">
+            <section id="breadcrumb" class="${cssClassName}">
+                <div class="${fluidLayout ? 'container-fluid' : 'container'}">
+                    <div class="row">
+                        <ul class="breadcrumb-list">
+                            <g:while test="${pageProperty(name: metaName)}">
+                                <g:set value="${pageProperty(name: metaName).tokenize(',')}" var="parentArray"/>
+                                <li><a href="${parentArray[0]}">${parentArray[1]}</a></li>
+                                <% index++ %>
+                                <g:set var="metaName" value="${'meta.breadcrumbParent' + index}"/>
+                            </g:while>
+                            <li class="active">${pageProperty(name: "meta.breadcrumb")}</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </g:if>
+    </g:else>
+</g:if>
+<!-- End Breadcrumb -->
 
 <g:pageProperty name="page.page-header"/> <%-- allows special content to be inserted --%>
 
-<div id="main-content" class="${homepage? 'homepage': ''} ${hubConfig.templateConfiguration.header.type == 'ala'? 'padding-top-70':''} ${fluidLayout?'container-fluid':'container'}">
+<div id="main-content"
+     class="${homepage ? 'homepage' : ''} ${fluidLayout ? 'container-fluid' : 'container'} padding-top-10">
     <g:if test="${flash.message}">
         <div class="container-fluid">
             <div class="alert alert-info">
@@ -118,7 +166,7 @@
             </div>
         </div>
     </g:if>
-    <g:layoutBody />
+    <g:layoutBody/>
 </div>
 
 <g:if test="${hubConfig.templateConfiguration.footer.type == 'ala'}">
@@ -128,7 +176,7 @@
 </g:if>
 <g:elseif test="${hubConfig.templateConfiguration.footer.type == 'custom'}">
     <div id="custom-footer">
-        <div class="${fluidLayout?'container-fluid':'container'}">
+        <div class="${fluidLayout ? 'container-fluid' : 'container'}">
             <div class="row-fluid  navbar-inverse">
                 <div class="span5">
                     <ul class="nav">
@@ -145,15 +193,20 @@
                     <div id="smlinks">
                         <g:if test="${hubConfig.templateConfiguration?.footer?.socials}">
                             <g:each in="${hubConfig.templateConfiguration?.footer?.socials}" var="social">
-                                <config:getSocialMediaLinkFromConfig config="${social}"></config:getSocialMediaLinkFromConfig>
+                                <config:getSocialMediaLinkFromConfig
+                                        config="${social}"></config:getSocialMediaLinkFromConfig>
                             </g:each>
                         </g:if>
                     </div>
                 </div><!--/.spanX -->
                 <div class="span3">
                     <a class="brand" href="http://ala.org.au/" id="alaLink" title="ALA home page">
-                        <g:img dir="/images/mdba" file="ALA-logo-BW-124x109.png" alt="Powered by ALA logo" class="headerLogo"/>
-                        <div id="alaHeadingText"><div id="poweredBy">powered by</div><div id="alaBy" class="visible-desktop">Atlas of Living Australia</div>
+                        <g:img dir="/images/mdba" file="ALA-logo-BW-124x109.png" alt="Powered by ALA logo"
+                               class="headerLogo"/>
+                        <div id="alaHeadingText"><div id="poweredBy">powered by</div>
+
+                            <div id="alaBy" class="visible-desktop">Atlas of Living Australia</div>
+
                             <div class="hidden-desktop">ALA</div></div>
                     </a>
                 </div>
@@ -175,9 +228,11 @@
         var intervalSeconds = 5 * 60;
 
         setInterval(function() {
-            $.ajax("${createLink(controller: 'ajax', action:'keepSessionAlive')}").done(function(data) {});
+            $.ajax("${createLink(controller: 'ajax', action: 'keepSessionAlive')}").done(function(data) {});
         }, intervalSeconds * 1000);
 
+        //make sure external link icon is not added to links in footer.
+        $('#ala-footer-bootstrap2').find('a').addClass('do-not-mark-external')
     }); // end document ready
 
 </r:script>
@@ -195,7 +250,7 @@
             }
             // console.log("referrer", document.referrer);
             // don't show popup if user has clicked checkbox on popup
-            $('#hideIntro').click(function() {
+            $('#hideIntro').click(function () {
                 if ($(this).is(':checked')) {
                     $.cookie(cookieName, 1);
                 } else {

@@ -11,187 +11,194 @@
          to the main viewModel. -->
 <!-- ko stopBinding: true -->
 <div class="row-fluid" id="planContainer">
-    <div id="status-update-error-placeholder"></div>
+    <g:if test="${(project.planStatus == 'not approved') && params.userIsProjectEditor}">
+        <div class="alert alert-info">
+            <g:message code="project.works.workschedule.notapproved.message"></g:message>
+        </div>
+    </g:if>
+    <g:else>
+        <div id="status-update-error-placeholder"></div>
 
-    <div id="activityContainer" class="space-before">
+        <div id="activityContainer" class="space-before">
 
-        <div class="row-fluid" data-bind="visible:planStatus()==='not approved'">
-            <div class="row-fluid">
-                <div class="span6"><span class="badge badge-info">Planning Mode</span>
-                    <fc:iconHelp>Use the "Add new activity" button to add a new activity to your plan.  When you have finished adding activities, use the "Finished planning" button to go into data entry mode.  You can toggle freely between planning and data entry modes.</fc:iconHelp>
+            <div class="row-fluid" data-bind="visible:planStatus()==='not approved'">
+                <div class="row-fluid">
+                    <div class="span6"><span class="badge badge-info">Planning Mode</span>
+                        <fc:iconHelp>Use the "Add new activity" button to add a new activity to your plan.  When you have finished adding activities, use the "Finished planning" button to go into data entry mode.  You can toggle freely between planning and data entry modes.</fc:iconHelp>
+                    </div>
                 </div>
-            </div>
-            <g:if test="${user?.isEditor}">
+                <g:if test="${user?.isEditor}">
 
                     <div class="well">
                         <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.WORKS_PLANNING_MODE_INTRO}"/>
                     </div>
 
-                <div class="form-actions">
+                    <div class="form-actions">
 
-                    <span>Planning actions: </span>
-                    <a class="btn btn-success" class="btn btn-link"
-                            data-bind="visible:planStatus()==='not approved',click:newActivity"
-                            style="vertical-align: baseline"><i class="fa fa-plus"></i> Add new activity</a>
+                        <span>Planning actions: </span>
+                        <a class="btn btn-success" class="btn btn-link"
+                           data-bind="visible:planStatus()==='not approved',click:newActivity"
+                           style="vertical-align: baseline"><i class="fa fa-plus"></i> Add new activity</a>
 
-                    <a class="btn btn-success" class="btn btn-link"
-                       data-bind="visible:planStatus()==='not approved',click:speciesFieldsConfiguration"
-                       style="vertical-align: baseline"><i class="fa fa-table"></i> Configure species fields</a>
+                        <a class="btn btn-success" class="btn btn-link"
+                           data-bind="visible:planStatus()==='not approved',click:speciesFieldsConfiguration"
+                           style="vertical-align: baseline"><i class="fa fa-table"></i> Configure species fields</a>
 
-                    <button class="btn btn-info" data-bind="click:finishedPlanning">Finished planning</button>
+                        <button class="btn btn-info" data-bind="click:finishedPlanning">Finished planning</button>
 
+                    </div>
+                </g:if>
+
+            </div>
+
+            <div class="row-fluid" data-bind="visible:planStatus()==='approved'">
+                <div class="span6"><span class="badge badge-info">Data Entry Mode</span>
+                    <fc:iconHelp>Enter implementation details for project activities using the controls to the left of each activity.  Use the "Edit plann" button to return to planning mode to add new activities or change planning dates.</fc:iconHelp>
                 </div>
-            </g:if>
+                <g:if test="${user?.isEditor}">
+                    <h5></h5>
+                    <div class="form-actions">
 
-        </div>
+                        <span>Actions: </span>
 
-        <div class="row-fluid" data-bind="visible:planStatus()==='approved'">
-            <div class="span6"><span class="badge badge-info">Data Entry Mode</span>
-                <fc:iconHelp>Enter implementation details for project activities using the controls to the left of each activity.  Use the "Edit plann" button to return to planning mode to add new activities or change planning dates.</fc:iconHelp>
+                        <button class="btn btn-info" data-bind="click:editPlan">Edit plan</button>
+                </g:if>
             </div>
-            <g:if test="${user?.isEditor}">
-                <h5></h5>
-                <div class="form-actions">
-
-                    <span>Actions: </span>
-
-                    <button class="btn btn-info" data-bind="click:editPlan">Edit plan</button>
-            </g:if>
-        </div>
-        </div>
-
-
-        <h4 class="inline">Planned Activities</h4>
-
-        <ul class="nav nav-tabs nav-tab-small space-before">
-            <li class="active"><a href="#tablePlan" data-toggle="tab">Tabular</a></li>
-            <li><a href="#ganttPlan" data-toggle="tab">Gantt chart</a></li>
-        </ul>
-
-        <div class="tab-content" style="padding:0;border:none;overflow:visible">
-            <div class="tab-pane active" id="tablePlan">
-                <table class="table table-condensed" id="activities">
-                    <thead>
-                    <tr>
-                        <th style="width:128px;">Actions</th>
-                        <th style="min-width:64px">From</th>
-                        <th style="min-width:64px">To</th>
-                        <th style="width:25%;" id="description-column">Description</th>
-                        <th>Activity</th>
-                        <g:if test="${showSites}">
-                            <th>Site</th>
-                        </g:if>
-                        <th>Status</th>
-                    </tr>
-                    </thead>
-                    <tbody data-bind="foreach:activities.activities" id="activityList">
-                    <tr>
-                        <td>
-                            <button type="button" class="btn btn-mini"
-                                    data-bind="click:editActivity"><i
-                                    class="icon-edit" title="Edit Activity"></i></button>
-                            <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
-                                    class="icon-eye-open" title="View Activity"></i></button>
-                            <button type="button" class="btn btn-mini"
-                                    data-bind="click:printActivity"><i
-                                    class="icon-print" title="Print activity"></i></button>
-                            <button type="button" class="btn btn-mini"
-                                    data-bind="click:deleteActivity"><i class="icon-remove" title="Delete activity"></i>
-                            </button>
-                        </td>
-                        <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
-                        <td><span data-bind="text:plannedEndDate.formattedDate"></span></td>
-                        <td>
-                            <span class="truncate"
-                                  data-bind="text:description,click:$parent.editActivity, css:{clickable:true}"></span>
-                        </td>
-                        <td>
-                            <span data-bind="text:type,click:$parent.editActivity, css:{clickable:true}"></span>
-                        </td>
-                        <g:if test="${showSites}">
-                            <td><a class="clickable" data-bind="text:siteName,click:$parent.openSite"></a></td>
-                        </g:if>
-                        <td>
-                            <span data-bind="template:canUpdateStatus() ? 'updateStatusTmpl' : 'viewStatusTmpl'"></span>
-
-                            <!-- Modal for getting reasons for status change -->
-                            <div id="activityStatusReason" class="modal hide fade" tabindex="-1" role="dialog"
-                                 aria-labelledby="myModalLabel" aria-hidden="true"
-                                 data-bind="showModal:displayReasonModal(),with:deferReason">
-                                <form class="reasonModalForm">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                                                data-bind="click:$parent.displayReasonModal.cancelReasonModal">×</button>
-
-                                        <h3 id="myModalLabel">Reason for deferring or cancelling an activity</h3>
-                                    </div>
-
-                                    <div class="modal-body">
-                                        <p>If you wish to defer or cancel a planned activity you must provide an explanation. Your case
-                                        manager will use this information when assessing your report.</p>
-
-                                        <p>You can simply refer to a document that has been uploaded to the project if you like.</p>
-                                        <textarea data-bind="value:notes,hasFocus:true" name="reason" rows=4 cols="80"
-                                                  class="validate[required]"></textarea>
-                                    </div>
-
-                                    <div class="modal-footer">
-                                        <button class="btn"
-                                                data-bind="click: $parent.displayReasonModal.cancelReasonModal"
-                                                data-dismiss="modal" aria-hidden="true">Discard status change</button>
-                                        <button class="btn btn-primary"
-                                                data-bind="click:$parent.displayReasonModal.saveReasonDocument">Save reason</button>
-                                    </div></form>
-                            </div>
-
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
             </div>
 
-            <div class="tab-pane" id="ganttPlan" style="overflow:hidden;">
-                <div id="gantt-container"></div>
+
+            <h4 class="inline">Planned Activities</h4>
+
+            <ul class="nav nav-tabs nav-tab-small space-before">
+                <li class="active"><a href="#tablePlan" data-toggle="tab">Tabular</a></li>
+                <li><a href="#ganttPlan" data-toggle="tab">Gantt chart</a></li>
+            </ul>
+
+            <div class="tab-content" style="padding:0;border:none;overflow:visible">
+                <div class="tab-pane active" id="tablePlan">
+                    <table class="table table-condensed" id="activities">
+                        <thead>
+                        <tr>
+                            <th style="width:128px;">Actions</th>
+                            <th style="min-width:64px">From</th>
+                            <th style="min-width:64px">To</th>
+                            <th style="width:25%;" id="description-column">Description</th>
+                            <th>Activity</th>
+                            <g:if test="${showSites}">
+                                <th>Site</th>
+                            </g:if>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody data-bind="foreach:activities.activities" id="activityList">
+                        <tr>
+                            <td>
+                                <button type="button" class="btn btn-mini"
+                                        data-bind="click:editActivity"><i
+                                        class="icon-edit" title="Edit Activity"></i></button>
+                                <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
+                                        class="icon-eye-open" title="View Activity"></i></button>
+                                <button type="button" class="btn btn-mini"
+                                        data-bind="click:printActivity"><i
+                                        class="icon-print" title="Print activity"></i></button>
+                                <button type="button" class="btn btn-mini"
+                                        data-bind="click:deleteActivity"><i class="icon-remove" title="Delete activity"></i>
+                                </button>
+                            </td>
+                            <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
+                            <td><span data-bind="text:plannedEndDate.formattedDate"></span></td>
+                            <td>
+                                <span class="truncate"
+                                      data-bind="text:description,click:$parent.editActivity, css:{clickable:true}"></span>
+                            </td>
+                            <td>
+                                <span data-bind="text:type,click:$parent.editActivity, css:{clickable:true}"></span>
+                            </td>
+                            <g:if test="${showSites}">
+                                <td><a class="clickable" data-bind="text:siteName,click:$parent.openSite"></a></td>
+                            </g:if>
+                            <td>
+                                <span data-bind="template:canUpdateStatus() ? 'updateStatusTmpl' : 'viewStatusTmpl'"></span>
+
+                                <!-- Modal for getting reasons for status change -->
+                                <div id="activityStatusReason" class="modal hide fade" tabindex="-1" role="dialog"
+                                     aria-labelledby="myModalLabel" aria-hidden="true"
+                                     data-bind="showModal:displayReasonModal(),with:deferReason">
+                                    <form class="reasonModalForm">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                                    data-bind="click:$parent.displayReasonModal.cancelReasonModal">×</button>
+
+                                            <h3 id="myModalLabel">Reason for deferring or cancelling an activity</h3>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <p>If you wish to defer or cancel a planned activity you must provide an explanation. Your case
+                                            manager will use this information when assessing your report.</p>
+
+                                            <p>You can simply refer to a document that has been uploaded to the project if you like.</p>
+                                            <textarea data-bind="value:notes,hasFocus:true" name="reason" rows=4 cols="80"
+                                                      class="validate[required]"></textarea>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button class="btn"
+                                                    data-bind="click: $parent.displayReasonModal.cancelReasonModal"
+                                                    data-dismiss="modal" aria-hidden="true">Discard status change</button>
+                                            <button class="btn btn-primary"
+                                                    data-bind="click:$parent.displayReasonModal.saveReasonDocument">Save reason</button>
+                                        </div></form>
+                                </div>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane" id="ganttPlan" style="overflow:hidden;">
+                    <div id="gantt-container"></div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <form id="outputTargetsContainer">
-        <h4>Output Targets</h4>
-        <table id="outputTargets" class="table table-condensed tight-inputs">
-            <thead><tr><th>Output Type</th><th>Outcome Targets</th><th>Output Targets</th><th>Target</th></tr></thead>
-            <!-- ko foreach:outputTargets -->
-            <tbody data-bind="foreach:scores">
-            <tr>
-                <!-- ko with:isFirst -->
-                <td data-bind="attr:{rowspan:$parents[1].scores.length}">
-                    <b><span data-bind="text:$parents[1].name"></span></b>
-                </td>
-                <td data-bind="attr:{rowspan:$parents[1].scores.length}">
-                    <textarea data-bind="visible:$root.canEditOutputTargets(),value:$parents[1].outcomeTarget" rows="3"
-                              cols="80" style="width:90%"></textarea>
-                    <span data-bind="visible:!$root.canEditOutputTargets(),text:$parents[1].outcomeTarget"></span>
-                    <span class="save-indicator" data-bind="visible:$parents[1].isSaving"><r:img dir="images"
-                                                                                                 file="ajax-saver.gif"
-                                                                                                 alt="saving icon"/> saving</span>
-                </td>
+        <form id="outputTargetsContainer">
+            <h4>Output Targets</h4>
+            <table id="outputTargets" class="table table-condensed tight-inputs">
+                <thead><tr><th>Output Type</th><th>Outcome Targets</th><th>Output Targets</th><th>Target</th></tr></thead>
+                <!-- ko foreach:outputTargets -->
+                <tbody data-bind="foreach:scores">
+                <tr>
+                    <!-- ko with:isFirst -->
+                    <td data-bind="attr:{rowspan:$parents[1].scores.length}">
+                        <b><span data-bind="text:$parents[1].name"></span></b>
+                    </td>
+                    <td data-bind="attr:{rowspan:$parents[1].scores.length}">
+                        <textarea data-bind="visible:$root.canEditOutputTargets(),value:$parents[1].outcomeTarget" rows="3"
+                                  cols="80" style="width:90%"></textarea>
+                        <span data-bind="visible:!$root.canEditOutputTargets(),text:$parents[1].outcomeTarget"></span>
+                        <span class="save-indicator" data-bind="visible:$parents[1].isSaving"><r:img dir="images"
+                                                                                                     file="ajax-saver.gif"
+                                                                                                     alt="saving icon"/> saving</span>
+                    </td>
+                    <!-- /ko -->
+                    <td><span data-bind="text:scoreLabel"></span></td>
+                    <td>
+                        <input type="text" class="input-mini" data-bind="visible:$root.canEditOutputTargets(),value:target"
+                               data-validation-engine="validate[required,custom[number]]"/>
+                        <span data-bind="visible:!$root.canEditOutputTargets(),text:target"></span>
+                        <span data-bind="text:units"></span>
+                        <span class="save-indicator" data-bind="visible:isSaving"><r:img dir="images" file="ajax-saver.gif"
+                                                                                         alt="saving icon"/> saving</span>
+                    </td>
+
+                </tr>
+                </tbody>
                 <!-- /ko -->
-                <td><span data-bind="text:scoreLabel"></span></td>
-                <td>
-                    <input type="text" class="input-mini" data-bind="visible:$root.canEditOutputTargets(),value:target"
-                           data-validation-engine="validate[required,custom[number]]"/>
-                    <span data-bind="visible:!$root.canEditOutputTargets(),text:target"></span>
-                    <span data-bind="text:units"></span>
-                    <span class="save-indicator" data-bind="visible:isSaving"><r:img dir="images" file="ajax-saver.gif"
-                                                                                     alt="saving icon"/> saving</span>
-                </td>
+            </table>
 
-            </tr>
-            </tbody>
-            <!-- /ko -->
-        </table>
-
-    </form>
+        </form>
+    </g:else>
 
     <g:if env="development">
         <hr/>

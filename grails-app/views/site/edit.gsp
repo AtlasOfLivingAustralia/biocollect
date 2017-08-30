@@ -4,7 +4,22 @@
 <head>
   <meta name="layout" content="${hubConfig.skin}"/>
   <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | Sites | Field Capture</title>
-  <style type="text/css">
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2"
+          content="${createLink(controller: 'site', action: 'list')},Sites"/>
+    <g:if test="${project}">
+        <meta name="breadcrumb" content="Create new site for ${project?.name?.encodeAsHTML()}"/>
+    </g:if>
+    <g:elseif test="${create}">
+        <meta name="breadcrumb" content="Create"/>
+    </g:elseif>
+    <g:else>
+        <meta name="breadcrumbParent3"
+              content="${createLink(controller: 'site', action: 'index')}/${site?.siteId},${site?.name?.encodeAsHTML()}"/>
+        <meta name="breadcrumb" content="Edit"/>
+    </g:else>
+
+    <style type="text/css">
     legend {
         border: none;
         margin-bottom: 5px;
@@ -50,24 +65,6 @@
 </head>
 <body>
     <div class="container-fluid validationEngineContainer" id="validation-container">
-        <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-            <ul class="breadcrumb">
-                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-                <li><g:link controller="site" action="list">Sites</g:link><span class="divider">/</span></li>
-                <g:if test="${project}">
-                    <li class="active">Create new site for ${project?.name?.encodeAsHTML()}</li>
-                </g:if>
-                <g:elseif test="${create}">
-                    <li class="active">Create</li>
-                </g:elseif>
-                <g:else>
-                    <li><g:link controller="site" action="index" id="${site?.siteId}">
-                        <span data-bind="text: name">${site?.name?.encodeAsHTML()}</span>
-                    </g:link><span class="divider">/</span></li>
-                    <li class="active">Edit</li>
-                </g:else>
-            </ul>
-        </g:if>
         <bs:form action="update" inline="true">
             <g:render template="siteDetails" />
             <div class="row-fluid">

@@ -236,6 +236,7 @@ modules = {
         resource url: 'js/projects.js'
         resource url: 'js/sites.js'
         resource url: 'js/meriPlan.js'
+        resource url: 'js/risks.js'
         resource url: 'js/output-targets.js'
         resource url: 'vendor/moment/moment.min.js'
         resource url: 'vendor/moment/moment-timezone-with-data.min.js'
@@ -276,6 +277,7 @@ modules = {
         resource url: 'js/projectActivity.js'
         resource url: 'js/aekosWorkflow.js'
         resource url: 'js/aekosWorkflowUtility.js'
+        resource url: 'js/aekosPreQualification.js'
         resource url: 'js/projectActivities.js'
     }
 
@@ -578,7 +580,7 @@ modules = {
     }
 
     configHubTemplate1 {
-        dependsOn 'bootstrap', 'font_awesome_44', 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
+        dependsOn 'ala', 'font_awesome_44', 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
         resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
         resource url: 'css/bootstrap-combobox.css'
         resource url: 'css/common.css'
@@ -586,5 +588,11 @@ modules = {
     }
     mobile{
         resource url: 'css/mobile_activity.css'
+    }
+
+    // This module is used by ala-bootstrap2 plugin. Removed application.js file from module.
+    core {
+        dependsOn 'jquery', 'autocomplete'
+        resource url:[plugin: 'ala-bootstrap2', dir: 'js',file:'html5.js'], wrapper: { s -> "<!--[if lt IE 9]>$s<![endif]-->" }
     }
 }

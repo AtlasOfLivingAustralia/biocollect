@@ -1,11 +1,15 @@
 <%@ page import="net.sf.json.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<g:set var="projectService" bean="projectService"></g:set>
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Create | Project | <g:message code="g.fieldCapture"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumb" content="Create Project"/>
+
     <r:script disposition="head">
     var fcConfig = {
-        projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
+        projectUpdateUrl: "${createLink(action:'ajaxCreate')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
         organisationSearchUrl: "${createLink(controller: 'organisation', action: 'search')}",
@@ -33,13 +37,6 @@
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
-    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-        <ul class="breadcrumb">
-            <li><g:link controller="home"><g:message code="g.home"/></g:link> <span class="divider">/</span></li>
-
-            <li class="active">Create Project</li>
-        </ul>
-    </g:if>
     <h2>Register a new project</h2>
     <p>
     Please tell us about your project by completing the form below.  Questions marked with a * are mandatory.
@@ -128,7 +125,8 @@ $(function(){
                     }]
                 );
             } else {
-                if (viewModel.transients.kindOfProject() == 'ecoscience' || viewModel.transients.siteViewModel.isValid(true)) {
+                var projectErrors = viewModel.transients.projectHasErrors()
+                if (!projectErrors) {
                     viewModel.saveWithErrorDetection(function(data) {
                         var projectId = "${project?.projectId}" || data.projectId;
 
@@ -139,7 +137,7 @@ $(function(){
                         }
                     });
                 } else {
-                    bootbox.alert("You must define the spatial extent of the project area");
+                    bootbox.alert(projectErrors);
                 }
             }
         }

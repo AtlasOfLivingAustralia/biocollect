@@ -55,8 +55,8 @@ class SiteController {
     def createForProject(){
         def project = projectService.getRich(params.projectId)
         // permissions check
-        if (!projectService.canUserEditProject(userService.getCurrentUserId(), params.projectId)) {
-            flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${params.projectId}"
+        if (!projectService.canUserEditSitesForProject(userService.getCurrentUserId(), params.projectId)) {
+            flash.message = "Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}"
             redirect(controller:'project', action:'index', id: params.projectId)
         }
 
@@ -133,11 +133,10 @@ class SiteController {
 
     def ajaxDeleteSitesFromProject(String id){
         // permissions check - id is the projectId here
-        if (!projectService.canUserEditProject(userService.getCurrentUserId(), id)) {
-            render status:403, text: "Access denied: User does not have permission to edit site: ${id}"
+        if (!projectService.canUserEditSitesForProject(userService.getCurrentUserId(), id)) {
+            render status:403, text: "Access denied: User does not have permission to edit sites for project: ${id}"
             return
         }
-
         def status = siteService.deleteSitesFromProject(id)
         if (status < 400) {
             def result = [status: 'deleted']
@@ -155,7 +154,7 @@ class SiteController {
             render status:400, text:'The siteId parameter is mandatory'
             return
         }
-        if (!projectService.canUserEditProject(userService.getCurrentUserId(), projectId)) {
+        if (!projectService.canUserEditSitesForProject(userService.getCurrentUserId(), projectId)) {
             render status:403, text: "Access denied: User does not have permission to edit sites for project: ${projectId}"
             return
         }
@@ -262,8 +261,8 @@ class SiteController {
     }
 
     def uploadShapeFile() {
-        if (!projectService.canUserEditProject(userService.getCurrentUserId(), params.projectId)) {
-            flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${params.projectId}"
+        if (!projectService.canUserEditSitesForProject(userService.getCurrentUserId(), params.projectId)) {
+            flash.message = "Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}"
             redirect(url: params.returnTo)
         }
 
@@ -432,8 +431,8 @@ class SiteController {
         // ALL linked projects to proceed.
         String userId = userService.getCurrentUserId()
         values.projects?.each { projectId ->
-            if (!projectService.canUserEditProject(userId, projectId) && !userService.userIsAlaAdmin()) {
-                log.error("Error: access denied: User does not have *editor* permission for projectId ${projectId}")
+            if (!projectService.canUserEditSitesForProject(userId, projectId) && !userService.userIsAlaAdmin()) {
+                log.error("Error: Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}")
                 result = [status: 'error']
                 //render result as JSON
             }
@@ -747,7 +746,7 @@ class SiteController {
         site.projects.each { p ->
             // handle both 'raw' and normal (project is a Map) output from siteService.get()
             def pId = (p instanceof Map && p.containsKey('projectId')) ? p.projectId : p
-            if (pId && projectService.canUserEditProject(userService.getCurrentUserId(), pId)) {
+            if (pId && projectService.canUserEditSitesForProject(userService.getCurrentUserId(), pId)) {
                 userCanEdit = true
             }
         }

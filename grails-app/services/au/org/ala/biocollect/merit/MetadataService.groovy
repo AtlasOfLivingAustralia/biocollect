@@ -338,5 +338,31 @@ class MetadataService {
         return defaults
     }
 
+    boolean isOptionalContent(String contentName, String program, String subProgram = '') {
+        Map config = getProgramConfiguration(program, subProgram)
+        return contentName in (config.optionalProjectContent?:[])
+    }
+
+    Map getProgramConfiguration(String programName, String subProgramName = null) {
+        def program = programModel(programName)
+        if (!program) {
+            throw new IllegalArgumentException("No program exists with name ${programName}")
+        }
+        def config = new HashMap(program)
+        config.remove('subprograms')
+
+        if (subProgramName) {
+            def subProgram = program.subprograms?.find{it.name == subProgramName}
+            if (!subProgram) {
+                throw new IllegalArgumentException("No subprogram exists for program ${programName} with name ${subProgramName}")
+            }
+
+            if (subProgram.overridesProgramData) {
+                config.putAll(subProgram)
+            }
+        }
+
+        config
+    }
 
 }

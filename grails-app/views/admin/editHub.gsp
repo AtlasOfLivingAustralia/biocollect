@@ -424,6 +424,33 @@
                     </tbody>
                 </table>
 
+                <h3>Custom Breadcrumbs</h3>
+                <small>Add breadcrumbs for specific controller actions.  Initially designed so that sightings can have custom breadcrumbs on all its pages</small>
+                <!-- ko template: {name: 'templateLinkNotes'} -->
+                <!-- /ko -->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Controller name</th>
+                        <th>Controller action</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- ko foreach: customBreadCrumbs -->
+                    <!-- ko template: { name: 'templateCustomBreadCrumb'} -->
+                    <!-- /ko -->
+                    <!-- /ko -->
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <button type="button" class="btn" data-bind="click: addCustomBreadCrumb"><i class="icon-plus"></i> Add breadcrumb for a page</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
             </div>
         </div>
         <div class="tab-pane" id="hubHomepage">
@@ -475,6 +502,7 @@
                 <option value="content">Biocollect content</option>
                 <option value="static">Static page</option>
                 <option value="external">External link</option>
+                <option value="nolink">No link - text only</option>
                 <option value="">---------</option>
                 <option value="admin">Admin</option>
                 <option value="allrecords">All Records</option>
@@ -493,6 +521,53 @@
             <button class="btn btn-danger" data-bind="click: $parent.removeLink">
                 <i class="icon icon-remove icon-white"></i> Remove
             </button>
+        </td>
+    </tr>
+</script>
+
+<script id="templateCustomBreadCrumb" type="text/html">
+    <tr>
+        <td>
+            <input type="text" data-bind="value: controllerName"/>
+        </td>
+        <td>
+            <input type="text" data-bind="value: actionName"/>
+        </td>
+        <td>
+            <button class="btn btn-danger" data-bind="click: $parent.removeCustomBreadCrumb">
+                <i class="icon icon-remove icon-white"></i> Remove
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <b>Breadcrumbs</b>
+        </td>
+        <td colspan="2">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Display name</th>
+                    <th>Content type</th>
+                    <th>Href value</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- ko foreach: breadCrumbs -->
+                <!-- ko template: { name: 'templateLink'} -->
+                <!-- /ko -->
+                <!-- /ko -->
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <button type="button" class="btn" data-bind="click: addBreadCrumb"><i class="icon-plus"></i> Add a breadcrumb</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </td>
     </tr>
 </script>
@@ -601,6 +676,11 @@
             <td>Default button text colour when hovering</td>
             <td><input type="text" data-bind="value: defaultButtonBackgroundColorActive"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonBackgroundColorActive}"></div></td>
+        </tr>
+        <tr>
+            <td>Breadcrumbs background colour</td>
+            <td><input type="text" data-bind="value: breadCrumbBackGroundColour"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':breadCrumbBackGroundColour}"></div></td>
         </tr>
         <tr>
             <td>Href colour</td>
@@ -751,6 +831,7 @@
         <strong>Biocollect content</strong> Href value must start with forward slash - '/' - e.g. '/hub/index'.<br/>
         <strong>Static page</strong> Href value should be a word. This word should be unique to the hub e.g. 'contact'<br/>
         <strong>External link</strong> Href value should be the full address to a website e.g. 'https://www.ala.org.au'.<br/>
+        <strong>No link - text only</strong> Only show text. This does not create a hyperlink. Enter text in display name column.<br/>
         <strong>Other settings</strong> Href value for content type such as 'home' is predefined. Hence it should be left empty.
         One exception is 'Record a Sighting'. It is a button which requires href value.
     </div>

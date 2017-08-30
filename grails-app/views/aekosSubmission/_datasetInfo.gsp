@@ -8,26 +8,27 @@
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="datasetTitle"><g:message code="aekos.dataset.info.name"/>
+            <label class="control-label" %{--for="datasetTitle"--}%><g:message code="aekos.dataset.info.name"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.info.name"/>',
                               content:'<g:message code="aekos.dataset.info.name.help"/>'}">
                     <i class="icon-question-sign"></i>
                 </a>
-                <span class="req-field"></span></label>
+                %{--<span class="req-field"></span>--}%
             </label>
         </div>
 
         <div class="span8">
             <div class="controls">
-                <input id="datasetTitle" data-bind="value: datasetTitle" data-validation-engine="validate[required]" style="width: 90%">
+                <span id="datasetTitle" data-bind="text: datasetTitle" />
+                %{--<input id="datasetTitle" data-bind="value: datasetTitle" data-validation-engine="validate[required]" style="width: 90%">--}%
             </div>
         </div>
     </div>
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="projectAim"><g:message code="aekos.project.objective"/>
+            <label class="control-label" for="datasetObjective"><g:message code="aekos.project.objective"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.project.objective"/>',
                           content:'<g:message code="aekos.project.objective.help"/>'}">
@@ -38,26 +39,26 @@
 
         <div class="span8">
             <div class="controls">
-                <span id="projectAim" data-bind="text: projectViewModel.aim()"></span>
+                <span id="datasetObjective" data-bind="text: projectViewModel.aim()"></span>
             </div>
         </div>
     </div>
 
     <div class="row-fluid">
         <div class="span4 text-right">
-            <label class="control-label" for="activityDescription"><g:message code="aekos.dataset.summary"/>
+            <label class="control-label" for="datasetSummary"><g:message code="aekos.dataset.summary"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.summary"/>',
                           content:'<g:message code="aekos.dataset.summary.help"/>'}">
                     <i class="icon-question-sign"></i>
                 </a>
-                <span class="req-field"></span></label>
+                <span class="req-field"></span>
             </label>
         </div>
 
         <div class="span8">
             <div class="controls">
-                <textarea id="activityDescription" data-bind="value: description"  data-validation-engine="validate[required]" rows="3" style="width: 90%"></textarea>
+                <textarea id="datasetSummary" data-bind="value: description"  data-validation-engine="validate[required]" rows="3" style="width: 90%"></textarea>
             </div>
         </div>
     </div>
@@ -75,7 +76,9 @@
 
         <div class="span8">
             <div class="controls">
-                <span id="datasetVersion" data-bind="text: currentDatasetVersion()"></span>
+                %{--<span id="datasetVersion" data-bind="text: currentDatasetVersion()"></span>--}%
+                <span id="datasetVersion" data-bind="text: currentSubmissionRecord.datasetVersion()"></span>
+
             </div>
         </div>
     </div>
@@ -129,15 +132,15 @@
 
         <div class="span8">
             <div class="controls">
-                <div id="relatedDatasets" class="panel panel-default" >
-                    <div class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
+                <div class="panel panel-default" >
+                    <div id="relatedDatasets" class="panel-body" style="max-height: 355px; max-width: 500px; overflow-y: scroll; overflow-x: scroll; background:#ffffff;">
 
                         <!-- ko foreach: parentProjectActivities -->
 
                         <!-- ko if: $data.projectActivityId != $parent.projectActivityId -->
-                        <input type="checkbox" data-bind="checkedValue: projectActivityId, checked: relatedDatasets" />
+                        <input type="checkbox" name="relatedDatasets" class="multiselect" data-bind="checkedValue: name, checked: relatedDatasets" />
 
-                        <span data-bind="text: name"></span>
+                        <span class="multiselect" data-bind="text: name"></span>
 
                         </br>
 
@@ -166,9 +169,7 @@
 
         <div class="span8">
             <div class="controls">
-                %{--<textarea id="urlImage" data-bind="value: aekosModalView().projectViewModel.urlImage" rows="3" style="width: 90%"></textarea>--}%
-                <input id="urlImage" type="file" accept="text/csv" data-bind="projectViewModel.urlImage" />
-                <!--textarea></textarea-->
+                <img id="urlImage" class="image-logo" data-bind="attr:{alt:transients.getImageUrl(), src: transients.getImageUrl(), onload: findLogoScalingClass(urlImage, aekosModal)}" />
             </div>
         </div>
     </div>

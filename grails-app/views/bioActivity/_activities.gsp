@@ -162,7 +162,6 @@
                                                         Project name: <a
                                                             data-bind="attr:{'href': $parent.projectUrl()}"><span
                                                                 data-bind="text: $parent.projectName"></span></a>
-                                                        <span class="badge" data-bind="if: $parent.isWorksProject() ">Works</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -223,7 +222,6 @@
                                                         Project name: <a
                                                             data-bind="attr:{'href': projectUrl()}"><span
                                                                 data-bind="text: projectName"></span></a>
-                                                        <span class="badge" data-bind="if: isWorksProject() ">Works</span>
                                                     </div>
                                                 </div>
                                             </div>

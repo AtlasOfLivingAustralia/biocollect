@@ -2,8 +2,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="layout" content="${hubConfig.skin}"/>
-  <title>${project?.name.encodeAsHTML()} | Project | Field Capture</title>
+    <meta name="layout" content="${hubConfig.skin}"/>
+    <title>${project?.name.encodeAsHTML()} | Project | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumb" content="${project?.name}"/>
     <r:script disposition="head">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -69,15 +71,6 @@
 </head>
 <body>
 <div class="container-fluid">
-    <g:if test="${!hubConfig.content?.hideBreadCrumbs}">
-        <ul class="breadcrumb">
-            <li>
-                <g:link controller="home">Home</g:link> <span class="divider">/</span>
-            </li>
-            <li class="active">Projects <span class="divider">/</span></li>
-            <li class="active" data-bind="text:name"></li>
-        </ul>
-    </g:if>
     <g:if test="${!user?.isEditor}">
         <div class="alert alert-info">
             This project is funded by a federal government programme and can only be edited in the <a href="${g.createLink(id:project.projectId, base:grailsApplication.config.merit.url)}">MERIT system</a>

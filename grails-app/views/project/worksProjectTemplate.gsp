@@ -4,6 +4,10 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${project?.name.encodeAsHTML()} | Project | Field Capture</title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumb" content="${project?.name}"/>
+
+    <script src="${grailsApplication.config.google.maps.url}"></script>
     <r:script disposition="head">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -99,7 +103,7 @@
         </style>
     <![endif]-->
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <r:require modules="knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, map, mapWithFeatures, leaflet_google_base"/>
+    <r:require modules="knockout,datepicker, jqueryValidationEngine, jquery_bootstrap_datatable, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, map, mapWithFeatures, leaflet_google_base"/>
 </head>
 <body>
 
@@ -144,6 +148,8 @@
             var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
             var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
             var viewModel = new WorksProjectViewModel(project, ${user?.isEditor?:false}, organisations, {});
+
+            viewModel.loadPrograms(<fc:modelAsJavascript model="${programs}"/>);
             var map
 
             ko.applyBindings(viewModel);

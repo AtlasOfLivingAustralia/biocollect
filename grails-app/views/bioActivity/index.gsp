@@ -10,6 +10,10 @@
         <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
         <title>View | ${activity.type} | Bio Collect</title>
     </g:else>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${pActivity.projectId},Project"/>
+    <meta name="breadcrumb" content="${pActivity.name}"/>
+
     %{-- this will ultimately follow through to the comment controller using url mapping --}%
     <g:set var="commentUrl" value="${resource(dir:'/bioActivity')}/${activity.activityId}/comment"></g:set>
 
@@ -46,16 +50,6 @@
 <div class="container-fluid validationEngineContainer" id="validation-container">
 
     <div id="koActivityMainBlock">
-
-        <g:if test="${!printView && !mobile  && !hubConfig.content?.hideBreadCrumbs}">
-            <ul class="breadcrumb">
-                <li><g:link controller="home">Home</g:link> <span class="divider">/</span></li>
-                <li><a href="#" data-bind="click:goToProject" class="clickable">Project</a> <span class="divider">/</span></li>
-                <li class="active">
-                    <span>${pActivity.name}</span>
-                </li>
-            </ul>
-        </g:if>
         <g:if test="${!mobile}">
             <div class="row-fluid">
                 %{--page title--}%

@@ -29,6 +29,7 @@ class ProjectControllerSpec extends Specification {
     def organisationStub = Stub(OrganisationService)
     def vocabServiceStub = Stub(VocabService)
     def documentServiceStub = Stub(DocumentService)
+    def settingServiceStub = Stub(SettingService)
 
     void setup() {
         controller.userService = userServiceStub
@@ -44,6 +45,7 @@ class ProjectControllerSpec extends Specification {
         controller.organisationService = organisationStub
         controller.vocabService = vocabServiceStub
         controller.documentService = documentServiceStub
+        controller.settingService = settingServiceStub
         auditServiceStub.getAuditMessagesForProject(_) >> []
         metadataServiceStub.activitiesModel() >> [activities: []]
         userServiceStub.getOrganisationIdsForUserId(_) >> ['1']
@@ -56,6 +58,8 @@ class ProjectControllerSpec extends Specification {
         blogServiceStub.get(_, _) >> []
         organisationStub.get(_) >> [organisationId: "ABC123", name: "organisation name"]
         vocabServiceStub.getVocabValues() >> []
+        settingServiceStub.isWorksHub() >> false
+        settingServiceStub.isEcoScienceHub() >> false
     }
 
     void "creating a citizen science project should pre-populate the citizen science project type"() {
@@ -184,6 +188,8 @@ class ProjectControllerSpec extends Specification {
         stubProjectEditor('1234', projectId)
         projectServiceStub.isCitizenScience(_) >> false
         projectServiceStub.isEcoScience(_) >> false
+        params.userCanEditProject = true
+        params.userIsProjectAdmin = true
         projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'works', isExternal:external]
 
         when:
@@ -228,6 +234,7 @@ class ProjectControllerSpec extends Specification {
         payload.sort = 'lastUpdated';
         payload.fq = ['surveyImage:true']
         payload.projectId = 'abs'
+        payload.hub = params.hub = 'ala'
         projectServiceStub.listImages(payload, _) >> [count:1,documents:[[documentId:'124',licence: 'CC BY']]]
         when:
         request.method = "POST"
@@ -251,6 +258,7 @@ class ProjectControllerSpec extends Specification {
         payload.sort = 'lastUpdated';
         payload.fq = ['surveyImage:true']
         payload.projectId = 'abs'
+        payload.hub = params.hub = 'ala'
         projectServiceStub.listImages(payload, _) >> {throw new SocketTimeoutException('timed out')}
         when:
         request.method = "POST"

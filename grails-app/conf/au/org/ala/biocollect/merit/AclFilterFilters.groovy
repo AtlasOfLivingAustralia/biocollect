@@ -20,12 +20,25 @@ class AclFilterFilters {
                 Class controllerClass = controller?.clazz
                 def method = controllerClass.getMethod(actionName?:"index", [] as Class[])
                 def roles = roleService.getAugmentedRoles()
+                def userId = userService.getCurrentUserId()
+                def projectId = params.projectId
+
+                if(!projectId){
+                    if(controllerClass == ProjectController){
+                        projectId = params.id
+                    }
+                }
+
+                if(userService.userInRole(grailsApplication.config.security.cas.alaAdminRole)){
+                    params.userIsAlaAdmin = true
+                } else {
+                    params.userIsAlaAdmin = false
+                }
 
                 if (controllerClass.isAnnotationPresent(PreAuthorise) || method.isAnnotationPresent(PreAuthorise)) {
                     PreAuthorise pa = method.getAnnotation(PreAuthorise)?:controllerClass.getAnnotation(PreAuthorise)
-                    def userId = userService.getCurrentUserId()
+                    projectId = params[pa.projectIdParam()]
                     def accessLevel = pa.accessLevel()
-                    def projectId = params[pa.projectIdParam()]
 
                     def errorMsg
 
@@ -71,6 +84,10 @@ class AclFilterFilters {
                                 errorMsg = "Access denied: User does not have <b>editor</b> permission ${projectId?'for project':''}"
                             }
                             break
+                        case 'loggedInUser':
+                            if(!userId){
+                                errorMsg = "Access denied: You are not logged in."
+                            }
                         default:
                             log.warn "Unexpected role: ${accessLevel}"
                     }
@@ -85,6 +102,47 @@ class AclFilterFilters {
                         return false
                     }
                 }
+
+                // get the permissions of the user with respect to a project.
+                if(userId && projectId){
+                    if (projectService.isUserCaseManagerForProject(userId, projectId)) {
+                        params.userIsProjectCaseManager = true
+                    } else {
+                        params.userIsProjectCaseManager = false
+                    }
+
+                    if (projectService.isUserAdminForProject(userId, projectId)) {
+                        params.userIsProjectAdmin = true
+                    } else {
+                        params.userIsProjectAdmin = false
+                    }
+
+                    if(projectService.canUserEditProject(userId, projectId)){
+                        params.userCanEditProject = true
+                    } else {
+                        params.userCanEditProject = false
+                    }
+
+                    if (projectService.isUserEditorForProject(userId, projectId)) {
+                        params.userIsProjectEditor = true
+                    } else {
+                        params.userIsProjectEditor = false
+                    }
+
+                    if (projectService.isUserParticipantForProject(userId, projectId)) {
+                        params.userIsProjectParticipant = true
+                    } else {
+                        params.userIsProjectParticipant = false
+                    }
+                } else {
+                    params.userIsProjectAdmin = false
+                    params.userIsProjectCaseManager = false
+                    params.userIsProjectEditor = false
+                    params.userIsProjectParticipant = false
+                    params.userCanEditProject = false
+                }
+
+                return true
             }
 
             after = { Map model ->
