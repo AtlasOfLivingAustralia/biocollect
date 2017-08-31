@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
 import org.apache.commons.io.FilenameUtils
+import org.springframework.http.HttpStatus
 
 class ProxyController {
 
@@ -44,6 +45,25 @@ class ProxyController {
     def speciesProfile(String id) {
         Map result = speciesService.getSpeciesDetailsForTaxonId(id);
         render result
+    }
+
+    /**
+     * Get common keys between a list of data sets in species list.
+     * @param druid - coma separated if more than one druid
+     * @return a list of column names
+     * @example
+     * if two lists have the following columns
+     * list1 = ['rawScientificName', 'matchedName', 'commonName', 'colour', 'shape']
+     * list1 = ['rawScientificName', 'matchedName', 'commonName', 'colour']
+     * this will return
+     * ['rawScientificName', 'matchedName', 'commonName', 'colour']
+     */
+    def getCommonKeys(){
+        if(params.druid){
+            render webService.get("${grailsApplication.config.lists.baseURL}/ws/listCommonKeys?druid=${params.druid}")
+        } else {
+            render status: HttpStatus.BAD_REQUEST, text: 'Parameter druid is required.'
+        }
     }
 
     def speciesListPost() {
