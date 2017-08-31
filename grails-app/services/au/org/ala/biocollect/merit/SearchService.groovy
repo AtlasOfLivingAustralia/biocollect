@@ -22,18 +22,7 @@ class SearchService {
     private def addDefaultFacetQuery(params) {
         def defaultFacetQuery = SettingService.getHubConfig().defaultFacetQuery
         if (defaultFacetQuery) {
-            def fq = new HashSet(defaultFacetQuery)
-            def paramFq = params.fq
-
-            if (paramFq) {
-                if (paramFq instanceof List) {
-                    fq.addAll(paramFq)
-                }
-                else {
-                    fq.add(paramFq)
-                }
-            }
-            params.fq = fq.asList()
+            params.hubFq = defaultFacetQuery
         }
     }
 
