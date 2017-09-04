@@ -3,7 +3,7 @@ sudo: false
 jdk:
 - openjdk7
 node_js:
-  - "0.10"
+- "0.10.36"
 branches:
   only:
   - master
