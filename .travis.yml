@@ -2,6 +2,8 @@ language: groovy
 sudo: false
 jdk:
 - openjdk7
+node_js:
+  - "0.10"
 branches:
   only:
   - master
