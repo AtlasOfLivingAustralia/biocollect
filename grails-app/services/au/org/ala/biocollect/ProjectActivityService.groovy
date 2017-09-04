@@ -6,6 +6,9 @@ import au.org.ala.biocollect.merit.SiteService
 import au.org.ala.biocollect.merit.SpeciesService
 import au.org.ala.biocollect.merit.WebService
 import org.springframework.context.MessageSource
+import java.nio.file.Files
+//import org.springframework.util.FileCopyUtils
+import java.nio.file.StandardCopyOption;
 
 class ProjectActivityService {
 
@@ -389,52 +392,74 @@ class ProjectActivityService {
 
     def sendAekosDataset(String downloadUrl, String jsonSubmissionPayload) {
 
+        log.info "aekosSubmission downloading data from: " + downloadUrl
+
         URLConnection conn = new URL(downloadUrl).openConnection()
         conn.setConnectTimeout(10*1000);
-        conn.setReadTimeout(10*1000);
 
-        def contentType = conn.getContentType()
-        def len = conn.getContentLength()
+        log.info ("Set read timeout: " + grailsApplication.config.aekos?.downloadReadTimeout?:20*1000)
+        conn.setReadTimeout(grailsApplication.config.aekos?.downloadReadTimeout?:20*1000);
+
         def status = conn.responseCode
+
+        // Instead of storing download in memory, it is now writing to physical file
+   /*     BufferedInputStream bufferedInputStream = new BufferedInputStream(conn.getInputStream());
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        FileCopyUtils.copy(bufferedInputStream, byteArrayOutputStream);*/
+
 
         def result = [:]
         if (status == 200 && grailsApplication.config.aekosSubmission?.url) {
-            //   File tempFile = new File ("temp.zip")
-            //  Files.copy (conn.getInputStream(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
-            //  def is = StreamUtils.copyToByteArray(conn.getInputStream())
+            File tempFile = new File("/data/biocollect/temp/dataset-${UUID.randomUUID()}.zip")
 
-            def is = conn.getInputStream().getBytes()
+            try {
+                long readLen = Files.copy(conn.getInputStream(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
 
-            // External Aekos Submission Url
-            def aekosUrl = grailsApplication.config.aekosSubmission?.url //?: "http://shared-uat.ecoinformatics.org.au:8080/shared-web/api/submission/create"
+                while (readLen > tempFile.length()) {
+                    Thread.sleep(2000);
+                }
+                //  def is = StreamUtils.copyToByteArray(conn.getInputStream())
+                //  def is = byteArrayOutputStream.toByteArray() //conn.getInputStream().getBytes()
 
-            log.info("Sending data to SHaRED url: " + aekosUrl)
+                // External Aekos Submission Url
+                def aekosUrl = grailsApplication.config.aekosSubmission?.url
+                //?: "http://shared-uat.ecoinformatics.org.au:8080/shared-web/api/submission/create"
 
-            Map aekosParamMap = [:]
-            List<Map> contentListMap = new ArrayList<Map>()
+                log.info("Sending data to SHaRED url: " + aekosUrl)
 
-            Map jsonInputStreamMap = [:]
-            //jsonInputStreamMap.put("contentIn", new ByteArrayInputStream(jsonSubmissionPayload.getBytes()))
-            jsonInputStreamMap.put("contentIn", jsonSubmissionPayload)
-            Map jsonInputInfo = [:]
-            jsonInputInfo.put("contentType", "application/json")
-            jsonInputInfo.put("contentName", "submissionJson")
-            jsonInputStreamMap.put("contentInfo", jsonInputInfo)
+                Map aekosParamMap = [:]
+                List<Map> contentListMap = new ArrayList<Map>()
 
-            Map fileInputStreamMap = [:]
-            Map fileInputStreamInfo = [:]
-            fileInputStreamInfo.put("contentType", "application/zip")
-            fileInputStreamInfo.put("contentName", "datasetZipFile")
-            fileInputStreamMap.put("contentIn", is)
-            //fileInputStreamMap.put("contentIn", tempFile)
-            fileInputStreamMap.put("contentInfo", fileInputStreamInfo)
+                Map jsonInputStreamMap = [:]
+                //jsonInputStreamMap.put("contentIn", new ByteArrayInputStream(jsonSubmissionPayload.getBytes()))
+                jsonInputStreamMap.put("contentIn", jsonSubmissionPayload)
+                Map jsonInputInfo = [:]
+                jsonInputInfo.put("contentType", "application/json")
+                jsonInputInfo.put("contentName", "submissionJson")
+                jsonInputStreamMap.put("contentInfo", jsonInputInfo)
 
-            contentListMap.add(jsonInputStreamMap)
-            contentListMap.add(fileInputStreamMap)
+                Map fileInputStreamMap = [:]
+                Map fileInputStreamInfo = [:]
+                fileInputStreamInfo.put("contentType", "application/zip")
+                fileInputStreamInfo.put("contentName", "datasetZipFile")
+                // fileInputStreamMap.put("contentIn", is)
+                fileInputStreamMap.put("contentIn", tempFile)
+                fileInputStreamMap.put("contentInfo", fileInputStreamInfo)
 
-            result = utilService.postMultipart(aekosUrl, aekosParamMap, contentListMap, null)
+                contentListMap.add(jsonInputStreamMap)
+                contentListMap.add(fileInputStreamMap)
 
-            log.info("Result from service: " + result)
+                result = utilService.postMultipart(aekosUrl, aekosParamMap, contentListMap, null)
+
+                log.info("Result from service: " + result)
+
+                tempFile.delete()
+            } catch (IOException e) {
+                log.error("IO Exception has occurred.", e)
+            } catch (Exception e) {
+                log.error ("Exception occurred while trying to send data to AEKOS. ${e.getClass()} ${e.getMessage()}", e)
+            }
 
         } else if (grailsApplication.config.aekosSubmission?.url) {
             result = [status: 504, error: "Timeout downloading data.zip."]

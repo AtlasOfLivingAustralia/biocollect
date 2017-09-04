@@ -779,7 +779,8 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
     };
 
     var jsonEscapeValue = function (value) {
-        var str = value.replace(/\n/g, "\\r\\n");
+        //var str = value.replace(/\n/g, "\r\n");
+        var str = value.replace(/\n/g, " ");
         return str;
     };
 
@@ -857,7 +858,8 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
             error: function (data) {
                 promise.resolve({status: "error", error: "An error occurred prior to sending data to Aekos" });
             },
-            timeout: 15*1000
+            timeout: 25*1000,
+            async: true
         });
 
         return promise;
