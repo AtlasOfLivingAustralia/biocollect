@@ -411,8 +411,6 @@ class BioActivityController {
 
         String downloadDataUrl = grailsLinkGenerator.link(uri: "/bioActivity/downloadProjectData?projectId=" + postBody?.aekosActivityRec?.projectId + "&fq=projectActivityNameFacet:" + URLEncoder.encode(postBody?.aekosActivityRec?.activityName, "UTF-8") + "&max=10&offset=0&sort=lastUpdated&order=DESC&flimit=15&view=project&searchTerm", absolute: true)
 
-        log.info "aekosSubmission downloading data from: " + downloadDataUrl
-
         def response = projectActivityService.sendAekosDataset(downloadDataUrl, jsonBody.toString())
 
         def result = [:]

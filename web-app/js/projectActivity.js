@@ -465,33 +465,80 @@ var ProjectActivity = function (params) {
         $.getJSON(url, function(data) {
 
             var inValidDataset = false;
+            var promptToSubmitDataset = false;
+            var filteredActivities = [];
+
             if (data && data.activities && data.activities instanceof Array && data.activities.length > 0) {
 
-                  //  var i, len, myStringArray = [ "Hello", "World" ];
-                for (len = data.activities.length, i=0; i<len; ++i) {
-                    var activity = data.activities[i];
-                   // for (var record in activity.records) {
-                    for (activityRecLen = activity.records.length, j=0; j<activityRecLen; ++j) {
-                        var record = activity.records[j];
-                        if (record.name && record.name.toLowerCase().indexOf('unmatched taxon') > 0) {
-                            inValidDataset = true;
-                            break;
-                        }
+                //Array.prototype.push.apply(filteredActivities, data);
+
+                // filter off those activities which doesn't have records
+                var filteredActivities = data.activities.filter (function (a) {
+                    return ((a.records != null) || (a.records && a.records.length >= 0))
+                });
+
+
+                var invalidActivity = [];
+
+                // filter of invalid records from the remaining activity records
+                for (len = filteredActivities.length, i=0; i<len; ++i) {
+                    var activity = filteredActivities[i];
+                    var filteredRecords = [];
+                    // Obtain valid records and remove invalid records
+                    var filteredRecords = activity.records.filter(function(e) {
+                        return (e.guid != null || (e.name && e.name.toLowerCase().indexOf('unmatched taxon') < 0));
+                    });
+
+                    // none of the record is valid, flag this activity as invalid
+                    if (filteredRecords.length == 0) {
+                        invalidActivity.push (activity.activityId)
+                    } else if (filteredRecords.length < activity.records.length) {
+                        // some record is invalid, still can submitted but only those that are valid
+                        promptToSubmitDataset = true;
                     }
-                    if (inValidDataset) {break;}
+
+                    activity.records = filteredRecords;
 
                 }
 
-                if (!inValidDataset) {
+                // if all records in activity is invalid, remove the activity
+                filteredActivities = filteredActivities.filter (function (a) {
+                    return invalidActivity.indexOf(a.activityId) < 0 ;
+                });
+
+                if (promptToSubmitDataset) {
+                    bootbox.confirm("Warning! This dataset contains some invalid records with unMatched Taxon or invalid names. These invalid records will be ignored. Click OK to proceed or Cancel to fix the records.", function (result) {
+                        if (result) {
+                            data.activities = filteredActivities;
+                            AEKOS.Utility.openModal({
+                                template: "aekosWorkflowModal",
+                                viewModel: new AEKOS.AekosViewModel(self, pActivity, project, projectActivities, currentUser, vocabList, projectArea, data),
+                                context: self // Set context so we don't need to bind the callback function
+                            })
+                        }
+                    });
+                } else if (filteredActivities.length == 0) {
+                    bootbox.alert("This dataset does not contain any records or records that are invalid. There is nothing to submit.");
+                    //inValidDataset = true;
+                } else if (filteredActivities.length < data.activities.length) {
+                     bootbox.confirm("Warning! There are some activities with empty records. These will be ignored. Click OK if you wish to proceed.", function (result) {
+                         if (result) {
+                             data.activities = filteredActivities;
+                             AEKOS.Utility.openModal({
+                                 template: "aekosWorkflowModal",
+                                 viewModel: new AEKOS.AekosViewModel(self, pActivity, project, projectActivities, currentUser, vocabList, projectArea, data),
+                                 context: self // Set context so we don't need to bind the callback function
+                             })
+                         }
+                     });
+                } else if (filteredActivities.length == data.activities.length) {
+                    data.activities = filteredActivities;
                     AEKOS.Utility.openModal({
                         template: "aekosWorkflowModal",
                         viewModel: new AEKOS.AekosViewModel(self, pActivity, project, projectActivities, currentUser, vocabList, projectArea, data),
                         context: self // Set context so we don't need to bind the callback function
                     })
-                } else {
-                    bootbox.alert("This dataset contains records with UnMatched Taxon. You cannot submit records with Unmatched taxons. ");
                 }
-
 
             } else {
                 bootbox.alert("There are no records for this dataset or records cannot be retrieved.");
