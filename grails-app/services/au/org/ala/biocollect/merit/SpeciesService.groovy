@@ -29,15 +29,47 @@ class SpeciesService {
         return results
     }
 
-    def searchSpeciesInLists(searchTerm, lists, limit = 10){ def results
-        def autoCompleteList = []
-        lists?.each{ list ->
-            def listResults =  filterSpeciesList(searchTerm, list?.dataResourceUid)
-            listResults.autoCompleteList?.each{
-                autoCompleteList << it
-            }
+    /**
+     * Query certain fields on species lists and return results in a format compatible with jQuery's autocomplete.
+     * @param searchTerm
+     * @param speciesConfig
+     * @return
+     */
+    def searchSpeciesInLists(String searchTerm,  Map speciesConfig = [:], limit = 10){
+        List druids = speciesConfig.speciesLists?.collect{it.dataResourceUid}
+        Map fields = getSpeciesListAutocompleteLookupFields(speciesConfig)
+        List listResults =  searchSpeciesListOnFields(searchTerm, druids, fields.fieldList, limit)
+        formatSpeciesListResultToAutocompleteFormat(listResults, fields.fieldMap)
+    }
+
+    /**
+     * From the species configuration, find the fields that holds scientific name and common name.
+     * @param speciesConfig
+     * @return
+     */
+    Map getSpeciesListAutocompleteLookupFields(Map speciesConfig = [:]){
+        String scientificNameField = speciesConfig.scientificNameField?:'matchedName',
+            commonNameField = speciesConfig.commonNameField?:'commonName'
+
+        [fieldList: [scientificNameField, commonNameField], fieldMap: [scientificNameField: scientificNameField, commonNameField: commonNameField]]
+    }
+
+    /**
+     * Transform species list search result. Extract scientific name and common name from the result set. Then, make it
+     * jQuery autocomplete compatible.
+     * @param queryResult
+     * @param fields
+     * @return
+     */
+    Map formatSpeciesListResultToAutocompleteFormat(List queryResult, Map fields){
+        List autoCompleteList = queryResult?.collect { result ->
+            Map searchResult = [id: result.id, guid: result.lsid, lsid: result.lsid]
+            searchResult.scientificName = result[fields.scientificNameField]?: result.kvpValues?.find { it.key ==  fields.scientificNameField } ?.value
+            searchResult.commonName = result[fields.commonNameField]?: result.kvpValues?.find { it.key ==  fields.commonNameField } ?.value
+            searchResult
         }
-        results = [autoCompleteList: autoCompleteList]
+
+        [autoCompleteList: autoCompleteList]
     }
 
     /**
@@ -81,6 +113,22 @@ class SpeciesService {
         results.count = filtered.size()
 
         return results
+    }
+
+    /**
+     * Executes a query on given fields in supplied data resources.
+     * @param query the term to search for.
+     * @param listId the id of the list to search.
+     * @return
+     */
+    private def searchSpeciesListOnFields(String query, List listId = [], List fields = [], limit = 10) {
+        def listContents = webService.getJson("${grailsApplication.config.lists.baseURL}/ws/queryListItemOrKVP?druid=${listId.join(',')}&fields=${URLEncoder.encode(fields.join(','), "UTF-8")}&q=${URLEncoder.encode(query, "UTF-8")}&includeKVP=true&limit=${limit}")
+
+        if(listContents.hasProperty('error')){
+            throw new Exception(listContents.error)
+        }
+
+        return listContents
     }
 
     def searchBie(searchTerm, limit) {
@@ -201,8 +249,7 @@ class SpeciesService {
                 break
 
             case 'GROUP_OF_SPECIES':
-                def lists = speciesConfig?.speciesLists
-                result = searchSpeciesInLists(q, lists, limit)
+                result = searchSpeciesInLists(q, speciesConfig, limit)
                 break
             default:
                 result = [autoCompleteList: []]
@@ -211,10 +258,12 @@ class SpeciesService {
         return result
     }
 
-    List formatSpeciesNameForSurvey(String speciesDisplayFormat, Map data){
+    Map formatSpeciesNameInAutocompleteList(String speciesDisplayFormat, Map data){
         data?.autoCompleteList?.each{
             it.name = formatSpeciesName(speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', it)
         }
+
+        data
     }
 
     def addSpeciesList(postBody) {

@@ -946,8 +946,7 @@ class ProjectService {
         Map speciesFieldConfig = findSpeciesFieldConfig(id, surveyName, dataFieldName, output)
 
         def result = speciesService.searchSpeciesForConfig(speciesFieldConfig, q, limit)
-        speciesService.formatSpeciesNameForSurvey(speciesFieldConfig.speciesDisplayFormat , result)
-        result
+        speciesService.formatSpeciesNameInAutocompleteList(speciesFieldConfig.speciesDisplayFormat , result)
     }
 
     /**

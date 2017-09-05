@@ -974,7 +974,7 @@ class BioActivityController {
             species.scientificName = result?.scientificName
             species.commonName = result.commonName
             species.guid = params.taxonId
-            species.name = projectActivityService.formatSpeciesName(speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', species)
+            species.name = speciesService.formatSpeciesName(speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', species)
 
             params.id = pActivity
             params.hub = hub

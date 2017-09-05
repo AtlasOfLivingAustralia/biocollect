@@ -6,16 +6,24 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
     var self = this;
     if (!o) o = {};
 
+    var defaultCommonNameField = 'commonName', defaultScientificNameField = 'matchedName';
     self.type = ko.observable(o.type);
     self.allSpeciesLists = new SpeciesListsViewModel();
     self.singleSpecies = new SpeciesViewModel(o.singleSpecies);
-    self.speciesLists = ko.observableArray($.map(o.speciesLists ? o.speciesLists : [], function (obj, i) {
+    self.commonNameField = ko.observable(o.commonNameField || defaultCommonNameField);
+    self.scientificNameField = ko.observable(o.scientificNameField || defaultScientificNameField);
+    self.commonFields = ko.observableArray();
+    self.speciesLists = ko.observableArray();
+    self.speciesLists.subscribe(getCommonKeys);
+    self.newSpeciesLists = new NewSpeciesListViewModel();
+    self.speciesDisplayFormat = ko.observable(o.speciesDisplayFormat ||'SCIENTIFICNAME(COMMONNAME)');
+    self.speciesOptions =  [{id: 'ALL_SPECIES', name:'All species'},{id:'SINGLE_SPECIES', name:'Single species'}, {id:'GROUP_OF_SPECIES',name:'A selection or group of species'}];
+
+    self.speciesLists($.map(o.speciesLists ? o.speciesLists : [], function (obj, i) {
         return new SpeciesList(obj);
     }));
-    self.newSpeciesLists = new NewSpeciesListViewModel();
-    self.speciesDisplayFormat = ko.observable(o.speciesDisplayFormat ||'SCIENTIFICNAME(COMMONNAME)')
 
-    self.speciesOptions =  [{id: 'ALL_SPECIES', name:'All species'},{id:'SINGLE_SPECIES', name:'Single species'}, {id:'GROUP_OF_SPECIES',name:'A selection or group of species'}];
+    addDefaultCommonFields();
 
     self.transients = {};
     self.transients.bioProfileUrl = ko.computed(function () {
@@ -149,6 +157,8 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
         }
         else if (self.type() == "GROUP_OF_SPECIES") {
             jsData.speciesLists = ko.mapping.toJS(self.speciesLists, {ignore: ['listType', 'fullName', 'itemCount', 'description', 'listType', 'allSpecies', 'transients']});
+            jsData.commonNameField = self.commonNameField();
+            jsData.scientificNameField = self.scientificNameField();
         }
 
         // Only generate output for known types
@@ -236,6 +246,26 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
         });
     };
 
+    function getCommonKeys(){
+        var url = fcConfig.commonKeysUrl, druids = $.map(self.speciesLists(), function (list) {
+            return list.dataResourceUid();
+        });
+
+        if(druids && druids.length){
+            $.get(url,{
+                druid: druids.join(',')
+            }, function (fields) {
+                console.log(fields);
+                self.commonFields(fields);
+            }).fail(addDefaultCommonFields);
+        } else {
+            addDefaultCommonFields()
+        }
+    }
+
+    function addDefaultCommonFields() {
+        self.commonFields(fcConfig.defaultCommonFields);
+    }
 };
 
 var NewSpeciesListViewModel = function (o) {

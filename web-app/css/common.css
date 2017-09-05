@@ -579,6 +579,10 @@ section#breadcrumb li + li::before {
     opacity: .6;
 }
 
+section#breadcrumb {
+    display: inherit;
+}
+
 @media (max-width: 767px) {
     .hidden-xs {
         display: none !important;

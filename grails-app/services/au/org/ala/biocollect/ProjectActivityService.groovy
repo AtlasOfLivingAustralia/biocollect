@@ -250,82 +250,8 @@ class ProjectActivityService {
     def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName){
         def pActivity = get(id)
         Map speciesConfig =  getSpeciesConfigForProjectActivity(pActivity, output, dataFieldName)
-        def result = searchSpeciesForConfig(speciesConfig, q, limit)
-        formatSpeciesNameForSurvey(speciesConfig.speciesDisplayFormat , result)
-        result
-    }
-
-    private Object searchSpeciesForConfig(Map speciesConfig, String q, Integer limit) {
-        def result
-        switch (speciesConfig?.type) {
-            case 'SINGLE_SPECIES':
-                result = speciesService.searchForSpecies(speciesConfig?.singleSpecies?.name, 1)
-                break
-
-            case 'ALL_SPECIES':
-                result = speciesService.searchForSpecies(q, limit)
-                break
-
-            case 'GROUP_OF_SPECIES':
-                def lists = speciesConfig?.speciesLists
-                result = speciesService.searchSpeciesInLists(q, lists, limit)
-                break
-            default:
-                result = [autoCompleteList: []]
-                break
-        }
-        return result
-    }
-
-    List formatSpeciesNameForSurvey(String speciesDisplayFormat, Map data){
-        data?.autoCompleteList?.each{
-            it.name = formatSpeciesName(speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', it)
-        }
-    }
-
-    /**
-     * formats a name into the specified format
-     * if species does not match to a taxon, then mention it in name.
-     * @param displayType
-     * @param data
-     * @return
-     */
-    String formatSpeciesName(String displayType, Map data){
-        String name
-        if(data.guid){
-            switch (displayType){
-                case 'COMMONNAME(SCIENTIFICNAME)':
-                    if(data.commonName){
-                        name = "${data.commonName} (${data.scientificName})"
-                    } else {
-                        name = "${data.scientificName}"
-                    }
-                    break;
-                case 'SCIENTIFICNAME(COMMONNAME)':
-                    if(data.commonName){
-                        name = "${data.scientificName} (${data.commonName})"
-                    } else {
-                        name = "${data.scientificName}"
-                    }
-
-                    break;
-                case 'COMMONNAME':
-                    if(data.commonName){
-                        name = "${data.commonName}"
-                    } else {
-                        name = "${data.scientificName}"
-                    }
-                    break;
-                case 'SCIENTIFICNAME':
-                    name = "${data.scientificName}"
-                    break;
-            }
-        } else {
-            // when no guid, append unmatched taxon string
-            name = "${data.name} (Unmatched taxon)"
-        }
-
-        name
+        def result = speciesService.searchSpeciesForConfig(speciesConfig, q, limit)
+        speciesService.formatSpeciesNameInAutocompleteList(speciesConfig.speciesDisplayFormat , result)
     }
 
     /**
@@ -357,7 +283,7 @@ class ProjectActivityService {
                 result.isSingle = true
 
                 if (speciesFieldConfig?.singleSpecies?.guid) {
-                    result.name = formatSpeciesName(speciesFieldConfig.speciesDisplayFormat, speciesFieldConfig.singleSpecies)
+                    result.name = speciesService.formatSpeciesName(speciesFieldConfig.speciesDisplayFormat, speciesFieldConfig.singleSpecies)
                     result.guid = speciesFieldConfig.singleSpecies?.guid
                     result.scientificName = speciesFieldConfig.singleSpecies?.scientificName
                     result.commonName = speciesFieldConfig.singleSpecies?.commonName

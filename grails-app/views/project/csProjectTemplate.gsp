@@ -85,7 +85,9 @@
         editBlogEntryUrl: "${createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}",
         deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}",
         downloadTemplateFormUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
-        flimit: ${grailsApplication.config.facets.flimit}
+        flimit: ${grailsApplication.config.facets.flimit},
+        commonKeysUrl: "${createLink(controller: 'search', action: 'getCommonKeys')}",
+        defaultCommonFields: <fc:modelAsJavascript model="${grailsApplication.config.lists.commonFields}"/>
         },
         here = window.location.href;
 
