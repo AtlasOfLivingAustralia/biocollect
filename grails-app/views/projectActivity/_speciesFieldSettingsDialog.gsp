@@ -15,7 +15,7 @@
                     <div class="row-fluid">
                         <div class="span12">
                             <div class="controls">
-                                <h5>Step 1. Constrain species available to select</h5>
+                                <h5>Step 1. Constrain species available for selection</h5>
                                 <span class="req-field">
                                     <select data-validation-engine="validate[required]"
                                             data-prompt-position="centerRight"
