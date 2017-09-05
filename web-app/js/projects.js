@@ -318,19 +318,20 @@ function ProjectViewModel(project, isUserEditor) {
     self.managerEmail = ko.observable(project.managerEmail);
     self.plannedStartDate = ko.observable(project.plannedStartDate).extend({simpleDate: false});
     self.plannedEndDate = ko.observable(project.plannedEndDate).extend({simpleDate: false});
-    self.funding = ko.observable(project.funding).extend({currency:{currencySymbol:"AUD $ "}});
+
+    // self.funding = ko.observable(project.funding).extend({currency:{currencySymbol:"AUD $ "}});
 
     var fundings = $.map(project.fundings || [], function(funding){
         return new FundingViewModel(funding)})
     self.fundings = ko.observableArray(fundings);
 
-    self.totalFundingsAmount = ko.computed(function(){
+    self.funding = ko.computed(function(){
         var total = 0;
         ko.utils.arrayForEach(self.fundings() ,function(funding){
             total += parseInt(funding.fundingSourceAmount());
         })
         return total;
-    })
+    }).extend({currency:{currencySymbol:"AUD $ "}})
 
     self.removeFunding = function(){
         self.fundings.remove(this);

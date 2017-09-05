@@ -395,22 +395,13 @@
                 </div>
             </div>
 
-            <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="clearfix control-group">
-                <label class="control-label span3" for="funding"><g:message code="project.details.funding"/><fc:iconHelp><g:message code="project.details.funding.help"/></fc:iconHelp></label>
-
-                <div class="controls span9">
-                    <g:textField class="span12" name="funding" data-bind="value:funding"
-                                 data-validation-engine="validate[custom[number]]"/>
-                </div>
-            </div>
-
             <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="clearfix control-group" class="clearfix control-group">
                 <label class="control-label span3"  for="fundingSourceAmount" ><g:message code="project.details.funding"/><fc:iconHelp><g:message code="project.details.funding.help"/></fc:iconHelp></label>
                 <div class="span9 " name="fundings">
                     <div class="row-fluid">
                         <div class="span3">Funding Source<fc:iconHelp><g:message code="project.details.funding.fundingSource.help"/></fc:iconHelp></div>
                         <div class="span3">Funding Type<fc:iconHelp><g:message code="project.details.funding.fundingType.help"/></fc:iconHelp></div>
-                        <div class="span3">Funding Source Amount<fc:iconHelp><g:message code="project.details.funding.fundingSourceAmount.help"/></fc:iconHelp></div>
+                        <div class="span3">Funding Amount<fc:iconHelp><g:message code="project.details.funding.fundingSourceAmount.help"/></fc:iconHelp></div>
                     </div>
 
 
@@ -430,7 +421,7 @@
                     </div>
                     <div><button class="btn main-image-button" data-bind="click:addFunding"><i class="icon-plus"></i> Add</button></div>
                     <hr size="1"/>
-                    <div class="pull-right"><fc:iconHelp><g:message code="project.details.funding.fundingTotal.help"/></fc:iconHelp><b>Total amount: $<span name="totalFundingsAmount" data-bind="text:totalFundingsAmount"/></b></div>
+                    <div class="pull-right"><fc:iconHelp><g:message code="project.details.funding.fundingTotal.help"/></fc:iconHelp><b>Total amount: <span name="totalFundingsAmount" data-bind="text:funding.formattedCurrency"/></b></div>
                 </div>
             </div>
 
