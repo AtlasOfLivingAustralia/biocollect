@@ -294,6 +294,14 @@ function isValid(p, a) {
 	 return p;
 }
 
+function FundingViewModel(funding){
+    var self = this;
+    self.fundingSource=ko.observable(funding.fundingSource)
+    self.fundingType=ko.observable(funding.fundingType)
+    self.fundingSourceAmount=ko.observable(funding.fundingSourceAmount)
+    self.fundingTypes = ["Public - commonwealth", "Public - state", "Public - local", "Public - in-kind", "Private - in-kind", "Private - industry", "Private - philanthropic", "Private - bequeath/other", "Private - NGO"];
+}
+
 function ProjectViewModel(project, isUserEditor) {
     var self = $.extend(this, new Documents());
 
@@ -311,6 +319,27 @@ function ProjectViewModel(project, isUserEditor) {
     self.plannedStartDate = ko.observable(project.plannedStartDate).extend({simpleDate: false});
     self.plannedEndDate = ko.observable(project.plannedEndDate).extend({simpleDate: false});
     self.funding = ko.observable(project.funding).extend({currency:{currencySymbol:"AUD $ "}});
+
+    var fundings = $.map(project.fundings || [], function(funding){
+        return new FundingViewModel(funding)})
+    self.fundings = ko.observableArray(fundings);
+
+    self.totalFundingsAmount = ko.computed(function(){
+        var total = 0;
+        ko.utils.arrayForEach(self.fundings() ,function(funding){
+            total += parseInt(funding.fundingSourceAmount());
+        })
+        return total;
+    })
+
+    self.removeFunding = function(){
+        self.fundings.remove(this);
+    }
+    self.addFunding = function(){
+        self.fundings.push(new FundingViewModel({fundingSournce : "",fundingType : "", fundingSourceAmount : 0}))
+    }
+
+
     var initialCountries = project.countries && $.isArray(project.countries) && project.countries.length > 0 ? project.countries : ['Australia']
     self.countries = ko.observableArray(initialCountries)
     var initialUNRegions = project.uNRegions && $.isArray(project.uNRegions) && project.uNRegions.length > 0 ? project.uNRegions : ['Oceania']
@@ -1177,6 +1206,7 @@ function CreateEditProjectViewModel(project, isUserEditor, options) {
         self.associatedOrgs.remove(org);
     };
 
+
     self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch', 'granteeOrganisation', 'sponsorOrganisation']);
     self.transients.existingLinks = project.links;
 
@@ -1431,7 +1461,7 @@ var SiteViewModel = function (site, feature) {
             return;
         }
         var hasDoc = false;
-        $.each(site.documents, function(i, doc) {
+        $.each(site.documents, function(i, doc) {ƒ
             if (doc.poiId === poi.poiId) {
                 hasDoc = true;
                 return false;
