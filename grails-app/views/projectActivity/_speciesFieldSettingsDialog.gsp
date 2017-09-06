@@ -7,6 +7,7 @@
                 <button type="button" class="close" data-bind="click:cancel">&times;</button>
                 <h4 class="modal-title">Configure <span
                         data-bind="visible: transients.fieldName, text: transients.fieldName()"></span></h4>
+
                 <div id="species-dialog-alert-placeholder"></div>
             </div>
 
@@ -24,7 +25,7 @@
                             </div>
 
                             <g:if test="${settingService.getSettingText(au.org.ala.biocollect.merit.SettingPageType.SURVEY_SPECIES_ALL)}">
-                                <div class="alert alert-info">
+                                <div class="alert alert-info" data-bind="visible: type()">
                                     <div data-bind="visible: type() == 'ALL_SPECIES'">
                                         <fc:getSettingContent
                                                 settingType="${au.org.ala.biocollect.merit.SettingPageType.SURVEY_SPECIES_ALL}"/>
@@ -49,6 +50,7 @@
 
                             <div data-bind="visible: groupInfoVisible">
                                 <h5>Step 2. Create or select species list</h5>
+
                                 <div class="btn-group">
                                     <button class="btn btn-xs btn-small btn-default"
                                             data-bind="click: transients.toggleShowExistingSpeciesLists">Choose from existing species lists</button>
@@ -57,16 +59,14 @@
                                 </div>
                             </div>
 
-                            <div data-bind="visible: singleInfoVisible" class="margin-top-2">
+                            <div data-bind="visible: singleInfoVisible" class="margin-top-10">
                                 <h5>Step 2. Search and select a species below</h5>
-                                <div class="controls block">
-                                    <span data-bind="visible: singleSpecies.transients.guid" class="req-field">
-                                        <a data-bind="attr:{href: transients.bioProfileUrl}" target="_blank"><small
-                                                data-bind="text:  singleSpecies.transients.name"></small></a>
-                                    </span>
 
-                                    <input class="input-xlarge" type="text" placeholder="Search species"
-                                           data-bind="value:singleSpecies.name,
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <span class="req-field">
+                                            <input class="input-xlarge" type="text" placeholder="Search species"
+                                                   data-bind="value:singleSpecies.name,
                                                     event:{focusout: singleSpecies.focusLost},
                                                     fusedAutocomplete:{
                                                         source: transients.bioSearch,
@@ -75,7 +75,15 @@
                                                         scientificName: singleSpecies.transients.scientificName,
                                                         commonName: singleSpecies.transients.commonName
                                                     }" data-validation-engine="validate[required]">
+                                        </span>
+                                    </div>
 
+                                    <div class="span6">
+                                        <span data-bind="visible: singleSpecies.transients.guid">
+                                            <a data-bind="attr:{href: transients.bioProfileUrl}" target="_blank"><small
+                                                    data-bind="text:  singleSpecies.transients.name"></small></a>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -95,7 +103,7 @@
                         </label>
 
                         <h5><span class="req-field">Selected lists</span></h5>
-                            <ol>
+                        <ol>
                             <!-- ko foreach: speciesLists -->
                             <li>
                                 <a class="btn-link" target="_blank"
@@ -110,6 +118,7 @@
                     </div>
 
                 </div>
+
                 <div class="modal-footer control-group">
                     <div class="controls">
                         <button type="button" class="btn btn-success" data-bind="click:accept">Apply</button>
