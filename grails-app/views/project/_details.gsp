@@ -404,12 +404,11 @@
                         <div class="span3">Funding Amount<fc:iconHelp><g:message code="project.details.funding.fundingSourceAmount.help"/></fc:iconHelp></div>
                     </div>
 
-
                     <div data-bind="foreach: fundings">
                         <div class="row-fluid">
                             <div class="span3"><g:textField name="fundingSource" data-bind="value:fundingSource"/>
                             </div>
-                            <div class="span3"><select  name="fundintType" data-bind="options:fundingTypes,value:fundingType"></select>
+                            <div class="span3"><select  name="fundingType" data-bind="options:$parent.fundingTypes,value:fundingType"></select>
 
                             </div>
                             <div class="span3"><g:textField name="fundingSourceAmount" data-bind="value:fundingSourceAmount" data-validation-engine="validate[custom[number]]"/>

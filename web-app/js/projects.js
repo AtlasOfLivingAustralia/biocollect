@@ -294,12 +294,14 @@ function isValid(p, a) {
 	 return p;
 }
 
+
+
 function FundingViewModel(funding){
     var self = this;
     self.fundingSource=ko.observable(funding.fundingSource)
     self.fundingType=ko.observable(funding.fundingType)
     self.fundingSourceAmount=ko.observable(funding.fundingSourceAmount)
-    self.fundingTypes = ["Public - commonwealth", "Public - state", "Public - local", "Public - in-kind", "Private - in-kind", "Private - industry", "Private - philanthropic", "Private - bequeath/other", "Private - NGO"];
+
 }
 
 function ProjectViewModel(project, isUserEditor) {
@@ -325,6 +327,7 @@ function ProjectViewModel(project, isUserEditor) {
         return new FundingViewModel(funding)})
     self.fundings = ko.observableArray(fundings);
 
+    self.fundingTypes = ["Public - commonwealth", "Public - state", "Public - local", "Public - in-kind", "Private - in-kind", "Private - industry", "Private - philanthropic", "Private - bequeath/other", "Private - NGO"];
     self.funding = ko.computed(function(){
         var total = 0;
         ko.utils.arrayForEach(self.fundings() ,function(funding){
