@@ -300,7 +300,7 @@ function FundingViewModel(funding){
     var self = this;
     self.fundingSource=ko.observable(funding.fundingSource)
     self.fundingType=ko.observable(funding.fundingType)
-    self.fundingSourceAmount=ko.observable(funding.fundingSourceAmount)
+    self.fundingSourceAmount=ko.observable(funding.fundingSourceAmount).extend({currency:{currencySymbol:"AUD $ "}})
 
 }
 
