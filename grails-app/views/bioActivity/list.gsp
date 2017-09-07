@@ -7,6 +7,7 @@
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
+    <g:set var="wsParameters" value="${[version: params.version, spotterId: "${spotterId}", projectActivityId: "${projectActivityId}"]}"/>
     <r:script disposition="head">
     var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -20,7 +21,7 @@
             worksActivityEditUrl: "${createLink(controller: 'activity', action: 'enterData')}",
             worksActivityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
             downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
-            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params:[version: params.version])}",
+            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params: wsParameters)}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
@@ -33,7 +34,9 @@
             imageLocation:"${resource(dir:'/images')}",
             version: "${params?.version}",
             projectId: "${projectId}",
-            flimit: ${grailsApplication.config.facets.flimit},
+            projectActivityId: "${projectActivityId}",
+            spotterId: ${spotterId?:'undefined'},
+            flimit: ${grailsApplication.config.facets.flimit?:10},
             hideProjectAndSurvey: ${hubConfig.content?.hideProjectAndSurvey?:false}
         },
         here = document.location.href;
@@ -43,10 +46,6 @@
 <body>
 
 <div class="container-fluid">
-    <div class="hidden-sm hidden-xs">
-        <div class="margin-bottom-50"></div>
-    </div>
-
     <div class="row-fluid">
         %{--page title--}%
         <div class="span4">

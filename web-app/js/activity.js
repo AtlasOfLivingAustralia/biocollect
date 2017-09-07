@@ -450,6 +450,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             order: self.order(),
             flimit: flimit || fcConfig.flimit,
             view: self.view,
+            spotterId: fcConfig.spotterId,
+            projectActivityId: fcConfig.projectActivityId,
             clientTimezone : moment.tz.guess()
         },
             fq = [];

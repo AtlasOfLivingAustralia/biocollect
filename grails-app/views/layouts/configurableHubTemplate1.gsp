@@ -62,6 +62,7 @@
     </r:script>
     <r:layoutResources/>
     <g:layoutHead/>
+    <link rel="stylesheet" href="${resource(dir: 'css', file: 'common.css')}" type="text/css">
     <link rel="stylesheet" type="text/css"
           href="${createLink(controller: 'hub', action: 'getStyleSheet')}?hub=${hubConfig.urlPath}">
     <link href="https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"
@@ -76,6 +77,7 @@
     <div id="ala-header-bootstrap2" class="do-not-mark-external">
         <hf:banner logoutUrl="${g.createLink(controller: "logout", action: "logout", absolute: true)}"/>
     </div>
+    <div id="content-starting-point"></div>
 </g:if>
 <g:elseif test="${hubConfig.templateConfiguration.header.type == 'biocollect'}">
     <div id="biocollect-header">
@@ -115,7 +117,7 @@
 </g:elseif>
 <!-- Breadcrumb -->
 <g:if test="${!printView && !mobile && !hubConfig.content?.hideBreadCrumbs}">
-    <g:set var="cssClassName" value="${hubConfig?.templateConfiguration?.header?.type == 'ala'?'margin-top-70':''}"/>
+    <g:set var="cssClassName" value=""/>
     <g:set var="breadCrumbs"
            value="${settingService.getCustomBreadCrumbsSetForControllerAction(controllerName, actionName)}"/>
     <g:if test="${breadCrumbs}">

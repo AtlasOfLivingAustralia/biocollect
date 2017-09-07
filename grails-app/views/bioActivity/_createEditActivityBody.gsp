@@ -3,10 +3,6 @@
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
         <g:if test="${!mobile}">
-            <div class="hidden-sm hidden-xs">
-                <div class="margin-bottom-50"></div>
-            </div>
-
             <div class="row-fluid">
                 %{--page title--}%
                 <div class="span4">

@@ -1,6 +1,7 @@
 package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.*
+import au.org.ala.web.AuthService
 import grails.converters.JSON
 import groovyx.net.http.ContentType
 import org.apache.commons.io.FilenameUtils
@@ -9,6 +10,7 @@ import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
+import au.org.ala.web.UserDetails
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST
 import static org.apache.http.HttpStatus.SC_OK
@@ -28,6 +30,7 @@ class BioActivityController {
     SpeciesService speciesService
     LinkGenerator grailsLinkGenerator
     SettingService settingService
+    AuthService authService
 
     static int MAX_FLIMIT = 500
 
@@ -368,7 +371,7 @@ class BioActivityController {
     }
 
     /**
-     * List all activity associated to a project by a user.
+     * List activities of the current user in a project.
      * @param id activity id
      * @return
      */
@@ -387,6 +390,33 @@ class BioActivityController {
         } else {
             flash.message = "You need to be logged in to view your records"
             forward(action: 'projectRecords', params: params)
+        }
+    }
+
+    /**
+     * List activities of a user (not current user) in a project.
+     * @param id activity id
+     * @return
+     */
+    def listRecordsForUser() {
+        if(params.spotterId && params.projectActivityId){
+            UserDetails user = authService.getUserForUserId(params.spotterId, false)
+            if(user){
+                render(view: 'list',
+                        model: [
+                                view: 'userprojectactivityrecords',
+                                spotterId:  params.spotterId,
+                                projectActivityId: params.projectActivityId,
+                                title: "${messageSource.getMessage('project.userrecords.title', [].toArray(), '', Locale.default)} ${user.getDisplayName()}",
+                                returnTo: g.createLink(controller: 'bioActivity', action: 'myProjectRecords') + '/' + params.projectId,
+                                doNotStoreFacetFilters: true
+                        ]
+                )
+            } else {
+                render view: '../error', status: SC_BAD_REQUEST, model : [errorMessage: "No user found for id - ${params.spotterId}"]
+            }
+        } else {
+            render view: '../error', status: SC_BAD_REQUEST, model : [errorMessage: "Missing parameter - spotterId or projectActivityId"]
         }
     }
 
@@ -471,11 +501,15 @@ class BioActivityController {
                     break
 
                 case 'projectrecords':
-                    facets = "projectActivityNameFacet,recordNameFacet,activityOwnerNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
+                    facets = "recordNameFacet,activityOwnerNameFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
                     break
 
                 case 'myprojectrecords':
-                    facets = "projectActivityNameFacet,recordNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
+                    facets = "recordNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
+                    break
+
+                case 'userprojectactivityrecords':
+                    facets = "recordNameFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
                     break
 
                 case 'allrecords':
@@ -494,14 +528,9 @@ class BioActivityController {
      */
 
     def searchProjectActivities() {
-//        long startTime = System.currentTimeMillis()
-
         GrailsParameterMap queryParams = constructDefaultSearchParams(params)
 
         Map searchResult = searchService.searchProjectActivity(queryParams)
-
-//        long searchStarttime = System.currentTimeMillis()
-//        long searchTime = searchStarttime - startTime
 
         List activities = searchResult?.hits?.hits
         List facets = []
@@ -534,8 +563,6 @@ class BioActivityController {
             result
         }
 
-//        long permissionCheckTime = System.currentTimeMillis() - searchStarttime
-
         if(queryParams.facets){
             String[] facetList = queryParams.facets.split(',')
             facets = searchService.standardiseFacets (searchResult.facets, Arrays.asList(facetList))
@@ -543,14 +570,6 @@ class BioActivityController {
 
         facets = projectActivityService.getDisplayNamesForFacets(facets);
         render([activities: activities, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
-
-//        long totalTime = System.currentTimeMillis() - startTime
-//
-//        log.debug ("Activities: ${activities?.size()} ")
-//        log.debug ("Total time: ${totalTime}ms")
-//        log.debug ("Search time: ${searchTime}ms")
-//        log.debug ("Permission time: ${permissionCheckTime}ms")
-
     }
 
     /**
@@ -558,9 +577,6 @@ class BioActivityController {
      * function to points.
      */
     def getProjectActivitiesRecordsForMapping() {
-//
-//  long startTime = System.currentTimeMillis()
-
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
         Map parsed = commonService.parseParams(params)
         parsed.userId = userService.getCurrentUserId()
@@ -625,9 +641,6 @@ class BioActivityController {
         }
 
         render([activities: activities, total: searchResult.hits?.total ?: activities?.size()] as JSON)
-
-//        long totalTime = System.currentTimeMillis() - startTime
-//        log.debug("getProjectActivitiesRecordsForMapping time ${totalTime}ms")
     }
 
     def ajaxListForProject(String id) {
@@ -993,5 +1006,24 @@ class BioActivityController {
     public getSitesWithDataForProjectActivity(String id){
         def result = activityService.getSitesWithDataForProjectActivity(id)
         render result as JSON
+    }
+
+
+    /**
+     * This controller is used to pre-fill the species details if a taxon id is passed in the url.
+     * @return
+     */
+    public spotter(){
+        if(params.spotterId){
+            String pActivity = grailsApplication.config.individualSightings.pActivity,
+                   hub = grailsApplication.config.individualSightings.hub;
+
+            params.projectActivityId = pActivity
+            params.hub = hub
+
+            forward(action: 'listRecordsForUser')
+        } else {
+            render status: SC_BAD_REQUEST, text: "You need to provide user id"
+        }
     }
 }

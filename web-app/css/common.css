@@ -603,3 +603,14 @@ section#breadcrumb {
         display: none !important;
     }
 }
+
+/** header is responsive on screen size hence needs adjusting on different resolutions **/
+#content-starting-point{
+    margin-top: 0px;
+}
+
+@media (min-width: 980px) {
+    #content-starting-point{
+        margin-top: 70px;
+    }
+}

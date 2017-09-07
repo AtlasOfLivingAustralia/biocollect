@@ -316,7 +316,9 @@
                 view: fcConfig.view,
                 fq: [],
                 searchTerm: '',
-                projectId: fcConfig.projectId || ''
+                projectId: fcConfig.projectId || '',
+                spotterId: fcConfig.spotterId,
+                projectActivityId: fcConfig.projectActivityId
             },
             viewModel: activitiesAndRecordsViewModel
         }
