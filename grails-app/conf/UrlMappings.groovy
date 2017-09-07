@@ -49,7 +49,7 @@ class UrlMappings {
 
                 "/sight/$taxonId**" (controller: 'bioActivity', action: 'preFillSpeciesName')
 
-                "/sight/spotter/$spotterId" (controller: 'bioActivity', action: 'spotter')
+                "/spotter/$spotterId" (controller: 'bioActivity', action: 'spotter')
 
                 "/$controller/$id?"(parseRequest:true) {
 
