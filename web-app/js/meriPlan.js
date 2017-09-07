@@ -111,6 +111,7 @@ function DetailsViewModel(projectDetails, period) {
     self.lastUpdated = ko.observable(projectDetails.lastUpdated ? projectDetails.lastUpdated : moment().format());
     self.budget = new BudgetViewModel(projectDetails.budget, period);
     $.extend(self, new Risks(projectDetails.risks));
+    self.issues = new IssuesViewModel(projectDetails.issues);
 
     var row = [];
     projectDetails.events ? row = projectDetails.events : row.push(ko.mapping.toJS(new EventsRowViewModel()));

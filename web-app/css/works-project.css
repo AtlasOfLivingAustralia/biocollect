@@ -14,3 +14,8 @@
 .edit-view-meri-plan table tbody td { border: 1px solid #ccc; padding: 10px; vertical-align: top; line-height: 1.3; }
 
 .edit-view-meri-plan table tfoot td { border: 1px solid #ccc; padding: 10px; vertical-align: top; line-height: 1.3; }
+
+.edit-view-meri-plan table td textarea {
+    width: 100%;
+    box-sizing: border-box;
+}

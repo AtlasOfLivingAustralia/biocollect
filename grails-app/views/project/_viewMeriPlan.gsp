@@ -192,8 +192,8 @@
 					<div align="right">
 				  		<b> Overall project risk profile : <span data-bind="text: risks.overallRisk, css: overAllRiskHighlight" ></span></b>
 					</div>
-					<table>
-				    <thead style="width:100%;">
+					<table style="width:100%;">
+				    <thead >
 			          <tr>
 			            <th>Type of threat / risk</th>
 			            <th>Description</th>
@@ -234,5 +234,47 @@
 			    </div>
 		</div>
 		<!-- /ko -->
+
+			<!-- ko with: details.issues -->
+			<div class="row-fluid space-after">
+				<div class="required">
+					<div id="project-issues" class="margin-bottom-10 margin-right-20">
+						<label><b>Project issues</b></label>
+						<table style="width:100%;">
+							<thead >
+							<tr>
+							<tr>
+								<th>Type of issue </th>
+								<th>Description </th>
+								<th>Assessment </th>
+								<th>Action plan </th>
+								<th>Impact</th>
+							</tr>
+							</tr>
+							</thead>
+							<tbody data-bind="foreach : issues" >
+							<tr>
+								<td>
+									<label data-bind="text: type" ></label>
+								</td>
+								<td>
+									<label data-bind="text: description" ></label>
+								</td>
+								<td>
+									<label data-bind="text: assessment" ></label>
+								</td>
+								<td>
+									<label data-bind="text: actionPlan" ></label>
+								</td>
+								<td>
+									<label data-bind="text: impact" ></label>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- /ko -->
 		</g:if>
 </div>
