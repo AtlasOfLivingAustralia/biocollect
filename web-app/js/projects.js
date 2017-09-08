@@ -973,11 +973,12 @@ function ProjectViewModel(project, isUserEditor) {
 
     self.toJS = function() {
         var toIgnore = self.ignore; // document properties to ignore.
-        toIgnore.concat(['transients', 'daysStatus', 'projectDatesChanged', 'collectoryInstitutionId', 'ignore', 'projectStatus','fundingTypes']);
+        toIgnore = toIgnore.concat(['transients', 'daysStatus', 'projectDatesChanged', 'collectoryInstitutionId', 'ignore', 'projectStatus','fundingTypes']);
         return ko.mapping.toJS(self, {ignore:toIgnore});
     };
 
     self.modelAsJSON = function() {
+        debugger
         return JSON.stringify(self.toJS());
     };
 
