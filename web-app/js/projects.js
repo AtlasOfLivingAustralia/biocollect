@@ -978,7 +978,6 @@ function ProjectViewModel(project, isUserEditor) {
     };
 
     self.modelAsJSON = function() {
-        debugger
         return JSON.stringify(self.toJS());
     };
 
