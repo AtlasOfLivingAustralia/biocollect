@@ -398,29 +398,34 @@
             <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="clearfix control-group" class="clearfix control-group">
                 <label class="control-label span3"  for="fundingSourceAmount" ><g:message code="project.details.funding"/><fc:iconHelp><g:message code="project.details.funding.help"/></fc:iconHelp></label>
                 <div class="span9 " name="fundings">
-                    <div class="row-fluid">
-                        <div class="span3">Funding Source<fc:iconHelp><g:message code="project.details.funding.fundingSource.help"/></fc:iconHelp></div>
-                        <div class="span3">Funding Type<fc:iconHelp><g:message code="project.details.funding.fundingType.help"/></fc:iconHelp></div>
-                        <div class="span3">Funding Amount<fc:iconHelp><g:message code="project.details.funding.fundingSourceAmount.help"/></fc:iconHelp></div>
-                    </div>
+                    <table class="table borderless">
+                        <thead>
+                            <td>Funding Source<fc:iconHelp><g:message code="project.details.funding.fundingSource.help"/></fc:iconHelp><i class="req-field"></i></td>
+                            <td>Funding Type<fc:iconHelp><g:message code="project.details.funding.fundingType.help"/></fc:iconHelp></td>
+                            <td>Funding Amount<fc:iconHelp><g:message code="project.details.funding.fundingSourceAmount.help"/></fc:iconHelp></td>
+                            <td></td>
+                        </thead>
+                        <tbody>
+                        <!-- ko foreach: fundings -->
+                        <tr >
+                            <td ><g:textField name="fundingSource" data-bind="value:fundingSource" data-validation-engine="validate[required]"></g:textField></td>
+                            <td ><select  name="fundingType" data-bind="options:$parent.fundingTypes,value:fundingType"></select></td>
+                            <td ><g:textField name="fundingSourceAmount" data-bind="value:fundingSourceAmount" data-validation-engine="validate[custom[number]]"></g:textField></td>
+                            <td><button class="btn main-image-button" data-bind="click:$parent.removeFunding"><i class="icon-minus"></i> Remove</button></td>
+                        </tr>
+                        <!-- /ko -->
+                        <tr>
+                            <td colspan="2" ></td>
+                            <td colspan="2">
+                                <fc:iconHelp><g:message code="project.details.funding.fundingTotal.help"/></fc:iconHelp><b>Total amount: <span name="totalFundingsAmount" data-bind="text:funding.formattedCurrency"/></b>
+                            </td>
+                        </tr>
+                        <tr><td colspan="4"><button class="btn main-image-button" data-bind="click:addFunding"><i class="icon-plus"></i> Add</button></td></tr>
+                        </tbody>
+                    </table>
 
-                    <div data-bind="foreach: fundings">
-                        <div class="row-fluid">
-                            <div class="span3"><g:textField name="fundingSource" data-bind="value:fundingSource"/>
-                            </div>
-                            <div class="span3"><select  name="fundingType" data-bind="options:$parent.fundingTypes,value:fundingType"></select>
 
-                            </div>
-                            <div class="span3"><g:textField name="fundingSourceAmount" data-bind="value:fundingSourceAmount" data-validation-engine="validate[custom[number]]"/>
-                            </div>
-                            <div class="span3">
-                                <button class="btn main-image-button" data-bind="click:$parent.removeFunding"><i class="icon-minus"></i> Remove</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div><button class="btn main-image-button" data-bind="click:addFunding"><i class="icon-plus"></i> Add</button></div>
-                    <hr size="1"/>
-                    <div class="pull-right"><fc:iconHelp><g:message code="project.details.funding.fundingTotal.help"/></fc:iconHelp><b>Total amount: <span name="totalFundingsAmount" data-bind="text:funding.formattedCurrency"/></b></div>
+
                 </div>
             </div>
 

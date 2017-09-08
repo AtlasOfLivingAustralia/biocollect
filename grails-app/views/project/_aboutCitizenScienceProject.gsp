@@ -67,7 +67,7 @@
                         </div>
                         <div data-bind="visible:funding">
                             <div class="text-small-heading"><g:message code="project.display.fundingValue" /></div>
-                            <span data-bind="text:funding.formattedCurrency" ></span>
+                            <span data-bind="text:funding.formattedCurrency" ></span>&nbsp;&nbsp;&nbsp;
                             <g:if test="project.fundings">
                                     <a href="#" data-toggle="modal" data-target="#fundingDetails"><i class="icon-th-list"></i></a>
                             </g:if>
