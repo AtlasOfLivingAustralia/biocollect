@@ -23,6 +23,18 @@
                         <strong>Note!</strong> ${hubConfig.content?.recordNote?.encodeAsHTML()}
                     </div>
                 </g:if>
+                <g:if test="${isProjectContributingDataToALA}">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <a class="btn btn-ala" data-bind="attr:{href: biocacheUrl}">
+                                View records in occurrence explorer
+                            </a>
+                            <a class="btn btn-ala" data-bind="attr:{href: spatialUrl}">
+                                View records in spatial portal
+                            </a>
+                        </div>
+                    </div>
+                </g:if>
                 <ul class="nav nav-tabs" id="tabDifferentViews">
                     <li class="active"><a id="recordVis-tab" href="#recordVis" data-toggle="tab" >List</a></li>
                     <li class=""><a href="#mapVis" id="dataMapTab" data-bind="attr:{'data-toggle': activities().length > 0 ? 'tab' : ''}">Map</a></li>

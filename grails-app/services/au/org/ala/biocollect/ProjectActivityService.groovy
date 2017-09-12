@@ -5,6 +5,7 @@ import au.org.ala.biocollect.merit.ProjectService
 import au.org.ala.biocollect.merit.SiteService
 import au.org.ala.biocollect.merit.SpeciesService
 import au.org.ala.biocollect.merit.WebService
+import au.org.ala.web.AuthService
 import org.springframework.context.MessageSource
 import java.nio.file.Files
 //import org.springframework.util.FileCopyUtils
@@ -20,6 +21,7 @@ class ProjectActivityService {
     MetadataService metadataService
     MessageSource messageSource
     UtilService utilService
+    AuthService authService
 
     def getAllByProject(projectId, levelOfDetail = "", version = null){
         def params = '?'
@@ -308,11 +310,22 @@ class ProjectActivityService {
      */
     List getDisplayNamesForFacets(facets){
         facets?.each { facet ->
+            switch (facet.name){
+                case 'userId':
+                    List userIds = facet.terms.collect {it.term}
+                    Map users = authService.getUserDetailsById(userIds)?.users
+                    facet.terms.each { term ->
+                        term.title = users[term.term]?.displayName
+                    }
+                    break;
+                default:
+                    facet.terms?.each{ term ->
+                        term.title = messageSource.getMessage("projectActivity.facets."+facet.name+"."+term.term, [].toArray(), term.name, Locale.default)
+                    }
+            }
+
             facet.title = messageSource.getMessage("projectActivity.facets."+facet.name, [].toArray(), facet.name, Locale.default)
             facet.helpText = messageSource.getMessage("projectActivity.facets."+facet.name +".helpText", [].toArray(), "", Locale.default)
-            facet.terms?.each{ term ->
-                term.title = messageSource.getMessage("projectActivity.facets."+facet.name+"."+term.term, [].toArray(), term.name, Locale.default)
-            }
         }
     }
 

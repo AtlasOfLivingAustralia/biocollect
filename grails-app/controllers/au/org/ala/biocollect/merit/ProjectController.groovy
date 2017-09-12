@@ -71,6 +71,7 @@ class ProjectController {
                 project.origin = messageSource.getMessage("project.facets.origin." + project.origin, [].toArray(), project.origin, Locale.default)
             }
 
+            String view = 'project'
             def user = userService.getUser()
             def members = projectService.getMembersForProjectId(id)
             def admins = members.findAll{ it.role == "admin" }.collect{ it.userName }.join(",") // comma separated list of user email addresses
@@ -85,6 +86,9 @@ class ProjectController {
             def programs = projectService.programsModel()
             def content = projectContent(project, user, programs, params)
             projectService.buildFieldsForTags (project)
+            String occurrenceUrl = projectService.getOccurrenceUrl(project, view)
+            String spatialUrl = projectService.getSpatialUrl(project, view, params.spotterId)
+            Boolean isProjectContributingDataToALA = projectService.isProjectContributingDataToALA(project)
 
             def model = [project: project,
                 mapFeatures: commonService.getMapFeatures(project),
@@ -100,7 +104,10 @@ class ProjectController {
                 themes:metadataService.getThemesForProject(project),
                 projectContent:content.model,
                 hideBackButton: true,
-                projectSite: project.projectSite
+                projectSite: project.projectSite,
+                occurrenceUrl: occurrenceUrl,
+                spatialUrl: spatialUrl,
+                isProjectContributingDataToALA: isProjectContributingDataToALA
             ]
 
 

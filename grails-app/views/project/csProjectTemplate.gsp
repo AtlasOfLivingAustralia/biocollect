@@ -87,7 +87,9 @@
         downloadTemplateFormUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         flimit: ${grailsApplication.config.facets.flimit},
         commonKeysUrl: "${createLink(controller: 'search', action: 'getCommonKeys')}",
-        defaultCommonFields: <fc:modelAsJavascript model="${grailsApplication.config.lists.commonFields}"/>
+        defaultCommonFields: <fc:modelAsJavascript model="${grailsApplication.config.lists.commonFields}"/>,
+        occurrenceUrl: "${occurrenceUrl}",
+        spatialUrl: "${spatialUrl}"
         },
         here = window.location.href;
 

@@ -37,7 +37,9 @@
             projectActivityId: "${projectActivityId}",
             spotterId: ${spotterId?:'undefined'},
             flimit: ${grailsApplication.config.facets.flimit?:10},
-            hideProjectAndSurvey: ${hubConfig.content?.hideProjectAndSurvey?:false}
+            hideProjectAndSurvey: ${hubConfig.content?.hideProjectAndSurvey?:false},
+            occurrenceUrl: "${occurrenceUrl}",
+            spatialUrl: "${spatialUrl}"
         },
         here = document.location.href;
     </r:script>

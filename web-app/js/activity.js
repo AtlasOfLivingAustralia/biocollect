@@ -440,6 +440,48 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return facetFilters;
     };
 
+    /**
+     * translate the current facet selection to biocache url format.
+     */
+    self.biocacheUrl = ko.computed(function () {
+        var fqs = self.filterViewModel.getALACompatibleQuery() || [],
+            query = fqs.join("&fq="),
+            url = fcConfig.occurrenceUrl,
+            questionMark = false;
+
+        if(url.indexOf('?') < 0){
+            questionMark = true
+        }
+
+        if(query){
+            var prefix = questionMark?'?':'&';
+            return url + prefix + "fq=" + query
+        }
+
+        return url
+    });
+
+    /**
+     * translate the current facet selection to spatial portal url format.
+     */
+    self.spatialUrl = ko.computed(function () {
+        var fqs = self.filterViewModel.getALACompatibleQuery() || [],
+            query = fqs.join("&fq="),
+            url = fcConfig.spatialUrl,
+            questionMark = false;
+
+        if(url.indexOf('?') < 0){
+            questionMark = true
+        }
+
+        if(query){
+            var prefix = questionMark?'?':'&';
+            return url + prefix + "fq=" + query
+        }
+
+        return url
+    });
+
     function constructQueryUrl(prefix, offset, facetOnly, flimit) {
         if (!offset) offset = 0;
 
@@ -508,11 +550,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             selectedFacets.push(new FacetTermViewModel({
                 term: value.term || '',
                 exclude: value.exclude,
-                facet: {
-                    name: ko.observable(value.name || ''),
-                    title: ko.observable(value.title || ''),
+                facet: new FacetViewModel({
+                    name: value.name || '',
+                    title: value.title || '',
                     ref: self.filterViewModel
-                }
+                })
             }));
         });
 

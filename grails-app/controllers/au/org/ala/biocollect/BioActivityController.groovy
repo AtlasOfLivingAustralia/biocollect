@@ -359,11 +359,20 @@ class BioActivityController {
      * @return
      */
     def projectRecords(String id) {
+        String view = 'projectrecords'
+        Map project = projectService.get(id)
+        String occurrenceUrl = projectService.getOccurrenceUrl(project, view)
+        String spatialUrl = projectService.getSpatialUrl(project, view)
+        Boolean isProjectContributingDataToALA = projectService.isProjectContributingDataToALA(project)
         render(view: 'list',
                 model: [
-                        view: 'projectrecords',
+                        view: view,
                         projectId: id,
+                        project: project,
                         title: messageSource.getMessage('project.records.title', [].toArray(), '', Locale.default),
+                        occurrenceUrl: occurrenceUrl,
+                        spatialUrl: spatialUrl,
+                        isProjectContributingDataToALA: isProjectContributingDataToALA,
                         returnTo: g.createLink(controller: 'bioActivity', action: 'projectRecords') + '/' + id,
                         doNotStoreFacetFilters: true
                 ]
@@ -377,12 +386,21 @@ class BioActivityController {
      */
     def myProjectRecords(String id) {
         if(userService.user){
+            String view = 'myprojectrecords'
+            Map project = projectService.get(id)
+            Boolean isProjectContributingDataToALA = projectService.isProjectContributingDataToALA(project)
+            String occurrenceUrl = projectService.getOccurrenceUrl(project, view)
+            String spatialUrl = projectService.getSpatialUrl(project, view)
             render(view: 'list',
                     model: [
-                            view: 'myprojectrecords',
+                            view: view,
                             user:  userService.user,
                             projectId: id,
+                            project: project,
                             title: messageSource.getMessage('project.myrecords.title', [].toArray(), '', Locale.default),
+                            occurrenceUrl: occurrenceUrl,
+                            spatialUrl: spatialUrl,
+                            isProjectContributingDataToALA: isProjectContributingDataToALA,
                             returnTo: g.createLink(controller: 'bioActivity', action: 'myProjectRecords') + '/' + id,
                             doNotStoreFacetFilters: true
                     ]
@@ -400,14 +418,24 @@ class BioActivityController {
      */
     def listRecordsForUser() {
         if(params.spotterId && params.projectActivityId){
+            String view = 'userprojectactivityrecords'
+            Map projectActivity = projectActivityService.get(params.projectActivityId)
+            String projectId = projectActivity?.projectId
+            Map project = projectService.get(projectId)
+            String occurrenceUrl = projectService.getOccurrenceUrl(project, view, params.spotterId)
+            String spatialUrl = projectService.getSpatialUrl(project, view, params.spotterId)
+            Boolean isProjectContributingDataToALA = projectService.isProjectContributingDataToALA(project)
             UserDetails user = authService.getUserForUserId(params.spotterId, false)
             if(user){
                 render(view: 'list',
                         model: [
-                                view: 'userprojectactivityrecords',
+                                view: view,
                                 spotterId:  params.spotterId,
                                 projectActivityId: params.projectActivityId,
                                 title: "${messageSource.getMessage('project.userrecords.title', [].toArray(), '', Locale.default)} ${user.getDisplayName()}",
+                                occurrenceUrl: occurrenceUrl,
+                                spatialUrl: spatialUrl,
+                                isProjectContributingDataToALA: isProjectContributingDataToALA,
                                 returnTo: g.createLink(controller: 'bioActivity', action: 'myProjectRecords') + '/' + params.projectId,
                                 doNotStoreFacetFilters: true
                         ]
@@ -488,7 +516,7 @@ class BioActivityController {
         queryParams.searchTerm = queryParams.searchTerm ?: ''
 
         if(!queryParams.facets){
-            String facets = "projectNameFacet,organisationNameFacet,projectActivityNameFacet,recordNameFacet,activityOwnerNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
+            String facets = "projectNameFacet,organisationNameFacet,projectActivityNameFacet,recordNameFacet,userId,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
 
             switch (params.view) {
 
@@ -497,11 +525,11 @@ class BioActivityController {
                     break
 
                 case 'project':
-                    facets = "projectActivityNameFacet,recordNameFacet,activityOwnerNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
+                    facets = "projectActivityNameFacet,recordNameFacet,userId,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
                     break
 
                 case 'projectrecords':
-                    facets = "recordNameFacet,activityOwnerNameFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
+                    facets = "recordNameFacet,userId,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
                     break
 
                 case 'myprojectrecords':

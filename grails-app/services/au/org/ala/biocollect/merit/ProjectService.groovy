@@ -960,4 +960,72 @@ class ProjectService {
             project.planStatus == PROJECT_PLAN_STATUS_APPROVED
         }
     }
+
+    /**
+     * Check if project is contributing data to Atlas of Living Australia
+     * @return boolean
+     */
+    boolean isProjectContributingDataToALA(Map project){
+        project.dataResourceId && (project.alaHarvest == true)
+    }
+
+    /**
+     * Get biocache query to get all records belonging to a project or a user's project records
+     * @param project
+     * @param view
+     * @param spotterId
+     * @return
+     */
+    String getOccurrenceUrl(Map project, String view, String spotterId = null){
+        if(project.dataResourceId){
+            String url = grailsApplication.config.biocache.baseURL + "/occurrences/search?q=*:*&"
+            String query = getQueryStringForALASystems(view, project, spotterId)
+
+            "${url}${query?:''}"
+        }
+    }
+
+    /**
+     * Get spatial portal query to get all records belonging to a project or a user's project records
+     * @param project
+     * @param view
+     * @param spotterId
+     * @return
+     */
+    String getSpatialUrl(Map project, String view, String spotterId = null){
+        if(project.dataResourceId){
+            String url = grailsApplication.config.spatial.baseURL
+            String query = getQueryStringForALASystems(view, project, spotterId)
+
+            "${url}?${query?:''}"
+        }
+    }
+
+    /**
+     * Add filter queries so that ALA systems like biocache, spatial portal etc. will be able to show
+     * records belonging to a project or a user's project records.
+     * @param view
+     * @param project
+     * @param spotterId
+     * @return
+     */
+    String getQueryStringForALASystems(String view, Map project, String spotterId) {
+        switch (view) {
+            case 'project':
+            case 'projectrecords':
+                return  "fq=(data_resource_uid:${project.dataResourceId})";
+                break;
+            case 'myprojectrecords':
+                return  "fq=(data_resource_uid:${project.dataResourceId})&fq=alau_user_id:${userService.getUser()?.userId}";
+                break
+            case 'userprojectactivityrecords':
+                return  "fq=(data_resource_uid:${project.dataResourceId})&fq=alau_user_id:${spotterId}";
+                break
+
+            case 'myrecords':
+            case 'allrecords':
+            default:
+                break
+        }
+    }
 }

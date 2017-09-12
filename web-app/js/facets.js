@@ -14,6 +14,23 @@
  * 
  * Created by Temi on 9/08/2016.
  */
+var BIOCOLLECT_ALA_FACET_MAPPING = {
+    'recordNameFacet':'taxon_name',
+    'activityLastUpdatedYearFacet': 'year',
+    'userId': 'alau_user_id',
+    'projectNameFacet':undefined,
+    'organisationNameFacet':undefined,
+    'projectActivityNameFacet':undefined,
+    'embargoedFacet':undefined,
+    'activityLastUpdatedMonthFacet': {
+        'name': 'month',
+        'transform': function (month) {
+            var months = {"january":"01", "february":"02", "march":"03", "april":"04", "may":"05", "june":"06", "july":"07", "august":"08", "september":"09", "october":"10", "november":"11", "december":"12"}
+            month = (month || '').toLowerCase()
+            return months[month]
+        }
+    }
+};
 
 function FilterViewModel(config){
     var self = this;
@@ -137,6 +154,28 @@ function FilterViewModel(config){
                 self.addToRefineList (term)
             });
         }
+    };
+
+    /**
+     * Get a list of facets that can be used to query ALA systems
+     * @returns {Array}
+     */
+    self.getALACompatibleQuery = function () {
+        var facetGroup = {}, facets = [];
+        self.selectedFacets().forEach(function (term) {
+            var name = term.facet.name();
+            if(!facetGroup[name]){
+                facetGroup[name] = [];
+            }
+
+            facetGroup[name].push(term.getALACompatibleQueryText());
+        });
+
+        for( var key in facetGroup){
+            facets.push(facetGroup[key].join(' OR '));
+        }
+
+        return facets;
     };
 
     /**
@@ -342,6 +381,32 @@ function FacetViewModel(facet) {
 
         return false
     };
+
+    /**
+     * translate Biocollect facet name to a format understood by ALA systems like Biocache, Spatial portal etc.
+     * @returns {*}
+     */
+    self.nameALAFormat = function () {
+        var mapName = BIOCOLLECT_ALA_FACET_MAPPING[self.name()];
+        if(mapName && mapName.name){
+            return mapName.name
+        }
+
+        return mapName;
+    };
+
+    /**
+     * Some facets need to be transformed since Biocollect and ALA system represent data differently
+     * example month - Biocollect represents them as 'January', 'February' etc. But ALA represent them as 01, 02 etc.
+     */
+    self.transformValueToALAFormat = function (value) {
+        var map = BIOCOLLECT_ALA_FACET_MAPPING[self.name()];
+        if(map && map.transform){
+            return map.transform(value)
+        }
+
+        return value
+    };
 };
 
 function FacetTermViewModel(term) {
@@ -382,6 +447,23 @@ function FacetTermViewModel(term) {
         var prefix = self.exclude? '-':'';
         return prefix + self.facet.name() +':' + self.term();
     }
+
+    /**
+     * constructs a query that can be understood by Atlas of Living Australia systems like biocache
+     * @returns {string}
+     */
+    self.getALACompatibleQueryText = function(){
+        var name = self.facet.nameALAFormat();
+        if(name){
+            var prefix = self.exclude? '-':'';
+            var term = self.term() || "";
+            term = self.facet.transformValueToALAFormat(term);
+            if(typeof term === 'string'){
+                term = term.replace(/ /g,"+");
+            }
+            return prefix + name +':"' + term + '"';
+        }
+    };
 
     /**
      * toggle checked status
