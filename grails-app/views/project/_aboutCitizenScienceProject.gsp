@@ -1,5 +1,5 @@
 
-<style type="text/css" xmlns="http://www.w3.org/1999/html">
+<style type="text/css" >
 #surveyLink a {
     color:white;
     background:green;
