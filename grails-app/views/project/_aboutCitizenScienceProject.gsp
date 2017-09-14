@@ -1,5 +1,5 @@
 
-<style type="text/css">
+<style type="text/css" >
 #surveyLink a {
     color:white;
     background:green;
@@ -67,9 +67,38 @@
                         </div>
                         <div data-bind="visible:funding">
                             <div class="text-small-heading"><g:message code="project.display.fundingValue" /></div>
-                            <span data-bind="text:funding.formattedCurrency"></span>
+                            <span data-bind="text:funding.formattedCurrency" style="margin-right:16px" ></span>
+                            <g:if test="project.fundings">
+                                    <a href="#" data-toggle="modal" data-target="#fundingDetails"><i class="icon-th-list"></i></a>
+                            </g:if>
                             <p/>
                         </div>
+
+                    <g:if test="project.fundings">
+                        <div class="modal fade"  id="fundingDetails" tabindex="-1" role="dialog" aria-labelledby="Fundings" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <table class="table"><thead><td>Funding Source</td><td>Funding Type</td><td>Funding Amount</td></thead>
+                                            <tbody>
+                                            <!-- ko foreach: fundings -->
+                                                <tr >
+                                                    <td ><span data-bind="text: fundingSource"></span></td>
+                                                    <td ><span data-bind="text: fundingType"></span></td>
+                                                    <td ><span data-bind="text: fundingSourceAmount.formattedCurrency"></span></td>
+                                                </tr>
+                                            <!-- /ko -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </g:if>
+
                         <div data-bind="visible:associatedProgram">
                             <div class="text-small-heading"><g:message code="project.display.program" /></div>
                             <span data-bind="text:associatedProgram"></span>

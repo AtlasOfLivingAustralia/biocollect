@@ -32,6 +32,10 @@ div.dataTables_paginate div.pagination {
     margin: 0;
 }
 
+.borderless td, .borderless th {
+    border: none;
+}
+
 @media screen and (max-width: 767px) {
     div.dataTables_length,
     div.dataTables_filter,

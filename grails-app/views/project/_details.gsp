@@ -395,14 +395,41 @@
                 </div>
             </div>
 
-            <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="clearfix control-group">
-                <label class="control-label span3" for="funding"><g:message code="project.details.funding"/><fc:iconHelp><g:message code="project.details.funding.help"/></fc:iconHelp></label>
+            <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="clearfix control-group" class="clearfix control-group">
+                <label class="control-label span3"  for="fundingSourceAmount" ><g:message code="project.details.funding"/><fc:iconHelp><g:message code="project.details.funding.help"/></fc:iconHelp></label>
+                <div class="span9 " name="fundings">
+                    <table class="table borderless">
+                        <thead>
+                            <td>Funding Source<fc:iconHelp><g:message code="project.details.funding.fundingSource.help"/></fc:iconHelp><i class="req-field"></i></td>
+                            <td>Funding Type<fc:iconHelp><g:message code="project.details.funding.fundingType.help"/></fc:iconHelp></td>
+                            <td>Funding Amount<fc:iconHelp><g:message code="project.details.funding.fundingSourceAmount.help"/></fc:iconHelp></td>
+                            <td>Action</td>
+                        </thead>
+                        <tbody>
+                        <!-- ko foreach: fundings -->
+                        <tr >
+                            <td ><g:textField name="fundingSource" data-bind="value:fundingSource" data-validation-engine="validate[required]"></g:textField></td>
+                            <td ><select  name="fundingType" data-bind="options:$parent.fundingTypes,value:fundingType"></select></td>
+                            <td ><g:field type="number" step="any" min="0" name="fundingSourceAmount" data-bind="value:fundingSourceAmount" data-validation-engine="validate[custom[number]]"></g:field></td>
+                            <td><button class="btn main-image-button" data-bind="click:$parent.removeFunding"><i class="icon-minus"></i> Remove</button></td>
+                        </tr>
+                        <!-- /ko -->
+                        <tr>
+                            <td colspan="2" ></td>
+                            <td colspan="1">
+                                <fc:iconHelp><g:message code="project.details.funding.fundingTotal.help"/></fc:iconHelp><b>Total amount: <span name="totalFundingsAmount" data-bind="text:funding.formattedCurrency"/></b>
+                            </td>
+                            </tr>
+                        <tr><td colspan="3" ></td>
+                            <td colspan="1"><button class="btn main-image-button" data-bind="click:addFunding"><i class="icon-plus"></i> Add funding</button></td></tr>
+                        </tbody>
+                    </table>
 
-                <div class="controls span9">
-                    <g:textField class="span12" name="funding" data-bind="value:funding"
-                                 data-validation-engine="validate[custom[number]]"/>
+
+
                 </div>
             </div>
+
 
             <div class="clearfix control-group">
                 <label class="control-label span3" for="program"><g:message code="project.details.program"/><fc:iconHelp><g:message code="project.details.program.help"/></fc:iconHelp><i class="req-field"></i></label>

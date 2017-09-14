@@ -294,6 +294,16 @@ function isValid(p, a) {
 	 return p;
 }
 
+
+
+function FundingViewModel(funding){
+    var self = this;
+    self.fundingSource=ko.observable(funding.fundingSource)
+    self.fundingType=ko.observable(funding.fundingType)
+    self.fundingSourceAmount=ko.observable(funding.fundingSourceAmount).extend({currency:{currencySymbol:"AUD $ "}})
+
+}
+
 function ProjectViewModel(project, isUserEditor) {
     var self = $.extend(this, new Documents());
 
@@ -310,7 +320,27 @@ function ProjectViewModel(project, isUserEditor) {
     self.managerEmail = ko.observable(project.managerEmail);
     self.plannedStartDate = ko.observable(project.plannedStartDate).extend({simpleDate: false});
     self.plannedEndDate = ko.observable(project.plannedEndDate).extend({simpleDate: false});
-    self.funding = ko.observable(project.funding).extend({currency:{currencySymbol:"AUD $ "}});
+    var fundings = $.map(project.fundings || [], function(funding){
+        return new FundingViewModel(funding)})
+    self.fundings = ko.observableArray(fundings);
+
+    self.fundingTypes = ["Public - commonwealth", "Public - state", "Public - local", "Public - in-kind", "Private - in-kind", "Private - industry", "Private - philanthropic", "Private - bequeath/other", "Private - NGO"];
+    self.funding = ko.computed(function(){
+        var total = 0;
+        ko.utils.arrayForEach(self.fundings() ,function(funding){
+            total += funding.fundingSourceAmount();
+        })
+        return total;
+    }).extend({currency:{currencySymbol:"AUD $ "}})
+
+    self.removeFunding = function(){
+        self.fundings.remove(this);
+    }
+    self.addFunding = function(){
+        self.fundings.push(new FundingViewModel({fundingSournce : "",fundingType : "", fundingSourceAmount : 0}))
+    }
+
+
     var initialCountries = project.countries && $.isArray(project.countries) && project.countries.length > 0 ? project.countries : ['Australia']
     self.countries = ko.observableArray(initialCountries)
     var initialUNRegions = project.uNRegions && $.isArray(project.uNRegions) && project.uNRegions.length > 0 ? project.uNRegions : ['Oceania']
@@ -940,7 +970,7 @@ function ProjectViewModel(project, isUserEditor) {
 
     self.toJS = function() {
         var toIgnore = self.ignore; // document properties to ignore.
-        toIgnore.concat(['transients', 'daysStatus', 'projectDatesChanged', 'collectoryInstitutionId', 'ignore', 'projectStatus']);
+        toIgnore = toIgnore.concat(['transients', 'daysStatus', 'projectDatesChanged', 'collectoryInstitutionId', 'ignore', 'projectStatus','fundingTypes']);
         return ko.mapping.toJS(self, {ignore:toIgnore});
     };
 
@@ -1176,6 +1206,7 @@ function CreateEditProjectViewModel(project, isUserEditor, options) {
     self.removeAssociatedOrganisation = function(org, event) {
         self.associatedOrgs.remove(org);
     };
+
 
     self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch', 'granteeOrganisation', 'sponsorOrganisation']);
     self.transients.existingLinks = project.links;
