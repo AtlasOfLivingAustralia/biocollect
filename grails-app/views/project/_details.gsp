@@ -403,24 +403,25 @@
                             <td>Funding Source<fc:iconHelp><g:message code="project.details.funding.fundingSource.help"/></fc:iconHelp><i class="req-field"></i></td>
                             <td>Funding Type<fc:iconHelp><g:message code="project.details.funding.fundingType.help"/></fc:iconHelp></td>
                             <td>Funding Amount<fc:iconHelp><g:message code="project.details.funding.fundingSourceAmount.help"/></fc:iconHelp></td>
-                            <td></td>
+                            <td>Action</td>
                         </thead>
                         <tbody>
                         <!-- ko foreach: fundings -->
                         <tr >
                             <td ><g:textField name="fundingSource" data-bind="value:fundingSource" data-validation-engine="validate[required]"></g:textField></td>
                             <td ><select  name="fundingType" data-bind="options:$parent.fundingTypes,value:fundingType"></select></td>
-                            <td ><g:textField name="fundingSourceAmount" data-bind="value:fundingSourceAmount" data-validation-engine="validate[custom[number]]"></g:textField></td>
+                            <td ><g:field type="number" step="any" min="0" name="fundingSourceAmount" data-bind="value:fundingSourceAmount" data-validation-engine="validate[custom[number]]"></g:field></td>
                             <td><button class="btn main-image-button" data-bind="click:$parent.removeFunding"><i class="icon-minus"></i> Remove</button></td>
                         </tr>
                         <!-- /ko -->
                         <tr>
                             <td colspan="2" ></td>
-                            <td colspan="2">
+                            <td colspan="1">
                                 <fc:iconHelp><g:message code="project.details.funding.fundingTotal.help"/></fc:iconHelp><b>Total amount: <span name="totalFundingsAmount" data-bind="text:funding.formattedCurrency"/></b>
                             </td>
-                        </tr>
-                        <tr><td colspan="4"><button class="btn main-image-button" data-bind="click:addFunding"><i class="icon-plus"></i> Add</button></td></tr>
+                            </tr>
+                        <tr><td colspan="3" ></td>
+                            <td colspan="1"><button class="btn main-image-button" data-bind="click:addFunding"><i class="icon-plus"></i> Add funding</button></td></tr>
                         </tbody>
                     </table>
 
