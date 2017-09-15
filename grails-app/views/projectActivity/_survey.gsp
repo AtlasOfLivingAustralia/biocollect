@@ -2,6 +2,8 @@
 
         <!-- ko foreach: projectActivities -->
             <!-- ko if: current -->
+            <g:render template="/bioActivity/previewTemplate" ></g:render>
+
 
             <div class="row-fluid">
                 <div class="span10 text-left">
@@ -30,6 +32,7 @@
                 <div class="span4 text-left">
                     <div class="controls">
                         <select id="template" style="width:98%;" data-validation-engine="validate[required]" data-bind="options: $root.formNames, value: pActivityFormName, optionsCaption: 'Please select'" ></select>
+                        <a class="btn btn-small btn-default" href="" data-bind="click: function() {previewActivity('<g:createLink controller="bioActivity" action="previewActivity"/>', pActivityFormName())}"> <i class="icon-eye-open"></i> Preview Survey</a>
                     </div>
                 </div>
             </div>

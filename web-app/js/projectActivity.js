@@ -1,4 +1,3 @@
-
 var ProjectActivity = function (params) {
     if(!params) params = {};
     var pActivity = params.pActivity ? params.pActivity : {};
@@ -19,6 +18,27 @@ var ProjectActivity = function (params) {
     self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
     self.baseLayersName = ko.observable(pActivity.baseLayersName);
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
+
+    self.previewUrl = ko.observable('');
+
+    self.previewActivity = function (link, pActivityFormName) {
+
+        var formName = encodeURIComponent(pActivityFormName);
+
+        self.previewUrl(link + "?formName=" + formName + "&projectId=" + projectId);
+
+        $("#previewModal").modal({
+            // Clicking the backdrop, or pressing Escape, shouldn't automatically close the modal by default.
+            // The view model should remain in control of when to close.
+            backdrop: "static",
+            keyboard: false
+        });
+
+    };
+
+    self.hideModal = function() {
+        $("#previewModal").modal('hide');
+    };
 
     /**
      * Retrieves the species fields and overrides self.speciesFields with them

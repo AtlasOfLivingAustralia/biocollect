@@ -158,6 +158,36 @@ class BioActivityController {
     }
 
     /**
+     * Preview activity survey form template
+     * @param formName Survey form name
+     * @param projectId project id
+     * @return populated model
+     */
+    def previewActivity() {
+
+        String type = params.formName
+        String projectId = params.projectId
+
+        Map pActivity = [:]
+        pActivity.sites = []
+
+        Map model = [:]
+        model.user = userService.getUser()
+        Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
+        Map project = projectService.get(projectId)
+        model = activityModel(activity, projectId)
+        model.pActivity = pActivity
+        model.projectName = project.name
+        
+        addOutputModel(model)
+        model.defaultData = metadataService.getDefaultData(model.outputModels)
+        model.preview = true;
+
+        model
+
+    }
+
+    /**
      * Edit activity for the given activityId
      * Project Site Admin / activity owner can edit the activity
      * @param id activity id

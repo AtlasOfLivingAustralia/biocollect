@@ -182,14 +182,18 @@
 
 <g:if test="${!printView}">
     <div class="form-actions">
-        <button type="button" id="save" class="btn btn-primary">Submit</button>
+        <g:if test="${!preview}">
+            <button type="button" id="save" class="btn btn-primary">Submit</button>
+        </g:if>
         <g:if test="${showCreate && !mobile}">
-            <button type="button" id="cancel" class="btn">Cancel</button>
+            <g:if test="${!preview}">
+                <button type="button" id="cancel" class="btn">Cancel</button>
+            </g:if>
         </g:if>
     </div>
 </g:if>
 
-<g:if env="development" test="${!printView}">
+<g:if env="development" test="${!printView && !preview}">
     <div class="expandable-debug">
         <hr/>
 

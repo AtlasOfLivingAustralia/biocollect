@@ -312,7 +312,7 @@ class MetadataService {
     Map getDefaultData(outputModels) {
         def defaults = [:]
         outputModels.each { name, model ->
-            model.dataModel.each { dm ->
+            model?.dataModel.each { dm ->
                 if (dm.defaultValue) {
                     String now = ISO8601.clone().format(new Date())
                     String value = dm.defaultValue

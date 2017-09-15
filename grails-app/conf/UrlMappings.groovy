@@ -47,6 +47,8 @@ class UrlMappings {
                         action = [GET: 'get', POST: 'update', PUT: 'update', DELETE: 'delete']
                 }
 
+                "/bioActivity/previewActivity/$formName/$projectId"(controller: "bioActivity", action: 'previewActivity')
+
                 "/sight/$taxonId**" (controller: 'bioActivity', action: 'preFillSpeciesName')
 
                 "/spotter/$spotterId" (controller: 'bioActivity', action: 'spotter')
