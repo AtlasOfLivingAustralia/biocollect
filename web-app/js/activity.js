@@ -625,6 +625,7 @@ var RecordVM = function (record) {
     self.coordinates = record.coordinates;
     self.multimedia = record.multimedia || [];
     self.eventTime = record.eventTime;
+    self.individualCount = ko.observable(record.individualCount);
     self.eventDate =  ko.observable(record.eventDate).extend({simpleDate: false});
 };
 
