@@ -10,7 +10,7 @@ class StaticPageController {
         String page = params.page;
         if(page){
             String setting = "${page}";
-            render view: 'index', model: ["setting": setting];
+            render view: 'index', model: ["setting": setting, "mobile": params.mobile ?:false];
         } else {
             render view: "404";
         }
