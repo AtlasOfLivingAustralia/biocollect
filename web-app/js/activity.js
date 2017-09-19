@@ -314,9 +314,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             url += '&fq=' + fq.join('&fq=');
         }
 
+        self.transients.loadingMap(true);
         alaMap.startLoading();
         $.getJSON(url, function(data) {
-            self.transients.loadingMap(false)
+            self.transients.loadingMap(false);
             results = data;
             self.generateDotsFromResult(data);
             alaMap.finishLoading();
@@ -332,7 +333,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
      */
     self.generateDotsFromResult = function (data){
         features = [];
-        var geoPoints = data;
+        var geoPoints = data, type;
 
         if (geoPoints.activities) {
             $.each(geoPoints.activities, function(index, activity) {
@@ -354,6 +355,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                                 }
                             });
                         }
+                        type = 'point';
                         break;
                     case 'activity':
                         if(activity.coordinates && activity.coordinates.length && activity.coordinates[1] && !isNaN(activity.coordinates[1]) && activity.coordinates[0] && !isNaN(activity.coordinates[0])){
@@ -364,10 +366,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                                 popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name)
                             });
                         }
+                        type = 'cluster';
                         break;
                 }
             });
-            self.plotOnMap(features);
+            self.plotOnMap(features, type);
         }
     };
 
@@ -375,7 +378,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
      * creates the map and plots the points on map
      * @param features
      */
-    self.plotOnMap = function (features){
+    self.plotOnMap = function (features, drawType){
+        drawType = drawType || 'cluster';
         var radio;
 
         var mapOptions = {
@@ -393,11 +397,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 name: 'activityOrRecrodsTEST',
                 potion: 'topright',
                 radioButtons:[{
-                    displayName: 'Records',
+                    displayName: 'Points',
                     value: 'record',
                     checked: true
                 },{
-                    displayName: 'Activity',
+                    displayName: 'Cluster',
                     value: 'activity'
                 }],
                 onClick: self.getActivityOrRecords
@@ -407,7 +411,17 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         }
 
         self.transients.totalPoints(features && features.length ? features.length : 0);
-        features && features.length && alaMap.addClusteredPoints(features);
+        if(features && features.length){
+            switch (drawType){
+                case 'cluster':
+                    alaMap.addClusteredPoints(features);
+                    break;
+                case 'point':
+                    alaMap.addPoints(features);
+                    break;
+            }
+        }
+
         alaMap.redraw()
     };
 
