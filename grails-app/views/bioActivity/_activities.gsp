@@ -137,7 +137,14 @@
                                                 <!-- ko if: $parent.embargoed() -->
                                                 <a href="#" class="helphover"
                                                    data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment($parent.embargoUntil()).format('DD/MM/YYYY')}">
-                                                    <span class="icon-lock"></span>
+                                                    <span class="fa fa-lock"></span>
+                                                </a>
+                                                <!--/ko -->
+                                                &nbsp;&nbsp;
+                                                <!-- ko if: individualCount() === 0 -->
+                                                <a href="#" class="helphover"
+                                                   data-bind="popover: {content:'The record has zero species occurrence'}">
+                                                <span class="fa fa-circle-thin"></span>
                                                 </a>
                                                 <!--/ko -->
                                             </div>
@@ -208,7 +215,7 @@
                                                 <!-- ko if: embargoed() -->
                                                 <a href="#" class="helphover"
                                                    data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment(embargoUntil()).format('DD/MM/YYYY')}">
-                                                    <span class="icon-lock"></span>
+                                                    <span class="fa fa-lock"></span>
                                                 </a>
                                                 <!--/ko -->
                                             </div>
@@ -262,8 +269,9 @@
                             <div class="row-fluid">
                                 <div class="span12 pull-right">
                                     <div class="span12 text-right">
-                                        <div><small class="text-right"><span
-                                                class="icon-lock"></span> indicates that only project members can access the record.
+                                        <div><small class="text-right"><span class="fa fa-lock"></span> indicates that only project members can access the record.
+                                        </small></div>
+                                        <div><small class="text-right"><span class="fa fa-circle-thin"></span> indicates that record has zero species occurrence.
                                         </small></div>
                                     </div>
 

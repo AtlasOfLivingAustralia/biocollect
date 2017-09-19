@@ -220,7 +220,7 @@
                                         <!-- ko if: embargoed() -->
                                         <a href="#" class="helphover"
                                            data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment(embargoUntil()).format('DD/MM/YYYY')}">
-                                            <span class="icon-lock"></span>
+                                            <span class="fa fa-lock"></span>
                                         </a>
                                         <!--/ko -->
                                         Survey name:
@@ -309,8 +309,7 @@
                 <div class="row-fluid">
                     <div class="span12 pull-right">
                         <div class="span12 text-right">
-                            <div><small class="text-right"><span
-                                    class="icon-lock"></span> indicates that only project members can access the record.
+                            <div><small class="text-right"><span class="fa fa-lock"></span> indicates that only project members can access the record.
                             </small></div>
                         </div>
 
