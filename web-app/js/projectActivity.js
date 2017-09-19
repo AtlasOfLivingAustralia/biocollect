@@ -23,16 +23,21 @@ var ProjectActivity = function (params) {
 
     self.previewActivity = function (link, pActivityFormName) {
 
-        var formName = encodeURIComponent(pActivityFormName);
+        if (pActivityFormName) {
 
-        self.previewUrl(link + "?formName=" + formName + "&projectId=" + projectId);
+            var formName = encodeURIComponent(pActivityFormName);
 
-        $("#previewModal").modal({
-            // Clicking the backdrop, or pressing Escape, shouldn't automatically close the modal by default.
-            // The view model should remain in control of when to close.
-            backdrop: "static",
-            keyboard: false
-        });
+            self.previewUrl(link + "?formName=" + formName + "&projectId=" + projectId);
+
+            $("#previewModal").modal({
+                // Clicking the backdrop, or pressing Escape, shouldn't automatically close the modal by default.
+                // The view model should remain in control of when to close.
+                backdrop: "static",
+                keyboard: false
+            });
+        } else {
+            bootbox.alert("Please select a survey form to preview");
+        }
 
     };
 
