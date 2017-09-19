@@ -143,7 +143,7 @@
                                                 &nbsp;&nbsp;
                                                 <!-- ko if: individualCount() === 0 -->
                                                 <a href="#" class="helphover"
-                                                   data-bind="popover: {content:'The record has zero species occurrence'}">
+                                                   data-bind="popover: {content:'The record indicates absence of the species'}">
                                                 <span class="fa fa-circle-thin"></span>
                                                 </a>
                                                 <!--/ko -->
@@ -271,7 +271,7 @@
                                     <div class="span12 text-right">
                                         <div><small class="text-right"><span class="fa fa-lock"></span> indicates that only project members can access the record.
                                         </small></div>
-                                        <div><small class="text-right"><span class="fa fa-circle-thin"></span> indicates that record has zero species occurrence.
+                                        <div><small class="text-right"><span class="fa fa-circle-thin"></span> indicates species absence record.
                                         </small></div>
                                     </div>
 
