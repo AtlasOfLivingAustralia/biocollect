@@ -204,7 +204,7 @@ class BioActivityController {
         model.mobile = true
         model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
         model.authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
-        render (view: 'create', model: model)
+        render (view: model.error ? 'error' : 'edit', model: model)
     }
 
     def mobileEdit(String id) {
@@ -212,8 +212,9 @@ class BioActivityController {
         model.mobile = true
         model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
         model.authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
-        render (view: 'edit', model: model)
+        render (view: model.error ? 'error' : 'edit', model: model)
     }
+
 
     private def addActivity(String id, boolean mobile = false) {
         String userId = userService.getCurrentUserId(request)
@@ -223,7 +224,7 @@ class BioActivityController {
         Map model = [:]
 
         if (!pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
-            flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
+            flash.message = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
             if (!mobile) redirect(controller: 'project', action: 'index', id: projectId)
         } else if (!type) {
             flash.message = "Invalid activity type"
@@ -265,7 +266,7 @@ class BioActivityController {
         def model = [:]
 
         if (!userId) {
-            flash.message = "Access denied: User has not been authenticated."
+            flash.message = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
             if(!mobile) redirect(controller: 'project', action: 'index', id: projectId)
         } else if (!activity) {
             flash.message = "Invalid activity - ${id}"
