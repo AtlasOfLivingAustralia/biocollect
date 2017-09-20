@@ -1,6 +1,7 @@
 <%@ page import="grails.converters.JSON" %>
 <r:require modules="map"></r:require>
 <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
+<g:render template="../shared/legend"/>
 <!-- ko stopBinding: true -->
 <div id="survey-all-activities-and-records-content">
     <div id="data-result-placeholder"></div>
@@ -38,7 +39,7 @@
                 <ul class="nav nav-tabs" id="tabDifferentViews">
                     <li class="active"><a id="recordVis-tab" href="#recordVis" data-toggle="tab" >List</a></li>
                     <li class=""><a href="#mapVis" id="dataMapTab" data-bind="attr:{'data-toggle': activities().length > 0 ? 'tab' : ''}">Map</a></li>
-                    <li class=""><a href="#imageGallery" data-toggle="tab">Images</a></li>
+                    <li class=""><a id="dataImageTab" href="#imageGallery" data-toggle="tab">Images</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
@@ -346,5 +347,20 @@
         activitiesAndRecordsViewModel.imageGallery = initialiseImageGallery(configImageGallery);
     }
 
+    // initialise tab
+    var recordsTab = getUrlParameterValue('recordsTab'),
+        tabId;
+    switch (recordsTab){
+        case 'map':
+            tabId = '#dataMapTab';
+            break;
+        case 'list':
+            tabId = '#recordVis-tab';
+            break;
+        case 'image':
+            tabId = '#dataImageTab';
+            break;
+    }
 
+    tabId && $(tabId).tab('show');
 </r:script>

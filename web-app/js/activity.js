@@ -410,6 +410,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             });
             alaMap.addControl(radio);
             alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomleft");
+            self.addLegend()
         }
 
         self.transients.totalPoints(features && features.length ? features.length : 0);
@@ -429,6 +430,24 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         }
 
         alaMap.redraw()
+    };
+
+
+    self.addLegend = function () {
+        var Legend = L.Control.extend({
+            options: {
+                position: "bottomright",
+                title: 'Legend'
+            },
+            onAdd: function (map) {
+                var container = L.DomUtil.create("div", "leaflet-control-layers");
+                this.container = container;
+                $(container).html("<div style='padding:10px'>" + $('#map-legend').html() + "</div>");
+                return container;
+            }
+        });
+
+        alaMap.addControl(new Legend());
     };
 
     /**

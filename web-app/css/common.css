@@ -583,6 +583,10 @@ section#breadcrumb {
     display: inherit;
 }
 
+.point-colour{
+    color: #003eff;
+}
+
 #main-content a.btn-ala {
     color: #FFF;
 }
