@@ -346,11 +346,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                         if (activity.records && activity.records.length > 0) {
                             $.each(activity.records, function(k, el) {
                                 if(el.coordinates && el.coordinates.length && el.coordinates[1] && !isNaN(el.coordinates[1]) && el.coordinates[0] && !isNaN(el.coordinates[0])){
+                                    var type = el.individualCount == 0 ? 'icon' : 'circle';
                                     features.push({
                                         // the ES index always returns the coordinate array in [lat, lng] order
                                         lat: el.coordinates[0],
                                         lng: el.coordinates[1],
-                                        popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, el.name)
+                                        popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, el.name),
+                                        type: type
                                     });
                                 }
                             });
@@ -417,7 +419,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                     alaMap.addClusteredPoints(features);
                     break;
                 case 'point':
-                    alaMap.addPoints(features);
+                    alaMap.addPointsOrIcons(features, {}, fcConfig.absenceIconUrl, {
+                        iconSize:     [20, 18],
+                        iconAnchor:   [10, 9],
+                        popupAnchor:  [0, -9]
+                    });
                     break;
             }
         }
@@ -552,11 +558,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     if (orgTerm) {
         self.filterViewModel.selectedFacets.push(new FacetTermViewModel({
             term: orgTerm,
-            facet: {
-                name: ko.observable( "organisationNameFacet" ),
-                title: ko.observable( 'Organisation' ),
+            facet: new FacetViewModel({
+                name: "organisationNameFacet",
+                title: 'Organisation',
                 ref: self.filterViewModel
-            }
+            })
         }));
     } else if (restored && restored.length > 0) {
         var selectedFacets = []

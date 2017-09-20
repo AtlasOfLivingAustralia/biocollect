@@ -67,7 +67,10 @@
             organisationName: '${organisation.name}',
             version: "${params.version?:''}",
             hideWorldWideBtn: true,
-            flimit: ${grailsApplication.config.facets.flimit}
+            flimit: ${grailsApplication.config.facets.flimit},
+            occurrenceUrl: "",
+            spatialUrl: "",
+            absenceIconUrl:"${resource(dir: 'images', file: 'triangle.png')}"
         };
     </r:script>
     <style type="text/css">

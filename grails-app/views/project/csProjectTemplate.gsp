@@ -89,7 +89,8 @@
         commonKeysUrl: "${createLink(controller: 'search', action: 'getCommonKeys')}",
         defaultCommonFields: <fc:modelAsJavascript model="${grailsApplication.config.lists.commonFields}"/>,
         occurrenceUrl: "${occurrenceUrl}",
-        spatialUrl: "${spatialUrl}"
+        spatialUrl: "${spatialUrl}",
+        absenceIconUrl:"${resource(dir: 'images', file: 'triangle.png')}"
         },
         here = window.location.href;
 

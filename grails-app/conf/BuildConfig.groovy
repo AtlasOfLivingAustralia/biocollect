@@ -23,7 +23,7 @@ grails.project.fork = [
     console: false// [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
 
-grails.plugin.location["ala-map-plugin"] = '../ala-map-plugin'
+//grails.plugin.location["ala-map-plugin"] = '../ala-map-plugin'
 //grails.plugin.location["images-client-plugin"] = '../images-client-plugin'
 
 // settings for the development environment
@@ -109,7 +109,7 @@ grails.project.dependency.resolution = {
         compile ":excel-export:0.2.0"
         compile ":excel-import:1.0.1"
         compile ":images-client-plugin:0.6.1"
-//        compile ":ala-map:2.0.4"
+        compile ":ala-map:2.0.6"
         compile ':cookie:1.4'
 
     }

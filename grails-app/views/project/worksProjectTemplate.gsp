@@ -83,6 +83,7 @@
         deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}",
         shapefileDownloadUrl: "${createLink(controller:'project', action:'downloadShapefile', id:project.projectId)}",
         sitesPhotoPointsUrl:"${createLink(controller:'project', action:'projectSitePhotos', id:project.projectId)}",
+        absenceIconUrl:"${resource(dir: 'images', file: 'triangle.png')}"
         },
         here = window.location.href;
 

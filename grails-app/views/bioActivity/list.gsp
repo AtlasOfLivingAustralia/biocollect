@@ -39,7 +39,8 @@
             flimit: ${grailsApplication.config.facets.flimit?:10},
             hideProjectAndSurvey: ${hubConfig.content?.hideProjectAndSurvey?:false},
             occurrenceUrl: "${occurrenceUrl}",
-            spatialUrl: "${spatialUrl}"
+            spatialUrl: "${spatialUrl}",
+            absenceIconUrl:"${resource(dir: 'images', file: 'triangle.png')}"
         },
         here = document.location.href;
     </r:script>

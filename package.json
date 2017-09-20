@@ -27,3 +27,14 @@
   "author": "",
   "license": ""
 }
+//    "jquery": "1.11.0",
+//    "jasmine-core": "^2.3.4",
+//    "karma": "^0.12.32",
+//    "karma-chrome-launcher": "^0.2.1",
+//    "karma-coverage": "^0.5.3",
+//    "karma-firefox-launcher": "^0.1.7",
+//    "karma-jasmine": "^0.3.6",
+//    "karma-phantomjs-launcher": "^0.2.0",
+//    "phantomjs": "^1.9.17",
+//    "karma-jasmine-jquery": "^0.1.1",
+//    "karma-jquery": "^0.1.0"

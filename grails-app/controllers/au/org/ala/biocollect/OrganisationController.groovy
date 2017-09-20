@@ -3,7 +3,6 @@ package au.org.ala.biocollect
 import au.org.ala.biocollect.merit.RoleService
 import au.org.ala.web.AuthService
 import grails.converters.JSON
-
 /**
  * Processes requests relating to organisations in field capture.
  */
