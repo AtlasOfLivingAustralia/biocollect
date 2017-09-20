@@ -24,7 +24,7 @@
                     </div>
                 </g:if>
                 <g:if test="${isProjectContributingDataToALA}">
-                    <div class="row-fluid">
+                    <div class="row-fluid margin-bottom-1">
                         <div class="span12">
                             <a class="btn btn-ala" data-bind="attr:{href: biocacheUrl}">
                                 View records in occurrence explorer
