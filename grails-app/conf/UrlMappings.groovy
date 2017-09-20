@@ -116,6 +116,7 @@ class UrlMappings {
                 "/ws/species/uniqueId"(controller:  "output", action: 'getOutputSpeciesIdentifier')
                 "/ws/bioactivity/save"(controller:  "bioActivity", action: 'ajaxUpdate')
                 "/ws/bioactivity/search"(controller:  "bioActivity", action: 'searchProjectActivities')
+                "/ws/bioactivity/map"(controller:  "bioActivity", action: 'getProjectActivitiesRecordsForMapping')
         }
 }
 
