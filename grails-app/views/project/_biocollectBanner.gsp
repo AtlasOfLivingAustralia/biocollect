@@ -1,6 +1,6 @@
 <g:set var="settingService" bean="settingService"></g:set>
 <nav role='navigation' id="biocollectNav"
-    ${hubConfig.defaultFacetQuery.contains('isEcoScience:true') ? 'class="ecoScienceNav"' : ''}
+    class="${hubConfig.defaultFacetQuery.contains('isEcoScience:true') ? 'ecoScienceNav' : ''} margin-bottom-20"
 >
     <ul id='main'>
         <g:set var="path" value="${request.getServletPath()}"/>
