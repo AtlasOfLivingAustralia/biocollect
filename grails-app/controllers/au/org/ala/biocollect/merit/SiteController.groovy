@@ -1,11 +1,10 @@
 package au.org.ala.biocollect.merit
+
 import au.org.ala.web.AuthService
 import grails.converters.JSON
 import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
-
-import javax.servlet.http.HttpServletResponse
 
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
@@ -667,6 +666,8 @@ class SiteController {
             }
 
             queryParams.query = query.join(' AND ')
+            queryParams.remove('hub')
+            queryParams.remove('hubFq')
             Map searchResult = searchService.searchForSites(queryParams)
             List sites = searchResult?.hits?.hits
             List facets = []
