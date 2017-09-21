@@ -109,7 +109,7 @@ grails.project.dependency.resolution = {
         compile ":excel-export:0.2.0"
         compile ":excel-import:1.0.1"
         compile ":images-client-plugin:0.6.1"
-        compile ":ala-map:2.0.6"
+        compile ":ala-map:2.0.7"
         compile ':cookie:1.4'
 
     }
