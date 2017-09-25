@@ -431,7 +431,6 @@ function ProjectViewModel(project, isUserEditor) {
     self.isExternal = ko.observable(project.isExternal);
     self.isSciStarter = ko.observable(project.isSciStarter);
     self.isMERIT = ko.observable(project.isMERIT);
-    self.isContributingDataToAla = ko.observable(project.isExternal);
     self.isSuitableForChildren = ko.observable(project.isSuitableForChildren);
     self.keywords = ko.observable(project.keywords);
     self.projectSiteId = project.projectSiteId;
@@ -493,12 +492,6 @@ function ProjectViewModel(project, isUserEditor) {
             name: tmpOrg.name || null,
             url: tmpOrg.url || null
         });
-    });
-
-    self.isExternal.subscribe(function (newVal) {
-        if (!newVal) {
-            self.isContributingDataToAla(true)
-        }
     });
 
     var isBeforeToday = function(date) {

@@ -707,11 +707,6 @@ class ProjectService {
 
         project.remove('hasTeachingMaterials')
 
-        if (project.isContributingDataToAla) {
-            project.tags.push('isContributingDataToAla')
-        }
-
-        project.remove('isContributingDataToAla')
 
         Boolean isMobile = isMobileAppForProject(project)
         if(isMobile){
@@ -727,7 +722,7 @@ class ProjectService {
      * @return
      */
     Map buildFieldsForTags(Map project){
-        List fields = ['hasParticipantCost', 'isSuitableForChildren', 'isDIY', 'isHome', 'hasTeachingMaterials', 'isContributingDataToAla', 'noCost', 'mobileApp']
+        List fields = ['hasParticipantCost', 'isSuitableForChildren', 'isDIY', 'isHome', 'isExternal','hasTeachingMaterials', 'noCost', 'mobileApp']
         project?.tags?.eachWithIndex { String tag, int i ->
             if(tag in fields){
                 project[tag] = true

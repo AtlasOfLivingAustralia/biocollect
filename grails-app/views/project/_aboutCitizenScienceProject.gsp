@@ -39,7 +39,7 @@
                     <span data-bind="text:origin"></span>
                     <p/>
                 </div>
-                <div data-bind="visible:isContributingDataToAla" class="margin-top-1 margin-bottom-1">
+                <div data-bind="visible:!isExternal()" class="margin-top-1 margin-bottom-1">
                     <img src="${resource([dir: "images", file: "ala-logo-small.png"])}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
 
                 </div>

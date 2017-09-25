@@ -27,7 +27,7 @@
                             <div style="line-height:2.2em" data-bind="visible:!isMERIT()">
                                 TAGS:&nbsp;<g:render template="/project/tags"/>
                             </div>
-                            <div data-bind="if: isContributingDataToAla()">
+                            <div data-bind="if: !isExternal()">
                                 <img src="${resource([dir: "images", file: "ala-logo-small.png"])}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
                             </div>
                         </div>
