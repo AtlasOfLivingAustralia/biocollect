@@ -231,7 +231,7 @@ class ProjectService {
         result
     }
 
-    def update(id, body, boolean skipEmailNotification = false) {
+    def update(id, body, boolean skipEmailNotification = true) {
         def result
 
         //validate
