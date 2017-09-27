@@ -18,14 +18,16 @@
 					        <thead>
 					            <tr>
 					            	<th></th>
-					                <th>Outcomes</th>
-					                <th>Asset(s) addressed</th>
+									<th>Baseline condition</th>
+									<th>Target Outcomes</th>
+									<th>Asset(s) addressed</th>
 					            </tr>
 					        </thead>
 						<tbody data-bind="foreach : details.objectives.rows1">
 							<tr>
 				            	<td><span data-bind="text: $index()+1"></span></td>
-				            	<td><span data-bind="text:description"></span></td>
+				            	<td><span data-bind="text:baseline"></span></td>
+								<td><span data-bind="text:target"></span></td>
 				            	<td><label data-bind="text:assets"></label></td>
 				            </tr>
 						</tbody>		
