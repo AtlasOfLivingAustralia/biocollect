@@ -188,9 +188,17 @@ function EventsRowViewModel(o) {
 function OutcomeRowViewModel(o) {
     var self = this;
     if(!o) o = {};
-    self.description = ko.observable(o.description);
+    self.baseline = ko.observable(o.baseline);
+    self.target = ko.observable(o.target);
     if(!o.assets) o.assets = [];
     self.assets = ko.observableArray(o.assets);
+};
+
+function OutcomeProgressViewModel(o) {
+    var self = this;
+    if(!o) o = {};
+    self.outcome = ko.observable(o.outcome);
+    self.progress = ko.observable(o.progress);
 };
 
 function BudgetViewModel(o, period){

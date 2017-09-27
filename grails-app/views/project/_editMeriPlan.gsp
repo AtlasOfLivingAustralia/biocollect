@@ -21,8 +21,8 @@
 					<tbody data-bind="foreach : details.objectives.rows1">
 					<tr>
 						<td width="2%"> <span data-bind="text:$index()+1"></span></td>
-						<td width="35%"><textarea style="width: 99%;" data-bind="value: description, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
-						<td width="35%"><textarea style="width: 99%;" data-bind="value: description, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
+						<td width="35%"><textarea style="width: 99%;" data-bind="value: baseline, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
+						<td width="35%"><textarea style="width: 99%;" data-bind="value: target, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
 						<td width="20%"><select style="width: 99%;float:right;" class="input-xlarge"
 												data-bind="options: $parent.protectedNaturalAssests, selectedOptions: assets, disable: $parent.isProjectDetailsLocked()" size="5" multiple="true"></select></td>
 						<td width="4%">
