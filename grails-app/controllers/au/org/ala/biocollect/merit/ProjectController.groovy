@@ -117,7 +117,7 @@ class ProjectController {
                 model.vocabList = vocabService.getVocabValues ()
                 println model.pActivityForms
             }
-
+            model.mobile = params.mobile ?:false
             render view:content.view, model:model
         }
     }
