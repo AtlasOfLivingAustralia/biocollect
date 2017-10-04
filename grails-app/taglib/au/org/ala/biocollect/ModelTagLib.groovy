@@ -72,18 +72,21 @@ class ModelTagLib {
      */
     def dataTag(attrs, model, context, editable, elementAttributes, databindAttrs, labelAttributes) {
         ModelWidgetRenderer renderer
-        def toEdit
+
+        def toEdit = editable && !model.computed && !model.noEdit
+        def userIsProjectMember = attrs.userIsProjectMember
+
+        // hidden from public and visible to only project members (and ALA admins)
+        if (!toEdit && model.memberOnlyView && !userIsProjectMember) {
+            return ""
+        }
+
         def validate = validationAttribute(attrs, model, editable)
 
         if (attrs.printable) {
             renderer = new PrintModelWidgetRenderer()
         } else {
-            toEdit = editable && !model.computed && !model.noEdit
-            if (toEdit) {
-                renderer = new EditModelWidgetRenderer()
-            } else {
-                renderer = new ViewModelWidgetRenderer()
-            }
+            renderer = toEdit ? new EditModelWidgetRenderer() : new ViewModelWidgetRenderer()
         }
 
         // hack - sometimes span class are added to elementAttributes. It interferes with the rendering of input like
