@@ -250,3 +250,29 @@ if(!lists.commonFields){
 } else if(lists.commonFields instanceof String) {
     lists.commonFields = lists.commonFields.split(',')
 }
+
+facets.data = [
+        [
+                name: "projectNameFacet",
+        ],
+        [
+                name:  "organisationNameFacet"
+        ],
+        [
+                name: "projectActivityNameFacet"
+        ],
+        [
+                name: "recordNameFacet"
+        ],[
+                name: "userId"
+        ],
+        [
+                name: "embargoedFacet"
+        ],
+        [
+                name:  "activityLastUpdatedMonthFacet"
+        ],
+        [
+                name:  "activityLastUpdatedYearFacet"
+        ]
+]

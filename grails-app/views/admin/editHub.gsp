@@ -9,7 +9,8 @@
             listHubsUrl:"${createLink(controller: 'admin', action: 'listHubs')}",
             getHubUrl:"${createLink(controller: 'admin', action: 'loadHubSettings')}",
             saveHubUrl:"${createLink(controller: 'admin', action: 'saveHubSettings')}",
-            listProjectFacetUrl: "${createLink(controller: 'project', action: 'getFacets')}"
+            listProjectFacetUrl: "${createLink(controller: 'project', action: 'getFacets')}",
+            listActivityFacetUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}"
         };
     </r:script>
 </head>
@@ -51,6 +52,7 @@
         <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubFooter"  data-toggle="tab">Footer</a></li>
         <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubBanner"  data-toggle="tab">Banner</a></li>
         <li><a href="#hubContent"  data-toggle="tab">Content</a></li>
+        <li><a href="#hubFacet"  data-toggle="tab">Facets</a></li>
         <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubHomepage"  data-toggle="tab">Homepage</a></li>
     </ul>
     <div class="tab-content">
@@ -90,67 +92,6 @@
                 <label class="control-label" for="default-program">Default program (new projects created from this hub will inherit this program)</label>
                 <div class="controls">
                     <select id="default-program" data-bind="value:defaultProgram, options:supportedPrograms"></select>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="default-program">Configure project finder facets</label>
-                <div class="controls">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Facet name</th>
-                            <th>Expand or Collapse</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!-- ko foreach: facets -->
-                        <tr>
-                            <td data-bind="text: displayName">
-
-                            </td>
-                            <td>
-                                <select data-bind="value: state">
-                                    <option value="Expanded">Expanded</option>
-                                    <option value="Collapsed">Collapsed</option>
-                                </select>
-                            </td>
-                            <td>
-                                <button class="btn btn-small btn-danger" data-bind="click: $parent.removeFacet"><i class="icon-remove icon-white"></i> Remove</button>
-                            </td>
-                        </tr>
-                        <!-- /ko -->
-                        <!-- ko ifnot: facets().length -->
-                        <tr>
-                            <td colspan="3">
-                                No Facets selected.
-                            </td>
-                        </tr>
-                        <!-- /ko -->
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td colspan="2">Pick a facet <select data-bind="options: transients.facetList, optionsText:'displayName', value: transients.selectedValue"></select></td>
-                            <td>
-                                <button class="btn btn-small btn-default" data-bind="click: addFacet"><i class="icon-plus"></i> Add</button>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="default-facets-list">Default Facet Query (Searches will automatically include these facets)</label>
-                <div class="controls">
-                    <ul id="default-facets-list" data-bind="foreach:defaultFacetQuery">
-                        <li>
-                            <input type="text" class="input-xxlarge"  data-bind="value:query" placeholder="query string as produced by the home page"> <button class="btn" data-bind="click:$parent.removeDefaultFacetQuery">Remove</button>
-                        </li>
-                    </ul>
-                    <button class="btn" data-bind="click:addDefaultFacetQuery">Add</button>
-
                 </div>
             </div>
         </div>
@@ -451,6 +392,120 @@
                     </tbody>
                 </table>
 
+            </div>
+        </div>
+        <div class="tab-pane" id="hubFacet">
+            <div class="control-group">
+                <label class="control-label" for="default-facets-list">Default Facet Query (Searches will automatically include these facets)</label>
+                <div class="controls">
+                    <ul id="default-facets-list" data-bind="foreach:defaultFacetQuery" class="unstyled">
+                        <li>
+                            <input type="text" class="input-xxlarge"  data-bind="value:query" placeholder="query string as produced by the home page"> <button class="btn" data-bind="click:$parent.removeDefaultFacetQuery">Remove</button>
+                        </li>
+                    </ul>
+                    <button class="btn" data-bind="click:addDefaultFacetQuery">Add</button>
+
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="default-program">Configure project finder facets</label>
+                <div class="controls">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Facet name</th>
+                            <th>Expand or Collapse</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- ko foreach: facets -->
+                        <tr>
+                            <td data-bind="text: formattedName">
+
+                            </td>
+                            <td>
+                                <select data-bind="value: state">
+                                    <option value="Expanded">Expanded</option>
+                                    <option value="Collapsed">Collapsed</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-small btn-danger" data-bind="click: $parent.removeFacet"><i class="icon-remove icon-white"></i> Remove</button>
+                            </td>
+                        </tr>
+                        <!-- /ko -->
+                        <!-- ko ifnot: facets().length -->
+                        <tr>
+                            <td colspan="3">
+                                No Facets selected.
+                            </td>
+                        </tr>
+                        <!-- /ko -->
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="3">Pick a facet <select data-bind="options: transients.facetList, optionsText:'formattedName', value: transients.selectedValue"></select></td>
+                            <td>
+                                <button class="btn btn-small btn-default" data-bind="click: addFacet"><i class="icon-plus"></i> Add</button>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="default-program">Configure data page facets</label>
+                <div class="controls">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Facet name</th>
+                            <th>Expand or Collapse</th>
+                            <th>Display name</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- ko foreach: dataFacets -->
+                        <tr>
+                            <td data-bind="text: formattedName">
+
+                            </td>
+                            <td>
+                                <select data-bind="value: state">
+                                    <option value="Expanded">Expanded</option>
+                                    <option value="Collapsed">Collapsed</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" class="input-xxlarge"  data-bind="value:displayName" placeholder="Give a custom name for facet.">
+                            </td>
+                            <td>
+                                <button class="btn btn-small btn-danger" data-bind="click: $parent.removeDataFacet"><i class="icon-remove icon-white"></i> Remove</button>
+                            </td>
+                        </tr>
+                        <!-- /ko -->
+                        <!-- ko ifnot: dataFacets().length -->
+                        <tr>
+                            <td colspan="4">
+                                No Facets selected.
+                            </td>
+                        </tr>
+                        <!-- /ko -->
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="2">Pick a facet <select data-bind="options: transients.dataFacetList, optionsText:'formattedName', value: transients.selectedDataFacet"></select></td>
+                            <td>
+                                <button class="btn btn-small btn-default" data-bind="click: addDataFacet"><i class="icon-plus"></i> Add</button>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
         <div class="tab-pane" id="hubHomepage">

@@ -1085,4 +1085,9 @@ class BioActivityController {
             render status: SC_BAD_REQUEST, text: "You need to provide user id"
         }
     }
+
+    def getFacets(){
+        List facets = activityService.getFacets()
+        render text: facets as JSON, contentType: 'application/json'
+    }
 }

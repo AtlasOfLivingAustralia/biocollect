@@ -1,5 +1,6 @@
 var hubConfigs = {
-    availableProjectFacets: []
+    availableProjectFacets: [],
+    availableDataFacets: []
 };
 
 var HubSettingsViewModel = function (programsModel, options) {
@@ -49,6 +50,13 @@ var HubSettingsViewModel = function (programsModel, options) {
         hubConfigs.availableProjectFacets = facets;
     }, 'json');
 
+    $.get(config.listProjectFacetUrl, function (data) {
+        var facets = $.map(data.facets, function (facet) {
+            return new FacetViewModel(facet);
+        });
+        hubConfigs.availableDataFacets = facets;
+    }, 'json');
+
     $.get(config.listHubsUrl, function (data) {
         self.hubs(data);
         if (self.hubs().indexOf(config.currentHub) >= 0) {
@@ -80,6 +88,7 @@ var HubSettings = function (settings, config) {
     self.content = ko.observable();
     self.quickLinks = ko.observableArray();
     self.facets = ko.observableArray();
+    self.dataFacets = ko.observableArray();
     self.customBreadCrumbs = ko.observableArray();
     /**
      * Set home page only if the configurable template is chosen. Otherwise, do nothing. If user had previously chosen
@@ -171,7 +180,9 @@ var HubSettings = function (settings, config) {
         }),
         showTemplateSettings: ko.observable(false),
         facetList: ko.observableArray(hubConfigs.availableProjectFacets.slice()),
-        selectedValue: ko.observable()
+        dataFacetList: ko.observableArray(hubConfigs.availableDataFacets.slice()),
+        selectedValue: ko.observable(),
+        selectedDataFacet: ko.observable()
     };
 
     self.loadSettings = function (settings) {
@@ -228,6 +239,27 @@ var HubSettings = function (settings, config) {
         });
 
         self.facets(facets);
+
+        var dataFacets = $.map(settings.dataFacets || [], function (facet) {
+            var facetVMs =  $.grep(self.transients.dataFacetList(), function (f) {
+                return f.name() == facet.name
+            });
+            var facetVM = facetVMs[0];
+
+            if(!facetVM){
+                facetVM = new FacetViewModel(facet);
+            } else {
+                facetVM.state(facet.state);
+                var index = self.transients.dataFacets.indexOf(facetVM);
+                if(index >= 0){
+                    self.transients.dataFacets.splice(index, 1);
+                }
+            }
+
+            return facetVM;
+        });
+
+        self.dataFacets(dataFacets);
     };
 
 
@@ -250,28 +282,45 @@ var HubSettings = function (settings, config) {
 
     self.addFacet = function () {
         var facet = self.transients.selectedValue();
-        self.facets.push(facet);
-        var index = self.transients.facetList.indexOf(facet);
-        if(index >= 0){
-            self.transients.facetList.splice(index, 1);
+        self.addFacetToSelectionAndRemoveFromList(facet, self.facets, self.transients.facetList);
+    };
+
+    self.addDataFacet = function () {
+        var facet = self.transients.selectedDataFacet();
+        self.addFacetToSelectionAndRemoveFromList(facet, self.dataFacets, self.transients.dataFacetList);
+    };
+
+    self.addFacetToSelectionAndRemoveFromList = function (facet, add, remove) {
+        add.push(facet);
+        var index = remove.indexOf(facet);
+        if (index >= 0) {
+            remove.splice(index, 1);
         }
     };
 
-    self.removeFacet = function (facet ) {
+    self.removeFacet = function (facet) {
         var facets = self.facets();
-        var index = facets.indexOf(facet);
+        self.removeFacetFromSelectionAndAddToList(facet, facets, self.transients.facetList);
+    };
+
+    self.removeDataFacet = function (facet) {
+        var facets = self.dataFacets();
+        self.removeFacetFromSelectionAndAddToList(facet, facets, self.transients.facetList);
+    };
+
+    self.removeFacetFromSelectionAndAddToList = function (facet, remove, add) {
+        var index = remove.indexOf(facet);
         if(index >= 0){
-            facets.splice(index, 1);
-            self.facets(facets);
-            index = self.transients.facetList.indexOf(facet);
+            remove.splice(index, 1);
+            index = add.indexOf(facet);
             if(index == -1){
-                self.transients.facetList.push(facet);
-                self.transients.facetList.sort(function (a,b) {
+                add.push(facet);
+                add.sort(function (a,b) {
                     return a.title() < b.title()? - 1 : 1;
                 })
             }
         }
-    };
+    }
 
     self.save = function () {
         if ($(config.formSelector).validationEngine('validate')) {
@@ -489,8 +538,9 @@ function FacetViewModel(config){
     self.title = ko.observable(config.title || '');
     self.state = ko.observable(config.state || 'Collapsed');
     self.name = ko.observable(config.name || '');
+    self.displayName = ko.observable(config.displayName || '');
 
-    self.displayName = ko.computed(function () {
+    self.formattedName = ko.computed(function () {
         return self.title() + ' (' + self.name() + ')'
     });
 };

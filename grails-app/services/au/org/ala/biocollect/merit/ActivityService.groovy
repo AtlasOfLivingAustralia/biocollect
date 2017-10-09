@@ -239,4 +239,18 @@ class ActivityService {
         return !(userService.userIsAlaOrFcAdmin() || projectMember)
     }
 
+    List getDynamicFacets(){
+        webService.doGet(grailsApplication.config.ecodata.service.url+'/metadata/getIndicesForDataModels')?.resp
+    }
+
+    List getDefaultFacets(){
+
+    }
+
+    List getFacets(){
+        List facets = getDynamicFacets()
+        if(facets){
+
+        }
+    }
 }
