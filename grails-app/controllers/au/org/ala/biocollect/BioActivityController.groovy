@@ -1,6 +1,8 @@
 package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.*
+import au.org.ala.biocollect.merit.metadata.OutputMetadata
+import au.org.ala.biocollect.merit.metadata.OutputModelProcessor
 import au.org.ala.web.AuthService
 import grails.converters.JSON
 import groovyx.net.http.ContentType
@@ -349,6 +351,14 @@ class BioActivityController {
                 model.id = pActivity.projectActivityId
                 model.userIsProjectMember = userIsProjectMember
                 params.mobile ? model.mobile = true : ''
+
+                if (!userIsProjectMember) {
+                    OutputModelProcessor processor = new OutputModelProcessor()
+                    activity.outputs?.each { output ->
+                        OutputMetadata outputModel = new OutputMetadata(metadataService.getDataModelFromOutputName(output.name))
+                        processor.hideMemberOnlyAttributes(output, outputModel, userIsProjectMember)
+                     }
+                }
                 model
 
             }

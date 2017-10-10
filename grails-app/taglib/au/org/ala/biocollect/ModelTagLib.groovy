@@ -74,12 +74,6 @@ class ModelTagLib {
         ModelWidgetRenderer renderer
 
         def toEdit = editable && !model.computed && !model.noEdit
-        def userIsProjectMember = attrs.userIsProjectMember
-
-        // hidden from public and visible to only project members (and ALA admins)
-        if (!toEdit && model.memberOnlyView && !userIsProjectMember) {
-            return ""
-        }
 
         def validate = validationAttribute(attrs, model, editable)
 
@@ -353,6 +347,21 @@ class ModelTagLib {
         return criteria.contains("required")
     }
 
+    /**
+     * Check if the field is visible to only project members (and ALA admins)
+     * @parma attrs the attributes passed to the tag library.  Used to access site id.
+     * @param model of the data element
+     * @param editable if the html element is an input
+     * @return true if field marked as member only, false if it has public visibility
+     */
+    def isHidden(attrs, model, editable) {
+        def toEdit = editable && !model.computed && !model.noEdit
+        def userIsProjectMember = attrs.userIsProjectMember
+
+        // hidden from public and visible to only project members (and ALA admins)
+        return (!toEdit && model.memberOnlyView && !userIsProjectMember) ? true: false
+    }
+
     def validationAttribute(attrs, model, edit) {
         def criteria = getValidationCriteria(attrs, model, edit)
         if (criteria.isEmpty()) {
@@ -418,6 +427,9 @@ class ModelTagLib {
         def span = context == 'row'? (int)(LAYOUT_COLUMNS / model.items.size()) : LAYOUT_COLUMNS
 
         model.items.each { it ->
+            if (isHidden(attrs, it, attrs.edit)){
+                return
+            }
             AttributeMap at = new AttributeMap()
             at.addClass(it.css)
             // inject computed from data model
