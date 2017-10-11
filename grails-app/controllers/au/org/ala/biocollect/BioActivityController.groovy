@@ -1,8 +1,6 @@
 package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.*
-import au.org.ala.biocollect.merit.metadata.OutputMetadata
-import au.org.ala.biocollect.merit.metadata.OutputModelProcessor
 import au.org.ala.web.AuthService
 import grails.converters.JSON
 import groovyx.net.http.ContentType
@@ -328,10 +326,10 @@ class BioActivityController {
      * @return
      */
     def index(String id) {
-        def activity = activityService.get(id, params?.version)
-        def pActivity = projectActivityService.get(activity?.projectActivityId, "all", params?.version)
-
         String userId = userService.getCurrentUserId()
+
+        def activity = activityService.get(id, params?.version, userId, true)
+        def pActivity = projectActivityService.get(activity?.projectActivityId, "all", params?.version)
 
         boolean embargoed = projectActivityService.isEmbargoed(pActivity)
         boolean userIsOwner = userId && activityService.isUserOwnerForActivity(userId, id)
@@ -352,13 +350,6 @@ class BioActivityController {
                 model.userIsProjectMember = userIsProjectMember
                 params.mobile ? model.mobile = true : ''
 
-                if (!userIsProjectMember) {
-                    OutputModelProcessor processor = new OutputModelProcessor()
-                    activity.outputs?.each { output ->
-                        OutputMetadata outputModel = new OutputMetadata(metadataService.getDataModelFromOutputName(output.name))
-                        processor.hideMemberOnlyAttributes(output, outputModel, userIsProjectMember)
-                     }
-                }
                 model
 
             }
