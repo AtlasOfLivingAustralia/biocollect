@@ -351,11 +351,10 @@ class ModelTagLib {
      * Check if the field is visible to only project members (and ALA admins)
      * @parma attrs the attributes passed to the tag library.  Used to access site id.
      * @param model of the data element
-     * @param editable if the html element is an input
      * @return true if field marked as member only, false if it has public visibility
      */
-    def isHidden(attrs, model, editable) {
-        def toEdit = editable && !model.computed && !model.noEdit
+    def isHidden(attrs, model) {
+        def toEdit = attrs.edit && !model.computed && !model.noEdit
         def userIsProjectMember = attrs.userIsProjectMember
 
         // hidden from public and visible to only project members (and ALA admins)
@@ -427,7 +426,7 @@ class ModelTagLib {
         def span = context == 'row'? (int)(LAYOUT_COLUMNS / model.items.size()) : LAYOUT_COLUMNS
 
         model.items.each { it ->
-            if (isHidden(attrs, it, attrs.edit)){
+            if (isHidden(attrs, it)){
                 return
             }
             AttributeMap at = new AttributeMap()
