@@ -71,23 +71,8 @@
             </div>
         </div>
 
-        <div class="row-fluid">
-            <div class="span6 required">
-                <label for="plannedStartDate">Planned start date
-                <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
-                </label>
-                <div class="input-append">
-                    <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
-                </div>
-            </div>
-            <div class="span6 required">
-                <label for="plannedEndDate">Planned end date
-                <fc:iconHelp title="Planned end date" printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
-                </label>
-                <div class="input-append">
-                    <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate" data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]" printable="${printView}" />
-                </div>
-            </div>
+        <div class="row-fluid" data-bind="template:transients.isMilestone() ? 'milestoneTmpl' : 'activityTmpl'">
+
         </div>
 
         <div class="form-actions">
@@ -98,6 +83,34 @@
 </div>
 
 <!-- templates -->
+<script type="text/html" id="activityTmpl">
+<div class="span6 required">
+    <label for="plannedStartDate">Planned start date
+    <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
+    </label>
+    <div class="input-append">
+        <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
+    </div>
+</div>
+<div class="span6 required">
+    <label for="plannedEndDate">Planned end date
+    <fc:iconHelp title="Planned end date" printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
+    </label>
+    <div class="input-append">
+        <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate" data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]" printable="${printView}" />
+    </div>
+</div>
+</script>
+<script type="text/html" id="milestoneTmpl">
+<div class="span6 required">
+    <label for="plannedStartDate">Milestone date
+    <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
+    </label>
+    <div class="input-append">
+        <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
+    </div>
+</div>
+</script>
 
 <r:script>
 
@@ -167,6 +180,35 @@
                     });
                 }
                 return result;
+            });
+
+            self.transients.isMilestone = ko.computed(function() {
+                var milestone = false;
+                if (self.type()) {
+                    $.each(activityTypes, function(i, obj) {
+                        $.each(obj.list, function(j, type) {
+                            if (type.name === self.type()) {
+                                milestone = type.type == 'Milestone';
+                                return false;
+                            }
+                        });
+
+                    });
+                }
+
+                return milestone;
+            });
+
+            self.transients.isMilestone.subscribe(function(newValue) {
+                if (newValue) {
+                    self.plannedEndDate(self.plannedStartDate());
+                }
+            });
+            self.plannedStartDate.subscribe(function(newValue) {
+                // Keep start and end dates the same for a milestone.
+                if (self.transients.isMilestone()) {
+                   self.plannedEndDate(newValue);
+                }
             });
 
             self.save = function () {

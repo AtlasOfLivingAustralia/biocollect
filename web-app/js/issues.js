@@ -13,9 +13,6 @@ function IssuesViewModel (issues) {
                 return new IssueViewModel(obj);
             }));
         }
-        else {
-            self.issues.push(new IssueViewModel());
-        }
     };
     self.modelAsJSON = function() {
         var tmp = {};
@@ -40,8 +37,11 @@ function IssueViewModel (issue) {
     var self = this;
     if(!issue) issue = {};
     self.type = ko.observable(issue.type);
+    self.priority = ko.observable(issue.priority);
+    self.priority.options = ['blocker','high','medium','low'];
+    self.status = ko.observable(issue.status || 'current');
+    self.status.options = ['current','resolved'];
     self.description = ko.observable(issue.description);
-    self.assessment = ko.observable(issue.assessment);
     self.actionPlan = ko.observable(issue.actionPlan);
     self.impact = ko.observable(issue.impact);
     self.impact.options = ['critical', 'significant', 'moderate', 'low'];

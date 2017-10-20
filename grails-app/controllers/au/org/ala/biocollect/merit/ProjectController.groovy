@@ -204,8 +204,11 @@ class ProjectController {
     }
 
     protected Map worksProjectContent(project, user) {
+        List activityTypes = metadataService.activityTypesList()
         def activities = activityService.activitiesForProject(project.projectId)
-
+        activities.each { activity ->
+            activity.typeCategory = metadataService.getActivityModel(activity.type)?.type
+        }
         def risksAndThreatsVisible = metadataService.isOptionalContent('Risks and Threats', project.associatedProgram, project.associatedSubProgram)
         def canViewRisks = risksAndThreatsVisible && (user?.hasViewAccess || user?.isEditor)
 
@@ -217,6 +220,8 @@ class ProjectController {
         Boolean hasLegacyProjectStories = project.projectStories as Boolean
 
         Boolean canEditSites = projectService.canUserEditSitesForProject(user?.userId, project.projectId)
+
+
 
         Map content = [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
                        news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],

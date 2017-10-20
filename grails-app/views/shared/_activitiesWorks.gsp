@@ -30,12 +30,13 @@
                 <g:if test="${user?.isEditor}">
 
                     <div class="well">
-                        <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.WORKS_PLANNING_MODE_INTRO}"/>
+                        <fc:getSettingContent
+                                settingType="${au.org.ala.biocollect.merit.SettingPageType.WORKS_PLANNING_MODE_INTRO}"/>
                     </div>
 
                     <div class="form-actions">
 
-                        <span>Planning actions: </span>
+                        <span>Planning actions:</span>
                         <a class="btn btn-success" class="btn btn-link"
                            data-bind="visible:planStatus()==='not approved',click:newActivity"
                            style="vertical-align: baseline"><i class="fa fa-plus"></i> Add new activity</a>
@@ -91,66 +92,8 @@
                         </tr>
                         </thead>
                         <tbody data-bind="foreach:activities.activities" id="activityList">
-                        <tr>
-                            <td>
-                                <button type="button" class="btn btn-mini"
-                                        data-bind="click:editActivity"><i
-                                        class="icon-edit" title="Edit Activity"></i></button>
-                                <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
-                                        class="icon-eye-open" title="View Activity"></i></button>
-                                <button type="button" class="btn btn-mini"
-                                        data-bind="click:printActivity"><i
-                                        class="icon-print" title="Print activity"></i></button>
-                                <button type="button" class="btn btn-mini"
-                                        data-bind="click:deleteActivity"><i class="icon-remove" title="Delete activity"></i>
-                                </button>
-                            </td>
-                            <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
-                            <td><span data-bind="text:plannedEndDate.formattedDate"></span></td>
-                            <td>
-                                <span class="truncate"
-                                      data-bind="text:description,click:$parent.editActivity, css:{clickable:true}"></span>
-                            </td>
-                            <td>
-                                <span data-bind="text:type,click:$parent.editActivity, css:{clickable:true}"></span>
-                            </td>
-                            <g:if test="${showSites}">
-                                <td><a class="clickable" data-bind="text:siteName,click:$parent.openSite"></a></td>
-                            </g:if>
-                            <td>
-                                <span data-bind="template:canUpdateStatus() ? 'updateStatusTmpl' : 'viewStatusTmpl'"></span>
+                        <tr data-bind="template:typeCategory == 'Milestone' ? 'milestoneRow':'activityRow', css:typeCategory" >
 
-                                <!-- Modal for getting reasons for status change -->
-                                <div id="activityStatusReason" class="modal hide fade" tabindex="-1" role="dialog"
-                                     aria-labelledby="myModalLabel" aria-hidden="true"
-                                     data-bind="showModal:displayReasonModal(),with:deferReason">
-                                    <form class="reasonModalForm">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                                                    data-bind="click:$parent.displayReasonModal.cancelReasonModal">×</button>
-
-                                            <h3 id="myModalLabel">Reason for deferring or cancelling an activity</h3>
-                                        </div>
-
-                                        <div class="modal-body">
-                                            <p>If you wish to defer or cancel a planned activity you must provide an explanation. Your case
-                                            manager will use this information when assessing your report.</p>
-
-                                            <p>You can simply refer to a document that has been uploaded to the project if you like.</p>
-                                            <textarea data-bind="value:notes,hasFocus:true" name="reason" rows=4 cols="80"
-                                                      class="validate[required]"></textarea>
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <button class="btn"
-                                                    data-bind="click: $parent.displayReasonModal.cancelReasonModal"
-                                                    data-dismiss="modal" aria-hidden="true">Discard status change</button>
-                                            <button class="btn btn-primary"
-                                                    data-bind="click:$parent.displayReasonModal.saveReasonDocument">Save reason</button>
-                                        </div></form>
-                                </div>
-
-                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -165,7 +108,8 @@
         <form id="outputTargetsContainer">
             <h4>Output Targets</h4>
             <table id="outputTargets" class="table table-condensed tight-inputs">
-                <thead><tr><th>Output Type</th><th>Outcome Targets</th><th>Output Targets</th><th>Target</th></tr></thead>
+                <thead><tr><th>Output Type</th><th>Outcome Targets</th><th>Output Targets</th><th>Target</th></tr>
+                </thead>
                 <!-- ko foreach:outputTargets -->
                 <tbody data-bind="foreach:scores">
                 <tr>
@@ -174,7 +118,8 @@
                         <b><span data-bind="text:$parents[1].name"></span></b>
                     </td>
                     <td data-bind="attr:{rowspan:$parents[1].scores.length}">
-                        <textarea data-bind="visible:$root.canEditOutputTargets(),value:$parents[1].outcomeTarget" rows="3"
+                        <textarea data-bind="visible:$root.canEditOutputTargets(),value:$parents[1].outcomeTarget"
+                                  rows="3"
                                   cols="80" style="width:90%"></textarea>
                         <span data-bind="visible:!$root.canEditOutputTargets(),text:$parents[1].outcomeTarget"></span>
                         <span class="save-indicator" data-bind="visible:$parents[1].isSaving"><r:img dir="images"
@@ -184,11 +129,13 @@
                     <!-- /ko -->
                     <td><span data-bind="text:scoreLabel"></span></td>
                     <td>
-                        <input type="text" class="input-mini" data-bind="visible:$root.canEditOutputTargets(),value:target"
+                        <input type="text" class="input-mini"
+                               data-bind="visible:$root.canEditOutputTargets(),value:target"
                                data-validation-engine="validate[required,custom[number]]"/>
                         <span data-bind="visible:!$root.canEditOutputTargets(),text:target"></span>
                         <span data-bind="text:units"></span>
-                        <span class="save-indicator" data-bind="visible:isSaving"><r:img dir="images" file="ajax-saver.gif"
+                        <span class="save-indicator" data-bind="visible:isSaving"><r:img dir="images"
+                                                                                         file="ajax-saver.gif"
                                                                                          alt="saving icon"/> saving</span>
                     </td>
 
@@ -214,6 +161,99 @@
     </g:if>
 
 </div>
+
+<script id="activityRow" type="text/html">
+
+    <td>
+        <button type="button" class="btn btn-mini"
+                data-bind="click:editActivity"><i
+                class="icon-edit" title="Edit Activity"></i></button>
+        <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
+                class="icon-eye-open" title="View Activity"></i></button>
+        <button type="button" class="btn btn-mini"
+                data-bind="click:printActivity"><i
+                class="icon-print" title="Print activity"></i></button>
+        <button type="button" class="btn btn-mini"
+                data-bind="click:deleteActivity"><i class="icon-remove" title="Delete activity"></i>
+        </button>
+    </td>
+    <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
+    <td><span data-bind="text:plannedEndDate.formattedDate"></span></td>
+    <td>
+        <span class="truncate"
+              data-bind="text:description,click:$parent.editActivity, css:{clickable:true}"></span>
+    </td>
+    <td>
+        <span data-bind="text:type,click:$parent.editActivity, css:{clickable:true}"></span>
+    </td>
+    <g:if test="${showSites}">
+        <td><a class="clickable" data-bind="text:siteName,click:$parent.openSite"></a></td>
+    </g:if>
+    <td>
+        <span data-bind="template:canUpdateStatus() ? 'updateStatusTmpl' : 'viewStatusTmpl'"></span>
+
+        <!-- Modal for getting reasons for status change -->
+        <div id="activityStatusReason" class="modal hide fade" tabindex="-1" role="dialog"
+             aria-labelledby="myModalLabel" aria-hidden="true"
+             data-bind="showModal:displayReasonModal(),with:deferReason">
+            <form class="reasonModalForm">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                            data-bind="click:$parent.displayReasonModal.cancelReasonModal">×</button>
+
+                    <h3 id="myModalLabel">Reason for deferring or cancelling an activity</h3>
+                </div>
+
+                <div class="modal-body">
+                    <p>If you wish to defer or cancel a planned activity you must provide an explanation. Your case
+                    manager will use this information when assessing your report.</p>
+
+                    <p>You can simply refer to a document that has been uploaded to the project if you like.</p>
+                    <textarea data-bind="value:notes,hasFocus:true" name="reason" rows=4 cols="80"
+                              class="validate[required]"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn"
+                            data-bind="click: $parent.displayReasonModal.cancelReasonModal"
+                            data-dismiss="modal" aria-hidden="true">Discard status change</button>
+                    <button class="btn btn-primary"
+                            data-bind="click:$parent.displayReasonModal.saveReasonDocument">Save reason</button>
+                </div></form>
+        </div>
+
+    </td>
+
+</script>
+
+<script id="milestoneRow" type="text/html">
+
+    <td>
+        <button type="button" class="btn btn-mini"
+                data-bind="click:editActivity"><i
+                class="icon-edit" title="Edit Milestone"></i></button>
+        <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
+                class="icon-eye-open" title="View Milestone"></i></button>
+        <button type="button" class="btn btn-mini"
+                data-bind="click:deleteActivity"><i class="icon-remove" title="Delete Milestone"></i>
+        </button>
+    </td>
+    <td colspan="2"><span data-bind="text:plannedStartDate.formattedDate"></span></td>
+    <td>
+        <span class="truncate"
+              data-bind="text:description,click:$parent.editActivity, css:{clickable:true}"></span>
+    </td>
+    <td>
+        <span data-bind="text:type,click:$parent.editActivity, css:{clickable:true}"></span>
+    </td>
+    <g:if test="${showSites}">
+        <td></td>
+    </g:if>
+    <td>
+
+    </td>
+
+</script>
 
 <script id="updateStatusTmpl" type="text/html">
 <div class="btn-group">
@@ -427,6 +467,7 @@
             this.siteId = act.siteId;
             this.siteName = lookupSiteName(act.siteId);
             this.type = act.type;
+            this.typeCategory = act.typeCategory;
             this.projectStage = act.projectStage;
             this.description = act.description;
             this.hasOutputs = act.outputs && act.outputs.length;
@@ -604,95 +645,95 @@
             activitiesInThisStage = activities
             this.label = stageLabel;
             this.isCurrentStage = isCurrentStage;
-            <g:if test="${enableReporting}">
-                this.isReportable = stage.toDate < new Date().toISOStringNoMillis();
-            </g:if>
-            <g:else>
-                this.isReportable = false;
-            </g:else>
-            this.projectId = project.projectId;
-            this.planViewModel = planViewModel;
+    <g:if test="${enableReporting}">
+        this.isReportable = stage.toDate < new Date().toISOStringNoMillis();
+    </g:if>
+    <g:else>
+        this.isReportable = false;
+    </g:else>
+    this.projectId = project.projectId;
+    this.planViewModel = planViewModel;
 
-            // sort activities by assigned sequence or date created (as a proxy for sequence).
-            // CG - still needs to be addressed properly.
-            activitiesInThisStage.sort(function (a,b) {
-                if (a.sequence !== undefined && b.sequence !== undefined) {
-                    return a.sequence - b.sequence;
-                }
-                if (a.plannedStartDate != b.plannedStartDate) {
-                     return a.plannedStartDate < b.plannedStartDate ? -1 : (a.plannedStartDate > b.plannedStartDate ? 1 : 0);
-                }
-
-
-                var numericActivity = /[Aa]ctivity (\d+)(\w)?.*/;
-                var first = numericActivity.exec(a.description);
-                var second = numericActivity.exec(b.description);
-                if (first && second) {
-                    var firstNum = Number(first[1]);
-                    var secondNum = Number(second[1]);
-                    if (firstNum == secondNum) {
-                        // This is to catch activities of the form Activity 1a, Activity 1b etc.
-                        if (first.length == 3 && second.length == 3) {
-                            return first[2] > second[2] ? 1 : (first[2] < second[2] ? -1 : 0);
-                        }
-                    }
-                    return  firstNum - secondNum;
-                }
-                else {
-                    if (a.dateCreated !== undefined && b.dateCreated !== undefined && a.dateCreated != b.dateCreated) {
-                        return a.dateCreated < b.dateCreated ? 1 : -1;
-                    }
-                    return a.description > b.description ? 1 : (a.description < b.description ? -1 : 0);
-                }
-
-            });
-            this.activities = $.map(activitiesInThisStage, function (act, index) {
-                act.projectStage = stageLabel;
-                return new PlannedActivity(act, index === 0, project, planViewModel);
-            });
-            /**
-             * A stage is considered to be approved when all of the activities in the stage have been marked
-             * as published.
-             */
-            this.isApproved = ko.computed(function() {
-                var numActivities = self.activities ? self.activities.length : 0;
-                if (numActivities == 0) {
-                    return false;
-                }
-                return $.grep(self.activities, function(act, i) {
-                    return act.isApproved();
-                }).length == numActivities;
-            }, this, {deferEvaluation: true});
-            this.isSubmitted = ko.computed(function() {
-                var numActivities = self.activities ? self.activities.length : 0;
-                if (numActivities == 0) {
-                    return false;
-                }
-                return $.grep(self.activities, function(act, i) {
-                    return act.isSubmitted();
-                }).length == numActivities;
-            }, this, {deferEvaluation: true});
+    // sort activities by assigned sequence or date created (as a proxy for sequence).
+    // CG - still needs to be addressed properly.
+    activitiesInThisStage.sort(function (a,b) {
+        if (a.sequence !== undefined && b.sequence !== undefined) {
+            return a.sequence - b.sequence;
+        }
+        if (a.plannedStartDate != b.plannedStartDate) {
+             return a.plannedStartDate < b.plannedStartDate ? -1 : (a.plannedStartDate > b.plannedStartDate ? 1 : 0);
+        }
 
 
-            this.stageStatusTemplateName = ko.computed(function() {
-                if (!self.isReportable) {
-                    return 'stageNotReportableTmpl';
+        var numericActivity = /[Aa]ctivity (\d+)(\w)?.*/;
+        var first = numericActivity.exec(a.description);
+        var second = numericActivity.exec(b.description);
+        if (first && second) {
+            var firstNum = Number(first[1]);
+            var secondNum = Number(second[1]);
+            if (firstNum == secondNum) {
+                // This is to catch activities of the form Activity 1a, Activity 1b etc.
+                if (first.length == 3 && second.length == 3) {
+                    return first[2] > second[2] ? 1 : (first[2] < second[2] ? -1 : 0);
                 }
-                if (self.isApproved()) {
-                    return 'stageApprovedTmpl';
-                }
-                if (self.isSubmitted()) {
-                    return 'stageSubmittedTmpl';
-                }
-                return 'stageNotApprovedTmpl';
-            });
+            }
+            return  firstNum - secondNum;
+        }
+        else {
+            if (a.dateCreated !== undefined && b.dateCreated !== undefined && a.dateCreated != b.dateCreated) {
+                return a.dateCreated < b.dateCreated ? 1 : -1;
+            }
+            return a.description > b.description ? 1 : (a.description < b.description ? -1 : 0);
+        }
+
+    });
+    this.activities = $.map(activitiesInThisStage, function (act, index) {
+        act.projectStage = stageLabel;
+        return new PlannedActivity(act, index === 0, project, planViewModel);
+    });
+    /**
+     * A stage is considered to be approved when all of the activities in the stage have been marked
+     * as published.
+     */
+    this.isApproved = ko.computed(function() {
+        var numActivities = self.activities ? self.activities.length : 0;
+        if (numActivities == 0) {
+            return false;
+        }
+        return $.grep(self.activities, function(act, i) {
+            return act.isApproved();
+        }).length == numActivities;
+    }, this, {deferEvaluation: true});
+    this.isSubmitted = ko.computed(function() {
+        var numActivities = self.activities ? self.activities.length : 0;
+        if (numActivities == 0) {
+            return false;
+        }
+        return $.grep(self.activities, function(act, i) {
+            return act.isSubmitted();
+        }).length == numActivities;
+    }, this, {deferEvaluation: true});
 
 
-        };
+    this.stageStatusTemplateName = ko.computed(function() {
+        if (!self.isReportable) {
+            return 'stageNotReportableTmpl';
+        }
+        if (self.isApproved()) {
+            return 'stageApprovedTmpl';
+        }
+        if (self.isSubmitted()) {
+            return 'stageSubmittedTmpl';
+        }
+        return 'stageNotApprovedTmpl';
+    });
 
-        function PlanViewModel(activities, outputTargets, project) {
-            var self = this;
-            this.userIsCaseManager = ko.observable(${user?.isCaseManager});
+
+};
+
+function PlanViewModel(activities, outputTargets, project) {
+    var self = this;
+    this.userIsCaseManager = ko.observable(${user?.isCaseManager});
             this.planStatus = ko.observable(project.planStatus || 'not approved');
 
             this.isApproved = ko.computed(function () {
