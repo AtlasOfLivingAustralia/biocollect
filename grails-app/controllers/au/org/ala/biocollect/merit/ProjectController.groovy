@@ -204,7 +204,6 @@ class ProjectController {
     }
 
     protected Map worksProjectContent(project, user) {
-        List activityTypes = metadataService.activityTypesList()
         def activities = activityService.activitiesForProject(project.projectId)
         activities.each { activity ->
             activity.typeCategory = metadataService.getActivityModel(activity.type)?.type
