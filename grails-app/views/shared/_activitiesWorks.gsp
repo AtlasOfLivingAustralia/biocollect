@@ -865,6 +865,7 @@ function PlanViewModel(activities, outputTargets, project) {
                         var statusClass = 'gantt-' + act.progress(),
                             startDate = act.plannedStartDate.date().getTime(),
                             endDate = act.plannedEndDate.date().getTime();
+                        var isMilestone = act.typeCategory == 'Milestone';
                         if (!isNaN(startDate)) {
                             values.push({
                                 name:act.projectStage === previousStage ? '' : act.projectStage,
@@ -873,7 +874,7 @@ function PlanViewModel(activities, outputTargets, project) {
                                     label: act.type,
                                     from: "/Date(" + startDate + ")/",
                                     to: "/Date(" + endDate + ")/",
-                                    customClass: statusClass,
+                                    customClass: isMilestone ? 'milestone' : statusClass,
                                     dataObj: act
                                 }]
                             });
