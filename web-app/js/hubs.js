@@ -50,7 +50,7 @@ var HubSettingsViewModel = function (programsModel, options) {
         hubConfigs.availableProjectFacets = facets;
     }, 'json');
 
-    $.get(config.listProjectFacetUrl, function (data) {
+    $.get(config.listDynamicFacetsUrl, function (data) {
         var facets = $.map(data.facets, function (facet) {
             return new FacetViewModel(facet);
         });
@@ -72,6 +72,7 @@ var HubSettingsViewModel = function (programsModel, options) {
 var HubSettings = function (settings, config) {
 
     var self = this;
+    settings.pages = settings.pages || {};
 
     self.hubId = ko.observable();
     self.urlPath = ko.observable();
@@ -87,9 +88,16 @@ var HubSettings = function (settings, config) {
     self.templateConfiguration = ko.observable();
     self.content = ko.observable();
     self.quickLinks = ko.observableArray();
-    self.facets = ko.observableArray();
-    self.dataFacets = ko.observableArray();
     self.customBreadCrumbs = ko.observableArray();
+    self.pages = {
+        allRecords : new FacetConfigurationViewModel(settings.pages.allRecords, hubConfigs.availableDataFacets),
+        myRecords : new FacetConfigurationViewModel(settings.pages.myRecords, hubConfigs.availableDataFacets),
+        project : new FacetConfigurationViewModel(settings.pages.project, hubConfigs.availableDataFacets),
+        projectRecords : new FacetConfigurationViewModel(settings.pages.projectRecords, hubConfigs.availableDataFacets),
+        userProjectActivityRecords : new FacetConfigurationViewModel(settings.pages.userProjectActivityRecords, hubConfigs.availableDataFacets),
+        myProjectRecords : new FacetConfigurationViewModel(settings.pages.myProjectRecords, hubConfigs.availableDataFacets),
+        projectFinder: new FacetConfigurationViewModel(settings.pages.projectFinder, hubConfigs.availableProjectFacets)
+    };
     /**
      * Set home page only if the configurable template is chosen. Otherwise, do nothing. If user had previously chosen
      * configurable template but not anymore, then do not change homepage.
@@ -219,47 +227,6 @@ var HubSettings = function (settings, config) {
             self.customBreadCrumbs.push(new CustomBreadCrumbsViewModel(breadcrumb));
         });
 
-        var facets = $.map(settings.facets || [], function (facet) {
-            var facetVMs =  $.grep(self.transients.facetList(), function (f) {
-                return f.name() == facet.name
-            });
-            var facetVM = facetVMs[0];
-
-            if(!facetVM){
-                facetVM = new FacetViewModel(facet);
-            } else {
-                facetVM.state(facet.state);
-                var index = self.transients.facetList.indexOf(facetVM);
-                if(index >= 0){
-                    self.transients.facetList.splice(index, 1);
-                }
-            }
-
-            return facetVM;
-        });
-
-        self.facets(facets);
-
-        var dataFacets = $.map(settings.dataFacets || [], function (facet) {
-            var facetVMs =  $.grep(self.transients.dataFacetList(), function (f) {
-                return f.name() == facet.name
-            });
-            var facetVM = facetVMs[0];
-
-            if(!facetVM){
-                facetVM = new FacetViewModel(facet);
-            } else {
-                facetVM.state(facet.state);
-                var index = self.transients.dataFacets.indexOf(facetVM);
-                if(index >= 0){
-                    self.transients.dataFacets.splice(index, 1);
-                }
-            }
-
-            return facetVM;
-        });
-
-        self.dataFacets(dataFacets);
     };
 
 
@@ -299,13 +266,11 @@ var HubSettings = function (settings, config) {
     };
 
     self.removeFacet = function (facet) {
-        var facets = self.facets();
-        self.removeFacetFromSelectionAndAddToList(facet, facets, self.transients.facetList);
+        self.removeFacetFromSelectionAndAddToList(facet, self.facets, self.transients.facetList);
     };
 
     self.removeDataFacet = function (facet) {
-        var facets = self.dataFacets();
-        self.removeFacetFromSelectionAndAddToList(facet, facets, self.transients.facetList);
+        self.removeFacetFromSelectionAndAddToList(facet, self.dataFacets, self.transients.dataFacetList);
     };
 
     self.removeFacetFromSelectionAndAddToList = function (facet, remove, add) {
@@ -532,13 +497,82 @@ function ImageViewModel (config) {
     self.caption = ko.observable(config.caption || '')
 };
 
+function FacetConfigurationViewModel(config, availableFacets) {
+    var self = this;
+    config = config || {};
+    self.facets = ko.observableArray();
+    self.transients = {
+        facetList : ko.observableArray(availableFacets.slice()),
+        selectedFacet: ko.observable()
+    };
+
+    self.add = function () {
+        var facet = self.transients.selectedFacet();
+        self.addFacetToSelectionAndRemoveFromList(facet, self.facets, self.transients.facetList);
+    };
+
+    self.addFacetToSelectionAndRemoveFromList = function (facet, add, remove) {
+        add.push(facet);
+        var index = remove.indexOf(facet);
+        if (index >= 0) {
+            remove.splice(index, 1);
+        }
+    };
+
+    self.remove = function (facet) {
+        self.removeFacetFromSelectionAndAddToList(facet, self.facets, self.transients.facetList);
+    };
+
+    self.removeFacetFromSelectionAndAddToList = function (facet, remove, add) {
+        var index = remove.indexOf(facet);
+        if(index >= 0){
+            remove.splice(index, 1);
+            index = add.indexOf(facet);
+            if(index == -1){
+                add.push(facet);
+                add.sort(function (a,b) {
+                    return a.title() < b.title()? - 1 : 1;
+                })
+            }
+        }
+    };
+
+    var facets = $.map(config.facets|| [], function (facet) {
+        var facetVMs =  $.grep(self.transients.facetList(), function (f) {
+            return f.name() == facet.name
+        });
+        var facetVM = facetVMs[0];
+
+        if(!facetVM){
+            facetVM = new FacetViewModel(facet);
+        } else {
+            facetVM.state(facet.state);
+            facetVM.title(facet.title);
+            facetVM.facetTermType(facet.facetTermType || facetVM.facetTermType());
+            facetVM.helpText(facet.helpText || facetVM.helpText());
+            facetVM.interval(facet.interval || facetVM.interval());
+
+            var index = self.transients.facetList.indexOf(facetVM);
+            if(index >= 0){
+                self.transients.facetList.splice(index, 1);
+            }
+        }
+
+        return facetVM;
+    });
+
+    self.facets(facets);
+}
+
 function FacetViewModel(config){
     var self = this;
 
     self.title = ko.observable(config.title || '');
     self.state = ko.observable(config.state || 'Collapsed');
     self.name = ko.observable(config.name || '');
-    self.displayName = ko.observable(config.displayName || '');
+    self.helpText = ko.observable(config.helpText||'');
+    self.facetTermType = ko.observable(config.facetTermType||'Default');
+    self.interval = ko.observable(config.interval || 10);
 
     self.formattedName = ko.computed(function () {
         return self.title() + ' (' + self.name() + ')'

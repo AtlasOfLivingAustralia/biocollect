@@ -10,7 +10,7 @@
             getHubUrl:"${createLink(controller: 'admin', action: 'loadHubSettings')}",
             saveHubUrl:"${createLink(controller: 'admin', action: 'saveHubSettings')}",
             listProjectFacetUrl: "${createLink(controller: 'project', action: 'getFacets')}",
-            listActivityFacetUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}"
+            listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}"
         };
     </r:script>
 </head>
@@ -408,103 +408,61 @@
                 </div>
             </div>
 
-            <div class="control-group">
-                <label class="control-label" for="default-program">Configure project finder facets</label>
-                <div class="controls">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Facet name</th>
-                            <th>Expand or Collapse</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!-- ko foreach: facets -->
-                        <tr>
-                            <td data-bind="text: formattedName">
-
-                            </td>
-                            <td>
-                                <select data-bind="value: state">
-                                    <option value="Expanded">Expanded</option>
-                                    <option value="Collapsed">Collapsed</option>
-                                </select>
-                            </td>
-                            <td>
-                                <button class="btn btn-small btn-danger" data-bind="click: $parent.removeFacet"><i class="icon-remove icon-white"></i> Remove</button>
-                            </td>
-                        </tr>
-                        <!-- /ko -->
-                        <!-- ko ifnot: facets().length -->
-                        <tr>
-                            <td colspan="3">
-                                No Facets selected.
-                            </td>
-                        </tr>
-                        <!-- /ko -->
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td colspan="3">Pick a facet <select data-bind="options: transients.facetList, optionsText:'formattedName', value: transients.selectedValue"></select></td>
-                            <td>
-                                <button class="btn btn-small btn-default" data-bind="click: addFacet"><i class="icon-plus"></i> Add</button>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
+            <div>
+                <h4>Configure project finder facets</h4>
+                <div>
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.projectFinder } -->
+                    <!-- /ko -->
                 </div>
             </div>
 
-            <div class="control-group">
-                <label class="control-label" for="default-program">Configure data page facets</label>
-                <div class="controls">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Facet name</th>
-                            <th>Expand or Collapse</th>
-                            <th>Display name</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!-- ko foreach: dataFacets -->
-                        <tr>
-                            <td data-bind="text: formattedName">
+            <div class="margin-bottom-20">
+                <h4>Configure facets on all records page</h4>
+                <div>
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.allRecords } -->
+                    <!-- /ko -->
+                </div>
+            </div>
 
-                            </td>
-                            <td>
-                                <select data-bind="value: state">
-                                    <option value="Expanded">Expanded</option>
-                                    <option value="Collapsed">Collapsed</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="text" class="input-xxlarge"  data-bind="value:displayName" placeholder="Give a custom name for facet.">
-                            </td>
-                            <td>
-                                <button class="btn btn-small btn-danger" data-bind="click: $parent.removeDataFacet"><i class="icon-remove icon-white"></i> Remove</button>
-                            </td>
-                        </tr>
-                        <!-- /ko -->
-                        <!-- ko ifnot: dataFacets().length -->
-                        <tr>
-                            <td colspan="4">
-                                No Facets selected.
-                            </td>
-                        </tr>
-                        <!-- /ko -->
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td colspan="2">Pick a facet <select data-bind="options: transients.dataFacetList, optionsText:'formattedName', value: transients.selectedDataFacet"></select></td>
-                            <td>
-                                <button class="btn btn-small btn-default" data-bind="click: addDataFacet"><i class="icon-plus"></i> Add</button>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
+            <div class="margin-bottom-20">
+                <h4>Configure facets on my records page</h4>
+                <div>
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.myRecords } -->
+                    <!-- /ko -->
+                </div>
+            </div>
+
+            <div>
+                <h4>Configure facets on project's data tab</h4>
+                <div>
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.project } -->
+                    <!-- /ko -->
+                </div>
+            </div>
+
+            <div>
+                <h4>Configure facets on my project records page</h4>
+                <div>
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.myProjectRecords } -->
+                    <!-- /ko -->
+                </div>
+            </div>
+
+
+            <div>
+                <h4>Configure facets on user's project activity records page</h4>
+                <div>
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.userProjectActivityRecords } -->
+                    <!-- /ko -->
+                </div>
+            </div>
+
+
+            <div>
+                <h4>Configure facets on project records page</h4>
+                <div>
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.projectRecords } -->
+                    <!-- /ko -->
                 </div>
             </div>
         </div>
@@ -978,6 +936,74 @@
             </div>
         </div>
     </div>
+</script>
+<script id="templateDataPageFacetConfiguration" type="text/html">
+<table class="table table-custom-border borderless">
+    <thead>
+    <tr>
+        <th>Facet name</th>
+        <th>Facet term type</th>
+        <th>Expand or Collapse</th>
+        <th>Display interval</th>
+        <th>Display name</th>
+        <th>Help text</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- ko foreach: facets -->
+    <tr>
+        <td data-bind="text: formattedName">
+
+        </td>
+        <td>
+            <select data-bind="value: facetTermType">
+                <option value="Default">Default</option>
+                <option value="ActiveOrCompleted">Active or Completed</option>
+                <option value="PresenceOrAbsence">Presence or Absence</option>
+                <option value="Histogram">Histogram</option>
+                <option value="Date">Date</option>
+                %{--<option value="GeoMap">Map</option>--}%
+            </select>
+        </td>
+        <td>
+            <select data-bind="value: state">
+                <option value="Expanded">Expanded</option>
+                <option value="Collapsed">Collapsed</option>
+            </select>
+        </td>
+        <td>
+            <input type="number"  data-bind="value:interval" min="0">
+        </td>
+        <td>
+            <input type="text"  data-bind="value:title" placeholder="Give a custom name for facet.">
+        </td>
+        <td>
+            <textarea data-bind="value:helpText" placeholder="Add custom help text"></textarea>
+        </td>
+        <td>
+            <button class="btn btn-small btn-danger" data-bind="click: $parent.remove"><i class="icon-remove icon-white"></i> Remove</button>
+        </td>
+    </tr>
+    <!-- /ko -->
+    <!-- ko ifnot: facets().length -->
+    <tr>
+        <td colspan="7">
+            No Facets selected.
+        </td>
+    </tr>
+    <!-- /ko -->
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="6">Pick a facet <select data-bind="options: transients.facetList, optionsText:'formattedName', value: transients.selectedFacet"></select></td>
+        <td>
+            <button class="btn btn-small btn-default" data-bind="click: add"><i class="icon-plus"></i> Add</button>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+<hr/>
 </script>
 <r:script>
 

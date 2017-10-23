@@ -1,17 +1,28 @@
 package au.org.ala.biocollect
 
-import au.org.ala.biocollect.merit.MetadataService
-import au.org.ala.biocollect.merit.ProjectService
-import au.org.ala.biocollect.merit.SiteService
-import au.org.ala.biocollect.merit.SpeciesService
-import au.org.ala.biocollect.merit.WebService
+import au.org.ala.biocollect.merit.*
+import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
 import org.springframework.context.MessageSource
-import java.nio.file.Files
-//import org.springframework.util.FileCopyUtils
-import java.nio.file.StandardCopyOption;
 
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+//import org.springframework.util.FileCopyUtils
 class ProjectActivityService {
+
+    public static final SPECIAL_FACETS = [
+            GeoMap: [
+                    type : 'geoMap',
+                    total: 0,
+                    terms: [[term: 'active', count: 0], [term: 'completed', count: 0]]
+            ],
+            Date: [
+                    type : 'date',
+                    total: 0,
+                    terms: [[fromDate: '', toDate: '']]
+            ]
+    ]
+
 
     def grailsApplication
     WebService webService
@@ -22,19 +33,20 @@ class ProjectActivityService {
     MessageSource messageSource
     UtilService utilService
     AuthService authService
+    CacheService cacheService
 
-    def getAllByProject(projectId, levelOfDetail = "", version = null){
+    def getAllByProject(projectId, levelOfDetail = "", version = null) {
         def params = '?'
         params += levelOfDetail ? "view=${levelOfDetail}&" : ''
         params += version ? "version=${version}&" : ''
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/getAllByProject/'+ projectId + params).list
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/getAllByProject/' + projectId + params).list
     }
 
-    def get(projectActivityId, levelOfDetail = "", version = null){
+    def get(projectActivityId, levelOfDetail = "", version = null) {
         def params = '?'
         params += levelOfDetail ? "view=${levelOfDetail}&" : ''
         params += version ? "version=${version}&" : ''
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/get/'+ projectActivityId + params)
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/get/' + projectActivityId + params)
     }
 
     def validate(props, projectActivityId) {
@@ -105,26 +117,26 @@ class ProjectActivityService {
             return "startDate is missing"
         }
 
-        if(props?.speciesFields) {
-            if(!props.speciesFields instanceof List ) {
+        if (props?.speciesFields) {
+            if (!props.speciesFields instanceof List) {
                 return "speciesFields is not a list"
             }
 
-            for(Object speciesField : props.speciesFields) {
-                if(!speciesField instanceof Map) {
+            for (Object speciesField : props.speciesFields) {
+                if (!speciesField instanceof Map) {
                     return "At least one speciesField is not a Map"
                 }
 
-                if(!speciesField?.dataFieldName){
+                if (!speciesField?.dataFieldName) {
                     return "dataFieldName not set for speciesField " + speciesField?.label
                 }
 
-                if(!speciesField?.output){
+                if (!speciesField?.output) {
                     return "output not set for speciesField " + speciesField?.label
                 }
 
                 String speciesTypeErrorMessage = validateSpeciesType(speciesField?.config);
-                if(speciesTypeErrorMessage) {
+                if (speciesTypeErrorMessage) {
                     return speciesTypeErrorMessage
                 }
             }
@@ -180,7 +192,7 @@ class ProjectActivityService {
                         !species.singleSpecies?.name) {
                     return "invalid single_species for species type SINGLE_SPECIES"
                 }
-            } else if (species.type == 'GROUP_OF_SPECIES'){
+            } else if (species.type == 'GROUP_OF_SPECIES') {
                 if (!species?.speciesLists ||
                         !(species.speciesLists instanceof List)) {
                     return "invalid speciesLists for species type GROUP_OF_SPECIES"
@@ -231,7 +243,7 @@ class ProjectActivityService {
      * @param dataFieldName Identity of field for specific configuration.
      * @return Map - species config
      */
-    Map getSpeciesConfigForProjectActivity(Map pActivity, String output, String dataFieldName){
+    Map getSpeciesConfigForProjectActivity(Map pActivity, String output, String dataFieldName) {
         def specificFieldDefinition = pActivity?.speciesFields.find {
             it.dataFieldName == dataFieldName && it.output == output
         }
@@ -252,11 +264,11 @@ class ProjectActivityService {
      * @param dataFieldName Identity of field for specific configuration.
      * @return json structure containing search results suitable for use by the species autocomplete widget on a survey form.
      */
-    def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName){
+    def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName) {
         def pActivity = get(id)
-        Map speciesConfig =  getSpeciesConfigForProjectActivity(pActivity, output, dataFieldName)
+        Map speciesConfig = getSpeciesConfigForProjectActivity(pActivity, output, dataFieldName)
         def result = speciesService.searchSpeciesForConfig(speciesConfig, q, limit)
-        speciesService.formatSpeciesNameInAutocompleteList(speciesConfig.speciesDisplayFormat , result)
+        speciesService.formatSpeciesNameInAutocompleteList(speciesConfig.speciesDisplayFormat, result)
     }
 
     /**
@@ -274,7 +286,7 @@ class ProjectActivityService {
             it.dataFieldName == dataFieldName && it.output == output
         }
 
-        Map speciesFieldConfig =  (specificFieldDefinition) ?
+        Map speciesFieldConfig = (specificFieldDefinition) ?
                 //New species per field configuration
                 specificFieldDefinition.config :
                 // Legacy per survey species configuration
@@ -308,25 +320,74 @@ class ProjectActivityService {
      * @param facets
      * @return
      */
-    List getDisplayNamesForFacets(facets){
+    List getDisplayNamesForFacets(facets, List facetConfig) {
+        facetConfig = facetConfig ?: grailsApplication.config.facets.data
         facets?.each { facet ->
-            switch (facet.name){
+            switch (facet.name) {
                 case 'userId':
-                    List userIds = facet.terms.collect {it.term}
+                    List userIds = facet.terms.collect { it.term }
                     Map users = authService.getUserDetailsById(userIds)?.users
                     facet.terms.each { term ->
                         term.title = users[term.term]?.displayName
                     }
                     break;
                 default:
-                    facet.terms?.each{ term ->
-                        term.title = messageSource.getMessage("projectActivity.facets."+facet.name+"."+term.term, [].toArray(), term.name, Locale.default)
+                    facet.terms?.each { term ->
+                        term.title = messageSource.getMessage("projectActivity.facets." + facet.name + "." + term.term, [].toArray(), term.name, Locale.default)
                     }
             }
 
-            facet.title = messageSource.getMessage("projectActivity.facets."+facet.name, [].toArray(), facet.name, Locale.default)
-            facet.helpText = messageSource.getMessage("projectActivity.facets."+facet.name +".helpText", [].toArray(), "", Locale.default)
+            Map facetSetting = facetConfig.find { it.name == facet.name }
+            facet.title = facetSetting?.title
+            facet.helpText = facetSetting?.helpText
         }
+    }
+
+    /**
+     * This function translates view name to page name. Page name is then used in hub configuration to get the facet
+     * configuration for that page.
+     * @param view
+     * @return
+     */
+    String getDataPagePropertyFromViewName(String view) {
+        String name
+        switch (view) {
+            case 'myrecords':
+                name = 'myRecords'
+                break
+
+            case 'project':
+                name = 'project'
+                break
+
+            case 'projectrecords':
+                name = 'projectRecords'
+                break
+
+            case 'myprojectrecords':
+                name = 'myProjectRecords'
+                break
+
+            case 'userprojectactivityrecords':
+                name = 'userProjectActivityRecords'
+                break
+
+            case 'allrecords':
+                name = 'allRecords'
+                break
+        }
+
+        name
+    }
+
+    /**
+     * Get list of default facet names for data pages.
+     * @return
+     */
+    String getDataPageDefaultFacets() {
+        cacheService.get('data-page-default-facets', {
+            grailsApplication.config.facets.data?.collect { it.name }.join(',')
+        })
     }
 
     def sendAekosDataset(String downloadUrl, String jsonSubmissionPayload) {
@@ -334,15 +395,15 @@ class ProjectActivityService {
         log.info "aekosSubmission downloading data from: " + downloadUrl
 
         URLConnection conn = new URL(downloadUrl).openConnection()
-        conn.setConnectTimeout(10*1000);
+        conn.setConnectTimeout(10 * 1000);
 
-        log.info ("Set read timeout: " + grailsApplication.config.aekos?.downloadReadTimeout?:20*1000)
-        conn.setReadTimeout(grailsApplication.config.aekos?.downloadReadTimeout?:20*1000);
+        log.info("Set read timeout: " + grailsApplication.config.aekos?.downloadReadTimeout ?: 20 * 1000)
+        conn.setReadTimeout(grailsApplication.config.aekos?.downloadReadTimeout ?: 20 * 1000);
 
         def status = conn.responseCode
 
         // Instead of storing download in memory, it is now writing to physical file
-   /*     BufferedInputStream bufferedInputStream = new BufferedInputStream(conn.getInputStream());
+        /*     BufferedInputStream bufferedInputStream = new BufferedInputStream(conn.getInputStream());
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         FileCopyUtils.copy(bufferedInputStream, byteArrayOutputStream);*/
@@ -397,7 +458,7 @@ class ProjectActivityService {
             } catch (IOException e) {
                 log.error("IO Exception has occurred.", e)
             } catch (Exception e) {
-                log.error ("Exception occurred while trying to send data to AEKOS. ${e.getClass()} ${e.getMessage()}", e)
+                log.error("Exception occurred while trying to send data to AEKOS. ${e.getClass()} ${e.getMessage()}", e)
             }
 
         } else if (grailsApplication.config.aekosSubmission?.url) {
@@ -410,4 +471,24 @@ class ProjectActivityService {
         result
     }
 
+    /**
+     * Add facets that has special function like date, geoMap etc.
+     * @param facets
+     * @return
+     */
+    List addSpecialFacets(List facets, List facetConfig) {
+        facetConfig?.eachWithIndex{ Map config, int i ->
+            if(HubSettings.isFacetConfigSpecial(config)){
+                Map facet = SPECIAL_FACETS[config.facetTermType].clone()
+                facet.name = config.name
+                if(i >= 0  && i <= facets.size()){
+                    facets.add(i, facet)
+                } else {
+                    facets.add(facet)
+                }
+            }
+        }
+
+        facets
+    }
 }

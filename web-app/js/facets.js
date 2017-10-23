@@ -44,51 +44,49 @@ function FilterViewModel(config){
     self.showMoreFacet  = ko.observable();
     self.searchText = ko.observable();
     self.switchOffSearch = ko.observable(false);
-    self.datePicker = new DatePickerViewModel(parent, self);
 
-    /**
-     * Set to and from date on the form.
-     */
-    self.setDatePicker = function (fromDate, toDate, silent) {
-        if(silent){
-            self.switchOffSearch(true);
-        }
-        if(fromDate){
-            self.datePicker.fromDate(new Date(fromDate));
-        }
 
-        if(toDate){
-            self.datePicker.toDate(new Date(toDate));
+    self.createFacetViewModel = function (facet) {
+        var facetVm;
+        facet.ref = self;
+        switch (facet.type) {
+            case 'date':
+                facetVm = new DatePickerViewModel(facet);
+                break;
+            default:
+                facetVm = new FacetViewModel(facet);
+                break;
         }
 
-        if(silent){
-            self.switchOffSearch(false);
-        }
+        return facetVm;
     };
-
     /**
      * Function for initialising facets.
      * @param facets
      */
     self.setFacets = function (facets) {
         self.facets($.map(facets, function (facet) {
-            var facetVm;
-            facet.ref = self;
-            switch (facet.type){
-                case 'date':
-                    facetVm = self.datePicker;
-                    facetVm.loadFromConfig(facet);
-                    break;
-                default:
-                    facetVm = new FacetViewModel(facet);
-                    self.setFacetTerm(facetVm);
-                    break;
-            }
-
+            self.restoreFacetState(facet);
+            var facetVm = self.createFacetViewModel(facet);
+            self.setFacetTerm(facetVm);
             return facetVm;
         }))
     };
 
+    /**
+     * Get facet state set by the user and make sure the current facet preserves it.
+     * @param facet
+     */
+    self.restoreFacetState = function (facet) {
+        var previousFacets = self.facets();
+        var prevFacet = $.grep(previousFacets, function(pFacet){
+            return pFacet.name() == facet.name;
+        });
+
+        if(prevFacet && (prevFacet.length == 1)){
+            facet.state = prevFacet[0].state();
+        }
+    };
 
     /**
      * check all terms of this facet that was previously selected.
@@ -148,10 +146,19 @@ function FilterViewModel(config){
                     nameAndValue[0] = nameAndValue[0].replace('-', '');
                 }
 
-                facet = new FacetViewModel({ name: nameAndValue[0], terms: [{term:nameAndValue[1], exclude: exclude}], ref: self});
-                facet.ref = self;
-                var term = facet.terms()[0];
-                self.addToRefineList (term)
+                if(FacetRangeViewModel.isRangeQuery(nameAndValue[1])){
+                    var range = FacetRangeViewModel.parseRangeQuery(nameAndValue[1]);
+                    if(isValidDate(new Date(range.to)) || isValidDate(new Date(range.from))){
+                        facet = new DatePickerViewModel({ name: nameAndValue[0], to: range.to, from: range.from, ref: self, type: 'range'});
+                        self.addToRefineList (facet.term);
+                    } else {
+                        facet = new FacetViewModel({ name: nameAndValue[0], ranges: [{term:nameAndValue[1], exclude: exclude}], ref: self, type: 'range'});
+                        self.addToRefineList (facet.terms()[0]);
+                    }
+                } else {
+                    facet = new FacetViewModel({ name: nameAndValue[0], terms: [{term:nameAndValue[1], exclude: exclude}], ref: self, type: 'terms'});
+                    self.addToRefineList (facet.terms()[0]);
+                }
             });
         }
     };
@@ -247,9 +254,12 @@ function FilterViewModel(config){
         var promise = parent.getFacetTerms(facetVM.name());
         promise.then(function (data) {
             var facets = data.facets;
-            var facet = facets && facets[0];
-            if(facet){
-                var terms = facetVM.getTerms(facet.terms);
+            var facet = facets && $.grep(facets, function (facet) {
+                return facet.name == facetVM.name()
+            });
+
+            if(facet && (facet.length == 1)){
+                var terms = facetVM.getTerms(facet[0]);
                 self.showMoreTermList(terms);
             }
         })
@@ -304,11 +314,11 @@ function FacetViewModel(facet) {
     var state = facet.state|| 'Expanded';
 
     self.name = ko.observable(facet.name);
-    self.title = facet.title
+    self.title = facet.title;
     self.total = ko.observable(facet.total);
     self.terms = ko.observableArray();
     self.filter = ko.observable(false);
-    self.helpText = ko.observable(facet.helpText)
+    self.helpText = ko.observable(facet.helpText);
     self.displayName = ko.computed(function(){
         return self.title || cleanName(self.name()) || 'Unknown';
     });
@@ -341,15 +351,26 @@ function FacetViewModel(facet) {
 
     self.ref = facet.ref;
 
-    self.getTerms = function (terms) {
-        var terms = $.map(terms || [], function (term, index) {
-            term.facet = self;
-            return new FacetTermViewModel(term);
-        });
-        return terms;
+    self.getTerms = function (facet) {
+        switch (facet.type){
+            case 'terms':
+                var terms = $.map(facet.terms || [], function (term, index) {
+                    term.facet = self;
+                    return new FacetTermViewModel(term);
+                });
+                return terms;
+                break;
+            case 'range':
+                var ranges = $.map(facet.ranges || [], function (term, index) {
+                    term.facet = self;
+                    return new FacetRangeViewModel(term);
+                });
+                return ranges;
+                break;
+        }
     };
 
-    self.terms(self.getTerms(facet.terms));
+    self.terms(self.getTerms(facet));
 
     /**
      * Set a flag on a term to indicate that it is selected. 
@@ -374,12 +395,17 @@ function FacetViewModel(facet) {
     };
 
     self.showChooseMore = function () {
-        var terms = self.terms() || [];
-        if(terms.length >= self.ref.flimit){
-            return true;
-        }
+        switch (self.type){
+            case 'terms':
+                var terms = self.terms() || [];
+                if(terms.length >= self.ref.flimit){
+                    return true;
+                }
 
-        return false
+                return false;
+            case 'ranges':
+                return false;
+        }
     };
 
     /**
@@ -413,6 +439,7 @@ function FacetTermViewModel(term) {
     var self = this;
     if (!term) term = {};
 
+    self.type = 'term';
     self.selected = ko.observable(false);
     self.facet = term.facet;
     self.count = ko.observable(term.count);
@@ -447,6 +474,134 @@ function FacetTermViewModel(term) {
         var prefix = self.exclude? '-':'';
         return prefix + self.facet.name() +':' + self.term();
     }
+
+    /**
+     * constructs a query that can be understood by Atlas of Living Australia systems like biocache
+     * @returns {string}
+     */
+    self.getALACompatibleQueryText = function(){
+        var name = self.facet.nameALAFormat();
+        if(name){
+            var prefix = self.exclude? '-':'';
+            var term = self.term() || "";
+            term = self.facet.transformValueToALAFormat(term);
+            if(typeof term === 'string'){
+                term = term.replace(/ /g,"+");
+            }
+            return prefix + name +':"' + term + '"';
+        }
+    };
+
+    /**
+     * toggle checked status
+     */
+    self.filterNow = function () {
+        self.silent(true);
+        self.checked(true);
+        self.silent(false);
+        self.facet.ref.addToRefineList(self);
+    }
+
+    /**
+     * add to refine list
+     */
+    self.addToRefine = function () {
+        self.facet.ref.addToRefineList(self);
+    }
+
+    /**
+     * when refine result is clicked, add t
+     */
+    self.checked.subscribe(function(value){
+        if(!self.facet.ref){
+            return
+        }
+
+        if(!self.silent()){
+            if(self.checked()){
+                if(!isDuplicate(self.facet.ref.tempListOfFacets(), self)){
+                    self.facet.ref.tempListOfFacets.push(self);
+                }
+            } else {
+                self.facet.ref.tempListOfFacets.remove(self);
+            }
+        }
+    })
+
+    self.remove = function () {
+        self.facet.ref.selectedFacets.remove(self)
+    }
+};
+
+function FacetRangeViewModel(term) {
+    var self = this;
+    if (!term) term = {};
+
+    self.type = 'range';
+    self.selected = ko.observable(false);
+    self.facet = term.facet;
+    self.count = ko.observable(term.count);
+    self.to = ko.observable(term.to);
+    self.from = ko.observable(term.from);
+    self.title = term.title;
+    self.term = ko.observable();
+    self.displayName = ko.computed(function(){
+        var label = self.title || generateTitle() || 'Unknown';
+        if(self.count()){
+            label += " (" + self.count() + ")";
+        }
+
+        return label
+    });
+
+    self.showTerm = ko.observable(term.showTerm || true);
+    // self.id = ko.observable(generateTermIdForFacetTerm(self));
+    self.checked = ko.observable(false);
+    self.silent = ko.observable(false);
+    self.refined = ko.observable(false);
+    self.exclude = term.exclude || false;
+
+
+    function generateTitle() {
+        var label = '';
+        if(self.from() != undefined){
+            label += 'from ' + self.from();
+        }
+
+        if(self.to() != undefined){
+            label += ' to < ' + self.to();
+        }
+
+        return label;
+    };
+
+    self.displayNameWithoutCount = function(){
+        return self.title|| generateTitle() || 'Unknown';
+    };
+
+    /**
+     * constructs a facet term so that it can be passed as fq value.
+     * @returns {string}
+     */
+    self.getQueryText = function(){
+        var prefix = self.exclude? '-':'';
+        var to, from;
+
+        if((self.to() == undefined)){
+            to = '*'
+        } else {
+            to = self.to()
+        }
+
+        if((self.from() == undefined)){
+            from = '*'
+        } else {
+            from = self.from()
+        }
+
+
+        return prefix + self.facet.name() + ':' + '[' + from + ' TO ' + to + '}';
+    };
 
     /**
      * constructs a query that can be understood by Atlas of Living Australia systems like biocache
@@ -506,33 +661,103 @@ function FacetTermViewModel(term) {
     }
 };
 
-function DatePickerViewModel(pageVM, filterVM) {
+FacetRangeViewModel.isRangeQuery = function (query) {
+    var regExp = new RegExp(/([\[\{])(.*) TO (.*)([\]\}])/);
+    var execResult = regExp.exec(query);
+    if(execResult && execResult.length > 1){
+        return true
+    }
+
+    return false
+};
+
+FacetRangeViewModel.parseRangeQuery = function (query) {
+    var regExp = new RegExp(/([\[\{])(.*) TO (.*)([\]\}])/);
+    var result = {};
+    var execResult = regExp.exec(query);
+
+    if(execResult && execResult.length > 1){
+        if(execResult[2] != '*'){
+            result.from = execResult[2];
+        }
+
+        if(execResult[3] != '*'){
+            result.to = execResult[3]
+        }
+    }
+
+    return result
+};
+
+function DatePickerViewModel(config) {
     var self = this;
     var element;
-    self.state = ko.observable('Collapsed');
-    self.displayName = ko.observable();
-    self.helpText = ko.observable();
-    self.fromDate = ko.observable().extend({simpleDate:false});
-    self.toDate = ko.observable().extend({simpleDate:false});
+    self.ref = config.ref;
+    self.title = config.title;
+    self.state = ko.observable(config.state || 'Collapsed');
+    self.name = ko.observable(config.name);
+    self.displayName = ko.observable(config.displayName || config.title);
+    self.helpText = ko.observable(config.helpText);
+    self.fromDate = ko.observable(config.fromDate).extend({simpleDate:false});
+    self.toDate = ko.observable(config.toDate).extend({simpleDate:false});
+    self.type = config.type;
+    self.term = new FacetRangeViewModel({
+        facet: self,
+        to: config.to,
+        from: config.from
+    });
+    self.doNotUpdate = ko.observable(false);
 
-    self.fromDate.subscribe(validateAndSearch);
-    self.toDate.subscribe(validateAndSearch);
+    self.fromDate.subscribe(function () {
+        self.term.from(getYearMonthDate(self.fromDate.date()));
+        self.updateSelectedFacets();
+    });
 
+    self.toDate.subscribe(function () {
+        self.term.to(getYearMonthDate(self.toDate.date()));
+        self.updateSelectedFacets();
+    });
+
+    self.setTermState = function () {
+        self.ref.selectedFacets().forEach(function (term) {
+            if(term.facet.name() == self.name()){
+                if(term instanceof FacetRangeViewModel){
+                    self.term = term;
+                } else {
+                    self.term = new FacetRangeViewModel(term);
+                }
+
+                self.doNotUpdate(true);
+                self.term.to() && self.toDate.date(new Date(self.term.to()));
+                self.term.from() && self.fromDate.date(new Date(self.term.from()));
+                self.doNotUpdate(false);
+            }
+        });
+    };
 
     /**
-     * Check input date is valid and call the search function.
+     * Update selected filter list with from or to date
      */
-    function validateAndSearch () {
-        if(element){
-            var el = $(element).parents('.facetDates');
-
-            if(el.validationEngine('validate')){
-                pageVM.doSearch();
-            } else if ((self.fromDate.date().toString() === "Invalid Date") && (self.toDate.date().toString() === "Invalid Date")){
-                // if both dates are empty i.e. clear button is clicked
-                pageVM.doSearch();
-            }
+    self.updateSelectedFacets = function () {
+        if(!self.doNotUpdate()){
+            self.ref.switchOffSearch(true);
+            self.ref.selectedFacets.remove(self.term);
+            self.ref.switchOffSearch(false);
+            self.ref.selectedFacets.push(self.term);
         }
+    };
+
+    /**
+     * translate Biocollect facet name to a format understood by ALA systems like Biocache, Spatial portal etc.
+     * @returns {*}
+     */
+    self.nameALAFormat = function () {
+        var mapName = BIOCOLLECT_ALA_FACET_MAPPING[self.name()];
+        if(mapName && mapName.name){
+            return mapName.name
+        }
+
+        return mapName;
     };
 
     /**
@@ -581,19 +806,11 @@ function DatePickerViewModel(pageVM, filterVM) {
     };
     
     self.clearDates = function () {
-        var silent = false;
-        // because fromDate and toDate observables have subscribers, clear will trigger two search request.
-        // the below logic will only trigger it once.
-        if(!((self.fromDate.date().toString() !== "Invalid Date") && (self.toDate.date().toString() !== "Invalid Date"))){
-            silent = false;
-        } else {
-            silent = true;
-        }
-
-        filterVM.switchOffSearch(silent);
-        self.fromDate('');
-        filterVM.switchOffSearch(false);
-        self.toDate('');
+        self.ref.selectedFacets.remove(self.term);
+        self.doNotUpdate(true);
+        self.fromDate.date('');
+        self.toDate.date('');
+        self.doNotUpdate(false);
     };
 
     self.showClearButton = function () {
@@ -616,7 +833,7 @@ function generateTermIdForFacetTerm(facetTerm) {
     var name, term
     name = facetTerm.facet.name()
     term = facetTerm.term()
-    return name.replace(/[^a-zA-Z0-9]/g, "") + term.replace(/[^a-zA-Z0-9]/g, "")
+    return name.replace(/[^a-zA-Z0-9]/g, "") + term.toString().replace(/[^a-zA-Z0-9]/g, "")
 }
 
 /**
@@ -628,8 +845,10 @@ function generateTermIdForFacetTerm(facetTerm) {
  * @returns {string}
  */
 function decodeCamelCase(text) {
-    var result = text.replace( /([A-Z])/g, " $1" );
-    return result.charAt(0).toUpperCase() + result.slice(1); // capitalize the first letter - as an example.
+    if(typeof text == 'string'){
+        var result = text.replace( /([A-Z])/g, " $1" );
+        return result.charAt(0).toUpperCase() + result.slice(1); // capitalize the first letter - as an example.
+    }
 }
 
 function cleanName(text) {

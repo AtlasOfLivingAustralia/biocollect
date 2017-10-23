@@ -45,3 +45,7 @@
 .height100{
     height: 100px;
 }
+
+.table-custom-border.borderless td{
+    border: none;
+}

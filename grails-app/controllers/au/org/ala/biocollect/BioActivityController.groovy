@@ -1,7 +1,9 @@
 package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.*
+import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
+import au.org.ala.web.UserDetails
 import grails.converters.JSON
 import groovyx.net.http.ContentType
 import org.apache.commons.io.FilenameUtils
@@ -10,7 +12,6 @@ import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
-import au.org.ala.web.UserDetails
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST
 import static org.apache.http.HttpStatus.SC_OK
@@ -544,39 +545,33 @@ class BioActivityController {
         queryParams.sort = queryParams.sort ?: 'lastUpdated'
         queryParams.order = queryParams.order ?: 'DESC'
         queryParams.fq = queryParams.fq ?: ''
+        queryParams.rfq = queryParams.rfq ?: ''
         queryParams.searchTerm = queryParams.searchTerm ?: ''
 
+        HubSettings hubSettings = SettingService.hubConfig
+        String defaultFacets = projectActivityService.getDataPageDefaultFacets()
+        List facetConfig = hubSettings.getFacetConfigForPage(projectActivityService.getDataPagePropertyFromViewName(params.view))
+
         if(!queryParams.facets){
-            String facets = "projectNameFacet,organisationNameFacet,projectActivityNameFacet,recordNameFacet,userId,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
+            String facets = HubSettings.getFacetConfigForElasticSearch(facetConfig)?.collect{ it.name }?.join(',')
+            queryParams.facets = facets?: defaultFacets
+        }
 
-            switch (params.view) {
-
-                case 'myrecords':
-                    facets = "projectNameFacet,organisationNameFacet,projectActivityNameFacet,recordNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
-                    break
-
-                case 'project':
-                    facets = "projectActivityNameFacet,recordNameFacet,userId,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
-                    break
-
-                case 'projectrecords':
-                    facets = "recordNameFacet,userId,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
-                    break
-
-                case 'myprojectrecords':
-                    facets = "recordNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
-                    break
-
-                case 'userprojectactivityrecords':
-                    facets = "recordNameFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
-                    break
-
-                case 'allrecords':
-                default:
-                    break
+        List presenceAbsenceFacets = HubSettings.getFacetConfigWithPresenceAbsenceSetting(facetConfig)
+        if(presenceAbsenceFacets){
+            if(!queryParams.rangeFacets){
+                queryParams.rangeFacets =[]
             }
 
-            queryParams.facets = facets
+            presenceAbsenceFacets?.each {
+                queryParams.rangeFacets.add("${it.name}:[* TO 1}")
+                queryParams.rangeFacets.add("${it.name}:[1 TO *}")
+            }
+        }
+
+        if(!queryParams.histogramFacets){
+            String facets = HubSettings.getFacetConfigWithHistogramSetting(facetConfig)?.collect{ "${it.name}:${it.interval}" }?.join(',')
+            queryParams.histogramFacets = facets
         }
 
         queryParams
@@ -592,7 +587,7 @@ class BioActivityController {
         Map searchResult = searchService.searchProjectActivity(queryParams)
 
         List activities = searchResult?.hits?.hits
-        List facets = []
+        List facets
         activities = activities?.collect {
             Map doc = it._source
 
@@ -622,12 +617,30 @@ class BioActivityController {
             result
         }
 
-        if(queryParams.facets){
-            String[] facetList = queryParams.facets.split(',')
-            facets = searchService.standardiseFacets (searchResult.facets, Arrays.asList(facetList))
+        HubSettings hubSettings = SettingService.hubConfig
+        String alternativeViewName = projectActivityService.getDataPagePropertyFromViewName(queryParams.view)
+        List allFacetConfig = hubSettings.getFacetConfigForPage(alternativeViewName)
+        List facetConfig = HubSettings.getFacetConfigMinusSpecialFacets(allFacetConfig)
+
+        facets = searchService.standardiseFacets (searchResult.facets, facetConfig.collect{ it.name })
+
+        List presenceAbsenceFacetConfig = HubSettings.getFacetConfigWithPresenceAbsenceSetting(allFacetConfig)
+        if(presenceAbsenceFacetConfig){
+            facets = searchService.standardisePresenceAbsenceFacets(facets, presenceAbsenceFacetConfig)
         }
 
-        facets = projectActivityService.getDisplayNamesForFacets(facets);
+        List histogramFacetConfig = HubSettings.getFacetConfigWithHistogramSetting(allFacetConfig)
+        if(histogramFacetConfig){
+            facets = searchService.standardiseHistogramFacets(facets, histogramFacetConfig)
+        }
+
+        List specialFacetConfig = HubSettings.getFacetConfigWithSpecialFacets(allFacetConfig)
+        if(specialFacetConfig){
+            facets = projectActivityService.addSpecialFacets(facets, allFacetConfig)
+        }
+
+        facets = projectActivityService.getDisplayNamesForFacets(facets, allFacetConfig)
+        facets = projectService.addFacetState(facets, allFacetConfig)
         render([activities: activities, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
     }
 
@@ -1088,6 +1101,6 @@ class BioActivityController {
 
     def getFacets(){
         List facets = activityService.getFacets()
-        render text: facets as JSON, contentType: 'application/json'
+        render text: [facets: facets] as JSON, contentType: 'application/json'
     }
 }

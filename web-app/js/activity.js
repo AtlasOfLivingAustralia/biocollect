@@ -92,13 +92,14 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                     case 'store':
                         var facets = [];
                         ko.utils.arrayForEach(self.filterViewModel.selectedFacets(), function (filter) {
-                            var value = {};
-                            value.term = filter.term();
-                            value.title = filter.facet.title;
-                            value.name = filter.facet.name();
-                            value.exclude = filter.exclude;
+                            var value = ko.mapping.toJS(filter);
+                            delete  value.facet.terms;
+                            delete  value.facet.ref;
+                            delete  value.facet.filter;
+                            delete  value.facet.term;
                             facets.push(value);
                         });
+
                         amplify.store(key, facets);
                         break;
 
@@ -535,10 +536,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             projectActivityId: fcConfig.projectActivityId,
             clientTimezone : moment.tz.guess()
         },
-            fq = [];
+            fq = [],
+            rfq;
 
 
-        var filters = '';
+        var filters = '', rfilters = '';
         if (_.isUndefined(facetOnly) || !facetOnly) {
             params.searchTerm = self.searchTerm().trim();
 
@@ -550,8 +552,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         }
 
         url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
-
-        return url + filters;
+        return url + filters + rfilters;
     }
 
     function fetchDataForTabs(){
@@ -584,17 +585,19 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             })
         }));
     } else if (restored && restored.length > 0) {
-        var selectedFacets = []
+        var selectedFacets = [];
         $.each(restored, function (index, value) {
-            selectedFacets.push(new FacetTermViewModel({
-                term: value.term || '',
-                exclude: value.exclude,
-                facet: new FacetViewModel({
-                    name: value.name || '',
-                    title: value.title || '',
-                    ref: self.filterViewModel
-                })
-            }));
+            value.facet = self.filterViewModel.createFacetViewModel(value.facet);
+
+            switch (value.type){
+                case 'range':
+                    selectedFacets.push(new FacetRangeViewModel(value));
+                    break;
+                case 'term':
+                default:
+                    selectedFacets.push(new FacetTermViewModel(value));
+                    break;
+            }
         });
 
         !doNotInit && self.filterViewModel.selectedFacets.push.apply(self.filterViewModel.selectedFacets, selectedFacets);

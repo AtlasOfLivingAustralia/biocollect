@@ -510,15 +510,30 @@ class ProjectController {
 
         // format facets to a way acceptable for JS view model
         if(searchResult.facets){
-            String[] facetList = queryParams.facets?.split(',')
-            facets = searchService.standardiseFacets (searchResult.facets, Arrays.asList(facetList))
+            HubSettings hub = SettingService.hubConfig
+            List allFacetConfig = hub.getFacetConfigForPage('projectFinder')
+            List facetConfig = HubSettings.getFacetConfigForElasticSearch(allFacetConfig)
+            List facetList = params.facets ? params.facets?.split(',') : facetConfig?.collect { it.name }
+            facets = searchService.standardiseFacets (searchResult.facets, facetList)
+
+            List presenceAbsenceFacetConfig = HubSettings.getFacetConfigWithPresenceAbsenceSetting(allFacetConfig)
+            if(presenceAbsenceFacetConfig){
+                facets = searchService.standardisePresenceAbsenceFacets(facets, presenceAbsenceFacetConfig)
+            }
+
+            List histogramFacetConfig = HubSettings.getFacetConfigWithHistogramSetting(allFacetConfig)
+            if(histogramFacetConfig){
+                facets = searchService.standardiseHistogramFacets(facets, histogramFacetConfig)
+            }
+
+
             // if facet is provided by client do not add special facets
             if(!params.facets){
                 facets = projectService.addSpecialFacets(facets)
             }
 
             facets = projectService.addFacetExpandCollapseState(facets)
-            projectService.getDisplayNamesForFacets(facets)
+            projectService.getDisplayNamesForFacets(facets, allFacetConfig)
         }
 
         projects?.each{ Map project ->
@@ -551,6 +566,8 @@ class ProjectController {
 
         List difficulty = [], status =[]
         Map trimmedParams = commonService.parseParams(params)
+        HubSettings hub = SettingService.hubConfig
+        List allFacetConfig = hub.getFacetsForProjectFinderPage()
         trimmedParams.fsort = 'term'
         trimmedParams.flimit = params.flimit?:15
         trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
@@ -601,7 +618,25 @@ class ProjectController {
         }
 
         if(!trimmedParams.facets) {
-            trimmedParams.facets = projectService.getFacetListForHub()?.join(",")
+            trimmedParams.facets = HubSettings.getFacetConfigForElasticSearch(allFacetConfig)?.collect { it.name }?.join(",")
+        }
+
+        List presenceAbsenceFacets = HubSettings.getFacetConfigWithPresenceAbsenceSetting(allFacetConfig)
+        if(presenceAbsenceFacets){
+            if(!trimmedParams.rangeFacets){
+                trimmedParams.rangeFacets =[]
+            }
+
+            presenceAbsenceFacets?.each {
+                trimmedParams.rangeFacets.add("${it.name}:[* TO 1}")
+                trimmedParams.rangeFacets.add("${it.name}:[1 TO *}")
+            }
+        }
+
+        List histogramFacets = HubSettings.getFacetConfigWithHistogramSetting(allFacetConfig)
+        if(histogramFacets){
+            String facets = histogramFacets?.collect{ "${it.name}:${it.interval}" }?.join(',')
+            trimmedParams.histogramFacets = facets
         }
 
         if(trimmedParams.flimit == "-1"){
@@ -680,21 +715,6 @@ class ProjectController {
                 trimmedParams.query += " AND (${status.join(' OR ')})";
             }
             trimmedParams.status = null
-        }
-
-        if(trimmedParams.fromDate || trimmedParams.toDate){
-            List dates = [];
-            if(trimmedParams.fromDate){
-                dates.push('plannedStartDate:>=' + trimmedParams.fromDate);
-            }
-
-            if(trimmedParams.toDate){
-                dates.push('plannedStartDate:<=' + trimmedParams.toDate)
-            }
-
-            trimmedParams.query += " AND (${dates.join(' AND ')})";
-            trimmedParams.toDate = null
-            trimmedParams.fromDate = null
         }
 
         if (trimmedParams.isUserPage) {

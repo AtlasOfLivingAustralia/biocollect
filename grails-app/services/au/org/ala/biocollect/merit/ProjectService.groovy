@@ -24,15 +24,18 @@ class ProjectService {
             [
                     name:'status',
                     total: 0,
-                    terms: [ [ term: 'active', count: 0], [ term: 'completed', count: 0 ]]
+                    terms: [ [ term: 'active', count: 0, title: 'Active'], [ term: 'completed', count: 0, title: 'Completed' ]],
+                    type: 'terms'
             ],
             [
                     name:'plannedStartDate',
                     type: 'date',
                     total: 0,
-                    terms: [ [ fromDate: '', toDate: ''] ]
+                    terms: [ [ fromDate: '', toDate: ''] ],
+                    type: 'date'
             ]
     ]
+    public static final String PROJECT_FINDER_PAGE= 'projectFinder'
 
 
     WebService webService
@@ -742,10 +745,11 @@ class ProjectService {
      * @param facets
      * @return
      */
-    List getDisplayNamesForFacets(facets){
+    List getDisplayNamesForFacets(List facets, List facetConfig){
         facets?.each { facet ->
-            facet.title = messageSource.getMessage("project.facets."+facet.name, [].toArray(), facet.name, Locale.default)
-            facet.helpText = messageSource.getMessage("project.facets."+facet.name +".helpText", [].toArray(), "", Locale.default)
+            Map config = facetConfig.find { it.name == facet.name }
+            facet.title = config?.title
+            facet.helpText = config?.helpText
             facet.terms?.each{ term ->
                 term.title = messageSource.getMessage("project.facets."+facet.name+"."+term.term, [].toArray(), term.name, Locale.default)
             }
@@ -779,34 +783,14 @@ class ProjectService {
     }
 
     /**
-     * Get list of all possible facets for citizen science project finder.
-     * @return
-     */
-    Map getFacetsFromUrl(){
-        cacheService.get("facets.project", {
-            String url =  grailsApplication.config.ecodata.service.url + '/project/getBiocollectFacets'
-            webService.getJson(url)
-        })
-    }
-
-    /**
      * Get list of all possible facets for citizen science project finder. Then process it to a form it can be used
      * on admin's hub page.
      * @return
      */
     List getFacets(){
         cacheService.get("facets.project.resolved", {
-            Map facets = getFacetsFromUrl()
-            if (facets.facets) {
-                List facetsMapList = facets.facets?.collect {
-                    [name: it]
-                }
-
-                facetsMapList = getDisplayNamesForFacets(facetsMapList)
-                facetsMapList.sort{ it.title }
-            } else if (facets.error) {
-                return []
-            }
+            List facetsMapList = grailsApplication.config.facets.project
+            facetsMapList.sort{ it.title }
         })
     }
 
@@ -818,21 +802,23 @@ class ProjectService {
      */
     List addFacetExpandCollapseState (List facets){
         HubSettings hub = SettingService.getHubConfig()
-        Boolean checkState = false
         List configurableFacets = []
-        if(hub.isFacetListConfigured()){
-            checkState = true
-            configurableFacets = hub.getConfigForFacets()
+        if(hub.isFacetListConfigured(PROJECT_FINDER_PAGE)){
+            configurableFacets = hub.getFacetsForProjectFinderPage()
         }
 
-        facets?.each {facet ->
+        addFacetState(facets, configurableFacets)
+    }
+
+    List addFacetState(List facets, List configurableFacets) {
+        facets?.each { facet ->
             String state = 'Expanded'
-            if(checkState){
+            if (configurableFacets) {
                 Map cFacet = configurableFacets?.find {
                     it.name == facet.name
                 }
 
-                if(cFacet){
+                if (cFacet) {
                     state = cFacet.state
                 }
             }
@@ -851,8 +837,8 @@ class ProjectService {
      */
     List addSpecialFacets(List facets){
         HubSettings hub = SettingService.getHubConfig()
-        if(hub.isFacetListConfigured()) {
-            List hubFacets = hub.getConfigForFacets()
+        if(hub.isFacetListConfigured(PROJECT_FINDER_PAGE)) {
+            List hubFacets = hub.getFacetsForProjectFinderPage()
             SPECIAL_FACETS.each { specialFacet ->
                 int index = hubFacets?.findIndexOf{ it.name == specialFacet.name }
                 if(index >= 0){
@@ -874,11 +860,11 @@ class ProjectService {
      * Get list of facets for the current hub.
      * @return
      */
-    String[] getFacetListForHub(){
+    List getFacetListForHub(){
         HubSettings hub = SettingService.getHubConfig()
 
-        if(hub.isFacetListConfigured()) {
-            List facets = hub.getFacets()
+        if(hub.isFacetListConfigured(PROJECT_FINDER_PAGE)) {
+            List facets = hub.getFacetConfigForPage(PROJECT_FINDER_PAGE)
             // remove facets that have special meaning e.g. status facet which categorises a project as completed or active
             // using the project's end date.
             SPECIAL_FACETS.each { facet ->
@@ -891,7 +877,7 @@ class ProjectService {
                 }
             }
 
-            facets.toArray();
+            facets;
         }
     }
 
