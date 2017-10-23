@@ -9,7 +9,8 @@
 					<thead>
 					<tr>
 						<th></th>
-						<th>Outcomes <fc:iconHelp title="Outcomes">Enter the outcomes sought by the project. This should be expressed as a 'SMART' statement (Specific Measurable Attainable Realistic and Time-bound) and deliver against the programme.  The outcome should be no more than 2 sentences.</fc:iconHelp></th>
+						<th>Baseline condition</th>
+						<th>Target Outcomes <fc:iconHelp title="Outcomes">Enter the outcomes sought by the project. This should be expressed as a 'SMART' statement (Specific Measurable Attainable Realistic and Time-bound) and deliver against the programme.  The outcome should be no more than 2 sentences.</fc:iconHelp></th>
 						<th>
 							Asset(s) addressed <fc:iconHelp title="Asset(s) addressed">Select the most appropriate natural/cultural asset or assets being addressed by this project from the drop down list. Note that multiple selections can be made. </fc:iconHelp>
 						</br> (Hold down the Ctrl key and click to select multiple values.)
@@ -20,8 +21,9 @@
 					<tbody data-bind="foreach : details.objectives.rows1">
 					<tr>
 						<td width="2%"> <span data-bind="text:$index()+1"></span></td>
-						<td width="54%"><textarea style="width: 99%;" data-bind="value: description, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
-						<td width="40%"><select style="width: 99%;float:right;" class="input-xlarge"
+						<td width="35%"><textarea style="width: 99%;" data-bind="value: baseline, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
+						<td width="35%"><textarea style="width: 99%;" data-bind="value: target, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
+						<td width="20%"><select style="width: 99%;float:right;" class="input-xlarge"
 												data-bind="options: $parent.protectedNaturalAssests, selectedOptions: assets, disable: $parent.isProjectDetailsLocked()" size="5" multiple="true"></select></td>
 						<td width="4%">
 							<span data-bind="if: $index() && !$parent.isProjectDetailsLocked()"><i class="icon-remove" data-bind="click: $parent.removeObjectivesOutcome"></i></span>
@@ -263,6 +265,12 @@
 	<div class="row-fluid space-after">
 		<!-- ko with: details -->
 		<g:render template="riskTable"></g:render>
+		<!-- /ko -->
+	</div>
+
+	<div class="row-fluid space-after">
+		<!-- ko with: details.issues -->
+		<g:render template="issueTable"></g:render>
 		<!-- /ko -->
 	</div>
 

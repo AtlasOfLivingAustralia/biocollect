@@ -111,6 +111,7 @@ function DetailsViewModel(projectDetails, period) {
     self.lastUpdated = ko.observable(projectDetails.lastUpdated ? projectDetails.lastUpdated : moment().format());
     self.budget = new BudgetViewModel(projectDetails.budget, period);
     $.extend(self, new Risks(projectDetails.risks));
+    self.issues = new IssuesViewModel(projectDetails.issues);
 
     var row = [];
     projectDetails.events ? row = projectDetails.events : row.push(ko.mapping.toJS(new EventsRowViewModel()));
@@ -187,9 +188,17 @@ function EventsRowViewModel(o) {
 function OutcomeRowViewModel(o) {
     var self = this;
     if(!o) o = {};
-    self.description = ko.observable(o.description);
+    self.baseline = ko.observable(o.baseline);
+    self.target = ko.observable(o.target);
     if(!o.assets) o.assets = [];
     self.assets = ko.observableArray(o.assets);
+};
+
+function OutcomeProgressViewModel(o) {
+    var self = this;
+    if(!o) o = {};
+    self.outcome = ko.observable(o.outcome);
+    self.progress = ko.observable(o.progress);
 };
 
 function BudgetViewModel(o, period){

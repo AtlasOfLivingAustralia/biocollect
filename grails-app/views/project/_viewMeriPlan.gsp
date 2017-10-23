@@ -18,14 +18,16 @@
 					        <thead>
 					            <tr>
 					            	<th></th>
-					                <th>Outcomes</th>
-					                <th>Asset(s) addressed</th>
+									<th>Baseline condition</th>
+									<th>Target Outcomes</th>
+									<th>Asset(s) addressed</th>
 					            </tr>
 					        </thead>
 						<tbody data-bind="foreach : details.objectives.rows1">
 							<tr>
 				            	<td><span data-bind="text: $index()+1"></span></td>
-				            	<td><span data-bind="text:description"></span></td>
+				            	<td><span data-bind="text:baseline"></span></td>
+								<td><span data-bind="text:target"></span></td>
 				            	<td><label data-bind="text:assets"></label></td>
 				            </tr>
 						</tbody>		
@@ -192,8 +194,8 @@
 					<div align="right">
 				  		<b> Overall project risk profile : <span data-bind="text: risks.overallRisk, css: overAllRiskHighlight" ></span></b>
 					</div>
-					<table>
-				    <thead style="width:100%;">
+					<table style="width:100%;">
+				    <thead >
 			          <tr>
 			            <th>Type of threat / risk</th>
 			            <th>Description</th>
@@ -234,5 +236,51 @@
 			    </div>
 		</div>
 		<!-- /ko -->
+
+			<!-- ko with: details.issues -->
+			<div class="row-fluid space-after">
+				<div class="required">
+					<div class="project-issues margin-bottom-10 margin-right-20">
+						<label><b>Project issues</b></label>
+						<table style="width:100%;">
+							<thead >
+							<tr>
+							<tr>
+								<th class="type">Type of issue </th>
+								<th class="status">Status </th>
+								<th class="priority">Priority </th>
+								<th class="description">Description</th>
+								<th class="actionPlan">Action plan </th>
+								<th class="impact">Impact</th>
+							</tr>
+							</tr>
+							</thead>
+							<tbody data-bind="foreach : issues" >
+							<tr>
+								<td class="type">
+									<label data-bind="text: type" ></label>
+								</td>
+								<td class="status">
+									<label data-bind="text: status" ></label>
+								</td>
+								<td class="priority">
+									<label data-bind="text: priority" ></label>
+								</td>
+								<td  class="description">
+									<label data-bind="text: description" ></label>
+								</td>
+								<td class="actionPlan">
+									<label data-bind="text: actionPlan" ></label>
+								</td>
+								<td class="impact">
+									<label data-bind="text: impact" ></label>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- /ko -->
 		</g:if>
 </div>
