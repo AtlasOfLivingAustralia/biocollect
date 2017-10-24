@@ -245,10 +245,8 @@ class ActivityService {
 
 
     List getFacets(){
-        Map dynamicFacets = getDynamicFacets()
-        if(dynamicFacets){
-            List facets = dynamicFacets.collect{ [name: it.key] }
-            facets + grailsApplication.config.facets.data
-        }
+        Map dynamicFacets = getDynamicFacets()?:[:]
+        List facets = dynamicFacets.collect{ [name: it.key] }
+        facets + grailsApplication.config.facets.data
     }
 }
