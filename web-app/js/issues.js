@@ -1,9 +1,8 @@
-
-function IssuesViewModel (issues) {
+function IssuesViewModel(issues) {
     var self = this;
     self.status = ko.observable();
     self.issues = ko.observableArray();
-    self.load = function(issues) {
+    self.load = function (issues) {
         if (!issues) {
             issues = {};
         }
@@ -14,7 +13,7 @@ function IssuesViewModel (issues) {
             }));
         }
     };
-    self.modelAsJSON = function() {
+    self.modelAsJSON = function () {
         var tmp = {};
         tmp = ko.mapping.toJS(self);
         tmp['status'] = 'active';
@@ -24,25 +23,30 @@ function IssuesViewModel (issues) {
         });
         return json;
     };
-    self.addIssue = function(){
+    self.addIssue = function () {
         self.issues.push(new IssueViewModel());
     };
-    self.removeIssue = function(issue) {
+    self.removeIssue = function (issue) {
         self.issues.remove(issue);
     };
     self.load(issues);
 };
 
-function IssueViewModel (issue) {
+function IssueViewModel(issue) {
     var self = this;
-    if(!issue) issue = {};
+    if (!issue) issue = {};
     self.type = ko.observable(issue.type);
     self.priority = ko.observable(issue.priority);
-    self.priority.options = ['blocker','high','medium','low'];
-    self.status = ko.observable(issue.status || 'current');
-    self.status.options = ['current','resolved'];
+    self.priority.options =
+        ['Critical importance',
+            'Very important',
+            'Important',
+            'Low importance',
+            'Not important'];
+    self.status = ko.observable(issue.status || 'New');
+    self.status.options = [ 'New', 'Unresolved','Being actioned','Escalated','Closed'];
     self.description = ko.observable(issue.description);
     self.actionPlan = ko.observable(issue.actionPlan);
     self.impact = ko.observable(issue.impact);
-    self.impact.options = ['critical', 'significant', 'moderate', 'low'];
+    self.impact.options = ['Critical', 'Significant', 'Moderate', 'Low'];
 };
