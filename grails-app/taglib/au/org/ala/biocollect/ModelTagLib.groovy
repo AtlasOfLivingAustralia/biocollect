@@ -72,18 +72,15 @@ class ModelTagLib {
      */
     def dataTag(attrs, model, context, editable, elementAttributes, databindAttrs, labelAttributes) {
         ModelWidgetRenderer renderer
-        def toEdit
+
+        def toEdit = editable && !model.computed && !model.noEdit
+
         def validate = validationAttribute(attrs, model, editable)
 
         if (attrs.printable) {
             renderer = new PrintModelWidgetRenderer()
         } else {
-            toEdit = editable && !model.computed && !model.noEdit
-            if (toEdit) {
-                renderer = new EditModelWidgetRenderer()
-            } else {
-                renderer = new ViewModelWidgetRenderer()
-            }
+            renderer = toEdit ? new EditModelWidgetRenderer() : new ViewModelWidgetRenderer()
         }
 
         // hack - sometimes span class are added to elementAttributes. It interferes with the rendering of input like
@@ -350,6 +347,20 @@ class ModelTagLib {
         return criteria.contains("required")
     }
 
+    /**
+     * Check if the field is visible to only project members (and ALA admins)
+     * @parma attrs the attributes passed to the tag library.  Used to access site id.
+     * @param model of the data element
+     * @return true if field marked as member only, false if it has public visibility
+     */
+    def isHidden(attrs, model) {
+        def toEdit = attrs.edit && !model.computed && !model.noEdit
+        def userIsProjectMember = attrs.userIsProjectMember
+
+        // hidden from public and visible to only project members (and ALA admins)
+        return (!toEdit && model.memberOnlyView && !userIsProjectMember) ? true: false
+    }
+
     def validationAttribute(attrs, model, edit) {
         def criteria = getValidationCriteria(attrs, model, edit)
         if (criteria.isEmpty()) {
@@ -415,6 +426,9 @@ class ModelTagLib {
         def span = context == 'row'? (int)(LAYOUT_COLUMNS / model.items.size()) : LAYOUT_COLUMNS
 
         model.items.each { it ->
+            if (isHidden(attrs, it)){
+                return
+            }
             AttributeMap at = new AttributeMap()
             at.addClass(it.css)
             // inject computed from data model

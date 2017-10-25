@@ -327,15 +327,18 @@ class BioActivityController {
      * @return
      */
     def index(String id) {
-        def activity = activityService.get(id, params?.version)
-        def pActivity = projectActivityService.get(activity?.projectActivityId, "all", params?.version)
-
         String userId = userService.getCurrentUserId()
+
+        def activity = activityService.get(id, params?.version, userId, true)
+        def pActivity = projectActivityService.get(activity?.projectActivityId, "all", params?.version)
 
         boolean embargoed = projectActivityService.isEmbargoed(pActivity)
         boolean userIsOwner = userId && activityService.isUserOwnerForActivity(userId, id)
         boolean userIsAdmin = userId && projectService.isUserAdminForProject(userId, id)
         boolean userIsAlaAdmin = userService.userIsAlaOrFcAdmin()
+
+        def members = projectService.getMembersForProjectId(activity?.projectId)
+        boolean userIsProjectMember = members.find{it.userId == userId} || userIsAlaAdmin
 
         if (activity && pActivity) {
             if (embargoed && !userIsAdmin && !userIsOwner && !userIsAlaAdmin) {
@@ -345,7 +348,9 @@ class BioActivityController {
                 Map model = activityAndOutputModel(activity, activity.projectId, 'view', params?.version)
                 model.pActivity = pActivity
                 model.id = pActivity.projectActivityId
+                model.userIsProjectMember = userIsProjectMember
                 params.mobile ? model.mobile = true : ''
+
                 model
 
             }
