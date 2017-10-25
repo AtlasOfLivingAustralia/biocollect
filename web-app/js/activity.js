@@ -222,7 +222,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return getSelectedTermsForRefinement().length > 0;
     };
 
-    self.delete = function (activity) {
+    self.remove = function (activity) {
         bootbox.confirm("Are you sure you want to delete the survey and records?", function (result) {
             if (result) {
                 var url = fcConfig.activityDeleteUrl + "/" + activity.activityId();

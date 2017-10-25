@@ -91,7 +91,7 @@ function CommentViewModel(config) {
     }
 
     // talk with server to delete a comment, callback sent from listmodelview
-    self.delete = function(successCallback, errorCallback){
+    self.remove = function(successCallback, errorCallback){
         var url = fcConfig.deleteCommentUrl + '/' + self.id();
         $.ajax({
             url: url,
@@ -291,8 +291,8 @@ function CommentListViewModel() {
         });
     }
 
-    self.delete = function(comment, event){
-        comment && comment.delete(function(){
+    self.remove = function(comment, event){
+        comment && comment.remove(function(){
             if(comment.parentNode){
                 comment.parentNode.children.remove(comment);
             } else {

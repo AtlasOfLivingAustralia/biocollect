@@ -254,7 +254,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                     showAlert("Successfully deleted.", "alert-success", self.placeHolder);
                 }
                 else {
-                    self.delete();
+                    self.remove();
                 }
             }
         });
@@ -340,7 +340,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         });
     };
 
-    self.delete = function(){
+    self.remove = function(){
         var pActivity = self.current();
         var url =  fcConfig.projectActivityDeleteUrl + "/" + pActivity.projectActivityId();
         $.ajax({

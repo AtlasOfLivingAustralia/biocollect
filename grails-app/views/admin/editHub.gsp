@@ -408,59 +408,59 @@
                 </div>
             </div>
 
-            <div>
-                <h4>Configure project finder facets</h4>
-                <div>
+            <div class="border-bottom-4">
+                <h4><strong>Configure project finder facets</strong></h4>
+                <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.projectFinder } -->
                     <!-- /ko -->
                 </div>
             </div>
 
-            <div class="margin-bottom-20">
-                <h4>Configure facets on all records page</h4>
-                <div>
+            <div class="margin-bottom-20 border-bottom-4">
+                <h4><strong>Configure facets on all records page</strong></h4>
+                <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.allRecords } -->
                     <!-- /ko -->
                 </div>
             </div>
 
-            <div class="margin-bottom-20">
-                <h4>Configure facets on my records page</h4>
-                <div>
+            <div class="margin-bottom-20 border-bottom-4">
+                <h4><strong>Configure facets on my records page</strong></h4>
+                <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.myRecords } -->
                     <!-- /ko -->
                 </div>
             </div>
 
-            <div>
-                <h4>Configure facets on project's data tab</h4>
-                <div>
+            <div class="margin-bottom-20 border-bottom-4">
+                <h4><strong>Configure facets on project's data tab</strong></h4>
+                <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.project } -->
                     <!-- /ko -->
                 </div>
             </div>
 
-            <div>
-                <h4>Configure facets on my project records page</h4>
-                <div>
+            <div class="margin-bottom-20 border-bottom-4">
+                <h4><strong>Configure facets on my project records page</strong></h4>
+                <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.myProjectRecords } -->
                     <!-- /ko -->
                 </div>
             </div>
 
 
-            <div>
-                <h4>Configure facets on user's project activity records page</h4>
-                <div>
+            <div class="margin-bottom-20 border-bottom-4">
+                <h4><strong>Configure facets on user's project activity records page</strong></h4>
+                <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.userProjectActivityRecords } -->
                     <!-- /ko -->
                 </div>
             </div>
 
 
-            <div>
-                <h4>Configure facets on project records page</h4>
-                <div>
+            <div class="margin-bottom-20 border-bottom-4">
+                <h4><strong>Configure facets on project records page</strong></h4>
+                <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.projectRecords } -->
                     <!-- /ko -->
                 </div>
@@ -973,7 +973,7 @@
             </select>
         </td>
         <td>
-            <input type="number"  data-bind="value:interval" min="0">
+            <input type="number"  data-bind="value:interval, disable: isNotHistogram" min="0">
         </td>
         <td>
             <input type="text"  data-bind="value:title" placeholder="Give a custom name for facet.">
@@ -1003,7 +1003,6 @@
     </tr>
     </tfoot>
 </table>
-<hr/>
 </script>
 <r:script>
 

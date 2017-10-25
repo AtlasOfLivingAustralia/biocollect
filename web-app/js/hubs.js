@@ -577,6 +577,10 @@ function FacetViewModel(config){
     self.formattedName = ko.computed(function () {
         return self.title() + ' (' + self.name() + ')'
     });
+
+    self.isNotHistogram = ko.computed(function () {
+        return self.facetTermType() != 'Histogram';
+    });
 };
 
 function CustomBreadCrumbsViewModel(config) {

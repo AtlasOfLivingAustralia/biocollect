@@ -293,7 +293,7 @@
                                                 class="fa fa-edit" title="Edit survey"></i></a>
                                     </span>
                                     <span class="margin-left-1">
-                                        <a href="#" data-bind="click: $parent.delete"><i
+                                        <a href="#" data-bind="click: $parent.remove"><i
                                                 class="fa fa-remove" title="Delete survey"></i></a>
                                     </span>
                                 </div>

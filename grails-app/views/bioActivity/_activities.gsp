@@ -195,7 +195,7 @@
                                                     <button data-bind="click: function(){ window.location = $parent.transients.editUrl() }" title="Edit record" class="btn btn-small editBtn btn-default margin-top-5"><i class="fa fa-pencil"></i> Edit</button>
                                                 </span>
                                                 <span data-bind="visible: !$parent.readOnly(), if: $parent.showCrud()">
-                                                    <button class="btn btn-small btn-default margin-top-5" data-bind="click: function(){ $parent.transients.parent.delete($parent) }" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
+                                                    <button class="btn btn-small btn-default margin-top-5" data-bind="click: function(){ $parent.transients.parent.remove($parent) }" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
                                                 </span>
                                             </div>
                                         </td>
@@ -255,7 +255,7 @@
                                                     <a data-bind="attr:{'href': transients.editUrl}" title="Edit record" class="btn btn-small editBtn btn-default"><i class="fa fa-pencil"></i> Edit</a>
                                                 </span>
                                                 <span data-bind="visible: !readOnly()">
-                                                    <button class="btn btn-small btn-default" data-bind="click: $parent.delete" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
+                                                    <button class="btn btn-small btn-default" data-bind="click: $parent.remove" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
                                                 </span>
                                             </div>
                                         </td>

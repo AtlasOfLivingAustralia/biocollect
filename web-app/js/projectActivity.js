@@ -669,7 +669,8 @@ var AlertViewModel = function (alert) {
         }
         self.transients.species.reset();
     };
-    self.delete = function (species) {
+
+    self.remove = function (species) {
         self.allSpecies.remove(species);
     };
 
