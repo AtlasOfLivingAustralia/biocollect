@@ -809,7 +809,7 @@ class ProjectService {
         facets?.each { facet ->
             String state = 'Expanded'
             if (configurableFacets) {
-                Map cFacet = configurableFacets?.find {
+                Map cFacet = configurableFacets.find {
                     it.name == facet.name
                 }
 
@@ -849,31 +849,6 @@ class ProjectService {
         }
 
         facets
-    }
-
-    /**
-     * Get list of facets for the current hub.
-     * @return
-     */
-    List getFacetListForHub(){
-        HubSettings hub = SettingService.getHubConfig()
-
-        if(hub.isFacetListConfigured(PROJECT_FINDER_PAGE)) {
-            List facets = hub.getFacetConfigForPage(PROJECT_FINDER_PAGE)
-            // remove facets that have special meaning e.g. status facet which categorises a project as completed or active
-            // using the project's end date.
-            SPECIAL_FACETS.each { facet ->
-                int index = facets.findIndexOf {
-                    it == facet.name
-                }
-
-                if (index >= 0) {
-                    facets.remove(index)
-                }
-            }
-
-            facets;
-        }
     }
 
     /**

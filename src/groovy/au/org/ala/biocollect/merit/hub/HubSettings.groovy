@@ -87,7 +87,11 @@ class HubSettings extends JSONObject {
      * @return
      */
     List getFacetConfigForPage(String view){
-        this.pages?.get(view)?.facets
+        if(this.pages?.has(view)){
+            this.pages?.get(view)?.facets
+        } else {
+            []
+        }
     }
 
     /**
@@ -108,23 +112,23 @@ class HubSettings extends JSONObject {
     }
 
     public static List getFacetConfigWithPresenceAbsenceSetting(List facetConfig){
-        facetConfig.grep{ it.facetTermType in [ALL_DATA_TYPES.presenceAbsence] }
+        facetConfig?.grep{ it.facetTermType in [ALL_DATA_TYPES.presenceAbsence] }
     }
 
     public static List getFacetConfigWithActiveCompletedSetting(List facetConfig){
-        facetConfig.grep{ it.facetTermType in [ALL_DATA_TYPES.activeCompleted] }
+        facetConfig?.grep{ it.facetTermType in [ALL_DATA_TYPES.activeCompleted] }
     }
 
 
     public static List getFacetConfigWithHistogramSetting(List facetConfig){
-        facetConfig.grep{ it.facetTermType in [ALL_DATA_TYPES.histogram] }
+        facetConfig?.grep{ it.facetTermType in [ALL_DATA_TYPES.histogram] }
     }
 
     public static List getFacetConfigForElasticSearch(List facetConfig){
-        facetConfig.grep{ !( it.facetTermType in [ALL_DATA_TYPES.presenceAbsence, ALL_DATA_TYPES.histogram, ALL_DATA_TYPES.date, ALL_DATA_TYPES.activeCompleted]) }
+        facetConfig?.grep{ !( it.facetTermType in [ALL_DATA_TYPES.presenceAbsence, ALL_DATA_TYPES.histogram, ALL_DATA_TYPES.date, ALL_DATA_TYPES.activeCompleted]) }
     }
 
     public static Boolean isFacetConfigSpecial(Map config){
-        config.facetTermType in SPECIAL_FACET_DATA_TYPES
+        config?.facetTermType in SPECIAL_FACET_DATA_TYPES
     }
 }
