@@ -556,6 +556,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     }
 
     function fetchDataForTabs(){
+        if(self.filterViewModel.switchOffSearch()) return;
+
         self.refreshPage();
         self.getDataAndShowOnMap();
         self.imageGallery && self.imageGallery.fetchRecordImages()
