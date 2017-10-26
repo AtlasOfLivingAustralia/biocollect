@@ -292,6 +292,16 @@ facets.data = [
                 helpText: 'Year the record was last edited'
         ],
         [
+                name:  "surveyMonthFacet",
+                title:  'Month',
+                helpText: 'Month the sighting was observed'
+        ],
+        [
+                name:  "surveyYearFacet",
+                title:  'Year',
+                helpText: 'Year the sighting was observed'
+        ],
+        [
                 name:  "individualCount",
                 title:  'Presence or Absence',
                 helpText: 'Is species present or absent',
