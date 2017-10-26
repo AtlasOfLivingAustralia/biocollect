@@ -380,16 +380,6 @@ class ProjectActivityService {
         name
     }
 
-    /**
-     * Get list of default facet names for data pages.
-     * @return
-     */
-    String getDataPageDefaultFacets() {
-        cacheService.get('data-page-default-facets', {
-            grailsApplication.config.facets.data?.collect { it.name }.join(',')
-        })
-    }
-
     def sendAekosDataset(String downloadUrl, String jsonSubmissionPayload) {
 
         log.info "aekosSubmission downloading data from: " + downloadUrl
