@@ -554,7 +554,7 @@ class BioActivityController {
         queryParams.searchTerm = queryParams.searchTerm ?: ''
 
         HubSettings hubSettings = SettingService.hubConfig
-        List facetConfig = hubSettings.getFacetConfigForPage(projectActivityService.getDataPagePropertyFromViewName(params.view)) ?: grailsApplication.config.facets.data
+        List facetConfig = hubSettings.getFacetConfigForPage(projectActivityService.getDataPagePropertyFromViewName(params.view)) ?: activityService.getDefaultFacets()
 
         if(!queryParams.facets){
             String facets = HubSettings.getFacetConfigForElasticSearch(facetConfig)?.collect{ it.name }?.join(',')
@@ -623,7 +623,7 @@ class BioActivityController {
 
         HubSettings hubSettings = SettingService.hubConfig
         String alternativeViewName = projectActivityService.getDataPagePropertyFromViewName(queryParams.view)
-        List allFacetConfig = hubSettings.getFacetConfigForPage(alternativeViewName)?: grailsApplication.config.facets.data
+        List allFacetConfig = hubSettings.getFacetConfigForPage(alternativeViewName)?: activityService.getDefaultFacets()
         List facetConfig = HubSettings.getFacetConfigMinusSpecialFacets(allFacetConfig)
 
         facets = searchService.standardiseFacets (searchResult.facets, facetConfig.collect{ it.name })

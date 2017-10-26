@@ -784,7 +784,7 @@ class ProjectService {
      */
     List getFacets(){
         cacheService.get("facets.project.resolved", {
-            List facetsMapList = grailsApplication.config.facets.project
+            List facetsMapList = getDefaultFacets()
             facetsMapList.sort{ it.title }
         })
     }
@@ -983,5 +983,11 @@ class ProjectService {
             default:
                 break
         }
+    }
+
+    List getDefaultFacets(){
+        cacheService.get('default-facets-for-project-finder', {
+            webService.getJson(grailsApplication.config.ecodata.service.url + '/project/getDefaultFacets')
+        })
     }
 }

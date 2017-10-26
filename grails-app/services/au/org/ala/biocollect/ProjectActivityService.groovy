@@ -321,7 +321,7 @@ class ProjectActivityService {
      * @return
      */
     List getDisplayNamesForFacets(facets, List facetConfig) {
-        facetConfig = facetConfig ?: grailsApplication.config.facets.data
+        facetConfig = facetConfig ?: activityService.getDefaultFacets()
         facets?.each { facet ->
             switch (facet.name) {
                 case 'userId':
@@ -480,5 +480,15 @@ class ProjectActivityService {
         }
 
         facets
+    }
+
+    /**
+     *
+     * @return
+     */
+    List getDefaultActivity(){
+        cacheService.get('default-facets-for-data-pages', {
+            webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDefaultFacets')
+        })
     }
 }

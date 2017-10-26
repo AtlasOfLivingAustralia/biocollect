@@ -515,7 +515,7 @@ class ProjectController {
         // format facets to a way acceptable for JS view model
         if(searchResult.facets){
             HubSettings hub = SettingService.hubConfig
-            List allFacetConfig = hub.getFacetConfigForPage('projectFinder') ?: grailsApplication.config.facets.project
+            List allFacetConfig = hub.getFacetConfigForPage('projectFinder') ?: projectService.getDefaultFacets()
             List facetConfig = HubSettings.getFacetConfigForElasticSearch(allFacetConfig)
             List facetList = params.facets ? params.facets?.split(',') : facetConfig?.collect { it.name }
             facets = searchService.standardiseFacets (searchResult.facets, facetList)
@@ -571,7 +571,7 @@ class ProjectController {
         List difficulty = [], status =[]
         Map trimmedParams = commonService.parseParams(params)
         HubSettings hub = SettingService.hubConfig
-        List allFacetConfig = hub.getFacetsForProjectFinderPage() ?: grailsApplication.config.facets.project
+        List allFacetConfig = hub.getFacetsForProjectFinderPage() ?: projectService.getDefaultFacets()
         trimmedParams.fsort = 'term'
         trimmedParams.flimit = params.flimit?:15
         trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
