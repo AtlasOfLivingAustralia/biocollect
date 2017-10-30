@@ -806,6 +806,27 @@ class ProjectController {
         }
     }
 
+    def getMembersForProjectIdPaginated() {
+        String projectId = params.id
+        def adminUserId = userService.getCurrentUserId()
+
+        if (projectId && adminUserId) {
+            if (projectService.isUserAdminForProject(adminUserId, projectId) || projectService.isUserCaseManagerForProject(adminUserId, projectId)) {
+                def results = projectService.getMembersForProjectPerPage(projectId, params.int('start'), params.int('length'))
+                asJson results
+
+            } else {
+                response.sendError(SC_FORBIDDEN, 'Permission denied')
+            }
+        } else if (adminUserId) {
+            response.sendError(SC_BAD_REQUEST, 'Required params not provided: id')
+        } else if (projectId) {
+            response.sendError(SC_FORBIDDEN, 'User not logged-in or does not have permission')
+        } else {
+            response.sendError(SC_INTERNAL_SERVER_ERROR, 'Unexpected error')
+        }
+    }
+
     def getUserProjects(){
         UserDetails user = userService.user;
         JSON projects = projectService.userProjects(user);

@@ -197,7 +197,6 @@
             </g:if>
 
             initialiseInternalCSAdmin();
-            populatePermissionsTable();
         </g:if>
 
 

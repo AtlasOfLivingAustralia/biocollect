@@ -111,8 +111,8 @@
             $("#projectId").data('combobox').toggle(); // reset combobox
         }
         // project page - trigger user table refresh
-        if (typeof(populatePermissionsTable) != "undefined") {
-            populatePermissionsTable();
+        if (typeof(reloadMembers()) != "undefined") {
+            reloadMembers();
         }
 
     }

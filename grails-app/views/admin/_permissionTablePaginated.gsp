@@ -1,0 +1,159 @@
+<r:require modules="jquery_bootstrap_datatable"/>
+
+<div class="pill-pane">
+    <div class="row well well-small" id="project-member-list">
+        <table style="width: 95%;" class="table table-striped table-bordered table-hover" id="member-list">
+            <thead>
+            <th>User Id</th>
+            <th>User Name</th>
+            <th>Role</th>
+            <th width="5%"></th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="span5">
+        <div id="formStatus" class="hide alert alert-success">
+            <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
+            <span></span>
+        </div>
+    </div>
+</div>
+
+<r:script type="text/javascript">
+    var table;
+
+    $(document).ready(function() {
+        table = $('#member-list').DataTable({
+            "bFilter": false,
+            "processing": true,
+            "serverSide": true,
+            "ajax":{
+               url: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}/${project.projectId}",
+            },
+            "columns": [{
+                data: 'userId',
+                name: 'userId',
+                bSortable : false
+            },
+            {
+                data: 'displayName',
+                name: 'displayName',
+                bSortable : false
+            },
+            {
+                data: 'role',
+                render: function(data, type, row){
+                    var $select = $("<select></select>", {
+                        "id": "role_" + row.userId,
+                        "value": data
+                    });
+                    $.each(${roles.inspect()}, function(i ,value){
+                        var $option = $("<option></option>", {
+                            "text": decodeCamelCase(value).replace('Case','Grant'),
+                            "value": value
+                        });
+                        if(data === value){
+                            $option.attr("selected", "selected")
+                        }
+                        $select.append($option);
+                    });
+                    return $select.prop("outerHTML");
+                },
+                bSortable : false
+            },
+            {
+                render: function(data, type, row){
+                    return '<a class="btn btn-small"><i class="icon-remove"></i></a>';
+                },
+                bSortable : false
+            }]
+        });
+
+        $('#member-list').on( 'change', 'tbody td:nth-child(3) select', function (e) {
+            e.preventDefault();
+
+            var role = $(this).val();
+            var row = this.parentElement.parentElement;
+            var data = table.row(row).data();
+            var currentRole = data.role;
+            var userId = data.userId;
+
+            var message;
+            if (userId == ${user?.userId}) {
+                message = "<span class='label label-important'>Important</span><p><b>If you modify your access level you may need assistance to get it back.</b></p><p>Are you sure you want to change your access to this project from " + currentRole + " to " + decodeCamelCase(role)+"?</p>";
+            }
+            else {
+                message = "Are you sure you want to change this user's access from " + decodeCamelCase(currentRole) + " to " + decodeCamelCase(role) + "?";
+            }
+
+            bootbox.confirm(message, function(result) {
+                if (result) {
+                    addUserWithRole(userId, role, "${project.projectId}");
+
+                } else {
+                    reloadMembers(); // reload table
+                }
+            });
+        });
+
+        $('#member-list').on( "click", "tbody td:nth-child(4)", function (e) {
+            e.preventDefault();
+
+            var row = this.parentElement;
+            var data = table.row(row).data();
+            var userId = data.userId;
+            var role = data.role;
+
+            var message;
+            if (userId == ${user?.userId}) {
+                message = "<span class='label label-important'>Important</span><p><b>If you proceed you may need assistance to get your access back.</b></p><p>Are you sure you want to remove your access to this project?</p>";
+            }
+            else {
+                message = "Are you sure you want to remove this user's access?";
+            }
+            bootbox.confirm(message, function(result) {
+                if (result) {
+                    if (userId && role) {
+                        removeUserRole(userId, role);
+                    } else {
+                        alert("Error: required params not provided: userId & role");
+                    }
+                }
+            });
+        });
+
+        function updateStatusMessage2(msg) {
+            $('#formStatus span').text(''); // clear previous message
+            $('#formStatus span').text(msg).parent().fadeIn();
+        }
+
+        function removeUserRole(userId, role) {
+            $.ajax( {
+                url: "${createLink(controller:'user', action:'removeUserWithRoleFromProject')}",
+                data: {
+                    userId: userId,
+                    role: role,
+                    entityId: "${project.projectId}"
+                }
+            })
+            .done(function(result) {
+                updateStatusMessage2("user was removed.");
+                }
+            )
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                alert(jqXHR.responseText);
+                }
+            )
+            .always(function(result) {
+                // $("#spinner1").hide();
+                reloadMembers(); // reload table
+            });
+        }
+    });
+
+    function reloadMembers(){
+        $('#member-list').DataTable().ajax.reload();
+    }
+</r:script>

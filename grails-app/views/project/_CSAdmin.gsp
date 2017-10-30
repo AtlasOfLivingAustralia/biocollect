@@ -68,7 +68,7 @@
                 <div id="permissions" class="pill-pane">
                     <h3>Members</h3>
                     <g:render template="/admin/addPermissions" model="[addUserUrl:g.createLink(controller:'user', action:'addUserAsRoleToProject'), entityId:project.projectId]"/>
-                    <g:render template="/admin/permissionTable" model="[loadPermissionsUrl:g.createLink(controller:'project', action:'getMembersForProjectId', id:project.projectId), removeUserUrl:g.createLink(controller:'user', action:'removeUserWithRoleFromProject'), entityId:project.projectId, user:user]"/>
+                    <g:render template="/admin/permissionTablePaginated"/>
                 </div>
 
                 <!--AUDIT-->
