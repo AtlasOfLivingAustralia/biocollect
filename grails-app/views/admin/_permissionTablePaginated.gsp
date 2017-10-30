@@ -65,7 +65,7 @@
             },
             {
                 render: function(data, type, row){
-                    return '<a class="btn btn-small"><i class="icon-remove"></i></a>';
+                    return '<a class="btn btn-small tooltips href="" title="remove this user and role combination"><i class="icon-remove"></i></a>';
                 },
                 bSortable : false
             }]
@@ -98,10 +98,10 @@
             });
         });
 
-        $('#member-list').on( "click", "tbody td:nth-child(4)", function (e) {
+        $('#member-list').on( "click", "tbody td:nth-child(4) a", function (e) {
             e.preventDefault();
 
-            var row = this.parentElement;
+            var row = this.parentElement.parentElement;
             var data = table.row(row).data();
             var userId = data.userId;
             var role = data.role;
