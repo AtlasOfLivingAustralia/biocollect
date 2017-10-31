@@ -433,7 +433,6 @@ class SiteController {
             if (!projectService.canUserEditSitesForProject(userId, projectId) && !userService.userIsAlaAdmin()) {
                 log.error("Error: Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}")
                 result = [status: 'error']
-                //render result as JSON
             }
         }
 
@@ -441,7 +440,6 @@ class SiteController {
             result = siteService.updateRaw(id, values)
             if(postBody?.pActivityId){
                 def pActivity = projectActivityService.get(postBody.pActivityId)
-//                if(!projectService.canUserEditProject(userId, pActivity?.projectId) && !userService.userIsAlaAdmin()){
                 // TODO Check this - need to give users who are submitting a pactvitiy the ability to create new
                 // geometries for the pactvitiy.
                 if (!projectService.canUserViewProject(userId, pActivity?.projectId)) {
@@ -453,7 +451,12 @@ class SiteController {
                 }
             }
         }
-        render result as JSON
+
+        if (result.status == 'error'){
+            render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${result.message}"
+        } else {
+            render result as JSON
+        }
     }
 
     def checkSiteName(String id) {

@@ -428,10 +428,14 @@ class ProjectController {
         def siteResult
         if (projectSite) {
             siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
-            if (siteResult.status == 'error') render status: 400, text: "SiteService failed."
+            if (siteResult.status == 'error'){
+                render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${siteResult.message}"
+                return
+            }
             else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
         } else if (project?.sites?.isEmpty()) {
-            render status: 400, text: "No project site is defined."
+            render status: HttpStatus.SC_BAD_REQUEST, text: "No project site is defined."
+            return
         }
 
         if (!values?.associatedOrgs) values.put('associatedOrgs', [])
