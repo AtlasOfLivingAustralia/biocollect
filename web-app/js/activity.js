@@ -583,7 +583,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             facet: new FacetViewModel({
                 name: "organisationNameFacet",
                 title: 'Organisation',
-                ref: self.filterViewModel
+                ref: self.filterViewModel,
+                type: 'terms'
             })
         }));
     } else if (restored && restored.length > 0) {
