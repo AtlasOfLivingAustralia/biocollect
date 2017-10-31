@@ -65,7 +65,12 @@
             },
             {
                 render: function(data, type, row){
-                    return '<a class="btn btn-small tooltips href="" title="remove this user and role combination"><i class="icon-remove"></i></a>';
+                    // cannot delete the last admin
+                    if (row.totalNbrOfAdmins == 1 && row.role == "admin") {
+                        return '';
+                    } else {
+                        return '<a class="btn btn-small tooltips href="" title="remove this user and role combination"><i class="icon-remove"></i></a>';
+                    }
                 },
                 bSortable : false
             }]
