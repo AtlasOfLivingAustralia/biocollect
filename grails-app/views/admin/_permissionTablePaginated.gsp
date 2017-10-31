@@ -29,9 +29,7 @@
             "bFilter": false,
             "processing": true,
             "serverSide": true,
-            "ajax":{
-               url: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}/${project.projectId}",
-            },
+            "ajax": "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}/${project.projectId}",
             "columns": [{
                 data: 'userId',
                 name: 'userId',
@@ -66,7 +64,7 @@
             {
                 render: function(data, type, row){
                     // cannot delete the last admin
-                    if (row.totalNbrOfAdmins == 1 && row.role == "admin") {
+                    if (table.ajax.json().totalNbrOfAdmins == 1 && row.role == "admin") {
                         return '';
                     } else {
                         return '<a class="btn btn-small tooltips href="" title="remove this user and role combination"><i class="icon-remove"></i></a>';
