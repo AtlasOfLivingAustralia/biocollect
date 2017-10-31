@@ -340,7 +340,7 @@
             } else {
                 $(storedAdminTab + "-tab").tab('show');
             }
-            populatePermissionsTable();
+            reloadMembers();
 
 //            var project = <fc:modelAsJavascript model="${project}"/>;
 //            var viewModel = new WorksProjectViewModel(project, ${user?.isEditor?:false}, {}, {});
