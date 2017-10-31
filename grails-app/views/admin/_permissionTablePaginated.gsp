@@ -71,7 +71,7 @@
             }]
         });
 
-        $('#member-list').on( 'change', 'tbody td:nth-child(3) select', function (e) {
+        $('#member-list').on( "change", "tbody td:nth-child(3) select", function (e) {
             e.preventDefault();
 
             var role = $(this).val();
