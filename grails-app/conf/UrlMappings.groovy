@@ -89,6 +89,11 @@ class UrlMappings {
 
                 }
 
+                "/licence"(controller: 'Licence', action: 'index') {
+
+                }
+
+
                 "/$hub/admin/user/$id"(controller: "user", action: "show") {
                         constraints {
                                 hub validator: {val, obj -> isHubValid(applicationContext, val)}

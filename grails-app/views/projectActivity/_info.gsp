@@ -1,3 +1,4 @@
+
 <div id="pActivityInfo" class="well">
 
         <!-- ko foreach: projectActivities -->
@@ -201,6 +202,7 @@
 <!-- /ko -->
 </div>
 
+
 <div id="pSupplementaryActivitySurvey" class="well">
 
     <div class="row-fluid">
@@ -311,7 +313,32 @@
                     <span class="req-field"></span>
                 </label>
                 <div class="controls">
-                    <input id="dataSharingLicense" type="text" data-bind="value: dataSharingLicense" data-validation-engine="validate[required]">
+                    <%-- <input id="dataSharingLicense" type="text" data-bind="value: dataSharingLicense" data-validation-engine="validate[required]">  --%>
+                    <g:select id="dataSharingLicense" name="dateSharingLicence" from="${licences}" optionValue="name" data-bind="value:dataSharingLicense"
+                              noSelection="['':'-Please select the licence-']" optionKey="url" data-validation-engine="validate[required]" />
+
+                    %{--<select id="dataSharingLicense" data-bind="options: transients.alaSupportedLicences ,--}%
+                                                             %{--value: dataSharingLicense,--}%
+                                                             %{--optionsText: function(item){return item.name},--}%
+                                                             %{--optionsValue: function(item){return item.url},--}%
+                                                             %{--optionsCaption: '-Please select the licence-',--}%
+                                                             %{--data-validation-engine=validate[required]--}%
+                                                             %{--"--}%
+                            %{--data-validation-engine="validate[required]">--}%
+                    %{--</select>--}%
+
+
+                    %{--<div data-bind="with: displaySelectedLicence()">--}%
+                       %{--Name: <span data-bind="text:name"></span>--}%
+                    %{--</div>--}%
+
+                    <g:each in="${licences}">
+                        <p data-bind="visible: dataSharingLicense() == '${it.url}'"><img src="${resource(dir: 'images/licence/', file: 'cc_by_nc.png')}" ><a href="${it.url}">${it.name}</a></p>
+                    </g:each>
+
+
+
+
                 </div>
             </div>
 

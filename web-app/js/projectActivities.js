@@ -16,6 +16,7 @@ var ProjectActivitiesViewModel = function (params) {
     self.vocabList = params.vocabList;
     self.projectArea = params.projectArea;
     self.user = user ? user : {isEditor: false, isAdmin: false};
+    self.alaSupportedLicences = params.licences
 
     self.sortBy = ko.observable();
     self.sortOrder = ko.observable();
@@ -81,7 +82,8 @@ var ProjectActivitiesViewModel = function (params) {
                 organisationName: self.organisationName,
                 startDate: self.projectStartDate,
                 project: self.project,
-                user: self.user /*,
+                user: self.user,
+                alaSupportedLicences:self.alaSupportedLicences/*,
                  vocabList: params.vocabList,
                  projectArea: params.projectArea*/
             };
@@ -90,6 +92,8 @@ var ProjectActivitiesViewModel = function (params) {
 
         self.sort();
     };
+
+
 
     self.userCanEdit = function (pActivity) {
         var projectActive = !pActivity.endDate() || moment(pActivity.endDate()).isAfter(moment());

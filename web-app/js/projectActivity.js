@@ -8,6 +8,8 @@ var ProjectActivity = function (params) {
     var organisationName = params.organisationName ? params.organisationName : "";
     var project = params.project ? params.project : {};
     var user = params.user ? params.user : {};
+    var alaSupportedLicences = params.alaSupportedLicences ? params.alaSupportedLicences : [];
+
 
     var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
 
@@ -20,6 +22,9 @@ var ProjectActivity = function (params) {
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
 
     self.previewUrl = ko.observable('');
+    self.transients.alaSupportedLicences = alaSupportedLicences;
+
+
 
     self.previewActivity = function (link, pActivityFormName) {
 
@@ -82,6 +87,7 @@ var ProjectActivity = function (params) {
             });
         }
     };
+
 
     // 1. There is no straightforward way to prevent/cancel a KO change in a beforeChange subscription
     // 2. bootbox.confirm is totally asynchronous so by the time a user confirms or rejects a change, the change has already happened.
@@ -300,7 +306,15 @@ var ProjectActivity = function (params) {
 
     self.lastUpdated = ko.observable(pActivity.lastUpdated ? pActivity.lastUpdated : "");
 
-    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "CC BY");
+    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "");
+
+
+    self.displaySelectedLicence = ko.computed(function(){
+          return _.where(self.transients.alaSupportedLicences,{url:self.dataSharingLicense()});
+
+    });
+
+
 
     self.transients = self.transients || {};
     self.transients.warning = ko.computed(function () {
@@ -313,6 +327,26 @@ var ProjectActivity = function (params) {
 
         return false;
     });
+
+    // self.transients.alaSupportedLicences = ko.computed(function () {
+    //     $.ajax({
+    //         url: '/licence',
+    //         type: 'GET',
+    //         timeout: 10000,
+    //         success: function (data) {
+    //             if(data){
+    //                 console.out(data);
+    //                 return data
+    //             }
+    //         },
+    //         error: function (data) {
+    //             console.log("Error retrieving licences.", "alert-error");
+    //             return []
+    //         }
+    //     }).done(function () {
+    //
+    //     });
+    // })
 
     self.transients.availableSpeciesDisplayFormat = ko.observableArray([{
         id:'SCIENTIFICNAME(COMMONNAME)',
