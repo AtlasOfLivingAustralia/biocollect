@@ -57,9 +57,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     });
 
     self.search = function () {
-        self.refreshPage();
-        self.getDataAndShowOnMap();
-        self.imageGallery && self.imageGallery.fetchRecordImages()
+        fetchDataForTabs()
     };
 
     self.clearData = function() {
@@ -486,7 +484,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.biocacheUrl = ko.computed(function () {
         var fqs = self.filterViewModel.getALACompatibleQuery() || [],
             query = fqs.join("&fq="),
-            url = fcConfig.occurrenceUrl,
+            url = fcConfig.occurrenceUrl || '',
             questionMark = false;
 
         if(url.indexOf('?') < 0){
@@ -507,7 +505,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.spatialUrl = ko.computed(function () {
         var fqs = self.filterViewModel.getALACompatibleQuery() || [],
             query = fqs.join("&fq="),
-            url = fcConfig.spatialUrl,
+            url = fcConfig.spatialUrl || '',
             questionMark = false;
 
         if(url.indexOf('?') < 0){
@@ -564,9 +562,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     }
 
     self.filterViewModel.selectedFacets.subscribe(fetchDataForTabs);
-
-    // listen to facet change event so that map can be updated.
-    self.searchTerm.subscribe(self.getDataAndShowOnMap);
 
     self.sortButtonClick = function(data){
         // remove subscribe event on order so that we can set it and page will not refresh. will only refresh when
