@@ -314,8 +314,14 @@
                 </label>
                 <div class="controls">
                     <%-- <input id="dataSharingLicense" type="text" data-bind="value: dataSharingLicense" data-validation-engine="validate[required]">  --%>
-                    <g:select id="dataSharingLicense" name="dateSharingLicence" from="${licences}" optionValue="name" data-bind="value:dataSharingLicense"
+                    <div class="survey-editable-dropdown">
+                         <g:select id="dataSharingLicense" name="dateSharingLicence" from="${licences}" optionValue="name" data-bind="value:dataSharingLicense"
                               noSelection="['':'-Please select the licence-']" optionKey="url" data-validation-engine="validate[required]" />
+                        <g:each in="${licences}">
+                            <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${resource(dir: 'images/licence/', file: it.logo)} ">&nbsp;&nbsp;${it.description}</a> </span>
+                        </g:each>
+
+                    </div>
 
                     %{--<select id="dataSharingLicense" data-bind="options: transients.alaSupportedLicences ,--}%
                                                              %{--value: dataSharingLicense,--}%
@@ -331,12 +337,6 @@
                     %{--<div data-bind="with: displaySelectedLicence()">--}%
                        %{--Name: <span data-bind="text:name"></span>--}%
                     %{--</div>--}%
-
-                    <g:each in="${licences}">
-                        <p data-bind="visible: dataSharingLicense() == '${it.url}'"><img src="${resource(dir: 'images/licence/', file: 'cc_by_nc.png')}" ><a href="${it.url}">${it.name}</a></p>
-                    </g:each>
-
-
 
 
                 </div>

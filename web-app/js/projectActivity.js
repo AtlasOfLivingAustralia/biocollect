@@ -8,13 +8,9 @@ var ProjectActivity = function (params) {
     var organisationName = params.organisationName ? params.organisationName : "";
     var project = params.project ? params.project : {};
     var user = params.user ? params.user : {};
-    var alaSupportedLicences = params.alaSupportedLicences ? params.alaSupportedLicences : [];
-
 
     var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
-
     self.project = project;
-
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
     self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
@@ -22,9 +18,6 @@ var ProjectActivity = function (params) {
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
 
     self.previewUrl = ko.observable('');
-    self.transients.alaSupportedLicences = alaSupportedLicences;
-
-
 
     self.previewActivity = function (link, pActivityFormName) {
 
