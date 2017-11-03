@@ -380,7 +380,10 @@ function enmapify(args) {
                     siteIdObservable(id);
                 })
                 .fail(saveSiteFailed);
-        }).fail(enableEditMode);
+        }).fail(function(){
+            var m = map;
+            enableEditMode()
+        });
 
 
         siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
