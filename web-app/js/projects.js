@@ -444,6 +444,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.imageUrl = ko.observable(project.urlImage);
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
     self.alaHarvest = ko.observable(project.alaHarvest ? 'Yes' : 'No');
+    self.industries = ko.observableArray(project.industries);
     self.transients.yesNoOptions = ["Yes","No"];
 
     self.updateProject = function(jsonData){
@@ -949,6 +950,9 @@ function ProjectViewModel(project, isUserEditor) {
     });
 
     self.transients.index = ko.observable();
+    self.transients.industries = [
+        'Bananas', 'Sugarcane', 'Grazing'
+    ];
 
     self.loadPrograms = function (programsModel) {
         $.each(programsModel.programs, function (i, program) {
