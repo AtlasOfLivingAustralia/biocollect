@@ -238,7 +238,9 @@
                 data-bind="click:deleteActivity"><i class="icon-remove" title="Delete Milestone"></i>
         </button>
     </td>
-    <td colspan="2"><span data-bind="text:plannedStartDate.formattedDate"></span></td>
+    <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
+    <td><span data-bind="text:plannedEndDate.formattedDate"></span></td>
+
     <td>
         <span class="truncate"
               data-bind="text:description,click:$parent.editActivity, css:{clickable:true}"></span>
