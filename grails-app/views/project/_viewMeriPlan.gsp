@@ -14,21 +14,21 @@
 			    <div class="span6">
 			        <div id="project-objectives" class="margin-bottom-10 margin-right-20">
 			 			<label><b>Project Outcomes</b></label>
-						<table style="width: 100%;">
+						<table class="outcome-targets table">
 					        <thead>
 					            <tr>
-					            	<th></th>
-									<th>Baseline condition</th>
-									<th>Target Outcomes</th>
-									<th>Asset(s) addressed</th>
+					            	<th class="index"></th>
+									<th class="baseline">Baseline condition</th>
+									<th class="target">Target Outcomes</th>
+									<th class="assets">Asset(s) addressed</th>
 					            </tr>
 					        </thead>
 						<tbody data-bind="foreach : details.objectives.rows1">
 							<tr>
-				            	<td><span data-bind="text: $index()+1"></span></td>
-				            	<td><span data-bind="text:baseline"></span></td>
-								<td><span data-bind="text:target"></span></td>
-				            	<td><label data-bind="text:assets"></label></td>
+				            	<td class="index"><span data-bind="text: $index()+1"></span></td>
+				            	<td class="baseline"><span data-bind="text:baseline"></span></td>
+								<td class="target"><span data-bind="text:target"></span></td>
+				            	<td class="assets"><label data-bind="text:assets"></label></td>
 				            </tr>
 						</tbody>		
 						</table>	
