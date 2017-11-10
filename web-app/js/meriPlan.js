@@ -116,7 +116,7 @@ function DetailsViewModel(projectDetails, period) {
     self.partnership = new GenericViewModel(projectDetails.partnership);
     self.lastUpdated = ko.observable(projectDetails.lastUpdated ? projectDetails.lastUpdated : moment().format());
     self.budget = new BudgetViewModel(projectDetails.budget, period);
-    self.outcomeProgress = ko.observableArray($.map(projectDetails.outcomeProgress, function(outcomeProgress) { return new OutcomeProgressViewModel(outcomeProgress); }));
+    self.outcomeProgress = ko.observableArray($.map(projectDetails.outcomeProgress || [], function(outcomeProgress) { return new OutcomeProgressViewModel(outcomeProgress); }));
     $.extend(self, new Risks(projectDetails.risks));
     self.issues = new IssuesViewModel(projectDetails.issues);
 

@@ -110,3 +110,6 @@ table.outcome-targets.table thead tr:first-child th {
     box-sizing: border-box;
     width: 100%;
 }
+.announcements th {
+    white-space: normal;
+}

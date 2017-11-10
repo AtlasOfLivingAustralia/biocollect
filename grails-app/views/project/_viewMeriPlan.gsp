@@ -1,8 +1,3 @@
-<style type="text/css">
-.announcements th {
-	white-space: normal;
-}
-</style>
 <div data-bind="ifnot: details.status() == 'active'">
 	<h4>Project Plan not available.</h4>
 </div>
@@ -36,7 +31,7 @@
 						<table style="width: 100%;">
 					        <thead>
 					            <tr>
-					            	<th></th>
+					            	<th>	</th>
 					                <th>Monitoring indicator</th>
 					                <th>Monitoring approach</th>
 					            </tr>
