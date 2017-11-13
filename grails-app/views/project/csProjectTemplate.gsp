@@ -61,6 +61,7 @@
         imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         documentUpdateUrl: "${createLink(controller:"proxy", action:"documentUpdate")}",
+        methoddocumentUpdateUrl: "${createLink(controller:"image", action:"upload", params:[role: "methodDoc"])}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
         imageLocation:"${resource(dir:'/images')}",
         pdfgenUrl: "${createLink(controller: 'resource', action: 'pdfUrl')}",

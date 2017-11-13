@@ -61,6 +61,9 @@ class ProjectActivityController {
                     if (doc.status == "deleted") {
                         result.doc = documentService.updateDocument(doc)
                     } else if (!doc.documentId) {
+                        if (doc.role == "methodDoc"){
+                            doc.projectId = pActivity.projectId
+                        }
                         doc.projectActivityId = pActivity.projectActivityId
                         result.doc = documentService.saveStagedImageDocument(doc)
                     }
