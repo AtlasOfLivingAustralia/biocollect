@@ -81,7 +81,7 @@ var ProjectActivitiesViewModel = function (params) {
                 organisationName: self.organisationName,
                 startDate: self.projectStartDate,
                 project: self.project,
-                user: self.user /*,
+                user: self.user/*,
                  vocabList: params.vocabList,
                  projectArea: params.projectArea*/
             };
@@ -90,6 +90,8 @@ var ProjectActivitiesViewModel = function (params) {
 
         self.sort();
     };
+
+
 
     self.userCanEdit = function (pActivity) {
         var projectActive = !pActivity.endDate() || moment(pActivity.endDate()).isAfter(moment());

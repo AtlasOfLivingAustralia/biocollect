@@ -262,4 +262,6 @@ class ActivityService {
         List facets = dynamicFacets.collect{ [name: it.key] }
         facets + getDefaultFacets()
     }
+
+
 }

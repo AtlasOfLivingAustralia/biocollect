@@ -61,7 +61,7 @@
                     </div>
 
                     <div id="project-activity" class="pill-pane">
-                        <g:render template="/projectActivity/settings" model="[projectActivities : projectActivities]" />
+                        <g:render template="/projectActivity/settings" model="[projectActivities:projectActivities]" />
                     </div>
                 </g:if>
 
