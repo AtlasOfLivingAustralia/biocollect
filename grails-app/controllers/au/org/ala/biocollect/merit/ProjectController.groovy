@@ -118,6 +118,10 @@ class ProjectController {
                 println model.pActivityForms
             }
 
+            if(projectService.isWorks(project)){
+                model.activityTypes = projectService.addSpeciesFieldsToActivityTypesList(metadataService.activityTypesList(project.associatedProgram))
+            }
+
             render view:content.view, model:model
         }
     }
@@ -936,71 +940,6 @@ class ProjectController {
     def getFacets(){
         List facets = projectService.getFacets()
         render text: [facets: facets] as JSON, contentType: 'application/json'
-    }
-
-    /**
-     * Configure species fields for Works project schedules
-     */
-    @PreAuthorise(projectIdParam = 'id')
-    def configureSpeciesFields(String id) {
-
-        def project = projectService.get(id, 'all')
-
-        def model = [returnTo: params.returnTo]
-
-        if(project.error) {
-            model.error = project.detail
-        } else if( !project?.planStatus || project?.planStatus == 'not approved') {
-            def activities = activityService.activitiesForProject(id)
-            // Find the different surveys used in this project schedule
-            Set<String> surveys = new HashSet<>();
-
-            activities.each {
-                surveys << it.type
-            }
-
-            Map<String,Map> speciesFieldsBySurvey = [:]
-
-            surveys.each {
-                speciesFieldsBySurvey[it] = formSpeciesFieldParserService.getSpeciesFieldsForSurvey(it)?.result;
-            }
-
-            // Enrich the speciesFieldsBySurvey with any existing configuration already stored in the project object
-            // Discards any configuration that is no longer used.
-
-            List surveysSettings = project?.speciesFieldsSettings?.surveysConfig ?: []
-
-            surveysSettings.each {projectSurveySettings ->
-                if(speciesFieldsBySurvey.containsKey(projectSurveySettings.name)) {
-                    projectSurveySettings?.speciesFields?.each { projectFieldSettings ->
-                        def speciesField = speciesFieldsBySurvey[projectSurveySettings.name].find {
-                            return projectFieldSettings.label == it.label && projectFieldSettings.context == it.context && projectFieldSettings.output == it.output
-                        }
-
-                        // Let's add saved configuration
-                        if(speciesField) {
-                            speciesField.config = projectFieldSettings.config
-                        }
-                    }
-                }
-            }
-
-            List fieldsConfig = []
-
-            speciesFieldsBySurvey.each{surveyName, speciesFields ->
-                fieldsConfig << [name:surveyName, speciesFields:speciesFields]
-            }
-
-            model.speciesFieldsSettings =
-                    [ defaultSpeciesConfig: project?.speciesFieldsSettings?.defaultSpeciesConfig,
-                            surveysConfig: fieldsConfig
-                    ]
-            model.projectId = project.projectId
-            model.projectName = project.name
-        } else {
-            model.error = 'Species fields can only be configured when the project is in planning mode.'
-        }
-        model
     }
 
     /**

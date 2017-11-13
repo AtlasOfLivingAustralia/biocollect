@@ -109,6 +109,30 @@ ko.bindingHandlers.independentlyValidated = {
     }
 };
 
+ko.bindingHandlers.validateOnClick = {
+    init: function (element, valueAccessor) {
+        var value = valueAccessor(),
+            options = {
+                callback: false,
+                selector: "button"
+            };
+
+        if(typeof value === 'function') {
+            $.extend(options,{
+                callback: value
+            });
+        } else if(typeof value === 'object') {
+            $.extend(options, value);
+        }
+
+        $(element).validationEngine('attach', {scroll: false});
+
+        $(element).find(options.selector).on('click', function () {
+            options.callback && options.callback($(element).validationEngine('validate'));
+        });
+    }
+};
+
 
 ko.bindingHandlers.activityProgress = {
     update: function (element, valueAccessor) {

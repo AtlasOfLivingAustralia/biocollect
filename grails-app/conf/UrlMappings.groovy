@@ -10,13 +10,13 @@ class UrlMappings {
         }
 
         static mappings = { GrailsWebApplicationContext applicationContext ->
-                "/$hub/$controller/$action?/$id?"{
+                "/$hub/$controller/$action?/$id?(.$format)?"{
                         constraints {
                                 hub validator: {val, obj -> isHubValid(applicationContext, val)}
                         }
                 }
 
-                "/$controller/$action?/$id?"{
+                "/$controller/$action?/$id?(.$format)?"{
 
                 }
 

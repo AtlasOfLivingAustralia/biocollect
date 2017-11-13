@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.ProjectActivityService
 import grails.converters.JSON
+import org.apache.http.HttpStatus
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.ss.util.CellReference
@@ -85,7 +86,7 @@ class ActivityController {
                 redirect(controller:'project', action:'index', id: activity.projectId)
             }
 
-            activityAndOutputModel(activity, activity.projectId)
+            respond activityAndOutputModel(activity, activity.projectId)
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }
@@ -210,36 +211,6 @@ class ActivityController {
     }
 
     /**
-     * Displays page to create an activity in planning mode.
-     *
-     * Depending on where this is called from, either the site or the project or neither is known.
-     * If neither is known, then the full list of projects and sites is injected for selection.
-     * If project is known (created from a project page) then the list of sites associated with
-     * that project is injected. The project cannot be changed.
-     * If the site is known (created from a site page) then the list of projects associated with
-     * that site is injected. The site cannot be changed.
-     *
-     * @param siteId may be null
-     * @param projectId may be null
-     * @return
-     */
-    @PreAuthorise(projectIdParam = 'projectId')
-    def createPlan(String siteId, String projectId) {
-        def activity = [activityId: "", siteId: siteId, projectId: projectId]
-        def model = [activity: activity, returnTo: params.returnTo, create: true,
-                     projectStages:projectStages()]
-        model.project = projectId ? projectService.get(projectId) : null
-        model.activityTypes = metadataService.activityTypesList(model.project.associatedProgram)
-        if (projectId) {
-            model.themes = metadataService.getThemesForProject(model.project)
-        }
-        if (!model.project) {
-            model.projects = projectService.list().collect({[name:it.name,projectId:it.projectId]})
-        }
-        model
-    }
-
-    /**
      * Updates existing or creates new activity.
      *
      * Also updates/creates any outputs that are passed in the 'outputs' property of the activity.
@@ -285,35 +256,35 @@ class ActivityController {
             response.status = 400
             flash.message = "No project id supplied for activity: ${id}"
             result = [status: 400, error: flash.message]
-        }
+        } else {
+            String userId = userService.getCurrentUserId()
 
-        String userId = userService.getCurrentUserId()
-
-        // check user has permissions to edit/update site - user must have 'editor' access to
-        // ALL linked projects to proceed.
-        if (!projectService.canUserEditProject(userId, projectId)) {
-            flash.message = "Error: access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
-            response.status = 401
-            result = [status:401, error: flash.message]
-        }
-
-        if (!result) {
-            // checking to prevent an editor from entering data when administrator is editing work schedule.
-            // But if admin is editing the activity, then let the activity be updated.
-            if(projectService.isWorksProjectPlanStatusApproved(projectId) || projectService.isUserAdminForProject(userId, projectId)){
-                values.userId = userId
-                def photoPoints = values.remove('photoPoints')
-                result = activityService.update(id, values)
-                if (photoPoints) {
-                    updatePhotoPoints(id ?: result.activityId, photoPoints)
-                }
-            } else {
-                log.debug("Error: Trying to enter data to a works project not approved by Administrator - ${projectId}")
-                flash.message = messageSource.getMessage("project.works.workschedule.notapproved.message", [].toArray(), '', Locale.default)
-                response.status = 409
-                result = [status:409, error: flash.message]
+            // check user has permissions to edit/update site - user must have 'editor' access to
+            // ALL linked projects to proceed.
+            if (!projectService.canUserEditProject(userId, projectId)) {
+                flash.message = "Error: access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
+                response.status = 401
+                result = [status:401, error: flash.message]
             }
 
+            if (!result) {
+                // checking to prevent an editor from entering data when administrator is editing work schedule.
+                // But if admin is editing the activity, then let the activity be updated.
+                if(projectService.isWorksProjectPlanStatusApproved(projectId) || projectService.isUserAdminForProject(userId, projectId)){
+                    values.userId = userId
+                    def photoPoints = values.remove('photoPoints')
+                    result = activityService.update(id, values)
+                    if (photoPoints) {
+                        updatePhotoPoints(id ?: result.activityId, photoPoints)
+                    }
+                } else {
+                    log.debug("Error: Trying to enter data to a works project not approved by Administrator - ${projectId}")
+                    flash.message = messageSource.getMessage("project.works.workschedule.notapproved.message", [].toArray(), '', Locale.default)
+                    response.status = 409
+                    result = [status:409, error: flash.message]
+                }
+
+            }
         }
 
         if (result.error) {
@@ -347,6 +318,15 @@ class ActivityController {
             photo.activityId = activityId
             documentService.saveStagedImageDocument(photo)
 
+        }
+    }
+
+    def get(String id){
+        if(id){
+            Map activity = activityService.get(id)
+            respond(activity);
+        } else {
+            render(text: "Must provide parameter id", status: HttpStatus.SC_BAD_REQUEST)
         }
     }
 
