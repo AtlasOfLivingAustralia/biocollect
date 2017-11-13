@@ -10,6 +10,23 @@ var ProjectActivitiesViewModel = function (params) {
     self.project = params.project;
 
     self.projectId = ko.observable(params.projectId);
+
+    /**
+     * Differentiate a site for project from sites for survey
+     */
+    self.markProjectAreaSite = function(){
+        var ps_Id = self.project.projectSiteId;
+        _.each(self.sites, function(site){
+            if (site.siteId == ps_Id){
+                site.isProjectArea = true;
+            }else{
+                site.isProjectArea = false;
+            }
+        })
+    };
+
+    self.markProjectAreaSite();
+
     self.projectActivities = ko.observableArray();
 
     self.currentUser = user;

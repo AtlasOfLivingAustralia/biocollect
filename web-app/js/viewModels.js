@@ -37,18 +37,24 @@ function enmapify(args) {
         uniqueNameUrl = args.uniqueNameUrl + "/" + ( activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId),
         hideSiteSelection = args.hideSiteSelection || false,
         hideMyLocation = args.hideMyLocation || false,
+        allowPolygons = args.activityLevelData.pActivity.allowPolygons,
+        allowPoints = args.activityLevelData.pActivity.allowPoints,
+        pointsOnly = args.activityLevelData.pActivity.allowPoints && ! args.activityLevelData.pActivity.allowPolygons,
+        polygonsOnly = !args.activityLevelData.pActivity.allowPoints && args.activityLevelData.pActivity.allowPolygons,
+        defaultZoomArea = args.activityLevelData.pActivity.defaultZoomArea,
+        allowAdditionalSurveySites = args.activityLevelData.pActivity.allowAdditionalSurveySites,
         siteIdObservable = container[name] = ko.observable(),
         nameObservable = container[name + "Name"] = ko.observable(),
         latObservable = container[name + "Latitude"] = ko.observable(),
         lonObservable = container[name + "Longitude"] = ko.observable(),
         previousLatObservable = container[name + "HiddenLatitude"] = ko.observable(),
         previousLonObservable = container[name + "HiddenLongitude"] = ko.observable(),
-        latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(),
+        latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(!pointsOnly),
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
         sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
         loadingObservable = container[name + "Loading"] = ko.observable(false)
-        ;
+    ;
 
     var mapOptions = {
         wmsFeatureUrl: proxyFeatureUrl + "?featureId=",
@@ -64,7 +70,7 @@ function enmapify(args) {
         allowSearchRegionByAddress: false,
         zoomToObject: true,
         markerZoomToMax: true,
-        drawOptions:  activityLevelData.mobile || readonly || !activityLevelData.pActivity.allowAdditionalSurveySites ?
+        drawOptions:  activityLevelData.mobile || readonly ?
             {
                 polyline: false,
                 polygon: false,
@@ -75,11 +81,28 @@ function enmapify(args) {
             :
             {
                 polyline: false,
-                polygon: true,
-                circle: true,
-                rectangle: true,
+                polygon: allowPolygons,
+                circle: allowPolygons,
+                rectangle: allowPolygons,
+                marker: allowPoints,
                 edit: true
             }
+        // drawOptions:  activityLevelData.mobile || readonly || !activityLevelData.pActivity.allowAdditionalSurveySites ?
+        //     {
+        //         polyline: false,
+        //         polygon: false,
+        //         rectangle: false,
+        //         circle: false,
+        //         edit: false
+        //     }
+        //     :
+        //     {
+        //         polyline: false,
+        //         polygon: true,
+        //         circle: true,
+        //         rectangle: true,
+        //         edit: true
+        //     }
     };
 
     // undefined/null, Google Maps or Default should enable Google Maps view
@@ -131,7 +154,7 @@ function enmapify(args) {
                 siteIdObservable(null);
                 latObservable(markerLocation.lat);
                 lonObservable(markerLocation.lng);
-                latLonDisabledObservable(false);
+                //latLonDisabledObservable(false);
                 centroidLatObservable(null);
                 centroidLonObservable(null);
 
@@ -142,7 +165,7 @@ function enmapify(args) {
 
         } else if (geo && geo.features && geo.features.length > 0) {
             console.log("Updating location fields to site");
-            latLonDisabledObservable(true);
+            //latLonDisabledObservable(true);
             feature = geo.features[0];
             var c = centroid(feature);
             latObservable(null);
@@ -151,7 +174,7 @@ function enmapify(args) {
             centroidLatObservable(c[1]);
         } else {
             console.log("Clearing location fields");
-            latLonDisabledObservable(false);
+            //latLonDisabledObservable(false);
             latObservable(null);
             lonObservable(null);
             centroidLatObservable(null);
@@ -264,6 +287,7 @@ function enmapify(args) {
                     mapImpl = map.getMapImpl();
 
                 mapImpl.fitBounds(bounds);
+                geojson.addTo(map);
             }
         }
     }
@@ -320,12 +344,14 @@ function enmapify(args) {
         console.log("draw created");
         var type = e.layerType,
             layer = e.layer;
-
-        if (type === 'marker') {
-            console.log("marker");
-            return;
-        }
-        completeDraw();
+        // if (type === 'marker') {
+        //     console.log("marker");
+        //     return;
+        // }
+        if (allowAdditionalSurveySites)
+            completeDraw();
+        else
+            completeDrawWithoutAdditionalSite();
     });
     var saved = false;
     map.registerListener("draw:edited", function (e) {
@@ -338,7 +364,10 @@ function enmapify(args) {
             console.log("clear geo json");
             map.clearLayers();
         } else if (saved) {
-            completeDraw();
+            if (allowAdditionalSurveySites)
+                completeDraw();
+            else
+                completeDrawWithoutAdditionalSite()
         } else {
             console.log("cancelled edit with selected site, not clearing geometry")
         }
@@ -386,6 +415,37 @@ function enmapify(args) {
         });
 
 
+        siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
+    }
+
+    function completeDrawWithoutAdditionalSite() {
+        siteSubscriber.dispose();
+        siteIdObservable(null);
+        loadingObservable(true);
+        var extent = convertGeoJSONToExtent(map.getGeoJSON());
+        blockUIWithMessage("Adding Site, please stand by...");
+        addSite({
+            pActivityId: activityLevelData.pActivity.projectActivityId,
+            site: {
+                name: '',
+                invisible:true,
+                projects: [
+                    activityLevelData.pActivity.projectId
+                ],
+                extent: extent
+            }}).then(function (data, jqXHR, textStatus) {
+            return reloadSiteData().then(function () {
+                return data.id
+            })
+           })
+            .always(function () {
+                $.unblockUI();
+                loadingObservable(false);
+            })
+            .done(function (id) {
+                siteIdObservable(id);
+            })
+            .fail(saveSiteFailed)
         siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
     }
 
@@ -478,6 +538,8 @@ function enmapify(args) {
         value ? map.startLoading() : map.finishLoading();
     });
 
+
+    // continue init map
     if (!readonly) {
         map.addButton("<span class='fa fa-undo reset-map' title='Reset map'></span>", function () {
             map.resetMap();
@@ -489,16 +551,30 @@ function enmapify(args) {
         }, "bottomright");
     }
 
-    if (args.zoomToProjectArea) {
-        console.log('Zooming to project area original config')
-        zoomToProjectArea();
-    } else if (activityLevelData.pActivity.sites.length == 1) {
-        console.log('One site for activity')
-        container[name](activityLevelData.pActivity.sites[0].siteId);
-    } else if (activityLevelData.projectSite && activityLevelData.projectSite.extent) {
-        console.log('Will display project site')
-        map.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(activityLevelData.projectSite.extent.geometry));
-    }
+    //always zoom to default zoom area
+    var zoomToSite = $.grep(activityLevelData.pActivity.sites,function(site){
+        if(site.siteId == defaultZoomArea)
+            return site;
+    });
+
+
+    // if (zoomToSite.length>0){
+    //     var geojson = createGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(zoomToSite[0].extent.geometry));
+    //     map.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(zoomToSite[0].extent.geometry));
+    //     geojson.addTo(map);
+    // }
+
+
+    // if (args.zoomToProjectArea) {
+    //     console.log('Zooming to project area original config')
+    //     zoomToProjectArea();
+    // } else if (activityLevelData.pActivity.sites.length == 1) {
+    //     console.log('One site for activity')
+    //     container[name](activityLevelData.pActivity.sites[0].siteId);
+    // } else if (activityLevelData.projectSite && activityLevelData.projectSite.extent) {
+    //     console.log('Will display project site')
+    //     map.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(activityLevelData.projectSite.extent.geometry));
+    // }
 
 }
 

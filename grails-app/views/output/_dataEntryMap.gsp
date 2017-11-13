@@ -13,6 +13,11 @@
         <m:map id="${source}Map" width="100%"/>
     </div>
 </g:if>
+
+Allow Points: <span data-bind="text:activityLevelData.pActivity.allowPoints">Allow Points</span> <br/>
+Allow Polygons: <span data-bind="text:activityLevelData.pActivity.allowPolygons"></span> <br/>
+Allow Addtional Survey Sites: <span data-bind="text:activityLevelData.pActivity.allowAdditionalSurveySites"></span> <br/>
+Default zoom to: <span data-bind="text:activityLevelData.pActivity.defaultZoomArea"> </span> <br/>
 <g:if test="${!hideSiteSelection}">
     <div class="${isHorizontal ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 0">
         <div>
@@ -288,7 +293,7 @@
                 viewModel = ko.dataFor(el);
 
             if(viewModel){
-                var source = viewModel.data.${source}Source;
+                var source = viewModel.data.${source};
                 source && source('Google maps');
             }
 

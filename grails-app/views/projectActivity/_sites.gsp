@@ -25,7 +25,6 @@
                 <thead>
                 <tr>
                     <th class="text-left">Sites associated with this survey:
-                        <span class="req-field"></span>
                         <a href="#" data-bind="popover: {content:'Sites listed here will be selectable on the data collection form. If you don\'t want a particular site to be available for selection in this survey, click the arrow to move it into the \'Sites associated with the project\' column. Note that the survey must have at least one site associated with it.'}"><i  class="icon-question-sign"></i></a>
                     </th>
                 </tr>
@@ -34,13 +33,14 @@
                 <tbody>
                 <!-- ko foreach: sites -->
                 <tr data-bind="visible: added()">
+                    <!-- ko ifnot: isProjectArea -->
                     <td>
                         <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
                         <button class="btn btn-mini pull-right btn-default" data-bind="click: removeSite, disable: transients.isDataForSite"  title="Remove this site from survey">
                             <span class="icon-arrow-right"></span>
                         </button>
-
                     </td>
+                    <!-- /ko -->
                 </tr>
                 <!-- /ko -->
                 <!-- ko if: getNumberOfSitesForSurvey() == 0 -->
@@ -101,6 +101,26 @@
             </div>
         </div>
     </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <h3>Allowed Geo types</h3>
+                <label class="checkbox">
+                    <input type="checkbox" data-bind="checked: allowPolygons"/> Polygons Allowed
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" data-bind="checked: allowPoints"/> Points Allowed
+                </label>
+        </div>
+    </div>
+
+
+    <div class="row-fluid">
+        Default zoom area:
+            <select id="siteToZoom"
+                    data-bind='options: sites, optionsText: "name", optionsValue: "siteId", value: defaultZoomArea;' class="form-control input-xlarge full-width"></select>
+    </div>
+
+
     <div class="row-fluid">
         <div class="span12">
             <h3>Additional site options</h3>

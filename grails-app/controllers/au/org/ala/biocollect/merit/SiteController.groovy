@@ -438,6 +438,8 @@ class SiteController {
 
         if (!result) {
             result = siteService.updateRaw(id, values)
+            //Do not save siteid into the selectable sites in project Activity
+            boolean selectableSite = !values['invisible']
             if(postBody?.pActivityId){
                 def pActivity = projectActivityService.get(postBody.pActivityId)
                 // TODO Check this - need to give users who are submitting a pactvitiy the ability to create new
@@ -446,7 +448,8 @@ class SiteController {
                     log.error("Error: access denied: User does not have *viewer* permission for pActivitityId ${postBody.pActivityId}")
                     result = [status: 'error']
                 } else {
-                    pActivity.sites.add(result.id)
+                    if (selectableSite)
+                        pActivity.sites.add(result.id)
                     projectActivityService.update(postBody.pActivityId, pActivity)
                 }
             }

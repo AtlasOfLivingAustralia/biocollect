@@ -16,6 +16,12 @@ var ProjectActivity = function (params) {
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
     self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
+
+
+    self.allowPolygons = ko.observable(('allowPolygons' in pActivity)? pActivity.allowPolygons : true);
+    self.allowPoints = ko.observable(('allowPoints' in pActivity)? pActivity.allowPoints : true);
+    self.defaultZoomArea = ko.observable(('defaultZoomArea' in pActivity)? pActivity.defaultZoomArea : project?project.projectSiteId:'');
+
     self.baseLayersName = ko.observable(pActivity.baseLayersName);
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
 
@@ -345,6 +351,8 @@ var ProjectActivity = function (params) {
             surveySites && surveySites.length > 0 ? $.merge(defaultSites, surveySites) : defaultSites.push(obj.siteId);
             self.sites.push(new SiteList(obj, defaultSites, self));
         });
+
+
     };
     self.loadSites(sites, pActivity.sites);
 
@@ -464,6 +472,9 @@ var ProjectActivity = function (params) {
             jsData.restrictRecordToSites = self.restrictRecordToSites();
             jsData.allowAdditionalSurveySites = self.allowAdditionalSurveySites();
             jsData.baseLayersName = self.baseLayersName();
+            jsData.allowPolygons = self.allowPolygons();
+            jsData.allowPoints = self.allowPoints();
+            jsData.defaultZoomArea = self.defaultZoomArea();
         }
         else if (by == "visibility") {
             jsData = {};
@@ -586,7 +597,8 @@ var SiteList = function (o, surveySites, pActivity) {
     self.name = ko.observable(o.name);
     self.added = ko.observable(false);
     self.siteUrl = ko.observable(fcConfig.siteViewUrl + "/" + self.siteId());
-    self.ibra = ko.observable(o.extent.geometry.ibra)
+    self.ibra = ko.observable(o.extent.geometry.ibra);
+    self.isProjectArea = ko.observable(o.isProjectArea||false);
 
     self.addSite = function () {
         self.added(true);
