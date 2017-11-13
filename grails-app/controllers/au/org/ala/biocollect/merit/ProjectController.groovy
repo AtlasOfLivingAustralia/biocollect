@@ -4,10 +4,13 @@ import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.VocabService
+import au.org.ala.biocollect.merit.CollectoryService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
 import au.org.ala.biocollect.projectresult.Initiator
 import au.org.ala.web.AuthService
+
+
 import grails.converters.JSON
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
@@ -39,6 +42,7 @@ class ProjectController {
     MessageSource messageSource
     VocabService vocabService
     FormSpeciesFieldParserService formSpeciesFieldParserService
+    CollectoryService collectoryService
 
     def grailsApplication
 
@@ -89,6 +93,7 @@ class ProjectController {
             String occurrenceUrl = projectService.getOccurrenceUrl(project, view)
             String spatialUrl = projectService.getSpatialUrl(project, view, params.spotterId)
             Boolean isProjectContributingDataToALA = projectService.isProjectContributingDataToALA(project)
+            def licences = collectoryService.licence()
 
             def model = [project: project,
                 mapFeatures: commonService.getMapFeatures(project),
@@ -107,7 +112,8 @@ class ProjectController {
                 projectSite: project.projectSite,
                 occurrenceUrl: occurrenceUrl,
                 spatialUrl: spatialUrl,
-                isProjectContributingDataToALA: isProjectContributingDataToALA
+                isProjectContributingDataToALA: isProjectContributingDataToALA,
+                licences: licences
             ]
 
 

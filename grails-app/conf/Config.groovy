@@ -233,6 +233,13 @@ if (!grails.cache.ehcache) {
     }
 }
 
+/******************************************************************************\
+ *  EXTERNAL SERVERS
+ \******************************************************************************/
+if (!collectory.service.url) {
+    collectory.service.url = "https://collections.ala.org.au"
+}
+
 if (!acsaUrl){
     acsaUrl = 'http://csna.gaiaresources.com.au/wordpress/'
 }

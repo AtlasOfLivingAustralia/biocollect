@@ -111,6 +111,5 @@ grails.project.dependency.resolution = {
         compile ":images-client-plugin:0.6.1"
         compile ":ala-map:2.1.1"
         compile ':cookie:1.4'
-
     }
 }
