@@ -30,6 +30,7 @@ module.exports = function (config) {
         files: [
             'web-app/vendor/knockout.js/knockout-3.3.0.min.js',
             'web-app/vendor/knockout.js/knockout.mapping-latest.js',
+            'web-app/vendor/underscore/underscore/underscore-1.8.3.min.js',
             'web-app/js/knockout-dates.js',
             'web-app/vendor/wmd/showdown.js',
             'web-app/vendor/wmd/wmd.js',
