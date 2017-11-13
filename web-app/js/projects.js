@@ -950,9 +950,7 @@ function ProjectViewModel(project, isUserEditor) {
     });
 
     self.transients.index = ko.observable();
-    self.transients.industries = [
-        'Bananas', 'Sugarcane', 'Grazing'
-    ];
+    self.transients.industries = ['Bananas','Cropping','Grazing','Sugarcane'];
 
     self.loadPrograms = function (programsModel) {
         $.each(programsModel.programs, function (i, program) {
