@@ -1,7 +1,6 @@
 package au.org.ala.biocollect.merit
 
 import org.codehaus.groovy.grails.commons.GrailsApplication
-import au.org.ala.biocollect.merit.WebService
 
 /**
  * Licences provided by Collectory service are not fully supported by BioCollect,
@@ -20,8 +19,8 @@ class CollectoryService {
     List licence() {
         def url = "${grailsApplication.config.collectory.service.url}/licence/"
         List licences = webService.getJson(url);
-        List alaSupported = this.ALAsupported;
-        for (item in alaSupported) {
+        List bioSupported = this.BioCollectSupported;
+        for (item in bioSupported) {
             String supported = item.url;
             def found = licences.find {
                 supported == it.url
@@ -30,10 +29,10 @@ class CollectoryService {
                 item.name = found.name
             }
         }
-        return alaSupported;
+        return bioSupported;
     }
 
-    private static List ALAsupported =
+    private static List BioCollectSupported =
             [[url: 'https://creativecommons.org/publicdomain/zero/1.0/', logo: "Cc-by-pd_icon.svg.png", description: "Public Domain Dedication"],
              [url: 'https://creativecommons.org/licenses/by-nc/2.5/', logo: "Cc-by-nc_icon.svg.png", description: "CC BY NC 2.5"],
              [url: 'https://creativecommons.org/licenses/by/4.0/', logo: "Cc-by_icon.svg.png", description: "CC BY 4.0"],

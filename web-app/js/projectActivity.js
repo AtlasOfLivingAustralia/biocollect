@@ -321,26 +321,6 @@ var ProjectActivity = function (params) {
         return false;
     });
 
-    // self.transients.alaSupportedLicences = ko.computed(function () {
-    //     $.ajax({
-    //         url: '/licence',
-    //         type: 'GET',
-    //         timeout: 10000,
-    //         success: function (data) {
-    //             if(data){
-    //                 console.out(data);
-    //                 return data
-    //             }
-    //         },
-    //         error: function (data) {
-    //             console.log("Error retrieving licences.", "alert-error");
-    //             return []
-    //         }
-    //     }).done(function () {
-    //
-    //     });
-    // })
-
     self.transients.availableSpeciesDisplayFormat = ko.observableArray([{
         id:'SCIENTIFICNAME(COMMONNAME)',
         name: 'Scientific name (Common name)'
