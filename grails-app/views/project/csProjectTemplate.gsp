@@ -181,7 +181,7 @@
         params.projectArea = projectArea;
 
         <g:if test="${!project.isExternal}">
-            var pActivitiesVM = new ProjectActivitiesViewModel(params);
+            var pActivitiesVM = new ProjectActivitiesViewModel(params, projectViewModel);
             initialiseProjectActivitiesList(pActivitiesVM);
             initialiseData('project');
             <g:if test="${projectContent.admin.visible}">initialiseProjectActivitiesSettings(pActivitiesVM);</g:if>

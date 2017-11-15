@@ -1,7 +1,9 @@
-var ProjectActivitiesViewModel = function (params) {
+var ProjectActivitiesViewModel = function (params, projectViewModel) {
     var self = this;
     var pActivities = params.pActivities;
     var user = params.user;
+
+    self.projectViewModel = projectViewModel;
 
     self.organisationName = params.organisationName;
     self.pActivityForms = params.pActivityForms;
@@ -290,6 +292,22 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         }
     };
 
+    self.updateProjectResources = function (data) {
+        var doc = data.methodDoc;
+        if (doc && doc.content && doc.content.documentId && doc.content.url) {
+            $.each(self.projectActivities(), function (i, obj) {
+                if (obj.current()) {
+                    var methodDocument = obj.findDocumentByRole(obj.documents(), 'methodDoc');
+                    if (methodDocument) {
+                        methodDocument.documentId = doc.content.documentId;
+                        methodDocument.url = doc.content.url;
+                        self.projectViewModel.updateMethodDocs(methodDocument);
+                    }
+                }
+            });
+        }
+    };
+
     self.create = function (pActivity, caller){
         var pActivity = self.current();
         var url = fcConfig.projectActivityCreateUrl;
@@ -329,6 +347,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                 var result = data.resp;
                 if (result && result.message == 'updated') {
                     self.updateLogo(data);
+                    self.updateProjectResources(data);
                     showAlert("Successfully updated ", "alert-success", self.placeHolder);
                 } else {
                     showAlert(data.error ? data.error : "Error updating the survey", "alert-error", self.placeHolder);
