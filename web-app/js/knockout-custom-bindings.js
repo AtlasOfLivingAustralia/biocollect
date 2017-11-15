@@ -883,6 +883,21 @@ ko.bindingHandlers.enter = {
     }
 };
 
+/**
+ * Dismiss a bootstrap modal dialog when subscriber passed to it is set to true.
+ */
+ko.bindingHandlers.dismissModal = {
+    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        var value = valueAccessor(),
+            $element = $(element);
+        value.subscribe(function (newValue) {
+            if(newValue){
+                $element.modal('hide')
+            }
+        });
+    }
+};
+
 // the following code handles resize-sensitive truncation of the description field
 $.fn.textWidth = function(text, font) {
     if (!$.fn.textWidth.fakeEl) $.fn.textWidth.fakeEl = $('<span>').hide().appendTo(document.body);

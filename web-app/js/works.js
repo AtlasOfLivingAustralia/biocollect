@@ -61,9 +61,6 @@ function WorksActivityViewModel (config) {
     self.canEditOutputData = ko.computed(function () {
         return !self.isReadOnly() && planViewModel.planStatus() === 'approved';
     });
-    self.canPrintActivity = ko.computed(function () {
-        return true;
-    });
     self.canDeleteActivity = ko.computed(function () {
         return !self.isReadOnly() && planViewModel.planStatus() === 'not approved';
     });
@@ -312,9 +309,6 @@ function WorksActivityViewModel (config) {
         url = fcConfig.activityViewUrl;
         document.location.href = url + "/" + self.activityId +
             "?returnTo=" + here;
-    };
-    self.printActivity = function() {
-        open(fcConfig.activityPrintUrl + "/" + self.activityId, "fieldDataPrintWindow");
     };
     self.deleteActivity = function () {
         // confirm first

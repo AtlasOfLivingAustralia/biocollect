@@ -30,6 +30,11 @@
             </ul>
 
             <div class="tab-content" style="padding:0;border:none;overflow:visible">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <a href="#createNewActivity" role="button" class="btn btn-primary pull-right" data-toggle="modal"><i class="icon icon-plus icon-white"></i> <g:message code="project.works.createNewActivity"/> </a>
+                    </div>
+                </div>
                 <div class="tab-pane active" id="tablePlan">
                     <table class="table table-condensed" id="activities">
                         <thead>
@@ -69,12 +74,21 @@
                     </table>
                     <!-- ko with: newActivityViewModel-->
                     <!-- ko if: canEditActivity -->
-                    <div class="border-1 padding-10">
-                        <!-- ko template: 'basicActivityTmpl' -->
-                        <!-- /ko -->
+
+                    <div class="modal hide fade" id="createNewActivity" data-bind="dismissModal: transients.created">
+                        <div class="modal-body">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <!-- ko template: 'basicActivityTmpl' -->
+                            <!-- /ko -->
+                        </div>
                     </div>
                     <!-- /ko -->
                     <!-- /ko -->
+                </div>
+                <div class="row-fluid">
+                    <div class="span12">
+                        <a href="#createNewActivity" role="button" class="btn btn-primary pull-right" data-toggle="modal"><i class="icon icon-plus icon-white"></i> <g:message code="project.works.createNewActivity"/> </a>
+                    </div>
                 </div>
 
                 <div class="tab-pane" id="ganttPlan" style="overflow:hidden;">
@@ -294,14 +308,10 @@
 <script id="activityRow" type="text/html">
 
 <td>
-    <button type="button" class="btn btn-mini"
-            data-bind="click:editActivity"><i
+    <button class="btn btn-default btn-mini" data-bind="click: editActivityMetadata, visible: canEditActivity"><i
             class="icon-edit" title="Edit Activity"></i></button>
     <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
             class="icon-eye-open" title="View Activity"></i></button>
-    <button type="button" class="btn btn-mini"
-            data-bind="click:printActivity"><i
-            class="icon-print" title="Print activity"></i></button>
     <button type="button" class="btn btn-mini"
             data-bind="click:deleteActivity"><i class="icon-remove" title="Delete activity"></i>
     </button>
@@ -313,9 +323,8 @@
           data-bind="text:description,click: editActivity, css:{clickable:true}"></span>
 </td>
 <td>
-    <span data-bind="text:type,click: editActivity, css:{clickable:true}"></span>
-    <button class="btn btn-default btn-mini" data-bind="click: editActivityMetadata, visible: canEditActivity"><i class="icon icon-edit"></i> <g:message code="project.survey.activity.edit"/></button>
-    <button class="btn btn-default btn-mini" data-bind="click: transients.editSpeciesConfiguration, visible: transients.canEditSpeciesConfiguration"><i class="icon icon-edit"></i> <g:message code="project.survey.activity.editSpecies"/></button>
+    <a href="#" data-bind="text:type,click: editActivity"></a>
+    <button class="btn btn-default btn-mini pull-right" data-bind="click: transients.editSpeciesConfiguration, visible: transients.canEditSpeciesConfiguration" data-toggle="button"><i class="icon icon-edit"></i> <g:message code="project.survey.activity.editSpecies"/></button>
 </td>
 <td><a class="clickable" data-bind="text:siteName,click:$parent.openSite"></a></td>
 <td>
@@ -357,8 +366,7 @@
 <script id="milestoneRow" type="text/html">
 
     <td>
-        <button type="button" class="btn btn-mini"
-                data-bind="click:editActivity"><i
+        <button class="btn btn-default btn-mini" data-bind="click: editActivityMetadata, visible: canEditActivity"><i
                 class="icon-edit" title="Edit Milestone"></i></button>
         <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
                 class="icon-eye-open" title="View Milestone"></i></button>
@@ -369,8 +377,8 @@
     <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
     <td><span data-bind="text:plannedEndDate.formattedDate"></span></td>
     <td>
-        <span class="truncate"
-              data-bind="text:description,click:$parent.editActivity, css:{clickable:true}"></span>
+        <a href="#" class="truncate"
+              data-bind="text:description,click:$parent.editActivity"></a>
     </td>
     <td>
         <span data-bind="text:type,click:$parent.editActivity, css:{clickable:true}"></span>
