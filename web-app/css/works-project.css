@@ -113,3 +113,7 @@ table.outcome-targets.table thead tr:first-child th {
 .announcements th {
     white-space: normal;
 }
+
+#createNewActivity{
+    width: 700px;
+}

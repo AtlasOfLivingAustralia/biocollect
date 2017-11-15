@@ -86,7 +86,8 @@ class ActivityController {
                 redirect(controller:'project', action:'index', id: activity.projectId)
             }
 
-            respond activityAndOutputModel(activity, activity.projectId)
+            Map model = activityAndOutputModel(activity, activity.projectId)
+            respond model as Object, [model: model, view: 'index']
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }
