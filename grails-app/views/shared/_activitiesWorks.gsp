@@ -270,14 +270,15 @@
                 </select>
             </div>
 
-            <div class="span2"
-                 data-bind="visible:fcConfig.themes && fcConfig.themes.length > 1">
-                <label>Major theme</label>
-                <select class="full-width form-control"
-                        data-bind="value:mainTheme, options:fcConfig.themes,
-                                                    optionsText: 'name', optionsValue: 'name',
-                                                    optionsCaption:'Choose..'">
-                </select>
+            <div class="span2">
+                <div data-bind="visible:fcConfig.themes && fcConfig.themes.length > 1">
+                    <label>Major theme</label>
+                    <select class="full-width form-control"
+                            data-bind="value:mainTheme, options:fcConfig.themes,
+                                                        optionsText: 'name', optionsValue: 'name',
+                                                        optionsCaption:'Choose..'">
+                    </select>
+                </div>
             </div>
             <div class="span6 required">
                 <fc:textArea data-bind="value: description" id="description"
@@ -308,7 +309,7 @@
 <script id="activityRow" type="text/html">
 
 <td>
-    <button class="btn btn-default btn-mini" data-bind="click: editActivityMetadata, visible: canEditActivity"><i
+    <button class="btn btn-mini" data-bind="click: editActivityMetadata, visible: canEditActivity"><i
             class="icon-edit" title="Edit Activity"></i></button>
     <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
             class="icon-eye-open" title="View Activity"></i></button>
@@ -366,7 +367,7 @@
 <script id="milestoneRow" type="text/html">
 
     <td>
-        <button class="btn btn-default btn-mini" data-bind="click: editActivityMetadata, visible: canEditActivity"><i
+        <button class="btn btn-mini" data-bind="click: editActivityMetadata, visible: canEditActivity"><i
                 class="icon-edit" title="Edit Milestone"></i></button>
         <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
                 class="icon-eye-open" title="View Milestone"></i></button>
@@ -377,11 +378,11 @@
     <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
     <td><span data-bind="text:plannedEndDate.formattedDate"></span></td>
     <td>
-        <a href="#" class="truncate"
-              data-bind="text:description,click:$parent.editActivity"></a>
+        <span class="truncate"
+              data-bind="text:description,click:$parent.editActivity, css:{clickable:true}"></span>
     </td>
     <td>
-        <span data-bind="text:type,click:$parent.editActivity, css:{clickable:true}"></span>
+        <a href="#" data-bind="text:type,click:$parent.editActivity"></a>
     </td>
     <g:if test="${showSites}">
         <td></td>
