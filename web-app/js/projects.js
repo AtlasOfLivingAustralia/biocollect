@@ -1008,6 +1008,15 @@ function ProjectViewModel(project, isUserEditor) {
             self.addDocument(doc);
         });
     }
+
+    self.updateMethodDocs = function(doc) {
+        $.each (self.documents(), function (i, obj) {
+            if (obj.projectActivityId === doc.projectActivityId && obj.role() === 'methodDoc') {
+                self.documents.remove(obj);
+            }
+        });
+        self.addDocument(doc);
+    }
     self.mainImageAttribution = ko.observable(self.mainImageAttributionText());
     self.logoAttribution = ko.observable(self.logoAttributionText());
 

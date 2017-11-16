@@ -50,6 +50,7 @@ function DocumentViewModel (doc, owner, settings) {
     this.url = doc.url;
     this.thumbnailUrl = doc.thumbnailUrl ? doc.thumbnailUrl : doc.url;
     this.documentId = doc.documentId;
+    this.projectActivityId = doc.projectActivityId ? doc.projectActivityId : '';
     this.hasPreview = ko.observable(false);
     this.error = ko.observable();
     this.progress = ko.observable(0);
