@@ -322,7 +322,7 @@ class ProjectService {
 
     def getMembersForProjectPerPage(projectId, pageStart, pageSize) {
         def url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForProjectPerPage?projectId=${projectId}&offset=${pageStart}&max=${pageSize}"
-        webService.getJson(url)
+        webService.getJson(url, null, true)
     }
 
     /**
