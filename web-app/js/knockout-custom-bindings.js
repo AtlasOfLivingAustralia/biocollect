@@ -321,6 +321,30 @@ ko.bindingHandlers.stagedImageUpload = {
         return {controlsDescendantBindings: true};
     },
     toDocument: function (f, config) {
+        // same logic as projects.js for determining type
+        var type;
+        if (config.role == 'methodDoc') {
+            if (f.type) {
+                var ftype = file.type.split('/');
+                if (ftype) {
+                    type = ftype[0];
+                }
+            }
+            else if (f.name) {
+                var ftype = f.name.split('.').pop();
+
+                var imageTypes = ['gif','jpeg', 'jpg', 'png', 'tif', 'tiff'];
+                if ($.inArray(ftype.toLowerCase(), imageTypes) > -1) {
+                    type = 'image';
+                }
+                else {
+                    type = 'document';
+                }
+            }
+        }
+        else {
+            type = 'image';
+        }
 
         var data = {
             thumbnailUrl: f.thumbnail_url,
@@ -332,7 +356,7 @@ ko.bindingHandlers.stagedImageUpload = {
             lat: f.decimalLatitude,
             lng: f.decimalLongitude,
             name: f.name,
-            type: 'image',
+            type: type,
             role: config.role
         };
 
