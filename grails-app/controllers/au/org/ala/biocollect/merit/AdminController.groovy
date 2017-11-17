@@ -48,7 +48,7 @@ class AdminController {
         if (user && projects) {
             [ projects: projects, user: user, roles: roles]
         } else {
-            flash.message = "Error: ${!user?'Logged-in user could not be determined ':' '}${!userList?'List of all users not found ':' '}${!projects?'List of all projects not found ':''}"
+            flash.message = "Error: ${!user?'Logged-in user could not be determined ':' '}${!projects?'List of all projects not found ':''}"
             redirect(action: "index")
         }
     }

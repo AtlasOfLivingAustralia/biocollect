@@ -84,6 +84,8 @@
         deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}",
         shapefileDownloadUrl: "${createLink(controller:'project', action:'downloadShapefile', id:project.projectId)}",
         sitesPhotoPointsUrl:"${createLink(controller:'project', action:'projectSitePhotos', id:project.projectId)}",
+        getMembersForProjectIdPaginatedUrl: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}",
+        removeUserRoleUrl:"${createLink(controller:'user', action:'removeUserWithRoleFromProject')}",
         absenceIconUrl:"${resource(dir: 'images', file: 'triangle.png')}",
         isAdmin: ${user?.isAdmin ? 'true' : 'false'},
         isEditor: ${user?.isEditor ? 'true' : 'false'},
@@ -347,7 +349,7 @@
             } else {
                 $(storedAdminTab + "-tab").tab('show');
             }
-            populatePermissionsTable();
+            reloadMembers();
 
 //            var project = <fc:modelAsJavascript model="${project}"/>;
 //            var viewModel = new WorksProjectViewModel(project, ${user?.isEditor?:false}, {}, {});
