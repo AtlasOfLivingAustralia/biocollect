@@ -296,7 +296,7 @@
             <div class="margin-top-2"></div>
             <div class="row-fluid">
                 <div class="clearfix control-group">
-                    <label class="control-label span3"><g:message code="project.details.industries.label"/>:<fc:iconHelp><g:message code="project.details.industries.help"/></fc:iconHelp><i class="req-field"></i></label>
+                    <label class="control-label span3"><g:message code="project.details.industries.label"/>:<fc:iconHelp><g:message code="project.details.industries.help"/></fc:iconHelp></label>
 
                         <div class="span9">
                         <!-- ko foreach: transients.industries -->
