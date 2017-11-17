@@ -444,6 +444,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.imageUrl = ko.observable(project.urlImage);
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
     self.alaHarvest = ko.observable(project.alaHarvest ? 'Yes' : 'No');
+    self.industries = ko.observableArray(project.industries);
     self.transients.yesNoOptions = ["Yes","No"];
 
     self.updateProject = function(jsonData){
@@ -949,6 +950,7 @@ function ProjectViewModel(project, isUserEditor) {
     });
 
     self.transients.index = ko.observable();
+    self.transients.industries = ['Bananas','Cropping','Grazing','Sugarcane'];
 
     self.loadPrograms = function (programsModel) {
         $.each(programsModel.programs, function (i, program) {
@@ -1005,6 +1007,15 @@ function ProjectViewModel(project, isUserEditor) {
             if (doc.role === "logo") doc.public = true; // for backward compatibility
             self.addDocument(doc);
         });
+    }
+
+    self.updateMethodDocs = function(doc) {
+        $.each (self.documents(), function (i, obj) {
+            if (obj.projectActivityId === doc.projectActivityId && obj.role() === 'methodDoc') {
+                self.documents.remove(obj);
+            }
+        });
+        self.addDocument(doc);
     }
     self.mainImageAttribution = ko.observable(self.mainImageAttributionText());
     self.logoAttribution = ko.observable(self.logoAttributionText());

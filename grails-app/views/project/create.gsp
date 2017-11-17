@@ -135,6 +135,9 @@ $(function(){
                         } else {
                             document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
                         }
+                    },function(data) {
+                        var responseText = data.responseText || 'An error occurred while saving project.';
+                        bootbox.alert(responseText);
                     });
                 } else {
                     bootbox.alert(projectErrors);

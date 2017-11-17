@@ -406,7 +406,8 @@ function enmapify(args) {
     }
 
     function saveSiteFailed(jqXHR, textStatus, errorThrown) {
-        bootbox.alert("An error occured while attempting to save the site.");
+        var errorMessage = jqXHR.responseText || "An error occured while attempting to save the site.";
+        bootbox.alert(errorMessage);
         map.clearLayers();
     }
 

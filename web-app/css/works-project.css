@@ -65,3 +65,55 @@
     border-botton: 1px solid grey;
     background: lightgrey;
 }
+
+.outcomes-progress .date {
+    width: 15%;
+}
+
+.outcomes-progress .type {
+    width: 15%;
+}
+
+.outcomes-progress .progress {
+    width: 65%;
+}
+
+.outcomes-progress .outcome-progress textarea {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.outcomes-progress .controls {
+    width: 5%;
+    min-width: 30px;
+}
+
+table.outcome-targets.table thead tr:first-child th {
+    border-top: 1px solid #ccc; !important;
+}
+.outcome-targets .index {
+    width: 2%;
+}
+.outcome-targets .baseline {
+    width: 35%;
+}
+.outcome-targets .target {
+    width: 35%;
+}
+.outcome-targets .assets {
+    width: 20%;
+}
+.outcome-targets .controls {
+    width: 4%;
+}
+.outcome-targets textarea {
+    box-sizing: border-box;
+    width: 100%;
+}
+.announcements th {
+    white-space: normal;
+}
+
+#createNewActivity{
+    width: 700px;
+}

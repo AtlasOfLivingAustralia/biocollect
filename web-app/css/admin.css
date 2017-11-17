@@ -49,3 +49,11 @@
 .table-custom-border.borderless td{
     border: none;
 }
+
+.overflow-x{
+    overflow-x: scroll;
+}
+
+.border-bottom-4{
+    border-bottom: solid 4px black;
+}

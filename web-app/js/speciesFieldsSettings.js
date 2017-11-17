@@ -76,7 +76,10 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
         }
     });
 
-
+    self.transients.isValid = ko.computed(function () {
+        var type = self.type();
+        return !!type
+    });
     self.transients.fieldName = ko.observable(fieldName);
     self.transients.bioSearch = ko.observable(fcConfig.speciesSearchUrl);
     self.transients.allowedListTypes = [
@@ -255,7 +258,6 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
             $.get(url,{
                 druid: druids.join(',')
             }, function (fields) {
-                console.log(fields);
                 self.commonFields(fields);
             }).fail(addDefaultCommonFields);
         } else {
@@ -391,9 +393,7 @@ var SpeciesFieldViewModel = function (o) {
 
     self.transients = {};
     self.transients.fieldName = self.output + ' - ' + self.label
-
     self.config = ko.observable(new SpeciesConstraintViewModel(o.config));
-    // self.config().speciesOptions.push({id: 'DEFAULT_SPECIES', name:'Use default configuration'});
 
     self.asJson = function () {
         var jsData = {};
