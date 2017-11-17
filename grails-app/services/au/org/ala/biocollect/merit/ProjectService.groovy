@@ -6,6 +6,8 @@ import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
 import org.springframework.context.MessageSource
 
+
+
 class ProjectService {
 
     //TODO refactor project type
@@ -51,6 +53,7 @@ class ProjectService {
     CacheService cacheService
     MessageSource messageSource
     SpeciesService speciesService
+    FormSpeciesFieldParserService formSpeciesFieldParserService
 
     def list(brief = false, citizenScienceOnly = false) {
         def params = brief ? '?brief=true' : ''
@@ -549,6 +552,19 @@ class ProjectService {
     }
 
     /**
+     * Find and add all species fields in an activity type. The resulting list is returned.
+     * @param activityTypes
+     * @return
+     */
+    List addSpeciesFieldsToActivityTypesList(List activityTypes){
+        activityTypes.each { category ->
+            category?.list?.each { type ->
+                type.speciesFields = formSpeciesFieldParserService.getSpeciesFieldsForSurvey(type.name)?.result
+            }
+        }
+    }
+
+    /**
      * Returns a list of the activity types that can be used by the supplied project.
      * The types are filtered based on what program the project is run under.
      * @param project the project.
@@ -778,7 +794,7 @@ class ProjectService {
         project.projectType == PROJECT_TYPE_ECOSCIENCE
     }
 
-    public boolean isWork(project){
+    public boolean isWorks(project){
         project.projectType == PROJECT_TYPE_WORKS
     }
 
@@ -789,7 +805,7 @@ class ProjectService {
      */
     List getFacets(){
         cacheService.get("facets.project.resolved", {
-            List facetsMapList = grailsApplication.config.facets.project
+            List facetsMapList = getDefaultFacets()
             facetsMapList.sort{ it.title }
         })
     }
@@ -884,7 +900,7 @@ class ProjectService {
         }
 
 
-        Map speciesFieldConfig = (specificFieldDefinition?.config !=null &&  specificFieldDefinition?.config?.type != "DEFAULT_SPECIES") ?
+        Map speciesFieldConfig = (specificFieldDefinition?.config && specificFieldDefinition?.config?.type != "DEFAULT_SPECIES") ?
                 //New species per field configuration
                 specificFieldDefinition.config :
                 // Legacy per survey species configuration
@@ -988,5 +1004,11 @@ class ProjectService {
             default:
                 break
         }
+    }
+
+    List getDefaultFacets(){
+        cacheService.get('default-facets-for-project-finder', {
+            webService.getJson(grailsApplication.config.ecodata.service.url + '/project/getDefaultFacets')
+        })
     }
 }

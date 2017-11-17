@@ -15,6 +15,7 @@ class ActivityService {
     SpeciesService speciesService
     ProjectActivityService projectActivityService
     UserService userService
+    CacheService cacheService
 
     private static def PROGRESS = ['planned', 'started', 'finished', 'cancelled', 'deferred']
 
@@ -250,10 +251,17 @@ class ActivityService {
         webService.getJson(grailsApplication.config.ecodata.service.url+'/metadata/getIndicesForDataModels')
     }
 
+    List getDefaultFacets(){
+        cacheService.get('default-facets-for-data', {
+            webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDefaultFacets')
+        })
+    }
 
     List getFacets(){
         Map dynamicFacets = getDynamicFacets()?:[:]
         List facets = dynamicFacets.collect{ [name: it.key] }
-        facets + grailsApplication.config.facets.data
+        facets + getDefaultFacets()
     }
+
+
 }

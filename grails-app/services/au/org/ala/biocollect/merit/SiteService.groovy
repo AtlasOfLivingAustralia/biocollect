@@ -122,11 +122,19 @@ class SiteService {
         }
 
         if (id) {
-            update(id, values)
-            [status: 'updated']
+            def result = update(id, values)
+            if(result.error){
+                [status: 'error', message: result.detail]
+            } else {
+                [status: 'updated']
+            }
         } else {
             def resp = create(values)
-            [status: 'created', id:resp.resp.siteId]
+            if(resp.error){
+                [status: 'error', message: resp.detail]
+            } else {
+                [status: 'created', id:resp.resp.siteId]
+            }
         }
     }
 

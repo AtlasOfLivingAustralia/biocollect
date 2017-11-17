@@ -95,6 +95,12 @@ function MERIPlan(project, themes, key) {
         self.details.partnership.rows.remove(partnership);
     };
 
+    self.addOutcomeProgress = function(outcomeProgress) {
+        self.details.outcomeProgress.push(new OutcomeProgressViewModel(outcomeProgress));
+    };
+    self.removeOutcomeProgress = function(outcomeProgress) {
+        self.details.outcomeProgress.remove(outcomeProgress);
+    };
 };
 
 function DetailsViewModel(projectDetails, period) {
@@ -110,6 +116,7 @@ function DetailsViewModel(projectDetails, period) {
     self.partnership = new GenericViewModel(projectDetails.partnership);
     self.lastUpdated = ko.observable(projectDetails.lastUpdated ? projectDetails.lastUpdated : moment().format());
     self.budget = new BudgetViewModel(projectDetails.budget, period);
+    self.outcomeProgress = ko.observableArray($.map(projectDetails.outcomeProgress || [], function(outcomeProgress) { return new OutcomeProgressViewModel(outcomeProgress); }));
     $.extend(self, new Risks(projectDetails.risks));
     self.issues = new IssuesViewModel(projectDetails.issues);
 
@@ -197,8 +204,10 @@ function OutcomeRowViewModel(o) {
 function OutcomeProgressViewModel(o) {
     var self = this;
     if(!o) o = {};
-    self.outcome = ko.observable(o.outcome);
     self.progress = ko.observable(o.progress);
+    self.date = ko.observable(o.date).extend({simpleDate:false});
+    self.type = ko.observable(o.type);
+    self.type.options = ['Interim', 'Final'];
 };
 
 function BudgetViewModel(o, period){

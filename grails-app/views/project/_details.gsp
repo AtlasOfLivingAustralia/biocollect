@@ -296,6 +296,18 @@
             <div class="margin-top-2"></div>
             <div class="row-fluid">
                 <div class="clearfix control-group">
+                    <label class="control-label span3"><g:message code="project.details.industries.label"/>:<fc:iconHelp><g:message code="project.details.industries.help"/></fc:iconHelp><i class="req-field"></i></label>
+
+                        <div class="span9">
+                        <!-- ko foreach: transients.industries -->
+                        <!-- ko template: { name:'industryTemplate'} -->
+                        <!-- /ko -->
+                        <!-- /ko -->
+                        </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="clearfix control-group">
                     <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.countries.label"/>:<fc:iconHelp><g:message code="project.details.countries.help"/></fc:iconHelp><i class="req-field"></i></label>
                     <div class="span9">
                         <div class="row-fluid">
@@ -779,6 +791,13 @@
         <input type="checkbox" name="ecoScienceType"
                data-bind="value: $data.toLowerCase(), attr:{id:'checkbox'+$index()}, checked: $root.transients.isEcoScienceTypeChecked($data), event:{change:$root.transients.addEcoScienceType}"/>
         <label data-bind="html: '<span></span> ' + $data, attr:{for:'checkbox'+$index()}"></label>
+    </div>
+    </script>
+    <script id="industryTemplate" type="text/html">
+    <div class="large-checkbox">
+        <input type="checkbox" name="industries"
+               data-bind="value: $data, attr:{id:'industry-'+$index()}, checked: $root.industries"/>
+        <label data-bind="html: '<span></span> ' + $data, attr:{for:'industry-'+$index()}"></label>
     </div>
     </script>
 </bc:koLoading>

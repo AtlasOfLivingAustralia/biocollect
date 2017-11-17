@@ -1,7 +1,9 @@
-var ProjectActivitiesViewModel = function (params) {
+var ProjectActivitiesViewModel = function (params, projectViewModel) {
     var self = this;
     var pActivities = params.pActivities;
     var user = params.user;
+
+    self.projectViewModel = projectViewModel;
 
     self.organisationName = params.organisationName;
     self.pActivityForms = params.pActivityForms;
@@ -81,7 +83,7 @@ var ProjectActivitiesViewModel = function (params) {
                 organisationName: self.organisationName,
                 startDate: self.projectStartDate,
                 project: self.project,
-                user: self.user /*,
+                user: self.user/*,
                  vocabList: params.vocabList,
                  projectArea: params.projectArea*/
             };
@@ -90,6 +92,8 @@ var ProjectActivitiesViewModel = function (params) {
 
         self.sort();
     };
+
+
 
     self.userCanEdit = function (pActivity) {
         var projectActive = !pActivity.endDate() || moment(pActivity.endDate()).isAfter(moment());
@@ -254,7 +258,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                     showAlert("Successfully deleted.", "alert-success", self.placeHolder);
                 }
                 else {
-                    self.delete();
+                    self.remove();
                 }
             }
         });
@@ -284,6 +288,22 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                         logoDocument.documentId = doc.content.documentId;
                         logoDocument.url = doc.content.url;
                         obj.documents.push(logoDocument);
+                    }
+                }
+            });
+        }
+    };
+
+    self.updateProjectResources = function (data) {
+        var doc = data.methodDoc;
+        if (doc && doc.content && doc.content.documentId && doc.content.url) {
+            $.each(self.projectActivities(), function (i, obj) {
+                if (obj.current()) {
+                    var methodDocument = obj.findDocumentByRole(obj.documents(), 'methodDoc');
+                    if (methodDocument) {
+                        methodDocument.documentId = doc.content.documentId;
+                        methodDocument.url = doc.content.url;
+                        self.projectViewModel.updateMethodDocs(methodDocument);
                     }
                 }
             });
@@ -329,6 +349,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                 var result = data.resp;
                 if (result && result.message == 'updated') {
                     self.updateLogo(data);
+                    self.updateProjectResources(data);
                     showAlert("Successfully updated ", "alert-success", self.placeHolder);
                 } else {
                     showAlert(data.error ? data.error : "Error updating the survey", "alert-error", self.placeHolder);
@@ -340,7 +361,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         });
     };
 
-    self.delete = function(){
+    self.remove = function(){
         var pActivity = self.current();
         var url =  fcConfig.projectActivityDeleteUrl + "/" + pActivity.projectActivityId();
         $.ajax({

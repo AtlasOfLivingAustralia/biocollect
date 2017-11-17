@@ -4,10 +4,13 @@ import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.VocabService
+import au.org.ala.biocollect.merit.CollectoryService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
 import au.org.ala.biocollect.projectresult.Initiator
 import au.org.ala.web.AuthService
+
+
 import grails.converters.JSON
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
@@ -39,6 +42,7 @@ class ProjectController {
     MessageSource messageSource
     VocabService vocabService
     FormSpeciesFieldParserService formSpeciesFieldParserService
+    CollectoryService collectoryService
 
     def grailsApplication
 
@@ -89,6 +93,7 @@ class ProjectController {
             String occurrenceUrl = projectService.getOccurrenceUrl(project, view)
             String spatialUrl = projectService.getSpatialUrl(project, view, params.spotterId)
             Boolean isProjectContributingDataToALA = projectService.isProjectContributingDataToALA(project)
+            def licences = collectoryService.licence()
 
             def model = [project: project,
                 mapFeatures: commonService.getMapFeatures(project),
@@ -107,7 +112,8 @@ class ProjectController {
                 projectSite: project.projectSite,
                 occurrenceUrl: occurrenceUrl,
                 spatialUrl: spatialUrl,
-                isProjectContributingDataToALA: isProjectContributingDataToALA
+                isProjectContributingDataToALA: isProjectContributingDataToALA,
+                licences: licences
             ]
 
 
@@ -116,6 +122,10 @@ class ProjectController {
                 model.pActivityForms = projectService.supportedActivityTypes(project).collect{[name: it.name, images: it.images]}
                 model.vocabList = vocabService.getVocabValues ()
                 println model.pActivityForms
+            }
+
+            if(projectService.isWorks(project)){
+                model.activityTypes = projectService.addSpeciesFieldsToActivityTypesList(metadataService.activityTypesList(project.associatedProgram))
             }
 
             render view:content.view, model:model
@@ -228,6 +238,7 @@ class ProjectController {
                        activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:false],
                        site:[label:'Sites', template:'/site/worksSites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', canEditSites: canEditSites, type:'tab'],
                        meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, canViewRisks: canViewRisks, type:'tab', template:'viewMeriPlan'],
+                       outcomes:[label:'Outcomes', disable:false, visible:user?.isEditor, type:'tab', template:'outcomes'],
                        dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab'],
                        admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
                        ]
@@ -428,10 +439,14 @@ class ProjectController {
         def siteResult
         if (projectSite) {
             siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
-            if (siteResult.status == 'error') render status: 400, text: "SiteService failed."
+            if (siteResult.status == 'error'){
+                render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${siteResult.message}"
+                return
+            }
             else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
         } else if (project?.sites?.isEmpty()) {
-            render status: 400, text: "No project site is defined."
+            render status: HttpStatus.SC_BAD_REQUEST, text: "No project site is defined."
+            return
         }
 
         if (!values?.associatedOrgs) values.put('associatedOrgs', [])
@@ -515,7 +530,7 @@ class ProjectController {
         // format facets to a way acceptable for JS view model
         if(searchResult.facets){
             HubSettings hub = SettingService.hubConfig
-            List allFacetConfig = hub.getFacetConfigForPage('projectFinder')
+            List allFacetConfig = hub.getFacetConfigForPage('projectFinder') ?: projectService.getDefaultFacets()
             List facetConfig = HubSettings.getFacetConfigForElasticSearch(allFacetConfig)
             List facetList = params.facets ? params.facets?.split(',') : facetConfig?.collect { it.name }
             facets = searchService.standardiseFacets (searchResult.facets, facetList)
@@ -571,7 +586,7 @@ class ProjectController {
         List difficulty = [], status =[]
         Map trimmedParams = commonService.parseParams(params)
         HubSettings hub = SettingService.hubConfig
-        List allFacetConfig = hub.getFacetsForProjectFinderPage()
+        List allFacetConfig = hub.getFacetsForProjectFinderPage() ?: projectService.getDefaultFacets()
         trimmedParams.fsort = 'term'
         trimmedParams.flimit = params.flimit?:15
         trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
@@ -952,71 +967,6 @@ class ProjectController {
     def getFacets(){
         List facets = projectService.getFacets()
         render text: [facets: facets] as JSON, contentType: 'application/json'
-    }
-
-    /**
-     * Configure species fields for Works project schedules
-     */
-    @PreAuthorise(projectIdParam = 'id')
-    def configureSpeciesFields(String id) {
-
-        def project = projectService.get(id, 'all')
-
-        def model = [returnTo: params.returnTo]
-
-        if(project.error) {
-            model.error = project.detail
-        } else if( !project?.planStatus || project?.planStatus == 'not approved') {
-            def activities = activityService.activitiesForProject(id)
-            // Find the different surveys used in this project schedule
-            Set<String> surveys = new HashSet<>();
-
-            activities.each {
-                surveys << it.type
-            }
-
-            Map<String,Map> speciesFieldsBySurvey = [:]
-
-            surveys.each {
-                speciesFieldsBySurvey[it] = formSpeciesFieldParserService.getSpeciesFieldsForSurvey(it)?.result;
-            }
-
-            // Enrich the speciesFieldsBySurvey with any existing configuration already stored in the project object
-            // Discards any configuration that is no longer used.
-
-            List surveysSettings = project?.speciesFieldsSettings?.surveysConfig ?: []
-
-            surveysSettings.each {projectSurveySettings ->
-                if(speciesFieldsBySurvey.containsKey(projectSurveySettings.name)) {
-                    projectSurveySettings?.speciesFields?.each { projectFieldSettings ->
-                        def speciesField = speciesFieldsBySurvey[projectSurveySettings.name].find {
-                            return projectFieldSettings.label == it.label && projectFieldSettings.context == it.context && projectFieldSettings.output == it.output
-                        }
-
-                        // Let's add saved configuration
-                        if(speciesField) {
-                            speciesField.config = projectFieldSettings.config
-                        }
-                    }
-                }
-            }
-
-            List fieldsConfig = []
-
-            speciesFieldsBySurvey.each{surveyName, speciesFields ->
-                fieldsConfig << [name:surveyName, speciesFields:speciesFields]
-            }
-
-            model.speciesFieldsSettings =
-                    [ defaultSpeciesConfig: project?.speciesFieldsSettings?.defaultSpeciesConfig,
-                            surveysConfig: fieldsConfig
-                    ]
-            model.projectId = project.projectId
-            model.projectName = project.name
-        } else {
-            model.error = 'Species fields can only be configured when the project is in planning mode.'
-        }
-        model
     }
 
     /**

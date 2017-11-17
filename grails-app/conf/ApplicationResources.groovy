@@ -237,6 +237,7 @@ modules = {
         resource url: 'js/sites.js'
         resource url: 'js/meriPlan.js'
         resource url: 'js/risks.js'
+        resource url: 'js/works.js'
         resource url: 'js/issues.js'
         resource url: 'js/output-targets.js'
         resource url: 'vendor/moment/moment.min.js'

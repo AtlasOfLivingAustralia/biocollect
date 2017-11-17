@@ -258,13 +258,16 @@ function stringToDate(date) {
             });
         },
         update: function(element, valueAccessor)   {
-            var widget = $(element).data("datepicker");
+            var $element = $(element),
+                widget = $element.data("datepicker");
             //when the view model is updated, update the widget
             if (widget) {
                 var date = ko.utils.unwrapObservable(valueAccessor());
                 widget.date = date;
                 if (!isNaN(widget.date) ) {
                     widget.setDate(widget.date);
+                } else if( date && (date.toString() === 'Invalid Date')){
+                    $element.val('').datepicker('update');
                 }
             }
         }

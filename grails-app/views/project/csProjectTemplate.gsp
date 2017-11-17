@@ -61,6 +61,7 @@
         imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         documentUpdateUrl: "${createLink(controller:"proxy", action:"documentUpdate")}",
+        methoddocumentUpdateUrl: "${createLink(controller:"image", action:"upload", params:[role: "methodDoc"])}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
         imageLocation:"${resource(dir:'/images')}",
         pdfgenUrl: "${createLink(controller: 'resource', action: 'pdfUrl')}",
@@ -158,12 +159,14 @@
         var user = <fc:modelAsJavascript model="${user}"/>;
         var vocabList = <fc:modelAsJavascript model="${vocabList}" />;
         var projectArea = <fc:modelAsJavascript model="${projectSite.extent.geometry}"/>;
+        var licences = <fc:modelAsJavascript model="${licences}"/>;
 
         var ViewModel = function() {
             var self = this;
             $.extend(this, projectViewModel);
             self.transients = self.transients || {};
             self.transients.resultsHolder = 'project-results-placeholder';
+            // self.transients.dataSharingLicences = licences;
         };
         var viewModel = new ViewModel()
         viewModel.loadPrograms(<fc:modelAsJavascript model="${programs}"/>);
@@ -180,9 +183,10 @@
         params.project = projectViewModel;
         params.vocabList = vocabList;
         params.projectArea = projectArea;
+        params.licences = licences;
 
         <g:if test="${!project.isExternal}">
-            var pActivitiesVM = new ProjectActivitiesViewModel(params);
+            var pActivitiesVM = new ProjectActivitiesViewModel(params, projectViewModel);
             initialiseProjectActivitiesList(pActivitiesVM);
             initialiseData('project');
             <g:if test="${projectContent.admin.visible}">initialiseProjectActivitiesSettings(pActivitiesVM);</g:if>

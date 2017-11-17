@@ -293,7 +293,7 @@
                                                 class="fa fa-edit" title="Edit survey"></i></a>
                                     </span>
                                     <span class="margin-left-1">
-                                        <a href="#" data-bind="click: $parent.delete"><i
+                                        <a href="#" data-bind="click: $parent.remove"><i
                                                 class="fa fa-remove" title="Delete survey"></i></a>
                                     </span>
                                 </div>
@@ -374,7 +374,8 @@
 
 
             var activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', null, null, true, true)
-            activitiesAndRecordsViewModel.searchTerm('siteId:${site.siteId}')
+            activitiesAndRecordsViewModel.searchTerm('siteId:${site.siteId}');
+            activitiesAndRecordsViewModel.search();
             ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('siteActivities'));
             var params = {
                 params: {

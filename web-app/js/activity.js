@@ -57,9 +57,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     });
 
     self.search = function () {
-        self.refreshPage();
-        self.getDataAndShowOnMap();
-        self.imageGallery && self.imageGallery.fetchRecordImages()
+        fetchDataForTabs()
     };
 
     self.clearData = function() {
@@ -222,7 +220,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return getSelectedTermsForRefinement().length > 0;
     };
 
-    self.delete = function (activity) {
+    self.remove = function (activity) {
         bootbox.confirm("Are you sure you want to delete the survey and records?", function (result) {
             if (result) {
                 var url = fcConfig.activityDeleteUrl + "/" + activity.activityId();
@@ -486,7 +484,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.biocacheUrl = ko.computed(function () {
         var fqs = self.filterViewModel.getALACompatibleQuery() || [],
             query = fqs.join("&fq="),
-            url = fcConfig.occurrenceUrl,
+            url = fcConfig.occurrenceUrl || '',
             questionMark = false;
 
         if(url.indexOf('?') < 0){
@@ -507,7 +505,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.spatialUrl = ko.computed(function () {
         var fqs = self.filterViewModel.getALACompatibleQuery() || [],
             query = fqs.join("&fq="),
-            url = fcConfig.spatialUrl,
+            url = fcConfig.spatialUrl || '',
             questionMark = false;
 
         if(url.indexOf('?') < 0){
@@ -556,15 +554,14 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     }
 
     function fetchDataForTabs(){
+        if(self.filterViewModel.switchOffSearch()) return;
+
         self.refreshPage();
         self.getDataAndShowOnMap();
         self.imageGallery && self.imageGallery.fetchRecordImages()
     }
 
     self.filterViewModel.selectedFacets.subscribe(fetchDataForTabs);
-
-    // listen to facet change event so that map can be updated.
-    self.searchTerm.subscribe(self.getDataAndShowOnMap);
 
     self.sortButtonClick = function(data){
         // remove subscribe event on order so that we can set it and page will not refresh. will only refresh when
@@ -581,7 +578,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             facet: new FacetViewModel({
                 name: "organisationNameFacet",
                 title: 'Organisation',
-                ref: self.filterViewModel
+                ref: self.filterViewModel,
+                type: 'terms'
             })
         }));
     } else if (restored && restored.length > 0) {
