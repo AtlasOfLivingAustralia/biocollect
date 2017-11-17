@@ -33,6 +33,7 @@ function enmapify(args) {
         spatialGeoserverUrl = args.spatialGeoserverUrl,
         updateSiteUrl = args.updateSiteUrl,
         listSitesUrl = args.listSitesUrl,
+        getSiteUrl = args.getSiteUrl,
         activityLevelData = args.activityLevelData,
         uniqueNameUrl = args.uniqueNameUrl + "/" + ( activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId),
         hideSiteSelection = args.hideSiteSelection || false,
@@ -53,8 +54,32 @@ function enmapify(args) {
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
         sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
-        loadingObservable = container[name + "Loading"] = ko.observable(false)
-    ;
+        loadingObservable = container[name + "Loading"] = ko.observable(false),
+        isValidMapInfo = container['isValidMapInfo'] = ko.computed(function(){
+            if (pointsOnly){
+                  if (latObservable && lonObservable && !siteIdObservable)
+                      return true;
+                  else
+                      return false;
+            };
+
+            if (polygonsOnly){
+                if (siteIdObservable && !latObservable && !lonObservable)
+                    return true;
+                else
+                    return false;
+            }
+
+            if (allowPolygons && allowPoints){
+                if (siteIdObservable)
+                    return true;
+                if (latObservable && lonObservable)
+                    return true;
+            }
+
+            return false;
+
+        });
 
     var mapOptions = {
         wmsFeatureUrl: proxyFeatureUrl + "?featureId=",
@@ -219,19 +244,37 @@ function enmapify(args) {
 
     function updateMapForSite(siteId) {
         if (typeof siteId !== "undefined" && siteId) {
-            if(lonObservable()) {
+            if (lonObservable()) {
                 previousLonObservable(lonObservable());
             }
 
-            if(latObservable()) {
+            if (latObservable()) {
                 previousLatObservable(latObservable());
             }
-
 
 
             var matchingSite = $.grep(sitesObservable(), function (site) {
                 return siteId == site.siteId
             })[0];
+
+            if (!matchingSite){
+                var siteUrl = getSiteUrl + '/' + siteId + "?format=json"
+                //It is a sync call
+                $.ajax({
+                    type: "GET",
+                    url: siteUrl,
+                    async: false,
+                    success: function (data) {
+                        if (data.site){
+                            data.site.name='The polygon you drawed'
+                            sitesObservable.push(data.site)
+                            matchingSite = data.site;
+                        }
+                    }
+                });
+            }
+
+            // TODO: OPTIMISE THE PROCEDUE
             if (matchingSite) {
                 console.log("Clearing map before displaying a new shape")
                 map.clearBoundLimits();
@@ -243,17 +286,48 @@ function enmapify(args) {
                     map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
                 }
             }
-        } else { // Drop a pin, restore previous coordinates if any
-            console.log("Displaying pin")
-            if(previousLatObservable() && previousLonObservable()) {
-                lonObservable(previousLonObservable());
-                latObservable(previousLatObservable());
+            // else if (!matchingSite) {
+            //         //@seeAlso: completeDrawWithoutAdditionalSite
+            //         // if the site id is not in project->sites, we need to search site collection to get detaits
+            //         // these codes are only called in displaying, not in edit/create
+            //         var siteUrl = getSiteUrl + '/' + siteId + "?format=json"
+            //         $.getJSON(siteUrl).then(function (data, textStatus, jqXHR) {
+            //             matchingSite = data.site;
+            //             map.clearBoundLimits();
+            //             if (matchingSite.extent.geometry.pid) {
+            //                 console.log("Displaying site with geometry.")
+            //                 map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(matchingSite.extent.geometry));
+            //             } else {
+            //                 console.log("Displaying site without geometry.")
+            //                 map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
+            //             }
+            //         });
+            //     }
+        }else{
+            if (previousLatObservable() && previousLonObservable()) {
+                    lonObservable(previousLonObservable());
+                    latObservable(previousLatObservable());
             } else {
                 console.log("Resetting map because of non-previous lat long")
                 map.resetMap()
+                }
             }
         }
-    }
+
+
+
+
+        // else { // Drop a pin, restore previous coordinates if any
+        //     console.log("Displaying pin")
+        //     if(previousLatObservable() && previousLonObservable()) {
+        //         lonObservable(previousLonObservable());
+        //         latObservable(previousLatObservable());
+        //     } else {
+        //         console.log("Resetting map because of non-previous lat long")
+        //         map.resetMap()
+        //     }
+        // }
+
 
     function getProjectArea() {
         return $.grep(activityLevelData.pActivity.sites, function (item) {
@@ -344,10 +418,10 @@ function enmapify(args) {
         console.log("draw created");
         var type = e.layerType,
             layer = e.layer;
-        // if (type === 'marker') {
-        //     console.log("marker");
-        //     return;
-        // }
+        if (type === 'marker') {
+            console.log("marker");
+            return;
+        }
         if (allowAdditionalSurveySites)
             completeDraw();
         else
@@ -427,16 +501,27 @@ function enmapify(args) {
         addSite({
             pActivityId: activityLevelData.pActivity.projectActivityId,
             site: {
-                name: '',
+                name: '*',
                 invisible:true,
                 projects: [
                     activityLevelData.pActivity.projectId
                 ],
                 extent: extent
             }}).then(function (data, jqXHR, textStatus) {
-            return reloadSiteData().then(function () {
-                return data.id
-            })
+                    var anonymousSiteId= data.id;
+                    return reloadSiteData().then(function () {
+                        return data.id
+                }).done(function(){
+                        //IMPORTANT
+                        //sites is a data-bind source for the selection dropdown list and bound to activity-output-data-location
+                        //if the new created site id is not in this list, then the location would be empty
+                        var anonymousSite = {
+                         name:'A polygon you drawed',
+                         siteId: anonymousSiteId,
+                         extent: extent
+                        }
+                        sitesObservable.push(anonymousSite)
+                 })
            })
             .always(function () {
                 $.unblockUI();

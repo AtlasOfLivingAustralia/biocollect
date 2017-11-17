@@ -307,7 +307,10 @@
                 });
                 if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
                     return null;
-                } else {
+                }else if( !outputs.data.isValidMapInfo){
+                    return false;
+                }
+                else {
                     if (activityData === undefined) {
                         activityData = {}
                     }

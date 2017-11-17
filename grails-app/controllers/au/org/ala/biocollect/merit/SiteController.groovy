@@ -80,12 +80,18 @@ class SiteController {
             //siteService.injectLocationMetadata(site)
             def user = userService.getUser()
 
-            [site               : site,
+            def result = [site               : site,
              //activities: activityService.activitiesForProject(id),
              mapFeatures        : siteService.getMapFeatures(site),
              isSiteStarredByUser: userService.isSiteStarredByUser(user?.userId ?: "0", site.siteId)?.isSiteStarredByUser,
              user               : user
             ]
+
+            if (params.format == 'json')
+                respond result as Object
+            else
+                result
+
         } else {
             //forward(action: 'list', model: [error: 'no such id'])
             flash.message = "Site not found."
@@ -450,6 +456,7 @@ class SiteController {
                 } else {
                     if (selectableSite)
                         pActivity.sites.add(result.id)
+//                    pActivity.sites.add(result.id)
                     projectActivityService.update(postBody.pActivityId, pActivity)
                 }
             }

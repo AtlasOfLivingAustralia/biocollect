@@ -660,6 +660,7 @@ class ModelJSTagLib {
                 , spatialGeoserverUrl: '${grailsApplication.config.spatial.geoserverUrl}'
                 , updateSiteUrl: '${createLink(controller: 'site', action: 'ajaxUpdate')}'
                 , listSitesUrl: '${createLink(controller: 'site', action: 'ajaxList' )}'
+                , getSiteUrl: '${createLink(controller: 'site', action: 'index' )}'
                 , uniqueNameUrl: '${createLink(controller: 'site', action: 'checkSiteName' )}'
                 , activityLevelData: activityLevelData
                 , hideSiteSelection: ${model.hideSiteSelection}

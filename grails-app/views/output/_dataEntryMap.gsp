@@ -18,6 +18,7 @@ Allow Points: <span data-bind="text:activityLevelData.pActivity.allowPoints">All
 Allow Polygons: <span data-bind="text:activityLevelData.pActivity.allowPolygons"></span> <br/>
 Allow Addtional Survey Sites: <span data-bind="text:activityLevelData.pActivity.allowAdditionalSurveySites"></span> <br/>
 Default zoom to: <span data-bind="text:activityLevelData.pActivity.defaultZoomArea"> </span> <br/>
+<input data-bind="value:data.${source}"/>
 <g:if test="${!hideSiteSelection}">
     <div class="${isHorizontal ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 0">
         <div>
@@ -37,6 +38,8 @@ Default zoom to: <span data-bind="text:activityLevelData.pActivity.defaultZoomAr
         </div>
     </div>
 </g:if>
+
+
 
 <g:if test="${!isHorizontal}">
     <div class="row-fluid margin-bottom-1">
