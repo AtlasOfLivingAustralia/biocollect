@@ -115,7 +115,7 @@ function initialise(roles, currentUserId, projectId) {
             data: {
                 userId: userId,
                 role: role,
-                entityId: "${project.projectId}"
+                entityId: projectId
             }
         })
             .done(function (result) {
