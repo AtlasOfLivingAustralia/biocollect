@@ -289,6 +289,10 @@ modules = {
         resource url: 'js/projectActivityInfo.js'
     }
 
+    permissionTable {
+        resource url: 'js/permissionTable.js'
+    }
+
     species {
         defaultBundle 'application'
         dependsOn 'knockout'

@@ -323,6 +323,11 @@ class ProjectService {
         webService.getJson(url)
     }
 
+    def getMembersForProjectPerPage(projectId, pageStart, pageSize) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForProjectPerPage?projectId=${projectId}&offset=${pageStart}&max=${pageSize}"
+        webService.getJson(url, null, true)
+    }
+
     /**
      * Does the current user have permission to administer the requested projectId?
      * Checks for the ADMIN role in CAS and then checks the UserPermission
