@@ -90,6 +90,8 @@
         defaultCommonFields: <fc:modelAsJavascript model="${grailsApplication.config.lists.commonFields}"/>,
         occurrenceUrl: "${occurrenceUrl}",
         spatialUrl: "${spatialUrl}",
+        getMembersForProjectIdPaginatedUrl: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}",
+        removeUserRoleUrl:"${createLink(controller:'user', action:'removeUserWithRoleFromProject')}",
         absenceIconUrl:"${resource(dir: 'images', file: 'triangle.png')}"
         },
         here = window.location.href;
