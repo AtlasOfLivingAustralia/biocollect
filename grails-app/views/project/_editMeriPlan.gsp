@@ -1,5 +1,5 @@
 <div class="validationEngineContainer edit-view-meri-plan"  id="edit-meri-plan">
-	<span data-bind="if:detailsLastUpdated"> <br/>Last update date : <span data-bind="text:detailsLastUpdated.formattedDate"></span></span>
+	<p data-bind="if:detailsLastUpdated">Last updated <span data-bind="if:detailsLastUpdatedDisplayName"> by <span data-bind="text:detailsLastUpdatedDisplayName"></span></span> at <span data-bind="text:detailsLastUpdated.formattedDate"></span></p>
 
 	<div class="row-fluid space-after">
 		<div>
