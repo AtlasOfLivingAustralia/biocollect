@@ -131,6 +131,11 @@
                         </div>
                     </div>
                     <div class="span6">
+                        <div data-bind="visible: industries().length">
+                            <div class="text-small-heading"><g:message code="project.display.industries"/></div>
+                            <span data-bind="text:industries().join(', ')"></span>
+                            <p/>
+                        </div>
                         <div data-bind="visible: countries().length">
                             <div class="text-small-heading">
                                 <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
