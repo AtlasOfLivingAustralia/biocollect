@@ -20,6 +20,7 @@ function MERIPlan(project, themes, key) {
 
     self.details = new DetailsViewModel(project.custom.details, getBudgetHeaders(project));
     self.detailsLastUpdated = ko.observable(project.custom.details.lastUpdated).extend({simpleDate: true});
+    self.detailsLastUpdatedDisplayName = ko.observable(project.custom.details.lastUpdatedDisplayName || '');
     self.isProjectDetailsSaved = ko.computed (function (){
         return (project['custom']['details'].status == 'active');
     });
@@ -379,7 +380,11 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
             var now = moment().toDate().toISOStringNoMillis();
             self.details.lastUpdated(now);
             self.detailsLastUpdated(now);
-            self.details.saveWithErrorDetection();
+            self.details.saveWithErrorDetection(function(result) {
+                self.detailsLastUpdatedDisplayName((result.resp && result.resp.lastUpdatedByDisplayName) || '');
+            }, function(result) {
+                bootbox.alert("An error occurred while updating the plan.");
+            });
         } 
     };
 
