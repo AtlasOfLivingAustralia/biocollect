@@ -1,4 +1,4 @@
-<r:require modules="jquery_bootstrap_datatable, permissionTable"/>
+<r:require modules="jquery_bootstrap_datatable"/>
 
 <div class="pill-pane">
     <div class="row well well-small" id="project-member-list">
