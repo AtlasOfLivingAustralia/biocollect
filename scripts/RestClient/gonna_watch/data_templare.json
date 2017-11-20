@@ -1,0 +1,334 @@
+{
+  "activityId": "",
+  "projectStage": "",
+  "mainTheme": "",
+  "type": "General Weed Sighting",
+  "projectId": "f0caedd0-70fd-4388-adb8-8d26935fa6f7",
+  "siteId": "",
+  "outputs": [
+    {
+      "name": "General Weed Sighting",
+      "outputId": "",
+      "data": {
+        "surveyDate": "",
+        "surveyStartTime": "",
+        "notes": "",
+        "recordedBy": "",
+        "locationLatitude": -34.96471438,
+        "locationLongitude": 117.3462219,
+        "locationLatLonDisabled": false,
+        "locationCentroidLatitude": null,
+        "locationCentroidLongitude": null,
+        "locationSitesArray": [
+          {
+            "status": "active",
+            "lastUpdated": "2016-10-31T06:50:04Z",
+            "type": "surveyArea",
+            "externalId": "",
+            "id": "5678d5e9e4b0f1563c207f6b",
+            "poi": [],
+            "projects": [
+              "f0caedd0-70fd-4388-adb8-8d26935fa6f7"
+            ],
+            "geoIndex": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    117.4883391754702,
+                    -35.07312573241921
+                  ],
+                  [
+                    117.5212981598452,
+                    -34.97416016392412
+                  ],
+                  [
+                    117.5212981598452,
+                    -34.79391614236496
+                  ],
+                  [
+                    116.8291594879702,
+                    -34.77587000744554
+                  ],
+                  [
+                    116.8346526520327,
+                    -35.04839557264395
+                  ],
+                  [
+                    116.9362761871889,
+                    -35.07762132023397
+                  ],
+                  [
+                    116.9664885895327,
+                    -35.03265429844767
+                  ],
+                  [
+                    117.1450164215639,
+                    -35.0596374829878
+                  ],
+                  [
+                    117.1972014801577,
+                    -35.03040529742966
+                  ],
+                  [
+                    117.3235442535952,
+                    -35.05064407851805
+                  ],
+                  [
+                    117.4883391754702,
+                    -35.07312573241921
+                  ]
+                ]
+              ]
+            },
+            "area": "1861.054433179656",
+            "siteId": "a74bd52e-7c1b-4230-96d5-ea33d7079f65",
+            "extent": {
+              "source": "drawn",
+              "geometry": {
+                "fid": "",
+                "mvs": "Cleared, non-native vegetation, buildings",
+                "other": [
+                  "Australian Coral Ecoregions",
+                  "Directory of Important Wetlands"
+                ],
+                "centre": [
+                  "117.17208925464973",
+                  "-34.91792488400646"
+                ],
+                "state": [
+                  "Western Australia (including Coastal Waters)"
+                ],
+                "layerName": "",
+                "datum": "",
+                "type": "Polygon",
+                "ibra": [
+                  "Jarrah Forest",
+                  "Warren"
+                ],
+                "imcra4_pb": [
+                  "Southwest Shelf Province"
+                ],
+                "areaKmSq": 1861.054433179656,
+                "nrm": [
+                  "South Coast"
+                ],
+                "bbox": "",
+                "name": "",
+                "cmz": [
+                  "South Western Australia temperate forests"
+                ],
+                "coordinates": [
+                  [
+                    [
+                      117.4883391754702,
+                      -35.07312573241921
+                    ],
+                    [
+                      117.5212981598452,
+                      -34.97416016392412
+                    ],
+                    [
+                      117.5212981598452,
+                      -34.79391614236496
+                    ],
+                    [
+                      116.8291594879702,
+                      -34.77587000744554
+                    ],
+                    [
+                      116.8346526520327,
+                      -35.04839557264395
+                    ],
+                    [
+                      116.9362761871889,
+                      -35.07762132023397
+                    ],
+                    [
+                      116.9664885895327,
+                      -35.03265429844767
+                    ],
+                    [
+                      117.1450164215639,
+                      -35.0596374829878
+                    ],
+                    [
+                      117.1972014801577,
+                      -35.03040529742966
+                    ],
+                    [
+                      117.3235442535952,
+                      -35.05064407851805
+                    ],
+                    [
+                      117.4883391754702,
+                      -35.07312573241921
+                    ]
+                  ]
+                ],
+                "uncertainty": "",
+                "elect": [
+                  "O'CONNOR"
+                ],
+                "precision": "",
+                "pid": 6644182,
+                "decimalLatitude": -34.92674566383975,
+                "mvg": "Cleared, non-native vegetation, buildings",
+                "decimalLongitude": 117.1752288239077,
+                "locality": "2195 Scotsdale Rd, Kordabup WA 6333, Australia",
+                "radius": "",
+                "lga": [
+                  "Denmark (S)",
+                  "Plantagenet (S)",
+                  "Albany (C)"
+                ],
+                "aream2": 1853091663.482749
+              }
+            },
+            "description": "",
+            "name": "Project extent for Working Wonders on Weeds - Community of Denmark WA",
+            "dateCreated": "2015-12-22T04:47:37Z",
+            "notes": "",
+            "refreshed": "Y"
+          },
+          {
+            "status": "active",
+            "lastUpdated": "2016-03-31T02:01:05Z",
+            "type": "surveyArea",
+            "externalId": "",
+            "id": "56fc84d7e4b0b67b8a050f0b",
+            "poi": [],
+            "projects": [
+              "f0caedd0-70fd-4388-adb8-8d26935fa6f7"
+            ],
+            "geoIndex": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    "-35.0678443908691",
+                    "116.724807739258"
+                  ],
+                  [
+                    "-34.753288269043",
+                    "116.724807739258"
+                  ],
+                  [
+                    "-34.753288269043",
+                    "117.488372802734"
+                  ],
+                  [
+                    "-35.0678443908691",
+                    "117.488372802734"
+                  ],
+                  [
+                    "-35.0678443908691",
+                    "116.724807739258"
+                  ]
+                ]
+              ]
+            },
+            "area": "1864.2315891469802",
+            "siteId": "96fe9f01-e360-4789-982b-5ec8f34186a7",
+            "extent": {
+              "source": "pid",
+              "geometry": {
+                "fid": "cl959",
+                "mvs": "Cleared, non-native vegetation, buildings",
+                "other": [
+                  "Directory of Important Wetlands"
+                ],
+                "centre": [
+                  "117.1188243705468",
+                  "-34.89047780644781"
+                ],
+                "state": [
+                  "Western Australia (including Coastal Waters)"
+                ],
+                "layerName": "Local Government Areas",
+                "datum": "",
+                "type": "pid",
+                "ibra": [
+                  "Jarrah Forest",
+                  "Warren"
+                ],
+                "areaKmSq": 1864.2315891469802,
+                "nrm": [
+                  "South Coast"
+                ],
+                "bbox": "POLYGON((116.724807739258 -35.0678443908691,116.724807739258 -34.753288269043,117.488372802734 -34.753288269043,117.488372802734 -35.0678443908691,116.724807739258 -35.0678443908691))",
+                "name": "Denmark (S)",
+                "coordinates": [
+                  [
+                    [
+                      "116.724807739258",
+                      "-35.0678443908691"
+                    ],
+                    [
+                      "116.724807739258",
+                      "-34.753288269043"
+                    ],
+                    [
+                      "117.488372802734",
+                      "-34.753288269043"
+                    ],
+                    [
+                      "117.488372802734",
+                      "-35.0678443908691"
+                    ],
+                    [
+                      "116.724807739258",
+                      "-35.0678443908691"
+                    ]
+                  ]
+                ],
+                "uncertainty": "",
+                "cmz": [
+                  "South Western Australia temperate forests"
+                ],
+                "elect": [
+                  "O'CONNOR"
+                ],
+                "precision": "",
+                "pid": "5724237",
+                "decimalLatitude": -34.91056632995605,
+                "mvg": "Cleared, non-native vegetation, buildings",
+                "decimalLongitude": 117.10659027099601,
+                "locality": "3053 Scotsdale Rd, Kordabup WA 6333, Australia",
+                "lga": [
+                  "Denmark (S)"
+                ],
+                "aream2": 1858422725.475958
+              }
+            },
+            "description": "",
+            "name": "Shire of Denmark WA",
+            "dateCreated": "2016-03-31T02:00:55Z",
+            "notes": "",
+            "refreshed": "Y",
+            "isSciStarter": false
+          }
+        ],
+        "locationLoading": false,
+        "locationMap": {
+          "DEFAULT_CENTRE": {
+            "lat": -28,
+            "lng": 134
+          }
+        },
+        "species": {
+          "name": "",
+          "guid": "",
+          "scientificName": "",
+          "commonName": "",
+          "outputSpeciesId": ""
+        },
+        "occurrenceDensity": "",
+        "identificationConfidence": "",
+        "comments": "",
+        "sightingPhoto": []
+      },
+      "outputNotCompleted": false
+    }
+  ]
+}
