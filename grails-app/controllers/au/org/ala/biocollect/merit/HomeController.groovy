@@ -145,6 +145,10 @@ class HomeController {
         renderStaticPage(SettingPageType.CITIZEN_SCIENCE_WHAT_IS_THIS, false)
     }
 
+    def worksScheduleIntro(){
+        renderStaticPage(SettingPageType.WORKS_SCHEDULE_INTRO, false)
+    }
+
     def close() {
         response.setContentType("text/html")
         render """<html><head><script type="text/javascript">window.close();</script></head><body/></html>"""

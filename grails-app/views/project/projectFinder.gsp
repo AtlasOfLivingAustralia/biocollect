@@ -130,9 +130,9 @@
 </div>
 <r:script>
     $("#newPortal").on("click", function() {
-        <g:if test="${isCitizenScience}">
-    document.location.href = "${createLink(controller: 'project', action: 'create', params: [citizenScience: true])}";
-</g:if>
+    <g:if test="${isCitizenScience}">
+        document.location.href = "${createLink(controller: 'project', action: 'create', params: [citizenScience: true])}";
+    </g:if>
     <g:if test="${isWorks}">
         document.location.href = "${createLink(controller: 'project', action: 'create', params: [works: true])}";
     </g:if>

@@ -4,13 +4,10 @@ import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.VocabService
-import au.org.ala.biocollect.merit.CollectoryService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
 import au.org.ala.biocollect.projectresult.Initiator
 import au.org.ala.web.AuthService
-
-
 import grails.converters.JSON
 import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
@@ -423,15 +420,6 @@ class ProjectController {
         def links = values.remove('links')
         final Map project = projectService.get(id)
         def projectType = id ? project.projectType : values?.projectType
-
-        if (projectType == "works" && postBody?.size() == 2 && postBody?.planStatus == "approved") {
-            // We need to validate that species fields are configured
-
-            if (!areWorksProjectSpeciesFieldConfigured(project)) {
-                render status: 400, text: "Species fields have not been configured for the project or the current configuration is outdated."
-                return
-            }
-        }
 
         String mainImageAttribution = values.remove("mainImageAttribution")
         String logoAttribution = values.remove("logoAttribution")
@@ -988,64 +976,6 @@ class ProjectController {
 
         def result = projectService.searchSpecies(id, q, limit, output, dataFieldName, surveyName)
         render result as JSON
-    }
-
-    private Boolean areWorksProjectSpeciesFieldConfigured(Map project) {
-        int speciesFieldsCount = 0
-        def activities = activityService.activitiesForProject(project.projectId)
-
-        // Find the different surveys used in this project schedule
-        Set<String> surveys = new HashSet<>();
-        activities.each {
-            surveys << it.type
-        }
-
-        Map<String,Map> speciesFieldsBySurvey = [:]
-
-        surveys.each {
-            List speciesFields = formSpeciesFieldParserService.getSpeciesFieldsForSurvey(it)?.result
-            speciesFieldsBySurvey[it] = speciesFields
-            speciesFieldsCount += speciesFields.size()
-        }
-
-        // The current project has no activity forms using species fields so there is nothing to validate
-        if(!speciesFieldsCount) {
-            return true
-        } else {
-            // Let's check that the current project configuration covers all fields and default configuration
-
-            if(!(project?.speciesFieldsSettings?.defaultSpeciesConfig?.type in ["SINGLE_SPECIES", "GROUP_OF_SPECIES", "ALL_SPECIES"])) {
-                return false
-            } else if(speciesFieldsCount > 1){ // We use more than the default configuration
-
-                List projectSurveysSettings = project?.speciesFieldsSettings?.surveysConfig ?: []
-
-                for(String surveyName : speciesFieldsBySurvey.keySet()) {
-                    def projectSurveySettings = projectSurveysSettings.find {
-                        it.name == surveyName
-                    }
-
-                    List expectedSpeciesFields = speciesFieldsBySurvey[surveyName]
-
-                    if(!projectSurveySettings && expectedSpeciesFields.size()) {
-                        return false // Missing survey configuration entry.
-                    }
-
-                    for(def expectedField :expectedSpeciesFields ) {
-                        def specificFieldDefinition = projectSurveySettings?.speciesFields?.find {
-                            it.dataFieldName == expectedField.dataFieldName && it.output == expectedField.output
-                        }
-
-                        if(!(specificFieldDefinition?.config?.type in ["SINGLE_SPECIES", "GROUP_OF_SPECIES", "ALL_SPECIES", "DEFAULT_SPECIES"])) {
-                            return false // No field configuration for survey or the field definition does not have a type
-                        }
-                    }
-                }
-            }
-            // All expected surveys and fields are already in project config
-            return true
-        }
-
     }
 
     @PreAuthorise(accessLevel = 'admin', redirectController ='home', redirectAction = 'index')

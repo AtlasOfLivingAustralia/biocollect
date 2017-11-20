@@ -253,6 +253,10 @@ if(!biocache.baseURL){
     biocache.baseURL = "https://biocache.ala.org.au"
 }
 
+/*
+ * Specific configurations used by Biocollect
+ */
+
 if(!facets.flimit){
     facets.flimit = 15
 }
@@ -261,4 +265,11 @@ if(!lists.commonFields){
     lists.commonFields = ['rawScientificName', 'matchedName', 'commonName']
 } else if(lists.commonFields instanceof String) {
     lists.commonFields = lists.commonFields.split(',')
+}
+
+if(!speciesConfiguration.default){
+    speciesConfiguration.default = [
+            "type"                : "ALL_SPECIES",
+            "speciesDisplayFormat": "SCIENTIFICNAME(COMMONNAME)"
+    ]
 }
