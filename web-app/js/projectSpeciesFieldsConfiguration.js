@@ -80,7 +80,7 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
         self.projectId = projectId;
         
         // Default species configuration
-        self.species = ko.observable(new SpeciesConstraintViewModel(speciesFieldsSettings.defaultSpeciesConfig));
+        self.species = ko.observable(new SpeciesConstraintViewModel(speciesFieldsSettings.defaultSpeciesConfig || fcConfig.defaultSpeciesConfiguration));
 
 
         var surveysConfig = speciesFieldsSettings.surveysConfig || []

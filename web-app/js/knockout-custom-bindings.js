@@ -174,10 +174,11 @@ ko.bindingHandlers.slideVisible = {
         var value = valueAccessor();
         $(element).toggle(ko.unwrap(value)); // Use "unwrapObservable" so we can handle values that may or may not be observable
     },
-    update: function (element, valueAccessor) {
+    update: function (element, valueAccessor, allBindings) {
         // Whenever the value subsequently changes, slowly fade the element in or out
-        var value = valueAccessor();
-        ko.unwrap(value) ? $(element).slideDown() : $(element).slideUp();
+        var value = valueAccessor(),
+            duration = allBindings.get('slideDuration') || 600;
+        ko.unwrap(value) ? $(element).slideDown(duration, 'linear') : $(element).slideUp(duration, 'linear');
     }
 };
 
@@ -911,14 +912,30 @@ ko.bindingHandlers.enter = {
  * Dismiss a bootstrap modal dialog when subscriber passed to it is set to true.
  */
 ko.bindingHandlers.dismissModal = {
-    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
         var value = valueAccessor(),
             $element = $(element);
-        value.subscribe(function (newValue) {
-            if(newValue){
-                $element.modal('hide')
-            }
-        });
+
+        if(ko.unwrap(value)){
+            $element.modal('hide')
+        }
+    }
+};
+
+/**
+ * Hightlight an element on the
+ */
+ko.bindingHandlers.highlight = {
+    update: function (element, valueAccessor, allBindings) {
+        var value = valueAccessor(),
+            $element = $(element),
+            speed = allBindings.get('highlightDuration') || 1000;
+
+        if(ko.unwrap(value)){
+            setTimeout(function () {
+                $element.effect('highlight', speed);
+            }, 1000);
+        }
     }
 };
 

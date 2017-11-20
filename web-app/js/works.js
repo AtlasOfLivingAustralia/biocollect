@@ -21,12 +21,12 @@ function WorksActivityViewModel (config) {
         planViewModel = config.planViewModel,
         isFirst = config.isFirst,
         speciesSettings = config.speciesSettings,
-        progress = act.progress || 'planned';
+        initialProgress = 'planned',
+        progress = act.progress || initialProgress;
     self.activityId = act.activityId;
     self.isFirst = isFirst ? self : undefined;
-    self.siteId = act.siteId;
-    self.siteName = lookupSiteName(act.siteId);
-    self.typeCategory = act.typeCategory;
+    self.siteId = ko.observable(act.siteId || "");
+    self.typeCategory = ko.observable(act.typeCategory);
     self.hasOutputs = act.outputs && act.outputs.length;
     self.publicationStatus = act.publicationStatus ? act.publicationStatus : 'unpublished';
     self.deferReason = ko.observable(undefined); // a reason document or undefined
@@ -45,7 +45,9 @@ function WorksActivityViewModel (config) {
     self.fieldNotes = ko.observable(act.fieldNotes);
     self.projectId = ko.observable(act.projectId);
     self.mainTheme = ko.observable(act.mainTheme);
-
+    self.siteName = ko.computed(function () {
+        return lookupSiteName(self.siteId());
+    });
 
     self.isReadOnly = ko.computed(function() {
         var isEditor = fcConfig.isEditor;
@@ -59,15 +61,23 @@ function WorksActivityViewModel (config) {
         return self.isAdmin();
     });
     self.canEditOutputData = ko.computed(function () {
-        return !self.isReadOnly() && planViewModel.planStatus() === 'approved';
+        return !self.isReadOnly();
     });
     self.canDeleteActivity = ko.computed(function () {
-        return !self.isReadOnly() && planViewModel.planStatus() === 'not approved';
+        return self.isAdmin();
     });
     self.canUpdateStatus = ko.computed(function () {
-        return !self.isReadOnly() && planViewModel.planStatus() === 'approved';
+        return !self.isReadOnly();
     });
+    self.canEditType = ko.computed(function () {
+        if(self.isAdmin()){
+            if(self.progress() === initialProgress){
+                return true;
+            }
+        }
 
+        return false;
+    });
 
 
     self.transients = {};
@@ -75,6 +85,7 @@ function WorksActivityViewModel (config) {
     self.transients.activityType = ko.observable();
     self.transients.created = ko.observable();
     self.transients.editActivity = ko.observable();
+    self.transients.remove = ko.observable(false);
     self.transients.speciesSettings = ko.observable(speciesSettings);
     self.transients.speciesConfigurationToggle = ko.observable(false);
     self.transients.editSpeciesConfiguration = function () {
@@ -130,6 +141,7 @@ function WorksActivityViewModel (config) {
             self.deferReason(activity.deferReason); // a reason document or undefined
             self.description(activity.description);
             self.notes(activity.notes);
+            self.typeCategory(activity.typeCategory);
             self.type(activity.type);
             self.startDate.date(activity.startDate || '');
             self.endDate.date(activity.endDate || '');
@@ -152,6 +164,24 @@ function WorksActivityViewModel (config) {
     self.transients.clear = function () {
         self.transients.loadActivity({})
     };
+    /**
+     * Dismiss modal showing activity edit form.
+     */
+    self.transients.dismissModal = ko.computed(function () {
+        var a =self.transients.created(),
+            b = self.transients.editActivity();
+
+        return a || !b;
+    });
+    self.transients.site = ko.computed(function () {
+        return lookupSite(self.siteId());
+    });
+    self.transients.siteArea = ko.computed(function () {
+        var site = self.transients.site();
+        if(site && site.extent && site.extent.geometry && site.extent.geometry.areaKmSq ){
+            return site.extent.geometry.areaKmSq;
+        }
+    });
 
     self.save = function (isValid) {
         if (isValid) {
@@ -176,6 +206,39 @@ function WorksActivityViewModel (config) {
                         } else {
                             self.transients.editActivity(false);
                         }
+                    }
+                },
+                error: function (data) {
+                    var status = data.status;
+                    alert('An unhandled error occurred: ' + data.status);
+                },
+                complete: function () {
+                    self.transients.isSaving(false);
+                }
+            });
+        }
+    };
+
+    self.saveSite = function () {
+        if (self.siteId()) {
+            self.transients.isSaving(true);
+            var jsData = {
+                activityId: self.activityId,
+                siteId: self.siteId()
+            };
+            var json = JSON.stringify(jsData);
+            var url = fcConfig.activityUpdateUrl;
+            if(self.activityId){
+                url += '/' + self.activityId
+            }
+            return $.ajax({
+                url: url,
+                type: 'POST',
+                data: json,
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data.error) {
+                        bootbox.alert(data.detail + ' \n' + data.error);
                     }
                 },
                 error: function (data) {
@@ -232,7 +295,7 @@ function WorksActivityViewModel (config) {
             if (self.deferReason() === undefined) {
                 self.deferReason(new DocumentViewModel(
                     {role:'deferReason', name:'Deferred/canceled reason document'},
-                    {activityId:act.activityId/*, projectId:project.projectId*/}));
+                    {activityId:act.activityId}));
             }
             // popup dialog for reason
             self.displayReasonModal.trigger('progress_change');
@@ -265,6 +328,17 @@ function WorksActivityViewModel (config) {
             self.transients.saveActivitySnapshot();
         }
     });
+    // update typeCategory
+    self.type.subscribe(function(newType){
+        $.each(fcConfig.activityTypes, function(i, obj) {
+            $.each(obj.list, function(j, type) {
+                if (type.name === newType) {
+                    self.typeCategory(type.type);
+                }
+            });
+        });
+    });
+    self.siteId.subscribe(self.saveSite);
 
     self.saveProgress = function(payload) {
         self.transients.isSaving(true);
@@ -302,7 +376,7 @@ function WorksActivityViewModel (config) {
         }
     };
     self.editActivityMetadata = function () {
-        self.transients.editActivity(!self.transients.editActivity())
+        self.transients.editActivity(true)
     };
 
     self.viewActivity = function() {
@@ -317,7 +391,7 @@ function WorksActivityViewModel (config) {
                 $.getJSON(fcConfig.activityDeleteUrl + '/' + self.activityId,
                     function (data) {
                         if (data.code < 400) {
-                            document.location.reload();
+                            self.transients.remove(true);
                         } else {
                             alert("Failed to delete activity - error " + data.code);
                         }
@@ -349,18 +423,19 @@ function PlanViewModel(config) {
     var activities = config.activities,
         outputTargets = config.outputTargets,
         project = config.project,
-        placeholder = config.placeholder;
+        placeholder = config.placeholder,
+        sites = config.sites;
 
     self.userIsCaseManager = ko.observable(fcConfig.isCaseManager);
-    self.planStatus = ko.observable(project.planStatus || 'not approved');
-    self.isApproved = ko.computed(function () {
-        return (self.planStatus() === 'approved');
-    });
-
+    self.selectedWorksActivityViewModel = ko.observable();
     self.canEditOutputTargets = ko.computed(function() {
         var isEditor = fcConfig.isEditor;
-        return isEditor && self.planStatus() === 'not approved';
+        return isEditor;
     });
+    self.openActivityModal = function (activity) {
+        activity.editActivityMetadata();
+        self.selectedWorksActivityViewModel(activity);
+    };
     //this.currentDate = ko.observable("2014-02-03T00:00:00Z"); // mechanism for testing behaviour at different dates
     self.currentDate = ko.observable(new Date().toISOStringNoMillis()); // mechanism for testing behaviour at different dates
 
@@ -381,7 +456,7 @@ function PlanViewModel(config) {
     };
 
     self.openSite = function () {
-        var siteId = self.siteId;
+        var siteId = this.siteId();
         if (siteId !== '') {
             document.location.href = fcConfig.siteViewUrl + '/' + siteId;
         }
@@ -397,74 +472,12 @@ function PlanViewModel(config) {
         projectId: project.projectId
     };
     self.newActivityViewModel = new WorksActivityViewModel({act: mockActivity, project: project, planViewModel: self});
-
-
-    // Project status manipulations
-    // ----------------------------
-    // This has been refactored to update project status on specific actions (rather than subscribing
-    //  to changes in the status) so that errors can be handled in a known context.
-
-    // save new status and return a promise
-    self.saveStatus = function (newValue) {
-        var payload = {planStatus: newValue, projectId: project.projectId};
-        return $.ajax({
-            url: fcConfig.projectUpdateUrl,
-            type: 'POST',
-            data: JSON.stringify(payload),
-            contentType: 'application/json'
-        });
-    };
-    // submit plan and handle errors
-    self.editPlan = function () {
-        self.saveStatus('not approved')
-            .done(function (data) {
-                if (data.error) {
-                    showAlert("Unable to enter planing mode. An error occurred: " + data.detail + ' \n' + data.error,
-                        "alert-error",placeholder);
-                } else {
-                    self.planStatus('approved');
-                    window.location.reload();
-                }
-            })
-            .fail(function (data) {
-                if (data.status === 401) {
-                    showAlert("Unable to submit plan. You do not have editor rights for this project.",
-                        "alert-error",placeholder);
-                } else {
-                    showAlert("Unable to submit plan. An error occurred: [" + data.status + "] " + (data.responseText || ""),
-                        "alert-error",placeholder);
-                }
-            });
-    };
-    self.finishedPlanning = function () {
-
-        self.saveStatus('approved')
-            .done(function (data) {
-                if (data.error) {
-                    showAlert("Unable to leave planning mode. An unhandled error occurred: " + data.detail + ' \n' + data.error,
-                        "alert-error",placeholder);
-                } else {
-                    self.planStatus('approved');
-                    window.location.reload();
-                }
-            })
-            .fail(function (data) {
-                if (data.status === 401) {
-                    showAlert("Unable to leave planning mode.  You do not have administrator rights for this project.",
-                        "alert-error",placeholder);
-                } else {
-
-                    showAlert("Unable to leave planning mode. An error occurred: [" + data.status + "] " + (data.responseText || ""),
-                        "alert-error",placeholder);
-                }
-            });
-    };
+    self.selectedWorksActivityViewModel(self.newActivityViewModel);
 
     self.submitReport = function (e) {
         //bootbox.alert("Reporting has not been enabled yet.");
         $('#declaration').modal('show');
     };
-
     self.getGanttData = function () {
         var values = [],
             previousStage = '',
@@ -474,7 +487,7 @@ function PlanViewModel(config) {
                 var statusClass = 'gantt-' + act.progress(),
                     startDate = act.plannedStartDate.date().getTime(),
                     endDate = act.plannedEndDate.date().getTime();
-                var isMilestone = act.typeCategory == 'Milestone';
+                var isMilestone = act.typeCategory() == 'Milestone';
                 if (!isNaN(startDate)) {
                     values.push({
                         name:act.projectStage === previousStage ? '' : act.projectStage,
@@ -560,9 +573,23 @@ function PlanViewModel(config) {
             self.updateProjectSpeciesConfiguration();
         });
 
+        activity.transients.remove.subscribe(function (newValue) {
+            if(newValue){
+                setTimeout(function(){
+                    self.activities.activities.remove(activity);
+                }, 500);
+            }
+        });
+
+        // update selectedWorksActivityViewModel
+        activity.displayReasonModal.subscribe(function (newValue) {
+            if(newValue){
+                self.selectedWorksActivityViewModel(activity);
+            }
+        });
+
         return activity;
     };
-
     /**
      * Remove species configuration that are no longer relevant.
      */
@@ -752,3 +779,33 @@ function PlanStage(stage, activities, planViewModel, isCurrentStage, project) {
         return 'stageNotApprovedTmpl';
     });
 };
+
+
+function lookupSiteName (siteId) {
+    var site = lookupSite(siteId) || {};
+    return site.name;
+}
+
+function lookupSite (siteId) {
+    var site;
+    if (siteId !== undefined && siteId !== '') {
+        site = $.grep(fcConfig.sites, function(obj, i) {
+            return (obj.siteId === siteId);
+        });
+
+        if (site.length > 0) {
+            return site[0];
+        }
+    }
+}
+
+function drawGanttChart(ganttData) {
+    if (ganttData.length > 0) {
+        $("#gantt-container").gantt({
+            source: ganttData,
+            navigate: "keys",
+            scale: "weeks",
+            itemsPerPage: 30
+        });
+    }
+}

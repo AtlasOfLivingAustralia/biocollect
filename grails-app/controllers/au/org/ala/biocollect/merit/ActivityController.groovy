@@ -271,7 +271,7 @@ class ActivityController {
             if (!result) {
                 // checking to prevent an editor from entering data when administrator is editing work schedule.
                 // But if admin is editing the activity, then let the activity be updated.
-                if(projectService.isWorksProjectPlanStatusApproved(projectId) || projectService.isUserAdminForProject(userId, projectId)){
+                if(projectService.isUserAdminForProject(userId, projectId)){
                     values.userId = userId
                     def photoPoints = values.remove('photoPoints')
                     result = activityService.update(id, values)

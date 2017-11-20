@@ -13,131 +13,195 @@
          to the main viewModel. -->
 <!-- ko stopBinding: true -->
 <div class="row-fluid" id="planContainer">
-    <g:if test="${(project.planStatus == 'not approved') && params.userIsProjectEditor}">
-        <div class="alert alert-info">
-            <g:message code="project.works.workschedule.notapproved.message"></g:message>
+    <div id="status-update-error-placeholder"></div>
+
+    <div id="activityContainer" class="space-before">
+        <h4 class="inline">Planned Activities</h4>
+
+        <ul class="nav nav-tabs nav-tab-small space-before">
+            <li class="active"><a href="#tablePlan" data-toggle="tab">Tabular</a></li>
+            <li><a href="#ganttPlan" data-toggle="tab">Gantt chart</a></li>
+        </ul>
+
+        <div class="tab-content" style="padding:0;border:none;overflow:visible">
+            <div class="tab-pane active" id="tablePlan">
+                <!-- ko template: 'workScheduleActionButtonsTmpl' -->
+                <!-- /ko -->
+                <bc:koLoading>
+                <table class="table table-condensed table-hover" id="activities">
+                    <thead>
+                    <tr>
+                        <th style="width:128px;">Actions</th>
+                        <th style="min-width:64px">From</th>
+                        <th style="min-width:64px">To</th>
+                        <th style="width:25%;" id="description-column">Description</th>
+                        <th>Activity</th>
+                        <th>Site</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody data-bind="foreach:activities.activities" id="activityList">
+                    <tr data-bind="template:typeCategory() == 'Milestone' ? 'milestoneRow':'activityRow', css:typeCategory, slideVisible: !transients.editActivity() || !transients.remove(), highlight: transients.remove() || !transients.editActivity(), slideDuration: 100">
+
+                    </tr>
+                    <!-- ko if: transients.speciesSettings() -->
+                    <tr class="no-highlight-on-hover" data-bind="slideVisible: transients.speciesConfigurationToggle">
+                        <td colspan="7">
+                            <div class="padding-10 border-1">
+                                <!-- ko template: 'speciesConfigurationTmpl' -->
+                                <!-- /ko -->
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- /ko -->
+                    </tbody>
+                </table>
+                </bc:koLoading>
+
+                <!-- ko template: 'workScheduleActionButtonsTmpl' -->
+                <!-- /ko -->
+            </div>
+            <div class="tab-pane" id="ganttPlan" style="overflow:hidden;">
+                <div id="gantt-container"></div>
+            </div>
         </div>
-    </g:if>
-    <g:else>
-        <div id="status-update-error-placeholder"></div>
+    </div>
 
-        <div id="activityContainer" class="space-before">
-            <h4 class="inline">Planned Activities</h4>
 
-            <ul class="nav nav-tabs nav-tab-small space-before">
-                <li class="active"><a href="#tablePlan" data-toggle="tab">Tabular</a></li>
-                <li><a href="#ganttPlan" data-toggle="tab">Gantt chart</a></li>
-            </ul>
+    <!-- ko with: selectedWorksActivityViewModel -->
+    <div class="modal hide fade" id="createOrUpdateActivity" data-bind="dismissModal: transients.dismissModal">
+        <div class="modal-body">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <div data-bind="validateOnClick:  { callback: save, selector: '.save-activity'}, css: {'ajax-opacity': transients.isSaving}" class="validationEngineContainer">
+                <h4><!-- ko text: activityId ? 'Update activity': 'Add a new activity' --> <!-- /ko --></h4>
+                <div id="add-new-activity">
+                    <div class="row-fluid">
+                        <div class="span4 required">
+                            <label>Type of activity</label>
+                            <select data-bind="value: type,
+                                popover:{title:'', content: transients.activityDescription,
+                                trigger:'manual', autoShow:true}, enable: canEditType"  class="full-width form-control"
+                                    data-validation-engine="validate[required]">
+                                <option></option>
+                                <g:each in="${activityTypes}" var="t" status="i">
+                                    <optgroup label="${t.name}">
+                                        <g:each in="${t.list}" var="opt">
+                                            <option>${opt.name}</option>
+                                        </g:each>
+                                    </optgroup>
+                                </g:each>
+                            </select>
+                        </div>
 
-            <div class="tab-content" style="padding:0;border:none;overflow:visible">
-                <div class="row-fluid">
-                    <div class="span12">
-                        <a href="#createNewActivity" role="button" class="btn btn-primary pull-right" data-toggle="modal"><i class="icon icon-plus icon-white"></i> <g:message code="project.works.createNewActivity"/> </a>
-                    </div>
-                </div>
-                <div class="tab-pane active" id="tablePlan">
-                    <table class="table table-condensed" id="activities">
-                        <thead>
-                        <tr>
-                            <th style="width:128px;">Actions</th>
-                            <th style="min-width:64px">From</th>
-                            <th style="min-width:64px">To</th>
-                            <th style="width:25%;" id="description-column">Description</th>
-                            <th>Activity</th>
-                            <th>Site</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody data-bind="foreach:activities.activities" id="activityList">
-                        <tr data-bind="template:typeCategory == 'Milestone' ? 'milestoneRow':'activityRow', css:typeCategory, slideVisible: !transients.editActivity()">
-
-                        </tr>
-                        <tr data-bind="slideVisible: transients.editActivity">
-                            <td colspan="7">
-                                <div class="padding-10 border-1">
-                                    <!-- ko template: 'basicActivityTmpl' -->
-                                    <!-- /ko -->
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- ko if: transients.speciesSettings() -->
-                        <tr data-bind="slideVisible: transients.speciesConfigurationToggle">
-                            <td colspan="7">
-                                <div class="padding-10 border-1">
-                                    <!-- ko template: 'speciesConfigurationTmpl' -->
-                                    <!-- /ko -->
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- /ko -->
-                        </tbody>
-                    </table>
-                    <!-- ko with: newActivityViewModel-->
-                    <!-- ko if: canEditActivity -->
-
-                    <div class="modal hide fade" id="createNewActivity" data-bind="dismissModal: transients.created">
-                        <div class="modal-body">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <!-- ko template: 'basicActivityTmpl' -->
-                            <!-- /ko -->
+                        <div class="span2">
+                            <div data-bind="visible:fcConfig.themes && fcConfig.themes.length > 1">
+                                <label>Major theme</label>
+                                <select class="full-width form-control"
+                                        data-bind="value:mainTheme, options:fcConfig.themes,
+                                                                optionsText: 'name', optionsValue: 'name',
+                                                                optionsCaption:'Choose..'">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="span6 required">
+                            <fc:textArea data-bind="value: description" id="description"
+                                         label="Description" class="full-width form-control" row="5"
+                                         data-validation-engine="validate[required]"/>
                         </div>
                     </div>
-                    <!-- /ko -->
-                    <!-- /ko -->
-                </div>
-                <div class="row-fluid">
-                    <div class="span12">
-                        <a href="#createNewActivity" role="button" class="btn btn-primary pull-right" data-toggle="modal"><i class="icon icon-plus icon-white"></i> <g:message code="project.works.createNewActivity"/> </a>
-                    </div>
-                </div>
 
-                <div class="tab-pane" id="ganttPlan" style="overflow:hidden;">
-                    <div id="gantt-container"></div>
+                    <div class="row-fluid"
+                         data-bind="template:transients.isMilestone() ? 'milestoneTmpl' : 'activityTmpl'">
+
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <button class="btn btn-primary save-activity">
+                                <i class="icon icon-white"
+                                   data-bind="css: {'icon-plus': !activityId, 'icon-file': activityId}">
+                                </i>
+                                <!-- ko text: activityId ? '<g:message code="project.works.workschedule.activitymodal.save"/>': '<g:message code="project.works.workschedule.activitymodal.create"/>' --> <!-- /ko -->
+                            </button>
+                            <button class="btn" data-bind="click: transients.stopEditing"><g:message code="project.works.workschedule.activitymodal.close"/></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <form id="outputTargetsContainer">
-            <h4>Output Targets</h4>
-            <table id="outputTargets" class="table table-condensed tight-inputs">
-                <thead><tr><th>Output Type</th><th>Outcome Targets</th><th>Output Targets</th><th>Target</th></tr>
-                </thead>
-                <!-- ko foreach:outputTargets -->
-                <tbody data-bind="foreach:scores">
-                <tr>
-                    <!-- ko with:isFirst -->
-                    <td data-bind="attr:{rowspan:$parents[1].scores.length}">
-                        <b><span data-bind="text:$parents[1].name"></span></b>
-                    </td>
-                    <td data-bind="attr:{rowspan:$parents[1].scores.length}">
-                        <textarea data-bind="visible:$root.canEditOutputTargets(),value:$parents[1].outcomeTarget"
-                                  rows="3"
-                                  cols="80" style="width:90%"></textarea>
-                        <span data-bind="visible:!$root.canEditOutputTargets(),text:$parents[1].outcomeTarget"></span>
-                        <span class="save-indicator" data-bind="visible:$parents[1].transients.isSaving"><r:img dir="images"
-                                                                                                     file="ajax-saver.gif"
-                                                                                                     alt="saving icon"/> saving</span>
-                    </td>
-                    <!-- /ko -->
-                    <td><span data-bind="text:scoreLabel"></span></td>
-                    <td>
-                        <input type="text" class="input-mini"
-                               data-bind="visible:$root.canEditOutputTargets(),value:target"
-                               data-validation-engine="validate[required,custom[number]]"/>
-                        <span data-bind="visible:!$root.canEditOutputTargets(),text:target"></span>
-                        <span data-bind="text:units"></span>
-                        <span class="save-indicator" data-bind="visible:transients.isSaving"><r:img dir="images"
-                                                                                         file="ajax-saver.gif"
-                                                                                         alt="saving icon"/> saving</span>
-                    </td>
+    <!-- Modal for getting reasons for status change -->
+    <div id="activityStatusReason" class="modal hide fade"
+         data-bind="showModal: displayReasonModal(), with:deferReason">
+        <form class="reasonModalForm">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                        data-bind="click:$parent.displayReasonModal.cancelReasonModal">×</button>
 
-                </tr>
-                </tbody>
-                <!-- /ko -->
-            </table>
+                <h3 id="myModalLabel">Reason for deferring or cancelling an activity</h3>
+            </div>
 
+            <div class="modal-body">
+                <p>If you wish to defer or cancel a planned activity you must provide an explanation. Your case
+                manager will use this information when assessing your report.</p>
+
+                <p>You can simply refer to a document that has been uploaded to the project if you like.</p>
+                <textarea data-bind="value:notes,hasFocus:true" name="reason" rows=4 cols="80"
+                          class="validate[required]"></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn"
+                        data-bind="click: $parent.displayReasonModal.cancelReasonModal"
+                        data-dismiss="modal" aria-hidden="true">Discard status change</button>
+                <button class="btn btn-primary"
+                        data-bind="click:$parent.displayReasonModal.saveReasonDocument">Save reason</button>
+            </div>
         </form>
-    </g:else>
+    </div>
+    <!-- /ko -->
+
+    <form id="outputTargetsContainer">
+        <h4>Output Targets</h4>
+        <table id="outputTargets" class="table table-condensed tight-inputs">
+            <thead><tr><th>Output Type</th><th>Outcome Targets</th><th>Output Targets</th><th>Target</th></tr>
+            </thead>
+            <!-- ko foreach:outputTargets -->
+            <tbody data-bind="foreach:scores">
+            <tr>
+                <!-- ko with:isFirst -->
+                <td data-bind="attr:{rowspan:$parents[1].scores.length}">
+                    <b><span data-bind="text:$parents[1].name"></span></b>
+                </td>
+                <td data-bind="attr:{rowspan:$parents[1].scores.length}">
+                    <textarea data-bind="visible:$root.canEditOutputTargets(),value:$parents[1].outcomeTarget"
+                              rows="3"
+                              cols="80" style="width:90%"></textarea>
+                    <span data-bind="visible:!$root.canEditOutputTargets(),text:$parents[1].outcomeTarget"></span>
+                    <span class="save-indicator" data-bind="visible:$parents[1].isSaving"><r:img dir="images"
+                                                                                                 file="ajax-saver.gif"
+                                                                                                 alt="saving icon"/> saving</span>
+                </td>
+                <!-- /ko -->
+                <td><span data-bind="text:scoreLabel"></span></td>
+                <td>
+                    <input type="text" class="input-mini"
+                           data-bind="visible:$root.canEditOutputTargets(),value:target"
+                           data-validation-engine="validate[required,custom[number]]"/>
+                    <span data-bind="visible:!$root.canEditOutputTargets(),text:target"></span>
+                    <span data-bind="text:units"></span>
+                    <span class="save-indicator" data-bind="visible:isSaving"><r:img dir="images"
+                                                                                     file="ajax-saver.gif"
+                                                                                     alt="saving icon"/> saving</span>
+                </td>
+
+            </tr>
+            </tbody>
+            <!-- /ko -->
+        </table>
+
+    </form>
 
     <g:if env="development">
         <hr/>
@@ -153,6 +217,10 @@
     </g:if>
 
 </div>
+<!-- /ko -->
+
+<!-- ko stopBinding: true -->
+<div  id="speciesFieldDialog" data-bind="template: {name:'speciesFieldDialogTemplate'}"></div>
 <!-- /ko -->
 
 <!-- ko stopBinding: true -->
@@ -248,73 +316,15 @@
 <!-- /ko -->
 
 <!-- templates -->
-<script id="basicActivityTmpl" type="text/html">
-<div data-bind="validateOnClick:  { callback: save, selector: '.save-activity'}, css: {'ajax-opacity': transients.isSaving}" class="validationEngineContainer">
-    <h4><!-- ko text: activityId ? 'Update activity': 'Add a new activity' --> <!-- /ko --></h4>
-    <div id="add-new-activity">
-        <div class="row-fluid">
-            <div class="span4 required">
-                <label>Type of activity</label>
-                <select data-bind="value: type,
-                        popover:{title:'', content: transients.activityDescription,
-                        trigger:'manual', autoShow:true}"  class="full-width form-control"
-                        data-validation-engine="validate[required]">
-                    <option></option>
-                    <g:each in="${activityTypes}" var="t" status="i">
-                        <optgroup label="${t.name}">
-                            <g:each in="${t.list}" var="opt">
-                                <option>${opt.name}</option>
-                            </g:each>
-                        </optgroup>
-                    </g:each>
-                </select>
-            </div>
-
-            <div class="span2">
-                <div data-bind="visible:fcConfig.themes && fcConfig.themes.length > 1">
-                    <label>Major theme</label>
-                    <select class="full-width form-control"
-                            data-bind="value:mainTheme, options:fcConfig.themes,
-                                                        optionsText: 'name', optionsValue: 'name',
-                                                        optionsCaption:'Choose..'">
-                    </select>
-                </div>
-            </div>
-            <div class="span6 required">
-                <fc:textArea data-bind="value: description" id="description"
-                             label="Description" class="full-width form-control" row="5"
-                             data-validation-engine="validate[required]"/>
-            </div>
-        </div>
-
-        <div class="row-fluid"
-             data-bind="template:transients.isMilestone() ? 'milestoneTmpl' : 'activityTmpl'">
-
-        </div>
-
-        <div class="row-fluid">
-            <div class="span12">
-                <button class="btn btn-primary save-activity">
-                    <i class="icon icon-white"
-                       data-bind="css: {'icon-plus': !activityId, 'icon-file': activityId}">
-                    </i>
-                    <!-- ko text: activityId ? 'Save activity': 'Create activity' --> <!-- /ko -->
-                </button>
-                <button class="btn" data-bind="click: transients.stopEditing, visible: activityId">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-</script>
 <script id="activityRow" type="text/html">
 
 <td>
-    <button class="btn btn-mini" data-bind="click: editActivityMetadata, visible: canEditActivity"><i
-            class="icon-edit" title="Edit Activity"></i></button>
+    <a class="btn btn-mini" href="#createOrUpdateActivity" role="button" data-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
+            class="icon-edit" title="Edit Activity"></i></a>
     <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
             class="icon-eye-open" title="View Activity"></i></button>
     <button type="button" class="btn btn-mini"
-            data-bind="click:deleteActivity"><i class="icon-remove" title="Delete activity"></i>
+            data-bind="click:deleteActivity, visible: canDeleteActivity"><i class="icon-remove" title="Delete activity"></i>
     </button>
 </td>
 <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
@@ -325,71 +335,49 @@
 </td>
 <td>
     <a href="#" data-bind="text:type,click: editActivity"></a>
-    <button class="btn btn-default btn-mini pull-right" data-bind="click: transients.editSpeciesConfiguration, visible: transients.canEditSpeciesConfiguration" data-toggle="button"><i class="icon icon-edit"></i> <g:message code="project.survey.activity.editSpecies"/></button>
+    <button class="btn btn-default btn-mini pull-right" data-bind="click: transients.editSpeciesConfiguration, visible: transients.canEditSpeciesConfiguration"><i class="icon icon-edit"></i> <g:message code="project.survey.activity.editSpecies"/></button>
 </td>
-<td><a class="clickable" data-bind="text:siteName,click:$parent.openSite"></a></td>
+<td>
+    <div class="row-fluid" data-bind="css: {'ajax-opacity': transients.isSaving}">
+        <div class="span4" data-bind="visible: isAdmin">
+            <select data-bind="options: fcConfig.sites, optionsText: 'name', optionsValue: 'siteId', optionsCaption: 'Please choose', value: siteId"></select>
+        </div>
+        <div class="span4" data-bind="visible: siteId">
+            <a class="clickable" data-bind="text:siteName,click:$parent.openSite"></a>
+        </div>
+        <div class="span4" data-bind="visible: siteId">
+            <!-- ko text: transients.siteArea -->
+            <!-- /ko -->
+            KM<sup>2</sup>
+        </div>
+    </div>
 <td>
     <span data-bind="template:canUpdateStatus() ? 'updateStatusTmpl' : 'viewStatusTmpl'"></span>
-
-    <!-- Modal for getting reasons for status change -->
-    <div id="activityStatusReason" class="modal hide fade" tabindex="-1" role="dialog"
-         aria-labelledby="myModalLabel" aria-hidden="true"
-         data-bind="showModal: displayReasonModal(), with:deferReason">
-        <form class="reasonModalForm">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                        data-bind="click:$parent.displayReasonModal.cancelReasonModal">×</button>
-
-                <h3 id="myModalLabel">Reason for deferring or cancelling an activity</h3>
-            </div>
-
-            <div class="modal-body">
-                <p>If you wish to defer or cancel a planned activity you must provide an explanation. Your case
-                manager will use this information when assessing your report.</p>
-
-                <p>You can simply refer to a document that has been uploaded to the project if you like.</p>
-                <textarea data-bind="value:notes,hasFocus:true" name="reason" rows=4 cols="80"
-                          class="validate[required]"></textarea>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn"
-                        data-bind="click: $parent.displayReasonModal.cancelReasonModal"
-                        data-dismiss="modal" aria-hidden="true">Discard status change</button>
-                <button class="btn btn-primary"
-                        data-bind="click:$parent.displayReasonModal.saveReasonDocument">Save reason</button>
-            </div></form>
-    </div>
-
 </td>
 
 </script>
 <script id="milestoneRow" type="text/html">
 
     <td>
-        <button class="btn btn-mini" data-bind="click: editActivityMetadata, visible: canEditActivity"><i
-                class="icon-edit" title="Edit Milestone"></i></button>
+        <a class="btn btn-mini" href="#createOrUpdateActivity" role="button" data-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
+                class="icon-edit" title="Edit Milestone"></i></a>
         <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
                 class="icon-eye-open" title="View Milestone"></i></button>
         <button type="button" class="btn btn-mini"
-                data-bind="click:deleteActivity"><i class="icon-remove" title="Delete Milestone"></i>
+                data-bind="click:deleteActivity, visible: canDeleteActivity"><i class="icon-remove" title="Delete Milestone"></i>
         </button>
     </td>
     <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
     <td><span data-bind="text:plannedEndDate.formattedDate"></span></td>
     <td>
         <span class="truncate"
-              data-bind="text:description,click:$parent.editActivity, css:{clickable:true}"></span>
+              data-bind="text:description,click:editActivity, css:{clickable:true}"></span>
     </td>
     <td>
-        <a href="#" data-bind="text:type,click:$parent.editActivity"></a>
+        <a href="#" data-bind="text:type,click:editActivity"></a>
     </td>
-    <g:if test="${showSites}">
-        <td></td>
-    </g:if>
-    <td>
-
-</td>
+    <td></td>
+    <td><span data-bind="template:canUpdateStatus() ? 'updateStatusTmpl' : 'viewStatusTmpl'"></span></td>
 
 </script>
 <script id="updateStatusTmpl" type="text/html">
@@ -404,9 +392,11 @@
         <li data-bind="css: {'disabled' : $data==$parent.progress() || $data=='planned'}">
             <a href="#" data-bind="click: $parent.progress"><span data-bind="text: $data"></span></a>
         </li>
-    </ul></div>
-<span class="save-indicator" data-bind="visible:transients.isSaving"><r:img dir="images" file="ajax-saver.gif"
-                                                                 alt="saving icon"/> saving</span>
+    </ul>
+</div>
+<a class="save-indicator" data-bind="visible:transients.isSaving">
+    <r:img dir="images" file="ajax-saver.gif" alt="saving icon"/> saving
+</a>
 <!-- ko with: deferReason -->
 <span data-bind="visible: $parent.progress()=='deferred' || $parent.progress()=='cancelled'">
     <i class="icon-list-alt"
@@ -534,11 +524,12 @@
                 <td></td>
                 <td>
                     <span class="req-field" data-bind="tooltip: {title:transients.inputSettingsTooltip()}">
-                        <input type="text" class="input-large" data-bind="disable: true, value: transients.inputSettingsSummary"> </input>
+                        <input type="text" class="input-large" data-bind="disable: true, value: transients.inputSettingsSummary"/>
                     </span>
                 </td>
                 <td>
-                    <input class="form-control full-width" data-bind="value: speciesDisplayFormat" disabled/>
+                    <select class="form-control full-width" data-bind="options: $parents[1].transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  speciesDisplayFormat">
+                    </select>
                 </td>
                 <td></td>
                 <!-- /ko -->
@@ -547,18 +538,34 @@
         </tbody>
     </table>
     <button class="btn btn-primary" data-bind="click: transients.parent.save">
-        <i class="icon icon-white icon-file"/>
+        <i class="icon-white icon-file"/>
         <g:message code="project.survey.species.saveButton"/>
     </button>
+    <button class="btn btn-default" data-bind="click: $parent.transients.editSpeciesConfiguration">
+        <i class="icon-minus"/>
+        <g:message code="project.survey.species.closeButton"/>
+    </button>
+
     <!-- /ko -->
 </div>
 </script>
-<!-- ko stopBinding: true -->
-<div  id="speciesFieldDialog" data-bind="template: {name:'speciesFieldDialogTemplate'}"></div>
-<!-- /ko -->
-
 <script type="text/html" id="speciesFieldDialogTemplate">
 <g:render template="/projectActivity/speciesFieldSettingsDialog"></g:render>
+</script>
+<script type="text/html" id="workScheduleActionButtonsTmpl">
+<div class="row-fluid">
+    <div class="span12">
+        <div class="pull-right">
+            <a href="#createOrUpdateActivity" role="button" class="btn btn-primary" data-toggle="modal"
+               data-bind="click: openActivityModal(newActivityViewModel)"><i class="icon icon-plus icon-white"></i>
+                <g:message code="project.works.createNewActivity"/> </a>
+            <a class="btn btn-default" data-bind="attr: {href: fcConfig.siteCreateUrl}"><i class="icon-map-marker"></i>
+                <g:message code="project.works.workschedule.button.createsite"/></a>
+            <a class="btn btn-info" data-bind="attr: {href: fcConfig.worksScheduleIntroUrl}"><i class="icon-question-sign icon-white"></i>
+                <g:message code="project.works.workschedule.button.help"/></a>
+        </div>
+    </div>
+</div>
 </script>
 <r:script>
 
@@ -593,31 +600,6 @@
         // Return modified observable
         return target;
     };
-
-    var sites = ${sites ?: []};
-    function lookupSiteName (siteId) {
-        var site;
-        if (siteId !== undefined && siteId !== '') {
-            site = $.grep(sites, function(obj, i) {
-                    return (obj.siteId === siteId);
-            });
-            if (site.length > 0) {
-                 return site[0].name;
-            }
-        }
-        return '';
-    }
-
-    function drawGanttChart(ganttData) {
-        if (ganttData.length > 0) {
-            $("#gantt-container").gantt({
-                source: ganttData,
-                navigate: "keys",
-                scale: "weeks",
-                itemsPerPage: 30
-            });
-        }
-    }
 
     $(window).load(function () {
      var project = <fc:modelAsJavascript model="${project}"/>;

@@ -114,6 +114,10 @@ table.outcome-targets.table thead tr:first-child th {
     white-space: normal;
 }
 
-#createNewActivity{
+#createOrUpdateActivity{
     width: 700px;
+}
+
+.table-hover tbody tr:hover.no-highlight-on-hover>td, .table-hover tbody tr:hover.no-highlight-on-hover>th {
+    background-color: white;
 }
