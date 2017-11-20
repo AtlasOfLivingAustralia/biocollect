@@ -121,6 +121,11 @@ flag.issues = ['IDENTIFICATION','GEOCODING_ISSUE','TEMPORAL_ISSUE','HABITAT_ISSU
 showBiocacheLinks = false
 identify.subgroupFacet="names_and_lsid"
 identify.enabled = true
+
+// Quarantine the EHP industries section to the test environment until this becomes hub configurable.
+// This item will be set to true in the test environment only.
+projectdata.industries.enabled = false
+
 // ----------------------------------
 
 environments {
