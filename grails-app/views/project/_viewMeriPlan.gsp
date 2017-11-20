@@ -242,6 +242,7 @@
 							<tr>
 							<tr>
 								<th class="type">Type of issue </th>
+								<th class="date">Date</th>
 								<th class="status">Status </th>
 								<th class="priority">Priority </th>
 								<th class="description">Description</th>
@@ -254,6 +255,9 @@
 							<tr>
 								<td class="type">
 									<label data-bind="text: type" ></label>
+								</td>
+								<td class="date">
+									<label data-bind="text: date.formattedDate"></label>
 								</td>
 								<td class="status">
 									<label data-bind="text: status" ></label>

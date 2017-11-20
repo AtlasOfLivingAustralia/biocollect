@@ -11,6 +11,7 @@
                 <thead>
                 <tr>
                     <th class="required type">Type of issue </th>
+                    <th class="required">Date</th><
                     <th class="required status">Status </th>
                     <th class="required priority">Priority </th>
                     <th class="required description">Description</th>
@@ -24,6 +25,10 @@
                     <td class="type">
                         <input data-validation-engine="validate[required]" data-bind="value:type">
                     </td>
+                    <td class="date">
+                        <fc:datePicker class="input-small" targetField="date.date" name="date" data-validation-engine="validate[required]"/>
+                    </td>
+
                     <td class="status">
                         <select data-validation-engine="validate[required]" data-bind="value:status, options: status.options"></select>
                     </td>
