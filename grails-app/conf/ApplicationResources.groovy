@@ -247,6 +247,7 @@ modules = {
         resource url: 'css/project-map-view.css'
         resource url: 'css/works-project.css'
         resource url: 'css/blog.css'
+        resource url: 'js/permissionTable.js'
         resource url: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700", attrs:[type:"css"]
         resource url: "https://fonts.googleapis.com/css?family=Oswald:300", attrs:[type:"css"]
     }
@@ -287,10 +288,6 @@ modules = {
         defaultBundle 'application'
         dependsOn 'knockout'
         resource url: 'js/projectActivityInfo.js'
-    }
-
-    permissionTable {
-        resource url: 'js/permissionTable.js'
     }
 
     species {
