@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.EmailService
 import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.merit.hub.HubSettings
@@ -255,6 +256,21 @@ class ProjectService {
             emailService.sendEmail(subject, emailBody, ["${grailsApplication.config.biocollect.support.email.address}"])
         }
 
+        result
+    }
+
+    /**
+     * Adds the current user id as a field in the project plan then saves it to ecodata.
+     * @param projectId the project to update
+     * @param projectPlan the plan details, including the [custom:[details:[]] prefix.
+     * @return the response from ecodata
+     */
+    Map updateProjectPlan(String projectId, Map projectPlan) {
+        projectPlan.custom.details.lastUpdatedBy = userService.user.userId
+        Map result = webService.doPost(grailsApplication.config.ecodata.service.url + '/project/' + projectId, projectPlan)
+        if (result.statusCode == 200 && result.resp) {
+            result.resp.lastUpdatedByDisplayName = userService.currentUserDisplayName
+        }
         result
     }
 

@@ -227,6 +227,10 @@ class ProjectController {
 
         Boolean canEditSites = projectService.canUserEditSitesForProject(user?.userId, project.projectId)
 
+        // Add a human readable name of the last user to update the project plan.
+        if (project.custom?.details?.lastUpdatedBy) {
+            project.custom.details.lastUpdatedDisplayName = authService.getUserForUserId(project.custom?.details?.lastUpdatedBy)?.displayName ?: 'Unknown user'
+        }
 
 
         Map content = [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
@@ -483,6 +487,21 @@ class ProjectController {
     def update(String id) {
         projectService.update(id, params)
         chain action: 'index', id: id
+    }
+
+    @PreAuthorise(accessLevel = 'admin')
+    def updateProjectPlan(String id) {
+        Map result
+        if (!id) {
+            result.status = 400
+            result.error = 'The project id must be supplied'
+        }
+        else {
+            Map plan = request.JSON
+            result = projectService.updateProjectPlan(id, plan)
+
+        }
+        render result as JSON
     }
 
     @PreAuthorise(accessLevel = 'admin')
