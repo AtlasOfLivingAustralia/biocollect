@@ -11,7 +11,7 @@
                 <thead>
                 <tr>
                     <th class="required type">Type of issue </th>
-                    <th class="required">Date</th><
+                    <th class="required">Date</th>
                     <th class="required status">Status </th>
                     <th class="required priority">Priority </th>
                     <th class="required description">Description</th>
