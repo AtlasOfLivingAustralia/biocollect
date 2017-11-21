@@ -19,12 +19,10 @@ function WorksActivityViewModel (config) {
     var act = config.act || {},
         project = config.project || {},
         planViewModel = config.planViewModel,
-        isFirst = config.isFirst,
         speciesSettings = config.speciesSettings,
         initialProgress = 'planned',
         progress = act.progress || initialProgress;
     self.activityId = act.activityId;
-    self.isFirst = isFirst ? self : undefined;
     self.siteId = ko.observable(act.siteId || "");
     self.typeCategory = ko.observable(act.typeCategory);
     self.hasOutputs = act.outputs && act.outputs.length;
@@ -134,7 +132,7 @@ function WorksActivityViewModel (config) {
         self.transients.editActivity(false);
     };
     self.transients.toJS = function () {
-        return ko.mapping.toJS(self, {'ignore':['transients', 'isFirst']});
+        return ko.mapping.toJS(self, {'ignore':['transients']});
     };
     self.transients.loadActivity = function (activity) {
         if(activity){
@@ -565,7 +563,6 @@ function PlanViewModel(config) {
             act: act,
             project: project,
             planViewModel: self,
-            isFirst: index === 0,
             speciesSettings: self.projectSpeciesFieldsConfigurationViewModel.findOrCreateSpeciesSettingsForActivityType(act.type)
         };
         var activity = new WorksActivityViewModel(config);

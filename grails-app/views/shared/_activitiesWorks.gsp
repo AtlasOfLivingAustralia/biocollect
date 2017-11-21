@@ -13,6 +13,7 @@
          to the main viewModel. -->
 <!-- ko stopBinding: true -->
 <div class="row-fluid" id="planContainer">
+<bc:koLoading>
     <div id="status-update-error-placeholder"></div>
 
     <div id="activityContainer" class="space-before">
@@ -27,25 +28,18 @@
             <div class="tab-pane active" id="tablePlan">
                 <!-- ko template: 'workScheduleActionButtonsTmpl' -->
                 <!-- /ko -->
-                <bc:koLoading>
+
                 <table class="table table-condensed table-hover" id="activities">
                     <thead>
-                    <tr>
-                        <th style="width:128px;">Actions</th>
-                        <th style="min-width:64px">From</th>
-                        <th style="min-width:64px">To</th>
-                        <th style="width:25%;" id="description-column">Description</th>
-                        <th>Activity</th>
-                        <th>Site</th>
-                        <th>Status</th>
-                    </tr>
+                    <!-- ko template: 'activityHeaderTmpl'-->
+                    <!-- /ko -->
                     </thead>
                     <tbody data-bind="foreach:activities.activities" id="activityList">
-                    <tr data-bind="template:typeCategory() == 'Milestone' ? 'milestoneRow':'activityRow', css:typeCategory, slideVisible: !transients.editActivity() || !transients.remove(), highlight: transients.remove() || !transients.editActivity(), slideDuration: 100">
+                    <tr data-bind="template:typeCategory() == 'Milestone' ? 'milestoneRow':'activityRow', css:typeCategory, slideVisible: !transients.editActivity() || !transients.remove(), highlight: transients.remove() || !transients.editActivity(), slideDuration: 200">
 
                     </tr>
                     <!-- ko if: transients.speciesSettings() -->
-                    <tr class="no-highlight-on-hover" data-bind="slideVisible: transients.speciesConfigurationToggle">
+                    <tr class="no-highlight-on-hover" data-bind="slideVisible: transients.speciesConfigurationToggle, slideDuration: 200">
                         <td colspan="7">
                             <div class="padding-10 border-1">
                                 <!-- ko template: 'speciesConfigurationTmpl' -->
@@ -55,11 +49,11 @@
                     </tr>
                     <!-- /ko -->
                     </tbody>
+                    <tfoot>
+                    <!-- ko template: 'activityHeaderTmpl'-->
+                    <!-- /ko -->
+                    </tfoot>
                 </table>
-                </bc:koLoading>
-
-                <!-- ko template: 'workScheduleActionButtonsTmpl' -->
-                <!-- /ko -->
             </div>
             <div class="tab-pane" id="ganttPlan" style="overflow:hidden;">
                 <div id="gantt-container"></div>
@@ -162,7 +156,7 @@
     </div>
     <!-- /ko -->
 
-    <form id="outputTargetsContainer">
+    <form id="outputTargetsContainer" data-bind="visible: outputTargets().length">
         <h4>Output Targets</h4>
         <table id="outputTargets" class="table table-condensed tight-inputs">
             <thead><tr><th>Output Type</th><th>Outcome Targets</th><th>Output Targets</th><th>Target</th></tr>
@@ -215,7 +209,7 @@
             </div>
         </div>
     </g:if>
-
+</bc:koLoading>
 </div>
 <!-- /ko -->
 
@@ -316,6 +310,26 @@
 <!-- /ko -->
 
 <!-- templates -->
+<script id="activityHeaderTmpl" type="text/html">
+<tr>
+    <th style="width:128px;">Actions</th>
+    <th style="min-width:64px">From</th>
+    <th style="min-width:64px">To</th>
+    <th style="width:25%;">Description</th>
+    <th>Activity &nbsp;
+        <a href="#createOrUpdateActivity" role="button" class="btn btn-primary btn-small" data-toggle="modal"
+                    data-bind="click: openActivityModal(newActivityViewModel)"><i class="icon-plus icon-white"></i>
+        <g:message code="project.works.createNewActivity"/> </a>
+    </th>
+    <th>Site &nbsp;
+        <a class="btn btn-default btn-small" data-bind="attr: {href: fcConfig.siteCreateUrl}">
+            <i class="icon-plus"></i>
+            <g:message code="project.works.workschedule.button.createsite"/>
+        </a>
+    </th>
+    <th>Status</th>
+</tr>
+</script>
 <script id="activityRow" type="text/html">
 
 <td>
@@ -335,20 +349,23 @@
 </td>
 <td>
     <a href="#" data-bind="text:type,click: editActivity"></a>
-    <button class="btn btn-default btn-mini pull-right" data-bind="click: transients.editSpeciesConfiguration, visible: transients.canEditSpeciesConfiguration"><i class="icon icon-edit"></i> <g:message code="project.survey.activity.editSpecies"/></button>
+    <button class="btn btn-default btn-mini pull-right" data-bind="click: transients.editSpeciesConfiguration, visible: transients.canEditSpeciesConfiguration">
+        <i data-bind="css: {'icon-arrow-down': transients.speciesConfigurationToggle, 'icon-arrow-up': !transients.speciesConfigurationToggle() }"></i>
+        <g:message code="project.survey.activity.editSpecies"/>
+    </button>
 </td>
 <td>
     <div class="row-fluid" data-bind="css: {'ajax-opacity': transients.isSaving}">
-        <div class="span4" data-bind="visible: isAdmin">
+        <div class="span12" data-bind="visible: isAdmin">
             <select data-bind="options: fcConfig.sites, optionsText: 'name', optionsValue: 'siteId', optionsCaption: 'Please choose', value: siteId"></select>
-        </div>
-        <div class="span4" data-bind="visible: siteId">
-            <a class="clickable" data-bind="text:siteName,click:$parent.openSite"></a>
-        </div>
-        <div class="span4" data-bind="visible: siteId">
-            <!-- ko text: transients.siteArea -->
-            <!-- /ko -->
-            KM<sup>2</sup>
+            <span class="margin-left-1">
+                <a href="#" data-bind="click:$parent.openSite, attr: {title: siteName}, visible: siteId"><i class="icon-info-sign"></i></a>
+                <span data-bind="visible: siteId">
+                    <!-- ko text: transients.siteArea -->
+                    <!-- /ko -->
+                    <g:message code="unit.distance"></g:message><sup>2</sup>
+                </span>
+            </span>
         </div>
     </div>
 <td>
@@ -477,7 +494,7 @@
             </th>
             <th>
                 <label class="control-label"><g:message code="project.survey.species.settings"/>
-                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.settings"/>', content:'<g:message code="project.survey.species.settings.content"/>'}">
+                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.settings"/>', content:'<g:message code="project.survey.species.settings.content.works"/>'}">
                         <i class="icon-question-sign"></i>
                     </a>
                 </label>
@@ -505,26 +522,29 @@
                     <span data-bind="text: label"></span>
                 </td>
                 <td>
-                    <span class="req-field" data-bind="tooltip: {title:config().transients.inputSettingsTooltip()}">
-                        <input type="text" class="input-large" data-bind="disable: true, value: config().transients.inputSettingsSummary"> </input>
-                    </span>
-                    <a target="_blank" data-bind="click:showSpeciesConfiguration" class="btn btn-link" ><small><g:message code="project.survey.species.configure"/></small></a>
+                    <span data-bind="tooltip: {title:config().transients.inputSettingsTooltip()}, disable: true, text: config().transients.inputSettingsSummary"></span>
                 </td>
                 <td>
                     <select class="form-control full-width" data-bind="disable: config().type() == 'DEFAULT_SPECIES', options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">
                     </select>
                 </td>
                 <td>
-                    <button class="btn btn-default" data-bind="click: $parent.transients.parent.toggleDefault"><g:message code="project.survey.species.showdefault"/></button>
-                    <button class="btn btn-default" data-bind="click: $parent.transients.parent.setAsDefault, disable: !config().isValid()"><g:message code="project.survey.species.setdefault"/></button>
+                    <button data-bind="click:showSpeciesConfiguration" class="btn btn-default" ><i class="icon-cog"></i> <g:message code="project.survey.species.configure.works"/></button>
+                    <button class="btn btn-default" data-bind="click: $parent.transients.parent.toggleDefault">
+                        <i data-bind="css:{'icon-arrow-up': !$parent.transients.parent.showDefault(), 'icon-arrow-down': $parent.transients.parent.showDefault}"/>
+                        <g:message code="project.survey.species.showdefault"/>
+                    </button>
+                    <button class="btn btn-default" data-bind="click: $parent.transients.parent.setAsDefault, disable: !config().isValid()">
+                        <i class="icon-star-empty"/>
+                        <g:message code="project.survey.species.setdefault"/>
+                    </button>
                 </td>
             </tr>
-            <tr data-bind="slideVisible: $parent.transients.parent.showDefault">
+            <tr data-bind="slideVisible: $parent.transients.parent.showDefault, slideDuration: 200">
                 <!-- ko with: $parent.transients.parent.species -->
-                <td></td>
+                <td><g:message code="project.survey.species.defaultConfiguration"/></td>
                 <td>
-                    <span class="req-field" data-bind="tooltip: {title:transients.inputSettingsTooltip()}">
-                        <input type="text" class="input-large" data-bind="disable: true, value: transients.inputSettingsSummary"/>
+                    <span data-bind="tooltip: {title:transients.inputSettingsTooltip()},disable: true, text: transients.inputSettingsSummary">
                     </span>
                 </td>
                 <td>
@@ -556,11 +576,6 @@
 <div class="row-fluid">
     <div class="span12">
         <div class="pull-right">
-            <a href="#createOrUpdateActivity" role="button" class="btn btn-primary" data-toggle="modal"
-               data-bind="click: openActivityModal(newActivityViewModel)"><i class="icon icon-plus icon-white"></i>
-                <g:message code="project.works.createNewActivity"/> </a>
-            <a class="btn btn-default" data-bind="attr: {href: fcConfig.siteCreateUrl}"><i class="icon-map-marker"></i>
-                <g:message code="project.works.workschedule.button.createsite"/></a>
             <a class="btn btn-info" data-bind="attr: {href: fcConfig.worksScheduleIntroUrl}"><i class="icon-question-sign icon-white"></i>
                 <g:message code="project.works.workschedule.button.help"/></a>
         </div>
