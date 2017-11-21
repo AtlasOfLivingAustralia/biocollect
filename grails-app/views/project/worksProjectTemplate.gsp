@@ -90,7 +90,7 @@
         isAdmin: ${user?.isAdmin ? 'true' : 'false'},
         isEditor: ${user?.isEditor ? 'true' : 'false'},
         isCaseManager: ${user?.isCaseManager ? 'true' : 'false'},
-        worksScheduleIntroUrl: "${createLink(controller: 'home', action:'worksScheduleIntro')}",
+        worksScheduleIntroUrl: "${createLink(controller: 'staticPage', action:'index', params: [page:"workScheduleHelp"])}",
         outputTargetMetadata: ${((outputTargetMetadata?:[]) as grails.converters.JSON).toString()},
         activityTypes: ${((activityTypes?:[]) as JSON).toString()},
         themes: ${((themes?:[]) as JSON).toString()},
