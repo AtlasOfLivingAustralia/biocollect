@@ -179,7 +179,8 @@ function WorksActivityViewModel (config) {
     self.transients.siteArea = ko.computed(function () {
         var site = self.transients.site();
         if(site && site.extent && site.extent.geometry && site.extent.geometry.areaKmSq ){
-            return site.extent.geometry.areaKmSq;
+            var precision = 4, constant = Math.pow(10, precision);
+            return Math.floor(site.extent.geometry.areaKmSq * constant)/constant;
         }
     });
 
