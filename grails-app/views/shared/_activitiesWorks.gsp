@@ -317,7 +317,7 @@
     <th style="min-width:64px">To</th>
     <th style="width:25%;">Description</th>
     <th>Activity &nbsp;
-        <a href="#createOrUpdateActivity" role="button" class="btn btn-primary btn-small" data-toggle="modal"
+        <a href="#createOrUpdateActivity" role="button" class="btn btn-default btn-small" data-toggle="modal"
                     data-bind="click: openActivityModal(newActivityViewModel)"><i class="icon-plus icon-white"></i>
         <g:message code="project.works.createNewActivity"/> </a>
     </th>
@@ -360,7 +360,7 @@
             <select data-bind="options: fcConfig.sites, optionsText: 'name', optionsValue: 'siteId', optionsCaption: 'Please choose', value: siteId"></select>
             <span class="margin-left-1">
                 <a href="#" data-bind="click:$parent.openSite, attr: {title: siteName}, visible: siteId"><i class="icon-info-sign"></i></a>
-                <span data-bind="visible: siteId">
+                <span data-bind="visible: transients.siteArea">
                     <!-- ko text: transients.siteArea -->
                     <!-- /ko -->
                     <g:message code="unit.distance"></g:message><sup>2</sup>

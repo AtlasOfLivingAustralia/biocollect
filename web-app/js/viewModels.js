@@ -66,7 +66,7 @@ function enmapify(args) {
         markerZoomToMax: true,
         drawOptions:  activityLevelData.mobile || readonly || !activityLevelData.pActivity.allowAdditionalSurveySites ?
             {
-                polyline: false,
+                polyline: true,
                 polygon: false,
                 rectangle: false,
                 circle: false,
@@ -74,7 +74,7 @@ function enmapify(args) {
             }
             :
             {
-                polyline: false,
+                polyline: true,
                 polygon: true,
                 circle: true,
                 rectangle: true,
@@ -459,6 +459,8 @@ function enmapify(args) {
             } else {
                 type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
             }
+        } else if (geoJsonFeature.geometry.type == ALA.MapConstants.DRAW_TYPE.LINE_TYPE){
+            type = geoJsonFeature.geometry.type
         }
 
         return type;
