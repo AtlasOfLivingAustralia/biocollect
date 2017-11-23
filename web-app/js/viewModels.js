@@ -520,13 +520,12 @@ function enmapify(args) {
         siteIdObservable(null);
         loadingObservable(true);
         var extent = convertGeoJSONToExtent(map.getGeoJSON());
-        blockUIWithMessage("Saving, please stand by...");
+        blockUIWithMessage("Updating, please stand by...");
         addSite({
             pActivityId: activityLevelData.pActivity.projectActivityId,
             site: {
-                name: '*',
-                invisible:true, //for site creation telling if this site needs to be added to project
-                visibility:'private',
+                name: '*', // site named as * will not  be added to project
+                visibility:'private',//site will not be indexed
                 projects: [
                     activityLevelData.pActivity.projectId
                 ],
@@ -539,8 +538,9 @@ function enmapify(args) {
                         //IMPORTANT
                         //sites is a data-bind source for the selection dropdown list and bound to activity-output-data-location
                         //if the new created site id is not in this list, then the location would be empty
+                        var geometryType =  extent.geometry.type;
                         var anonymousSite = {
-                         name:'A polygon you drawed',
+                         name: 'You drawed a '+ geometryType,
                          siteId: anonymousSiteId,
                          extent: extent
                         }

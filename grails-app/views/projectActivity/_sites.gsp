@@ -32,7 +32,7 @@
 
                 <tbody>
                 <!-- ko foreach: sites -->
-                    <!-- ko ifnot: $data.invisible -->
+                    <!-- ko ko ifnot: name() == '*' -->
                        <tr data-bind="visible: added()">
                             <!-- ko ifnot: isProjectArea -->
                             <td>
