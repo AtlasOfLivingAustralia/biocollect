@@ -177,7 +177,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         pointOfInterestMarkers.clearLayers();
 
         self.pointsOfInterest().forEach(function (pointOfInterest) {
-            var marker = marker = ALA.MapUtils.createMarker(
+            var marker  = ALA.MapUtils.createMarker(
                 pointOfInterest.geometry().decimalLatitude(),
                 pointOfInterest.geometry().decimalLongitude(),
                 pointOfInterest.name,

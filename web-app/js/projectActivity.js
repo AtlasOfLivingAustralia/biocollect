@@ -16,7 +16,7 @@ var ProjectActivity = function (params) {
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
     self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
-
+    self.selectFromSitesOnly = ko.observable(pActivity.selectFromSitesOnly);
 
     self.allowPolygons = ko.observable(('allowPolygons' in pActivity)? pActivity.allowPolygons : true);
     self.allowPoints = ko.observable(('allowPoints' in pActivity)? pActivity.allowPoints : true);
@@ -471,6 +471,7 @@ var ProjectActivity = function (params) {
             jsData.sites = sites;
             jsData.restrictRecordToSites = self.restrictRecordToSites();
             jsData.allowAdditionalSurveySites = self.allowAdditionalSurveySites();
+            jsData.selectFromSitesOnly = self.selectFromSitesOnly();
             jsData.baseLayersName = self.baseLayersName();
             jsData.allowPolygons = self.allowPolygons();
             jsData.allowPoints = self.allowPoints();

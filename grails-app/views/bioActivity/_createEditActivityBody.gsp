@@ -307,7 +307,8 @@
                 });
                 if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
                     return null;
-                }else if( !outputs.data.isValidMapInfo){
+                }else if( !outputs[0].data.isValidMapInfo){
+                    ///Todo: multi outputs
                     return false;
                 }
                 else {

@@ -32,16 +32,18 @@
 
                 <tbody>
                 <!-- ko foreach: sites -->
-                <tr data-bind="visible: added()">
-                    <!-- ko ifnot: isProjectArea -->
-                    <td>
-                        <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
-                        <button class="btn btn-mini pull-right btn-default" data-bind="click: removeSite, disable: transients.isDataForSite"  title="Remove this site from survey">
-                            <span class="icon-arrow-right"></span>
-                        </button>
-                    </td>
-                    <!-- /ko -->
-                </tr>
+                    <!-- ko ifnot: $data.invisible -->
+                       <tr data-bind="visible: added()">
+                            <!-- ko ifnot: isProjectArea -->
+                            <td>
+                                <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
+                                <button class="btn btn-mini pull-right btn-default" data-bind="click: removeSite, disable: transients.isDataForSite"  title="Remove this site from survey">
+                                    <span class="icon-arrow-right"></span>
+                                </button>
+                            </td>
+                            <!-- /ko -->
+                        </tr>
+                     <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: getNumberOfSitesForSurvey() == 0 -->
                 <tr>
@@ -67,14 +69,16 @@
 
                 <tbody>
                 <!-- ko foreach: sites -->
-                <tr data-bind="visible: !added()">
-                    <td>
-                        <button class="btn btn-mini btn-primary" data-bind="click: addSite" title="Add this site to survey">
-                            <span class="icon-arrow-left icon-white"></span>
-                        </button>
-                        <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
-                    </td>
-                </tr>
+                    <!-- ko ifnot: name() == '*' -->
+                        <tr data-bind="visible: !added()">
+                            <td>
+                                <button class="btn btn-mini btn-primary" data-bind="click: addSite" title="Add this site to survey">
+                                    <span class="icon-arrow-left icon-white"></span>
+                                </button>
+                                <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
+                            </td>
+                        </tr>
+                    <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if:sites().length == 0 -->
                 <tr>
@@ -128,6 +132,12 @@
                 <input type="checkbox" data-bind="checked: allowAdditionalSurveySites, disable: transients.warning()"/> Allow Additional Survey Sites
             </label>
             <span class="help-block">Check this box if you want to allow users to add or edit site polygons on the survey record.</span>
+
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: selectFromSitesOnly, disable: transients.warning()"/> Select from existing sites
+            </label>
+            <span class="help-block">User can only select from exisiting site </span>
+
             <auth:ifAnyGranted roles="ROLE_ADMIN">
                 <label for="map-tiles">Map tiles</label>
                 <select id="map-tiles" data-bind="value: baseLayersName, optionsCaption: 'Choose...', disable: transients.warning()">
@@ -137,6 +147,8 @@
             </auth:ifAnyGranted>
         </div>
     </div>
+
+
     <!--
     Not supported.
     <div class="row-fluid">

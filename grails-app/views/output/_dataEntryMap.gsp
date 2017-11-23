@@ -18,6 +18,8 @@ Allow Points: <span data-bind="text:activityLevelData.pActivity.allowPoints">All
 Allow Polygons: <span data-bind="text:activityLevelData.pActivity.allowPolygons"></span> <br/>
 Allow Addtional Survey Sites: <span data-bind="text:activityLevelData.pActivity.allowAdditionalSurveySites"></span> <br/>
 Default zoom to: <span data-bind="text:activityLevelData.pActivity.defaultZoomArea"> </span> <br/>
+Select only: <span data-bind="text:activityLevelData.pActivity.selectFromSitesOnly"> </span> <br/>
+
 <input data-bind="value:data.${source}"/>
 <g:if test="${!hideSiteSelection}">
     <div class="${isHorizontal ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 0">
@@ -134,6 +136,8 @@ Default zoom to: <span data-bind="text:activityLevelData.pActivity.defaultZoomAr
         </div>
 
         <!-- /ko -->
+        <!-- Try to pass geo info of map to ko -->
+        <input id = "${source}geoInfo" hidden="true">
 
         <g:if test="${includeAccuracy}">
             <div class="row-fluid">

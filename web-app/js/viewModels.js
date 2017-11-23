@@ -44,6 +44,8 @@ function enmapify(args) {
         polygonsOnly = !args.activityLevelData.pActivity.allowPoints && args.activityLevelData.pActivity.allowPolygons,
         defaultZoomArea = args.activityLevelData.pActivity.defaultZoomArea,
         allowAdditionalSurveySites = args.activityLevelData.pActivity.allowAdditionalSurveySites,
+        selectFromSitesOnly = args.activityLevelData.pActivity.selectFromSitesOnly,
+
         siteIdObservable = container[name] = ko.observable(),
         nameObservable = container[name + "Name"] = ko.observable(),
         latObservable = container[name + "Latitude"] = ko.observable(),
@@ -53,27 +55,30 @@ function enmapify(args) {
         latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(!pointsOnly),
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
+
+        geoInfoObservable = container[name +'geoInfo'] = ko.observable(),
+
         sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
         loadingObservable = container[name + "Loading"] = ko.observable(false),
         isValidMapInfo = container['isValidMapInfo'] = ko.computed(function(){
             if (pointsOnly){
-                  if (latObservable && lonObservable && !siteIdObservable)
+                  if (latObservable() && lonObservable())
                       return true;
                   else
                       return false;
             };
 
             if (polygonsOnly){
-                if (siteIdObservable && !latObservable && !lonObservable)
+                if (siteIdObservable() && !latObservable() && !lonObservable())
                     return true;
                 else
                     return false;
             }
 
             if (allowPolygons && allowPoints){
-                if (siteIdObservable)
+                if (siteIdObservable())
                     return true;
-                if (latObservable && lonObservable)
+                if (latObservable() && lonObservable())
                     return true;
             }
 
@@ -192,11 +197,19 @@ function enmapify(args) {
             console.log("Updating location fields to site");
             //latLonDisabledObservable(true);
             feature = geo.features[0];
-            var c = centroid(feature);
-            latObservable(null);
-            lonObservable(null);
-            centroidLonObservable(c[0]);
-            centroidLatObservable(c[1]);
+            if (feature.geometry.type == 'Point'){
+                latObservable(feature.geometry.coordinates[1]);
+                lonObservable(feature.geometry.coordinates[0]);
+                centroidLonObservable(null);
+                centroidLatObservable(null);
+
+            }else{
+                var c = centroid(feature);
+                latObservable(null);
+                lonObservable(null);
+                centroidLonObservable(c[0]);
+                centroidLatObservable(c[1]);
+            }
         } else {
             console.log("Clearing location fields");
             //latLonDisabledObservable(false);
@@ -418,14 +431,25 @@ function enmapify(args) {
         console.log("draw created");
         var type = e.layerType,
             layer = e.layer;
-        if (type === 'marker') {
-            console.log("marker");
-            return;
-        }
+
+        //Create site for all type including point
         if (allowAdditionalSurveySites)
             completeDraw();
         else
             completeDrawWithoutAdditionalSite();
+        // if (type === 'marker') {
+        //     if (allowAdditionalSurveySites)
+        //         completeDraw();
+        //     latLonDisabledObservable(false);
+        //     return;
+        // }else{
+        //     latLonDisabledObservable(true);
+        // }
+        // if (allowAdditionalSurveySites)
+        //     completeDraw();
+        // else
+        //     completeDrawWithoutAdditionalSite();
+
     });
     var saved = false;
     map.registerListener("draw:edited", function (e) {
@@ -484,7 +508,6 @@ function enmapify(args) {
                 })
                 .fail(saveSiteFailed);
         }).fail(function(){
-            var m = map;
             enableEditMode()
         });
 
@@ -497,12 +520,13 @@ function enmapify(args) {
         siteIdObservable(null);
         loadingObservable(true);
         var extent = convertGeoJSONToExtent(map.getGeoJSON());
-        blockUIWithMessage("Adding Site, please stand by...");
+        blockUIWithMessage("Saving, please stand by...");
         addSite({
             pActivityId: activityLevelData.pActivity.projectActivityId,
             site: {
                 name: '*',
-                invisible:true,
+                invisible:true, //for site creation telling if this site needs to be added to project
+                visibility:'private',
                 projects: [
                     activityLevelData.pActivity.projectId
                 ],

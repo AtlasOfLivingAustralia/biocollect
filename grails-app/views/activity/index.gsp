@@ -175,6 +175,10 @@
     </g:if>
     <div class="form-actions">
         <button type="button" id="cancel" class="btn">return</button>
+
+
+            <a data-bind="attr: {href: $parent.transients.editUrl }" title="Edit record" class="btn btn-small editBtn btn-default margin-top-5"><i class="fa fa-pencil"></i> Edit</a>
+
     </div>
 </div>
 
@@ -241,8 +245,6 @@
             ${site ?: 'null'},
             ${project ?: 'null'},
             ${metaModel ?: 'null'});
-
-        ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
 
         <g:if test="${pActivity.commentsAllowed}">
             ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
