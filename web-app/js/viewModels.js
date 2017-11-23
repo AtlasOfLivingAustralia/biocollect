@@ -66,7 +66,7 @@ function enmapify(args) {
         markerZoomToMax: true,
         drawOptions: activityLevelData.mobile || readonly || !activityLevelData.pActivity.allowAdditionalSurveySites ?
             {
-                polyline: true,
+                polyline: false,
                 polygon: false,
                 rectangle: false,
                 circle: false,
