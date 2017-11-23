@@ -585,7 +585,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     } else if (restored && restored.length > 0) {
         var selectedFacets = [];
         $.each(restored, function (index, value) {
-            value.facet = self.filterViewModel.createFacetViewModel(value.facet);
+            value.facet = self.filterViewModel.createFacetViewModel(value.facet || value.name);
 
             switch (value.type){
                 case 'range':
