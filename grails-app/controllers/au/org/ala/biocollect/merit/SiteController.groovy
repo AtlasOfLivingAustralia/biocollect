@@ -115,9 +115,9 @@ class SiteController {
     }
 
     /**
-     * Api: delete invisible site
+     * Api: delete site which is not public and not related to a project anymore
      *
-     * FORCE Delete, Do not use it unless
+     * FORCE Delete without check if it is connected to a project
      *
      * @param id
      * @return
@@ -128,26 +128,25 @@ class SiteController {
             // rule ala admin can only delete a site on condition,
             // 1. site is not assoicated with an acitivity(s)
             if(!userService.userIsAlaAdmin()){
-                render status:HttpStatus.SC_UNAUTHORIZED, text: "Access denied: User not authorised to delete"
-                return
-            }
+                return {status:HttpStatus.SC_UNAUTHORIZED; text: "Access denied: User not authorised to delete"} as JSON
 
+            }
             def status = siteService.delete(id)
             if (status < 400) {
                 def result = [status: 'deleted']
-                render result as JSON
+                return result as JSON
             } else {
                 def result = [status: status]
-                render result as JSON
+                return result as JSON
             }
         } catch (SocketTimeoutException sTimeout){
             log.error(sTimeout.message)
             log.error(sTimeout.stackTrace)
-            render(text: 'Webserive call timed out', status: HttpStatus.SC_REQUEST_TIMEOUT);
+            return {text: 'Webserive call timed out'; status: HttpStatus.SC_REQUEST_TIMEOUT} as JSON;
         } catch (Exception e){
             log.error(e.message)
             log.error(e.stackTrace)
-            render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            return {text: 'Internal server error'; status: HttpStatus.SC_INTERNAL_SERVER_ERROR} as JSON;
         }
     }
 
