@@ -51,6 +51,7 @@ class SiteController {
         render view: 'edit', model: [create:true, documents:[]]
     }
 
+
     def createForProject(){
         def project = projectService.getRich(params.projectId)
         // permissions check
@@ -112,6 +113,45 @@ class SiteController {
             result
         }
     }
+
+    /**
+     * Api: delete invisible site
+     *
+     * FORCE Delete, Do not use it unless
+     *
+     * @param id
+     * @return
+     */
+    def forceDelete(String id) {
+        try{
+            // permissions check
+            // rule ala admin can only delete a site on condition,
+            // 1. site is not assoicated with an acitivity(s)
+            if(!userService.userIsAlaAdmin()){
+                render status:HttpStatus.SC_UNAUTHORIZED, text: "Access denied: User not authorised to delete"
+                return
+            }
+
+            def status = siteService.delete(id)
+            if (status < 400) {
+                def result = [status: 'deleted']
+                render result as JSON
+            } else {
+                def result = [status: status]
+                render result as JSON
+            }
+        } catch (SocketTimeoutException sTimeout){
+            log.error(sTimeout.message)
+            log.error(sTimeout.stackTrace)
+            render(text: 'Webserive call timed out', status: HttpStatus.SC_REQUEST_TIMEOUT);
+        } catch (Exception e){
+            log.error(e.message)
+            log.error(e.stackTrace)
+            render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
     def ajaxList(String id) {
         if(params.entityType == "projectActivity") {

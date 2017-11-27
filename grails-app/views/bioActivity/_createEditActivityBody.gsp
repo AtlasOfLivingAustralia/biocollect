@@ -321,6 +321,33 @@
                 }
             };
 
+            this.removeTemporarySite = function() {
+                var sites = this.subscribers[0].model.data.locationSitesArray();
+                var linkedSite = this.subscribers[0].model.data.location();
+
+                var waitingForDelete =  _.find(sites, function(site){
+                    return site.siteId != linkedSite && site.visibility == 'private'
+                })
+
+                var siteUrl = fcConfig.siteDeleteUrl;
+
+                waitingForDelete.projects = [];
+                waitingForDelete.status = 'inactive';
+
+               if (waitingForDelete){
+                   console.log('Found a temporary site '+ waitingForDelete.siteId);
+                   $.ajax({
+                        method: 'POST',
+                        url: siteUrl+"?id="+waitingForDelete.siteId,
+                        data: JSON.stringify({id:waitingForDelete}),
+                        contentType: 'application/json',
+                        dataType: 'json'
+                    });
+                   }
+
+            }
+
+
             /**
              * Makes an ajax call to save any sections that have been modified. This includes the activity
              * itself and each output.
@@ -449,6 +476,7 @@
 
             $('#save').click(function () {
                 master.save();
+                master.removeTemporarySite();
             });
 
             $('#cancel').click(function () {

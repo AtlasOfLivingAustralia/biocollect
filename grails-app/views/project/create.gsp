@@ -20,6 +20,7 @@
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         geocodeUrl: "${grailsApplication.config.google.geocode.url}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
+        deleteSiteUrl: "${createLink(controller:'site', action:'delete')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}",
         scienceTypes: ${scienceTypes as grails.converters.JSON},
         ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},

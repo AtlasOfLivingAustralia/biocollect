@@ -242,6 +242,7 @@
 
         $('#save').click(function () {
             master.save();
+
         });
 
         $('#cancel').click(function () {

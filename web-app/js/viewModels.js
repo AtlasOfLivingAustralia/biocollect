@@ -279,8 +279,9 @@ function enmapify(args) {
                     async: false,
                     success: function (data) {
                         if (data.site){
-                            data.site.name='The polygon you drawed'
-                            sitesObservable.push(data.site)
+                            var geoType =  data.site.extent.source;
+                            data.site.name='Location of the sighting';
+                            sitesObservable.push(data.site);
                             matchingSite = data.site;
                         }
                     }
@@ -517,20 +518,30 @@ function enmapify(args) {
 
     function completeDrawWithoutAdditionalSite() {
         siteSubscriber.dispose();
+
+        var extent = convertGeoJSONToExtent(map.getGeoJSON());
+        var site = {
+            name: '*', // site named as * will not  be added to project
+            visibility:'private',//site will not be indexed
+            projects: [
+                activityLevelData.pActivity.projectId
+            ],
+            extent: extent
+        }
+
+        var uSite = lookupUpdatebleSite()
+        if (uSite){
+            site.siteId = uSite.siteId;
+        }
+
         siteIdObservable(null);
         loadingObservable(true);
-        var extent = convertGeoJSONToExtent(map.getGeoJSON());
+
         blockUIWithMessage("Updating, please stand by...");
         addSite({
-            pActivityId: activityLevelData.pActivity.projectActivityId,
-            site: {
-                name: '*', // site named as * will not  be added to project
-                visibility:'private',//site will not be indexed
-                projects: [
-                    activityLevelData.pActivity.projectId
-                ],
-                extent: extent
-            }}).then(function (data, jqXHR, textStatus) {
+                pActivityId: activityLevelData.pActivity.projectActivityId,
+                site: site}
+            ).then(function (data, jqXHR, textStatus) {
                     var anonymousSiteId= data.id;
                     return reloadSiteData().then(function () {
                         return data.id
@@ -540,9 +551,10 @@ function enmapify(args) {
                         //if the new created site id is not in this list, then the location would be empty
                         var geometryType =  extent.geometry.type;
                         var anonymousSite = {
-                         name: 'You drawed a '+ geometryType,
+                         name: 'The '+ geometryType + ' you created.',
                          siteId: anonymousSiteId,
-                         extent: extent
+                         extent: extent,
+                         visibility: "private"
                         }
                         sitesObservable.push(anonymousSite)
                  })
@@ -558,6 +570,18 @@ function enmapify(args) {
         siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
     }
 
+    /**
+     * check the current site id if this site is unchangale or updateble
+     * If a site is 'visibility = private and name ='*'', it means the site is not seleable
+     * which means we should update it instead of create a new one
+     */
+
+    function lookupUpdatebleSite(){
+       return _.find(sitesObservable(),function(site){
+            return site.visibility == 'private'
+        })
+    }
+
     function enableEditMode() {
         console.log('Init edit mode')
         // this is gross hack around the map plugin not giving access to the Draw Control
@@ -568,9 +592,11 @@ function enmapify(args) {
     }
 
     function addSite(site) {
+        var siteId = site['site'].siteId
+
         return $.ajax({
             method: 'POST',
-            url: updateSiteUrl,
+            url: siteId? updateSiteUrl+"?id="+siteId:updateSiteUrl,
             data: JSON.stringify(site),
             contentType: 'application/json',
             dataType: 'json'

@@ -376,6 +376,7 @@
             }
         };
 
+
         /**
          * Makes an ajax call to save any sections that have been modified. This includes the activity
          * itself and each output.
@@ -393,7 +394,7 @@
                 var toSave = this.collectData();
 
                 if (!toSave) {
-                    alert("Nothing to save.");
+                    alert("Nothing to save, or location failed on validation.");
                     return;
                 }
 
