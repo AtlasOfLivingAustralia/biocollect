@@ -140,14 +140,18 @@
         var savedData = amplify.store('activity-${activity.activityId}');
         var savedOutput = null;
         if (savedData) {
-            var outputData = $.parseJSON(savedData);
-            $.each(outputData.outputs, function(i, tmpOutput) {
-                if (tmpOutput.name === '${output.name}') {
-                    if (tmpOutput.data) {
-                        savedOutput = tmpOutput.data;
+            try{
+                var outputData = $.parseJSON(savedData);
+                $.each(outputData.outputs, function(i, tmpOutput) {
+                    if (tmpOutput.name === '${output.name}') {
+                        if (tmpOutput.data) {
+                            savedOutput = tmpOutput.data;
+                        }
                     }
-                }
-            });
+                });
+            }catch(err){
+                
+            }
         }
         if (savedOutput) {
             window[viewModelInstance].loadData(savedOutput);
@@ -367,9 +371,12 @@
                         return;
                     }
 
-                    if (toSave.validation){
-                        alert(toSave.message)
-                        return;
+                    if (toSave.hasOwnProperty('validation')){
+                        if (!toSave.validation){
+                            alert(toSave.message);
+                            return;
+                        }
+
                     }
 
                     toSave = JSON.stringify(toSave);

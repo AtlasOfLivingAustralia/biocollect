@@ -256,14 +256,18 @@
                 var savedData = amplify.store('activity-${activity.activityId}');
                 var savedOutput = null;
                 if (savedData) {
-                    var outputData = $.parseJSON(savedData);
-                    $.each(outputData.outputs, function(i, tmpOutput) {
-                        if (tmpOutput.name === '${output.name}') {
-                            if (tmpOutput.data) {
-                                savedOutput = tmpOutput.data;
+                    try{
+                        var outputData = $.parseJSON(savedData);
+                        $.each(outputData.outputs, function(i, tmpOutput) {
+                            if (tmpOutput.name === '${output.name}') {
+                                if (tmpOutput.data) {
+                                    savedOutput = tmpOutput.data;
+                                }
                             }
-                        }
-                    });
+                        });
+                    }catch(e){
+
+                    }
                 }
                 if (savedOutput) {
                     window[viewModelInstance].loadData(savedOutput);

@@ -78,9 +78,9 @@ function enmapify(args) {
 
             if (allowPolygons && allowPoints){
                 if (siteIdObservable())
-                    return true;
+                    return {validation:true};
                 if (latObservable() && lonObservable())
-                    return true;
+                    return {validation:true};
             }
 
             return {validation:false, message:"You have not created or selected a location yet"};;
