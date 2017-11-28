@@ -45,7 +45,7 @@
                         </tr>
                      <!-- /ko -->
                 <!-- /ko -->
-                <!-- ko if: getNumberOfSitesForSurvey() == 0 -->
+                <!-- ko ko if: getNumberOfSitesForSurvey() == 0 -->
                 <tr>
                     <td>
                         <i>Add sites to survey from the column on right using the <span class="icon-arrow-left"></span> button.</i>
@@ -134,7 +134,7 @@
             <span class="help-block">Check this box if you want to allow users to add or edit site polygons on the survey record.</span>
 
             <label class="checkbox">
-                <input type="checkbox" data-bind="checked: selectFromSitesOnly, disable: transients.warning()"/> Select from existing sites
+                <input type="checkbox" data-bind="checked: selectFromSitesOnly, disable: transients.warning()"/> ONLY Select from existing sites
             </label>
             <span class="help-block">User can only select from exisiting site </span>
 

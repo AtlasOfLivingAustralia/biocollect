@@ -38,13 +38,13 @@ function enmapify(args) {
         uniqueNameUrl = args.uniqueNameUrl + "/" + ( activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId),
         hideSiteSelection = args.hideSiteSelection || false,
         hideMyLocation = args.hideMyLocation || false,
-        allowPolygons = args.activityLevelData.pActivity.allowPolygons,
-        allowPoints = args.activityLevelData.pActivity.allowPoints,
-        pointsOnly = args.activityLevelData.pActivity.allowPoints && ! args.activityLevelData.pActivity.allowPolygons,
-        polygonsOnly = !args.activityLevelData.pActivity.allowPoints && args.activityLevelData.pActivity.allowPolygons,
+        allowPolygons = args.activityLevelData.pActivity.allowPolygons == undefined ? true : args.activityLevelData.pActivity.allowPolygons,
+        allowPoints = args.activityLevelData.pActivity.allowPoints  == undefined ? true : args.activityLevelData.pActivity.allowPoints,
+        pointsOnly = allowPoints && !allowPolygons,
+        polygonsOnly = !allowPoints && allowPolygons,
         defaultZoomArea = args.activityLevelData.pActivity.defaultZoomArea,
-        allowAdditionalSurveySites = args.activityLevelData.pActivity.allowAdditionalSurveySites,
-        selectFromSitesOnly = args.activityLevelData.pActivity.selectFromSitesOnly,
+        allowAdditionalSurveySites = args.activityLevelData.pActivity.allowAdditionalSurveySites == undefined ? true : args.activityLevelData.pActivity.allowAdditionalSurveySites,
+        selectFromSitesOnly = args.activityLevelData.pActivity.selectFromSitesOnly == undefined ? false : args.activityLevelData.pActivity.selectFromSitesOnly,
 
         siteIdObservable = container[name] = ko.observable(),
         nameObservable = container[name + "Name"] = ko.observable(),
@@ -60,19 +60,20 @@ function enmapify(args) {
 
         sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
         loadingObservable = container[name + "Loading"] = ko.observable(false),
-        isValidMapInfo = container['isValidMapInfo'] = ko.computed(function(){
+        ///TODO add reason of failed validation
+        checkMapInfo = container['checkMapInfo'] = ko.computed(function(){
             if (pointsOnly){
                   if (latObservable() && lonObservable())
-                      return true;
+                      return {validation:true};
                   else
-                      return false;
+                      return {validation:false, message:"Point only"};
             };
 
             if (polygonsOnly){
                 if (siteIdObservable() && !latObservable() && !lonObservable())
-                    return true;
+                    return {validation:true};
                 else
-                    return false;
+                    return {validation:false, message:"Polygon only"};
             }
 
             if (allowPolygons && allowPoints){
@@ -82,7 +83,7 @@ function enmapify(args) {
                     return true;
             }
 
-            return false;
+            return {validation:false, message:"You have not created or selected a location yet"};;
 
         });
 
@@ -111,11 +112,11 @@ function enmapify(args) {
             :
             {
                 polyline: false,
-                polygon: allowPolygons,
-                circle: allowPolygons,
-                rectangle: allowPolygons,
-                marker: allowPoints,
-                edit: true
+                polygon: !selectFromSitesOnly && allowPolygons,
+                circle: !selectFromSitesOnly && allowPolygons,
+                rectangle: !selectFromSitesOnly && allowPolygons,
+                marker: !selectFromSitesOnly && allowPoints,
+                edit: !selectFromSitesOnly && true
             }
         // drawOptions:  activityLevelData.mobile || readonly || !activityLevelData.pActivity.allowAdditionalSurveySites ?
         //     {
@@ -686,11 +687,34 @@ function enmapify(args) {
         }, "bottomright");
     }
 
-    //always zoom to default zoom area
-    var zoomToSite = $.grep(activityLevelData.pActivity.sites,function(site){
-        if(site.siteId == defaultZoomArea)
-            return site;
-    });
+
+
+    function zoomToDefaultSite(){
+        if (!siteIdObservable()){
+            var defaultsite  = $.grep(activityLevelData.pActivity.sites,function(site){
+                if(site.siteId == defaultZoomArea)
+                    return site;
+            });
+            var geojson;
+
+            if (defaultsite.length>0) {
+                if (defaultsite[0].extent.geometry.pid) {
+                    geojson = createGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(defaultsite[0].extent.geometry));
+                } else {
+                    geojson = createGeoJSON(siteExtentToValidGeoJSON(defaultsite[0].extent));
+                }
+
+                var bounds = geojson.getBounds(),
+                    mapImpl = map.getMapImpl();
+
+                mapImpl.fitBounds(bounds);
+                geojson.addTo(map);
+            }
+
+        }
+    }
+
+    zoomToDefaultSite();
 
 
     // if (zoomToSite.length>0){

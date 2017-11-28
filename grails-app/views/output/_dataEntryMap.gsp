@@ -32,7 +32,7 @@ Select only: <span data-bind="text:activityLevelData.pActivity.selectFromSitesOn
                     </g:if>
                     <g:else>
                         <select id="siteLocation"
-                                data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Drop a pin.", disable: ${readonly} || data.${source}Loading'
+                                data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Create your location", disable: ${readonly} || data.${source}Loading'
                                 class="form-control input-xlarge full-width"></select>
                     </g:else>
                 </div>

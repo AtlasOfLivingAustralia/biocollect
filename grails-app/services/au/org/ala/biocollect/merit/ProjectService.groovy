@@ -4,6 +4,7 @@ import au.org.ala.biocollect.EmailService
 import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
+import org.codehaus.groovy.grails.web.json.JSONArray
 import org.springframework.context.MessageSource
 
 class ProjectService {
@@ -64,14 +65,31 @@ class ProjectService {
         resp
     }
 
-    def get(id, levelOfDetail = "", includeDeleted = false, version = null) {
+    def get(id, levelOfDetail = "", includeDeleted = false, version = null, def includePrivateSite = false) {
 
         def params = '?'
 
         params += levelOfDetail ? "view=${levelOfDetail}&" : ''
         params += "includeDeleted=${includeDeleted}&"
         params += version ? "version=${version}" : ''
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + id + params)
+        def project  = webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + id + params);
+
+        if (!includePrivateSite){
+            ///Cannot use findAll, it converts jsonarray to arraylist
+            def validSites = new JSONArray()
+                for(int i=0;i<project.sites.size();i++){
+                    if (!!project.sites[i]['visibility']){
+                        if(project.sites[i]['visibility']!= "private")
+                            validSites.add(project.sites[i]);
+                    }else
+                        validSites.add(project.sites[i]);
+                }
+
+               project.sites = validSites;
+        }
+
+        return project;
+
     }
 
     def getRich(id) {

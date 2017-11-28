@@ -307,9 +307,13 @@
                 });
                 if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
                     return null;
-                }else if( !outputs[0].data.isValidMapInfo){
+                }
+
+                var mapInfoCheck= outputs[0].data.checkMapInfo;
+
+                if( !mapInfoCheck.validation){
                     ///Todo: multi outputs
-                    return false;
+                    return mapInfoCheck;
                 }
                 else {
                     if (activityData === undefined) {
@@ -329,11 +333,7 @@
                     return site.siteId != linkedSite && site.visibility == 'private'
                 })
 
-                var siteUrl = fcConfig.siteDeleteUrl;
-
-                waitingForDelete.projects = [];
-                waitingForDelete.status = 'inactive';
-
+               var siteUrl = fcConfig.siteDeleteUrl;
                if (waitingForDelete){
                    console.log('Found a temporary site '+ waitingForDelete.siteId);
                    $.ajax({
@@ -364,6 +364,11 @@
                     var toSave = this.collectData();
                     if (!toSave) {
                         alert("Nothing to save.");
+                        return;
+                    }
+
+                    if (toSave.validation){
+                        alert(toSave.message)
                         return;
                     }
 
