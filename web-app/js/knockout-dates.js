@@ -236,6 +236,11 @@ function stringToDate(date) {
             $element.parent().find('.open-datepicker').click(function () {
                 $element.datepicker('show');
             });
+            $element.parent().find('.clear-date').click(function () {
+                $(this).siblings('input').val('');
+                $(this).siblings('input').change();
+            });
+
 
             var changeHandler = function(event) {
                 var value = valueAccessor();
@@ -258,20 +263,20 @@ function stringToDate(date) {
             });
         },
         update: function(element, valueAccessor)   {
-            var $element = $(element),
-                widget = $element.data("datepicker");
+            var widget = $(element).data("datepicker");
             //when the view model is updated, update the widget
             if (widget) {
                 var date = ko.utils.unwrapObservable(valueAccessor());
                 widget.date = date;
                 if (!isNaN(widget.date) ) {
                     widget.setDate(widget.date);
-                } else if( date && (date.toString() === 'Invalid Date')){
-                    $element.val('').datepicker('update');
+                }else{
+                    console.log('reset')
                 }
             }
         }
     };
+
 
 }());
 
