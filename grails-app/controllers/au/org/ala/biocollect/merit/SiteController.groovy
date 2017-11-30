@@ -484,7 +484,8 @@ class SiteController {
         if (!result) {
             result = siteService.updateRaw(id, values)
             //Do not save siteid into the selectable sites in project Activity
-            boolean selectableSite = values['name'] == '*'? false : true;
+            //boolean selectableSite = values['name'] == '*'? false : true;
+            boolean selectableSite = values['visibility']?(values['visibility']=='private'?false:true):true;
             if(postBody?.pActivityId){
                 def pActivity = projectActivityService.get(postBody.pActivityId)
                 // TODO Check this - need to give users who are submitting a pactvitiy the ability to create new

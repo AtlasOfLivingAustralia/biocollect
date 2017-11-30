@@ -66,14 +66,14 @@ function enmapify(args) {
                   if (latObservable() && lonObservable())
                       return {validation:true};
                   else
-                      return {validation:false, message:"Point only"};
+                      return {validation:false, message:"The record only accepts POINT"};
             };
 
             if (polygonsOnly){
                 if (siteIdObservable() && !latObservable() && !lonObservable())
                     return {validation:true};
                 else
-                    return {validation:false, message:"Polygon only"};
+                    return {validation:false, message:"The record only accepts Polygon"};
             }
 
             if (allowPolygons && allowPoints){

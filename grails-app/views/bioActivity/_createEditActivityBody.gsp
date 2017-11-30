@@ -310,13 +310,12 @@
                     }
                 });
                 if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
-                    return null;
+                    return {validation:false, message:"Nothing need to be updated!"};
                 }
 
                 var mapInfoCheck= outputs[0].data.checkMapInfo;
 
                 if( !mapInfoCheck.validation){
-                    ///Todo: multi outputs
                     return mapInfoCheck;
                 }
                 else {
@@ -366,10 +365,6 @@
             this.save = function () {
                 if ($('#validation-container').validationEngine('validate')) {
                     var toSave = this.collectData();
-                    if (!toSave) {
-                        alert("Nothing to save.");
-                        return;
-                    }
 
                     if (toSave.hasOwnProperty('validation')){
                         if (!toSave.validation){
