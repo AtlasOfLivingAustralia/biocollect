@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import groovy.time.*
 import au.org.ala.web.AuthService
 import grails.converters.JSON
 import org.apache.commons.lang.StringUtils
@@ -8,6 +9,7 @@ import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
+
 
 class SiteController {
 
@@ -461,8 +463,13 @@ class SiteController {
     }
 
     def ajaxUpdate(String id) {
-
+        def result = [:]
+        def timeStart = new Date();
         String userId = userService.getCurrentUserId(request)
+        TimeDuration duration = TimeCategory.minus(new Date(), timeStart)
+        def performanceTrack = []
+        performanceTrack.push('Get current user info: '+ duration);
+
         if (!userId) {
             Map error  = [status: 401, error:"Access denied: User has not been authenticated."]
             response.status = 401
@@ -482,23 +489,36 @@ class SiteController {
             }
             log.debug(values as JSON).toString()
 
-            def result = [:]
+
             boolean privateSite = values['visibility'] ? (values['visibility'] == 'private' ? true : false) : false;
 
             if(privateSite){
                 //Do not check permission if site is private
                 //This design is specially for sightings
+
+                timeStart = new Date();
                 result = siteService.updateRaw(id, values)
+                duration = TimeCategory.minus(new Date(), timeStart)
+                performanceTrack.push('Update private site: '+ duration);
             }else{
+                timeStart = new Date();
                 values.projects?.each { projectId ->
                     if (!projectService.canUserEditSitesForProject(userId, projectId)) {
                         log.error("Error: Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}")
                         render status: 401, error: 'Error: Access denied: User is not en editor or is not allowed to manage sites';
                     }
                 }
+                duration = TimeCategory.minus(new Date(), timeStart)
+                performanceTrack.push('check user permission: '+ duration);
 
+                timeStart = new Date();
                 result = siteService.updateRaw(id, values)
+                duration = TimeCategory.minus(new Date(), timeStart)
+                performanceTrack.push('update site: '+ duration);
+
                 String siteId = result.id
+
+                timeStart = new Date();
                 if(siteId) {
                     if(isCreateSiteRequest){
                         String projectId = postBody?.projectId
@@ -518,6 +538,9 @@ class SiteController {
                             }
                         }
                     }
+                    duration = TimeCategory.minus(new Date(), timeStart)
+                    performanceTrack.push('create site request: '+ duration);
+
                 } else {
                     result.status = 'error';
                     result.message = 'Could not save site';
@@ -528,6 +551,7 @@ class SiteController {
             if (result.status == 'error') {
                 render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${result.message}"
             } else {
+                result.put('performanceTrack', performanceTrack);
                 render result as JSON
             }
         }
