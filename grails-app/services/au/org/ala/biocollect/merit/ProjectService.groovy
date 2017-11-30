@@ -74,7 +74,7 @@ class ProjectService {
         params += version ? "version=${version}" : ''
         def project  = webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + id + params);
 
-        if (!includePrivateSite){
+        if (!includePrivateSite && project.sites){
             ///Cannot use findAll, it converts jsonarray to arraylist
             def validSites = new JSONArray()
                 for(int i=0;i<project.sites.size();i++){

@@ -208,7 +208,7 @@
     <g:if test="${projectSite?.extent?.geometry}">
     if ((typeof map === 'undefined' || Object.keys(map).length == 0)) {
         var projectArea = <fc:modelAsJavascript model="${projectSite.extent.geometry}"/>;
-
+        console.log(projectArea);
         if (projectArea) {
             var mapOptions = {
                 drawControl: false,
