@@ -153,6 +153,15 @@ class FCTagLib {
                         mkp.yieldUnescaped("&nbsp;")
                     }
                 }
+
+                if (attrs.clearBtn?.toBoolean()){
+                    mb.span(class:'add-on clear-date') {
+                        mb.i(class: 'icon-remove') {
+                            mkp.yieldUnescaped("&nbsp;")
+                        }
+                    }
+                }
+
             };
         } else {
             def inputAttrs = [

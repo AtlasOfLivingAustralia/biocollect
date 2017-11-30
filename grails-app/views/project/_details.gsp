@@ -132,7 +132,7 @@
                 </label>
 
                 <div class="controls span9">
-                    <fc:datePicker class="input-small" targetField="plannedEndDate.date" name="plannedEndDate"
+                    <fc:datePicker class="input-small" targetField="plannedEndDate.date" name="plannedEndDate" clearBtn="true"
                                    id="plannedEndDate" data-validation-engine="validate[future[plannedStartDate]]"/>
                     <g:message code="project.details.plannedEndDate.extra"/>
                 </div>
