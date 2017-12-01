@@ -323,6 +323,9 @@
                         activityData = {}
                     }
                     activityData.outputs = outputs;
+                    //assign siteId to activity
+                    if (outputs[0].data.location)
+                        activityData.siteId = outputs[0].data.location;
 
                     return activityData;
                 }

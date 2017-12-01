@@ -270,7 +270,7 @@ function enmapify(args) {
             var matchingSite = $.grep(sitesObservable(), function (site) {
                 return siteId == site.siteId
             })[0];
-
+            //search from site collection in case it is a private site
             if (!matchingSite){
                 var siteUrl = getSiteUrl + '/' + siteId + "?format=json"
                 //It is a sync call
