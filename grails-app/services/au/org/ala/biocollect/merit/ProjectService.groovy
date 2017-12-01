@@ -67,7 +67,7 @@ class ProjectService {
     def get(id, levelOfDetail = "", includeDeleted = false, version = null) {
 
         def params = '?'
-        params += levelOfDetail ? "view=${levelOfDetail?:PRIVATE_SITES_REMOVED}&" : ''
+        params += "view=${levelOfDetail?:PRIVATE_SITES_REMOVED}&"
         params += "includeDeleted=${includeDeleted}&"
         params += version ? "version=${version}" : ''
         webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + id + params)
