@@ -61,19 +61,19 @@ function enmapify(args) {
         sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
         loadingObservable = container[name + "Loading"] = ko.observable(false),
         ///TODO add reason of failed validation
-        checkMapInfo = container['checkMapInfo'] = ko.computed(function(){
+        checkMapInfo = container[name + 'checkMapInfo'] = ko.computed(function(){
             if (pointsOnly){
                   if (latObservable() && lonObservable())
                       return {validation:true};
                   else
-                      return {validation:false, message:"The record only accepts POINT"};
+                      return {validation:false, message:"The record only accepts POINTs"};
             };
 
             if (polygonsOnly){
                 if (siteIdObservable() && !latObservable() && !lonObservable())
                     return {validation:true};
                 else
-                    return {validation:false, message:"The record only accepts Polygon"};
+                    return {validation:false, message:"The record only accepts Polygons"};
             }
 
             if (allowPolygons && allowPoints){

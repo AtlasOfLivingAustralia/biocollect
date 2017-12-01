@@ -20,7 +20,10 @@ Allow Addtional Survey Sites: <span data-bind="text:activityLevelData.pActivity.
 Default zoom to: <span data-bind="text:activityLevelData.pActivity.defaultZoomArea"> </span> <br/>
 Select only: <span data-bind="text:activityLevelData.pActivity.selectFromSitesOnly"> </span> <br/>
 
+
 <input data-bind="value:data.${source}"/>
+
+
 <g:if test="${!hideSiteSelection}">
     <div class="${isHorizontal ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 0">
         <div>
@@ -34,6 +37,11 @@ Select only: <span data-bind="text:activityLevelData.pActivity.selectFromSitesOn
                         <select id="siteLocation"
                                 data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Create your location", disable: ${readonly} || data.${source}Loading'
                                 class="form-control input-xlarge full-width"></select>
+                        <!-- ko with: data.${source}checkMapInfo -->
+                            <!-- ko ifnot: validation -->
+                         <span class="label label-important" data-bind="text:message"></span>
+                            <!-- /ko -->
+                        <!-- /ko -->
                     </g:else>
                 </div>
             </div>
