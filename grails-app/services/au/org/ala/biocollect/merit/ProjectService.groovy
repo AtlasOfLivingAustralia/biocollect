@@ -1,13 +1,10 @@
 package au.org.ala.biocollect.merit
 
-import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.EmailService
 import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
 import org.springframework.context.MessageSource
-
-
 
 class ProjectService {
 
@@ -37,6 +34,7 @@ class ProjectService {
             ]
     ]
     public static final String PROJECT_FINDER_PAGE= 'projectFinder'
+    public static final PRIVATE_SITES_REMOVED  = 'privatesitesremoved'
 
 
     WebService webService
@@ -69,8 +67,7 @@ class ProjectService {
     def get(id, levelOfDetail = "", includeDeleted = false, version = null) {
 
         def params = '?'
-
-        params += levelOfDetail ? "view=${levelOfDetail}&" : ''
+        params += "view=${levelOfDetail?:PRIVATE_SITES_REMOVED}&"
         params += "includeDeleted=${includeDeleted}&"
         params += version ? "version=${version}" : ''
         webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + id + params)

@@ -852,6 +852,7 @@ function decodeCamelCase(text) {
 }
 
 function cleanName(text) {
+    text = text || '';
     return decodeCamelCase(text.replace('_', ' '))
 }
 
