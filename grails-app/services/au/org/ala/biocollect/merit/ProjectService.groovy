@@ -871,9 +871,10 @@ class ProjectService {
                 if(index >= 0){
                     if(index >= facets?.size()){
                         index = facets.size()
+                        facets.add(index, specialFacet.clone())
+                    } else {
+                        facets.putAt(index, specialFacet.clone())
                     }
-
-                    facets.add(index, specialFacet.clone())
                 }
             }
         } else {
