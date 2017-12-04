@@ -313,7 +313,7 @@
                     return {validation:false, message:"Nothing need to be updated!"};
                 }
 
-                var mapInfoCheck= outputs[0].data.checkMapInfo;
+                var mapInfoCheck= activityLevelData.checkMapInfo();
 
                 if( !mapInfoCheck.validation){
                     return mapInfoCheck;
@@ -324,8 +324,8 @@
                     }
                     activityData.outputs = outputs;
                     //assign siteId to activity
-                    if (outputs[0].data.location)
-                        activityData.siteId = outputs[0].data.location;
+                    if (activityLevelData.siteId())
+                        activityData.siteId = activityLevelData.siteId();
 
                     return activityData;
                 }
@@ -607,7 +607,7 @@
                 self.dirtyFlag = ko.dirtyFlag(self, false);
             }
 
-            var viewModel = new ViewModel(
+              viewModel = new ViewModel(
                 activityLevelData.activity,
                 activityLevelData.site,
                 ${project ? "JSON.parse('${project.toString().encodeAsJavaScript()}')" : 'null'},

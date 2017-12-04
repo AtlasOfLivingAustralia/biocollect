@@ -19,8 +19,6 @@ Allow Polygons: <span data-bind="text:activityLevelData.pActivity.allowPolygons"
 Allow Addtional Survey Sites: <span data-bind="text:activityLevelData.pActivity.allowAdditionalSurveySites"></span> <br/>
 Default zoom to: <span data-bind="text:activityLevelData.pActivity.defaultZoomArea"> </span> <br/>
 Select only: <span data-bind="text:activityLevelData.pActivity.selectFromSitesOnly"> </span> <br/>
-
-
 <input data-bind="value:data.${source}"/>
 
 
@@ -37,7 +35,7 @@ Select only: <span data-bind="text:activityLevelData.pActivity.selectFromSitesOn
                         <select id="siteLocation"
                                 data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Create your location", disable: ${readonly} || data.${source}Loading'
                                 class="form-control input-xlarge full-width"></select>
-                        <!-- ko with: data.${source}checkMapInfo -->
+                        <!-- ko with: checkMapInfo -->
                             <!-- ko ifnot: validation -->
                          <span class="label label-important" data-bind="text:message"></span>
                             <!-- /ko -->

@@ -46,7 +46,8 @@ function enmapify(args) {
         allowAdditionalSurveySites = args.activityLevelData.pActivity.allowAdditionalSurveySites == undefined ? true : args.activityLevelData.pActivity.allowAdditionalSurveySites,
         selectFromSitesOnly = args.activityLevelData.pActivity.selectFromSitesOnly == undefined ? false : args.activityLevelData.pActivity.selectFromSitesOnly,
 
-        siteIdObservable = container[name] = ko.observable(),
+
+        siteIdObservable =activityLevelData.siteId = container[name] = ko.observable(),
         nameObservable = container[name + "Name"] = ko.observable(),
         latObservable = container[name + "Latitude"] = ko.observable(),
         lonObservable = container[name + "Longitude"] = ko.observable(),
@@ -61,7 +62,7 @@ function enmapify(args) {
         sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
         loadingObservable = container[name + "Loading"] = ko.observable(false),
         ///TODO add reason of failed validation
-        checkMapInfo = container[name + 'checkMapInfo'] = ko.computed(function(){
+        checkMapInfo = viewModel.checkMapInfo=activityLevelData.checkMapInfo = ko.computed(function(){
             if (pointsOnly){
                   if (latObservable() && lonObservable())
                       return {validation:true};
