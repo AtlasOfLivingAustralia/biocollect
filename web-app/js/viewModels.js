@@ -290,6 +290,8 @@ function enmapify(args) {
                 });
             }
 
+            // Keep the previous code to make compatible with old records
+            // Can be removed after all data be migrated.
             // TODO: OPTIMISE THE PROCEDUE
             if (matchingSite) {
                 console.log("Clearing map before displaying a new shape")
@@ -522,8 +524,18 @@ function enmapify(args) {
         siteSubscriber.dispose();
 
         var extent = convertGeoJSONToExtent(map.getGeoJSON());
+        var siteName = 'Private site';
+        if (activityLevelData.pActivity){
+            activityLevelData.pActivity.name? siteName += " for survey: "+activityLevelData.pActivity.name: siteName;
+        }
+
+        if (activityLevelData.projectSite){
+
+        }
+
+
         var site = {
-            name: 'Private site for ' + activityLevelData.pActivity.name,  
+            name: 'Private site for ' + activityLevelData.pActivity.name,
             visibility:'private',//site will not be indexed
             projects: [
                 activityLevelData.pActivity.projectId
