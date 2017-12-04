@@ -523,7 +523,7 @@ function enmapify(args) {
 
         var extent = convertGeoJSONToExtent(map.getGeoJSON());
         var site = {
-            name: '*', // site named as * will not  be added to project
+            name: 'Private site for ' + activityLevelData.pActivity.name,  
             visibility:'private',//site will not be indexed
             projects: [
                 activityLevelData.pActivity.projectId
