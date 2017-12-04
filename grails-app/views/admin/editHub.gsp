@@ -686,7 +686,7 @@
             <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonColorActive}"></div></td>
         </tr>
         <tr>
-            <td>Default button text colour when active</td>
+            <td>Default button background colour when active</td>
             <td><input type="text" data-bind="value: defaultButtonBackgroundColorActive"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonBackgroundColorActive}"></div></td>
         </tr>
