@@ -56,12 +56,8 @@ function enmapify(args) {
         latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(!pointsOnly),
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
-
-        geoInfoObservable = container[name +'geoInfo'] = ko.observable(),
-
         sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
         loadingObservable = container[name + "Loading"] = ko.observable(false),
-        ///TODO add reason of failed validation
         checkMapInfo = viewModel.checkMapInfo=activityLevelData.checkMapInfo = ko.computed(function(){
             if (pointsOnly){
                   if (latObservable() && lonObservable())
@@ -257,6 +253,11 @@ function enmapify(args) {
 
     }
 
+    /**
+     * Once the site selection changed, the function will be called
+     * Also called in record information display
+     * @param siteId
+     */
     function updateMapForSite(siteId) {
         if (typeof siteId !== "undefined" && siteId) {
             if (lonObservable()) {
@@ -266,7 +267,6 @@ function enmapify(args) {
             if (latObservable()) {
                 previousLatObservable(latObservable());
             }
-
 
             var matchingSite = $.grep(sitesObservable(), function (site) {
                 return siteId == site.siteId
@@ -289,9 +289,6 @@ function enmapify(args) {
                     }
                 });
             }
-
-            // Keep the previous code to make compatible with old records
-            // Can be removed after all data be migrated.
             // TODO: OPTIMISE THE PROCEDUE
             if (matchingSite) {
                 console.log("Clearing map before displaying a new shape")
@@ -322,6 +319,8 @@ function enmapify(args) {
             //         });
             //     }
         }else{
+            // Keep the previous code to make compatible with old records
+            // Can be removed after all data be migrated.
             if (previousLatObservable() && previousLonObservable()) {
                     lonObservable(previousLonObservable());
                     latObservable(previousLatObservable());
@@ -529,13 +528,8 @@ function enmapify(args) {
             activityLevelData.pActivity.name? siteName += " for survey: "+activityLevelData.pActivity.name: siteName;
         }
 
-        if (activityLevelData.projectSite){
-
-        }
-
-
         var site = {
-            name: 'Private site for ' + activityLevelData.pActivity.name,
+            name: siteName,
             visibility:'private',//site will not be indexed
             projects: [
                 activityLevelData.pActivity.projectId
@@ -585,9 +579,8 @@ function enmapify(args) {
     }
 
     /**
-     * check the current site id if this site is unchangale or updateble
-     * If a site is 'visibility = private and name ='*'', it means the site is not seleable
-     * which means we should update it instead of create a new one
+     * find a private site id.
+     * If a site is 'visibility = private, it means we should update it instead of creating a new one
      */
 
     function lookupUpdatebleSite(){
@@ -721,7 +714,7 @@ function enmapify(args) {
                     mapImpl = map.getMapImpl();
 
                 mapImpl.fitBounds(bounds);
-                geojson.addTo(map);
+                //geojson.addTo(map);
             }
 
         }
