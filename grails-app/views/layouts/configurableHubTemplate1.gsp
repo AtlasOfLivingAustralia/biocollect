@@ -62,7 +62,6 @@
     </r:script>
     <r:layoutResources/>
     <g:layoutHead/>
-    <link rel="stylesheet" href="${resource(dir: 'css', file: 'common.css')}" type="text/css">
     <link rel="stylesheet" type="text/css"
           href="${createLink(controller: 'hub', action: 'getStyleSheet')}?hub=${hubConfig.urlPath}">
     <link href="https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"
@@ -160,7 +159,7 @@
 <g:pageProperty name="page.page-header"/> <%-- allows special content to be inserted --%>
 
 <div id="main-content"
-     class="${homepage ? 'homepage' : ''} ${fluidLayout ? 'container-fluid' : 'container'} padding-top-10">
+     class="${homepage ? 'homepage' : ''} ${fluidLayout ? 'container-fluid' : 'container'}">
     <g:if test="${flash.message}">
         <div class="container-fluid">
             <div class="alert alert-info">

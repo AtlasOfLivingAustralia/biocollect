@@ -143,6 +143,10 @@
     padding-right: 8px
 }
 
+.padding-top-10{
+    padding-top: 10px;
+}
+
 .organisation-search {
     margin-left: 0 !important;
     margin-top: 10px;
