@@ -330,11 +330,17 @@ class ProjectController {
 
         def userOrgIds = userService.getOrganisationIdsForUserId(user.userId)
 
-        // Default the project organisation if the user is a member of a single organisation.
-        if (userOrgIds?.size() == 1) {
-            def userOrganisation = organisationService.get(userOrgIds[0])
-            project.organisationId = userOrganisation.organisationId
-            project.organisationName = userOrganisation.name
+        // If organisation id is passed as parameter, then select it.
+        // Otherwise, select an organisation this user is a member.
+        if( userOrgIds || params.organisationId){
+            String orgId = params.organisationId
+            orgId = orgId?: userOrgIds ? userOrgIds[0] : null
+
+            if(orgId){
+                def userOrganisation = organisationService.get(orgId)
+                project.organisationId = userOrganisation.organisationId
+                project.organisationName = userOrganisation.name
+            }
         }
 
         [
