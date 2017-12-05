@@ -19,7 +19,7 @@ Allow Polygons: <span data-bind="text:activityLevelData.pActivity.allowPolygons"
 Allow Addtional Survey Sites: <span data-bind="text:activityLevelData.pActivity.allowAdditionalSurveySites"></span> <br/>
 Default zoom to: <span data-bind="text:activityLevelData.pActivity.defaultZoomArea"> </span> <br/>
 Select only: <span data-bind="text:activityLevelData.pActivity.selectFromSitesOnly"> </span> <br/>
-<input data-bind="value:data.${source}"/>
+Site ID： <span data-bind="text:data.${source}"/></span><br/>
 
 
 <g:if test="${!hideSiteSelection}">
