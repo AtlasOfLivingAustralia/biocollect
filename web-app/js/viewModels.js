@@ -70,8 +70,8 @@ function enmapify(args) {
                 })
             }
 
-            return new ko.observableArray(sites);
-            
+            return new ko.observableArray(activityLevelData.pActivity.sites);
+
 
             }),
         loadingObservable = container[name + "Loading"] = ko.observable(false),
