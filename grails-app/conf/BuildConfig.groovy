@@ -23,7 +23,7 @@ grails.project.fork = [
     console: false// [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
 
-grails.plugin.location["ala-map-plugin"] = '../ala-map-plugin'
+//grails.plugin.location["ala-map-plugin"] = '../ala-map-plugin'
 //grails.plugin.location["images-client-plugin"] = '../images-client-plugin'
 
 // settings for the development environment
