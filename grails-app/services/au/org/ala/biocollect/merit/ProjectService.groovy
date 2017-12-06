@@ -6,8 +6,6 @@ import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
 import org.springframework.context.MessageSource
 
-
-
 class ProjectService {
 
     //TODO refactor project type
