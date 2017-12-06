@@ -239,6 +239,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             maxZoom: 20,
             wmsLayerUrl: mapOptions.spatialWms + "/wms/reflect?",
             wmsFeatureUrl: mapOptions.featureService + "?featureId=",
+            drawOptions: mapOptions.drawOptions,
             showReset: false
         };
 

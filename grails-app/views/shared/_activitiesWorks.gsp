@@ -1,3 +1,4 @@
+<%@ page import="grails.converters.JSON; au.org.ala.biocollect.DateUtils;" %>
 <r:require modules="datepicker, jqueryGantt, jqueryValidationEngine, attachDocuments"/>
 <r:script>
     var PROJECT_STATE = {approved: 'approved', submitted: 'submitted', planned: 'not approved'};
@@ -5,147 +6,196 @@
         planned: 'planned', started: 'started', finished: 'finished', deferred: 'deferred',
         cancelled: 'cancelled'
     };
-
 </r:script>
+<g:set var="formattedStartDate" value="${DateUtils.isoToDisplayFormat(project.plannedStartDate)}"/>
+<g:set var="formattedEndDate" value="${DateUtils.isoToDisplayFormat(project.plannedEndDate)}"/>
 <!-- This section is bound to a secondary KO viewModel. The following line prevents binding
          to the main viewModel. -->
 <!-- ko stopBinding: true -->
 <div class="row-fluid" id="planContainer">
-    <g:if test="${(project.planStatus == 'not approved') && params.userIsProjectEditor}">
-        <div class="alert alert-info">
-            <g:message code="project.works.workschedule.notapproved.message"></g:message>
-        </div>
-    </g:if>
-    <g:else>
-        <div id="status-update-error-placeholder"></div>
+<bc:koLoading>
+    <div id="status-update-error-placeholder"></div>
 
-        <div id="activityContainer" class="space-before">
+    <div id="activityContainer" class="space-before">
+        <h4 class="inline">Planned Activities</h4>
 
-            <div class="row-fluid" data-bind="visible:planStatus()==='not approved'">
-                <div class="row-fluid">
-                    <div class="span6"><span class="badge badge-info">Planning Mode</span>
-                        <fc:iconHelp>Use the "Add new activity" button to add a new activity to your plan.  When you have finished adding activities, use the "Finished planning" button to go into data entry mode.  You can toggle freely between planning and data entry modes.</fc:iconHelp>
-                    </div>
-                </div>
-                <g:if test="${user?.isEditor}">
+        <ul class="nav nav-tabs nav-tab-small space-before">
+            <li class="active"><a href="#tablePlan" data-toggle="tab">Tabular</a></li>
+            <li><a href="#ganttPlan" data-toggle="tab">Gantt chart</a></li>
+        </ul>
 
-                    <div class="well">
-                        <fc:getSettingContent
-                                settingType="${au.org.ala.biocollect.merit.SettingPageType.WORKS_PLANNING_MODE_INTRO}"/>
-                    </div>
-
-                    <div class="form-actions">
-
-                        <span>Planning actions:</span>
-                        <a class="btn btn-success" class="btn btn-link"
-                           data-bind="visible:planStatus()==='not approved',click:newActivity"
-                           style="vertical-align: baseline"><i class="fa fa-plus"></i> Add new activity</a>
-
-                        <a class="btn btn-success" class="btn btn-link"
-                           data-bind="visible:planStatus()==='not approved',click:speciesFieldsConfiguration"
-                           style="vertical-align: baseline"><i class="fa fa-table"></i> Configure species fields</a>
-
-                        <button class="btn btn-info" data-bind="click:finishedPlanning">Finished planning</button>
-
-                    </div>
-                </g:if>
-
-            </div>
-
-            <div class="row-fluid" data-bind="visible:planStatus()==='approved'">
-                <div class="span6"><span class="badge badge-info">Data Entry Mode</span>
-                    <fc:iconHelp>Enter implementation details for project activities using the controls to the left of each activity.  Use the "Edit plann" button to return to planning mode to add new activities or change planning dates.</fc:iconHelp>
-                </div>
-                <g:if test="${user?.isEditor}">
-                    <h5></h5>
-                    <div class="form-actions">
-
-                        <span>Actions: </span>
-
-                        <button class="btn btn-info" data-bind="click:editPlan">Edit plan</button>
-                </g:if>
-            </div>
-            </div>
-
-
-            <h4 class="inline">Planned Activities</h4>
-
-            <ul class="nav nav-tabs nav-tab-small space-before">
-                <li class="active"><a href="#tablePlan" data-toggle="tab">Tabular</a></li>
-                <li><a href="#ganttPlan" data-toggle="tab">Gantt chart</a></li>
-            </ul>
-
-            <div class="tab-content" style="padding:0;border:none;overflow:visible">
-                <div class="tab-pane active" id="tablePlan">
-                    <table class="table table-condensed" id="activities">
-                        <thead>
-                        <tr>
-                            <th style="width:128px;">Actions</th>
-                            <th style="min-width:64px">From</th>
-                            <th style="min-width:64px">To</th>
-                            <th style="width:25%;" id="description-column">Description</th>
-                            <th>Activity</th>
-                            <g:if test="${showSites}">
-                                <th>Site</th>
-                            </g:if>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody data-bind="foreach:activities.activities" id="activityList">
-                        <tr data-bind="template:typeCategory == 'Milestone' ? 'milestoneRow':'activityRow', css:typeCategory" >
-
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="tab-pane" id="ganttPlan" style="overflow:hidden;">
-                    <div id="gantt-container"></div>
-                </div>
-            </div>
-        </div>
-
-        <form id="outputTargetsContainer">
-            <h4>Output Targets</h4>
-            <table id="outputTargets" class="table table-condensed tight-inputs">
-                <thead><tr><th>Output Type</th><th>Outcome Targets</th><th>Output Targets</th><th>Target</th></tr>
-                </thead>
-                <!-- ko foreach:outputTargets -->
-                <tbody data-bind="foreach:scores">
-                <tr>
-                    <!-- ko with:isFirst -->
-                    <td data-bind="attr:{rowspan:$parents[1].scores.length}">
-                        <b><span data-bind="text:$parents[1].name"></span></b>
-                    </td>
-                    <td data-bind="attr:{rowspan:$parents[1].scores.length}">
-                        <textarea data-bind="visible:$root.canEditOutputTargets(),value:$parents[1].outcomeTarget"
-                                  rows="3"
-                                  cols="80" style="width:90%"></textarea>
-                        <span data-bind="visible:!$root.canEditOutputTargets(),text:$parents[1].outcomeTarget"></span>
-                        <span class="save-indicator" data-bind="visible:$parents[1].isSaving"><r:img dir="images"
-                                                                                                     file="ajax-saver.gif"
-                                                                                                     alt="saving icon"/> saving</span>
-                    </td>
-                    <!-- /ko -->
-                    <td><span data-bind="text:scoreLabel"></span></td>
-                    <td>
-                        <input type="text" class="input-mini"
-                               data-bind="visible:$root.canEditOutputTargets(),value:target"
-                               data-validation-engine="validate[required,custom[number]]"/>
-                        <span data-bind="visible:!$root.canEditOutputTargets(),text:target"></span>
-                        <span data-bind="text:units"></span>
-                        <span class="save-indicator" data-bind="visible:isSaving"><r:img dir="images"
-                                                                                         file="ajax-saver.gif"
-                                                                                         alt="saving icon"/> saving</span>
-                    </td>
-
-                </tr>
-                </tbody>
+        <div class="tab-content" style="padding:0;border:none;overflow:visible">
+            <div class="tab-pane active" id="tablePlan">
+                <!-- ko template: 'workScheduleActionButtonsTmpl' -->
                 <!-- /ko -->
-            </table>
 
+                <table class="table table-condensed table-hover" id="activities">
+                    <thead>
+                    <!-- ko template: 'activityHeaderTmpl'-->
+                    <!-- /ko -->
+                    </thead>
+                    <tbody data-bind="foreach:activities.activities" id="activityList">
+                    <tr data-bind="template:typeCategory() == 'Milestone' ? 'milestoneRow':'activityRow', css:typeCategory, slideVisible: !transients.editActivity() || !transients.remove(), highlight: transients.remove() || !transients.editActivity(), slideDuration: 200">
+
+                    </tr>
+                    <!-- ko if: transients.speciesSettings() -->
+                    <tr class="no-highlight-on-hover" data-bind="slideVisible: transients.speciesConfigurationToggle, slideDuration: 200">
+                        <td colspan="7">
+                            <div class="padding-10 border-1">
+                                <!-- ko template: 'speciesConfigurationTmpl' -->
+                                <!-- /ko -->
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- /ko -->
+                    </tbody>
+                    <tfoot>
+                    <!-- ko template: 'activityHeaderTmpl'-->
+                    <!-- /ko -->
+                    </tfoot>
+                </table>
+            </div>
+            <div class="tab-pane" id="ganttPlan" style="overflow:hidden;">
+                <div id="gantt-container"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ko with: selectedWorksActivityViewModel -->
+    <div class="modal hide fade" id="createOrUpdateActivity" data-bind="dismissModal: transients.dismissModal">
+        <div class="modal-body">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <div data-bind="validateOnClick:  { callback: save, selector: '.save-activity'}, css: {'ajax-opacity': transients.isSaving}" class="validationEngineContainer">
+                <h4><!-- ko text: activityId ? 'Update activity': 'Add a new activity' --> <!-- /ko --></h4>
+                <div id="add-new-activity">
+                    <div class="row-fluid">
+                        <div class="span4 required">
+                            <label>Type of activity</label>
+                            <select data-bind="value: type,
+                                popover:{title:'', content: transients.activityDescription,
+                                trigger:'manual', autoShow:true}, enable: canEditType"  class="full-width form-control"
+                                    data-validation-engine="validate[required]">
+                                <option></option>
+                                <g:each in="${activityTypes}" var="t" status="i">
+                                    <optgroup label="${t.name}">
+                                        <g:each in="${t.list}" var="opt">
+                                            <option>${opt.name}</option>
+                                        </g:each>
+                                    </optgroup>
+                                </g:each>
+                            </select>
+                        </div>
+
+                        <div class="span2">
+                            <div data-bind="visible:fcConfig.themes && fcConfig.themes.length > 1">
+                                <label>Major theme</label>
+                                <select class="full-width form-control"
+                                        data-bind="value:mainTheme, options:fcConfig.themes,
+                                                                optionsText: 'name', optionsValue: 'name',
+                                                                optionsCaption:'Choose..'">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="span6 required">
+                            <fc:textArea data-bind="value: description" id="description"
+                                         label="Description" class="full-width form-control" row="5"
+                                         data-validation-engine="validate[required]"/>
+                        </div>
+                    </div>
+
+                    <div class="row-fluid"
+                         data-bind="template:transients.isMilestone() ? 'milestoneTmpl' : 'activityTmpl'">
+
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <button class="btn btn-primary save-activity">
+                                <i class="icon icon-white"
+                                   data-bind="css: {'icon-plus': !activityId, 'icon-file': activityId}">
+                                </i>
+                                <!-- ko text: activityId ? '<g:message code="project.works.workschedule.activitymodal.save"/>': '<g:message code="project.works.workschedule.activitymodal.create"/>' --> <!-- /ko -->
+                            </button>
+                            <button class="btn" data-bind="click: transients.stopEditing"><g:message code="project.works.workschedule.activitymodal.close"/></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for getting reasons for status change -->
+    <div id="activityStatusReason" class="modal hide fade"
+         data-bind="showModal: displayReasonModal(), with:deferReason">
+        <form class="reasonModalForm">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                        data-bind="click:$parent.displayReasonModal.cancelReasonModal">×</button>
+
+                <h3 id="myModalLabel">Reason for deferring or cancelling an activity</h3>
+            </div>
+
+            <div class="modal-body">
+                <p>If you wish to defer or cancel a planned activity you must provide an explanation. Your case
+                manager will use this information when assessing your report.</p>
+
+                <p>You can simply refer to a document that has been uploaded to the project if you like.</p>
+                <textarea data-bind="value:notes,hasFocus:true" name="reason" rows=4 cols="80"
+                          class="validate[required]"></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn"
+                        data-bind="click: $parent.displayReasonModal.cancelReasonModal"
+                        data-dismiss="modal" aria-hidden="true">Discard status change</button>
+                <button class="btn btn-primary"
+                        data-bind="click:$parent.displayReasonModal.saveReasonDocument">Save reason</button>
+            </div>
         </form>
-    </g:else>
+    </div>
+    <!-- /ko -->
+
+    <form id="outputTargetsContainer" data-bind="visible: outputTargets().length">
+        <h4>Output Targets</h4>
+        <table id="outputTargets" class="table table-condensed tight-inputs">
+            <thead><tr><th>Output Type</th><th>Outcome Targets</th><th>Output Targets</th><th>Target</th></tr>
+            </thead>
+            <!-- ko foreach:outputTargets -->
+            <tbody data-bind="foreach:scores">
+            <tr>
+                <!-- ko with:isFirst -->
+                <td data-bind="attr:{rowspan:$parents[1].scores.length}">
+                    <b><span data-bind="text:$parents[1].name"></span></b>
+                </td>
+                <td data-bind="attr:{rowspan:$parents[1].scores.length}">
+                    <textarea data-bind="visible:$root.canEditOutputTargets(),value:$parents[1].outcomeTarget"
+                              rows="3"
+                              cols="80" style="width:90%"></textarea>
+                    <span data-bind="visible:!$root.canEditOutputTargets(),text:$parents[1].outcomeTarget"></span>
+                    <span class="save-indicator" data-bind="visible:$parents[1].isSaving"><r:img dir="images"
+                                                                                                 file="ajax-saver.gif"
+                                                                                                 alt="saving icon"/> saving</span>
+                </td>
+                <!-- /ko -->
+                <td><span data-bind="text:scoreLabel"></span></td>
+                <td>
+                    <input type="text" class="input-mini"
+                           data-bind="visible:$root.canEditOutputTargets(),value:target"
+                           data-validation-engine="validate[required,custom[number]]"/>
+                    <span data-bind="visible:!$root.canEditOutputTargets(),text:target"></span>
+                    <span data-bind="text:units"></span>
+                    <span class="save-indicator" data-bind="visible:isSaving"><r:img dir="images"
+                                                                                     file="ajax-saver.gif"
+                                                                                     alt="saving icon"/> saving</span>
+                </td>
+
+            </tr>
+            </tbody>
+            <!-- /ko -->
+        </table>
+
+    </form>
 
     <g:if env="development">
         <hr/>
@@ -159,140 +209,12 @@
             </div>
         </div>
     </g:if>
-
+</bc:koLoading>
 </div>
-
-<script id="activityRow" type="text/html">
-
-    <td>
-        <button type="button" class="btn btn-mini"
-                data-bind="click:editActivity"><i
-                class="icon-edit" title="Edit Activity"></i></button>
-        <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
-                class="icon-eye-open" title="View Activity"></i></button>
-        <button type="button" class="btn btn-mini"
-                data-bind="click:printActivity"><i
-                class="icon-print" title="Print activity"></i></button>
-        <button type="button" class="btn btn-mini"
-                data-bind="click:deleteActivity"><i class="icon-remove" title="Delete activity"></i>
-        </button>
-    </td>
-    <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
-    <td><span data-bind="text:plannedEndDate.formattedDate"></span></td>
-    <td>
-        <span class="truncate"
-              data-bind="text:description,click:$parent.editActivity, css:{clickable:true}"></span>
-    </td>
-    <td>
-        <span data-bind="text:type,click:$parent.editActivity, css:{clickable:true}"></span>
-    </td>
-    <g:if test="${showSites}">
-        <td><a class="clickable" data-bind="text:siteName,click:$parent.openSite"></a></td>
-    </g:if>
-    <td>
-        <span data-bind="template:canUpdateStatus() ? 'updateStatusTmpl' : 'viewStatusTmpl'"></span>
-
-        <!-- Modal for getting reasons for status change -->
-        <div id="activityStatusReason" class="modal hide fade" tabindex="-1" role="dialog"
-             aria-labelledby="myModalLabel" aria-hidden="true"
-             data-bind="showModal:displayReasonModal(),with:deferReason">
-            <form class="reasonModalForm">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                            data-bind="click:$parent.displayReasonModal.cancelReasonModal">×</button>
-
-                    <h3 id="myModalLabel">Reason for deferring or cancelling an activity</h3>
-                </div>
-
-                <div class="modal-body">
-                    <p>If you wish to defer or cancel a planned activity you must provide an explanation. Your case
-                    manager will use this information when assessing your report.</p>
-
-                    <p>You can simply refer to a document that has been uploaded to the project if you like.</p>
-                    <textarea data-bind="value:notes,hasFocus:true" name="reason" rows=4 cols="80"
-                              class="validate[required]"></textarea>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn"
-                            data-bind="click: $parent.displayReasonModal.cancelReasonModal"
-                            data-dismiss="modal" aria-hidden="true">Discard status change</button>
-                    <button class="btn btn-primary"
-                            data-bind="click:$parent.displayReasonModal.saveReasonDocument">Save reason</button>
-                </div></form>
-        </div>
-
-    </td>
-
-</script>
-
-<script id="milestoneRow" type="text/html">
-
-    <td>
-        <button type="button" class="btn btn-mini"
-                data-bind="click:editActivity"><i
-                class="icon-edit" title="Edit Milestone"></i></button>
-        <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
-                class="icon-eye-open" title="View Milestone"></i></button>
-        <button type="button" class="btn btn-mini"
-                data-bind="click:deleteActivity"><i class="icon-remove" title="Delete Milestone"></i>
-        </button>
-    </td>
-    <td colspan="2"><span data-bind="text:plannedStartDate.formattedDate"></span></td>
-    <td>
-        <span class="truncate"
-              data-bind="text:description,click:$parent.editActivity, css:{clickable:true}"></span>
-    </td>
-    <td>
-        <span data-bind="text:type,click:$parent.editActivity, css:{clickable:true}"></span>
-    </td>
-    <g:if test="${showSites}">
-        <td></td>
-    </g:if>
-    <td>
-
-    </td>
-
-</script>
-
-<script id="updateStatusTmpl" type="text/html">
-<div class="btn-group">
-    <button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown"
-            data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-inverse':progress()=='cancelled'}"
-            style="line-height:16px;min-width:86px;text-align:left;">
-        <span data-bind="text: progress"></span> <span class="caret pull-right" style="margin-top:6px;"></span>
-    </button>
-    <ul class="dropdown-menu" data-bind="foreach:$root.progressOptions" style="min-width:100px;">
-        <!-- Disable item if selected -->
-        <li data-bind="css: {'disabled' : $data==$parent.progress() || $data=='planned'}">
-            <a href="#" data-bind="click: $parent.progress"><span data-bind="text: $data"></span></a>
-        </li>
-    </ul></div>
-<span class="save-indicator" data-bind="visible:isSaving"><r:img dir="images" file="ajax-saver.gif"
-                                                                 alt="saving icon"/> saving</span>
-<!-- ko with: deferReason -->
-<span data-bind="visible: $parent.progress()=='deferred' || $parent.progress()=='cancelled'">
-    <i class="icon-list-alt"
-       data-bind="popover: {title: 'Reason for deferral<br><small>(Click icon to edit reason.)</small>', content: notes, placement: 'left'}, click:$parent.displayReasonModal.editReason">
-    </i>
-</span>
 <!-- /ko -->
-</script>
 
-<script id="viewStatusTmpl" type="text/html">
-<button type="button" class="btn btn-small"
-        data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-inverse':progress()=='cancelled'}"
-        style="line-height:16px;min-width:75px;text-align:left;cursor:default;color:white">
-    <span data-bind="text: progress"></span>
-</button>
-<!-- ko with: deferReason -->
-<span data-bind="visible: $parent.progress()=='deferred' || $parent.progress()=='cancelled'">
-    <i class="icon-list-alt"
-       data-bind="popover: {title: 'Reason for deferral', content: notes, placement: 'left'}">
-    </i>
-</span>
-<!-- /ko -->
-</script>
+<!-- ko stopBinding: true -->
+<div  id="speciesFieldDialog" data-bind="template: {name:'speciesFieldDialogTemplate'}"></div>
 <!-- /ko -->
 
 <!-- ko stopBinding: true -->
@@ -387,7 +309,279 @@
 </div>
 <!-- /ko -->
 
+<!-- templates -->
+<script id="activityHeaderTmpl" type="text/html">
+<tr>
+    <th style="width:128px;">Actions</th>
+    <th style="min-width:64px">From</th>
+    <th style="min-width:64px">To</th>
+    <th style="width:25%;">Description</th>
+    <th>Activity &nbsp;
+        <a href="#createOrUpdateActivity" role="button" class="btn btn-default btn-small" data-toggle="modal"
+                    data-bind="click: openActivityModal(newActivityViewModel)"><i class="icon-plus icon-white"></i>
+        <g:message code="project.works.createNewActivity"/> </a>
+    </th>
+    <th>Site &nbsp;
+        <a class="btn btn-default btn-small" data-bind="attr: {href: fcConfig.siteCreateUrl}">
+            <i class="icon-plus"></i>
+            <g:message code="project.works.workschedule.button.createsite"/>
+        </a>
+    </th>
+    <th>Status</th>
+</tr>
+</script>
+<script id="activityRow" type="text/html">
 
+<td>
+    <a class="btn btn-mini" href="#createOrUpdateActivity" role="button" data-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
+            class="icon-edit" title="Edit Activity"></i></a>
+    <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
+            class="icon-eye-open" title="View Activity"></i></button>
+    <button type="button" class="btn btn-mini"
+            data-bind="click:deleteActivity, visible: canDeleteActivity"><i class="icon-remove" title="Delete activity"></i>
+    </button>
+</td>
+<td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
+<td><span data-bind="text:plannedEndDate.formattedDate"></span></td>
+<td>
+    <span class="truncate"
+          data-bind="text:description,click: editActivity, css:{clickable:true}"></span>
+</td>
+<td>
+    <a href="#" data-bind="text:type,click: editActivity"></a>
+    <button class="btn btn-default btn-mini pull-right" data-bind="click: transients.editSpeciesConfiguration, visible: transients.canEditSpeciesConfiguration">
+        <i data-bind="css: {'icon-arrow-down': transients.speciesConfigurationToggle, 'icon-arrow-up': !transients.speciesConfigurationToggle() }"></i>
+        <g:message code="project.survey.activity.editSpecies"/>
+    </button>
+</td>
+<td>
+    <div class="row-fluid" data-bind="css: {'ajax-opacity': transients.isSaving}">
+        <div class="span12" data-bind="visible: isAdmin">
+            <select data-bind="options: fcConfig.sites, optionsText: 'name', optionsValue: 'siteId', optionsCaption: 'Please choose', value: siteId"></select>
+            <span class="margin-left-1">
+                <a href="#" data-bind="click:$parent.openSite, attr: {title: siteName}, visible: siteId"><i class="icon-info-sign"></i></a>
+                <span data-bind="visible: transients.siteArea">
+                    <!-- ko text: transients.siteArea -->
+                    <!-- /ko -->
+                    <g:message code="unit.distance"></g:message><sup>2</sup>
+                </span>
+            </span>
+        </div>
+    </div>
+<td>
+    <span data-bind="template:canUpdateStatus() ? 'updateStatusTmpl' : 'viewStatusTmpl'"></span>
+</td>
+
+</script>
+<script id="milestoneRow" type="text/html">
+
+    <td>
+        <a class="btn btn-mini" href="#createOrUpdateActivity" role="button" data-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
+                class="icon-edit" title="Edit Milestone"></i></a>
+        <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
+                class="icon-eye-open" title="View Milestone"></i></button>
+        <button type="button" class="btn btn-mini"
+                data-bind="click:deleteActivity, visible: canDeleteActivity"><i class="icon-remove" title="Delete Milestone"></i>
+        </button>
+    </td>
+    <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
+    <td><span data-bind="text:plannedEndDate.formattedDate"></span></td>
+    <td>
+        <span class="truncate"
+              data-bind="text:description,click:editActivity, css:{clickable:true}"></span>
+    </td>
+    <td>
+        <a href="#" data-bind="text:type,click:editActivity"></a>
+    </td>
+    <td></td>
+    <td><span data-bind="template:canUpdateStatus() ? 'updateStatusTmpl' : 'viewStatusTmpl'"></span></td>
+
+</script>
+<script id="updateStatusTmpl" type="text/html">
+<div class="btn-group">
+    <button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown"
+            data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-inverse':progress()=='cancelled'}"
+            style="line-height:16px;min-width:86px;text-align:left;">
+        <span data-bind="text: progress"></span> <span class="caret pull-right" style="margin-top:6px;"></span>
+    </button>
+    <ul class="dropdown-menu" data-bind="foreach:$root.progressOptions" style="min-width:100px;">
+        <!-- Disable item if selected -->
+        <li data-bind="css: {'disabled' : $data==$parent.progress() || $data=='planned'}">
+            <a href="#" data-bind="click: $parent.progress"><span data-bind="text: $data"></span></a>
+        </li>
+    </ul>
+</div>
+<a class="save-indicator" data-bind="visible:transients.isSaving">
+    <r:img dir="images" file="ajax-saver.gif" alt="saving icon"/> saving
+</a>
+<!-- ko with: deferReason -->
+<span data-bind="visible: $parent.progress()=='deferred' || $parent.progress()=='cancelled'">
+    <i class="icon-list-alt"
+       data-bind="popover: {title: 'Reason for deferral<br><small>(Click icon to edit reason.)</small>', content: notes, placement: 'left'}, click:$parent.displayReasonModal.editReason">
+    </i>
+</span>
+<!-- /ko -->
+</script>
+<script id="viewStatusTmpl" type="text/html">
+<button type="button" class="btn btn-small"
+        data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-inverse':progress()=='cancelled'}"
+        style="line-height:16px;min-width:75px;text-align:left;cursor:default;color:white">
+    <span data-bind="text: progress"></span>
+</button>
+<!-- ko with: deferReason -->
+<span data-bind="visible: $parent.progress()=='deferred' || $parent.progress()=='cancelled'">
+    <i class="icon-list-alt"
+       data-bind="popover: {title: 'Reason for deferral', content: notes, placement: 'left'}">
+    </i>
+</span>
+<!-- /ko -->
+</script>
+<script type="text/html" id="activityTmpl">
+<div class="span6 required">
+    <label for="plannedStartDate">Planned start date
+    <fc:iconHelp title="Planned start date"
+                 printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
+    </label>
+
+    <div class="input-append">
+        <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate"
+                       data-validation-engine="validate[required,future[${formattedStartDate}]]"
+                       printable="${printView}"/>
+    </div>
+</div>
+
+<div class="span6 required">
+    <label for="plannedEndDate">Planned end date
+    <fc:iconHelp title="Planned end date"
+                 printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
+    </label>
+
+    <div class="input-append">
+        <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate"
+                       data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]"
+                       printable="${printView}"/>
+    </div>
+</div>
+</script>
+<script type="text/html" id="milestoneTmpl">
+<div class="span6 required">
+    <label for="plannedStartDate">Milestone date
+    <fc:iconHelp title="Planned start date"
+                 printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
+    </label>
+
+    <div class="input-append">
+        <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate"
+                       data-validation-engine="validate[required,future[${formattedStartDate}]]"
+                       printable="${printView}"/>
+    </div>
+</div>
+</script>
+<script type="text/html" id="speciesConfigurationTmpl">
+<div>
+    <!-- ko with: transients.speciesSettings -->
+    <h4><g:message code="project.survey.species.configureSpeciesFields"/></h4>
+    <div id="species-validation-result-placeholder"></div>
+    <table class="table" data-bind="css: {'ajax-opacity': transients.parent.transients.isSaving}">
+        <thead>
+        <tr>
+            <th>
+                <label class="control-label"><g:message code="project.survey.species.fieldName"/>
+                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.fieldName"/>', content:'<g:message code="project.survey.species.fieldName.content"/>'}">
+                        <i class="icon-question-sign"></i>
+                    </a>
+                </label>
+            </th>
+            <th>
+                <label class="control-label"><g:message code="project.survey.species.settings"/>
+                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.settings"/>', content:'<g:message code="project.survey.species.settings.content.works"/>'}">
+                        <i class="icon-question-sign"></i>
+                    </a>
+                </label>
+            </th>
+            <th>
+                <label class="control-label"><g:message code="project.survey.species.displayAs"/>
+                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.displayAs"/>', content:'<g:message code="project.survey.species.displayAs.content"/>'}">
+                        <i class="icon-question-sign"></i>
+                    </a>
+                </label>
+            </th>
+            <th>
+                <label class="control-label"><g:message code="project.survey.species.actions"/>
+                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.actions"/>', content:'<g:message code="project.survey.species.actions.content"/>'}">
+                        <i class="icon-question-sign"></i>
+                    </a>
+                </label>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- ko foreach: speciesFields -->
+            <tr>
+                <td>
+                    <span data-bind="text: label"></span>
+                </td>
+                <td>
+                    <span data-bind="tooltip: {title:config().transients.inputSettingsTooltip()}, disable: true, text: config().transients.inputSettingsSummary"></span>
+                </td>
+                <td>
+                    <select class="form-control full-width" data-bind="disable: config().type() == 'DEFAULT_SPECIES', options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">
+                    </select>
+                </td>
+                <td>
+                    <button data-bind="click:showSpeciesConfiguration" class="btn btn-default" ><i class="icon-cog"></i> <g:message code="project.survey.species.configure.works"/></button>
+                    <button class="btn btn-default" data-bind="click: $parent.transients.parent.toggleDefault">
+                        <i data-bind="css:{'icon-arrow-up': !$parent.transients.parent.showDefault(), 'icon-arrow-down': $parent.transients.parent.showDefault}"/>
+                        <g:message code="project.survey.species.showdefault"/>
+                    </button>
+                    <button class="btn btn-default" data-bind="click: $parent.transients.parent.setAsDefault, disable: !config().isValid()">
+                        <i class="icon-star-empty"/>
+                        <g:message code="project.survey.species.setdefault"/>
+                    </button>
+                </td>
+            </tr>
+            <tr data-bind="slideVisible: $parent.transients.parent.showDefault, slideDuration: 200">
+                <!-- ko with: $parent.transients.parent.species -->
+                <td><g:message code="project.survey.species.defaultConfiguration"/></td>
+                <td>
+                    <span data-bind="tooltip: {title:transients.inputSettingsTooltip()},disable: true, text: transients.inputSettingsSummary">
+                    </span>
+                </td>
+                <td>
+                    <select class="form-control full-width" data-bind="options: $parents[1].transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  speciesDisplayFormat">
+                    </select>
+                </td>
+                <td></td>
+                <!-- /ko -->
+            </tr>
+        <!-- /ko -->
+        </tbody>
+    </table>
+    <button class="btn btn-primary" data-bind="click: transients.parent.save">
+        <i class="icon-white icon-file"/>
+        <g:message code="project.survey.species.saveButton"/>
+    </button>
+    <button class="btn btn-default" data-bind="click: $parent.transients.editSpeciesConfiguration">
+        <i class="icon-minus"/>
+        <g:message code="project.survey.species.closeButton"/>
+    </button>
+
+    <!-- /ko -->
+</div>
+</script>
+<script type="text/html" id="speciesFieldDialogTemplate">
+<g:render template="/projectActivity/speciesFieldSettingsDialog"></g:render>
+</script>
+<script type="text/html" id="workScheduleActionButtonsTmpl">
+<div class="row-fluid">
+    <div class="span12">
+        <div class="pull-right">
+            <a class="btn btn-info" data-bind="attr: {href: fcConfig.worksScheduleIntroUrl}"><i class="icon-question-sign icon-white"></i>
+                <g:message code="project.works.workschedule.button.help"/></a>
+        </div>
+    </div>
+</div>
+</script>
 <r:script>
 
     ko.bindingHandlers.showModal = {
@@ -422,548 +616,16 @@
         return target;
     };
 
-    var sites = ${sites ?: []};
-    function lookupSiteName (siteId) {
-        var site;
-        if (siteId !== undefined && siteId !== '') {
-            site = $.grep(sites, function(obj, i) {
-                    return (obj.siteId === siteId);
-            });
-            if (site.length > 0) {
-                 return site[0].name;
-            }
-        }
-        return '';
-    }
-
-    function drawGanttChart(ganttData) {
-        if (ganttData.length > 0) {
-            $("#gantt-container").gantt({
-                source: ganttData,
-                navigate: "keys",
-                scale: "weeks",
-                itemsPerPage: 30/*,
-                onItemClick: function(data) {
-                    alert(data.type + ' (' + data.progress() + ')');
-                },
-                onAddClick: function(dt, rowId) {
-                    alert("Empty space clicked - add an item!");
-                },
-                onRender: function() {
-                    if (window.console && typeof console.log === "function") {
-                        console.log("chart rendered");
-                    }
-                }*/
-            });
-        }
-    }
-
     $(window).load(function () {
-
-        var PlannedActivity = function (act, isFirst, project, planViewModel) {
-            var self = this;
-            this.activityId = act.activityId;
-            this.isFirst = isFirst ? this : undefined;
-            this.siteId = act.siteId;
-            this.siteName = lookupSiteName(act.siteId);
-            this.type = act.type;
-            this.typeCategory = act.typeCategory;
-            this.projectStage = act.projectStage;
-            this.description = act.description;
-            this.hasOutputs = act.outputs && act.outputs.length;
-            this.startDate = ko.observable(act.startDate).extend({simpleDate:false});
-            this.endDate = ko.observable(act.endDate).extend({simpleDate:false});
-            this.plannedStartDate = ko.observable(act.plannedStartDate).extend({simpleDate:false});
-            this.plannedEndDate = ko.observable(act.plannedEndDate).extend({simpleDate:false});
-            this.progress = ko.observable(act.progress).extend({withPrevious:act.progress});
-            this.isSaving = ko.observable(false);
-            this.publicationStatus = act.publicationStatus ? act.publicationStatus : 'unpublished';
-            this.deferReason = ko.observable(undefined); // a reason document or undefined
-            // the following handles the modal dialog for deferral/cancel reasons
-            this.displayReasonModal = ko.observable(false);
-            this.displayReasonModal.trigger = ko.observable();
-            this.displayReasonModal.needsToBeSaved = true; // prevents unnecessary saves when a change to progress is reverted
-            this.displayReasonModal.closeReasonModal = function() {
-                self.displayReasonModal(false);
-                self.displayReasonModal.needsToBeSaved = true;
-            };
-            this.displayReasonModal.cancelReasonModal = function() {
-                if (self.displayReasonModal.trigger() === 'progress_change') {
-                    self.displayReasonModal.needsToBeSaved = false;
-                    self.progress.revert();
-                }
-                self.displayReasonModal.closeReasonModal();
-            };
-            this.displayReasonModal.saveReasonDocument = function (item , event) {
-                // make sure reason text has been added
-                var $form = $(event.currentTarget).parents('form');
-                if ($form.validationEngine('validate')) {
-                    if (self.displayReasonModal.trigger() === 'progress_change') {
-                        self.saveProgress({progress: self.progress(), activityId: self.activityId});
-                    }
-                    self.deferReason().recordOnlySave("${createLink(controller: 'proxy', action: 'documentUpdate')}/" + (self.deferReason().documentId ? self.deferReason().documentId : ''));
-                    self.displayReasonModal.closeReasonModal();
-                }
-            };
-            this.displayReasonModal.editReason = function () {
-                // popup dialog for reason
-                self.displayReasonModal.trigger('edit');
-                self.displayReasonModal(true);
-            };
-            // save progress updates - with a reason document in some cases
-            this.progress.subscribe(function (newValue) {
-                if (!self.progress.changed()) { return; } // Cancel if value hasn't changed
-                if (!self.displayReasonModal.needsToBeSaved) { return; } // Cancel if value hasn't changed
-
-                if (newValue === 'deferred' || newValue === 'cancelled') {
-                    // create a reason document if one doesn't exist
-                    // NOTE that 'deferReason' role is used in both cases, ie refers to cancel reason as well
-                    if (self.deferReason() === undefined) {
-                        self.deferReason(new DocumentViewModel(
-                            {role:'deferReason', name:'Deferred/canceled reason document'},
-                            {activityId:act.activityId/*, projectId:project.projectId*/}));
-                    }
-                    // popup dialog for reason
-                    self.displayReasonModal.trigger('progress_change');
-                    self.displayReasonModal(true);
-                } else if (self.displayReasonModal.needsToBeSaved) {
-
-                    if ((newValue === 'started' || newValue === 'finished') && !self.hasOutputs) {
-                        blockUIWithMessage('Loading activity form...');
-                        var url = fcConfig.activityEnterDataUrl;
-                        document.location.href = url + "/" + self.activityId + "?returnTo=" + here + '&progress='+newValue;
-                    }
-                    else {
-                        self.saveProgress({progress: newValue, activityId: self.activityId});
-                    }
-                }
-            });
-
-            this.saveProgress = function(payload) {
-                self.isSaving(true);
-                // save new status
-                $.ajax({
-                    url: "${createLink(controller: 'activity', action: 'ajaxUpdate')}/" + self.activityId,
-                    type: 'POST',
-                    data: JSON.stringify(payload),
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if (data.error) {
-                            alert(data.detail + ' \n' + data.error);
-                        }
-                        drawGanttChart(planViewModel.getGanttData());
-                    },
-                    error: function (data) {
-                        bootbox.alert('The activity was not updated due to a login timeout or server error.  Please try again after the page reloads.', function() {location.reload();});
-                    },
-                    complete: function () {
-                        //console.log('saved progress');
-                        self.isSaving(false);
-                    }
-                });
-            };
-            this.isReadOnly = ko.computed(function() {
-                var isEditor = ${user?.isEditor ? 'true' : 'false'};
-                return !isEditor;
-            });
-            this.canEditActivity = ko.computed(function () {
-                return !self.isReadOnly() && planViewModel.planStatus() === 'not approved';
-            });
-            this.canEditOutputData = ko.computed(function () {
-                return !self.isReadOnly() && planViewModel.planStatus() === 'approved';
-            });
-            this.canPrintActivity = ko.computed(function () {
-                return true;
-            });
-            this.canDeleteActivity = ko.computed(function () {
-                return !self.isReadOnly() && planViewModel.planStatus() === 'not approved';
-            });
-            this.canUpdateStatus = ko.computed(function () {
-                return !self.isReadOnly() && planViewModel.planStatus() === 'approved';
-            });
-
-
-            this.editActivity = function () {
-                var url;
-                if (self.isReadOnly()) {
-                    self.viewActivity(activity);
-                } else if (self.canEditOutputData()) {
-                    url = fcConfig.activityEnterDataUrl;
-                    document.location.href = url + "/" + self.activityId +
-                        "?returnTo=" + here;
-                } else if (self.canEditActivity()) {
-                    url = fcConfig.activityEditUrl;
-                    document.location.href = url + "/" + self.activityId +
-                        "?returnTo=" + here;
-                }
-            };
-            this.viewActivity = function() {
-                url = fcConfig.activityViewUrl;
-                document.location.href = url + "/" + self.activityId +
-                        "?returnTo=" + here;
-            };
-            this.printActivity = function() {
-                open(fcConfig.activityPrintUrl + "/" + self.activityId, "fieldDataPrintWindow");
-            };
-            this.deleteActivity = function () {
-                // confirm first
-                bootbox.confirm("Delete this activity? Are you sure?", function(result) {
-                    if (result) {
-                        $.getJSON(fcConfig.activityDeleteUrl + '/' + self.activityId,
-                            function (data) {
-                                if (data.code < 400) {
-                                    document.location.reload();
-                                } else {
-                                    alert("Failed to delete activity - error " + data.code);
-                                }
-                            });
-                    }
-                });
-            };
-
-
-            var reasonDocs = $.grep(act.documents, function(document) {
-                return document.role === 'deferReason';
-            });
-            if (reasonDocs.length > 0) {
-                self.deferReason(new DocumentViewModel(reasonDocs[0], {activityId:act.activityId/*, projectId:project.projectId*/}));
-            }
-            this.isApproved = function() {
-                return this.publicationStatus == 'published';
-            };
-            this.isSubmitted = function() {
-                return this.publicationStatus == 'pendingApproval';
-            }
-        };
-
-        var PlanStage = function (stage, activities, planViewModel, isCurrentStage, project) {
-            var stageLabel = '';
-
-            // Note that the two $ transforms used to extract activities are not combined because we
-            // want the index of the PlannedActivity to be relative to the filtered set of activities.
-            var self = this,
-            activitiesInThisStage = activities
-            this.label = stageLabel;
-            this.isCurrentStage = isCurrentStage;
-    <g:if test="${enableReporting}">
-        this.isReportable = stage.toDate < new Date().toISOStringNoMillis();
-    </g:if>
-    <g:else>
-        this.isReportable = false;
-    </g:else>
-    this.projectId = project.projectId;
-    this.planViewModel = planViewModel;
-
-    // sort activities by assigned sequence or date created (as a proxy for sequence).
-    // CG - still needs to be addressed properly.
-    activitiesInThisStage.sort(function (a,b) {
-        if (a.sequence !== undefined && b.sequence !== undefined) {
-            return a.sequence - b.sequence;
-        }
-        if (a.plannedStartDate != b.plannedStartDate) {
-             return a.plannedStartDate < b.plannedStartDate ? -1 : (a.plannedStartDate > b.plannedStartDate ? 1 : 0);
-        }
-
-
-        var numericActivity = /[Aa]ctivity (\d+)(\w)?.*/;
-        var first = numericActivity.exec(a.description);
-        var second = numericActivity.exec(b.description);
-        if (first && second) {
-            var firstNum = Number(first[1]);
-            var secondNum = Number(second[1]);
-            if (firstNum == secondNum) {
-                // This is to catch activities of the form Activity 1a, Activity 1b etc.
-                if (first.length == 3 && second.length == 3) {
-                    return first[2] > second[2] ? 1 : (first[2] < second[2] ? -1 : 0);
-                }
-            }
-            return  firstNum - secondNum;
-        }
-        else {
-            if (a.dateCreated !== undefined && b.dateCreated !== undefined && a.dateCreated != b.dateCreated) {
-                return a.dateCreated < b.dateCreated ? 1 : -1;
-            }
-            return a.description > b.description ? 1 : (a.description < b.description ? -1 : 0);
-        }
-
-    });
-    this.activities = $.map(activitiesInThisStage, function (act, index) {
-        act.projectStage = stageLabel;
-        return new PlannedActivity(act, index === 0, project, planViewModel);
-    });
-    /**
-     * A stage is considered to be approved when all of the activities in the stage have been marked
-     * as published.
-     */
-    this.isApproved = ko.computed(function() {
-        var numActivities = self.activities ? self.activities.length : 0;
-        if (numActivities == 0) {
-            return false;
-        }
-        return $.grep(self.activities, function(act, i) {
-            return act.isApproved();
-        }).length == numActivities;
-    }, this, {deferEvaluation: true});
-    this.isSubmitted = ko.computed(function() {
-        var numActivities = self.activities ? self.activities.length : 0;
-        if (numActivities == 0) {
-            return false;
-        }
-        return $.grep(self.activities, function(act, i) {
-            return act.isSubmitted();
-        }).length == numActivities;
-    }, this, {deferEvaluation: true});
-
-
-    this.stageStatusTemplateName = ko.computed(function() {
-        if (!self.isReportable) {
-            return 'stageNotReportableTmpl';
-        }
-        if (self.isApproved()) {
-            return 'stageApprovedTmpl';
-        }
-        if (self.isSubmitted()) {
-            return 'stageSubmittedTmpl';
-        }
-        return 'stageNotApprovedTmpl';
-    });
-
-
-};
-
-function PlanViewModel(activities, outputTargets, project) {
-    var self = this;
-    this.userIsCaseManager = ko.observable(${user?.isCaseManager});
-            this.planStatus = ko.observable(project.planStatus || 'not approved');
-
-            this.isApproved = ko.computed(function () {
-                return (self.planStatus() === 'approved');
-            });
-
-            this.canEditOutputTargets = ko.computed(function() {
-                var isEditor = ${user?.isEditor ? 'true' : 'false'};
-                return isEditor && self.planStatus() === 'not approved';
-            });
-            //this.currentDate = ko.observable("2014-02-03T00:00:00Z"); // mechanism for testing behaviour at different dates
-            this.currentDate = ko.observable(new Date().toISOStringNoMillis()); // mechanism for testing behaviour at different dates
-
-            this.loadActivities = function (activities) {
-                return new PlanStage('', activities, self, true, project)
-            };
-            self.activities = self.loadActivities(activities);
-
-            self.progressOptions = ['planned','started','finished','deferred','cancelled'];
-            self.newActivity = function () {
-                var context = '',
-                    projectId = project.projectId,
-                    siteId = "${site?.siteId}",
-                    returnTo = '&returnTo=' + document.location.href;
-                if (projectId) {
-                    context = '&projectId=' + projectId;
-                } else if (siteId) {
-                    context = '&siteId=' + siteId;
-                }
-
-                document.location.href = fcConfig.activityCreateUrl + '?' + context + returnTo;
-            };
-            self.speciesFieldsConfiguration = function () {
-                var context = '',
-                    projectId = project.projectId,
-                    returnTo = '&returnTo=' + document.location.href;
-                if (projectId) {
-                    context = '&projectId=' + projectId;
-                 }
-                document.location.href = fcConfig.configureSpeciesFieldsUrl + '?' + context + returnTo;
-            };
-
-            self.openSite = function () {
-                var siteId = this.siteId;
-                if (siteId !== '') {
-                    document.location.href = fcConfig.siteViewUrl + '/' + siteId;
-                }
-            };
-            self.descriptionExpanded = ko.observable(false);
-            self.toggleDescriptions = function() {
-                self.descriptionExpanded(!self.descriptionExpanded());
-                adjustTruncations();
-            };
-
-
-            // Project status manipulations
-            // ----------------------------
-            // This has been refactored to update project status on specific actions (rather than subscribing
-            //  to changes in the status) so that errors can be handled in a known context.
-
-            // save new status and return a promise
-            this.saveStatus = function (newValue) {
-                var payload = {planStatus: newValue, projectId: project.projectId};
-                return $.ajax({
-                    url: "${createLink(action: 'ajaxUpdate')}/" + project.projectId,
-                    type: 'POST',
-                    data: JSON.stringify(payload),
-                    contentType: 'application/json'
-                });
-            };
-            // submit plan and handle errors
-            this.editPlan = function () {
-                self.saveStatus('not approved')
-                .done(function (data) {
-                    if (data.error) {
-                        showAlert("Unable to enter planing mode. An error occurred: " + data.detail + ' \n' + data.error,
-                            "alert-error","status-update-error-placeholder");
-                    } else {
-                        self.planStatus('approved');
-                        window.location.reload();
-                    }
-                })
-                .fail(function (data) {
-                    if (data.status === 401) {
-                        showAlert("Unable to submit plan. You do not have editor rights for this project.",
-                            "alert-error","status-update-error-placeholder");
-                    } else {
-                        showAlert("Unable to submit plan. An error occurred: [" + data.status + "] " + (data.responseText || ""),
-                            "alert-error","status-update-error-placeholder");
-                    }
-                });
-            };
-            this.finishedPlanning = function () {
-
-                self.saveStatus('approved')
-                .done(function (data) {
-                    if (data.error) {
-                        showAlert("Unable to leave planning mode. An unhandled error occurred: " + data.detail + ' \n' + data.error,
-                            "alert-error","status-update-error-placeholder");
-                    } else {
-                        self.planStatus('approved');
-                        window.location.reload();
-                    }
-                })
-                .fail(function (data) {
-                    if (data.status === 401) {
-                        showAlert("Unable to leave planning mode.  You do not have administrator rights for this project.",
-                            "alert-error","status-update-error-placeholder");
-                    } else {
-
-                        showAlert("Unable to leave planning mode. An error occurred: [" + data.status + "] " + (data.responseText || ""),
-                            "alert-error","status-update-error-placeholder");
-                    }
-                });
-            };
-
-            this.submitReport = function (e) {
-            console.log(e);
-                //bootbox.alert("Reporting has not been enabled yet.");
-                $('#declaration').modal('show');
-            };
-
-            this.getGanttData = function () {
-                var values = [],
-                    previousStage = '',
-                    hasAnyValidPlannedEndDate = false;
-                $.each([self.activities], function (i, stage) {
-                    $.each(stage.activities, function (j, act) {
-                        var statusClass = 'gantt-' + act.progress(),
-                            startDate = act.plannedStartDate.date().getTime(),
-                            endDate = act.plannedEndDate.date().getTime();
-                        var isMilestone = act.typeCategory == 'Milestone';
-                        if (!isNaN(startDate)) {
-                            values.push({
-                                name:act.projectStage === previousStage ? '' : act.projectStage,
-                                desc:act.type,
-                                values: [{
-                                    label: act.type,
-                                    from: "/Date(" + startDate + ")/",
-                                    to: "/Date(" + endDate + ")/",
-                                    customClass: isMilestone ? 'milestone' : statusClass,
-                                    dataObj: act
-                                }]
-                            });
-                        }
-                        hasAnyValidPlannedEndDate |= !isNaN(endDate);
-                        previousStage = act.projectStage;
-                    });
-                });
-                // don't return any data if there is no valid end date because the lib will throw an error
-                return hasAnyValidPlannedEndDate ? values : [];
-            };
-            self.outputTargets = ko.observableArray([]);
-            self.saveOutputTargets = function() {
-                if (self.canEditOutputTargets()) {
-                    if ($('#outputTargetsContainer').validationEngine('validate')) {
-                        var targets = [];
-                        $.each(self.outputTargets(), function (i, target) {
-                            $.merge(targets, target.toJSON());
-                        });
-                        var project = {projectId:'${project.projectId}', outputTargets:targets};
-                        var json = JSON.stringify(project);
-                        var id = "${'/' + project.projectId}";
-                        $.ajax({
-                            url: "${createLink(action: 'ajaxUpdate')}" + id,
-                            type: 'POST',
-                            data: json,
-                            contentType: 'application/json',
-                            success: function (data) {
-                                if (data.error) {
-                                    alert(data.detail + ' \n' + data.error);
-                                }
-                            },
-                            error: function (data) {
-                                var status = data.status;
-                                alert('An unhandled error occurred: ' + data.status);
-                            },
-                            complete: function(data) {
-                                $.each(self.outputTargets(), function(i, target) {
-                                    // The timeout is here to ensure the save indicator is visible long enough for the
-                                    // user to notice.
-                                    setTimeout(function(){target.clearSaving();}, 1000);
-                                });
-                            }
-                        });
-                    } else {
-                        // clear the saving indicator when validation fails
-                        $.each(self.outputTargets(), function (i, target) {
-                            target.clearSaving();
-                        });
-                    }
-                }
-            };
-            self.addOutputTarget = function(target) {
-                var newOutputTarget = new OutputTarget(target);
-                self.outputTargets.push(newOutputTarget);
-                newOutputTarget.target.subscribe(function() {
-                    if (self.canEditOutputTargets()) {
-                        newOutputTarget.isSaving(true);
-                        self.saveOutputTargets();
-                    }
-                });
-            };
-
-            // metadata for setting up the output targets
-            self.targetMetadata = ${outputTargetMetadata as grails.converters.JSON};
-
-            var outputTargetHelper = new OutputTargets(activities, outputTargets, self.canEditOutputTargets, self.targetMetadata,  {saveTargetsUrl:fcConfig.projectUpdateUrl});
-            $.extend(self, outputTargetHelper);
-            self.saveOutputTargets = function() {
-                var result;
-                if (self.canEditOutputTargets()) {
-                    if ($('#outputTargetsContainer').validationEngine('validate')) {
-                        return outputTargetHelper.saveOutputTargets();
-
-                    } else {
-                        // clear the saving indicator when validation fails
-                        $.each(self.outputTargets(), function (i, target) {
-                            target.clearSaving();
-                        });
-                    }
-                }
-            };
-        }
-        var project = <fc:modelAsJavascript model="${project}"/>;
-        var planViewModel = new PlanViewModel(
-    ${activities ?: []},
-            project.outputTargets || {},
-            project
-        );
+     var project = <fc:modelAsJavascript model="${project}"/>;
+     var config = {
+            activities: ${activities ?: []},
+            outputTargets: project.outputTargets || {},
+            project: project,
+            placeholder: 'status-update-error-placeholder',
+            speciesPlaceholder: 'species-validation-result-placeholder'
+     }
+    var planViewModel = new PlanViewModel(config);
         ko.applyBindings(planViewModel, document.getElementById('planContainer'));
 
         // the following code handles resize-sensitive truncation of the description field

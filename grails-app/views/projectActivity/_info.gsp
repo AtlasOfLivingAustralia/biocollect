@@ -1,3 +1,4 @@
+
 <div id="pActivityInfo" class="well">
 
         <!-- ko foreach: projectActivities -->
@@ -97,6 +98,56 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="methodUrl"><g:message code="project.survey.info.methodUrl"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodUrl"/>', content:'<g:message code="project.survey.info.methodUrl.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <input id="methodUrl" type="text" data-bind="value: methodUrl" data-validation-engine="validate[custom[url]]"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method document-->
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" ><g:message code="project.survey.info.methodDoc"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodDoc"/>', content:'<g:message code="project.survey.info.methodDoc.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
+                </div>
+
+                <div class="span2 text-left">
+                    <a data-bind="attr:{href:methodDocUrl}" target="_blank">
+                    <small class="media-heading" data-bind="text:methodDocName"></small>
+                    </a>
+                </br>
+                    <span class="btn fileinput-button pull-left"
+                          data-bind="
+                                    attr:{'data-role':'methodDoc',
+                                        'data-url': transients.methoddocumentUpdateUrl(),
+                                        'data-owner-type': 'projectActivityId',
+                                        'data-owner-id': projectActivityId()},
+                                         stagedImageUpload: documents,
+                                             visible:!methodDocUrl()">
+                        <i class="icon-plus"></i>
+                        <input id="mthDoc" type="file" name="files">
+                        <span>Attach Document</span></span>
+                    <button class="btn btn-small" data-bind="click:removeMethodDoc, visible:methodDocUrl()"><i class="icon-minus"></i> Remove Document</button>
+                </div>
+            </div>
+            </br>
+            <!-- end of Document -->
 
             <div class="row-fluid">
                 <div class="span4 text-right">
@@ -200,6 +251,7 @@
     <!-- /ko -->
 <!-- /ko -->
 </div>
+
 
 <div id="pSupplementaryActivitySurvey" class="well">
 
@@ -311,10 +363,15 @@
                     <span class="req-field"></span>
                 </label>
                 <div class="controls">
-                    <input id="dataSharingLicense" type="text" data-bind="value: dataSharingLicense" data-validation-engine="validate[required]">
+                    <div class="survey-editable-dropdown">
+                         <g:select id="dataSharingLicense" name="dateSharingLicence" from="${licences}" optionValue="name" data-bind="value:dataSharingLicense"
+                              noSelection="['':'-Please select the licence-']" optionKey="url" data-validation-engine="validate[required]" />
+                         <g:each in="${licences}">
+                            <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${resource(dir: 'images/licence/', file: it.logo)} ">&nbsp;&nbsp;${it.description}</a> </span>
+                        </g:each>
+                    </div>
                 </div>
             </div>
-
         </div>
 
         <!-- /ko -->

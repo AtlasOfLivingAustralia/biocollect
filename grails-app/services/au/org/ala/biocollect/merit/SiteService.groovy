@@ -118,7 +118,7 @@ class SiteService {
         //if its a drawn shape, save and get a PID
         if(values?.extent?.source?.toLowerCase() == 'drawn'){
             def shapePid = persistSiteExtent(values.name, values.extent.geometry)
-            values.extent.geometry.pid = shapePid.resp?.id
+            values.extent.geometry.pid = shapePid.resp?.id ?: ""
         }
 
         if (id) {
@@ -280,7 +280,7 @@ class SiteService {
             def url = grailsApplication.config.spatial.layersUrl + "/shape/upload/pointradius/" +
                     geometry?.coordinates[1] + '/' + geometry?.coordinates[0] + '/' + (geometry?.radius / 1000)
             resp = webService.doPost(url, body)
-        } else if (geometry?.type == 'Polygon') {
+        } else if (geometry?.type in ['Polygon', 'LineString']) {
             def body = [geojson: geometry, name: name, description: 'my description', user_id: userId, api_key: grailsApplication.config.api_key]
             resp = webService.doPost(grailsApplication.config.spatial.layersUrl + "/shape/upload/geojson", body)
         }

@@ -30,6 +30,9 @@ Biocollect.MapUtilities = {
             geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
             geoJson.geometry.coordinates = feature.coordinates;
             geoJson.properties.radius = feature.radius;
+        } else if (feature.type.toLowerCase() == "linestring") {
+            geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.LINE_TYPE;
+            geoJson.geometry.coordinates = feature.coordinates;
         }
 
         return geoJson;

@@ -8,10 +8,6 @@ body {
   color: $body-text-color;
 }
 
-.padding-top-10{
-  padding-top: 10px;
-}
-
 .margin-top-70{
   margin-top: 70px
 }
@@ -719,9 +715,10 @@ section#breadcrumb {
 
 
 #custom-header{
-  body .navbar {
+  .navbar {
     min-height: 58px;
     font-family: Roboto, Helvetica, "Helvetica Neue", Arial, sans-serif;
+    border-bottom: 0px solid #fff;
   }
 
   .navbar-inverse .navbar-inner {

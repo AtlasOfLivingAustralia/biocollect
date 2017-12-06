@@ -30,6 +30,7 @@ class ProjectControllerSpec extends Specification {
     def vocabServiceStub = Stub(VocabService)
     def documentServiceStub = Stub(DocumentService)
     def settingServiceStub = Stub(SettingService)
+    def collectoryServiceStub = Stub(CollectoryService)
 
     void setup() {
         controller.userService = userServiceStub
@@ -46,6 +47,7 @@ class ProjectControllerSpec extends Specification {
         controller.vocabService = vocabServiceStub
         controller.documentService = documentServiceStub
         controller.settingService = settingServiceStub
+        controller.collectoryService = collectoryServiceStub
         auditServiceStub.getAuditMessagesForProject(_) >> []
         metadataServiceStub.activitiesModel() >> [activities: []]
         metadataServiceStub.getActivityModel(*_) >> [type:'Activity']

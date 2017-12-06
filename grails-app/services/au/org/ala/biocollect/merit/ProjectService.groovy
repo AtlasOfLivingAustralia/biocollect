@@ -14,8 +14,6 @@ class ProjectService {
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE_TYPE_2 = 'citizenScience'
     public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoScience'
     public static final String PROJECT_TYPE_WORKS = 'works'
-    public static final String PROJECT_PLAN_STATUS_APPROVED = 'approved'
-    public static final String PROJECT_PLAN_STATUS_NOTAPPROVED = 'not approved'
         static  final MOBILE_APP_ROLE = [ "android",
                                           "blackberry",
                                           "iTunes",
@@ -37,6 +35,7 @@ class ProjectService {
             ]
     ]
     public static final String PROJECT_FINDER_PAGE= 'projectFinder'
+    public static final PRIVATE_SITES_REMOVED  = 'privatesitesremoved'
 
 
     WebService webService
@@ -52,6 +51,7 @@ class ProjectService {
     CacheService cacheService
     MessageSource messageSource
     SpeciesService speciesService
+    FormSpeciesFieldParserService formSpeciesFieldParserService
 
     def list(brief = false, citizenScienceOnly = false) {
         def params = brief ? '?brief=true' : ''
@@ -68,8 +68,7 @@ class ProjectService {
     def get(id, levelOfDetail = "", includeDeleted = false, version = null, def includePrivateSite = false) {
 
         def params = '?'
-
-        params += levelOfDetail ? "view=${levelOfDetail}&" : ''
+        params += "view=${levelOfDetail?:PRIVATE_SITES_REMOVED}&"
         params += "includeDeleted=${includeDeleted}&"
         params += version ? "version=${version}" : ''
         def project  = webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + id + params);
@@ -276,6 +275,21 @@ class ProjectService {
     }
 
     /**
+     * Adds the current user id as a field in the project plan then saves it to ecodata.
+     * @param projectId the project to update
+     * @param projectPlan the plan details, including the [custom:[details:[]] prefix.
+     * @return the response from ecodata
+     */
+    Map updateProjectPlan(String projectId, Map projectPlan) {
+        projectPlan.custom.details.lastUpdatedBy = userService.user.userId
+        Map result = webService.doPost(grailsApplication.config.ecodata.service.url + '/project/' + projectId, projectPlan)
+        if (result.statusCode == 200 && result.resp) {
+            result.resp.lastUpdatedByDisplayName = userService.currentUserDisplayName
+        }
+        result
+    }
+
+    /**
      * This does a 'soft' delete. The record is marked as inactive but not removed from the DB.
      * @param id the record to delete
      * @return the returned status
@@ -336,6 +350,11 @@ class ProjectService {
     def getMembersForProjectId(projectId) {
         def url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForProject/${projectId}"
         webService.getJson(url)
+    }
+
+    def getMembersForProjectPerPage(projectId, pageStart, pageSize) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForProjectPerPage?projectId=${projectId}&offset=${pageStart}&max=${pageSize}"
+        webService.getJson(url, null, true)
     }
 
     /**
@@ -559,6 +578,19 @@ class ProjectService {
         }
 
         allowedActivities
+    }
+
+    /**
+     * Find and add all species fields in an activity type. The resulting list is returned.
+     * @param activityTypes
+     * @return
+     */
+    List addSpeciesFieldsToActivityTypesList(List activityTypes){
+        activityTypes.each { category ->
+            category?.list?.each { type ->
+                type.speciesFields = formSpeciesFieldParserService.getSpeciesFieldsForSurvey(type.name)?.result
+            }
+        }
     }
 
     /**
@@ -791,7 +823,7 @@ class ProjectService {
         project.projectType == PROJECT_TYPE_ECOSCIENCE
     }
 
-    public boolean isWork(project){
+    public boolean isWorks(project){
         project.projectType == PROJECT_TYPE_WORKS
     }
 
@@ -857,9 +889,10 @@ class ProjectService {
                 if(index >= 0){
                     if(index >= facets?.size()){
                         index = facets.size()
+                        facets.add(index, specialFacet.clone())
+                    } else {
+                        facets.putAt(index, specialFacet.clone())
                     }
-
-                    facets.add(index, specialFacet.clone())
                 }
             }
         } else {
@@ -897,11 +930,17 @@ class ProjectService {
         }
 
 
-        Map speciesFieldConfig = (specificFieldDefinition?.config !=null &&  specificFieldDefinition?.config?.type != "DEFAULT_SPECIES") ?
+        Map speciesFieldConfig = (specificFieldDefinition?.config && specificFieldDefinition?.config?.type != "DEFAULT_SPECIES") ?
                 //New species per field configuration
                 specificFieldDefinition.config :
                 // Legacy per survey species configuration
                 project?.speciesFieldsSettings?.defaultSpeciesConfig
+
+        // All species is the default setting when field is not configured.
+        if(!speciesFieldConfig){
+            speciesFieldConfig = grailsApplication.config.speciesConfiguration.default
+        }
+
         return speciesFieldConfig
     }
 
@@ -923,17 +962,6 @@ class ProjectService {
         speciesService.formatSpeciesNameInAutocompleteList(speciesFieldConfig.speciesDisplayFormat , result)
     }
 
-    /**
-     * Check if work project plan has been approved.
-     * @param projectId
-     * @return
-     */
-    boolean isWorksProjectPlanStatusApproved(String projectId){
-        Map project = get(projectId)
-        if(!project?.error){
-            project.planStatus == PROJECT_PLAN_STATUS_APPROVED
-        }
-    }
 
     /**
      * Check if project is contributing data to Atlas of Living Australia
