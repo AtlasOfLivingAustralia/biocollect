@@ -56,6 +56,15 @@
                             <br/><br/>
                             <div data-bind="text:description"></div>
                             <br/>
+                            <!-- ko if: dataSharingLicense -->
+                            <div>
+                                <g:message code="project.survey.info.dataSharingLicense"/><br/>
+                                <g:each in="${licences}">
+                                    <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${resource(dir: 'images/licence/', file: it.logo)} ">&nbsp;&nbsp;${it.name}</a> </span>
+                                </g:each>
+                            </div>
+                            <!-- /ko -->
+                            <br/>
                             <div data-bind="visible:transients.status()">
                                 <span>Status: <span data-bind="text: transients.status"></span></span>
                             </div>

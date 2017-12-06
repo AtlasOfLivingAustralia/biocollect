@@ -10,9 +10,7 @@ var ProjectActivity = function (params) {
     var user = params.user ? params.user : {};
 
     var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
-
     self.project = project;
-
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
     self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
@@ -88,6 +86,7 @@ var ProjectActivity = function (params) {
             });
         }
     };
+
 
     // 1. There is no straightforward way to prevent/cancel a KO change in a beforeChange subscription
     // 2. bootbox.confirm is totally asynchronous so by the time a user confirms or rejects a change, the change has already happened.
@@ -306,7 +305,15 @@ var ProjectActivity = function (params) {
 
     self.lastUpdated = ko.observable(pActivity.lastUpdated ? pActivity.lastUpdated : "");
 
-    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "CC BY");
+    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "");
+
+
+    self.displaySelectedLicence = ko.computed(function(){
+          return _.where(self.transients.alaSupportedLicences,{url:self.dataSharingLicense()});
+
+    });
+
+
 
     self.transients = self.transients || {};
     self.transients.warning = ko.computed(function () {

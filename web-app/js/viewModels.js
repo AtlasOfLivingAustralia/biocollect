@@ -56,6 +56,7 @@ function enmapify(args) {
         latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(!pointsOnly),
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
+
         // sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
         sitesObservable = container[name + "SitesArray"] = ko.computed(function(){
             if (pointsOnly){
@@ -137,31 +138,15 @@ function enmapify(args) {
                 marker: !selectFromSitesOnly && allowPoints,
                 edit: !selectFromSitesOnly && true
             }
-        // drawOptions:  activityLevelData.mobile || readonly || !activityLevelData.pActivity.allowAdditionalSurveySites ?
-        //     {
-        //         polyline: false,
-        //         polygon: false,
-        //         rectangle: false,
-        //         circle: false,
-        //         edit: false
-        //     }
-        //     :
-        //     {
-        //         polyline: false,
-        //         polygon: true,
-        //         circle: true,
-        //         rectangle: true,
-        //         edit: true
-        //     }
     };
 
     // undefined/null, Google Maps or Default should enable Google Maps view
     if (activityLevelData.pActivity.baseLayersName !== 'Open Layers') {
-        var googleLayer = new L.Google('ROADMAP',{maxZoom: 21, nativeMaxZoom: 21});
+        var googleLayer = new L.Google('ROADMAP', {maxZoom: 21, nativeMaxZoom: 21});
         var otherLayers = {
             Roadmap: googleLayer,
             Hybrid: new L.Google('HYBRID', {maxZoom: 21, nativeMaxZoom: 21}),
-            Terrain: new L.Google('TERRAIN',{maxZoom: 21, nativeMaxZoom: 21})
+            Terrain: new L.Google('TERRAIN', {maxZoom: 21, nativeMaxZoom: 21})
         };
 
         mapOptions.baseLayer = googleLayer;
@@ -196,7 +181,7 @@ function enmapify(args) {
         if (markerLocation) {
             // Prevent sitesubscriber from been reset, when we are in the process of clearing the map
             // If the user dropped a pin or search a location then the select location should be deselected
-            if(!isRemoveEvent) {
+            if (!isRemoveEvent) {
 
                 siteSubscriber.dispose();
 
@@ -259,11 +244,11 @@ function enmapify(args) {
             var sixA = 6 * (a.reduce(sum, 0).value() / 2);
             var zippedAValue = zipped.zip(a.value());
             var cx = zippedAValue.map(function (c) {
-                    return ( parseFloat(c[0][0][0]) + parseFloat(c[0][1][0]) ) * parseFloat(c[1]);
-                }).reduce(sum, 0).value() / sixA;
+                return ( parseFloat(c[0][0][0]) + parseFloat(c[0][1][0]) ) * parseFloat(c[1]);
+            }).reduce(sum, 0).value() / sixA;
             var cy = zippedAValue.map(function (c) {
-                    return ( parseFloat(c[0][0][1]) + parseFloat(c[0][1][1]) ) * parseFloat(c[1]);
-                }).reduce(sum, 0).value() / sixA;
+                return ( parseFloat(c[0][0][1]) + parseFloat(c[0][1][1]) ) * parseFloat(c[1]);
+            }).reduce(sum, 0).value() / sixA;
             return [cx, cy];
         } else if (feature.geometry.type == 'Point') {
             coords = feature.geometry.coordinates;
@@ -323,29 +308,13 @@ function enmapify(args) {
                     map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
                 }
             }
-            // else if (!matchingSite) {
-            //         //@seeAlso: completeDrawWithoutAdditionalSite
-            //         // if the site id is not in project->sites, we need to search site collection to get detaits
-            //         // these codes are only called in displaying, not in edit/create
-            //         var siteUrl = getSiteUrl + '/' + siteId + "?format=json"
-            //         $.getJSON(siteUrl).then(function (data, textStatus, jqXHR) {
-            //             matchingSite = data.site;
-            //             map.clearBoundLimits();
-            //             if (matchingSite.extent.geometry.pid) {
-            //                 console.log("Displaying site with geometry.")
-            //                 map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(matchingSite.extent.geometry));
-            //             } else {
-            //                 console.log("Displaying site without geometry.")
-            //                 map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
-            //             }
-            //         });
-            //     }
         }else{
             // Keep the previous code to make compatible with old records
             // Can be removed after all data be migrated.
             if (previousLatObservable() && previousLonObservable()) {
                     lonObservable(previousLonObservable());
                     latObservable(previousLatObservable());
+
             } else {
                 console.log("Resetting map because of non-previous lat long")
                 map.resetMap()
@@ -686,14 +655,16 @@ function enmapify(args) {
             } else {
                 type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
             }
+        } else if (geoJsonFeature.geometry.type == ALA.MapConstants.DRAW_TYPE.LINE_TYPE) {
+            type = geoJsonFeature.geometry.type
         }
 
         return type;
     }
 
     function reloadSiteData() {
-        var entityType=  activityLevelData.pActivity.projectActivityId? "projectActivity" : "project"
-        return $.getJSON(listSitesUrl + '/' + (activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId) + "?entityType=" + entityType ).then(function (data, textStatus, jqXHR) {
+        var entityType = activityLevelData.pActivity.projectActivityId ? "projectActivity" : "project"
+        return $.getJSON(listSitesUrl + '/' + (activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId) + "?entityType=" + entityType).then(function (data, textStatus, jqXHR) {
             sitesObservable(data);
         });
     }
@@ -707,7 +678,7 @@ function enmapify(args) {
     if (!readonly) {
         map.addButton("<span class='fa fa-undo reset-map' title='Reset map'></span>", function () {
             map.resetMap();
-            if(!hideSiteSelection){
+            if (!hideSiteSelection) {
                 if (activityLevelData.pActivity.sites.length == 1) {
                     updateMapForSite(activityLevelData.pActivity.sites[0].siteId);
                 }

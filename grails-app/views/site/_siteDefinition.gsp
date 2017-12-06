@@ -194,7 +194,10 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: '${grailsApplication.config.spatial.geoserverUrl}',
         allowPointsOfInterest: allowPointsOfInterest,
-        readonly: edit? true : false
+        readonly: edit? true : false,
+        drawOptions: {
+            polyline: true
+        }
     };
 
     var savedSiteData = {

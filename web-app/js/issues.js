@@ -35,6 +35,7 @@ function IssuesViewModel(issues) {
 function IssueViewModel(issue) {
     var self = this;
     if (!issue) issue = {};
+    self.date = ko.observable(issue.date).extend({simpleDate:false});
     self.type = ko.observable(issue.type);
     self.priority = ko.observable(issue.priority);
     self.priority.options =
