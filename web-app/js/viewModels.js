@@ -56,31 +56,53 @@ function enmapify(args) {
         latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(!pointsOnly),
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
-        sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
+        // sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
+        sitesObservable = container[name + "SitesArray"] = ko.computed(function(){
+            if (pointsOnly){
+                return ko.utils.arrayFilter(activityLevelData.pActivity.sites,function(site){
+                    return site.extent.geometry.type === 'Point';
+                })
+            }
+
+            if (polygonsOnly){
+                return ko.utils.arrayFilter(activityLevelData.pActivity.sites,function(site){
+                    return site.extent.geometry.type != 'Point';
+                })
+            }
+
+            return new ko.observableArray(sites);
+            
+
+            }),
         loadingObservable = container[name + "Loading"] = ko.observable(false),
         checkMapInfo = viewModel.checkMapInfo=activityLevelData.checkMapInfo = ko.computed(function(){
+            var lat = latObservable(), lon = lonObservable(), siteId = siteIdObservable();
+
+            if (!siteId && !lon && !lat )
+                return {validation:false, message:"You have not created or selected a location yet"};
+
             if (pointsOnly){
-                  if (latObservable() && lonObservable())
+                  if (lat && lon)
                       return {validation:true};
                   else
                       return {validation:false, message:"The record only accepts POINTs"};
             };
 
             if (polygonsOnly){
-                if (siteIdObservable() && !latObservable() && !lonObservable())
+                if (siteId && !lat && !lon)
                     return {validation:true};
                 else
                     return {validation:false, message:"The record only accepts Polygons"};
             }
 
             if (allowPolygons && allowPoints){
-                if (siteIdObservable())
+                if (siteId)
                     return {validation:true};
-                if (latObservable() && lonObservable())
+                if (lat && lon)
                     return {validation:true};
             }
 
-            return {validation:false, message:"You have not created or selected a location yet"};;
+            return {validation:false, message:"You have not created or selected a location yet"};
 
         });
 

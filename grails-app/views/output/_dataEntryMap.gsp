@@ -14,6 +14,23 @@
     </div>
 </g:if>
 
+<script>
+    function validator_site_check(field, rules, i, options){
+        var result = activityLevelData.checkMapInfo()
+        if (!result.validation)
+            return result.message;
+        else
+            return true;
+    }
+
+//    $(document).ready(function(){
+//        $('select#siteLocation').change(function(){
+//           $('select#siteLocation').validationEngine('validate')
+//        });
+//    });
+
+</script>
+
 Allow Points: <span data-bind="text:activityLevelData.pActivity.allowPoints">Allow Points</span> <br/>
 Allow Polygons: <span data-bind="text:activityLevelData.pActivity.allowPolygons"></span> <br/>
 Allow Addtional Survey Sites: <span data-bind="text:activityLevelData.pActivity.allowAdditionalSurveySites"></span> <br/>
@@ -32,14 +49,15 @@ Site ID： <span data-bind="text:data.${source}"/></span><br/>
                         <span class="output-text" data-bind="text: data.${source}Name() "></span>
                     </g:if>
                     <g:else>
+                        <!-- ko with: checkMapInfo -->
+                           <!-- ko ifnot: validation -->
+                        <span class="label label-important" data-bind="text:message"></span><br/>
+                        <!-- /ko -->
+                    <!-- /ko -->
                         <select id="siteLocation"
                                 data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Create your location", disable: ${readonly} || data.${source}Loading'
-                                class="form-control input-xlarge full-width"></select>
-                        <!-- ko with: checkMapInfo -->
-                            <!-- ko ifnot: validation -->
-                         <span class="label label-important" data-bind="text:message"></span>
-                            <!-- /ko -->
-                        <!-- /ko -->
+                                class="form-control input-xlarge full-width" data-validation-engine="validate[required,funcCall[validator_site_check]"></select>
+
                     </g:else>
                 </div>
             </div>
