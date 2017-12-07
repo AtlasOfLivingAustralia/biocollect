@@ -428,7 +428,7 @@ class SiteController {
         def result = [:]
         // check user has persmissions to edit/update site - user must have 'editor' access to
         // ALL linked projects to proceed.
-        String userId = userService.getCurrentUserId()
+        String userId = userService.getCurrentUserId(request)
         values.projects?.each { projectId ->
             if (!projectService.canUserEditSitesForProject(userId, projectId) && !userService.userIsAlaAdmin()) {
                 log.error("Error: Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}")
