@@ -350,7 +350,6 @@
                         <th>Display name</th>
                         <th>Content type</th>
                         <th>Href value</th>
-                        <th>Role</th>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -360,7 +359,6 @@
                     <!-- /ko -->
                     <!-- /ko -->
                     <tr>
-                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
