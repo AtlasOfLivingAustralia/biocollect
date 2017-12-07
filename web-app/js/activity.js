@@ -613,7 +613,14 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         var selectedFacets = [];
         $.each(restored, function (index, value) {
             // using name for backward compatibility
-            value.facet = self.filterViewModel.createFacetViewModel(value.facet || value.name);
+            if(!value.facet && value.name){
+                value.facet = {
+                    name: value.name,
+                    type: value.type || 'terms'
+                }
+            }
+
+            value.facet = self.filterViewModel.createFacetViewModel(value.facet);
 
             switch (value.type){
                 case 'range':
