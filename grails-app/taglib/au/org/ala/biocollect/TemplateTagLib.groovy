@@ -9,7 +9,9 @@ class TemplateTagLib {
 
     def createAButton = { attrs ->
         Map link = attrs.config;
-
+        if (link.role && !userService.doesUserHaveHubRole(link.role)) {
+            return
+        }
         if(link){
             String classes = getSpanClassForColumnNumber(attrs.layout)?:'span4';
             String url = getLinkUrl(link)
@@ -29,8 +31,11 @@ class TemplateTagLib {
      */
     def getLinkFromConfig = { attrs ->
         if(attrs.config){
-            Map link = attrs.config;
-            String url = getLinkUrl(link);
+            Map link = attrs.config
+            if (link.role && !userService.doesUserHaveHubRole(link.role)) {
+                return
+            }
+            String url = getLinkUrl(link)
 
             switch (link.contentType){
                 case 'external':

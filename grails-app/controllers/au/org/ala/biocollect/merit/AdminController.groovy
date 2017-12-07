@@ -26,6 +26,7 @@ class AdminController {
     def projectActivityService
     def webService
     def grailsApplication
+    def roleService
 
     def index() {}
 
@@ -412,7 +413,7 @@ class AdminController {
 
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def manageHubs() {
-        render view:'editHub', model:[programsModel: metadataService.programsModel()]
+        render view:'editHub', model:[programsModel: metadataService.programsModel(), roles:roleService.getHubRoles()]
     }
 
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")

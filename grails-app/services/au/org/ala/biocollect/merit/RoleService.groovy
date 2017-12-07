@@ -9,6 +9,8 @@ class RoleService {
     public static final String PROJECT_ADMIN_ROLE = 'admin'
     public static final String PROJECT_EDITOR_ROLE = 'editor'
     public static final String PROJECT_PARTICIPANT_ROLE = 'projectParticipant'
+    public static final String LOGGED_IN_USER_ROLE = 'loggedInUser'
+    public static final String READ_ONLY_ROLE = 'siteReadOnly'
 
     private List roles(Boolean clearCache = false) {
         if (clearCache) {
@@ -39,8 +41,15 @@ class RoleService {
 
     public List getAugmentedRoles() {
         def rolesCopy = getRoles().clone()
-        rolesCopy.addAll(["alaAdmin","siteAdmin","officer","siteReadOnly","loggedInUser"]) // augment roles with these extra ones TODO: refactor this
+        rolesCopy.addAll(["alaAdmin","siteAdmin","officer",READ_ONLY_ROLE, LOGGED_IN_USER_ROLE]) // augment roles with these extra ones TODO: refactor this
 
         return rolesCopy
+    }
+
+    /**
+     * Returns a List of roles that are relevant to controlling access to the features of a Hub.
+     */
+    List getHubRoles() {
+        [LOGGED_IN_USER_ROLE, PROJECT_ADMIN_ROLE]
     }
 }
