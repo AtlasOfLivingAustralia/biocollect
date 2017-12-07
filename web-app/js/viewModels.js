@@ -57,24 +57,33 @@ function enmapify(args) {
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
 
-        // sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
-        sitesObservable = container[name + "SitesArray"] = ko.computed(function(){
-            if (pointsOnly){
-                return ko.utils.arrayFilter(activityLevelData.pActivity.sites,function(site){
-                    return site.extent.geometry.type === 'Point';
-                })
-            }
+        sitesObservable = container[name + "SitesArray"] = ko.observableArray($.grep(activityLevelData.pActivity.sites,function(site){
+                    if (pointsOnly){
+                           return site.extent.geometry.type === 'Point';
+                    }
+                    if (polygonsOnly){
+                           return site.extent.geometry.type != 'Point';
+                    }
 
-            if (polygonsOnly){
-                return ko.utils.arrayFilter(activityLevelData.pActivity.sites,function(site){
-                    return site.extent.geometry.type != 'Point';
-                })
-            }
-
-            return new ko.observableArray(activityLevelData.pActivity.sites);
-
-
-            }),
+                    return true;
+            })),
+        // sitesObservable = container[name + "SitesArray"] = ko.computed(function(){
+        //     if (pointsOnly){
+        //         return ko.utils.arrayFilter(activityLevelData.pActivity.sites,function(site){
+        //             return site.extent.geometry.type === 'Point';
+        //         })
+        //     }
+        //
+        //     if (polygonsOnly){
+        //         return ko.utils.arrayFilter(activityLevelData.pActivity.sites,function(site){
+        //             return site.extent.geometry.type != 'Point';
+        //         })
+        //     }
+        //
+        //     return new ko.observableArray(activityLevelData.pActivity.sites);
+        //
+        //
+        //     }),
         loadingObservable = container[name + "Loading"] = ko.observable(false),
         checkMapInfo = viewModel.checkMapInfo=activityLevelData.checkMapInfo = ko.computed(function(){
             var lat = latObservable(), lon = lonObservable(), siteId = siteIdObservable();
@@ -665,7 +674,18 @@ function enmapify(args) {
     function reloadSiteData() {
         var entityType = activityLevelData.pActivity.projectActivityId ? "projectActivity" : "project"
         return $.getJSON(listSitesUrl + '/' + (activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId) + "?entityType=" + entityType).then(function (data, textStatus, jqXHR) {
-            sitesObservable(data);
+            //TODO optimised
+            sitesObservable($.grep(activityLevelData.pActivity.sites,function(site){
+                if (pointsOnly){
+                    return site.extent.geometry.type === 'Point';
+                }
+                if (polygonsOnly){
+                    return site.extent.geometry.type != 'Point';
+                }
+
+                return true;
+            }))
+
         });
     }
 
