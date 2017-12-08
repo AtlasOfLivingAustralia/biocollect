@@ -16,6 +16,18 @@ var ProjectActivity = function (params) {
     self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
     self.selectFromSitesOnly = ko.observable(pActivity.selectFromSitesOnly);
 
+    self.selectFromSitesOnly.subscribe(function(checked){
+        if(checked){
+            self.allowAdditionalSurveySites(false);
+        }
+    }.bind(self));
+
+    self.allowAdditionalSurveySites.subscribe(function(checked){
+        if(checked){
+            self.selectFromSitesOnly(false);
+        }
+    }.bind(self));
+
     self.allowPolygons = ko.observable(('allowPolygons' in pActivity)? pActivity.allowPolygons : true);
     self.allowPoints = ko.observable(('allowPoints' in pActivity)? pActivity.allowPoints : true);
     self.defaultZoomArea = ko.observable(('defaultZoomArea' in pActivity)? pActivity.defaultZoomArea : project?project.projectSiteId:'');
