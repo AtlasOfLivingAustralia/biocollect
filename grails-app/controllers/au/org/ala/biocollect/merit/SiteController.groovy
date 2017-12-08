@@ -89,7 +89,7 @@ class SiteController {
             ]
 
             if (params.format == 'json')
-                respond result as Object
+                render result as JSON
             else
                 result
 

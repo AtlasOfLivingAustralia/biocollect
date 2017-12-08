@@ -57,17 +57,27 @@ function enmapify(args) {
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
 
-        sitesObservable = container[name + "SitesArray"] = ko.observableArray($.grep(activityLevelData.pActivity.sites,function(site){
-                    if (pointsOnly){
-                           return site.extent.geometry.type === 'Point';
-                    }
-                    if (polygonsOnly){
-                           return site.extent.geometry.type != 'Point';
-                    }
+        sitesObservable = ko.observableArray(activityLevelData.pActivity.sites),
 
-                    return true;
-            })),
-        // sitesObservable = container[name + "SitesArray"] = ko.computed(function(){
+        surveySupportedSitesObservable = container[name + "SitesArray"] =  ko.computed(function(){
+                if (pointsOnly){
+                    return ko.utils.arrayFilter(sitesObservable(),function(site){
+                        return site.extent.geometry.type === 'Point';
+                    })
+                }
+
+                if (polygonsOnly){
+                    return ko.utils.arrayFilter(sitesObservable(),function(site){
+                        return site.extent.geometry.type != 'Point';
+                    })
+                }
+
+                return sitesObservable();
+
+                }),
+
+
+    // sitesObservable = container[name + "SitesArray"] = ko.computed(function(){
         //     if (pointsOnly){
         //         return ko.utils.arrayFilter(activityLevelData.pActivity.sites,function(site){
         //             return site.extent.geometry.type === 'Point';
@@ -289,7 +299,7 @@ function enmapify(args) {
             })[0];
             //search from site collection in case it is a private site
             if (!matchingSite){
-                var siteUrl = getSiteUrl + '/' + siteId + "?format=json"
+                var siteUrl = getSiteUrl + '/' + siteId + ".json"
                 //It is a sync call
                 $.ajax({
                     type: "GET",
@@ -302,6 +312,9 @@ function enmapify(args) {
                             sitesObservable.push(data.site);
                             matchingSite = data.site;
                         }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr);
                     }
                 });
             }
@@ -675,16 +688,7 @@ function enmapify(args) {
         var entityType = activityLevelData.pActivity.projectActivityId ? "projectActivity" : "project"
         return $.getJSON(listSitesUrl + '/' + (activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId) + "?entityType=" + entityType).then(function (data, textStatus, jqXHR) {
             //TODO optimised
-            sitesObservable($.grep(activityLevelData.pActivity.sites,function(site){
-                if (pointsOnly){
-                    return site.extent.geometry.type === 'Point';
-                }
-                if (polygonsOnly){
-                    return site.extent.geometry.type != 'Point';
-                }
-
-                return true;
-            }))
+            sitesObservable(data);
 
         });
     }
