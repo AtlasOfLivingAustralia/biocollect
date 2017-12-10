@@ -9,6 +9,7 @@ import org.springframework.context.MessageSource
 class ProjectService {
 
     //TODO refactor project type
+    public static final PRIVATE_SITES_REMOVED  = 'privatesitesremoved'
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE = 'survey'
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE_TYPE_2 = 'citizenScience'
     public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoScience'
@@ -65,7 +66,7 @@ class ProjectService {
 
         def params = '?'
 
-        params += levelOfDetail ? "view=${levelOfDetail}&" : ''
+        params += levelOfDetail ? "view=${levelOfDetail?:PRIVATE_SITES_REMOVED}&" : ''
         params += "includeDeleted=${includeDeleted}&"
         params += version ? "version=${version}" : ''
         webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + id + params)

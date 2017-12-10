@@ -48,7 +48,7 @@ class ProjectController {
     static int MAX_FACET_TERMS = 500
 
     def index(String id) {
-        def project = projectService.get(id, 'brief', false, params?.version)
+        def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED, false, params?.version)
         def roles = roleService.getRoles()
 
         if (!project || project.error) {
@@ -132,7 +132,7 @@ class ProjectController {
      */
     def listSurveys(String id) {
         def projectActivities = []
-        def project = projectService.get(id, 'brief', false, params?.version)
+        def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED, false, params?.version)
         if (project && project.projectType in [ProjectService.PROJECT_TYPE_ECOSCIENCE, ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE]) {
             projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
         }
@@ -245,7 +245,7 @@ class ProjectController {
     @PreAuthorise(accessLevel = 'admin')
     def edit(String id) {
 
-        def project = projectService.get(id, 'brief')
+        def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED)
         // This will happen if we are returning from the organisation create page during an edit workflow.
         if (params.organisationId) {
             project.organisationId = params.organisationId
@@ -271,7 +271,7 @@ class ProjectController {
 
     @PreAuthorise
     def newProjectIntro(String id) {
-        Map project = projectService.get(id, 'brief')
+        Map project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED)
 
         if (project) {
             [project: project, text: settingService.getSettingText(SettingPageType.NEW_CITIZEN_SCIENCE_PROJECT_INTRO)]
@@ -734,7 +734,7 @@ class ProjectController {
 
 
     def species(String id) {
-        def project = projectService.get(id, 'brief')
+        def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED)
         def activityTypes = metadataService.activityTypesList();
         render view:'/species/select', model: [project:project, activityTypes:activityTypes]
     }

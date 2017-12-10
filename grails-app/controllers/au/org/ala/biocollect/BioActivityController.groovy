@@ -767,7 +767,7 @@ class BioActivityController {
     private Map activityModel(activity, projectId, mode = '', version = null) {
         Map model = [activity: activity, returnTo: params.returnTo, mode: mode]
         model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view: 'brief', version: version]) : null
-        model.project = projectId ? projectService.get(model.activity.projectId, version) : null
+        model.project = projectId ? projectService.get(model.activity.projectId, null, false, version) : null
         model.projectSite = model.project?.sites?.find { it.siteId == model.project.projectSiteId }
 
         // Add the species lists that are relevant to this activity.
