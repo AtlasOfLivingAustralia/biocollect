@@ -395,8 +395,10 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
         };
 
         $.ajax({
-            url: fcConfig.projectUrl,
-            data: data,
+            url: fcConfig.projectUpdateUrl,
+            method: 'post',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
             success : function () {
 
             },

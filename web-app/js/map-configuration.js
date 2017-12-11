@@ -17,23 +17,60 @@
 function MapConfiguration(config, project)
 {
     var self = this;
-    var sites = params.sites ? params.sites : [];
+    var sites = project.sites || [],
+        defaults = {
+            allowPolygons: true,
+            allowPoints: true
+        };
     config = config || {};
+    config = $.extend(defaults, config);
+    project.sites = project.sites || [];
 
-    self.allowPolygons = ko.observable(config.allowPolygons || true);
-    self.allowPoints = ko.observable(config.allowPoints || true);
+    self.allowPolygons = ko.observable(config.allowPolygons);
+    self.allowPoints = ko.observable(config.allowPoints);
     self.allowAdditionalSurveySites = ko.observable(config.allowAdditionalSurveySites);
     self.selectFromSitesOnly = ko.observable(config.selectFromSitesOnly);
     self.defaultZoomArea = ko.observable(config.defaultZoomArea || project.projectSiteId);
     self.baseLayersName = ko.observable(config.baseLayersName);
-    self.sites = ko.observableArray();
-    self.loadSites = function (projectSites, surveySites) {
-        $.map(projectSites ? projectSites : [], function (obj, i) {
-            var defaultSites = [];
-            surveySites && surveySites.length > 0 ? $.merge(defaultSites, surveySites) : defaultSites.push(obj.siteId);
-            self.sites.push(new SiteList(obj, defaultSites, self));
-        });
-    };
+    self.sites = ko.observableArray(config.sites || []);
 
-    self.loadSites(sites, pActivity.sites);
+    self.transients = {};
+    self.transients.sites = project.sites;
+    self.transients.selectedSites = ko.computed(function () {
+        var sites = self.sites(),
+            result = [];
+
+        sites.forEach(function (siteId) {
+            var site = $.grep(self.transients.sites, function (site) {
+                return site.siteId == siteId;
+            });
+
+            if(site.length){
+                result.push(site[0]);
+            }
+        });
+
+        return result;
+    });
+    self.transients.unSelectedSites = ko.computed(function () {
+        var sites = self.sites(),
+            result = [];
+
+        self.transients.sites.forEach(function (site) {
+            if(sites.indexOf(site.siteId) == -1){
+                result.push(site)
+            }
+        });
+
+        return result;
+    });
+    self.transients.siteUrl = function (site) {
+        return fcConfig.siteViewUrl + '/' + site.siteId
+    };
+    self.transients.addSite = function (site) {
+        self.sites.push(site.siteId);
+    };
+    self.transients.removeSite = function (site) {
+        self.sites.remove(site.siteId);
+    };
 }

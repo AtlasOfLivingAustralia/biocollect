@@ -1,6 +1,5 @@
 <div>
-
-    <!-- ko with: {} -->
+    <!-- ko with: mapConfiguration -->
     <div class="row-fluid">
         <div class="span12 text-left">
             <h3 class="strong"><g:message code="project.works.mapConfiguration.title"/></h3>
@@ -18,19 +17,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                <!-- ko foreach: sites -->
-                <tr data-bind="visible: added()">
-                    <!-- ko ifnot: isProjectArea -->
+                <!-- ko foreach: transients.selectedSites -->
+                <tr>
                     <td>
-                        <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
-                        <button class="btn btn-mini pull-right btn-default" data-bind="click: removeSite, disable: transients.isDataForSite"  title="Remove this site from survey">
+                        <a class="btn-link" target="_blank" data-bind="attr:{href: $parent.transients.siteUrl($data)}, text: name"></a>
+                        <button class="btn btn-mini pull-right btn-default" data-bind="click: $parent.transients.removeSite"  title="Remove this site from whitelist">
                             <span class="icon-arrow-right"></span>
                         </button>
                     </td>
-                    <!-- /ko -->
                 </tr>
                 <!-- /ko -->
-                <!-- ko if: getNumberOfSitesForSurvey() == 0 -->
+                <!-- ko if: transients.selectedSites().length == 0 -->
                 <tr>
                     <td>
                         <i><g:message code="project.works.mapConfiguration.associatedSites.message"/> <span class="icon-arrow-left"></span>.</i>
@@ -52,19 +49,17 @@
                 </thead>
 
                 <tbody>
-                <!-- ko foreach: sites -->
-                <!-- ko ifnot: name() == '*' -->
-                <tr data-bind="visible: !added()">
+                <!-- ko foreach: transients.unSelectedSites -->
+                <tr>
                     <td>
-                        <button class="btn btn-mini btn-primary" data-bind="click: addSite" title="Add this site to whitelist">
+                        <button class="btn btn-mini btn-primary" data-bind="click: $parent.transients.addSite" title="Add this site to whitelist">
                             <span class="icon-arrow-left icon-white"></span>
                         </button>
-                        <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
+                        <a class="btn-link" target="_blank" data-bind="attr:{href: $parent.transients.siteUrl($data)}, text: name"></a>
                     </td>
                 </tr>
                 <!-- /ko -->
-                <!-- /ko -->
-                <!-- ko if:sites().length == 0 -->
+                <!-- ko if: transients.unSelectedSites().length == 0 -->
                 <tr>
                     <td>
                         <g:message code="project.works.mapConfiguration.projectSites.message"/>
@@ -81,9 +76,9 @@
             <h4><g:message code="project.works.mapConfiguration.site.controls"/></h4>
             <div class="">
                 <div class="btn-group btn-group-justified margin-bottom-5">
-                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToCreate, disable: transients.warning()"><i class="icon-plus"></i> <g:message code="project.works.mapConfiguration.site.controls.add"/> </button>
-                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToSelect, disable: transients.warning()"><i class="icon-folder-open"></i> <g:message code="project.works.mapConfiguration.site.controls.choose"/> </button>
-                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToUpload, disable: transients.warning()"><i class="icon-arrow-up"></i> <g:message code="project.works.mapConfiguration.site.controls.upload"/> </button>
+                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToCreate"><i class="icon-plus"></i> <g:message code="project.works.mapConfiguration.site.controls.add"/> </button>
+                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToSelect"><i class="icon-folder-open"></i> <g:message code="project.works.mapConfiguration.site.controls.choose"/> </button>
+                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToUpload"><i class="icon-arrow-up"></i> <g:message code="project.works.mapConfiguration.site.controls.upload"/> </button>
                 </div>
             </div>
         </div>
@@ -99,11 +94,11 @@
             </label>
 
             <label class="checkbox">
-                <input type="checkbox" data-bind="checked: allowAdditionalSurveySites, disable: transients.warning()"/> Allow Additional Survey Sites <a href="#" data-bind="popover: {content:'<g:message code="project.works.mapConfiguration.drawing.additionalSites.help"/> '}"><i  class="icon-question-sign"></i></a>
+                <input type="checkbox" data-bind="checked: allowAdditionalSurveySites"/> Allow Additional Survey Sites <a href="#" data-bind="popover: {content:'<g:message code="project.works.mapConfiguration.drawing.additionalSites.help"/> '}"><i  class="icon-question-sign"></i></a>
             </label>
 
             <label class="checkbox">
-                <input type="checkbox" data-bind="checked: selectFromSitesOnly, disable: transients.warning()"/> ONLY Select from existing sites <a href="#" data-bind="popover: {content:'<g:message code="project.works.mapConfiguration.drawing.selectFromSiteOnly.help"/> '}"><i  class="icon-question-sign"></i></a></id>
+                <input type="checkbox" data-bind="checked: selectFromSitesOnly"/> ONLY Select from existing sites <a href="#" data-bind="popover: {content:'<g:message code="project.works.mapConfiguration.drawing.selectFromSiteOnly.help"/> '}"><i  class="icon-question-sign"></i></a></id>
             </label>
 
         </div>
@@ -115,7 +110,7 @@
             <auth:ifAnyGranted roles="ROLE_ADMIN">
                 <label for="map-tiles">
                     Map tiles:
-                    <select id="map-tiles" data-bind="value: baseLayersName, optionsCaption: 'Choose...', disable: transients.warning()">
+                    <select id="map-tiles" data-bind="value: baseLayersName, optionsCaption: 'Choose...'">
                         <option>Google Maps</option>
                         <option>Open Layers</option>
                     </select>
@@ -126,7 +121,7 @@
             <label>
                 Default zoom area:
                 <select id="siteToZoom"
-                        data-bind='options: sites, optionsText: "name", optionsValue: "siteId", value: defaultZoomArea;'></select>
+                        data-bind='options: transients.sites, optionsText: "name", optionsValue: "siteId", value: defaultZoomArea;'></select>
             </label>
 
         </div>
