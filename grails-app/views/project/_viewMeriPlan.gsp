@@ -184,100 +184,15 @@
 		<!-- ko with: details -->
 		<div class="row-fluid space-after">
 			<div class="required">
-			        <div id="project-risks-threats" class="margin-bottom-10 margin-right-20">
-					<label><b>Project risks & threats</b></label> 
-					<div align="right">
-				  		<b> Overall project risk profile : <span data-bind="text: risks.overallRisk, css: overAllRiskHighlight" ></span></b>
-					</div>
-					<table style="width:100%;">
-				    <thead >
-			          <tr>
-			            <th>Type of threat / risk</th>
-			            <th>Description</th>
-						<th>Likelihood</th>			                
-						<th>Consequence</th>							
-						<th>Risk rating</th>
-						<th>Current control / Contingency strategy</th>														
-						<th>Residual risk</th>	
-			          </tr>
-				    </thead>
-					<tbody data-bind="foreach : risks.rows" >
-					             <tr>
-					                 <td>
-					                 	<label data-bind="text: threat" ></label>
-					                 </td>
-					                 <td>
-					                 	<label data-bind="text: description" ></label>
-					                 </td>
-					                 <td>
-					                 	<label data-bind="text: likelihood" ></label>
-					                 </td>
-					                 <td>
-					                 	<label data-bind="text: consequence" ></label>
-					                 </td>
-					                 <td>
-					                 <label data-bind="text: riskRating" ></label> 
-					                 </td>
-					                 <td>
-					                 	<label data-bind="text: currentControl" ></label>
-					                  </td>
-					                 <td>
-					                 	<label data-bind="text: residualRisk" ></label>
-					                  </td>
-					              </tr>
-					      </tbody>
-					  </table>
-		        </div>
-			    </div>
+			    <g:render template="riskTableReadOnly"/>
+			</div>
 		</div>
 		<!-- /ko -->
 
 			<!-- ko with: details.issues -->
 			<div class="row-fluid space-after">
 				<div class="required">
-					<div class="project-issues margin-bottom-10 margin-right-20">
-						<label><b>Project issues</b></label>
-						<table style="width:100%;">
-							<thead >
-							<tr>
-							<tr>
-								<th class="type">Type of issue </th>
-								<th class="date">Date</th>
-								<th class="status">Status </th>
-								<th class="priority">Priority </th>
-								<th class="description">Description</th>
-								<th class="actionPlan">Action plan </th>
-								<th class="impact">Impact</th>
-							</tr>
-							</tr>
-							</thead>
-							<tbody data-bind="foreach : issues" >
-							<tr>
-								<td class="type">
-									<label data-bind="text: type" ></label>
-								</td>
-								<td class="date">
-									<label data-bind="text: date.formattedDate"></label>
-								</td>
-								<td class="status">
-									<label data-bind="text: status" ></label>
-								</td>
-								<td class="priority">
-									<label data-bind="text: priority" ></label>
-								</td>
-								<td  class="description">
-									<label data-bind="text: description" ></label>
-								</td>
-								<td class="actionPlan">
-									<label data-bind="text: actionPlan" ></label>
-								</td>
-								<td class="impact">
-									<label data-bind="text: impact" ></label>
-								</td>
-							</tr>
-							</tbody>
-						</table>
-					</div>
+					<g:render template="issueTableReadOnly"/>
 				</div>
 			</div>
 			<!-- /ko -->

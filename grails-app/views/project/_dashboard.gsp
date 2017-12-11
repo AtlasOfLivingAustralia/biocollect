@@ -1,5 +1,80 @@
+<%@ page import="au.org.ala.biocollect.DateUtils" %>
 %{-- Not using this tag as we want  a protocol-less import<gvisualization:apiImport/>--}%
 <script type="text/javascript" src="//www.google.com/jsapi"></script>
+
+<div class="edit-view-meri-plan">
+<h3>Risks and issues</h3>
+<!-- ko with: details -->
+    <g:render template="riskTableReadOnly"/>
+
+
+<!-- /ko -->
+
+<!-- ko with: details.issues -->
+    <g:render template="issueTableReadOnly"/>
+
+
+<!-- /ko -->
+
+
+<h3>Project Milestones</h3>
+<table class="milestones">
+    <thead>
+    <tr>
+        <th class="date">Date</th>
+        <th class="description">Description</th>
+        <th class="status">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <g:each in="${activities}" var="activity">
+        <g:if test="${activity.typeCategory == 'Milestone'}">
+            <tr>
+                <td>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(activity.plannedEndDate)}</td>
+                <td>${activity.description}</td>
+                <td>${activity.progress}</td>
+            </tr>
+           </g:if>
+    </g:each>
+
+    </tbody>
+
+
+</table>
+
+    <g:if test="${project?.custom?.details?.outcomeProgress}">
+    <h3>Progress towards outcomes</h3>
+    <table class="outcomes-progress">
+        <thead>
+        <tr>
+            <th class="date">Date</th>
+            <th class="type">Interim / Final</th>
+            <th class="outcome-progress">Progress</th>
+        </tr>
+        </thead>
+        <tbody>
+        <g:each in="${project.custom.details.outcomeProgress}" var="outcome">
+
+        <tr>
+            <td class="date">
+                ${DateUtils.isoToDisplayFormat(outcome.date)}
+            </td>
+            <td class="type">
+                ${outcome.type}
+            </td>
+            <td class="outcome-progress">
+                <textarea readonly rows="3">${outcome.progress}</textarea>
+            </td>
+        </tr>
+
+        </tbody>
+        </g:each>
+
+    </table>
+    </g:if>
+
+
+</div>
 
 <g:set var="targets" value="${metrics.targets}"/>
 <g:set var="other" value="${metrics.other}"/>
