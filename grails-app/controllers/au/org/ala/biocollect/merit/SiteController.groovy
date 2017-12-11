@@ -164,7 +164,7 @@ class SiteController {
             render pActivity.sites as JSON
 
         } else if (params.entityType == "project") {
-            def project = projectService.get(id, "brief")
+            def project = projectService.get(id, "all")
             if (!project) {
                 response.sendError(404, "Couldn't find project $id")
                 return
