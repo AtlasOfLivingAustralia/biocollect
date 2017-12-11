@@ -147,15 +147,17 @@
                                     <th>Display name</th>
                                     <th>Content type</th>
                                     <th>Href value</th>
+                                    <th>Role</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!-- ko foreach: links -->
-                                <!-- ko template: { name: 'templateLink'} -->
+                                <!-- ko template: { name: 'templateLink', data: {disableRoles:false, link:$data }} -->
                                 <!-- /ko -->
                                 <!-- /ko -->
                                 <tr>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -197,15 +199,17 @@
                                     <th>Display name</th>
                                     <th>Content type</th>
                                     <th>Href value</th>
+                                    <th>Role</th>
                                     <th>Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <!-- ko foreach: links -->
-                                <!-- ko template: { name: 'templateLink'} -->
+                                <!-- ko template: { name: 'templateLink', data: {disableRoles:false, link:$data }} -->
                                 <!-- /ko -->
                                 <!-- /ko -->
                                 <tr>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -351,7 +355,7 @@
                     </thead>
                     <tbody>
                     <!-- ko foreach: quickLinks -->
-                    <!-- ko template: { name: 'templateLink'} -->
+                    <!-- ko template: { name: 'templateLink', data: {$parent: $parent, disableRoles:true, link:$data }} -->
                     <!-- /ko -->
                     <!-- /ko -->
                     <tr>
@@ -508,10 +512,10 @@
 <script id="templateLink" type="text/html">
     <tr>
         <td>
-            <input type="text" data-bind="value: displayName"/>
+            <input type="text" data-bind="value: link.displayName"/>
         </td>
         <td>
-            <select data-bind="value: contentType">
+            <select data-bind="value: link.contentType">
                 <option value="content">Biocollect content</option>
                 <option value="static">Static page</option>
                 <option value="external">External link</option>
@@ -528,8 +532,16 @@
             </select>
         </td>
         <td>
-            <input type="text" data-bind="value: href"/>
+            <input type="text" data-bind="value: link.href"/>
         </td>
+        <!-- ko if:!disableRoles -->
+        <td>
+            <select data-bind="value: link.role">
+                <option value="">Anyone</option>
+                <g:render template="/admin/userRoleOptions"/>
+            </select>
+        </td>
+        <!-- /ko -->
         <td>
             <button class="btn btn-danger" data-bind="click: $parent.removeLink">
                 <i class="icon icon-remove icon-white"></i> Remove
@@ -568,7 +580,7 @@
                 </thead>
                 <tbody>
                 <!-- ko foreach: breadCrumbs -->
-                <!-- ko template: { name: 'templateLink'} -->
+                <!-- ko template: { name: 'templateLink', data: {$parent: $parent, disableRoles:true, link:$data }} -->
                 <!-- /ko -->
                 <!-- /ko -->
                 <tr>
@@ -807,15 +819,17 @@
                             <th>Display name</th>
                             <th>Content type</th>
                             <th>Href value</th>
+                            <th>Role</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
                         <!-- ko foreach: buttons -->
-                        <!-- ko template: { name: 'templateLink'} -->
+                        <!--ko template: { name: 'templateLink', data: {disableRoles:false, link:$data }} -->
                         <!-- /ko -->
                         <!-- /ko -->
                         <tr>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>

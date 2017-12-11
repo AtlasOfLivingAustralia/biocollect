@@ -69,7 +69,7 @@
 
                 <tbody>
                 <!-- ko foreach: sites -->
-                    <!-- ko ifnot: name() == '*' -->
+
                         <tr data-bind="visible: !added()">
                             <td>
                                 <button class="btn btn-mini btn-primary" data-bind="click: addSite" title="Add this site to survey">
@@ -78,7 +78,7 @@
                                 <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
                             </td>
                         </tr>
-                    <!-- /ko -->
+
                 <!-- /ko -->
                 <!-- ko if:sites().length == 0 -->
                 <tr>

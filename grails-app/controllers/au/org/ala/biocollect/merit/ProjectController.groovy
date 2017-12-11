@@ -428,7 +428,7 @@ class ProjectController {
         def projectSite = values.remove("projectSite")
         def documents = values.remove('documents')
         def links = values.remove('links')
-        final Map project = projectService.get(id)
+        final Map project = id ? projectService.get(id) : null
         def projectType = id ? project.projectType : values?.projectType
 
         String mainImageAttribution = values.remove("mainImageAttribution")
@@ -480,7 +480,7 @@ class ProjectController {
             else if (!projectSite.projects.contains(id))
                 projectSite.projects += id
 
-            siteService.update(siteResult.id, projectSite)
+            siteService.update(values.projectSiteId, projectSite)
         }
         if (result.error) {
             render result as JSON
