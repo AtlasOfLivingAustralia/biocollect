@@ -3,7 +3,7 @@ package au.org.ala.biocollect.merit
 class ReportController {
 
     static defaultAction = "dashboard"
-    def webService, cacheService, searchService, metadataService
+    def webService, cacheService, searchService, metadataService, reportService
 
     def loadReport() {
         forward action: params.report+'Report', params:params
@@ -66,5 +66,12 @@ class ReportController {
         render view:'_dashboard', model:model
 
     }
+
+    def programReport() {
+        // Check hub permissions....  how?  needs to be attached to the program...
+
+        reportService.programReport("")
+    }
+
 
 }

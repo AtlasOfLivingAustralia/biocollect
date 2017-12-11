@@ -26,6 +26,7 @@ class ReportService {
     def documentService
     def metadataService
     def activityService
+    def messageSource
 
     private static int DEFAULT_REPORT_DAYS_TO_COMPLETE = 43
 
@@ -553,5 +554,82 @@ class ReportService {
 
         [actions:allActions, actionStatus:actionStatus, actionStatusByTheme:actionStatusByTheme, endDate:endDate]
 
+    }
+
+    Map programReport(String programName, String searchTerm = "*:*") {
+//        Provide a dashboard style capability for an authorised user, using speed dial type graphics (or similar), which provide a status snapshot of, for example, the –
+//        •	Number of projects being performed by project type and status of finalised, current and planned
+//        •	Number of project risks by the overall risk rating
+//        •	Number of issues by the impact levels
+//        •	Overall budget assigned to the projects by financial year.
+
+        // This would almost certainly be better done with ES aggregrations....
+
+        int BATCH_SIZE = 100
+
+        String now = DateUtils.format(new Date())
+        Map<String,Map> projectStatusByType = [:].withDefault{[:].withDefault{0}}
+        Map<String, Integer> risks = [:].withDefault{0}
+        Map<String, Integer> issues = [:].withDefault{0}
+        Map<String, Integer> budgetByYear = [:].withDefault{0}
+
+        int processed = 0
+        Map params = [offset:processed, max:BATCH_SIZE]
+        if (programName) {
+            params.fq = "associatedProgram:"+programName
+        }
+        def result = searchService.allProjects(params, searchTerm)
+        int count = result?.hits?.total ?: 0
+        while (processed < count) {
+            result.hits.hits?.each { hit ->
+                Map project = hit._source
+                projectStatusByType[project.projectType][getStatus(project, now)]++
+                String overallRiskRating = project.custom?.details?.risks?.overallRisk
+                if (overallRiskRating) {
+                    risks[overallRiskRating]++
+                }
+                if (project.custom?.details?.issues?.issues) {
+                    project.custom.details.issues.issues.each { issue ->
+                        issues[issue.impact]++
+                    }
+                }
+                if (project.custom?.details?.budget?.headers) {
+                    Map budget = project.custom.details.budget
+                    budget.headers.eachWithIndex { header, i ->
+                        if (budget.columnTotal[i]) {
+                            budgetByYear[header.data] += budget.columnTotal[i].data
+                        }
+                    }
+                }
+
+                processed++
+            }
+            params.offset = processed
+            result = searchService.allProjects(params)
+        }
+
+        Map projectStatusByTypeAsScores = projectStatusByType.collectEntries { key, value ->
+            String title = messageSource.getMessage('project.facets.typeOfProject.'+key, null, Locale.default)
+            [(key):asScore(title, value)]
+        }
+        [projectStatusByType:projectStatusByTypeAsScores,
+         issueCountByImpact:asScore("Issue count by impact" , issues),
+         riskCountByRating:asScore("Risk count by rating", risks),
+         budgetByYear:asScore("Budget by financial year", budgetByYear, 'barchart')]
+    }
+
+    private Map asScore(String label, Map data, String type = 'piechart') {
+
+        [label: label, result: [result:data], displayType:type]
+    }
+
+    private String getStatus(Map project, String isoDate) {
+        if (project.plannedEndDate < isoDate) {
+            return 'Finished'
+        }
+        if (project.plannedStartDate > isoDate) {
+            return 'Planned'
+        }
+        return 'Current'
     }
 }
