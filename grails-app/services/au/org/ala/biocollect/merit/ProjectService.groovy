@@ -108,7 +108,7 @@ class ProjectService {
     def validate(props, projectId = null) {
         def error = null
         def updating = projectId != null
-        def project = get(projectId)
+        def project = projectId ? get(projectId) : null
         def projectType = ((updating && !props?.projectType) ? project?.projectType : props?.projectType)
         def isWorks = projectType == PROJECT_TYPE_WORKS
         def isEcoScience = projectType == PROJECT_TYPE_ECOSCIENCE

@@ -58,34 +58,27 @@ function enmapify(args) {
         latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(!pointsOnly),
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
+        //siteObservable filters out all private sites
+        sitesObservable = ko.observableArray(activityLevelData.pActivity.sites),
+        //container[SitesArray] does not care about 'private' or not, only check if the site matches the survey configs
+        surveySupportedSitesObservable = container[name + "SitesArray"] =  ko.computed(function(){
+                if (pointsOnly){
+                    return ko.utils.arrayFilter(sitesObservable(),function(site){
+                        return site.extent.geometry.type === 'Point';
+                    })
+                }
 
-        sitesObservable = container[name + "SitesArray"] = ko.observableArray($.grep(activityLevelData.pActivity.sites,function(site){
-                    if (pointsOnly){
-                           return site.extent.geometry.type === 'Point';
-                    }
-                    if (polygonsOnly){
-                           return site.extent.geometry.type != 'Point';
-                    }
+                if (polygonsOnly){
+                    return ko.utils.arrayFilter(sitesObservable(),function(site){
+                        return site.extent.geometry.type != 'Point';
+                    })
+                }
 
-                    return true;
-            })),
-        // sitesObservable = container[name + "SitesArray"] = ko.computed(function(){
-        //     if (pointsOnly){
-        //         return ko.utils.arrayFilter(activityLevelData.pActivity.sites,function(site){
-        //             return site.extent.geometry.type === 'Point';
-        //         })
-        //     }
-        //
-        //     if (polygonsOnly){
-        //         return ko.utils.arrayFilter(activityLevelData.pActivity.sites,function(site){
-        //             return site.extent.geometry.type != 'Point';
-        //         })
-        //     }
-        //
-        //     return new ko.observableArray(activityLevelData.pActivity.sites);
-        //
-        //
-        //     }),
+                return sitesObservable();
+
+                }),
+
+
         loadingObservable = container[name + "Loading"] = ko.observable(false),
         checkMapInfo = viewModel.checkMapInfo=activityLevelData.checkMapInfo = ko.computed(function(){
             var lat = latObservable(), lon = lonObservable(), siteId = siteIdObservable();
@@ -291,7 +284,7 @@ function enmapify(args) {
             })[0];
             //search from site collection in case it is a private site
             if (!matchingSite){
-                var siteUrl = getSiteUrl + '/' + siteId + "?format=json"
+                var siteUrl = getSiteUrl + '/' + siteId + ".json"
                 //It is a sync call
                 $.ajax({
                     type: "GET",
@@ -304,6 +297,9 @@ function enmapify(args) {
                             sitesObservable.push(data.site);
                             matchingSite = data.site;
                         }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr);
                     }
                 });
             }
@@ -676,17 +672,7 @@ function enmapify(args) {
     function reloadSiteData() {
         var entityType = activityLevelData.pActivity.projectActivityId ? "projectActivity" : "project"
         return $.getJSON(listSitesUrl + '/' + (activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId) + "?entityType=" + entityType).then(function (data, textStatus, jqXHR) {
-            //TODO optimised
-            sitesObservable($.grep(activityLevelData.pActivity.sites,function(site){
-                if (pointsOnly){
-                    return site.extent.geometry.type === 'Point';
-                }
-                if (polygonsOnly){
-                    return site.extent.geometry.type != 'Point';
-                }
-
-                return true;
-            }))
+            sitesObservable(data);
 
         });
     }

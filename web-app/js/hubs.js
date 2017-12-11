@@ -69,6 +69,16 @@ var HubSettingsViewModel = function (programsModel, options) {
     });
 };
 
+/**
+ * Wraps an array of links in LinkViewModels
+ * @param links the links to wrap.
+ */
+function mapLinks(links) {
+    return $.map(links || [], function(link) {
+        return new LinkViewModel(link);
+    });
+}
+
 var HubSettings = function (settings, config) {
 
     var self = this;
@@ -205,7 +215,7 @@ var HubSettings = function (settings, config) {
         self.homePagePath(self.orBlank(settings.homePagePath));
         self.defaultFacetQuery([]);
         self.content(new ContentViewModel(settings.content || {}));
-        self.quickLinks(settings.quickLinks || []);
+        self.quickLinks(mapLinks(settings.quickLinks));
         self.templateConfiguration(new TemplateConfigurationViewModel(settings.templateConfiguration || {}));
         if (settings.defaultFacetQuery && settings.defaultFacetQuery instanceof Array) {
             $.each(settings.defaultFacetQuery, function (i, obj) {
@@ -289,7 +299,7 @@ var HubSettings = function (settings, config) {
 
     self.save = function () {
         if ($(config.formSelector).validationEngine('validate')) {
-            var js = ko.mapping.toJS(self, {ignore: 'transients'});
+            var js = ko.mapping.toJS(self, {ignore: ['transients', 'disableRoles']});
             // Unwrap the default facet query which we wrapped to allow binding to values in the array
             var defaultFacetQuery = [];
             $.each(js.defaultFacetQuery, function (i, query) {
@@ -349,10 +359,7 @@ function ContentViewModel(config) {
 
 var HeaderViewModel = function (config) {
     var self = this;
-    config.links = $.map(config.links || [], function (link) {
-        return new LinkViewModel(link);
-    });
-
+    config.links = mapLinks(config.links);
     self.links = ko.observableArray(config.links);
     self.logo = ko.observable();
     self.style = ko.observable(config.style);
@@ -369,9 +376,7 @@ var HeaderViewModel = function (config) {
 
 var FooterViewModel = function (config) {
     var self = this;
-    config.links = $.map(config.links || [], function (link) {
-        return new LinkViewModel(link);
-    });
+    config.links = mapLinks(config.links);
 
     config.socials = $.map(config.socials || [], function (social) {
         return new SocialMediaViewModel(social);
@@ -402,6 +407,7 @@ var LinkViewModel = function (config) {
     self.displayName = ko.observable(config.displayName || '');
     self.contentType = ko.observable(config.contentType || 'static');
     self.href = ko.observable(config.href || '');
+    self.role = ko.observable(config.role || '');
 };
 
 var StyleViewModel = function (config) {
@@ -444,7 +450,7 @@ var SocialMediaViewModel = function (config) {
 var ButtonsHomePageViewModel = function (config) {
     var self = this;
 
-    self.buttons = ko.observableArray(config.buttons || []);
+    self.buttons = ko.observableArray(mapLinks(config.buttons));
     self.numberOfColumns = ko.observable(config.numberOfColumns || 3);
 
     self.addButtton = function () {
@@ -587,7 +593,7 @@ function CustomBreadCrumbsViewModel(config) {
     var self = this;
     self.controllerName = ko.observable(config.controllerName || '');
     self.actionName = ko.observable(config.actionName || '');
-    self.breadCrumbs = ko.observableArray(config.breadCrumbs || []);
+    self.breadCrumbs = ko.observableArray(mapLinks(config.breadCrumbs));
 
     self.addBreadCrumb = function () {
         self.breadCrumbs.push(new LinkViewModel({}));

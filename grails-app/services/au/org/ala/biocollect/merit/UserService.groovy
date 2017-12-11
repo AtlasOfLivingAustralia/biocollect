@@ -1,5 +1,7 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.merit.hub.HubSettings
+
 import javax.annotation.PostConstruct
 import org.apache.commons.httpclient.HttpStatus
 
@@ -70,6 +72,29 @@ class UserService {
         }
 
         return user
+    }
+
+    /**
+     * Hubs currently only support public, logged in user and admin roles so this implementation doesn't need
+     * to call ecodata to use the AccessLevel comparison.  This avoids the need to cache the result, at least for the
+     * moment, as this method could be called many times while rendering a hub skin.
+     * @param role the role to check.
+     * @return true if the user has the supplied role.
+     */
+    boolean doesUserHaveHubRole(String role) {
+        HubSettings settings = SettingService.getHubConfig()
+        String userId = getUser()?.userId
+        if (!userId) {
+            return false
+        }
+        if (userIsAlaAdmin()) {
+            return true
+        }
+        if (role == RoleService.LOGGED_IN_USER_ROLE) {
+            return true
+        }
+
+        return role == settings.userPermissions?.find({it.userId == userId})?.accessLevel
     }
 
     def userInRole(role) {
