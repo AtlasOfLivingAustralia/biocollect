@@ -3,7 +3,7 @@ package au.org.ala.biocollect.merit
 class ReportController {
 
     static defaultAction = "dashboard"
-    def webService, cacheService, searchService, metadataService, reportService
+    def webService, cacheService, searchService, metadataService, reportService, userService
 
     def loadReport() {
         forward action: params.report+'Report', params:params
@@ -68,9 +68,18 @@ class ReportController {
     }
 
     def programReport() {
-        // Check hub permissions....  how?  needs to be attached to the program...
 
-        reportService.programReport("")
+        // This prevents this report from being available in the production environment.
+        if (grailsApplication.config.projectdata.industries.enabled &&
+            userService.doesUserHaveHubRole(RoleService.PROJECT_ADMIN_ROLE)) {
+
+            // This needs to be improved to be program specific.
+            reportService.programReport("")
+        }
+        else {
+            render status:401, text: "Unauthorized"
+        }
+
     }
 
 

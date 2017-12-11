@@ -15,7 +15,7 @@
 </head>
 
 <body>
-
+<h1>Program Overview</h1>
 <h3>Project Status by type of project</h3>
 <div class="row-fluid">
     <g:each in="${projectStatusByType}" var="type">
