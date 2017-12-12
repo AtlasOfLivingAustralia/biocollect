@@ -363,6 +363,7 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
     var config = $.extend(defaults, options);
 
     $.extend(self, new ProjectViewModel(project, isEditor, organisations));
+    self.mapConfiguration = new MapConfiguration(project.mapConfiguration, project);
     var themes = [];
     $.extend(self, new MERIPlan(project, themes, config.storageKey));
 
@@ -386,6 +387,25 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
                 bootbox.alert("An error occurred while updating the plan.");
             });
         } 
+    };
+
+    self.saveMapConfig = function () {
+        var data = {
+            mapConfiguration: ko.toJS(self.mapConfiguration)
+        };
+
+        $.ajax({
+            url: fcConfig.projectUpdateUrl,
+            method: 'post',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success : function () {
+
+            },
+            error: function () {
+
+            }
+        })
     };
 
     self.cancelMeriPlanEdits = function() {
