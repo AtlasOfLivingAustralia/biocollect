@@ -38,12 +38,12 @@ function enmapify(args) {
         uniqueNameUrl = args.uniqueNameUrl + "/" + ( activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId),
         hideSiteSelection = args.hideSiteSelection || false,
         hideMyLocation = args.hideMyLocation || false,
-        allowPolygons = args.activityLevelData.pActivity.allowPolygons == undefined ? true : args.activityLevelData.pActivity.allowPolygons,
+        allowPolygons = args.activityLevelData.pActivity.allowPolygons == undefined ? false : args.activityLevelData.pActivity.allowPolygons,
         allowPoints = args.activityLevelData.pActivity.allowPoints  == undefined ? true : args.activityLevelData.pActivity.allowPoints,
         pointsOnly = allowPoints && !allowPolygons,
         polygonsOnly = !allowPoints && allowPolygons,
         defaultZoomArea = args.activityLevelData.pActivity.defaultZoomArea,
-        allowAdditionalSurveySites = args.activityLevelData.pActivity.allowAdditionalSurveySites == undefined ? true : args.activityLevelData.pActivity.allowAdditionalSurveySites,
+        allowAdditionalSurveySites = args.activityLevelData.pActivity.allowAdditionalSurveySites == undefined ? false : args.activityLevelData.pActivity.allowAdditionalSurveySites,
         selectFromSitesOnly = args.activityLevelData.pActivity.selectFromSitesOnly == undefined ? false : args.activityLevelData.pActivity.selectFromSitesOnly,
 
 
