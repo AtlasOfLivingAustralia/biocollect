@@ -416,15 +416,8 @@ class SiteController {
             render error as JSON
         } else {
             def postBody = request.JSON
-            log.debug "Body: " + postBody
-            log.debug "Params:"
-            params.each { println it }
             //todo: need to detect 'cleared' values which will be missing from the params - implement _destroy
             def values = [:]
-            // filter params to remove:
-            //  1. keys in the ignore list; &
-            //  2. keys with dot notation - the controller will automatically marshall these into maps &
-            //  3. keys in nested maps with dot notation
             postBody.site?.each { k, v ->
                 if (!(k in ignore)) {
                     values[k] = v //reMarshallRepeatingObjects(v);
@@ -437,19 +430,19 @@ class SiteController {
             // ALL linked projects to proceed.
             values.projects?.each { projectId ->
                 if (!projectService.canUserEditSitesForProject(userId, projectId) && !userService.userIsAlaAdmin()) {
-                    log.error("Error: Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}")
+                    log.error("Error: Access denied: User is not en editor or is not allowed to manage sites for projectId ${projectId}")
                     result = [status: 'error']
                 }
             }
 
             if (!result) {
-                result = siteService.updateRaw(id, values)
+                result = siteService.updateRaw(id, values, userId)
                 if(postBody?.pActivityId){
                     def pActivity = projectActivityService.get(postBody.pActivityId)
                     // TODO Check this - need to give users who are submitting a pactvitiy the ability to create new
                     // geometries for the pactvitiy.
                     if (!projectService.canUserViewProject(userId, pActivity?.projectId)) {
-                        log.error("Error: access denied: User does not have *viewer* permission for pActivitityId ${postBody.pActivityId}")
+                        log.error("Error: Access denied: User does not have *viewer* permission for pActivitityId ${postBody.pActivityId}")
                         result = [status: 'error']
                     } else {
                         pActivity.sites.add(result.id)
