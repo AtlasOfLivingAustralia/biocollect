@@ -318,7 +318,7 @@
     <th style="width:25%;">Description</th>
     <th>Activity &nbsp;
         <a href="#createOrUpdateActivity" role="button" class="btn btn-default btn-small" data-toggle="modal"
-                    data-bind="click: openActivityModal(newActivityViewModel)"><i class="icon-plus icon-white"></i>
+                    data-bind="click: openActivityModal(newActivityViewModel)"><i class="icon-plus"></i>
         <g:message code="project.works.createNewActivity"/> </a>
     </th>
     <th>Site &nbsp;

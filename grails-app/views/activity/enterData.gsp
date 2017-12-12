@@ -319,6 +319,7 @@
         var self = this;
         self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
         self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
+        self.project = JSON.parse('${(project as JSON).toString().encodeAsJavaScript()}');
         // We only need the sites from a pActivity within works projects
         self.pActivity = JSON.parse('${(project as JSON).toString().encodeAsJavaScript()}');
         self.pActivity.allowAdditionalSurveySites =  ${canEditSites}

@@ -235,6 +235,7 @@ modules = {
         dependsOn 'knockout', 'attachDocuments', 'wmd', 'responsiveTable'
         resource url: 'js/projects.js'
         resource url: 'js/sites.js'
+        resource url: 'js/map-configuration.js'
         resource url: 'js/meriPlan.js'
         resource url: 'js/risks.js'
         resource url: 'js/works.js'
