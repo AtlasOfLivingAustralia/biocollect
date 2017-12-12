@@ -37,7 +37,11 @@
 }
 
 .project-issues .type {
-    width: 22%;
+    width: 20%;
+}
+
+.project-issues .date {
+    width: 10%;
 }
 
 .project-issues .priority {
@@ -49,11 +53,11 @@
 }
 
 .project-issues .description {
-    width: 22%;
+    width: 20%;
 }
 
 .project-issues .actionPlan {
-    width: 22%;
+    width: 20%;
 }
 
 .project-issues .impact {
@@ -120,4 +124,21 @@ table.outcome-targets.table thead tr:first-child th {
 
 .table-hover tbody tr:hover.no-highlight-on-hover>td, .table-hover tbody tr:hover.no-highlight-on-hover>th {
     background-color: white;
+}
+
+table.milestones {
+    width:100%;
+}
+
+table.milestones .date {
+    width: 15%;
+}
+table.milestones .description {
+    width: 70%;
+}
+table.milestones .progress {
+    width: 15%;
+}
+table.outcomes-progress {
+    width: 100%;
 }
