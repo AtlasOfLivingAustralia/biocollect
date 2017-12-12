@@ -57,6 +57,7 @@
             <div id="sitesPermissions" class="pill-pane">
                 <h3>Sites permissions</h3>
                 <g:render template="sitesPermissions"></g:render>
+                <g:render template="worksMapConfiguration"></g:render>
             </div>
             <!-- DOCUMENTS -->
             <div id="edit-documents" class="pill-pane">
