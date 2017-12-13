@@ -475,40 +475,41 @@ class SiteController {
                     values[k] = v //reMarshallRepeatingObjects(v);
                 }
             }
-            log.debug (values as JSON).toString()
+            log.debug(values as JSON).toString()
 
             def result = [:]
-            // check user has persmissions to edit/update site - user must have 'editor' access to
-            // ALL linked projects to proceed.
-            values.projects?.each { projectId ->
-                if (!projectService.canUserEditSitesForProject(userId, projectId) && !userService.userIsAlaAdmin()) {
-                    log.error("Error: Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}")
-                    result = [status: 'error']
-                }
-            }
 
-            if (!result) {
+            boolean privateSite = values['visibility'] ? (values['visibility'] == 'private' ? true : false) : false;
+
+            if(privateSite){
+                //Do not check permission if site is private
+                //This design is specially for sightings
                 result = siteService.updateRaw(id, values)
-                //Do not save siteid into the selectable sites in project Activity
-                //boolean selectableSite = values['name'] == '*'? false : true;
-                boolean selectableSite = values['visibility'] ? (values['visibility'] == 'private' ? false : true) : true;
-                if (postBody?.pActivityId) {
-                    def pActivity = projectActivityService.get(postBody.pActivityId)
-                    // TODO Check this - need to give users who are submitting a pactvitiy the ability to create new
-                    // geometries for the pactvitiy.
-                    if (!projectService.canUserViewProject(userId, pActivity?.projectId)) {
-                        log.error("Error: access denied: User does not have *viewer* permission for pActivitityId ${postBody.pActivityId}")
-                        result = [status: 'error']
-                    } else {
-                        if (selectableSite)
-                            pActivity.sites.add(result.id)
-                        projectActivityService.update(postBody.pActivityId, pActivity)
-
+            }else{
+                values.projects?.each { projectId ->
+                    if (!projectService.canUserEditSitesForProject(userId, projectId) && !userService.userIsAlaAdmin()) {
+                        log.error("Error: Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}")
+                        render status: 401, error: 'Error: Access denied: User is not en editor or is not allowed to manage sites';
                     }
                 }
+
+
+                if (postBody?.pActivityId) {
+                    def pActivity = projectActivityService.get(postBody.pActivityId);
+
+                    result = siteService.updateRaw(id, values)
+                    if(result?.status != 'error'){
+                        pActivity.sites.add(result.id)
+                        projectActivityService.update(postBody.pActivityId, pActivity)
+                    }
+                }else{
+                    result.status='error';
+                    result.message = 'Cannot find project actvity Id';
+                }
             }
 
-            if (result.status == 'error'){
+
+            if (result.status == 'error') {
                 render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${result.message}"
             } else {
                 render result as JSON

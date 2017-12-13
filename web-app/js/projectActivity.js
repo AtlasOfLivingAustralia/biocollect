@@ -28,7 +28,7 @@ var ProjectActivity = function (params) {
         }
     }.bind(self));
 
-    self.allowPolygons = ko.observable(('allowPolygons' in pActivity)? pActivity.allowPolygons : true);
+    self.allowPolygons = ko.observable(('allowPolygons' in pActivity)? pActivity.allowPolygons : false);
     self.allowPoints = ko.observable(('allowPoints' in pActivity)? pActivity.allowPoints : true);
     self.defaultZoomArea = ko.observable(('defaultZoomArea' in pActivity)? pActivity.defaultZoomArea : project?project.projectSiteId:'');
 

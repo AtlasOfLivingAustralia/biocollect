@@ -40,12 +40,12 @@ function enmapify(args) {
         hideMyLocation = args.hideMyLocation || false,
         project = args.activityLevelData.project || {},
         mapConfiguration = project.mapConfiguration || args.activityLevelData.pActivity || {},
-        allowPolygons = mapConfiguration.allowPolygons == undefined ? true : mapConfiguration.allowPolygons,
+        allowPolygons = mapConfiguration.allowPolygons == undefined ? false : mapConfiguration.allowPolygons,
         allowPoints = mapConfiguration.allowPoints  == undefined ? true : mapConfiguration.allowPoints,
         pointsOnly = allowPoints && !allowPolygons,
         polygonsOnly = !allowPoints && allowPolygons,
         defaultZoomArea = mapConfiguration.defaultZoomArea,
-        allowAdditionalSurveySites = mapConfiguration.allowAdditionalSurveySites == undefined ? true : mapConfiguration.allowAdditionalSurveySites,
+        allowAdditionalSurveySites = mapConfiguration.allowAdditionalSurveySites == undefined ? false : mapConfiguration.allowAdditionalSurveySites,
         selectFromSitesOnly = mapConfiguration.selectFromSitesOnly == undefined ? false : mapConfiguration.selectFromSitesOnly,
 
 
