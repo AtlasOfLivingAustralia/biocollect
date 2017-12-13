@@ -140,9 +140,11 @@ class ModelJSTagLib {
                 out << INDENT*8 << "self.data['${mod.name}'](new DocumentViewModel(doc));\n"
                 out << INDENT*4 << "}\n"
             } else if (mod.dataType == "geoMap") {
+                String siteId = attrs.activity?.siteId?:"";
                 out << INDENT*4 << """
                     if (data.${mod.name} && typeof data.${mod.name} !== 'undefined') {
-                        self.data.${mod.name}(data.${mod.name});
+                        var siteId = "${siteId}" || data.${mod.name}; 
+                        self.data.${mod.name}(siteId);
                     }
                     
                     if (data.${mod.name}Latitude && typeof data.${mod.name}Latitude !== 'undefined') {

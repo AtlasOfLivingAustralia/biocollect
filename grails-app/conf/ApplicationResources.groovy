@@ -241,6 +241,7 @@ modules = {
         resource url: 'js/works.js'
         resource url: 'js/issues.js'
         resource url: 'js/output-targets.js'
+        resource url: 'vendor/emitter/emitter.js'
         resource url: 'vendor/moment/moment.min.js'
         resource url: 'vendor/moment/moment-timezone-with-data.min.js'
         resource url: 'css/surveys.css'
