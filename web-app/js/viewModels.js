@@ -39,7 +39,7 @@ function enmapify(args) {
         hideSiteSelection = args.hideSiteSelection || false,
         hideMyLocation = args.hideMyLocation || false,
         project = args.activityLevelData.project || {},
-        mapConfiguration = args.activityLevelData.pActivity || project.mapConfiguration || {},
+        mapConfiguration = project.mapConfiguration || args.activityLevelData.pActivity || {},
         allowPolygons = mapConfiguration.allowPolygons == undefined ? true : mapConfiguration.allowPolygons,
         allowPoints = mapConfiguration.allowPoints  == undefined ? true : mapConfiguration.allowPoints,
         pointsOnly = allowPoints && !allowPolygons,
@@ -59,7 +59,7 @@ function enmapify(args) {
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
         //siteObservable filters out all private sites
-        sitesObservable = ko.observableArray(activityLevelData.pActivity.sites),
+        sitesObservable = ko.observableArray(resolveSites(mapConfiguration.sites, activityLevelData.project.sites)),
         //container[SitesArray] does not care about 'private' or not, only check if the site matches the survey configs
         surveySupportedSitesObservable = container[name + "SitesArray"] =  ko.computed(function(){
                 if (pointsOnly){
@@ -111,6 +111,11 @@ function enmapify(args) {
 
         });
 
+    // add event handling functions
+    if(!viewModel.on){
+        new Emitter(viewModel);
+    }
+
     var mapOptions = {
         wmsFeatureUrl: proxyFeatureUrl + "?featureId=",
         wmsLayerUrl: spatialGeoserverUrl + "/wms/reflect?",
@@ -145,7 +150,7 @@ function enmapify(args) {
     };
 
     // undefined/null, Google Maps or Default should enable Google Maps view
-    if (activityLevelData.pActivity.baseLayersName !== 'Open Layers') {
+    if (mapConfiguration.baseLayersName !== 'Open Layers') {
         var googleLayer = new L.Google('ROADMAP', {maxZoom: 21, nativeMaxZoom: 21});
         var otherLayers = {
             Roadmap: googleLayer,
@@ -270,6 +275,8 @@ function enmapify(args) {
      * @param siteId
      */
     function updateMapForSite(siteId) {
+        viewModel.emit('sitechanged', siteId);
+
         if (typeof siteId !== "undefined" && siteId) {
             if (lonObservable()) {
                 previousLonObservable(lonObservable());
@@ -815,4 +822,3 @@ AddSiteViewModel.prototype.checkUniqueName = function (name) {
             }
         });
 };
-

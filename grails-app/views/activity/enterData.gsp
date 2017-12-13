@@ -217,7 +217,7 @@
 
                     self.loadData = function (data) {
                         // load dynamic data
-                        <md:jsLoadModel model="${model}" surveyName="${metaModel?.name}" output="${output.name}"/>
+                        <md:jsLoadModel model="${model}" surveyName="${metaModel?.name}" output="${output.name}" activity="${activity}"/>
 
                         // if there is no data in tables then add an empty row for the user to add data
                         if (typeof self.addRow === 'function' && self.rowCount() === 0) {
@@ -506,6 +506,7 @@
             self.progress = ko.observable(act.progress);
             self.mainTheme = ko.observable(act.mainTheme);
             self.type = ko.observable(act.type);
+            self.siteId = ko.observable(act.siteId);
             self.projectId = act.projectId;
             self.transients = {};
             self.transients.project = project;
@@ -567,6 +568,20 @@
             // make sure progress moves to started if we save any data (unless already finished)
             // (do this here so the model becomes dirty)
             self.progress(self.transients.markedAsFinished() ? 'finished' : 'started');
+
+            self.subscribeToSiteChange = function() {
+                master.subscribers.forEach(function(model) {
+                  if(typeof model === 'object'){
+                      if(model.model.on){
+                          model.model.on('sitechanged', function(siteId) {
+                            viewModel.siteId(siteId);
+                          })
+                      }
+                  }
+                });
+            };
+
+            self.subscribeToSiteChange()
         };
 
         var activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');

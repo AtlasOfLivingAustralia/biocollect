@@ -1592,3 +1592,21 @@ var SiteViewModel = function (site, feature) {
 
     });
 };
+
+
+function resolveSites(sites, projectSites) {
+    var resolved = [];
+    sites = sites || [];
+
+    sites.forEach(function (site) {
+        if(typeof site === 'string'){
+            site = $.grep(projectSites, function (projectSite) {
+                return site == projectSite.siteId;
+            });
+        }
+
+        site && site[0] && resolved.push(site[0]);
+    });
+
+    return resolved;
+}
