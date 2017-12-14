@@ -502,9 +502,6 @@ class SiteController {
                         pActivity.sites.add(result.id)
                         projectActivityService.update(postBody.pActivityId, pActivity)
                     }
-                }else{
-                    result.status='error';
-                    result.message = 'Cannot find project actvity Id';
                 }
             }
 

@@ -92,7 +92,7 @@ function enmapify(args) {
                   else
                       return {validation:false, message:"The record only accepts POINTs"};
             };
-
+            //Be careful of circle.
             if (polygonsOnly){
                 if (siteId && !lat && !lon)
                     return {validation:true};
@@ -207,10 +207,19 @@ function enmapify(args) {
             //latLonDisabledObservable(true);
             feature = geo.features[0];
             if (feature.geometry.type == 'Point'){
-                latObservable(feature.geometry.coordinates[1]);
-                lonObservable(feature.geometry.coordinates[0]);
-                centroidLonObservable(null);
-                centroidLatObservable(null);
+                //circle is also a point
+                if (feature.properties.point_type=="Circle"){
+                    var c = centroid(feature);
+                    latObservable(null);
+                    lonObservable(null);
+                    centroidLonObservable(c[0]);
+                    centroidLatObservable(c[1]);
+                }else{
+                    latObservable(feature.geometry.coordinates[1]);
+                    lonObservable(feature.geometry.coordinates[0]);
+                    centroidLonObservable(null);
+                    centroidLatObservable(null);
+                }
 
             }else{
                 var c = centroid(feature);
