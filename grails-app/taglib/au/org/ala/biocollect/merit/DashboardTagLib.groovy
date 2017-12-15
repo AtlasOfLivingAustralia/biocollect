@@ -183,7 +183,7 @@ class DashboardTagLib {
     }
 
     private boolean enoughResults(int resultSize, attrs) {
-        int min = Integer.parseInt(attrs.minResults) ?: 2
+        int min = attrs.minResults ? Integer.parseInt(attrs.minResults) : 2
         return resultSize >= min
     }
 

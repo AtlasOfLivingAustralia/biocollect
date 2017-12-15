@@ -94,7 +94,7 @@ class UserService {
             return true
         }
 
-        return role == settings.userPermissions?.find({it.userId == userId})?.accessLevel
+        return role == settings.userPermissions?.find({it.userId == userId})?.role
     }
 
     def userInRole(role) {
