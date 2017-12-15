@@ -109,10 +109,10 @@
         <div class="span12">
             <h3>Allowed Geo types</h3>
                 <label class="checkbox">
-                    <input type="checkbox" data-bind="checked: allowPolygons"/> Polygons Allowed
+                    <input type="checkbox" data-bind="checked: allowPolygons"/> Polygons allowed <a href="#" data-bind="popover: {content:'Allow to create a polygon or select a site of a polygon.'}"><i class="icon-question-sign"></i></a>
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" data-bind="checked: allowPoints"/> Points Allowed
+                    <input type="checkbox" data-bind="checked: allowPoints"/> Points allowed  <i class="icon-question-sign"></i>
                 </label>
         </div>
     </div>
@@ -129,7 +129,7 @@
         <div class="span12">
             <h3>Additional site options</h3>
             <label class="checkbox">
-                <input type="checkbox" data-bind="checked: allowAdditionalSurveySites, disable: transients.warning()"/> Allow Additional Survey Sites
+                <input type="checkbox" data-bind="checked: allowAdditionalSurveySites, disable: transients.warning()"/> Allow additional survey sites
             </label>
             <span class="help-block">Check this box if you want to allow users to add or edit site polygons on the survey record.</span>
 

@@ -46,7 +46,7 @@ function enmapify(args) {
         polygonsOnly = !allowPoints && allowPolygons,
         defaultZoomArea = mapConfiguration.defaultZoomArea,
         allowAdditionalSurveySites = mapConfiguration.allowAdditionalSurveySites == undefined ? false : mapConfiguration.allowAdditionalSurveySites,
-        selectFromSitesOnly = mapConfiguration.selectFromSitesOnly == undefined ? false : mapConfiguration.selectFromSitesOnly,
+        selectFromSitesOnly =viewModel.selectFromSitesOnly= mapConfiguration.selectFromSitesOnly == undefined ? false : mapConfiguration.selectFromSitesOnly,
 
 
         siteIdObservable =activityLevelData.siteId = container[name] = ko.observable(),

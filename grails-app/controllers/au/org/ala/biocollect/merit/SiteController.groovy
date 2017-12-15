@@ -492,12 +492,10 @@ class SiteController {
                         render status: 401, error: 'Error: Access denied: User is not en editor or is not allowed to manage sites';
                     }
                 }
-
-
+                //Update site ANYWAY
+                result = siteService.updateRaw(id, values)
                 if (postBody?.pActivityId) {
                     def pActivity = projectActivityService.get(postBody.pActivityId);
-
-                    result = siteService.updateRaw(id, values)
                     if(result?.status != 'error'){
                         pActivity.sites.add(result.id)
                         projectActivityService.update(postBody.pActivityId, pActivity)
