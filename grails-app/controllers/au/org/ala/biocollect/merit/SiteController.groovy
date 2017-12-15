@@ -461,15 +461,8 @@ class SiteController {
             render error as JSON
         } else {
             def postBody = request.JSON
-            log.debug "Body: " + postBody
-            log.debug "Params:"
-            params.each { println it }
             //todo: need to detect 'cleared' values which will be missing from the params - implement _destroy
             def values = [:]
-            // filter params to remove:
-            //  1. keys in the ignore list; &
-            //  2. keys with dot notation - the controller will automatically marshall these into maps &
-            //  3. keys in nested maps with dot notation
             postBody.site?.each { k, v ->
                 if (!(k in ignore)) {
                     values[k] = v //reMarshallRepeatingObjects(v);
@@ -478,7 +471,6 @@ class SiteController {
             log.debug(values as JSON).toString()
 
             def result = [:]
-
             boolean privateSite = values['visibility'] ? (values['visibility'] == 'private' ? true : false) : false;
 
             if(privateSite){
