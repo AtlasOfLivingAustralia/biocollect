@@ -43,9 +43,14 @@
 <g:if test="${!hideSiteSelection}">
     <div class="${isHorizontal ? 'span6' : 'row-fluid'}" data-bind="visible: data.${source}SitesArray().length > 0">
         <div>
+            <g:set var="textOnSiteLocation" value="Create or select a location"/>
+            <!-- ko if: selectFromSitesOnly -->
+                   <g:set var="textOnSiteLocation" value="Select a location"/>
+            <!-- /ko -->
+
             <div class="row-fluid">
                 <div class="span12">
-                    <label for="siteLocation">${readonly ? 'Location:' : 'Select a location or drop a pin:'}</label>
+                    <label for="siteLocation">${readonly ? 'Location:' : "${textOnSiteLocation}"}</label>
                     <g:if test="${readonly}">
                         <span class="output-text" data-bind="text: data.${source}Name() "></span>
                     </g:if>
@@ -56,7 +61,7 @@
                         <!-- /ko -->
                     <!-- /ko -->
                         <select id="siteLocation"
-                                data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "Create your location", disable: ${readonly} || data.${source}Loading'
+                                data-bind='options: data.${source}SitesArray, optionsText: "name", optionsValue: "siteId", value: data.${source}, optionsCaption: "${textOnSiteLocation}", disable: ${readonly} || data.${source}Loading'
                                 class="form-control input-xlarge full-width" data-validation-engine="validate[required,funcCall[validator_site_check]"></select>
 
                     </g:else>
