@@ -415,6 +415,10 @@ function WorksActivityViewModel (config) {
     if (!act.mainTheme && fcConfig.themes.length == 1) {
         self.mainTheme(fcConfig.themes[0]);
     }
+    if(act.siteId){
+        fcConfig.siteIds = fcConfig.siteIds || [];
+        fcConfig.siteIds.push(act.siteId)
+    }
 }
 
 function PlanViewModel(config) {
@@ -795,6 +799,29 @@ function lookupSite (siteId) {
             return site[0];
         }
     }
+}
+
+function resolveSites(sites, addNotFoundSite) {
+    var resolved = [];
+    sites = sites || [];
+
+    sites.forEach(function (siteId) {
+        var site;
+        if(typeof siteId === 'string'){
+            site = lookupSite(siteId);
+        }
+
+        if(site){
+            resolved.push(site);
+        } else if(addNotFoundSite && siteId) {
+            resolved.push({
+                name: 'User created site',
+                siteId: siteId
+            });
+        }
+    });
+
+    return resolved;
 }
 
 function drawGanttChart(ganttData) {

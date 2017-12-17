@@ -150,6 +150,10 @@ class SiteService {
         webService.doPost(grailsApplication.config.ecodata.service.url + '/project/updateSites/' + body.projectId, body)
     }
 
+    def addProjectToSite(String siteId, String projectId) {
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/site/' + siteId + '?projectId=' + projectId)
+    }
+
     /** uploads a shapefile to the spatial portal */
     def uploadShapefile(shapefile) {
         def userId = userService.getUser().userId
@@ -165,8 +169,9 @@ class SiteService {
      * @param name the name for the site
      * @param description the description for the site
      * @param projectId the project the site should be associated with.
+     * @param forceAddToWhiteList update project's map configuration with site so that it appears in whitelist
      */
-    def createSiteFromUploadedShapefile(shapeFileId, siteId, externalId, name, description, projectId) {
+    def createSiteFromUploadedShapefile(shapeFileId, siteId, externalId, name, description, projectId, forceAddToWhiteList) {
         def baseUrl = "${grailsApplication.config.spatial.layersUrl}/shape/upload/shp"
         def userId = userService.getUser().userId
 
@@ -179,7 +184,10 @@ class SiteService {
             def id = result.resp.id
 
             Point centriod = calculateSiteCentroid(id)
-            createSite(projectId, name, description, externalId, id, centriod.getY(), centriod.getX())
+            Map data = createSite(projectId, name, description, externalId, id, centriod.getY(), centriod.getX())
+            if (!data.error && data.resp?.siteId) {
+                addSitesToSiteWhiteListInProjects([data.resp?.siteId], [projectId], forceAddToWhiteList)
+            }
         }
     }
 
@@ -549,5 +557,76 @@ class SiteService {
         }
         long end = System.currentTimeMillis()
         log.debug "Photopoint initialisation took ${(end-start)} millis"
+    }
+
+    /**
+     * Add the site to the project's site whitelist if the following conditions are met.
+     * 1. Allow additional survey sites is checked or force add flag is set
+     */
+    Boolean addSiteToProjectSiteWhiteList(String siteId, Map mapConfiguration, Boolean forceAdd = false) {
+        Boolean isDirty = false
+        if (mapConfiguration?.allowAdditionalSurveySites || forceAdd) {
+            mapConfiguration.sites = mapConfiguration.sites ?: []
+            // check if this site was added previously
+            String sitePresent = mapConfiguration.sites.find { it == siteId }
+            if (!sitePresent) {
+                mapConfiguration.sites.add(siteId)
+                isDirty = true
+            }
+        }
+
+        isDirty
+    }
+
+    /**
+     * Add sites to project's whitelist for each project in list.
+     * The conditions to add a site is described in {@link #addSiteToProjectSiteWhiteList(String, Map, Boolean)}.
+     * @param sites
+     * @param projects
+     * @param forceAdd add site without checking for further conditions
+     */
+    void addSitesToSiteWhiteListInProjects(List sites, List projects, Boolean forceAdd = false) {
+        projects?.each { projectId ->
+            Map project = projectService.get(projectId)
+            if (projectService.isWorks(project)) {
+                List projectSiteIds = project.sites?.collect { it.siteId }
+                // ensure sites in map configuration is a subset of project sites
+                updateMapConfigurationWithProjectAssociatedSiteIds(projectSiteIds, project.mapConfiguration)
+
+                Boolean isDirty = false
+                sites?.each { siteId ->
+                    // add site project relationship if it does not exist
+                    if (!projectSiteIds?.contains(siteId)) {
+                        addProjectToSite(siteId, projectId)
+                    }
+
+                    Boolean isAdded = addSiteToProjectSiteWhiteList(siteId, project.mapConfiguration, forceAdd)
+                    isDirty = isDirty || isAdded
+                }
+
+                // update project if site list has been modified.
+                if (isDirty) {
+                    Map body = [mapConfiguration: project.mapConfiguration]
+                    projectService.update(project.projectId, body)
+                }
+            }
+        }
+    }
+
+    /**
+     * Sites in map configuration must be a subset of sites associated with project.
+     * This function removes all other sites.
+     * @param projectSites
+     * @param mapConfiguration
+     */
+    void updateMapConfigurationWithProjectAssociatedSiteIds(List projectSites, Map mapConfiguration) {
+        List toRemove = []
+        mapConfiguration.sites?.each { siteId ->
+            if (!projectSites.contains(siteId)) {
+                toRemove.add(siteId)
+            }
+        }
+
+        mapConfiguration.sites?.removeAll(toRemove)
     }
 }

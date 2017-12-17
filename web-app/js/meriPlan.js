@@ -394,7 +394,7 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
             mapConfiguration: ko.toJS(self.mapConfiguration)
         };
 
-        $.ajax({
+        return $.ajax({
             url: fcConfig.projectUpdateUrl,
             method: 'post',
             data: JSON.stringify(data),
@@ -412,5 +412,22 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
         self.details.cancelAutosave();
 
         document.location.reload(true);
+    };
+
+    self.saveSitesBeforeRedirect = function (redirectUrl) {
+        var promise = self.saveMapConfig();
+        window.location.href = redirectUrl;
+    };
+
+    self.redirectToCreate = function () {
+        self.saveSitesBeforeRedirect(fcConfig.siteCreateUrl);
+    };
+
+    self.redirectToSelect = function () {
+        self.saveSitesBeforeRedirect(fcConfig.siteSelectUrl);
+    };
+
+    self.redirectToUpload = function () {
+        self.saveSitesBeforeRedirect(fcConfig.siteUploadUrl);
     };
 }

@@ -494,6 +494,7 @@ modules = {
     }
 
     siteSelection {
+        dependsOn('pagination')
         resource url: "js/siteSelection.js"
         resource url: "css/siteSelection.css"
     }

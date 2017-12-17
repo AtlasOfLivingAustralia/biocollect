@@ -357,7 +357,7 @@
 <td>
     <div class="row-fluid" data-bind="css: {'ajax-opacity': transients.isSaving}">
         <div class="span12" data-bind="visible: isAdmin">
-            <select data-bind="options: resolveSites(fcConfig.sites, fcConfig.project.sites), optionsText: 'name', optionsValue: 'siteId', optionsCaption: 'Please choose', value: siteId"></select>
+            <select data-bind="options: resolveSites(fcConfig.siteIds, true), optionsText: 'name', optionsValue: 'siteId', optionsCaption: 'Please choose', value: siteId"></select>
             <span class="margin-left-1">
                 <a href="#" data-bind="click:$parent.openSite, attr: {title: siteName}, visible: siteId"><i class="icon-info-sign"></i></a>
                 <span data-bind="visible: transients.siteArea">

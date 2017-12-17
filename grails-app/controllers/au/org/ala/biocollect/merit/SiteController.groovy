@@ -34,6 +34,8 @@ class SiteController {
             }
         }
 
+        // remove hub param so that default filter query is not added when executing in ecodata
+        params.remove('hub')
         def results = searchService.fulltextSearch(params, true)
         render results as JSON
     }
@@ -352,7 +354,7 @@ class SiteController {
             session.uploadProgress = progress
 
             siteData.sites.each {
-                siteService.createSiteFromUploadedShapefile(siteData.shapeFileId, it.id, it.externalId, it.name, it.description?:'No description supplied', siteData.projectId)
+                siteService.createSiteFromUploadedShapefile(siteData.shapeFileId, it.id, it.externalId, it.name, it.description?:'No description supplied', siteData.projectId, true)
                 progress.uploaded = progress.uploaded + 1
             }
         }
@@ -443,8 +445,14 @@ class SiteController {
             }
         }
         log.debug "values: " + (values as JSON).toString()
-
+        Map project = projectService.get(values.projectId)
         def result = siteService.updateProjectAssociations(values)
+        if (values.sites && !project.error) {
+            List projectSites = project.sites?.collect { it.siteId }
+            List toAdd = values.sites.minus(projectSites)
+            siteService.addSitesToSiteWhiteListInProjects(toAdd, [values.projectId], true)
+        }
+
         if(result.error){
             response.status = 500
         } else {
@@ -461,6 +469,7 @@ class SiteController {
             render error as JSON
         } else {
             def postBody = request.JSON
+            Boolean isCreateSiteRequest = !id
             log.debug "Body: " + postBody
             log.debug "Params:"
             params.each { println it }
@@ -493,18 +502,30 @@ class SiteController {
                     }
                 }
 
+                result = siteService.updateRaw(id, values)
+                String siteId = result.id
+                if(siteId) {
+                    if(isCreateSiteRequest){
+                        String projectId = postBody?.projectId
+                        Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
+                        if (projectId && isAdmin) {
+                            siteService.addSitesToSiteWhiteListInProjects([siteId], [projectId], true);
+                        } else {
+                            siteService.addSitesToSiteWhiteListInProjects([siteId], values.projects)
+                        }
 
-                if (postBody?.pActivityId) {
-                    def pActivity = projectActivityService.get(postBody.pActivityId);
+                        if (postBody?.pActivityId) {
+                            def pActivity = projectActivityService.get(postBody.pActivityId);
 
-                    result = siteService.updateRaw(id, values)
-                    if(result?.status != 'error'){
-                        pActivity.sites.add(result.id)
-                        projectActivityService.update(postBody.pActivityId, pActivity)
+                            if (result?.status != 'error') {
+                                pActivity.sites.add(siteId)
+                                projectActivityService.update(postBody.pActivityId, pActivity)
+                            }
+                        }
                     }
-                }else{
-                    result.status='error';
-                    result.message = 'Cannot find project actvity Id';
+                } else {
+                    result.status = 'error';
+                    result.message = 'Could not save site';
                 }
             }
 

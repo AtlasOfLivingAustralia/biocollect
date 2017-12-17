@@ -30,7 +30,8 @@
         speciesSearch: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
-        uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}"
+        uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
+        sites: ${((project?.sites ?: []) as JSON).toString()}
         },
         here = document.location.href;
     </r:script>

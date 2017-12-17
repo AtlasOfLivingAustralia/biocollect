@@ -94,7 +94,8 @@
         outputTargetMetadata: ${((outputTargetMetadata?:[]) as grails.converters.JSON).toString()},
         activityTypes: ${((activityTypes?:[]) as JSON).toString()},
         themes: ${((themes?:[]) as JSON).toString()},
-        sites: ${((project.mapConfiguration?.sites ?: []) as JSON).toString()},
+        sites: ${((project?.sites ?: []) as JSON).toString()},
+        siteIds: ${((project.mapConfiguration?.sites ?: []) as JSON).toString()},
         project: ${((project?: [:]) as JSON).toString()},
         defaultSpeciesConfiguration: ${(grailsApplication.config.speciesConfiguration.default as JSON).toString()}
         },
