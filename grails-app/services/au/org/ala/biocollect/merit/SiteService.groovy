@@ -114,10 +114,10 @@ class SiteService {
         [site: site, documents:documents as JSON, meta: metaModel()]
     }
 
-    def updateRaw(id, values) {
+    def updateRaw(id, values, userId = "") {
         //if its a drawn shape, save and get a PID
         if(values?.extent?.source?.toLowerCase() == 'drawn'){
-            def shapePid = persistSiteExtent(values.name, values.extent.geometry)
+            def shapePid = persistSiteExtent(values.name, values.extent.geometry, userId)
             values.extent.geometry.pid = shapePid.resp?.id ?: ""
         }
 
@@ -279,10 +279,10 @@ class SiteService {
         return create(values)
     }
 
-    def persistSiteExtent(name, geometry) {
+    def persistSiteExtent(name, geometry, userId = "") {
 
         def resp = null
-        def userId = userService.getUser().userId
+        userId = userId ?: userService.getUser().userId
         if (geometry?.type == 'Circle') {
             def body = [name: "test", description: "my description", user_id: userId, api_key: grailsApplication.config.api_key]
             def url = grailsApplication.config.spatial.layersUrl + "/shape/upload/pointradius/" +

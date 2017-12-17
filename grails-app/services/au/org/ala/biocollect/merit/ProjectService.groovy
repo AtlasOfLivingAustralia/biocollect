@@ -65,28 +65,13 @@ class ProjectService {
         resp
     }
 
-    def get(id, levelOfDetail = "", includeDeleted = false, version = null, def includePrivateSite = false) {
+    def get(id, levelOfDetail = "", includeDeleted = false, version = null ) {
 
         def params = '?'
         params += "view=${levelOfDetail?:PRIVATE_SITES_REMOVED}&"
         params += "includeDeleted=${includeDeleted}&"
         params += version ? "version=${version}" : ''
         def project  = webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + id + params);
-
-        if (!includePrivateSite && project.sites){
-            ///Cannot use findAll, it converts jsonarray to arraylist
-            def validSites = new JSONArray()
-                for(int i=0;i<project.sites.size();i++){
-                    if (!!project.sites[i]['visibility']){
-                        if(project.sites[i]['visibility']!= "private")
-                            validSites.add(project.sites[i]);
-                    }else
-                        validSites.add(project.sites[i]);
-                }
-
-               project.sites = validSites;
-        }
-
         return project;
 
     }
