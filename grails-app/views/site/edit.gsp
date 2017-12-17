@@ -119,6 +119,11 @@
                 var json = siteViewModel.toJS();
                 var data = {
                     site: json
+                    <g:if test="${project?.projectId}">
+                        ,
+                        projectId: '${project?.projectId.encodeAsHTML()}'
+                    </g:if>
+
                     <g:if test="${pActivityId}">
                         ,
                         pActivityId: '${pActivityId.encodeAsHTML()}'

@@ -59,7 +59,7 @@ function enmapify(args) {
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
         //siteObservable filters out all private sites
-        sitesObservable = ko.observableArray(resolveSites(mapConfiguration.sites, activityLevelData.project.sites)),
+        sitesObservable = ko.observableArray(resolveSites(mapConfiguration.sites)),
         //container[SitesArray] does not care about 'private' or not, only check if the site matches the survey configs
         surveySupportedSitesObservable = container[name + "SitesArray"] =  ko.computed(function(){
                 if (pointsOnly){
