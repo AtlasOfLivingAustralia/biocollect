@@ -23,7 +23,7 @@
     <div class="row-fluid">
         <g:each in="${projectStatusByType}" var="type">
             <div class="span4">
-                <fc:renderScore score="${type.value}" minResults="1" chartOptions="${[pieSliceText: 'value']}"/>
+                <fc:renderScore score="${type.value}" minResults="1" chartOptions="${[pieSliceText: 'value']}" order="${["Current", "Finished"]}" sliceColoursByTitle="${["Current":"#2ECC40", "Finished":"#0074D9"]}"/>
             </div>
         </g:each>
 
@@ -34,11 +34,11 @@
     <div class="row-fluid">
         <div class="span6">
 
-            <fc:renderScore score="${issueCountByImpact}" minResults="1" chartOptions="${[pieSliceText: 'value']}"/>
+            <fc:renderScore score="${issueCountByImpact}" minResults="1" chartOptions="${[pieSliceText: 'value']}" order="${["Low", "Moderate", "Significant", "Critical"]}" sliceColoursByTitle="${["Low":"#0074D9", "Moderate":"#2ECC40", "Significant":"#FFDC00", "Critical":"#FF4136"]}"/>
         </div>
 
         <div class="span6">
-            <fc:renderScore score="${riskCountByRating}" minResults="1" chartOptions="${[pieSliceText: 'value']}"/>
+            <fc:renderScore score="${riskCountByRating}" minResults="1" chartOptions="${[pieSliceText: 'value']}" order="${["Low", "Medium", "Significant", "High"]}" sliceColoursByTitle="${["Low":"#0074D9", "Medium":"#2ECC40", "Significant":"FFDC00", "High":"#FF4136"]}"/>
         </div>
     </div>
 
