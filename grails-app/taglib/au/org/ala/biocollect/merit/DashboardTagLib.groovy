@@ -135,7 +135,7 @@ class DashboardTagLib {
             if (!enoughResults(result.size(), attrs)) {
                 return
             }
-            def chartData = toArray(result)
+            def chartData = toArray(result, attrs.order)
             def chartType = score.displayType?:'piechart'
             drawChart(chartType, score.label, score.label, helpText(score, attrs), [['string', score.label], ['number', 'Count']], chartData, attrs)
         }
@@ -145,11 +145,15 @@ class DashboardTagLib {
         }
     }
 
-    private def toArray(dataMap) {
+    private def toArray(dataMap, List order = null) {
         def chartData = []
         dataMap.each{ key, value ->
             chartData << [key, value]
         }
+        if (order) {
+            chartData.sort{a, b -> order.indexOf(a[0]) <=> order.indexOf(b[0])}
+        }
+
         chartData
     }
 
@@ -166,7 +170,7 @@ class DashboardTagLib {
             if (!enoughResults(result.result.size(), attrs)) {
                 return
             }
-            def chartData = toArray(result.result)
+            def chartData = toArray(result.result, attrs.order)
             def chartType = score.displayType?:'piechart'
             drawChart(chartType, score.label, score.label, helpText(score, attrs), [['string', score.label], ['number', 'Count']], chartData, attrs)
         }
