@@ -475,14 +475,6 @@ function ProjectViewModel(project, isUserEditor) {
         self.updateProject(data);
     });
 
-    self.canEditorCreateSites = ko.observable(project.canEditorCreateSites ? 'Yes' : 'No');
-
-    self.canEditorCreateSites.subscribe(function(newValue) {
-        var data = {canEditorCreateSites: newValue == 'Yes' ? true : false}
-        self.updateProject(data);
-    });
-
-
     self.associatedOrgs = ko.observableArray();
     ko.utils.arrayMap(project.associatedOrgs || [], function(org) {
         var tmpOrg = org || {};

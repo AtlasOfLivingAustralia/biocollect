@@ -15,7 +15,7 @@
             </g:if>
             <li ${activeClass}><a href="#permissions" id="permissions-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project access</a></li>
             <g:if test="${params.userIsProjectAdmin}">
-                <li ${activeClass}><a href="#sitesPermissions" id="sitesPermissions-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Sites</a></li>
+                <li ${activeClass}><a href="#mapConfiguration" id="mapConfiguration-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Sites</a></li>
             </g:if>
             <li><a href="#edit-documents" id="documents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Resources</a></li>
             <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
@@ -54,9 +54,7 @@
                 <g:render template="/admin/addPermissions" model="[addUserUrl:g.createLink(controller:'user', action:'addUserAsRoleToProject'), entityId:project.projectId]"/>
                 <g:render template="/admin/permissionTablePaginated"/>
             </div>
-            <div id="sitesPermissions" class="pill-pane">
-                <h3>Sites permissions</h3>
-                <g:render template="sitesPermissions"></g:render>
+            <div id="mapConfiguration" class="pill-pane">
                 <g:render template="worksMapConfiguration"></g:render>
             </div>
             <!-- DOCUMENTS -->

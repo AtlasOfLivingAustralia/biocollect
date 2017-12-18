@@ -391,7 +391,7 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
 
     self.saveMapConfig = function () {
         var data = {
-            mapConfiguration: ko.toJS(self.mapConfiguration)
+            mapConfiguration: self.mapConfiguration.toJS()
         };
 
         return $.ajax({

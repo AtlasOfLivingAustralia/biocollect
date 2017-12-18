@@ -269,22 +269,12 @@ class ActivityController {
             }
 
             if (!result) {
-                // checking to prevent an editor from entering data when administrator is editing work schedule.
-                // But if admin is editing the activity, then let the activity be updated.
-                if(projectService.isUserAdminForProject(userId, projectId)){
-                    values.userId = userId
-                    def photoPoints = values.remove('photoPoints')
-                    result = activityService.update(id, values)
-                    if (photoPoints) {
-                        updatePhotoPoints(id ?: result.activityId, photoPoints)
-                    }
-                } else {
-                    log.debug("Error: Trying to enter data to a works project not approved by Administrator - ${projectId}")
-                    flash.message = messageSource.getMessage("project.works.workschedule.notapproved.message", [].toArray(), '', Locale.default)
-                    response.status = 409
-                    result = [status:409, error: flash.message]
+                values.userId = userId
+                def photoPoints = values.remove('photoPoints')
+                result = activityService.update(id, values)
+                if (photoPoints) {
+                    updatePhotoPoints(id ?: result.activityId, photoPoints)
                 }
-
             }
         }
 

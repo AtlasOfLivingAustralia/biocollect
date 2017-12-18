@@ -318,11 +318,11 @@
     <th style="width:25%;">Description</th>
     <th>Activity &nbsp;
         <a href="#createOrUpdateActivity" role="button" class="btn btn-default btn-small" data-toggle="modal"
-                    data-bind="click: openActivityModal(newActivityViewModel)"><i class="icon-plus"></i>
+                    data-bind="click: openActivityModal(newActivityViewModel), visible: fcConfig.canAddActivity"><i class="icon-plus"></i>
         <g:message code="project.works.createNewActivity"/> </a>
     </th>
     <th>Site &nbsp;
-        <a class="btn btn-default btn-small" data-bind="attr: {href: fcConfig.siteCreateUrl}">
+        <a class="btn btn-default btn-small" data-bind="attr: {href: fcConfig.siteCreateUrl}, visible: fcConfig.canAddSite">
             <i class="icon-plus"></i>
             <g:message code="project.works.workschedule.button.createsite"/>
         </a>
@@ -356,7 +356,7 @@
 </td>
 <td>
     <div class="row-fluid" data-bind="css: {'ajax-opacity': transients.isSaving}">
-        <div class="span12" data-bind="visible: isAdmin">
+        <div class="span12">
             <select data-bind="options: resolveSites(fcConfig.siteIds, true), optionsText: 'name', optionsValue: 'siteId', optionsCaption: 'Please choose', value: siteId"></select>
             <span class="margin-left-1">
                 <a href="#" data-bind="click:$parent.openSite, attr: {title: siteName}, visible: siteId"><i class="icon-info-sign"></i></a>
@@ -529,30 +529,12 @@
                     </select>
                 </td>
                 <td>
-                    <button data-bind="click:showSpeciesConfiguration" class="btn btn-default" ><i class="icon-cog"></i> <g:message code="project.survey.species.configure.works"/></button>
-                    <button class="btn btn-default" data-bind="click: $parent.transients.parent.toggleDefault">
-                        <i data-bind="css:{'icon-arrow-up': !$parent.transients.parent.showDefault(), 'icon-arrow-down': $parent.transients.parent.showDefault}"/>
-                        <g:message code="project.survey.species.showdefault"/>
-                    </button>
-                    <button class="btn btn-default" data-bind="click: $parent.transients.parent.setAsDefault, disable: !config().isValid()">
-                        <i class="icon-star-empty"/>
+                    <button data-bind="click: showSpeciesConfiguration" class="btn btn-default" ><i class="icon-cog"></i> <g:message code="project.survey.species.configure.works"/></button>
+                    <button class="btn btn-default" data-bind="click: $parent.transients.parent.copySettings">
+                        <i class="icon-bookmark"/>
                         <g:message code="project.survey.species.setdefault"/>
                     </button>
                 </td>
-            </tr>
-            <tr data-bind="slideVisible: $parent.transients.parent.showDefault, slideDuration: 200">
-                <!-- ko with: $parent.transients.parent.species -->
-                <td><g:message code="project.survey.species.defaultConfiguration"/></td>
-                <td>
-                    <span data-bind="tooltip: {title:transients.inputSettingsTooltip()},disable: true, text: transients.inputSettingsSummary">
-                    </span>
-                </td>
-                <td>
-                    <select class="form-control full-width" data-bind="options: $parents[1].transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  speciesDisplayFormat">
-                    </select>
-                </td>
-                <td></td>
-                <!-- /ko -->
             </tr>
         <!-- /ko -->
         </tbody>

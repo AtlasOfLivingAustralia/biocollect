@@ -4,19 +4,24 @@
 
 var SpeciesConstraintViewModel = function (o, fieldName) {
     var self = this;
-    if (!o) o = {};
+    var defaultValues = {
+        type: 'ALL_SPECIES',
+        speciesDisplayFormat: 'SCIENTIFICNAME(COMMONNAME)',
+        commonNameField: 'commonName',
+        scientificNameField: 'matchedName'
+    };
 
-    var defaultCommonNameField = 'commonName', defaultScientificNameField = 'matchedName';
+    o = $.extend(defaultValues, o);
     self.type = ko.observable(o.type);
     self.allSpeciesLists = new SpeciesListsViewModel();
     self.singleSpecies = new SpeciesViewModel(o.singleSpecies);
-    self.commonNameField = ko.observable(o.commonNameField || defaultCommonNameField);
-    self.scientificNameField = ko.observable(o.scientificNameField || defaultScientificNameField);
+    self.commonNameField = ko.observable(o.commonNameField);
+    self.scientificNameField = ko.observable(o.scientificNameField);
     self.commonFields = ko.observableArray();
     self.speciesLists = ko.observableArray();
     self.speciesLists.subscribe(getCommonKeys);
     self.newSpeciesLists = new NewSpeciesListViewModel();
-    self.speciesDisplayFormat = ko.observable(o.speciesDisplayFormat ||'SCIENTIFICNAME(COMMONNAME)');
+    self.speciesDisplayFormat = ko.observable(o.speciesDisplayFormat);
     self.speciesOptions =  [{id: 'ALL_SPECIES', name:'All species'},{id:'SINGLE_SPECIES', name:'Single species'}, {id:'GROUP_OF_SPECIES',name:'A selection or group of species'}];
 
     self.speciesLists($.map(o.speciesLists ? o.speciesLists : [], function (obj, i) {
@@ -392,7 +397,7 @@ var SpeciesFieldViewModel = function (o) {
     self.output = o.output || "";
 
     self.transients = {};
-    self.transients.fieldName = self.output + ' - ' + self.label
+    self.transients.fieldName = self.output + ' - ' + self.label;
     self.config = ko.observable(new SpeciesConstraintViewModel(o.config));
 
     self.asJson = function () {
@@ -405,7 +410,18 @@ var SpeciesFieldViewModel = function (o) {
         jsData.config = self.config().asJson();
         return jsData;
     };
-}
+
+    self.load = function (data) {
+        if (data) {
+            self.label = data.label;
+            self.dataFieldName = data.dataFieldName;
+            self.context = data.context;
+            self.output = data.output;
+            self.transients.fieldName = self.output + ' - ' + self.label;
+            self.config(new SpeciesConstraintViewModel(data.config));
+        }
+    };
+};
 
 
 var SpeciesListsViewModel = function (o) {
