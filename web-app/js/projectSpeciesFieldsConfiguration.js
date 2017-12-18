@@ -199,23 +199,27 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
     };
 
     self.copySettings = function (speciesFieldViewModel) {
-        var surveys = self.surveysToConfigure();
-        var data = speciesFieldViewModel.asJson(),
-            isDirty = false;
+        bootbox.confirm("Copy will overwrite all species configuration you have made in this project. Do you want to continue?", function(result) {
+            if (result) {
+                var surveys = self.surveysToConfigure();
+                var data = speciesFieldViewModel.asJson(),
+                    isDirty = false;
 
-        for (var i = 0; i < surveys.length; i++) {
-            var speciesFields = surveys[i].speciesFields();
-            for (var j = 0; j < speciesFields.length; j++) {
-                if (speciesFieldViewModel != speciesFields[j]) {
-                    speciesFields[j].load(data);
-                    isDirty = true
+                for (var i = 0; i < surveys.length; i++) {
+                    var speciesFields = surveys[i].speciesFields();
+                    for (var j = 0; j < speciesFields.length; j++) {
+                        if (speciesFieldViewModel != speciesFields[j]) {
+                            speciesFields[j].load(data);
+                            isDirty = true
+                        }
+                    }
+                }
+
+                if(isDirty){
+                    self.save();
                 }
             }
-        }
-
-        if(isDirty){
-            self.save();
-        }
+        });
     };
 
     self.save = function () {
