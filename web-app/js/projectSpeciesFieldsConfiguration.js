@@ -78,10 +78,6 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
         speciesFieldsSettings = speciesFieldsSettings || {}
         self.placeHolder = placeHolder;
         self.projectId = projectId;
-        
-        // Default species configuration
-        self.species = ko.observable(new SpeciesConstraintViewModel(speciesFieldsSettings.defaultSpeciesConfig || fcConfig.defaultSpeciesConfiguration));
-
 
         var surveysConfig = speciesFieldsSettings.surveysConfig || []
 
@@ -97,9 +93,6 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
         // If it is only one we use only the default configuration
         self.speciesFieldsCount = ko.observable(0);
 
-        self.showDefault = ko.observable(false);
-
-
         for(var i=0; i<surveysConfig.length; i++) {
             var config = surveysConfig[i];
             config.parent = self;
@@ -113,9 +106,7 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
                 self.surveysWithoutFields.push(surveySpeciesFieldsVM);
             }
         }
-
-        self.species().speciesDisplayFormat.subscribe(self.onDefaultSpeciesDisplayFormatChange)
-    }
+    };
 
     self.init();
 
@@ -127,14 +118,6 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
         if (self.projectId) {
             document.location.href = fcConfig.projectViewUrl + self.projectId;
         }
-    };
-
-    self.toggleDefault = function () {
-        self.showDefault(!self.showDefault());
-    };
-
-    self.setAsDefault = function (speciesFieldViewModel) {
-        self.species(speciesFieldViewModel.config());
     };
 
     /**
@@ -215,6 +198,26 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
         }
     };
 
+    self.copySettings = function (speciesFieldViewModel) {
+        var surveys = self.surveysToConfigure();
+        var data = speciesFieldViewModel.asJson(),
+            isDirty = false;
+
+        for (var i = 0; i < surveys.length; i++) {
+            var speciesFields = surveys[i].speciesFields();
+            for (var j = 0; j < speciesFields.length; j++) {
+                if (speciesFieldViewModel != speciesFields[j]) {
+                    speciesFields[j].load(data);
+                    isDirty = true
+                }
+            }
+        }
+
+        if(isDirty){
+            self.save();
+        }
+    };
+
     self.save = function () {
         if (self.areSpeciesValid()) {
 
@@ -226,9 +229,11 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
                 surveysConfigJsData.push(surveysToConfigure[i].asJson());
             }
 
-            var jsData = {speciesFieldsSettings:
-                    {defaultSpeciesConfig: self.species().asJson(),
-                        surveysConfig: surveysConfigJsData}};
+            var jsData = {
+                speciesFieldsSettings: {
+                    surveysConfig: surveysConfigJsData
+                }
+            };
             var json = JSON.stringify(jsData);
             $.ajax({
                 url: fcConfig.projectUpdateUrl,

@@ -629,4 +629,17 @@ class SiteService {
 
         mapConfiguration.sites?.removeAll(toRemove)
     }
+
+
+    Map defaultMapConfiguration(String defaultZoomSiteId = null){
+        [
+            "sites" : [],
+            "allowPoints" : true,
+            "allowPolygons" : true,
+            "allowAdditionalSurveySites" : false,
+            "selectFromSitesOnly" : false,
+            "defaultZoomArea" : defaultZoomSiteId,
+            "baseLayersName" : "Open Layers"
+        ]
+    }
 }

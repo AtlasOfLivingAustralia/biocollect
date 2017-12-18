@@ -4,7 +4,6 @@ import au.org.ala.biocollect.EmailService
 import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
-import org.codehaus.groovy.grails.web.json.JSONArray
 import org.springframework.context.MessageSource
 
 class ProjectService {
@@ -200,6 +199,11 @@ class ProjectService {
      */
     def create(props) {
         Map result
+
+        // set default map configuration for works project at the time of creation.
+        if (isWorks(props)) {
+            props.mapConfiguration = siteService.defaultMapConfiguration(props.projectSiteId)
+        }
 
         //validate
         def error = validate(props)
@@ -405,7 +409,7 @@ class ProjectService {
     }
 
     /**
-     * Check whether a works project has the canEditorCreateSites and the user has permission to edit the project
+     * Check whether a works project has the allowAdditionalSurveySites and the user has permission to edit the project
      * If the project is not Works the default behaviour is to just call canUserEditProject.
      * @param userId The user calling the controller
      * @param projectId The project to check
@@ -416,9 +420,9 @@ class ProjectService {
 
         Map project = get(projectId)
 
-        if(project.projectType == "works") {
+        if(isWorks(project)) {
             canManageSites = userService.userIsSiteAdmin() || userService.isUserAdminForProject(userId, projectId)  ||
-                    project?.canEditorCreateSites && userService.isUserEditorForProject(userId, projectId)
+                    project?.mapConfiguration?.allowAdditionalSurveySites && userService.isUserEditorForProject(userId, projectId)
         }
 
         // Not sure if merit check is still relevant but just in case we rely on canUserEditProject behaviour

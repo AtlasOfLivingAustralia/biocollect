@@ -20,7 +20,9 @@ function MapConfiguration(config, project)
     var sites = project.sites || [],
         defaults = {
             allowPolygons: true,
-            allowPoints: true
+            allowPoints: true,
+            allowAdditionalSurveySites: false,
+            selectFromSitesOnly: false
         };
     config = config || {};
     config = $.extend(defaults, config);
@@ -33,6 +35,9 @@ function MapConfiguration(config, project)
     self.defaultZoomArea = ko.observable(config.defaultZoomArea || project.projectSiteId);
     self.baseLayersName = ko.observable(config.baseLayersName);
     self.sites = ko.observableArray(config.sites || []);
+    self.toJS = function () {
+        return ko.mapping.toJS(self, {ignore: ['transients']});
+    };
 
     self.transients = {};
     self.transients.sites = project.sites;
@@ -73,4 +78,23 @@ function MapConfiguration(config, project)
     self.transients.removeSite = function (site) {
         self.sites.remove(site.siteId);
     };
+
+    self.selectFromSitesOnly.subscribe(function(checked){
+        if(checked){
+            self.allowAdditionalSurveySites(false);
+            self.allowPolygons(false);
+            self.allowPoints(false);
+        }
+    });
+
+    self.allowAdditionalSurveySites.subscribe(function(checked){
+        if(checked){
+            self.selectFromSitesOnly(false);
+            // make sure drawing controls are checked when allowAdditionalSurveySites is switched on
+            if (!(self.allowPolygons() || self.allowPoints())) {
+                self.allowPolygons(true);
+                self.allowPoints(true);
+            }
+        }
+    });
 }

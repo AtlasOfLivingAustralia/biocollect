@@ -8,20 +8,20 @@
             <a id="biocollectlogo" class="white-background" href="${grailsApplication.config.biocollect.homepageUrl}"><img src="${resource(dir: 'images/icons', file: 'BioCollect24.jpg')}" width="193"></a>
         </li>
         <li class="${(path ==~ /.*project\/projectFinder.*/) ? 'active' : ''}">
-            <a href="#" class="btnSearch"><span class="fa fa-search"></span>Search</a>
+            <a href="${createLink(controller: 'home', action: 'index')}" class="btnSearch"><span class="fa fa-search"></span>Search</a>
         </li>
         <li class="${(path ==~ /.*bioActivity\/allRecords.*/) ? 'active' : ''}">
-                <a href="#" class="btnAllData"><span class="fa fa-database"></span>All Records</a>
+                <a href="${createLink(controller: 'bioActivity', action: 'allRecords')}" class="btnAllData"><span class="fa fa-database"></span>All Records</a>
         </li>
         <li class="${(path ==~ /.*site\/.*/) ? 'active' : ''}">
-            <a href="#" class="btnSite"><span class="fa fa-map-marker"></span>Sites</a>
+            <a href="${createLink(controller: 'site', action: 'list')}" class="btnSite"><span class="fa fa-map-marker"></span>Sites</a>
         </li>
         <li class="${(path ==~ /.*project\/create.*/) ? 'active' : ''}">
-            <a href="#" class="btnNewProject"><span class="fa fa-plus"></span>New Project</a>
+            <a href="<fc:getNewProjectLinkForHub hubConfig="${hubConfig}"/>" class="btnNewProject"><span class="fa fa-plus"></span>New Project</a>
         </li>
         <g:if test="${fc.userIsSiteAdmin()}">
             <li class="${(path ==~ /.*admin\/index.*/) ? 'active' : ''}">
-                <a href="#" class="btnAdministration"><span class="fa fa-lock"></span>Admin</a>
+                <a href="${createLink(controller: 'admin')}" class="btnAdministration"><span class="fa fa-lock"></span>Admin</a>
             </li>
         </g:if>
         <g:if test="${fc.currentUserDisplayName()}">
@@ -29,14 +29,14 @@
                 <a href="#" ><span class="fa fa-user"></span><fc:currentUserDisplayName/></a>
                 <ul>
                     <!--
-                    <li><a href="#" class="btnMyDashboard"><span class="fa fa-dashboard"></span>My Dashboard</a></li>
+                    <li><a href="${createLink(controller: 'user', action: 'index')}" class="btnMyDashboard"><span class="fa fa-dashboard"></span>My Dashboard</a></li>
                     -->
                     <g:if test="${!settingService.isWorksHub()}">
-                        <li><a href="#" class="btnMyData"><span class="fa fa-database"></span>My Data</a></li>
+                        <li><a href="${createLink(controller: 'bioActivity', action: 'list')}" class="btnMyData"><span class="fa fa-database"></span>My Data</a></li>
                     </g:if>
-                    <li><a href="#" class="btnMyProjects"><span class="fa fa-folder"></span>My Projects</a></li>
-                    <li><a href="#" class="btnMyOrganisation"><span class="fa fa-building"></span>My Organisation</a></li>
-                    <li><a href="#" class="btnMyFavouriteSites"><span class="fa fa-map-marker"></span>My Favourite Sites</a></li>
+                    <li><a href="${createLink(controller: 'project', action: 'myProjects')}" class="btnMyProjects"><span class="fa fa-folder"></span>My Projects</a></li>
+                    <li><a href="${createLink(controller: 'organisation', action: 'myOrganisations')}" class="btnMyOrganisation"><span class="fa fa-building"></span>My Organisation</a></li>
+                    <li><a href="${createLink(controller: 'site', action: 'myFavourites')}" class="btnMyFavouriteSites"><span class="fa fa-map-marker"></span>My Favourite Sites</a></li>
                 </ul>
             </li>
         </g:if>
@@ -56,62 +56,6 @@
         </g:if>
     </ul>
 </nav>
-<r:script>
-    $(document).ready(function (e) {
-        $(".btnAdministration").click(function (e) {
-            window.location = "${createLink(controller: 'admin')}";
-        });
-        $('.btnNewProject').click(function(e) {
-    <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-        window.location = "${createLink(controller: 'project', action:'create', params: [citizenScience:true])}"
-    </g:if>
-    <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-        window.location = "${createLink(controller: 'project', action:'create', params: [works:true])}"
-    </g:if>
-    <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
-        window.location = "${createLink(controller: 'project', action:'create', params: [ecoScience:true])}"
-    </g:if>
-    });
-
-    $(".btnProfile").click(function (e) {
-        window.location = "${createLink(controller: 'myProfile')}";
-        });
-
-        $(".btnAllData").click(function (e) {
-            window.location = "${createLink(controller: 'bioActivity', action: 'allRecords')}";
-        });
-
-        $(".btnMyDashboard").click(function (e) {
-            window.location = "${createLink(controller: 'user', action: 'index')}";
-        });
-
-        $(".btnMyData").click(function (e) {
-            window.location = "${createLink(controller: 'bioActivity', action: 'list')}";
-        });
-
-        $(".btnMyProjects").click(function (e) {
-            window.location = "${createLink(controller: 'project', action: 'myProjects')}";
-        });
-
-        $(".btnMyOrganisation").click(function (e) {
-            window.location = "${createLink(controller: 'organisation', action: 'myOrganisations')}";
-        });
-
-        $(".btnMyFavouriteSites").click(function (e) {
-            window.location = "${createLink(controller: 'site', action: 'myFavourites')}";
-        });
-
-
-        $(".btnSearch").click(function(e){
-            window.location = "${createLink(controller: 'home', action: 'index')}";
-        })
-
-    $(".btnSite").click(function(e){
-         window.location = "${createLink(controller: 'site', action: 'list')}";
-        })
-    }); // end document ready
-
-</r:script>
 <r:script>
     function calcWidth() {
         var navwidth = 0;

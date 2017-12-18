@@ -55,6 +55,9 @@ function WorksActivityViewModel (config) {
         var isAdmin = fcConfig.isAdmin;
         return !!isAdmin;
     });
+    self.canAddActivity = ko.computed(function () {
+        return self.isAdmin();
+    });
     self.canEditActivity = ko.computed(function () {
         return self.isAdmin();
     });

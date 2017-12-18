@@ -140,7 +140,7 @@ function enmapify(args) {
             }
             :
             {
-                polyline: false,
+                polyline: !selectFromSitesOnly && allowPolygons,
                 polygon: !selectFromSitesOnly && allowPolygons,
                 circle: !selectFromSitesOnly && allowPolygons,
                 rectangle: !selectFromSitesOnly && allowPolygons,

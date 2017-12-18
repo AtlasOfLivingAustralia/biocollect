@@ -87,18 +87,18 @@
         <div class="span12">
             <h4><g:message code="project.works.mapConfiguration.drawing.title"/> </h4>
             <label class="checkbox">
-                <input type="checkbox" data-bind="checked: allowPolygons"/> Draw Polygons
+                <input type="checkbox" data-bind="checked: allowPolygons"/> Draw shapes
             </label>
             <label class="checkbox">
-                <input type="checkbox" data-bind="checked: allowPoints"/> Mark Points
-            </label>
-
-            <label class="checkbox">
-                <input type="checkbox" data-bind="checked: allowAdditionalSurveySites"/> Allow Additional Survey Sites <a href="#" data-bind="popover: {content:'<g:message code="project.works.mapConfiguration.drawing.additionalSites.help"/> '}"><i  class="icon-question-sign"></i></a>
+                <input type="checkbox" data-bind="checked: allowPoints"/> Mark points
             </label>
 
             <label class="checkbox">
-                <input type="checkbox" data-bind="checked: selectFromSitesOnly"/> ONLY Select from existing sites <a href="#" data-bind="popover: {content:'<g:message code="project.works.mapConfiguration.drawing.selectFromSiteOnly.help"/> '}"><i  class="icon-question-sign"></i></a></id>
+                <input type="checkbox" data-bind="checked: allowAdditionalSurveySites"/> Add created site to list of predefined sites <a href="#" data-bind="popover: {content:'<g:message code="project.works.mapConfiguration.drawing.additionalSites.help"/> '}"><i  class="icon-question-sign"></i></a>
+            </label>
+
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: selectFromSitesOnly"/> Only pick from predefined sites (prevent creating new sites) <a href="#" data-bind="popover: {content:'<g:message code="project.works.mapConfiguration.drawing.selectFromSiteOnly.help"/> '}"><i  class="icon-question-sign"></i></a></id>
             </label>
 
         </div>
