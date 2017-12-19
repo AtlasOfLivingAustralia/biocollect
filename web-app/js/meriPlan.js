@@ -394,17 +394,14 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
             mapConfiguration: self.mapConfiguration.toJS()
         };
 
+        self.mapConfiguration.transients.loading(true);
         return $.ajax({
             url: fcConfig.projectUpdateUrl,
             method: 'post',
             data: JSON.stringify(data),
-            contentType: 'application/json',
-            success : function () {
-
-            },
-            error: function () {
-
-            }
+            contentType: 'application/json'
+        }).done(function () {
+            self.mapConfiguration.transients.loading(false);
         })
     };
 
