@@ -40,6 +40,7 @@ function MapConfiguration(config, project)
     };
 
     self.transients = {};
+    self.transients.loading = ko.observable();
     self.transients.sites = project.sites;
     self.transients.selectedSites = ko.computed(function () {
         var sites = self.sites(),

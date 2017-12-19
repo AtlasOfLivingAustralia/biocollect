@@ -1,5 +1,6 @@
 <div>
     <!-- ko with: mapConfiguration -->
+    <div data-bind="css: {'ajax-opacity': transients.loading}">
     <div class="row-fluid">
         <div class="span12 text-left">
             <h3 class="strong"><g:message code="project.works.mapConfiguration.title"/></h3>
@@ -10,11 +11,11 @@
         <div class="span6 ">
             <table class="table white-background table-custom-border borderless">
                 <thead>
-                    <tr>
-                        <th class="text-left"><g:message code="project.works.mapConfiguration.associatedSites"/>
-                            <a href="#" data-bind="popover: {content:'<g:message code="project.works.mapConfiguration.associatedSites.help"/>'}"><i  class="icon-question-sign"></i></a>
-                        </th>
-                    </tr>
+                <tr>
+                    <th class="text-left"><g:message code="project.works.mapConfiguration.associatedSites"/>
+                        <a href="#" data-bind="popover: {content:'<g:message code="project.works.mapConfiguration.associatedSites.help"/>'}"><i  class="icon-question-sign"></i></a>
+                    </th>
+                </tr>
                 </thead>
                 <tbody>
                 <!-- ko foreach: transients.selectedSites -->
@@ -131,6 +132,7 @@
         <div class="span12">
             <button class="btn-primary btn btn-small block" data-bind="click: $parent.saveMapConfig"><i class="icon-white  icon-hdd" ></i>  Save </button>
         </div>
+    </div>
     </div>
     <!-- /ko -->
 </div>
