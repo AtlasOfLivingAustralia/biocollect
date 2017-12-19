@@ -420,7 +420,9 @@ function WorksActivityViewModel (config) {
     }
     if(act.siteId){
         fcConfig.siteIds = fcConfig.siteIds || [];
-        fcConfig.siteIds.push(act.siteId)
+        if (fcConfig.siteIds.indexOf(act.siteId) < 0) {
+            fcConfig.siteIds.push(act.siteId);
+        }
     }
 }
 
