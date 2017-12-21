@@ -120,58 +120,6 @@
 
         $.ajaxSetup({ cache: false });
 
-        $(".btnAdministration").click(function (e) {
-            window.location = "${createLink(controller: 'admin')}";
-        });
-        $('.btnNewProject').click(function(e) {
-            <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-                window.location = "${createLink(controller: 'project', action:'create', params: [citizenScience:true])}"
-            </g:if>
-            <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-                window.location = "${createLink(controller: 'project', action:'create', params: [works:true])}"
-            </g:if>
-            <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
-                window.location = "${createLink(controller: 'project', action:'create', params: [ecoScience:true])}"
-            </g:if>
-        });
-
-        $(".btnProfile").click(function (e) {
-            window.location = "${createLink(controller: 'myProfile')}";
-        });
-
-        $(".btnAllData").click(function (e) {
-            window.location = "${createLink(controller: 'bioActivity', action: 'allRecords')}";
-        });
-
-        $(".btnMyDashboard").click(function (e) {
-            window.location = "${createLink(controller: 'user', action: 'index')}";
-        });
-
-        $(".btnMyData").click(function (e) {
-            window.location = "${createLink(controller: 'bioActivity', action: 'list')}";
-        });
-
-        $(".btnMyProjects").click(function (e) {
-            window.location = "${createLink(controller: 'project', action: 'myProjects')}";
-        });
-
-        $(".btnMyOrganisation").click(function (e) {
-            window.location = "${createLink(controller: 'organisation', action: 'myOrganisations')}";
-        });
-
-        $(".btnMyFavouriteSites").click(function (e) {
-            window.location = "${createLink(controller: 'site', action: 'myFavourites')}";
-        });
-
-
-        $(".btnSearch").click(function(e){
-            window.location = "${createLink(controller: 'home', action: 'index')}";
-        })
-
-        $(".btnSite").click(function(e){
-             window.location = "${createLink(controller: 'site', action: 'list')}";
-        })
-
         $("#toggleFluid").click(function(el){
             var fluidNo = $('div.container-fluid').length;
             var fixNo = $('div.container').length;
