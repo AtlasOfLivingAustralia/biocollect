@@ -418,6 +418,8 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             } else {
                 type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
             }
+        } else if (geoJsonFeature.geometry.type == ALA.MapConstants.DRAW_TYPE.LINE_TYPE) {
+            type = geoJsonFeature.geometry.type
         }
 
         return type;

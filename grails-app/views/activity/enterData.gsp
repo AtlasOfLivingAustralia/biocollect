@@ -281,7 +281,7 @@
     </g:each>
 <!-- /ko -->
 
-    <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
+    <g:if test="${metaModel?.supportsPhotoPoints?.toBoolean()}">
         <div class="output-block" data-bind="with:transients.photoPointModel">
             <h3>Photo Points</h3>
 
