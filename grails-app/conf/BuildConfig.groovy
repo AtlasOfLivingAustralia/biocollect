@@ -72,7 +72,7 @@ grails.project.dependency.resolution = {
 
         compile group: 'au.org.ala',
                 name: 'ala-cas-client',
-                version:'2.1-SNAPSHOT',
+                version:'2.1',
                 transitive:false
     }
 
