@@ -450,7 +450,7 @@ class SiteController {
         if (values.sites && !project.error) {
             List projectSites = project.sites?.collect { it.siteId }
             List toAdd = values.sites.minus(projectSites)
-            siteService.addSitesToSiteWhiteListInProjects(toAdd, [values.projectId], true)
+            siteService.addSitesToSiteWhiteListInWorksProjects(toAdd, [values.projectId], true)
         }
 
         if(result.error){
@@ -491,7 +491,7 @@ class SiteController {
                 result = siteService.updateRaw(id, values)
             }else{
                 values.projects?.each { projectId ->
-                    if (!projectService.canUserEditSitesForProject(userId, projectId) && !userService.userIsAlaAdmin()) {
+                    if (!projectService.canUserEditSitesForProject(userId, projectId)) {
                         log.error("Error: Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}")
                         render status: 401, error: 'Error: Access denied: User is not en editor or is not allowed to manage sites';
                     }
@@ -504,9 +504,9 @@ class SiteController {
                         String projectId = postBody?.projectId
                         Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
                         if (projectId && isAdmin) {
-                            siteService.addSitesToSiteWhiteListInProjects([siteId], [projectId], true);
+                            siteService.addSitesToSiteWhiteListInWorksProjects([siteId], [projectId], true);
                         } else {
-                            siteService.addSitesToSiteWhiteListInProjects([siteId], values.projects)
+                            siteService.addSitesToSiteWhiteListInWorksProjects([siteId], values.projects)
                         }
 
                         if (postBody?.pActivityId) {

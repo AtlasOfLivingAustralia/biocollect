@@ -186,7 +186,7 @@ class SiteService {
             Point centriod = calculateSiteCentroid(id)
             Map data = createSite(projectId, name, description, externalId, id, centriod.getY(), centriod.getX())
             if (!data.error && data.resp?.siteId) {
-                addSitesToSiteWhiteListInProjects([data.resp?.siteId], [projectId], forceAddToWhiteList)
+                addSitesToSiteWhiteListInWorksProjects([data.resp?.siteId], [projectId], forceAddToWhiteList)
             }
         }
     }
@@ -585,7 +585,7 @@ class SiteService {
      * @param projects
      * @param forceAdd add site without checking for further conditions
      */
-    void addSitesToSiteWhiteListInProjects(List sites, List projects, Boolean forceAdd = false) {
+    void addSitesToSiteWhiteListInWorksProjects(List sites, List projects, Boolean forceAdd = false) {
         projects?.each { projectId ->
             Map project = projectService.get(projectId)
             if (projectService.isWorks(project)) {
