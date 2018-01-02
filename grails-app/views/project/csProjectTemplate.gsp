@@ -166,7 +166,6 @@
             $.extend(this, projectViewModel);
             self.transients = self.transients || {};
             self.transients.resultsHolder = 'project-results-placeholder';
-            // self.transients.dataSharingLicences = licences;
         };
         var viewModel = new ViewModel()
         viewModel.loadPrograms(<fc:modelAsJavascript model="${programs}"/>);
