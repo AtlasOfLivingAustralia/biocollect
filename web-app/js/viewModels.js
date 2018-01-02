@@ -565,9 +565,6 @@ function enmapify(args) {
                 site: site}
             ).then(function (data, jqXHR, textStatus) {
                     var anonymousSiteId= data.id;
-                    return reloadSiteData().then(function () {
-                        return data.id
-                }).done(function(){
                         //IMPORTANT
                         //sites is a data-bind source for the selection dropdown list and bound to activity-output-data-location
                         //if the new created site id is not in this list, then the location would be empty
@@ -578,18 +575,18 @@ function enmapify(args) {
                          extent: extent,
                          visibility: "private"
                         }
-                        sitesObservable.push(anonymousSite)
+                    sitesObservable.remove(function(site){
+                        return site.visibility == 'private';
+                    })
+                    sitesObservable.push(anonymousSite);
+                    siteIdObservable(anonymousSiteId);
+                    siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
                  })
-           })
             .always(function () {
                 $.unblockUI();
                 loadingObservable(false);
             })
-            .done(function (id) {
-                siteIdObservable(id);
-            })
             .fail(saveSiteFailed)
-        siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
     }
 
     /**
