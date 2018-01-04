@@ -119,7 +119,9 @@ function enmapify(args) {
     var mapOptions = {
         wmsFeatureUrl: proxyFeatureUrl + "?featureId=",
         wmsLayerUrl: spatialGeoserverUrl + "/wms/reflect?",
-        draggableMarkers: !readonly,
+        //set false to keep consistance with edit mode.  We need to enter edit mode to move marker.
+        //If we set it true, we can move point, but cannot update site. And if we enter edit mode and exit, marker is no longer draggable.  Could be a bug in leaflet
+        draggableMarkers: false,
         drawControl: !readonly,
         showReset: false,
         singleDraw: true,
@@ -195,7 +197,7 @@ function enmapify(args) {
                 siteSubscriber.dispose();
 
                 console.log("Updating location fields to pin");
-                siteIdObservable(null);
+                //siteIdObservable(null);
                 latObservable(markerLocation.lat);
                 lonObservable(markerLocation.lng);
                 //latLonDisabledObservable(false);
@@ -443,8 +445,8 @@ function enmapify(args) {
     };
 
     var siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
-// make sure the lat/lng fields are cleared when the marker is removed by cancelling a new marker
-    map.registerListener("layerremove", updateFieldsForMap);
+    // make sure the lat/lng fields are cleared when the marker is removed by cancelling a new marker
+
     map.registerListener("draw:created", function (e) {
         console.log("draw created");
         var type = e.layerType,
@@ -474,6 +476,7 @@ function enmapify(args) {
         console.log("edited", e);
         saved = true;
     });
+
     map.registerListener("draw:editstop", function (e) {
         console.log("editstop", e);
         if (!siteIdObservable() && !saved) {
@@ -489,7 +492,10 @@ function enmapify(args) {
         }
         saved = false;
     });
+
+    //Change on map will trigger the method.
     map.subscribe(updateFieldsForMap);
+
     if (!edit && !readonly) {
         map.markMyLocation();
     }
