@@ -143,7 +143,7 @@ function enmapify(args) {
             :
             {
                 polyline: !selectFromSitesOnly && allowPolygons,
-                polygon: !selectFromSitesOnly && allowPolygons,
+                polygon: !selectFromSitesOnly && allowPolygons? { allowIntersection: false } : false,
                 circle: !selectFromSitesOnly && allowPolygons,
                 rectangle: !selectFromSitesOnly && allowPolygons,
                 marker: !selectFromSitesOnly && allowPoints,
