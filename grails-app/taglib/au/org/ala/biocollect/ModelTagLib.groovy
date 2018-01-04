@@ -15,6 +15,7 @@ class ModelTagLib {
     private final static String SPACE = " ";
     private final static String EQUALS = "=";
     private final static String DEFERRED_TEMPLATES_KEY = "deferredTemplates"
+    private final static String NUMBER_OF_TABLE_COLUMNS = "numberOfTableColumns"
 
     private final static int LAYOUT_COLUMNS = 12 // Bootstrap scaffolding uses a 12 column layout.
 
@@ -489,8 +490,11 @@ class ModelTagLib {
     }
 
     def gridHeader(out, attrs, model) {
+        Integer colCount = 0;
+        pageScope.setVariable(NUMBER_OF_TABLE_COLUMNS, colCount);
         out << INDENT*4 << "<thead><tr>"
         model.columns.each { col ->
+            colCount ++
             out << "<th>"
             out << col.title
             if (col.pleaseSpecify) {
@@ -506,6 +510,7 @@ class ModelTagLib {
             out << "</th>"
         }
         out << '\n' << INDENT*4 << "</tr></thead>\n"
+        pageScope.setVariable(NUMBER_OF_TABLE_COLUMNS, colCount);
     }
 
     def gridBodyEdit(out, attrs, model) {
@@ -601,6 +606,8 @@ class ModelTagLib {
     }
 
     def tableHeader(out, attrs, table) {
+        Integer colCount = 0;
+        pageScope.setVariable(NUMBER_OF_TABLE_COLUMNS, colCount);
         out << INDENT*4 << "<thead><tr>"
         table.columns.eachWithIndex { col, i ->
             if (isRequired(attrs, col, attrs.edit)) {
@@ -608,12 +615,14 @@ class ModelTagLib {
             } else {
                 out << "<th>" + labelText(attrs, col, col.title) + "</th>"
             }
-
+            colCount ++;
         }
         if (table.source && attrs.edit && !attrs.printable && (table.editableRows || getAllowRowDelete(attrs, table.source, null))) {
             out << "<th></th>"
+            colCount++;
         }
         out << '\n' << INDENT*4 << "</tr></thead>\n"
+        pageScope.setVariable(NUMBER_OF_TABLE_COLUMNS, colCount);
     }
 
     def tableBodyView (out, attrs, table) {
@@ -758,18 +767,16 @@ class ModelTagLib {
      */
     def footer(out, attrs, model) {
 
-        def colCount = 0
+        def colCount = pageScope.getVariable(NUMBER_OF_TABLE_COLUMNS);
         def containsSpecies = model.columns.find{it.type == 'autocomplete'}
         out << INDENT*4 << "<tfoot>\n"
         model.footer?.rows.each { row ->
-            colCount = 0
             out << INDENT*4 << "<tr>\n"
             row.columns.eachWithIndex { col, i ->
                 def attributes = new AttributeMap()
                 if (getAttribute(attrs, col.source, '', 'primaryResult') == 'true') {
                     attributes.addClass('value');
                 }
-                colCount += (col.colspan ? col.colspan.toInteger() : 1)
                 def colspan = col.colspan ? " colspan='${col.colspan}'" : ''
                 // inject type from data model
                 col.type = col.type ?: getType(attrs, col.source, '')
@@ -780,7 +787,6 @@ class ModelTagLib {
             }
             if (model.type == 'table' && attrs.edit) {
                 out << INDENT*5 << "<td></td>\n"  // to balance the extra column for actions
-                colCount++
             }
             out << INDENT*4 << "</tr>\n"
         }
