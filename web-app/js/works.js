@@ -805,7 +805,13 @@ function lookupSite (siteId) {
         }
     }
 }
-
+/**
+* It is for  projects which contain a list of site ids instead of sites
+ * e.g workprojects
+* @param sites
+* @param addNotFoundSite
+* @returns {Array}
+ */
 function resolveSites(sites, addNotFoundSite) {
     var resolved = [];
     sites = sites || [];
@@ -814,15 +820,17 @@ function resolveSites(sites, addNotFoundSite) {
         var site;
         if(typeof siteId === 'string'){
             site = lookupSite(siteId);
-        }
 
-        if(site){
-            resolved.push(site);
-        } else if(addNotFoundSite && siteId) {
-            resolved.push({
-                name: 'User created site',
-                siteId: siteId
-            });
+             if(site){
+                    resolved.push(site);
+                } else if(addNotFoundSite && siteId) {
+                    resolved.push({
+                        name: 'User created site',
+                        siteId: siteId
+                    });
+                }
+        } else if(typeof siteId === 'object'){
+            resolved.push(siteId);
         }
     });
 
