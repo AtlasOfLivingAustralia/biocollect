@@ -327,6 +327,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
         fq = self.urlFacetParameter();
 
+        fq.forEach(function (filter, index) {
+            fq[index] = encodeURI(filter)
+        });
+
         if(fq.length){
             url += '&fq=' + fq.join('&fq=');
         }
@@ -570,6 +574,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             params.searchTerm = self.searchTerm().trim();
 
             fq = self.urlFacetParameter();
+
+            fq.forEach(function (filter, index) {
+                fq[index] = encodeURI(filter)
+            });
 
             if(fq.length){
                 filters = '&fq=' + fq.join('&fq=');
