@@ -125,7 +125,7 @@
                 <div class="row">
                     <ul class="breadcrumb-list">
                         <g:each in="${breadCrumbs}" var="item" status="index">
-                            <config:getLinkFromConfig config="${item}"></config:getLinkFromConfig>
+                            <config:getLinkFromConfig config="${item}" hubConfig="${hubConfig}"></config:getLinkFromConfig>
                         </g:each>
                     </ul>
                 </div>
@@ -184,7 +184,7 @@
                         <g:if test="${hubConfig.templateConfiguration?.footer?.links}">
                             <g:each in="${hubConfig.templateConfiguration?.footer?.links}" var="link">
                                 <li>
-                                    <config:getLinkFromConfig config="${link}"></config:getLinkFromConfig>
+                                    <config:getLinkFromConfig config="${link}" hubConfig="${hubConfig}"></config:getLinkFromConfig>
                                 </li>
                             </g:each>
                         </g:if>

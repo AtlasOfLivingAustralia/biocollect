@@ -28,6 +28,7 @@ class TemplateTagLib {
 
     /**
      * Generate links for header and footer based on config options.
+     * @attr hubConfig REQUIRED hub configuration object {@link au.org.ala.biocollect.merit.hub.HubSettings}
      */
     def getLinkFromConfig = { attrs ->
         if(attrs.config){
