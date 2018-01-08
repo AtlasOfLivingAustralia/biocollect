@@ -1,6 +1,5 @@
 package au.org.ala.biocollect.merit
 
-import groovy.time.*
 import au.org.ala.web.AuthService
 import grails.converters.JSON
 import org.apache.commons.lang.StringUtils
@@ -486,8 +485,6 @@ class SiteController {
                 }
             }
             log.debug(values as JSON).toString()
-
-
             boolean privateSite = values['visibility'] ? (values['visibility'] == 'private' ? true : false) : false;
 
             if(privateSite){
@@ -504,14 +501,9 @@ class SiteController {
                 }
 
                 result = siteService.updateRaw(id, values)
-
                 String siteId = result.id
-
-
                 if(siteId) {
-
                     if(isCreateSiteRequest){
-
                         String projectId = postBody?.projectId
                         Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
                         if (projectId && isAdmin) {
@@ -529,8 +521,6 @@ class SiteController {
                             }
                         }
                     }
-
-
                 } else {
                     result.status = 'error';
                     result.message = 'Could not save site';
@@ -541,7 +531,6 @@ class SiteController {
             if (result.status == 'error') {
                 render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${result.message}"
             } else {
-
                 render result as JSON
             }
         }

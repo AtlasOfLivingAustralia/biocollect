@@ -1,6 +1,5 @@
 package au.org.ala.biocollect.merit
 
-import groovy.time.*
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.Point
 import com.vividsolutions.jts.io.WKTReader
@@ -117,17 +116,11 @@ class SiteService {
 
     def updateRaw(id, values, userId = "") {
         //if its a drawn shape, save and get a PID
-        def timeStart = new Date()
-        def performanceTrack=[]
 
         if(values?.extent?.source?.toLowerCase() == 'drawn'){
             def shapePid = persistSiteExtent(values.name, values.extent.geometry, userId)
             values.extent.geometry.pid = shapePid.resp?.id ?: ""
         }
-        def duration = TimeCategory.minus(new Date(), timeStart)
-        performanceTrack.push('Persist site extent: '+ duration)
-
-        timeStart = new Date();
         def resp = [:]
         if (id) {
             def result = update(id, values)
@@ -144,12 +137,7 @@ class SiteService {
                 resp = [status: 'created', id:result.resp.siteId]
             }
         }
-
-        duration = TimeCategory.minus(new Date(), timeStart)
-        performanceTrack.push('update site: '+ duration)
-        resp.put('performanceTrack', performanceTrack)
-        return resp;
-
+        return resp
     }
 
     def create(body){
