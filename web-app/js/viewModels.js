@@ -617,6 +617,7 @@ function enmapify(args) {
 
     function addSite(site) {
         var siteId = site['site'].siteId
+        site['site']['asyncUpdate'] = true;  // aysnc update Metadata service for performance
 
         return $.ajax({
             method: 'POST',
