@@ -332,6 +332,10 @@ function enmapify(args) {
                     console.log("Displaying site without geometry.")
                     map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
                 }
+
+                // if (matchingSite.extent.geometry.centre){
+                //     map.addMarker(parseFloat(matchingSite.extent.geometry.centre[1]),parseFloat(matchingSite.extent.geometry.centre[0]));
+                // }
             }
         }else{
             // Keep the previous code to make compatible with old records
@@ -617,7 +621,7 @@ function enmapify(args) {
 
     function addSite(site) {
         var siteId = site['site'].siteId
-        site['site']['asyncUpdate'] = true;  // aysnc update Metadata service for performance
+        site['site']['asyncUpdate'] = true;  // aysnc update Metadata service for performance improvement
 
         return $.ajax({
             method: 'POST',
@@ -634,18 +638,62 @@ function enmapify(args) {
         map.clearLayers();
     }
 
+    function polygonCenter(vertices){
+        var lowx,
+            highx,
+            lowy,
+            highy,
+            lats = [],
+            lngs = [];
+
+        for(var i=0; i<vertices.length; i++) {
+           lats.push(vertices[i][0]);
+           lngs.push(vertices[i][1]);
+        }
+
+        lats.sort();
+        lngs.sort();
+        lowx = lats[0];
+        highx = lats[vertices.length - 1];
+        lowy = lngs[0];
+        highy = lngs[vertices.length - 1];
+        var center_x = lowx + ((highx-lowx) / 2);
+        var center_y = lowy + ((highy - lowy) / 2);
+        return [center_x, center_y];
+    }
+
     function convertGeoJSONToExtent(gj) {
         var feature = gj.features[0];
-        var geometryType = feature.geometry.type;
+        //var geometryType = feature.geometry.type;
         var latLng = null;
         var extent = {
             geometry: {}
         };
-        if (geometryType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
-            extent.geometry.centre = latLng;
-        }
 
         var geoType = determineExtentType(feature);
+
+        if (geoType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE || geoType === ALA.MapConstants.DRAW_TYPE.CIRCLE_TYPE) {
+            if (feature.geometry.coordinates.length == 2){
+                latLng = feature.geometry.coordinates;
+            }
+
+        }
+
+        if (geoType === ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE) {
+            //Polygon is 2D array. Here we use the first element.
+            var coordinates = feature.geometry.coordinates.length > 0?feature.geometry.coordinates[0]:[]
+            latLng = polygonCenter(coordinates);
+        }
+        // We use the first point as the center of a polyline
+        if (geoType === ALA.MapConstants.DRAW_TYPE.LINE_TYPE) {
+            if (feature.geometry.coordinates.length > 1){
+                latLng = feature.geometry.coordinates[0];
+            }
+        }
+
+
+        extent.geometry.centre = latLng;
+
         extent.geometry.type = geoType;
         extent.source = geoType == "Point" ? "Point" : geoType == "pid" ? "pid" : "drawn";
         extent.geometry.radius = feature.properties.radius;
