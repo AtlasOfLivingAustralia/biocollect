@@ -485,6 +485,7 @@ class SiteController {
                 }
             }
             log.debug(values as JSON).toString()
+            //Compatible with previous records without visibility field
             boolean privateSite = values['visibility'] ? (values['visibility'] == 'private' ? true : false) : false;
 
             if(privateSite){
@@ -549,7 +550,7 @@ class SiteController {
         if (!site || site.error) {
             md = [error: 'no such site']
         } else {
-            md = siteService.getLocationMetadata(site)
+            md = siteService.getLocati onMetadata(site)
             if (!md) {
                 md = [error: 'no metadata found']
             }
