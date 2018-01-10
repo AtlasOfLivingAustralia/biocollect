@@ -327,7 +327,7 @@ class BioActivityController {
      * @return
      */
     def index(String id) {
-        String userId = userService.getCurrentUserId()
+        String userId = userService.getCurrentUserId(request)
 
         def activity = activityService.get(id, params?.version, userId, true)
         def pActivity = projectActivityService.get(activity?.projectActivityId, "all", params?.version)
