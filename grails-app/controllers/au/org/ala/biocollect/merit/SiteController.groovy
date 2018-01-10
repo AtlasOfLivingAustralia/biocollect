@@ -491,7 +491,7 @@ class SiteController {
             if(privateSite){
                 //Do not check permission if site is private
                 //This design is specially for sightings
-                result = siteService.updateRaw(id, values)
+                result = siteService.updateRaw(id, values,userId)
             }else{
 
                 values.projects?.each { projectId ->
@@ -501,7 +501,7 @@ class SiteController {
                     }
                 }
 
-                result = siteService.updateRaw(id, values)
+                result = siteService.updateRaw(id, values, userId)
                 String siteId = result.id
                 if(siteId) {
                     if(isCreateSiteRequest){
