@@ -228,7 +228,7 @@
 
             map = new ALA.Map("projectSiteMap", mapOptions);
 
-            if (projectArea.pid) {
+            if (projectArea.pid && projectArea.pid != 'null' && projectArea.pid != "undefined") {
                 map.addWmsLayer(projectArea.pid);
             } else {
                 var geometry = _.pick(projectArea, "type", "coordinates");
