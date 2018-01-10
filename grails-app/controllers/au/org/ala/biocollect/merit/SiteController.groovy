@@ -518,6 +518,7 @@ class SiteController {
 
                             if (result?.status != 'error') {
                                 pActivity.sites.add(siteId)
+
                                 projectActivityService.update(postBody.pActivityId, pActivity)
                             }
                         }
