@@ -329,7 +329,7 @@ class BioActivityController {
         def activity = activityService.get(id, params?.version)
         def pActivity = projectActivityService.get(activity?.projectActivityId, "all", params?.version)
 
-        String userId = userService.getCurrentUserId()
+        String userId = userService.getCurrentUserId(request)
 
         boolean embargoed = projectActivityService.isEmbargoed(pActivity)
         boolean userIsOwner = userId && activityService.isUserOwnerForActivity(userId, id)
