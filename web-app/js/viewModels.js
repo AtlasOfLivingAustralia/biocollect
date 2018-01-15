@@ -195,7 +195,6 @@ function enmapify(args) {
             if (!isRemoveEvent) {
 
                 siteSubscriber.dispose();
-
                 console.log("Updating location fields to pin");
                 //siteIdObservable(null);
                 latObservable(markerLocation.lat);
