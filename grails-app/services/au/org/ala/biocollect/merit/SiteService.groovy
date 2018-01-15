@@ -132,7 +132,7 @@ class SiteService {
         } else {
             def result = create(values)
             if(result.error){
-               resp = [status: 'error', message: resp.detail]
+               resp = [status: 'error', message: result.detail]
             } else {
                 resp = [status: 'created', id:result.resp.siteId]
             }
