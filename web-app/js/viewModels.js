@@ -63,14 +63,14 @@ function enmapify(args) {
         //container[SitesArray] does not care about 'private' or not, only check if the site matches the survey configs
         surveySupportedSitesObservable = container[name + "SitesArray"] =  ko.computed(function(){
                 if (pointsOnly){
-                    return ko.utils.arrayFilter(sitesObservable(),function(site){
-                        return site.extent.geometry.type === 'Point';
+                     return ko.utils.arrayFilter(sitesObservable(),function(site){
+                        return site.extent.geometry.type === 'Point' || site.siteId == siteIdObservable();
                     })
                 }
 
                 if (polygonsOnly){
                     return ko.utils.arrayFilter(sitesObservable(),function(site){
-                        return site.extent.geometry.type != 'Point';
+                        return site.extent.geometry.type != 'Point'|| site.siteId == siteIdObservable();
                     })
                 }
 
