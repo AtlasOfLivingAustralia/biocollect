@@ -330,6 +330,11 @@ class BioActivityController {
         String userId = userService.getCurrentUserId(request)
 
         def activity = activityService.get(id, params?.version, userId, true)
+        if (activity.error){
+            redirect(controller: "base", action:'error', params: activity)
+            //forward(action: 'list', model: [error: 'Activity cannot be found or Ecodata service is temporarily unavailable'])
+            return
+        }
         def pActivity = projectActivityService.get(activity?.projectActivityId, "all", params?.version)
 
         boolean embargoed = projectActivityService.isEmbargoed(pActivity)

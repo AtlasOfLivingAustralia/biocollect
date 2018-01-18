@@ -22,4 +22,9 @@ class BaseController {
             render resp.resp as JSON
         }
     }
+
+    def error(String error){
+        render(view:"/error",model: [errorMessage : error])
+    }
+
 }
