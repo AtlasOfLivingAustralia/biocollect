@@ -153,7 +153,7 @@
                             </thead>
                             <tbody>
                                 <!-- ko foreach: links -->
-                                <!-- ko template: { name: 'templateLink', data: {disableRoles:false, link:$data }} -->
+                                <!-- ko template: { name: 'templateLink', data: {disableRoles:false, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
                                 <!-- /ko -->
                                 <!-- /ko -->
                                 <tr>
@@ -205,7 +205,7 @@
                                 </thead>
                                 <tbody>
                                 <!-- ko foreach: links -->
-                                <!-- ko template: { name: 'templateLink', data: {disableRoles:false, link:$data }} -->
+                                <!-- ko template: { name: 'templateLink', data: {disableRoles:false, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
                                 <!-- /ko -->
                                 <!-- /ko -->
                                 <tr>
@@ -355,7 +355,7 @@
                     </thead>
                     <tbody>
                     <!-- ko foreach: quickLinks -->
-                    <!-- ko template: { name: 'templateLink', data: {$parent: $parent, disableRoles:true, link:$data }} -->
+                    <!-- ko template: { name: 'templateLink', data: {$parent: $parent, disableRoles:true, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
                     <!-- /ko -->
                     <!-- /ko -->
                     <tr>
@@ -543,7 +543,7 @@
         </td>
         <!-- /ko -->
         <td>
-            <button class="btn btn-danger" data-bind="click: $parent.removeLink">
+            <button class="btn btn-danger" data-bind="click: removeLink">
                 <i class="icon icon-remove icon-white"></i> Remove
             </button>
         </td>
@@ -825,7 +825,7 @@
                         </thead>
                         <tbody>
                         <!-- ko foreach: buttons -->
-                        <!--ko template: { name: 'templateLink', data: {disableRoles:false, link:$data }} -->
+                        <!--ko template: { name: 'templateLink', data: {disableRoles:false, link:$data, removeLink:removeLink:function() {$parent.removeLink($data)} }} -->
                         <!-- /ko -->
                         <!-- /ko -->
                         <tr>
