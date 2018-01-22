@@ -140,7 +140,9 @@ public class EditModelWidgetRenderer implements ModelWidgetRenderer {
     @Override
     void renderImage(WidgetRenderContext context) {
         context.databindAttrs.add 'imageUpload', "{target:${context.source}, config:{}}"
-        context.writer << context.g.render(template: '/output/imageDataTypeEditModelTemplate', model: [databindAttrs:context.databindAttrs.toString(), name: context.source, validationAttrs:context.validationAttr ])
+        def showImgMetadata = (context.model.showMetadata == null ||  context.model.showMetadata == true) ? "block" :"none"
+        def allowImageAdd = (context.model.allowImageAdd == null ||  context.model.allowImageAdd == true) ? "block" :"none"
+        context.writer << context.g.render(template: '/output/imageDataTypeEditModelTemplate', model: [databindAttrs:context.databindAttrs.toString(), showImgMetadata: showImgMetadata, allowImageAdd: allowImageAdd, name: context.source, validationAttrs:context.validationAttr ])
     }
 
     @Override

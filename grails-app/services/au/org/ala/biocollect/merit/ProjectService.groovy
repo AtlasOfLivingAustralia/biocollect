@@ -14,8 +14,6 @@ class ProjectService {
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE_TYPE_2 = 'citizenScience'
     public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoScience'
     public static final String PROJECT_TYPE_WORKS = 'works'
-    public static final String PROJECT_PLAN_STATUS_APPROVED = 'approved'
-    public static final String PROJECT_PLAN_STATUS_NOTAPPROVED = 'not approved'
         static  final MOBILE_APP_ROLE = [ "android",
                                           "blackberry",
                                           "iTunes",
@@ -25,15 +23,18 @@ class ProjectService {
             [
                     name:'status',
                     total: 0,
-                    terms: [ [ term: 'active', count: 0], [ term: 'completed', count: 0 ]]
+                    terms: [ [ term: 'active', count: 0, title: 'Active'], [ term: 'completed', count: 0, title: 'Completed' ]],
+                    type: 'terms'
             ],
             [
                     name:'plannedStartDate',
                     type: 'date',
                     total: 0,
-                    terms: [ [ fromDate: '', toDate: ''] ]
+                    terms: [ [ fromDate: '', toDate: ''] ],
+                    type: 'date'
             ]
     ]
+    public static final String PROJECT_FINDER_PAGE= 'projectFinder'
 
 
     WebService webService
@@ -49,6 +50,7 @@ class ProjectService {
     CacheService cacheService
     MessageSource messageSource
     SpeciesService speciesService
+    FormSpeciesFieldParserService formSpeciesFieldParserService
 
     def list(brief = false, citizenScienceOnly = false) {
         def params = brief ? '?brief=true' : ''
@@ -62,14 +64,15 @@ class ProjectService {
         resp
     }
 
-    def get(id, levelOfDetail = "", includeDeleted = false, version = null) {
+    def get(id, levelOfDetail = "", includeDeleted = false, version = null ) {
 
         def params = '?'
-
         params += "view=${levelOfDetail?:PRIVATE_SITES_REMOVED}&"
         params += "includeDeleted=${includeDeleted}&"
         params += version ? "version=${version}" : ''
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + id + params)
+        def project  = webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + id + params);
+        return project;
+
     }
 
     def getRich(id) {
@@ -89,7 +92,7 @@ class ProjectService {
     def validate(props, projectId = null) {
         def error = null
         def updating = projectId != null
-        def project = get(projectId)
+        def project = projectId ? get(projectId) : null
         def projectType = ((updating && !props?.projectType) ? project?.projectType : props?.projectType)
         def isWorks = projectType == PROJECT_TYPE_WORKS
         def isEcoScience = projectType == PROJECT_TYPE_ECOSCIENCE
@@ -197,6 +200,11 @@ class ProjectService {
     def create(props) {
         Map result
 
+        // set default map configuration for works project at the time of creation.
+        if (isWorks(props)) {
+            props.mapConfiguration = siteService.defaultMapConfiguration(props.projectSiteId)
+        }
+
         //validate
         def error = validate(props)
         if (error) {
@@ -232,7 +240,7 @@ class ProjectService {
         result
     }
 
-    def update(id, body, boolean skipEmailNotification = false) {
+    def update(id, body, boolean skipEmailNotification = true) {
         def result
 
         //validate
@@ -252,6 +260,21 @@ class ProjectService {
             emailService.sendEmail(subject, emailBody, ["${grailsApplication.config.biocollect.support.email.address}"])
         }
 
+        result
+    }
+
+    /**
+     * Adds the current user id as a field in the project plan then saves it to ecodata.
+     * @param projectId the project to update
+     * @param projectPlan the plan details, including the [custom:[details:[]] prefix.
+     * @return the response from ecodata
+     */
+    Map updateProjectPlan(String projectId, Map projectPlan) {
+        projectPlan.custom.details.lastUpdatedBy = userService.user.userId
+        Map result = webService.doPost(grailsApplication.config.ecodata.service.url + '/project/' + projectId, projectPlan)
+        if (result.statusCode == 200 && result.resp) {
+            result.resp.lastUpdatedByDisplayName = userService.currentUserDisplayName
+        }
         result
     }
 
@@ -318,6 +341,11 @@ class ProjectService {
         webService.getJson(url)
     }
 
+    def getMembersForProjectPerPage(projectId, pageStart, pageSize) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForProjectPerPage?projectId=${projectId}&offset=${pageStart}&max=${pageSize}"
+        webService.getJson(url, null, true)
+    }
+
     /**
      * Does the current user have permission to administer the requested projectId?
      * Checks for the ADMIN role in CAS and then checks the UserPermission
@@ -381,7 +409,7 @@ class ProjectService {
     }
 
     /**
-     * Check whether a works project has the canEditorCreateSites and the user has permission to edit the project
+     * Check whether a works project has the allowAdditionalSurveySites and the user has permission to edit the project
      * If the project is not Works the default behaviour is to just call canUserEditProject.
      * @param userId The user calling the controller
      * @param projectId The project to check
@@ -392,9 +420,9 @@ class ProjectService {
 
         Map project = get(projectId)
 
-        if(project.projectType == "works") {
+        if(isWorks(project)) {
             canManageSites = userService.userIsSiteAdmin() || userService.isUserAdminForProject(userId, projectId)  ||
-                    project?.canEditorCreateSites && userService.isUserEditorForProject(userId, projectId)
+                    project?.mapConfiguration?.allowAdditionalSurveySites && userService.isUserEditorForProject(userId, projectId)
         }
 
         // Not sure if merit check is still relevant but just in case we rely on canUserEditProject behaviour
@@ -539,6 +567,19 @@ class ProjectService {
         }
 
         allowedActivities
+    }
+
+    /**
+     * Find and add all species fields in an activity type. The resulting list is returned.
+     * @param activityTypes
+     * @return
+     */
+    List addSpeciesFieldsToActivityTypesList(List activityTypes){
+        activityTypes.each { category ->
+            category?.list?.each { type ->
+                type.speciesFields = formSpeciesFieldParserService.getSpeciesFieldsForSurvey(type.name)?.result
+            }
+        }
     }
 
     /**
@@ -738,10 +779,11 @@ class ProjectService {
      * @param facets
      * @return
      */
-    List getDisplayNamesForFacets(facets){
+    List getDisplayNamesForFacets(List facets, List facetConfig){
         facets?.each { facet ->
-            facet.title = messageSource.getMessage("project.facets."+facet.name, [].toArray(), facet.name, Locale.default)
-            facet.helpText = messageSource.getMessage("project.facets."+facet.name +".helpText", [].toArray(), "", Locale.default)
+            Map config = facetConfig.find { it.name == facet.name }
+            facet.title = config?.title
+            facet.helpText = config?.helpText
             facet.terms?.each{ term ->
                 term.title = messageSource.getMessage("project.facets."+facet.name+"."+term.term, [].toArray(), term.name, Locale.default)
             }
@@ -770,19 +812,8 @@ class ProjectService {
         project.projectType == PROJECT_TYPE_ECOSCIENCE
     }
 
-    public boolean isWork(project){
+    public boolean isWorks(project){
         project.projectType == PROJECT_TYPE_WORKS
-    }
-
-    /**
-     * Get list of all possible facets for citizen science project finder.
-     * @return
-     */
-    Map getFacetsFromUrl(){
-        cacheService.get("facets.project", {
-            String url =  grailsApplication.config.ecodata.service.url + '/project/getBiocollectFacets'
-            webService.getJson(url)
-        })
     }
 
     /**
@@ -792,17 +823,8 @@ class ProjectService {
      */
     List getFacets(){
         cacheService.get("facets.project.resolved", {
-            Map facets = getFacetsFromUrl()
-            if (facets.facets) {
-                List facetsMapList = facets.facets?.collect {
-                    [name: it]
-                }
-
-                facetsMapList = getDisplayNamesForFacets(facetsMapList)
-                facetsMapList.sort{ it.title }
-            } else if (facets.error) {
-                return []
-            }
+            List facetsMapList = getDefaultFacets()
+            facetsMapList.sort{ it.title }
         })
     }
 
@@ -814,21 +836,23 @@ class ProjectService {
      */
     List addFacetExpandCollapseState (List facets){
         HubSettings hub = SettingService.getHubConfig()
-        Boolean checkState = false
         List configurableFacets = []
-        if(hub.isFacetListConfigured()){
-            checkState = true
-            configurableFacets = hub.getConfigForFacets()
+        if(hub.isFacetListConfigured(PROJECT_FINDER_PAGE)){
+            configurableFacets = hub.getFacetsForProjectFinderPage()
         }
 
-        facets?.each {facet ->
+        addFacetState(facets, configurableFacets)
+    }
+
+    List addFacetState(List facets, List configurableFacets) {
+        facets?.each { facet ->
             String state = 'Expanded'
-            if(checkState){
-                Map cFacet = configurableFacets?.find {
+            if (configurableFacets) {
+                Map cFacet = configurableFacets.find {
                     it.name == facet.name
                 }
 
-                if(cFacet){
+                if (cFacet) {
                     state = cFacet.state
                 }
             }
@@ -847,16 +871,17 @@ class ProjectService {
      */
     List addSpecialFacets(List facets){
         HubSettings hub = SettingService.getHubConfig()
-        if(hub.isFacetListConfigured()) {
-            List hubFacets = hub.getConfigForFacets()
+        if(hub.isFacetListConfigured(PROJECT_FINDER_PAGE)) {
+            List hubFacets = hub.getFacetsForProjectFinderPage()
             SPECIAL_FACETS.each { specialFacet ->
                 int index = hubFacets?.findIndexOf{ it.name == specialFacet.name }
                 if(index >= 0){
                     if(index >= facets?.size()){
                         index = facets.size()
+                        facets.add(index, specialFacet.clone())
+                    } else {
+                        facets.putAt(index, specialFacet.clone())
                     }
-
-                    facets.add(index, specialFacet.clone())
                 }
             }
         } else {
@@ -864,31 +889,6 @@ class ProjectService {
         }
 
         facets
-    }
-
-    /**
-     * Get list of facets for the current hub.
-     * @return
-     */
-    String[] getFacetListForHub(){
-        HubSettings hub = SettingService.getHubConfig()
-
-        if(hub.isFacetListConfigured()) {
-            List facets = hub.getFacets()
-            // remove facets that have special meaning e.g. status facet which categorises a project as completed or active
-            // using the project's end date.
-            SPECIAL_FACETS.each { facet ->
-                int index = facets.findIndexOf {
-                    it == facet.name
-                }
-
-                if (index >= 0) {
-                    facets.remove(index)
-                }
-            }
-
-            facets.toArray();
-        }
     }
 
     /**
@@ -919,11 +919,17 @@ class ProjectService {
         }
 
 
-        Map speciesFieldConfig = (specificFieldDefinition?.config !=null &&  specificFieldDefinition?.config?.type != "DEFAULT_SPECIES") ?
+        Map speciesFieldConfig = (specificFieldDefinition?.config && specificFieldDefinition?.config?.type != "DEFAULT_SPECIES") ?
                 //New species per field configuration
                 specificFieldDefinition.config :
                 // Legacy per survey species configuration
                 project?.speciesFieldsSettings?.defaultSpeciesConfig
+
+        // All species is the default setting when field is not configured.
+        if(!speciesFieldConfig){
+            speciesFieldConfig = grailsApplication.config.speciesConfiguration.default
+        }
+
         return speciesFieldConfig
     }
 
@@ -945,17 +951,6 @@ class ProjectService {
         speciesService.formatSpeciesNameInAutocompleteList(speciesFieldConfig.speciesDisplayFormat , result)
     }
 
-    /**
-     * Check if work project plan has been approved.
-     * @param projectId
-     * @return
-     */
-    boolean isWorksProjectPlanStatusApproved(String projectId){
-        Map project = get(projectId)
-        if(!project?.error){
-            project.planStatus == PROJECT_PLAN_STATUS_APPROVED
-        }
-    }
 
     /**
      * Check if project is contributing data to Atlas of Living Australia
@@ -1023,5 +1018,11 @@ class ProjectService {
             default:
                 break
         }
+    }
+
+    List getDefaultFacets(){
+        cacheService.get('default-facets-for-project-finder', {
+            webService.getJson(grailsApplication.config.ecodata.service.url + '/project/getDefaultFacets')
+        })
     }
 }

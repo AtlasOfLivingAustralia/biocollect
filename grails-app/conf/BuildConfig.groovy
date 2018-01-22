@@ -104,13 +104,12 @@ grails.project.dependency.resolution = {
         compile ':cache:1.1.8'
         compile ':cache-headers:1.1.7'
         compile ":cache-ehcache:1.0.5"
-        compile ":google-visualization:0.6.2"
+        compile ":google-visualization:1.0.1"
         compile ":mail:1.0.7"
         compile ":excel-export:0.2.0"
         compile ":excel-import:1.0.1"
         compile ":images-client-plugin:0.6.1"
-        compile ":ala-map:2.0.8"
+        compile ":ala-map:2.1.3"
         compile ':cookie:1.4'
-
     }
 }

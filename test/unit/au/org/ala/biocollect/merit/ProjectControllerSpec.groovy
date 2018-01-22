@@ -30,6 +30,7 @@ class ProjectControllerSpec extends Specification {
     def vocabServiceStub = Stub(VocabService)
     def documentServiceStub = Stub(DocumentService)
     def settingServiceStub = Stub(SettingService)
+    def collectoryServiceStub = Stub(CollectoryService)
 
     void setup() {
         controller.userService = userServiceStub
@@ -46,8 +47,10 @@ class ProjectControllerSpec extends Specification {
         controller.vocabService = vocabServiceStub
         controller.documentService = documentServiceStub
         controller.settingService = settingServiceStub
+        controller.collectoryService = collectoryServiceStub
         auditServiceStub.getAuditMessagesForProject(_) >> []
         metadataServiceStub.activitiesModel() >> [activities: []]
+        metadataServiceStub.getActivityModel(*_) >> [type:'Activity']
         userServiceStub.getOrganisationIdsForUserId(_) >> ['1']
         projectServiceStub.getMembersForProjectId(_) >> []
         
@@ -191,6 +194,7 @@ class ProjectControllerSpec extends Specification {
         params.userCanEditProject = true
         params.userIsProjectAdmin = true
         projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'works', isExternal:external]
+        activityServiceStub.activitiesForProject(projectId) >> [[type:'Activity 1']]
 
         when:
         controller.index(projectId)
@@ -278,6 +282,7 @@ class ProjectControllerSpec extends Specification {
         stubProjectAdmin('1234', projectId)
         projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE, isExternal:external]
         projectServiceStub.supportedActivityTypes(_) >> [[name:'1'], [name:'2'], [name:'3']]
+        activityServiceStub.activitiesForProject(projectId) >> [[type:'Activity 1']]
 
         when:
         controller.index(projectId)

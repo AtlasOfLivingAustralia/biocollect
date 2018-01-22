@@ -121,6 +121,11 @@ flag.issues = ['IDENTIFICATION','GEOCODING_ISSUE','TEMPORAL_ISSUE','HABITAT_ISSU
 showBiocacheLinks = false
 identify.subgroupFacet="names_and_lsid"
 identify.enabled = true
+
+// Quarantine the EHP industries section to the test environment until this becomes hub configurable.
+// This item will be set to true in the test environment only.
+projectdata.industries.enabled = false
+
 // ----------------------------------
 
 environments {
@@ -233,6 +238,13 @@ if (!grails.cache.ehcache) {
     }
 }
 
+/******************************************************************************\
+ *  EXTERNAL SERVERS
+ \******************************************************************************/
+if (!collectory.service.url) {
+    collectory.service.url = "https://collections.ala.org.au"
+}
+
 if (!acsaUrl){
     acsaUrl = 'http://csna.gaiaresources.com.au/wordpress/'
 }
@@ -240,6 +252,10 @@ if (!acsaUrl){
 if(!biocache.baseURL){
     biocache.baseURL = "https://biocache.ala.org.au"
 }
+
+/*
+ * Specific configurations used by Biocollect
+ */
 
 if(!facets.flimit){
     facets.flimit = 15
@@ -249,4 +265,11 @@ if(!lists.commonFields){
     lists.commonFields = ['rawScientificName', 'matchedName', 'commonName']
 } else if(lists.commonFields instanceof String) {
     lists.commonFields = lists.commonFields.split(',')
+}
+
+if(!speciesConfiguration.default){
+    speciesConfiguration.default = [
+            "type"                : "ALL_SPECIES",
+            "speciesDisplayFormat": "SCIENTIFICNAME(COMMONNAME)"
+    ]
 }

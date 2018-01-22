@@ -9,6 +9,7 @@ import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
 
+
 class SiteController {
 
     def siteService, projectService, projectActivityService, activityService, metadataService, userService,
@@ -34,6 +35,8 @@ class SiteController {
             }
         }
 
+        // remove hub param so that default filter query is not added when executing in ecodata
+        params.remove('hub')
         def results = searchService.fulltextSearch(params, true)
         render results as JSON
     }
@@ -50,6 +53,7 @@ class SiteController {
     def create(){
         render view: 'edit', model: [create:true, documents:[]]
     }
+
 
     def createForProject(){
         def project = projectService.getRich(params.projectId)
@@ -80,12 +84,18 @@ class SiteController {
             //siteService.injectLocationMetadata(site)
             def user = userService.getUser()
 
-            [site               : site,
+            def result = [site               : site,
              //activities: activityService.activitiesForProject(id),
              mapFeatures        : siteService.getMapFeatures(site),
              isSiteStarredByUser: userService.isSiteStarredByUser(user?.userId ?: "0", site.siteId)?.isSiteStarredByUser,
              user               : user
             ]
+
+            if (params.format == 'json')
+                render result as JSON
+            else
+                result
+
         } else {
             //forward(action: 'list', model: [error: 'no such id'])
             flash.message = "Site not found."
@@ -107,6 +117,44 @@ class SiteController {
         }
     }
 
+    /**
+     * Api: delete site which is not public and not related to a project anymore
+     *
+     * FORCE Delete without check if it is connected to a project
+     *
+     * @param id
+     * @return
+     */
+    def forceDelete(String id) {
+        try{
+            // permissions check
+            // rule ala admin can only delete a site on condition,
+            // 1. site is not assoicated with an acitivity(s)
+            if(!userService.userIsAlaAdmin()){
+                return {status:HttpStatus.SC_UNAUTHORIZED; text: "Access denied: User not authorised to delete"} as JSON
+
+            }
+            def status = siteService.delete(id)
+            if (status < 400) {
+                def result = [status: 'deleted']
+                return result as JSON
+            } else {
+                def result = [status: status]
+                return result as JSON
+            }
+        } catch (SocketTimeoutException sTimeout){
+            log.error(sTimeout.message)
+            log.error(sTimeout.stackTrace)
+            return {text: 'Webserive call timed out'; status: HttpStatus.SC_REQUEST_TIMEOUT} as JSON;
+        } catch (Exception e){
+            log.error(e.message)
+            log.error(e.stackTrace)
+            return {text: 'Internal server error'; status: HttpStatus.SC_INTERNAL_SERVER_ERROR} as JSON;
+        }
+    }
+
+
+
     def ajaxList(String id) {
         if(params.entityType == "projectActivity") {
             def pActivity = projectActivityService.get(id, 'all')
@@ -119,7 +167,7 @@ class SiteController {
             render pActivity.sites as JSON
 
         } else if (params.entityType == "project") {
-            def project = projectService.get(id, "brief")
+            def project = projectService.get(id, "all")
             if (!project) {
                 response.sendError(404, "Couldn't find project $id")
                 return
@@ -307,7 +355,7 @@ class SiteController {
             session.uploadProgress = progress
 
             siteData.sites.each {
-                siteService.createSiteFromUploadedShapefile(siteData.shapeFileId, it.id, it.externalId, it.name, it.description?:'No description supplied', siteData.projectId)
+                siteService.createSiteFromUploadedShapefile(siteData.shapeFileId, it.id, it.externalId, it.name, it.description?:'No description supplied', siteData.projectId, true)
                 progress.uploaded = progress.uploaded + 1
             }
         }
@@ -398,8 +446,14 @@ class SiteController {
             }
         }
         log.debug "values: " + (values as JSON).toString()
-
+        Map project = projectService.get(values.projectId)
         def result = siteService.updateProjectAssociations(values)
+        if (values.sites && !project.error) {
+            List projectSites = project.sites?.collect { it.siteId }
+            List toAdd = values.sites.minus(projectSites)
+            siteService.addSitesToSiteWhiteListInWorksProjects(toAdd, [values.projectId], true)
+        }
+
         if(result.error){
             response.status = 500
         } else {
@@ -408,52 +462,80 @@ class SiteController {
     }
 
     def ajaxUpdate(String id) {
-        def postBody = request.JSON
-        log.debug "Body: " + postBody
-        log.debug "Params:"
-        params.each { println it }
-        //todo: need to detect 'cleared' values which will be missing from the params - implement _destroy
-        def values = [:]
-        // filter params to remove:
-        //  1. keys in the ignore list; &
-        //  2. keys with dot notation - the controller will automatically marshall these into maps &
-        //  3. keys in nested maps with dot notation
-        postBody.site?.each { k, v ->
-            if (!(k in ignore)) {
-                values[k] = v //reMarshallRepeatingObjects(v);
-            }
-        }
-        log.debug (values as JSON).toString()
-
         def result = [:]
-        // check user has persmissions to edit/update site - user must have 'editor' access to
-        // ALL linked projects to proceed.
-        String userId = userService.getCurrentUserId()
-        values.projects?.each { projectId ->
-            if (!projectService.canUserEditSitesForProject(userId, projectId) && !userService.userIsAlaAdmin()) {
-                log.error("Error: Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}")
-                result = [status: 'error']
-                //render result as JSON
-            }
-        }
+        String userId = userService.getCurrentUserId(request)
 
-        if (!result) {
-            result = siteService.updateRaw(id, values)
-            if(postBody?.pActivityId){
-                def pActivity = projectActivityService.get(postBody.pActivityId)
-//                if(!projectService.canUserEditProject(userId, pActivity?.projectId) && !userService.userIsAlaAdmin()){
-                // TODO Check this - need to give users who are submitting a pactvitiy the ability to create new
-                // geometries for the pactvitiy.
-                if (!projectService.canUserViewProject(userId, pActivity?.projectId)) {
-                    log.error("Error: access denied: User does not have *viewer* permission for pActivitityId ${postBody.pActivityId}")
-                    result = [status: 'error']
-                } else {
-                    pActivity.sites.add(result.id)
-                    projectActivityService.update(postBody.pActivityId, pActivity)
+
+
+        if (!userId) {
+            Map error  = [status: 401, error:"Access denied: User has not been authenticated."]
+            response.status = 401
+            render error as JSON
+        } else {
+            def postBody = request.JSON
+            Boolean isCreateSiteRequest = !id
+            log.debug "Body: " + postBody
+            log.debug "Params:"
+            params.each { println it }
+            //todo: need to detect 'cleared' values which will be missing from the params - implement _destroy
+            def values = [:]
+            postBody.site?.each { k, v ->
+                if (!(k in ignore)) {
+                    values[k] = v //reMarshallRepeatingObjects(v);
                 }
             }
+            log.debug(values as JSON).toString()
+            //Compatible with previous records without visibility field
+            boolean privateSite = values['visibility'] ? (values['visibility'] == 'private' ? true : false) : false;
+
+            if(privateSite){
+                //Do not check permission if site is private
+                //This design is specially for sightings
+                result = siteService.updateRaw(id, values,userId)
+            }else{
+
+                values.projects?.each { projectId ->
+                    if (!projectService.canUserEditSitesForProject(userId, projectId)) {
+                        log.error("Error: Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}")
+                        render status: 401, error: 'Error: Access denied: User is not en editor or is not allowed to manage sites';
+                    }
+                }
+
+                result = siteService.updateRaw(id, values, userId)
+                String siteId = result.id
+                if(siteId) {
+                    if(isCreateSiteRequest){
+                        String projectId = postBody?.projectId
+                        Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
+                        if (projectId && isAdmin) {
+                            siteService.addSitesToSiteWhiteListInWorksProjects([siteId], [projectId], true);
+                        } else {
+                            siteService.addSitesToSiteWhiteListInWorksProjects([siteId], values.projects)
+                        }
+
+                        if (postBody?.pActivityId) {
+                            def pActivity = projectActivityService.get(postBody.pActivityId);
+
+                            if (result?.status != 'error') {
+                                pActivity.sites.add(siteId)
+
+                                projectActivityService.update(postBody.pActivityId, pActivity)
+                            }
+                        }
+                    }
+                } else {
+                    result.status = 'error';
+                    result.message = 'Could not save site';
+                }
+            }
+
+
+            if (result.status == 'error') {
+                render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${result.message}"
+            } else {
+                render result as JSON
+            }
         }
-        render result as JSON
     }
 
     def checkSiteName(String id) {
@@ -469,7 +551,7 @@ class SiteController {
         if (!site || site.error) {
             md = [error: 'no such site']
         } else {
-            md = siteService.getLocationMetadata(site)
+            md = siteService.getLocati onMetadata(site)
             if (!md) {
                 md = [error: 'no metadata found']
             }

@@ -1,8 +1,3 @@
-<style type="text/css">
-.announcements th {
-	white-space: normal;
-}
-</style>
 <div data-bind="ifnot: details.status() == 'active'">
 	<h4>Project Plan not available.</h4>
 </div>
@@ -14,19 +9,21 @@
 			    <div class="span6">
 			        <div id="project-objectives" class="margin-bottom-10 margin-right-20">
 			 			<label><b>Project Outcomes</b></label>
-						<table style="width: 100%;">
+						<table class="outcome-targets table">
 					        <thead>
 					            <tr>
-					            	<th></th>
-					                <th>Outcomes</th>
-					                <th>Asset(s) addressed</th>
+					            	<th class="index"></th>
+									<th class="baseline">Baseline condition</th>
+									<th class="target">Target Outcomes</th>
+									<th class="assets">Asset(s) addressed</th>
 					            </tr>
 					        </thead>
 						<tbody data-bind="foreach : details.objectives.rows1">
 							<tr>
-				            	<td><span data-bind="text: $index()+1"></span></td>
-				            	<td><span data-bind="text:description"></span></td>
-				            	<td><label data-bind="text:assets"></label></td>
+				            	<td class="index"><span data-bind="text: $index()+1"></span></td>
+				            	<td class="baseline"><span data-bind="text:baseline"></span></td>
+								<td class="target"><span data-bind="text:target"></span></td>
+				            	<td class="assets"><label data-bind="text:assets"></label></td>
 				            </tr>
 						</tbody>		
 						</table>	
@@ -34,7 +31,7 @@
 						<table style="width: 100%;">
 					        <thead>
 					            <tr>
-					            	<th></th>
+					            	<th>	</th>
 					                <th>Monitoring indicator</th>
 					                <th>Monitoring approach</th>
 					            </tr>
@@ -187,52 +184,17 @@
 		<!-- ko with: details -->
 		<div class="row-fluid space-after">
 			<div class="required">
-			        <div id="project-risks-threats" class="margin-bottom-10 margin-right-20">
-					<label><b>Project risks & threats</b></label> 
-					<div align="right">
-				  		<b> Overall project risk profile : <span data-bind="text: risks.overallRisk, css: overAllRiskHighlight" ></span></b>
-					</div>
-					<table>
-				    <thead style="width:100%;">
-			          <tr>
-			            <th>Type of threat / risk</th>
-			            <th>Description</th>
-						<th>Likelihood</th>			                
-						<th>Consequence</th>							
-						<th>Risk rating</th>
-						<th>Current control / Contingency strategy</th>														
-						<th>Residual risk</th>	
-			          </tr>
-				    </thead>
-					<tbody data-bind="foreach : risks.rows" >
-					             <tr>
-					                 <td>
-					                 	<label data-bind="text: threat" ></label>
-					                 </td>
-					                 <td>
-					                 	<label data-bind="text: description" ></label>
-					                 </td>
-					                 <td>
-					                 	<label data-bind="text: likelihood" ></label>
-					                 </td>
-					                 <td>
-					                 	<label data-bind="text: consequence" ></label>
-					                 </td>
-					                 <td>
-					                 <label data-bind="text: riskRating" ></label> 
-					                 </td>
-					                 <td>
-					                 	<label data-bind="text: currentControl" ></label>
-					                  </td>
-					                 <td>
-					                 	<label data-bind="text: residualRisk" ></label>
-					                  </td>
-					              </tr>
-					      </tbody>
-					  </table>
-		        </div>
-			    </div>
+			    <g:render template="riskTableReadOnly"/>
+			</div>
 		</div>
 		<!-- /ko -->
+
+			<!-- ko with: details.issues -->
+			<div class="row-fluid space-after">
+				<div class="required">
+					<g:render template="issueTableReadOnly"/>
+				</div>
+			</div>
+			<!-- /ko -->
 		</g:if>
 </div>

@@ -47,10 +47,10 @@ body {
     vertical-align: middle;
 }
 
-.output-block .required label,  .validationEngineContainer .required label {
+.output-block .required label,  .validationEngineContainer .required label, th.required {
     position:relative;
 }
-.output-block .required label:after, .output-block th.required:after, .validationEngineContainer .required label:after {
+.output-block .required label:after, .output-block th.required:after, .validationEngineContainer .required label:after, th.required:after {
     content: "*";
     font-weight:bold;
     font-size:1.5em;
@@ -59,7 +59,7 @@ body {
     white-space: nowrap;
 }
 
-.ie .output-block .required label:after, .ie .output-block th.required:after, .ie .validationEngineContainer .required label:after {
+.ie .output-block .required label:after, .ie .output-block th.required:after, .ie .validationEngineContainer .required label:after, th.required:after {
     font-size:1em;
 }
 

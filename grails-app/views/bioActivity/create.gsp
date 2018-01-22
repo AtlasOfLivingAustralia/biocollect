@@ -24,6 +24,7 @@
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
+        siteDeleteUrl: "${createLink(controller: 'site', action: 'forceDelete')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         imageLocation:"${resource(dir: '/images')}",

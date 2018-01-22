@@ -1,7 +1,9 @@
 package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.*
+import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
+import au.org.ala.web.UserDetails
 import grails.converters.JSON
 import groovyx.net.http.ContentType
 import org.apache.commons.io.FilenameUtils
@@ -10,7 +12,6 @@ import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
-import au.org.ala.web.UserDetails
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST
 import static org.apache.http.HttpStatus.SC_OK
@@ -326,15 +327,22 @@ class BioActivityController {
      * @return
      */
     def index(String id) {
-        def activity = activityService.get(id, params?.version)
-        def pActivity = projectActivityService.get(activity?.projectActivityId, "all", params?.version)
-
         String userId = userService.getCurrentUserId(request)
+        def activity = activityService.get(id, params?.version, userId, true)
+        if (activity.error){
+            redirect(controller: "base", action:'error', params: activity)
+            //forward(action: 'list', model: [error: 'Activity cannot be found or Ecodata service is temporarily unavailable'])
+            return
+        }
+        def pActivity = projectActivityService.get(activity?.projectActivityId, "all", params?.version)
 
         boolean embargoed = projectActivityService.isEmbargoed(pActivity)
         boolean userIsOwner = userId && activityService.isUserOwnerForActivity(userId, id)
         boolean userIsAdmin = userId && projectService.isUserAdminForProject(userId, id)
         boolean userIsAlaAdmin = userService.userIsAlaOrFcAdmin()
+
+        def members = projectService.getMembersForProjectId(activity?.projectId)
+        boolean userIsProjectMember = members.find{it.userId == userId} || userIsAlaAdmin
 
         if (activity && pActivity) {
             if (embargoed && !userIsAdmin && !userIsOwner && !userIsAlaAdmin) {
@@ -344,7 +352,9 @@ class BioActivityController {
                 Map model = activityAndOutputModel(activity, activity.projectId, 'view', params?.version)
                 model.pActivity = pActivity
                 model.id = pActivity.projectActivityId
+                model.userIsProjectMember = userIsProjectMember
                 params.mobile ? model.mobile = true : ''
+
                 model
 
             }
@@ -544,39 +554,32 @@ class BioActivityController {
         queryParams.sort = queryParams.sort ?: 'lastUpdated'
         queryParams.order = queryParams.order ?: 'DESC'
         queryParams.fq = queryParams.fq ?: ''
+        queryParams.rfq = queryParams.rfq ?: ''
         queryParams.searchTerm = queryParams.searchTerm ?: ''
 
+        HubSettings hubSettings = SettingService.hubConfig
+        List facetConfig = hubSettings.getFacetConfigForPage(projectActivityService.getDataPagePropertyFromViewName(params.view)) ?: activityService.getDefaultFacets()
+
         if(!queryParams.facets){
-            String facets = "projectNameFacet,organisationNameFacet,projectActivityNameFacet,recordNameFacet,userId,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
+            String facets = HubSettings.getFacetConfigForElasticSearch(facetConfig)?.collect{ it.name }?.join(',')
+            queryParams.facets = facets
+        }
 
-            switch (params.view) {
-
-                case 'myrecords':
-                    facets = "projectNameFacet,organisationNameFacet,projectActivityNameFacet,recordNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
-                    break
-
-                case 'project':
-                    facets = "projectActivityNameFacet,recordNameFacet,userId,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
-                    break
-
-                case 'projectrecords':
-                    facets = "recordNameFacet,userId,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
-                    break
-
-                case 'myprojectrecords':
-                    facets = "recordNameFacet,embargoedFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
-                    break
-
-                case 'userprojectactivityrecords':
-                    facets = "recordNameFacet,activityLastUpdatedMonthFacet,activityLastUpdatedYearFacet"
-                    break
-
-                case 'allrecords':
-                default:
-                    break
+        List presenceAbsenceFacets = HubSettings.getFacetConfigWithPresenceAbsenceSetting(facetConfig)
+        if(presenceAbsenceFacets){
+            if(!queryParams.rangeFacets){
+                queryParams.rangeFacets =[]
             }
 
-            queryParams.facets = facets
+            presenceAbsenceFacets?.each {
+                queryParams.rangeFacets.add("${it.name}:[* TO 1}")
+                queryParams.rangeFacets.add("${it.name}:[1 TO *}")
+            }
+        }
+
+        if(!queryParams.histogramFacets){
+            String facets = HubSettings.getFacetConfigWithHistogramSetting(facetConfig)?.collect{ "${it.name}:${it.interval}" }?.join(',')
+            queryParams.histogramFacets = facets
         }
 
         queryParams
@@ -592,7 +595,7 @@ class BioActivityController {
         Map searchResult = searchService.searchProjectActivity(queryParams)
 
         List activities = searchResult?.hits?.hits
-        List facets = []
+        List facets
         activities = activities?.collect {
             Map doc = it._source
 
@@ -622,12 +625,30 @@ class BioActivityController {
             result
         }
 
-        if(queryParams.facets){
-            String[] facetList = queryParams.facets.split(',')
-            facets = searchService.standardiseFacets (searchResult.facets, Arrays.asList(facetList))
+        HubSettings hubSettings = SettingService.hubConfig
+        String alternativeViewName = projectActivityService.getDataPagePropertyFromViewName(queryParams.view)
+        List allFacetConfig = hubSettings.getFacetConfigForPage(alternativeViewName)?: activityService.getDefaultFacets()
+        List facetConfig = HubSettings.getFacetConfigMinusSpecialFacets(allFacetConfig)
+
+        facets = searchService.standardiseFacets (searchResult.facets, facetConfig.collect{ it.name })
+
+        List presenceAbsenceFacetConfig = HubSettings.getFacetConfigWithPresenceAbsenceSetting(allFacetConfig)
+        if(presenceAbsenceFacetConfig){
+            facets = searchService.standardisePresenceAbsenceFacets(facets, presenceAbsenceFacetConfig)
         }
 
-        facets = projectActivityService.getDisplayNamesForFacets(facets);
+        List histogramFacetConfig = HubSettings.getFacetConfigWithHistogramSetting(allFacetConfig)
+        if(histogramFacetConfig){
+            facets = searchService.standardiseHistogramFacets(facets, histogramFacetConfig)
+        }
+
+        List specialFacetConfig = HubSettings.getFacetConfigWithSpecialFacets(allFacetConfig)
+        if(specialFacetConfig){
+            facets = projectActivityService.addSpecialFacets(facets, allFacetConfig)
+        }
+
+        facets = projectActivityService.getDisplayNamesForFacets(facets, allFacetConfig)
+        facets = projectService.addFacetState(facets, allFacetConfig)
         render([activities: activities, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
     }
 
@@ -1084,5 +1105,10 @@ class BioActivityController {
         } else {
             render status: SC_BAD_REQUEST, text: "You need to provide user id"
         }
+    }
+
+    def getFacets(){
+        List facets = activityService.getFacets()
+        render text: [facets: facets] as JSON, contentType: 'application/json'
     }
 }

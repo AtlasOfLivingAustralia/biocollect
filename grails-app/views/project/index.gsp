@@ -505,7 +505,6 @@
                 } else {
                     $(storedAdminTab + "-tab").tab('show');
                 }
-                populatePermissionsTable();
             }); // end window.load
 
         </r:script>

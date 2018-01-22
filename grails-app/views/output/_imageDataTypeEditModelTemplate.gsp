@@ -15,7 +15,7 @@
                     </div>
                 </div>
             </div>
-            <div class="span8">
+            <div class="span8"  style="display:${showImgMetadata};">
                 <div class="row-fluid">
                     <div class="span4 text-left control-group required">
                         <label class="control-label">Title:</label>
@@ -106,7 +106,7 @@
             </td>
             <td>
 
-                <label for="progress" class="control-label">Uploading Photo...</label>
+                <label for="progress" class="control-label">Uploading Image...</label>
 
                 <div id="progress" class="controls progress progress-info active input-large"
                      data-bind="visible:!error() && progress() <= 100, css:{'progress-info':progress()<100, 'progress-success':complete()}">
@@ -114,7 +114,7 @@
                 </div>
 
                 <div id="successmessage" class="controls" data-bind="visible:complete()">
-                    <span class="alert alert-success">File successfully uploaded</span>
+                    <span class="alert alert-success">Image successfully uploaded</span>
                 </div>
 
                 <div id="message" class="controls" data-bind="visible:error()">
@@ -122,14 +122,14 @@
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr  style="display:${allowImageAdd};">
             <td class="span4">
-                <span class="btn-small btn-success fileinput-button"><i class="fa fa-plus"></i> <input type="file" accept="image/*" name="files" ${validationAttrs?'data-validation-engine="data-validate[groupRequired['+source+']]"':''} ><span>Add files</span>
+                <span class="btn-small btn-success fileinput-button"><i class="fa fa-plus"></i> <input type="file" accept="image/*" name="files" ${validationAttrs?'data-validation-engine="data-validate[groupRequired['+source+']]"':''} ><span>Add images</span>
                 </span>
             </td>
             <td>
                 <div class="dropzone span12">
-                    Or, drop files here
+                    Or, drop images here
                 </div>
             </td>
         </tr>

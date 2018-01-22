@@ -229,7 +229,6 @@ function ProjectFinder() {
         var isBiologicalScience = fcConfig.isBiologicalScience || false;
         var isMERIT = fcConfig.isMERIT || false;
         var isWorldWide, hideWorldWideBtn = fcConfig.hideWorldWideBtn || false;
-        var dates;
         if(!hideWorldWideBtn){
             isWorldWide= getActiveButtonValues($('#pt-aus-world'));
             isWorldWide = isWorldWide.length? isWorldWide[0] : false
@@ -241,8 +240,6 @@ function ProjectFinder() {
         pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
             fq.push(facet.getQueryText())
         });
-
-        dates = pageWindow.filterViewModel.datePicker.getParams();
 
         var map = {
             fq: fq,
@@ -258,8 +255,6 @@ function ProjectFinder() {
             geoSearchJSON: JSON.stringify(geoSearch),
             skipDefaultFilters:fcConfig.showAllProjects,
             isWorldWide: isWorldWide,
-            toDate: dates.toDate,
-            fromDate: dates.fromDate,
             q: ($('#pt-search').val() || '' ).toLowerCase()
         };
 
@@ -307,7 +302,7 @@ function ProjectFinder() {
                     projectVMs.push(new ProjectViewModel(project, false));
                 });
                 self.pago.init(projectVMs);
-                pageWindow.filterViewModel.setFacets(data.facets || [])
+                pageWindow.filterViewModel.setFacets(data.facets || []);
 
                 // Issue map search in parallel to 'standard' search
                 // standard search is required to drive facet display
@@ -497,11 +492,11 @@ function ProjectFinder() {
                         };
 
                         if(project.coverage.centre && project.coverage.centre.length == 2) {
-                            point.lat = parseFloat(project.coverage.centre[1])
-                            point.lng = parseFloat(project.coverage.centre[0])
+                            point.lat = parseFloat(project.coverage.centre[1]);
+                            point.lng = parseFloat(project.coverage.centre[0]);
                         } else {
-                            point.lat = parseFloat(project.coverage.decimalLatitude)
-                            point.lng = parseFloat(project.coverage.decimalLongitude)
+                            point.lat = parseFloat(project.coverage.decimalLatitude);
+                            point.lng = parseFloat(project.coverage.decimalLongitude);
                         }
 
                         if (isValidPoint(point)) {
@@ -828,7 +823,6 @@ function ProjectFinder() {
 
         setGeoSearch(params.geoSearch);
         pageWindow.filterViewModel.setFilterQuery(params.fq);
-        pageWindow.filterViewModel.setDatePicker(params.fromDate, params.toDate);
 
         if (fcConfig.associatedPrograms) {
             $.each(fcConfig.associatedPrograms, function (i, program) {

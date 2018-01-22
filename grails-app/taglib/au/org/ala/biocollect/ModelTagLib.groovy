@@ -15,6 +15,7 @@ class ModelTagLib {
     private final static String SPACE = " ";
     private final static String EQUALS = "=";
     private final static String DEFERRED_TEMPLATES_KEY = "deferredTemplates"
+    private final static String NUMBER_OF_TABLE_COLUMNS = "numberOfTableColumns"
 
     private final static int LAYOUT_COLUMNS = 12 // Bootstrap scaffolding uses a 12 column layout.
 
@@ -72,18 +73,15 @@ class ModelTagLib {
      */
     def dataTag(attrs, model, context, editable, elementAttributes, databindAttrs, labelAttributes) {
         ModelWidgetRenderer renderer
-        def toEdit
+
+        def toEdit = editable && !model.computed && !model.noEdit
+
         def validate = validationAttribute(attrs, model, editable)
 
         if (attrs.printable) {
             renderer = new PrintModelWidgetRenderer()
         } else {
-            toEdit = editable && !model.computed && !model.noEdit
-            if (toEdit) {
-                renderer = new EditModelWidgetRenderer()
-            } else {
-                renderer = new ViewModelWidgetRenderer()
-            }
+            renderer = toEdit ? new EditModelWidgetRenderer() : new ViewModelWidgetRenderer()
         }
 
         // hack - sometimes span class are added to elementAttributes. It interferes with the rendering of input like
@@ -350,6 +348,20 @@ class ModelTagLib {
         return criteria.contains("required")
     }
 
+    /**
+     * Check if the field is visible to only project members (and ALA admins)
+     * @parma attrs the attributes passed to the tag library.  Used to access site id.
+     * @param model of the data element
+     * @return true if field marked as member only, false if it has public visibility
+     */
+    def isHidden(attrs, model) {
+        def toEdit = attrs.edit && !model.computed && !model.noEdit
+        def userIsProjectMember = attrs.userIsProjectMember
+
+        // hidden from public and visible to only project members (and ALA admins)
+        return (!toEdit && model.memberOnlyView && !userIsProjectMember) ? true: false
+    }
+
     def validationAttribute(attrs, model, edit) {
         def criteria = getValidationCriteria(attrs, model, edit)
         if (criteria.isEmpty()) {
@@ -415,6 +427,9 @@ class ModelTagLib {
         def span = context == 'row'? (int)(LAYOUT_COLUMNS / model.items.size()) : LAYOUT_COLUMNS
 
         model.items.each { it ->
+            if (isHidden(attrs, it)){
+                return
+            }
             AttributeMap at = new AttributeMap()
             at.addClass(it.css)
             // inject computed from data model
@@ -475,8 +490,11 @@ class ModelTagLib {
     }
 
     def gridHeader(out, attrs, model) {
+        Integer colCount = 0;
+        pageScope.setVariable(NUMBER_OF_TABLE_COLUMNS, colCount);
         out << INDENT*4 << "<thead><tr>"
         model.columns.each { col ->
+            colCount ++
             out << "<th>"
             out << col.title
             if (col.pleaseSpecify) {
@@ -492,6 +510,7 @@ class ModelTagLib {
             out << "</th>"
         }
         out << '\n' << INDENT*4 << "</tr></thead>\n"
+        pageScope.setVariable(NUMBER_OF_TABLE_COLUMNS, colCount);
     }
 
     def gridBodyEdit(out, attrs, model) {
@@ -587,6 +606,8 @@ class ModelTagLib {
     }
 
     def tableHeader(out, attrs, table) {
+        Integer colCount = 0;
+        pageScope.setVariable(NUMBER_OF_TABLE_COLUMNS, colCount);
         out << INDENT*4 << "<thead><tr>"
         table.columns.eachWithIndex { col, i ->
             if (isRequired(attrs, col, attrs.edit)) {
@@ -594,12 +615,14 @@ class ModelTagLib {
             } else {
                 out << "<th>" + labelText(attrs, col, col.title) + "</th>"
             }
-
+            colCount ++;
         }
         if (table.source && attrs.edit && !attrs.printable && (table.editableRows || getAllowRowDelete(attrs, table.source, null))) {
             out << "<th></th>"
+            colCount++;
         }
         out << '\n' << INDENT*4 << "</tr></thead>\n"
+        pageScope.setVariable(NUMBER_OF_TABLE_COLUMNS, colCount);
     }
 
     def tableBodyView (out, attrs, table) {
@@ -744,18 +767,16 @@ class ModelTagLib {
      */
     def footer(out, attrs, model) {
 
-        def colCount = 0
+        def colCount = pageScope.getVariable(NUMBER_OF_TABLE_COLUMNS);
         def containsSpecies = model.columns.find{it.type == 'autocomplete'}
         out << INDENT*4 << "<tfoot>\n"
         model.footer?.rows.each { row ->
-            colCount = 0
             out << INDENT*4 << "<tr>\n"
             row.columns.eachWithIndex { col, i ->
                 def attributes = new AttributeMap()
                 if (getAttribute(attrs, col.source, '', 'primaryResult') == 'true') {
                     attributes.addClass('value');
                 }
-                colCount += (col.colspan ? col.colspan.toInteger() : 1)
                 def colspan = col.colspan ? " colspan='${col.colspan}'" : ''
                 // inject type from data model
                 col.type = col.type ?: getType(attrs, col.source, '')
@@ -766,7 +787,6 @@ class ModelTagLib {
             }
             if (model.type == 'table' && attrs.edit) {
                 out << INDENT*5 << "<td></td>\n"  // to balance the extra column for actions
-                colCount++
             }
             out << INDENT*4 << "</tr>\n"
         }

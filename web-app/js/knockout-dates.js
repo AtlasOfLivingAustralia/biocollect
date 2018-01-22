@@ -213,7 +213,7 @@ function stringToDate(date) {
     // "datePickerOptions: {...}" to the data-bind attribute of the parent element.
     // e.g. data-bind="datepicker: myDate, datePickerOptions: {endDate: '+12m', startDate: '+0d'}" will add a date range constraint to the calendar.
     ko.bindingHandlers.datepicker = {
-        init: function(element, valueAccessor, allBindingsAccessor) {
+        init: function (element, valueAccessor, allBindingsAccessor) {
             // set current date into the element
             var $element = $(element),
                 initialDate = ko.utils.unwrapObservable(valueAccessor()),
@@ -236,8 +236,13 @@ function stringToDate(date) {
             $element.parent().find('.open-datepicker').click(function () {
                 $element.datepicker('show');
             });
+            $element.parent().find('.clear-date').click(function () {
+                $(this).siblings('input').val('');
+                $(this).siblings('input').change();
+            });
 
-            var changeHandler = function(event) {
+
+            var changeHandler = function (event) {
                 var value = valueAccessor();
                 if (ko.isObservable(value)) {
                     value(event.date);
@@ -249,7 +254,7 @@ function stringToDate(date) {
             ko.utils.registerEventHandler(element, "hide", changeHandler);
 
             //when a user changes the date via the input, update the view model
-            ko.utils.registerEventHandler(element, "change", function() {
+            ko.utils.registerEventHandler(element, "change", function () {
                 var value = valueAccessor();
                 if (ko.isObservable(value)) {
                     value(stringToDate(element.value));
@@ -257,17 +262,19 @@ function stringToDate(date) {
                 }
             });
         },
-        update: function(element, valueAccessor)   {
+        update: function (element, valueAccessor) {
             var widget = $(element).data("datepicker");
             //when the view model is updated, update the widget
             if (widget) {
                 var date = ko.utils.unwrapObservable(valueAccessor());
                 widget.date = date;
-                if (!isNaN(widget.date) ) {
+                if (!isNaN(widget.date)) {
                     widget.setDate(widget.date);
+                } else {
+                    console.log('reset')
                 }
             }
-        }
+        },
     };
 
 }());

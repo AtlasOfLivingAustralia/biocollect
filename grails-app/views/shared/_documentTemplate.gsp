@@ -45,8 +45,8 @@
 
 <script id="objDocEditTmpl" type="text/html">
 <div class="btn-group pull-left" style="margin-top:4px;">
-    <button class="btn btn-mini" type="button" data-bind="enable:!readOnly,click:$root.deleteDocument"><i class="icon-remove"></i></button>
-    <button class="btn btn-mini" type="button" data-bind="enable:!readOnly,click:$root.editDocumentMetadata"><i class="icon-edit"></i></button>
+    <button class="btn btn-mini" type="button" data-bind="enable: !readOnly && role() != 'methodDoc',click:$root.deleteDocument"><i class="icon-remove"></i></button>
+    <button class="btn btn-mini" type="button" data-bind="enable: !readOnly && role() != 'methodDoc',click:$root.editDocumentMetadata"><i class="icon-edit"></i></button>
 </div>
 <a class="pull-left" data-bind="attr:{href:url}">
     <img class="media-object" data-bind="attr:{src:filetypeImg(), alt:name}" alt="document icon">

@@ -39,6 +39,7 @@ class ProjectController {
     MessageSource messageSource
     VocabService vocabService
     FormSpeciesFieldParserService formSpeciesFieldParserService
+    CollectoryService collectoryService
 
     def grailsApplication
 
@@ -89,6 +90,7 @@ class ProjectController {
             String occurrenceUrl = projectService.getOccurrenceUrl(project, view)
             String spatialUrl = projectService.getSpatialUrl(project, view, params.spotterId)
             Boolean isProjectContributingDataToALA = projectService.isProjectContributingDataToALA(project)
+            def licences = collectoryService.licence()
 
             def model = [project: project,
                 mapFeatures: commonService.getMapFeatures(project),
@@ -107,7 +109,8 @@ class ProjectController {
                 projectSite: project.projectSite,
                 occurrenceUrl: occurrenceUrl,
                 spatialUrl: spatialUrl,
-                isProjectContributingDataToALA: isProjectContributingDataToALA
+                isProjectContributingDataToALA: isProjectContributingDataToALA,
+                licences: licences
             ]
 
 
@@ -118,6 +121,10 @@ class ProjectController {
                 println model.pActivityForms
             }
             model.mobile = params.mobile ?:false
+            if(projectService.isWorks(project)){
+                model.activityTypes = projectService.addSpeciesFieldsToActivityTypesList(metadataService.activityTypesList(project.associatedProgram))
+            }
+
             render view:content.view, model:model
         }
     }
@@ -205,7 +212,9 @@ class ProjectController {
 
     protected Map worksProjectContent(project, user) {
         def activities = activityService.activitiesForProject(project.projectId)
-
+        activities.each { activity ->
+            activity.typeCategory = metadataService.getActivityModel(activity.type)?.type
+        }
         def risksAndThreatsVisible = metadataService.isOptionalContent('Risks and Threats', project.associatedProgram, project.associatedSubProgram)
         def canViewRisks = risksAndThreatsVisible && (user?.hasViewAccess || user?.isEditor)
 
@@ -218,13 +227,20 @@ class ProjectController {
 
         Boolean canEditSites = projectService.canUserEditSitesForProject(user?.userId, project.projectId)
 
+        // Add a human readable name of the last user to update the project plan.
+        if (project.custom?.details?.lastUpdatedBy) {
+            project.custom.details.lastUpdatedDisplayName = authService.getUserForUserId(project.custom?.details?.lastUpdatedBy)?.displayName ?: 'Unknown user'
+        }
+
+
         Map content = [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
                        news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
                        documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
                        activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:false],
                        site:[label:'Sites', template:'/site/worksSites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', canEditSites: canEditSites, type:'tab'],
                        meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, canViewRisks: canViewRisks, type:'tab', template:'viewMeriPlan'],
-                       dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab'],
+                       outcomes:[label:'Outcomes', disable:false, visible:user?.isEditor, type:'tab', template:'outcomes'],
+                       dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab', activities:activities],
                        admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
                        ]
 
@@ -314,11 +330,17 @@ class ProjectController {
 
         def userOrgIds = userService.getOrganisationIdsForUserId(user.userId)
 
-        // Default the project organisation if the user is a member of a single organisation.
-        if (userOrgIds?.size() == 1) {
-            def userOrganisation = organisationService.get(userOrgIds[0])
-            project.organisationId = userOrganisation.organisationId
-            project.organisationName = userOrganisation.name
+        // If organisation id is passed as parameter, then select it.
+        // Otherwise, select an organisation this user is a member.
+        if( userOrgIds || params.organisationId){
+            String orgId = params.organisationId
+            orgId = orgId?: userOrgIds ? userOrgIds[0] : null
+
+            if(orgId){
+                def userOrganisation = organisationService.get(orgId)
+                project.organisationId = userOrganisation.organisationId
+                project.organisationName = userOrganisation.name
+            }
         }
 
         [
@@ -406,17 +428,8 @@ class ProjectController {
         def projectSite = values.remove("projectSite")
         def documents = values.remove('documents')
         def links = values.remove('links')
-        final Map project = projectService.get(id)
+        final Map project = id ? projectService.get(id) : null
         def projectType = id ? project.projectType : values?.projectType
-
-        if (projectType == "works" && postBody?.size() == 2 && postBody?.planStatus == "approved") {
-            // We need to validate that species fields are configured
-
-            if (!areWorksProjectSpeciesFieldConfigured(project)) {
-                render status: 400, text: "Species fields have not been configured for the project or the current configuration is outdated."
-                return
-            }
-        }
 
         String mainImageAttribution = values.remove("mainImageAttribution")
         String logoAttribution = values.remove("logoAttribution")
@@ -424,10 +437,14 @@ class ProjectController {
         def siteResult
         if (projectSite) {
             siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
-            if (siteResult.status == 'error') render status: 400, text: "SiteService failed."
+            if (siteResult.status == 'error'){
+                render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${siteResult.message}"
+                return
+            }
             else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
         } else if (project?.sites?.isEmpty()) {
-            render status: 400, text: "No project site is defined."
+            render status: HttpStatus.SC_BAD_REQUEST, text: "No project site is defined."
+            return
         }
 
         if (!values?.associatedOrgs) values.put('associatedOrgs', [])
@@ -463,7 +480,7 @@ class ProjectController {
             else if (!projectSite.projects.contains(id))
                 projectSite.projects += id
 
-            siteService.update(siteResult.id, projectSite)
+            siteService.update(values.projectSiteId, projectSite)
         }
         if (result.error) {
             render result as JSON
@@ -476,6 +493,21 @@ class ProjectController {
     def update(String id) {
         projectService.update(id, params)
         chain action: 'index', id: id
+    }
+
+    @PreAuthorise(accessLevel = 'admin')
+    def updateProjectPlan(String id) {
+        Map result
+        if (!id) {
+            result.status = 400
+            result.error = 'The project id must be supplied'
+        }
+        else {
+            Map plan = request.JSON
+            result = projectService.updateProjectPlan(id, plan)
+
+        }
+        render result as JSON
     }
 
     @PreAuthorise(accessLevel = 'admin')
@@ -510,15 +542,30 @@ class ProjectController {
 
         // format facets to a way acceptable for JS view model
         if(searchResult.facets){
-            String[] facetList = queryParams.facets?.split(',')
-            facets = searchService.standardiseFacets (searchResult.facets, Arrays.asList(facetList))
+            HubSettings hub = SettingService.hubConfig
+            List allFacetConfig = hub.getFacetConfigForPage('projectFinder') ?: projectService.getDefaultFacets()
+            List facetConfig = HubSettings.getFacetConfigForElasticSearch(allFacetConfig)
+            List facetList = params.facets ? params.facets?.split(',') : facetConfig?.collect { it.name }
+            facets = searchService.standardiseFacets (searchResult.facets, facetList)
+
+            List presenceAbsenceFacetConfig = HubSettings.getFacetConfigWithPresenceAbsenceSetting(allFacetConfig)
+            if(presenceAbsenceFacetConfig){
+                facets = searchService.standardisePresenceAbsenceFacets(facets, presenceAbsenceFacetConfig)
+            }
+
+            List histogramFacetConfig = HubSettings.getFacetConfigWithHistogramSetting(allFacetConfig)
+            if(histogramFacetConfig){
+                facets = searchService.standardiseHistogramFacets(facets, histogramFacetConfig)
+            }
+
+
             // if facet is provided by client do not add special facets
             if(!params.facets){
                 facets = projectService.addSpecialFacets(facets)
             }
 
             facets = projectService.addFacetExpandCollapseState(facets)
-            projectService.getDisplayNamesForFacets(facets)
+            projectService.getDisplayNamesForFacets(facets, allFacetConfig)
         }
 
         projects?.each{ Map project ->
@@ -551,6 +598,8 @@ class ProjectController {
 
         List difficulty = [], status =[]
         Map trimmedParams = commonService.parseParams(params)
+        HubSettings hub = SettingService.hubConfig
+        List allFacetConfig = hub.getFacetsForProjectFinderPage() ?: projectService.getDefaultFacets()
         trimmedParams.fsort = 'term'
         trimmedParams.flimit = params.flimit?:15
         trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
@@ -597,7 +646,25 @@ class ProjectController {
         }
 
         if(!trimmedParams.facets) {
-            trimmedParams.facets = projectService.getFacetListForHub()?.join(",")
+            trimmedParams.facets = HubSettings.getFacetConfigForElasticSearch(allFacetConfig)?.collect { it.name }?.join(",")
+        }
+
+        List presenceAbsenceFacets = HubSettings.getFacetConfigWithPresenceAbsenceSetting(allFacetConfig)
+        if(presenceAbsenceFacets){
+            if(!trimmedParams.rangeFacets){
+                trimmedParams.rangeFacets =[]
+            }
+
+            presenceAbsenceFacets?.each {
+                trimmedParams.rangeFacets.add("${it.name}:[* TO 1}")
+                trimmedParams.rangeFacets.add("${it.name}:[1 TO *}")
+            }
+        }
+
+        List histogramFacets = HubSettings.getFacetConfigWithHistogramSetting(allFacetConfig)
+        if(histogramFacets){
+            String facets = histogramFacets?.collect{ "${it.name}:${it.interval}" }?.join(',')
+            trimmedParams.histogramFacets = facets
         }
 
         if(trimmedParams.flimit == "-1"){
@@ -676,21 +743,6 @@ class ProjectController {
                 trimmedParams.query += " AND (${status.join(' OR ')})";
             }
             trimmedParams.status = null
-        }
-
-        if(trimmedParams.fromDate || trimmedParams.toDate){
-            List dates = [];
-            if(trimmedParams.fromDate){
-                dates.push('plannedStartDate:>=' + trimmedParams.fromDate);
-            }
-
-            if(trimmedParams.toDate){
-                dates.push('plannedStartDate:<=' + trimmedParams.toDate)
-            }
-
-            trimmedParams.query += " AND (${dates.join(' AND ')})";
-            trimmedParams.toDate = null
-            trimmedParams.fromDate = null
         }
 
         if (trimmedParams.isUserPage) {
@@ -779,6 +831,27 @@ class ProjectController {
             render status:403, text: 'User not logged-in or does not have permission'
         } else {
             render status:500, text: 'Unexpected error'
+        }
+    }
+
+    def getMembersForProjectIdPaginated() {
+        String projectId = params.id
+        def adminUserId = userService.getCurrentUserId()
+
+        if (projectId && adminUserId) {
+            if (projectService.isUserAdminForProject(adminUserId, projectId) || projectService.isUserCaseManagerForProject(adminUserId, projectId)) {
+                def results = projectService.getMembersForProjectPerPage(projectId, params.int('start'), params.int('length'))
+                asJson results
+
+            } else {
+                response.sendError(SC_FORBIDDEN, 'Permission denied')
+            }
+        } else if (adminUserId) {
+            response.sendError(SC_BAD_REQUEST, 'Required params not provided: id')
+        } else if (projectId) {
+            response.sendError(SC_FORBIDDEN, 'User not logged-in or does not have permission')
+        } else {
+            response.sendError(SC_INTERNAL_SERVER_ERROR, 'Unexpected error')
         }
     }
 
@@ -910,71 +983,6 @@ class ProjectController {
     }
 
     /**
-     * Configure species fields for Works project schedules
-     */
-    @PreAuthorise(projectIdParam = 'id')
-    def configureSpeciesFields(String id) {
-
-        def project = projectService.get(id, 'all')
-
-        def model = [returnTo: params.returnTo]
-
-        if(project.error) {
-            model.error = project.detail
-        } else if( !project?.planStatus || project?.planStatus == 'not approved') {
-            def activities = activityService.activitiesForProject(id)
-            // Find the different surveys used in this project schedule
-            Set<String> surveys = new HashSet<>();
-
-            activities.each {
-                surveys << it.type
-            }
-
-            Map<String,Map> speciesFieldsBySurvey = [:]
-
-            surveys.each {
-                speciesFieldsBySurvey[it] = formSpeciesFieldParserService.getSpeciesFieldsForSurvey(it)?.result;
-            }
-
-            // Enrich the speciesFieldsBySurvey with any existing configuration already stored in the project object
-            // Discards any configuration that is no longer used.
-
-            List surveysSettings = project?.speciesFieldsSettings?.surveysConfig ?: []
-
-            surveysSettings.each {projectSurveySettings ->
-                if(speciesFieldsBySurvey.containsKey(projectSurveySettings.name)) {
-                    projectSurveySettings?.speciesFields?.each { projectFieldSettings ->
-                        def speciesField = speciesFieldsBySurvey[projectSurveySettings.name].find {
-                            return projectFieldSettings.label == it.label && projectFieldSettings.context == it.context && projectFieldSettings.output == it.output
-                        }
-
-                        // Let's add saved configuration
-                        if(speciesField) {
-                            speciesField.config = projectFieldSettings.config
-                        }
-                    }
-                }
-            }
-
-            List fieldsConfig = []
-
-            speciesFieldsBySurvey.each{surveyName, speciesFields ->
-                fieldsConfig << [name:surveyName, speciesFields:speciesFields]
-            }
-
-            model.speciesFieldsSettings =
-                    [ defaultSpeciesConfig: project?.speciesFieldsSettings?.defaultSpeciesConfig,
-                            surveysConfig: fieldsConfig
-                    ]
-            model.projectId = project.projectId
-            model.projectName = project.name
-        } else {
-            model.error = 'Species fields can only be configured when the project is in planning mode.'
-        }
-        model
-    }
-
-    /**
      * Get Single Species name and guid for the given project identifier
      * @param id project identifier
      * @return
@@ -993,64 +1001,6 @@ class ProjectController {
 
         def result = projectService.searchSpecies(id, q, limit, output, dataFieldName, surveyName)
         render result as JSON
-    }
-
-    private Boolean areWorksProjectSpeciesFieldConfigured(Map project) {
-        int speciesFieldsCount = 0
-        def activities = activityService.activitiesForProject(project.projectId)
-
-        // Find the different surveys used in this project schedule
-        Set<String> surveys = new HashSet<>();
-        activities.each {
-            surveys << it.type
-        }
-
-        Map<String,Map> speciesFieldsBySurvey = [:]
-
-        surveys.each {
-            List speciesFields = formSpeciesFieldParserService.getSpeciesFieldsForSurvey(it)?.result
-            speciesFieldsBySurvey[it] = speciesFields
-            speciesFieldsCount += speciesFields.size()
-        }
-
-        // The current project has no activity forms using species fields so there is nothing to validate
-        if(!speciesFieldsCount) {
-            return true
-        } else {
-            // Let's check that the current project configuration covers all fields and default configuration
-
-            if(!(project?.speciesFieldsSettings?.defaultSpeciesConfig?.type in ["SINGLE_SPECIES", "GROUP_OF_SPECIES", "ALL_SPECIES"])) {
-                return false
-            } else if(speciesFieldsCount > 1){ // We use more than the default configuration
-
-                List projectSurveysSettings = project?.speciesFieldsSettings?.surveysConfig ?: []
-
-                for(String surveyName : speciesFieldsBySurvey.keySet()) {
-                    def projectSurveySettings = projectSurveysSettings.find {
-                        it.name == surveyName
-                    }
-
-                    List expectedSpeciesFields = speciesFieldsBySurvey[surveyName]
-
-                    if(!projectSurveySettings && expectedSpeciesFields.size()) {
-                        return false // Missing survey configuration entry.
-                    }
-
-                    for(def expectedField :expectedSpeciesFields ) {
-                        def specificFieldDefinition = projectSurveySettings?.speciesFields?.find {
-                            it.dataFieldName == expectedField.dataFieldName && it.output == expectedField.output
-                        }
-
-                        if(!(specificFieldDefinition?.config?.type in ["SINGLE_SPECIES", "GROUP_OF_SPECIES", "ALL_SPECIES", "DEFAULT_SPECIES"])) {
-                            return false // No field configuration for survey or the field definition does not have a type
-                        }
-                    }
-                }
-            }
-            // All expected surveys and fields are already in project config
-            return true
-        }
-
     }
 
     @PreAuthorise(accessLevel = 'admin', redirectController ='home', redirectAction = 'index')

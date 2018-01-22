@@ -109,6 +109,30 @@ ko.bindingHandlers.independentlyValidated = {
     }
 };
 
+ko.bindingHandlers.validateOnClick = {
+    init: function (element, valueAccessor) {
+        var value = valueAccessor(),
+            options = {
+                callback: false,
+                selector: "button"
+            };
+
+        if(typeof value === 'function') {
+            $.extend(options,{
+                callback: value
+            });
+        } else if(typeof value === 'object') {
+            $.extend(options, value);
+        }
+
+        $(element).validationEngine('attach', {scroll: false});
+
+        $(element).find(options.selector).on('click', function () {
+            options.callback && options.callback($(element).validationEngine('validate'));
+        });
+    }
+};
+
 
 ko.bindingHandlers.activityProgress = {
     update: function (element, valueAccessor) {
@@ -150,10 +174,11 @@ ko.bindingHandlers.slideVisible = {
         var value = valueAccessor();
         $(element).toggle(ko.unwrap(value)); // Use "unwrapObservable" so we can handle values that may or may not be observable
     },
-    update: function (element, valueAccessor) {
+    update: function (element, valueAccessor, allBindings) {
         // Whenever the value subsequently changes, slowly fade the element in or out
-        var value = valueAccessor();
-        ko.unwrap(value) ? $(element).slideDown() : $(element).slideUp();
+        var value = valueAccessor(),
+            duration = allBindings.get('slideDuration') || 600;
+        ko.unwrap(value) ? $(element).slideDown(duration, 'linear') : $(element).slideUp(duration, 'linear');
     }
 };
 
@@ -297,6 +322,30 @@ ko.bindingHandlers.stagedImageUpload = {
         return {controlsDescendantBindings: true};
     },
     toDocument: function (f, config) {
+        // same logic as projects.js for determining type
+        var type;
+        if (config.role == 'methodDoc') {
+            if (f.type) {
+                var ftype = file.type.split('/');
+                if (ftype) {
+                    type = ftype[0];
+                }
+            }
+            else if (f.name) {
+                var ftype = f.name.split('.').pop();
+
+                var imageTypes = ['gif','jpeg', 'jpg', 'png', 'tif', 'tiff'];
+                if ($.inArray(ftype.toLowerCase(), imageTypes) > -1) {
+                    type = 'image';
+                }
+                else {
+                    type = 'document';
+                }
+            }
+        }
+        else {
+            type = 'image';
+        }
 
         var data = {
             thumbnailUrl: f.thumbnail_url,
@@ -308,7 +357,7 @@ ko.bindingHandlers.stagedImageUpload = {
             lat: f.decimalLatitude,
             lng: f.decimalLongitude,
             name: f.name,
-            type: 'image',
+            type: type,
             role: config.role
         };
 
@@ -856,6 +905,37 @@ ko.bindingHandlers.enter = {
         };
 
         return ko.bindingHandlers['event']['init'].call(this, element, newValueAccessor, allBindings, viewModel, bindingContext);
+    }
+};
+
+/**
+ * Dismiss a bootstrap modal dialog when subscriber passed to it is set to true.
+ */
+ko.bindingHandlers.dismissModal = {
+    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        var value = valueAccessor(),
+            $element = $(element);
+
+        if(ko.unwrap(value)){
+            $element.modal('hide')
+        }
+    }
+};
+
+/**
+ * Hightlight an element on the
+ */
+ko.bindingHandlers.highlight = {
+    update: function (element, valueAccessor, allBindings) {
+        var value = valueAccessor(),
+            $element = $(element),
+            speed = allBindings.get('highlightDuration') || 1000;
+
+        if(ko.unwrap(value)){
+            setTimeout(function () {
+                $element.effect('highlight', speed);
+            }, 1000);
+        }
     }
 };
 

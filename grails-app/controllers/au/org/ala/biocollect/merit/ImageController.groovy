@@ -12,8 +12,10 @@ import org.apache.commons.io.FilenameUtils
 import org.imgscalr.Scalr
 import org.springframework.web.multipart.MultipartFile
 
+import javax.activation.MimetypesFileTypeMap
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
+import java.nio.file.Files
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
@@ -130,21 +132,27 @@ class ImageController {
         }
     }
 
+    /**
+     * Uploads image file or survey method supporting file to staging area
+     * @return file metadata for rending in view
+     */
     def upload() {
         def user = userService.getCurrentUserId(request)
 
         def result = []
         if (request.respondsTo('getFile') && user) {
             MultipartFile file = request.getFile('files')
-            //println "file is " + file
+
             if (file?.size) {  // will only have size if a file was selected
-                String filename = file.getOriginalFilename().replaceAll(' ','_')
+                String filename = file.getOriginalFilename().replaceAll(' ', '_')
                 String ext = FilenameUtils.getExtension(filename)
                 String path = grailsApplication.config.upload.images.path
-                filename = FileUtils.nextUniqueFileName(FilenameUtils.getBaseName(filename)+'.'+ext, path)
+                filename = FileUtils.nextUniqueFileName(FilenameUtils.getBaseName(filename) + '.' + ext, path)
 
-                def thumbFilename = FilenameUtils.removeExtension(filename) + "-thumb." + ext
-                //println "filename=${filename}"
+                def thumbFilename
+                if (!params.role) {
+                    thumbFilename = FilenameUtils.removeExtension(filename) + "-thumb." + ext
+                }
 
                 def colDir = new File(grailsApplication.config.upload.images.path as String)
                 colDir.mkdirs()
@@ -153,16 +161,18 @@ class ImageController {
                 file.transferTo(f)
                 def exifMd = getExifMetadata(f)
 
-                // thumbnail it
-                BufferedImage img = ImageIO.read(f)
-                BufferedImage tn = Scalr.resize(img, 300, Scalr.OP_ANTIALIAS)
-                File tnFile = new File(colDir, thumbFilename)
-                try {
-                    def success = ImageIO.write(tn, ext, tnFile)
-                    log.debug "Thumbnailing: " + success
-                } catch(IOException e) {
-                    e.printStackTrace()
-                    log.error "Write error for " + tnFile.getPath() + ": " + e.getMessage()
+                // thumbnail it if file is not for supporting method
+                if (!params.role) {
+                    BufferedImage img = ImageIO.read(f)
+                    BufferedImage tn = Scalr.resize(img, 300, Scalr.OP_ANTIALIAS)
+                    File tnFile = new File(colDir, thumbFilename)
+                    try {
+                        def success = ImageIO.write(tn, ext, tnFile)
+                        log.debug "Thumbnailing: " + success
+                    } catch (IOException e) {
+                        e.printStackTrace()
+                        log.error "Write error for " + tnFile.getPath() + ": " + e.getMessage()
+                    }
                 }
 
                 def md = [
@@ -176,8 +186,8 @@ class ImageController {
                         decimalLongitude: doubleToString(exifMd.decLng),
                         verbatimLatitude: exifMd.latitude,
                         verbatimLongitude: exifMd.longitude,
-                        url: FileUtils.encodeUrl(grailsApplication.config.upload.images.url,filename),
-                        thumbnail_url: FileUtils.encodeUrl(grailsApplication.config.upload.images.url, thumbFilename),
+                        url: FileUtils.encodeUrl(grailsApplication.config.upload.images.url, filename),
+                        thumbnail_url: thumbFilename ? FileUtils.encodeUrl(grailsApplication.config.upload.images.url, thumbFilename): null,
                         delete_url: FileUtils.encodeUrl(grailsApplication.config.grails.serverURL+"/image/delete?filename=", filename),
                         delete_type: 'DELETE',
                         attribution: ''
@@ -214,12 +224,27 @@ class ImageController {
             return
         }
 
-        def ext = FilenameUtils.getExtension(params.id)
+        // treat method supporting document differently
+        if (params.role) {
+            FileInputStream fis = new FileInputStream(f)
+            byte[] buffer = new byte[fis.available()]
+            fis.read(buffer)
+            fis.close()
 
-        response.contentType = 'image/'+ext
-        response.outputStream << new FileInputStream(f)
-        response.outputStream.flush()
+            response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(params.id,"utf-8"))
+            response.addHeader("Content-Length",String.valueOf(f.length()))
+            OutputStream out = new BufferedOutputStream(response.getOutputStream())
+            response.setContentType("application/octet-stream")
+            out.write(buffer)
+            out.flush()
+            out.close()
+        } else {
+            def ext = FilenameUtils.getExtension(params.id)
+
+            response.contentType = 'image/'+ext
+            response.outputStream << new FileInputStream(f)
+            response.outputStream.flush()
+        }
 
     }
-
 }

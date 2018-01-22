@@ -10,12 +10,28 @@ var ProjectActivity = function (params) {
     var user = params.user ? params.user : {};
 
     var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
-
     self.project = project;
-
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
     self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
+    self.selectFromSitesOnly = ko.observable(pActivity.selectFromSitesOnly);
+
+    self.selectFromSitesOnly.subscribe(function(checked){
+        if(checked){
+            self.allowAdditionalSurveySites(false);
+        }
+    }.bind(self));
+
+    self.allowAdditionalSurveySites.subscribe(function(checked){
+        if(checked){
+            self.selectFromSitesOnly(false);
+        }
+    }.bind(self));
+
+    self.allowPolygons = ko.observable(('allowPolygons' in pActivity)? pActivity.allowPolygons : false);
+    self.allowPoints = ko.observable(('allowPoints' in pActivity)? pActivity.allowPoints : true);
+    self.defaultZoomArea = ko.observable(('defaultZoomArea' in pActivity)? pActivity.defaultZoomArea : project?project.projectSiteId:'');
+
     self.baseLayersName = ko.observable(pActivity.baseLayersName);
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
 
@@ -82,6 +98,7 @@ var ProjectActivity = function (params) {
             });
         }
     };
+
 
     // 1. There is no straightforward way to prevent/cancel a KO change in a beforeChange subscription
     // 2. bootbox.confirm is totally asynchronous so by the time a user confirms or rejects a change, the change has already happened.
@@ -300,7 +317,15 @@ var ProjectActivity = function (params) {
 
     self.lastUpdated = ko.observable(pActivity.lastUpdated ? pActivity.lastUpdated : "");
 
-    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "CC BY");
+    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "");
+
+
+    self.displaySelectedLicence = ko.computed(function(){
+          return _.where(self.transients.alaSupportedLicences,{url:self.dataSharingLicense()});
+
+    });
+
+
 
     self.transients = self.transients || {};
     self.transients.warning = ko.computed(function () {
@@ -345,6 +370,8 @@ var ProjectActivity = function (params) {
             surveySites && surveySites.length > 0 ? $.merge(defaultSites, surveySites) : defaultSites.push(obj.siteId);
             self.sites.push(new SiteList(obj, defaultSites, self));
         });
+
+
     };
     self.loadSites(sites, pActivity.sites);
 
@@ -463,7 +490,11 @@ var ProjectActivity = function (params) {
             jsData.sites = sites;
             jsData.restrictRecordToSites = self.restrictRecordToSites();
             jsData.allowAdditionalSurveySites = self.allowAdditionalSurveySites();
+            jsData.selectFromSitesOnly = self.selectFromSitesOnly();
             jsData.baseLayersName = self.baseLayersName();
+            jsData.allowPolygons = self.allowPolygons();
+            jsData.allowPoints = self.allowPoints();
+            jsData.defaultZoomArea = self.defaultZoomArea();
         }
         else if (by == "visibility") {
             jsData = {};
@@ -586,7 +617,8 @@ var SiteList = function (o, surveySites, pActivity) {
     self.name = ko.observable(o.name);
     self.added = ko.observable(false);
     self.siteUrl = ko.observable(fcConfig.siteViewUrl + "/" + self.siteId());
-    self.ibra = ko.observable(o.extent.geometry.ibra)
+    self.ibra = ko.observable(o.extent.geometry.ibra);
+    self.isProjectArea = ko.observable(o.isProjectArea||false);
 
     self.addSite = function () {
         self.added(true);
@@ -669,7 +701,8 @@ var AlertViewModel = function (alert) {
         }
         self.transients.species.reset();
     };
-    self.delete = function (species) {
+
+    self.remove = function (species) {
         self.allSpecies.remove(species);
     };
 

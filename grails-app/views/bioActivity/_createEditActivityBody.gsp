@@ -140,14 +140,18 @@
         var savedData = amplify.store('activity-${activity.activityId}');
         var savedOutput = null;
         if (savedData) {
-            var outputData = $.parseJSON(savedData);
-            $.each(outputData.outputs, function(i, tmpOutput) {
-                if (tmpOutput.name === '${output.name}') {
-                    if (tmpOutput.data) {
-                        savedOutput = tmpOutput.data;
+            try{
+                var outputData = $.parseJSON(savedData);
+                $.each(outputData.outputs, function(i, tmpOutput) {
+                    if (tmpOutput.name === '${output.name}') {
+                        if (tmpOutput.data) {
+                            savedOutput = tmpOutput.data;
+                        }
                     }
-                }
-            });
+                });
+            }catch(err){
+                
+            }
         }
         if (savedOutput) {
             window[viewModelInstance].loadData(savedOutput);
@@ -306,16 +310,49 @@
                     }
                 });
                 if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
-                    return null;
-                } else {
+                    return {validation:false, message:"Nothing need to be updated!"};
+                }
+
+                var mapInfoCheck= activityLevelData.checkMapInfo();
+
+                if( !mapInfoCheck.validation){
+                    return mapInfoCheck;
+                }
+                else {
                     if (activityData === undefined) {
                         activityData = {}
                     }
                     activityData.outputs = outputs;
+                    //assign siteId to activity
+                    if (activityLevelData.siteId())
+                        activityData.siteId = activityLevelData.siteId();
 
                     return activityData;
                 }
             };
+
+            this.removeTemporarySite = function() {
+                var sites = this.subscribers[0].model.data.locationSitesArray();
+                var linkedSite = this.subscribers[0].model.data.location();
+
+                var waitingForDelete =  _.find(sites, function(site){
+                    return site.siteId != linkedSite && site.visibility == 'private'
+                })
+
+               var siteUrl = fcConfig.siteDeleteUrl;
+               if (waitingForDelete){
+                   console.log('Found a temporary site '+ waitingForDelete.siteId);
+                   $.ajax({
+                        method: 'POST',
+                        url: siteUrl+"?id="+waitingForDelete.siteId,
+                        data: JSON.stringify({id:waitingForDelete}),
+                        contentType: 'application/json',
+                        dataType: 'json'
+                    });
+                   }
+
+            }
+
 
             /**
              * Makes an ajax call to save any sections that have been modified. This includes the activity
@@ -331,9 +368,13 @@
             this.save = function () {
                 if ($('#validation-container').validationEngine('validate')) {
                     var toSave = this.collectData();
-                    if (!toSave) {
-                        alert("Nothing to save.");
-                        return;
+
+                    if (toSave.hasOwnProperty('validation')){
+                        if (!toSave.validation){
+                            alert(toSave.message);
+                            return;
+                        }
+
                     }
 
                     toSave = JSON.stringify(toSave);
@@ -445,6 +486,7 @@
 
             $('#save').click(function () {
                 master.save();
+                master.removeTemporarySite();
             });
 
             $('#cancel').click(function () {
@@ -565,7 +607,7 @@
                 self.dirtyFlag = ko.dirtyFlag(self, false);
             }
 
-            var viewModel = new ViewModel(
+              viewModel = new ViewModel(
                 activityLevelData.activity,
                 activityLevelData.site,
                 ${project ? "JSON.parse('${project.toString().encodeAsJavaScript()}')" : 'null'},

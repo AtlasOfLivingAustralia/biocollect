@@ -38,3 +38,23 @@
 .fn-gantt .fn-content {
     border: 1px solid #ddd;
 }
+
+
+.fn-gantt .milestone {
+    width: 0 !important;
+    height: 0;
+    border: 10px solid transparent;
+    border-bottom-color: red; //position: relative;
+    top: -10px;
+    background-color: transparent;
+}
+.fn-gantt .milestone:after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 9px;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-top-color: red;
+}

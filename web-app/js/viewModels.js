@@ -33,27 +33,95 @@ function enmapify(args) {
         spatialGeoserverUrl = args.spatialGeoserverUrl,
         updateSiteUrl = args.updateSiteUrl,
         listSitesUrl = args.listSitesUrl,
+        getSiteUrl = args.getSiteUrl,
         activityLevelData = args.activityLevelData,
         uniqueNameUrl = args.uniqueNameUrl + "/" + ( activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId),
         hideSiteSelection = args.hideSiteSelection || false,
         hideMyLocation = args.hideMyLocation || false,
-        siteIdObservable = container[name] = ko.observable(),
+        project = args.activityLevelData.project || {},
+        mapConfiguration = project.mapConfiguration || args.activityLevelData.pActivity || {},
+        allowPolygons = mapConfiguration.allowPolygons == undefined ? false : mapConfiguration.allowPolygons,
+        allowPoints = mapConfiguration.allowPoints  == undefined ? true : mapConfiguration.allowPoints,
+        pointsOnly = allowPoints && !allowPolygons,
+        polygonsOnly = !allowPoints && allowPolygons,
+        defaultZoomArea = mapConfiguration.defaultZoomArea,
+        allowAdditionalSurveySites = mapConfiguration.allowAdditionalSurveySites == undefined ? false : mapConfiguration.allowAdditionalSurveySites,
+        selectFromSitesOnly =viewModel.selectFromSitesOnly= mapConfiguration.selectFromSitesOnly == undefined ? false : mapConfiguration.selectFromSitesOnly,
+
+
+        siteIdObservable =activityLevelData.siteId = container[name] = ko.observable(),
         nameObservable = container[name + "Name"] = ko.observable(),
         latObservable = container[name + "Latitude"] = ko.observable(),
         lonObservable = container[name + "Longitude"] = ko.observable(),
         previousLatObservable = container[name + "HiddenLatitude"] = ko.observable(),
         previousLonObservable = container[name + "HiddenLongitude"] = ko.observable(),
-        latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(),
+        latLonDisabledObservable = container[name + "LatLonDisabled"] = ko.observable(!pointsOnly),
         centroidLatObservable = container[name + "CentroidLatitude"] = ko.observable(),
         centroidLonObservable = container[name + "CentroidLongitude"] = ko.observable(),
-        sitesObservable = container[name + "SitesArray"] = ko.observableArray(activityLevelData.pActivity.sites),
-        loadingObservable = container[name + "Loading"] = ko.observable(false)
-        ;
+        //siteObservable filters out all private sites
+        sitesObservable = ko.observableArray(resolveSites(mapConfiguration.sites)),
+        //container[SitesArray] does not care about 'private' or not, only check if the site matches the survey configs
+        surveySupportedSitesObservable = container[name + "SitesArray"] =  ko.computed(function(){
+                if (pointsOnly){
+                     return ko.utils.arrayFilter(sitesObservable(),function(site){
+                        return site.extent.geometry.type === 'Point' || site.siteId == siteIdObservable();
+                    })
+                }
+
+                if (polygonsOnly){
+                    return ko.utils.arrayFilter(sitesObservable(),function(site){
+                        return site.extent.geometry.type != 'Point'|| site.siteId == siteIdObservable();
+                    })
+                }
+
+                return sitesObservable();
+
+                }),
+
+
+        loadingObservable = container[name + "Loading"] = ko.observable(false),
+        checkMapInfo = viewModel.checkMapInfo=activityLevelData.checkMapInfo = ko.computed(function(){
+            var lat = latObservable(), lon = lonObservable(), siteId = siteIdObservable();
+
+            if (!siteId && !lon && !lat )
+                return {validation:false, message:"You have not created or selected a location yet"};
+
+            if (pointsOnly){
+                  if (lat && lon)
+                      return {validation:true};
+                  else
+                      return {validation:false, message:"The record only accepts POINTs"};
+            };
+            //Be careful of circle.
+            if (polygonsOnly){
+                if (siteId && !lat && !lon)
+                    return {validation:true};
+                else
+                    return {validation:false, message:"The record only accepts Polygons"};
+            }
+
+            if (allowPolygons && allowPoints){
+                if (siteId)
+                    return {validation:true};
+                if (lat && lon)
+                    return {validation:true};
+            }
+
+            return {validation:false, message:"You have not created or selected a location yet"};
+
+        });
+
+    // add event handling functions
+    if(!viewModel.on){
+        new Emitter(viewModel);
+    }
 
     var mapOptions = {
         wmsFeatureUrl: proxyFeatureUrl + "?featureId=",
         wmsLayerUrl: spatialGeoserverUrl + "/wms/reflect?",
-        draggableMarkers: !readonly,
+        //set false to keep consistance with edit mode.  We need to enter edit mode to move marker.
+        //If we set it true, we can move point, but cannot update site. And if we enter edit mode and exit, marker is no longer draggable.  Could be a bug in leaflet
+        draggableMarkers: false,
         drawControl: !readonly,
         showReset: false,
         singleDraw: true,
@@ -64,7 +132,7 @@ function enmapify(args) {
         allowSearchRegionByAddress: false,
         zoomToObject: true,
         markerZoomToMax: true,
-        drawOptions:  activityLevelData.mobile || readonly || !activityLevelData.pActivity.allowAdditionalSurveySites ?
+        drawOptions:  activityLevelData.mobile || readonly ?
             {
                 polyline: false,
                 polygon: false,
@@ -74,21 +142,22 @@ function enmapify(args) {
             }
             :
             {
-                polyline: false,
-                polygon: true,
-                circle: true,
-                rectangle: true,
-                edit: true
+                polyline: !selectFromSitesOnly && allowPolygons,
+                polygon: !selectFromSitesOnly && allowPolygons? { allowIntersection: false } : false,
+                circle: !selectFromSitesOnly && allowPolygons,
+                rectangle: !selectFromSitesOnly && allowPolygons,
+                marker: !selectFromSitesOnly && allowPoints,
+                edit: !selectFromSitesOnly && true
             }
     };
 
     // undefined/null, Google Maps or Default should enable Google Maps view
-    if (activityLevelData.pActivity.baseLayersName !== 'Open Layers') {
-        var googleLayer = new L.Google('ROADMAP',{maxZoom: 21, nativeMaxZoom: 21});
+    if (mapConfiguration.baseLayersName !== 'Open Layers') {
+        var googleLayer = new L.Google('ROADMAP', {maxZoom: 21, nativeMaxZoom: 21});
         var otherLayers = {
             Roadmap: googleLayer,
             Hybrid: new L.Google('HYBRID', {maxZoom: 21, nativeMaxZoom: 21}),
-            Terrain: new L.Google('TERRAIN',{maxZoom: 21, nativeMaxZoom: 21})
+            Terrain: new L.Google('TERRAIN', {maxZoom: 21, nativeMaxZoom: 21})
         };
 
         mapOptions.baseLayer = googleLayer;
@@ -123,15 +192,14 @@ function enmapify(args) {
         if (markerLocation) {
             // Prevent sitesubscriber from been reset, when we are in the process of clearing the map
             // If the user dropped a pin or search a location then the select location should be deselected
-            if(!isRemoveEvent) {
+            if (!isRemoveEvent) {
 
                 siteSubscriber.dispose();
-
                 console.log("Updating location fields to pin");
-                siteIdObservable(null);
+                //siteIdObservable(null);
                 latObservable(markerLocation.lat);
                 lonObservable(markerLocation.lng);
-                latLonDisabledObservable(false);
+                //latLonDisabledObservable(false);
                 centroidLatObservable(null);
                 centroidLonObservable(null);
 
@@ -142,16 +210,33 @@ function enmapify(args) {
 
         } else if (geo && geo.features && geo.features.length > 0) {
             console.log("Updating location fields to site");
-            latLonDisabledObservable(true);
+            //latLonDisabledObservable(true);
             feature = geo.features[0];
-            var c = centroid(feature);
-            latObservable(null);
-            lonObservable(null);
-            centroidLonObservable(c[0]);
-            centroidLatObservable(c[1]);
+            if (feature.geometry.type == 'Point'){
+                //circle is also a point
+                if (feature.properties.point_type=="Circle"){
+                    var c = centroid(feature);
+                    latObservable(null);
+                    lonObservable(null);
+                    centroidLonObservable(c[0]);
+                    centroidLatObservable(c[1]);
+                }else{
+                    latObservable(feature.geometry.coordinates[1]);
+                    lonObservable(feature.geometry.coordinates[0]);
+                    centroidLonObservable(null);
+                    centroidLatObservable(null);
+                }
+
+            }else{
+                var c = centroid(feature);
+                latObservable(null);
+                lonObservable(null);
+                centroidLonObservable(c[0]);
+                centroidLatObservable(c[1]);
+            }
         } else {
             console.log("Clearing location fields");
-            latLonDisabledObservable(false);
+            //latLonDisabledObservable(false);
             latObservable(null);
             lonObservable(null);
             centroidLatObservable(null);
@@ -178,11 +263,11 @@ function enmapify(args) {
             var sixA = 6 * (a.reduce(sum, 0).value() / 2);
             var zippedAValue = zipped.zip(a.value());
             var cx = zippedAValue.map(function (c) {
-                    return ( parseFloat(c[0][0][0]) + parseFloat(c[0][1][0]) ) * parseFloat(c[1]);
-                }).reduce(sum, 0).value() / sixA;
+                return ( parseFloat(c[0][0][0]) + parseFloat(c[0][1][0]) ) * parseFloat(c[1]);
+            }).reduce(sum, 0).value() / sixA;
             var cy = zippedAValue.map(function (c) {
-                    return ( parseFloat(c[0][0][1]) + parseFloat(c[0][1][1]) ) * parseFloat(c[1]);
-                }).reduce(sum, 0).value() / sixA;
+                return ( parseFloat(c[0][0][1]) + parseFloat(c[0][1][1]) ) * parseFloat(c[1]);
+            }).reduce(sum, 0).value() / sixA;
             return [cx, cy];
         } else if (feature.geometry.type == 'Point') {
             coords = feature.geometry.coordinates;
@@ -194,21 +279,48 @@ function enmapify(args) {
 
     }
 
+    /**
+     * Once the site selection changed, the function will be called
+     * Also called in record information display
+     * @param siteId
+     */
     function updateMapForSite(siteId) {
+        viewModel.emit('sitechanged', siteId);
+
         if (typeof siteId !== "undefined" && siteId) {
-            if(lonObservable()) {
+            if (lonObservable()) {
                 previousLonObservable(lonObservable());
             }
 
-            if(latObservable()) {
+            if (latObservable()) {
                 previousLatObservable(latObservable());
             }
-
-
 
             var matchingSite = $.grep(sitesObservable(), function (site) {
                 return siteId == site.siteId
             })[0];
+            //search from site collection in case it is a private site
+            if (!matchingSite){
+                var siteUrl = getSiteUrl + '/' + siteId + ".json"
+                //It is a sync call
+                $.ajax({
+                    type: "GET",
+                    url: siteUrl,
+                    async: false,
+                    success: function (data) {
+                        if (data.site){
+                            var geoType =  data.site.extent.source;
+                            data.site.name='Location of the sighting';
+                            sitesObservable.push(data.site);
+                            matchingSite = data.site;
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr);
+                    }
+                });
+            }
+            // TODO: OPTIMISE THE PROCEDUE
             if (matchingSite) {
                 console.log("Clearing map before displaying a new shape")
                 map.clearBoundLimits();
@@ -219,18 +331,39 @@ function enmapify(args) {
                     console.log("Displaying site without geometry.")
                     map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
                 }
+
+                // if (matchingSite.extent.geometry.centre){
+                //     map.addMarker(parseFloat(matchingSite.extent.geometry.centre[1]),parseFloat(matchingSite.extent.geometry.centre[0]));
+                // }
             }
-        } else { // Drop a pin, restore previous coordinates if any
-            console.log("Displaying pin")
-            if(previousLatObservable() && previousLonObservable()) {
-                lonObservable(previousLonObservable());
-                latObservable(previousLatObservable());
+        }else{
+            // Keep the previous code to make compatible with old records
+            // Can be removed after all data be migrated.
+            if (previousLatObservable() && previousLonObservable()) {
+                    lonObservable(previousLonObservable());
+                    latObservable(previousLatObservable());
+
             } else {
                 console.log("Resetting map because of non-previous lat long")
                 map.resetMap()
+                }
             }
         }
-    }
+
+
+
+
+        // else { // Drop a pin, restore previous coordinates if any
+        //     console.log("Displaying pin")
+        //     if(previousLatObservable() && previousLonObservable()) {
+        //         lonObservable(previousLonObservable());
+        //         latObservable(previousLatObservable());
+        //     } else {
+        //         console.log("Resetting map because of non-previous lat long")
+        //         map.resetMap()
+        //     }
+        // }
+
 
     function getProjectArea() {
         return $.grep(activityLevelData.pActivity.sites, function (item) {
@@ -264,6 +397,7 @@ function enmapify(args) {
                     mapImpl = map.getMapImpl();
 
                 mapImpl.fitBounds(bounds);
+                geojson.addTo(map);
             }
         }
     }
@@ -314,37 +448,57 @@ function enmapify(args) {
     };
 
     var siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
-// make sure the lat/lng fields are cleared when the marker is removed by cancelling a new marker
-    map.registerListener("layerremove", updateFieldsForMap);
+    // make sure the lat/lng fields are cleared when the marker is removed by cancelling a new marker
+
     map.registerListener("draw:created", function (e) {
         console.log("draw created");
         var type = e.layerType,
             layer = e.layer;
 
-        if (type === 'marker') {
-            console.log("marker");
-            return;
-        }
-        completeDraw();
+        //Create site for all type including point
+        if (allowAdditionalSurveySites)
+            completeDraw();
+        else
+            completeDrawWithoutAdditionalSite();
+        // if (type === 'marker') {
+        //     if (allowAdditionalSurveySites)
+        //         completeDraw();
+        //     latLonDisabledObservable(false);
+        //     return;
+        // }else{
+        //     latLonDisabledObservable(true);
+        // }
+        // if (allowAdditionalSurveySites)
+        //     completeDraw();
+        // else
+        //     completeDrawWithoutAdditionalSite();
+
     });
     var saved = false;
     map.registerListener("draw:edited", function (e) {
         console.log("edited", e);
         saved = true;
     });
+
     map.registerListener("draw:editstop", function (e) {
         console.log("editstop", e);
         if (!siteIdObservable() && !saved) {
             console.log("clear geo json");
             map.clearLayers();
         } else if (saved) {
-            completeDraw();
+            if (allowAdditionalSurveySites)
+                completeDraw();
+            else
+                completeDrawWithoutAdditionalSite()
         } else {
             console.log("cancelled edit with selected site, not clearing geometry")
         }
         saved = false;
     });
+
+    //Change on map will trigger the method.
     map.subscribe(updateFieldsForMap);
+
     if (!edit && !readonly) {
         map.markMyLocation();
     }
@@ -380,10 +534,79 @@ function enmapify(args) {
                     siteIdObservable(id);
                 })
                 .fail(saveSiteFailed);
-        }).fail(enableEditMode);
+        }).fail(function(){
+            enableEditMode()
+        });
 
 
         siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
+    }
+
+    function completeDrawWithoutAdditionalSite() {
+        siteSubscriber.dispose();
+
+        var extent = convertGeoJSONToExtent(map.getGeoJSON());
+        var siteName = 'Private site';
+        if (activityLevelData.pActivity){
+            activityLevelData.pActivity.name? siteName += " for survey: "+activityLevelData.pActivity.name: siteName;
+        }
+
+        var site = {
+            name: siteName,
+            visibility:'private',//site will not be indexed
+            projects: [
+                activityLevelData.pActivity.projectId
+            ],
+            extent: extent
+        }
+
+        var uSite = lookupUpdatebleSite()
+        if (uSite){
+            site.siteId = uSite.siteId;
+        }
+
+        siteIdObservable(null);
+        loadingObservable(true);
+
+        blockUIWithMessage("Updating, please stand by...");
+        addSite({
+                pActivityId: activityLevelData.pActivity.projectActivityId,
+                site: site}
+            ).then(function (data, jqXHR, textStatus) {
+                    var anonymousSiteId= data.id;
+                        //IMPORTANT
+                        //sites is a data-bind source for the selection dropdown list and bound to activity-output-data-location
+                        //if the new created site id is not in this list, then the location would be empty
+                        var geometryType =  extent.geometry.type;
+                        var anonymousSite = {
+                         name: 'The '+ geometryType + ' you created.',
+                         siteId: anonymousSiteId,
+                         extent: extent,
+                         visibility: "private"
+                        }
+                    sitesObservable.remove(function(site){
+                        return site.visibility == 'private';
+                    })
+                    sitesObservable.push(anonymousSite);
+                    siteIdObservable(anonymousSiteId);
+                    siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
+                 })
+            .always(function () {
+                $.unblockUI();
+                loadingObservable(false);
+            })
+            .fail(saveSiteFailed)
+    }
+
+    /**
+     * find a private site id.
+     * If a site is 'visibility = private, it means we should update it instead of creating a new one
+     */
+
+    function lookupUpdatebleSite(){
+       return _.find(sitesObservable(),function(site){
+            return site.visibility == 'private'
+        })
     }
 
     function enableEditMode() {
@@ -396,9 +619,12 @@ function enmapify(args) {
     }
 
     function addSite(site) {
+        var siteId = site['site'].siteId
+        site['site']['asyncUpdate'] = true;  // aysnc update Metadata service for performance improvement
+
         return $.ajax({
             method: 'POST',
-            url: updateSiteUrl,
+            url: siteId? updateSiteUrl+"?id="+siteId:updateSiteUrl,
             data: JSON.stringify(site),
             contentType: 'application/json',
             dataType: 'json'
@@ -406,22 +632,67 @@ function enmapify(args) {
     }
 
     function saveSiteFailed(jqXHR, textStatus, errorThrown) {
-        bootbox.alert("An error occured while attempting to save the site.");
+        var errorMessage = jqXHR.responseText || "An error occured while attempting to save the site.";
+        bootbox.alert(errorMessage);
         map.clearLayers();
+    }
+
+    function polygonCenter(vertices){
+        var lowx,
+            highx,
+            lowy,
+            highy,
+            lats = [],
+            lngs = [];
+
+        for(var i=0; i<vertices.length; i++) {
+           lats.push(vertices[i][0]);
+           lngs.push(vertices[i][1]);
+        }
+
+        lats.sort();
+        lngs.sort();
+        lowx = lats[0];
+        highx = lats[vertices.length - 1];
+        lowy = lngs[0];
+        highy = lngs[vertices.length - 1];
+        var center_x = lowx + ((highx-lowx) / 2);
+        var center_y = lowy + ((highy - lowy) / 2);
+        return [center_x, center_y];
     }
 
     function convertGeoJSONToExtent(gj) {
         var feature = gj.features[0];
-        var geometryType = feature.geometry.type;
+        //var geometryType = feature.geometry.type;
         var latLng = null;
         var extent = {
             geometry: {}
         };
-        if (geometryType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
-            extent.geometry.centre = latLng;
-        }
 
         var geoType = determineExtentType(feature);
+
+        if (geoType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE || geoType === ALA.MapConstants.DRAW_TYPE.CIRCLE_TYPE) {
+            if (feature.geometry.coordinates.length == 2){
+                latLng = feature.geometry.coordinates;
+            }
+
+        }
+
+        if (geoType === ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE) {
+            //Polygon is 2D array. Here we use the first element.
+            var coordinates = feature.geometry.coordinates.length > 0?feature.geometry.coordinates[0]:[]
+            latLng = polygonCenter(coordinates);
+        }
+        // We use the first point as the center of a polyline
+        if (geoType === ALA.MapConstants.DRAW_TYPE.LINE_TYPE) {
+            if (feature.geometry.coordinates.length > 1){
+                latLng = feature.geometry.coordinates[0];
+            }
+        }
+
+
+        extent.geometry.centre = latLng;
+
         extent.geometry.type = geoType;
         extent.source = geoType == "Point" ? "Point" : geoType == "pid" ? "pid" : "drawn";
         extent.geometry.radius = feature.properties.radius;
@@ -458,15 +729,18 @@ function enmapify(args) {
             } else {
                 type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
             }
+        } else if (geoJsonFeature.geometry.type == ALA.MapConstants.DRAW_TYPE.LINE_TYPE) {
+            type = geoJsonFeature.geometry.type
         }
 
         return type;
     }
 
     function reloadSiteData() {
-        var entityType=  activityLevelData.pActivity.projectActivityId? "projectActivity" : "project"
-        return $.getJSON(listSitesUrl + '/' + (activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId) + "?entityType=" + entityType ).then(function (data, textStatus, jqXHR) {
+        var entityType = activityLevelData.pActivity.projectActivityId ? "projectActivity" : "project"
+        return $.getJSON(listSitesUrl + '/' + (activityLevelData.pActivity.projectActivityId || activityLevelData.pActivity.projectId) + "?entityType=" + entityType).then(function (data, textStatus, jqXHR) {
             sitesObservable(data);
+
         });
     }
 
@@ -474,10 +748,12 @@ function enmapify(args) {
         value ? map.startLoading() : map.finishLoading();
     });
 
+
+    // continue init map
     if (!readonly) {
         map.addButton("<span class='fa fa-undo reset-map' title='Reset map'></span>", function () {
             map.resetMap();
-            if(!hideSiteSelection){
+            if (!hideSiteSelection) {
                 if (activityLevelData.pActivity.sites.length == 1) {
                     updateMapForSite(activityLevelData.pActivity.sites[0].siteId);
                 }
@@ -485,16 +761,53 @@ function enmapify(args) {
         }, "bottomright");
     }
 
-    if (args.zoomToProjectArea) {
-        console.log('Zooming to project area original config')
-        zoomToProjectArea();
-    } else if (activityLevelData.pActivity.sites.length == 1) {
-        console.log('One site for activity')
-        container[name](activityLevelData.pActivity.sites[0].siteId);
-    } else if (activityLevelData.projectSite && activityLevelData.projectSite.extent) {
-        console.log('Will display project site')
-        map.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(activityLevelData.projectSite.extent.geometry));
+
+
+    function zoomToDefaultSite(){
+        if (!siteIdObservable()){
+            var defaultsite  = $.grep(activityLevelData.pActivity.sites,function(site){
+                if(site.siteId == defaultZoomArea)
+                    return site;
+            });
+            var geojson;
+
+            if (defaultsite.length>0) {
+                if (defaultsite[0].extent.geometry.pid) {
+                    geojson = createGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(defaultsite[0].extent.geometry));
+                } else {
+                    geojson = createGeoJSON(siteExtentToValidGeoJSON(defaultsite[0].extent));
+                }
+
+                var bounds = geojson.getBounds(),
+                    mapImpl = map.getMapImpl();
+
+                mapImpl.fitBounds(bounds);
+                //geojson.addTo(map);
+            }
+
+        }
     }
+
+    zoomToDefaultSite();
+
+
+    // if (zoomToSite.length>0){
+    //     var geojson = createGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(zoomToSite[0].extent.geometry));
+    //     map.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(zoomToSite[0].extent.geometry));
+    //     geojson.addTo(map);
+    // }
+
+
+    // if (args.zoomToProjectArea) {
+    //     console.log('Zooming to project area original config')
+    //     zoomToProjectArea();
+    // } else if (activityLevelData.pActivity.sites.length == 1) {
+    //     console.log('One site for activity')
+    //     container[name](activityLevelData.pActivity.sites[0].siteId);
+    // } else if (activityLevelData.projectSite && activityLevelData.projectSite.extent) {
+    //     console.log('Will display project site')
+    //     map.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(activityLevelData.projectSite.extent.geometry));
+    // }
 
 }
 
@@ -569,4 +882,3 @@ AddSiteViewModel.prototype.checkUniqueName = function (name) {
             }
         });
 };
-

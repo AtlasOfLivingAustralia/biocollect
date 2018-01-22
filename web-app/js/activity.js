@@ -57,9 +57,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     });
 
     self.search = function () {
-        self.refreshPage();
-        self.getDataAndShowOnMap();
-        self.imageGallery && self.imageGallery.fetchRecordImages()
+        fetchDataForTabs()
     };
 
     self.clearData = function() {
@@ -92,13 +90,14 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                     case 'store':
                         var facets = [];
                         ko.utils.arrayForEach(self.filterViewModel.selectedFacets(), function (filter) {
-                            var value = {};
-                            value.term = filter.term();
-                            value.title = filter.facet.title;
-                            value.name = filter.facet.name();
-                            value.exclude = filter.exclude;
+                            var value = ko.mapping.toJS(filter);
+                            delete  value.facet.terms;
+                            delete  value.facet.ref;
+                            delete  value.facet.filter;
+                            delete  value.facet.term;
                             facets.push(value);
                         });
+
                         amplify.store(key, facets);
                         break;
 
@@ -221,7 +220,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return getSelectedTermsForRefinement().length > 0;
     };
 
-    self.delete = function (activity) {
+    self.remove = function (activity) {
         bootbox.confirm("Are you sure you want to delete the survey and records?", function (result) {
             if (result) {
                 var url = fcConfig.activityDeleteUrl + "/" + activity.activityId();
@@ -267,24 +266,42 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
      * @param speciesName
      * @returns {string}
      */
-    self.generatePopup = function (projectLinkPrefix, projectId, projectName, activityUrl, surveyName, speciesName){
-        var html = "<div class='projectInfoWindow'>";
-        var version = fcConfig.version === undefined ? "" : "?version=" + fcConfig.version
+    self.generatePopup = function (projectLinkPrefix, projectId, projectName, activityUrl, surveyName, speciesName, imageUrl){
+        var template =
+            '    <div>' +
+            '      IMAGE_TAG' +
+            '      SPECIES_NAME' +
+            '      ACTIVITY_LINK' +
+            '      PROJECT_LINK' +
+            '    </div>';
 
+        var version = fcConfig.version === undefined ? "" : "?version=" + fcConfig.version
+        var activityTemp = "";
         if (activityUrl && surveyName) {
-            html += "<div><i class='icon-home'></i> <a target='_blank' href='" +
+            activityTemp = "<div><i class='icon-home'></i> <a target='_blank' href='" +
                 activityUrl + version +"'>" +surveyName + " (record)</a></div>";
         }
+        template = template.replace("ACTIVITY_LINK", activityTemp);
 
+        var projectTemp = "";
         if(projectName && !fcConfig.hideProjectAndSurvey){
-            html += "<div><a target='_blank' href="+projectLinkPrefix+projectId+version+"><i class='icon-map-marker'></i>&nbsp;" +projectName + " (project)</a></div>";
+            projectTemp ="<div><a target='_blank' href="+projectLinkPrefix+projectId+version+"><i class='icon-map-marker'></i>&nbsp;" +projectName + " (project)</a></div>";
+        }
+        template = template.replace("PROJECT_LINK", projectTemp);
+
+        var speciesTemp = "";
+        if (speciesName) {
+            speciesTemp = "<strong><i class='icon-camera'></i>&nbsp;" + speciesName + "</strong>";
+        }
+        template = template.replace("SPECIES_NAME", speciesTemp);
+
+        var image = "";
+        if(imageUrl) {
+            image = "<div class='projectLogo'><img class='image-logo image-window' onload='findLogoScalingClass(this, 200, 150)' src='" + imageUrl + "'/></div>"
         }
 
-        if(speciesName){
-            html += "<div><i class='icon-camera'></i>&nbsp;"+ speciesName + "</div>";
-        }
-
-        return html;
+        template = template.replace('IMAGE_TAG', image);
+        return template;
     };
 
     /**
@@ -309,6 +326,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         }
 
         fq = self.urlFacetParameter();
+
+        fq.forEach(function (filter, index) {
+            fq[index] = encodeURI(filter)
+        });
 
         if(fq.length){
             url += '&fq=' + fq.join('&fq=');
@@ -347,11 +368,12 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                             $.each(activity.records, function(k, el) {
                                 if(el.coordinates && el.coordinates.length && el.coordinates[1] && !isNaN(el.coordinates[1]) && el.coordinates[0] && !isNaN(el.coordinates[0])){
                                     var type = el.individualCount == 0 ? 'icon' : 'circle';
+                                    var imageUrl = el.multimedia && el.multimedia[0] &&  el.multimedia[0].identifier;
                                     features.push({
                                         // the ES index always returns the coordinate array in [lat, lng] order
                                         lat: el.coordinates[0],
                                         lng: el.coordinates[1],
-                                        popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, el.name),
+                                        popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, el.name, imageUrl),
                                         type: type
                                     });
                                 }
@@ -361,11 +383,19 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                         break;
                     case 'activity':
                         if(activity.coordinates && activity.coordinates.length && activity.coordinates[1] && !isNaN(activity.coordinates[1]) && activity.coordinates[0] && !isNaN(activity.coordinates[0])){
+                            // get image from records
+                            var imageUrl;
+                            activity.records = activity.records || [];
+                            for(var i = 0; (i < activity.records.length) && !imageUrl; i++){
+                                var el = activity.records[i];
+                                imageUrl = el.multimedia && el.multimedia[0] &&  el.multimedia[0].identifier
+                            }
+
                             features.push({
                                 // the ES index always returns the coordinate array in [lat, lng] order
                                 lng: activity.coordinates[0],
                                 lat: activity.coordinates[1],
-                                popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name)
+                                popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, null, imageUrl)
                             });
                         }
                         type = 'cluster';
@@ -485,7 +515,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.biocacheUrl = ko.computed(function () {
         var fqs = self.filterViewModel.getALACompatibleQuery() || [],
             query = fqs.join("&fq="),
-            url = fcConfig.occurrenceUrl,
+            url = fcConfig.occurrenceUrl || '',
             questionMark = false;
 
         if(url.indexOf('?') < 0){
@@ -506,7 +536,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.spatialUrl = ko.computed(function () {
         var fqs = self.filterViewModel.getALACompatibleQuery() || [],
             query = fqs.join("&fq="),
-            url = fcConfig.spatialUrl,
+            url = fcConfig.spatialUrl || '',
             questionMark = false;
 
         if(url.indexOf('?') < 0){
@@ -535,14 +565,19 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             projectActivityId: fcConfig.projectActivityId,
             clientTimezone : moment.tz.guess()
         },
-            fq = [];
+            fq = [],
+            rfq;
 
 
-        var filters = '';
+        var filters = '', rfilters = '';
         if (_.isUndefined(facetOnly) || !facetOnly) {
             params.searchTerm = self.searchTerm().trim();
 
             fq = self.urlFacetParameter();
+
+            fq.forEach(function (filter, index) {
+                fq[index] = encodeURI(filter)
+            });
 
             if(fq.length){
                 filters = '&fq=' + fq.join('&fq=');
@@ -550,20 +585,18 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         }
 
         url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
-
-        return url + filters;
+        return url + filters + rfilters;
     }
 
     function fetchDataForTabs(){
+        if(self.filterViewModel.switchOffSearch()) return;
+
         self.refreshPage();
         self.getDataAndShowOnMap();
         self.imageGallery && self.imageGallery.fetchRecordImages()
     }
 
     self.filterViewModel.selectedFacets.subscribe(fetchDataForTabs);
-
-    // listen to facet change event so that map can be updated.
-    self.searchTerm.subscribe(self.getDataAndShowOnMap);
 
     self.sortButtonClick = function(data){
         // remove subscribe event on order so that we can set it and page will not refresh. will only refresh when
@@ -580,21 +613,32 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             facet: new FacetViewModel({
                 name: "organisationNameFacet",
                 title: 'Organisation',
-                ref: self.filterViewModel
+                ref: self.filterViewModel,
+                type: 'terms'
             })
         }));
     } else if (restored && restored.length > 0) {
-        var selectedFacets = []
+        var selectedFacets = [];
         $.each(restored, function (index, value) {
-            selectedFacets.push(new FacetTermViewModel({
-                term: value.term || '',
-                exclude: value.exclude,
-                facet: new FacetViewModel({
-                    name: value.name || '',
-                    title: value.title || '',
-                    ref: self.filterViewModel
-                })
-            }));
+            // using name for backward compatibility
+            if(!value.facet && value.name){
+                value.facet = {
+                    name: value.name,
+                    type: value.type || 'terms'
+                }
+            }
+
+            value.facet = self.filterViewModel.createFacetViewModel(value.facet);
+
+            switch (value.type){
+                case 'range':
+                    selectedFacets.push(new FacetRangeViewModel(value));
+                    break;
+                case 'term':
+                default:
+                    selectedFacets.push(new FacetTermViewModel(value));
+                    break;
+            }
         });
 
         !doNotInit && self.filterViewModel.selectedFacets.push.apply(self.filterViewModel.selectedFacets, selectedFacets);
