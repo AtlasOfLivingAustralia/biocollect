@@ -834,7 +834,7 @@
                             <td></td>
                             <td></td>
                             <td>
-                                <button type="button" class="btn" data-bind="click: addButtton"><i class="icon-plus"></i> Add button</button>
+                                <button type="button" class="btn" data-bind="click: addButton"><i class="icon-plus"></i> Add button</button>
                             </td>
                         </tr>
                         </tbody>
