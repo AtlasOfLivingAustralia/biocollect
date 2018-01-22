@@ -825,7 +825,7 @@
                         </thead>
                         <tbody>
                         <!-- ko foreach: buttons -->
-                        <!--ko template: { name: 'templateLink', data: {disableRoles:false, link:$data, removeLink:removeLink:function() {$parent.removeLink($data)} }} -->
+                        <!--ko template: { name: 'templateLink', data: {disableRoles:false, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
                         <!-- /ko -->
                         <!-- /ko -->
                         <tr>
