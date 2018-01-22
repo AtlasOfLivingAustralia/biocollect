@@ -62,7 +62,14 @@ class ProjectActivityController {
                         result.doc = documentService.updateDocument(doc)
                     } else if (!doc.documentId) {
                         doc.projectActivityId = pActivity.projectActivityId
-                        result.doc = documentService.saveStagedImageDocument(doc)
+
+                        if (doc.role == "methodDoc"){
+                            doc.projectId = pActivity.projectId
+                            result.methodDoc = documentService.saveStagedImageDocument(doc)
+                        }
+                        else {
+                            result.doc = documentService.saveStagedImageDocument(doc)
+                        }
                     }
                 }
             }

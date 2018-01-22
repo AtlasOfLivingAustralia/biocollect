@@ -13,12 +13,14 @@
                     </a>
                 </button>
                 <div data-bind="slideVisible: state() == 'Expanded'" class="margin-top-10">
-                    <!-- ko foreach: terms -->
-                    <label class="control-label checkbox" data-bind="visible: !refined()">
-                        <input type="checkbox" data-bind="checked: checked" style="display: inline-block;">
-                        <span class="label-ellipsis" data-bind="text:displayName, click: filterNow, attr:{title: displayName}"></span>
-                    </label>
-                    <!-- /ko -->
+                    <div class=" facet-display-height">
+                        <!-- ko foreach: terms -->
+                        <label class="control-label checkbox" data-bind="visible: !refined()">
+                            <input type="checkbox" data-bind="checked: checked" style="display: inline-block;">
+                            <span class="label-ellipsis" data-bind="text:displayName, click: filterNow, attr:{title: displayName}"></span>
+                        </label>
+                        <!-- /ko -->
+                    </div>
                     <a href="#" role="button" class="moreFacets tooltips" data-toggle="modal" title="" data-target="#${modalName}"
                        data-original-title="View full list of values" data-bind="click: loadMoreTerms, visible: showChooseMore()">
                         <i class="fa fa-hand-o-right"></i> choose more...
@@ -40,8 +42,8 @@
                     <div class="row-fluid">
                         <label class="input-label"><span class="span2">From:</span>
                             <div class="input-append">
-                                <input data-bind="value: fromDate.formattedDate, datepicker: fromDate.date, datePickerOptions: { format: 'dd-mm-yyyy'}, event: {blur: setContext($element)}"
-                                       id="fromDate" name="fromDate" type="text" size="16" class="input-small" placeholder="dd-mm-yyyy"
+                                <input data-bind="value: fromDate.formattedDate, datepicker: fromDate.date, datePickerOptions: { format: 'dd/mm/yyyy'}, event: {blur: setContext($element)}"
+                                       id="fromDate" name="fromDate" type="text" size="16" class="input-small" placeholder="dd/mm/yyyy"
                                         targetfield="fromDate.date"
                                        data-validation-engine="validate[date]">
                                 <span class="add-on open-datepicker">
@@ -53,10 +55,10 @@
                     <div class="">
                         <label class="input-label"><span class="span2">To:</span>
                             <div class="input-append">
-                                <input data-bind="value: toDate.formattedDate, datepicker: toDate.date, datePickerOptions: { format: 'dd-mm-yyyy'}, event: {blur: setContext($element)}"
+                                <input data-bind="value: toDate.formattedDate, datepicker: toDate.date, datePickerOptions: { format: 'dd/mm/yyyy'}, event: {blur: setContext($element)}"
                                      id="toDate" type="text" size="16" class="input-append input-small"
                                        targetfield="toDate.date"
-                                     placeholder="dd-mm-yyyy" data-validation-engine="validate[date,future[fromDate]]">
+                                     placeholder="dd/mm/yyyy" data-validation-engine="validate[date,future[fromDate]]">
                                 <span class="add-on open-datepicker">
                                     <i class="icon-calendar">&nbsp;</i>
                                 </span>

@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,8 +15,7 @@
         homePagePath: "${createLink(controller: 'home', action: 'index')}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         projectUpdateUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
-        configureSpeciesFieldsUrl:"${createLink(action:'configureSpeciesFields', id:project.projectId)}",
-        saveMeriPlanUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
+        saveMeriPlanUrl:"${createLink(action:'updateProjectPlan', id:project.projectId)}",
         projectEditUrl:"${createLink(action:'edit', id:project.projectId)}",
         sitesDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDeleteSitesFromProject', id:project.projectId)}",
         siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDeleteSiteFromProject', id:project.projectId)}",
@@ -25,9 +25,10 @@
         activityEditUrl: "${createLink(controller: 'activity', action: 'edit')}",
         activityEnterDataUrl: "${createLink(controller: 'activity', action: 'enterData')}",
         activityPrintUrl: "${createLink(controller: 'activity', action: 'print')}",
-        activityCreateUrl: "${createLink(controller: 'activity', action: 'createPlan')}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
+        // a hack to not add action name after activity - /activity
+        activityJsonUrl: "${createLink(controller: 'activity', action: ' ')}",
         activityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
         speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
         searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities',params: [projectId:project.projectId, version: params.version])}",
@@ -83,7 +84,22 @@
         deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}",
         shapefileDownloadUrl: "${createLink(controller:'project', action:'downloadShapefile', id:project.projectId)}",
         sitesPhotoPointsUrl:"${createLink(controller:'project', action:'projectSitePhotos', id:project.projectId)}",
-        absenceIconUrl:"${resource(dir: 'images', file: 'triangle.png')}"
+        getMembersForProjectIdPaginatedUrl: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}",
+        removeUserRoleUrl:"${createLink(controller:'user', action:'removeUserWithRoleFromProject')}",
+        absenceIconUrl:"${resource(dir: 'images', file: 'triangle.png')}",
+        isAdmin: ${user?.isAdmin ? 'true' : 'false'},
+        isEditor: ${user?.isEditor ? 'true' : 'false'},
+        isCaseManager: ${user?.isCaseManager ? 'true' : 'false'},
+        canAddActivity: ${user?.isAdmin ? 'true' : 'false'},
+        canAddSite: ${projectContent?.site?.canEditSites? 'true' : 'false'},
+        worksScheduleIntroUrl: "${createLink(controller: 'staticPage', action:'index', params: [page:"workScheduleHelp"])}",
+        outputTargetMetadata: ${((outputTargetMetadata?:[]) as grails.converters.JSON).toString()},
+        activityTypes: ${((activityTypes?:[]) as JSON).toString()},
+        themes: ${((themes?:[]) as JSON).toString()},
+        sites: ${((project?.sites ?: []) as JSON).toString()},
+        siteIds: ${((project.mapConfiguration?.sites ?: []) as JSON).toString()},
+        project: ${((project?: [:]) as JSON).toString()},
+        defaultSpeciesConfiguration: ${(grailsApplication.config.speciesConfiguration.default as JSON).toString()}
         },
         here = window.location.href;
 
@@ -340,7 +356,6 @@
             } else {
                 $(storedAdminTab + "-tab").tab('show');
             }
-            populatePermissionsTable();
 
 //            var project = <fc:modelAsJavascript model="${project}"/>;
 //            var viewModel = new WorksProjectViewModel(project, ${user?.isEditor?:false}, {}, {});

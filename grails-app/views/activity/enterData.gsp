@@ -30,7 +30,8 @@
         speciesSearch: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
-        uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}"
+        uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
+        sites: ${((project?.sites ?: []) as JSON).toString()}
         },
         here = document.location.href;
     </r:script>
@@ -40,7 +41,7 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <div class="row-fluid title-block well well-small input-block-level">
+        <div class="row-fluid title-block input-block-level">
             <div class="span12 title-attribute">
                 <h1><span data-bind="click:goToProject" class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
                 <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">Activity: <span data-bind="text:type"></span></h3>
@@ -217,7 +218,7 @@
 
                     self.loadData = function (data) {
                         // load dynamic data
-                        <md:jsLoadModel model="${model}" surveyName="${metaModel?.name}" output="${output.name}"/>
+                        <md:jsLoadModel model="${model}" surveyName="${metaModel?.name}" output="${output.name}" activity="${activity}"/>
 
                         // if there is no data in tables then add an empty row for the user to add data
                         if (typeof self.addRow === 'function' && self.rowCount() === 0) {
@@ -256,14 +257,18 @@
                 var savedData = amplify.store('activity-${activity.activityId}');
                 var savedOutput = null;
                 if (savedData) {
-                    var outputData = $.parseJSON(savedData);
-                    $.each(outputData.outputs, function(i, tmpOutput) {
-                        if (tmpOutput.name === '${output.name}') {
-                            if (tmpOutput.data) {
-                                savedOutput = tmpOutput.data;
+                    try{
+                        var outputData = $.parseJSON(savedData);
+                        $.each(outputData.outputs, function(i, tmpOutput) {
+                            if (tmpOutput.name === '${output.name}') {
+                                if (tmpOutput.data) {
+                                    savedOutput = tmpOutput.data;
+                                }
                             }
-                        }
-                    });
+                        });
+                    }catch(e){
+
+                    }
                 }
                 if (savedOutput) {
                     window[viewModelInstance].loadData(savedOutput);
@@ -276,7 +281,7 @@
     </g:each>
 <!-- /ko -->
 
-    <g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
+    <g:if test="${metaModel?.supportsPhotoPoints?.toBoolean()}">
         <div class="output-block" data-bind="with:transients.photoPointModel">
             <h3>Photo Points</h3>
 
@@ -315,6 +320,7 @@
         var self = this;
         self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
         self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
+        self.project = JSON.parse('${(project as JSON).toString().encodeAsJavaScript()}');
         // We only need the sites from a pActivity within works projects
         self.pActivity = JSON.parse('${(project as JSON).toString().encodeAsJavaScript()}');
         self.pActivity.allowAdditionalSurveySites =  ${canEditSites}
@@ -376,6 +382,7 @@
             }
         };
 
+
         /**
          * Makes an ajax call to save any sections that have been modified. This includes the activity
          * itself and each output.
@@ -393,7 +400,7 @@
                 var toSave = this.collectData();
 
                 if (!toSave) {
-                    alert("Nothing to save.");
+                    alert("Nothing to save, or location failed on validation.");
                     return;
                 }
 
@@ -500,6 +507,7 @@
             self.progress = ko.observable(act.progress);
             self.mainTheme = ko.observable(act.mainTheme);
             self.type = ko.observable(act.type);
+            self.siteId = ko.observable(act.siteId);
             self.projectId = act.projectId;
             self.transients = {};
             self.transients.project = project;
@@ -561,6 +569,20 @@
             // make sure progress moves to started if we save any data (unless already finished)
             // (do this here so the model becomes dirty)
             self.progress(self.transients.markedAsFinished() ? 'finished' : 'started');
+
+            self.subscribeToSiteChange = function() {
+                master.subscribers.forEach(function(model) {
+                  if(typeof model === 'object'){
+                      if(model.model.on){
+                          model.model.on('sitechanged', function(siteId) {
+                            viewModel.siteId(siteId);
+                          })
+                      }
+                  }
+                });
+            };
+
+            self.subscribeToSiteChange()
         };
 
         var activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');

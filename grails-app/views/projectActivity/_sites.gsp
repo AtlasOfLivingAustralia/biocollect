@@ -25,7 +25,6 @@
                 <thead>
                 <tr>
                     <th class="text-left">Sites associated with this survey:
-                        <span class="req-field"></span>
                         <a href="#" data-bind="popover: {content:'Sites listed here will be selectable on the data collection form. If you don\'t want a particular site to be available for selection in this survey, click the arrow to move it into the \'Sites associated with the project\' column. Note that the survey must have at least one site associated with it.'}"><i  class="icon-question-sign"></i></a>
                     </th>
                 </tr>
@@ -33,17 +32,20 @@
 
                 <tbody>
                 <!-- ko foreach: sites -->
-                <tr data-bind="visible: added()">
-                    <td>
-                        <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
-                        <button class="btn btn-mini pull-right btn-default" data-bind="click: removeSite, disable: transients.isDataForSite"  title="Remove this site from survey">
-                            <span class="icon-arrow-right"></span>
-                        </button>
-
-                    </td>
-                </tr>
+                    <!-- ko ko ifnot: name() == '*' -->
+                       <tr data-bind="visible: added()">
+                            <!-- ko ifnot: isProjectArea -->
+                            <td>
+                                <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
+                                <button class="btn btn-mini pull-right btn-default" data-bind="click: removeSite, disable: transients.isDataForSite"  title="Remove this site from survey">
+                                    <span class="icon-arrow-right"></span>
+                                </button>
+                            </td>
+                            <!-- /ko -->
+                        </tr>
+                     <!-- /ko -->
                 <!-- /ko -->
-                <!-- ko if: getNumberOfSitesForSurvey() == 0 -->
+                <!-- ko ko if: getNumberOfSitesForSurvey() == 0 -->
                 <tr>
                     <td>
                         <i>Add sites to survey from the column on right using the <span class="icon-arrow-left"></span> button.</i>
@@ -67,14 +69,16 @@
 
                 <tbody>
                 <!-- ko foreach: sites -->
-                <tr data-bind="visible: !added()">
-                    <td>
-                        <button class="btn btn-mini btn-primary" data-bind="click: addSite" title="Add this site to survey">
-                            <span class="icon-arrow-left icon-white"></span>
-                        </button>
-                        <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
-                    </td>
-                </tr>
+
+                        <tr data-bind="visible: !added()">
+                            <td>
+                                <button class="btn btn-mini btn-primary" data-bind="click: addSite" title="Add this site to survey">
+                                    <span class="icon-arrow-left icon-white"></span>
+                                </button>
+                                <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
+                            </td>
+                        </tr>
+
                 <!-- /ko -->
                 <!-- ko if:sites().length == 0 -->
                 <tr>
@@ -103,11 +107,37 @@
     </div>
     <div class="row-fluid">
         <div class="span12">
+            <h3>Allowed Geo types</h3>
+                <label class="checkbox">
+                    <input type="checkbox" data-bind="checked: allowPolygons"/> Polygons allowed <a href="#" data-bind="popover: {content:'Allow to create a polygon or select a site of a polygon.'}"><i class="icon-question-sign"></i></a>
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" data-bind="checked: allowPoints"/> Points allowed  <i class="icon-question-sign"></i>
+                </label>
+        </div>
+    </div>
+
+
+    <div class="row-fluid">
+        Default zoom area:
+            <select id="siteToZoom"
+                    data-bind='options: sites, optionsText: "name", optionsValue: "siteId", value: defaultZoomArea;' class="form-control input-xlarge full-width"></select>
+    </div>
+
+
+    <div class="row-fluid">
+        <div class="span12">
             <h3>Additional site options</h3>
             <label class="checkbox">
-                <input type="checkbox" data-bind="checked: allowAdditionalSurveySites, disable: transients.warning()"/> Allow Additional Survey Sites
+                <input type="checkbox" data-bind="checked: allowAdditionalSurveySites, disable: transients.warning()"/> Allow additional survey sites
             </label>
             <span class="help-block">Check this box if you want to allow users to add or edit site polygons on the survey record.</span>
+
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: selectFromSitesOnly, disable: transients.warning()"/> ONLY Select from existing sites
+            </label>
+            <span class="help-block">User can only select from exisiting site </span>
+
             <auth:ifAnyGranted roles="ROLE_ADMIN">
                 <label for="map-tiles">Map tiles</label>
                 <select id="map-tiles" data-bind="value: baseLayersName, optionsCaption: 'Choose...', disable: transients.warning()">
@@ -117,6 +147,8 @@
             </auth:ifAnyGranted>
         </div>
     </div>
+
+
     <!--
     Not supported.
     <div class="row-fluid">

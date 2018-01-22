@@ -177,7 +177,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         pointOfInterestMarkers.clearLayers();
 
         self.pointsOfInterest().forEach(function (pointOfInterest) {
-            var marker = marker = ALA.MapUtils.createMarker(
+            var marker  = ALA.MapUtils.createMarker(
                 pointOfInterest.geometry().decimalLatitude(),
                 pointOfInterest.geometry().decimalLongitude(),
                 pointOfInterest.name,
@@ -239,6 +239,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             maxZoom: 20,
             wmsLayerUrl: mapOptions.spatialWms + "/wms/reflect?",
             wmsFeatureUrl: mapOptions.featureService + "?featureId=",
+            drawOptions: mapOptions.drawOptions,
             showReset: false
         };
 
@@ -417,6 +418,8 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             } else {
                 type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
             }
+        } else if (geoJsonFeature.geometry.type == ALA.MapConstants.DRAW_TYPE.LINE_TYPE) {
+            type = geoJsonFeature.geometry.type
         }
 
         return type;

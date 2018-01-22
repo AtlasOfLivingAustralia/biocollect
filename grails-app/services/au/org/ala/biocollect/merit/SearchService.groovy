@@ -1,11 +1,11 @@
 package au.org.ala.biocollect.merit
+
 import groovy.json.JsonSlurper
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 
 import javax.annotation.PostConstruct
 import javax.servlet.http.HttpServletResponse
-
 /**
  * Service for ElasticSearch running on ecodata
  */
@@ -226,11 +226,17 @@ class SearchService {
         List results = []
         if(orderList){
             orderList.each { k ->
-                results << formatFacet(facets[k], k)
+                Map result = formatFacet(facets[k], k)
+                if(result){
+                    results << result
+                }
             }
         } else {
             facets?.each { k, v ->
-                results << formatFacet(facets[k], k)
+                Map result = formatFacet(facets[k], k)
+                if(result){
+                    results << result
+                }
             }
         }
 
@@ -238,11 +244,81 @@ class SearchService {
     }
 
     Map formatFacet(Map item, String name){
-        Map facet = [:]
-        facet.name = name
-        facet.total = item.total
-        facet.terms = item.terms
+        if(item){
+            Map facet = [:]
+            facet.name = name
+            facet.total = item.total
+            facet.terms = item.terms
+            facet.ranges = item.ranges
+            facet.entries = item.entries
+            facet.type = item._type
 
-        facet
+            facet
+        }
     }
+
+    /**
+     * Presence Absence is custom logic. This function is used to implement that custom logic.
+     * @param facets
+     * @param configs
+     * @return
+     */
+    List standardisePresenceAbsenceFacets(List facets, List configs){
+        facets.each { facet ->
+            Map facetConfig = configs?.find({ it.name == facet.name })
+            if(facetConfig){
+                if(facet.ranges.size() == 2){
+                    if(facet.ranges[0].to == 1){
+                        facet.ranges[0].title = 'Absence'
+                    } else if(facet.ranges[1].to == 1) {
+                        facet.ranges[1].title = 'Absence'
+                    }
+
+                    if(facet.ranges[1].from == 1){
+                        facet.ranges[1].title = 'Presence'
+                    } else if(facet.ranges[0].from == 1) {
+                        facet.ranges[0].title = 'Presence'
+                    }
+
+                }
+            }
+        }
+    }
+
+    /**
+     * Convert elastic search's histogram facet representation to range format. This makes it easy to render on browser
+     * since range facet view model can be re-used.
+     * @param facets
+     * @param facetConfig
+     * @return
+     */
+    List standardiseHistogramFacets(List facets, List histogramFacetConfig){
+        histogramFacetConfig.each { histogramConfig ->
+            Map facet = facets.find {it.name == histogramConfig.name }
+            List entries = facet.remove('entries')
+            facet.ranges = convertHistogramToRangeFormat(entries, Integer.parseInt(histogramConfig.interval?.toString()))
+            facet.type = 'range'
+        }
+
+        facets
+    }
+
+    /**
+     * Convert elastic search's histogram representation to range representation.
+     * Range representation has two parameters - from and to. This function creates the number range using interval parameter.
+     * @param entries
+     * @param interval
+     * @return
+     */
+    List convertHistogramToRangeFormat(List entries, Integer interval){
+        List ranges = []
+
+        entries?.eachWithIndex { entry, index ->
+            ranges.add([ from: entry.key,  to: entry.key + interval, count: entry.count ])
+        }
+
+        ranges
+    }
+
+
 }

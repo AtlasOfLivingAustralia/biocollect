@@ -41,7 +41,7 @@
             </div>
 
             <div class="span2 text-left">
-                <a href="#" data-bind="click: $parent.alert.delete"><span class="fa fa-close"></span></a>
+                <a href="#" data-bind="click: $parent.alert.remove"><span class="fa fa-close"></span></a>
             </div>
         </div>
         <!-- /ko -->

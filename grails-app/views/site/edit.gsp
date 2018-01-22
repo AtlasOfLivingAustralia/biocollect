@@ -119,6 +119,11 @@
                 var json = siteViewModel.toJS();
                 var data = {
                     site: json
+                    <g:if test="${project?.projectId}">
+                        ,
+                        projectId: '${project?.projectId.encodeAsHTML()}'
+                    </g:if>
+
                     <g:if test="${pActivityId}">
                         ,
                         pActivityId: '${pActivityId.encodeAsHTML()}'
@@ -145,7 +150,8 @@
                         }
                     },
                     error: function (data) {
-                        bootbox.alert('There was a problem saving this site', function() {location.reload();});
+                        var errorMessage = data.responseText || 'There was a problem saving this site'
+                        bootbox.alert(errorMessage);
                     }
                 });
             }

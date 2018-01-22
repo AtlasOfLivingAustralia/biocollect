@@ -22,6 +22,7 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     self.attribution = ko.observable(o.attribution ? o.attribution : self.formatAttribution(organisationName, self.name()));
     self.methodName = ko.observable(o.methodName);
     self.methodAbstract = ko.observable(o.methodAbstract);
+    self.methodUrl = ko.observable(o.methodUrl);
     self.downloadFormTemplateUrl = ko.observable(o.pActivityFormName ? fcConfig.downloadTemplateFormUrl + "?type=" + o.pActivityFormName + "&expandList=true" : "")
 
  /*   self.datasetVersion = ko.observable(o.datasetVersion ? o.datasetVersion : "");
@@ -67,9 +68,25 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     self.transients.sitesWithData = ko.observableArray([]);
     self.transients.siteWithDataAjaxFlag = ko.observable(false);
     self.transients.imageUploadUrl  = ko.observable(fcConfig.imageUploadUrl);
+    self.transients.methoddocumentUpdateUrl  = ko.observable(fcConfig.methoddocumentUpdateUrl);
+
     self.transients.logoUrl = ko.pureComputed(function(){
         return self.logoUrl() ? self.logoUrl() : fcConfig.imageLocation + "/no-image-2.png";
     });
+
+    self.methodDocUrl = ko.pureComputed(function(){
+        var methodDocument = self.findDocumentByRole(self.documents(), 'methodDoc');
+        return methodDocument ? methodDocument.url + "&role='methodDoc'" : "";
+    });
+
+    self.methodDocName = ko.pureComputed(function(){
+        var methodDocument = self.findDocumentByRole(self.documents(), 'methodDoc');
+        return methodDocument ? methodDocument.name: "";
+    });
+
+    self.removeMethodDoc = function() {
+        self.deleteDocumentByRole('methodDoc');
+    };
 
     var isBeforeToday = function(date) {
         return moment(date) < moment().startOf('day');
@@ -114,7 +131,7 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     });
 
     if (o.documents !== undefined && o.documents.length > 0) {
-        $.each(['logo'], function(i, role){
+        $.each(['logo', 'methodDoc'], function(i, role){
             var document = self.findDocumentByRole(o.documents, role);
             if (document) {
                 self.documents.push(document);

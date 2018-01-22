@@ -1,0 +1,282 @@
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51697
+Downloading image file...
+File name images//Varanus_gouldii//109_0_NIK_7998_Goanna_(19).JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//109_1_NIK_7998_Goanna_(23).JPG
+Uploading image...
+Image upload successful. - 1
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[{"name":"109_0_NIK_7998_Goanna_(19).JPG","size":2220862,"isoDate":"2015-12-13T23:16:52Z","contentType":"image/jpeg","date":"14-12-2015","time":"10:16","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=109_0_NIK_7998_Goanna_%2819%29.JPG","thumbnail_url":"https://biocollect.ala.org.au/image?id=109_0_NIK_7998_Goanna_%2819%29-thumb.JPG","delete_url":"https://biocollect.ala.org.au/image/delete?filename=109_0_NIK_7998_Goanna_%2819%29.JPG","delete_type":"DELETE","attribution":""},{"name":"109_1_NIK_7998_Goanna_(23).JPG","size":782163,"isoDate":"2015-12-13T23:17:13Z","contentType":"image/jpeg","date":"14-12-2015","time":"10:17","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=109_1_NIK_7998_Goanna_%2823%29.JPG","thumbnail_url":"https://biocollect.ala.org.au/image?id=109_1_NIK_7998_Goanna_%2823%29-thumb.JPG","delete_url":"https://biocollect.ala.org.au/image/delete?filename=109_1_NIK_7998_Goanna_%2823%29.JPG","delete_type":"DELETE","attribution":""}],"surveyStartDate":"2015-12-13T23:15:00Z","surveyStartTime":"10:15 AM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"I\u2019m not sure","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: I'd like to know what kind of Goanna it is please; Type of micro-habitat: On ground; At what height was the goanna?: <0.5m; Location description: Private Land (e.g. farm); Survey effort: 0 Hrs : 5 mins; Cloud cover: 0/8: Sky completely clear; Temperature: Hot (above 30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Dawn Borchardt","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-35.103901","locationLongitude":"139.143979","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Monarto","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"343e7d7b-52f2-4e7f-ae6a-3ce57d2be8fd","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51698
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[],"surveyStartDate":"2016-06-19T22:00:00Z","surveyStartTime":"08:00 AM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"I\u2019m not sure","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: Rod works at Orlando Winery Langhorne creek and reported the goanna. sent a fact sheet and he thinks its a sand goanna. Has been working there for 10 years and has never seen one before on the property. ; Type of micro-habitat: On ground; At what height was the goanna?: ; Location description: Roadside; Survey effort: 0 Hrs : 0 mins; Cloud cover: ; Temperature:","individualCount":1,"comments":"","recordedBy":"Kylie Moritz","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-35.280415","locationLongitude":"139.006728","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Langhorne Creek","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"8e6aafc7-a24d-40ca-a4b6-23dab2d18f43","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51699
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[],"surveyStartDate":"2016-07-09T02:00:00Z","surveyStartTime":"12:00 PM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"1.0 \u2013 1.5 metres","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: ; Type of micro-habitat: On ground; At what height was the goanna?: <0.5m; Location description: Private Land (e.g. farm); Survey effort: 0 Hrs : 30 mins; Cloud cover: 2/8: One-quarter of sky filled; Temperature: Warm (20-30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Mick","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-35.21414","locationLongitude":"139.219116","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Lenswood","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"e0063eda-b579-4ac3-a834-87c24a92380e","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51702
+Downloading image file...
+File name images//Varanus_gouldii//114_0_DSCN0115.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//114_1_DSCN0127.JPG
+Uploading image...
+Image upload successful. - 1
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[{"name":"114_0_DSCN0115.JPG","size":3585119,"isoDate":"2015-10-10T11:55:01Z","contentType":"image/jpeg","date":"10-10-2015","time":"22:55","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=114_0_DSCN0115.JPG","thumbnail_url":"https://biocollect.ala.org.au/image?id=114_0_DSCN0115-thumb.JPG","delete_url":"https://biocollect.ala.org.au/image/delete?filename=114_0_DSCN0115.JPG","delete_type":"DELETE","attribution":""},{"name":"114_1_DSCN0127.JPG","size":3528452,"isoDate":"2015-10-10T11:56:59Z","contentType":"image/jpeg","date":"10-10-2015","time":"22:56","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=114_1_DSCN0127.JPG","thumbnail_url":"https://biocollect.ala.org.au/image?id=114_1_DSCN0127-thumb.JPG","delete_url":"https://biocollect.ala.org.au/image/delete?filename=114_1_DSCN0127.JPG","delete_type":"DELETE","attribution":""}],"surveyStartDate":"2016-08-18T00:55:00Z","surveyStartTime":"10:55 AM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"0.5 \u2013 1.0 metre","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: This goanna was very comfortable around our garden shed, under the house and under the car. We saw it several times in the following months; Type of micro-habitat: On ground; At what height was the goanna?: <0.5m; Location description: Private Land (e.g. farm); Survey effort: 0 Hrs : 10 mins; Cloud cover: I'm not sure; Temperature: Warm (20-30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Ruth Roberts","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-34.11296","locationLongitude":"140.801019","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Renmark","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"4ca39137-572e-4fe2-bac9-8d4d447894b6","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51705
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[],"surveyStartDate":"2016-12-12T00:35:00Z","surveyStartTime":"11:35 AM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"1.0 \u2013 1.5 metres","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: ; Type of micro-habitat: On ground; At what height was the goanna?: <0.5m; Location description: On road; Survey effort: 0 Hrs : 2 mins; Cloud cover: 2/8: One-quarter of sky filled; Temperature: Warm (20-30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Chris Davey","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-34.092922","locationLongitude":"137.972125","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Melton","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"b042bc59-e2fc-4094-8704-3e8a8baa588c","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51707
+Downloading image file...
+File name images//Varanus_gouldii//118_0_DSC_0682.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//118_1_DSC_0682.JPG
+Uploading image...
+Image upload successful. - 1
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[{"name":"118_0_DSC_0682.JPG","size":3987723,"isoDate":"2016-12-11T23:51:31Z","contentType":"image/jpeg","date":"12-12-2016","time":"10:51","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=118_0_DSC_0682.JPG","thumbnail_url":"https://biocollect.ala.org.au/image?id=118_0_DSC_0682-thumb.JPG","delete_url":"https://biocollect.ala.org.au/image/delete?filename=118_0_DSC_0682.JPG","delete_type":"DELETE","attribution":""},{"name":"118_1_DSC_0682.JPG","size":3987723,"isoDate":"2016-12-11T23:51:31Z","contentType":"image/jpeg","date":"12-12-2016","time":"10:51","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=118_1_DSC_0682.JPG","thumbnail_url":"https://biocollect.ala.org.au/image?id=118_1_DSC_0682-thumb.JPG","delete_url":"https://biocollect.ala.org.au/image/delete?filename=118_1_DSC_0682.JPG","delete_type":"DELETE","attribution":""}],"surveyStartDate":"2016-12-11T23:50:00Z","surveyStartTime":"10:50 AM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"0.5 \u2013 1.0 metre","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: ; Type of micro-habitat: On ground; At what height was the goanna?: <0.5m; Location description: On road; Survey effort: 0 Hrs : 30 mins; Cloud cover: 0/8: Sky completely clear; Temperature: Warm (20-30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Adrian  Uren","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-34.197579","locationLongitude":"140.323156","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Barmera","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"0b1df942-893b-4c1c-9d01-f8097fcb89fb","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51708
+Downloading image file...
+File name images//Varanus_gouldii//119_0_DSC_0270.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//119_1_DSC_0286.JPG
+Uploading image...
+Image upload successful. - 1
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[{"name":"119_0_DSC_0270.JPG","size":4710093,"isoDate":"2015-10-06T02:32:31Z","contentType":"image/jpeg","date":"06-10-2015","time":"13:32","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=119_0_DSC_0270.JPG","thumbnail_url":"https://biocollect.ala.org.au/image?id=119_0_DSC_0270-thumb.JPG","delete_url":"https://biocollect.ala.org.au/image/delete?filename=119_0_DSC_0270.JPG","delete_type":"DELETE","attribution":""},{"name":"119_1_DSC_0286.JPG","size":4811909,"isoDate":"2015-10-06T02:38:44Z","contentType":"image/jpeg","date":"06-10-2015","time":"13:38","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=119_1_DSC_0286.JPG","thumbnail_url":"https://biocollect.ala.org.au/image?id=119_1_DSC_0286-thumb.JPG","delete_url":"https://biocollect.ala.org.au/image/delete?filename=119_1_DSC_0286.JPG","delete_type":"DELETE","attribution":""}],"surveyStartDate":"2015-10-06T02:31:00Z","surveyStartTime":"01:31 PM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"1.0 \u2013 1.5 metres","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: ; Type of micro-habitat: On ground; At what height was the goanna?: <0.5m; Location description: On road; Survey effort: 36 Hrs : 0 mins; Cloud cover: 4/8: Half of sky filled; Temperature: Warm (20-30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Adrian  Uren","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-33.7608","locationLongitude":"140.151221","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Waikerie","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"40c5feb5-e667-493b-aa88-0cab4c560ad7","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51709
+Downloading image file...
+File name images//Varanus_gouldii//120_0_DSC_0239.JPG
+Uploading image...
+Image upload successful. - 0
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[{"name":"120_0_DSC_0239.JPG","size":4398121,"isoDate":"2016-03-27T01:38:36Z","contentType":"image/jpeg","date":"27-03-2016","time":"12:38","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=120_0_DSC_0239.JPG","thumbnail_url":"https://biocollect.ala.org.au/image?id=120_0_DSC_0239-thumb.JPG","delete_url":"https://biocollect.ala.org.au/image/delete?filename=120_0_DSC_0239.JPG","delete_type":"DELETE","attribution":""}],"surveyStartDate":"2016-03-27T01:38:00Z","surveyStartTime":"12:38 PM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"1.0 \u2013 1.5 metres","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: ; Type of micro-habitat: On ground; At what height was the goanna?: <0.5m; Location description: On road; Survey effort: 24 Hrs : 0 mins; Cloud cover: 3/8; Temperature: Warm (20-30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Adrian  Uren","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-31.455477","locationLongitude":"138.640274","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Wilpena Pound","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"cd69dea7-dfc0-4e62-bbfc-34dd623c346b","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51711
+Downloading image file...
+File name images//Varanus_gouldii//122_0_IMG20161115131342.jpg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//122_1_IMG20161115131357.jpg
+Uploading image...
+Image upload successful. - 1
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[{"name":"122_0_IMG20161115131342.jpg","size":2278406,"isoDate":"2016-11-15T02:13:42Z","contentType":"image/jpeg","date":"15-11-2016","time":"13:13","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=122_0_IMG20161115131342.jpg","thumbnail_url":"https://biocollect.ala.org.au/image?id=122_0_IMG20161115131342-thumb.jpg","delete_url":"https://biocollect.ala.org.au/image/delete?filename=122_0_IMG20161115131342.jpg","delete_type":"DELETE","attribution":""},{"name":"122_1_IMG20161115131357.jpg","size":2205678,"isoDate":"2016-11-15T02:13:57Z","contentType":"image/jpeg","date":"15-11-2016","time":"13:13","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=122_1_IMG20161115131357.jpg","thumbnail_url":"https://biocollect.ala.org.au/image?id=122_1_IMG20161115131357-thumb.jpg","delete_url":"https://biocollect.ala.org.au/image/delete?filename=122_1_IMG20161115131357.jpg","delete_type":"DELETE","attribution":""}],"surveyStartDate":"2016-11-15T02:40:00Z","surveyStartTime":"01:40 PM","lifeStatus":"Alive","observedBehaviour":"I\u2019m not sure","fullLengthInMetresClassRange":"Over 1.5. metres","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: Have seen goannas on the property before but this day the dog spotted it and barked. Goanna ran into the pool enclosure and climbed the mesh!  Felt quite secure watching us take photos. (This property is behind locked gates and has minimal disruption); Type of micro-habitat: Other (please describe in the Notes section); At what height was the goanna?: 0.5m-5.0m; Location description: Private Land (e.g. farm); Survey effort: 0 Hrs : 0 mins; Cloud cover: I'm not sure; Temperature: Warm (20-30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Jae Dalgleish","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-34.11631","locationLongitude":"139.348986","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Bower","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"fee7cd42-d616-47da-8250-a246fb310102","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51712
+Downloading image file...
+File name images//Varanus_gouldii//123_0_Frame-07-12-2016-04-54-42.jpeg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//123_1_Frame-07-12-2016-04-55-37.jpeg
+Uploading image...
+Image upload successful. - 1
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[{"name":"123_0_Frame-07-12-2016-04-54-42.jpeg","size":956465,"isoDate":"2016-12-07T05:54:42Z","contentType":"image/jpeg","date":"07-12-2016","time":"16:54","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=123_0_Frame-07-12-2016-04-54-42.jpeg","thumbnail_url":"https://biocollect.ala.org.au/image?id=123_0_Frame-07-12-2016-04-54-42-thumb.jpeg","delete_url":"https://biocollect.ala.org.au/image/delete?filename=123_0_Frame-07-12-2016-04-54-42.jpeg","delete_type":"DELETE","attribution":""},{"name":"123_1_Frame-07-12-2016-04-55-37.jpeg","size":875181,"isoDate":"2016-12-07T05:55:37Z","contentType":"image/jpeg","date":"07-12-2016","time":"16:55","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=123_1_Frame-07-12-2016-04-55-37.jpeg","thumbnail_url":"https://biocollect.ala.org.au/image?id=123_1_Frame-07-12-2016-04-55-37-thumb.jpeg","delete_url":"https://biocollect.ala.org.au/image/delete?filename=123_1_Frame-07-12-2016-04-55-37.jpeg","delete_type":"DELETE","attribution":""}],"surveyStartDate":"2016-12-08T10:41:00Z","surveyStartTime":"09:41 PM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"1.0 \u2013 1.5 metres","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: Regularly seen on property.\nMany burrows of varying sizes on property; Type of micro-habitat: On rocks; At what height was the goanna?: <0.5m; Location description: Private Land (e.g. farm); Survey effort: 0 Hrs : 2 mins; Cloud cover: 5/8; Temperature: Warm (20-30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Yvonne Gravier","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-34.650567","locationLongitude":"138.878955","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Williamstown","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"ba5fb989-363c-49e6-bcf8-42d742ab08e0","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51718
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[],"surveyStartDate":"2017-01-05T06:57:00Z","surveyStartTime":"05:57 PM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"0.5 \u2013 1.0 metre","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: ; Type of micro-habitat: On ground; At what height was the goanna?: <0.5m; Location description: Roadside; Survey effort: 0 Hrs : 15 mins; Cloud cover: 3/8; Temperature: Warm (20-30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Lachlan Cook","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-34.162824","locationLongitude":"138.155375","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Port Wakefield","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"30216628-3077-481d-8315-479e7a689979","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51719
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[],"surveyStartDate":"2017-01-05T03:30:00Z","surveyStartTime":"02:30 PM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"1.0 \u2013 1.5 metres","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: ; Type of micro-habitat: On ground; At what height was the goanna?: <0.5m; Location description: Roadside; Survey effort: 0 Hrs : 2 mins; Cloud cover: 4/8: Half of sky filled; Temperature: Hot (above 30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Chris Davey","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-33.784106","locationLongitude":"137.736134","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Tickera","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"f1ccfe8b-be87-47fd-8201-32a56936afe3","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51721
+Downloading image file...
+File name images//Varanus_gouldii//132_0_Goulds.PNG
+Uploading image...
+Image upload successful. - 0
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[{"name":"132_0_Goulds.PNG","size":493959,"isoDate":null,"contentType":"image/png","date":"Not available","time":"","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=132_0_Goulds.PNG","thumbnail_url":"https://biocollect.ala.org.au/image?id=132_0_Goulds-thumb.PNG","delete_url":"https://biocollect.ala.org.au/image/delete?filename=132_0_Goulds.PNG","delete_type":"DELETE","attribution":""}],"surveyStartDate":"2017-01-07T01:00:00Z","surveyStartTime":"12:00 PM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"1.0 \u2013 1.5 metres","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: ran of dirt road into roadside bush strip. Stopped by burrow (see photo) but than ran on.; Type of micro-habitat: On ground; At what height was the goanna?: <0.5m; Location description: On road; Survey effort: 0 Hrs : 0 mins; Cloud cover: I'm not sure; Temperature: Hot (above 30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Helen Owens","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-34.339647","locationLongitude":"137.972705","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Tiddy Widdy Beach, Yorke Peninsula, SA","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"96baa510-ec84-4732-abaa-83a315175a8d","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51722
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[],"surveyStartDate":"2017-01-17T02:20:00Z","surveyStartTime":"01:20 PM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"1.0 \u2013 1.5 metres","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: 42oC in the shade.\nVery healthy goanna was walking over the road. Too quick for me to grab a photo!\nI definitely noticed the pale/white tail tip.; Type of micro-habitat: On ground; At what height was the goanna?: <0.5m; Location description: On road; Survey effort: 0 Hrs : 1 mins; Cloud cover: 0/8: Sky completely clear; Temperature: Hot (above 30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Chris Davey","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-33.986179","locationLongitude":"137.916035","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Ninnes","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"9c78f2b6-ae34-4292-8922-ab4c7fda11bf","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51724
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[],"surveyStartDate":"2017-01-09T23:40:00Z","surveyStartTime":"10:40 AM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"0.5 \u2013 1.0 metre","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: Smallish goanna seen from a vehicle while driving - pale tail tip and general pale colour was noticeable but other features were difficult to distinguish while driving. ; Type of micro-habitat: Other (please describe in the Notes section); At what height was the goanna?: <0.5m; Location description: On road; Survey effort: 0 Hrs : 2 mins; Cloud cover: 4/8: Half of sky filled; Temperature: Warm (20-30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Mick Durant","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-35.169319","locationLongitude":"140.072788","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Karoonda","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"3eefae29-605e-44ba-82d5-a107bfdf5221","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51732
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus gouldii (Gould's Goanna)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:8313e5d6-0b23-4360-bffd-a81e9f83bc9d","scientificName":"Varanus gouldii","commonName":"Gould's Goanna"},"sightingPhoto":[],"surveyStartDate":"2017-03-18T01:02:00Z","surveyStartTime":"12:02 PM","lifeStatus":"Alive","observedBehaviour":"No, the goanna did not climb a tree","fullLengthInMetresClassRange":"0.5 \u2013 1.0 metre","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: Goanna was on dirt road but ran off when I walked back to take a photo.; Type of micro-habitat: On ground; At what height was the goanna?: <0.5m; Location description: On road; Survey effort: 2 Hrs : 0 mins; Cloud cover: 0/8: Sky completely clear; Temperature: Hot (above 30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Richard Geytenbeek","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-34.083534","locationLongitude":"138.33461","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Balaklava","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"2e548da9-f688-45d8-b790-aca3983d7dbf","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51735
+Downloading image file...
+File name images//Varanus_gouldii//146_0_C:\fakepath\20161207_104158.jpg
+Caught: java.io.FileNotFoundException: http://root-uat.ala.org.au/bdrs-core/unisa/files/download.htm?className=au.com.gaiaresources.bdrs.model.taxa.AttributeValue&id=547919&fileName=C%3A%5Cfakepath%5C20161207_104158.jpg
+java.io.FileNotFoundException: http://root-uat.ala.org.au/bdrs-core/unisa/files/download.htm?className=au.com.gaiaresources.bdrs.model.taxa.AttributeValue&id=547919&fileName=C%3A%5Cfakepath%5C20161207_104158.jpg
+	at java_net_URL$openStream$0.call(Unknown Source)
+	at RestClient$_run_closure1$_closure2.doCall(RestClient.groovy:174)
+	at RestClient$_run_closure1.doCall(RestClient.groovy:116)
+	at RestClient.run(RestClient.groovy:60)
+
+>> Continuing... 2nd set..
+Reading data-cleaned.xlsx file
+Successfully loaded data-cleaned.xlsx file
+Total activities to upload = 181
+Loading data_template file
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51735
+Downloading image file...
+File name images//Varanus_gouldii//146_0_C:\fakepath\20161207_104158.jpg
+Error downloading imagejava.io.FileNotFoundException: http://root-uat.ala.org.au/bdrs-core/unisa/files/download.htm?className=au.com.gaiaresources.bdrs.model.taxa.AttributeValue&id=547919&fileName=C%3A%5Cfakepath%5C20161207_104158.jpg
+-----END----
+200: {"resp":{"activityId":"c9df980d-15b2-4d86-8230-902ce3897f52","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51741
+Downloading image file...
+File name images//Varanus_gouldii//152_0_P1040229.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//152_1_P1040232.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"b15195d0-8994-4a6b-a0ec-1caebefa2a41","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51742
+Downloading image file...
+File name images//Varanus_gouldii//153_0_MFDC3351.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//153_1_MFDC3353.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"938e46fd-d7d1-436c-9cdc-dbbccd976ff3","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51744
+Downloading image file...
+File name images//Varanus_gouldii//155_0_20170921_105509.jpg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//155_1_20170921_105523.jpg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"b9cbd4cd-4a9b-4cd5-b9f3-f2e485c3073a","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51745
+-----END----
+200: {"resp":{"activityId":"60cfe236-55a4-49ed-ab3f-24dd8f73df2d","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51750
+Downloading image file...
+File name images//Varanus_gouldii//161_0_fullsizeoutput_954.jpeg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//161_1_DSCN6441.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"81caaee5-0f11-4c90-b226-d953b4e0fbb7","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51753
+Downloading image file...
+File name images//Varanus_gouldii//164_0_20171015_111758.jpg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//164_1_20171015_111750.jpg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"f333c9f1-bfc8-4312-9684-1c95b9bc7c90","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51754
+Downloading image file...
+File name images//Varanus_gouldii//165_0_20171021_182440.jpg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//165_1_20171021_182457.jpg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"edc2b4db-f4e2-42fa-b669-76b1be969f3f","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51755
+Downloading image file...
+File name images//Varanus_gouldii//166_0_20171023_142720.jpg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//166_1_20171023_142657.jpg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"47dd83d7-f741-4702-88c0-f7857d04ea1a","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51756
+Downloading image file...
+File name images//Varanus_gouldii//167_0_20171023_1.JPG
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"9bb0c1f0-0a49-4be3-88b5-42dc35aa5cfe","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51757
+-----END----
+200: {"resp":{"activityId":"eca004a2-0c90-4c0a-a77b-a817f6022d09","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51760
+Downloading image file...
+File name images//Varanus_gouldii//171_0_Photo_by_Margaret_Perry_26th_Oct._2017_sighting.jpg
+Uploading image...
+Image upload successful. - 0
+Empty behaviour
+Empty classRange
+-----END----
+200: {"resp":{"activityId":"dcf6d456-b867-4a3f-9de5-92cf641ce425","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51766
+Downloading image file...
+File name images//Varanus_gouldii//177_0_368.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_gouldii//177_1_366.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"fb71a161-ae45-4f20-8496-2adf0baa1118","message":"created"},"statusCode":200,"error":null}
+Completed..

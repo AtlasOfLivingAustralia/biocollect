@@ -104,7 +104,7 @@
                 </div>
                 <g:if test="${!output.outputNotCompleted}">
                     <!-- add the dynamic components -->
-                    <md:modelView model="${model}" site="${site}" readonly="true"/>
+                    <md:modelView model="${model}" site="${site}" readonly="true" userIsProjectMember="${userIsProjectMember}"/>
                 </g:if>
                 <r:script>
                     $(function(){

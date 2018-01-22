@@ -1,0 +1,396 @@
+Reading data-cleaned.xlsx file
+Successfully loaded data-cleaned.xlsx file
+Total activities to upload = 181
+Loading data_template file
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51524
+Downloading image file...
+File name images//Varanus_varius//0_0_goanna.jpg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"b1131029-f010-45eb-9dc7-c592b0bab84c","message":"created"},"statusCode":200,"error":null}
+Completed..
+pro:gonna_watch sat01a$ groovy RestClient.groovy
+Reading data-cleaned.xlsx file
+Successfully loaded data-cleaned.xlsx file
+Total activities to upload = 181
+Loading data_template file
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51531
+Downloading image file...
+File name images//Varanus_varius//7_0_goanna.jpg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"e406bc59-a3c7-49f0-9469-4cd54034e831","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51534
+Downloading image file...
+File name images//Varanus_varius//10_0_Goanna_Quarry_Rd_Laura.jpg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"ac1989c9-83ea-4ed3-a7eb-352eea413504","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51535
+Downloading image file...
+File name images//Varanus_varius//11_0_Goanna_-_B_&_W_Smith_-_Laura.jpg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"e6ab50e0-1bad-4990-90ca-f1b0fd134a62","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51536
+Downloading image file...
+File name images//Varanus_varius//12_0_Goanna_near_Bangor.jpg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"412730c4-590e-448c-9028-45aa053003ea","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51537
+Downloading image file...
+File name images//Varanus_varius//13_0_P1000740.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//13_1_P1000862.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"ac1ecc90-cf22-4ccc-b941-8c85bca27f55","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51540
+Downloading image file...
+File name images//Varanus_varius//15_0_IMG.jpg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"65173c0d-c420-472a-b27e-bf44a59b84e9","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51573
+Downloading image file...
+File name images//Varanus_varius//27_0_image.jpeg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//27_1_image.jpeg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"6e026acc-6c6a-4bf4-b00f-fcab32658256","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51574
+Downloading image file...
+File name images//Varanus_varius//28_0_IMG_8660.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//28_1_IMG_8663.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"0325a90b-7131-49d3-92bd-8adb66f16074","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51590
+-----END----
+200: {"resp":{"activityId":"77638dcc-a257-4e09-bd19-7c1a494dae1f","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51598
+-----END----
+200: {"resp":{"activityId":"bef71cb2-d8e5-4f79-bc1f-6b806fc74690","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51599
+-----END----
+200: {"resp":{"activityId":"3636ca8c-4097-4af2-aee9-ff05dc6ea213","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51603
+-----END----
+200: {"resp":{"activityId":"5a317f8e-d129-4a79-b78b-7e742f641ce3","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51610
+Downloading image file...
+File name images//Varanus_varius//60_0_12187841_10153074570031020_295724401057453369_n.jpg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"549b69b9-0d03-41de-b37d-d18731df3e62","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51612
+Downloading image file...
+File name images//Varanus_varius//62_0__DSC3775.jpg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//62_1__DSC3717.jpg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"16480602-7edd-4a0a-920c-28f0277d69d6","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51613
+Downloading image file...
+File name images//Varanus_varius//63_0_image.jpg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//63_1_image.jpg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"e8b14c41-3e6d-48f8-8214-f3fc861e7362","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51629
+-----END----
+200: {"resp":{"activityId":"b348bb67-5fa4-472c-8da7-1246cdb2231a","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51641
+Downloading image file...
+File name images//Varanus_varius//84_0_DSCN2348.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//84_1_RSCN2381.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"2745ab52-58cc-47f6-bacb-85e510819cb2","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51659
+-----END----
+200: {"resp":{"activityId":"638d8029-f3fd-472e-88ac-ceedb28510e1","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51663
+Downloading image file...
+File name images//Varanus_varius//105_0_20160312_101457.jpg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//105_1_20160312_101249-1.jpg
+Uploading image...
+Image upload successful. - 1
+Empty behaviour
+-----END----
+200: {"resp":{"activityId":"83dd2466-981b-496e-bb49-877f78b85556","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51701
+Downloading image file...
+File name images//Varanus_varius//113_0_goanna_swimming.JPG
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"43d8161f-51ee-4534-a8dd-c67573d0e5f5","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51703
+Downloading image file...
+File name images//Varanus_varius//115_0_IMG_3014.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//115_1_IMG_3016.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"d26ff535-05b7-4d82-bcc5-4f970fa38306","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51706
+Downloading image file...
+File name images//Varanus_varius//117_0_DSC_0591.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//117_1_DSC_0577.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"4fbdeefe-ab32-4f85-aa93-ef0920e24861","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51723
+Downloading image file...
+File name images//Varanus_varius//134_0_Lace_Monitor_Waukerie_Ck_2.jpg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"edc3e970-33e5-4c5e-970b-094f88d0fb56","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51728
+Downloading image file...
+File name images//Varanus_varius//139_1_FB_IMG_1488501043747.jpg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"5651da3b-1ef2-4a55-bb7e-10f35cd71ccf","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51729
+Downloading image file...
+File name images//Varanus_varius//140_0_DSCF3466.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//140_1_DSCF3465.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"b15d73ca-1be8-4650-87b6-a718f08692b9","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51733
+Downloading image file...
+File name images//Varanus_varius//144_0_SeanV-1.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//144_1_SeanV-2.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"021038ce-ced2-460a-b91a-e39428605206","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51734
+Downloading image file...
+File name images//Varanus_varius//145_0_SeanV-3.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//145_1_SeanV-4.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"4fb9eb93-aa82-43f6-8bc9-0f071a3b2994","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51736
+Downloading image file...
+File name images//Varanus_varius//147_0_goanna5.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//147_1_goanna6.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"a1a249f8-d544-4031-8ef4-56b81443f22d","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51737
+Downloading image file...
+File name images//Varanus_varius//148_0_Image_1_Feb_19_2015.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//148_1_Image_2_Feb_19_2015.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"d7d2d628-9d52-4a47-885f-fbf12f904975","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51738
+Downloading image file...
+File name images//Varanus_varius//149_0_Image_1_sighting_21st_Dec_2016.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//149_1_Image_2_sighting_21st_Dec_2016.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"2d788854-c741-48f2-a447-448b3d6eb27e","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51739
+Downloading image file...
+File name images//Varanus_varius//150_0_Image_1_January_23_2017.JPG
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"f4366f90-eebc-461a-bca2-6871ee22686e","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51740
+-----END----
+200: {"resp":{"activityId":"721cd32b-5b07-4f4e-ab85-7f8f076fed96","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51746
+Downloading image file...
+File name images//Varanus_varius//157_0_Image_2_September_23_2017.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//157_1_Image_2_larger_file_Sept_23_2017.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"2e4d9abc-692e-49d3-b3c4-0d18610fbb5a","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51748
+Downloading image file...
+File name images//Varanus_varius//159_0_2_Oct_2017.jpg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"41ff2bd6-e137-4ca7-a3ef-4fe70a89b18b","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51751
+Downloading image file...
+File name images//Varanus_varius//162_0_DSCN1354.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//162_1_fullsizeoutput_956.jpeg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"55d148f5-ed81-4d72-98c3-3f7b70750b30","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51752
+Downloading image file...
+File name images//Varanus_varius//163_0_17_Oct_2017_a..jpg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//163_1_17_Oct_2017_b..jpg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"f2a5de1f-6d4e-4a6f-b4ad-d653655df31c","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51758
+Downloading image file...
+File name images//Varanus_varius//169_0_25_Oct_2017_a..jpg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//169_1_25_Oct_2017_b..jpg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"a9dd9ad4-bd9e-4109-bb7d-f285c63e3bbb","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51759
+Downloading image file...
+File name images//Varanus_varius//170_0_26_Oct_2017_a..jpg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_varius//170_1_26_Oct_2017_b..jpg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"88f34ce8-cb08-42f0-81c0-5ba0036efab9","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51762
+Downloading image file...
+File name images//Varanus_varius//173_0_IMG_8538.JPG
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"653a52ae-5a55-42f7-9729-7c9e221914e4","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51764
+Downloading image file...
+File name images//Varanus_varius//175_0_12_Nov_2017.jpg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"cd7fd82c-5e9b-4082-8270-959df630cd8a","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51765
+-----END----
+200: {"resp":{"activityId":"844389ba-925e-4caa-b3c1-e019112560d8","message":"created"},"statusCode":200,"error":null}
+Completed..

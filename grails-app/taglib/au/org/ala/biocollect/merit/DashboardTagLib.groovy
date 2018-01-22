@@ -122,7 +122,7 @@ class DashboardTagLib {
 
         out << """
             <strong>${score.label}${helpText(score, attrs)}</strong>
-            <div class="progress progress-info active " style="position:relative; height:20px;">
+            <div class="progress progress-info active " style="position:relative">
                 <div class="bar" style="width: ${percentComplete}%;"></div>
                 <span class="pull-right progress-label ${percentComplete >= 99 ? 'progress-100':''}" style="position:absolute; top:0; right:0;"> ${g.formatNumber(type:'number',number:result, maxFractionDigits: 2, groupingUsed:true)}/${score.target}</span>
             </div>"""
@@ -132,10 +132,10 @@ class DashboardTagLib {
         def result = score.result?.result
 
         if (result instanceof Map) {
-            if (result.size() <= 1) {
+            if (!enoughResults(result.size(), attrs)) {
                 return
             }
-            def chartData = toArray(result)
+            def chartData = toArray(result, attrs.order)
             def chartType = score.displayType?:'piechart'
             drawChart(chartType, score.label, score.label, helpText(score, attrs), [['string', score.label], ['number', 'Count']], chartData, attrs)
         }
@@ -145,11 +145,15 @@ class DashboardTagLib {
         }
     }
 
-    private def toArray(dataMap) {
+    private def toArray(dataMap, List order = null) {
         def chartData = []
         dataMap.each{ key, value ->
             chartData << [key, value]
         }
+        if (order) {
+            chartData.sort{a, b -> order.indexOf(a[0]) <=> order.indexOf(b[0])}
+        }
+
         chartData
     }
 
@@ -163,10 +167,10 @@ class DashboardTagLib {
     private void renderGroupedScore(score, attrs) {
         def result = score.result
         if (result && result.result instanceof Map) {
-            if (result.result.size() <= 1) {
+            if (!enoughResults(result.result.size(), attrs)) {
                 return
             }
-            def chartData = toArray(result.result)
+            def chartData = toArray(result.result, attrs.order)
             def chartType = score.displayType?:'piechart'
             drawChart(chartType, score.label, score.label, helpText(score, attrs), [['string', score.label], ['number', 'Count']], chartData, attrs)
         }
@@ -182,20 +186,42 @@ class DashboardTagLib {
 
     }
 
+    private boolean enoughResults(int resultSize, attrs) {
+        int min = attrs.minResults ? Integer.parseInt(attrs.minResults) : 2
+        return resultSize >= min
+    }
+
     private void drawChart(type, label, title, helpText, columns, data, attrs) {
         if (!data) {
             return
         }
-        out << '<div class="chart-plus-title">'
-        def chartId = (label + '_chart').replaceAll(" ", "-")
+        if (!attrs.omitTitle) {
+            out << '<div class="chart-plus-title">'
+            out << "<div class='chartTitle'>${title}${helpText}</div>"
+        }
 
-        out << "<div class='chartTitle'>${title}${helpText}</div>"
+        def chartId = (label + '_chart').replaceAll(" ", "-")
 
         switch (type) {
 
             case 'piechart':
-                out << "<div id=\"${chartId}\" class=\"chart\"></div>"
-                out << gvisualization.pieCoreChart([elementId: chartId,  chartArea:new Expando(left:20, top:5, right:20, width:'430', height:'300'), dynamicLoading: true, title: title, columns: columns, data: data, width:'450', height:'300', backgroundColor: 'transparent'])
+                out << "<div id=\"${chartId}\" class=\"chart\" style=\" width:100%;\"></div>"
+                Map options = [elementId: chartId, chartArea:[left:20, top:5, right:20, width:'430', height:'300'], dynamicLoading: true, title: title, columns: columns, data: data, width:'450', height:'300', backgroundColor: 'transparent']
+                if (attrs.sliceColoursByTitle) {
+                    Map slices = [:]
+                    attrs.sliceColoursByTitle.each { sliceTitle, colour ->
+                        data.eachWithIndex { item, index ->
+                            if (item[0] == sliceTitle) {
+                                slices[index] = [color:colour]
+                            }
+                        }
+                    }
+                    options['slices'] = slices
+                }
+                if (attrs.chartOptions) {
+                    options.putAll(attrs.chartOptions)
+                }
+                out << gvisualization.pieCoreChart(options)
                 break;
             case 'barchart':
 
@@ -209,14 +235,21 @@ class DashboardTagLib {
                 else {
                     out << "<div id=\"${chartId}\" class=\"chart\"></div>"
                 }
-                out << gvisualization.barCoreChart([elementId: chartId, legendTextStyle:chartFont(), fontSize:11, tooltipTextStyle:chartFont(), legend:"none", dynamicLoading: true, title: title, columns: columns, data: data, chartArea:new Expando(left:140, top:topMargin, bottom:bottomMargin, width:'290', height:height-topMargin-bottomMargin), width:'450', height:height, backgroundColor: 'transparent'])
+                Map options = [elementId: chartId, legend:chartFont(), fontSize:11, tooltip:chartFont(), legend:"none", dynamicLoading: true, title: title, columns: columns, data: data, chartArea:[left:140, top:topMargin, bottom:bottomMargin, width:'290', height:height-topMargin-bottomMargin], width:'450', height:height, backgroundColor: 'transparent']
+                if (attrs.chartOptions) {
+                    options.putAll(attrs.chartOptions)
+                }
+                out << gvisualization.barCoreChart(options)
                 break;
         }
-        out << '</div>'
+        if (!attrs.omitTitle) {
+            out << '</div>'
+        }
+
     }
 
     def chartFont() {
 
-        return new Expando(fontSize:'10');
+        return [fontSize:10]
     }
 }

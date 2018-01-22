@@ -153,6 +153,15 @@ class FCTagLib {
                         mkp.yieldUnescaped("&nbsp;")
                     }
                 }
+
+                if (attrs.clearBtn?.toBoolean()){
+                    mb.span(class:'add-on clear-date') {
+                        mb.i(class: 'icon-remove') {
+                            mkp.yieldUnescaped("&nbsp;")
+                        }
+                    }
+                }
+
             };
         } else {
             def inputAttrs = [
@@ -744,4 +753,19 @@ class FCTagLib {
         }
     }
 
+    /**
+     * Create new project link based on hub configuration settings.
+     */
+    def getNewProjectLinkForHub = { attrs ->
+        Map hubConfig = attrs.hubConfig
+        if(hubConfig){
+            if (hubConfig.defaultFacetQuery.contains('isEcoScience:true')) {
+                out << createLink(controller: 'project', action:'create', params: [ecoScience:true])
+            } else if(hubConfig.defaultFacetQuery.contains('isWorks:true')){
+                out << createLink(controller: 'project', action:'create', params: [works:true])
+            } else {
+                out << createLink(controller: 'project', action:'create', params: [citizenScience:true])
+            }
+        }
+    }
 }

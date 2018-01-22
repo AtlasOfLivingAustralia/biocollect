@@ -62,7 +62,6 @@
     </r:script>
     <r:layoutResources/>
     <g:layoutHead/>
-    <link rel="stylesheet" href="${resource(dir: 'css', file: 'common.css')}" type="text/css">
     <link rel="stylesheet" type="text/css"
           href="${createLink(controller: 'hub', action: 'getStyleSheet')}?hub=${hubConfig.urlPath}">
     <link href="https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"
@@ -126,7 +125,7 @@
                 <div class="row">
                     <ul class="breadcrumb-list">
                         <g:each in="${breadCrumbs}" var="item" status="index">
-                            <config:getLinkFromConfig config="${item}"></config:getLinkFromConfig>
+                            <config:getLinkFromConfig config="${item}" hubConfig="${hubConfig}"></config:getLinkFromConfig>
                         </g:each>
                     </ul>
                 </div>
@@ -160,7 +159,7 @@
 <g:pageProperty name="page.page-header"/> <%-- allows special content to be inserted --%>
 
 <div id="main-content"
-     class="${homepage ? 'homepage' : ''} ${fluidLayout ? 'container-fluid' : 'container'} padding-top-10">
+     class="${homepage ? 'homepage' : ''} ${fluidLayout ? 'container-fluid' : 'container'}">
     <g:if test="${flash.message}">
         <div class="container-fluid">
             <div class="alert alert-info">
@@ -185,7 +184,7 @@
                         <g:if test="${hubConfig.templateConfiguration?.footer?.links}">
                             <g:each in="${hubConfig.templateConfiguration?.footer?.links}" var="link">
                                 <li>
-                                    <config:getLinkFromConfig config="${link}"></config:getLinkFromConfig>
+                                    <config:getLinkFromConfig config="${link}" hubConfig="${hubConfig}"></config:getLinkFromConfig>
                                 </li>
                             </g:each>
                         </g:if>

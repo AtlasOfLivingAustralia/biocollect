@@ -15,6 +15,7 @@ class ActivityService {
     SpeciesService speciesService
     ProjectActivityService projectActivityService
     UserService userService
+    CacheService cacheService
 
     private static def PROGRESS = ['planned', 'started', 'finished', 'cancelled', 'deferred']
 
@@ -62,8 +63,15 @@ class ActivityService {
         webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDistinctSitesForProjectActivity/'+ id)
     }
 
-    def get(id, version = null) {
-        def params = version ? '?version=' + version : ''
+    def get(id, version = null, userId = null, hideMemberOnlyFlds = false) {
+        def params = '?hideMemberOnlyFlds=' + hideMemberOnlyFlds
+        if (version) {
+            params += '&version=' + version
+        }
+        if (userId) {
+            params += '&userId=' + userId
+        }
+
         def activity = webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/' + id + params)
         activity
     }
@@ -238,5 +246,22 @@ class ActivityService {
 
         return !(userService.userIsAlaOrFcAdmin() || projectMember)
     }
+
+    Map getDynamicFacets(){
+        webService.getJson(grailsApplication.config.ecodata.service.url+'/metadata/getIndicesForDataModels')
+    }
+
+    List getDefaultFacets(){
+        cacheService.get('default-facets-for-data', {
+            webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDefaultFacets')
+        })
+    }
+
+    List getFacets(){
+        Map dynamicFacets = getDynamicFacets()?:[:]
+        List facets = dynamicFacets.collect{ [name: it.key] }
+        facets + getDefaultFacets()
+    }
+
 
 }

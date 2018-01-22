@@ -1,29 +1,31 @@
 <div class="validationEngineContainer edit-view-meri-plan"  id="edit-meri-plan">
-	<span data-bind="if:detailsLastUpdated"> <br/>Last update date : <span data-bind="text:detailsLastUpdated.formattedDate"></span></span>
+	<p data-bind="if:detailsLastUpdated">Last updated <span data-bind="if:detailsLastUpdatedDisplayName"> by <span data-bind="text:detailsLastUpdatedDisplayName"></span></span> at <span data-bind="text:detailsLastUpdated.formattedDate"></span></p>
 
 	<div class="row-fluid space-after">
 		<div>
 			<div class="margin-bottom-10 margin-right-20">
 				<label><b>Project Outcomes</b></label>
-				<table style="width: 100%;">
+				<table class="outcome-targets table">
 					<thead>
 					<tr>
-						<th></th>
-						<th>Outcomes <fc:iconHelp title="Outcomes">Enter the outcomes sought by the project. This should be expressed as a 'SMART' statement (Specific Measurable Attainable Realistic and Time-bound) and deliver against the programme.  The outcome should be no more than 2 sentences.</fc:iconHelp></th>
-						<th>
+						<th class="index"></th>
+						<th class="baseline">Baseline condition</th>
+						<th class="target">Target Outcomes <fc:iconHelp title="Outcomes">Enter the outcomes sought by the project. This should be expressed as a 'SMART' statement (Specific Measurable Attainable Realistic and Time-bound) and deliver against the programme.  The outcome should be no more than 2 sentences.</fc:iconHelp></th>
+						<th class="assets">
 							Asset(s) addressed <fc:iconHelp title="Asset(s) addressed">Select the most appropriate natural/cultural asset or assets being addressed by this project from the drop down list. Note that multiple selections can be made. </fc:iconHelp>
 						</br> (Hold down the Ctrl key and click to select multiple values.)
 						</th>
-						<th></th>
+						<th class="controls"></th>
 					</tr>
 					</thead>
 					<tbody data-bind="foreach : details.objectives.rows1">
 					<tr>
-						<td width="2%"> <span data-bind="text:$index()+1"></span></td>
-						<td width="54%"><textarea style="width: 99%;" data-bind="value: description, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
-						<td width="40%"><select style="width: 99%;float:right;" class="input-xlarge"
+						<td class="index"> <span data-bind="text:$index()+1"></span></td>
+						<td class="baseline"><textarea data-bind="value: baseline, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
+						<td class="target"><textarea  data-bind="value: target, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
+						<td class="assets"><select style="width: 99%;float:right;" class="input-xlarge"
 												data-bind="options: $parent.protectedNaturalAssests, selectedOptions: assets, disable: $parent.isProjectDetailsLocked()" size="5" multiple="true"></select></td>
-						<td width="4%">
+						<td class="controls">
 							<span data-bind="if: $index() && !$parent.isProjectDetailsLocked()"><i class="icon-remove" data-bind="click: $parent.removeObjectivesOutcome"></i></span>
 						</td>
 					</tr>
@@ -263,6 +265,12 @@
 	<div class="row-fluid space-after">
 		<!-- ko with: details -->
 		<g:render template="riskTable"></g:render>
+		<!-- /ko -->
+	</div>
+
+	<div class="row-fluid space-after">
+		<!-- ko with: details.issues -->
+		<g:render template="issueTable"></g:render>
 		<!-- /ko -->
 	</div>
 

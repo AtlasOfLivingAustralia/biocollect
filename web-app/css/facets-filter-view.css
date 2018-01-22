@@ -15,3 +15,8 @@ button.btn.btn-text-left{
 #pt-selectors label.input-label{
     color: #5f5d60;
 }
+
+.facet-display-height{
+    max-height: 200px;
+    overflow-y: scroll;
+}

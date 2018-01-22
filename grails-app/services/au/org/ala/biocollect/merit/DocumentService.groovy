@@ -17,6 +17,11 @@ class DocumentService {
         return webService.getJson(url)
     }
 
+    def delete(String id) {
+        def url = "${grailsApplication.config.ecodata.service.url}document/${id}"
+        return webService.doDelete(url)
+    }
+
     def createTextDocument(doc, content) {
         doc.content = content
         updateDocument(doc)

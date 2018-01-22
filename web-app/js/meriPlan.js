@@ -20,6 +20,7 @@ function MERIPlan(project, themes, key) {
 
     self.details = new DetailsViewModel(project.custom.details, getBudgetHeaders(project));
     self.detailsLastUpdated = ko.observable(project.custom.details.lastUpdated).extend({simpleDate: true});
+    self.detailsLastUpdatedDisplayName = ko.observable(project.custom.details.lastUpdatedDisplayName || '');
     self.isProjectDetailsSaved = ko.computed (function (){
         return (project['custom']['details'].status == 'active');
     });
@@ -95,6 +96,12 @@ function MERIPlan(project, themes, key) {
         self.details.partnership.rows.remove(partnership);
     };
 
+    self.addOutcomeProgress = function(outcomeProgress) {
+        self.details.outcomeProgress.push(new OutcomeProgressViewModel(outcomeProgress));
+    };
+    self.removeOutcomeProgress = function(outcomeProgress) {
+        self.details.outcomeProgress.remove(outcomeProgress);
+    };
 };
 
 function DetailsViewModel(projectDetails, period) {
@@ -110,7 +117,9 @@ function DetailsViewModel(projectDetails, period) {
     self.partnership = new GenericViewModel(projectDetails.partnership);
     self.lastUpdated = ko.observable(projectDetails.lastUpdated ? projectDetails.lastUpdated : moment().format());
     self.budget = new BudgetViewModel(projectDetails.budget, period);
+    self.outcomeProgress = ko.observableArray($.map(projectDetails.outcomeProgress || [], function(outcomeProgress) { return new OutcomeProgressViewModel(outcomeProgress); }));
     $.extend(self, new Risks(projectDetails.risks));
+    self.issues = new IssuesViewModel(projectDetails.issues);
 
     var row = [];
     projectDetails.events ? row = projectDetails.events : row.push(ko.mapping.toJS(new EventsRowViewModel()));
@@ -187,9 +196,19 @@ function EventsRowViewModel(o) {
 function OutcomeRowViewModel(o) {
     var self = this;
     if(!o) o = {};
-    self.description = ko.observable(o.description);
+    self.baseline = ko.observable(o.baseline);
+    self.target = ko.observable(o.target);
     if(!o.assets) o.assets = [];
     self.assets = ko.observableArray(o.assets);
+};
+
+function OutcomeProgressViewModel(o) {
+    var self = this;
+    if(!o) o = {};
+    self.progress = ko.observable(o.progress);
+    self.date = ko.observable(o.date).extend({simpleDate:false});
+    self.type = ko.observable(o.type);
+    self.type.options = ['Interim', 'Final'];
 };
 
 function BudgetViewModel(o, period){
@@ -344,6 +363,7 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
     var config = $.extend(defaults, options);
 
     $.extend(self, new ProjectViewModel(project, isEditor, organisations));
+    self.mapConfiguration = new MapConfiguration(project.mapConfiguration, project);
     var themes = [];
     $.extend(self, new MERIPlan(project, themes, config.storageKey));
 
@@ -361,13 +381,50 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
             var now = moment().toDate().toISOStringNoMillis();
             self.details.lastUpdated(now);
             self.detailsLastUpdated(now);
-            self.details.saveWithErrorDetection();
+            self.details.saveWithErrorDetection(function(result) {
+                self.detailsLastUpdatedDisplayName((result.resp && result.resp.lastUpdatedByDisplayName) || '');
+            }, function(result) {
+                bootbox.alert("An error occurred while updating the plan.");
+            });
         } 
+    };
+
+    self.saveMapConfig = function () {
+        var data = {
+            mapConfiguration: self.mapConfiguration.toJS()
+        };
+
+        self.mapConfiguration.transients.loading(true);
+        return $.ajax({
+            url: fcConfig.projectUpdateUrl,
+            method: 'post',
+            data: JSON.stringify(data),
+            contentType: 'application/json'
+        }).done(function () {
+            self.mapConfiguration.transients.loading(false);
+        })
     };
 
     self.cancelMeriPlanEdits = function() {
         self.details.cancelAutosave();
 
         document.location.reload(true);
+    };
+
+    self.saveSitesBeforeRedirect = function (redirectUrl) {
+        var promise = self.saveMapConfig();
+        window.location.href = redirectUrl;
+    };
+
+    self.redirectToCreate = function () {
+        self.saveSitesBeforeRedirect(fcConfig.siteCreateUrl);
+    };
+
+    self.redirectToSelect = function () {
+        self.saveSitesBeforeRedirect(fcConfig.siteSelectUrl);
+    };
+
+    self.redirectToUpload = function () {
+        self.saveSitesBeforeRedirect(fcConfig.siteUploadUrl);
     };
 }

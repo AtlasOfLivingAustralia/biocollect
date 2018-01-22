@@ -9,7 +9,8 @@
             listHubsUrl:"${createLink(controller: 'admin', action: 'listHubs')}",
             getHubUrl:"${createLink(controller: 'admin', action: 'loadHubSettings')}",
             saveHubUrl:"${createLink(controller: 'admin', action: 'saveHubSettings')}",
-            listProjectFacetUrl: "${createLink(controller: 'project', action: 'getFacets')}"
+            listProjectFacetUrl: "${createLink(controller: 'project', action: 'getFacets')}",
+            listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}"
         };
     </r:script>
 </head>
@@ -51,6 +52,7 @@
         <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubFooter"  data-toggle="tab">Footer</a></li>
         <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubBanner"  data-toggle="tab">Banner</a></li>
         <li><a href="#hubContent"  data-toggle="tab">Content</a></li>
+        <li><a href="#hubFacet"  data-toggle="tab">Facets</a></li>
         <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubHomepage"  data-toggle="tab">Homepage</a></li>
     </ul>
     <div class="tab-content">
@@ -90,67 +92,6 @@
                 <label class="control-label" for="default-program">Default program (new projects created from this hub will inherit this program)</label>
                 <div class="controls">
                     <select id="default-program" data-bind="value:defaultProgram, options:supportedPrograms"></select>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="default-program">Configure project finder facets</label>
-                <div class="controls">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Facet name</th>
-                            <th>Expand or Collapse</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!-- ko foreach: facets -->
-                        <tr>
-                            <td data-bind="text: displayName">
-
-                            </td>
-                            <td>
-                                <select data-bind="value: state">
-                                    <option value="Expanded">Expanded</option>
-                                    <option value="Collapsed">Collapsed</option>
-                                </select>
-                            </td>
-                            <td>
-                                <button class="btn btn-small btn-danger" data-bind="click: $parent.removeFacet"><i class="icon-remove icon-white"></i> Remove</button>
-                            </td>
-                        </tr>
-                        <!-- /ko -->
-                        <!-- ko ifnot: facets().length -->
-                        <tr>
-                            <td colspan="3">
-                                No Facets selected.
-                            </td>
-                        </tr>
-                        <!-- /ko -->
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td colspan="2">Pick a facet <select data-bind="options: transients.facetList, optionsText:'displayName', value: transients.selectedValue"></select></td>
-                            <td>
-                                <button class="btn btn-small btn-default" data-bind="click: addFacet"><i class="icon-plus"></i> Add</button>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="default-facets-list">Default Facet Query (Searches will automatically include these facets)</label>
-                <div class="controls">
-                    <ul id="default-facets-list" data-bind="foreach:defaultFacetQuery">
-                        <li>
-                            <input type="text" class="input-xxlarge"  data-bind="value:query" placeholder="query string as produced by the home page"> <button class="btn" data-bind="click:$parent.removeDefaultFacetQuery">Remove</button>
-                        </li>
-                    </ul>
-                    <button class="btn" data-bind="click:addDefaultFacetQuery">Add</button>
-
                 </div>
             </div>
         </div>
@@ -206,15 +147,17 @@
                                     <th>Display name</th>
                                     <th>Content type</th>
                                     <th>Href value</th>
+                                    <th>Role</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!-- ko foreach: links -->
-                                <!-- ko template: { name: 'templateLink'} -->
+                                <!-- ko template: { name: 'templateLink', data: {disableRoles:false, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
                                 <!-- /ko -->
                                 <!-- /ko -->
                                 <tr>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -256,15 +199,17 @@
                                     <th>Display name</th>
                                     <th>Content type</th>
                                     <th>Href value</th>
+                                    <th>Role</th>
                                     <th>Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <!-- ko foreach: links -->
-                                <!-- ko template: { name: 'templateLink'} -->
+                                <!-- ko template: { name: 'templateLink', data: {disableRoles:false, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
                                 <!-- /ko -->
                                 <!-- /ko -->
                                 <tr>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -410,7 +355,7 @@
                     </thead>
                     <tbody>
                     <!-- ko foreach: quickLinks -->
-                    <!-- ko template: { name: 'templateLink'} -->
+                    <!-- ko template: { name: 'templateLink', data: {$parent: $parent, disableRoles:true, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
                     <!-- /ko -->
                     <!-- /ko -->
                     <tr>
@@ -451,6 +396,78 @@
                     </tbody>
                 </table>
 
+            </div>
+        </div>
+        <div class="tab-pane" id="hubFacet">
+            <div class="control-group">
+                <label class="control-label" for="default-facets-list">Default Facet Query (Searches will automatically include these facets)</label>
+                <div class="controls">
+                    <ul id="default-facets-list" data-bind="foreach:defaultFacetQuery" class="unstyled">
+                        <li>
+                            <input type="text" class="input-xxlarge"  data-bind="value:query" placeholder="query string as produced by the home page"> <button class="btn" data-bind="click:$parent.removeDefaultFacetQuery">Remove</button>
+                        </li>
+                    </ul>
+                    <button class="btn" data-bind="click:addDefaultFacetQuery">Add</button>
+
+                </div>
+            </div>
+
+            <div class="border-bottom-4">
+                <h4><strong>Configure project finder facets</strong></h4>
+                <div class="overflow-x">
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.projectFinder } -->
+                    <!-- /ko -->
+                </div>
+            </div>
+
+            <div class="margin-bottom-20 border-bottom-4">
+                <h4><strong>Configure facets on all records page</strong></h4>
+                <div class="overflow-x">
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.allRecords } -->
+                    <!-- /ko -->
+                </div>
+            </div>
+
+            <div class="margin-bottom-20 border-bottom-4">
+                <h4><strong>Configure facets on my records page</strong></h4>
+                <div class="overflow-x">
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.myRecords } -->
+                    <!-- /ko -->
+                </div>
+            </div>
+
+            <div class="margin-bottom-20 border-bottom-4">
+                <h4><strong>Configure facets on project's data tab</strong></h4>
+                <div class="overflow-x">
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.project } -->
+                    <!-- /ko -->
+                </div>
+            </div>
+
+            <div class="margin-bottom-20 border-bottom-4">
+                <h4><strong>Configure facets on my project records page</strong></h4>
+                <div class="overflow-x">
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.myProjectRecords } -->
+                    <!-- /ko -->
+                </div>
+            </div>
+
+
+            <div class="margin-bottom-20 border-bottom-4">
+                <h4><strong>Configure facets on user's project activity records page</strong></h4>
+                <div class="overflow-x">
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.userProjectActivityRecords } -->
+                    <!-- /ko -->
+                </div>
+            </div>
+
+
+            <div class="margin-bottom-20 border-bottom-4">
+                <h4><strong>Configure facets on project records page</strong></h4>
+                <div class="overflow-x">
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.projectRecords } -->
+                    <!-- /ko -->
+                </div>
             </div>
         </div>
         <div class="tab-pane" id="hubHomepage">
@@ -495,10 +512,10 @@
 <script id="templateLink" type="text/html">
     <tr>
         <td>
-            <input type="text" data-bind="value: displayName"/>
+            <input type="text" data-bind="value: link.displayName"/>
         </td>
         <td>
-            <select data-bind="value: contentType">
+            <select data-bind="value: link.contentType">
                 <option value="content">Biocollect content</option>
                 <option value="static">Static page</option>
                 <option value="external">External link</option>
@@ -515,10 +532,18 @@
             </select>
         </td>
         <td>
-            <input type="text" data-bind="value: href"/>
+            <input type="text" data-bind="value: link.href"/>
         </td>
+        <!-- ko if:!disableRoles -->
         <td>
-            <button class="btn btn-danger" data-bind="click: $parent.removeLink">
+            <select data-bind="value: link.role">
+                <option value="">Anyone</option>
+                <g:render template="/admin/userRoleOptions"/>
+            </select>
+        </td>
+        <!-- /ko -->
+        <td>
+            <button class="btn btn-danger" data-bind="click: removeLink">
                 <i class="icon icon-remove icon-white"></i> Remove
             </button>
         </td>
@@ -555,7 +580,7 @@
                 </thead>
                 <tbody>
                 <!-- ko foreach: breadCrumbs -->
-                <!-- ko template: { name: 'templateLink'} -->
+                <!-- ko template: { name: 'templateLink', data: {$parent: $parent, disableRoles:true, link:$data }} -->
                 <!-- /ko -->
                 <!-- /ko -->
                 <tr>
@@ -668,12 +693,12 @@
             <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonTextColor}"></div></td>
         </tr>
         <tr>
-            <td>Default button colour when hovering</td>
+            <td>Default button colour when active</td>
             <td><input type="text" data-bind="value: defaultButtonColorActive"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonColorActive}"></div></td>
         </tr>
         <tr>
-            <td>Default button text colour when hovering</td>
+            <td>Default button background colour when active</td>
             <td><input type="text" data-bind="value: defaultButtonBackgroundColorActive"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonBackgroundColorActive}"></div></td>
         </tr>
@@ -794,20 +819,22 @@
                             <th>Display name</th>
                             <th>Content type</th>
                             <th>Href value</th>
+                            <th>Role</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
                         <!-- ko foreach: buttons -->
-                        <!-- ko template: { name: 'templateLink'} -->
+                        <!--ko template: { name: 'templateLink', data: {disableRoles:false, link:$data, removeLink:removeLink:function() {$parent.removeLink($data)} }} -->
                         <!-- /ko -->
                         <!-- /ko -->
                         <tr>
                             <td></td>
                             <td></td>
                             <td></td>
+                            <td></td>
                             <td>
-                                <button type="button" class="btn" data-bind="click: addButtton"><i class="icon-plus"></i> Add button</button>
+                                <button type="button" class="btn" data-bind="click: addButton"><i class="icon-plus"></i> Add button</button>
                             </td>
                         </tr>
                         </tbody>
@@ -923,6 +950,73 @@
             </div>
         </div>
     </div>
+</script>
+<script id="templateDataPageFacetConfiguration" type="text/html">
+<table class="table table-custom-border borderless">
+    <thead>
+    <tr>
+        <th>Facet name</th>
+        <th>Facet term type</th>
+        <th>Expand or Collapse</th>
+        <th>Display interval</th>
+        <th>Display name</th>
+        <th>Help text</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- ko foreach: facets -->
+    <tr>
+        <td data-bind="text: formattedName">
+
+        </td>
+        <td>
+            <select data-bind="value: facetTermType">
+                <option value="Default">Default</option>
+                <option value="ActiveOrCompleted">Active or Completed</option>
+                <option value="PresenceOrAbsence">Presence or Absence</option>
+                <option value="Histogram">Histogram</option>
+                <option value="Date">Date</option>
+                %{--<option value="GeoMap">Map</option>--}%
+            </select>
+        </td>
+        <td>
+            <select data-bind="value: state">
+                <option value="Expanded">Expanded</option>
+                <option value="Collapsed">Collapsed</option>
+            </select>
+        </td>
+        <td>
+            <input type="number"  data-bind="value:interval, disable: isNotHistogram" min="0">
+        </td>
+        <td>
+            <input type="text"  data-bind="value:title" placeholder="Give a custom name for facet.">
+        </td>
+        <td>
+            <textarea data-bind="value:helpText" placeholder="Add custom help text"></textarea>
+        </td>
+        <td>
+            <button class="btn btn-small btn-danger" data-bind="click: $parent.remove"><i class="icon-remove icon-white"></i> Remove</button>
+        </td>
+    </tr>
+    <!-- /ko -->
+    <!-- ko ifnot: facets().length -->
+    <tr>
+        <td colspan="7">
+            No Facets selected.
+        </td>
+    </tr>
+    <!-- /ko -->
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="6">Pick a facet <select data-bind="options: transients.facetList, optionsText:'formattedName', value: transients.selectedFacet"></select></td>
+        <td>
+            <button class="btn btn-small btn-default" data-bind="click: add"><i class="icon-plus"></i> Add</button>
+        </td>
+    </tr>
+    </tfoot>
+</table>
 </script>
 <r:script>
 

@@ -20,6 +20,7 @@
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         geocodeUrl: "${grailsApplication.config.google.geocode.url}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
+        deleteSiteUrl: "${createLink(controller:'site', action:'delete')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}",
         scienceTypes: ${scienceTypes as grails.converters.JSON},
         ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},
@@ -135,6 +136,9 @@ $(function(){
                         } else {
                             document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
                         }
+                    },function(data) {
+                        var responseText = data.responseText || 'An error occurred while saving project.';
+                        bootbox.alert(responseText);
                     });
                 } else {
                     bootbox.alert(projectErrors);

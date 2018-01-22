@@ -21,12 +21,15 @@
     <g:if test="${isEcoScience}">
         <g:set var="label" value="ecoScience"/>
     </g:if>
+    <g:if test="${!(isEcoScience || isWorks || isCitizenScience)}">
+        <g:set var="title" value="${hubConfig.title}"/>
+    </g:if>
 </g:else>
 
 
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title><g:message code="g.${label}"/> | <g:message code="g.fieldCapture"/></title>
+    <title><g:if test="${title}">${title}</g:if><g:else><g:message code="g.${label}"/></g:else> | <g:message code="g.fieldCapture"/></title>
     <r:script disposition="head">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
@@ -96,11 +99,18 @@
 </head>
 
 <body>
-<div id="wrapper" class="content container-fluid">
+<div id="wrapper" class="content container-fluid padding-top-10">
     <div id="project-finder-container">
         <div class="row-fluid">
             <div class="span12 padding10-small-screen" id="heading">
-                <h1 class="pull-left"><g:message code="project.${label}.heading"/></h1>
+                <h1 class="pull-left">
+                    <g:if test="${title}">
+                        ${title}
+                    </g:if>
+                    <g:else>
+                        <g:message code="project.${label}.heading"/>
+                    </g:else>
+                </h1>
                 <g:if test="${isUserPage}">
                     <button id="newPortal" type="button" class="pull-right btn"><g:message
                             code="project.citizenScience.portalLink"/></button>
@@ -130,9 +140,9 @@
 </div>
 <r:script>
     $("#newPortal").on("click", function() {
-        <g:if test="${isCitizenScience}">
-    document.location.href = "${createLink(controller: 'project', action: 'create', params: [citizenScience: true])}";
-</g:if>
+    <g:if test="${isCitizenScience}">
+        document.location.href = "${createLink(controller: 'project', action: 'create', params: [citizenScience: true])}";
+    </g:if>
     <g:if test="${isWorks}">
         document.location.href = "${createLink(controller: 'project', action: 'create', params: [works: true])}";
     </g:if>

@@ -114,20 +114,30 @@ class SiteService {
         [site: site, documents:documents as JSON, meta: metaModel()]
     }
 
-    def updateRaw(id, values) {
+    def updateRaw(id, values, userId = "") {
         //if its a drawn shape, save and get a PID
-        if(values?.extent?.source?.toLowerCase() == 'drawn'){
-            def shapePid = persistSiteExtent(values.name, values.extent.geometry)
-            values.extent.geometry.pid = shapePid.resp?.id
-        }
 
-        if (id) {
-            update(id, values)
-            [status: 'updated']
-        } else {
-            def resp = create(values)
-            [status: 'created', id:resp.resp.siteId]
+        if(values?.extent?.source?.toLowerCase() == 'drawn'){
+            def shapePid = persistSiteExtent(values.name, values.extent.geometry, userId)
+            values.extent.geometry.pid = shapePid.resp?.id ?: ""
         }
+        def resp = [:]
+        if (id) {
+            def result = update(id, values)
+            if(result.error){
+                resp = [status: 'error', message: result.detail]
+            } else {
+                resp = [status: 'updated', id:id]
+            }
+        } else {
+            def result = create(values)
+            if(result.error){
+               resp = [status: 'error', message: result.detail]
+            } else {
+                resp = [status: 'created', id:result.resp.siteId]
+            }
+        }
+        return resp
     }
 
     def create(body){
@@ -140,6 +150,10 @@ class SiteService {
 
     def updateProjectAssociations(body) {
         webService.doPost(grailsApplication.config.ecodata.service.url + '/project/updateSites/' + body.projectId, body)
+    }
+
+    def addProjectToSite(String siteId, String projectId) {
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/site/' + siteId + '?projectId=' + projectId)
     }
 
     /** uploads a shapefile to the spatial portal */
@@ -157,8 +171,9 @@ class SiteService {
      * @param name the name for the site
      * @param description the description for the site
      * @param projectId the project the site should be associated with.
+     * @param forceAddToWhiteList update project's map configuration with site so that it appears in whitelist
      */
-    def createSiteFromUploadedShapefile(shapeFileId, siteId, externalId, name, description, projectId) {
+    def createSiteFromUploadedShapefile(shapeFileId, siteId, externalId, name, description, projectId, forceAddToWhiteList) {
         def baseUrl = "${grailsApplication.config.spatial.layersUrl}/shape/upload/shp"
         def userId = userService.getUser().userId
 
@@ -171,7 +186,10 @@ class SiteService {
             def id = result.resp.id
 
             Point centriod = calculateSiteCentroid(id)
-            createSite(projectId, name, description, externalId, id, centriod.getY(), centriod.getX())
+            Map data = createSite(projectId, name, description, externalId, id, centriod.getY(), centriod.getX())
+            if (!data.error && data.resp?.siteId) {
+                addSitesToSiteWhiteListInWorksProjects([data.resp?.siteId], [projectId], forceAddToWhiteList)
+            }
         }
     }
 
@@ -263,16 +281,16 @@ class SiteService {
         return create(values)
     }
 
-    def persistSiteExtent(name, geometry) {
+    def persistSiteExtent(name, geometry, userId = "") {
 
         def resp = null
-        def userId = userService.getUser().userId
+        userId = userId ?: userService.getUser().userId
         if (geometry?.type == 'Circle') {
             def body = [name: "test", description: "my description", user_id: userId, api_key: grailsApplication.config.api_key]
             def url = grailsApplication.config.spatial.layersUrl + "/shape/upload/pointradius/" +
                     geometry?.coordinates[1] + '/' + geometry?.coordinates[0] + '/' + (geometry?.radius / 1000)
             resp = webService.doPost(url, body)
-        } else if (geometry?.type == 'Polygon') {
+        } else if (geometry?.type in ['Polygon', 'LineString']) {
             def body = [geojson: geometry, name: name, description: 'my description', user_id: userId, api_key: grailsApplication.config.api_key]
             resp = webService.doPost(grailsApplication.config.spatial.layersUrl + "/shape/upload/geojson", body)
         }
@@ -541,5 +559,89 @@ class SiteService {
         }
         long end = System.currentTimeMillis()
         log.debug "Photopoint initialisation took ${(end-start)} millis"
+    }
+
+    /**
+     * Add the site to the project's site whitelist if the following conditions are met.
+     * 1. Allow additional survey sites is checked or force add flag is set
+     */
+    Boolean addSiteToProjectSiteWhiteList(String siteId, Map mapConfiguration, Boolean forceAdd = false) {
+        Boolean isDirty = false
+        if (mapConfiguration?.allowAdditionalSurveySites || forceAdd) {
+            mapConfiguration.sites = mapConfiguration.sites ?: []
+            // check if this site was added previously
+            String sitePresent = mapConfiguration.sites.find { it == siteId }
+            if (!sitePresent) {
+                mapConfiguration.sites.add(siteId)
+                isDirty = true
+            }
+        }
+
+        isDirty
+    }
+
+    /**
+     * Add sites to project's whitelist for each project in list.
+     * The conditions to add a site is described in {@link #addSiteToProjectSiteWhiteList(String, Map, Boolean)}.
+     * @param sites
+     * @param projects
+     * @param forceAdd add site without checking for further conditions
+     */
+    void addSitesToSiteWhiteListInWorksProjects(List sites, List projects, Boolean forceAdd = false) {
+        projects?.each { projectId ->
+            Map project = projectService.get(projectId)
+            if (projectService.isWorks(project)) {
+                List projectSiteIds = project.sites?.collect { it.siteId }
+                // ensure sites in map configuration is a subset of project sites
+                updateMapConfigurationWithProjectAssociatedSiteIds(projectSiteIds, project.mapConfiguration)
+
+                Boolean isDirty = false
+                sites?.each { siteId ->
+                    // add site project relationship if it does not exist
+                    if (!projectSiteIds?.contains(siteId)) {
+                        addProjectToSite(siteId, projectId)
+                    }
+
+                    Boolean isAdded = addSiteToProjectSiteWhiteList(siteId, project.mapConfiguration, forceAdd)
+                    isDirty = isDirty || isAdded
+                }
+
+                // update project if site list has been modified.
+                if (isDirty) {
+                    Map body = [mapConfiguration: project.mapConfiguration]
+                    projectService.update(project.projectId, body)
+                }
+            }
+        }
+    }
+
+    /**
+     * Sites in map configuration must be a subset of sites associated with project.
+     * This function removes all other sites.
+     * @param projectSites
+     * @param mapConfiguration
+     */
+    void updateMapConfigurationWithProjectAssociatedSiteIds(List projectSites, Map mapConfiguration) {
+        List toRemove = []
+        mapConfiguration.sites?.each { siteId ->
+            if (!projectSites.contains(siteId)) {
+                toRemove.add(siteId)
+            }
+        }
+
+        mapConfiguration.sites?.removeAll(toRemove)
+    }
+
+
+    Map defaultMapConfiguration(String defaultZoomSiteId = null){
+        [
+            "sites" : [],
+            "allowPoints" : true,
+            "allowPolygons" : true,
+            "allowAdditionalSurveySites" : false,
+            "selectFromSitesOnly" : false,
+            "defaultZoomArea" : defaultZoomSiteId,
+            "baseLayersName" : "Open Layers"
+        ]
     }
 }

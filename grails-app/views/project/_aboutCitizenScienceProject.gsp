@@ -131,6 +131,11 @@
                         </div>
                     </div>
                     <div class="span6">
+                        <div data-bind="visible: industries().length">
+                            <div class="text-small-heading"><g:message code="project.display.industries"/></div>
+                            <span data-bind="text:industries().join(', ')"></span>
+                            <p/>
+                        </div>
                         <div data-bind="visible: countries().length">
                             <div class="text-small-heading">
                                 <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
@@ -208,7 +213,7 @@
     <g:if test="${projectSite?.extent?.geometry}">
     if ((typeof map === 'undefined' || Object.keys(map).length == 0)) {
         var projectArea = <fc:modelAsJavascript model="${projectSite.extent.geometry}"/>;
-
+        console.log(projectArea);
         if (projectArea) {
             var mapOptions = {
                 drawControl: false,
@@ -223,7 +228,7 @@
 
             map = new ALA.Map("projectSiteMap", mapOptions);
 
-            if (projectArea.pid) {
+            if (projectArea.pid && projectArea.pid != 'null' && projectArea.pid != "undefined") {
                 map.addWmsLayer(projectArea.pid);
             } else {
                 var geometry = _.pick(projectArea, "type", "coordinates");
