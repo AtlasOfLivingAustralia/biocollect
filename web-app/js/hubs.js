@@ -453,13 +453,13 @@ var ButtonsHomePageViewModel = function (config) {
     self.buttons = ko.observableArray(mapLinks(config.buttons));
     self.numberOfColumns = ko.observable(config.numberOfColumns || 3);
 
-    self.addButtton = function () {
+    self.addButton = function () {
         self.buttons.push(new LinkViewModel({}));
-    }
+    };
 
     self.removeLink = function (data) {
         self.buttons.remove(data);
-    }
+    };
 };
 
 var ProjectFinderHomePageViewModel = function (config) {
