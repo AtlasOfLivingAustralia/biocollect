@@ -33,7 +33,7 @@
 <g:if env="development">
         Allow Points: <span data-bind="text:activityLevelData.pActivity.allowPoints">Allow Points</span> <br/>
         Allow Polygons: <span data-bind="text:activityLevelData.pActivity.allowPolygons"></span> <br/>
-        Allow Addtional Survey Sites: <span data-bind="text:activityLevelData.pActivity.allowAdditionalSurveySites"></span> <br/>
+        Allow Additional Survey Sites: <span data-bind="text:activityLevelData.pActivity.allowAdditionalSurveySites"></span> <br/>
         Default zoom to: <span data-bind="text:activityLevelData.pActivity.defaultZoomArea"> </span> <br/>
         Select only: <span data-bind="text:activityLevelData.pActivity.selectFromSitesOnly"> </span> <br/>
         Site ID： <span data-bind="text:data.${source}"/></span>

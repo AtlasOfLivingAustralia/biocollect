@@ -151,6 +151,11 @@ function enmapify(args) {
             }
     };
 
+    // update siteId in activity
+    siteIdObservable.subscribe(function (siteId) {
+        viewModel.emit('sitechanged', siteId);
+    });
+
     // undefined/null, Google Maps or Default should enable Google Maps view
     if (mapConfiguration.baseLayersName !== 'Open Layers') {
         var googleLayer = new L.Google('ROADMAP', {maxZoom: 21, nativeMaxZoom: 21});
@@ -285,8 +290,6 @@ function enmapify(args) {
      * @param siteId
      */
     function updateMapForSite(siteId) {
-        viewModel.emit('sitechanged', siteId);
-
         if (typeof siteId !== "undefined" && siteId) {
             if (lonObservable()) {
                 previousLonObservable(lonObservable());
@@ -589,11 +592,11 @@ function enmapify(args) {
                     })
                     sitesObservable.push(anonymousSite);
                     siteIdObservable(anonymousSiteId);
-                    siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
                  })
             .always(function () {
                 $.unblockUI();
                 loadingObservable(false);
+                siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
             })
             .fail(saveSiteFailed)
     }
