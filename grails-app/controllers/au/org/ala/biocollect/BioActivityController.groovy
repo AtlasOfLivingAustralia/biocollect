@@ -269,7 +269,7 @@ class BioActivityController {
         if (!userId) {
             flash.message = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
             if(!mobile) redirect(controller: 'project', action: 'index', id: projectId)
-        } else if (!activity) {
+        } else if (!activity || activity.error) {
             flash.message = "Invalid activity - ${id}"
             if(!mobile)  redirect(controller: 'project', action: 'index', id: projectId)
         } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
@@ -331,8 +331,7 @@ class BioActivityController {
 
         def activity = activityService.get(id, params?.version, userId, true)
         if (activity.error){
-            redirect(controller: "base", action:'error', params: activity)
-            //forward(action: 'list', model: [error: 'Activity cannot be found or Ecodata service is temporarily unavailable'])
+            redirect(controller: "error", action:'notFound', params: [status: 404, errMsg: activity.error])
             return
         }
         def pActivity = projectActivityService.get(activity?.projectActivityId, "all", params?.version)
