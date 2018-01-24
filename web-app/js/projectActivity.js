@@ -367,11 +367,9 @@ var ProjectActivity = function (params) {
     self.loadSites = function (projectSites, surveySites) {
         $.map(projectSites ? projectSites : [], function (obj, i) {
             var defaultSites = [];
-            surveySites && surveySites.length > 0 ? $.merge(defaultSites, surveySites) : defaultSites.push(obj.siteId);
+            surveySites && surveySites.length > 0 ? $.merge(defaultSites, surveySites) : (obj.isProjectArea?defaultSites.push(obj.siteId):defaultSites);
             self.sites.push(new SiteList(obj, defaultSites, self));
         });
-
-
     };
     self.loadSites(sites, pActivity.sites);
 
