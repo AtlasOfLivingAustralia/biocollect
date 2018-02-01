@@ -9,6 +9,7 @@ import org.springframework.context.MessageSource
 class ProjectService {
 
     //TODO refactor project type
+    public static final PRIVATE_SITES_REMOVED  = 'privatesitesremoved'
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE = 'survey'
     public static final String PROJECT_TYPE_CITIZEN_SCIENCE_TYPE_2 = 'citizenScience'
     public static final String PROJECT_TYPE_ECOSCIENCE = 'ecoScience'
@@ -34,7 +35,6 @@ class ProjectService {
             ]
     ]
     public static final String PROJECT_FINDER_PAGE= 'projectFinder'
-    public static final PRIVATE_SITES_REMOVED  = 'privatesitesremoved'
 
 
     WebService webService

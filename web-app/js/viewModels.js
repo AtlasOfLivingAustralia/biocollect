@@ -327,19 +327,8 @@ function enmapify(args) {
             if (matchingSite) {
                 console.log("Clearing map before displaying a new shape")
                 map.clearBoundLimits();
-                if (matchingSite.extent.geometry.pid) {
-                    console.log("Displaying site with geometry.")
-                    map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(matchingSite.extent.geometry));
-                } else {
-                    console.log("Displaying site without geometry.")
-                    map.setGeoJSON(siteExtentToValidGeoJSON(matchingSite.extent));
-                }
-
-                // if (matchingSite.extent.geometry.centre){
-                //     map.addMarker(parseFloat(matchingSite.extent.geometry.centre[1]),parseFloat(matchingSite.extent.geometry.centre[0]));
-                // }
-            }
-        }else{
+                map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(matchingSite.extent.geometry));            }
+        } else {
             // Keep the previous code to make compatible with old records
             // Can be removed after all data be migrated.
             if (previousLatObservable() && previousLonObservable()) {
@@ -352,21 +341,6 @@ function enmapify(args) {
                 }
             }
         }
-
-
-
-
-        // else { // Drop a pin, restore previous coordinates if any
-        //     console.log("Displaying pin")
-        //     if(previousLatObservable() && previousLonObservable()) {
-        //         lonObservable(previousLonObservable());
-        //         latObservable(previousLatObservable());
-        //     } else {
-        //         console.log("Resetting map because of non-previous lat long")
-        //         map.resetMap()
-        //     }
-        // }
-
 
     function getProjectArea() {
         return $.grep(activityLevelData.pActivity.sites, function (item) {
@@ -390,12 +364,7 @@ function enmapify(args) {
             site = site && site[0];
 
             if (site) {
-                if (site.extent.geometry.pid) {
-                    geojson = createGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(site.extent.geometry));
-                } else {
-                    geojson = createGeoJSON(siteExtentToValidGeoJSON(site.extent));
-                }
-
+                geojson = createGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(site.extent.geometry));
                 var bounds = geojson.getBounds(),
                     mapImpl = map.getMapImpl();
 
@@ -775,12 +744,7 @@ function enmapify(args) {
             var geojson;
 
             if (defaultsite.length>0) {
-                if (defaultsite[0].extent.geometry.pid) {
-                    geojson = createGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(defaultsite[0].extent.geometry));
-                } else {
-                    geojson = createGeoJSON(siteExtentToValidGeoJSON(defaultsite[0].extent));
-                }
-
+                geojson = createGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(defaultsite[0].extent.geometry));
                 var bounds = geojson.getBounds(),
                     mapImpl = map.getMapImpl();
 
@@ -792,25 +756,6 @@ function enmapify(args) {
     }
 
     zoomToDefaultSite();
-
-
-    // if (zoomToSite.length>0){
-    //     var geojson = createGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(zoomToSite[0].extent.geometry));
-    //     map.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(zoomToSite[0].extent.geometry));
-    //     geojson.addTo(map);
-    // }
-
-
-    // if (args.zoomToProjectArea) {
-    //     console.log('Zooming to project area original config')
-    //     zoomToProjectArea();
-    // } else if (activityLevelData.pActivity.sites.length == 1) {
-    //     console.log('One site for activity')
-    //     container[name](activityLevelData.pActivity.sites[0].siteId);
-    // } else if (activityLevelData.projectSite && activityLevelData.projectSite.extent) {
-    //     console.log('Will display project site')
-    //     map.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(activityLevelData.projectSite.extent.geometry));
-    // }
 
 }
 
