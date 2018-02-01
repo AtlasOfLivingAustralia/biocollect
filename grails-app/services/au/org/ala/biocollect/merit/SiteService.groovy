@@ -115,13 +115,9 @@ class SiteService {
     }
 
     def updateRaw(id, values, userId = "") {
-        //if its a drawn shape, save and get a PID
-
-        if(values?.extent?.source?.toLowerCase() == 'drawn'){
-            def shapePid = persistSiteExtent(values.name, values.extent.geometry, userId)
-            values.extent.geometry.pid = shapePid.resp?.id ?: ""
-        }
         def resp = [:]
+        values['userId'] = userId
+
         if (id) {
             def result = update(id, values)
             if(result.error){
@@ -279,22 +275,6 @@ class SiteService {
         def strLon = "" + centroidLong + ""
         def values = [extent: [source: 'pid', geometry: [pid: geometryPid, type: 'pid', state: metadata.state, nrm: metadata.nrm, lga: metadata.lga, locality: metadata.locality, mvg: metadata.mvg, mvs: metadata.mvs, centre: [strLon, strLat]]], projects: [projectId], name: name, description: description, externalId:externalId]
         return create(values)
-    }
-
-    def persistSiteExtent(name, geometry, userId = "") {
-
-        def resp = null
-        userId = userId ?: userService.getUser().userId
-        if (geometry?.type == 'Circle') {
-            def body = [name: "test", description: "my description", user_id: userId, api_key: grailsApplication.config.api_key]
-            def url = grailsApplication.config.spatial.layersUrl + "/shape/upload/pointradius/" +
-                    geometry?.coordinates[1] + '/' + geometry?.coordinates[0] + '/' + (geometry?.radius / 1000)
-            resp = webService.doPost(url, body)
-        } else if (geometry?.type in ['Polygon', 'LineString']) {
-            def body = [geojson: geometry, name: name, description: 'my description', user_id: userId, api_key: grailsApplication.config.api_key]
-            resp = webService.doPost(grailsApplication.config.spatial.layersUrl + "/shape/upload/geojson", body)
-        }
-        resp
     }
 
     def delete(id) {

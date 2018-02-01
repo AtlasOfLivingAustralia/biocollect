@@ -120,7 +120,7 @@ class ProjectController {
                 model.vocabList = vocabService.getVocabValues ()
                 println model.pActivityForms
             }
-
+            model.mobile = params.mobile ?:false
             if(projectService.isWorks(project)){
                 model.activityTypes = projectService.addSpeciesFieldsToActivityTypesList(metadataService.activityTypesList(project.associatedProgram))
             }
