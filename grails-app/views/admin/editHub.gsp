@@ -580,7 +580,7 @@
                 </thead>
                 <tbody>
                 <!-- ko foreach: breadCrumbs -->
-                <!-- ko template: { name: 'templateLink', data: {$parent: $parent, disableRoles:true, link:$data }} -->
+                <!-- ko template: { name: 'templateLink', data: {$parent: $parent, disableRoles:true, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
                 <!-- /ko -->
                 <!-- /ko -->
                 <tr>
