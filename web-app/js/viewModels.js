@@ -137,26 +137,14 @@ function enmapify(args) {
                 polyline: false,
                 polygon: false,
                 rectangle: false,
-                circle: {
-                    shapeOptions: {
-                        weight: 3,
-                        fillOpacity: 0.5,
-                        color: "#000"
-                    }
-                },
+                circle: false,
                 edit: false
             }
             :
             {
                 polyline: !selectFromSitesOnly && allowPolygons,
                 polygon: !selectFromSitesOnly && allowPolygons? { allowIntersection: false } : false,
-                circle: {
-                    shapeOptions: {
-                        weight: 3,
-                        fillOpacity: 0.5,
-                        color: "#000"
-                    }
-                },
+                circle: !selectFromSitesOnly && allowPolygons,
                 rectangle: !selectFromSitesOnly && allowPolygons,
                 marker: !selectFromSitesOnly && allowPoints,
                 edit: !selectFromSitesOnly && true
@@ -339,13 +327,7 @@ function enmapify(args) {
             if (matchingSite) {
                 console.log("Clearing map before displaying a new shape")
                 map.clearBoundLimits();
-                map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(matchingSite.extent.geometry), {
-                    stroke: true,
-                    color: '#000',
-                    weight: 5,
-                    opacity: 0.5
-                });
-            }
+                map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(matchingSite.extent.geometry));            }
         } else {
             // Keep the previous code to make compatible with old records
             // Can be removed after all data be migrated.
