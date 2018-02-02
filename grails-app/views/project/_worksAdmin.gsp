@@ -5,6 +5,7 @@
                 <li ${activeClass}><a href="#settings" id="settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project settings</a></li>
                 <g:set var="activeClass" value=""/>
             </g:if>
+            <li><a href="#reports" id="reports-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project Reports</a> </li>
             <li><a href="#editMeriPlan" id="editMeriPlan-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Project Plan</a></li>
             <li><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Blog</a></li>
             <g:if test="${hasLegacyNewsAndEvents}">
@@ -31,7 +32,9 @@
                 <g:render template="editOrDeleteProject"/>
             </div>
             <g:set var="activeClass" value=""/>
-
+            <div id="reports" class="pill-pane">
+                <g:render template="worksProjectReports"/>
+            </div>
             <div id="editMeriPlan" class="pill-pane">
                 <h3>Edit Project Plan</h3>
                 <g:render template="editMeriPlan"></g:render>
