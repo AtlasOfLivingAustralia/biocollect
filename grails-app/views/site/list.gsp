@@ -64,7 +64,7 @@
             </bc:koLoading>
         </div>
 
-        <div class="span9">
+        <div class="span7">
             <bc:koLoading>
                 <g:render template="/site/searchSite"></g:render>
                 <div class="alert alert-block hide well" data-bind="slideVisible: error() != ''">
@@ -74,7 +74,7 @@
                 <g:if test="${flash.errorMessage || flash.message}">
                     <div class="alert alert-error">
                         <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-                        ${flash.errorMessage?:flash.message}
+                        ${flash.errorMessage ?: flash.message}
                     </div>
                 </g:if>
                 <div class="row-fluid">
@@ -92,17 +92,18 @@
                                 </div>
 
                                 <div class="tab-pane" id="map">
-                                    <g:render template="siteMap" model="${[id:'leafletMap']}"></g:render>
+                                    <g:render template="siteMap" model="${[id: 'leafletMap']}"></g:render>
                                 </div>
 
                                 <!-- ko stopBinding: true -->
                                 <div class="tab-pane" id="images">
-                                    <g:render template="poiGallery" ></g:render>
+                                    <g:render template="poiGallery"></g:render>
                                 </div>
                                 <!-- /ko -->
 
                             </div>
                         </div>
+
                         <div class="row-fluid">
                             <div class="span12 text-center margin-top-10">
                                 <g:render template="/shared/pagination"></g:render>
@@ -117,7 +118,7 @@
 <script>
     var SITES_TAB_AMPLIFY_VAR = 'site-list-result-tab'
     $(document).ready(function () {
-        RestoreTab('siteListResultTab','list-tab')
+        RestoreTab('siteListResultTab', 'list-tab')
 
         var sites = new SitesListViewModel();
         var params = {
@@ -125,22 +126,22 @@
         }
         ko.applyBindings(sites, document.getElementById('siteSearch'));
         var gallery = initPoiGallery(params, 'images');
-        sites.gallery.subscribe(function(){
+        sites.gallery.subscribe(function () {
             gallery.setParams({
-                    id: sites.gallery().join(',')
+                id: sites.gallery().join(',')
             });
             gallery.loadGallery()
         });
         sites.sites.subscribe(plotGeoJSON);
 
-        var map = initMap({},'leafletMap')
+        var map = initMap({}, 'leafletMap')
 
-        $("body").on("shown.bs.tab", "#map-tab", function() {
+        $("body").on("shown.bs.tab", "#map-tab", function () {
             map.getMapImpl().invalidateSize();
             map.fitBounds()
         });
 
-        function plotGeoJSON(){
+        function plotGeoJSON() {
             var siteList = sites.sites();
             map.clearMarkers();
             map.clearLayers();
@@ -150,10 +151,10 @@
                 if (feature && feature.source != 'none' && feature.geometry) {
                     var lng, lat, geometry, options;
 
-                    if(feature.geometry.centre && feature.geometry.centre.length){
-                        lng= parseFloat(feature.geometry.centre[0]);
+                    if (feature.geometry.centre && feature.geometry.centre.length) {
+                        lng = parseFloat(feature.geometry.centre[0]);
                         lat = parseFloat(feature.geometry.centre[1]);
-                        if(!feature.geometry.coordinates){
+                        if (!feature.geometry.coordinates) {
                             feature.geometry.coordinates = [lng, lat];
                         }
 
@@ -161,7 +162,7 @@
                         var options = {
                             markerWithMouseOver: true,
                             markerLocation: [lat, lng],
-                            popup: $('#popup'+site.siteId()).html()
+                            popup: $('#popup' + site.siteId()).html()
                         };
                         map.setGeoJSON(geometry, options);
                     }

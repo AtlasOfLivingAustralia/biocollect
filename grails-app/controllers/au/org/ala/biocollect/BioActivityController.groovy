@@ -328,7 +328,6 @@ class BioActivityController {
      */
     def index(String id) {
         String userId = userService.getCurrentUserId(request)
-
         def activity = activityService.get(id, params?.version, userId, true)
         if (activity.error){
             redirect(controller: "error", action:'notFound', params: [status: 404, errMsg: activity.error])

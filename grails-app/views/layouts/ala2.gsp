@@ -3,20 +3,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-   <meta name="app.version" content="${g.meta(name:'app.version')}"/>
-   <meta name="app.build" content="${g.meta(name:'app.build')}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="app.version" content="${g.meta(name: 'app.version')}"/>
+    <meta name="app.build" content="${g.meta(name: 'app.build')}"/>
     <meta name="description" content="Atlas of Living Australia Field Capture"/>
     <meta name="author" content="Atlas of Living Australia">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>
+    <link href="https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"
+          type="image/x-icon"/>
 
-   <title><g:layoutTitle /></title>
-   <r:require modules="ala, ala2Skin, jquery_cookie" />
+    <title><g:layoutTitle/></title>
+    <r:require modules="ala, ala2Skin, jquery_cookie"/>
     <r:layoutResources/>
-    <g:layoutHead />
+    <g:layoutHead/>
 </head>
-<body class="${pageProperty(name:'body.class')?:'nav-getinvolved'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}">
+
+<body class="${pageProperty(name: 'body.class') ?: 'nav-getinvolved'}" id="${pageProperty(name: 'body.id')}"
+      onload="${pageProperty(name: 'body.onload')}">
 <ala:systemMessage/>
 <g:set var="introText"><fc:getSettingContent settingType="${SettingPageType.INTRO}"/></g:set>
 <g:set var="userLoggedIn"><fc:userIsLoggedIn/></g:set>
@@ -27,8 +30,8 @@
         </div>
     </g:if>
 
-    <g:render template="/project/biocollectBanner" model="${[fc:fc, hf: hf]}"></g:render>
-    <g:if test="${isCitizenScience && !isUserPage}" model="${[hubConfig:hubConfig]}">
+    <g:render template="/project/biocollectBanner" model="${[fc: fc, hf: hf]}"></g:render>
+    <g:if test="${isCitizenScience && !isUserPage}" model="${[hubConfig: hubConfig]}">
         <g:render template="/shared/bannerCitizenScience"/>
     </g:if>
     <g:if test="${isWorks && !isUserPage}">
@@ -59,7 +62,7 @@
     </g:if>
 
     <div class="container-fluid" id="main-content">
-        <g:layoutBody />
+        <g:layoutBody/>
     </div><!--/.container-->
 
     <div class="container hidden-desktop">
@@ -76,18 +79,20 @@
         <div id="footer">
             <div id="footer-wrapper">
                 <div class="container-fluid">
-                    <fc:footerContent />
+                    <fc:footerContent/>
                 </div>
+
                 <div class="container-fluid">
                     <div class="large-space-before">
                         <button class="btn btn-mini" id="toggleFluid">toggle fixed/fluid width</button>
                         <g:if test="${userLoggedIn && introText}">
-                            <button class="btn btn-mini" type="button" data-toggle="modal" data-target="#introPopup">display user intro</button>
+                            <button class="btn btn-mini" type="button" data-toggle="modal"
+                                    data-target="#introPopup">display user intro</button>
                         </g:if>
                     </div>
                 </div>
             </div>
-        </div
+        </div>
     </g:if>
 </div><!-- /#body-wrapper -->
 <g:if test="${userLoggedIn && introText}">
@@ -95,11 +100,14 @@
     <div id="introPopup" class="modal hide fade">
         <div class="modal-header hide">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
             <h3>User Introduction</h3>
         </div>
+
         <div class="modal-body">
             ${introText}
         </div>
+
         <div class="modal-footer">
             <label for="hideIntro" class="pull-left">
                 <g:checkBox name="hideIntro" style="margin:0;"/>&nbsp;
@@ -135,7 +143,7 @@
         var intervalSeconds = 5 * 60;
 
         setInterval(function() {
-            $.ajax("${createLink(controller: 'ajax', action:'keepSessionAlive')}").done(function(data) {});
+            $.ajax("${createLink(controller: 'ajax', action: 'keepSessionAlive')}").done(function(data) {});
         }, intervalSeconds * 1000);
 
         //make sure external link icon is not added to links in footer.
@@ -158,7 +166,7 @@
             }
             // console.log("referrer", document.referrer);
             // don't show popup if user has clicked checkbox on popup
-            $('#hideIntro').click(function() {
+            $('#hideIntro').click(function () {
                 if ($(this).is(':checked')) {
                     $.cookie(cookieName, 1);
                 } else {
@@ -179,26 +187,26 @@
     </r:script>
 </g:if>
 
-    <script type="text/javascript">
-        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <r:script>
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<r:script>
         var pageTracker = _gat._getTracker('${grailsApplication.config.googleAnalyticsID}');
         pageTracker._initData();
         pageTracker._trackPageview();
         // show warning if using IE6
         if ($.browser.msie && $.browser.version.slice(0,1) == '6') {
             $('#header').prepend($('<div style="text-align:center;color:red;">WARNING: This page is not compatible with IE6.' +
-                    ' Many functions will still work but layout and image transparency will be disrupted.</div>'));
+    ' Many functions will still work but layout and image transparency will be disrupted.</div>'));
         }
-    </r:script>
+</r:script>
 <r:script>
     function calcWidth() {
         var navwidth = 0;
         var morewidth = $('#main .more').outerWidth(true);
-        $('#main > li:not(.more)').each(function() {
-            navwidth += $(this).outerWidth( true );
+        $('#main > li:not(.more)').each(function () {
+            navwidth += $(this).outerWidth(true);
         });
         var availablespace = $('nav').outerWidth(true) - morewidth;
 
@@ -216,18 +224,18 @@
         }
 
         if ($('.more li').length > 0) {
-            $('.more').css('display','inline-block');
+            $('.more').css('display', 'inline-block');
         } else {
-            $('.more').css('display','none');
+            $('.more').css('display', 'none');
         }
     }
-    $(window).on('resize',function(){
+    $(window).on('resize', function () {
         calcWidth();
     });
     $('#biocollectNav').show();
     calcWidth();
 </r:script>
-    <!-- JS resources-->
-    <r:layoutResources/>
+<!-- JS resources-->
+<r:layoutResources/>
 </body>
 </html>
