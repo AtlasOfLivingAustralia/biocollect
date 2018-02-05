@@ -120,8 +120,19 @@
 
     <div class="row-fluid">
         Default zoom area:
-            <select id="siteToZoom"
-                    data-bind='options: sites, optionsText: "name", optionsValue: "siteId", value: defaultZoomArea;' class="form-control input-xlarge full-width"></select>
+        <select id="siteToZoom1" data-bind="value: defaultZoomArea">
+        <!-- ko foreach: sites -->
+           <!-- ko if: added() -->
+              <!-- ko if: siteId != $parent.defaultZoomArea -->
+                    <option data-bind="text: name, value: siteId" ></option>
+              <!-- /ko -->
+              <!-- ko if: siteId == $parent.defaultZoomArea -->
+                <option data-bind="text: name, value: siteId"  selected></option>
+              <!-- /ko -->
+           <!-- /ko -->
+        <!-- /ko -->
+        </select>
+
     </div>
 
 
