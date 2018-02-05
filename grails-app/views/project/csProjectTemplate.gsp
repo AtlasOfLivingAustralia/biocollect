@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
     <title>${project?.name.encodeAsHTML()} | Project | Field Capture</title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
@@ -118,7 +118,10 @@
 <body>
 
 <bc:koLoading>
-    <g:render template="banner"/>
+    <g:if test="${!mobile}">
+        <g:render template="banner"/>
+    </g:if>
+
     <div class="container-fluid">
         <div id="project-results-placeholder"></div>
         <g:render template="../shared/flashScopeMessage"/>
@@ -132,14 +135,20 @@
             </div>
         </g:if>
 
-        <div class="row-fluid">
-            <!-- content  -->
-            <ul id="ul-main-project" class="nav nav-pills">
-                <fc:tabList tabs="${projectContent}"/>
-        </div>
-        <div class="pill-content">
-            <fc:tabContent tabs="${projectContent}" tabClass="pill-pane"/>
-        </div>
+        <g:if test="${mobile}">
+            <g:render template="/project/mobile"/>
+        </g:if>
+        <g:else>
+            <div class="row-fluid">
+                <!-- content  -->
+                <ul id="ul-main-project" class="nav nav-pills">
+                    <fc:tabList tabs="${projectContent}"/>
+            </div>
+            <div class="pill-content">
+                <fc:tabContent tabs="${projectContent}" tabClass="pill-pane"/>
+            </div>
+        </g:else>
+
    </div>
 </bc:koLoading>
 
