@@ -1064,7 +1064,14 @@ class ProjectController {
     }
 
     private Map projectSummaryReportModel(String id) {
-        Map project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED)
+        Map project = projectService.get(id, 'all')
+        project.activities?.each { activity ->
+            if (activity.siteId) {
+                Map site = project.sites?.find{it.siteId == activity.siteId}
+                activity.siteName = site?.name?:''
+            }
+
+        }
         Map metrics = projectService.summary(id)
         [project:project, metrics:metrics]
     }
