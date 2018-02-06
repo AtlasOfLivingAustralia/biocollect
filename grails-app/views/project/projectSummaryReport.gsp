@@ -4,7 +4,7 @@
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Project Summary | Project | MERIT</title>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-
+    <r:require modules="projects"/>
 </head>
 
 <body>
@@ -51,18 +51,23 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <g:each in="${['', 'Planned', 'Started', 'Finished', 'Deferred', 'Cancelled']}" var="progress">
-                <th>${progress}</th>
-            </g:each>
+            <th>From</th>
+            <th>To</th>
+            <th>Description</th>
+            <th>Activity</th>
+            <th>Site</th>
+            <th>Status</th>
         </tr>
         </thead>
         <tbody>
-        <g:each in="${orderedStageNames}" var="stage">
+        <g:each in="${project.activities}" var="activity">
             <tr>
-                <th>${stage}</th>
-                <g:each in="${['Planned', 'Started', 'Finished', 'Deferred', 'Cancelled']}" var="progress">
-                    <td>${activityCountByStage[stage][progress.toLowerCase()] ?: 0}</td>
-                </g:each>
+                <th>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(activity.plannedStartDate)}</th>
+                <th>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(activity.plannedStartDate)}</th>
+                <th>${activity.description?:''}</th>
+                <th>${activity.type}</th>
+                <th>${activity.siteName}</th>
+                <th>${activity.progress}</th>
             </tr>
         </g:each>
 
@@ -76,5 +81,11 @@
     <g:render template="dashboard"/>
 
 </div>
+
+<r:script>
+var project = <fc:modelAsJavascript model="${project}"/>;
+ko.applyBindings(project.custom);
+
+</r:script>
 </body>
 </html>
