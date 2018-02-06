@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.OrganisationService
+import au.org.ala.biocollect.PdfGenerationService
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.VocabService
 import au.org.ala.biocollect.merit.hub.HubSettings
@@ -40,6 +41,7 @@ class ProjectController {
     VocabService vocabService
     FormSpeciesFieldParserService formSpeciesFieldParserService
     CollectoryService collectoryService
+    PdfGenerationService pdfGenerationService
 
     def grailsApplication
 
@@ -1023,5 +1025,57 @@ class ProjectController {
         render template: 'sitessPhotoPoints', model:[project:project]
 
     }
+
+    @PreAuthorise(accessLevel = 'admin')
+    def projectSummaryReport(String id) {
+        projectSummaryReportModel(id)
+    }
+
+    @PreAuthorise(accessLevel = 'admin')
+    def projectSummaryReportPDF(String id) {
+
+        Map reportUrlConfig = [controller: 'project', action: 'projectSummaryReportCallback', id: id]
+
+        Map pdfGenParams = [:]
+        if (params.orientation) {
+            pdfGenParams.orientation = params.orientation
+        }
+        boolean result = pdfGenerationService.generatePDF(reportUrlConfig, pdfGenParams, response)
+        if (!result) {
+            render view: '/error', model: [error: "An error occurred generating the project report."]
+        }
+
+    }
+
+    /**
+     * This is designed as a callback from the PDF generation service.  It produces a HTML report that will
+     * be converted into PDF.
+     * @param id the project id
+     */
+    def projectSummaryReportCallback(String id) {
+
+        if (pdfGenerationService.authorizePDF(request)) {
+            Map model = projectSummaryReportModel(id)
+            render view:'projectSummaryReport', model:model
+        }
+        else {
+            render status:HttpStatus.SC_UNAUTHORIZED
+        }
+    }
+
+    private Map projectSummaryReportModel(String id) {
+        Map project = projectService.get(id, 'all')
+        project.activities?.each { activity ->
+            if (activity.siteId) {
+                Map site = project.sites?.find{it.siteId == activity.siteId}
+                activity.siteName = site?.name?:''
+            }
+
+        }
+        Map metrics = projectService.summary(id)
+        [project:project, metrics:metrics]
+    }
+
+
 
 }
