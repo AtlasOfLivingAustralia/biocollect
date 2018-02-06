@@ -330,7 +330,7 @@
                 viewModel = ko.dataFor(el);
 
             if(viewModel){
-                var source = viewModel.data.${source};
+                var source = viewModel.data.${source}Source;
                 source && source('Google maps');
             }
 
