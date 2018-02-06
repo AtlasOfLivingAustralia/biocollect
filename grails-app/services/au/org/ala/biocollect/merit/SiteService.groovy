@@ -117,6 +117,7 @@ class SiteService {
     def updateRaw(id, values, userId = "") {
         def resp = [:]
         values['userId'] = userId
+        values['asyncUpdate'] = values['asyncUpdate'] != null ? values['asyncUpdate'] : true
 
         if (id) {
             def result = update(id, values)
