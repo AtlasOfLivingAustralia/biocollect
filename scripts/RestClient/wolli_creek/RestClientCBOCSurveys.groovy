@@ -51,7 +51,7 @@ class Globals {
     static PROJECT_ID = "abdd9f05-a757-420b-85a6-3e8ae31c2d4f"
 
     static USERNAME = "qifeng.bai@csiro.au" // 510
-    static AUTH_KEY = "c600f05f-14c4-48ad-8d47-2026305559a8"
+    static AUTH_KEY = "889543c1-14ce-4d2d-a1f2-a43b19924ae8"
 
     static PROJECT_ACTIVITY_ID = "6eaf8817-3fb3-432b-add9-ede12824c241"
     static IMAGES_PATH = "images//Varanus_varius//"
@@ -225,7 +225,7 @@ static void main(String[] args) {
 
                 activity.outputs[0].data.burnt = record."burnt"? Boolean.parseBoolean(record."burnt") : false
                 activity.outputs[0].data.wetland = record."wetland" ? record."wetland" :  ""
-                activity.outputs[0].data.cbocObserverCode = record."cBocObserverCode" ? record."cBocObserverCode" : "None"
+                activity.outputs[0].data.cbocObserverCode = record."cbocObserverCode" ? record."cbocObserverCode" : ""
                 activity.outputs[0].data.cbocSurveyReferenceNumber = record."cbocSurveyReferenceNumber"
 
 
@@ -265,7 +265,7 @@ static void main(String[] args) {
 
                 if (Globals.DEBUG_AND_VALIDATE) {
                     println(new groovy.json.JsonBuilder( activity ).toString())
-                    //System.exit(0)
+                    System.exit(0)
                 }
 
                 String createdActivityId = postRecord(activity)
@@ -520,10 +520,14 @@ def uploadSite(server_url, site){
             return site_obj.id
         }else{
             def error = connection.getErrorStream().text
+            println(connection.responseCode + " : " + error)
             def jsonSlurper = new JsonSlurper()
             def result = jsonSlurper.parseText(error)
-            println(connection.responseCode + ": " + result.error)
-            return null;
+            //401 authentication error may still create site , why? don't know
+            if (result.status == "created")
+                return result.id
+            else
+                return null;
         }
 
 }
