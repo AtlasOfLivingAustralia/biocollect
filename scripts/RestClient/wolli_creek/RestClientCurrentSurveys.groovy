@@ -61,6 +61,7 @@ class Globals {
     static SERVER_URL = "http://devt.ala.org.au:8087/biocollect"
     //static ADD_NEW_ACTIVITY_URL = "/ws/bioactivity/save?pActivityId=${PROJECT_ACTIVITY_ID}"
     static ADD_NEW_ACTIVITY_URL = "/bioActivity/ajaxUpdate?pActivityId=${PROJECT_ACTIVITY_ID}"
+    static SPECIES_URL = "/search/searchSpecies/${PROJECT_ACTIVITY_ID}?limit=1&hub=ecoscience"
     static IMAGE_UPLOAD_URL = 'http://devt.ala.org.au:8087/biocollect/ws/attachment/upload'
     //def IMAGE_UPLOAD_URL = 'https://biocollect.ala.org.au/ws/attachment/upload'
     static SITE_CREATION_URL = '/site/ajaxUpdate'
@@ -260,9 +261,35 @@ def insertSpaces(String value){
                 speciesSighting['habitatCode'] = insertSpaces(record.habitatCode)
                 speciesSighting['sightingComments'] = record.sightingComments
 
-                speciesSighting['species'] = [:]
-                speciesSighting['species']['name'] = record.species
-                speciesSighting['species']['commonName'] = record.commonName
+                def species = [:]
+                speciesSighting['species'] = species
+
+                species['name'] = record.species
+                species['commonName'] = record.commonName
+
+                // Get Unique Species Id
+                def uniqueIdResponse = new URL(Globals.SERVER_URL + "/ws/species/uniqueId")?.text
+                def jsonResponse = new groovy.json.JsonSlurper()
+                def outputSpeciesId = jsonResponse.parseText(uniqueIdResponse)?.outputSpeciesId
+                species['outputSpeciesId'] = outputSpeciesId
+
+                def speciesResponse = new URL(Globals.SERVER_URL + Globals.SPECIES_URL + "&q=${record.'species'}").text
+                def speciesJSON = new groovy.json.JsonSlurper()
+                def autoCompleteList = speciesJSON.parseText(speciesResponse)?.autoCompleteList
+                println (autoCompleteList)
+                if (!autoCompleteList) {
+                    species.name = record.'species'
+                }
+
+                autoCompleteList?.eachWithIndex { item, index ->
+                    if (index == 0) {
+                        species.name = item.name
+                        species.guid = item.guid
+                        species.scientificName = item.scientificName
+                        species.commonName = item.commonName
+                    }
+                }
+
 
 
 
@@ -323,6 +350,7 @@ def insertSpaces(String value){
 
                 if (Globals.DEBUG_AND_VALIDATE) {
                     println(new groovy.json.JsonBuilder( activity ).toString())
+                    System.exit(0)
                 }
 
 
@@ -574,12 +602,16 @@ def uploadSite(server_url, site){
             def jsonSlurper = new JsonSlurper()
             def site_obj = jsonSlurper.parseText(result)
             return site_obj.id
-        }else{
+        }else {
             def error = connection.getErrorStream().text
+            println(connection.responseCode + " : " + error)
             def jsonSlurper = new JsonSlurper()
             def result = jsonSlurper.parseText(error)
-            println(connection.responseCode + ": " + result.error)
-            return null;
+            //401 authentication error may still create site , why? don't know
+            if (result.status == "created")
+                return result.id
+            else
+                return null;
         }
 
 }

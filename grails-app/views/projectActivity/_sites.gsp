@@ -57,8 +57,8 @@
             </table>
         </div>
 
-        <div class="span6">
-            <table class="table table-custom-border borderless white-background">
+        <div class="span6 pre-scrollable" >
+            <table class="table table-custom-border borderless white-background ">
                 <thead>
                 <tr>
                     <th>Sites associated with this project:
@@ -67,9 +67,8 @@
                 </tr>
                 </thead>
 
-                <tbody>
+                <tbody >
                 <!-- ko foreach: sites -->
-
                         <tr data-bind="visible: !added()">
                             <td>
                                 <button class="btn btn-mini btn-primary" data-bind="click: addSite" title="Add this site to survey">

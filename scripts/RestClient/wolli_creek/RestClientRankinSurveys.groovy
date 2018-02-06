@@ -569,10 +569,14 @@ def uploadSite(server_url, site){
             return site_obj.id
         }else{
             def error = connection.getErrorStream().text
+            println(connection.responseCode + " : " + error)
             def jsonSlurper = new JsonSlurper()
             def result = jsonSlurper.parseText(error)
-            println(connection.responseCode + ": " + result.error)
-            return null;
+            //401 authentication error may still create site , why? don't know
+            if (result.status == "created")
+                return result.id
+            else
+                return null;
         }
 
 }
