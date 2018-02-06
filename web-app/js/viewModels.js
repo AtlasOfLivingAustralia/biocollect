@@ -420,6 +420,16 @@ function enmapify(args) {
     };
 
     var siteSubscriber = siteIdObservable.subscribe(updateMapForSite);
+
+    //Listen mylocation and search events from the map plugin
+    map.registerListener("searchEventFired", function (e) {
+        console.log('Received search event')
+        if (allowAdditionalSurveySites)
+            completeDraw();
+        else
+            completeDrawWithoutAdditionalSite();
+    })
+
     // make sure the lat/lng fields are cleared when the marker is removed by cancelling a new marker
 
     map.registerListener("draw:created", function (e) {
