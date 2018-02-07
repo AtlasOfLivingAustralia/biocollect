@@ -33,12 +33,14 @@
                                              date="${au.org.ala.biocollect.DateUtils.parse(project.plannedStartDate).toDate()}"/></div>
         </div>
 
+        <g:if test="${project.plannedEndDate}">
         <div class="row-fluid">
             <div class="span3 title">Project finish</div>
 
             <div class="span9"><g:formatDate format="dd MMM yyyy"
                                              date="${au.org.ala.biocollect.DateUtils.parse(project.plannedEndDate).toDate()}"/></div>
         </div>
+        </g:if>
     </div>
 
     <h3>Project Overview</h3>
