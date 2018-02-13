@@ -49,7 +49,7 @@
 
     <h3>Activity status summary</h3>
 
-    <g:if test="${project.activities}">
+    <g:if test="${activities}">
         <div class="project-dashboard">
             <table class="table-striped">
                 <thead>
@@ -63,7 +63,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <g:each in="${project.activities}" var="activity">
+                <g:each in="${activities}" var="activity">
                     <tr>
                         <td>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(activity.plannedStartDate)}</td>
                         <td>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(activity.plannedStartDate)}</td>
