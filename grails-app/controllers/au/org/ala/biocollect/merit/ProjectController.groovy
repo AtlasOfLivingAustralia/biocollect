@@ -1070,8 +1070,9 @@ class ProjectController {
                 Map site = project.sites?.find{it.siteId == activity.siteId}
                 activity.siteName = site?.name?:''
             }
-
+            activity.typeCategory = metadataService.getActivityModel(activity.type)?.type
         }
+
         Map metrics = projectService.summary(id)
         [project:project, metrics:metrics]
     }

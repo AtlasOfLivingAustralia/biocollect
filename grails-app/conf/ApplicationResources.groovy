@@ -247,7 +247,7 @@ modules = {
         resource url: 'css/surveys.css'
         resource url: 'css/project-tile-view.css'
         resource url: 'css/project-map-view.css'
-        resource url: 'css/works-project.css'
+        resource url: 'css/works-project.css', attrs: [media: 'screen,print']
         resource url: 'css/blog.css'
         resource url: 'js/permissionTable.js'
         resource url: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700", attrs:[type:"css"]
