@@ -34,12 +34,12 @@
         </div>
 
         <g:if test="${project.plannedEndDate}">
-        <div class="row-fluid">
-            <div class="span3 title">Project finish</div>
+            <div class="row-fluid">
+                <div class="span3 title">Project finish</div>
 
-            <div class="span9"><g:formatDate format="dd MMM yyyy"
-                                             date="${au.org.ala.biocollect.DateUtils.parse(project.plannedEndDate).toDate()}"/></div>
-        </div>
+                <div class="span9"><g:formatDate format="dd MMM yyyy"
+                                                 date="${au.org.ala.biocollect.DateUtils.parse(project.plannedEndDate).toDate()}"/></div>
+            </div>
         </g:if>
     </div>
 
@@ -50,31 +50,33 @@
     <h3>Activity status summary</h3>
 
     <g:if test="${project.activities}">
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>From</th>
-            <th>To</th>
-            <th>Description</th>
-            <th>Activity</th>
-            <th>Site</th>
-            <th>Status</th>
-        </tr>
-        </thead>
-        <tbody>
-        <g:each in="${project.activities}" var="activity">
-            <tr>
-                <th>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(activity.plannedStartDate)}</th>
-                <th>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(activity.plannedStartDate)}</th>
-                <th>${activity.description?:''}</th>
-                <th>${activity.type}</th>
-                <th>${activity.siteName}</th>
-                <th>${activity.progress}</th>
-            </tr>
-        </g:each>
+        <div class="project-dashboard">
+            <table class="table-striped">
+                <thead>
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Description</th>
+                    <th>Activity</th>
+                    <th>Site</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <g:each in="${project.activities}" var="activity">
+                    <tr>
+                        <td>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(activity.plannedStartDate)}</td>
+                        <td>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(activity.plannedStartDate)}</td>
+                        <td>${activity.description ?: ''}</td>
+                        <td>${activity.type}</td>
+                        <td>${activity.siteName}</td>
+                        <td>${activity.progress}</td>
+                    </tr>
+                </g:each>
 
-        </tbody>
-    </table>
+                </tbody>
+            </table>
+        </div>
     </g:if>
     <g:else>
         No activities have been defined for this project.
