@@ -16,6 +16,10 @@ class HubSettings extends JSONObject {
                                           activeCompleted: 'ActiveOrCompleted'
                                   ]
 
+    /** Keys for checking sections of supported optional content.  Note these keys are used as javascript variables so shouldn't contain spaces etc. */
+    static final String CONTENT_INDUSTRIES = 'industries'
+    static final List OPTIONAL_PROJECT_CONTENT = [CONTENT_INDUSTRIES]
+
     public HubSettings() {
         super()
     }
@@ -92,6 +96,16 @@ class HubSettings extends JSONObject {
         } else {
             []
         }
+    }
+
+    /**
+     * Returns true if this hub supports a particular type of optional content.
+     * Industry types are the only current optional content.
+     * @param contentKey the type of optional content.
+     * @return
+     */
+    Boolean supportsOptionalContent(String contentKey) {
+        this['content'] && this['content'][contentKey]
     }
 
     /**

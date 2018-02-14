@@ -1,6 +1,6 @@
 <div class="project-issues margin-bottom-10 margin-right-20">
     <label><b>Project issues</b></label>
-    <table style="width:100%;">
+    <table class="table-striped" style="width:100%;">
         <thead >
         <tr>
         <tr>

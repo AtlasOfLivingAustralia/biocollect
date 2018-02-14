@@ -176,8 +176,8 @@
     </div>
 </g:if>
 <g:elseif test="${hubConfig.templateConfiguration.footer.type == 'custom'}">
-    <div id="custom-footer hidden-print">
-        <div class="${fluidLayout ? 'container-fluid' : 'container'}">
+    <div id="custom-footer">
+        <div class="${fluidLayout ? 'container-fluid' : 'container'} hidden-print">
             <div class="row-fluid  navbar-inverse">
                 <div class="span5">
                     <ul class="nav">

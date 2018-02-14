@@ -1070,10 +1070,13 @@ class ProjectController {
                 Map site = project.sites?.find{it.siteId == activity.siteId}
                 activity.siteName = site?.name?:''
             }
-
+            activity.typeCategory = metadataService.getActivityModel(activity.type)?.type
         }
+
+        project.activities?.sort{it.plannedEndDate?:it.plannedStartDate}
+
         Map metrics = projectService.summary(id)
-        [project:project, metrics:metrics]
+        [project:project, metrics:metrics, activities:project.activities?:[]]
     }
 
 
