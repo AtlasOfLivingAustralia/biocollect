@@ -69,9 +69,7 @@ class ReportController {
 
     def programReport() {
 
-        // This prevents this report from being available in the production environment.
-        if (grailsApplication.config.projectdata.industries.enabled &&
-            userService.doesUserHaveHubRole(RoleService.PROJECT_ADMIN_ROLE)) {
+        if (userService.doesUserHaveHubRole(RoleService.PROJECT_ADMIN_ROLE)) {
 
             // This needs to be improved to be program specific.
             reportService.programReport("")

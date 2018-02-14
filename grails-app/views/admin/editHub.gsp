@@ -396,6 +396,16 @@
                     </tbody>
                 </table>
 
+                <h3>Project Content</h3>
+                <small>Configure optional content to record about a project</small>
+                <!-- ko with:content -->
+                <g:each in="${au.org.ala.biocollect.merit.hub.HubSettings.OPTIONAL_PROJECT_CONTENT}" var="key">
+                    <div class="checkbox">
+                        <label><input type="checkbox" data-bind="checked:${key}"> <g:message code="project.optionalContent.${key}" default="${key}"></g:message></label>
+                    </div>
+                </g:each>
+                <!-- /ko -->
+
             </div>
         </div>
         <div class="tab-pane" id="hubFacet">

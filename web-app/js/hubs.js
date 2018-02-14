@@ -355,6 +355,7 @@ function ContentViewModel(config) {
     self.isContainer = ko.observable(config.isContainer || false);
     self.showNote = ko.observable(config.showNote || false);
     self.recordNote = ko.observable(config.recordNote || '');
+    self.industries = ko.observable(config.industries || false);
 }
 
 var HeaderViewModel = function (config) {
