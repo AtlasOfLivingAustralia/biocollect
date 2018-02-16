@@ -37,8 +37,8 @@
             <g:each in="${milestones}" var="milestone">
                 <tr>
                     <td>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(milestone.plannedEndDate)}</td>
-                    <td>${milestone.description}</td>
-                    <td>${milestone.progress}</td>
+                    <td class="milestone-description">${milestone.description}</td>
+                    <td class="milestone-progress">${milestone.progress}</td>
                 </tr>
 
             </g:each>
@@ -70,9 +70,7 @@
                     <td class="type">
                         ${outcome.type}
                     </td>
-                    <td class="outcome-progress">
-                        ${outcome.progress}
-                    </td>
+                    <td class="outcome-progress">${outcome.progress}</td>
                 </tr>
 
             </g:each>

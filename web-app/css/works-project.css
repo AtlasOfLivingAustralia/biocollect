@@ -146,3 +146,17 @@ table.outcomes-progress {
 .project-dashboard .project-statistics {
     page-break-before: always;
 }
+
+.project-dashboard tr.Milestone {
+    border-top: 1px solid grey;
+    border-botton: 1px solid grey;
+    background: lightgrey;
+}
+
+.project-dashboard tr.Milestone td {
+    background: lightgrey !important;
+}
+
+.project-dashboard .outcome-progress, .project-dashboard .milestone-progress, .project-dashboard .milestone-description {
+    white-space: pre;
+}
