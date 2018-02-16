@@ -1073,7 +1073,7 @@ class ProjectController {
             activity.typeCategory = metadataService.getActivityModel(activity.type)?.type
         }
 
-        project.activities?.sort{it.plannedEndDate?:it.plannedStartDate}
+        project.activities?.sort{ a,b -> a.plannedStartDate <=> b.plannedStartDate ?: a.dateCreated <=> b.dateCreated ?: a.description <=> b.description }
 
         Map metrics = projectService.summary(id)
         [project:project, metrics:metrics, activities:project.activities?:[]]
