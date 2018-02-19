@@ -50,6 +50,9 @@
         No milestones have been specified for this project.
     </g:else>
 
+    <h3>Project Budget</h3>
+    <g:render template="budgetTableReadOnly"/>
+
     <h3>Progress towards outcomes</h3>
     <g:if test="${project?.custom?.details?.outcomeProgress}">
         <table class="outcomes-progress table-striped">
