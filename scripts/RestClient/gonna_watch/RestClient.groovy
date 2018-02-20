@@ -44,7 +44,7 @@ def xlsx = "data-cleaned.xlsx"
 //def PROJECT_ACTIVITY_ID = "4eb242f1-0b60-4325-b11e-40ad13a5f4f2"
 //def SUPPORTED_SPECIES = "Varanus giganteus"
 //def IMAGES_PATH = "images//Varanus_giganteus//"
-//def DATA_TEMPLATE_FILE = "data_template_Varanus_giganteus.json"
+//def DATA_TEMPLATE_FILE = "data_template_Neil_Rankin_Surveys.json"
 
 def PROJECT_ACTIVITY_ID = "534dfa1c-5b78-480e-9eb5-f26d087f9a77"
 def SUPPORTED_SPECIES = "Varanus varius"
@@ -57,11 +57,11 @@ def DATA_TEMPLATE_FILE = "data_template_Varanus_varius.json"
 // def IMAGES_PATH = "images//Varanus_gouldii//"
 // def DATA_TEMPLATE_FILE = "data_template_Varanus_gouldii.json"
 
-//"data_template_unknown.json"
+//"data_template_current_surveys.json"
 //def PROJECT_ACTIVITY_ID = "e14a3597-3dea-403b-845d-afee66beb5d1"
 //def SUPPORTED_SPECIES = "Unknown"
 //def IMAGES_PATH = "images//unknown//"
-//def DATA_TEMPLATE_FILE = "data_template_unknown.json"
+//def DATA_TEMPLATE_FILE = "data_template_current_surveys.json"
 
 
 def SERVER_URL = "https://biocollect.ala.org.au"

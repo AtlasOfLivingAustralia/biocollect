@@ -294,7 +294,7 @@
                     </div>
                 </div>
             <div class="margin-top-2"></div>
-            <g:if test="${Boolean.valueOf(grailsApplication.config.projectdata.industries.enabled)}">
+            <config:optionalContent key="${au.org.ala.biocollect.merit.hub.HubSettings.CONTENT_INDUSTRIES}">
             <div class="row-fluid">
                 <div class="clearfix control-group">
                     <label class="control-label span3"><g:message code="project.details.industries.label"/>:<fc:iconHelp><g:message code="project.details.industries.help"/></fc:iconHelp></label>
@@ -307,7 +307,7 @@
                         </div>
                 </div>
             </div>
-            </g:if>
+            </config:optionalContent>
             <div class="row-fluid">
                 <div class="clearfix control-group">
                     <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.countries.label"/>:<fc:iconHelp><g:message code="project.details.countries.help"/></fc:iconHelp><i class="req-field"></i></label>
