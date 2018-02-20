@@ -1,11 +1,14 @@
 <div id="keq" class="margin-bottom-10 margin-right-20">
     <label><b>Project Budget</b></label>
-    <table style="width: 100%;">
+    <table class="budget">
         <thead>
         <tr>
-            <th width="2%"></th>
-            <th width="12%">Investment/Priority Area</th>
-            <th width="12%">Description</th>
+            <th class="index"></th>
+            <th class="category">Investment/Priority Area</th>
+            <th class="payment-number">Payment number</th>
+            <th class="funding-source">Funding source</th>
+            <th class="payment-status">Status <fc:iconHelp title="Payment Status">(P) Processing, (C) Complete</fc:iconHelp></th>
+            <th class="description">Description</th>
             <!-- ko foreach: details.budget.headers -->
             <th style="text-align: center;" width="10%" ><div style="text-align: center;" data-bind="text:data"></div>$</th>
             <!-- /ko -->
@@ -15,9 +18,13 @@
         </thead>
         <tbody data-bind="foreach : details.budget.rows">
         <tr>
-            <td><span data-bind="text:$index()+1"></span></td>
-            <td><span style="width: 97%;" data-bind="text:shortLabel"> </span></td>
-            <td><div style="text-align: left;"><span style="width: 90%;" data-bind="text: description"></span></div></td>
+            <td class="index"><span data-bind="text:$index()+1"></span></td>
+            <td class="category"><span data-bind="text:shortLabel"> </span></td>
+            <td class="payment-number"><span data-bind="text:paymentNumber"></span></td>
+            <td class="funding-source"><span data-bind="text:fundingSource"></span></td>
+            <td class="payment-status"><span data-bind="text:paymentStatus"></span></td>
+
+            <td class="description"><div style="text-align: left;"><span data-bind="text: description"></span></div></td>
 
             <!-- ko foreach: costs -->
             <td><div style="text-align: center;"><span style="width: 90%;" data-bind="text: dollar.formattedCurrency"></span></div></td>
@@ -29,6 +36,9 @@
         </tbody>
         <tfoot>
         <tr>
+            <td></td>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
             <td style="text-align: right;" ><b>Total </b></td>
