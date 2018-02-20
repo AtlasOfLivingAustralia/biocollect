@@ -73,13 +73,13 @@
       data-target="${pageProperty(name: 'body.data-target')}" data-spy="${pageProperty(name: 'body.data-spy')}">
 <g:set var="fluidLayout" value="${!hubConfig.content?.isContainer}"/>
 <g:if test="${hubConfig.templateConfiguration.header.type == 'ala'}">
-    <div id="ala-header-bootstrap2" class="do-not-mark-external">
+    <div id="ala-header-bootstrap2" class="do-not-mark-external hidden-print">
         <hf:banner logoutUrl="${g.createLink(controller: "logout", action: "logout", absolute: true)}"/>
     </div>
     <div id="content-starting-point"></div>
 </g:if>
 <g:elseif test="${hubConfig.templateConfiguration.header.type == 'biocollect'}">
-    <div id="biocollect-header">
+    <div id="biocollect-header" class="hidden-print">
         <g:render template="/project/biocollectBanner"></g:render>
         <g:if test="${isCitizenScience && !isUserPage}">
             <g:render template="/shared/bannerCitizenScience"/>
@@ -93,7 +93,7 @@
     </div>
 </g:elseif>
 <g:elseif test="${hubConfig.templateConfiguration.header.type == 'custom'}">
-    <div id="custom-header" class="do-not-mark-external">
+    <div id="custom-header" class="do-not-mark-external hidden-print">
         <div class="navbar navbar-inverse navbar-static-top">
             <div class="navbar-inner contain-to-grid">
                 <div class="${fluidLayout ? 'container-fluid' : 'container'}">
@@ -171,13 +171,13 @@
 </div>
 
 <g:if test="${hubConfig.templateConfiguration.footer.type == 'ala'}">
-    <div id="ala-footer-bootstrap2">
+    <div id="ala-footer-bootstrap2 hidden-print">
         <hf:footer/>
     </div>
 </g:if>
 <g:elseif test="${hubConfig.templateConfiguration.footer.type == 'custom'}">
     <div id="custom-footer">
-        <div class="${fluidLayout ? 'container-fluid' : 'container'}">
+        <div class="${fluidLayout ? 'container-fluid' : 'container'} hidden-print">
             <div class="row-fluid  navbar-inverse">
                 <div class="span5">
                     <ul class="nav">

@@ -1,9 +1,9 @@
 
-.edit-view-meri-plan table {
+.edit-view-meri-plan table, .project-dashboard table {
     margin-bottom: 10px;
 }
 
-.edit-view-meri-plan table thead th {
+.edit-view-meri-plan table thead th, .project-dashboard table thead th {
     border: 1px solid #ccc;
     padding: 10px;
     vertical-align: top;
@@ -12,21 +12,21 @@
     background-color: #f5f5f5
 }
 
-.edit-view-meri-plan table tbody td {
+.edit-view-meri-plan table tbody td, .project-dashboard table tbody td {
     border: 1px solid #ccc;
     padding: 10px;
     vertical-align: top;
     line-height: 1.3;
 }
 
-.edit-view-meri-plan table tfoot td {
+.edit-view-meri-plan table tfoot td, .project-dashboard table tfoot td {
     border: 1px solid #ccc;
     padding: 10px;
     vertical-align: top;
     line-height: 1.3;
 }
 
-.edit-view-meri-plan table td textarea {
+.edit-view-meri-plan table td textarea, .project-dashboard table td textarea {
     width: 100%;
     box-sizing: border-box;
 }
@@ -141,4 +141,63 @@ table.milestones .progress {
 }
 table.outcomes-progress {
     width: 100%;
+}
+
+table.budget {
+    width: 100%;
+}
+
+table.budget th {
+    white-space: normal;
+}
+
+table.budget .index {
+    width:2%;
+}
+
+table.budget .category {
+    width:5%;
+}
+
+table.budget .payment-number {
+    width:5%;
+}
+
+table.budget .payment-status {
+    width:2%;
+}
+
+
+table.budget .funding-source {
+    width: 10%;
+}
+
+table.budget select, table.budget textarea, table.budget input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+table.budget input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0;
+}
+
+
+.project-dashboard .project-statistics {
+    page-break-before: always;
+}
+
+.project-dashboard tr.Milestone {
+    border-top: 1px solid grey;
+    border-botton: 1px solid grey;
+    background: lightgrey;
+}
+
+.project-dashboard tr.Milestone td {
+    background: lightgrey !important;
+}
+
+.project-dashboard .outcome-progress, .project-dashboard .milestone-progress, .project-dashboard .milestone-description {
+    white-space: pre;
 }

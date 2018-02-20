@@ -23,8 +23,5 @@ class BaseController {
         }
     }
 
-    def error(String error){
-        render(view:"/error",model: [errorMessage : error])
-    }
 
 }

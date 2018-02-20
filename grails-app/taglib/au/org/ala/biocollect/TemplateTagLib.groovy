@@ -1,11 +1,13 @@
 package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.UserService
 
 class TemplateTagLib {
     static namespace = "config"
 
-    UserService userService;
+    UserService userService
+    SettingService settingService
 
     def createAButton = { attrs ->
         Map link = attrs.config;
@@ -137,6 +139,14 @@ class TemplateTagLib {
             }
         }
     }
+
+    def optionalContent = { attrs, body ->
+
+        if (settingService.getHubConfig()?.supportsOptionalContent(attrs?.key)) {
+            out << body()
+        }
+    }
+
 
     private String getLinkUrl (Map link){
         String url;
