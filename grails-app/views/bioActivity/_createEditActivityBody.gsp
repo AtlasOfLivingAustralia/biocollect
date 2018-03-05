@@ -312,22 +312,30 @@
                 if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
                     return {validation:false, message:"Nothing need to be updated!"};
                 }
+                if (typeof activityLevelData.checkMapInfo === "function"){
+                    var mapInfoCheck= activityLevelData.checkMapInfo();
 
-                var mapInfoCheck= activityLevelData.checkMapInfo();
-
-                if( !mapInfoCheck.validation){
-                    return mapInfoCheck;
-                }
-                else {
-                    if (activityData === undefined) {
-                        activityData = {}
+                    if( !mapInfoCheck.validation){
+                        return mapInfoCheck;
                     }
-                    activityData.outputs = outputs;
-                    //assign siteId to activity
-                    if (activityLevelData.siteId())
-                        activityData.siteId = activityLevelData.siteId();
+                    else {
+                        if (activityData === undefined) {
+                            activityData = {}
+                        }
+                        activityData.outputs = outputs;
+                        //assign siteId to activity
+                        if (activityLevelData.siteId())
+                            activityData.siteId = activityLevelData.siteId();
 
-                    return activityData;
+                        return activityData;
+                    }
+                }else{
+                    //quick fix for some suverys which don't have map
+                     if (activityData === undefined) {
+                            activityData = {}
+                        }
+                        activityData.outputs = outputs;
+                        return activityData;
                 }
             };
 
