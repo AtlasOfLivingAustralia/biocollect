@@ -212,12 +212,15 @@
 		<div>
 			<div class="margin-bottom-10 margin-right-20">
 				<label><b>Project Budget</b><fc:iconHelp title="Project Budget">Include the planned budget expenditure against each programme objective. This information will be used to report on the use of public money.</fc:iconHelp></label>
-				<table style="width: 100%;">
+				<table class="budget">
 					<thead>
 					<tr>
-						<th width="2%"></th>
-						<th width="10%">Investment/Priority Area <fc:iconHelp title="Investment/Priority Area">Select the appropriate investment area and indicate the funding distribution across the project to this. Add rows as required for different investment priority areas.</fc:iconHelp></th>
-						<th width="30%">Description <fc:iconHelp title="Description">Describe how funding distribution will address this investment priority</fc:iconHelp></th>
+						<th class="index"></th>
+						<th class="category">Investment/Priority Area <fc:iconHelp title="Investment/Priority Area">Select the appropriate investment area and indicate the funding distribution across the project to this. Add rows as required for different investment priority areas.</fc:iconHelp></th>
+                        <th class="payment-number">Payment number</th>
+                        <th class="funding-source">Funding source</th>
+                        <th class="payment-status">Status <fc:iconHelp title="Payment Status">(P) Processing, (C) Complete</fc:iconHelp></th>
+                        <th class="description">Description <fc:iconHelp title="Description">Describe how funding distribution will address this investment priority</fc:iconHelp></th>
 						<!-- ko foreach: details.budget.headers -->
 						<th style="text-align: center;" width="10%" ><div style="text-align: center;" data-bind="text:data"></div>$</th>
 						<!-- /ko -->
@@ -227,9 +230,12 @@
 					</thead>
 					<tbody data-bind="foreach : details.budget.rows">
 					<tr>
-						<td><span data-bind="text:$index()+1"></span></td>
-						<td><select style="width: 97%;" data-bind="options: $parent.projectThemes, optionsCaption: 'Please select', value:shortLabel, disable: $parent.isProjectDetailsLocked()"> </select></td>
-						<td><textarea style="width: 95%;" data-bind="value: description, disable: $parent.isProjectDetailsLocked()" rows="3"></textarea></td>
+						<td class="index"><span data-bind="text:$index()+1"></span></td>
+						<td class="category"><select  data-bind="options: $parent.projectThemes, optionsCaption: 'Please select', value:shortLabel, disable: $parent.isProjectDetailsLocked()"> </select></td>
+						<td class="payment-number"><input data-bind="value:paymentNumber"></td>
+                        <td class="funding-source"><input data-bind="value:fundingSource"></td>
+                        <td class="payment-status"><select data-bind="value:paymentStatus, options:paymentStatus.options"></select></td>
+                        <td class="description"><textarea data-bind="value: description, disable: $parent.isProjectDetailsLocked()" rows="3"></textarea></td>
 
 						<!-- ko foreach: costs -->
 						<td><div style="text-align: center;">
@@ -250,6 +256,9 @@
 						<td colspan="0" style="text-align:left;">
 							<button type="button" class="btn btn-small" data-bind="disable: isProjectDetailsLocked(), click: addBudget">
 								<i class="icon-plus"></i> Add a row</button></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
 						<td style="text-align: right;" ><b>Total </b></td>
 						<!-- ko foreach: details.budget.columnTotal -->
 						<td style="text-align: center;" width="10%"><span data-bind="text:data.formattedCurrency"></span></td>

@@ -64,9 +64,9 @@
                 </thead>
                 <tbody>
                 <g:each in="${activities}" var="activity">
-                    <tr>
+                    <tr class="${activity.typeCategory}">
                         <td>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(activity.plannedStartDate)}</td>
-                        <td>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(activity.plannedStartDate)}</td>
+                        <td>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(activity.plannedEndDate)}</td>
                         <td>${activity.description ?: ''}</td>
                         <td>${activity.type}</td>
                         <td>${activity.siteName}</td>
@@ -88,7 +88,8 @@
 
 <r:script>
 var project = <fc:modelAsJavascript model="${project}"/>;
-ko.applyBindings(project.custom);
+var viewModel = new MERIPlan(project, [], '');
+ko.applyBindings(viewModel);
 
 </r:script>
 </body>

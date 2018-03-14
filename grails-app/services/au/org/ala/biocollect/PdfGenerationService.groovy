@@ -51,7 +51,7 @@ class PdfGenerationService {
         }
 
         String reportUrl = grailsLinkGenerator.link(reportUrlDetails)
-        Map pdfGenParams = [docUrl: reportUrl, cacheable: false, options:'--print-media-type']
+        Map pdfGenParams = [docUrl: reportUrl, cacheable: false, options:'--print-media-type --viewport-size 1280x1024']
         if (pdfParams?.orientation == 'landscape') {
             pdfGenParams.options += ' -O landscape'
         }
