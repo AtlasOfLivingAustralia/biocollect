@@ -143,6 +143,61 @@ table.outcomes-progress {
     width: 100%;
 }
 
+table.budget {
+    width: 100%;
+}
+
+table.budget th {
+    white-space: normal;
+}
+
+table.budget .index {
+    width:2%;
+}
+
+table.budget .category {
+    width:5%;
+}
+
+table.budget .payment-number {
+    width:5%;
+}
+
+table.budget .payment-status {
+    width:2%;
+}
+
+
+table.budget .funding-source {
+    width: 10%;
+}
+
+table.budget select, table.budget textarea, table.budget input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+table.budget input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0;
+}
+
+
 .project-dashboard .project-statistics {
     page-break-before: always;
+}
+
+.project-dashboard tr.Milestone {
+    border-top: 1px solid grey;
+    border-botton: 1px solid grey;
+    background: lightgrey;
+}
+
+.project-dashboard tr.Milestone td {
+    background: lightgrey !important;
+}
+
+.project-dashboard .outcome-progress, .project-dashboard .milestone-progress, .project-dashboard .milestone-description {
+    white-space: pre;
 }

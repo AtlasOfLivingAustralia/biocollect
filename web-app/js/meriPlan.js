@@ -29,6 +29,7 @@ function MERIPlan(project, themes, key) {
     });
 
     self.projectThemes =  $.map(themes, function(theme, i) { return theme.name; });
+    self.projectThemes.push("Milestone");
     self.projectThemes.push("MERI & Admin");
     self.projectThemes.push("Others");
 
@@ -208,7 +209,7 @@ function OutcomeProgressViewModel(o) {
     self.progress = ko.observable(o.progress);
     self.date = ko.observable(o.date).extend({simpleDate:false});
     self.type = ko.observable(o.type);
-    self.type.options = ['Interim', 'Final'];
+    self.type.options = ['Progress Report', 'Interim', 'Final'];
 };
 
 function BudgetViewModel(o, period){
@@ -283,6 +284,11 @@ function BudgetRowViewModel(o,period) {
     if(!o) o = {};
     self.shortLabel = ko.observable(o.shortLabel);
     self.description = ko.observable(o.description);
+    self.paymentStatus = ko.observable(o.paymentStatus);
+    self.paymentStatus.options = ['', "P", "C"];
+    self.paymentNumber = ko.observable(o.paymentNumber);
+    self.fundingSource = ko.observable(o.fundingSource);
+
 
     var arr = [];
     for(i = 0 ; i < period.length; i++)

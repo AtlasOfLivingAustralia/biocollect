@@ -37,8 +37,8 @@
             <g:each in="${milestones}" var="milestone">
                 <tr>
                     <td>${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(milestone.plannedEndDate)}</td>
-                    <td>${milestone.description}</td>
-                    <td>${milestone.progress}</td>
+                    <td class="milestone-description">${milestone.description}</td>
+                    <td class="milestone-progress">${milestone.progress}</td>
                 </tr>
 
             </g:each>
@@ -49,6 +49,9 @@
     <g:else>
         No milestones have been specified for this project.
     </g:else>
+
+    <h3>Project Budget</h3>
+    <g:render template="budgetTableReadOnly"/>
 
     <h3>Progress towards outcomes</h3>
     <g:if test="${project?.custom?.details?.outcomeProgress}">
@@ -70,9 +73,7 @@
                     <td class="type">
                         ${outcome.type}
                     </td>
-                    <td class="outcome-progress">
-                        ${outcome.progress}
-                    </td>
+                    <td class="outcome-progress">${outcome.progress}</td>
                 </tr>
 
             </g:each>
