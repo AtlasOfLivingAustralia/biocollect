@@ -168,7 +168,7 @@
                             map.setGeoJSON(geometry, options);
                         }
                     }catch(exception){
-                        console.log("Site:"+site.siteId +" reports exception: " + exception)
+                        console.log("Site:"+site.siteId() +" reports exception: " + exception)
                     }
                 }
             });
