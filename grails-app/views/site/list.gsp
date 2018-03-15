@@ -150,21 +150,25 @@
                 var feature = site.extent
                 if (feature && feature.source != 'none' && feature.geometry) {
                     var lng, lat, geometry, options;
+                    try {
 
-                    if (feature.geometry.centre && feature.geometry.centre.length) {
-                        lng = parseFloat(feature.geometry.centre[0]);
-                        lat = parseFloat(feature.geometry.centre[1]);
-                        if (!feature.geometry.coordinates) {
-                            feature.geometry.coordinates = [lng, lat];
+                        if (feature.geometry.centre && feature.geometry.centre.length) {
+                            lng = parseFloat(feature.geometry.centre[0]);
+                            lat = parseFloat(feature.geometry.centre[1]);
+                            if (!feature.geometry.coordinates) {
+                                feature.geometry.coordinates = [lng, lat];
+                            }
+
+                            geometry = Biocollect.MapUtilities.featureToValidGeoJson(feature.geometry);
+                            var options = {
+                                markerWithMouseOver: true,
+                                markerLocation: [lat, lng],
+                                popup: $('#popup' + site.siteId()).html()
+                            };
+                            map.setGeoJSON(geometry, options);
                         }
-
-                        geometry = Biocollect.MapUtilities.featureToValidGeoJson(feature.geometry);
-                        var options = {
-                            markerWithMouseOver: true,
-                            markerLocation: [lat, lng],
-                            popup: $('#popup' + site.siteId()).html()
-                        };
-                        map.setGeoJSON(geometry, options);
+                    }catch(exception){
+                        console.log("Site:"+site.siteId +" reports exception: " + exception)
                     }
                 }
             });
