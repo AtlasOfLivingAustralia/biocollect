@@ -112,7 +112,7 @@ function SitesListViewModel(params) {
 
         facets = $.map(facets, function (facet) {
             facet.sites = self;
-            return new FacetViewModel(facet);
+            return new FacetViewModelForSiteList(facet);
         })
 
         facetsOrder.forEach(function (metadata) {
@@ -336,7 +336,7 @@ function SiteListViewModel(prop) {
 
 }
 
-function FacetViewModel(facet) {
+function FacetViewModelForSiteList(facet) {
     var self = this;
     if (!facet) facet = {};
 
