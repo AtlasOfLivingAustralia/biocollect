@@ -15,8 +15,13 @@ Biocollect.MapUtilities = {
         };
 
         if (feature.type.toLowerCase() == 'pid') {
-            geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
-            geoJson.geometry.coordinates = feature.coordinates || [];
+            if (feature.aream2 == 0){
+                geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
+                geoJson.geometry.coordinates = feature.centre;
+            }else{
+                geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
+                geoJson.geometry.coordinates = feature.coordinates || [];
+            }
             geoJson.properties.pid = feature.pid;
         } else if (feature.type.toLowerCase() == "circle") {
             geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
@@ -40,7 +45,6 @@ Biocollect.MapUtilities = {
 
     /**
      * Creates an instance of the L.Control.TwoStepSelector control from the ALA Map plugin
-     *
      * @param map The map the control will be placed in
      * @param featuresServiceUrl The URL for the WMS features service
      * @param regionListUrl The URL to retrieve the list of available regions
