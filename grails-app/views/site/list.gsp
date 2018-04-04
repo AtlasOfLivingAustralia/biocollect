@@ -157,6 +157,7 @@
                             lat = parseFloat(feature.geometry.centre[1]);
                             if (!feature.geometry.coordinates) {
                                 feature.geometry.coordinates = [lng, lat];
+
                             }
 
                             geometry = Biocollect.MapUtilities.featureToValidGeoJson(feature.geometry);
