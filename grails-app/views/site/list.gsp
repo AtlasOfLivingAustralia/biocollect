@@ -155,9 +155,12 @@
                         if (feature.geometry.centre && feature.geometry.centre.length) {
                             lng = parseFloat(feature.geometry.centre[0]);
                             lat = parseFloat(feature.geometry.centre[1]);
-                            if (!feature.geometry.coordinates) {
+                            if (!feature.geometry.coordinates ) {
                                 feature.geometry.coordinates = [lng, lat];
-
+                                if (feature.geometry.aream2 > 0){
+                                    //Change from Polygon to Point for geojson validation
+                                    feature.geometry.type = 'Point'
+                                }
                             }
 
                             geometry = Biocollect.MapUtilities.featureToValidGeoJson(feature.geometry);

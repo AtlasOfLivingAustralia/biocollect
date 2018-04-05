@@ -327,7 +327,8 @@ function enmapify(args) {
             if (matchingSite) {
                 console.log("Clearing map before displaying a new shape")
                 map.clearBoundLimits();
-                map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(matchingSite.extent.geometry));            }
+                map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(matchingSite.extent.geometry));
+            }
         } else {
             // Keep the previous code to make compatible with old records
             // Can be removed after all data be migrated.
