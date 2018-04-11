@@ -158,6 +158,7 @@
                             if (!feature.geometry.coordinates ) {
                                 feature.geometry.coordinates = [lng, lat];
                                 if (feature.geometry.aream2 > 0){
+                                    //ONLY apply on site list which show a marker instead of polygon
                                     //Change from Polygon to Point for geojson validation
                                     feature.geometry.type = 'Point'
                                 }
