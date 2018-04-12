@@ -117,6 +117,11 @@
         $('#save').click(function () {
             if ($('#validation-container').validationEngine('validate')) {
                 var json = siteViewModel.toJS();
+                //validate  if extent.geometry.pid, then update extent.source to pid, extent.geometry.type to pid
+                if (json.extent.geometry.pid){
+                    json.extent.source = 'pid';
+                    json.extent.geometry.type = 'pid'
+                }
                 var data = {
                     site: json
                     <g:if test="${project?.projectId}">
