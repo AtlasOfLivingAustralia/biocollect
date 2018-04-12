@@ -15,9 +15,14 @@ Biocollect.MapUtilities = {
         };
 
         if (feature.type.toLowerCase() == 'pid') {
-            if (feature.aream2 == 0){
+            if (feature.aream2 == 0 || feature.areaKmSq == 0){
                 geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
-                geoJson.geometry.coordinates = feature.centre;
+                if (feature.coordinates) {
+                    geoJson.geometry.coordinates = feature.coordinates;
+                }
+                else if (feature.centre){
+                    geoJson.geometry.coordinates = feature.centre;
+                }
             }else{
                 geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
                 geoJson.geometry.coordinates = feature.coordinates || [];
