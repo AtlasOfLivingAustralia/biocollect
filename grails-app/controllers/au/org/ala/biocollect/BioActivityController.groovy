@@ -337,7 +337,7 @@ class BioActivityController {
 
         boolean embargoed = projectActivityService.isEmbargoed(pActivity)
         boolean userIsOwner = userId && activityService.isUserOwnerForActivity(userId, id)
-        boolean userIsAdmin = userId && projectService.isUserAdminForProject(userId, id)
+        boolean userIsAdmin = userId && projectService.isUserAdminForProject(userId, pActivity?.projectId)
         boolean userIsAlaAdmin = userService.userIsAlaOrFcAdmin()
 
         def members = projectService.getMembersForProjectId(activity?.projectId)
