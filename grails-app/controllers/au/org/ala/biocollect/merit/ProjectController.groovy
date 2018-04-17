@@ -452,7 +452,7 @@ class ProjectController {
         if (!values?.associatedOrgs) values.put('associatedOrgs', [])
 
         def result = id ? projectService.update(id, values) : projectService.create(values)
-        log.debug "result is " + result
+        log.info "Project creation result: " + result
         if (documents && !result.error) {
             if (!id) id = result.resp.projectId
             documents.each { doc ->
@@ -475,6 +475,7 @@ class ProjectController {
                 documentService.saveLink(link)
             }
         }
+
         if (siteResult && !result.error) {
             if (!id) id = result.resp.projectId
             if (!projectSite.projects || (projectSite.projects.size() == 1 && projectSite.projects.get(0).isEmpty()))
@@ -482,9 +483,11 @@ class ProjectController {
             else if (!projectSite.projects.contains(id))
                 projectSite.projects += id
 
-            siteService.update(values.projectSiteId, projectSite)
+            def siteUpdate = siteService.update(values.projectSiteId, projectSite)
+            log.info(siteUpdate)
         }
         if (result.error) {
+            log.error(result.error);
             render result as JSON
         } else {
             render result.resp as JSON

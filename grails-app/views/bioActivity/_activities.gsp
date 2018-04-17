@@ -137,7 +137,7 @@
                                             <div>
                                                 <!-- ko if: $parent.embargoed() -->
                                                 <a href="#" class="helphover"
-                                                   data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment($parent.embargoUntil()).format('DD/MM/YYYY')}">
+                                                   data-bind="popover: {title:'Only project members can access the record.', content:'Embargoed until : ' + moment($parent.embargoUntil()).format('DD/MM/YYYY')}">
                                                     <span class="fa fa-lock"></span>
                                                 </a>
                                                 <!--/ko -->
@@ -215,7 +215,7 @@
                                             <div>
                                                 <!-- ko if: embargoed() -->
                                                 <a href="#" class="helphover"
-                                                   data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment(embargoUntil()).format('DD/MM/YYYY')}">
+                                                   data-bind="popover: {title:'Indicates that only project members can access the record.', content:'Embargoed until : ' + moment(embargoUntil()).format('DD/MM/YYYY')}">
                                                     <span class="fa fa-lock"></span>
                                                 </a>
                                                 <!--/ko -->
