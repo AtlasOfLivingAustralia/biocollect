@@ -13,7 +13,7 @@
 </div>
 
 <g:render template="/shared/documentTemplate"></g:render>
-<r:script>
+<asset:script type="text/javascript">
     var imageLocation = "${imageUrl}",
         useExistingModel = ${useExistingModel};
 
@@ -26,4 +26,4 @@
         }
     });
 
-</r:script>
+</asset:script>

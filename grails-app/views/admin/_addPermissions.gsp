@@ -26,7 +26,7 @@
     <div class="control-group">
         <div class="controls">
             <button id="addUserRoleBtn" class="btn btn-primary btn-small">Submit</button>
-            <g:img dir="images" file="spinner.gif" id="spinner1" class="hide spinner" alt="spinner icon"/>
+            <g:img uri="${asset.assetPath(src:'spinner.gif')}" id="spinner1" class="hide spinner" alt="spinner icon"/>
         </div>
     </div>
 </form>
@@ -44,7 +44,7 @@
         </li>
     </ul>
 </div>
-<r:script>
+<asset:script type="text/javascript">
     $(document).ready(function() {
         // combobox plugin enhanced select
         $(".combobox").combobox();
@@ -116,4 +116,4 @@
         }
 
     }
-</r:script>
+</asset:script>

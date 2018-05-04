@@ -6,38 +6,42 @@ if (typeof jQuery !== 'undefined') {
 			$(this).fadeOut();
 		});
 	})(jQuery);
-}
-// deprecated
-$('#debug').click(function () {
-    $(this).next().toggle();
-});
-// handles debug sections
-$('.expandable-debug').each(function() {
-    $(this).find('div,pre,ul').hide();
-    $(this).find('h1,h2,h3,h4,h5')
-        .css('cursor','pointer')
-        .css('color','grey')
-        .click(function () {
+
+	$(function () {
+        // deprecated
+        $('#debug').click(function () {
             $(this).next().toggle();
-        })
-        .hover(
-            function () { $(this).css('text-decoration','underline') },
-            function () { $(this).css('text-decoration','none') }
-        );
-    // pretty print sections with class pretty
-    if (vkbeautify && typeof vkbeautify.json === 'function') {
-        $(this).find('pre').each(function() {
-            var value = $(this).html();
-            if (value !== '') {
-                try {
-                    $(this).html(vkbeautify.json(value));
-                } catch (e) {
-                    $(this).html(value);
-                }
+        });
+
+        // handles debug sections
+        $('.expandable-debug').each(function() {
+            $(this).find('div,pre,ul').hide();
+            $(this).find('h1,h2,h3,h4,h5')
+                .css('cursor','pointer')
+                .css('color','grey')
+                .click(function () {
+                    $(this).next().toggle();
+                })
+                .hover(
+                    function () { $(this).css('text-decoration','underline') },
+                    function () { $(this).css('text-decoration','none') }
+                );
+            // pretty print sections with class pretty
+            if (vkbeautify && typeof vkbeautify.json === 'function') {
+                $(this).find('pre').each(function() {
+                    var value = $(this).html();
+                    if (value !== '') {
+                        try {
+                            $(this).html(vkbeautify.json(value));
+                        } catch (e) {
+                            $(this).html(value);
+                        }
+                    }
+                });
             }
         });
-    }
-});
+    });
+}
 
 // returns blank string if the property is undefined, else the value
 function orBlank(v) {

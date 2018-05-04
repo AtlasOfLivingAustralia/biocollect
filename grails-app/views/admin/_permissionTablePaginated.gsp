@@ -1,5 +1,3 @@
-<r:require modules="jquery_bootstrap_datatable"/>
-
 <div class="pill-pane">
     <div class="row well well-small" id="project-member-list">
         <table style="width: 95%;" class="table table-striped table-bordered table-hover" id="member-list">
@@ -20,8 +18,8 @@
         </div>
     </div>
 </div>
-<r:script>
+<asset:script type="text/javascript">
     $(window).load(function () {
         initialise(${roles.inspect()}, ${user?.userId}, "${project.projectId}");
      })
-</r:script>
+</asset:script>

@@ -1,4 +1,4 @@
-<r:require modules="sites"></r:require>
+%{--<r:require modules="sites"></r:require>--}%
 <bc:koLoading>
 <!-- ko if: !isSitesEmpty() -->
 <div class="inline">

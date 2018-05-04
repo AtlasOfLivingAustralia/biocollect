@@ -1,6 +1,6 @@
 <div class="well">
     <div class="row-fluid">
-        <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
+        <g:set var="noImageUrl" value="${asset.assetPath(src: "no-image-2.png")}"/>
         <div class="tiles">
             <div data-bind="foreach: partitioned( pageProjects, columns)">
                 <div class="row-fluid row-eq-height" data-bind="template: { name: 'projectCell', foreach: $data }">
@@ -19,7 +19,7 @@
                 </a>
             </div>
             <div data-bind="visible: isSciStarter" class="inline-block"><img class="logo-small"
-                                                                             src="${resource(dir: 'images', file: 'robot.png')}"
+                                                                             src="${asset.assetPath(src: 'robot.png')}"
                                                                              title="Project is sourced from SciStarter"></div>
         </div>
     </div>

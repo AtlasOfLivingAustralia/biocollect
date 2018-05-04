@@ -1,4 +1,3 @@
-<r:require module="speciesFieldsSettings"/>
 <g:set bean="settingService" var="settingService"></g:set>
 <div id="configureSpeciesFieldModal" class="species-modal fade" role="dialog">
     <div class="species-modal-dialog modal-lg">

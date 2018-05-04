@@ -1,5 +1,5 @@
 <%@ page import="au.org.ala.biocollect.DateUtils" %>
-<r:require modules="jquery_bootstrap_datatable"/>
+
 <g:set var="searchTerm" value="${params.searchTerm}"/>
 
 <div class="row">
@@ -31,7 +31,7 @@
 
 <button id="loadAuditRecords" class="btn btn-primary btn-large">Load ${project.name} audit records</button>
 
-<r:script type="text/javascript">
+<asset:script type="text/javascript">
     $(document).ready(function() {
         $("#project-audit-list").hide();
 
@@ -99,4 +99,4 @@
         }
 
     });
-</r:script>
+</asset:script>

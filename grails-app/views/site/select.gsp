@@ -4,7 +4,7 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Add existing site | Field Capture</title>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
@@ -18,8 +18,8 @@
             sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
         },
         returnTo = "${params.returnTo}";
-    </r:script>
-    <r:require modules="knockout,map,amplify,siteSelection"/>
+    </asset:script>
+    %{--<r:require modules="knockout,map,amplify,siteSelection"/>--}%
 </head>
 
 <body>
@@ -124,7 +124,7 @@
     </g:if>
 </div>
 </body>
-<r:script>
+<asset:script type="text/javascript">
     var siteModel = null;
     $(function(){
 
@@ -148,6 +148,6 @@
 
     });
 
-</r:script>
+</asset:script>
 
 </html>

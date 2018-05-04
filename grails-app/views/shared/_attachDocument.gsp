@@ -1,4 +1,3 @@
-<r:require module="attachDocuments"/>
 <!-- ko stopBinding: true -->
 <div id="attachDocument" class="modal fade" style="display:none;">
     <div class="modal-dialog">

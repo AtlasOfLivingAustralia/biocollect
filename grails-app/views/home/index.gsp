@@ -4,7 +4,8 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Home | Field Capture</title>
-    <r:script disposition="head">
+    <asset:stylesheet src="forms-manifest.css"/>
+    <asset:script type="text/javascript">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
@@ -14,9 +15,12 @@
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}"
     }
-    </r:script>
+    </asset:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <r:require modules="knockout,jquery_bootstrap_datatable,js_iso8601,amplify,map,siteDisplaysiteDispl"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
+    <asset:javascript src="siteDisplay.js"/>
+    %{--<r:require modules="knockout,jquery_bootstrap_datatable,js_iso8601,amplify,map,siteDisplaysiteDispl"/>--}%
 </head>
 <body>
 <div id="wrapper" class="container-fluid">
@@ -237,7 +241,7 @@
                         </g:else>
                     </div>
                     <div class="loading-message">
-                        <r:img dir="images" file="loading.gif" alt="saving icon"/> Loading...
+                        <img src="${asset.assetPath(src:'loading.gif')}" alt="saving icon"/> Loading...
                     </div>
                     <div id="dashboard-content">
 
@@ -296,7 +300,7 @@
 
 </div>
 
-<r:script>
+<asset:script type="text/javascript">
     var projectListIds = [], facetList = [], mapDataHasChanged = false, mapBounds, projectSites, siteDisplay; // globals
 
     $(window).load(function () {
@@ -733,6 +737,6 @@
         return yyyy + "-" + (mm[1]?mm:"0"+mm[0]) + "-" + (dd[1]?dd:"0"+dd[0]);
     }
 
-</r:script>
+</asset:script>
 </body>
 </html>

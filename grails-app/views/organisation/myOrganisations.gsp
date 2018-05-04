@@ -23,7 +23,7 @@
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>My Organisations | Biocollect</title>
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             createOrganisationUrl: "${createLink(controller: 'organisation', action: 'create')}",
@@ -31,8 +31,13 @@
             organisationSearchUrl: "${createLink(controller: 'organisation', action: 'searchMyOrg')}",
             noLogoImageUrl: "${r.resource(dir:'images', file:'no-image-2.png')}"
             };
-    </r:script>
-    <r:require modules="knockout,amplify,organisation"/>
+    </asset:script>
+    <asset:stylesheet src="organisation.css"/>
+    <asset:stylesheet src="fileupload-ui-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="organisation.js"/>
+    <asset:javascript src="fileupload-ui-manifest.js"/>
+
 
 </head>
 

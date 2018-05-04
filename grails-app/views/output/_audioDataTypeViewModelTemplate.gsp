@@ -1,4 +1,3 @@
-<r:require modules="audio"/>
 <div id="audioPanel" class="audio-output-panel">
     <div id="filesPanel">
         <div class="row-fluid">

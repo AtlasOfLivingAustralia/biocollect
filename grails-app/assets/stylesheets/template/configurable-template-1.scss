@@ -104,8 +104,7 @@ section#breadcrumb {
 
   .btn-primary:active,
   .btn-primary.active {
-    background-color: $primary-background-color \9
-  ;
+    background-color: $primary-background-color;
   }
 
   .btn-danger:hover {
@@ -677,7 +676,7 @@ section#breadcrumb {
   }
 
   .acsa-image {
-    content: url(/images/ACSA_logo_white.png);
+    content: url(ACSA_logo_white.png);
     height: 45px;
   }
 
@@ -702,7 +701,7 @@ section#breadcrumb {
   }
 
   .acsa-icon{
-    content: url(/images/acsa_icon.png);
+    content: url(acsa_icon.png);
     height: 20px;
   }
 

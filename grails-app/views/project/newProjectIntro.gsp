@@ -8,8 +8,8 @@
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${project.name?.encodeAsHTML()}"/>
     <meta name="breadcrumb" content="Introduction"/>
-
-    <r:require modules="application, amplify"></r:require>
+    <asset:javascript src="common.js"/>
+    %{--<r:require modules="application, amplify"></r:require>--}%
 </head>
 
 <body>

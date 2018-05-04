@@ -34,8 +34,8 @@
 
         </style>
     </head>
-
     <body>
+    <asset:javascript src="fieldcapture-application.js"/>
     <div class="container-fluid">
 
         <ul class="breadcrumb">

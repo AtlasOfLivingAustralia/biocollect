@@ -4,7 +4,7 @@
     <title>An error has occurred</title>
     <meta name="layout" content="${hubConfig.skin}">
     <meta name="breadcrumb" content="Error"/>
-    <link rel="stylesheet" href="${resource(dir: 'css', file: 'errors.css')}" type="text/css">
+    <link rel="stylesheet" href="${asset.assetPath(src: 'errors.css')}" type="text/css">
 </head>
 
 <body>

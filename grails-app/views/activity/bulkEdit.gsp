@@ -8,7 +8,7 @@
           content="${createLink(controller: 'project', action: 'index')}/${activity.projectId},Project"/>
     <meta name="breadcrumb" content="${title}"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
     var fcConfig = {
         organisationViewUrl: "${createLink(controller: 'organisation', action: 'index', id: organisation.organisationId)}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -18,9 +18,11 @@
         returnTo: "${params.returnTo}"
         },
         here = document.location.href;
-    </r:script>
-    <r:require
-            modules="knockout,jqueryValidationEngine,datepicker,slickgrid,jQueryFileUpload,jQueryFileDownload,amplify,viewmodels"/>
+    </asset:script>
+    <asset:javascript src="common.js" />
+    <asset:javascript src="forms-manifest.js" />
+    %{--<r:require--}%
+            %{--modules="knockout,jqueryValidationEngine,datepicker,slickgrid,jQueryFileUpload,jQueryFileDownload,amplify,viewmodels"/>--}%
     <style type="text/css">
     input.editor-text {
         box-sizing: border-box;
@@ -120,7 +122,7 @@
 
 <g:render template="/shared/timeoutMessage" model="${[url: loginUrl]}"/>
 
-<r:script>
+<asset:script type="text/javascript">
 
     $(function () {
     // Override the behaviour of the default to prevent spurious focus events from triggering change dection (as the value changes from 0 to "0")
@@ -569,7 +571,7 @@ self.loadData = function (data) {// load dynamic data
         });
     });
 
-</r:script>
+</asset:script>
 
 </body>
 </html>

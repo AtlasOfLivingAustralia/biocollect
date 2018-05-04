@@ -28,7 +28,7 @@
 </div>
 <!-- /ko -->
 
-<r:script>
+<asset:script type="text/javascript">
   $(function() {
     var EditorViewModel = function() {
         var self = this;
@@ -39,7 +39,7 @@
             output: "editorOutput",
             button_bar: "editor-button-bar",
             preview: "",
-            helpLink: "${request.contextPath}/static/vendor/wmd/markdownhelp.html"
+            helpLink: "${asset.assetPath(src:"/wmd/markdownhelp.html")}"
         });
 
         self.title = ko.observable();
@@ -72,4 +72,4 @@
     });
 
 
-</r:script>
+</asset:script>

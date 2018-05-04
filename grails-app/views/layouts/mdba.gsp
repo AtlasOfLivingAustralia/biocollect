@@ -4,13 +4,18 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    %{--<alatag:addApplicationMetaTags />--}%
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/x-icon" href="${grailsApplication.config.mdba.baseUrl}/images/favicons.ico/favicon.ico">
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap-responsive.min.css"/>
+    <asset:stylesheet src="base.css"/>
+    <asset:stylesheet src="Common_fonts.css"/>
+    <asset:stylesheet src="mdba-styles.css"/>
 
     <title><g:layoutTitle /></title>
-    <r:require modules="mdba" />
-    <r:script disposition='head'>
+    <asset:javascript src="base.js"/>
+    %{--<r:require modules="mdba" />--}%
+    <asset:script type="text/javascript">
         // initialise plugins
         jQuery(function(){
             // autocomplete on navbar search input
@@ -58,8 +63,7 @@
 
             $('.helphover').popover({animation: true, trigger:'hover'});
         });
-    </r:script>
-    <r:layoutResources/>
+    </asset:script>
     <g:layoutHead />
 </head>
 <body class="${pageProperty(name:'body.class')?:'nav-collections'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}"  data-offset="${pageProperty(name:'body.data-offset')}" data-target="${pageProperty(name:'body.data-target')}" data-spy="${pageProperty(name:'body.data-spy')}">
@@ -75,11 +79,11 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="brand do-not-mark-external" href="https://www.mdba.gov.au/" id="mdbaLink" title="MDBA home page">
-                <g:img dir="/images/mdba" file="MDBA-logo.png" alt="MDBA logo" class="headerLogo"/>
+                <img src="${asset.assetPath(src:'mdba/MDBA-logo.png')}" alt="MDBA logo" class="headerLogo"/>
                 <div id="mdbaHeadingText">MDBA</div>
             </a>
             <a class="brand" href="https://ala.org.au/" id="alaLink" title="ALA home page">
-                <g:img dir="/images/mdba" file="ALA-logo-BW-124x109.png" alt="Powered by ALA logo" class="headerLogo"/>
+                <img src="${asset.assetPath(src:'mdba/ALA-logo-BW-124x109.png')}" alt="Powered by ALA logo" class="headerLogo"/>
                 <div id="alaHeadingText"><div id="poweredBy">powered by</div><div id="alaBy" class="visible-desktop">Atlas of Living Australia</div>
                     <div class="hidden-desktop">ALA</div></div>
             </a>
@@ -153,6 +157,6 @@
 </div><!--/#footer -->
 
 <!-- JS resources-->
-<r:layoutResources/>
+<asset:deferredScripts/>
 </body>
 </html>

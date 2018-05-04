@@ -13,9 +13,14 @@
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${pActivity.projectId},Project"/>
     <meta name="breadcrumb" content="${pActivity.name}"/>
+    <asset:stylesheet src="common.css"/>
+    <asset:stylesheet src="forms-manifest.css"/>
+    <g:if test="${mobile}">
+        <asset:stylesheet src="mobile_activity.css"/>
+    </g:if>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
@@ -27,7 +32,7 @@
         siteDeleteUrl: "${createLink(controller: 'site', action: 'forceDelete')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
-        imageLocation:"${resource(dir: '/images')}",
+        imageLocation:"${asset.assetPath(src:'')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
         speciesSearch: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10])}",
         bioActivityUpdate: "${createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId, id: id])}",
@@ -39,12 +44,10 @@
         activityId: "${id}"
         },
         here = document.location.href;
-    </r:script>
+    </asset:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-
-    <r:require
-            modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,activity,attachDocuments,amplify,imageViewer,projectActivityInfo,species,map,leaflet_google_base,responsiveTableStacked,viewmodels"/>
-    <g:if test="${mobile}"><r:require modules="mobile"/></g:if>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
 </head>
 
 

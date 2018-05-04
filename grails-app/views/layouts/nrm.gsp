@@ -28,8 +28,10 @@
 <head>
     <title><g:layoutTitle /></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <r:require modules="nrmSkin, jquery_cookie"/>
-    <r:layoutResources/>
+    <asset:stylesheet src="base.css"/>
+    <asset:stylesheet src="nrm-manifest.css"/>
+    <asset:javascript src="base.js"/>
+    %{--<r:require modules="nrmSkin, jquery_cookie"/>--}%
     <g:layoutHead />
 </head>
 <body class="${pageProperty(name:'body.class')}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}">
@@ -140,7 +142,7 @@
         </div>
     </div>
 </g:if>
-<r:script>
+<asset:script type="text/javascript">
     // Prevent console.log() killing IE
     if (typeof console == "undefined") {
         this.console = {log: function() {}};
@@ -185,9 +187,9 @@
 
     }); // end document ready
 
-</r:script>
+</asset:script>
 <g:if test="${userLoggedIn}">
-    <r:script>
+    <asset:script type="text/javascript">
         $(document).ready(function (e) {
             // Show introduction popup (with cookie check)
             var cookieName = "hide-intro";
@@ -208,11 +210,11 @@
                 }
             });
         }); // end document ready
-    </r:script>
+    </asset:script>
 </g:if>
 <!-- current env = ${grails.util.Environment.getCurrent().name} -->
 <g:if test="${ grails.util.Environment.getCurrent().name =~ /test|prod/ }">
-    <r:script type="text/javascript">
+    <asset:script type="text/javascript">
 
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-4355440-1']);
@@ -225,9 +227,9 @@
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
 
-    </r:script>
+    </asset:script>
 </g:if>
 
-<r:layoutResources/>
+<asset:deferredScripts/>
 </body>
 </html>

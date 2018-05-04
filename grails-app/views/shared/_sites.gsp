@@ -7,7 +7,7 @@
     </div>
 </div>
 
-<r:script>
+<asset:script type="text/javascript">
 
     function generateMap(facetList) {
         var url = "${createLink(controller: 'nocas', action: 'geoService')}?max=10000&geo=true";
@@ -25,4 +25,4 @@
         var siteDisplay = new Biocollect.SiteDisplay();
         siteDisplay.generateMap(url, projectLinkPrefix, siteLinkPrefix);
     }
-</r:script>
+</asset:script>
