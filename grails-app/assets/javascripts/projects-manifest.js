@@ -1,6 +1,7 @@
 // leaflet
 //= require leaflet-manifest.js
 
+
 //= require moment/moment.min.js
 //= require moment/moment-timezone-with-data.min.js
 

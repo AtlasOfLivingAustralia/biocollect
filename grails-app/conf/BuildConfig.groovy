@@ -82,7 +82,6 @@ grails.project.dependency.resolution = {
 
         // required by the cached-resources plugin
         runtime ":cache-headers:1.1.6"
-
         runtime (":rest:0.8") {
             excludes "httpclient", "httpcore"
         }
