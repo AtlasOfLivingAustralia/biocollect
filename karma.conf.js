@@ -49,7 +49,7 @@ module.exports = function (config) {
             'grails-app/assets/javascripts/aekosWorkflow.js',
             'grails-app/assets/javascripts/aekosWorkflowUtility.js',
             'grails-app/assets/javascripts/speciesFieldsSettings.js',
-            'test/javascripts/spec/**/*.js'
+            'test/js/spec/**/*.js'
         ],
 
 
