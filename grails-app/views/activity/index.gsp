@@ -18,14 +18,14 @@
     <g:set var="commentUrl" value="${resource(dir:'/activity')}/${activity.activityId}/comment"></g:set>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
-        imageLocation:"${resource(dir:'/images')}",
+        imageLocation:"${asset.assetPath(src:'')}",
         createCommentUrl : "${commentUrl}",
         commentListUrl:"${commentUrl}",
         updateCommentUrl:"${commentUrl}",
@@ -34,9 +34,12 @@
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}"
         },
         here = document.location.href;
-    </r:script>
+    </asset:script>
+    <asset:stylesheet src="forms-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,map,leaflet_google_base,species,activity,comments,viewmodels"/>
+    %{--<r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,map,leaflet_google_base,species,activity,comments,viewmodels"/>--}%
     <g:set var="pActivity" value="${[commentsAllowed:false]}"/>
 </head>
 <body>
@@ -118,7 +121,7 @@
             <h3>${outputName}</h3>
             <!-- add the dynamic components -->
             <md:modelView model="${model}" site="${site}" readonly="true"/>
-            <r:script>
+            <asset:script type="text/javascript">
         $(function(){
 
             var viewModelName = "${blockId}ViewModel",
@@ -166,7 +169,7 @@
             ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
         });
 
-            </r:script>
+            </asset:script>
         </div>
     </g:each>
     <!-- /ko -->
@@ -184,7 +187,7 @@
 
 <!-- templates -->
 
-<r:script>
+<asset:script type="text/javascript">
 
     var returnTo = "${returnTo}";
 
@@ -251,6 +254,6 @@
         </g:if>
 
     });
-</r:script>
+</asset:script>
 </body>
 </html>

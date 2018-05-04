@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
     <!-- Chang URLs to wherever Video.js files will be hosted -->
-    <link href="${g.resource(dir: 'vendor/video-js/4.12.11/', file: 'video-js.css')}" rel="stylesheet" type="text/css">
+    <link href="${asset.assetPath(src: 'video-js/4.12.11/video-js.css')}" rel="stylesheet" type="text/css">
     <!-- video.js must be in the <head> for older IEs to work. -->
-    <script src="${g.resource(dir: 'vendor/video-js/4.12.11/', file: 'video.js')}"></script>
+    <script src="${asset.assetPath(src: 'video-js/4.12.11/video.js')}"></script>
 
     <!-- Unless using the CDN hosted version, update the URL to the Flash SWF -->
     <script>
-        videojs.options.flash.swf = "${g.resource(dir: 'vendor/video-js/4.12.11/', file: 'video-js.swf')}";
+        videojs.options.flash.swf = "${asset.assetPath(src: 'video-js/4.12.11/video-js.swf')}";
     </script>
 
     <style>

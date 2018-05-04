@@ -40,7 +40,7 @@
                     <p/>
                 </div>
                 <div data-bind="visible:!isExternal()" class="margin-top-1 margin-bottom-1">
-                    <img src="${resource([dir: "images", file: "ala-logo-small.png"])}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
+                    <img src="${asset.assetPath(src: "ala-logo-small.png")}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
 
                 </div>
             </div>
@@ -183,7 +183,7 @@
                     </div>
                 </div>
                 <g:render template="/shared/listDocumentLinks"
-                          model="${[transients:transients,imageUrl:resource(dir:'/images/filetypes')]}"/>
+                          model="${[transients:transients,imageUrl:asset.assetPath(src:'filetypes')]}"/>
                 <p/>
                 <div style="line-height:2.2em">
                     <g:render template="tags" />
@@ -208,7 +208,7 @@
         <span data-bind="visible: mainImageAttributionText()">Feature image: <span data-bind="text: mainImageAttributionText()"></span></span>
     </div>
 </div>
-<r:script>
+<asset:script type="text/javascript">
 
     <g:if test="${projectSite?.extent?.geometry}">
     if ((typeof map === 'undefined' || Object.keys(map).length == 0)) {
@@ -249,7 +249,7 @@
     }
 
     setTimeout(placeAssociatedOrgs, 2000);
-</r:script>
+</asset:script>
 
 
 
@@ -262,7 +262,7 @@
         <div data-bind="visible: url" class=" clearfix">
             <a href="#" data-bind="attr: {href: url}" target="_blank" class="do-not-mark-external">
 
-                <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
+                <g:set var="noImageUrl" value="${asset.assetPath(src: "no-image-2.png")}"/>
 
                     %{--Use 'if' instead of 'visible' to prevent creating child elements that potentially will source non https content--}%
                     <div data-bind="if: logo && logo.startsWith('https') "><img src="" data-bind="attr: {src: logo, title: name}"

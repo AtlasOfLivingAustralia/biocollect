@@ -1,5 +1,3 @@
-<r:require modules="admin, projectActivity"/>
-
 <div id="pActivitySurvey">
 
         <!-- ko foreach: projectActivities -->

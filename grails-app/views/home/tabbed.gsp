@@ -4,7 +4,8 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Home | Field Capture</title>
-    <r:script disposition="head">
+    <asset:stylesheet src="forms-manifest.css"/>
+    <asset:script type="text/javascript">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
@@ -13,8 +14,9 @@
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
     }
-    </r:script>
-    <r:require modules="knockout,map,jquery_bootstrap_datatable,js_iso8601"/>
+    </asset:script>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
 </head>
 <body>
 <div id="wrapper" class="container-fluid">
@@ -156,7 +158,7 @@
     </g:if>
 </div>
 
-<r:script>
+<asset:script type="text/javascript">
     var projectListIds = []; // list of strings
 
     $(window).load(function () {
@@ -570,6 +572,6 @@
     var viewModel = new ViewModel(data);
     ko.applyBindings(viewModel);*/
 
-</r:script>
+</asset:script>
 </body>
 </html>

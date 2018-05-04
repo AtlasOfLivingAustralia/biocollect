@@ -49,11 +49,11 @@
 </div>
 
 
-<r:script>
+<asset:script type="text/javascript">
 
     $(function () {
         var organisationsViewModel = new OrganisationsViewModel();
         ko.applyBindings(organisationsViewModel);
     });
 
-</r:script>
+</asset:script>

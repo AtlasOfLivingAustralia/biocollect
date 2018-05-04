@@ -620,8 +620,8 @@ class ModelJSTagLib {
     def timeViewModel(model, out) {
         // see http://keith-wood.name/timeEntry.html for details
 
-        String spinnerLocation = "${resource(file: '/vendor/jquery.timeentry.package-2.0.1/spinnerOrange.png')}"
-        String spinnerBigLocation = "${resource(file: '/vendor/jquery.timeentry.package-2.0.1/spinnerOrangeBig.png')}"
+        String spinnerLocation = "${asset.assetPath(src: 'jquery.timeentry.package-2.0.1/spinnerOrange.png')}"
+        String spinnerBigLocation = "${asset.assetPath(src: 'jquery.timeentry.package-2.0.1/spinnerOrangeBig.png')}"
 
         out << "\n" << INDENT*3 << "self.data.${model.name} = ko.observable();\n"
         out << "\n" << INDENT*3 << "\$('#${model.name}TimeField').timeEntry({ampmPrefix: ' ', spinnerImage: '${spinnerLocation}', spinnerBigImage: '${spinnerBigLocation}', spinnerSize: [20, 20, 8], spinnerBigSize: [40, 40, 16]});"

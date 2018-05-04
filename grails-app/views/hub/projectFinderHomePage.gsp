@@ -22,7 +22,11 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title><g:message code="hub.projectFinder"/> | ${hubConfig.title}</title>
-    <r:script disposition="head">
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
+    <asset:stylesheet src="projects-manifest.css" />
+    <asset:stylesheet src="project-finder.css" />
+    <asset:script type="text/javascript">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
@@ -39,8 +43,8 @@
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
-        imageLocation:"${resource(dir:'/images')}",
-        logoLocation:"${resource(dir:'/images/filetypes')}",
+        imageLocation:"${asset.assetPath(src:'')}",
+        logoLocation:"${asset.assetPath(src:'filetypes')}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
         isUserPage: false,
         <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
@@ -57,15 +61,18 @@
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
         defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
         showAllProjects: false,
-        meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
+        meritProjectLogo:"${asset.assetPath(src:'merit_project_logo.jpg')}",
         meritProjectUrl: "${grailsApplication.config.merit.project.url}",
         hideWorldWideBtn: ${!hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.showProjectRegionSwitch},
         flimit: ${grailsApplication.config.facets.flimit},
-        noImageUrl: '${resource([dir: "images", file: "no-image-2.png"])}',
-        sciStarterImageUrl: '${resource(dir: 'images', file: 'robot.png')}'
+        noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
+        sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}'
   }
-    </r:script>
-    <r:require modules="js_iso8601,projects,projectFinder,map,datepicker"/>
+    </asset:script>
+    <asset:javascript src="common.js" />
+    <asset:javascript src="projects-manifest.js" />
+    <asset:javascript src="project-finder.js" />
+    %{--<r:require modules="js_iso8601,projects,projectFinder,map,datepicker"/>--}%
     <style>
         %{-- Added to this page only to make image slider full page width --}%
         #main-content, #bannerHubContainer{
@@ -98,7 +105,7 @@
 
     <g:render template="/shared/projectFinder" model="${[doNotShowSearchBtn: true]}"/>
 </div>
-<r:script>
+<asset:script type="text/javascript">
     <g:if test="${hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.defaultView == 'grid'}">
         amplify.store('pt-view-state','tileView');
     </g:if>
@@ -107,6 +114,6 @@
     </g:elseif>
 
     var projectFinder = new ProjectFinder();
-</r:script>
+</asset:script>
 </body>
 </html>

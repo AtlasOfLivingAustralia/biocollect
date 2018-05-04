@@ -1,5 +1,3 @@
-<r:require module="projectDaysToGo" />
-
 <div class="dayscount" data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() > 0">
     <h2 data-bind="text:transients.daysRemaining"></h2>
     <h4>days to go</h4>
@@ -9,7 +7,7 @@
     <h4>Ended</h4>
 </div>
 <div class="dayscount" data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() < 0">
-    <r:img file="infinity.png" />
+    <img src="${asset.assetPath(src:'infinity.png')}" />
     <h4>Project</h4>
     <h4>Ongoing</h4>
 </div>

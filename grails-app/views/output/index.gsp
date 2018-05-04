@@ -5,7 +5,10 @@
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Edit | ${activity.activityId ?: 'new'} | ${site.name} | ${site.projectName} | Field Capture</title>
     <md:modelStyles model="${model}"/>
-    <r:require modules="jstimezonedetect,knockout,jqueryValidationEngine,datepicker,viewmodels"/>
+    <asset:stylesheet src="forms-manifest.css"/>
+    <asset:javascript src="jstz/jstz.min.js"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
 </head>
 <body>
 <div class="container-fluid">
@@ -66,7 +69,7 @@
     </div>
 </div>
 
-<r:script>
+<asset:script type="text/javascript">
 
     var outputData = ${output.data ?: '{}'};
 
@@ -108,6 +111,6 @@ ko.applyBindings(viewModel);
 
 });
 
-</r:script>
+</asset:script>
 </body>
 </html>>

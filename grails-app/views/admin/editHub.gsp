@@ -3,8 +3,7 @@
 <head>
     <meta name="layout" content="adminLayout"/>
     <title>Metadata | Admin | Data capture | Atlas of Living Australia</title>
-    <r:require modules="jquery,knockout,jqueryValidationEngine,attachDocuments,admin"/>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
         fcConfig = {
             listHubsUrl:"${createLink(controller: 'admin', action: 'listHubs')}",
             getHubUrl:"${createLink(controller: 'admin', action: 'loadHubSettings')}",
@@ -12,10 +11,16 @@
             listProjectFacetUrl: "${createLink(controller: 'project', action: 'getFacets')}",
             listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}"
         };
-    </r:script>
+    </asset:script>
 </head>
 
 <body>
+<asset:stylesheet src="admin.css"/>
+<asset:stylesheet src="fileupload-ui-manifest.css"/>
+<asset:javascript src="common.js"/>
+<asset:javascript src="fileupload-ui-manifest.js"/>
+<asset:javascript src="document.js"/>
+<asset:javascript src="hubs.js"/>
 
 <content tag="pageTitle">Create / Edit Hub</content>
 
@@ -1028,7 +1033,7 @@
     </tfoot>
 </table>
 </script>
-<r:script>
+<asset:script type="text/javascript">
 
     $(function() {
 
@@ -1041,7 +1046,7 @@
 
     });
 
-</r:script>
+</asset:script>
 
 </body>
 </html>

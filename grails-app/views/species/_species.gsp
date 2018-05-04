@@ -1,4 +1,3 @@
-<r:require modules="a-jquery-ui, jquery_bootstrap_datatable"/>
 <!-- This section is bound to a secondary KO viewModel. The following line prevents binding
          to the main viewModel. -->
 <!-- ko stopBinding: true -->
@@ -44,13 +43,13 @@
             <div class="control-group">
                 <div class="controls">
                     <button id="submitSpeciesList" class="btn btn-primary">${project.listId ? "Update" : "Submit"}</button>
-                    <g:img dir="images" file="spinner.gif" id="spinner1" class="hide spinner" alt="spinner icon"/>
+                    <g:img uri="${asset.assetPath(src:'spinner.gif')}" id="spinner1" class="hide spinner" alt="spinner icon"/>
                 </div>
             </div>
         </form>
     </div><!-- /.row-fluid -->
 </div>
-<r:script>
+<asset:script type="text/javascript">
     $(window).load(function(){
         // click event for submit species List
         $("#submitSpeciesList").click(function(e) {
@@ -101,5 +100,5 @@
 
     });
 
-</r:script>
+</asset:script>
 <!-- /ko -->

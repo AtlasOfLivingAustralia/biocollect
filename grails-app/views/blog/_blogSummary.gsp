@@ -30,7 +30,7 @@
 </div>
 <!-- /ko -->
 
-<r:script>
+<asset:script type="text/javascript">
 
 $(function(){
 
@@ -38,4 +38,4 @@ $(function(){
     ko.applyBindings(new BlogSummary(blog), document.getElementById('site-blog'));
 });
 
-</r:script>
+</asset:script>

@@ -19,7 +19,7 @@
     <link href="http://dev.openlayers.org/releases/OpenLayers-2.12/theme/default/style.css" type="text/css" rel="stylesheet"
           media="screen, projection"/>
 
-    <r:require modules="knockout"/>
+    <asset:javascript src="common.js"/>
 
     <style type="text/css">
     .chart {

@@ -1,5 +1,3 @@
-<r:require module="projectDaysToGo" />
-
 <div class="dayscount" data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() > 0">
     <strong>Status: </strong> <span data-bind="text:transients.daysRemaining"></span> <span>days to go</span>
 </div>

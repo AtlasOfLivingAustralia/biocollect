@@ -1,5 +1,5 @@
 <div class="row-fluid">
-        <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
+        <g:set var="noImageUrl" value="${asset.assetPath(src: "no-image-2.png")}"/>
         <table data-table-list class="project-finder-table">
             <tbody data-bind="foreach:pageProjects">
                 <tr>
@@ -23,12 +23,12 @@
                             <div data-bind="if: transients.links.length > 0" class="inline-block">
                                 <i class="icon-info-sign"></i>&nbsp;<span data-bind="html:transients.links"/>
                             </div>
-                            <div data-bind="visible: isSciStarter" class="inline-block">&nbsp;|&nbsp;<img class="logo-small" src="${resource(dir: 'images', file: 'robot.png')}" title="Project is sourced from SciStarter"></div>
+                            <div data-bind="visible: isSciStarter" class="inline-block">&nbsp;|&nbsp;<img class="logo-small" src="${asset.assetPath(src: 'robot.png')}" title="Project is sourced from SciStarter"></div>
                             <div style="line-height:2.2em" data-bind="visible:!isMERIT()">
                                 TAGS:&nbsp;<g:render template="/project/tags"/>
                             </div>
                             <div data-bind="if: !isExternal()">
-                                <img src="${resource([dir: "images", file: "ala-logo-small.png"])}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
+                                <img src="${asset.assetPath(src: "ala-logo-small.png")}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
                             </div>
                         </div>
                     </td>

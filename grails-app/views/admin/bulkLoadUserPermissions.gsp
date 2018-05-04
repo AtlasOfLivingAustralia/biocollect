@@ -7,7 +7,7 @@
     </head>
 
     <body>
-        <r:require module="jqueryValidationEngine"/>
+        <asset:javascript src="common.js"/>
         <content tag="pageTitle">Users - Bulk Load User Permissions</content>
         <div class="container">
             <div class="well">Logged in user is <b class="tooltips" title="${user}">${user.userDisplayName}</b></div>
@@ -57,9 +57,9 @@
     </body>
 </html>
 
-<r:script type="text/javascript">
+<asset:script type="text/javascript">
 
     $(document).ready(function() {
     }); // end document.ready
 
-</r:script>
+</asset:script>

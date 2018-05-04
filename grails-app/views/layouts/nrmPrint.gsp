@@ -18,8 +18,10 @@
 <head>
     <title><g:layoutTitle /></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <r:require modules="nrmPrintSkin"/>
-    <r:layoutResources/>
+    <asset:stylesheet src="base.css"/>
+    <asset:stylesheet src="nrm-manifest.css"/>
+    <asset:javascript src="base.js"/>
+    <asset:stylesheet src="print.css"/>
     <g:layoutHead />
 </head>
 <body class="${pageProperty(name:'body.class')}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}">
@@ -48,7 +50,7 @@
 
     </div>
 </div><!-- /#body-wrapper -->
-<r:script>
+<asset:script type="text/javascript">
 
     // Prevent console.log() killing IE
     if (typeof console == "undefined") {
@@ -72,8 +74,8 @@
     });
 
 
-</r:script>
+</asset:script>
 
-<r:layoutResources/>
+<asset:deferredScripts/>
 </body>
 </html>
