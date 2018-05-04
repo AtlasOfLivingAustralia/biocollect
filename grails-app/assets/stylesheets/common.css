@@ -1,3 +1,9 @@
+/*
+ *= require wmd/wmd.css
+ *= require wmd-editor.css
+ *= require validationEngine.jquery.css
+ *= require_self
+ */
 /* Documents specific styles */
 
 .nav-list.fc-docs-list {
@@ -430,7 +436,7 @@ input.padding-14, .padding-14{
 .sciStarterLogo{
     height: 50px;
     width: 50px;
-    background-image: url(/images/robot.png);
+    background-image: url(robot.png);
     background-repeat: no-repeat;
 }
 

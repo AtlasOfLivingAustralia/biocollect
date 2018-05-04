@@ -33,7 +33,7 @@
     </div>
     <br><br>
     <!-- /ko -->
-    <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
+    <g:set var="noImageUrl" value="${asset.assetPath(src: "no-image-2.png")}"/>
 
     <table data-table-list class="survey-finder-table">
         <tbody>
@@ -60,7 +60,7 @@
                             <div>
                                 <g:message code="project.survey.info.dataSharingLicense"/><br/>
                                 <g:each in="${licences}">
-                                    <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${resource(dir: 'images/licence/', file: it.logo)} ">&nbsp;&nbsp;${it.name}</a> </span>
+                                    <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${asset.assetPath(src:"licence/${it.logo}")} ">&nbsp;&nbsp;${it.name}</a> </span>
                                 </g:each>
                             </div>
                             <!-- /ko -->
@@ -169,7 +169,7 @@
                                 <h4>ENDED</h4>
                             </div>
                             <div class="dayscount" data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() < 0">
-                                <r:img file="infinity.png" />
+                                <img src="${asset.assetPath(src:'infinity.png')}" />
                                 <h4>SURVEY</h4>
                                 <h4>ONGOING</h4>
                             </div>
@@ -212,11 +212,11 @@
 
 <!-- /ko -->
 
-<r:script>
+<asset:script type="text/javascript">
 
     function initialiseProjectActivitiesList(pActivitiesVM){
         var pActivitiesListVM = new ProjectActivitiesListViewModel(pActivitiesVM);
         ko.applyBindings(pActivitiesListVM, document.getElementById('pActivitiesList'));
     };
 
-</r:script>
+</asset:script>

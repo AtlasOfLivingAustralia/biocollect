@@ -8,9 +8,9 @@
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${blogEntry.projectId},Project"/>
     <meta name="breadcrumb" content="Edit blog entry"/>
-
+    <asset:stylesheet src="fileupload-ui-manifest.css"/>
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             blogUpdateUrl: "${grailsApplication.config.grails.serverURL}/blog/update?id=${blogEntry.blogEntryId}",
@@ -18,9 +18,10 @@
             documentUpdateUrl: "${grailsApplication.config.grails.serverURL}/document/documentUpdate",
             returnTo: "${params.returnTo}"
             };
-    </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUpload,amplify,wmd"/>
-
+    </asset:script>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="fileupload-manifest.js"/>
+    <asset:javascript src="document.js"/>
 </head>
 <body>
 <div class="${containerType}">
@@ -32,7 +33,7 @@
     </div>
 </div>
 
-<r:script>
+<asset:script type="text/javascript">
 
 var EditableBlogEntryViewModel = function(blogEntry, options) {
 
@@ -125,7 +126,7 @@ var EditableBlogEntryViewModel = function(blogEntry, options) {
 
 
 
-</r:script>
+</asset:script>
 
 </body>
 

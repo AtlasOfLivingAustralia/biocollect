@@ -9,12 +9,16 @@
     <meta name="description" content="Atlas of Living Australia Field Capture"/>
     <meta name="author" content="Atlas of Living Australia">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><g:layoutTitle/></title>
     <link href="https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"
           type="image/x-icon"/>
 
-    <title><g:layoutTitle/></title>
-    <r:require modules="ala, ala2Skin, jquery_cookie"/>
-    <r:layoutResources/>
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/ala-styles.css"/>
+    <asset:stylesheet src="base.css"/>
+    <asset:stylesheet src="ala2.css"/>
+    <asset:javascript src="base.js"/>
     <g:layoutHead/>
 </head>
 
@@ -68,7 +72,6 @@
     <div class="container hidden-desktop">
         <%-- Borrowed from http://marcusasplund.com/optout/ --%>
         <a class="btn btn-small toggleResponsive"><i class="icon-resize-full"></i> <span>Desktop</span> version</a>
-        %{--<a class="btn btn-small toggleResponsive"><i class="icon-resize-full"></i> Desktop version</a>--}%
     </div>
 
     <div id="ala-footer">
@@ -114,11 +117,10 @@
                 Do not display this message again (current browser only)
             </label>
             <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-            %{--<a href="#" class="btn btn-primary">Save changes</a>--}%
         </div>
     </div>
 </g:if>
-<r:script>
+<asset:script type="text/javascript">
     // Prevent console.log() killing IE
     if (typeof console == "undefined") {
         this.console = {log: function() {}};
@@ -151,9 +153,9 @@
 
     }); // end document ready
 
-</r:script>
+</asset:script>
 <g:if test="${userLoggedIn}">
-    <r:script>
+    <asset:script type="text/javascript">
         $(document).ready(function (e) {
             // Show introduction popup (with cookie check)
             var cookieName = "hide-intro";
@@ -174,34 +176,9 @@
                 }
             });
         }); // end document ready
-    </r:script>
+    </asset:script>
 </g:if>
-<g:if test="${java.lang.Boolean.parseBoolean(grailsApplication.config.bugherd.integration)}">
-    <r:script>
-        (function (d, t) {
-            var bh = d.createElement(t), s = d.getElementsByTagName(t)[0];
-            bh.type = 'text/javascript';
-            bh.src = '//www.bugherd.com/sidebarv2.js?apikey=2wgeczqfyixard6e9xxfnq';
-            s.parentNode.insertBefore(bh, s);
-        })(document, 'script');
-    </r:script>
-</g:if>
-
-<script type="text/javascript">
-    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<r:script>
-        var pageTracker = _gat._getTracker('${grailsApplication.config.googleAnalyticsID}');
-        pageTracker._initData();
-        pageTracker._trackPageview();
-        // show warning if using IE6
-        if ($.browser.msie && $.browser.version.slice(0,1) == '6') {
-            $('#header').prepend($('<div style="text-align:center;color:red;">WARNING: This page is not compatible with IE6.' +
-    ' Many functions will still work but layout and image transparency will be disrupted.</div>'));
-        }
-</r:script>
-<r:script>
+<asset:script type="text/javascript">
     function calcWidth() {
         var navwidth = 0;
         var morewidth = $('#main .more').outerWidth(true);
@@ -234,8 +211,35 @@
     });
     $('#biocollectNav').show();
     calcWidth();
-</r:script>
+</asset:script>
 <!-- JS resources-->
-<r:layoutResources/>
+<asset:deferredScripts />
+
+
+<g:if test="${java.lang.Boolean.parseBoolean(grailsApplication.config.bugherd.integration)}">
+    <asset:script type="text/javascript">
+        (function (d, t) {
+            var bh = d.createElement(t), s = d.getElementsByTagName(t)[0];
+            bh.type = 'text/javascript';
+            bh.src = '//www.bugherd.com/sidebarv2.js?apikey=2wgeczqfyixard6e9xxfnq';
+            s.parentNode.insertBefore(bh, s);
+        })(document, 'script');
+    </asset:script>
+</g:if>
+
+<asset:script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</asset:script>
+<asset:script type="text/javascript">
+    var pageTracker = _gat._getTracker('${grailsApplication.config.googleAnalyticsID}');
+        pageTracker._initData();
+        pageTracker._trackPageview();
+        // show warning if using IE6
+        if ($.browser.msie && $.browser.version.slice(0,1) == '6') {
+            $('#header').prepend($('<div style="text-align:center;color:red;">WARNING: This page is not compatible with IE6.' +
+' Many functions will still work but layout and image transparency will be disrupted.</div>'));
+        }
+</asset:script>
 </body>
 </html>

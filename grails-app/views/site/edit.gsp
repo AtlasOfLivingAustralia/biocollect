@@ -34,7 +34,9 @@
     }
     .no-border { border-top: none !important; }
   </style>
-    <r:script disposition="head">
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
+    <asset:script type="text/javascript">
     var fcConfig = {
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -60,8 +62,13 @@
         },
         here = window.location.href;
 
-    </r:script>
-    <r:require modules="knockout, jqueryValidationEngine, amplify, projects, map"/>
+    </asset:script>
+    <asset:stylesheet src="sites-manifest.css"/>
+    <asset:stylesheet src="leaflet-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="leaflet-manifest.js"/>
+    <asset:javascript src="sites-manifest.js"/>
+    %{--<r:require modules="knockout, jqueryValidationEngine, amplify, projects, map"/>--}%
 </head>
 <body>
     <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -96,7 +103,7 @@
     </div>
     </g:if>
 
-<r:script>
+<asset:script type="text/javascript">
     $(function(){
 
         $('#validation-container').validationEngine('attach', {scroll: false});
@@ -162,7 +169,7 @@
             }
         });
     });
-</r:script>
+</asset:script>
 
 </body>
 </html>

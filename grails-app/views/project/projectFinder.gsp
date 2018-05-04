@@ -30,7 +30,11 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title><g:if test="${title}">${title}</g:if><g:else><g:message code="g.${label}"/></g:else> | <g:message code="g.fieldCapture"/></title>
-    <r:script disposition="head">
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
+    <asset:stylesheet src="projects-manifest.css" />
+    <asset:stylesheet src="project-finder.css" />
+    <asset:script type="text/javascript">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
@@ -48,18 +52,18 @@
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
-        imageLocation:"${resource(dir: '/images')}",
-        logoLocation:"${resource(dir: '/images/filetypes')}",
+        imageLocation:"${asset.assetPath(src:'')}",
+        logoLocation:"${asset.assetPath(src:'filetypes')}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
         projectListUrl: "${createLink(controller: 'project', action: 'search', params: [initiator: 'biocollect'])}",
         projectIndexBaseUrl : "${createLink(controller: 'project', action: 'index')}/",
         organisationBaseUrl : "${createLink(controller: 'organisation', action: 'index')}/",
         isCitizenScience: true,
         showAllProjects: false,
-        meritProjectLogo:"${resource(dir: '/images', file: 'merit_project_logo.jpg')}",
+        meritProjectLogo:"${asset.assetPath(src: 'merit_project_logo.jpg')}",
         flimit: ${grailsApplication.config.facets.flimit},
-        noImageUrl: '${resource([dir: "images", file: "no-image-2.png"])}',
-        sciStarterImageUrl: '${resource(dir: 'images', file: 'robot.png')}',
+        noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
+        sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
 
         <g:if test="${isUserPage}">
             <g:if test="${isWorks}">
@@ -93,9 +97,13 @@
         <g:if test="${grailsApplication.config.merit.projectLogo}">
             fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";
         </g:if>
-    </r:script>
+    </asset:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <r:require modules="js_iso8601,knockout,jqueryValidationEngine,map,datepicker,projects,projectFinder"/>
+    <asset:javascript src="common.js" />
+    <asset:javascript src="project-activity-manifest.js" />
+    <asset:javascript src="projects-manifest.js" />
+    <asset:javascript src="project-finder.js" />
+    %{--<r:require modules="js_iso8601,knockout,jqueryValidationEngine,map,datepicker,projects,projectFinder"/>--}%
 </head>
 
 <body>
@@ -138,7 +146,7 @@
         </div>
     </div>
 </div>
-<r:script>
+<asset:script type="text/javascript">
     $("#newPortal").on("click", function() {
     <g:if test="${isCitizenScience}">
         document.location.href = "${createLink(controller: 'project', action: 'create', params: [citizenScience: true])}";
@@ -153,6 +161,6 @@
 
     var projectFinder = new ProjectFinder();
 
-</r:script>
+</asset:script>
 </body>
 </html>

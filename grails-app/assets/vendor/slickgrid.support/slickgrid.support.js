@@ -1048,7 +1048,7 @@ progressFormatter = function( row, cell, value, columnDef, dataContext ) {
 
     result +=  "><span class=\"label "+activityProgressClass(progress)+"\">"+progress+"</span>"
     if (saving) {
-        result += '<r:img dir="images" file="ajax-saver.gif" alt="saving icon"/>'
+        result += '<img src="${asset.assetPath(src:\'ajax-saver.gif\')}" alt="saving icon"/>'
     }
     return result;
 };

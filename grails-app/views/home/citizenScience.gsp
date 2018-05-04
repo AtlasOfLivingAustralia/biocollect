@@ -4,7 +4,7 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title><g:message code="g.citizenScience"/> | <g:message code="g.fieldCapture"/></title>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
@@ -14,7 +14,7 @@
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}"
     }
-    </r:script>
+    </asset:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
 </head>
 

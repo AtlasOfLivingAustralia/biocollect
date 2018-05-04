@@ -6,8 +6,10 @@
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${project.name?.encodeAsHTML()}"/>
     <meta name="breadcrumb" content="Edit"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
 
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
     var fcConfig = {
         projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
@@ -20,7 +22,7 @@
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         geocodeUrl: "${grailsApplication.config.google.geocode.url}",
-        imageLocation:"${resource(dir:'/images')}",
+        imageLocation:"${asset.assetPath(src:'')}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}",
         scienceTypes: ${scienceTypes as grails.converters.JSON},
@@ -33,8 +35,14 @@
         },
         here = window.location.href;
 
-    </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,amplify,jQueryFileUpload,projects,organisation, fuseSearch, map, largeCheckbox"/>
+    </asset:script>
+    <asset:stylesheet src="organisation.css"/>
+    <asset:stylesheet src="project-create-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="organisation.js"/>
+    <asset:javascript src="project-activity-manifest.js"/>
+    <asset:javascript src="projects-manifest.js"/>
+    %{--<r:require modules="knockout,jqueryValidationEngine,datepicker,amplify,jQueryFileUpload,projects,organisation, fuseSearch, map, largeCheckbox"/>--}%
 </head>
 
 <body>
@@ -48,7 +56,7 @@
 </form>
 
 </div>
-<r:script>
+<asset:script type="text/javascript">
 $(function(){
 
     var PROJECT_DATA_KEY="CreateProjectSavedData";
@@ -112,7 +120,7 @@ $(function(){
     }
     });
  });
-</r:script>
+</asset:script>
 
 </body>
 </html>

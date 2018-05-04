@@ -1,3 +1,9 @@
+/*
+ *= require leaflet-manifest
+ *= require facets-filter-view.css
+ *= require project-daystogo.css
+ */
+
 .projectLogo {
     width: 200px;
     height: 150px;

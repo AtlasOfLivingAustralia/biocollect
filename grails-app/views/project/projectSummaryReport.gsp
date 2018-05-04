@@ -4,7 +4,10 @@
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Project Summary | Project | MERIT</title>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <r:require modules="projects"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
+    <asset:stylesheet src="projects-manifest.css"/>
+    <asset:javascript src="projects-manifest.js"/>
 </head>
 
 <body>
@@ -86,11 +89,11 @@
 
 </div>
 
-<r:script>
+<asset:script type="text/javascript">
 var project = <fc:modelAsJavascript model="${project}"/>;
 var viewModel = new MERIPlan(project, [], '');
 ko.applyBindings(viewModel);
 
-</r:script>
+</asset:script>
 </body>
 </html>

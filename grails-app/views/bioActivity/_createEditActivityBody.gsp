@@ -40,7 +40,7 @@
                 <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}" printable="${printView}"/>
             </div>
 
-            <r:script>
+            <asset:script type="text/javascript">
     $(function(){
         var viewModelName = "${blockId}ViewModel", viewModelInstance = viewModelName + "Instance";
         // load dynamic models - usually objects in a list
@@ -157,7 +157,7 @@
             window[viewModelInstance].loadData(savedOutput);
         }
     });
-            </r:script>
+            </asset:script>
         </div>
     </g:if>
 </g:each>
@@ -241,7 +241,7 @@
 <g:render template="/shared/attachDocument"/>
 <g:render template="/shared/documentTemplate"/>
 
-<r:script>
+<asset:script type="text/javascript">
         var returnTo = "${returnTo}";
 
         /* Master controller for page. This handles saving each model as required. */
@@ -659,5 +659,5 @@
             master.register('activityModel', viewModel.modelForSaving, viewModel.dirtyFlag.isDirty, viewModel.dirtyFlag.reset);
         });
 
-</r:script>
+</asset:script>
 </div>

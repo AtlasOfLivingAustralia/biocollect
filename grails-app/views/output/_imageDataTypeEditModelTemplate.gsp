@@ -1,4 +1,3 @@
-<r:require modules="imageDataType"/>
 <div id="" class="fileupload-buttonbar">
     <!-- ko foreach: ${name} -->
     <!-- Images -->

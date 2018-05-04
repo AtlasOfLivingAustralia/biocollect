@@ -149,7 +149,7 @@ nav#biocollectNav ul#main li a.ala-link:hover{
 }
 
 .acsa-image {
-    content: url(/images/ACSA_logo_white.png);
+    content: url(ACSA_logo_white.png);
     height: 45px;
 }
 
@@ -174,7 +174,7 @@ nav#biocollectNav > ul > li#acsa-text {
 }
 
 .acsa-icon{
-    content: url(/images/acsa_icon.png);
+    content: url(acsa_icon.png);
     height: 20px;
 }
 

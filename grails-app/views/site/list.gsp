@@ -43,7 +43,12 @@
             myFavourites: "${myFavourites}"
         }
     </script>
-    <r:require modules="restoreTab,siteSearch"></r:require>
+    <asset:stylesheet src="sites-manifest.css"/>
+    <asset:stylesheet src="leaflet-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="leaflet-manifest.js"/>
+    <asset:javascript src="sites-manifest.js"/>
+    %{--<r:require modules="restoreTab,siteSearch"></r:require>--}%
 </head>
 
 <body>

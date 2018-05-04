@@ -1,11 +1,11 @@
 modules = {
-    ala2Skin {
-        dependsOn 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
-        resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
-        resource url: 'css/bootstrap-combobox.css'
-        resource url: 'css/common.css'
-        resource url: 'css/biocollect-banner.css'
-    }
+//    ala2Skin {
+//        dependsOn 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
+//        resource url: 'vendor/bootstrap-combobox/bootstrap-combobox.js'
+//        resource url: 'css/bootstrap-combobox.css'
+//        resource url: 'css/common.css'
+//        resource url: 'css/biocollect-banner.css'
+//    }
 
     alaSkin {
         dependsOn 'a-jquery-ui', 'autocomplete', 'bootstrap', 'defaultSkin'
@@ -37,20 +37,20 @@ modules = {
     }
 
     /** BEGIN - Fildcapture/Marite resources **/
-    application {
-        dependsOn 'jquery', 'knockout', 'bootbox'
-        resource url: 'vendor/html5/html5.js', wrapper: { s -> "<!--[if lt IE 9]>$s<![endif]-->" }, disposition: 'head'
-        resource url: 'vendor/vkbeautyfy/vkbeautify.0.99.00.beta.js'
-        resource url: 'js/fieldcapture-application.js'
-        resource url: 'vendor/jquery.shorten/jquery.shorten.js'
-        resource url: 'vendor/jquery.columnizer/jquery.columnizer.js'
-        resource url: 'vendor/jquery.blockUI/jquery.blockUI.js'
-        resource url: 'vendor/polyfill/es6-promise.auto.js'
-    }
-
-    bootbox {
-        resource url: "vendor/bootbox/bootbox.min.js"
-    }
+//    application {
+//        dependsOn 'jquery', 'knockout', 'bootbox'
+//        resource url: 'vendor/html5/html5.js', wrapper: { s -> "<!--[if lt IE 9]>$s<![endif]-->" }, disposition: 'head'
+//        resource url: 'vendor/vkbeautyfy/vkbeautify.0.99.00.beta.js'
+//        resource url: 'js/fieldcapture-application.js'
+//        resource url: 'vendor/jquery.shorten/jquery.shorten.js'
+//        resource url: 'vendor/jquery.columnizer/jquery.columnizer.js'
+//        resource url: 'vendor/jquery.blockUI/jquery.blockUI.js'
+//        resource url: 'vendor/polyfill/es6-promise.auto.js'
+//    }
+//
+//    bootbox {
+//        resource url: "vendor/bootbox/bootbox.min.js"
+//    }
 
     defaultSkin {
         dependsOn 'application'
@@ -270,11 +270,11 @@ modules = {
         resource url: 'vendor/responsive/css/responsive.tablelist.css'
     }
 
-    jquery_cookie {
-        defaultBundle 'application'
-        dependsOn 'jquery'
-        resource url: 'vendor/jquery.cookie/jquery.cookie.js'
-    }
+//    jquery_cookie {
+//        defaultBundle 'application'
+//        dependsOn 'jquery'
+//        resource url: 'vendor/jquery.cookie/jquery.cookie.js'
+//    }
 
     projectActivity {
         defaultBundle 'application'
@@ -342,8 +342,8 @@ modules = {
         }
         
         map {
-            dependsOn "underscore"
-            dependsOn "jquery"
+//            dependsOn "underscore"
+//            dependsOn "jquery"
             dependsOn "jqueryScrollView"
             dependsOn 'leaflet_0.7.7'
             dependsOn "leaflet_draw"
@@ -458,11 +458,11 @@ modules = {
 
     }
 
-    pretty_text_diff {
-        resource url: 'vendor/prettytextdiff/jquery.pretty-text-diff.min.js'
-        resource url: 'vendor/prettytextdiff/diff_match_patch.js'
-        resource url: 'vendor/prettytextdiff/pretty_text_diff_basic.css'
-    }
+//    pretty_text_diff {
+//        resource url: 'vendor/prettytextdiff/jquery.pretty-text-diff.min.js'
+//        resource url: 'vendor/prettytextdiff/diff_match_patch.js'
+//        resource url: 'vendor/prettytextdiff/pretty_text_diff_basic.css'
+//    }
 
     leaflet_google_base {
         resource url: 'vendor/leaflet-plugins-2.0.0/layer/tile/Google.js'
@@ -505,7 +505,7 @@ modules = {
     
     activities{
         resource url: 'css/activities.css'
-        resource url: 'css/map.css'
+        resource url: 'css/map-activity.css'
     }
 
     largeCheckbox{
@@ -549,7 +549,7 @@ modules = {
     projectDaysToGo {
         resource url: 'css/project-daystogo.css'
     }
-    sites{
+    sites {
         dependsOn('imageViewer', 'font_awesome_44', 'projectActivityInfo', 'myActivity', 'knockout')
         resource url: 'css/sites.css'
         resource url: 'css/horizontal-scroll-list.css'
@@ -592,9 +592,9 @@ modules = {
         resource url: 'css/common.css'
         resource url: [dir: 'css', file: 'Common_fonts.css']
     }
-    mobile{
-        resource url: 'css/mobile_activity.css'
-    }
+//    mobile{
+//        resource url: 'css/mobile_activity.css'
+//    }
 
     // This module is used by ala-bootstrap2 plugin. Removed application.js file from module.
     core {
