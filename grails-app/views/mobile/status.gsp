@@ -4,12 +4,12 @@
 <head>
     <meta name="layout" content="mobile"/>
     <title> Mobile | Bio Collect</title>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
     var fcConfig = {
         };
         here = document.location.href;
-    </r:script>
-    <r:require modules="knockout,jquery"/>
+    </asset:script>
+    <asset:javascript src="common.js"/>
 </head>
 <body>
 
@@ -24,12 +24,12 @@
 
 </div>
 
-<r:script>
+<asset:script type="text/javascript">
     $(function() {
 
 
     });
-</r:script>
+</asset:script>
 
 </body>
 </html>

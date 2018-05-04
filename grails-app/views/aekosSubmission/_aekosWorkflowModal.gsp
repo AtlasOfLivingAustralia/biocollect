@@ -144,10 +144,10 @@
 
 <div id="aekosWorkflowDialog"></div>
 
-<r:script>
+<asset:script type="text/javascript">
 
     $(window).load(function () {
         $("div.modal.hide.fade.aekosModal").validationEngine();
     });
 
-</r:script>
+</asset:script>

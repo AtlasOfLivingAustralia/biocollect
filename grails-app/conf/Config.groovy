@@ -154,6 +154,8 @@ if(!(new File(loggingDir).exists())){
     loggingDir = "/tmp"
 }
 
+grails.assets.less.compiler = 'standard'
+
 // log4j configuration
 log4j = {
     appenders {

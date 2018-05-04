@@ -1,4 +1,3 @@
-<r:require module="species"/>
 <div class="row-fluid" data-bind="with:${source}">
     <div class="span6">
         <div class="row-fluid">

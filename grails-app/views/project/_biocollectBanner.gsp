@@ -5,7 +5,7 @@
     <ul id='main'>
         <g:set var="path" value="${request.getServletPath()}"/>
         <li class="pull-left">
-            <a id="biocollectlogo" class="white-background" href="${grailsApplication.config.biocollect.homepageUrl}"><img src="${resource(dir: 'images/icons', file: 'BioCollect24.jpg')}" width="193"></a>
+            <a id="biocollectlogo" class="white-background" href="${grailsApplication.config.biocollect.homepageUrl}"><img src="${asset.assetPath(src:"icons/Biocollect24.jpg")}" width="193"></a>
         </li>
         <li class="${(path ==~ /.*project\/projectFinder.*/) ? 'active' : ''}">
             <a href="${createLink(controller: 'home', action: 'index')}" class="btnSearch"><span class="fa fa-search"></span>Search</a>
@@ -56,7 +56,7 @@
         </g:if>
     </ul>
 </nav>
-<r:script>
+<asset:script>
     function calcWidth() {
         var navwidth = 0;
         var morewidth = $('#main .more').outerWidth(true);
@@ -89,4 +89,4 @@
     });
     $('#biocollectNav').show();
     calcWidth();
-</r:script>
+</asset:script>

@@ -41,7 +41,7 @@
                     <div class="row-fluid">
                         <div class="span10">
                             <g:render template="/shared/editDocuments"
-                                      model="[useExistingModel: true,editable:true, filterBy: 'all', ignore: '', imageUrl:resource(dir:'/images/filetypes'),containerId:'adminDocumentList']"/>
+                                      model="[useExistingModel: true,editable:true, filterBy: 'all', ignore: '', imageUrl:asset.assetPath(src:'filetypes'),containerId:'adminDocumentList']"/>
                         </div>
                     </div>
                     <g:render template="/shared/attachDocument"/>
@@ -83,8 +83,8 @@
     </div>
 </div>
 
-<r:script>
+<asset:script type="text/javascript">
     function initialiseInternalCSAdmin() {
         new RestoreTab('ul-cs-internal-project-admin', 'project-settings-tab');
     }
-</r:script>
+</asset:script>

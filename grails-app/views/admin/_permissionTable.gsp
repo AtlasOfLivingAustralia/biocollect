@@ -11,7 +11,7 @@
                 <td><a class="memEditRole icon-edit tooltips" href="" title="edit this user and role combination"></a></td>
                 <td><a class="memRemoveRole icon-remove tooltips" href="" title="remove this user and role combination"></a></td>
             </tr>
-            <tr id="spinnerRow"><td colspan="5">loading data... <g:img dir="images" file="spinner.gif" id="spinner2" class="spinner" alt="spinner icon"/></td></tr>
+            <tr id="spinnerRow"><td colspan="5">loading data... <g:img uri="${asset.assetPath(src:'spinner.gif')}" id="spinner2" class="spinner" alt="spinner icon"/></td></tr>
             <tr id="messageRow" class="hide"><td colspan="5">No project members set</td></tr>
             </tbody>
         </table>
@@ -24,7 +24,7 @@
     </div>
 </div>
 
-<r:script>
+<asset:script type="text/javascript">
 
 
             /**
@@ -174,4 +174,4 @@
                 });
             });
 
-</r:script>
+</asset:script>

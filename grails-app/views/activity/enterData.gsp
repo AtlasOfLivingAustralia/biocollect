@@ -16,7 +16,7 @@
     <meta name="breadcrumb" content="Enter data"/>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
@@ -25,7 +25,7 @@
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
-        imageLocation:"${resource(dir:'/images')}",
+        imageLocation:"${asset.assetPath(src:'')}",
         getSingleSpeciesUrl : "${createLink(controller: 'project', action: 'getSingleSpecies', params: [id: project.projectId])}",
         speciesSearch: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
@@ -34,9 +34,12 @@
         sites: ${((project?.sites ?: []) as JSON).toString()}
         },
         here = document.location.href;
-    </r:script>
+    </asset:script>
+    <asset:stylesheet src="forms-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,map,leaflet_google_base,activity,attachDocuments,species,amplify,imageDataType,imageViewer,bootstrap,viewmodels,photoPoint"/>
+    %{--<r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,map,leaflet_google_base,activity,attachDocuments,species,amplify,imageDataType,imageViewer,bootstrap,viewmodels,photoPoint"/>--}%
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -175,7 +178,7 @@
                 <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h3>
                 <!-- add the dynamic components -->
                 <md:modelView model="${model}" site="${site}" edit="true" printable="${printView}" surveyName="${metaModel?.name}" output="${output.name}"/>
-        <r:script>
+        <asset:script type="text/javascript">
 
 
             $(function(){
@@ -275,7 +278,7 @@
                 }
             });
 
-                </r:script>
+                </asset:script>
             </div>
         </g:if>
     </g:each>
@@ -312,7 +315,7 @@
 
 <g:render template="/shared/imagerViewerModal" model="[readOnly:false]"></g:render>
 
-<r:script>
+<asset:script type="text/javascript">
 
     var returnTo = "${returnTo}";
 
@@ -606,6 +609,6 @@
 
     });
 
-</r:script>
+</asset:script>
 </body>
 </html>

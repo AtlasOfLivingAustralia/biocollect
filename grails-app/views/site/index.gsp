@@ -9,7 +9,7 @@
           content="${createLink(controller: 'site', action: 'list')},Sites"/>
     <meta name="breadcrumb" content="${site.name?.encodeAsHTML()}"/>
 
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
@@ -46,8 +46,13 @@
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/"
             },
             here = "${createLink(controller: 'site', action: 'index', id: site.siteId)}";
-    </r:script>
-    <r:require modules="knockout,amplify,map,sites"/>
+    </asset:script>
+    <asset:stylesheet src="sites-manifest.css"/>
+    <asset:stylesheet src="leaflet-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="leaflet-manifest.js"/>
+    <asset:javascript src="sites-manifest.js"/>
+    %{--<r:require modules="knockout,amplify,map,sites"/>--}%
 </head>
 
 <body>
@@ -347,7 +352,7 @@
         </div>
     </g:if>
 </div>
-<r:script>
+<asset:script type="text/javascript">
         $(function(){
             var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
 
@@ -457,6 +462,6 @@
             }
         }
 
-</r:script>
+</asset:script>
 </body>
 </html>

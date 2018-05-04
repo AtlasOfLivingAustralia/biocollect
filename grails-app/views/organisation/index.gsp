@@ -10,8 +10,9 @@
     <meta name="breadcrumb" content="${organisation.name}"/>
 
     <g:set var="loadPermissionsUrl" value="${createLink(controller: 'organisation', action: 'getMembersForOrganisation', id:organisation.organisationId)}"/>
-
-    <r:script disposition="head">
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
+    <asset:script type="text/javascript">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             viewProjectUrl: "${createLink(controller:'project', action:'index')}",
@@ -26,8 +27,8 @@
             regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-            imageLocation:"${resource(dir:'/images')}",
-            logoLocation:"${resource(dir:'/images/filetypes')}",
+            imageLocation:"${asset.assetPath(src:'')}",
+            logoLocation:"${asset.assetPath(src:'filetypes')}",
             adHocReportsUrl: '${g.createLink(action:"getAdHocReportTypes")}',
             dashboardUrl: "${g.createLink(controller: 'report', action: 'loadReport', params:[fq:'organisationFacet:'+organisation.name])}",
             reportCreateUrl: '${g.createLink( action:'createAdHocReport')}',
@@ -46,7 +47,7 @@
             organisation : <fc:modelAsJavascript model="${organisation}"/>,
             organisationName : "${organisation.name}",
             showAllProjects: true,
-            meritProjectLogo:"${resource(dir:'/images', file:'merit_project_logo.jpg')}",
+            meritProjectLogo:"${asset.assetPath(src:'merit_project_logo.jpg')}",
             meritProjectUrl: "${grailsApplication.config.merit.project.url}",
 
             searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
@@ -70,9 +71,9 @@
             flimit: ${grailsApplication.config.facets.flimit},
             occurrenceUrl: "",
             spatialUrl: "",
-            absenceIconUrl:"${resource(dir: 'images', file: 'triangle.png')}"
+            absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}"
         };
-    </r:script>
+    </asset:script>
     <style type="text/css">
         #projectList th {
             white-space: normal;
@@ -84,11 +85,24 @@
             margin: 5px 0;
         }
     </style>
-    <r:require modules="wmd,knockout,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder,map,siteDisplaysiteDispl,myActivity, activities"/>
+    <asset:stylesheet src="base.css"/>
+    <asset:stylesheet src="organisation.css"/>
+    <asset:stylesheet src="facets-filter-view.css"/>
+    <asset:stylesheet src="projects-manifest.css"/>
+    <asset:stylesheet src="project-finder.css" />
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="organisation.js"/>
+    <asset:javascript src="projectActivityInfo.js"/>
+    <asset:javascript src="facets.js"/>
+    <asset:javascript src="projects.js"/>
+    <asset:javascript src="project-activity-manifest.js"/>
+    <asset:javascript src="projects-manifest.js"/>
+    <asset:javascript src="project-finder.js" />
+    %{--<r:require modules="wmd,knockout,amplify,organisation,projects,jquery_bootstrap_datatable,datepicker,jqueryValidationEngine,slickgrid,projectFinder,map,siteDisplaysiteDispl,myActivity, activities"/>--}%
 </head>
 <body>
 
-    <g:render template="banner" model="${[imageUrl:resource(dir:'/images/filetypes')]}"/>
+    <g:render template="banner" model="${[imageUrl:asset.assetPath(src:'filetypes')]}"/>
 
     <div id="organisationDetails" class="container-fluid">
 
@@ -104,13 +118,13 @@
             </div>
         </div>
         <div id="loading" class="text-center">
-            <r:img width="50px" dir="images" file="loading.gif" alt="loading icon"/>
+            <img width="50px" src="${asset.assetPath(src:'loading.gif')}" alt="loading icon"/>
         </div>
     </div>
 
 <g:render template="/shared/declaration"/>
 
-<r:script>
+<asset:script type="text/javascript">
 
     $(function () {
 
@@ -172,7 +186,7 @@
     $(function() {
         var projectFinder = new ProjectFinder();
     });
-</r:script>
+</asset:script>
 
 </body>
 

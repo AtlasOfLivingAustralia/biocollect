@@ -15,16 +15,19 @@
         <li><a data-bind="click:goToSite" class="clickable">Site</a> <span class="divider">/</span></li>
     </g:elseif>
     <meta name="breadcrumb" content="Create new activity"/>
+    <asset:stylesheet src="forms-manifest.css"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         createUrl: "${createLink(action: 'create')}/",
         projectViewUrl: "${createLink(controller:'project', action:'index')}/"
         },
         here = document.location.href;
-    </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker"/>
+    </asset:script>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
+    %{--<r:require modules="knockout,jqueryValidationEngine,datepicker"/>--}%
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -57,7 +60,7 @@
 
 <!-- templates -->
 
-<r:script>
+<asset:script type="text/javascript">
 
     var returnTo = "${returnTo}";
 
@@ -105,11 +108,11 @@
 
         }
 
-        var viewModel = new ViewModel(${(activityTypes as JSON).toString()}, '${project.projectId}');
+        var viewModel = new ViewModel(${(activityTypes as JSON).toString()}, '${project?.projectId}');
         ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
 
     });
 
-</r:script>
+</asset:script>
 </body>
 </html>

@@ -9,9 +9,14 @@
     <meta name="app.build" content="${g.meta(name: 'app.build')}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><g:layoutTitle/></title>
-    <r:require modules="configHubTemplate1"/>
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/ala-styles.css"/>
+    <asset:stylesheet src="base.css"/>
+    <asset:stylesheet src="Common_fonts.css"/>
+    <asset:javascript src="base.js"/>
     <g:set var="styles" value="${hubConfig.templateConfiguration?.styles}"></g:set>
-    <r:script>
+    <asset:script type="text/javascript">
         // initialise plugins
         jQuery(function () {
             // autocomplete on navbar search input
@@ -59,11 +64,10 @@
 
             $('.helphover').popover({animation: true, trigger: 'hover'});
         });
-    </r:script>
-    <r:layoutResources/>
+    </asset:script>
     <g:layoutHead/>
     <link rel="stylesheet" type="text/css"
-          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?hub=${hubConfig.urlPath}">
+          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?hub=${hubConfig.urlPath}&ver=${hubConfig.lastUpdated}">
     <link href="https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"
           type="image/x-icon"/>
 </head>
@@ -80,6 +84,7 @@
 </g:if>
 <g:elseif test="${hubConfig.templateConfiguration.header.type == 'biocollect'}">
     <div id="biocollect-header" class="hidden-print">
+        <asset:stylesheet src="biocollect-banner.css"/>
         <g:render template="/project/biocollectBanner"></g:render>
         <g:if test="${isCitizenScience && !isUserPage}">
             <g:render template="/shared/bannerCitizenScience"/>
@@ -202,7 +207,7 @@
                 </div><!--/.spanX -->
                 <div class="span3">
                     <a class="brand" href="http://ala.org.au/" id="alaLink" title="ALA home page">
-                        <g:img dir="/images/mdba" file="ALA-logo-BW-124x109.png" alt="Powered by ALA logo"
+                        <img src="${asset.assetPath(src:'mdba/ALA-logo-BW-124x109.png')}" alt="Powered by ALA logo"
                                class="headerLogo"/>
                         <div id="alaHeadingText"><div id="poweredBy">powered by</div>
 
@@ -215,7 +220,7 @@
         </div><!--/.contaier -->
     </div><!--/#footer -->
 </g:elseif>
-<r:script>
+<asset:script type="text/javascript">
     // Prevent console.log() killing IE
     if (typeof console == "undefined") {
         this.console = {log: function() {}};
@@ -236,9 +241,9 @@
         $('#ala-footer-bootstrap2').find('a').addClass('do-not-mark-external')
     }); // end document ready
 
-</r:script>
+</asset:script>
 <g:if test="${userLoggedIn}">
-    <r:script>
+    <asset:script type="text/javascript">
         $(document).ready(function (e) {
             // Show introduction popup (with cookie check)
             var cookieName = "hide-intro";
@@ -259,24 +264,24 @@
                 }
             });
         }); // end document ready
-    </r:script>
+    </asset:script>
 </g:if>
 <g:if test="${java.lang.Boolean.parseBoolean(grailsApplication.config.bugherd.integration)}">
-    <r:script>
+    <asset:script type="text/javascript">
         (function (d, t) {
             var bh = d.createElement(t), s = d.getElementsByTagName(t)[0];
             bh.type = 'text/javascript';
             bh.src = '//www.bugherd.com/sidebarv2.js?apikey=2wgeczqfyixard6e9xxfnq';
             s.parentNode.insertBefore(bh, s);
         })(document, 'script');
-    </r:script>
+    </asset:script>
 </g:if>
 
 <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
     document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
-<r:script>
+<asset:script type="text/javascript">
         var pageTracker = _gat._getTracker('${grailsApplication.config.googleAnalyticsID}');
         pageTracker._initData();
         pageTracker._trackPageview();
@@ -287,8 +292,8 @@
 ' Many functions will still work but layout and image transparency will be disrupted.</div>')
             );
         }
-</r:script>
+</asset:script>
 <!-- JS resources-->
-<r:layoutResources/>
+<asset:deferredScripts />
 </body>
 </html>
