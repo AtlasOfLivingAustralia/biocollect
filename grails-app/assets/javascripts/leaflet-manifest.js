@@ -14,7 +14,6 @@
 //= require leaflet-control-geocoder-1.5.1/Control.Geocoder.js
 //= require Leaflet.loading-0.1.16/Control.Loading.js
 //= require Leaflet.markercluster-0.4.0-hotfix.1/leaflet.markercluster.js
-//= require turf-2.0.2/turf.min.js
 //= require handlebars-4.0.5/handlebars.js
 //= require controls/Checkbox.js
 //= require controls/Slider.js
