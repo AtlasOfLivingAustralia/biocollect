@@ -54,9 +54,5 @@
 // comments
 //= require comment.js
 
-/*
-// audio todo add it in future
-*= require modernizr/modernizr-custom.js
-*= require recorderjs/recorder.js
-*= require audio.js
-*/
+
+// audio to be included

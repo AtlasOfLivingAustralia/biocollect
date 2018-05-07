@@ -154,7 +154,10 @@ if(!(new File(loggingDir).exists())){
     loggingDir = "/tmp"
 }
 
-grails.assets.less.compiler = 'standard'
+// URL Mapping Cache Max Size, defaults to 5000
+//grails.urlmapping.cache.maxsize = 1000
+grails.assets.excludes = ["bootstrap/less/**"]
+grails.assets.minifyOptions.excludes = ["**/*.min.js"]
 
 // log4j configuration
 log4j = {
@@ -194,7 +197,8 @@ log4j = {
     all additivity: false, aekosSubmissionLog: [
             'grails.app.controllers.au.org.ala.biocollect.BioActivityController',
             'grails.app.services.au.org.ala.biocollect.ProjectActivityService',
-            'grails.app.services.au.org.ala.biocollect.UtilService'
+            'grails.app.services.au.org.ala.biocollect.UtilService',
+            'org.mozilla.javascript'
     ]
 
     error   'au.org.ala.cas.client',
@@ -203,9 +207,11 @@ log4j = {
             'grails.plugin.cache.web.filter',
             'grails.app.services.org.grails.plugin.resource',
             'grails.app.taglib.org.grails.plugin.resource',
-            'grails.app.resourceMappers.org.grails.plugin.resource'
+            'grails.app.resourceMappers.org.grails.plugin.resource',
+            'org.mozilla.javascript'
 
-    debug   'grails.app'
+    debug   'grails.app',
+            'org.mozilla.javascript'
 }
 
 if (!grails.cache.config) {
