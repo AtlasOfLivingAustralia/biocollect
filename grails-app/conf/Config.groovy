@@ -197,8 +197,7 @@ log4j = {
     all additivity: false, aekosSubmissionLog: [
             'grails.app.controllers.au.org.ala.biocollect.BioActivityController',
             'grails.app.services.au.org.ala.biocollect.ProjectActivityService',
-            'grails.app.services.au.org.ala.biocollect.UtilService',
-            'org.mozilla.javascript'
+            'grails.app.services.au.org.ala.biocollect.UtilService'
     ]
 
     error   'au.org.ala.cas.client',
@@ -207,11 +206,9 @@ log4j = {
             'grails.plugin.cache.web.filter',
             'grails.app.services.org.grails.plugin.resource',
             'grails.app.taglib.org.grails.plugin.resource',
-            'grails.app.resourceMappers.org.grails.plugin.resource',
-            'org.mozilla.javascript'
+            'grails.app.resourceMappers.org.grails.plugin.resource'
 
-    debug   'grails.app',
-            'org.mozilla.javascript'
+    debug   'grails.app'
 }
 
 if (!grails.cache.config) {
