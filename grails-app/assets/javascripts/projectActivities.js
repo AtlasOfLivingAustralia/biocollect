@@ -57,9 +57,15 @@ var ProjectActivitiesViewModel = function (params, projectViewModel) {
 
     self.sort = function () {
         var by = self.sortBy();
-        var order = self.sortOrder() == 'asc' ? '<' : '>';
+        var order = self.sortOrder() == 'asc';
         if (by && order) {
-            eval('self.projectActivities.sort(function(left, right) { return left.' + by + '() == right.' + by + '() ? 0 : (left.' + by + '() ' + order + ' right.' + by + '() ? -1 : 1) });');
+            self.projectActivities.sort(function(left, right) {
+                if( order ) {
+                    return left[ by ]() <= right[ by ]();
+                } else {
+                    return left[ by ]() > right[ by ]();
+                }
+            });
         }
     };
 
