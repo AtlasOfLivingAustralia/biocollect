@@ -56,14 +56,20 @@ var ProjectActivitiesViewModel = function (params, projectViewModel) {
     self.isSurveySelected = ko.observable(false);
 
     self.sort = function () {
-        var by = self.sortBy();
+        var by = self.sortBy() || '';
+        by = by.split('.');
         var order = self.sortOrder() == 'asc';
-        if (by && order) {
+        if (by != '' && order != undefined) {
             self.projectActivities.sort(function(left, right) {
+                for (var i=0; i < by.length; i++) {
+                    left = left[by[i]];
+                    right = right[by[i]];
+                }
+
                 if( order ) {
-                    return left[ by ]() <= right[ by ]();
+                    return left() > right();
                 } else {
-                    return left[ by ]() > right[ by ]();
+                    return left() <= right();
                 }
             });
         }
