@@ -16,11 +16,13 @@ class ModelJSTagLib {
 
     def jsModelObjects = { attrs ->
         attrs.model?.dataModel?.each { model ->
-            if (model.dataType in ['list', 'photoPoints']) {
+
+            if (model.dataType in ['list', 'photoPoints', 'matrix'] && model.jsClass) {
+                customDataModel(attrs, model, out, "jsClass")
+            } else if(model.dataType in ['list', 'photoPoints']) {
                 repeatingModel(attrs, model, out)
                 totalsModel attrs, model, out
-            }
-            else if (model.dataType == 'matrix') {
+            } else if (model.dataType == 'matrix') {
                 matrixModel attrs, model, out
             }
         }
@@ -50,7 +52,9 @@ class ModelJSTagLib {
 
     def createDataModelJS(attrs, String container = "self.data") {
         attrs.model?.dataModel?.each { mod ->
-            if (mod.dataType  == 'list') {
+            if (mod.jsMain) {
+                customDataModel(attrs, mod, out, "jsMain")
+            } else if (mod.dataType  == 'list') {
                 listViewModel(attrs, mod, out)
                 columnTotalsModel out, attrs, mod
             } else if (mod.dataType == 'matrix') {
@@ -915,4 +919,26 @@ class ModelJSTagLib {
         dataModel.find {it.name == name}
     }
 
+    /**
+     * Custom script to support complex calculations.
+     * jsClass: Hook for javascript knockout classes: Example: > SightingsEvidenceRowTable.
+     * jsMain:  Hook for knockout main function. Example: >  this[viewModelName] = function (config, outputNotCompleted)
+     */
+    def customDataModel(attrs, model, out, type) {
+        def lines = []
+
+        if(type == "jsClass") {
+            out << INDENT*3 << "\n // jsClass ${model.name} custom script implementation >> START \n"
+            model?.jsClass?.toURL()?.text?.eachLine{ lines << it }
+        } else if(type == "jsMain") {
+            out << INDENT*3 << "\n // jsMain ${model.name} custom script implementation >> START \n"
+            model?.jsMain?.toURL()?.text?.eachLine{ lines << it }
+        } else {
+            out << INDENT*3 << "\n // Custom script not avaialble for ${model.name} \n"
+        }
+        lines.each {
+            out << "\n" << INDENT*3 << "${it}"
+        }
+        out << INDENT*3 << "\n // << END \n"
+    }
 }
