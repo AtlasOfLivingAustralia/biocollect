@@ -278,6 +278,7 @@ class BioActivityController {
             model.pActivity = pActivity
             model.projectActivityId = pActivity.projectActivityId
             model.id = id
+            model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'bioActivity', action: 'index') + "/" + id
         } else {
             flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
             if(!mobile)  redirect(controller: 'project', action: 'index', id: projectId)
@@ -352,6 +353,8 @@ class BioActivityController {
                 model.pActivity = pActivity
                 model.id = pActivity.projectActivityId
                 model.userIsProjectMember = userIsProjectMember
+                model.userIsOwner = userIsOwner
+                model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', action: 'index', id: pActivity?.projectId)
                 params.mobile ? model.mobile = true : ''
 
                 model
