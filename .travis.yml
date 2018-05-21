@@ -6,6 +6,7 @@ branches:
   only:
   - master
   - dev
+  - hot-fix
   - hotfix
   - asset-pipeline
 before_install:
