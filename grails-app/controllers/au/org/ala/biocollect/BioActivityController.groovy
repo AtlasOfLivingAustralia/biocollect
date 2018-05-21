@@ -353,7 +353,7 @@ class BioActivityController {
                 model.pActivity = pActivity
                 model.id = pActivity.projectActivityId
                 model.userIsProjectMember = userIsProjectMember
-                model.userIsOwner = userIsOwner
+                model.userHasEditRights = userIsAlaAdmin || userIsAdmin || userIsOwner
                 model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', action: 'index', id: pActivity?.projectId)
                 params.mobile ? model.mobile = true : ''
 
