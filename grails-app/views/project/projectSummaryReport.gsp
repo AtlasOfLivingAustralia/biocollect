@@ -7,6 +7,7 @@
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
     <asset:stylesheet src="projects-manifest.css"/>
+    <asset:javascript src="common.js"/>
     <asset:javascript src="projects-manifest.js"/>
 </head>
 

@@ -1,6 +1,9 @@
 // leaflet
 //= require leaflet-manifest.js
 
+//= require moment/moment.min.js
+//= require moment/moment-timezone-with-data.min.js
+
 // responsive table
 //= require responsive-table-stacked/stacked.js
 
@@ -11,6 +14,7 @@
 //= require fileupload-manifest.js
 
 // project species field configuration
+//= require speciesFieldsSettings.js
 //= require projectSpeciesFieldsConfiguration.js
 
 // projects
@@ -23,8 +27,6 @@
 //= require issues.js
 //= require output-targets.js
 //= require emitter/emitter.js
-//= require moment/moment.min.js
-//= require moment/moment-timezone-with-data.min.js
 //= require permissionTable.js
 
 // attachDocuments
