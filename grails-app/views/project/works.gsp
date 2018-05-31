@@ -47,7 +47,6 @@
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <asset:javascript src="project-finder.js"/>
-    %{--<r:require modules="js_iso8601,knockout,jqueryValidationEngine,projects,projectFinder,map"/>--}%
 </head>
 <body>
 <div id="wrapper" class="content container-fluid">

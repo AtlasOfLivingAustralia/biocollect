@@ -4,7 +4,7 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Create | Project | <g:message code="g.fieldCapture"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="Create Project"/>
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
@@ -102,7 +102,7 @@ $(function(){
     <g:if test="${citizenScience}">
     viewModel.transients.kindOfProject("citizenScience");
     $('#cancel').click(function () {
-        document.location.href = "${createLink(action: 'projectFinder')}";
+        document.location.href = "${createLink(action: 'homePage')}";
     });
     </g:if>
     <g:else>

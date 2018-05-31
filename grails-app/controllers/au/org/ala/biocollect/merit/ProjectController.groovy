@@ -357,10 +357,10 @@ class ProjectController {
 
 
     def myProjects() {
-        Map result = projectFinder()
+        Map result = homePage()
         result.isUserPage = true
 
-        render view: 'projectFinder',  model:  result
+        render view: 'homePage',  model:  result
     }
 
     def projectFinder() {
@@ -387,6 +387,22 @@ class ProjectController {
         }
 
         result
+    }
+
+    def homePage () {
+        HubSettings hubSettings = SettingService.hubConfig
+        if (hubSettings.overridesHomePage()) {
+            if(hubSettings.isHomePagePathSimple()){
+                Map result = hubSettings.getHomePageControllerAndAction()
+                forward(result)
+                return
+            } else {
+                redirect([uri: hubSettings['homePagePath'] ])
+                return
+            }
+        }
+
+        forward(action: 'projectFinder')
     }
 
     /**
