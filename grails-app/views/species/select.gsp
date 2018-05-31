@@ -3,7 +3,7 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${project.name} | Species | Field Capture</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${project.name}"/>
     <meta name="breadcrumb" content="Species"/>

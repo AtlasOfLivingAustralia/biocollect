@@ -72,7 +72,6 @@
     <asset:javascript src="common.js" />
     <asset:javascript src="projects-manifest.js" />
     <asset:javascript src="project-finder.js" />
-    %{--<r:require modules="js_iso8601,projects,projectFinder,map,datepicker"/>--}%
     <style>
         %{-- Added to this page only to make image slider full page width --}%
         #main-content, #bannerHubContainer{
