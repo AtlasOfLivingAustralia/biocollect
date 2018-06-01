@@ -24,8 +24,6 @@
             returnTo = "${params.returnTo}";
     </asset:script>
     <asset:javascript src="common.js"/>
-
-    %{--<r:require modules="knockout,amplify,jqueryValidationEngine"/>--}%
 </head>
 <body>
 <div class="container-fluid">

@@ -68,7 +68,6 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
-    %{--<r:require modules="knockout, jqueryValidationEngine, amplify, projects, map"/>--}%
 </head>
 <body>
     <div class="container-fluid validationEngineContainer" id="validation-container">

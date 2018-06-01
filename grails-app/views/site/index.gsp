@@ -52,7 +52,6 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
-    %{--<r:require modules="knockout,amplify,map,sites"/>--}%
 </head>
 
 <body>

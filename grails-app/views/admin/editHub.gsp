@@ -18,7 +18,7 @@
 <asset:stylesheet src="admin.css"/>
 <asset:stylesheet src="fileupload-ui-manifest.css"/>
 <asset:javascript src="common.js"/>
-<asset:javascript src="fileupload-ui-manifest.js"/>
+<asset:javascript src="fileupload-manifest.js"/>
 <asset:javascript src="document.js"/>
 <asset:javascript src="hubs.js"/>
 

@@ -15,7 +15,6 @@
     }
     </asset:script>
     <asset:javascript src="common.js"/>
-    %{--<r:require modules="knockout"/>--}%
 </head>
 <body>
 <div id="wrapper" class="container-fluid">

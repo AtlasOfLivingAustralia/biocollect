@@ -48,7 +48,6 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
-    %{--<r:require modules="restoreTab,siteSearch"></r:require>--}%
 </head>
 
 <body>

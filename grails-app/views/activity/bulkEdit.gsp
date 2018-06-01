@@ -21,8 +21,6 @@
     </asset:script>
     <asset:javascript src="common.js" />
     <asset:javascript src="forms-manifest.js" />
-    %{--<r:require--}%
-            %{--modules="knockout,jqueryValidationEngine,datepicker,slickgrid,jQueryFileUpload,jQueryFileDownload,amplify,viewmodels"/>--}%
     <style type="text/css">
     input.editor-text {
         box-sizing: border-box;

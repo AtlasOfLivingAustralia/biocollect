@@ -27,7 +27,6 @@
     </asset:script>
     <asset:javascript src="common.js"/>
     <asset:javascript src="forms-manifest.js"/>
-    %{--<r:require modules="knockout,jqueryValidationEngine,datepicker"/>--}%
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">

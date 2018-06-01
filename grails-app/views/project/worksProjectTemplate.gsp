@@ -128,7 +128,6 @@
     <asset:javascript src="projects-manifest.js"/>
     <asset:javascript src="wms.js"/>
     <asset:javascript src="mapWithFeatures.js"/>
-    %{--<r:require modules="knockout,datepicker, jqueryValidationEngine, jquery_bootstrap_datatable, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, map, mapWithFeatures, leaflet_google_base"/>--}%
 </head>
 <body>
 

@@ -51,7 +51,6 @@
     <asset:javascript src="projectActivityInfo.js"/>
     <asset:javascript src="facets.js"/>
     <asset:javascript src="projects.js"/>
-    %{--<r:require modules="knockout, projectActivityInfo, jqueryValidationEngine, restoreTab, myActivity, activities, datepicker"/>--}%
 </head>
 <body>
 

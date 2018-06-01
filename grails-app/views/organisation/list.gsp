@@ -18,10 +18,8 @@
             };
     </asset:script>
     <asset:stylesheet src="organisation.css"/>
-    <asset:stylesheet src="fileupload-ui-manifest.css"/>
     <asset:javascript src="common.js"/>
     <asset:javascript src="organisation.js"/>
-    <asset:javascript src="fileupload-ui-manifest.js"/>
 </head>
 
 <body>

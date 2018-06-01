@@ -10,7 +10,6 @@
     <asset:stylesheet src="base.css"/>
     <asset:stylesheet src="ala2.css"/>
     <asset:javascript src="base.js"/>
-    %{--<r:require modules="ala2Skin, jquery_cookie"/>--}%
     <g:layoutHead />
     <style type="text/css">
         input[type=checkbox] {  -webkit-transform: scale(1.5); }

@@ -394,8 +394,11 @@ class ProjectController {
         if (hubSettings.overridesHomePage()) {
             if(hubSettings.isHomePagePathSimple()){
                 Map result = hubSettings.getHomePageControllerAndAction()
-                forward(result)
-                return
+                // avoid infinite loop
+                if(result.controller != 'project' && result.action != 'homePage'){
+                    forward(result)
+                    return
+                }
             } else {
                 redirect([uri: hubSettings['homePagePath'] ])
                 return

@@ -15,7 +15,6 @@
     </asset:script>
     <asset:javascript src="common.js"/>
     <asset:javascript src="forms-manifest.js"/>
-    %{--<r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,map,activity,attachDocuments,species,amplify,imageViewer,viewmodels"/>--}%
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
