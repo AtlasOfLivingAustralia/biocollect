@@ -1,5 +1,4 @@
 <g:set var="wordForActivity" value="${wordForActivity?:'activity'}"/>
-%{--<r:require module="datepicker"/>--}%
 <!-- This section is bound to a secondary KO viewModel. The following line prevents binding
          to the main viewModel. -->
 <!-- ko stopBinding: true -->

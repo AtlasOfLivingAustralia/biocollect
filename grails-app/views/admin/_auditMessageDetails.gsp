@@ -1,5 +1,4 @@
 <%@ page import="au.org.ala.biocollect.DateUtils" %>
-%{--<r:require modules="pretty_text_diff"/>--}%
 <h4>Audit ${message?.entityType?.substring(message?.entityType?.lastIndexOf('.')+1)}: ${message?.entity?.name} ${message?.entity?.type} </h4>
 <g:set var="projectId" value="${params.projectId}"/>
 <g:set var="searchTerm" value="${params.searchTerm}"/>

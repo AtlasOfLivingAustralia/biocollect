@@ -20,7 +20,6 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="siteDisplay.js"/>
-    %{--<r:require modules="knockout,jquery_bootstrap_datatable,js_iso8601,amplify,map,siteDisplaysiteDispl"/>--}%
 </head>
 <body>
 <div id="wrapper" class="container-fluid">

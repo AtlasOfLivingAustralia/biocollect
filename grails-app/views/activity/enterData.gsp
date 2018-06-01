@@ -39,7 +39,6 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    %{--<r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,map,leaflet_google_base,activity,attachDocuments,species,amplify,imageDataType,imageViewer,bootstrap,viewmodels,photoPoint"/>--}%
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">

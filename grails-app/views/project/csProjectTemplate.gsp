@@ -118,7 +118,6 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
-    %{--<r:require modules="knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, map"/>--}%
 </head>
 <body>
 

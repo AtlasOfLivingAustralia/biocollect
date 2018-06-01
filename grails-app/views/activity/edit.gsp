@@ -28,7 +28,6 @@
         },
         here = document.location.href;
     </asset:script>
-    %{--<r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,map"/>--}%
     <g:set var="formattedStartDate" value="${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(project.plannedStartDate)}"/>
     <g:set var="formattedEndDate" value="${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(project.plannedEndDate)}"/>
 </head>

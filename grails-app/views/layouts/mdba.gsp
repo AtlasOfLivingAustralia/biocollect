@@ -14,7 +14,6 @@
 
     <title><g:layoutTitle /></title>
     <asset:javascript src="base.js"/>
-    %{--<r:require modules="mdba" />--}%
     <asset:script type="text/javascript">
         // initialise plugins
         jQuery(function(){

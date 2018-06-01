@@ -9,7 +9,6 @@
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${project.name?.encodeAsHTML()}"/>
     <meta name="breadcrumb" content="Introduction"/>
     <asset:javascript src="common.js"/>
-    %{--<r:require modules="application, amplify"></r:require>--}%
 </head>
 
 <body>

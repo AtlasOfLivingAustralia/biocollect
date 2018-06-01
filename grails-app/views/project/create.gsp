@@ -40,7 +40,6 @@
     <asset:javascript src="organisation.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
-    %{--<r:require modules="knockout,jqueryValidationEngine,datepicker,amplify,jQueryFileUpload,projects,organisation,fuseSearch,map,largeCheckbox"/>--}%
 </head>
 
 <body>

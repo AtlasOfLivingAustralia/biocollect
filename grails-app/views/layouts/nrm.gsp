@@ -31,7 +31,6 @@
     <asset:stylesheet src="base.css"/>
     <asset:stylesheet src="nrm-manifest.css"/>
     <asset:javascript src="base.js"/>
-    %{--<r:require modules="nrmSkin, jquery_cookie"/>--}%
     <g:layoutHead />
 </head>
 <body class="${pageProperty(name:'body.class')}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}">

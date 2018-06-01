@@ -19,7 +19,6 @@
         },
         returnTo = "${params.returnTo}";
     </asset:script>
-    %{--<r:require modules="knockout,map,amplify,siteSelection"/>--}%
 </head>
 
 <body>

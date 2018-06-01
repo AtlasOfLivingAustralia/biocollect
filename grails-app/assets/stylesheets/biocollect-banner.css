@@ -123,7 +123,7 @@ nav#biocollectNav ul#main li a.ala-link:hover{
     background-position-y: -54px;
 }
 
-.ala-header .input-append, .ala-header-works .input-append, .ala-header-ecoscience .input-append {
+.jumbotron .input-append {
     margin-top: 75px ;
 }
 

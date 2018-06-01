@@ -69,7 +69,6 @@
             }
         </style>
     <![endif]-->
-    %{--<r:require modules="map, knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd"/>--}%
     <asset:javascript src="common.js"/>
     <asset:javascript src="projects-manifest.js"/>
 </head>
