@@ -36,12 +36,16 @@
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
         speciesSearch: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10])}",
         bioActivityUpdate: "${createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId, id: id])}",
+        bioActivityMobileUpdate: "${createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId, id: id, isMobile: true])}",
         activityDataTableUploadUrl: "${createLink(controller:'bioActivity', action:'extractDataFromExcelTemplate', id:projectActivityId)}",
         getSingleSpeciesUrl : "${createLink(controller: 'projectActivity', action: 'getSingleSpecies', params: [id: pActivity.projectActivityId])}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         bioActivityView: "${createLink(controller: 'bioActivity', action: 'index')}/",
-        activityId: "${id}"
+        activityId: "${id}",
+        returnTo: "${returnTo}",
+        returnToMobile: "${createLink(controller: 'mobile', action: 'status')}#successfully-posted",
+
         },
         here = document.location.href;
     </asset:script>

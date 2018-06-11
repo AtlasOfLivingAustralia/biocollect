@@ -25,6 +25,7 @@ grails.project.fork = [
 
 //grails.plugin.location["ala-map-plugin"] = '../ala-map-plugin'
 //grails.plugin.location["images-client-plugin"] = '../images-client-plugin'
+grails.plugin.location["ecodata-client-plugin"] = '../ecodata-client-plugin'
 
 // settings for the development environment
 if (Environment.current == Environment.DEVELOPMENT) {
@@ -86,7 +87,7 @@ grails.project.dependency.resolution = {
             excludes "httpclient", "httpcore"
         }
 
-        compile ":asset-pipeline:2.3.2"
+        compile ":asset-pipeline:2.13.1"
         // Uncomment these to enable additional asset-pipeline capabilities
         //compile ":sass-asset-pipeline:2.13.1"
 //        compile ":less-asset-pipeline:2.14.1"

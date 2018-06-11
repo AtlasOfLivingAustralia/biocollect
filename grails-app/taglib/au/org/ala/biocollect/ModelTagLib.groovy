@@ -7,7 +7,7 @@ import grails.converters.JSON
  */
 class ModelTagLib {
 
-    static namespace = "md"
+    static namespace = "x"
 
     private final static INDENT = "    "
     private final static operators = ['sum':'+', 'times':'*', 'divide':'/']

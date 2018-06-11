@@ -4,7 +4,7 @@ import grails.converters.JSON
 
 class ModelJSTagLib {
 
-    static namespace = "md"
+    static namespace = "x"
 
     private final static INDENT = "    "
     private final static operators = ['sum':'+', 'times':'*', 'divide':'/','difference':'-']
@@ -675,40 +675,37 @@ class ModelJSTagLib {
         """
     }
 
+    def audioModel(model, out) {
+        out << INDENT*4 << "self.data.${model.name}= new AudioViewModel({downloadUrl: '${grailsApplication.config.grails.serverURL}/download/file?filename='});\n"
+        populateAudioList(model, out)
+    }
 
-    def computedObservable(model, propertyContext, dependantContext, out) {
-        out << INDENT*5 << "${propertyContext}.${model.name} = ko.computed(function () {\n"
+    def photoPointModel(attrs, model, out) {
+        listViewModel(attrs, model, out)
 
-        if (model.computed.expression) {
-            renderJSExpression(model.computed, "self")
-        }
-        else {
-            // must be at least one dependant
-            def numbers = []
-            def checkNumberness = []
-            model.computed.dependents.each {
-                def ref = it
-                def path = dependantContext
-                if (ref.startsWith('$')) {
-                    ref = ref[1..-1]
-                    path = "self.data"
-                }
-                numbers << "Number(${path}.${ref}())"
-                checkNumberness << "isNaN(Number(${path}.${ref}()))"
-            }
-            out << INDENT * 6 << "if (" + checkNumberness.join(' || ') + ") { return 0; }\n"
-            if (model.computed.operation == 'divide') {
-                // can't divide by zero
-                out << INDENT * 6 << "if (${numbers[-1]} === 0) { return 0; }\n"
-            }
-            def expression = numbers.join(" ${operators[model.computed.operation]} ")
-            if (model.computed.rounding) {
-                expression = "neat_number(${expression},${model.computed.rounding})"
-            }
-            out << INDENT * 6 << "return " + expression + ";\n"
-        }
-        out << INDENT * 5 << "});\n"
+        out << g.render(template:"/output/photoPointTemplate", plugin:'fieldcapture-plugin', model:[model:model]);
+    }
 
+    def speciesModel(attrs, model, out) {
+        out << INDENT*3 << "self.data.${model.name} = new SpeciesViewModel({}, ${model.validate == 'required'}, '${attrs.output}', '${model.name}', '${attrs.surveyName}');\n"
+    }
+
+    def imageModel(model, out) {
+        out << INDENT*4 << "self.data.${model.name}=ko.observableArray([]);\n"
+        populateImageList(model, out)
+    }
+
+    def stringListModel(model, out) {
+        out << INDENT*4 << "self.data.${model.name}=ko.observableArray([]);\n"
+        modelConstraints(model, out)
+        populateList(model, out)
+
+    }
+
+    def setModel(model, out) {
+        out << INDENT*4 << "self.data.${model.name}=ko.observableArray([]).extend({set: null});\n"
+        modelConstraints(model, out)
+        populateList(model, out)
     }
 
     def listViewModel(attrs, model, out) {
@@ -827,19 +824,6 @@ class ModelJSTagLib {
         }
     }
 
-    def stringListModel(model, out) {
-        out << INDENT*4 << "self.data.${model.name}=ko.observableArray([]);\n"
-        modelConstraints(model, out)
-        populateList(model, out)
-
-    }
-
-    def setModel(model, out) {
-        out << INDENT*4 << "self.data.${model.name}=ko.observableArray([]).extend({set: null});\n"
-        modelConstraints(model, out)
-        populateList(model, out)
-    }
-
     def populateList(model, out) {
         out << INDENT*4 << """
         self.load${model.name} = function (data) {
@@ -877,24 +861,39 @@ class ModelJSTagLib {
         """
     }
 
-    def imageModel(model, out) {
-        out << INDENT*4 << "self.data.${model.name}=ko.observableArray([]);\n"
-        populateImageList(model, out)
-    }
+    def computedObservable(model, propertyContext, dependantContext, out) {
+        out << INDENT*5 << "${propertyContext}.${model.name} = ko.computed(function () {\n"
 
-    def audioModel(model, out) {
-        out << INDENT*4 << "self.data.${model.name}= new AudioViewModel({downloadUrl: '${grailsApplication.config.grails.serverURL}/download/file?filename='});\n"
-        populateAudioList(model, out)
-    }
+        if (model.computed.expression) {
+            renderJSExpression(model.computed, "self")
+        }
+        else {
+            // must be at least one dependant
+            def numbers = []
+            def checkNumberness = []
+            model.computed.dependents.each {
+                def ref = it
+                def path = dependantContext
+                if (ref.startsWith('$')) {
+                    ref = ref[1..-1]
+                    path = "self.data"
+                }
+                numbers << "Number(${path}.${ref}())"
+                checkNumberness << "isNaN(Number(${path}.${ref}()))"
+            }
+            out << INDENT * 6 << "if (" + checkNumberness.join(' || ') + ") { return 0; }\n"
+            if (model.computed.operation == 'divide') {
+                // can't divide by zero
+                out << INDENT * 6 << "if (${numbers[-1]} === 0) { return 0; }\n"
+            }
+            def expression = numbers.join(" ${operators[model.computed.operation]} ")
+            if (model.computed.rounding) {
+                expression = "neat_number(${expression},${model.computed.rounding})"
+            }
+            out << INDENT * 6 << "return " + expression + ";\n"
+        }
+        out << INDENT * 5 << "});\n"
 
-    def photoPointModel(attrs, model, out) {
-        listViewModel(attrs, model, out)
-
-        out << g.render(template:"/output/photoPointTemplate", plugin:'fieldcapture-plugin', model:[model:model]);
-    }
-
-    def speciesModel(attrs, model, out) {
-        out << INDENT*3 << "self.data.${model.name} = new SpeciesViewModel({}, ${model.validate == 'required'}, '${attrs.output}', '${model.name}', '${attrs.surveyName}');\n"
     }
 
     def modelConstraints(model, out) {
