@@ -299,7 +299,7 @@ class BioActivityController {
      */
     def delete(String id) {
         def activity = activityService.get(id)
-        String userId = userService.getCurrentUserId()
+        String userId = userService.getCurrentUserId(request)
 
         Map result
 
