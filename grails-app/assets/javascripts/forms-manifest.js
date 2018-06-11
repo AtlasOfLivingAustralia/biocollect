@@ -18,6 +18,10 @@
 //= require fancybox/jquery.fancybox.js
 //= require ala-image-viewer.js
 
+// activity form prerequisite
+//= require forms.js
+//= require enterBioActivityData.js
+
 // activity
 //= require outputs.js
 //= require parser.js

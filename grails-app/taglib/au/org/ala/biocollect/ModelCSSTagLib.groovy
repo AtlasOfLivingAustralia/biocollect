@@ -1,9 +1,7 @@
 package au.org.ala.biocollect
 
-import au.org.ala.biocollect.ModelTagLib
-
 class ModelCSSTagLib {
-    static namespace = "md"
+    static namespace = "x"
 
     private final static INDENT = "    "
     private final static operators = ['sum':'+', 'times':'*', 'divide':'/']
