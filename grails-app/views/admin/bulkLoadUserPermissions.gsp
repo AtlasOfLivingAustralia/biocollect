@@ -10,7 +10,7 @@
         <asset:javascript src="common.js"/>
         <content tag="pageTitle">Users - Bulk Load User Permissions</content>
         <div class="container">
-            <div class="well">Logged in user is <b class="tooltips" title="${user}">${user.userDisplayName}</b></div>
+            <div class="well">Logged in user is <b class="tooltips" title="${user}">${user.getDisplayName()}</b></div>
             <div>
                 <p>
                     Upload a csv whose first row contains column headers, and has at least the following 5 columns (in any order):

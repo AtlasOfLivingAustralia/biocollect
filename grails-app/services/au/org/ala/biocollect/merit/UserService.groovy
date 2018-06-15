@@ -3,7 +3,7 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.merit.hub.HubSettings
 
 import javax.annotation.PostConstruct
-import org.apache.commons.httpclient.HttpStatus
+import org.apache.http.HttpStatus
 
 class UserService {
    def grailsApplication, authService, webService
@@ -68,7 +68,7 @@ class UserService {
         def user
 
         if (u?.userId) {
-            user = new UserDetails(u.userDisplayName, u.email, u.userId)
+            user = new UserDetails(u.getDisplayName(), u.email, u.userId)
         }
 
         return user
@@ -241,7 +241,7 @@ class UserService {
     }
 
     def checkEmailExists(String email) {
-        def user = authService.getUserForEmailAddress(email)
+        def user = authService.getUserForEmailAddress(email, false)
         return user?.userId
     }
 }

@@ -2,7 +2,7 @@ package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
 
-import static org.apache.commons.httpclient.HttpStatus.SC_OK
+import static org.apache.http.HttpStatus.SC_OK
 
 class BlogController {
 

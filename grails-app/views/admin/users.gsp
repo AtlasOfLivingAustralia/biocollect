@@ -16,7 +16,7 @@
     <content tag="pageTitle">Users</content>
 
     <div class="container-fluid padding20">
-        <div class="well">Logged in user is <b class="tooltips" title="${user}">${user.userDisplayName}</b></div>
+        <div class="well">Logged in user is <b class="tooltips" title="${user}">${user.getDisplayName()}</b></div>
 
         <div class="row-fluid">
             <div class="span12">

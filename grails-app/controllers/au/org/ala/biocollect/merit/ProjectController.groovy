@@ -231,7 +231,7 @@ class ProjectController {
 
         // Add a human readable name of the last user to update the project plan.
         if (project.custom?.details?.lastUpdatedBy) {
-            project.custom.details.lastUpdatedDisplayName = authService.getUserForUserId(project.custom?.details?.lastUpdatedBy)?.displayName ?: 'Unknown user'
+            project.custom.details.lastUpdatedDisplayName = authService.getUserForUserId(project.custom?.details?.lastUpdatedBy, false)?.displayName ?: 'Unknown user'
         }
 
 

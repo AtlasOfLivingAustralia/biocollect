@@ -95,7 +95,7 @@
                         <li><a class="do-not-mark-external" href="${grailsApplication.config.mdba.baseUrl}/help">Help</a></li>
                         <g:if test="${!fc.userIsLoggedIn()}">
                             <li>
-                                <a href="${grailsApplication.config.casServerLoginUrl}?service=${grailsApplication.config.serverName}${request.forwardURI}">Login</a>
+                                <a href="${grailsApplication.config.security.cas.loginUrl}?service=${grailsApplication.config.serverName}${request.forwardURI}">Login</a>
                             </li>
                         </g:if>
                         <g:if test="${fc.userIsLoggedIn()}">

@@ -326,7 +326,7 @@ class ProjectActivityService {
             switch (facet.name) {
                 case 'userId':
                     List userIds = facet.terms.collect { it.term }
-                    Map users = authService.getUserDetailsById(userIds)?.users
+                    Map users = authService.getUserDetailsById(userIds, false)?.users
                     facet.terms.each { term ->
                         term.title = users[term.term]?.displayName
                     }
