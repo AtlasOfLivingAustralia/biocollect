@@ -37,7 +37,7 @@
         flimit: ${grailsApplication.config.facets.flimit}
     }
         <g:if test = "${grailsApplication.config.merit.projectLogo}" >
-            fcConfig.meritProjectLogo = fcConfig.imageLocation + "/" + "${grailsApplication.config.merit.projectLogo}";
+            fcConfig.meritProjectLogo = fcConfig.imageLocation + "${grailsApplication.config.merit.projectLogo}";
         </g:if>
     </asset:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>

@@ -33,7 +33,7 @@
             projectLinkPrefix: "${createLink(controller: 'project')}/",
             recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
-            imageLocation:"${createLink(url: "/assets")}",
+            imageLocation:"${asset.assetPath(src:'')}",
             version: "${params?.version}",
             projectId: "${projectId}",
             projectActivityId: "${projectActivityId}",
