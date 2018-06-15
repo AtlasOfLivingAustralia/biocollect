@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
-import static org.apache.commons.httpclient.HttpStatus.*
+import static org.apache.http.HttpStatus.*
 
 class MetadataService {
     static DateFormat ISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
