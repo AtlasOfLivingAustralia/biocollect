@@ -95,12 +95,12 @@
                         <li><a class="do-not-mark-external" href="${grailsApplication.config.mdba.baseUrl}/help">Help</a></li>
                         <g:if test="${!fc.userIsLoggedIn()}">
                             <li>
-                                <a href="${grailsApplication.config.security.cas.loginUrl}?service=${grailsApplication.config.serverName}${request.forwardURI}">Login</a>
+                                <a href="${grailsApplication.config.security.cas.loginUrl}?service=${ grailsApplication.config.security.cas.appServerName}${request.forwardURI}">Login</a>
                             </li>
                         </g:if>
                         <g:if test="${fc.userIsLoggedIn()}">
                             <li>
-                                <a href="${grailsApplication.config.grails.serverURL}/logout/logout?casUrl=${grailsApplication.config.casServerUrlPrefix}/logout&appUrl=${grailsApplication.config.serverName}${request.forwardURI}">Logout</a>
+                                <a href="${grailsApplication.config.grails.serverURL}/logout/logout?casUrl=${grailsApplication.config.casServerUrlPrefix}/logout&appUrl=${ grailsApplication.config.security.cas.appServerName}${request.forwardURI}">Logout</a>
                             </li>
                         </g:if>
                     </ul>
