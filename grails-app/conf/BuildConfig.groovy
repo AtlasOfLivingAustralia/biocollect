@@ -103,7 +103,7 @@ grails.project.dependency.resolution = {
             excludes "resources"
         }
 
-        compile":ala-auth:2.1.4"
+        compile":ala-auth:2.2.0"
         compile ":markdown:1.1.1"
         compile ':cache:1.1.8'
         compile ':cache-headers:1.1.7'

@@ -46,14 +46,14 @@
         geocodeUrl: "${grailsApplication.config.google.geocode.url}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
         <g:if test="${project}">
-            pageUrl : "${grailsApplication.config.grails.serverName}${createLink(controller:'site', action:'createForProject', params:[projectId:project.projectId,checkForState:true])}",
-            projectUrl : "${grailsApplication.config.grails.serverName}${createLink(controller:'project', action:'index', id:project.projectId)}",
+            pageUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'site', action:'createForProject', params:[projectId:project.projectId,checkForState:true])}",
+            projectUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'project', action:'index', id:project.projectId)}",
         </g:if>
         <g:elseif test="${site}">
-            pageUrl : "${grailsApplication.config.grails.serverName}${createLink(controller:'site', action:'edit', id: site?.siteId, params:[checkForState:true])}",
+            pageUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'site', action:'edit', id: site?.siteId, params:[checkForState:true])}",
         </g:elseif>
         <g:else>
-            pageUrl : "${grailsApplication.config.grails.serverName}${createLink(controller:'site', action:'create', params:[checkForState:true])}",
+            pageUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'site', action:'create', params:[checkForState:true])}",
         </g:else>
         sitePageUrl : "${createLink(action: 'index', id: site?.siteId)}",
         homePageUrl : "${createLink(controller: 'home', action: 'index')}",
