@@ -51,6 +51,10 @@
     <asset:javascript src="projectActivityInfo.js"/>
     <asset:javascript src="facets.js"/>
     <asset:javascript src="projects.js"/>
+<<<<<<< HEAD
+=======
+    %{--<r:require modules="knockout, projectActivityInfo, jqueryValidationEngine, restoreTab, myActivity, activities, datepicker"/>--}%
+>>>>>>> 8d3b0473eb055c11edd3584c5661c01b4e561b77
 </head>
 <body>
 
