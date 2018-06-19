@@ -62,7 +62,7 @@
         </div>
     </div>
     <g:render template="/shared/listDocumentLinks"
-              model="${[transients:transients,imageUrl:resource(dir:'/images/filetypes')]}"/>
+              model="${[transients:transients,imageUrl:asset.assetPath(src:'filetypes')]}"/>
 
     <div class="clearfix" data-bind="visible:description()">
         <p class="well well-small more" data-bind="text:description"></p>

@@ -7,8 +7,8 @@
 		</style>
 	</head>
 	<body>
-        <r:require modules="wmd" />
-        <r:script>
+        <asset:javascript src="common.js" />
+        <asset:script type="text/javascript">
                 $(document).ready(function (e) {
                     setup_wmd({
                         output_format: "markdown",
@@ -16,10 +16,10 @@
                         output: "copy_html",
                         button_bar: "notes-button-bar",
                         preview: "notes-preview",
-                        helpLink: "${request.contextPath}/static/vendor/wmd/markdownhelp.html"
+                        helpLink: "${asset.assetPath(src:"/wmd/markdownhelp.html")}"
                     });
                 });
-        </r:script>
+        </asset:script>
         <content tag="pageTitle">Static pages</content>
         <div id="wrapper" class="container-fluid padding10-small-screen">
             <div class="row-fluid">

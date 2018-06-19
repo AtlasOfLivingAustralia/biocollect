@@ -4,12 +4,12 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title> Upload | Sites | Field Capture</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'site', action: 'list')},Sites"/>
     <meta name="breadcrumb" content="Upload Sites"/>
 
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
             var fcConfig = {
                 serverUrl: "${grailsApplication.config.grails.serverURL}",
                 spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
@@ -22,8 +22,8 @@
 
             },
             returnTo = "${params.returnTo}";
-    </r:script>
-    <r:require modules="knockout,amplify,jqueryValidationEngine"/>
+    </asset:script>
+    <asset:javascript src="common.js"/>
 </head>
 <body>
 <div class="container-fluid">
@@ -150,7 +150,7 @@
 </div>
 </body>
 
-<r:script>
+<asset:script type="text/javascript">
 <g:if test="${shapeFileId}">
 var SiteViewModel = function(shape) {
     var self = this;
@@ -322,6 +322,6 @@ ko.applyBindings(new SiteUploadViewModel());
         document.location.href = returnTo;
     })
 </g:else>
-</r:script>
+</asset:script>
 
 </html>

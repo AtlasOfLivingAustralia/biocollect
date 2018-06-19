@@ -43,7 +43,11 @@
             myFavourites: "${myFavourites}"
         }
     </script>
-    <r:require modules="restoreTab,siteSearch"></r:require>
+    <asset:stylesheet src="sites-manifest.css"/>
+    <asset:stylesheet src="leaflet-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="leaflet-manifest.js"/>
+    <asset:javascript src="sites-manifest.js"/>
 </head>
 
 <body>
@@ -150,21 +154,30 @@
                 var feature = site.extent
                 if (feature && feature.source != 'none' && feature.geometry) {
                     var lng, lat, geometry, options;
+                    try {
 
-                    if (feature.geometry.centre && feature.geometry.centre.length) {
-                        lng = parseFloat(feature.geometry.centre[0]);
-                        lat = parseFloat(feature.geometry.centre[1]);
-                        if (!feature.geometry.coordinates) {
-                            feature.geometry.coordinates = [lng, lat];
+                        if (feature.geometry.centre && feature.geometry.centre.length) {
+                            lng = parseFloat(feature.geometry.centre[0]);
+                            lat = parseFloat(feature.geometry.centre[1]);
+                            if (!feature.geometry.coordinates ) {
+                                feature.geometry.coordinates = [lng, lat];
+                                if (feature.geometry.aream2 > 0){
+                                    //ONLY apply on site list which show a marker instead of polygon
+                                    //Change from Polygon to Point for geojson validation
+                                    feature.geometry.type = 'Point'
+                                }
+                            }
+
+                            geometry = Biocollect.MapUtilities.featureToValidGeoJson(feature.geometry);
+                            var options = {
+                                markerWithMouseOver: true,
+                                markerLocation: [lat, lng],
+                                popup: $('#popup' + site.siteId()).html()
+                            };
+                            map.setGeoJSON(geometry, options);
                         }
-
-                        geometry = Biocollect.MapUtilities.featureToValidGeoJson(feature.geometry);
-                        var options = {
-                            markerWithMouseOver: true,
-                            markerLocation: [lat, lng],
-                            popup: $('#popup' + site.siteId()).html()
-                        };
-                        map.setGeoJSON(geometry, options);
+                    }catch(exception){
+                        console.log("Site:"+site.siteId() +" reports exception: " + exception)
                     }
                 }
             });

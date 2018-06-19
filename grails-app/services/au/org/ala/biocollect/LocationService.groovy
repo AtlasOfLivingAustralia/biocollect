@@ -23,12 +23,11 @@ import org.codehaus.groovy.grails.web.json.JSONObject
 class LocationService {
 
     def grailsApplication
-    def httpWebService
     def webService
 
     def getBookmarkLocationsForUser(String userId) {
         def bookmarks = []
-        JSONElement results = httpWebService.getJson("${grailsApplication.config.ecodata.service.url}/location/user/$userId?pageSize=20")
+        JSONElement results = webService.getJson("${grailsApplication.config.ecodata.service.url}/location/user/$userId?pageSize=20")
 
         if (results.hasProperty('error')) {
             return [error: results.error]

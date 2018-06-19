@@ -66,10 +66,10 @@
 </div>
 %{--
 
-<r:script>
+<asset:script type="text/javascript">
     $(window).load(function () {
         AekosViewModel.isProjectInfoValidated = function () {
             return self.projectName;
         }
     });
-</r:script>--}%
+</asset:script>--}%

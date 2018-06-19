@@ -367,7 +367,7 @@
                          <g:select id="dataSharingLicense" name="dateSharingLicence" from="${licences}" optionValue="name" data-bind="value:dataSharingLicense"
                               noSelection="['':'-Please select the licence-']" optionKey="url" data-validation-engine="validate[required]" />
                          <g:each in="${licences}">
-                            <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${resource(dir: 'images/licence/', file: it.logo)} ">&nbsp;&nbsp;${it.description}</a> </span>
+                            <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${asset.assetPath(src: "licence/${it.logo}")}">&nbsp;&nbsp;${it.description}</a> </span>
                         </g:each>
                     </div>
                 </div>

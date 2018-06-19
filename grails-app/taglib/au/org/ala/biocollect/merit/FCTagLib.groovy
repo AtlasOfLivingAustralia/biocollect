@@ -308,12 +308,16 @@ class FCTagLib {
      *
      */
     def formatDateString = { attrs, body ->
-        def inputFormat = attrs.inputFormat?:"yyyy-MM-dd'T'HH:mm:ss'Z'"
-        def formattedDate = g.formatDate(
-                date: Date.parse(inputFormat, attrs.date),
-                format: attrs.format?:"yyyy-MM-dd"
-        )
-        out << formattedDate
+        if (attrs.date){
+            def inputFormat = attrs.inputFormat?:"yyyy-MM-dd'T'HH:mm:ss'Z'"
+            def formattedDate = g.formatDate(
+                    date: Date.parse(inputFormat, attrs.date),
+                    format: attrs.format?:"yyyy-MM-dd"
+            )
+            out << formattedDate
+        }else {
+            out << ''
+        }
     }
 
     /**

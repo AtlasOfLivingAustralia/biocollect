@@ -4,12 +4,12 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Edit | ${organisation.name.encodeAsHTML()} | Field Capture</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
     <meta name="breadcrumb" content="${organisation.name}"/>
 
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             viewProjectUrl: "${createLink(controller:'project', action:'index')}",
@@ -24,8 +24,21 @@
             returnTo: "${params.returnTo?:createLink(action:'index', id:organisation.organisationId)}"
 
             };
-    </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,amplify,organisation"/>
+    </asset:script>
+    <asset:stylesheet src="forms-manifest.css"/>
+    <asset:stylesheet src="organisation.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="fileupload-9.0.0/load-image.min.js"/>
+    <asset:javascript src="fileupload-9.0.0/jquery.fileupload.js"/>
+    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-process.js"/>
+    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-image.js"/>
+    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-video.js"/>
+    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-validate.js"/>
+    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-audio.js"/>
+    <asset:javascript src="fileupload-9.0.0/jquery.iframe-transport.js"/>
+    <asset:javascript src="fileupload-9.0.0/locale.js"/>
+    <asset:javascript src="cors/jquery.xdr-transport.js"/>
+    <asset:javascript src="organisation.js"/>
 
 
 </head>
@@ -41,7 +54,7 @@
 
 </div>
 
-<r:script>
+<asset:script type="text/javascript">
 
    $(function () {
         var organisation = <fc:modelAsJavascript model="${organisation}"/>;
@@ -86,7 +99,7 @@
     });
 
 
-</r:script>
+</asset:script>
 
 </body>
 </html>

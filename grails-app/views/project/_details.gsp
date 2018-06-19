@@ -154,7 +154,7 @@
                         <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.associatedOrgs"/>:<fc:iconHelp><g:message code="project.details.associatedOrgs.help"/></fc:iconHelp></label>
                         <div class="span9"><g:message code="project.details.associatedOrgs.extra"/></div>
                         <div class="span6" id="associatedOrgList">
-                            <g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
+                            <g:set var="noImageUrl" value="${asset.assetPath(src: "no-image-2.png")}"/>
                             <!-- ko foreach: associatedOrgs -->
                             <div class="span12 margin-left-0 margin-bottom-1">
                                 <div class="span6 margin-left-0" data-bind="text: name"></div>
@@ -695,7 +695,7 @@
             </div>
 
             <g:render template="/shared/editDocumentLinks"
-                      model="${[entity:'project',imageUrl:resource(dir:'/images/filetypes')]}"/>
+                      model="${[entity:'project',imageUrl:asset.assetPath(src:'filetypes')]}"/>
 
             <div class="control-group">
                 <label class="control-label span3" for="keywords"><g:message code="project.details.keywords"/><fc:iconHelp><g:message code="project.details.keywords.help"/></fc:iconHelp></label>

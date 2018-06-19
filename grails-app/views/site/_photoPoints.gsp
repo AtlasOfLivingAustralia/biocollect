@@ -1,5 +1,3 @@
-<r:require modules="sites,photoPoint"></r:require>
-
 <g:if test="${!printView}">
     <div data-bind="visible:!site">
         No site has been selected.  To add photos to this activity, select a site.

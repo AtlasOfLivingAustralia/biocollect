@@ -9,7 +9,7 @@
         </span>
     </div>
     <div class="loading-message">
-        <r:img dir="images" file="loading.gif" alt="saving icon"/> Loading...
+        <img src="${asset.assetPath('loading.gif')}" alt="saving icon"/> Loading...
     </div>
     <div id="dashboard-content">
 

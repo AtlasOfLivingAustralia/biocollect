@@ -10,13 +10,15 @@
         <meta name="layout" content="${hubConfig.skin}"/>
         <title>Edit | ${activity.type} | Field Capture</title>
     </g:else>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
     <meta name="breadcrumb" content="${activity.type}"/>
-
+    <asset:stylesheet src="forms-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
@@ -25,8 +27,7 @@
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/"
         },
         here = document.location.href;
-    </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,map"/>
+    </asset:script>
     <g:set var="formattedStartDate" value="${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(project.plannedStartDate)}"/>
     <g:set var="formattedEndDate" value="${au.org.ala.biocollect.DateUtils.isoToDisplayFormat(project.plannedEndDate)}"/>
 </head>
@@ -130,7 +131,7 @@
 </div>
 </script>
 
-<r:script>
+<asset:script type="text/javascript">
 
     var returnTo = "${returnTo}";
 
@@ -377,6 +378,6 @@
         master.register('activityModel', viewModel.modelForSaving, viewModel.dirtyFlag.isDirty, viewModel.dirtyFlag.reset);
 
     });
-</r:script>
+</asset:script>
 </body>
 </html>

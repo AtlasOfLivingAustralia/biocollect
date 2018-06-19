@@ -7,11 +7,16 @@
     </head>
 
     <body>
-    <r:require module="jqueryValidationEngine"/>
+    <asset:stylesheet src="datatables-manifest.css"/>
+    <asset:stylesheet src="validationEngine.jquery.css"/>
+    <asset:javascript src="jquery.validationEngine/jquery.validationEngine.js"/>
+    <asset:javascript src="jquery.validationEngine/jquery.validationEngine-en.js"/>
+    <asset:javascript src="permissionTable.js"/>
+    <asset:javascript src="datatables-manifest.js"/>
     <content tag="pageTitle">Users</content>
 
     <div class="container-fluid padding20">
-        <div class="well">Logged in user is <b class="tooltips" title="${user}">${user.userDisplayName}</b></div>
+        <div class="well">Logged in user is <b class="tooltips" title="${user}">${user.getDisplayName()}</b></div>
 
         <div class="row-fluid">
             <div class="span12">
@@ -30,7 +35,7 @@
                 <div class="control-group">
                     <div class="controls">
                         <button id="viewUserPermissionsButton" class="btn btn-primary">View</button>
-                        <g:img dir="images" file="spinner.gif" id="spinner2" class="hide spinner" alt="spinner icon"/>
+                        <g:img uri="${asset.assetPath(src:'spinner.gif')}" id="spinner2" class="hide spinner" alt="spinner icon"/>
                     </div>
                 </div>
             </form>
@@ -42,7 +47,7 @@
     </body>
 </html>
 
-<r:script type="text/javascript">
+<asset:script type="text/javascript">
 
     $(document).ready(function() {
 
@@ -85,4 +90,4 @@
         html += "</tbody></table>";
         return html;
     }
-</r:script>
+</asset:script>

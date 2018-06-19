@@ -12,10 +12,8 @@ import org.apache.commons.io.FilenameUtils
 import org.imgscalr.Scalr
 import org.springframework.web.multipart.MultipartFile
 
-import javax.activation.MimetypesFileTypeMap
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
-import java.nio.file.Files
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
@@ -137,7 +135,7 @@ class ImageController {
      * @return file metadata for rending in view
      */
     def upload() {
-        def user = userService.getCurrentUserId(request)
+        def user = userService.getCurrentUserId()
 
         def result = []
         if (request.respondsTo('getFile') && user) {

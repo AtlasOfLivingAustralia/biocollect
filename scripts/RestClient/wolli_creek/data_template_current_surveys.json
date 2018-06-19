@@ -1,0 +1,48 @@
+{
+  "activityId": "",
+  "projectStage": "",
+  "mainTheme": "",
+  "type": "Wolli Creek Birdos - Current Surveys",
+  "projectId": "abdd9f05-a757-420b-85a6-3e8ae31c2d4f",
+  "siteId": "",
+  "outputs": [
+    {
+      "name": "Wolli Ck - Current surveys",
+      "outputId": "",
+      "data": {
+        "surveyType": "",
+        "surveyStartDate": "",
+        "surveyStartTime": "",
+        "surveyFinishDate": "",
+        "surveyFinishTime": "",
+        "notes": "",
+        "recordedBy": "",
+        "locationAccuracy": null,
+        "location": "",
+        "locationLatitude": null,
+        "locationLongitude": null,
+        "locationCentroidLatitude": null,
+        "locationCentroidLongitude": null,
+        "speciesSightings": [
+          {
+            "species": {
+              "name": "",
+              "guid": "",
+              "scientificName": "",
+              "commonName": "",
+              "outputSpeciesId": ""
+            },
+            "individualCount": "",
+            "habitatCode": "",
+            "sightingComments": "",
+            "sightingPhoto": [
+
+            ]
+          }
+        ]
+      },
+      "outputNotCompleted": false,
+      "appendTableRows": true
+    }
+  ]
+}

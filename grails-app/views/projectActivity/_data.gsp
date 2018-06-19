@@ -45,9 +45,9 @@
 <!-- /ko -->
 
 
-<r:script>
+<asset:script type="text/javascript">
     function initialiseProjectActivitiesData(pActivitiesVM){
         var pActivitiesDataVM = new ProjectActivitiesDataViewModel(pActivitiesVM);
         ko.applyBindings(pActivitiesDataVM, document.getElementById('pActivitiesData'));
     };
-</r:script>
+</asset:script>

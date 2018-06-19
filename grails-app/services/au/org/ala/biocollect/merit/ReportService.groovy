@@ -171,7 +171,7 @@ class ReportService {
         reports.each { report ->
 
             report.statusChangeHistory.each { change ->
-                def changingUser = authService.getUserForUserId(change.changedBy)
+                def changingUser = authService.getUserForUserId(change.changedBy, false)
                 def displayName = changingUser?changingUser.displayName:'unknown'
                 history << [name:report.name, date:change.dateChanged, who:displayName, status:change.status]
             }

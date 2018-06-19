@@ -4,7 +4,7 @@
 <head>
   <meta name="layout" content="${hubConfig.skin}"/>
   <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | Sites | Field Capture</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'site', action: 'list')},Sites"/>
     <g:if test="${project}">
@@ -34,7 +34,9 @@
     }
     .no-border { border-top: none !important; }
   </style>
-    <r:script disposition="head">
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
+    <asset:script type="text/javascript">
     var fcConfig = {
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -44,14 +46,14 @@
         geocodeUrl: "${grailsApplication.config.google.geocode.url}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
         <g:if test="${project}">
-            pageUrl : "${grailsApplication.config.grails.serverName}${createLink(controller:'site', action:'createForProject', params:[projectId:project.projectId,checkForState:true])}",
-            projectUrl : "${grailsApplication.config.grails.serverName}${createLink(controller:'project', action:'index', id:project.projectId)}",
+            pageUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'site', action:'createForProject', params:[projectId:project.projectId,checkForState:true])}",
+            projectUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'project', action:'index', id:project.projectId)}",
         </g:if>
         <g:elseif test="${site}">
-            pageUrl : "${grailsApplication.config.grails.serverName}${createLink(controller:'site', action:'edit', id: site?.siteId, params:[checkForState:true])}",
+            pageUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'site', action:'edit', id: site?.siteId, params:[checkForState:true])}",
         </g:elseif>
         <g:else>
-            pageUrl : "${grailsApplication.config.grails.serverName}${createLink(controller:'site', action:'create', params:[checkForState:true])}",
+            pageUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'site', action:'create', params:[checkForState:true])}",
         </g:else>
         sitePageUrl : "${createLink(action: 'index', id: site?.siteId)}",
         homePageUrl : "${createLink(controller: 'home', action: 'index')}",
@@ -60,8 +62,12 @@
         },
         here = window.location.href;
 
-    </r:script>
-    <r:require modules="knockout, jqueryValidationEngine, amplify, projects, map"/>
+    </asset:script>
+    <asset:stylesheet src="sites-manifest.css"/>
+    <asset:stylesheet src="leaflet-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="leaflet-manifest.js"/>
+    <asset:javascript src="sites-manifest.js"/>
 </head>
 <body>
     <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -96,7 +102,7 @@
     </div>
     </g:if>
 
-<r:script>
+<asset:script type="text/javascript">
     $(function(){
 
         $('#validation-container').validationEngine('attach', {scroll: false});
@@ -117,6 +123,11 @@
         $('#save').click(function () {
             if ($('#validation-container').validationEngine('validate')) {
                 var json = siteViewModel.toJS();
+                //validate  if extent.geometry.pid, then update extent.source to pid, extent.geometry.type to pid
+                if (json.extent.geometry.pid){
+                    json.extent.source = 'pid';
+                    json.extent.geometry.type = 'pid'
+                }
                 var data = {
                     site: json
                     <g:if test="${project?.projectId}">
@@ -157,7 +168,7 @@
             }
         });
     });
-</r:script>
+</asset:script>
 
 </body>
 </html>

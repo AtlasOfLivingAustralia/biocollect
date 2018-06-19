@@ -1,4 +1,3 @@
-<r:require modules="audio"/>
 <div id="audioPanel" class="audio-input-panel">
     <div id="filesPanel">
         <div data-bind="foreach: ${name}.files">

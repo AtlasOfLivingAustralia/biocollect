@@ -182,7 +182,7 @@
 </script>
 
 
-<r:script>
+<asset:script type="text/javascript">
 function initSiteViewModel(allowPointsOfInterest, edit) {
 
     // server side generated paths & properties
@@ -237,4 +237,4 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
 
     return siteViewModel;
 }
-</r:script>
+</asset:script>

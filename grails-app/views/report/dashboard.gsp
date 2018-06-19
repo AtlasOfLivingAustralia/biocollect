@@ -11,7 +11,7 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Dashboard | Field Capture</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="Dashboard"/>
 
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -19,7 +19,7 @@
     <link href="http://dev.openlayers.org/releases/OpenLayers-2.12/theme/default/style.css" type="text/css" rel="stylesheet"
           media="screen, projection"/>
 
-    <r:require modules="knockout"/>
+    <asset:javascript src="common.js"/>
 
     <style type="text/css">
     .chart {

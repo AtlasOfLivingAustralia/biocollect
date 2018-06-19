@@ -1,4 +1,3 @@
-<r:require modules="imageGallery"/>
 <bc:koLoading>
     <div class="image-gallery">
         <ul class="thumbnails">

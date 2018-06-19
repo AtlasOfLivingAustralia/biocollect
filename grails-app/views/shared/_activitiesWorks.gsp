@@ -1,12 +1,11 @@
 <%@ page import="grails.converters.JSON; au.org.ala.biocollect.DateUtils;" %>
-<r:require modules="datepicker, jqueryGantt, jqueryValidationEngine, attachDocuments"/>
-<r:script>
+<asset:script type="text/javascript">
     var PROJECT_STATE = {approved: 'approved', submitted: 'submitted', planned: 'not approved'};
     var ACTIVITY_STATE = {
         planned: 'planned', started: 'started', finished: 'finished', deferred: 'deferred',
         cancelled: 'cancelled'
     };
-</r:script>
+</asset:script>
 <g:set var="formattedStartDate" value="${DateUtils.isoToDisplayFormat(project.plannedStartDate)}"/>
 <g:set var="formattedEndDate" value="${DateUtils.isoToDisplayFormat(project.plannedEndDate)}"/>
 <!-- This section is bound to a secondary KO viewModel. The following line prevents binding
@@ -173,8 +172,7 @@
                               rows="3"
                               cols="80" style="width:90%"></textarea>
                     <span data-bind="visible:!$root.canEditOutputTargets(),text:$parents[1].outcomeTarget"></span>
-                    <span class="save-indicator" data-bind="visible:$parents[1].isSaving"><r:img dir="images"
-                                                                                                 file="ajax-saver.gif"
+                    <span class="save-indicator" data-bind="visible:$parents[1].isSaving"><img src="${asset.assetPath(src:'ajax-saver.gif')}"
                                                                                                  alt="saving icon"/> saving</span>
                 </td>
                 <!-- /ko -->
@@ -185,9 +183,8 @@
                            data-validation-engine="validate[required,custom[number]]"/>
                     <span data-bind="visible:!$root.canEditOutputTargets(),text:target"></span>
                     <span data-bind="text:units"></span>
-                    <span class="save-indicator" data-bind="visible:isSaving"><r:img dir="images"
-                                                                                     file="ajax-saver.gif"
-                                                                                     alt="saving icon"/> saving</span>
+                    <span class="save-indicator" data-bind="visible:isSaving"><img src="${asset.assetPath(src:'ajax-saver.gif')}"
+                                                                                   alt="saving icon"/> saving</span>
                 </td>
 
             </tr>
@@ -412,7 +409,7 @@
     </ul>
 </div>
 <a class="save-indicator" data-bind="visible:transients.isSaving">
-    <r:img dir="images" file="ajax-saver.gif" alt="saving icon"/> saving
+    <img src="${asset.assetPath(src:'ajax-saver.gif')}" alt="saving icon"/> saving
 </a>
 <!-- ko with: deferReason -->
 <span data-bind="visible: $parent.progress()=='deferred' || $parent.progress()=='cancelled'">
@@ -564,7 +561,7 @@
     </div>
 </div>
 </script>
-<r:script>
+<asset:script type="text/javascript">
 
     ko.bindingHandlers.showModal = {
         init: function (element, valueAccessor) {
@@ -685,4 +682,4 @@
 
     });
 
-</r:script>
+</asset:script>

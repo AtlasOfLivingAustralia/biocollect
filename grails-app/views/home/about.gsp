@@ -4,7 +4,7 @@
 <head>
   <meta name="layout" content="${hubConfig.skin}"/>
   <title>${settingType.title?:'About'} | Field Capture</title>
-  <r:script disposition="head">
+  <asset:script type="text/javascript">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
@@ -13,7 +13,7 @@
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
     }
-  </r:script>
+  </asset:script>
 </head>
 <body>
     <div id="wrapper" class="container-fluid">

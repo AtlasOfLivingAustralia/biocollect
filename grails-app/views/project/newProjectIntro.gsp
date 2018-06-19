@@ -4,12 +4,11 @@
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${project?.name?.encodeAsHTML()} | <g:message code="g.projects"/> | <g:message
             code="g.fieldCapture"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${project.name?.encodeAsHTML()}"/>
     <meta name="breadcrumb" content="Introduction"/>
-
-    <r:require modules="application, amplify"></r:require>
+    <asset:javascript src="common.js"/>
 </head>
 
 <body>
