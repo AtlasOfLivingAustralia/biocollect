@@ -4,8 +4,12 @@
 <head>
     <title><g:layoutTitle /></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <r:require modules="ala2Skin, jquery_cookie"/>
-    <r:layoutResources/>
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/ala-styles.css"/>
+    <asset:stylesheet src="base.css"/>
+    <asset:stylesheet src="ala2.css"/>
+    <asset:javascript src="base.js"/>
     <g:layoutHead />
     <style type="text/css">
         input[type=checkbox] {  -webkit-transform: scale(1.5); }
@@ -23,7 +27,7 @@
 </head>
 <body><g:layoutBody />
 
-<r:script>
+<asset:script type="text/javascript">
     $(function() {
         $.ajaxSetup({
             cache: false,
@@ -36,7 +40,7 @@
             }
         });
     });
-</r:script>
-<r:layoutResources/>
+</asset:script>
+<asset:deferredScripts/>
 </body>
 </html>

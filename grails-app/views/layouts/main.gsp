@@ -11,9 +11,14 @@
     <title><g:layoutTitle /></title>
 
     <%-- Do not include JS & CSS files here - add them to your app's "application" module (in "Configuration/ApplicationResources.groovy") --%>
-    <r:require modules="bootstrap, application"/>
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/ala-styles.css"/>
+    <asset:stylesheet src="base.css"/>
+    <asset:stylesheet src="ala2.css"/>
+    <asset:javascript src="base.js"/>
 
-    <r:script disposition='head'>
+    <asset:script type="text/javascript">
         // initialise plugins
         jQuery(function(){
             // autocomplete on navbar search input
@@ -59,9 +64,8 @@
                 }
             });
         });
-    </r:script>
+    </asset:script>
 
-    <r:layoutResources/>
     <g:layoutHead />
 </head>
 <body class="${pageProperty(name:'body.class')}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}">
@@ -87,7 +91,7 @@
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
     document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
-<r:script>
+<asset:script type="text/javascript">
     var pageTracker = _gat._getTracker("UA-4355440-1");
     pageTracker._initData();
     pageTracker._trackPageview();
@@ -97,10 +101,10 @@
         $('#header').prepend($('<div style="text-align:center;color:red;">WARNING: This page is not compatible with IE6.' +
                 ' Many functions will still work but layout and image transparency will be disrupted.</div>'));
     }
-</r:script>
+</asset:script>
 
 <!-- JS resources-->
-<r:layoutResources/>
+<asset:deferredScripts/>
 
 </body>
 </html>

@@ -5,7 +5,9 @@
     <meta name="layout" content="ajaxLayout"/>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-    <r:script disposition="head">
+    <asset:stylesheet src="common.css"/>
+    <asset:stylesheet src="forms-manifest.css"/>
+    <asset:script type="text/javascript">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
@@ -16,7 +18,7 @@
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
-        imageLocation:"${resource(dir: '/images')}",
+        imageLocation:"${asset.assetPath(src:'')}",
         speciesSearch: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10])}",
         bioActivityUpdate: "${createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId])}",
         bioActivityView: "${createLink(controller: 'bioActivity', action: 'index')}/",
@@ -26,11 +28,11 @@
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}"
         }
-    </r:script>
+    </asset:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <r:require
-            modules="application, bootstrap, knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,activity,attachDocuments,amplify,imageViewer,projectActivityInfo,species,map,leaflet_google_base,responsiveTableStacked,viewmodels"/>
-
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
+    <asset:javascript src="projectActivityInfo.js"/>
 </head>
 
 <body>

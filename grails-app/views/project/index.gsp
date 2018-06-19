@@ -4,9 +4,11 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${project?.name.encodeAsHTML()} | Project | Field Capture</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
-    <r:script disposition="head">
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
+    <asset:script type="text/javascript">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         projectUpdateUrl: "${createLink(action: 'ajaxUpdate', id: project.projectId)}",
@@ -39,7 +41,7 @@
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         documentUpdateUrl: "${g.createLink(controller:"proxy", action:"documentUpdate")}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
-        imageLocation:"${resource(dir:'/images')}",
+        imageLocation:"${asset.assetPath(src:'')}",
         pdfgenUrl: "${createLink(controller: 'resource', action: 'pdfUrl')}",
         pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
         imgViewer: "${createLink(controller: 'resource', action: 'imageviewer')}",
@@ -55,7 +57,7 @@
         },
         here = window.location.href;
 
-    </r:script>
+    </asset:script>
 
     <!--[if gte IE 8]>
         <style>
@@ -67,7 +69,8 @@
             }
         </style>
     <![endif]-->
-    <r:require modules="map, knockout,datepicker,amplify,jqueryValidationEngine, projects, attachDocuments, wmd"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="projects-manifest.js"/>
 </head>
 <body>
 <div class="container-fluid">
@@ -178,7 +181,7 @@
                     </div>
                 </div>
                 <g:render template="/shared/listDocumentLinks"
-                          model="${[transients:transients,imageUrl:resource(dir:'/images/filetypes')]}"/>
+                          model="${[transients:transients,imageUrl:asset.assetPath(src:'filetypes')]}"/>
 
                 <div class="clearfix" data-bind="visible:description()">
                     <p class="well well-small more" data-bind="text:description"></p>
@@ -290,7 +293,7 @@
                                 <div class="row-fluid">
                                     <div class="span10">
                                         <g:render template="/shared/editDocuments"
-                                                  model="[useExistingModel: true,editable:true, filterBy: 'all', ignore: '', imageUrl:resource(dir:'/images/filetypes'),containerId:'adminDocumentList']"/>
+                                                  model="[useExistingModel: true,editable:true, filterBy: 'all', ignore: '', imageUrl:asset.assetPath(src:'filetypes'),containerId:'adminDocumentList']"/>
                                     </div>
                                 </div>
                                 %{--The modal view containing the contents for a modal dialog used to attach a document--}%
@@ -327,7 +330,7 @@
     </div>
     </g:if>
 </div>
-    <r:script>
+    <asset:script type="text/javascript">
         $(window).load(function () {
             var map;
             // setup 'read more' for long text
@@ -487,9 +490,9 @@
             amplify.store('traffic-from-project-finder-page',false)
             $('#about-tab').tab('show');
         }
-    </r:script>
+    </asset:script>
     <g:if test="${user?.isAdmin || user?.isCaseManager}">
-        <r:script>
+        <asset:script type="text/javascript">
             // Admin JS code only exposed to admin users
             $(window).load(function () {
 
@@ -507,7 +510,7 @@
                 }
             }); // end window.load
 
-        </r:script>
+        </asset:script>
     </g:if>
 </body>
 </html>

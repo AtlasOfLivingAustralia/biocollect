@@ -3,12 +3,14 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${project.name} | Species | Field Capture</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${project.name}"/>
     <meta name="breadcrumb" content="Species"/>
 
-    <r:require modules="knockout, a-jquery-ui, jquery_bootstrap_datatable"/>
+    <asset:stylesheet src="datatables-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="datatables-manifest.js"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -97,7 +99,7 @@
     </div>
 
 </div>
-<r:script>
+<asset:script type="text/javascript">
 $(window).load(function(){
 
     var SpeciesList = function(data) {
@@ -212,6 +214,6 @@ $(window).load(function(){
 
 });
 
-</r:script>
+</asset:script>
 </body>
 </html>

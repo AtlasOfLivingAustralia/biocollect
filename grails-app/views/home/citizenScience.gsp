@@ -4,7 +4,7 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title><g:message code="g.citizenScience"/> | <g:message code="g.fieldCapture"/></title>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
@@ -14,7 +14,7 @@
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}"
     }
-    </r:script>
+    </asset:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
 </head>
 
@@ -107,7 +107,7 @@
             easy for you to find projects happening in your area or with a subject or theme that is of interest to you.
             <p>In the interim, here is a list of citizen science projects supported by Atlas infrastructure and
             other projects in Australia that the Atlas does not support directly, but that we are aware of.</p>
-            <a href="${createLink(controller:'project', action:'projectFinder')}" class="btn btn-small">
+            <a href="${createLink(controller:'project', action:'homePage')}" class="btn btn-small">
                 <g:message code="project.citizenScience.heading"/></a>
             <br/>
             <h3>Citizen Science Network Australia</h3>

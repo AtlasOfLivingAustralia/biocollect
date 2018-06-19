@@ -4,10 +4,11 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Create | Project | <g:message code="g.fieldCapture"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="Create Project"/>
-
-    <r:script disposition="head">
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
+    <asset:script type="text/javascript">
     var fcConfig = {
         projectUpdateUrl: "${createLink(action:'ajaxCreate')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
@@ -32,8 +33,13 @@
         },
         here = window.location.href;
 
-    </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,amplify,jQueryFileUpload,projects,organisation,fuseSearch,map,largeCheckbox"/>
+    </asset:script>
+    <asset:stylesheet src="organisation.css"/>
+    <asset:stylesheet src="project-create-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="organisation.js"/>
+    <asset:javascript src="project-activity-manifest.js"/>
+    <asset:javascript src="projects-manifest.js"/>
 </head>
 
 <body>
@@ -57,7 +63,7 @@
                             <label for="termsOfUseAgreement"><span></span> I confirm that have read and accept the <a href="${grailsApplication.config.termsOfUseUrl}" data-bind="click: clickTermsOfUse" target="_blank">Terms of Use</a>.</label>
                             <div class="margin-bottom-1"></div>
                             <p><g:message code="project.details.termsOfUseAgreement.help"/></p>
-                            <p><img src="${request.contextPath}/images/cc.png" alt="Creative Commons Attribution 3.0"></p>
+                            <p><img src="${asset.assetPath(src:'cc.png')}" alt="Creative Commons Attribution 3.0"></p>
                         </div>
                     </div>
                 </div>
@@ -70,7 +76,7 @@
         </div>
     </form>
 </div>
-<r:script>
+<asset:script type="text/javascript">
 $(function(){
 
     var PROJECT_DATA_KEY="CreateProjectSavedData";
@@ -95,7 +101,7 @@ $(function(){
     <g:if test="${citizenScience}">
     viewModel.transients.kindOfProject("citizenScience");
     $('#cancel').click(function () {
-        document.location.href = "${createLink(action: 'projectFinder')}";
+        document.location.href = "${createLink(action: 'homePage')}";
     });
     </g:if>
     <g:else>
@@ -149,7 +155,7 @@ $(function(){
 
     ko.applyBindings(viewModel, document.getElementById("projectDetails"));
  });
-</r:script>
+</asset:script>
 
 </body>
 </html>

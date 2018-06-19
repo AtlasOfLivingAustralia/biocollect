@@ -1,0 +1,19 @@
+/* leaflet
+*= encoding UTF-8
+*= require leaflet-0.7.7/leaflet.css
+
+* from image-client-plugin
+*= require leaflet/leaflet.measure
+*= require leaflet/Control.FullScreen
+
+* from ala-map-plugin
+*= require Leaflet.draw-0.4.2/leaflet.draw
+*= require Leaflet.Coordinates-0.1.5/Leaflet.Coordinates-0.1.5
+*= require Leaflet.Coordinates-0.1.5/Leaflet.Coordinates-0.1.5.ie
+*= require Leaflet.EasyButton-1.2.0/easy-button
+*= require leaflet-control-geocoder-1.5.1/Control.Geocoder
+*= require Leaflet.loading-0.1.16/Control.Loading
+*= require Leaflet.markercluster-0.4.0-hotfix.1/MarkerCluster.css
+*= require Leaflet.markercluster-0.4.0-hotfix.1/MarkerCluster.Default.css
+*= require Map.css
+*/

@@ -4,7 +4,7 @@ import au.org.ala.web.AuthService
 import grails.test.mixin.TestFor
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
-import org.apache.commons.httpclient.HttpStatus
+import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import spock.lang.Specification
 

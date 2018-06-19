@@ -4,16 +4,17 @@
 <head>
 
     <meta name="layout" content="mobile"/>
-
-    <r:script disposition="head">
+    <asset:stylesheet src="forms-manifest.css"/>
+    <asset:script type="text/javascript">
     var fcConfig = {
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile', absolute:true)}",
         googleStaticUrl:"http://maps.googleapis.com/maps/api/staticmap?maptype=terrian&zoom=12&sensor=false&size=350x250&markers=color:red%7C"
         },
         here = document.location.href;
-    </r:script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,map,activity,attachDocuments,species,amplify,imageViewer,viewmodels"/>
+    </asset:script>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
 </head>
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
@@ -144,7 +145,7 @@
             <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">${outputName}</h3>
         <!-- add the dynamic components -->
         <md:modelView model="${model}" site="${site}" edit="true" disableTableUpload="true" output="${outputName}" />
-        <r:script>
+        <asset:script type="text/javascript">
         $(function(){
 
             var viewModelName = "${blockId}ViewModel",
@@ -236,7 +237,7 @@
             window[viewModelInstance].dirtyFlag.isDirty, window[viewModelInstance].dirtyFlag.reset);
         });
 
-        </r:script>
+        </asset:script>
     </div>
     </g:if>
 </g:each>
@@ -244,7 +245,7 @@
 
 </div>
 
-<r:script>
+<asset:script type="text/javascript">
 
 
     /* Master controller for page. This handles saving each model as required. */
@@ -501,7 +502,7 @@ $('[data-bind^=datepicker]').datepicker().on('hide', function() {
 });
 
 
-</r:script>
+</asset:script>
 
 </body>
 </html>

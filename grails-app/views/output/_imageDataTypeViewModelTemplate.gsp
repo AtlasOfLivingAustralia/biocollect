@@ -1,4 +1,3 @@
-<r:require modules="imageDataType,imageViewer,imageGallery"></r:require>
 <bc:koLoading>
     <div class="image-gallery">
         <ul class="thumbnails" data-bind="visible: ${name}().length">

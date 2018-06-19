@@ -1,0 +1,184 @@
+body.nav-getinvolved{
+    padding-top: 0px;
+}
+
+nav#biocollectNav > ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    text-align: left;
+    background: rgb(43, 123, 117);
+}
+
+nav#biocollectNav.ecoScienceNav > ul, nav#biocollectNav.ecoScienceNav > ul > li a, nav#biocollectNav.ecoScienceNav ul#main > li > a.ala-link {
+    color: #555;
+    background: rgb(148,222,255);
+}
+
+nav#biocollectNav.ecoScienceNav > ul > li a + ul li a:hover, nav#biocollectNav.ecoScienceNav > ul > li:hover > a {
+    background: rgb(100,170,200);
+}
+
+nav#biocollectNav.ecoScienceNav ul > li.active > a {
+    background: rgb(100,170,200);
+}
+
+nav#biocollectNav > ul > li {
+    display: inline-block;
+    position: relative;
+}
+nav#biocollectNav > ul > li.more > a .fa {
+    color: yellow;
+}
+nav#biocollectNav > ul > li.hidden {
+    display: none;
+}
+nav#biocollectNav > ul > li > a {
+    border-right: 1px dashed white;
+}
+
+nav#biocollectNav > ul > li a {
+    font-size: 1rem;
+    display: block;
+    background:rgb(43, 123, 117);
+    color: #FFF;
+    text-align: center;
+    text-decoration: none;
+    padding: 10px 20px 5px 20px;
+}
+nav#biocollectNav > ul > li a .fa {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+nav#biocollectNav ul > li.active > a {
+    background-color: #444d58;
+}
+
+nav#biocollectNav > ul > li a + ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-right: 0;
+    list-style-type: none;
+}
+nav#biocollectNav > ul > li a + ul li {
+    margin-top: 1px;
+    position: relative;
+    /*
+    Input when focused hides the drop down menu. This was happening since bootstrap sets z-index=2 when an
+    input field is focused.
+    */
+    z-index: 3;
+}
+nav#biocollectNav > ul > li a + ul li a {
+    padding-left: 16px;
+    text-align: left;
+    white-space: nowrap;
+}
+nav#biocollectNav > ul > li a + ul li a .fa {
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 0;
+}
+nav#biocollectNav > ul > li a + ul li a:hover {
+    background: #444d58;
+}
+nav#biocollectNav > ul > li:hover > a {
+    background: #444d58;
+}
+nav#biocollectNav > ul > li:hover ul {
+    display: block;
+}
+
+nav#biocollectNav > ul > li.more > ul.more-ul > li > ul{
+    display: block;
+    position: relative;
+}
+
+.ala-icon:before {
+    content: url(https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico)
+}
+
+nav#biocollectNav ul#main > li > a.ala-link{
+    padding-top:25px; !important;
+    padding-bottom: 10px;!important;
+    color:white;
+    font-size: large;
+    border-right: 0px dashed #d1f5d6;
+}
+
+nav#biocollectNav ul#main li a.ala-link:hover{
+    color: #5f5d60;
+    background: rgb(43, 123, 117);
+}
+
+.ala-header{
+    background: url(https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/species-by-location-phyllopteryx-taeniolatus.jpg) no-repeat center top;
+    height: 225px;
+    background-size: cover;
+    background-position-y: -54px;
+}
+
+.jumbotron .input-append {
+    margin-top: 75px ;
+}
+
+.ala-header-works {
+    background: url(https://www.ala.org.au/wp-content/uploads/2015/07/Revegetation.jpg) no-repeat center top;
+    height: 225px;
+    background-size: cover;
+    background-position-y: -54px;
+}
+
+.ala-header-ecoscience {
+    background: url(https://www.ala.org.au/wp-content/uploads/2015/07/ES-banner-4.jpg) no-repeat center top;
+    height: 350px;
+    background-size: cover;
+    background-position-y: -90px;
+}
+
+#biocollectlogo {
+    background-color: white !important;
+}
+#biocollectlogo > img {
+    width: 193px;
+}
+
+.acsa-image {
+    content: url(ACSA_logo_white.png);
+    height: 45px;
+}
+
+nav#biocollectNav > ul > li#acsa-banner {
+    display: inline-block;
+}
+
+nav#biocollectNav .more li#acsa-banner {
+    display: none;
+}
+
+nav#biocollectNav > ul > li#acsa-banner a{
+    border-right: 0px;
+}
+
+nav#biocollectNav .more li#acsa-text {
+    display: inline-block;
+}
+
+nav#biocollectNav > ul > li#acsa-text {
+    display: none;
+}
+
+.acsa-icon{
+    content: url(acsa_icon.png);
+    height: 20px;
+}
+
+section#breadcrumb {
+    background-color: white;
+    border-bottom: 0px;
+}

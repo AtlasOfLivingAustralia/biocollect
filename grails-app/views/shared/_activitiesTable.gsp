@@ -1,4 +1,3 @@
-<r:require module="datepicker"/>
 <!-- This section is bound to a secondary KO viewModel. The following line prevents binding
          to the main viewModel. -->
 <!-- ko stopBinding: true -->
@@ -78,7 +77,7 @@
         </tbody>
     </table>
 </div>
-<r:script>
+<asset:script type="text/javascript">
     $(window).load(function () {
         var collapseState = amplify.store.sessionStorage('output-accordion-state');
         function ActivitiesViewModel(activities, sites) {
@@ -237,5 +236,5 @@
         ko.applyBindings(activitiesViewModel, document.getElementById('activityListContainer'));
     });
 
-</r:script>
+</asset:script>
 <!-- /ko -->

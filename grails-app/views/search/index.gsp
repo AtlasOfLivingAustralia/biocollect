@@ -182,10 +182,10 @@
     </g:else>
 
 </div>
-<r:script>
+<asset:script type="text/javascript">
     $(window).load(function () {
         $('.tooltips').tooltip({placement: "right"});
     });
-</r:script>
+</asset:script>
 </body>
 </html>

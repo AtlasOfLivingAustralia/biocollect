@@ -1,5 +1,4 @@
 <g:set var="wordForActivity" value="${wordForActivity?:'activity'}"/>
-<r:require module="datepicker"/>
 <!-- This section is bound to a secondary KO viewModel. The following line prevents binding
          to the main viewModel. -->
 <!-- ko stopBinding: true -->
@@ -50,7 +49,7 @@
         </tbody>
     </table>
 </div>
-<r:script>
+<asset:script type="text/javascript">
     $(window).load(function () {
         function ActivitiesViewModel(activities, sites) {
             var self = this;
@@ -180,5 +179,5 @@
         ko.applyBindings(activitiesViewModel, document.getElementById('activityListContainer'));
     });
 
-</r:script>
+</asset:script>
 <!-- /ko -->

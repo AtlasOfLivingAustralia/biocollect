@@ -1,5 +1,4 @@
 <%@ page import="au.org.ala.biocollect.DateUtils" %>
-<r:require modules="pretty_text_diff"/>
 <h4>Audit ${message?.entityType?.substring(message?.entityType?.lastIndexOf('.')+1)}: ${message?.entity?.name} ${message?.entity?.type} </h4>
 <g:set var="projectId" value="${params.projectId}"/>
 <g:set var="searchTerm" value="${params.searchTerm}"/>
@@ -97,7 +96,7 @@
 
 </div>
 
-<r:script type="text/javascript">
+<asset:script type="text/javascript">
     $(document).ready(function() {
         $( "#ids").hide();
         $("#wrapper tr").prettyTextDiff({
@@ -115,4 +114,4 @@
 
 
     });
-</r:script>
+</asset:script>

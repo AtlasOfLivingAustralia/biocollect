@@ -4,7 +4,7 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Advanced | Field Capture</title>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
@@ -13,17 +13,17 @@
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
     }
-    </r:script>
-    <r:require modules="knockout"/>
+    </asset:script>
+    <asset:javascript src="common.js"/>
 </head>
 <body>
 <div id="wrapper" class="container-fluid">
 
     <div class="row-fluid large-space-after large-space-before button-set">
-        <g:link controller="project" action="create" class="btn btn-medium"><r:img dir="images/icons" file="project.png"/> Add a project</g:link>
-        <g:link controller="site" action="create" class="btn btn-medium"><r:img dir="images/icons" file="site.png"/> Add a site</g:link>
-        <g:link controller="activity" action="create" class="btn btn-medium"><r:img dir="images/icons" file="activity.png"/> Add an activity</g:link>
-        <g:link controller="assessment" action="create" class="btn btn-medium"><r:img dir="images/icons" file="assessment.png"/> Add an assessment</g:link>
+        <g:link controller="project" action="create" class="btn btn-medium"><img src="${asset.assetPath(src:'icons/project.png')}" /> Add a project</g:link>
+        <g:link controller="site" action="create" class="btn btn-medium"><img src="${asset.assetPath(src:'icons/site.png')}" /> Add a site</g:link>
+        <g:link controller="activity" action="create" class="btn btn-medium"><img src="${asset.assetPath(src:'icons/activity.png')}"/> Add an activity</g:link>
+        <g:link controller="assessment" action="create" class="btn btn-medium"><img src="${asset.assetPath(src:'icons/assessment.png')}"/> Add an assessment</g:link>
         <form action="search" class="form-search pull-right">
             <div class="control-group">
                 <div class="controls">
@@ -168,7 +168,7 @@
     </g:if>
 </div>
 
-<r:script>
+<asset:script type="text/javascript">
     $(window).load(function () {
 
         // bind filters
@@ -260,6 +260,6 @@
     var viewModel = new ViewModel(data);
     ko.applyBindings(viewModel);*/
 
-</r:script>
+</asset:script>
 </body>
 </html>

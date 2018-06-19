@@ -48,7 +48,7 @@ grails.project.dependency.resolution = {
         mavenRepo "http://nexus.ala.org.au/content/groups/public/"
     }
 
-    def tomcatVersion = '7.0.55'
+    def tomcatVersion = '7.0.55.2'
     def metadataExtractorVersion = "2.6.2"
     def imgscalrVersion = "4.2"
     def httpmimeVersion = "4.2.1"
@@ -67,40 +67,43 @@ grails.project.dependency.resolution = {
         compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
         compile "org.apache.httpcomponents:httpcore:4.4.1"
         compile "org.apache.httpcomponents:httpclient:4.4.1"
-        compile "com.vaadin:vaadin-sass-compiler:0.9.13"
 
 
-        compile group: 'au.org.ala',
-                name: 'ala-cas-client',
-                version:'2.1',
-                transitive:false
     }
 
     plugins {
         // plugins for the build system only
-        build ":tomcat:7.0.55.2"
+        build ":tomcat:${tomcatVersion}"
         build (":release:3.1.1", ":rest-client-builder:2.1.1") {
             export = false
         }
 
         runtime ":jquery:1.11.1"
-        //compile ':asset-pipeline:1.9.9'
+
         // required by the cached-resources plugin
         runtime ":cache-headers:1.1.6"
-        if (Environment.current == Environment.PRODUCTION) {
-            runtime ":cached-resources:1.0"
-        }
         runtime (":rest:0.8") {
             excludes "httpclient", "httpcore"
         }
-        runtime ":ala-bootstrap2:2.4.5"
-        runtime ":csv:0.3.1"
-        runtime ":lesscss-resources:1.3.3"
-        runtime ":ala-admin-plugin:1.2"
 
-        compile ":ala-auth:1.3.1"
+        compile ":asset-pipeline:2.3.2"
+        // Uncomment these to enable additional asset-pipeline capabilities
+        //compile ":sass-asset-pipeline:2.13.1"
+//        compile ":less-asset-pipeline:2.14.1"
+        //compile ":coffee-asset-pipeline:2.13.1"
+        //compile ":handlebars-asset-pipeline:2.13.1"
+
+
+        runtime (":ala-bootstrap2:2.7.0") {
+            excludes "resources"
+        }
+        runtime ":csv:0.3.1"
+        runtime (":ala-admin-plugin:1.2") {
+            excludes "resources"
+        }
+
+        compile":ala-auth:2.2.0"
         compile ":markdown:1.1.1"
-        compile ":resources:1.2.14"
         compile ':cache:1.1.8'
         compile ':cache-headers:1.1.7'
         compile ":cache-ehcache:1.0.5"
@@ -108,8 +111,12 @@ grails.project.dependency.resolution = {
         compile ":mail:1.0.7"
         compile ":excel-export:0.2.0"
         compile ":excel-import:1.0.1"
-        compile ":images-client-plugin:0.6.1"
-        compile ":ala-map:2.1.6"
+        compile (":images-client-plugin:0.6.1") {
+            excludes "resources"
+        }
+        compile (":ala-map:2.1.7") {
+            excludes "resources"
+        }
         compile ':cookie:1.4'
     }
 }

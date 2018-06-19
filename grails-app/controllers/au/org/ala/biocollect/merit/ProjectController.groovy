@@ -176,7 +176,7 @@ class ProjectController {
 
         def config = [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
          news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
+         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
          admin:[label:'Admin', template:'CSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
@@ -199,7 +199,7 @@ class ProjectController {
 
         def config = [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
          news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab'],
+         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
          admin:[label:'Admin', template:'CSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
@@ -231,13 +231,13 @@ class ProjectController {
 
         // Add a human readable name of the last user to update the project plan.
         if (project.custom?.details?.lastUpdatedBy) {
-            project.custom.details.lastUpdatedDisplayName = authService.getUserForUserId(project.custom?.details?.lastUpdatedBy)?.displayName ?: 'Unknown user'
+            project.custom.details.lastUpdatedDisplayName = authService.getUserForUserId(project.custom?.details?.lastUpdatedBy, false)?.displayName ?: 'Unknown user'
         }
 
 
         Map content = [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
                        news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-                       documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, imageUrl:resource(dir:'/images/filetypes'), containerId:'overviewDocumentList', type:'tab', project:project],
+                       documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab', project:project],
                        activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:false],
                        site:[label:'Sites', template:'/site/worksSites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', canEditSites: canEditSites, type:'tab'],
                        meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, canViewRisks: canViewRisks, type:'tab', template:'viewMeriPlan'],
@@ -357,10 +357,10 @@ class ProjectController {
 
 
     def myProjects() {
-        Map result = projectFinder()
+        Map result = homePage()
         result.isUserPage = true
 
-        render view: 'projectFinder',  model:  result
+        render view: 'homePage',  model:  result
     }
 
     def projectFinder() {
@@ -387,6 +387,25 @@ class ProjectController {
         }
 
         result
+    }
+
+    def homePage () {
+        HubSettings hubSettings = SettingService.hubConfig
+        if (hubSettings.overridesHomePage()) {
+            if(hubSettings.isHomePagePathSimple()){
+                Map result = hubSettings.getHomePageControllerAndAction()
+                // avoid infinite loop
+                if(result.controller != 'project' && result.action != 'homePage'){
+                    forward(result)
+                    return
+                }
+            } else {
+                redirect([uri: hubSettings['homePagePath'] ])
+                return
+            }
+        }
+
+        forward(action: 'projectFinder')
     }
 
     /**
@@ -452,7 +471,7 @@ class ProjectController {
         if (!values?.associatedOrgs) values.put('associatedOrgs', [])
 
         def result = id ? projectService.update(id, values) : projectService.create(values)
-        log.debug "result is " + result
+        log.info "Project creation result: " + result
         if (documents && !result.error) {
             if (!id) id = result.resp.projectId
             documents.each { doc ->
@@ -475,6 +494,7 @@ class ProjectController {
                 documentService.saveLink(link)
             }
         }
+
         if (siteResult && !result.error) {
             if (!id) id = result.resp.projectId
             if (!projectSite.projects || (projectSite.projects.size() == 1 && projectSite.projects.get(0).isEmpty()))
@@ -482,9 +502,11 @@ class ProjectController {
             else if (!projectSite.projects.contains(id))
                 projectSite.projects += id
 
-            siteService.update(values.projectSiteId, projectSite)
+            def siteUpdate = siteService.update(values.projectSiteId, projectSite)
+            log.info(siteUpdate)
         }
         if (result.error) {
+            log.error(result.error);
             render result as JSON
         } else {
             render result.resp as JSON

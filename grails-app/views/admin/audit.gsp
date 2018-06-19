@@ -7,8 +7,9 @@
 		</style>
 	</head>
 	<body>
-        <r:require modules="jquery_bootstrap_datatable"/>
-        <h3>Audit</h3>
+        <asset:stylesheet src="datatables-manifest.css"/>
+        <asset:javascript src="datatables-manifest.js"/>
+    <h3>Audit</h3>
         <form class="form-inline">
             Search for a project:
             <g:textField id="searchTerm" name="searchTerm" placeholder="Search for projects..." value="${searchTerm}"></g:textField>
@@ -39,7 +40,7 @@
     </body>
 </html>
 
-<r:script>
+<asset:script type="text/javascript">
 
     $(document).ready(function() {
 
@@ -65,5 +66,5 @@
     }
 
 
-</r:script>
+</asset:script>
 

@@ -4,11 +4,13 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${title} | Bio Collect</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <g:set var="wsParameters" value="${[version: params.version, spotterId: "${spotterId}", projectActivityId: "${projectActivityId}"]}"/>
-    <r:script disposition="head">
+    <asset:stylesheet src="forms-manifest.css"/>
+    <asset:stylesheet src="facets-filter-view.css"/>
+    <asset:script type="text/javascript">
     var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
@@ -31,7 +33,7 @@
             projectLinkPrefix: "${createLink(controller: 'project')}/",
             recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
-            imageLocation:"${resource(dir:'/images')}",
+            imageLocation:"${asset.assetPath(src:'')}",
             version: "${params?.version}",
             projectId: "${projectId}",
             projectActivityId: "${projectActivityId}",
@@ -40,11 +42,15 @@
             hideProjectAndSurvey: ${hubConfig.content?.hideProjectAndSurvey?:false},
             occurrenceUrl: "${occurrenceUrl}",
             spatialUrl: "${spatialUrl}",
-            absenceIconUrl:"${resource(dir: 'images', file: 'triangle.png')}"
+            absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}"
         },
         here = document.location.href;
-    </r:script>
-    <r:require modules="knockout, projectActivityInfo, jqueryValidationEngine, restoreTab, myActivity, activities, datepicker"/>
+    </asset:script>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
+    <asset:javascript src="projectActivityInfo.js"/>
+    <asset:javascript src="facets.js"/>
+    <asset:javascript src="projects.js"/>
 </head>
 <body>
 
@@ -69,11 +75,11 @@
     </div>
 </div>
 
-<r:script>
+<asset:script type="text/javascript">
     $(function() {
         initialiseData(fcConfig.view);
     });
-</r:script>
+</asset:script>
 
 </body>
 </html>

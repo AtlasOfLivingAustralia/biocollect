@@ -5,11 +5,13 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${project?.name.encodeAsHTML()} | Project | Field Capture</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
 
     <script src="${grailsApplication.config.google.maps.url}"></script>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         homePagePath: "${createLink(controller: 'home', action: 'index')}",
@@ -60,7 +62,7 @@
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         documentUpdateUrl: "${createLink(controller:"proxy", action:"documentUpdate")}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
-        imageLocation:"${resource(dir:'/images')}",
+        imageLocation:"${asset.assetPath(src:'')}",
         pdfgenUrl: "${createLink(controller: 'resource', action: 'pdfUrl')}",
         pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
         imgViewer: "${createLink(controller: 'resource', action: 'imageviewer')}",
@@ -86,7 +88,7 @@
         sitesPhotoPointsUrl:"${createLink(controller:'project', action:'projectSitePhotos', id:project.projectId)}",
         getMembersForProjectIdPaginatedUrl: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}",
         removeUserRoleUrl:"${createLink(controller:'user', action:'removeUserWithRoleFromProject')}",
-        absenceIconUrl:"${resource(dir: 'images', file: 'triangle.png')}",
+        absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
         isAdmin: ${user?.isAdmin ? 'true' : 'false'},
         isEditor: ${user?.isEditor ? 'true' : 'false'},
         isCaseManager: ${user?.isCaseManager ? 'true' : 'false'},
@@ -103,7 +105,7 @@
         },
         here = window.location.href;
 
-    </r:script>
+    </asset:script>
 
     <style type="text/css">
 
@@ -120,7 +122,12 @@
         </style>
     <![endif]-->
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <r:require modules="knockout,datepicker, jqueryValidationEngine, jquery_bootstrap_datatable, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, map, mapWithFeatures, leaflet_google_base"/>
+    <asset:stylesheet src="projects-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="project-activity-manifest.js"/>
+    <asset:javascript src="projects-manifest.js"/>
+    <asset:javascript src="wms.js"/>
+    <asset:javascript src="mapWithFeatures.js"/>
 </head>
 <body>
 
@@ -150,7 +157,7 @@
    </div>
 </bc:koLoading>
 
-<r:script>
+<asset:script type="text/javascript">
         $(function () {
             // set project tab selection if a 'tab' parameter is set
             var projectTab = getUrlParameterValue('tab');
@@ -378,7 +385,7 @@
         $('#about-tab').tab('show');
     }
 
-</r:script>
+</asset:script>
 
 </body>
 </html>

@@ -1,4 +1,3 @@
-<r:require module="species"/>
 <span class="input-prepend input-append" data-bind="with:${source}">
     <input type="text" placeholder="" data-bind="${databindAttrs}" ${validationAttrs} ${attrs}/>
     <span class="add-on">

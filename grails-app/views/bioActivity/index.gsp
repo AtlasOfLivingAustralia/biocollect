@@ -10,15 +10,19 @@
         <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
         <title>View | ${activity.type} | Bio Collect</title>
     </g:else>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${pActivity.projectId},Project"/>
     <meta name="breadcrumb" content="${pActivity.name}"/>
+    <asset:stylesheet src="forms-manifest.css"/>
+    <g:if test="${mobile}">
+        <asset:stylesheet src="mobile_activity.css"/>
+    </g:if>
 
     %{-- this will ultimately follow through to the comment controller using url mapping --}%
     <g:set var="commentUrl" value="${resource(dir:'/bioActivity')}/${activity.activityId}/comment"></g:set>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
@@ -26,7 +30,7 @@
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
-        imageLocation:"${resource(dir:'/images')}",
+        imageLocation:"${asset.assetPath(src:'')}",
         createCommentUrl : "${commentUrl}",
         commentListUrl:"${commentUrl}",
         updateCommentUrl:"${commentUrl}",
@@ -40,10 +44,10 @@
         ${(params?.version) ? ',version: ' + params?.version : ''}
         },
         here = document.location.href;
-    </r:script>
+    </asset:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <r:require modules="knockout,jqueryValidationEngine,datepicker,timepicker,jQueryFileUploadUI,species,activity, projectActivityInfo, imageViewer, comments, map, leaflet_google_base, responsiveTableStacked, viewmodels"/>
-    <g:if test="${mobile}"><r:require modules="mobile"/></g:if>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
 </head>
 
 <body>
@@ -106,7 +110,7 @@
                     <!-- add the dynamic components -->
                     <md:modelView model="${model}" site="${site}" readonly="true" userIsProjectMember="${userIsProjectMember}"/>
                 </g:if>
-                <r:script>
+                <asset:script type="text/javascript">
                     $(function(){
                         var viewModelName = "${blockId}ViewModel";
                         var viewModelInstance = viewModelName + "Instance";
@@ -164,7 +168,7 @@
 
                         ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
                     });
-                </r:script>
+                </asset:script>
             </div>
         </g:each>
     <!-- /ko -->
@@ -176,13 +180,16 @@
 
     <g:if test="${!mobile}">
         <div class="form-actions">
+            <g:if test="${userIsOwner}">
+                <a class="btn btn-primary" href="${createLink(controller: 'bioActivity', action: 'edit')}/${activity.activityId}">Edit</a>
+            </g:if>
             <button type="button" id="cancel" class="btn">return</button>
         </div>
     </g:if>
 </div>
 <!-- templates -->
 
-<r:script>
+<asset:script type="text/javascript">
         var returnTo = "${returnTo}";
 
         function ActivityLevelData() {
@@ -284,6 +291,6 @@
 
     var versionMsg = $('#versionMsg')
     if (versionMsg.length > 0) versionMsg[0].innerHTML = moment(fcConfig.version, 'x').format('YYYY-MM-DD HH:mm:ss')
-</r:script>
+</asset:script>
 </body>
 </html>

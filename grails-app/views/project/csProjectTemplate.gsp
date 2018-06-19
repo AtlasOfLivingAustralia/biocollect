@@ -4,10 +4,11 @@
 <head>
     <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
     <title>${project?.name.encodeAsHTML()} | Project | Field Capture</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
-
-    <r:script disposition="head">
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
+    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
+    <asset:script type="text/javascript">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         homePagePath: "${createLink(controller: 'home', action: 'index')}",
@@ -63,7 +64,7 @@
         documentUpdateUrl: "${createLink(controller:"proxy", action:"documentUpdate")}",
         methoddocumentUpdateUrl: "${createLink(controller:"image", action:"upload", params:[role: "methodDoc"])}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
-        imageLocation:"${resource(dir:'/images')}",
+        imageLocation:"${asset.assetPath(src:'')}",
         pdfgenUrl: "${createLink(controller: 'resource', action: 'pdfUrl')}",
         pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
         imgViewer: "${createLink(controller: 'resource', action: 'imageviewer')}",
@@ -93,11 +94,11 @@
         spatialUrl: "${spatialUrl}",
         getMembersForProjectIdPaginatedUrl: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}",
         removeUserRoleUrl:"${createLink(controller:'user', action:'removeUserWithRoleFromProject')}",
-        absenceIconUrl:"${resource(dir: 'images', file: 'triangle.png')}"
+        absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}"
         },
         here = window.location.href;
 
-    </r:script>
+    </asset:script>
 
     <style type="text/css">
 
@@ -113,7 +114,10 @@
             }
         </style>
     <![endif]-->
-    <r:require modules="knockout,datepicker, jqueryValidationEngine, projects, attachDocuments, wmd, projectActivity, restoreTab, myActivity, map"/>
+    <asset:stylesheet src="projects-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="project-activity-manifest.js"/>
+    <asset:javascript src="projects-manifest.js"/>
 </head>
 <body>
 
@@ -152,7 +156,7 @@
    </div>
 </bc:koLoading>
 
-<r:script>
+<asset:script type="text/javascript">
     $(function() {
         // set project tab selection if a 'tab' parameter is set
         var projectTab = getUrlParameterValue('tab');
@@ -224,6 +228,6 @@
             $('#about-tab').tab('show');
         }
     });
-</r:script>
+</asset:script>
 </body>
 </html>

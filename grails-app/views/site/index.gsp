@@ -4,12 +4,12 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${site?.name?.encodeAsHTML()} | Field Capture</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'site', action: 'list')},Sites"/>
     <meta name="breadcrumb" content="${site.name?.encodeAsHTML()}"/>
 
-    <r:script disposition="head">
+    <asset:script type="text/javascript">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
@@ -46,8 +46,12 @@
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/"
             },
             here = "${createLink(controller: 'site', action: 'index', id: site.siteId)}";
-    </r:script>
-    <r:require modules="knockout,amplify,map,sites"/>
+    </asset:script>
+    <asset:stylesheet src="sites-manifest.css"/>
+    <asset:stylesheet src="leaflet-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="leaflet-manifest.js"/>
+    <asset:javascript src="sites-manifest.js"/>
 </head>
 
 <body>
@@ -219,7 +223,7 @@
                                     <h4>
                                         <!-- ko if: embargoed() -->
                                         <a href="#" class="helphover"
-                                           data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment(embargoUntil()).format('DD/MM/YYYY')}">
+                                           data-bind="popover: {title:'Only project members can access the record.', content:'Embargoed until : ' + moment(embargoUntil()).format('DD/MM/YYYY')}">
                                             <span class="fa fa-lock"></span>
                                         </a>
                                         <!--/ko -->
@@ -347,7 +351,7 @@
         </div>
     </g:if>
 </div>
-<r:script>
+<asset:script type="text/javascript">
         $(function(){
             var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
 
@@ -457,6 +461,6 @@
             }
         }
 
-</r:script>
+</asset:script>
 </body>
 </html>

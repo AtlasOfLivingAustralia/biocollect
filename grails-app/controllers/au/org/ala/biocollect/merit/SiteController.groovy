@@ -463,7 +463,7 @@ class SiteController {
 
     def ajaxUpdate(String id) {
         def result = [:]
-        String userId = userService.getCurrentUserId(request)
+        String userId = userService.getCurrentUserId()
 
 
 
@@ -533,7 +533,7 @@ class SiteController {
             if (result.status == 'error') {
                 render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${result.message}"
             } else {
-                render result as JSON
+                render status: HttpStatus.SC_OK, text: result as JSON, contentType: "application/json"
             }
         }
     }

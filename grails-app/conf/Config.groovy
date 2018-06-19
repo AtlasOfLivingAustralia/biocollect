@@ -89,6 +89,10 @@ layout.skin = "ala2"
 webservice.connectTimeout = 10000
 webservice.readTimeout = 20000
 
+//CAS config
+security.cas.uriExclusionFilterPattern="/assets/.*,/images.*,/css.*,/js.*,/less.*,/ajax/bulkLookupQuestions,/uploads/.*"
+security.cas.authenticateOnlyIfLoggedInPattern=".*"
+security.cas.uriFilterPattern=".*/user/.*,.*/site/(?!(index|list|elasticsearch|getImages|getPoiImages|ajaxUpdate)).*,.*/project/(?!(index|search|citizenScience|listRecordImages|projectSummaryReportCallback)).*,.*/activity/(?!index).*,.*/output/(?!index).*,.*/image/(?!index).*,.*/admin/.*,i.*/proxy/speciesListPost,.*/proxy/documentUpdate,.*/proxy/deleteDocument,.*/home/advanced,.*/organisation/(?!index).*,.*/organisation/(?!list).*,.*/bioActivity/create/.*,.*/bioActivity/edit/.*,.*/bioActivity/list,/sight/.*"
 security.cas.alaAdminRole = "ROLE_ADMIN"
 security.cas.officerRole = "ROLE_FC_OFFICER"
 security.cas.adminRole = "ROLE_FC_ADMIN"
@@ -130,6 +134,7 @@ projectdata.industries.enabled = false
 
 environments {
     development {
+        security.cas.appServerName = 'http://devt.ala.org.au:8087/'
         grails.logging.jul.usebridge = true
         emailFilter = /[A-Z0-9._%-]+@csiro\.au|chris\.godwin\.ala@gmail.com/
         grails {
@@ -140,10 +145,12 @@ environments {
         }
     }
     test {
+        security.cas.appServerName = 'http://devt.ala.org.au:8087/'
         test.user.admin.email = 'fc-ta@outlook.com'
         test.user.admin.password = 'testing!'
     }
     production {
+        security.cas.appServerName = 'https://biocollect.ala.org.au/'
         grails.logging.jul.usebridge = false
         grails.resources.work.dir = "/data/${appName}/cache"
     }
@@ -153,6 +160,11 @@ def loggingDir = (System.getProperty('catalina.base') ? System.getProperty('cata
 if(!(new File(loggingDir).exists())){
     loggingDir = "/tmp"
 }
+
+// URL Mapping Cache Max Size, defaults to 5000
+//grails.urlmapping.cache.maxsize = 1000
+grails.assets.excludes = ["bootstrap/less/**"]
+grails.assets.minifyOptions.excludes = ["**/*.min.js"]
 
 // log4j configuration
 log4j = {
@@ -203,7 +215,8 @@ log4j = {
             'grails.app.taglib.org.grails.plugin.resource',
             'grails.app.resourceMappers.org.grails.plugin.resource'
 
-    debug   'grails.app'
+    debug   'grails.app',
+            "au.org.ala.cas"
 }
 
 if (!grails.cache.config) {

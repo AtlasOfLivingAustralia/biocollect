@@ -1,6 +1,5 @@
 <%@ page import="grails.converters.JSON" %>
-<r:require modules="map"></r:require>
-<g:set var="noImageUrl" value="${resource([dir: "images", file: "no-image-2.png"])}"/>
+<g:set var="noImageUrl" value="${asset.assetPath([src: "no-image-2.png"])}"/>
 <g:render template="../shared/legend"/>
 <!-- ko stopBinding: true -->
 <div id="survey-all-activities-and-records-content">
@@ -137,7 +136,7 @@
                                             <div>
                                                 <!-- ko if: $parent.embargoed() -->
                                                 <a href="#" class="helphover"
-                                                   data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment($parent.embargoUntil()).format('DD/MM/YYYY')}">
+                                                   data-bind="popover: {title:'Only project members can access the record.', content:'Embargoed until : ' + moment($parent.embargoUntil()).format('DD/MM/YYYY')}">
                                                     <span class="fa fa-lock"></span>
                                                 </a>
                                                 <!--/ko -->
@@ -215,7 +214,7 @@
                                             <div>
                                                 <!-- ko if: embargoed() -->
                                                 <a href="#" class="helphover"
-                                                   data-bind="popover: {title:'Access to the record is restricted to non-project members', content:'Embargoed until : ' + moment(embargoUntil()).format('DD/MM/YYYY')}">
+                                                   data-bind="popover: {title:'Indicates that only project members can access the record.', content:'Embargoed until : ' + moment(embargoUntil()).format('DD/MM/YYYY')}">
                                                     <span class="fa fa-lock"></span>
                                                 </a>
                                                 <!--/ko -->
@@ -312,7 +311,7 @@
     </div>
 </div>
 <!-- /ko -->
-<r:script>
+<asset:script type="text/javascript">
     var activitiesAndRecordsViewModel, alaMap, results;
     function initialiseData(view) {
         var user = '${user as grails.converters.JSON}',
@@ -363,4 +362,4 @@
     }
 
     tabId && $(tabId).tab('show');
-</r:script>
+</asset:script>

@@ -299,7 +299,7 @@
     </div>
 </div>
 </script>
-<r:script>
+<asset:script type="text/javascript">
 
     $(function () {
         var prevLat, prevLng;
@@ -454,4 +454,4 @@
             }
         }
     })
-</r:script>
+</asset:script>

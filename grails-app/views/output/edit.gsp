@@ -4,11 +4,14 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Edit | ${activity.activityId ?: 'new'} | ${site.name} | ${site.projectName} | Field Capture</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'projectFinder')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="Edit output"/>
 
     <md:modelStyles model="${model}" edit="true"/>
-    <r:require modules="jstimezonedetect,knockout,jqueryValidationEngine,datepicker,jQueryFileUploadUI,viewmodels"/>
+    <asset:stylesheet src="forms-manifest.css"/>
+    <asset:javascript src="jstz/jstz.min.js"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
 </head>
 <body>
 <div class="container-fluid">
@@ -79,7 +82,7 @@
 </g:each>
 
 <!-- templates -->
-<r:script>
+<asset:script type="text/javascript">
 
     var outputData = ${output.data ?: '{}'},
         returnTo = "${returnTo}";
@@ -174,6 +177,6 @@
 
     });
 
-</r:script>
+</asset:script>
 </body>
 </html>

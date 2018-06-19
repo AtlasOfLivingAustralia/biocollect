@@ -22,8 +22,8 @@
 <head>
     <title></title>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <r:require modules="wmd" />
-    <r:script>
+    <asset:javascript src="common.js" />
+    <asset:script type="text/javascript">
         $(document).ready(function (e) {
             setup_wmd({
                 output_format: "markdown",
@@ -31,10 +31,10 @@
                 output: "copy_html",
                 button_bar: "notes-button-bar",
                 preview: "notes-preview",
-                helpLink: "${request.contextPath}/static/vendor/wmd/markdownhelp.html"
+                helpLink: "${asset.assetPath(src:"/wmd/markdownhelp.html")}"
             });
         });
-    </r:script>
+    </asset:script>
 </head>
 <body data-offset="70" data-target="#page-nav" data-spy="scroll">
 <div class="${fluidLayout?'container-fluid':'container'}">

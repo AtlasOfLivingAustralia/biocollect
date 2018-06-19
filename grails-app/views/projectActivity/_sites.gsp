@@ -57,8 +57,8 @@
             </table>
         </div>
 
-        <div class="span6">
-            <table class="table table-custom-border borderless white-background">
+        <div class="span6 pre-scrollable" >
+            <table class="table table-custom-border borderless white-background ">
                 <thead>
                 <tr>
                     <th>Sites associated with this project:
@@ -67,9 +67,8 @@
                 </tr>
                 </thead>
 
-                <tbody>
+                <tbody >
                 <!-- ko foreach: sites -->
-
                         <tr data-bind="visible: !added()">
                             <td>
                                 <button class="btn btn-mini btn-primary" data-bind="click: addSite" title="Add this site to survey">
@@ -120,8 +119,19 @@
 
     <div class="row-fluid">
         Default zoom area:
-            <select id="siteToZoom"
-                    data-bind='options: sites, optionsText: "name", optionsValue: "siteId", value: defaultZoomArea;' class="form-control input-xlarge full-width"></select>
+        <select id="siteToZoom1" data-bind="value: defaultZoomArea">
+        <!-- ko foreach: sites -->
+           <!-- ko if: added() -->
+              <!-- ko if: siteId != $parent.defaultZoomArea -->
+                    <option data-bind="text: name, value: siteId" ></option>
+              <!-- /ko -->
+              <!-- ko if: siteId == $parent.defaultZoomArea -->
+                <option data-bind="text: name, value: siteId"  selected></option>
+              <!-- /ko -->
+           <!-- /ko -->
+        <!-- /ko -->
+        </select>
+
     </div>
 
 
