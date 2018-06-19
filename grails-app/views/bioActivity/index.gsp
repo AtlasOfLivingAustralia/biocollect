@@ -180,7 +180,7 @@
 
     <g:if test="${!mobile}">
         <div class="form-actions">
-            <g:if test="${userIsOwner}">
+            <g:if test="${hasEditRights}">
                 <a class="btn btn-primary" href="${createLink(controller: 'bioActivity', action: 'edit')}/${activity.activityId}">Edit</a>
             </g:if>
             <button type="button" id="cancel" class="btn">return</button>
