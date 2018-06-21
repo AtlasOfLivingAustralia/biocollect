@@ -103,6 +103,13 @@
             <div class="navbar-inner contain-to-grid">
                 <div class="${fluidLayout ? 'container-fluid' : 'container'}">
                     <div class="pull-right">
+                        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+
                         <div class="nav-collapse collapse pull-right">
                             <ul class="nav">
                                 <g:if test="${hubConfig.templateConfiguration?.header?.links}">
