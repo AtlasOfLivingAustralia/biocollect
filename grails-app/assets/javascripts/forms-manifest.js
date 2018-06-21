@@ -11,8 +11,15 @@
 //= require jquery.timeentry.package-2.0.1/jquery.plugin.min.js
 //= require jquery.timeentry.package-2.0.1/jquery.timeentry.min.js
 
+// select2
+//= require select2/4.0.3/js/select2.full
+//= require typeahead/0.11.1/bloodhound
+
 // emitter
 //= require emitter/emitter.js
+
+// emitter
+//= require select
 
 // image-viewer
 //= require fancybox/jquery.fancybox.js
