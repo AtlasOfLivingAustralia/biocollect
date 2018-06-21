@@ -5,6 +5,7 @@
     <title>Image viewer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <asset:stylesheet src="leaflet-manifest.css"/>
+    <asset:javascript src="base.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <style>
     body {
