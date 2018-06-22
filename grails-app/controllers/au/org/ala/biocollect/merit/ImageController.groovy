@@ -135,7 +135,7 @@ class ImageController {
      * @return file metadata for rending in view
      */
     def upload() {
-        def user = userService.getCurrentUserId()
+        def user = userService.getCurrentUserId(request)
 
         def result = []
         if (request.respondsTo('getFile') && user) {

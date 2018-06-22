@@ -463,7 +463,7 @@ class SiteController {
 
     def ajaxUpdate(String id) {
         def result = [:]
-        String userId = userService.getCurrentUserId()
+        String userId = userService.getCurrentUserId(request)
 
 
 
