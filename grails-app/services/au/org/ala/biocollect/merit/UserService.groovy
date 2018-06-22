@@ -1,9 +1,10 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
+import grails.converters.JSON
+import org.apache.http.HttpStatus
 
 import javax.annotation.PostConstruct
-import org.apache.http.HttpStatus
 
 class UserService {
    def grailsApplication, authService, webService
@@ -52,11 +53,14 @@ class UserService {
 
         if (result.statusCode == HttpStatus.SC_OK && result.resp?.status == 'success') {
             params = [userName: username]
-            url = grailsApplication.config.userDetails.url + "getUserDetails"
+            url = grailsApplication.config.userDetails.url + "userDetails/getUserDetails"
             result = webService.doPostWithParams(url, params)
             if (result.statusCode == HttpStatus.SC_OK && result.resp) {
                 return new UserDetails(result.resp.firstName + result.resp.lastName, result.resp.userName, result.resp.userId)
             }
+        } else {
+            log.error("Failed to get user details for parameters: ${(params as JSON).toString()}")
+            log.error((result as JSON).toString(true))
         }
 
         return null
