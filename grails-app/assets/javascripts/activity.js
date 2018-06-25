@@ -1,7 +1,7 @@
 var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit, doNotStoreFacetFiltering) {
     var self = this;
 
-    var features, featureType = 'record', alaMap, results;
+    var features, featureType = 'record', alaMap, results, radio;
     self.view = view ? view : 'allrecords';
     var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500;
 
@@ -402,8 +402,27 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                         break;
                 }
             });
-            self.plotOnMap(features, type);
+
+            if(features.length > 0) {
+                self.plotOnMap(features, type);
+            }
+            // if no records found, then display activities
+            else if (featureType == 'record') {
+                var type = 'activity';
+                self.updateActivityRecordRadioButton(type, radio);
+                self.getActivityOrRecords(type);
+            }
         }
+    };
+
+
+    /**
+     * A hack to update activity or record radio buttons.
+     * @param value - value of radio button to be checked - 'activity' or 'record'
+     * @param radio - leaflet radio button control
+     */
+    self.updateActivityRecordRadioButton = function (value, radio) {
+        $(radio._container).find('input[value="' + value + '"]').prop('checked', true);
     };
 
     /**
@@ -412,7 +431,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
      */
     self.plotOnMap = function (features, drawType){
         drawType = drawType || 'cluster';
-        var radio;
 
         var mapOptions = {
             drawControl: false,
@@ -427,13 +445,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             self.transients.alaMap = alaMap = new ALA.Map("recordOrActivityMap", mapOptions);
             radio = new L.Control.Radio({
                 name: 'activityOrRecrodsTEST',
-                potion: 'topright',
+                position: 'topleft',
                 radioButtons:[{
-                    displayName: 'Points',
+                    displayName: 'Points ( Species occurrences )',
                     value: 'record',
                     checked: true
                 },{
-                    displayName: 'Cluster',
+                    displayName: 'Cluster ( Site visits )',
                     value: 'activity'
                 }],
                 onClick: self.getActivityOrRecords
