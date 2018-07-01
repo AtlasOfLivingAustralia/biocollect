@@ -129,7 +129,7 @@ function Master(activityId, config) {
             return site.siteId != linkedSite && site.visibility == 'private'
         })
 
-        var siteUrl = fcConfig.siteDeleteUrl;
+        var siteUrl = config.siteDeleteUrl;
         if (waitingForDelete) {
             console.log('Found a temporary site ' + waitingForDelete.siteId);
             $.ajax({
@@ -172,9 +172,9 @@ function Master(activityId, config) {
             // Don't allow another save to be initiated.
             blockUIWithMessage("Saving activity data...");
 
-            amplify.store('activity-' + fcConfig.activityId, toSave);
+            amplify.store('activity-' + config.activityId, toSave);
             var unblock = true;
-            var url = config.isMobile ? fcConfig.bioActivityMobileUpdate : fcConfig.bioActivityUpdate;
+            var url = config.isMobile ? config.bioActivityMobileUpdate : config.bioActivityUpdate;
             var ajaxRequestParams = {
                 url: url,
                 type: 'POST',
@@ -197,13 +197,13 @@ function Master(activityId, config) {
                         bootbox.alert(data.error);
                     } else {
                         unblock = false; // We will be transitioning off this page.
-                        activityId = fcConfig.activityId || data.resp.activityId;
-                        returnTo = fcConfig.bioActivityView + activityId;
+                        activityId = config.activityId || data.resp.activityId;
+                        returnTo = config.bioActivityView + activityId;
                         blockUIWithMessage("Successfully submitted the record.");
                         self.reset();
                         self.saved();
                     }
-                    amplify.store('activity-' + fcConfig.activityId, null);
+                    amplify.store('activity-' + config.activityId, null);
                 },
                 error: function (jqXHR, status, error) {
 
@@ -229,8 +229,8 @@ function Master(activityId, config) {
                         withCredentials: true
                     },
                     beforeSend: function (xhr) {
-                        xhr.setRequestHeader('userName', fcConfig.userName);
-                        xhr.setRequestHeader('authKey', fcConfig.authKey);
+                        xhr.setRequestHeader('userName', config.userName);
+                        xhr.setRequestHeader('authKey', config.authKey);
                     }
                 });
             }
@@ -241,9 +241,9 @@ function Master(activityId, config) {
 
     self.saved = function () {
         if (config.isMobile) {
-            location.href = fcConfig.returnToMobile;
+            location.href = config.returnToMobile;
         } else {
-            document.location.href = fcConfig.returnTo;
+            document.location.href = config.returnTo;
         }
     };
 
@@ -258,170 +258,122 @@ function Master(activityId, config) {
     autoSaveModel(self, null, {preventNavigationIfDirty: true});
 };
 
-
-function ActivityHeaderViewModel(activity, site, project, metaModel, themes, config) {
+function ActivityHeaderViewModel (act, site, project, metaModel, pActivity, config) {
     var self = this;
-
-    var defaults = {
-        projectViewUrl: fcConfig.projectViewUrl,
-        siteViewUrl: fcConfig.siteViewUrl,
-        featureServiceUrl: fcConfig.featureServiceUrl,
-        wmsServerUrl: fcConfig.wmsServerUrl
-    };
-    var options = _.extend({}, defaults, config);
-
-    var mapInitialised = false;
-    self.activityId = activity.activityId;
-    self.description = ko.observable(activity.description);
-    self.notes = ko.observable(activity.notes);
-    self.startDate = ko.observable(activity.startDate).extend({simpleDate: false});
-    self.endDate = ko.observable(activity.endDate || activity.plannedEndDate).extend({simpleDate: false});
-    self.plannedStartDate = ko.observable(activity.plannedStartDate).extend({simpleDate: false});
-    self.plannedEndDate = ko.observable(activity.plannedEndDate).extend({simpleDate: false});
-    self.projectStage = ko.observable(activity.projectStage || "");
-    self.progress = ko.observable(activity.progress);
-    self.mainTheme = ko.observable(activity.mainTheme);
-    self.type = ko.observable(activity.type);
-    self.projectId = activity.projectId;
+    self.activityId = act.activityId;
+    self.notes = ko.observable(act.notes);
+    self.eventPurpose = ko.observable(act.eventPurpose);
+    self.fieldNotes = ko.observable(act.fieldNotes);
+    self.projectStage = ko.observable(act.projectStage || "");
+    self.mainTheme = ko.observable(act.mainTheme);
+    self.type = ko.observable(act.type);
+    self.projectId = act.projectId;
     self.transients = {};
+    self.transients.pActivity = new pActivityInfo(pActivity);
+    self.transients.pActivitySites = pActivity.sites;
     self.transients.site = ko.observable(site);
     self.transients.project = project;
     self.transients.outputs = [];
     self.transients.metaModel = metaModel || {};
-    self.transients.activityProgressValues = ['planned', 'started', 'finished'];
-    self.transients.themes = $.map(themes, function (obj, i) {
-        return obj.name
-    });
-    self.transients.markedAsFinished = ko.observable(activity.progress === 'finished');
-    self.transients.markedAsFinished.subscribe(function (finished) {
-        self.progress(finished ? 'finished' : 'started');
-    });
 
     self.confirmSiteChange = function () {
-
-        if (metaModel.supportsSites && metaModel.supportsPhotoPoints && self.transients.photoPointModel().dirtyFlag.isDirty()) {
+        if (self.transients.photoPointModel && self.transients.photoPointModel().isDirty()) {
             return window.confirm(
                 "This activity has photos attached to photo points.\n  Changing the site will delete these photos.\n  This cannot be undone.  Are you sure?"
             );
         }
         return true;
     };
-    self.siteId = ko.vetoableObservable(activity.siteId, self.confirmSiteChange);
+    self.siteId = ko.vetoableObservable(act.siteId, self.confirmSiteChange);
 
     self.siteId.subscribe(function (siteId) {
 
-        var matchingSite = $.grep(self.transients.project.sites, function (site) {
+        var matchingSite = $.grep(self.transients.pActivitySites, function (site) {
             return siteId == site.siteId
         })[0];
 
-        if (mapInitialised) {
-            alaMap.clearFeatures();
-            if (matchingSite) {
-                alaMap.replaceAllFeatures([matchingSite.extent.geometry]);
+        if (matchingSite && matchingSite.extent && matchingSite.extent.geometry) {
+            var geometry = matchingSite.extent.geometry;
+            if (geometry.pid) {
+                activityLevelData.siteMap.addWmsLayer(geometry.pid);
+            } else {
+                var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                activityLevelData.siteMap.setGeoJSON(geoJson);
             }
-            self.transients.site(matchingSite);
-            if (metaModel.supportsPhotoPoints) {
-                self.updatePhotoPointModel(matchingSite);
-            }
+        }
+        self.transients.site(matchingSite);
+
+        if (metaModel.supportsPhotoPoints) {
+            self.updatePhotoPointModel(matchingSite);
         }
     });
+
     self.goToProject = function () {
         if (self.projectId) {
-            document.location.href = options.projectViewUrl + self.projectId;
+            document.location.href = config.projectViewUrl + self.projectId;
         }
     };
+
     self.goToSite = function () {
         if (self.siteId()) {
-            document.location.href = options.siteViewUrl + self.siteId();
+            document.location.href = config.siteViewUrl + self.siteId();
         }
     };
 
     if (metaModel.supportsPhotoPoints) {
-        self.transients.photoPointModel = ko.observable(new PhotoPointViewModel(site, activity));
+        self.transients.photoPointModel = ko.observable(new PhotoPointViewModel(site, activityLevelData.activity));
         self.updatePhotoPointModel = function (site) {
-            self.transients.photoPointModel(new PhotoPointViewModel(site, activity));
+            self.transients.photoPointModel(new PhotoPointViewModel(site, activityLevelData.activity));
         };
     }
 
-    self.modelForSaving = function (valid) {
+    self.modelForSaving = function () {
         // get model as a plain javascript object
-        var jsData = ko.mapping.toJS(self, {'ignore': ['transients', 'dirtyFlag']});
+        var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
         if (metaModel.supportsPhotoPoints) {
             jsData.photoPoints = self.transients.photoPointModel().modelForSaving();
         }
+
         // If we leave the site or theme undefined, it will be ignored during JSON serialisation and hence
         // will not overwrite the current value on the server.
         var possiblyUndefinedProperties = ['siteId', 'mainTheme'];
 
-        $.each(possiblyUndefinedProperties, function (i, propertyName) {
+        $.each(possiblyUndefinedProperties, function(i, propertyName) {
             if (jsData[propertyName] === undefined) {
                 jsData[propertyName] = '';
             }
         });
+
         return jsData;
     };
+
     self.modelAsJSON = function () {
         return JSON.stringify(self.modelForSaving());
     };
 
-    self.selfDirtyFlag = ko.dirtyFlag(self, false);
-
-    // make sure progress moves to started if we save any data (unless already finished)
-    // (do this here so the model becomes dirty)
-    self.progress(self.transients.markedAsFinished() ? 'finished' : 'started');
-
-    self.initialiseMap = function (mapFeatures) {
-        if (metaModel.supportsSites) {
-            if (!mapFeatures) {
-                mapFeatures = {zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []};
-            }
-            init_map_with_features({
-                    mapContainer: "smallMap",
-                    zoomToBounds: true,
-                    zoomLimit: 16,
-                    featureService: options.featureServiceUrl,
-                    wmsServer: options.wmsServerUrl,
-                    polygonMarkerAreaKm2: -1
-                },
-                mapFeatures
-            );
-            mapInitialised = true;
-        }
+    self.save = function (callback, key) {
     };
 
-    self.updateIdsAfterSave = function (saveResult) {
-        if (metaModel.supportsPhotoPoints) {
-            self.transients.photoPointModel().updatePhotoPointDocumentIds(saveResult.photoPoints);
-
-        }
+    self.removeActivity = function () {
+        bootbox.confirm("Delete this entire activity? Are you sure?", function(result) {
+            if (result) {
+                document.location.href = config.activityDeleteAndReturnToUrl;
+            }
+        });
     };
 
-    /**
-     *  Takes into account changes to the photo point photo's as the default knockout dependency
-     *  detection misses edits to some of the fields.
-     */
-    self.dirtyFlag = {
-        isDirty: ko.computed(function () {
-            var dirty = self.selfDirtyFlag.isDirty();
-            if (!dirty && metaModel.supportsPhotoPoints) {
-                dirty = self.transients.photoPointModel().dirtyFlag.isDirty();
-            }
-            return dirty;
-        }),
-        reset: function () {
-            self.selfDirtyFlag.reset();
-            if (metaModel.supportsPhotoPoints) {
-                self.transients.photoPointModel().dirtyFlag.reset();
-            }
-        }
+    self.notImplemented = function () {
+        alert("Not implemented yet.")
     };
-};
 
-initialiseOutputViewModel = function (outputViewModelName, dataModel, elementId, activity, output, master, config) {
+    self.dirtyFlag = ko.dirtyFlag(self, false);
+}
+
+function initialiseOutputViewModel(outputViewModelName, dataModel, elementId, activity, output, master, config) {
     var viewModelInstance = outputViewModelName + 'Instance';
 
     var context = {
-        project: fcConfig.project,
+        project: config.project,
         activity: activity,
         documents: activity.documents,
         site: activity.site
