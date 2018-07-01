@@ -1,8 +1,9 @@
 /*
  *= require font-awesome/4.4.0/css/font-awesome.css
  *= require bootstrap-combobox.css
- *= require jquery.autocomplete.css
- *= require jquery-ui/themes/smoothness/jquery-ui.css
+ *=requirejquery.autocomplete.css
+ *=requirejquery-ui/themes/smoothness/jquery-ui.css
+ *= require jquery-ui/1.9.2/smoothness/jquery-ui-1.9.2.custom.min.css
  *= require bootstrap-combobox.css
  *= require default.skin.css
  *= require common.css
