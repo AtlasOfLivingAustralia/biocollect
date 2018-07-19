@@ -14,7 +14,7 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
     o = $.extend(defaultValues, o);
     self.type = ko.observable(o.type);
     self.allSpeciesLists = new SpeciesListsViewModel();
-    self.singleSpecies = new SpeciesViewModel(o.singleSpecies);
+    self.singleSpecies = new SpeciesViewModel(o.singleSpecies || {}, fcConfig);
     self.commonNameField = ko.observable(o.commonNameField);
     self.scientificNameField = ko.observable(o.scientificNameField);
     self.commonFields = ko.observableArray();
@@ -285,12 +285,12 @@ var NewSpeciesListViewModel = function (o) {
     self.listType = ko.observable(o.listType);
     self.allSpecies = ko.observableArray();
 
-    self.inputSpeciesViewModel = new SpeciesViewModel();
+    self.inputSpeciesViewModel = new SpeciesViewModel({}, fcConfig);
     self.inputSpeciesViewModel.transients.searchValue = ko.observable("");
 
     self.inputSpeciesViewModel.transients.name.subscribe(function (newName) {
         if(newName) {
-            var newSpecies = new SpeciesViewModel();
+            var newSpecies = new SpeciesViewModel({}, fcConfig);
             newSpecies.name(newName);
             newSpecies.guid(self.inputSpeciesViewModel.transients.guid());
             if(self.inputSpeciesViewModel.transients.guid()) {

@@ -13,7 +13,7 @@ class SpeciesService {
                 return results
             }
         }
-        def results = searchBie(searchTerm, limit)
+        def results = searchBie(searchTerm, null, limit)
 
         // standardise output
         // Handle some unhelpful results from the BIE.
@@ -63,9 +63,11 @@ class SpeciesService {
      */
     Map formatSpeciesListResultToAutocompleteFormat(List queryResult, Map fields){
         List autoCompleteList = queryResult?.collect { result ->
-            Map searchResult = [id: result.id, guid: result.lsid, lsid: result.lsid]
+            Map searchResult = [id: result.id, guid: result.lsid, lsid: result.lsid, listId: result.dataResourceUid]
             searchResult.scientificName = result[fields.scientificNameField]?: result.kvpValues?.find { it.key ==  fields.scientificNameField } ?.value
+            searchResult.scientificNameMatches = searchResult.scientificName ? [ searchResult.scientificName ] : []
             searchResult.commonName = result[fields.commonNameField]?: result.kvpValues?.find { it.key ==  fields.commonNameField } ?.value
+            searchResult.commonNameMatches = searchResult.commonName ? [ searchResult.commonName ] : []
             searchResult
         }
 
@@ -131,13 +133,22 @@ class SpeciesService {
         return listContents
     }
 
-    def searchBie(searchTerm, limit) {
+    def searchBie(searchTerm, fq, limit) {
         if (!limit) {
             limit = 10
         }
-        def encodedQuery = URLEncoder.encode(searchTerm ?: '', "UTF-8")
-        def url = "${grailsApplication.config.bie.baseURL}/ws/search/auto.jsonp?q=${encodedQuery}&limit=${limit}&idxType=TAXON"
 
+        def encodedQuery = URLEncoder.encode(searchTerm ?: '', "UTF-8")
+        String url = "${grailsApplication.config.bie.baseURL}/ws"
+        if (fq) {
+            String encodedFacetQuery = URLEncoder.encode(fq, 'UTF-8')
+            url += "/search.json?q=${encodedQuery}&fq=${encodedFacetQuery}&pageSize=${limit}"
+        }
+        else {
+            def encodedFq = URLEncoder.encode(fq ?: '', "UTF-8")
+            url += "/search/auto.jsonp?q=${encodedQuery}&limit=${limit}&idxType=TAXON"
+
+        }
         webService.getJson(url)
     }
 
@@ -294,5 +305,22 @@ class SpeciesService {
         }
 
         result
+    }
+
+    /**
+     * Returns a thumbnail image for the supplied GUID.
+     * @param id the species GUID.
+     * @return
+     */
+    String speciesImageThumbnailUrl(String id) {
+        Map profile = speciesProfile(id)
+        return profile.thumbnail
+    }
+
+    Map speciesProfile(String id) {
+
+        // While the BIE is in the process of being cut over to the new version we have to handle both APIs.
+        def url = "${grailsApplication.config.bie.baseURL}/ws/species/shortProfile/${id}"
+        webService.getJson(url)
     }
 }

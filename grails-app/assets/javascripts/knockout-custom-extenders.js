@@ -246,7 +246,7 @@ ko.extenders.set = function (target) {
             if(newValue){
                 for(var i in newValue){
                     if(values.indexOf(newValue[i]) == -1){
-                        target.push(newValue[i]);
+                        values.push(newValue[i]);
                     }
                 }
 

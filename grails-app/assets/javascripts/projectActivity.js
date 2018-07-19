@@ -695,7 +695,7 @@ var AlertViewModel = function (alert) {
         });
 
         if (!match) {
-            self.allSpecies.push(new SpeciesViewModel(species));
+            self.allSpecies.push(new SpeciesViewModel(species, fcConfig));
         }
         self.transients.species.reset();
     };
@@ -734,7 +734,7 @@ var AlertViewModel = function (alert) {
     };
 
     self.transients = {};
-    self.transients.species = new SpeciesViewModel();
+    self.transients.species = new SpeciesViewModel({}, fcConfig);
     self.transients.emailAddress = ko.observable();
     self.transients.disableSpeciesAdd  = ko.observable(true);
     self.transients.disableAddEmail  = ko.observable(true);
@@ -754,7 +754,7 @@ var AlertViewModel = function (alert) {
     self.transients.bioSearch = ko.observable(fcConfig.speciesSearchUrl);
     self.loadAlert = function (alert) {
         self.allSpecies($.map(alert.allSpecies ? alert.allSpecies : [], function (obj, i) {
-                return new SpeciesViewModel(obj);
+                return new SpeciesViewModel(obj, fcConfig);
             })
         );
 

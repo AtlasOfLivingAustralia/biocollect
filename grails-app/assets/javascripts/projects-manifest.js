@@ -16,7 +16,12 @@
 
 // project species field configuration
 //= require speciesFieldsSettings.js
-//= require projectSpeciesFieldsConfiguration.js
+//= require projectSpeciesF ieldsConfiguration.js
+
+// select2
+//= require select2/4.0.3/js/select2.full
+//= require typeahead/0.11.1/bloodhound
+
 
 // projects
 //= require projects.js

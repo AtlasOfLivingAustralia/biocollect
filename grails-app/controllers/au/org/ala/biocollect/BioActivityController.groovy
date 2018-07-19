@@ -181,7 +181,6 @@ class BioActivityController {
         model.projectName = project.name
         
         addOutputModel(model)
-        model.defaultData = metadataService.getDefaultData(model.outputModels)
         model.preview = true;
 
         model
@@ -238,19 +237,12 @@ class BioActivityController {
             Map project = projectService.get(projectId)
             model = activityModel(activity, projectId)
             model.pActivity = pActivity
+            model.speciesConfig = [surveyConfig: [speciesFields: pActivity?.speciesFields]]
             model.projectName = project.name
             model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', id: projectId)
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
             addOutputModel(model)
-            model.defaultData = metadataService.getDefaultData(model.outputModels)
-
-            // added to override default values. This will enable pre-populating values in fields like species
-            // whereby passing taxon id will populate species field value. for example, look at action preFillSpeciesName
-            // on this controller.
-            if(params.overrideDefaultData){
-                model.defaultData = model.defaultData ?: [:]
-                model.defaultData.putAll(params.overrideDefaultData);
-            }
+            addDefaultSpecies(activity)
         }
 
         if (mobile && flash.message) {
@@ -1045,38 +1037,35 @@ class BioActivityController {
     }
 
     /**
-     * This controller is used to pre-fill the species details if a taxon id is passed in the url.
+     * Biocollect has a special URL for prefilling species information. The format is
+     * http://biocollect.ala.org.au/sight/http://id.biodiversity.org.au/node/apni/9443092 . The function does the
+     * species prefilling. This call is done from BIE's species page. Biocollect records it in ALA's
+     * species sightings survey.
+     * @param activity
      * @return
      */
-    public preFillSpeciesName(){
-        if(params.taxonId){
-            String pActivity = grailsApplication.config.individualSightings.pActivity,
-                speciesModelName = grailsApplication.config.individualSightings.dataTypeName,
-                hub = grailsApplication.config.individualSightings.hub,
-                output = grailsApplication.config.individualSightings.outputName,
-                speciesDisplayFormat;
-
+    private addDefaultSpecies (Map activity) {
+        if (params.taxonId) {
+            String speciesModelName = grailsApplication.config.individualSightings.dataTypeName
+            String outputName = grailsApplication.config.individualSightings.outputName
+            String speciesDisplayFormat
             Map species = [:]
             Map result = speciesService.getSpeciesDetailsForTaxonId(params.taxonId, false);
-            Map pActivityDetails = projectActivityService.get(pActivity)
-            if(!pActivityDetails.error){
-                Map speciesConfig = projectActivityService.getSpeciesConfigForProjectActivity(pActivityDetails, output, speciesModelName)
+            Map pActivityDetails = projectActivityService.get(params.id)
+            if (!pActivityDetails.error) {
+                Map speciesConfig = projectActivityService.getSpeciesConfigForProjectActivity(pActivityDetails, outputName, speciesModelName)
                 speciesDisplayFormat = speciesConfig?.speciesDisplayFormat
             }
 
             species.scientificName = result?.scientificName
             species.commonName = result.commonName
             species.guid = params.taxonId
-            species.name = speciesService.formatSpeciesName(speciesDisplayFormat?:'SCIENTIFICNAME(COMMONNAME)', species)
-
-            params.id = pActivity
-            params.hub = hub
-            params.overrideDefaultData = [ : ]
-            params.overrideDefaultData[speciesModelName] = species
-
-            forward(action: 'create')
-        } else {
-            render status: SC_BAD_REQUEST, text: "You need to provide taxon id"
+            species.name = speciesService.formatSpeciesName(speciesDisplayFormat ?: 'SCIENTIFICNAME(COMMONNAME)', species)
+            Map output = [:]
+            output.name = outputName
+            output?.data = output?.data ?: [:]
+            output.data[speciesModelName] = species
+            activity.outputs = [ output ]
         }
     }
 

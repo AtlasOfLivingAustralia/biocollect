@@ -40,7 +40,9 @@
         activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
-
+        searchBieUrl: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10])}",
+        speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
+        speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
         ${(params?.version) ? ',version: ' + params?.version : ''}
         },
         here = document.location.href;
@@ -95,6 +97,7 @@
 
     <!-- ko stopBinding:true -->
         <g:each in="${metaModel?.outputs}" var="outputName">
+            <script type="text/javascript" src="${createLink(controller: 'dataModel', action: 'getScript', params: [outputName: outputName])}"></script>
             <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
             <g:set var="model" value="${outputModels[outputName]}"/>
             <g:set var="output" value="${activity.outputs.find { it.name == outputName }}"/>
@@ -112,61 +115,18 @@
                 </g:if>
                 <asset:script type="text/javascript">
                     $(function(){
-                        var viewModelName = "${blockId}ViewModel";
-                        var viewModelInstance = viewModelName + "Instance";
+                        var viewModelName = "${blockId}ViewModel",
+                            elementId = "ko${blockId}",
+                            outputName = "${outputName}",
+                            viewModelInstance = viewModelName + "Instance";
 
-                        // load dynamic models - usually objects in a list
-                    <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}"
-                                       viewModelInstance="${blockId}ViewModelInstance"/>
-
-                    this[viewModelName] = function (site, config, outputNotCompleted) {
-                        var self = this;
-                        self.name = "${output.name}";
-                            self.outputId = "${output.outputId}";
-                            self.data = {};
-                            self.transients = {};
-                            self.transients.selectedSite = ko.observable(site);
-                            var notCompleted = outputNotCompleted;
-                            if (notCompleted === undefined) {
-                                notCompleted = config.collapsedByDefault;
-                            }
-                            self.outputNotCompleted = ko.observable(notCompleted);
-                            self.transients.optional = config.optional || false;
-                            self.transients.questionText = config.optionalQuestionText || 'No '+self.name+' was completed during this activity';
-                            self.transients.dummy = ko.observable();
-
-                            // add declarations for dynamic data
-                    <md:jsViewModel model="${model}" output="${output.name}"
-                                    viewModelInstance="${blockId}ViewModelInstance" readonly="true"/>
-
-                    // this will be called when generating a savable model to remove transient properties
-                    self.removeBeforeSave = function (jsData) {
-                        // add code to remove any transients added by the dynamic tags
-                    <md:jsRemoveBeforeSave model="${model}"/>
-                    delete jsData.activityType;
-                    delete jsData.transients;
-                    return jsData;
-                };
-
-                self.loadData = function (data) {
-                        // load dynamic data
-                    <md:jsLoadModel model="${model}" readonly="true"/>
-
-                    // if there is no data in tables then add an empty row for the user to add data
-                    if (typeof self.addRow === 'function' && self.rowCount() === 0) {
-                        self.addRow();
-                    }
-                    self.transients.dummy.notifySubscribers();
-                };
-            };
-
-            var config = ${fc.modelAsJavascript(model:metaModel.outputConfig?.find{it.outputName == outputName}, default:'{}')};
-            var outputNotCompleted = ${output.outputNotCompleted?:'undefined'};
-
-            window[viewModelInstance] = new this[viewModelName](site, config, outputNotCompleted);
-            window[viewModelInstance].loadData(${output.data ?: '{}'});
-
-                        ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
+                        var output = $.grep(activity.outputs || [], function(it){return it.name == outputName})[0] || { name: outputName};
+                        var config = $.grep(metaModel.outputConfig || [], function(it){return it.outputName == outputName})[0] || {};
+                        config.model = outputModels[outputName];
+                        config = _.extend({}, outputModelConfig, config);
+                        ecodata.forms[viewModelInstance] = new ecodata.forms[viewModelName](output, config.model.dataModel, context, config);
+                        ecodata.forms[viewModelInstance].loadData(output.data);
+                        ko.applyBindings(ecodata.forms[viewModelInstance], document.getElementById(elementId));
                     });
                 </asset:script>
             </div>
@@ -190,13 +150,39 @@
 <!-- templates -->
 
 <asset:script type="text/javascript">
+        var activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
+        var site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
+        var pActivity = JSON.parse('${(pActivity as JSON).toString().encodeAsJavaScript()}');
+        var project = <fc:modelAsJavascript model="${project}" default="null"/>;
+        var metaModel = <fc:modelAsJavascript model="${metaModel}" default="null"/>;
+        var speciesConfig = <fc:modelAsJavascript model="${speciesConfig}"/>;
+        var outputModels = <fc:modelAsJavascript model="${outputModels}"/>;
+        var mobile = ${mobile ?: false};
+        var activityId = '${activity.activityId}';
+        var projectId = '${activity.projectId}';
+        var siteId = '${activity.siteId?:""}';
+
+        var outputModelConfig = {
+            projectId:projectId,
+            activityId:activityId,
+            siteId: siteId,
+            speciesConfig : speciesConfig
+        };
+
+        outputModelConfig = _.extend(fcConfig, outputModelConfig);
+
+        var context = {
+            project: fcConfig.project,
+            documents: activity.documents
+        };
+
         var returnTo = "${returnTo}";
 
         function ActivityLevelData() {
             var self = this;
-            self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
-            self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
-            self.pActivity = JSON.parse('${(pActivity as JSON).toString().encodeAsJavaScript()}');
+            self.activity = activity;
+            self.site = site;
+            self.pActivity = pActivity;
         }
 
         var activityLevelData = new ActivityLevelData();
@@ -250,11 +236,11 @@
             }
 
             var viewModel = new ViewModel(
-                ${(activity as JSON).toString()},
-                ${site ?: 'null'},
-                ${project ?: 'null'},
-                ${metaModel ?: 'null'},
-                ${pActivity ?: 'null'}
+                activity,
+                site,
+                project,
+                metaModel,
+                pActivity
                 );
 
             ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));

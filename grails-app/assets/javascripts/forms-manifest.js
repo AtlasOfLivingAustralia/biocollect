@@ -18,7 +18,7 @@
 // emitter
 //= require emitter/emitter.js
 
-// emitter
+// select
 //= require select
 
 // image-viewer

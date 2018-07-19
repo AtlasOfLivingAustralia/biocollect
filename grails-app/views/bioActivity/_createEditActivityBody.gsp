@@ -228,7 +228,7 @@
             elementId = "ko${blockId}",
             outputName = "${outputName}";
 
-        var output = $.grep(activity.outputs || [], function(it){return it.name == outputName})[0] || {};
+        var output = $.grep(activity.outputs || [], function(it){return it.name == outputName})[0] || { name: outputName};
         var config = $.grep(metaModel.outputConfig || [], function(it){return it.outputName == outputName})[0] || {};
         config.model = outputModels[outputName];
         config = _.extend({}, outputModelConfig, config);
