@@ -198,7 +198,7 @@ function Master(activityId, config) {
                     } else {
                         unblock = false; // We will be transitioning off this page.
                         activityId = config.activityId || data.resp.activityId;
-                        returnTo = config.bioActivityView + activityId;
+                        config.returnTo = config.bioActivityView + activityId;
                         blockUIWithMessage("Successfully submitted the record.");
                         self.reset();
                         self.saved();

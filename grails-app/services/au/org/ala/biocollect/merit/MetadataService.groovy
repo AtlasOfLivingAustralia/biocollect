@@ -10,7 +10,7 @@ import static org.apache.http.HttpStatus.*
 class MetadataService {
     static DateFormat ISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
 
-    def grailsApplication, webService, cacheService, settingService
+    def grailsApplication, webService, cacheService, settingService, modelService
 
     def activitiesModel() {
         return cacheService.get('activity-model',{
@@ -313,24 +313,8 @@ class MetadataService {
         def defaults = [:]
         outputModels.each { name, model ->
             model?.dataModel.each { dm ->
-                if (dm.defaultValue) {
-                    String now = ISO8601.clone().format(new Date())
-                    String value = dm.defaultValue
-                    while (value.contains('${now}')) {
-                        value = value.replace('${now}', now)
-                    }
-                    switch (dm.dataType) {
-                        case 'text':
-                            if (dm.constraints && value.matches(/\d+/)) {
-                                int index = value as Integer
-                                if (index < dm.constraints.size()) {
-                                    value = dm.constraints[index]
-                                }
-                            }
-                            break
-                        default:
-                            break
-                    }
+                def value = modelService.evaluateDefaultDataForDataModel(dm)
+                if(value){
                     defaults[dm.name] = value
                 }
             }

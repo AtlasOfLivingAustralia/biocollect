@@ -351,13 +351,14 @@ section#breadcrumb {
   padding: 50px 15px 14px;
   background-color: #fff;
   border: 1px solid #ddd;
+  box-sizing: border-box;
 }
 #main-content textarea {
   resize: none;
   height: auto;
 }
 #main-content .form-control, #main-content input.form-control, #main-content .input-append .add-on {
-  padding: 6px 12px;
+  padding: 4px 5px;
 }
 #main-content .full-width {
   width: 100%;
@@ -367,7 +368,7 @@ section#breadcrumb {
 }
 #main-content input.full-width-input {
   width: 100%;
-  height: 34px;
+  height: 30px;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;

@@ -11,6 +11,9 @@
  *= require sites.css
  *= require horizontal-scroll-list.css
  *
+ * select2
+ *= require select2/4.0.3/css/select2
+ *
  * image-gallery
  *= require image-gallery.css
  *
@@ -23,3 +26,56 @@
  * comments
  *= require comment.css
  */
+
+
+/** Override the select2 width determination (which doesn't work properly in tables) */
+.select2-search--inline .select2-search__field {
+    width:100% !important;
+}
+
+.select2-container .select2-selection--single {
+    height: 30px;
+    border: 0px;
+}
+
+.select2-results .species-image-holder {
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    padding-right: 5px;
+    display: inline-block;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.select2-results .name-holder {
+    margin: 0;
+    position: absolute;               /* 2 */
+    top: 50%;                         /* 3 */
+    transform: translate(0, -50%);
+    left: 85px;
+
+}
+
+.select2-results .species-result {
+    position: relative;
+    width: 350px;
+    height:70px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #cccccc;
+    color: #555555;
+}
+.input-append .select2-container--default .select2-selection--single .select2-selection__rendered {
+    border-radius: 4px 0 0 4px;
+}
+.input-prepend .select2-container--default .select2-selection--single .select2-selection__rendered {
+    border-radius: 0 4px 4px 0;
+}
+.input-prepend.input-append .select2-container--default .select2-selection--single .select2-selection__rendered {
+    border-radius: 0;
+}

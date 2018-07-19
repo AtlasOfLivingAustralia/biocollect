@@ -19,6 +19,7 @@
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
         siteEditUrl: "${createLink(controller: 'site', action: 'edit')}",
         removeSiteUrl: "${createLink(controller: 'site', action: '')}",
+        bieUrl: "${grailsApplication.config.bie.baseURL}",
         activityEditUrl: "${createLink(controller: 'activity', action: 'edit')}",
         activityEnterDataUrl: "${createLink(controller: 'activity', action: 'enterData')}",
         activityPrintUrl: "${createLink(controller: 'activity', action: 'print')}",

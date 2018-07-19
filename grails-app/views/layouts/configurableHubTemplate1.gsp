@@ -20,7 +20,29 @@
         // initialise plugins
         jQuery(function () {
             // autocomplete on navbar search input
-            jQuery("#biesearch").autocomplete('https://bie.ala.org.au/ws/search/auto.jsonp', {
+            jQuery("#biesearch").autocomplete({
+                source: function(request, response) {
+                    $.ajax({
+                        url: 'https://bie.ala.org.au/ws/search/auto.jsonp',
+                        dataType:'json',
+                        data: {q:request.term},
+                        success: function(data) {
+                            var items = $.map(data.autoCompleteList, function(item) {
+                                return {
+                                    label:item.name,
+                                    value: item.name,
+                                    source: item
+                                }
+                            });
+                            response(items);
+
+                        },
+                        error: function() {
+                            items = [{label:"Error during species lookup", value:request.term, source: {listId:'error-unmatched', name: request.term}}];
+                            response(items);
+                        }
+                    });
+                },
                 extraParams: {limit: 100},
                 dataType: 'jsonp',
                 parse: function (data) {
@@ -36,9 +58,6 @@
                     return rows;
                 },
                 matchSubset: false,
-                formatItem: function (row, i, n) {
-                    return row.matchedNames[0];
-                },
                 cacheLength: 10,
                 minChars: 3,
                 scroll: false,

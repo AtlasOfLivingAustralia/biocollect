@@ -149,6 +149,7 @@ class OutputController {
      */
     def getOutputSpeciesIdentifier(){
         def result = outputService.getOutputSpeciesId()
+        header 'Cache-Control', 'no-cache, no-store, must-revalidate'
 
         if(!result.error){
             render result as JSON
