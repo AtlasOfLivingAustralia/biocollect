@@ -87,7 +87,7 @@ grails.project.dependency.resolution = {
             excludes "httpclient", "httpcore"
         }
 
-        compile ":asset-pipeline:2.13.1"
+        compile ":asset-pipeline:2.14.1"
         // Uncomment these to enable additional asset-pipeline capabilities
         //compile ":sass-asset-pipeline:2.13.1"
 //        compile ":less-asset-pipeline:2.14.1"
