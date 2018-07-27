@@ -28,7 +28,7 @@ before_script:
 - node --version
 - npm install
 script:
-- node_modules/karma/bin/karma start karma.conf.js --single-run --browsers PhantomJS
+#- node_modules/karma/bin/karma start karma.conf.js --single-run --browsers PhantomJS
 #- grails clean && grails refresh-dependencies --non-interactive && grails test-app
 #  --non-interactive && grails prod maven-deploy --repository=$MAVEN_REPO --non-interactive
 #  --stacktrace
