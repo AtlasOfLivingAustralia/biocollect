@@ -1,7 +1,5 @@
 // leaflet
 //= require leaflet-manifest.js
-
-
 //= require moment/moment.min.js
 //= require moment/moment-timezone-with-data.min.js
 
@@ -16,12 +14,7 @@
 
 // project species field configuration
 //= require speciesFieldsSettings.js
-//= require projectSpeciesF ieldsConfiguration.js
-
-// select2
-//= require select2/4.0.3/js/select2.full
-//= require typeahead/0.11.1/bloodhound
-
+//= require projectSpeciesFieldsConfiguration.js
 
 // projects
 //= require projects.js
@@ -50,5 +43,5 @@
 //= require fancybox/jquery.fancybox.js
 //= require ala-image-viewer.js
 
-//= jquery gantt chart
+// jquery gantt chart
 //= require jquery-gantt/js/jquery.fn.gantt.js

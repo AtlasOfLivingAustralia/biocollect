@@ -16,6 +16,13 @@ class ActivityService {
     ProjectActivityService projectActivityService
     UserService userService
     CacheService cacheService
+    OutputService outputService
+
+    public static final String PROGRESS_PLANNED = 'planned'
+    public static final String PROGRESS_FINISHED = 'finished'
+    public static final String PROGRESS_STARTED = 'started'
+    public static final String PROGRESS_DEFERRED = 'deferred'
+    public static final String PROGRESS_CANCELLED = 'cancelled'
 
     private static def PROGRESS = ['planned', 'started', 'finished', 'cancelled', 'deferred']
 
@@ -263,5 +270,41 @@ class ActivityService {
         facets + getDefaultFacets()
     }
 
+    /**
+     * Update output site when activity site changes. This is done to synchronize site used in activity and output.
+     * Works projects can choose a site for an activity on work schedule tab. In such a situation, this function is
+     * used to update output with the new site.
+     * @param newActivity
+     * @param oldActivity
+     */
+    def updateOutputSite (Map newActivity, Map oldActivity, String mapDataType = 'geoMap') {
+        // Execute this logic only when activity siteId is updated on work schedule tab.
+        // Do not do this when activity is created or updated.
+        String activityId = oldActivity?.activityId
+        String type = oldActivity?.type
+        if( !newActivity.outputs && activityId && type && oldActivity?.outputs) {
+            if ( newActivity?.siteId && (newActivity?.siteId != oldActivity?.siteId) ) {
+                // get data model describing map data
+                Map outputModels = metadataService.getOutputNameAndDataModelForAnActivityName(type)
+                Map dataModel
+                String outputName
+                outputModels?.each { key, outputModel ->
+                    if ( !dataModel ) {
+                        outputName = key
+                        dataModel = outputModel.dataModel?.find { it.dataType == mapDataType }
+                    }
+                }
 
+                // update output with new site
+                if ( dataModel?.name ) {
+                    String name = dataModel.name
+                    Map output = oldActivity?.outputs?.find { it.name == outputName }
+                    if (output) {
+                        output.data[name] = newActivity.siteId
+                        outputService.update(output.outputId, output)
+                    }
+                }
+            }
+        }
+    }
 }

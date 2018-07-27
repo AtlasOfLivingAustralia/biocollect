@@ -48,6 +48,7 @@
     </asset:script>
     <asset:javascript src="common.js"/>
     <asset:javascript src="forms-manifest.js"/>
+    <asset:javascript src="enterBioActivityData.js"/>
     <asset:javascript src="projectActivityInfo.js"/>
     <asset:javascript src="facets.js"/>
     <asset:javascript src="projects.js"/>

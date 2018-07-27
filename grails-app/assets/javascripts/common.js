@@ -3,7 +3,6 @@
 //= require amplify/amplify.min.js
 //= require bootstrap-datepicker/js/bootstrap-datepicker.js
 //= require bootbox/bootbox.min.js
-// = requireknockout.js/knockout-3.3.0.min.js
 //= require knockout/3.4.0/knockout-3.4.0.js
 //= require knockout.js/knockout.mapping-latest.js
 //= require jquery.validationEngine/jquery.validationEngine.js

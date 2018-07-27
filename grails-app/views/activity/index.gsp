@@ -1,4 +1,4 @@
-<%@ page import="grails.converters.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<%@ page import="au.org.ala.biocollect.merit.ActivityService; grails.converters.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
@@ -31,13 +31,23 @@
         updateCommentUrl:"${commentUrl}",
         deleteCommentUrl:"${commentUrl}",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
-        getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}"
+        surveyName: "${metaModel.name}",
+        speciesConfig: ${fc.modelAsJavascript(model: speciesConfig)},
+        speciesSearch: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
+        speciesSearchUrl: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
+        speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
+        speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
+        searchBieUrl: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
+        getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
+        project:${fc.modelAsJavascript(model:project)},
+        sites: ${fc.modelAsJavascript(model:project?.sites)}
         },
         here = document.location.href;
     </asset:script>
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:javascript src="common.js"/>
     <asset:javascript src="forms-manifest.js"/>
+    <asset:javascript src="meritActivity.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
     <g:set var="pActivity" value="${[commentsAllowed:false]}"/>
 </head>
@@ -108,68 +118,23 @@
         </g:if>
     </div>
 
-    <!-- ko stopBinding:true -->
-        <g:each in="${metaModel?.outputs}" var="outputName">
-        <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
-        <g:set var="model" value="${outputModels[outputName]}"/>
-        <g:set var="output" value="${activity.outputs.find {it.name == outputName}}"/>
-        <g:if test="${!output}">
-            <g:set var="output" value="[name: outputName]"/>
+    <!-- ko stopBinding: true -->
+    <g:each in="${metaModel?.outputs}" var="outputName">
+
+        <g:if test="${outputName != 'Photo Points'}">
+            <g:render template="/output/outputJSModel" plugin="ecodata-client-plugin"
+                      model="${[viewModelInstance:activity.activityId+fc.toSingleWord([name: outputName])+'ViewModel',
+                                edit:false, model:outputModels[outputName],
+                                outputName:outputName]}"></g:render>
+            <g:render template="/output/readOnlyOutput"
+                      model="${[activity:activity,
+                                outputModel:outputModels[outputName],
+                                outputName:outputName,
+                                activityModel:metaModel,
+                                disablePrepop: activity.progress != au.org.ala.biocollect.merit.ActivityService.PROGRESS_PLANNED]}"
+                      plugin="ecodata-client-plugin"></g:render>
+
         </g:if>
-        <div class="output-block" id="ko${blockId}">
-            <h3>${outputName}</h3>
-            <!-- add the dynamic components -->
-            <md:modelView model="${model}" site="${site}" readonly="true"/>
-            <asset:script type="text/javascript">
-        $(function(){
-
-            var viewModelName = "${blockId}ViewModel",
-                viewModelInstance = viewModelName + "Instance";
-
-            // load dynamic models - usually objects in a list
-                <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}" viewModelInstance="${blockId}ViewModelInstance"/>
-
-                this[viewModelName] = function (site) {
-                    var self = this;
-                    self.name = "${output.name}";
-                self.outputId = "${output.outputId}";
-                self.data = {};
-                self.transients = {};
-                 self.transients.selectedSite = ko.observable(site);
-                self.transients.dummy = ko.observable();
-
-                // add declarations for dynamic data
-                <md:jsViewModel model="${model}" output="${output.name}" viewModelInstance="${blockId}ViewModelInstance" readonly="true"/>
-
-                // this will be called when generating a savable model to remove transient properties
-                self.removeBeforeSave = function (jsData) {
-                    // add code to remove any transients added by the dynamic tags
-                <md:jsRemoveBeforeSave model="${model}"/>
-                delete jsData.activityType;
-                delete jsData.transients;
-                return jsData;
-                };
-
-                self.loadData = function (data) {
-                    // load dynamic data
-                <md:jsLoadModel model="${model}" readonly="true"/>
-
-                // if there is no data in tables then add an empty row for the user to add data
-                if (typeof self.addRow === 'function' && self.rowCount() === 0) {
-                    self.addRow();
-                }
-                self.transients.dummy.notifySubscribers();
-            };
-        };
-
-        window[viewModelInstance] = new this[viewModelName](site);
-        window[viewModelInstance].loadData(${output.data ?: '{}'});
-
-            ko.applyBindings(window[viewModelInstance], document.getElementById("ko${blockId}"));
-        });
-
-            </asset:script>
-        </div>
     </g:each>
     <!-- /ko -->
     <g:if test="${projectActivity?.commentsAllowed}">
@@ -177,10 +142,6 @@
     </g:if>
     <div class="form-actions">
         <button type="button" id="cancel" class="btn">return</button>
-
-
-            <a data-bind="attr: {href: $parent.transients.editUrl }" title="Edit record" class="btn btn-small editBtn btn-default margin-top-5"><i class="fa fa-pencil"></i> Edit</a>
-
     </div>
 </div>
 
@@ -194,8 +155,10 @@
         var self = this;
         self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
         self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
+        self.metaModel = <fc:modelAsJavascript model="${metaModel}"/>;
+        self.themes = <fc:modelAsJavascript model="${themes}"/>;
         // We only need the sites from a pActivity within works projects
-        self.pActivity = JSON.parse('${(project as JSON).toString().encodeAsJavaScript()}');
+        self.pActivity = fcConfig.project
     }
 
     var activityLevelData = new ActivityLevelData();
@@ -208,46 +171,13 @@
             document.location.href = returnTo;
         });
 
-        function ViewModel (act, site, project, metaModel) {
-            var self = this;
-            self.activityId = act.activityId;
-            self.description = ko.observable(act.description);
-            self.notes = ko.observable(act.notes);
-            self.startDate = ko.observable(act.startDate || act.plannedStartDate).extend({simpleDate: false});
-            self.endDate = ko.observable(act.endDate || act.plannedEndDate).extend({simpleDate: false});
-            self.eventPurpose = ko.observable(act.eventPurpose);
-            self.fieldNotes = ko.observable(act.fieldNotes);
-            self.associatedProgram = ko.observable(act.associatedProgram);
-            self.associatedSubProgram = ko.observable(act.associatedSubProgram);
-            self.projectStage = ko.observable(act.projectStage || "");
-            self.progress = ko.observable(act.progress || 'started');
-            self.mainTheme = ko.observable(act.mainTheme);
-            self.type = ko.observable(act.type);
-            self.projectId = act.projectId;
-            self.transients = {};
-            self.transients.site = site;
-            self.transients.project = project;
-            self.transients.metaModel = metaModel || {};
-            self.transients.activityProgressValues = ['planned','started','finished'];
-            self.transients.themes = $.map(${themes}, function (obj, i) { return obj.name });
-            self.goToProject = function () {
-                if (self.projectId) {
-                    document.location.href = fcConfig.projectViewUrl + self.projectId;
-                }
-            };
-
-            self.notImplemented = function () {
-                alert("Not implemented yet.")
-            };
-        }
-
-
-        var viewModel = new ViewModel(
-            ${(activity as JSON).toString()},
-            ${site ?: 'null'},
-            ${project ?: 'null'},
-            ${metaModel ?: 'null'});
-
+        var viewModel = new ActivityViewModel(
+            activityLevelData.activity,
+            activityLevelData.site,
+            fcConfig.project,
+            activityLevelData.metaModel,
+            activityLevelData.themes);
+        ko.applyBindings(viewModel);
         <g:if test="${pActivity.commentsAllowed}">
             ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
         </g:if>

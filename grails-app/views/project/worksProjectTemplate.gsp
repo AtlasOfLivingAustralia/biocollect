@@ -101,6 +101,8 @@
         sites: ${((project?.sites ?: []) as JSON).toString()},
         siteIds: ${((project.mapConfiguration?.sites ?: []) as JSON).toString()},
         project: ${((project?: [:]) as JSON).toString()},
+        commonKeysUrl: "${createLink(controller: 'search', action: 'getCommonKeys')}",
+        searchBieUrl: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
         defaultSpeciesConfiguration: ${(grailsApplication.config.speciesConfiguration.default as JSON).toString()}
         },
         here = window.location.href;

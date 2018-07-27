@@ -270,6 +270,7 @@ class BioActivityController {
             model.pActivity = pActivity
             model.projectActivityId = pActivity.projectActivityId
             model.id = id
+            model.speciesConfig = [surveyConfig: [speciesFields: pActivity?.speciesFields]]
             model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'bioActivity', action: 'index') + "/" + id
         } else {
             flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
@@ -342,6 +343,7 @@ class BioActivityController {
                 redirect(controller: 'project', action: 'index', id: activity.projectId)
             } else {
                 Map model = activityAndOutputModel(activity, activity.projectId, 'view', params?.version)
+                model.speciesConfig = [surveyConfig: [speciesFields: pActivity?.speciesFields]]
                 model.pActivity = pActivity
                 model.id = pActivity.projectActivityId
                 model.userIsProjectMember = userIsProjectMember

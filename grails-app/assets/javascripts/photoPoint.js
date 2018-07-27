@@ -3,9 +3,13 @@
  */
 
 
-var PhotoPointViewModel = function(site, activity) {
+var PhotoPointViewModel = function(site, activity, config) {
 
     var self = this;
+
+    var defaults = {
+    };
+    var options = $.extend(defaults, config);
 
     self.site = site;
     self.photoPoints = ko.observableArray();
@@ -54,17 +58,33 @@ var PhotoPointViewModel = function(site, activity) {
         return toSave;
     };
 
-    self.isDirty = function() {
-        var isDirty = false;
+    self.updatePhotoPointDocumentIds = function(idMap) {
         $.each(self.photoPoints(), function(i, photoPoint) {
-            isDirty = isDirty || photoPoint.isDirty();
+            $.each(photoPoint.photos(), function(i, photo) {
+                if (!photo.documentId && photo.clientId) {
+                    console.log("Updating document ID for client ID "+photo.clientId+" to "+idMap[photo.clientId]);
+                    if (idMap[photo.clientId]) {
+                        photo.documentId = idMap[photo.clientId].documentId;
+                    }
+                }
+            });
         });
-        return isDirty;
     };
 
-    self.reset = function() {};
-
-
+    self.dirtyFlag = {
+        isDirty:ko.computed(function() {
+            var dirty = false;
+            $.each(self.photoPoints(), function(i, photo) {
+                dirty = dirty || photo.dirtyFlag.isDirty();
+            });
+            return dirty;
+        }),
+        reset:function() {
+            $.each(self.photoPoints(), function(i, photo) {
+                photo.dirtyFlag.reset();
+            });
+        }
+    };
 };
 
 var PhotoPointMetadata = function(data) {
@@ -106,9 +126,9 @@ var PhotoPointMetadata = function(data) {
  * @constructor
  */
 var PhotoPoint = function(site, photoPoint, activityId, existingPhotos) {
-
-    var files = ko.observableArray();
-    var photos = ko.observableArray();
+    var self = this;
+    var files = self.files = ko.observableArray();
+    var photos = self.photos = ko.observableArray();
     var isNewPhotopoint = !photoPoint;
     var isDirty = isNewPhotopoint;
 
@@ -170,21 +190,22 @@ var PhotoPoint = function(site, photoPoint, activityId, existingPhotos) {
             return isNewPhotopoint ? 'editablePhotoPoint' : 'readOnlyPhotoPoint'
         },
         isNew : function() { return isNewPhotopoint },
-        isDirty: function() {
-            if (isDirty) {
-                return true;
-            };
-            var tmpPhotos = photos();
-            for (var i=0; i < tmpPhotos.length; i++) {
-                if (tmpPhotos[i].dirtyFlag.isDirty()) {
-                    return true;
-                }
+        dirtyFlag: {
+            isDirty:ko.computed(function() {
+                var dirty = false;
+                $.each(photos(), function(i, photo) {
+                    dirty = dirty || photo.dirtyFlag.isDirty();
+                });
+                return dirty;
+            }),
+            reset:function() {
+                $.each(photos(), function(i, photo) {
+                    photo.dirtyFlag.reset();
+                });
             }
-            return false;
         }
-
     }
-}
+};
 
 /**
  * Photo metadata for a photo part of a Photo point location
@@ -193,9 +214,14 @@ var PhotoPoint = function(site, photoPoint, activityId, existingPhotos) {
  * @constructor
  */
 var Photo = function(data) {
+    // The purpose of the clientId is to correlate server generated documentIds with new documents created on
+    // the client.  This can prevent duplicate documents from being created if the same model is saved multiple
+    // times without a reload of the page/photo point documents.
+    this.clientId = this.clientId || 0;
     if (!data) {
         data = {};
     }
+    data.clientId = data.documentId || 'new-photo-'+this.clientId++;
     data.role = 'photoPoint';
     var result = new DocumentViewModel(data);
     result.dateTaken = ko.observable(data.dateTaken).extend({simpleDate:false});

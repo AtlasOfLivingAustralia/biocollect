@@ -3,8 +3,8 @@
 //= require sites-list.js
 //= require document.js
 //= require photoPoint.js
-//= require project-activity-manifest.js
 //= require projects-manifest.js
+//= require project-activity-manifest.js
 
 // image-viewer
 //= require fancybox/jquery.fancybox.js
