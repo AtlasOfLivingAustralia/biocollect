@@ -25,7 +25,7 @@ grails.project.fork = [
 
 //grails.plugin.location["ala-map-plugin"] = '../ala-map-plugin'
 //grails.plugin.location["images-client-plugin"] = '../images-client-plugin'
-grails.plugin.location["ecodata-client-plugin"] = '../ecodata-client-plugin'
+//grails.plugin.location["ecodata-client-plugin"] = '../ecodata-client-plugin'
 
 // settings for the development environment
 if (Environment.current == Environment.DEVELOPMENT) {
@@ -112,6 +112,7 @@ grails.project.dependency.resolution = {
         compile ":mail:1.0.7"
         compile ":excel-export:0.2.0"
         compile ":excel-import:1.0.1"
+        compile ":ecodata-client-plugin:1.0-SNAPSHOT"
         compile (":images-client-plugin:0.6.1") {
             excludes "resources"
         }

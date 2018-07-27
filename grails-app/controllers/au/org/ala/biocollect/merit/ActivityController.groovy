@@ -56,15 +56,28 @@ class ActivityController {
     }
 
     private Map activityAndOutputModel(activity, projectId) {
+        def project = projectService.get(projectId)
         def model = activityModel(activity, projectId)
         addOutputModel(model)
         addProjectActivity(model,activity)
+        addSpeciesConfig(model, project, activity)
         model
     }
 
     void addProjectActivity(model, activity){
         if(activity.projectActivityId){
             model.projectActivity = projectActivityService.get(activity.projectActivityId);
+        }
+    }
+
+    void addSpeciesConfig (model, project, activity) {
+        Map speciesConfig = project?.speciesFieldsSettings
+        if (speciesConfig && project && activity) {
+            // MERIT uses 'surveyConfig'. Mapping it to that format so that speciesModel understands config correctly.
+            speciesConfig = speciesConfig?.surveysConfig?.find { it.name == activity.type }
+            if (speciesConfig) {
+                model.speciesConfig = [surveyConfig: speciesConfig]
+            }
         }
     }
 
@@ -225,6 +238,7 @@ class ActivityController {
      * @return
      */
     def ajaxUpdate(String id) {
+        def activity
         def postBody = request.JSON
         if (!id) {
             id = postBody.remove('activityId')
@@ -247,7 +261,7 @@ class ActivityController {
 
         def projectId
         if (id) {
-            def activity = activityService.get(id)
+            activity = activityService.get(id)
             projectId = activity.projectId
         }
         else {
@@ -275,6 +289,8 @@ class ActivityController {
                 if (photoPoints) {
                     updatePhotoPoints(id ?: result.activityId, photoPoints)
                 }
+
+                activityService.updateOutputSite(values, activity)
             }
         }
 

@@ -1042,3 +1042,15 @@ function truncate (string,  length) {
     return string.length > length ?
         string.slice(0, length - truncation.length) + truncation : string;
 };
+
+function stageNumberFromStage(stage) {
+    var stageRegexp = /.+ (\d+)/;
+    var match = stageRegexp.exec(stage);
+    if (match) {
+        stage = match[1];
+    }
+    else {
+        stage = '';
+    }
+    return stage
+}

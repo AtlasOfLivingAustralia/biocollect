@@ -1,20 +1,3 @@
-/*
- * Copyright (C) 2018 Atlas of Living Australia
- * All Rights Reserved.
- *
- * The contents of this file are subject to the Mozilla Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
- * 
- * Created by Temi on 6/6/18.
- */
-
 //= require_self
 // $.fn.select2.defaults.set("width", "100%");
 
@@ -90,55 +73,39 @@ function Master(activityId, config) {
                 // create derived data even if outputs didn't change
                 outputs.push(obj.get());
             }
+
         });
         if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
             return {validation: false, message: "Nothing need to be updated!"};
         }
-        if (typeof activityLevelData.checkMapInfo === "function") {
-            var mapInfoCheck = activityLevelData.checkMapInfo();
 
-            if (!mapInfoCheck.validation) {
-                return mapInfoCheck;
-            }
-            else {
-                if (activityData === undefined) {
-                    activityData = {}
-                }
-                activityData.outputs = outputs;
-                //assign siteId to activity
-                if (activityLevelData.siteId())
-                    activityData.siteId = activityLevelData.siteId();
-
-                return activityData;
-            }
-        } else {
-            //quick fix for some suverys which don't have map
-            if (activityData === undefined) {
-                activityData = {}
-            }
-            activityData.outputs = outputs;
-            return activityData;
+        if (activityData === undefined) {
+            activityData = {}
         }
+        activityData.outputs = outputs;
+        return activityData;
     };
 
     self.removeTemporarySite = function () {
-        var sites = this.subscribers[0].model.data.locationSitesArray();
-        var linkedSite = this.subscribers[0].model.data.location();
+        if (this.subscribers[0].model.data && this.subscribers[0].model.data.locationSitesArray && this.subscribers[0].model.data.location) {
+            var sites = this.subscribers[0].model.data.locationSitesArray();
+            var linkedSite = this.subscribers[0].model.data.location();
 
-        var waitingForDelete = _.find(sites, function (site) {
-            return site.siteId != linkedSite && site.visibility == 'private'
-        })
+            var waitingForDelete = _.find(sites, function (site) {
+                return site.siteId != linkedSite && site.visibility == 'private'
+            })
 
-        var siteUrl = config.siteDeleteUrl;
-        if (waitingForDelete) {
-            console.log('Found a temporary site ' + waitingForDelete.siteId);
-            $.ajax({
-                method: 'POST',
-                url: siteUrl + "?id=" + waitingForDelete.siteId,
-                data: JSON.stringify({id: waitingForDelete}),
-                contentType: 'application/json',
-                dataType: 'json'
-            });
+            var siteUrl = config.siteDeleteUrl;
+            if (waitingForDelete) {
+                console.log('Found a temporary site ' + waitingForDelete.siteId);
+                $.ajax({
+                    method: 'POST',
+                    url: siteUrl + "?id=" + waitingForDelete.siteId,
+                    data: JSON.stringify({id: waitingForDelete}),
+                    contentType: 'application/json',
+                    dataType: 'json'
+                });
+            }
         }
 
     }
@@ -158,15 +125,6 @@ function Master(activityId, config) {
     self.save = function () {
         if ($('#validation-container').validationEngine('validate')) {
             var toSave = this.collectData();
-
-            if (toSave.hasOwnProperty('validation')) {
-                if (!toSave.validation) {
-                    alert(toSave.message);
-                    return;
-                }
-
-            }
-
             toSave = JSON.stringify(toSave);
 
             // Don't allow another save to be initiated.
@@ -253,6 +211,14 @@ function Master(activityId, config) {
                 obj.reset();
             }
         });
+    };
+
+    self.registerModelForSiteChange = function (outputModel, activityModel) {
+        if( outputModel.isMapPresent && outputModel.isMapPresent() ) {
+            outputModel.on('sitechanged', function (siteId) {
+                activityModel.siteId(siteId);
+            })
+        }
     };
 
     autoSaveModel(self, null, {preventNavigationIfDirty: true});
@@ -369,17 +335,18 @@ function ActivityHeaderViewModel (act, site, project, metaModel, pActivity, conf
     self.dirtyFlag = ko.dirtyFlag(self, false);
 }
 
-function initialiseOutputViewModel(outputViewModelName, dataModel, elementId, activity, output, master, config) {
+function initialiseOutputViewModel(outputViewModelName, dataModel, elementId, activity, output, master, config, activityModel) {
     var viewModelInstance = outputViewModelName + 'Instance';
 
     var context = {
         project: config.project,
         activity: activity,
         documents: activity.documents,
-        site: activity.site
+        site: activity.site,
+        pActivity: config.pActivity
     };
     ecodata.forms[viewModelInstance] = new ecodata.forms[outputViewModelName](output, dataModel, context, config);
-    ecodata.forms[viewModelInstance].loadData(output.data);
+    ecodata.forms[viewModelInstance].initialise(output.data);
 
     // dirtyFlag must be defined after data is loaded
     ecodata.forms[viewModelInstance].dirtyFlag = ko.simpleDirtyFlag(ecodata.forms[viewModelInstance], false);
@@ -396,6 +363,9 @@ function initialiseOutputViewModel(outputViewModelName, dataModel, elementId, ac
     // register with the master controller so this model can participate in the save cycle
     master.register(ecodata.forms[viewModelInstance], ecodata.forms[viewModelInstance].modelForSaving,
         ecodata.forms[viewModelInstance].dirtyFlag.isDirty, ecodata.forms[viewModelInstance].dirtyFlag.reset);
+
+    // register with master controller so that when site is updated activity site is also updated
+    master.registerModelForSiteChange(ecodata.forms[viewModelInstance], activityModel);
 
     // Check for locally saved data for this output - this will happen in the event of a session timeout
     // for example.

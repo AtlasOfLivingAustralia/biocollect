@@ -149,7 +149,7 @@
 
                 // add declarations for dynamic data
         <md:jsViewModel model="${model}" output="${outputModel.name}" edit="true"
-                        viewModelInstance="${blockId}ViewModelInstance"/>
+                        viewModelInstance="${blockId}ViewModelInstance" readonly="${false}" surveyName="${surveyName}"/>
 
         // this will be called when generating a savable model to remove transient properties
         self.removeBeforeSave = function (jsData) {

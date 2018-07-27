@@ -178,68 +178,31 @@
         }); // end document ready
     </asset:script>
 </g:if>
-<asset:script type="text/javascript">
-    function calcWidth() {
-        var navwidth = 0;
-        var morewidth = $('#main .more').outerWidth(true);
-        $('#main > li:not(.more)').each(function () {
-            navwidth += $(this).outerWidth(true);
-        });
-        var availablespace = $('nav').outerWidth(true) - morewidth;
-
-        if (navwidth > availablespace) {
-            var lastItem = $('#main > li:not(.more)').last();
-            lastItem.attr('data-width', lastItem.outerWidth(true));
-            lastItem.prependTo($('#main .more ul.more-ul'));
-            calcWidth();
-        } else {
-            var firstMoreElement = $('#main li.more li').first();
-            while ((navwidth = navwidth + firstMoreElement.data('width')) < availablespace) {
-                firstMoreElement.insertBefore($('#main .more'));
-                firstMoreElement = $('#main li.more li').first();
-            }
-        }
-
-        if ($('.more li').length > 0) {
-            $('.more').css('display', 'inline-block');
-        } else {
-            $('.more').css('display', 'none');
-        }
-    }
-    $(window).on('resize', function () {
-        calcWidth();
-    });
-    $('#biocollectNav').show();
-    calcWidth();
-</asset:script>
 <!-- JS resources-->
 <asset:deferredScripts />
 
-
 <g:if test="${java.lang.Boolean.parseBoolean(grailsApplication.config.bugherd.integration)}">
-    <asset:script type="text/javascript">
+    <script type="text/javascript">
         (function (d, t) {
             var bh = d.createElement(t), s = d.getElementsByTagName(t)[0];
             bh.type = 'text/javascript';
             bh.src = '//www.bugherd.com/sidebarv2.js?apikey=2wgeczqfyixard6e9xxfnq';
             s.parentNode.insertBefore(bh, s);
         })(document, 'script');
-    </asset:script>
+    </script>
 </g:if>
 
-<asset:script type="text/javascript">
-    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</asset:script>
-<asset:script type="text/javascript">
-    var pageTracker = _gat._getTracker('${grailsApplication.config.googleAnalyticsID}');
-        pageTracker._initData();
-        pageTracker._trackPageview();
-        // show warning if using IE6
-        if ($.browser.msie && $.browser.version.slice(0,1) == '6') {
-            $('#header').prepend($('<div style="text-align:center;color:red;">WARNING: This page is not compatible with IE6.' +
-' Many functions will still work but layout and image transparency will be disrupted.</div>'));
-        }
-</asset:script>
+<!-- Google Analytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-4355440-1', 'auto');
+    ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
 </body>
 </html>

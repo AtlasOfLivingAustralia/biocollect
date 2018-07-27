@@ -42,6 +42,8 @@
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
         searchBieUrl: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10])}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
+        speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
+        noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
         speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
         ${(params?.version) ? ',version: ' + params?.version : ''}
         },
@@ -50,6 +52,7 @@
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
     <asset:javascript src="common.js"/>
     <asset:javascript src="forms-manifest.js"/>
+    <asset:javascript src="enterBioActivityData.js"/>
 </head>
 
 <body>
@@ -97,7 +100,7 @@
 
     <!-- ko stopBinding:true -->
         <g:each in="${metaModel?.outputs}" var="outputName">
-            <script type="text/javascript" src="${createLink(controller: 'dataModel', action: 'getScript', params: [outputName: outputName])}"></script>
+            <script type="text/javascript" src="${createLink(controller: 'dataModel', action: 'getScript', params: [outputName: outputName, edit: false])}"></script>
             <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
             <g:set var="model" value="${outputModels[outputName]}"/>
             <g:set var="output" value="${activity.outputs.find { it.name == outputName }}"/>
@@ -125,7 +128,7 @@
                         config.model = outputModels[outputName];
                         config = _.extend({}, outputModelConfig, config);
                         ecodata.forms[viewModelInstance] = new ecodata.forms[viewModelName](output, config.model.dataModel, context, config);
-                        ecodata.forms[viewModelInstance].loadData(output.data);
+                        ecodata.forms[viewModelInstance].initialise(output.data);
                         ko.applyBindings(ecodata.forms[viewModelInstance], document.getElementById(elementId));
                     });
                 </asset:script>
@@ -173,7 +176,8 @@
 
         var context = {
             project: fcConfig.project,
-            documents: activity.documents
+            documents: activity.documents,
+            pActivity: pActivity
         };
 
         var returnTo = "${returnTo}";

@@ -19,7 +19,7 @@
 <g:set var="user" value="${user}"/>
 <g:each in="${metaModel?.outputs}" var="outputName">
     <g:if test="${outputName != 'Photo Points'}">
-        <script type="text/javascript" src="${createLink(controller: 'dataModel', action: 'getScript', params: [outputName: outputName])}"></script>
+        <script type="text/javascript" src="${createLink(controller: 'dataModel', action: 'getScript', params: [outputName: outputName, edit: true])}"></script>
         <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
         <g:set var="model" value="${outputModels[outputName]}"/>
         <g:set var="output" value="${activity.outputs.find { it.name == outputName }}"/>
@@ -231,8 +231,8 @@
         var output = $.grep(activity.outputs || [], function(it){return it.name == outputName})[0] || { name: outputName};
         var config = $.grep(metaModel.outputConfig || [], function(it){return it.outputName == outputName})[0] || {};
         config.model = outputModels[outputName];
-        config = _.extend({}, outputModelConfig, config);
-        initialiseOutputViewModel(viewModelName, config.model.dataModel, elementId, activity, output, master, config);
+        config = _.extend({}, outputModelConfig, config, activityLevelData);
+        initialiseOutputViewModel(viewModelName, config.model.dataModel, elementId, activity, output, master, config, viewModel);
 
         setTimeout(function(){
             // Forcing map refresh because of tricky race condition that resets the map
