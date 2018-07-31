@@ -42,7 +42,7 @@ module.exports = function (config) {
             'grails-app/assets/javascripts/organisation.js',
             'grails-app/assets/javascripts/pagination.js',
             'grails-app/assets/javascripts/sites.js',
-            '~/ecodata-cleint-plugin/grails-app/assets/javascripts/speciesModel.js',
+            '../ecodata-cleint-plugin/grails-app/assets/javascripts/speciesModel.js',
             'grails-app/assets/javascripts/projectActivityInfo.js',
             'grails-app/assets/javascripts/projectActivity.js',
             'grails-app/assets/javascripts/projectActivities.js',
