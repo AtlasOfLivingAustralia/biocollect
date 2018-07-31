@@ -42,6 +42,8 @@ module.exports = function (config) {
             'grails-app/assets/javascripts/organisation.js',
             'grails-app/assets/javascripts/pagination.js',
             'grails-app/assets/javascripts/sites.js',
+            '../ecodata-client-plugin/grails-app/assets/vendor/select2/4.0.3/js/select2.full.js',
+            '../ecodata-client-plugin/grails-app/assets/vendor/typeahead/0.11.1/bloodhound.js',
             '../ecodata-client-plugin/grails-app/assets/javascripts/speciesModel.js',
             'grails-app/assets/javascripts/projectActivityInfo.js',
             'grails-app/assets/javascripts/projectActivity.js',
