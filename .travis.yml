@@ -10,7 +10,7 @@ branches:
   - ecodata-client-plugin
 before_install:
 - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
-- git clone https://github.com/AtlasOfLivingAustralia/ecodata-client-plugin.git AtlasOfLivingAustralia/ecodata-cleint-plugin && (cd AtlasOfLivingAustralia/ecodata-cleint-plugin && git checkout dev)
+- git clone https://github.com/AtlasOfLivingAustralia/ecodata-client-plugin.git AtlasOfLivingAustralia/ecodata-client-plugin && (cd AtlasOfLivingAustralia/ecodata-client-plugin && git checkout dev)
 - rm -rf ~/.sdkman
 - curl -s get.sdkman.io > ~/install_sdkman.sh
 - chmod 775 ~/install_sdkman.sh
