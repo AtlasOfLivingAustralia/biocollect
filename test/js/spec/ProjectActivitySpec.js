@@ -1,7 +1,27 @@
 describe("ProjectActivityViewModel Spec", function () {
     beforeAll(function() {
         window.fcConfig = {
-            imageLocation:'/'
+            serverUrl: "http://devt.ala.org.au:8087/biocollect",
+            activityUpdateUrl: "/biocollect/sightings/activity/ajaxUpdate",
+            activityDeleteUrl: "/biocollect/sightings/activity/ajaxDelete",
+            projectViewUrl: "/biocollect/sightings/project/index/",
+            siteViewUrl: "/biocollect/sightings/site/index/",
+            bieUrl: "https://bie.ala.org.au",
+            imageLocation:"/biocollect/assets/",
+            createCommentUrl : "/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            commentListUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            updateCommentUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            deleteCommentUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            imageLeafletViewer: 'http://devt.ala.org.au:8087/biocollect/sightings/resource/imageviewer',
+            projectIndexUrl: "/biocollect/sightings/project/index",
+            activityViewUrl: "/biocollect/sightings/bioActivity/index",
+            getGuidForOutputSpeciesUrl : "/biocollect/sightings/record/getGuidForOutputSpeciesIdentifier",
+            uploadImagesUrl: "/biocollect/ws/attachment/upload?hub=sightings",
+            searchBieUrl: "/biocollect/search/searchSpecies/e61eb018-02a9-4e3b-a4b3-9d6be33d9cbb?limit=10&hub=sightings",
+            speciesListUrl: "/biocollect/sightings/proxy/speciesItemsForList",
+            speciesProfileUrl: "/biocollect/sightings/proxy/speciesProfile",
+            noImageUrl: '/biocollect/assets/no-image-2-14a0a809823b65b821d14e1b5f6e2e9f.png',
+            speciesImageUrl:"/biocollect/sightings/species/speciesImage"
         }
     });
     afterAll(function() {
@@ -64,7 +84,27 @@ describe("ProjectActivityViewModel Spec", function () {
 describe("pActivityInfo Spec", function () {
     beforeAll(function() {
         window.fcConfig = {
-            imageLocation:'/'
+            serverUrl: "http://devt.ala.org.au:8087/biocollect",
+            activityUpdateUrl: "/biocollect/sightings/activity/ajaxUpdate",
+            activityDeleteUrl: "/biocollect/sightings/activity/ajaxDelete",
+            projectViewUrl: "/biocollect/sightings/project/index/",
+            siteViewUrl: "/biocollect/sightings/site/index/",
+            bieUrl: "https://bie.ala.org.au",
+            imageLocation:"/biocollect/assets/",
+            createCommentUrl : "/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            commentListUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            updateCommentUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            deleteCommentUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            imageLeafletViewer: 'http://devt.ala.org.au:8087/biocollect/sightings/resource/imageviewer',
+            projectIndexUrl: "/biocollect/sightings/project/index",
+            activityViewUrl: "/biocollect/sightings/bioActivity/index",
+            getGuidForOutputSpeciesUrl : "/biocollect/sightings/record/getGuidForOutputSpeciesIdentifier",
+            uploadImagesUrl: "/biocollect/ws/attachment/upload?hub=sightings",
+            searchBieUrl: "/biocollect/search/searchSpecies/e61eb018-02a9-4e3b-a4b3-9d6be33d9cbb?limit=10&hub=sightings",
+            speciesListUrl: "/biocollect/sightings/proxy/speciesItemsForList",
+            speciesProfileUrl: "/biocollect/sightings/proxy/speciesProfile",
+            noImageUrl: '/biocollect/assets/no-image-2-14a0a809823b65b821d14e1b5f6e2e9f.png',
+            speciesImageUrl:"/biocollect/sightings/species/speciesImage"
         }
     });
     afterAll(function() {
@@ -108,7 +148,27 @@ describe("pActivityInfo Spec", function () {
 describe("SpeciesConstraintViewModel Spec", function () {
     beforeAll(function() {
         window.fcConfig = {
-            imageLocation:'/'
+            serverUrl: "http://devt.ala.org.au:8087/biocollect",
+            activityUpdateUrl: "/biocollect/sightings/activity/ajaxUpdate",
+            activityDeleteUrl: "/biocollect/sightings/activity/ajaxDelete",
+            projectViewUrl: "/biocollect/sightings/project/index/",
+            siteViewUrl: "/biocollect/sightings/site/index/",
+            bieUrl: "https://bie.ala.org.au",
+            imageLocation:"/biocollect/assets/",
+            createCommentUrl : "/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            commentListUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            updateCommentUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            deleteCommentUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            imageLeafletViewer: 'http://devt.ala.org.au:8087/biocollect/sightings/resource/imageviewer',
+            projectIndexUrl: "/biocollect/sightings/project/index",
+            activityViewUrl: "/biocollect/sightings/bioActivity/index",
+            getGuidForOutputSpeciesUrl : "/biocollect/sightings/record/getGuidForOutputSpeciesIdentifier",
+            uploadImagesUrl: "/biocollect/ws/attachment/upload?hub=sightings",
+            searchBieUrl: "/biocollect/search/searchSpecies/e61eb018-02a9-4e3b-a4b3-9d6be33d9cbb?limit=10&hub=sightings",
+            speciesListUrl: "/biocollect/sightings/proxy/speciesItemsForList",
+            speciesProfileUrl: "/biocollect/sightings/proxy/speciesProfile",
+            noImageUrl: '/biocollect/assets/no-image-2-14a0a809823b65b821d14e1b5f6e2e9f.png',
+            speciesImageUrl:"/biocollect/sightings/species/speciesImage"
         }
     });
     afterAll(function() {
@@ -152,7 +212,27 @@ describe("SpeciesConstraintViewModel Spec", function () {
 describe("SpeciesListsViewModel Spec", function () {
     beforeAll(function() {
         window.fcConfig = {
-            imageLocation:'/'
+            serverUrl: "http://devt.ala.org.au:8087/biocollect",
+            activityUpdateUrl: "/biocollect/sightings/activity/ajaxUpdate",
+            activityDeleteUrl: "/biocollect/sightings/activity/ajaxDelete",
+            projectViewUrl: "/biocollect/sightings/project/index/",
+            siteViewUrl: "/biocollect/sightings/site/index/",
+            bieUrl: "https://bie.ala.org.au",
+            imageLocation:"/biocollect/assets/",
+            createCommentUrl : "/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            commentListUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            updateCommentUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            deleteCommentUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            imageLeafletViewer: 'http://devt.ala.org.au:8087/biocollect/sightings/resource/imageviewer',
+            projectIndexUrl: "/biocollect/sightings/project/index",
+            activityViewUrl: "/biocollect/sightings/bioActivity/index",
+            getGuidForOutputSpeciesUrl : "/biocollect/sightings/record/getGuidForOutputSpeciesIdentifier",
+            uploadImagesUrl: "/biocollect/ws/attachment/upload?hub=sightings",
+            searchBieUrl: "/biocollect/search/searchSpecies/e61eb018-02a9-4e3b-a4b3-9d6be33d9cbb?limit=10&hub=sightings",
+            speciesListUrl: "/biocollect/sightings/proxy/speciesItemsForList",
+            speciesProfileUrl: "/biocollect/sightings/proxy/speciesProfile",
+            noImageUrl: '/biocollect/assets/no-image-2-14a0a809823b65b821d14e1b5f6e2e9f.png',
+            speciesImageUrl:"/biocollect/sightings/species/speciesImage"
         }
     });
     afterAll(function() {
@@ -170,7 +250,27 @@ describe("SpeciesListsViewModel Spec", function () {
 describe("SurveyVisibilityViewModel Spec", function () {
     beforeAll(function() {
         window.fcConfig = {
-            imageLocation:'/'
+            serverUrl: "http://devt.ala.org.au:8087/biocollect",
+            activityUpdateUrl: "/biocollect/sightings/activity/ajaxUpdate",
+            activityDeleteUrl: "/biocollect/sightings/activity/ajaxDelete",
+            projectViewUrl: "/biocollect/sightings/project/index/",
+            siteViewUrl: "/biocollect/sightings/site/index/",
+            bieUrl: "https://bie.ala.org.au",
+            imageLocation:"/biocollect/assets/",
+            createCommentUrl : "/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            commentListUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            updateCommentUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            deleteCommentUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
+            imageLeafletViewer: 'http://devt.ala.org.au:8087/biocollect/sightings/resource/imageviewer',
+            projectIndexUrl: "/biocollect/sightings/project/index",
+            activityViewUrl: "/biocollect/sightings/bioActivity/index",
+            getGuidForOutputSpeciesUrl : "/biocollect/sightings/record/getGuidForOutputSpeciesIdentifier",
+            uploadImagesUrl: "/biocollect/ws/attachment/upload?hub=sightings",
+            searchBieUrl: "/biocollect/search/searchSpecies/e61eb018-02a9-4e3b-a4b3-9d6be33d9cbb?limit=10&hub=sightings",
+            speciesListUrl: "/biocollect/sightings/proxy/speciesItemsForList",
+            speciesProfileUrl: "/biocollect/sightings/proxy/speciesProfile",
+            noImageUrl: '/biocollect/assets/no-image-2-14a0a809823b65b821d14e1b5f6e2e9f.png',
+            speciesImageUrl:"/biocollect/sightings/species/speciesImage"
         }
     });
     afterAll(function() {
