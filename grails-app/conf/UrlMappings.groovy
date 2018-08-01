@@ -50,8 +50,9 @@ class UrlMappings {
                 "/bioActivity/previewActivity/$formName/$projectId"(controller: "bioActivity", action: 'previewActivity')
 
                 "/sight/$taxonId**" (controller: 'bioActivity', action: 'create') {
-                        id = grailsApplication.config.individualSightings.pActivity
-                        hub = grailsApplication.config.individualSightings.hub
+                        def grailsApplication = applicationContext.getBean("grailsApplication")
+                        id = grailsApplication?.config.individualSightings.pActivity
+                        hub = grailsApplication?.config.individualSightings.hub
                 }
 
                 "/spotter/$spotterId" (controller: 'bioActivity', action: 'spotter')

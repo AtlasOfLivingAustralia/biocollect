@@ -34,6 +34,9 @@ script:
   --non-interactive && grails prod maven-deploy --repository=$MAVEN_REPO --non-interactive
   --stacktrace
 
+- grails clean && grails refresh-dependencies --non-interactive && grails prod maven-deploy --repository=$MAVEN_REPO --non-interactive
+  --stacktrace
+
 env:
   global:
   - TRAVIS_NODE_VERSION="0.10"
