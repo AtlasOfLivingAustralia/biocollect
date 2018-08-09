@@ -35,10 +35,11 @@ class ProjectActivityService {
     AuthService authService
     CacheService cacheService
 
-    def getAllByProject(projectId, levelOfDetail = "", version = null) {
+    def getAllByProject(projectId, levelOfDetail = "", version = null, stats = false) {
         def params = '?'
         params += levelOfDetail ? "view=${levelOfDetail}&" : ''
         params += version ? "version=${version}&" : ''
+        params += "stats=${stats}"
         webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/getAllByProject/' + projectId + params).list
     }
 

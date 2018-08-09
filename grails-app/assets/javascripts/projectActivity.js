@@ -38,6 +38,9 @@ var ProjectActivity = function (params) {
     self.dataManagementPolicyURL = ko.observable(pActivity.dataManagementPolicyURL || "");
     self.dataManagementPolicyDocument = ko.observable(pActivity.dataManagementPolicyDocument || "");
     self.transients.publicAccess = pActivity.publicAccess? "True" : "False";
+    self.transients.activityLastUpdated = pActivity.activityLastUpdated;
+    self.transients.speciesRecorded = pActivity.speciesRecorded;
+    self.transients.activityCount = pActivity.activityCount;
     self.transients.isDataManagementPolicyDocumented = pActivity.isDataManagementPolicyDocumented? "True" : "False";
 
     self.selectFromSitesOnly.subscribe(function(checked){
