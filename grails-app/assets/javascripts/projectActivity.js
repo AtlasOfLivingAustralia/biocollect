@@ -15,6 +15,30 @@ var ProjectActivity = function (params) {
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
     self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
     self.selectFromSitesOnly = ko.observable(pActivity.selectFromSitesOnly);
+    self.legalCustodianOrganisation = ko.utils.unwrapObservable(pActivity.legalCustodianOrganisation || organisationName);
+    self.sites = ko.observableArray();
+    self.allowPolygons = ko.observable(('allowPolygons' in pActivity)? pActivity.allowPolygons : false);
+    self.allowPoints = ko.observable(('allowPoints' in pActivity)? pActivity.allowPoints : true);
+    self.defaultZoomArea = ko.observable(('defaultZoomArea' in pActivity)? pActivity.defaultZoomArea : project?project.projectSiteId:'');
+    self.baseLayersName = ko.observable(pActivity.baseLayersName);
+    self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
+    self.usageGuide = ko.observable(pActivity.usageGuide || "");
+    self.relatedDatasets = ko.observableArray (pActivity.relatedDatasets || []);
+    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense || "");
+    self.spatialAccuracy = ko.observable(pActivity.spatialAccuracy || "");
+    self.speciesIdentification = ko.observable(pActivity.speciesIdentification || "");
+    self.temporalAccuracy = ko.observable(pActivity.temporalAccuracy || "");
+    self.nonTaxonomicAccuracy = ko.observable(pActivity.nonTaxonomicAccuracy || "");
+    self.dataQualityAssuranceMethod = ko.observable(pActivity.dataQualityAssuranceMethod || "");
+    self.dataAccessMethod = ko.observable(pActivity.dataAccessMethod || "");
+    self.dataAccessExternalURL = ko.observable(pActivity.dataAccessExternalURL || "");
+    self.isDataManagementPolicyDocumented = ko.observable(pActivity.isDataManagementPolicyDocumented || false);
+    self.dataQualityAssuranceDescription = ko.observable(pActivity.dataQualityAssuranceDescription || "");
+    self.dataManagementPolicyDescription = ko.observable(pActivity.dataManagementPolicyDescription || "");
+    self.dataManagementPolicyURL = ko.observable(pActivity.dataManagementPolicyURL || "");
+    self.dataManagementPolicyDocument = ko.observable(pActivity.dataManagementPolicyDocument || "");
+    self.transients.publicAccess = pActivity.publicAccess? "True" : "False";
+    self.transients.isDataManagementPolicyDocumented = pActivity.isDataManagementPolicyDocumented? "True" : "False";
 
     self.selectFromSitesOnly.subscribe(function(checked){
         if(checked){
@@ -27,13 +51,6 @@ var ProjectActivity = function (params) {
             self.selectFromSitesOnly(false);
         }
     }.bind(self));
-
-    self.allowPolygons = ko.observable(('allowPolygons' in pActivity)? pActivity.allowPolygons : false);
-    self.allowPoints = ko.observable(('allowPoints' in pActivity)? pActivity.allowPoints : true);
-    self.defaultZoomArea = ko.observable(('defaultZoomArea' in pActivity)? pActivity.defaultZoomArea : project?project.projectSiteId:'');
-
-    self.baseLayersName = ko.observable(pActivity.baseLayersName);
-    self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
 
     self.previewUrl = ko.observable('');
 
@@ -311,15 +328,6 @@ var ProjectActivity = function (params) {
     self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
     self.alert = new AlertViewModel(pActivity.alert);
 
-    self.usageGuide = ko.observable(pActivity.usageGuide ? pActivity.usageGuide : "");
-
-    self.relatedDatasets = ko.observableArray (pActivity.relatedDatasets ? pActivity.relatedDatasets : []);
-
-    self.lastUpdated = ko.observable(pActivity.lastUpdated ? pActivity.lastUpdated : "");
-
-    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ? pActivity.dataSharingLicense : "");
-
-
     self.displaySelectedLicence = ko.computed(function(){
           return _.where(self.transients.alaSupportedLicences,{url:self.dataSharingLicense()});
 
@@ -351,19 +359,8 @@ var ProjectActivity = function (params) {
     },{
         id:'SCIENTIFICNAME',
         name: 'Scientific name'
-    }])
+    }]);
 
-    var legalCustodianVal = ko.utils.unwrapObservable(project.legalCustodianOrganisation);
-
-    if (legalCustodianVal != "" && organisationName != legalCustodianVal) {
-        self.transients.custodianOptions = [organisationName, legalCustodianVal];
-    } else {
-        self.transients.custodianOptions = [organisationName];
-    }
-
-    self.transients.selectedCustodianOption = legalCustodianVal;
-
-    self.sites = ko.observableArray();
     self.loadSites = function (projectSites, surveySites) {
         $.map(projectSites ? projectSites : [], function (obj, i) {
             var defaultSites = [];

@@ -70,16 +70,3 @@ table.table-list.survey-finder-table tr{
 .indent-left-10{
     margin-left: 18px;
 }
-
-.survey-editable-dropdown {
-    position: relative;
-}
-.survey-editable-dropdown select
-{
-    width: 100%;
-}
-
-.survey-editable-dropdown input {
-    position: absolute;
-    width: calc(100% - 30px);
-}

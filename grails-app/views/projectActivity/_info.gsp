@@ -94,7 +94,7 @@
 
                 <div class="span8">
                     <div class="controls">
-                        <textarea id="methodAbstract" rows="4" class="input-xlarge" data-bind="value: methodAbstract"></textarea>
+                        <textarea id="methodAbstract" rows="4" class="input-xlarge" data-bind="value: methodAbstract" data-validation-engine="validate[groupRequired[DescriptionSurveyMethod]]"></textarea>
                     </div>
                 </div>
             </div>
@@ -111,7 +111,7 @@
 
                 <div class="span8">
                     <div class="controls">
-                        <input id="methodUrl" type="text" data-bind="value: methodUrl" data-validation-engine="validate[custom[url]]"/>
+                        <input id="methodUrl" type="text" data-bind="value: methodUrl" data-validation-engine="validate[groupRequired[DescriptionSurveyMethod],custom[url]]"/>
                     </div>
                 </div>
             </div>
@@ -139,7 +139,8 @@
                                         'data-owner-type': 'projectActivityId',
                                         'data-owner-id': projectActivityId()},
                                          stagedImageUpload: documents,
-                                             visible:!methodDocUrl()">
+                                             visible:!methodDocUrl(), validationObservable: methodDocUrl"
+                          data-validation-engine="validate[groupRequired[DescriptionSurveyMethod]]">
                         <i class="icon-plus"></i>
                         <input id="mthDoc" type="file" name="files">
                         <span>Attach Document</span></span>
@@ -220,6 +221,27 @@
 
             <div class="row-fluid">
                 <div class="span4 text-right">
+                    <label class="control-label" for="dataSharingLicense"><g:message code="project.survey.info.dataSharingLicense"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataSharingLicense"/>', content:'<g:message code="project.survey.info.dataSharingLicense.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="req-field"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <g:select id="dataSharingLicense" class="full-width form-control" name="dateSharingLicence" from="${licences}" optionValue="name" data-bind="value:dataSharingLicense"
+                                  noSelection="['':'-Please select the licence-']" optionKey="url" data-validation-engine="validate[required]" />
+                        <g:each in="${licences}">
+                            <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${asset.assetPath(src: "licence/${it.logo}")}">&nbsp;&nbsp;${it.description}</a> </span>
+                        </g:each>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
                     <label class="control-label"><g:message code="project.survey.info.logo"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.logo"/>', content:'<g:message code="project.survey.info.logo.content"/>'}">
                             <i class="icon-question-sign"></i>
@@ -246,6 +268,326 @@
                 </div>
             </div>
 
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="legalCustodian"><g:message code="project.survey.info.legalCustodian"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.legalCustodian"/>', content:'<g:message code="project.survey.info.legalCustodian.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="req-field"></span>
+                    </label>
+                </div>
+                <div class="span8 text-left">
+                    <div class="controls">
+                        <input id="legalCustodian" class="full-width-input form-control" type="text" data-bind="value: legalCustodianOrganisation" data-validation-engine="validate[required]" >
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="legalCustodian"><g:message code="project.survey.info.reliabilityTag"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.reliabilityTag"/>', content:'<g:message code="project.survey.info.reliabilityTag.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                    </label>
+                </div>
+                <div class="span8 text-left">
+                    <div class="controls">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <strong>
+                                    <g:message code="project.survey.info.spatialAccuracy.text"/>
+                                </strong>
+                                <span class="req-field"></span>
+                            </div>
+                        </div>
+                        <label class="radio">
+                            <input name="spatialAccuracy" class="form-control" type="radio"
+                                   data-bind="checked: spatialAccuracy"
+                                   value="<g:message code="project.survey.info.spatialAccuracy.high.value"/>"
+                                   data-validation-engine="validate[required]" >
+                            <g:message code="project.survey.info.spatialAccuracy.high"/>
+                        </label>
+                        <label class="radio">
+                            <input name="spatialAccuracy" class="form-control" type="radio"
+                                   data-bind="checked: spatialAccuracy"
+                                   value="<g:message code="project.survey.info.spatialAccuracy.moderate.value"/>"
+                                   data-validation-engine="validate[required]" >
+                            <g:message code="project.survey.info.spatialAccuracy.moderate"/>
+                        </label>
+                        <label class="radio">
+                            <input name="spatialAccuracy" class="form-control" type="radio"
+                                   data-bind="checked: spatialAccuracy"
+                                   value="<g:message code="project.survey.info.spatialAccuracy.low.value"/>"
+                                   data-validation-engine="validate[required]" >
+                            <g:message code="project.survey.info.spatialAccuracy.low"/>
+                        </label>
+
+
+                        %{-- species identification confidence --}%
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <strong>
+                                    <g:message code="project.survey.info.speciesIdentification.text"/>
+                                </strong>
+                                <span class="req-field"></span>
+                            </div>
+                        </div>
+                        <label class="radio">
+                            <input name="speciesIdentification" class="form-control" type="radio"
+                                   data-bind="checked: speciesIdentification"
+                                   value="<g:message code="project.survey.info.speciesIdentification.high.value"/>"
+                                   data-validation-engine="validate[required]" >
+                            <g:message code="project.survey.info.speciesIdentification.high"/>
+                        </label>
+                        <label class="radio">
+                            <input name="speciesIdentification" class="form-control" type="radio"
+                                   data-bind="checked: speciesIdentification"
+                                   value="<g:message code="project.survey.info.speciesIdentification.moderate.value"/>"
+                                   data-validation-engine="validate[required]" >
+                            <g:message code="project.survey.info.speciesIdentification.moderate"/>
+                        </label>
+                        <label class="radio">
+                            <input name="speciesIdentification" class="form-control" type="radio"
+                                   data-bind="checked: speciesIdentification"
+                                   value="<g:message code="project.survey.info.speciesIdentification.low.value"/>"
+                                   data-validation-engine="validate[required]" >
+                            <g:message code="project.survey.info.speciesIdentification.low"/>
+                        </label>
+                        %{-- species identification confidence - END--}%
+
+                        %{-- --}%
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <strong>
+                                    <g:message code="project.survey.info.temporalAccuracy.text"/>
+                                </strong>
+                                <span class="req-field"></span>
+                            </div>
+                        </div>
+                        <label class="radio">
+                            <input name="temporalAccuracy" class="form-control" type="radio"
+                                   data-bind="checked: temporalAccuracy"
+                                   value="<g:message code="project.survey.info.temporalAccuracy.high.value"/>"
+                                   data-validation-engine="validate[required]" >
+                            <g:message code="project.survey.info.temporalAccuracy.high"/>
+                        </label>
+                        <label class="radio">
+                            <input name="temporalAccuracy" class="form-control" type="radio"
+                                   data-bind="checked: temporalAccuracy"
+                                   value="<g:message code="project.survey.info.temporalAccuracy.moderate.value"/>"
+                                   data-validation-engine="validate[required]" >
+                            <g:message code="project.survey.info.temporalAccuracy.moderate"/>
+                        </label>
+                        <label class="radio">
+                            <input name="temporalAccuracy" class="form-control" type="radio"
+                                   data-bind="checked: temporalAccuracy"
+                                   value="<g:message code="project.survey.info.temporalAccuracy.low.value"/>"
+                                   data-validation-engine="validate[required]" >
+                            <g:message code="project.survey.info.temporalAccuracy.low"/>
+                        </label>
+
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <strong>
+                                    <g:message code="project.survey.info.nonTaxonomicAccuracy.text"/>
+                                </strong>
+                                <span class="req-field"></span>
+                            </div>
+                        </div>
+                        <label class="radio">
+                            <input name="nonTaxonomicAccuracy" class="form-control" type="radio"
+                                   data-bind="checked: nonTaxonomicAccuracy"
+                                   value="<g:message code="project.survey.info.nonTaxonomicAccuracy.high.value"/>"
+                                   data-validation-engine="validate[required]" >
+                            <g:message code="project.survey.info.nonTaxonomicAccuracy.high"/>
+                        </label>
+                        <label class="radio">
+                            <input name="nonTaxonomicAccuracy" class="form-control" type="radio"
+                                   data-bind="checked: nonTaxonomicAccuracy"
+                                   value="<g:message code="project.survey.info.nonTaxonomicAccuracy.moderate.value"/>"
+                                   data-validation-engine="validate[required]" >
+                            <g:message code="project.survey.info.nonTaxonomicAccuracy.moderate"/>
+                        </label>
+                        <label class="radio">
+                            <input name="nonTaxonomicAccuracy" class="form-control" type="radio"
+                                   data-bind="checked: nonTaxonomicAccuracy"
+                                   value="<g:message code="project.survey.info.nonTaxonomicAccuracy.low.value"/>"
+                                   data-validation-engine="validate[required]" >
+                            <g:message code="project.survey.info.nonTaxonomicAccuracy.low"/>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="dataQualityAssuranceMethod"><g:message code="project.survey.info.dataQualityAssuranceMethod"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataQualityAssuranceMethod"/>', content:'<g:message code="project.survey.info.dataQualityAssuranceMethod.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="req-field"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <g:select id="dataQualityAssuranceMethod" class="full-width form-control" name="dataQualityAssuranceMethod" from="${dataQualityAssuranceMethods}" data-bind="value:dataQualityAssuranceMethod"
+                                  noSelection="['':'- Please select data quality assurance method -']" data-validation-engine="validate[required]" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="dataAccessMethod"><g:message code="project.survey.info.dataAccessMethod"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataAccessMethod"/>', content:'<g:message code="project.survey.info.dataAccessMethod.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="req-field"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <g:select id="dataAccessMethod" class="full-width form-control" name="dataAccessMethod" from="${dataAccessMethods}" data-bind="value:dataAccessMethod"
+                                  noSelection="['':'- Please select data access method -']" data-validation-engine="validate[required]" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="dataAccessExternalURL"><g:message code="project.survey.info.dataAccessExternalURL"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataAccessExternalURL"/>', content:'<g:message code="project.survey.info.dataAccessExternalURL.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <input id="dataAccessExternalURL" type="text" data-bind="value: dataAccessExternalURL" data-validation-engine="validate[custom[url]]"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="dataQualityAssuranceDescription"><g:message code="project.survey.info.dataQualityAssuranceDescription"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataQualityAssuranceDescription"/>', content:'<g:message code="project.survey.info.dataQualityAssuranceDescription.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                    </label>
+                </div>
+                <div class="span8">
+                    <div class="controls">
+                        <textarea id="dataQualityAssuranceDescription" rows="6" style="width: 100%" class="input-xlarge" data-bind="value: dataQualityAssuranceDescription"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="usageGuide"><g:message code="project.survey.info.usageGuide"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.usageGuide"/>', content:'<g:message code="project.survey.info.usageGuide.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                    </label>
+                </div>
+                <div class="span8">
+                    <div class="controls">
+                        <textarea id="usageGuide" rows="6" style="width: 100%" class="input-xlarge" data-bind="value: usageGuide"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="isDataManagementPolicyDocumented"><g:message code="project.survey.info.isDataManagementPolicyDocumented"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.isDataManagementPolicyDocumented"/>', content:'<g:message code="project.survey.info.isDataManagementPolicyDocumented.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <input id="isDataManagementPolicyDocumented" name="isDataManagementPolicyDocumented" type="checkbox" data-bind="checked: isDataManagementPolicyDocumented"/>
+                    </div>
+                </div>
+            </div>
+
+            <div data-bind="slideVisible: isDataManagementPolicyDocumented">
+                <div class="row-fluid">
+                    <div class="span4 text-right">
+                        <label class="control-label" for="dataManagementPolicyDescription"><g:message code="project.survey.info.dataManagementPolicyDescription"/>
+                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataManagementPolicyDescription"/>', content:'<g:message code="project.survey.info.dataManagementPolicyDescription.content"/>'}">
+                                <i class="icon-question-sign"></i>
+                            </a>
+                            <span class="right-padding"></span>
+                        </label>
+                    </div>
+
+                    <div class="span8">
+                        <div class="controls">
+                            <textarea id="dataManagementPolicyDescription" rows="4" class="input-xlarge" data-bind="value: dataManagementPolicyDescription" data-validation-engine="validate[groupRequired[DataManagement],condRequired[isDataManagementPolicyDocumented]]"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row-fluid">
+                    <div class="span4 text-right">
+                        <label class="control-label" for="dataManagementPolicyURL"><g:message code="project.survey.info.dataManagementPolicyURL"/>
+                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataManagementPolicyURL"/>', content:'<g:message code="project.survey.info.dataManagementPolicyURL.content"/>'}">
+                                <i class="icon-question-sign"></i>
+                            </a>
+                            <span class="right-padding"></span>
+                        </label>
+                    </div>
+
+                    <div class="span8">
+                        <div class="controls">
+                            <input id="dataManagementPolicyURL" type="text" data-bind="value: dataManagementPolicyURL" data-validation-engine="validate[groupRequired[DataManagement],condRequired[isDataManagementPolicyDocumented],custom[url]]"/>
+                        </div>
+                    </div>
+                </div>
+
+                %{--<div class="row-fluid">--}%
+                    %{--<div class="span4 text-right">--}%
+                        %{--<label class="control-label" ><g:message code="project.survey.info.dataManagementPolicyDocument"/>--}%
+                            %{--<a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataManagementPolicyDocument"/>', content:'<g:message code="project.survey.info.dataManagementPolicyDocument.content"/>'}">--}%
+                                %{--<i class="icon-question-sign"></i>--}%
+                            %{--</a>--}%
+                            %{--<span class="right-padding"></span>--}%
+                        %{--</label>--}%
+                    %{--</div>--}%
+
+                    %{--<div class="span2 text-left">--}%
+                        %{--<a data-bind="attr:{href:methodDocUrl}" target="_blank">--}%
+                            %{--<small class="media-heading" data-bind="text:methodDocName"></small>--}%
+                        %{--</a>--}%
+                    %{--</br>--}%
+                        %{--<span class="btn fileinput-button pull-left"--}%
+                              %{--data-bind="--}%
+                                                    %{--attr:{'data-role':'methodDoc',--}%
+                                                        %{--'data-url': transients.methoddocumentUpdateUrl(),--}%
+                                                        %{--'data-owner-type': 'projectActivityId',--}%
+                                                        %{--'data-owner-id': projectActivityId()},--}%
+                                                         %{--stagedImageUpload: documents,--}%
+                                                             %{--visible:!dataManagementPolicyDocument(), validationObservable: dataManagementPolicyDocument"--}%
+                              %{--data-validation-engine="validate[groupRequired[DataManagement]]">--}%
+                            %{--<i class="icon-plus"></i>--}%
+                            %{--<input id="mthDoc" type="file" name="files">--}%
+                            %{--<span>Attach Document</span></span>--}%
+                        %{--<button class="btn btn-small" data-bind="click:removeMethodDoc, visible:methodDocUrl()"><i class="icon-minus"></i> Remove Document</button>--}%
+                    %{--</div>--}%
+            </div>
+
+            <!-- /ko -->
             <g:render template="../projectActivity/indexingNote"/>
 
     <!-- /ko -->
@@ -304,74 +646,6 @@
             </div>
         <!-- /ko -->
 
-        </div>
-
-        <div class="row-fluid">
-            <div class="span6 text-left">
-                <label class="control-label" for="usageGuide"><g:message code="project.survey.info.usageGuide"/>
-                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.usageGuide"/>', content:'<g:message code="project.survey.info.usageGuide.content"/>'}">
-                        <i class="icon-question-sign"></i>
-                    </a>
-
-                </label>
-                <div class="controls">
-                    <textarea id="usageGuide" rows="6" style="width: 100%" class="input-xlarge" data-bind="value: usageGuide"></textarea>
-                </div>
-
-                <span class="right-padding"></span>
-
-                <label class="control-label" for="lastUpdated"><g:message code="project.survey.info.lastUpdated"/>
-                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.lastUpdated"/>', content:'<g:message code="project.survey.info.lastUpdated.content"/>'}">
-                        <i class="icon-question-sign"></i>
-                    </a>
-                </label>
-                <div class="controls">
-                    <div class="controls input-append">
-                        <input id="lastUpdated" data-bind="datepicker:lastUpdated.date" type="text"/>
-                        <span class="add-on open-datepicker"><i class="icon-calendar"></i> </span>
-                    </div>
-                </div>
-
-                <span class="right-padding"></span>
-
-                <label class="control-label" for="legalCustodian"><g:message code="project.survey.info.legalCustodian"/>
-                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.legalCustodian"/>', content:'<g:message code="project.survey.info.legalCustodian.content"/>'}">
-                        <i class="icon-question-sign"></i>
-                    </a>
-                    <span class="right-padding"></span>
-                </label>
-                <div class="controls">
-                    <div class="survey-editable-dropdown">
-                        <input id="legalCustodian" type="text" data-bind="value: project.legalCustodianOrganisation" >
-
-                        <select id="selectOption" data-bind="options: transients.custodianOptions,
-                                                             value: transients.selectedCustodianOption,
-                                                             optionsCaption: 'Enter the custodian',
-                                                             event:{ change: project.setLegalCustodian}">
-
-                        </select>
-                    </div>
-
-                </div>
-
-                <span class="right-padding"></span>
-
-                <label class="control-label" for="dataSharingLicense"><g:message code="project.survey.info.dataSharingLicense"/>
-                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataSharingLicense"/>', content:'<g:message code="project.survey.info.dataSharingLicense.content"/>'}">
-                        <i class="icon-question-sign"></i>
-                    </a>
-                    <span class="req-field"></span>
-                </label>
-                <div class="controls">
-                    <div class="survey-editable-dropdown">
-                         <g:select id="dataSharingLicense" name="dateSharingLicence" from="${licences}" optionValue="name" data-bind="value:dataSharingLicense"
-                              noSelection="['':'-Please select the licence-']" optionKey="url" data-validation-engine="validate[required]" />
-                         <g:each in="${licences}">
-                            <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${asset.assetPath(src: "licence/${it.logo}")}">&nbsp;&nbsp;${it.description}</a> </span>
-                        </g:each>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- /ko -->

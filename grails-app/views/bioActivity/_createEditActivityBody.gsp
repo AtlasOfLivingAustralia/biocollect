@@ -15,6 +15,7 @@
                 %{--quick links END--}%
             </div>
         </g:if>
+<!-- start model binding -->
 <!-- ko stopBinding: true -->
 <g:set var="user" value="${user}"/>
 <g:each in="${metaModel?.outputs}" var="outputName">
@@ -44,7 +45,7 @@
     </g:if>
 </g:each>
 <!-- /ko -->
-
+<!-- end model binding -->
 
 <g:if test="${metaModel.supportsSites?.toBoolean()}">
     <div >

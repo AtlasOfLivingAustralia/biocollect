@@ -393,11 +393,6 @@ function ProjectViewModel(project, isUserEditor) {
     var legalCustodianVal = project.legalCustodianOrganisation? project.legalCustodianOrganisation: ko.utils.unwrapObservable(self.organisationName);
     self.legalCustodianOrganisation = ko.observable(legalCustodianVal);
 
-    self.setLegalCustodian = function (data, event) {
-        if (event.originalEvent) { //user changed
-            self.current().legalCustodianOrganisation(data.transients.selectedCustodianOption);
-        }
-    };
 
     self.transients = self.transients || {};
 

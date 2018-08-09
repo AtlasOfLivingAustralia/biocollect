@@ -84,6 +84,8 @@ input[type=checkbox] {
     width: 50%;
     max-width: 500px;
     padding: 14px;
+    box-sizing: content-box;
+    height: 20px;
 }
 
 #pt-control-buttons{

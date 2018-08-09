@@ -939,6 +939,32 @@ ko.bindingHandlers.highlight = {
     }
 };
 
+ko.bindingHandlers.validationObservable = {
+    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        if (!element.type && jQuery.valHooks) {
+            var uid = generateRandomId(),
+                valueFunction = valueAccessor();
+
+            element.type = uid;
+            jQuery.valHooks[uid] = {
+                get: function modelValidator() {
+                    var value = ko.utils.unwrapObservable(valueFunction);
+                    return [undefined, null, ""].indexOf(value) >= 0 ? "" : "Validation successful";
+                }
+            }
+        } else {
+            throw "KO error: Validation handler cannot be used on an input element or any element which has 'type' property."
+        }
+    }
+};
+
+function randomMax8HexChars() {
+    return (((1 + Math.random()) * 0x100000000) | 0).toString(16).substring(1);
+}
+function generateRandomId() {
+    return randomMax8HexChars() + randomMax8HexChars();
+}
+
 // the following code handles resize-sensitive truncation of the description field
 $.fn.textWidth = function(text, font) {
     if (!$.fn.textWidth.fakeEl) $.fn.textWidth.fakeEl = $('<span>').hide().appendTo(document.body);
