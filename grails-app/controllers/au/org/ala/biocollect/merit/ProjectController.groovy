@@ -112,7 +112,9 @@ class ProjectController {
                 occurrenceUrl: occurrenceUrl,
                 spatialUrl: spatialUrl,
                 isProjectContributingDataToALA: isProjectContributingDataToALA,
-                licences: licences
+                licences: licences,
+                dataQualityAssuranceMethods: grailsApplication.config.dataQualityAssuranceMethods,
+                dataAccessMethods: grailsApplication.config.dataAccessMethods
             ]
 
 

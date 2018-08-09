@@ -56,19 +56,230 @@
                             <br/><br/>
                             <div data-bind="text:description"></div>
                             <br/>
-                            <!-- ko if: dataSharingLicense -->
-                            <div>
-                                <g:message code="project.survey.info.dataSharingLicense"/><br/>
-                                <g:each in="${licences}">
-                                    <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${asset.assetPath(src:"licence/${it.logo}")} ">&nbsp;&nbsp;${it.name}</a> </span>
-                                </g:each>
+                            <div class="row-fluid space-after">
+                                <div class="span3" data-bind="css: spatialAccuracy">
+                                    <g:message code="project.survey.info.spatialAccuracy.text"/> - <!-- ko text: spatialAccuracy --> <!-- /ko -->
+                                </div>
+                                <div class="span3" data-bind="css: speciesIdentification">
+                                    <g:message code="project.survey.info.speciesIdentification.text"/> - <!-- ko text: speciesIdentification --> <!-- /ko -->
+                                </div>
+                                <div class="span3" data-bind="css: temporalAccuracy">
+                                    <g:message code="project.survey.info.temporalAccuracy.text"/> - <!-- ko text: temporalAccuracy --> <!-- /ko -->
+                                </div>
+                                <div class="span3" data-bind="css: nonTaxonomicAccuracy">
+                                    <g:message code="project.survey.info.nonTaxonomicAccuracy.text"/> - <!-- ko text: nonTaxonomicAccuracy --> <!-- /ko -->
+                                </div>
                             </div>
-                            <!-- /ko -->
-                            <br/>
-                            <div data-bind="visible:transients.status()">
-                                <span>Status: <span data-bind="text: transients.status"></span></span>
-                            </div>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="accordion" id="accordion2">
+                                        <div class="accordion-group">
+                                            <div class="accordion-heading">
+                                                <div class="row-fluid">
+                                                    <div class="span8">
+                                                        <div data-bind="visible:transients.status()" class="accordion-toggle">
+                                                            <span>Status: <span data-bind="text: transients.status"></span></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="span4 text-right">
+                                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                                                            Show more
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="collapseOne" class="accordion-body collapse">
+                                                <div class="accordion-inner">
+                                                    <!-- ko if: attribution -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.attribution"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: attribution"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
 
+                                                    %{-- todo : public access to data--}%
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.publicAccess"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: transients.publicAccess"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- ko if: dataAccessMethod -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataAccessMethod"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: dataAccessMethod"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: dataAccessExternalURL -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataAccessExternalURL"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: dataAccessExternalURL"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    %{-- todo: last updated--}%
+                                                    %{-- todo: Number of data recording events in the dataset--}%
+                                                    %{-- todo: Number of species records in the dataset--}%
+
+                                                    <!-- ko if: dataSharingLicense -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataSharingLicense"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <g:each in="${licences}">
+                                                                <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${asset.assetPath(src:"licence/${it.logo}")} ">&nbsp;&nbsp;${it.name}</a> </span>
+                                                            </g:each>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: legalCustodianOrganisation -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.legalCustodian"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: legalCustodianOrganisation"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: transients.isDataManagementPolicyDocumented -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.isDataManagementPolicyDocumented"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: transients.isDataManagementPolicyDocumented"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: isDataManagementPolicyDocumented() && dataManagementPolicyDescription() -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataManagementPolicyDescription"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: dataManagementPolicyDescription"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: isDataManagementPolicyDocumented() && dataManagementPolicyURL() -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataManagementPolicyURL"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <a data-bind="href: dataManagementPolicyURL, text: dataManagementPolicyURL"></a>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    %{-- todo : dataManagementPolicyDocument --}%
+
+                                                    <!-- ko if: dataQualityAssuranceMethod -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataQualityAssuranceMethod"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: dataQualityAssuranceMethod"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: dataQualityAssuranceDescription -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataQualityAssuranceDescription"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: dataQualityAssuranceDescription"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: methodName -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.methodName"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: methodName"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+
+                                                    <!-- ko if: methodAbstract -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.methodAbstract"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: methodAbstract"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: methodUrl -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.methodUrl"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <a data-bind="href: methodUrl, text: methodUrl"></a>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+
+                                                    %{--<!-- ko if: methodDoc -->--}%
+                                                    %{--<div class="row-fluid">--}%
+                                                        %{--<div class="span4">--}%
+                                                            %{--<g:message code="project.survey.info.methodDoc"/>--}%
+                                                        %{--</div>--}%
+                                                        %{--<div class="span8">--}%
+                                                            %{--<a data-bind="text: methodDoc, href: methodDoc"></a>--}%
+                                                        %{--</div>--}%
+                                                    %{--</div>--}%
+                                                    %{--<!-- /ko -->--}%
+
+                                                    <!-- ko if: usageGuide -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.usageGuide"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: usageGuide"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <g:if test="${grailsApplication.config.aekosEnabled? Boolean.parseBoolean(grailsApplication.config.aekosEnabled): false}">
 
                                 <br/>
@@ -201,7 +412,7 @@
                     </td>
                 </tr>
 
-        <!-- /ko -->
+            <!-- /ko -->
         <!-- /ko -->
         </tbody>
     </table>

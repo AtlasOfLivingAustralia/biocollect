@@ -4,6 +4,12 @@
  *= require validationEngine.jquery.css
  *= require_self
  */
+
+/* ala style*/
+#global-search #biesearch {
+    box-sizing: content-box;
+}
+
 /* Documents specific styles */
 
 .nav-list.fc-docs-list {
@@ -689,6 +695,26 @@ input.full-width-input {
     padding: 0px !important;
 }
 
+/**
+ * used in project activities for colour coding reliability tags
+ */
+.high {
+    background: #4cbc4c;
+    color: white;
+    padding: 10px;
+}
+
+.moderate {
+    background: #f9fc4b;
+    color: black;
+    padding: 10px;
+}
+
+.low {
+    background: #dd514c;
+    color: white;
+    padding: 10px;
+}
 @media (min-width: 980px) {
     #content-starting-point{
         margin-top: 70px;
