@@ -57,16 +57,16 @@
                             <div data-bind="text:description"></div>
                             <br/>
                             <div class="row-fluid space-after">
-                                <div class="span3" data-bind="css: spatialAccuracy">
+                                <div class="span3" data-bind="css: spatialAccuracy, visible: spatialAccuracy">
                                     <g:message code="project.survey.info.spatialAccuracy.text"/> - <!-- ko text: spatialAccuracy --> <!-- /ko -->
                                 </div>
-                                <div class="span3" data-bind="css: speciesIdentification">
+                                <div class="span3" data-bind="css: speciesIdentification, visible: speciesIdentification">
                                     <g:message code="project.survey.info.speciesIdentification.text"/> - <!-- ko text: speciesIdentification --> <!-- /ko -->
                                 </div>
-                                <div class="span3" data-bind="css: temporalAccuracy">
+                                <div class="span3" data-bind="css: temporalAccuracy, visible: temporalAccuracy">
                                     <g:message code="project.survey.info.temporalAccuracy.text"/> - <!-- ko text: temporalAccuracy --> <!-- /ko -->
                                 </div>
-                                <div class="span3" data-bind="css: nonTaxonomicAccuracy">
+                                <div class="span3" data-bind="css: nonTaxonomicAccuracy, visible: nonTaxonomicAccuracy">
                                     <g:message code="project.survey.info.nonTaxonomicAccuracy.text"/> - <!-- ko text: nonTaxonomicAccuracy --> <!-- /ko -->
                                 </div>
                             </div>
