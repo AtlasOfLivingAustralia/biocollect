@@ -119,7 +119,7 @@ class ProjectController {
 
 
             if(project.projectType in [ProjectService.PROJECT_TYPE_ECOSCIENCE, ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE]){
-                model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
+                model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version, true)
                 model.pActivityForms = projectService.supportedActivityTypes(project).collect{[name: it.name, images: it.images]}
                 model.vocabList = vocabService.getVocabValues ()
                 println model.pActivityForms

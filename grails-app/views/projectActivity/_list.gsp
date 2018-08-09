@@ -101,7 +101,6 @@
                                                     </div>
                                                     <!-- /ko -->
 
-                                                    %{-- todo : public access to data--}%
                                                     <div class="row-fluid">
                                                         <div class="span4">
                                                             <g:message code="project.survey.info.publicAccess"/>
@@ -133,9 +132,38 @@
                                                     </div>
                                                     <!-- /ko -->
 
-                                                    %{-- todo: last updated--}%
-                                                    %{-- todo: Number of data recording events in the dataset--}%
-                                                    %{-- todo: Number of species records in the dataset--}%
+                                                    <!-- ko if: transients.activityLastUpdated -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.lastUpdated"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: moment(transients.activityLastUpdated).format('DD MMMM, YYYY')"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: transients.activityCount -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.activityCount"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: transients.activityCount"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: transients.speciesRecorded -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.speciesRecorded"/>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: transients.speciesRecorded"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
 
                                                     <!-- ko if: dataSharingLicense -->
                                                     <div class="row-fluid">
