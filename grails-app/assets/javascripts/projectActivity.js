@@ -319,12 +319,14 @@ var ProjectActivity = function (params) {
     };
 
     self.findDocumentById = function (id) {
-        var documents = project.documents();
-        var found = $.grep(documents, function (doc) {
-            return doc.documentId === id;
-        });
+        var documents = project.documents && project.documents();
+        if( documents) {
+            var found = $.grep(documents, function (doc) {
+                return doc.documentId === id;
+            });
 
-        return found[0];
+            return found[0];
+        }
     };
 
 
