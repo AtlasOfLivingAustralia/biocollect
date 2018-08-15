@@ -1,5 +1,6 @@
 <!-- ko stopBinding: true -->
-<div id="attachDocument" class="modal fade" style="display:none;">
+<g:set var="modalId" value="${ modalId?:'attachDocument' }"/>
+<div id="${modalId}" class="modal fade" style="display:none;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

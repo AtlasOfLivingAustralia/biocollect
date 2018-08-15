@@ -287,27 +287,28 @@ if(!speciesConfiguration.default){
     ]
 }
 
-if(!dataAccessMethods) {
-    dataAccessMethods = [
-        "Open access structured raw data download from this system",
-        "Open access opaque raw data file attached in this system",
-        "Limited structured raw data access in this system - via request (subject to embargo)",
-        "Opaque raw data file attached in this system - via request",
-        "Open access structured raw data download from external source",
-        "Closed access structured raw data download from external source",
-        "Raw data not available",
-        "Only derived/interpreted data products available"
-    ]
-}
+dataAccessMethods = [
+        "oasrdfs",
+        "oaordfs",
+        "lsrds",
+        "ordfsvr",
+        "oasrdes",
+        "casrdes",
+        "rdna",
+        "odidpa"
+]
 
-if(!dataQualityAssuranceMethods) {
-    dataQualityAssuranceMethods = [
-        "Data owner curated",
-        "Subject matter expert record verification",
-        "Crowd-sourced record verification",
-        "Record annotation",
-        "System supported data attribute configuration",
-        "No DQ methods used",
-        "Not applicable"
+dataQualityAssuranceMethods = [
+        "dataownercurated",
+        "subjectexpertverification",
+        "crowdsourcedverification",
+        "recordannotation",
+        "systemsupported",
+        "nodqmethodsused",
+        "na"
     ]
-}
+
+methodType = [
+    'opportunistic',
+    'systematic'
+]

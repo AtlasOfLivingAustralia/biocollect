@@ -96,7 +96,8 @@
         spatialUrl: "${spatialUrl}",
         getMembersForProjectIdPaginatedUrl: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}",
         removeUserRoleUrl:"${createLink(controller:'user', action:'removeUserWithRoleFromProject')}",
-        absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}"
+        absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
+        opportunisticDisplayName: "<g:message code="project.facets.methodType.opportunistic"/>"
         },
         here = window.location.href;
 

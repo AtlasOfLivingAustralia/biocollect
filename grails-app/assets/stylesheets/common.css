@@ -33,7 +33,7 @@
     margin-right: -9px;
 }
 
-select,textarea,input[type="text"],input[type="password"],input[type="datetime"],input[type="datetime-local"],input[type="date"],input[type="month"],input[type="time"],input[type="week"],input[type="number"],input[type="email"],input[type="url"],input[type="search"],input[type="tel"],input[type="color"],.uneditable-input {
+select,input[type="text"],input[type="password"],input[type="datetime"],input[type="datetime-local"],input[type="date"],input[type="month"],input[type="time"],input[type="week"],input[type="number"],input[type="email"],input[type="url"],input[type="search"],input[type="tel"],input[type="color"],.uneditable-input {
     display: inline-block;
     height: 30px;
     padding: 4px 6px;
@@ -702,18 +702,24 @@ input.full-width-input {
     background: #4cbc4c;
     color: white;
     padding: 10px;
+    max-height: 50px;
+    overflow-y: scroll;
 }
 
 .moderate {
     background: #f9fc4b;
     color: black;
     padding: 10px;
+    max-height: 50px;
+    overflow-y: scroll;
 }
 
 .low {
     background: #dd514c;
     color: white;
     padding: 10px;
+    max-height: 50px;
+    overflow-y: scroll;
 }
 @media (min-width: 980px) {
     #content-starting-point{
