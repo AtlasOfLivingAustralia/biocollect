@@ -50,7 +50,6 @@
                 <h4>ENDED</h4>
             </div>
             <div class="dayscount" data-bind="visible: transients.pActivity.transients.daysSince() >= 0 && transients.pActivity.transients.daysRemaining() < 0">
-                <img height="50%" data-bind="attr:{src: fcConfig.imageLocation + 'infinity.png'}"/>
                 <h4>SURVEY</h4>
                 <h4>ONGOING</h4>
             </div>

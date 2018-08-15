@@ -9,14 +9,13 @@
     background-color: white;
 }
 
-table.table-list.survey-finder-table td{
+table.survey-finder-table td{
     vertical-align: top;
 }
 
-table.table-list.survey-finder-table tr{
+table.survey-finder-table tr{
     padding-top: 5px;
     padding-bottom: 5px;
-    border-bottom: 2px solid grey;
     margin-top: 5px;
     margin-bottom: 5px;
 }

@@ -44,7 +44,6 @@
                                       model="[useExistingModel: true,editable:true, filterBy: 'all', ignore: '', imageUrl:asset.assetPath(src:'filetypes'),containerId:'adminDocumentList']"/>
                         </div>
                     </div>
-                    <g:render template="/shared/attachDocument"/>
 
                     <div class="row-fluid attachDocumentModal">
                         <button class="btn btn-small btn-primary" id="doAttach" data-bind="click:attachDocument"><i class="icon-white icon-plus"></i> Attach Document</button>
@@ -82,6 +81,8 @@
         </div>
     </div>
 </div>
+
+<g:render template="/shared/attachDocument"/>
 
 <asset:script type="text/javascript">
     function initialiseInternalCSAdmin() {

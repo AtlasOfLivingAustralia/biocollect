@@ -20,6 +20,7 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     self.published = ko.observable(o.published ? o.published : false);
     self.publicAccess = ko.observable(o.publicAccess ? o.publicAccess : false);
     self.attribution = ko.observable(o.attribution ? o.attribution : self.formatAttribution(organisationName, self.name()));
+    self.methodType = ko.observable(o.methodType || "");
     self.methodName = ko.observable(o.methodName);
     self.methodAbstract = ko.observable(o.methodAbstract);
     self.methodUrl = ko.observable(o.methodUrl);
@@ -31,6 +32,17 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     self.datasetSubmitter = ko.observable(o.datasetSubmitter ? o.datasetSubmitter : "");
 */
     self.current = ko.observable(selected);
+    self.methodType.subscribe(function (newValue) {
+        if (newValue === 'opportunistic') {
+            self.methodName(fcConfig.opportunisticDisplayName);
+        } else {
+            self.methodName("");
+        }
+    });
+
+    self.transients.isSystematicSurvey = ko.pureComputed(function () {
+        return self.methodType() === 'systematic';
+    });
 
     self.addActivity = function(){
         window.location.href = fcConfig.activityCreateUrl + "/" + self.projectActivityId();

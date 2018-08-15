@@ -29,19 +29,57 @@ var ProjectActivity = function (params) {
     self.speciesIdentification = ko.observable(pActivity.speciesIdentification || "");
     self.temporalAccuracy = ko.observable(pActivity.temporalAccuracy || "");
     self.nonTaxonomicAccuracy = ko.observable(pActivity.nonTaxonomicAccuracy || "");
-    self.dataQualityAssuranceMethod = ko.observable(pActivity.dataQualityAssuranceMethod || "");
+    self.dataQualityAssuranceMethods = ko.observableArray(pActivity.dataQualityAssuranceMethods || []);
     self.dataAccessMethod = ko.observable(pActivity.dataAccessMethod || "");
     self.dataAccessExternalURL = ko.observable(pActivity.dataAccessExternalURL || "");
     self.isDataManagementPolicyDocumented = ko.observable(pActivity.isDataManagementPolicyDocumented || false);
     self.dataQualityAssuranceDescription = ko.observable(pActivity.dataQualityAssuranceDescription || "");
     self.dataManagementPolicyDescription = ko.observable(pActivity.dataManagementPolicyDescription || "");
     self.dataManagementPolicyURL = ko.observable(pActivity.dataManagementPolicyURL || "");
-    self.dataManagementPolicyDocument = ko.observable(pActivity.dataManagementPolicyDocument || "");
+    self.dataManagementPolicyDocument = ko.observable();
     self.transients.publicAccess = pActivity.publicAccess? "True" : "False";
     self.transients.activityLastUpdated = pActivity.activityLastUpdated;
     self.transients.speciesRecorded = pActivity.speciesRecorded;
     self.transients.activityCount = pActivity.activityCount;
-    self.transients.isDataManagementPolicyDocumented = pActivity.isDataManagementPolicyDocumented? "True" : "False";
+    self.transients.isDataManagementPolicyDocumented = ko.computed({
+        read: function () {
+            if(self.isDataManagementPolicyDocumented() === false) {
+                return 'no'
+            } else if(self.isDataManagementPolicyDocumented() === true) {
+                return 'yes'
+            } else {
+                return '';
+            }
+        },
+        write: function (value) {
+            if(value === 'no') {
+                self.isDataManagementPolicyDocumented(false);
+            } else if(value === 'yes') {
+                self.isDataManagementPolicyDocumented(true);
+            } else {
+                self.isDataManagementPolicyDocumented('');
+            }
+        }
+    });
+    self.transients.dataManagementPolicyDocumentURL = ko.observable();
+    self.transients.dataQualityAssuranceMethods = ko.computed({
+        read: function(){
+            return self.dataQualityAssuranceMethods();
+        },
+        write: function(values) {
+            if (values && values.length > 0) {
+                if ( values.indexOf('na') > 0) {
+                    self.dataQualityAssuranceMethods.removeAll();
+                    self.dataQualityAssuranceMethods.push('na');
+                } else if (values.indexOf('nodqmethodsused') > 0) {
+                    self.dataQualityAssuranceMethods.removeAll();
+                    self.dataQualityAssuranceMethods.push('nodqmethodsused');
+                } else {
+                    self.dataQualityAssuranceMethods.remove.apply(self.dataQualityAssuranceMethods, ['na', 'nodqmethodsused']);
+                }
+            }
+        }
+    });
 
     self.selectFromSitesOnly.subscribe(function(checked){
         if(checked){
@@ -272,6 +310,22 @@ var ProjectActivity = function (params) {
     }
 
     self.transients.initSpeciesConfig(pActivity, selected);
+
+    self.setDataManagementDocumentObserables = function (doc) {
+        if (doc) {
+            self.dataManagementPolicyDocument(doc.documentId);
+            self.transients.dataManagementPolicyDocumentURL(doc.url);
+        }
+    };
+
+    self.findDocumentById = function (id) {
+        var documents = project.documents();
+        var found = $.grep(documents, function (doc) {
+            return doc.documentId === id;
+        });
+
+        return found[0];
+    };
 
 
     self.areSpeciesFieldsConfigured = function () {
@@ -604,6 +658,22 @@ var ProjectActivity = function (params) {
 
     };
 
+    /** document attach **/
+    self.attachDocument = function() {
+        showDocumentAttachInModal(fcConfig.documentUpdateUrl, new DocumentViewModel({role:'information', public: true, projectActivityId: self.projectActivityId()},{key:'projectId', value:project.transients.projectId}), '#attachDocument')
+            .done(function(result) {
+                    self.setDataManagementDocumentObserables(result);
+                }
+            );
+    };
+
+    self.deleteDocument = function() {
+        var url = fcConfig.documentDeleteUrl+'/'+  self.dataManagementPolicyDocument();
+        $.post(url, {}, function() { self.dataManagementPolicyDocument(""); });
+    };
+
+
+    self.setDataManagementDocumentObserables(self.findDocumentById(pActivity.dataManagementPolicyDocument));
 };
 
 var SiteList = function (o, surveySites, pActivity) {
