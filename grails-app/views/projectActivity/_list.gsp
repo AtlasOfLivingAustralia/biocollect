@@ -113,7 +113,7 @@
                                                             </a>
                                                         </div>
                                                         <div class="span8">
-                                                            <span data-bind="text: transients.activityCount"></span>
+                                                            <span data-bind="text: transients.activityCount.formattedInteger"></span>
                                                         </div>
                                                     </div>
                                                     <!-- /ko -->
@@ -127,7 +127,7 @@
                                                             </a>
                                                         </div>
                                                         <div class="span8">
-                                                            <span data-bind="text: transients.speciesRecorded"></span>
+                                                            <span data-bind="text: transients.speciesRecorded.formattedInteger"></span>
                                                         </div>
                                                     </div>
                                                     <!-- /ko -->
@@ -273,12 +273,12 @@
 
                                                         </div>
                                                         <div class="span8">
-                                                            <a data-bind="attr: {href: dataManagementPolicyURL}, text: dataManagementPolicyURL" target="_blank"></a>
+                                                            <a data-bind="attr: {href: dataManagementPolicyURL}, text: dataManagementPolicyURL" target="_blank" class="ellipsis-full-width"></a>
                                                         </div>
                                                     </div>
                                                     <!-- /ko -->
 
-                                                    <!-- ko if: dataManagementPolicyDocument -->
+                                                    <!-- ko if: isDataManagementPolicyDocumented() && dataManagementPolicyDocument() -->
                                                     <div class="row-fluid">
                                                         <div class="span4">
                                                             <g:message code="project.survey.info.dataManagementPolicyDocument"/>
@@ -288,7 +288,15 @@
 
                                                         </div>
                                                         <div class="span8">
-                                                            <a data-bind="attr: {href: transients.dataManagementPolicyDocumentURL}, text: transients.dataManagementPolicyDocumentURL" target="_blank"></a>
+                                                            <div class="media">
+                                                                <a class="pull-left" href="#">
+                                                                    <img class="media-object" data-bind="attr:{src: transients.getFileTypeForDataManagementDocument()}">
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <h4 class="media-heading"></h4>
+                                                                    <a data-bind="text: transients.getFileNameForDataManagementDocument(), click: showDocument" data-document="management" href="#"></a>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <!-- /ko -->
@@ -307,7 +315,7 @@
                                                             <g:each in="${grailsApplication.config.dataQualityAssuranceMethods}" var="dqMethod">
                                                                 <!-- ko if: dataQualityAssuranceMethods().indexOf('${dqMethod}') > -1 -->
                                                                 <div>
-                                                                    <g:message code="project.facets.dataQualityAssuranceMethod.${dqMethod}"/>
+                                                                    <g:message code="project.facets.dataQualityAssuranceMethods.${dqMethod}"/>
                                                                 </div>
                                                                 <!-- /ko -->
                                                             </g:each>
@@ -390,7 +398,7 @@
 
                                                         </div>
                                                         <div class="span8">
-                                                            <a data-bind="attr: {href: methodUrl}, text: methodUrl"></a>
+                                                            <a data-bind="attr: {href: methodUrl}, text: methodUrl" class="ellipsis-full-width" target="_blank"></a>
                                                         </div>
                                                     </div>
                                                     <!-- /ko -->
@@ -406,7 +414,16 @@
 
                                                         </div>
                                                         <div class="span8">
-                                                            <a data-bind="text: methodDocName, attr: {href: methodDocUrl}" target="_blank"></a>
+                                                            <div class="media">
+                                                                <a class="pull-left" href="#">
+                                                                    <img class="media-object" data-bind="attr:{src: transients.getFileTypeForSurveyMethodDocument()}">
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <h4 class="media-heading"></h4>
+                                                                    <a href="#" data-bind="text: methodDocName, click: showDocument" data-document="method" target="_blank"></a>
+                                                                </div>
+                                                            </div>
+
                                                         </div>
                                                     </div>
                                                     <!-- /ko -->

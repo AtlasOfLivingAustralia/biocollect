@@ -8,6 +8,7 @@ var ProjectActivity = function (params) {
     var organisationName = params.organisationName ? params.organisationName : "";
     var project = params.project ? params.project : {};
     var user = params.user ? params.user : {};
+    var tabDocumentId = params.tabDocumentId || "#documents-tab";
 
     var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
     self.project = project;
@@ -39,8 +40,8 @@ var ProjectActivity = function (params) {
     self.dataManagementPolicyDocument = ko.observable();
     self.transients.publicAccess = pActivity.publicAccess? "True" : "False";
     self.transients.activityLastUpdated = pActivity.activityLastUpdated;
-    self.transients.speciesRecorded = pActivity.speciesRecorded;
-    self.transients.activityCount = pActivity.activityCount;
+    self.transients.speciesRecorded = ko.observable(pActivity.speciesRecorded).extend({integer:0});
+    self.transients.activityCount = ko.observable(pActivity.activityCount).extend({integer:0});
     self.transients.isDataManagementPolicyDocumented = ko.computed({
         read: function () {
             if(self.isDataManagementPolicyDocumented() === false) {
@@ -329,6 +330,32 @@ var ProjectActivity = function (params) {
         }
     };
 
+    self.getDocumentFromUsageType = function (type) {
+        var documentId, document;
+        switch (type) {
+            case 'management':
+                documentId = self.dataManagementPolicyDocument();
+                break;
+            case 'method':
+                document = self.findDocumentByRole(self.documents(), 'methodDoc');
+                documentId = document && document.documentId;
+                break;
+        }
+
+        return self.findDocumentById(documentId);
+    };
+
+    self.showDocument = function (data, event) {
+        var type = $(event.target).attr('data-document');
+        var document = self.getDocumentFromUsageType(type);
+        if (document) {
+            $(tabDocumentId).tab('show');
+            project.selectDocument(document);
+        } else {
+            alert("Could not find document. Let project administrator know.");
+        }
+    };
+
 
     self.areSpeciesFieldsConfigured = function () {
         // As soon as a field is valid, we stop
@@ -405,6 +432,20 @@ var ProjectActivity = function (params) {
 
         return false;
     });
+    self.transients.getFileNameForDataManagementDocument = ko.pureComputed(function () {
+        var document = self.getDocumentFromUsageType('management');
+        return document.filename;
+    });
+    self.transients.getFileTypeForDataManagementDocument = ko.pureComputed(function () {
+        var document = self.getDocumentFromUsageType('management');
+        return self.filetypeImg(ko.unwrap(document.filename));
+    });
+
+    self.transients.getFileTypeForSurveyMethodDocument = ko.pureComputed(function () {
+        var document = self.getDocumentFromUsageType('method');
+        return self.filetypeImg(ko.unwrap(document.filename));
+    });
+
 
     self.transients.availableSpeciesDisplayFormat = ko.observableArray([{
         id:'SCIENTIFICNAME(COMMONNAME)',
@@ -672,6 +713,10 @@ var ProjectActivity = function (params) {
     self.deleteDocument = function() {
         var url = fcConfig.documentDeleteUrl+'/'+  self.dataManagementPolicyDocument();
         $.post(url, {}, function() { self.dataManagementPolicyDocument(""); });
+    };
+
+    self.filetypeImg = function (filename) {
+        return fcConfig.imageLocation + "filetypes/" + iconnameFromFilename(filename);
     };
 
 
