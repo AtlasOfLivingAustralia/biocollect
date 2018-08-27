@@ -25,6 +25,29 @@ ko.extenders.currency = function(target, options) {
     return target;
 };
 
+/**
+ *
+ * @param target the knockoutjs object being extended.
+ * @param options {currencySymbol, decimalSeparator, thousandsSeparator}
+ */
+ko.extenders.integer = function(target, options) {
+
+    var t;
+    if (options !== undefined) {
+        t = options.thousandsSeparator;
+    }
+    target.formattedInteger = ko.computed(function() {
+        var n = target(),
+            c = isNaN(c = Math.abs(c)) ? 2 : c,
+            t = t == undefined ? "," : t,
+            s = n < 0 ? "-" : "",
+            i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+            j = (j = i.length) > 3 ? j % 3 : 0;
+        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t);
+    });
+    return target;
+};
+
 ko.extenders.numericString = function(target, precision) {
     //create a writable computed observable to intercept writes to our observable
     var result = ko.computed({

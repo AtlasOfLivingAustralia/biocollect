@@ -645,6 +645,7 @@ class BioActivityController {
 
         facets = projectActivityService.getDisplayNamesForFacets(facets, allFacetConfig)
         facets = projectService.addFacetState(facets, allFacetConfig)
+        projectService.getDisplayNamesForFacets(facets, allFacetConfig)
         render([activities: activities, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
     }
 

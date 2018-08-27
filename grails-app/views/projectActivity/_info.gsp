@@ -482,7 +482,7 @@
                                     <div class="span6">
                                         <label class="checkbox">
                                             <input type="checkbox" value="${dqMethod}" data-bind="checked: transients.dataQualityAssuranceMethods"/>
-                                            <g:message code="project.facets.dataQualityAssuranceMethod.${dqMethod}"/>
+                                            <g:message code="project.facets.dataQualityAssuranceMethods.${dqMethod}"/>
                                         </label>
                                     </div>
                                 </g:each>
@@ -634,7 +634,7 @@
                         <div class="row-fluid">
                             <div class="span12">
                                 <div class="space-after">
-                                    <a data-bind="attr: { href: transients.dataManagementPolicyDocumentURL}, text: transients.dataManagementPolicyDocumentURL, visible: dataManagementPolicyDocument, validateObservable:dataManagementPolicyDocument" data-validation-engine="validate[groupRequired[DataManagement]]" target="_blank"></a>
+                                    <a data-bind="attr: { href: transients.dataManagementPolicyDocumentURL}, text: transients.getFileNameForDataManagementDocument(), visible: dataManagementPolicyDocument, validateObservable:dataManagementPolicyDocument" data-validation-engine="validate[groupRequired[DataManagement]]" target="_blank"></a>
                                 </div>
                                 <button class="btn btn-small" data-bind="click:deleteDocument, visible: dataManagementPolicyDocument"><i class="icon-minus"></i> Remove Document</button>
                                 <div class="row-fluid attachDocumentModal" data-bind="visible: !dataManagementPolicyDocument()">
