@@ -433,16 +433,16 @@ var ProjectActivity = function (params) {
         return false;
     });
     self.transients.getFileNameForDataManagementDocument = ko.pureComputed(function () {
-        var document = self.getDocumentFromUsageType('management');
+        var document = self.getDocumentFromUsageType('management') || {};
         return document.filename;
     });
     self.transients.getFileTypeForDataManagementDocument = ko.pureComputed(function () {
-        var document = self.getDocumentFromUsageType('management');
+        var document = self.getDocumentFromUsageType('management') || {};
         return self.filetypeImg(ko.unwrap(document.filename));
     });
 
     self.transients.getFileTypeForSurveyMethodDocument = ko.pureComputed(function () {
-        var document = self.getDocumentFromUsageType('method');
+        var document = self.getDocumentFromUsageType('method') || {};
         return self.filetypeImg(ko.unwrap(document.filename));
     });
 
