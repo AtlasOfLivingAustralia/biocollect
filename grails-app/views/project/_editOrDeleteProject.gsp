@@ -20,7 +20,7 @@
             </p>
         </div>
         <div class="span4 text-left" >
-            <select data-bind="options: transients.yesNoOptions, value: alaHarvest, optionsCaption: 'Please select'"></select>
+            <select data-bind="options: transients.yesNoOptions, value: transients.alaHarvest, optionsCaption: 'Please select'"></select>
         </div>
     </div>
     <div class="margin-bottom-20"></div>

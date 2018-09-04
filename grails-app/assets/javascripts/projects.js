@@ -1,3 +1,4 @@
+//= require EmailViewModel.js
 /*
     Utilities for managing project representations.
  */
@@ -438,9 +439,22 @@ function ProjectViewModel(project, isUserEditor) {
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
     self.imageUrl = ko.observable(project.urlImage);
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
-    self.alaHarvest = ko.observable(project.alaHarvest ? 'Yes' : 'No');
+    self.alaHarvest = ko.observable(project.alaHarvest ? true : false);
     self.industries = ko.observableArray(project.industries);
+    self.transients.notification = new EmailViewModel(fcConfig);
     self.transients.yesNoOptions = ["Yes","No"];
+    self.transients.alaHarvest = ko.computed({
+        read: function () {
+            return self.alaHarvest() ? 'Yes' : 'No';
+        },
+        write: function (newValue) {
+            if (newValue === 'Yes') {
+                self.alaHarvest(true);
+            } else if (newValue === 'No') {
+                self.alaHarvest(false);
+            }
+        }
+    });
 
     self.updateProject = function(jsonData){
         return $.ajax({
@@ -466,7 +480,7 @@ function ProjectViewModel(project, isUserEditor) {
     };
 
     self.alaHarvest.subscribe(function(newValue) {
-        var data = {alaHarvest: newValue == 'Yes' ? true : false}
+        var data = {alaHarvest: newValue };
         self.updateProject(data);
     });
 
