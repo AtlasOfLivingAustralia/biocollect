@@ -1,0 +1,47 @@
+{
+  "activityId": "",
+  "projectStage": "",
+  "mainTheme": "",
+  "type": "Weed Biological Control - Agent Record - Non cane rust and fungi agents",
+  "projectId": "",
+  "siteId": "",
+  "outputs": [
+    {
+      "name": "Weed Biological Control - Agent Record - Non cane rust and fungi agents",
+      "outputId": "",
+      "data": {
+        "recordedBy": "",
+        "eventDate": "",
+        "eventTime": "",
+        "observationId": "",
+        "targetSpecies": {},
+        "agentSpecies": {},
+        "recordType": "",
+        "numberOfTargetPlantsExamined": "0",
+        "numberOfAffectedPlants": "",
+        "collectedBy": "",
+        "verifiedBy": "",
+        "observationNotes": "",
+        "sightingPhoto": [],
+        "locationPhotopoint": [],
+        "locationAccuracy": 50,
+        "locationNotes": "",
+        "locationSource": "Google maps",
+        "location": "",
+        "locationLatitude": -24.24585153395349,
+        "locationLongitude": 131.48101150989532,
+        "locationCentroidLatitude": null,
+        "locationCentroidLongitude": null,
+        "state": "",
+        "nearestTown": "",
+        "moderatorComments": ""
+      },
+      "outputNotCompleted": false,
+      "selectFromSitesOnly": false,
+      "checkMapInfo": {
+        "validation": true
+      },
+      "_callbacks": {}
+    }
+  ]
+}
