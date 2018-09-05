@@ -37,6 +37,7 @@ module.exports = function (config) {
             'grails-app/assets/javascripts/document.js',
             'grails-app/assets/vendor/fuse/fuse.min.js',
             'grails-app/assets/javascripts/fieldcapture-application.js',
+            'grails-app/assets/javascripts/EmailViewModel.js',
             'grails-app/assets/javascripts/projects.js',
             'grails-app/assets/vendor/moment/moment.min.js',
             'grails-app/assets/javascripts/organisation.js',
