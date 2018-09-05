@@ -86,6 +86,15 @@ class SettingService {
 
     }
 
+    def getSettingText(String urlPath, String path) {
+        urlPath = urlPath?.trim()
+        path = path?.trim()
+        urlPath = urlPath ?: localHubConfig.get().urlPath
+        if (path) {
+            def key = urlPath + path
+            get(key)
+        }
+    }
 
     def setSettingText(SettingPageType type, String content) {
         def key = localHubConfig.get().urlPath + type.key

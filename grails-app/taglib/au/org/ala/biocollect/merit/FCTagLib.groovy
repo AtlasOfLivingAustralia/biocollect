@@ -1,4 +1,6 @@
 package au.org.ala.biocollect.merit
+
+import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.cas.util.AuthenticationCookieUtils
 import grails.converters.JSON
 import groovy.json.JsonSlurper
@@ -14,6 +16,7 @@ class FCTagLib {
     def commonService
     def userService
     def settingService
+    ProjectActivityService projectActivityService
 
     def textField = { attrs ->
         def outerClass = attrs.remove 'outerClass'
@@ -771,5 +774,10 @@ class FCTagLib {
                 out << createLink(controller: 'project', action:'create', params: [citizenScience:true])
             }
         }
+    }
+
+    def getSurveyMethods =  {
+        List methods = projectActivityService.getSurveyMethods()
+        out << (methods as JSON).toString()
     }
 }

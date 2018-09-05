@@ -47,7 +47,7 @@ class ProjectController {
 
     static defaultAction = "index"
     static ignore = ['action','controller','id']
-    static allowedMethods = [listRecordImages: "POST"]
+    static allowedMethods = [listRecordImages: "POST", "sendEmailToMembers": "POST"]
     static int MAX_FACET_TERMS = 500
 
     def index(String id) {
@@ -1067,6 +1067,51 @@ class ProjectController {
             render view: '/error', model: [error: "An error occurred generating the project report."]
         }
 
+    }
+
+    @PreAuthorise(accessLevel = 'admin')
+    def sendEmailToMembers(String id) {
+        Map payload = request.JSON
+        List recipients = payload?.recipients
+        String subject = payload?.subject
+        String body = payload?.body
+
+        if(id){
+            if (recipients && subject && body) {
+                def result = projectService.sendEmailNotificationToMembers(subject, body, recipients, id)
+                if (result.success) {
+                    render ( status: HttpStatus.SC_OK, text: result.message )
+                } else {
+                    render ( status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: result.message )
+                }
+            } else {
+                render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameters in payload - subject, recipients,  body" )
+            }
+        } else {
+            render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameter - id" )
+        }
+    }
+
+    @PreAuthorise(accessLevel = 'admin')
+    def sendTestEmail(String id) {
+        Map payload = request.JSON
+        String subject = payload?.subject
+        String body = payload?.body
+
+        if(id){
+            if (subject && body) {
+                def result = projectService.sendTestEmail(subject, body)
+                if (result.success) {
+                    render ( status: HttpStatus.SC_OK, text: result.message )
+                } else {
+                    render ( status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: result.message )
+                }
+            } else {
+                render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameters in payload - subject, recipients,  body" )
+            }
+        } else {
+            render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameter - id" )
+        }
     }
 
     /**

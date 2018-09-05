@@ -12,10 +12,11 @@ class EmailService {
     UserService userService
     def grailsApplication
 
-    def sendEmail(String subjectLine, String body, Collection recipients, Collection ccList = []) {
-        String systemEmailAddress = grailsApplication.config.biocollect.system.email.address
-        String sender = grailsApplication.config.biocollect.system.email.sender ?: systemEmailAddress
-        try {
+    def sendEmail(String subjectLine, String body, Collection recipients, Collection ccList = [], String replyAddress = null, String senderEmail = null, Collection bccList = []) {
+        replyAddress = replyAddress ?: grailsApplication.config.biocollect.system.email.address
+        String sender = (senderEmail ?: grailsApplication.config.biocollect.system.email.sender) ?: replyAddress
+
+            try {
             // This is to prevent spamming real users while testing.
             String emailFilter = grailsApplication.config.emailFilter
             if (emailFilter) {
@@ -31,22 +32,26 @@ class EmailService {
                 }
 
                 ccList = ccList.findAll {it ==~ emailFilter}
+                bccList = bccList.findAll {it ==~ emailFilter}
             }
             log.info("Sending email: ${subjectLine} to: ${recipients}, cc:${ccList}, body: ${body}")
 
             mailService.sendMail {
                 async true
-                to recipients
+                if (recipients) {to recipients}
                 if (ccList) {cc ccList}
+                if (bccList) {bcc bccList}
                 from sender
-                replyTo systemEmailAddress
+                replyTo replyAddress
                 subject subjectLine
                 html body
 
             }
+            [ success: true, message: "Successfully sent email."]
         }
         catch (Exception e) {
             log.error("Failed to send email: ", e)
+            [ success: false, message: e.message]
         }
     }
 

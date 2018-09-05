@@ -1025,4 +1025,53 @@ class ProjectService {
             webService.getJson(grailsApplication.config.ecodata.service.url + '/project/getDefaultFacets')
         })
     }
+
+    def sendTestEmail (String subjectLine, String body) {
+        String replyTo = userService.getUser().userName
+        Map result = [success: false, message : "You must be logged in to send emails."]
+        if (replyTo) {
+            result = emailService.sendEmail(subjectLine, body, [replyTo], null, replyTo, null, null)
+        }
+
+        result
+    }
+
+    def sendEmailNotificationToMembers (String subjectLine, String body, List userIDs, String projectId) {
+        String replyTo = userService.getUser().userName
+        Map result = [success: false, message : "You must be logged in to send emails."]
+        if (replyTo) {
+            List sanitisedUserIDs = getProjectMembersAndSanitiseRecipientList(userIDs, projectId)
+            if (sanitisedUserIDs) {
+                if (sanitisedUserIDs.size() != userIDs.size()) {
+                    List blackListedUserIDs = userIDs.minus(sanitisedUserIDs)
+                    log.info ("Email will not be sent to following userIDs - ${blackListedUserIDs.toString()}")
+                }
+
+                List bccList = userService.getUserNamesForUserIDs(sanitisedUserIDs)
+                if (bccList) {
+                    result = emailService.sendEmail(subjectLine, body, [replyTo], null, replyTo, null, bccList)
+                } else {
+                    result.message = "Could not resolve email address for given user ids."
+                }
+            } else {
+                result.message = "Cannot send email either because no recipients were selected or they are not members of this project."
+            }
+        }
+
+        result
+    }
+
+    List getProjectMembersAndSanitiseRecipientList (List userIDs, String projectId) {
+        if (userIDs) {
+            List projectMembers = getMembersForProjectId(projectId)
+            List whiteList
+            List blackList = []
+            whiteList = projectMembers?.collect { it.userId }
+            sanitiseRecipientList(userIDs, whiteList, blackList)
+        }
+    }
+
+    List sanitiseRecipientList (List userIDs, List whiteList, List blackList) {
+        userIDs?.findAll { whiteList?.contains(it) && !blackList?.contains(it) }
+    }
 }

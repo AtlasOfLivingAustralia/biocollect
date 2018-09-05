@@ -100,23 +100,29 @@
 
                 <div class="span8">
                     <div class="controls">
-                        <input id="methodName" class="full-width" type="text" data-bind="value: methodName" data-validation-engine="validate[required]">
+                        <input id="methodName" class="full-width" type="text" data-bind="autocompleteFromList: {value: methodName, config: {source: fcConfig.surveyMethods}}" data-validation-engine="validate[required]">
                     </div>
                 </div>
             </div>
 
             <div  data-bind="slideVisible: transients.isSystematicSurvey">
                 <div class="row-fluid">
-                    <div class="span4"></div>
+                    <div class="offset4 span8">
+                        <hr class="border-bottom-separator"/>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4 text-right">
+                        <label class="control-label" ><g:message code="project.survey.info.methodDoc"/>
+                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodDoc"/>', content:'<g:message code="project.survey.info.methodDoc.content"/>'}">
+                                <i class="icon-question-sign"></i>
+                            </a>
+                            <span class="right-padding"></span>
+                        </label>
+                    </div>
                     <div class="span8">
                         <div class="row-fluid">
                             <div class="span12">
-                                <label class="control-label" for="methodAbstract"><g:message code="project.survey.info.methodAbstract"/>
-                                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodAbstract"/>', content:'<g:message code="project.survey.info.methodAbstract.content"/>'}">
-                                        <i class="icon-question-sign"></i>
-                                    </a>
-                                    <span class="right-padding"></span>
-                                </label>
                                 <div>
                                     <div class="controls">
                                         <textarea id="methodAbstract" rows="4" class="full-width" data-bind="value: methodAbstract" data-validation-engine="validate[groupRequired[DescriptionSurveyMethod]]"></textarea>
@@ -124,32 +130,36 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row-fluid">
-                            <div class="span12">
-                                <label class="control-label" for="methodUrl"><g:message code="project.survey.info.methodUrl"/>
-                                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodUrl"/>', content:'<g:message code="project.survey.info.methodUrl.content"/>'}">
-                                        <i class="icon-question-sign"></i>
-                                    </a>
-                                    <span class="right-padding"></span>
-                                </label>
-                                <div>
-                                    <div class="controls">
-                                        <input id="methodUrl" class="full-width" type="text" data-bind="value: methodUrl" data-validation-engine="validate[groupRequired[DescriptionSurveyMethod],custom[url]]"/>
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4 text-right">
+                        <label class="control-label" for="methodUrl"><g:message code="project.survey.info.methodUrl"/>
+                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodUrl"/>', content:'<g:message code="project.survey.info.methodUrl.content"/>'}">
+                                <i class="icon-question-sign"></i>
+                            </a>
+                            <span class="right-padding"></span>
+                        </label>
+                    </div>
+                    <div class="span8">
+                        <div class="controls">
+                            <input id="methodUrl" class="full-width" type="text" data-bind="value: methodUrl" data-validation-engine="validate[groupRequired[DescriptionSurveyMethod],custom[url]]"/>
                         </div>
-
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4 text-right">
+                        <label class="control-label" for="methodAbstract"><g:message code="project.survey.info.methodAbstract"/>
+                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodAbstract"/>', content:'<g:message code="project.survey.info.methodAbstract.content"/>'}">
+                                <i class="icon-question-sign"></i>
+                            </a>
+                            <span class="right-padding"></span>
+                        </label>
+                    </div>
+                    <div class="span8">
                         <!-- Method document-->
                         <div class="row-fluid space-after">
                             <div class="span12">
-                                <label class="control-label" ><g:message code="project.survey.info.methodDoc"/>
-                                    <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodDoc"/>', content:'<g:message code="project.survey.info.methodDoc.content"/>'}">
-                                        <i class="icon-question-sign"></i>
-                                    </a>
-                                    <span class="right-padding"></span>
-                                </label>
                                 <div class="text-left">
                                     <a data-bind="attr:{href:methodDocUrl}" target="_blank">
                                         <small class="media-heading" data-bind="text:methodDocName"></small>
@@ -172,6 +182,7 @@
                             </div>
                         </div>
                         <!-- end of Document -->
+                        <hr class="border-bottom-separator"/>
                     </div>
                 </div>
             </div>
@@ -246,27 +257,6 @@
 
             <div class="row-fluid space-after">
                 <div class="span4 text-right">
-                    <label class="control-label" for="dataSharingLicense"><g:message code="project.survey.info.dataSharingLicense"/>
-                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataSharingLicense"/>', content:'<g:message code="project.survey.info.dataSharingLicense.content"/>'}">
-                            <i class="icon-question-sign"></i>
-                        </a>
-                        <span class="req-field"></span>
-                    </label>
-                </div>
-
-                <div class="span8">
-                    <div class="controls">
-                        <g:select id="dataSharingLicense" class="full-width form-control" name="dateSharingLicence" from="${licences}" optionValue="name" data-bind="value:dataSharingLicense"
-                                  noSelection="['':'-Please select the licence-']" optionKey="url" data-validation-engine="validate[required]" />
-                        <g:each in="${licences}">
-                            <label class="space-after" data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${asset.assetPath(src: "licence/${it.logo}")}">&nbsp;&nbsp;${it.description}</a> </label>
-                        </g:each>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row-fluid space-after">
-                <div class="span4 text-right">
                     <label class="control-label"><g:message code="project.survey.info.logo"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.logo"/>', content:'<g:message code="project.survey.info.logo.content"/>'}">
                             <i class="icon-question-sign"></i>
@@ -293,6 +283,27 @@
                 </div>
             </div>
 
+            <div class="row-fluid space-after">
+                <div class="span4 text-right">
+                    <label class="control-label" for="dataSharingLicense"><g:message code="project.survey.info.dataSharingLicense"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataSharingLicense"/>', content:'<g:message code="project.survey.info.dataSharingLicense.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="req-field"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <g:select id="dataSharingLicense" class="full-width form-control" name="dateSharingLicence" from="${licences}" optionValue="name" data-bind="value:dataSharingLicense"
+                                  noSelection="['':'-Please select the licence-']" optionKey="url" data-validation-engine="validate[required]" />
+                        <g:each in="${licences}">
+                            <label class="space-after" data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${asset.assetPath(src: "licence/${it.logo}")}">&nbsp;&nbsp;${it.description}</a> </label>
+                        </g:each>
+                    </div>
+                </div>
+            </div>
+
             <div class="row-fluid">
                 <div class="span4 text-right">
                     <label class="control-label" for="legalCustodian"><g:message code="project.survey.info.legalCustodian"/>
@@ -306,6 +317,7 @@
                     <div class="controls">
                         <input id="legalCustodian" class="full-width-input form-control" type="text" data-bind="value: legalCustodianOrganisation" data-validation-engine="validate[required]" >
                     </div>
+                    <hr class="border-bottom-separator"/>
                 </div>
             </div>
 
@@ -385,7 +397,14 @@
                                    data-validation-engine="validate[required]" >
                             <g:message code="project.facets.speciesIdentification.low"/>
                         </label>
-                        %{-- species identification confidence - END--}%
+                        <label class="radio">
+                            <input name="speciesIdentification" class="form-control" type="radio"
+                                   data-bind="checked: speciesIdentification"
+                                   value="<g:message code="project.survey.info.speciesIdentification.na.value"/>"
+                                   data-validation-engine="validate[required]" >
+                            <g:message code="project.facets.speciesIdentification.na"/>
+                        </label>
+            %{-- species identification confidence - END--}%
         </div>
                     </div>
                         <div class="row-fluid">
@@ -454,6 +473,7 @@
                         </div>
                         %{-- --}%
                     </div>
+                    <hr class="border-bottom-separator"/>
                 </div>
             </div>
 
@@ -489,13 +509,14 @@
                             </div>
                         </g:each>
                     </div>
+                    <hr class="border-bottom-separator"/>
                 </div>
             </div>
 
             <div class="row-fluid">
                 <div class="span4 text-right">
-                    <label class="control-label" for="dataAccessMethod"><g:message code="project.survey.info.dataAccessMethod"/>
-                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataAccessMethod"/>', content:'<g:message code="project.survey.info.dataAccessMethod.content"/>'}">
+                    <label class="control-label" for="dataAccessMethods"><g:message code="project.survey.info.dataAccessMethods"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataAccessMethods"/>', content:'<g:message code="project.survey.info.dataAccessMethods.content"/>'}">
                             <i class="icon-question-sign"></i>
                         </a>
                         <span class="req-field"></span>
@@ -503,14 +524,43 @@
                 </div>
 
                 <div class="span8">
+                    <div class="controls" id="dataAccessMethods" data-bind="validateObservable: dataAccessMethods" data-validation-engine="validate[required]">
+                        <g:set var="multiple" value="${2}"/>
+                        <g:set var="ceil" value="${(Integer)Math.ceil(grailsApplication.config.dataAccessMethods.size()/2)}"/>
+                        <g:each in="${0..<ceil}" var="index">
+                            <g:set var="start" value="${ index * multiple}"/>
+                            <g:set var="end" value="${(index + 1) * multiple - 1}"/>
+                            <g:if test="${end >= grailsApplication.config.dataAccessMethods.size()}">
+                                <g:set var="end" value="${end -1}"/>
+                            </g:if>
+                            <div class="row-fluid">
+                                <g:each in="${grailsApplication.config.dataAccessMethods[start..end]}" var="daMethod">
+                                    <div class="span6">
+                                        <label class="checkbox">
+                                            <input type="checkbox" value="${daMethod}" data-bind="checked: transients.dataAccessMethods"/>
+                                            <g:message code="project.facets.dataAccessMethods.${daMethod}"/>
+                                        </label>
+                                    </div>
+                                </g:each>
+                            </div>
+                        </g:each>
+                    </div>
+                    <hr class="border-bottom-separator"/>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="dataQualityAssuranceDescription"><g:message code="project.survey.info.dataQualityAssuranceDescription"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataQualityAssuranceDescription"/>', content:'<g:message code="project.survey.info.dataQualityAssuranceDescription.content"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
+                </div>
+                <div class="span8">
                     <div class="controls">
-                        <select id="dataAccessMethod" class="full-width form-control" name="dataAccessMethod" data-bind="value:dataAccessMethod"
-                                  data-validation-engine="validate[required]">
-                            <option value=""><g:message code="project.survey.info.dataAccessMethod.noSelection"/></option>
-                            <g:each in="${grailsApplication.config.dataAccessMethods}" var="daMethod">
-                                <option value="${daMethod}"><g:message code="project.facets.dataAccessMethod.${daMethod}"/></option>
-                            </g:each>
-                        </select>
+                        <textarea id="dataQualityAssuranceDescription" rows="6" class="full-width" data-bind="value: dataQualityAssuranceDescription"></textarea>
                     </div>
                 </div>
             </div>
@@ -528,22 +578,6 @@
                 <div class="span8">
                     <div class="controls">
                         <input id="dataAccessExternalURL" class="full-width" type="text" data-bind="value: dataAccessExternalURL" data-validation-engine="validate[custom[url]]"/>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row-fluid">
-                <div class="span4 text-right">
-                    <label class="control-label" for="dataQualityAssuranceDescription"><g:message code="project.survey.info.dataQualityAssuranceDescription"/>
-                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataQualityAssuranceDescription"/>', content:'<g:message code="project.survey.info.dataQualityAssuranceDescription.content"/>'}">
-                            <i class="icon-question-sign"></i>
-                        </a>
-                        <span class="right-padding"></span>
-                    </label>
-                </div>
-                <div class="span8">
-                    <div class="controls">
-                        <textarea id="dataQualityAssuranceDescription" rows="6" class="full-width" data-bind="value: dataQualityAssuranceDescription"></textarea>
                     </div>
                 </div>
             </div>
@@ -582,6 +616,7 @@
                             <option value="<g:message code="project.survey.info.isDataManagementPolicyDocumented.no.value"/>"><g:message code="project.facets.isDataManagementPolicyDocumented.no"/></option>
                         </select>
                     </div>
+                    <hr class="border-bottom-separator"/>
                 </div>
             </div>
 
@@ -642,6 +677,7 @@
                                 </div>
                             </div>
                         </div>
+                        <hr class="border-bottom-separator"/>
                     </div>
                 </div>
             </div>

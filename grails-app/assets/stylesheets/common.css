@@ -215,6 +215,10 @@ select,input[type="text"],input[type="password"],input[type="datetime"],input[ty
     margin-bottom: 20px;
 }
 
+.margin-bottom-10 {
+    margin-bottom: 10px;
+}
+
 .margin-bottom-50 {
     margin-bottom: 50px;
 }
@@ -227,6 +231,10 @@ select,input[type="text"],input[type="password"],input[type="datetime"],input[ty
 .margin-top-2 {
     display: inline-block;
     margin-top: 20px;
+}
+
+.margin-top-10 {
+    margin-top: 10px;
 }
 
 .logo-icon {
@@ -718,32 +726,55 @@ input.full-width-input {
     padding: 0px !important;
 }
 
+.border-bottom-separator {
+    border-bottom: 1px solid #f3e8a8;
+    margin: 20px 0;
+}
+
+.border-top-separator {
+    border-top: 1px solid #f3e8a8;
+    margin: 20px 0;
+}
+
 /**
  * used in project activities for colour coding reliability tags
  */
 .high {
     background: #4cbc4c;
     color: white;
-    padding: 10px;
+    padding: 5px 10px;
     max-height: 50px;
     overflow-y: scroll;
+    font-size: 11px;
 }
 
 .moderate {
     background: #f3f61f;
     color: black;
-    padding: 10px;
+    padding: 5px 10px;
     max-height: 50px;
     overflow-y: scroll;
+    font-size: 11px;
 }
 
 .low {
     background: #e22019;
     color: white;
-    padding: 10px;
+    padding: 5px 10px;
     max-height: 50px;
     overflow-y: scroll;
+    font-size: 11px;
 }
+
+.na {
+    background: #a5a9a5;
+    color: #ffffff;
+    padding: 5px 10px;
+    max-height: 50px;
+    overflow-y: scroll;
+    font-size: 11px;
+}
+
 @media (min-width: 980px) {
     #content-starting-point{
         margin-top: 70px;

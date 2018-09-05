@@ -73,4 +73,9 @@ class UtilService {
         log.info("Result of Submission to Aekos: " + result)
         result
     }
+
+
+    def removeHTMLTags(String content){
+        content?.replaceAll("<[^>]*>", "")
+    }
 }

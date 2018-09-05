@@ -34,6 +34,7 @@ class ProjectActivityService {
     UtilService utilService
     AuthService authService
     CacheService cacheService
+    SettingService settingService
 
     def getAllByProject(projectId, levelOfDetail = "", version = null, stats = false) {
         def params = '?'
@@ -491,5 +492,23 @@ class ProjectActivityService {
         cacheService.get('default-facets-for-data-pages', {
             webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDefaultFacets')
         })
+    }
+
+    /**
+     * Get survey methods from settings page. This function converts comma separated content stored in settings page to a list.
+     * @return
+     */
+    List getSurveyMethods(){
+        String urlPath = grailsApplication.config.app.default.hub ?: "ala"
+        String key = grailsApplication.config.settings.surveyMethods
+        String content = settingService.getSettingText(urlPath, key)
+        content = utilService.removeHTMLTags(content)
+        List entries = []
+        if(content?.trim()){
+            entries = content?.split(',')
+            entries = entries?.collect { it.trim() }
+        }
+
+        entries
     }
 }

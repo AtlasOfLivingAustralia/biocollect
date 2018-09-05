@@ -31,7 +31,7 @@ var ProjectActivity = function (params) {
     self.temporalAccuracy = ko.observable(pActivity.temporalAccuracy || "");
     self.nonTaxonomicAccuracy = ko.observable(pActivity.nonTaxonomicAccuracy || "");
     self.dataQualityAssuranceMethods = ko.observableArray(pActivity.dataQualityAssuranceMethods || []);
-    self.dataAccessMethod = ko.observable(pActivity.dataAccessMethod || "");
+    self.dataAccessMethods = ko.observableArray(pActivity.dataAccessMethods || []);
     self.dataAccessExternalURL = ko.observable(pActivity.dataAccessExternalURL || "");
     self.isDataManagementPolicyDocumented = ko.observable(pActivity.isDataManagementPolicyDocumented || false);
     self.dataQualityAssuranceDescription = ko.observable(pActivity.dataQualityAssuranceDescription || "");
@@ -77,6 +77,21 @@ var ProjectActivity = function (params) {
                     self.dataQualityAssuranceMethods.push('nodqmethodsused');
                 } else {
                     self.dataQualityAssuranceMethods.remove.apply(self.dataQualityAssuranceMethods, ['na', 'nodqmethodsused']);
+                }
+            }
+        }
+    });
+    self.transients.dataAccessMethods = ko.computed({
+        read: function () {
+            return self.dataAccessMethods();
+        },
+        write: function (values) {
+            if (values && values.length > 0) {
+                if ( values.indexOf('na') > 0) {
+                    self.dataAccessMethods.removeAll();
+                    self.dataAccessMethods.push('na');
+                } else {
+                    self.dataAccessMethods.remove('na');
                 }
             }
         }
@@ -185,6 +200,11 @@ var ProjectActivity = function (params) {
             url: fcConfig.deleteAllDataForProjectActivityUrl + "/" + self.projectActivityId(),
             type: 'GET'
         });
+    };
+
+    self.transients.getAccordionID = function () {
+        self.transients.accordionID = self.transients.accordionID || self.projectActivityId() || generateRandomId();
+        return self.transients.accordionID;
     };
 
     /**
@@ -705,6 +725,7 @@ var ProjectActivity = function (params) {
     self.attachDocument = function() {
         showDocumentAttachInModal(fcConfig.documentUpdateUrl, new DocumentViewModel({role:'information', public: true, projectActivityId: self.projectActivityId()},{key:'projectId', value:project.transients.projectId}), '#attachDocument')
             .done(function(result) {
+                    project.addDocument(result);
                     self.setDataManagementDocumentObserables(result);
                 }
             );

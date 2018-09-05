@@ -54,6 +54,7 @@ enum SettingPageType {
     CITIZEN_SCIENCE_GETTING_STARTED('citizenScienceGettingStarted', 'How to use project finder?', 'fielddata.citizenScience.gettingStarted'),
     CITIZEN_SCIENCE_WHAT_IS_THIS('citizenScienceWhatIsThis', 'What is project finder?', 'fielddata.citizenScience.whatIsThis'),
     ORGANISATION_LIST_PAGE_HEADER('organisationListHeader', 'Header content for the organisation list page', 'fielddata.organisationListHeader'),
+    SURVEY_METHODS("surveyMethods", "Survey methods listed here will be used to generate content of drop-down in project activity. Use comma to separate entries. Make sure you enter data from default hub's (ala) settings page.", "fielddata.survey.methods"),
     SURVEY_SPECIES_ALL("surveySpeciesAll", "Descriptive text for the 'all species' option on the Survey configuration's Species tab", "fielddata.survey.species.all"),
     SURVEY_SPECIES_SINGLE("surveySpeciesSingle", "Descriptive text for the 'single species' option on the Survey configuration's Species dialog", "fielddata.survey.species.single"),
     SURVEY_SPECIES_GROUP("surveySpeciesGroup", "Descriptive text for the 'selection or group' option on the Survey configuration's Species dialog", "fielddata.survey.species.group"),
