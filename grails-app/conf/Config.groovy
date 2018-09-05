@@ -287,6 +287,7 @@ if(!speciesConfiguration.default){
     ]
 }
 
+settings.surveyMethods="fielddata.survey.methods"
 dataAccessMethods = [
         "oasrdfs",
         "oaordfs",
@@ -295,7 +296,8 @@ dataAccessMethods = [
         "oasrdes",
         "casrdes",
         "rdna",
-        "odidpa"
+        "odidpa",
+        "na"
 ]
 
 dataQualityAssuranceMethods = [

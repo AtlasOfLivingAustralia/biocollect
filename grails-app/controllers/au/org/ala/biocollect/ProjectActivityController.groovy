@@ -218,4 +218,7 @@ class ProjectActivityController {
     }
 
 
+    def getSurveyMethods () {
+        render text: (projectActivityService.getSurveyMethods() as JSON)
+    }
 }

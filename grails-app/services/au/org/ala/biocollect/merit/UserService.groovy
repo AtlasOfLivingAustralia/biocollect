@@ -1,6 +1,7 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
+import au.org.ala.userdetails.UserDetailsFromIdListResponse
 import grails.converters.JSON
 import org.apache.http.HttpStatus
 
@@ -247,5 +248,10 @@ class UserService {
     def checkEmailExists(String email) {
         def user = authService.getUserForEmailAddress(email, false)
         return user?.userId
+    }
+
+    List getUserNamesForUserIDs (List<String> userIDs) {
+        UserDetailsFromIdListResponse usersDetails = authService.getUserDetailsById(userIDs, false)
+        usersDetails?.users?.collect {userId, user -> user.getEmail() }
     }
 }

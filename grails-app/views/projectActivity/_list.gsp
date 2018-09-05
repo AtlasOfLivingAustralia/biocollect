@@ -58,21 +58,34 @@
                             <br/>
                             <div class="row-fluid space-after">
                                 <span class="span3" data-bind="css: spatialAccuracy, visible: spatialAccuracy">
-                                    <g:message code="project.survey.info.spatialAccuracy.text"/> - <!-- ko text: spatialAccuracy --> <!-- /ko -->
+                                    <g:message code="project.survey.info.spatialAccuracy.text"/> -
+                                    <!-- ko if: spatialAccuracy() == 'low' --> <g:message code="project.facets.spatialAccuracy.low"/> <!-- /ko -->
+                                    <!-- ko if: spatialAccuracy() == 'moderate' --> <g:message code="project.facets.spatialAccuracy.moderate"/> <!-- /ko -->
+                                    <!-- ko if: spatialAccuracy() == 'high' --> <g:message code="project.facets.spatialAccuracy.high"/> <!-- /ko -->
                                 </span>
                                 <span class="span3" data-bind="css: speciesIdentification, visible: speciesIdentification">
-                                    <g:message code="project.survey.info.speciesIdentification.text"/> - <!-- ko text: speciesIdentification --> <!-- /ko -->
+                                    <g:message code="project.survey.info.speciesIdentification.text"/> -
+                                    <!-- ko if: speciesIdentification() == 'low' --> <g:message code="project.facets.speciesIdentification.low"/> <!-- /ko -->
+                                    <!-- ko if: speciesIdentification() == 'moderate' --> <g:message code="project.facets.speciesIdentification.moderate"/> <!-- /ko -->
+                                    <!-- ko if: speciesIdentification() == 'high' --> <g:message code="project.facets.speciesIdentification.high"/> <!-- /ko -->
+                                    <!-- ko if: speciesIdentification() == 'na' --> <g:message code="project.facets.speciesIdentification.na"/> <!-- /ko -->
                                 </span>
                                 <span class="span3" data-bind="css: temporalAccuracy, visible: temporalAccuracy">
-                                    <g:message code="project.survey.info.temporalAccuracy.text"/> - <!-- ko text: temporalAccuracy --> <!-- /ko -->
+                                    <g:message code="project.survey.info.temporalAccuracy.text"/> -
+                                    <!-- ko if: temporalAccuracy() == 'low' --> <g:message code="project.facets.temporalAccuracy.low"/> <!-- /ko -->
+                                    <!-- ko if: temporalAccuracy() == 'moderate' --> <g:message code="project.facets.temporalAccuracy.moderate"/> <!-- /ko -->
+                                    <!-- ko if: temporalAccuracy() == 'high' --> <g:message code="project.facets.temporalAccuracy.high"/> <!-- /ko -->
                                 </span>
                                 <span class="span3" data-bind="css: nonTaxonomicAccuracy, visible: nonTaxonomicAccuracy">
-                                    <g:message code="project.survey.info.nonTaxonomicAccuracy.text"/> - <!-- ko text: nonTaxonomicAccuracy --> <!-- /ko -->
+                                    <g:message code="project.survey.info.nonTaxonomicAccuracy.text"/> -
+                                    <!-- ko if: nonTaxonomicAccuracy() == 'low' --> <g:message code="project.facets.nonTaxonomicAccuracy.low"/> <!-- /ko -->
+                                    <!-- ko if: nonTaxonomicAccuracy() == 'moderate' --> <g:message code="project.facets.nonTaxonomicAccuracy.moderate"/> <!-- /ko -->
+                                    <!-- ko if: nonTaxonomicAccuracy() == 'high' --> <g:message code="project.facets.nonTaxonomicAccuracy.high"/> <!-- /ko -->
                                 </span>
                             </div>
                             <div class="row-fluid">
                                 <div class="span12">
-                                    <div class="accordion" id="accordion2">
+                                    <div class="accordion">
                                         <div class="accordion-group">
                                             <div class="accordion-heading">
                                                 <div class="row-fluid">
@@ -82,13 +95,13 @@
                                                         </div>
                                                     </div>
                                                     <div class="span4 text-right">
-                                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" data-bind="attr: {href: '#' + transients.getAccordionID()}">
                                                             Show more
                                                         </a>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="collapseOne" class="accordion-body collapse">
+                                            <div class="accordion-body collapse allow-overflow" data-bind="attr: {id: transients.getAccordionID()}">
                                                 <div class="accordion-inner">
                                                     <!-- ko if: attribution -->
                                                     <div class="row-fluid">
@@ -144,19 +157,19 @@
                                                         </div>
                                                     </div>
 
-                                                    <!-- ko if: dataAccessMethod -->
-                                                    <div class="row-fluid">
+                                                    <!-- ko if: dataAccessMethods().length -->
+                                                    <div class="row-fluid margin-top-10 margin-bottom-10">
                                                         <div class="span4">
-                                                            <g:message code="project.survey.info.dataAccessMethod"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataAccessMethod"/>', content:'<g:message code="project.survey.info.dataAccessMethod.content"/>'}">
+                                                            <g:message code="project.survey.info.dataAccessMethods"/>
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataAccessMethods"/>', content:'<g:message code="project.survey.info.dataAccessMethods.content"/>'}">
                                                                 <i class="icon-question-sign"></i>
                                                             </a>
                                                         </div>
                                                         <div class="span8">
                                                             <g:each in="${grailsApplication.config.dataAccessMethods}" var="daMethod">
-                                                                <!-- ko if: dataAccessMethod() === '${daMethod}' -->
+                                                                <!-- ko if: dataAccessMethods().indexOf('${daMethod}') > -1 -->
                                                                 <div>
-                                                                    <g:message code="project.facets.dataAccessMethod.${daMethod}"/>
+                                                                    <g:message code="project.facets.dataAccessMethods.${daMethod}"/>
                                                                 </div>
                                                                 <!-- /ko -->
                                                             </g:each>
@@ -193,7 +206,7 @@
                                                     <!-- /ko -->
 
                                                     <!-- ko if: dataSharingLicense -->
-                                                    <div class="row-fluid">
+                                                    <div class="row-fluid  margin-top-10 margin-bottom-10">
                                                         <div class="span4">
                                                             <g:message code="project.survey.info.dataSharingLicense"/>
                                                             <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataSharingLicense"/>', content:'<g:message code="project.survey.info.dataSharingLicense.content"/>'}">
@@ -303,7 +316,7 @@
 
 
                                                     <!-- ko if: dataQualityAssuranceMethods -->
-                                                    <div class="row-fluid">
+                                                    <div class="row-fluid margin-top-10 margin-bottom-10">
                                                         <div class="span4">
                                                             <g:message code="project.survey.info.dataQualityAssuranceMethod"/>
                                                             <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataQualityAssuranceMethod"/>', content:'<g:message code="project.survey.info.dataQualityAssuranceMethod.content"/>'}">
@@ -339,7 +352,7 @@
                                                     <!-- /ko -->
 
                                                     <!-- ko if: methodType -->
-                                                    <div class="row-fluid">
+                                                    <div class="row-fluid margin-top-10 margin-bottom-10">
                                                         <div class="span4">
                                                             <g:message code="project.survey.info.methodType"/>
                                                             <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodType"/>', content:'<g:message code="project.survey.info.methodType.content"/>'}">
