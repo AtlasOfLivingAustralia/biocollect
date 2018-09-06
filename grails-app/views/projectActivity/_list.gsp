@@ -56,33 +56,6 @@
                             <br/><br/>
                             <div data-bind="text:description"></div>
                             <br/>
-                            <div class="row-fluid space-after">
-                                <span class="span3" data-bind="css: spatialAccuracy, visible: spatialAccuracy">
-                                    <g:message code="project.survey.info.spatialAccuracy.text"/> -
-                                    <!-- ko if: spatialAccuracy() == 'low' --> <g:message code="project.facets.spatialAccuracy.low"/> <!-- /ko -->
-                                    <!-- ko if: spatialAccuracy() == 'moderate' --> <g:message code="project.facets.spatialAccuracy.moderate"/> <!-- /ko -->
-                                    <!-- ko if: spatialAccuracy() == 'high' --> <g:message code="project.facets.spatialAccuracy.high"/> <!-- /ko -->
-                                </span>
-                                <span class="span3" data-bind="css: speciesIdentification, visible: speciesIdentification">
-                                    <g:message code="project.survey.info.speciesIdentification.text"/> -
-                                    <!-- ko if: speciesIdentification() == 'low' --> <g:message code="project.facets.speciesIdentification.low"/> <!-- /ko -->
-                                    <!-- ko if: speciesIdentification() == 'moderate' --> <g:message code="project.facets.speciesIdentification.moderate"/> <!-- /ko -->
-                                    <!-- ko if: speciesIdentification() == 'high' --> <g:message code="project.facets.speciesIdentification.high"/> <!-- /ko -->
-                                    <!-- ko if: speciesIdentification() == 'na' --> <g:message code="project.facets.speciesIdentification.na"/> <!-- /ko -->
-                                </span>
-                                <span class="span3" data-bind="css: temporalAccuracy, visible: temporalAccuracy">
-                                    <g:message code="project.survey.info.temporalAccuracy.text"/> -
-                                    <!-- ko if: temporalAccuracy() == 'low' --> <g:message code="project.facets.temporalAccuracy.low"/> <!-- /ko -->
-                                    <!-- ko if: temporalAccuracy() == 'moderate' --> <g:message code="project.facets.temporalAccuracy.moderate"/> <!-- /ko -->
-                                    <!-- ko if: temporalAccuracy() == 'high' --> <g:message code="project.facets.temporalAccuracy.high"/> <!-- /ko -->
-                                </span>
-                                <span class="span3" data-bind="css: nonTaxonomicAccuracy, visible: nonTaxonomicAccuracy">
-                                    <g:message code="project.survey.info.nonTaxonomicAccuracy.text"/> -
-                                    <!-- ko if: nonTaxonomicAccuracy() == 'low' --> <g:message code="project.facets.nonTaxonomicAccuracy.low"/> <!-- /ko -->
-                                    <!-- ko if: nonTaxonomicAccuracy() == 'moderate' --> <g:message code="project.facets.nonTaxonomicAccuracy.moderate"/> <!-- /ko -->
-                                    <!-- ko if: nonTaxonomicAccuracy() == 'high' --> <g:message code="project.facets.nonTaxonomicAccuracy.high"/> <!-- /ko -->
-                                </span>
-                            </div>
                             <div class="row-fluid">
                                 <div class="span12">
                                     <div class="accordion">
@@ -103,20 +76,33 @@
                                             </div>
                                             <div class="accordion-body collapse allow-overflow" data-bind="attr: {id: transients.getAccordionID()}">
                                                 <div class="accordion-inner">
-                                                    <!-- ko if: attribution -->
-                                                    <div class="row-fluid">
-                                                        <div class="span4">
-                                                            <g:message code="project.survey.info.attribution"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.attribution"/>', content:'<g:message code="project.survey.info.attribution.content"/>'}">
-                                                                <i class="icon-question-sign"></i>
-                                                            </a>
-                                                        </div>
-                                                        <div class="span8">
-                                                            <span data-bind="text: attribution"></span>
-                                                        </div>
+                                                    <div class="row-fluid margin-bottom-10">
+                                                        <span class="span3" data-bind="css: spatialAccuracy, visible: spatialAccuracy">
+                                                            <g:message code="project.survey.info.spatialAccuracy.text"/> -
+                                                            <!-- ko if: spatialAccuracy() == 'low' --> <g:message code="project.facets.spatialAccuracy.low"/> <!-- /ko -->
+                                                            <!-- ko if: spatialAccuracy() == 'moderate' --> <g:message code="project.facets.spatialAccuracy.moderate"/> <!-- /ko -->
+                                                            <!-- ko if: spatialAccuracy() == 'high' --> <g:message code="project.facets.spatialAccuracy.high"/> <!-- /ko -->
+                                                        </span>
+                                                        <span class="span3" data-bind="css: speciesIdentification, visible: speciesIdentification">
+                                                            <g:message code="project.survey.info.speciesIdentification.text"/> -
+                                                            <!-- ko if: speciesIdentification() == 'low' --> <g:message code="project.facets.speciesIdentification.low"/> <!-- /ko -->
+                                                            <!-- ko if: speciesIdentification() == 'moderate' --> <g:message code="project.facets.speciesIdentification.moderate"/> <!-- /ko -->
+                                                            <!-- ko if: speciesIdentification() == 'high' --> <g:message code="project.facets.speciesIdentification.high"/> <!-- /ko -->
+                                                            <!-- ko if: speciesIdentification() == 'na' --> <g:message code="project.facets.speciesIdentification.na"/> <!-- /ko -->
+                                                        </span>
+                                                        <span class="span3" data-bind="css: temporalAccuracy, visible: temporalAccuracy">
+                                                            <g:message code="project.survey.info.temporalAccuracy.text"/> -
+                                                            <!-- ko if: temporalAccuracy() == 'low' --> <g:message code="project.facets.temporalAccuracy.low"/> <!-- /ko -->
+                                                            <!-- ko if: temporalAccuracy() == 'moderate' --> <g:message code="project.facets.temporalAccuracy.moderate"/> <!-- /ko -->
+                                                            <!-- ko if: temporalAccuracy() == 'high' --> <g:message code="project.facets.temporalAccuracy.high"/> <!-- /ko -->
+                                                        </span>
+                                                        <span class="span3" data-bind="css: nonTaxonomicAccuracy, visible: nonTaxonomicAccuracy">
+                                                            <g:message code="project.survey.info.nonTaxonomicAccuracy.text"/> -
+                                                            <!-- ko if: nonTaxonomicAccuracy() == 'low' --> <g:message code="project.facets.nonTaxonomicAccuracy.low"/> <!-- /ko -->
+                                                            <!-- ko if: nonTaxonomicAccuracy() == 'moderate' --> <g:message code="project.facets.nonTaxonomicAccuracy.moderate"/> <!-- /ko -->
+                                                            <!-- ko if: nonTaxonomicAccuracy() == 'high' --> <g:message code="project.facets.nonTaxonomicAccuracy.high"/> <!-- /ko -->
+                                                        </span>
                                                     </div>
-                                                    <!-- /ko -->
-
                                                     <!-- ko if: transients.activityCount -->
                                                     <div class="row-fluid">
                                                         <div class="span4">
@@ -145,52 +131,6 @@
                                                     </div>
                                                     <!-- /ko -->
 
-                                                    <div class="row-fluid">
-                                                        <div class="span4">
-                                                            <g:message code="project.survey.info.publicAccess"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.publicAccess"/>', content:'<g:message code="project.survey.info.publicAccess.content"/>'}">
-                                                                <i class="icon-question-sign"></i>
-                                                            </a>
-                                                        </div>
-                                                        <div class="span8">
-                                                            <span data-bind="text: transients.publicAccess"></span>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- ko if: dataAccessMethods().length -->
-                                                    <div class="row-fluid margin-top-10 margin-bottom-10">
-                                                        <div class="span4">
-                                                            <g:message code="project.survey.info.dataAccessMethods"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataAccessMethods"/>', content:'<g:message code="project.survey.info.dataAccessMethods.content"/>'}">
-                                                                <i class="icon-question-sign"></i>
-                                                            </a>
-                                                        </div>
-                                                        <div class="span8">
-                                                            <g:each in="${grailsApplication.config.dataAccessMethods}" var="daMethod">
-                                                                <!-- ko if: dataAccessMethods().indexOf('${daMethod}') > -1 -->
-                                                                <div>
-                                                                    <g:message code="project.facets.dataAccessMethods.${daMethod}"/>
-                                                                </div>
-                                                                <!-- /ko -->
-                                                            </g:each>
-                                                        </div>
-                                                    </div>
-                                                    <!-- /ko -->
-
-                                                    <!-- ko if: dataAccessExternalURL -->
-                                                    <div class="row-fluid">
-                                                        <div class="span4">
-                                                            <g:message code="project.survey.info.dataAccessExternalURL"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataAccessExternalURL"/>', content:'<g:message code="project.survey.info.dataAccessExternalURL.content"/>'}">
-                                                                <i class="icon-question-sign"></i>
-                                                            </a>
-                                                        </div>
-                                                        <div class="span8">
-                                                            <a data-bind="attr: {href: dataAccessExternalURL}, text: dataAccessExternalURL" target="_blank"></a>
-                                                        </div>
-                                                    </div>
-                                                    <!-- /ko -->
-
                                                     <!-- ko if: transients.activityLastUpdated -->
                                                     <div class="row-fluid">
                                                         <div class="span4">
@@ -205,148 +145,28 @@
                                                     </div>
                                                     <!-- /ko -->
 
-                                                    <!-- ko if: dataSharingLicense -->
-                                                    <div class="row-fluid  margin-top-10 margin-bottom-10">
-                                                        <div class="span4">
-                                                            <g:message code="project.survey.info.dataSharingLicense"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataSharingLicense"/>', content:'<g:message code="project.survey.info.dataSharingLicense.content"/>'}">
-                                                                <i class="icon-question-sign"></i>
-                                                            </a>
-
-                                                        </div>
-                                                        <div class="span8">
-                                                            <g:each in="${licences}">
-                                                                <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${asset.assetPath(src:"licence/${it.logo}")} ">&nbsp;&nbsp;${it.name}</a> </span>
-                                                            </g:each>
-                                                        </div>
-                                                    </div>
-                                                    <!-- /ko -->
-
-                                                    <!-- ko if: legalCustodianOrganisation -->
                                                     <div class="row-fluid">
                                                         <div class="span4">
-                                                            <g:message code="project.survey.info.legalCustodian"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.legalCustodian"/>', content:'<g:message code="project.survey.info.legalCustodian.content"/>'}">
+                                                            <g:message code="project.survey.info.publicAccess"/>
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.publicAccess"/>', content:'<g:message code="project.survey.info.publicAccess.content"/>'}">
                                                                 <i class="icon-question-sign"></i>
                                                             </a>
-
                                                         </div>
                                                         <div class="span8">
-                                                            <span data-bind="text: legalCustodianOrganisation"></span>
+                                                            <span data-bind="text: transients.publicAccess"></span>
                                                         </div>
                                                     </div>
-                                                    <!-- /ko -->
 
-                                                    <!-- ko if: transients.isDataManagementPolicyDocumented -->
+                                                    <!-- ko if: attribution -->
                                                     <div class="row-fluid">
                                                         <div class="span4">
-                                                            <g:message code="project.survey.info.isDataManagementPolicyDocumented"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.isDataManagementPolicyDocumented"/>', content:'<g:message code="project.survey.info.isDataManagementPolicyDocumented.content"/>'}">
+                                                            <g:message code="project.survey.info.attribution"/>
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.attribution"/>', content:'<g:message code="project.survey.info.attribution.content"/>'}">
                                                                 <i class="icon-question-sign"></i>
                                                             </a>
-
                                                         </div>
                                                         <div class="span8">
-                                                            <!-- ko if: isDataManagementPolicyDocumented() -->
-                                                            <span>
-                                                                <g:message code="project.facets.isDataManagementPolicyDocumented.yes"/>
-                                                            </span>
-                                                            <!-- /ko -->
-                                                            <!-- ko ifnot: isDataManagementPolicyDocumented() -->
-                                                            <span>
-                                                                <g:message code="project.facets.isDataManagementPolicyDocumented.no"/>
-                                                            </span>
-                                                            <!-- /ko -->
-                                                        </div>
-                                                    </div>
-                                                    <!-- /ko -->
-
-                                                    <!-- ko if: isDataManagementPolicyDocumented() && dataManagementPolicyDescription() -->
-                                                    <div class="row-fluid">
-                                                        <div class="span4">
-                                                            <g:message code="project.survey.info.dataManagementPolicyDescription"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataManagementPolicyDescription"/>', content:'<g:message code="project.survey.info.dataManagementPolicyDescription.content"/>'}">
-                                                                <i class="icon-question-sign"></i>
-                                                            </a>
-
-                                                        </div>
-                                                        <div class="span8">
-                                                            <span data-bind="text: dataManagementPolicyDescription"></span>
-                                                        </div>
-                                                    </div>
-                                                    <!-- /ko -->
-
-                                                    <!-- ko if: isDataManagementPolicyDocumented() && dataManagementPolicyURL() -->
-                                                    <div class="row-fluid">
-                                                        <div class="span4">
-                                                            <g:message code="project.survey.info.dataManagementPolicyURL"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataManagementPolicyURL"/>', content:'<g:message code="project.survey.info.dataManagementPolicyURL.content"/>'}">
-                                                                <i class="icon-question-sign"></i>
-                                                            </a>
-
-                                                        </div>
-                                                        <div class="span8">
-                                                            <a data-bind="attr: {href: dataManagementPolicyURL}, text: dataManagementPolicyURL" target="_blank" class="ellipsis-full-width"></a>
-                                                        </div>
-                                                    </div>
-                                                    <!-- /ko -->
-
-                                                    <!-- ko if: isDataManagementPolicyDocumented() && dataManagementPolicyDocument() -->
-                                                    <div class="row-fluid">
-                                                        <div class="span4">
-                                                            <g:message code="project.survey.info.dataManagementPolicyDocument"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataManagementPolicyDocument"/>', content:'<g:message code="project.survey.info.dataManagementPolicyDocument.content"/>'}">
-                                                                <i class="icon-question-sign"></i>
-                                                            </a>
-
-                                                        </div>
-                                                        <div class="span8">
-                                                            <div class="media">
-                                                                <a class="pull-left" href="#">
-                                                                    <img class="media-object" data-bind="attr:{src: transients.getFileTypeForDataManagementDocument()}">
-                                                                </a>
-                                                                <div class="media-body">
-                                                                    <h4 class="media-heading"></h4>
-                                                                    <a data-bind="text: transients.getFileNameForDataManagementDocument(), click: showDocument" data-document="management" href="#"></a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- /ko -->
-
-
-                                                    <!-- ko if: dataQualityAssuranceMethods -->
-                                                    <div class="row-fluid margin-top-10 margin-bottom-10">
-                                                        <div class="span4">
-                                                            <g:message code="project.survey.info.dataQualityAssuranceMethod"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataQualityAssuranceMethod"/>', content:'<g:message code="project.survey.info.dataQualityAssuranceMethod.content"/>'}">
-                                                                <i class="icon-question-sign"></i>
-                                                            </a>
-
-                                                        </div>
-                                                        <div class="span8">
-                                                            <g:each in="${grailsApplication.config.dataQualityAssuranceMethods}" var="dqMethod">
-                                                                <!-- ko if: dataQualityAssuranceMethods().indexOf('${dqMethod}') > -1 -->
-                                                                <div>
-                                                                    <g:message code="project.facets.dataQualityAssuranceMethods.${dqMethod}"/>
-                                                                </div>
-                                                                <!-- /ko -->
-                                                            </g:each>
-                                                        </div>
-                                                    </div>
-                                                    <!-- /ko -->
-
-                                                    <!-- ko if: dataQualityAssuranceDescription -->
-                                                    <div class="row-fluid">
-                                                        <div class="span4">
-                                                            <g:message code="project.survey.info.dataQualityAssuranceDescription"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataQualityAssuranceDescription"/>', content:'<g:message code="project.survey.info.dataQualityAssuranceDescription.content"/>'}">
-                                                                <i class="icon-question-sign"></i>
-                                                            </a>
-
-                                                        </div>
-                                                        <div class="span8">
-                                                            <span data-bind="text: dataQualityAssuranceDescription"></span>
+                                                            <span data-bind="text: attribution"></span>
                                                         </div>
                                                     </div>
                                                     <!-- /ko -->
@@ -442,6 +262,108 @@
                                                     <!-- /ko -->
                                                     <!-- /ko -->
 
+                                                    <!-- ko if: dataSharingLicense -->
+                                                    <div class="row-fluid  margin-top-10 margin-bottom-10">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataSharingLicense"/>
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataSharingLicense"/>', content:'<g:message code="project.survey.info.dataSharingLicense.content"/>'}">
+                                                                <i class="icon-question-sign"></i>
+                                                            </a>
+
+                                                        </div>
+                                                        <div class="span8">
+                                                            <g:each in="${licences}">
+                                                                <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}" target="_blank"><img src="${asset.assetPath(src:"licence/${it.logo}")} ">&nbsp;&nbsp;${it.name}</a> </span>
+                                                            </g:each>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: legalCustodianOrganisation -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.legalCustodian"/>
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.legalCustodian"/>', content:'<g:message code="project.survey.info.legalCustodian.content"/>'}">
+                                                                <i class="icon-question-sign"></i>
+                                                            </a>
+
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: legalCustodianOrganisation"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: dataQualityAssuranceMethods -->
+                                                    <div class="row-fluid margin-top-10 margin-bottom-10">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataQualityAssuranceMethod"/>
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataQualityAssuranceMethod"/>', content:'<g:message code="project.survey.info.dataQualityAssuranceMethod.content"/>'}">
+                                                                <i class="icon-question-sign"></i>
+                                                            </a>
+
+                                                        </div>
+                                                        <div class="span8">
+                                                            <g:each in="${grailsApplication.config.dataQualityAssuranceMethods}" var="dqMethod">
+                                                                <!-- ko if: dataQualityAssuranceMethods().indexOf('${dqMethod}') > -1 -->
+                                                                <div>
+                                                                    <g:message code="project.facets.dataQualityAssuranceMethods.${dqMethod}"/>
+                                                                </div>
+                                                                <!-- /ko -->
+                                                            </g:each>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: dataQualityAssuranceDescription -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataQualityAssuranceDescription"/>
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataQualityAssuranceDescription"/>', content:'<g:message code="project.survey.info.dataQualityAssuranceDescription.content"/>'}">
+                                                                <i class="icon-question-sign"></i>
+                                                            </a>
+
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: dataQualityAssuranceDescription"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: dataAccessExternalURL -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataAccessExternalURL"/>
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataAccessExternalURL"/>', content:'<g:message code="project.survey.info.dataAccessExternalURL.content"/>'}">
+                                                                <i class="icon-question-sign"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="span8">
+                                                            <a data-bind="attr: {href: dataAccessExternalURL}, text: dataAccessExternalURL" target="_blank"></a>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    %{--<!-- ko if: dataAccessMethods().length -->--}%
+                                                    %{--<div class="row-fluid margin-top-10 margin-bottom-10">--}%
+                                                        %{--<div class="span4">--}%
+                                                            %{--<g:message code="project.survey.info.dataAccessMethods"/>--}%
+                                                            %{--<a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataAccessMethods"/>', content:'<g:message code="project.survey.info.dataAccessMethods.content"/>'}">--}%
+                                                                %{--<i class="icon-question-sign"></i>--}%
+                                                            %{--</a>--}%
+                                                        %{--</div>--}%
+                                                        %{--<div class="span8">--}%
+                                                            %{--<g:each in="${grailsApplication.config.dataAccessMethods}" var="daMethod">--}%
+                                                                %{--<!-- ko if: dataAccessMethods().indexOf('${daMethod}') > -1 -->--}%
+                                                                %{--<div>--}%
+                                                                    %{--<g:message code="project.facets.dataAccessMethods.${daMethod}"/>--}%
+                                                                %{--</div>--}%
+                                                                %{--<!-- /ko -->--}%
+                                                            %{--</g:each>--}%
+                                                        %{--</div>--}%
+                                                    %{--</div>--}%
+                                                    %{--<!-- /ko -->--}%
+
                                                     <!-- ko if: usageGuide -->
                                                     <div class="row-fluid">
                                                         <div class="span4">
@@ -453,6 +375,83 @@
                                                         </div>
                                                         <div class="span8">
                                                             <span data-bind="text: usageGuide"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: transients.isDataManagementPolicyDocumented -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.isDataManagementPolicyDocumented"/>
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.isDataManagementPolicyDocumented"/>', content:'<g:message code="project.survey.info.isDataManagementPolicyDocumented.content"/>'}">
+                                                                <i class="icon-question-sign"></i>
+                                                            </a>
+
+                                                        </div>
+                                                        <div class="span8">
+                                                            <!-- ko if: isDataManagementPolicyDocumented() -->
+                                                            <span>
+                                                                <g:message code="project.facets.isDataManagementPolicyDocumented.yes"/>
+                                                            </span>
+                                                            <!-- /ko -->
+                                                            <!-- ko ifnot: isDataManagementPolicyDocumented() -->
+                                                            <span>
+                                                                <g:message code="project.facets.isDataManagementPolicyDocumented.no"/>
+                                                            </span>
+                                                            <!-- /ko -->
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: isDataManagementPolicyDocumented() && dataManagementPolicyDescription() -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataManagementPolicyDescription"/>
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataManagementPolicyDescription"/>', content:'<g:message code="project.survey.info.dataManagementPolicyDescription.content"/>'}">
+                                                                <i class="icon-question-sign"></i>
+                                                            </a>
+
+                                                        </div>
+                                                        <div class="span8">
+                                                            <span data-bind="text: dataManagementPolicyDescription"></span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: isDataManagementPolicyDocumented() && dataManagementPolicyURL() -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataManagementPolicyURL"/>
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataManagementPolicyURL"/>', content:'<g:message code="project.survey.info.dataManagementPolicyURL.content"/>'}">
+                                                                <i class="icon-question-sign"></i>
+                                                            </a>
+
+                                                        </div>
+                                                        <div class="span8">
+                                                            <a data-bind="attr: {href: dataManagementPolicyURL}, text: dataManagementPolicyURL" target="_blank" class="ellipsis-full-width"></a>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: isDataManagementPolicyDocumented() && dataManagementPolicyDocument() -->
+                                                    <div class="row-fluid">
+                                                        <div class="span4">
+                                                            <g:message code="project.survey.info.dataManagementPolicyDocument"/>
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataManagementPolicyDocument"/>', content:'<g:message code="project.survey.info.dataManagementPolicyDocument.content"/>'}">
+                                                                <i class="icon-question-sign"></i>
+                                                            </a>
+
+                                                        </div>
+                                                        <div class="span8">
+                                                            <div class="media">
+                                                                <a class="pull-left" href="#">
+                                                                    <img class="media-object" data-bind="attr:{src: transients.getFileTypeForDataManagementDocument()}">
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <h4 class="media-heading"></h4>
+                                                                    <a data-bind="text: transients.getFileNameForDataManagementDocument(), click: showDocument" data-document="management" href="#"></a>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <!-- /ko -->

@@ -69,6 +69,7 @@
 
 <g:if test="${!printView}">
     <div class="form-actions">
+        <g:render template="/shared/termsOfUse"/>
         <g:if test="${!preview}">
             <button type="button" id="save" class="btn btn-primary">Submit</button>
         </g:if>
