@@ -37,7 +37,7 @@
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
-        sites: ${((project?.sites ?: []) as JSON).toString()},
+        sites: <fc:modelAsJavascript model="${project?.sites ?: []}"/>,
         allowAdditionalSurveySites: ${canEditSites}
         },
         here = document.location.href;
@@ -235,11 +235,11 @@
 <script type="text/javascript">
     function ActivityLevelData() {
         var self = this;
-        self.activity = JSON.parse('${(activity as JSON).toString().encodeAsJavaScript()}');
-        self.site = JSON.parse('${(site as JSON).toString().encodeAsJavaScript()}');
-        self.project = JSON.parse('${(project as JSON).toString().encodeAsJavaScript()}');
-        self.metaModel = JSON.parse('${(metaModel as JSON).toString().encodeAsJavaScript()}');
-        self.mapFeatures = JSON.parse('${(mapFeatures as JSON)?.toString()?.encodeAsJavaScript()}');
+        self.activity = <fc:modelAsJavascript model="${activity}"/>;
+        self.site = <fc:modelAsJavascript model="${site}"/>;
+        self.project = <fc:modelAsJavascript model="${project}"/>;
+        self.metaModel = <fc:modelAsJavascript model="${metaModel}"/>;
+        self.mapFeatures = <fc:modelAsJavascript model="${mapFeatures}"/>;
         self.themes = <fc:modelAsJavascript model="${themes}"/>;
         self.speciesConfig = <fc:modelAsJavascript model="${speciesConfig}"/>;
         // We only need the sites from a pActivity within works projects
