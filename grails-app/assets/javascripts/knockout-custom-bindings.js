@@ -481,6 +481,12 @@ ko.bindingHandlers.autocompleteFromList = {
             params.value(ui.item.value);
         };
 
+        if ( params.dropDownOnFocus ) {
+            $element.on('focus', function () {
+                $element.autocomplete("search", $element.val())
+            })
+        }
+
         $element.val(params.value());
         params.value.subscribe(function (newValue) {
             $element.val(newValue);

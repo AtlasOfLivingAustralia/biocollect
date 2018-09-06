@@ -76,7 +76,7 @@ var ProjectActivity = function (params) {
                     self.dataQualityAssuranceMethods.removeAll();
                     self.dataQualityAssuranceMethods.push('nodqmethodsused');
                 } else {
-                    self.dataQualityAssuranceMethods.remove.apply(self.dataQualityAssuranceMethods, ['na', 'nodqmethodsused']);
+                    self.dataQualityAssuranceMethods.removeAll(['na', 'nodqmethodsused']);
                 }
             }
         }

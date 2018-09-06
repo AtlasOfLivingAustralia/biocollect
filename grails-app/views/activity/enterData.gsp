@@ -212,6 +212,7 @@
 
     <g:if test="${!printView}">
         <div class="form-actions">
+            <g:render template="/shared/termsOfUse"/>
             <button type="button" id="save" class="btn btn-primary">Save changes</button>
             <button type="button" id="cancel" class="btn">Cancel</button>
             <label class="checkbox inline">

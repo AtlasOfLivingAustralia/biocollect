@@ -65,6 +65,12 @@
             </div>
 
             <div class="row-fluid">
+                <div class="offset4 span8">
+                    <hr class="border-bottom-separator"/>
+                </div>
+            </div>
+
+            <div class="row-fluid">
                 <div class="span4 text-right">
                     <label class="control-label" for="methodType"><g:message code="project.survey.info.methodType"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodType"/>', content:'<g:message code="project.survey.info.methodType.content"/>'}">
@@ -100,21 +106,16 @@
 
                 <div class="span8">
                     <div class="controls">
-                        <input id="methodName" class="full-width" type="text" data-bind="autocompleteFromList: {value: methodName, config: {source: fcConfig.surveyMethods}}" data-validation-engine="validate[required]">
+                        <input id="methodName" class="full-width" type="text" data-bind="autocompleteFromList: {value: methodName, dropDownOnFocus: true, config: {source: fcConfig.surveyMethods, minLength: 0, autoFocus: true}}" data-validation-engine="validate[required]">
                     </div>
                 </div>
             </div>
 
             <div  data-bind="slideVisible: transients.isSystematicSurvey">
                 <div class="row-fluid">
-                    <div class="offset4 span8">
-                        <hr class="border-bottom-separator"/>
-                    </div>
-                </div>
-                <div class="row-fluid">
                     <div class="span4 text-right">
-                        <label class="control-label" ><g:message code="project.survey.info.methodDoc"/>
-                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodDoc"/>', content:'<g:message code="project.survey.info.methodDoc.content"/>'}">
+                        <label class="control-label" for="methodAbstract"><g:message code="project.survey.info.methodAbstract"/>
+                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodAbstract"/>', content:'<g:message code="project.survey.info.methodAbstract.content"/>'}">
                                 <i class="icon-question-sign"></i>
                             </a>
                             <span class="right-padding"></span>
@@ -149,12 +150,13 @@
                 </div>
                 <div class="row-fluid">
                     <div class="span4 text-right">
-                        <label class="control-label" for="methodAbstract"><g:message code="project.survey.info.methodAbstract"/>
-                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodAbstract"/>', content:'<g:message code="project.survey.info.methodAbstract.content"/>'}">
+                        <label class="control-label" ><g:message code="project.survey.info.methodDoc"/>
+                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.methodDoc"/>', content:'<g:message code="project.survey.info.methodDoc.content"/>'}">
                                 <i class="icon-question-sign"></i>
                             </a>
                             <span class="right-padding"></span>
                         </label>
+
                     </div>
                     <div class="span8">
                         <!-- Method document-->
@@ -182,10 +184,16 @@
                             </div>
                         </div>
                         <!-- end of Document -->
-                        <hr class="border-bottom-separator"/>
                     </div>
                 </div>
             </div>
+
+            <div class="row-fluid">
+                <div class="offset4 span8">
+                    <hr class="border-bottom-separator"/>
+                </div>
+            </div>
+
             <div class="row-fluid">
                 <div class="span4 text-right">
                     <label class="control-label" for="startDate"> <g:message code="project.survey.info.startDate"/>
@@ -317,13 +325,19 @@
                     <div class="controls">
                         <input id="legalCustodian" class="full-width-input form-control" type="text" data-bind="value: legalCustodianOrganisation" data-validation-engine="validate[required]" >
                     </div>
-                    <hr class="border-bottom-separator"/>
                 </div>
             </div>
 
             <div class="row-fluid">
+                <div class="offset4 span8">
+                    <hr class="border-bottom-separator"/>
+                </div>
+            </div>
+
+
+            <div class="row-fluid">
                 <div class="span4 text-right">
-                    <label class="control-label" for="legalCustodian"><g:message code="project.survey.info.reliabilityTag"/>
+                    <label class="control-label"><g:message code="project.survey.info.reliabilityTag"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.reliabilityTag"/>', content:'<g:message code="project.survey.info.reliabilityTag.content"/>'}">
                             <i class="icon-question-sign"></i>
                         </a>
@@ -334,79 +348,77 @@
                     <div class="controls">
                         <div class="row-fluid">
                             <div class="span6">
-
                                 <div class="row-fluid">
-                            <div class="span12">
-                                <strong>
-                                    <g:message code="project.survey.info.spatialAccuracy.text"/>
-                                </strong>
-                                <span class="req-field"></span>
+                                    <div class="span12">
+                                        <strong>
+                                            <g:message code="project.survey.info.spatialAccuracy.text"/>
+                                        </strong>
+                                        <span class="req-field"></span>
+                                    </div>
+                                </div>
+                                <label class="radio">
+                                    <input name="spatialAccuracy" class="form-control" type="radio"
+                                           data-bind="checked: spatialAccuracy"
+                                           value="<g:message code="project.survey.info.spatialAccuracy.high.value"/>"
+                                           data-validation-engine="validate[required]" >
+                                    <g:message code="project.facets.spatialAccuracy.high"/>
+                                </label>
+                                <label class="radio">
+                                    <input name="spatialAccuracy" class="form-control" type="radio"
+                                           data-bind="checked: spatialAccuracy"
+                                           value="<g:message code="project.survey.info.spatialAccuracy.moderate.value"/>"
+                                           data-validation-engine="validate[required]" >
+                                    <g:message code="project.facets.spatialAccuracy.moderate"/>
+                                </label>
+                                <label class="radio">
+                                    <input name="spatialAccuracy" class="form-control" type="radio"
+                                           data-bind="checked: spatialAccuracy"
+                                           value="<g:message code="project.survey.info.spatialAccuracy.low.value"/>"
+                                           data-validation-engine="validate[required]" >
+                                    <g:message code="project.facets.spatialAccuracy.low"/>
+                                </label>
+                            </div>
+                            <div class="span6">
+                                %{-- species identification confidence --}%
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <strong>
+                                            <g:message code="project.survey.info.speciesIdentification.text"/>
+                                        </strong>
+                                        <span class="req-field"></span>
+                                    </div>
+                                </div>
+                                <label class="radio">
+                                    <input name="speciesIdentification" class="form-control" type="radio"
+                                           data-bind="checked: speciesIdentification"
+                                           value="<g:message code="project.survey.info.speciesIdentification.high.value"/>"
+                                           data-validation-engine="validate[required]" >
+                                    <g:message code="project.facets.speciesIdentification.high"/>
+                                </label>
+                                <label class="radio">
+                                    <input name="speciesIdentification" class="form-control" type="radio"
+                                           data-bind="checked: speciesIdentification"
+                                           value="<g:message code="project.survey.info.speciesIdentification.moderate.value"/>"
+                                           data-validation-engine="validate[required]" >
+                                    <g:message code="project.facets.speciesIdentification.moderate"/>
+                                </label>
+                                <label class="radio">
+                                    <input name="speciesIdentification" class="form-control" type="radio"
+                                           data-bind="checked: speciesIdentification"
+                                           value="<g:message code="project.survey.info.speciesIdentification.low.value"/>"
+                                           data-validation-engine="validate[required]" >
+                                    <g:message code="project.facets.speciesIdentification.low"/>
+                                </label>
+                                <label class="radio">
+                                    <input name="speciesIdentification" class="form-control" type="radio"
+                                           data-bind="checked: speciesIdentification"
+                                           value="<g:message code="project.survey.info.speciesIdentification.na.value"/>"
+                                           data-validation-engine="validate[required]" >
+                                    <g:message code="project.facets.speciesIdentification.na"/>
+                                </label>
+                                %{-- species identification confidence - END--}%
                             </div>
                         </div>
-                        <label class="radio">
-                            <input name="spatialAccuracy" class="form-control" type="radio"
-                                   data-bind="checked: spatialAccuracy"
-                                   value="<g:message code="project.survey.info.spatialAccuracy.high.value"/>"
-                                   data-validation-engine="validate[required]" >
-                            <g:message code="project.facets.spatialAccuracy.high"/>
-                        </label>
-                        <label class="radio">
-                            <input name="spatialAccuracy" class="form-control" type="radio"
-                                   data-bind="checked: spatialAccuracy"
-                                   value="<g:message code="project.survey.info.spatialAccuracy.moderate.value"/>"
-                                   data-validation-engine="validate[required]" >
-                            <g:message code="project.facets.spatialAccuracy.moderate"/>
-                        </label>
-                        <label class="radio">
-                            <input name="spatialAccuracy" class="form-control" type="radio"
-                                   data-bind="checked: spatialAccuracy"
-                                   value="<g:message code="project.survey.info.spatialAccuracy.low.value"/>"
-                                   data-validation-engine="validate[required]" >
-                            <g:message code="project.facets.spatialAccuracy.low"/>
-                        </label>
-                            </div>
-        <div class="span6">
-
-                        %{-- species identification confidence --}%
-                        <div class="row-fluid">
-                            <div class="span12">
-                                <strong>
-                                    <g:message code="project.survey.info.speciesIdentification.text"/>
-                                </strong>
-                                <span class="req-field"></span>
-                            </div>
-                        </div>
-                        <label class="radio">
-                            <input name="speciesIdentification" class="form-control" type="radio"
-                                   data-bind="checked: speciesIdentification"
-                                   value="<g:message code="project.survey.info.speciesIdentification.high.value"/>"
-                                   data-validation-engine="validate[required]" >
-                            <g:message code="project.facets.speciesIdentification.high"/>
-                        </label>
-                        <label class="radio">
-                            <input name="speciesIdentification" class="form-control" type="radio"
-                                   data-bind="checked: speciesIdentification"
-                                   value="<g:message code="project.survey.info.speciesIdentification.moderate.value"/>"
-                                   data-validation-engine="validate[required]" >
-                            <g:message code="project.facets.speciesIdentification.moderate"/>
-                        </label>
-                        <label class="radio">
-                            <input name="speciesIdentification" class="form-control" type="radio"
-                                   data-bind="checked: speciesIdentification"
-                                   value="<g:message code="project.survey.info.speciesIdentification.low.value"/>"
-                                   data-validation-engine="validate[required]" >
-                            <g:message code="project.facets.speciesIdentification.low"/>
-                        </label>
-                        <label class="radio">
-                            <input name="speciesIdentification" class="form-control" type="radio"
-                                   data-bind="checked: speciesIdentification"
-                                   value="<g:message code="project.survey.info.speciesIdentification.na.value"/>"
-                                   data-validation-engine="validate[required]" >
-                            <g:message code="project.facets.speciesIdentification.na"/>
-                        </label>
-            %{-- species identification confidence - END--}%
-        </div>
-                    </div>
                         <div class="row-fluid">
                             <div class="span6">
                                 <div class="row-fluid">
@@ -471,8 +483,12 @@
                                 </label>
                             </div>
                         </div>
-                        %{-- --}%
                     </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="offset4 span8">
                     <hr class="border-bottom-separator"/>
                 </div>
             </div>
@@ -509,43 +525,6 @@
                             </div>
                         </g:each>
                     </div>
-                    <hr class="border-bottom-separator"/>
-                </div>
-            </div>
-
-            <div class="row-fluid">
-                <div class="span4 text-right">
-                    <label class="control-label" for="dataAccessMethods"><g:message code="project.survey.info.dataAccessMethods"/>
-                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataAccessMethods"/>', content:'<g:message code="project.survey.info.dataAccessMethods.content"/>'}">
-                            <i class="icon-question-sign"></i>
-                        </a>
-                        <span class="req-field"></span>
-                    </label>
-                </div>
-
-                <div class="span8">
-                    <div class="controls" id="dataAccessMethods" data-bind="validateObservable: dataAccessMethods" data-validation-engine="validate[required]">
-                        <g:set var="multiple" value="${2}"/>
-                        <g:set var="ceil" value="${(Integer)Math.ceil(grailsApplication.config.dataAccessMethods.size()/2)}"/>
-                        <g:each in="${0..<ceil}" var="index">
-                            <g:set var="start" value="${ index * multiple}"/>
-                            <g:set var="end" value="${(index + 1) * multiple - 1}"/>
-                            <g:if test="${end >= grailsApplication.config.dataAccessMethods.size()}">
-                                <g:set var="end" value="${end -1}"/>
-                            </g:if>
-                            <div class="row-fluid">
-                                <g:each in="${grailsApplication.config.dataAccessMethods[start..end]}" var="daMethod">
-                                    <div class="span6">
-                                        <label class="checkbox">
-                                            <input type="checkbox" value="${daMethod}" data-bind="checked: transients.dataAccessMethods"/>
-                                            <g:message code="project.facets.dataAccessMethods.${daMethod}"/>
-                                        </label>
-                                    </div>
-                                </g:each>
-                            </div>
-                        </g:each>
-                    </div>
-                    <hr class="border-bottom-separator"/>
                 </div>
             </div>
 
@@ -564,6 +543,49 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row-fluid">
+                <div class="offset4 span8">
+                    <hr class="border-bottom-separator"/>
+                </div>
+            </div>
+
+            %{--todo: add data access method section once its behaviour is finalised. Behaviour to be finalised are its interaction with "public access to data" and "embargo date" --}%
+            %{--<div class="row-fluid">--}%
+            %{--<div class="span4 text-right">--}%
+            %{--<label class="control-label" for="dataAccessMethods"><g:message code="project.survey.info.dataAccessMethods"/>--}%
+            %{--<a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataAccessMethods"/>', content:'<g:message code="project.survey.info.dataAccessMethods.content"/>'}">--}%
+            %{--<i class="icon-question-sign"></i>--}%
+            %{--</a>--}%
+            %{--<span class="req-field"></span>--}%
+            %{--</label>--}%
+            %{--</div>--}%
+
+            %{--<div class="span8">--}%
+            %{--<div class="controls" id="dataAccessMethods" data-bind="validateObservable: dataAccessMethods" data-validation-engine="validate[required]">--}%
+            %{--<g:set var="multiple" value="${2}"/>--}%
+            %{--<g:set var="ceil" value="${(Integer)Math.ceil(grailsApplication.config.dataAccessMethods.size()/2)}"/>--}%
+            %{--<g:each in="${0..<ceil}" var="index">--}%
+            %{--<g:set var="start" value="${ index * multiple}"/>--}%
+            %{--<g:set var="end" value="${(index + 1) * multiple - 1}"/>--}%
+            %{--<g:if test="${end >= grailsApplication.config.dataAccessMethods.size()}">--}%
+            %{--<g:set var="end" value="${end -1}"/>--}%
+            %{--</g:if>--}%
+            %{--<div class="row-fluid">--}%
+            %{--<g:each in="${grailsApplication.config.dataAccessMethods[start..end]}" var="daMethod">--}%
+            %{--<div class="span6">--}%
+            %{--<label class="checkbox">--}%
+            %{--<input type="checkbox" value="${daMethod}" data-bind="checked: transients.dataAccessMethods"/>--}%
+            %{--<g:message code="project.facets.dataAccessMethods.${daMethod}"/>--}%
+            %{--</label>--}%
+            %{--</div>--}%
+            %{--</g:each>--}%
+            %{--</div>--}%
+            %{--</g:each>--}%
+            %{--</div>--}%
+            %{--<hr class="border-bottom-separator"/>--}%
+            %{--</div>--}%
+            %{--</div>--}%
 
             <div class="row-fluid">
                 <div class="span4 text-right">
@@ -599,6 +621,12 @@
             </div>
 
             <div class="row-fluid">
+                <div class="offset4 span8">
+                    <hr class="border-bottom-separator"/>
+                </div>
+            </div>
+
+            <div class="row-fluid">
                 <div class="span4 text-right">
                     <label class="control-label" for="isDataManagementPolicyDocumented"><g:message code="project.survey.info.isDataManagementPolicyDocumented"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.isDataManagementPolicyDocumented"/>', content:'<g:message code="project.survey.info.isDataManagementPolicyDocumented.content"/>'}">
@@ -616,7 +644,6 @@
                             <option value="<g:message code="project.survey.info.isDataManagementPolicyDocumented.no.value"/>"><g:message code="project.facets.isDataManagementPolicyDocumented.no"/></option>
                         </select>
                     </div>
-                    <hr class="border-bottom-separator"/>
                 </div>
             </div>
 
@@ -677,11 +704,17 @@
                                 </div>
                             </div>
                         </div>
-                        <hr class="border-bottom-separator"/>
                     </div>
                 </div>
             </div>
-            <!-- /ko -->
+
+            <div class="row-fluid">
+                <div class="offset4 span8">
+                    <hr class="border-bottom-separator"/>
+                </div>
+            </div>
+
+    <!-- /ko -->
             <g:render template="../projectActivity/indexingNote"/>
 
     <!-- /ko -->
