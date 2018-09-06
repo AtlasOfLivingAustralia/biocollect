@@ -240,7 +240,7 @@
         self.project = JSON.parse('${(project as JSON).toString().encodeAsJavaScript()}');
         self.metaModel = JSON.parse('${(metaModel as JSON).toString().encodeAsJavaScript()}');
         self.mapFeatures = JSON.parse('${(mapFeatures as JSON)?.toString()?.encodeAsJavaScript()}');
-        self.themes = JSON.parse('${(themes as JSON)?.toString()?.encodeAsJavaScript()}');
+        self.themes = <fc:modelAsJavascript model="${themes}"/>;
         self.speciesConfig = <fc:modelAsJavascript model="${speciesConfig}"/>;
         // We only need the sites from a pActivity within works projects
         self.pActivity = self.project;
