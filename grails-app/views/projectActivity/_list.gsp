@@ -319,7 +319,7 @@
                                                     <div class="row-fluid">
                                                         <div class="span4">
                                                             <g:message code="project.survey.info.dataQualityAssuranceDescription"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataQualityAssuranceDescription"/>', content:'<g:message code="project.survey.info.dataQualityAssuranceDescription.content"/>'}">
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataQualityAssuranceDescription"/>', content:'<g:message code="project.survey.info.dataQualityAssuranceDescription.content" encodeAs="JavaScript"/>'}">
                                                                 <i class="icon-question-sign"></i>
                                                             </a>
 
@@ -383,7 +383,7 @@
                                                     <div class="row-fluid">
                                                         <div class="span4">
                                                             <g:message code="project.survey.info.isDataManagementPolicyDocumented"/>
-                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.isDataManagementPolicyDocumented"/>', content:'<g:message code="project.survey.info.isDataManagementPolicyDocumented.content"/>'}">
+                                                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.isDataManagementPolicyDocumented"/>', content:'<g:message code="project.survey.info.isDataManagementPolicyDocumented.content" encodeAs="JavaScript"/>'}">
                                                                 <i class="icon-question-sign"></i>
                                                             </a>
 
