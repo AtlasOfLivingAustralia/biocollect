@@ -365,20 +365,7 @@ function ActivityHeaderViewModel (activity, site, project, metaModel, themes, co
 
     self.initialiseMap = function(mapFeatures) {
         if (metaModel.supportsSites) {
-            if (!mapFeatures) {
-                mapFeatures = {zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []};
-            }
-            init_map_with_features({
-                    mapContainer: "smallMap",
-                    zoomToBounds:true,
-                    zoomLimit:16,
-                    featureService: options.featureServiceUrl,
-                    wmsServer: options.wmsServerUrl,
-                    polygonMarkerAreaKm2:-1
-                },
-                mapFeatures
-            );
-            mapInitialised = true;
+        //    Removed map rendering feature because it is not supported in Biocollect
         }
     };
 
