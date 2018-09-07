@@ -572,9 +572,10 @@ class SiteService {
         projects?.each { projectId ->
             Map project = projectService.get(projectId)
             if (projectService.isWorks(project)) {
+                project.mapConfiguration = project.mapConfiguration ?: [:]
                 List projectSiteIds = project.sites?.collect { it.siteId }
                 // ensure sites in map configuration is a subset of project sites
-                updateMapConfigurationWithProjectAssociatedSiteIds(projectSiteIds, project.mapConfiguration)
+                sanitiseSiteIdListInMapConfiguration(projectSiteIds, project.mapConfiguration)
 
                 Boolean isDirty = false
                 sites?.each { siteId ->
@@ -602,7 +603,7 @@ class SiteService {
      * @param projectSites
      * @param mapConfiguration
      */
-    void updateMapConfigurationWithProjectAssociatedSiteIds(List projectSites, Map mapConfiguration) {
+    void sanitiseSiteIdListInMapConfiguration(List projectSites, Map mapConfiguration) {
         List toRemove = []
         mapConfiguration.sites?.each { siteId ->
             if (!projectSites.contains(siteId)) {
