@@ -11,6 +11,21 @@
                     <g:render template="../projectActivity/status"/>
                 </div>
             </div>
+            <div class="row-fluid">
+                <div class="offset4 span8">
+                    <div class="alert alert-info">
+                        <p>
+                            <g:message code="project.survey.info.alertText.1"/>
+                        </p>
+                        <p>
+                            <g:message code="project.survey.info.alertText.2"/>
+                        </p>
+                        <p>
+                            <g:message code="project.survey.info.alertText.3"/>
+                        </p>
+                    </div>
+                </div>
+            </div>
 
             <div class="row-fluid">
                 <div class="span4 text-right">
@@ -41,24 +56,6 @@
                 <div class="span8">
                     <div class="controls">
                         <textarea id="description" rows="4" class="full-width" data-bind="value: description"
-                                  data-validation-engine="validate[required]"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row-fluid">
-                <div class="span4 text-right">
-                    <label class="control-label" for="attribution"><g:message code="project.survey.info.attribution"/>
-                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.attribution"/>', content:'<g:message code="project.survey.info.attribution.content"/>'}">
-                            <i class="icon-question-sign"></i>
-                        </a>
-                        <span class="req-field"></span>
-                    </label>
-                </div>
-
-                <div class="span8">
-                    <div class="controls">
-                        <textarea id="attribution" rows="4" class="full-width" data-bind="value: attribution"
                                   data-validation-engine="validate[required]"></textarea>
                     </div>
                 </div>
@@ -338,7 +335,7 @@
             <div class="row-fluid">
                 <div class="span4 text-right">
                     <label class="control-label"><g:message code="project.survey.info.reliabilityTag"/>
-                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.reliabilityTag"/>', content:'<g:message code="project.survey.info.reliabilityTag.content"/>'}">
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.reliabilityTag"/>', content:'<g:message code="project.survey.info.reliabilityTag.content" encodeAs="JavaScript"/>'}">
                             <i class="icon-question-sign"></i>
                         </a>
                         <span class="right-padding"></span>
@@ -353,6 +350,9 @@
                                         <strong>
                                             <g:message code="project.survey.info.spatialAccuracy.text"/>
                                         </strong>
+                                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.spatialAccuracy.text"/>', content:'<g:message code="project.survey.info.spatialAccuracy.content"/>'}">
+                                            <i class="icon-question-sign"></i>
+                                        </a>
                                         <span class="req-field"></span>
                                     </div>
                                 </div>
@@ -385,6 +385,9 @@
                                         <strong>
                                             <g:message code="project.survey.info.speciesIdentification.text"/>
                                         </strong>
+                                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.speciesIdentification.text"/>', content:'<g:message code="project.survey.info.speciesIdentification.content" encodeAs="JavaScript"/>'}">
+                                            <i class="icon-question-sign"></i>
+                                        </a>
                                         <span class="req-field"></span>
                                     </div>
                                 </div>
@@ -426,6 +429,9 @@
                                         <strong>
                                             <g:message code="project.survey.info.temporalAccuracy.text"/>
                                         </strong>
+                                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.temporalAccuracy.text"/>', content:'<g:message code="project.survey.info.temporalAccuracy.content"/>'}">
+                                            <i class="icon-question-sign"></i>
+                                        </a>
                                         <span class="req-field"></span>
                                     </div>
                                 </div>
@@ -457,6 +463,9 @@
                                         <strong>
                                             <g:message code="project.survey.info.nonTaxonomicAccuracy.text"/>
                                         </strong>
+                                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.nonTaxonomicAccuracy.text"/>', content:'<g:message code="project.survey.info.nonTaxonomicAccuracy.content"/>'}">
+                                            <i class="icon-question-sign"></i>
+                                        </a>
                                         <span class="req-field"></span>
                                     </div>
                                 </div>
@@ -531,7 +540,7 @@
             <div class="row-fluid">
                 <div class="span4 text-right">
                     <label class="control-label" for="dataQualityAssuranceDescription"><g:message code="project.survey.info.dataQualityAssuranceDescription"/>
-                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataQualityAssuranceDescription"/>', content:'<g:message code="project.survey.info.dataQualityAssuranceDescription.content"/>'}">
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataQualityAssuranceDescription"/>', content:'<g:message code="project.survey.info.dataQualityAssuranceDescription.content" encodeAs="JavaScript"/>'}">
                             <i class="icon-question-sign"></i>
                         </a>
                         <span class="right-padding"></span>
@@ -629,7 +638,7 @@
             <div class="row-fluid">
                 <div class="span4 text-right">
                     <label class="control-label" for="isDataManagementPolicyDocumented"><g:message code="project.survey.info.isDataManagementPolicyDocumented"/>
-                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.isDataManagementPolicyDocumented"/>', content:'<g:message code="project.survey.info.isDataManagementPolicyDocumented.content"/>'}">
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.isDataManagementPolicyDocumented"/>', content:'<g:message code="project.survey.info.isDataManagementPolicyDocumented.content" encodeAs="JavaScript"/>'}">
                             <i class="icon-question-sign"></i>
                         </a>
                         <span class="req-field"></span>
