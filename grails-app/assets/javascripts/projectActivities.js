@@ -165,6 +165,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
     var self = $.extend(this, pActivitiesVM);
     var surveyInfoTab = '#survey-info-tab';
+    var project = pActivitiesVM.project;
     self.placeHolder = placeHolder;
     self.datesOptions = [60, 90, 120, 180];
     self.formNames = ko.observableArray($.map(self.pActivityForms ? self.pActivityForms : [], function (obj, i) {
@@ -179,6 +180,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
             selected: true,
             sites: self.sites,
             organisationName: self.organisationName,
+            project: project,
             startDate: self.projectStartDate
         };
         var survey = new ProjectActivity(args)
