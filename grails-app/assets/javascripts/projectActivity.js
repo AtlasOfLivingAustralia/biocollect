@@ -65,29 +65,50 @@ var ProjectActivity = function (params) {
     self.transients.dataManagementPolicyDocumentURL = ko.observable();
     self.transients.dataQualityAssuranceMethods = ko.computed({
         read: function(){
+            // need to store old values since checked binding has a bug. It updates dataQualityAssuranceMethods value
+            // before calling write function. This is a hack to get around this issue.
+            self.dataQualityAssuranceMethods.oldValues = self.dataQualityAssuranceMethods().slice(0);
             return self.dataQualityAssuranceMethods();
         },
         write: function(values) {
+            var addedItem = undefined;
             if (values && values.length > 0) {
-                if ( values.indexOf('na') > 0) {
-                    self.dataQualityAssuranceMethods.removeAll();
-                    self.dataQualityAssuranceMethods.push('na');
-                } else if (values.indexOf('nodqmethodsused') > 0) {
-                    self.dataQualityAssuranceMethods.removeAll();
-                    self.dataQualityAssuranceMethods.push('nodqmethodsused');
-                } else {
-                    self.dataQualityAssuranceMethods.removeAll(['na', 'nodqmethodsused']);
+                if (values.length > self.dataQualityAssuranceMethods.oldValues.length) {
+                    addedItem = diffArrays(values, self.dataQualityAssuranceMethods.oldValues)[0];
+                    if ( addedItem === 'na' ) {
+                        self.dataQualityAssuranceMethods.removeAll();
+                        self.dataQualityAssuranceMethods.push('na');
+                    } else if (addedItem === 'nodqmethodsused') {
+                        self.dataQualityAssuranceMethods.removeAll();
+                        self.dataQualityAssuranceMethods.push('nodqmethodsused');
+                    } else {
+                        self.dataQualityAssuranceMethods.removeAll(['na', 'nodqmethodsused']);
+                    }
+
+                    self.dataQualityAssuranceMethods.oldValues = self.dataQualityAssuranceMethods().slice(0);
                 }
             }
         }
     });
+
+    function diffArrays(a, b) {
+        var diff = [];
+        a && a.forEach(function (item) {
+            if ( b.indexOf(item) <= -1 ) {
+                diff.push(item)
+            }
+        });
+
+        return diff;
+    }
+
     self.transients.dataAccessMethods = ko.computed({
         read: function () {
             return self.dataAccessMethods();
         },
         write: function (values) {
             if (values && values.length > 0) {
-                if ( values.indexOf('na') > 0) {
+                if ( values.indexOf('na') >= 0) {
                     self.dataAccessMethods.removeAll();
                     self.dataAccessMethods.push('na');
                 } else {

@@ -686,7 +686,7 @@
 
                     <div class="span8">
                         <div class="controls">
-                            <input id="dataManagementPolicyURL" type="text" class="full-width" data-bind="value: dataManagementPolicyURL" data-validation-engine="validate[custom[url],groupRequired[DataManagement]]"/>
+                            <input id="dataManagementPolicyURL" type="text" class="full-width" data-bind="value: dataManagementPolicyURL" data-validation-engine="validate[groupRequired[DataManagement],custom[url]]"/>
                         </div>
                     </div>
                 </div>
