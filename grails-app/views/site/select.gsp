@@ -19,6 +19,10 @@
         },
         returnTo = "${params.returnTo}";
     </asset:script>
+    <asset:stylesheet src="leaflet-manifest.css"/>
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="leaflet-manifest.js"/>
+    <asset:javascript src="siteSelection.js"/>
 </head>
 
 <body>

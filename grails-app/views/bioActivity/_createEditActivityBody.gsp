@@ -233,7 +233,7 @@
         var output = $.grep(activity.outputs || [], function(it){return it.name == outputName})[0] || { name: outputName};
         var config = $.grep(metaModel.outputConfig || [], function(it){return it.outputName == outputName})[0] || {};
         config.model = outputModels[outputName];
-        config = _.extend({}, outputModelConfig, config, activityLevelData);
+        config = _.extend(activityLevelData, outputModelConfig, config);
         initialiseOutputViewModel(viewModelName, config.model.dataModel, elementId, activity, output, master, config, viewModel);
 
         setTimeout(function(){
