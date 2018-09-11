@@ -224,7 +224,7 @@
         </g:if>
 
 
-        $('.validationEngineContainer').validationEngine();
+        $('.validationEngineContainer').validationEngine({promptPosition: 'topLeft'});
         $('.helphover').popover({animation: true, trigger:'hover'})
 
         //Main tab selection
