@@ -743,8 +743,8 @@ input.full-width-input {
     background: #4cbc4c;
     color: white;
     padding: 5px 10px;
-    max-height: 50px;
-    overflow-y: scroll;
+    min-height: 30px;
+    overflow-y: auto;
     font-size: 11px;
 }
 
@@ -752,8 +752,8 @@ input.full-width-input {
     background: #f3f61f;
     color: black;
     padding: 5px 10px;
-    max-height: 50px;
-    overflow-y: scroll;
+    min-height: 30px;
+    overflow-y: auto;
     font-size: 11px;
 }
 
@@ -761,8 +761,8 @@ input.full-width-input {
     background: #e22019;
     color: white;
     padding: 5px 10px;
-    max-height: 50px;
-    overflow-y: scroll;
+    min-height: 30px;
+    overflow-y: auto;
     font-size: 11px;
 }
 
@@ -770,8 +770,8 @@ input.full-width-input {
     background: #a5a9a5;
     color: #ffffff;
     padding: 5px 10px;
-    max-height: 50px;
-    overflow-y: scroll;
+    min-height: 30px;
+    overflow-y: auto;
     font-size: 11px;
 }
 

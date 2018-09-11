@@ -487,6 +487,9 @@ ko.bindingHandlers.autocompleteFromList = {
             })
         }
 
+        $element.on('change', function () {
+            params.value($element.val());
+        });
         $element.val(params.value());
         params.value.subscribe(function (newValue) {
             $element.val(newValue);

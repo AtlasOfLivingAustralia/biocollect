@@ -722,12 +722,9 @@
                     <hr class="border-bottom-separator"/>
                 </div>
             </div>
-
-    <!-- /ko -->
             <g:render template="../projectActivity/indexingNote"/>
-
-    <!-- /ko -->
-<!-- /ko -->
+            <!-- /ko -->
+        <!-- /ko -->
 </div>
 
 
