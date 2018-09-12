@@ -294,7 +294,7 @@
                                                     </div>
                                                     <!-- /ko -->
 
-                                                    <!-- ko if: dataQualityAssuranceMethods -->
+                                                    <!-- ko if: dataQualityAssuranceMethods().length -->
                                                     <div class="row-fluid margin-top-10 margin-bottom-10">
                                                         <div class="span4">
                                                             <g:message code="project.survey.info.dataQualityAssuranceMethod"/>
