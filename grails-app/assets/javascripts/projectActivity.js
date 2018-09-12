@@ -948,6 +948,6 @@ function isEmbargoDateRequired(field, rules, i, options) {
 function initialiseValidator() {
     var tabs = ['info', 'species', 'form', 'access', 'visibility', 'alert'];
     $.each(tabs, function (index, label) {
-        $('#project-activities-' + label + '-validation').validationEngine();
+        $('#project-activities-' + label + '-validation').validationEngine({promptPosition: "topLeft"});
     });
 };

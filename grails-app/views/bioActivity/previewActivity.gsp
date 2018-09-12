@@ -26,7 +26,8 @@
         getSingleSpeciesUrl : "${createLink(controller: 'projectActivity', action: 'getSingleSpecies', params: [id: pActivity.projectActivityId])}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
-        uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}"
+        uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
+        searchBieUrl: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10])}"
         }
     </asset:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
