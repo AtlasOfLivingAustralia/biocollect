@@ -426,16 +426,11 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
             success: function (data) {
                 var result = data.resp;
                 if (result && result.message) {
-                    var pActivityId = jsData.projectActivityId ? jsData.projectActivityId : result.projectActivityId;
-                    var found = ko.utils.arrayFirst(self.projectActivities(), function(obj) {
-                        return obj.projectActivityId() == pActivityId;
-                    });
-                    found ? found.published(true) : '';
-                    showAlert("Successfully published, redirecting to survey list page.", "alert-success", self.placeHolder);
+                    showAlert("Successfully published, reloading page now.", "alert-success", self.placeHolder);
                     setTimeout(function() {
-                        $('#activities-tab').tab('show');
-                    }, 3000);
-
+                        saveTabSelection('ul-main-project', 'activities-tab');
+                        window.location.reload(true);
+                    }, 1000);
                 } else{
                     showAlert(data.error ? data.error : "Error publishing the survey", "alert-error", self.placeHolder);
                 }
