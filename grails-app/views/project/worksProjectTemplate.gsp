@@ -88,6 +88,7 @@
         sitesPhotoPointsUrl:"${createLink(controller:'project', action:'projectSitePhotos', id:project.projectId)}",
         getMembersForProjectIdPaginatedUrl: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}",
         removeUserRoleUrl:"${createLink(controller:'user', action:'removeUserWithRoleFromProject')}",
+        getProjectMembersURL: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}/${project.projectId}",
         absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
         isAdmin: ${user?.isAdmin ? 'true' : 'false'},
         isEditor: ${user?.isEditor ? 'true' : 'false'},
