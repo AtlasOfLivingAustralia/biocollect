@@ -40,6 +40,7 @@
             fcConfig.meritProjectLogo = fcConfig.imageLocation + "${grailsApplication.config.merit.projectLogo}";
         </g:if>
     </asset:script>
+    <g:render template="/shared/conditionalLazyLoad"/>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
     <asset:stylesheet src="projects-manifest.css"/>
     <asset:stylesheet src="project-finder.css"/>

@@ -85,6 +85,7 @@
             margin: 5px 0;
         }
     </style>
+    <g:render template="/shared/conditionalLazyLoad"/>
     <asset:stylesheet src="base.css"/>
     <asset:stylesheet src="organisation.css"/>
     <asset:stylesheet src="facets-filter-view.css"/>
@@ -107,7 +108,7 @@
 
         <g:render template="/shared/flashScopeMessage"/>
 
-        <div class="row-fluid">
+        <div class="row-fluid" id="heading">
             <ul class="nav nav-tabs" data-tabs="tabs">
                 <fc:tabList tabs="${content}"/>
             </ul>

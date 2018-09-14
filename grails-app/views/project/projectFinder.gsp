@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: mol109
-  Date: 8/6/17
-  Time: 11:34 AM
---%>
-
 <%@ page import="grails.converters.JSON; au.org.ala.biocollect.merit.SettingPageType" contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
@@ -98,6 +91,7 @@
             fcConfig.meritProjectLogo = fcConfig.imageLocation + "${grailsApplication.config.merit.projectLogo}";
         </g:if>
     </asset:script>
+    <g:render template="/shared/conditionalLazyLoad"/>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
     <asset:javascript src="common.js" />
     <asset:javascript src="project-activity-manifest.js" />
@@ -159,7 +153,6 @@
     });
 
     var projectFinder = new ProjectFinder();
-
 </asset:script>
 </body>
 </html>

@@ -1,7 +1,6 @@
 /**
  * Created by Temi Varghese on 22/10/15.
  */
-
 //= require lz-string-1.4.4/lz-string.min.js
 //= require button-toggle-events.js
 //= require facets.js
@@ -32,7 +31,7 @@ function ProjectFinder() {
 
     var refreshSearch = false;
 
-    var filterQuery
+    var filterQuery, lazyLoad;
 
     this.availableProjectTypes = new ProjectViewModel({}, false).transients.availableProjectTypes;
 
@@ -98,6 +97,11 @@ function ProjectFinder() {
         // this.listView = ko.observable(true);
         this.viewMode = ko.observable("tileView");
 
+        this.viewMode.subscribe(function (newValue) {
+            if ((newValue === 'tileView') || (newValue === 'listView')) {
+                setTimeout(updateLazyLoad, 0);
+            }
+        });
 
         /**
          * this function is used to tell project/index or citizenscience page that the traffic is coming from
@@ -311,6 +315,7 @@ function ProjectFinder() {
                 });
                 self.pago.init(projectVMs);
                 pageWindow.filterViewModel.setFacets(data.facets || []);
+                updateLazyLoad();
 
                 // Issue map search in parallel to 'standard' search
                 // standard search is required to drive facet display
@@ -326,6 +331,16 @@ function ProjectFinder() {
             }
         })
     };
+
+    function updateLazyLoad() {
+        if (!lazyLoad) {
+            lazyLoad = new LazyLoad({
+                elements_selector: "img.lazy"
+            });
+        } else {
+            lazyLoad.update();
+        }
+    }
 
     /**
      * this is the function calling server with the latest query.

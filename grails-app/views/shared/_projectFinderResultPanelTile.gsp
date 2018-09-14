@@ -15,7 +15,7 @@
         <div class="span12 padding-left-5" style="min-width: 80px;">
             <div>
                 <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
-                    <img class="image-logo" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name, src:transients.imageUrl || '${noImageUrl}'}" onerror="imageError(this, '${noImageUrl}');"/>
+                    <img class="image-logo lazy" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name, 'data-src':transients.imageUrl || '${noImageUrl}'}" onerror="imageError(this, '${noImageUrl}');"/>
                 </a>
             </div>
             <div data-bind="visible: isSciStarter" class="inline-block"><img class="logo-small"
