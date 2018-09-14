@@ -96,10 +96,12 @@
         occurrenceUrl: "${occurrenceUrl}",
         spatialUrl: "${spatialUrl}",
         getMembersForProjectIdPaginatedUrl: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}",
+        getProjectMembersURL: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}/${project.projectId}",
         removeUserRoleUrl:"${createLink(controller:'user', action:'removeUserWithRoleFromProject')}",
         absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
         opportunisticDisplayName: "<g:message code="project.facets.methodType.opportunistic"/>",
-        projectNotificationUrl: "${createLink(controller: 'project', action: 'sendEmailToMembers')}",
+        projectNotificationUrl: "${createLink(controller: 'project', action: 'sendEmailToMembers', params: [id: project.projectId])}",
+        projectTestNotificationUrl: "${createLink(controller: 'project', action: 'sendTestEmail', params: [id: project.projectId])}",
         surveyMethods: <fc:getSurveyMethods/>
         },
         here = window.location.href;

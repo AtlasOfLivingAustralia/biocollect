@@ -20,6 +20,7 @@
                 <li><a href="#permissions" id="permissions-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Members</a></li>
                 <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
                     <li><a href="#project-audit" id="project-audit-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Audit</a></li>
+                    <li><a href="#project-notification" id="project-notification-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Notification</a></li>
                 </g:if>
             </ul>
         </div>
@@ -74,6 +75,9 @@
                 <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
                     <div id="project-audit" class="pill-pane">
                         <g:render template="/admin/auditProject"/>
+                    </div>
+                    <div id="project-notification" class="pill-pane">
+                        <g:render template="/project/notification"/>
                     </div>
                 </g:if>
 
