@@ -357,10 +357,10 @@ class ProjectController {
 
 
     def myProjects() {
-        Map result = homePage()
+        Map result = projectFinder()
         result.isUserPage = true
 
-        render view: 'homePage',  model:  result
+        render view: 'projectFinder',  model:  result
     }
 
     def projectFinder() {

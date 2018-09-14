@@ -51,6 +51,7 @@
         sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}'
   }
     </asset:script>
+    <g:render template="/shared/conditionalLazyLoad"/>
     <asset:javascript src="common.js" />
     <asset:javascript src="projects-manifest.js" />
     <asset:javascript src="project-finder.js" />
