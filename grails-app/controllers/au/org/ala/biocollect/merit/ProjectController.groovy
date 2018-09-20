@@ -4,6 +4,7 @@ import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.PdfGenerationService
 import au.org.ala.biocollect.ProjectActivityService
+import au.org.ala.biocollect.UtilService
 import au.org.ala.biocollect.VocabService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
@@ -42,6 +43,7 @@ class ProjectController {
     FormSpeciesFieldParserService formSpeciesFieldParserService
     CollectoryService collectoryService
     PdfGenerationService pdfGenerationService
+    UtilService utilService
 
     def grailsApplication
 
@@ -589,7 +591,7 @@ class ProjectController {
             }
 
             facets = projectService.addFacetExpandCollapseState(facets)
-            projectService.getDisplayNamesForFacets(facets, allFacetConfig)
+            utilService.getDisplayNamesForFacets(facets, allFacetConfig)
         }
 
         projects?.each{ Map project ->

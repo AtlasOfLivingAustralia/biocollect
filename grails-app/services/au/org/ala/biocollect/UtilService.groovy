@@ -1,17 +1,23 @@
 package au.org.ala.biocollect
 
+import au.org.ala.web.AuthService
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
+import org.apache.http.HttpStatus
 import org.apache.http.entity.mime.HttpMultipartMode
 import org.apache.http.entity.mime.MultipartEntity
+import org.apache.http.entity.mime.content.FileBody
+
 //import org.apache.http.entity.mime.content.ByteArrayBody
 //import org.apache.http.entity.mime.content.InputStreamBody
-import org.apache.http.HttpStatus
 import org.apache.http.entity.mime.content.StringBody
-import org.apache.http.entity.mime.content.FileBody
+import org.springframework.context.MessageSource
+
 import java.nio.charset.StandardCharsets
 
 class UtilService {
+    AuthService authService
+    MessageSource messageSource
 
     /**
      * Post a HTTP multipart/form-data request to external web sites.
@@ -77,5 +83,32 @@ class UtilService {
 
     def removeHTMLTags(String content){
         content?.replaceAll("<[^>]*>", "")
+    }
+
+    /**
+     * Convert facet names and terms to a human understandable text.
+     * @param facets
+     * @return
+     */
+    List getDisplayNamesForFacets(facets, List facetConfig) {
+        facets?.each { facet ->
+            switch (facet.name) {
+                case 'userId':
+                    List userIds = facet.terms.collect { it.term }
+                    Map users = authService.getUserDetailsById(userIds, false)?.users
+                    facet.terms.each { term ->
+                        term.title = users[term.term]?.displayName
+                    }
+                    break;
+                default:
+                    facet.terms?.each { term ->
+                        term.title = messageSource.getMessage("facets." + facet.name + "." + term.term, [].toArray(), term.name, Locale.default)
+                    }
+            }
+
+            Map facetSetting = facetConfig.find { it.name == facet.name }
+            facet.title = facetSetting?.title
+            facet.helpText = facetSetting?.helpText
+        }
     }
 }

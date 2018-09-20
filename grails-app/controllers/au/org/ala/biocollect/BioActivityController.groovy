@@ -32,6 +32,7 @@ class BioActivityController {
     LinkGenerator grailsLinkGenerator
     SettingService settingService
     AuthService authService
+    UtilService utilService
 
     static int MAX_FLIMIT = 500
 
@@ -643,9 +644,9 @@ class BioActivityController {
             facets = projectActivityService.addSpecialFacets(facets, allFacetConfig)
         }
 
-        facets = projectActivityService.getDisplayNamesForFacets(facets, allFacetConfig)
+        facets = utilService.getDisplayNamesForFacets(facets, allFacetConfig)
         facets = projectService.addFacetState(facets, allFacetConfig)
-        projectService.getDisplayNamesForFacets(facets, allFacetConfig)
+
         render([activities: activities, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
     }
 

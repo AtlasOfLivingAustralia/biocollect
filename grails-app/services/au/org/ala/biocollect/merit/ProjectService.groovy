@@ -775,22 +775,6 @@ class ProjectService {
     }
 
     /**
-     * Convert facet names and terms to a human understandable text.
-     * @param facets
-     * @return
-     */
-    List getDisplayNamesForFacets(List facets, List facetConfig){
-        facets?.each { facet ->
-            Map config = facetConfig.find { it.name == facet.name }
-            facet.title = config?.title
-            facet.helpText = config?.helpText
-            facet.terms?.each{ term ->
-                term.title = messageSource.getMessage("project.facets."+facet.name+"."+term.term, [].toArray(), term.name, Locale.default)
-            }
-        }
-    }
-
-    /**
      * Check if project has mobile application attached.
      * @param project
      * @return
