@@ -51,6 +51,17 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.transients.showEmailDownloadPrompt = ko.observable(false);
     self.transients.downloadEmail = ko.observable(user ? user.userName : null);
     self.transients.loading = ko.observable(false);
+    self.transients.activitiesToDelete = ko.observableArray([]);
+    self.transients.showBulkActionButtons = ko.pureComputed(function () {
+        var activities = self.activities(), show = false;
+        activities.forEach(function (item) {
+            if (item.userCanModerate) {
+                show = true;
+            }
+        });
+
+        return show && !!self.transients.activitiesToDelete().length;
+    });
 
     self.sort.subscribe(function (newValue) {
         self.refreshPage();
@@ -254,6 +265,75 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 });
             }
         });
+    };
+
+    self.bulkDelete = function (activity) {
+        var numberOfActivities = self.transients.activitiesToDelete().length;
+        bootbox.confirm("Are you sure you want to delete " + numberOfActivities + " activities?", function (result) {
+            if (result) {
+                var bulkDeletePayload = self.getBulkDeletePayloads(),
+                    promises = [],
+                    counter = 0;
+                for (var projectId in bulkDeletePayload) {
+                    var url = fcConfig.activityBulkDeleteUrl + "?projectId=" + projectId;
+                    promises.push($.ajax({
+                        url: url,
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(bulkDeletePayload[projectId]),
+                        success: function (data) {
+                            counter ++;
+                            if (counter === promises.length) {
+                                if (data.text == 'deleted') {
+                                    showAlert("Successfully deleted. Indexing is in process, search result will be updated in few minutes.", "alert-success", self.transients.placeHolder);
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 3000);
+                                } else {
+                                    showAlert("Error deleting the survey, please try again later.", "alert-error", self.transients.placeHolder);
+                                }
+                            }
+                        },
+                        error: function (data) {
+                            counter ++;
+                            if (counter === promises.length) {
+                                if (data.status == 401) {
+                                    var message = $.parseJSON(data.responseText);
+                                    bootbox.alert(message.error);
+                                } else if (data.status == 404) {
+                                    showAlert("Record not available. Indexing might be in process, refreshing the page now..", "alert-error", self.transients.placeHolder);
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 3000);
+                                } else {
+                                    alert('An unhandled error occurred: ' + data);
+                                }
+                            }
+                        }
+                    }));
+                }
+            }
+        });
+    };
+
+    self.getBulkDeletePayloads = function () {
+        var activityIds = self.transients.activitiesToDelete(),
+            activities = self.activities(),
+            result = {};
+
+        activityIds.forEach(function (id) {
+            var activity = $.grep(activities, function (act) {
+                return act.activityId() === id
+            })[0];
+
+            if (!result[activity.projectId()]) {
+                result[activity.projectId()] = {ids: []};
+            }
+
+            result[activity.projectId()].ids.push(id);
+        });
+
+        return result;
     };
 
     /**
@@ -672,6 +752,7 @@ var ActivityRecordViewModel = function (activity) {
 
     self.activityId = ko.observable(activity.activityId);
     self.showCrud = ko.observable(activity.showCrud);
+    self.userCanModerate = activity.userCanModerate;
     self.projectActivityId = ko.observable(activity.projectActivityId);
     self.name = ko.observable(activity.name);
     self.type = ko.observable(activity.type);

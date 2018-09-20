@@ -1,7 +1,24 @@
 function EmailViewModel(options) {
     var self = this,
         notificationId = options.notificationId || '#project-notification-tab',
-        initMembers = false;
+        initMembers = false,
+        specialRecipientList = [
+        {
+            userId: "ALL",
+            displayName: "All Members"
+        },
+        {
+            userId: "ALL_ADMINS",
+            displayName: "All Admins"
+        },
+        {
+            userId: "ALL_EDITORS",
+            displayName: "All Editors"
+        },
+        {
+            userId: "ALL_PROJECT_PARTICIPANTS",
+            displayName: "All Project Participants"
+        }];
     self.body = ko.observable('');
     self.subject = ko.observable('');
 

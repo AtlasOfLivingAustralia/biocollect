@@ -257,7 +257,7 @@ select,input[type="text"],input[type="password"],input[type="datetime"],input[ty
 }
 
 .display-inline-block{
-    display: inline-block;
+    display: inline-block !important;
     vertical-align: bottom;
 }
 

@@ -7,6 +7,7 @@ import au.org.ala.web.UserDetails
 import grails.converters.JSON
 import groovyx.net.http.ContentType
 import org.apache.commons.io.FilenameUtils
+import org.apache.http.HttpStatus
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
@@ -32,6 +33,7 @@ class BioActivityController {
     LinkGenerator grailsLinkGenerator
     SettingService settingService
     AuthService authService
+    UtilService utilService
 
     static int MAX_FLIMIT = 500
 
@@ -315,6 +317,18 @@ class BioActivityController {
         render result as JSON
     }
 
+    @PreAuthorise(accessLevel = 'moderator', projectIdParam = 'projectId')
+    def bulkDelete() {
+        Map payload = request.JSON
+        List ids = payload.ids
+        if ( ids ) {
+            Map resp = activityService.bulkDelete(ids)
+            render text: (resp as JSON), status: resp.statusCode
+        } else {
+            render (text: "JSON payload must have 'ids' property.", status: HttpStatus.SC_BAD_REQUEST)
+        }
+    }
+
     /**
      * View Activity Survey Details.
      * @param id activity id
@@ -592,8 +606,12 @@ class BioActivityController {
 
         List activities = searchResult?.hits?.hits
         List facets
+        Map userCanModerateForProjects = [:]
         activities = activities?.collect {
             Map doc = it._source
+            if ( !userCanModerateForProjects.hasProperty ( doc.projectId ) ) {
+                userCanModerateForProjects[doc.projectId] = projectService.canUserModerateForProject(queryParams.userId, doc.projectId)
+            }
 
             Map result =
             [
@@ -615,7 +633,8 @@ class BioActivityController {
                     projectId        : doc.projectActivity?.projectId,
                     thumbnailUrl     : doc.thumbnailUrl,
                     showCrud         : (doc.userId == queryParams.userId) ||
-                                        (queryParams.userId && doc.projectId && (projectService.isUserAdminForProject(queryParams.userId, doc.projectId)))
+                                        (queryParams.userId && doc.projectId && (projectService.isUserAdminForProject(queryParams.userId, doc.projectId))),
+                    userCanModerate  : userCanModerateForProjects[doc.projectId]
 
             ]
             result
@@ -643,9 +662,8 @@ class BioActivityController {
             facets = projectActivityService.addSpecialFacets(facets, allFacetConfig)
         }
 
-        facets = projectActivityService.getDisplayNamesForFacets(facets, allFacetConfig)
+        facets = utilService.getDisplayNamesForFacets(facets, allFacetConfig)
         facets = projectService.addFacetState(facets, allFacetConfig)
-        projectService.getDisplayNamesForFacets(facets, allFacetConfig)
         render([activities: activities, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
     }
 
@@ -662,7 +680,7 @@ class BioActivityController {
                 queryParams.put(key, value)
             }
         }
-
+    
         queryParams.max = queryParams.max ?: 10
         queryParams.offset = queryParams.offset ?: 0
         queryParams.flimit = queryParams.flimit ?: 20

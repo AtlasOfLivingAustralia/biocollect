@@ -7,6 +7,7 @@ class RoleService {
 
     public static final String GRANT_MANAGER_ROLE = 'caseManager'
     public static final String PROJECT_ADMIN_ROLE = 'admin'
+    public static final String PROJECT_MODERATOR_ROLE = 'moderator'
     public static final String PROJECT_EDITOR_ROLE = 'editor'
     public static final String PROJECT_PARTICIPANT_ROLE = 'projectParticipant'
     public static final String LOGGED_IN_USER_ROLE = 'loggedInUser'
@@ -32,11 +33,11 @@ class RoleService {
     public List getRoles() {
         List<String> allRoles = roles() // cached
         if (allRoles.size() <= 1) {
-            // possible empty list or value, due to previous WS call timing out
+            // possible empty list or value, due to pr  evious WS call timing out
             allRoles = roles(true) // reload with cleared cache
         }
 
-        allRoles.findAll { it == PROJECT_ADMIN_ROLE || it == PROJECT_EDITOR_ROLE || it == PROJECT_PARTICIPANT_ROLE}
+        allRoles.findAll { it == PROJECT_ADMIN_ROLE || it == PROJECT_EDITOR_ROLE || it == PROJECT_PARTICIPANT_ROLE || it == PROJECT_MODERATOR_ROLE }
     }
 
     public List getAugmentedRoles() {

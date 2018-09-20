@@ -109,6 +109,10 @@ class ActivityService {
         webService.doDelete(grailsApplication.config.ecodata.service.url + '/activity/' + id)
     }
 
+    def bulkDelete(List ids) {
+        webService.doPost(grailsApplication.config.ecodata.service.url + '/activity/bulkDelte', [ids: ids])
+    }
+
     def isUserOwnerForActivity(userId, id) {
         webService.doGet(grailsApplication.config.ecodata.service.url + '/activity/isUserOwnerForActivity/'+id, [userId: userId])?.resp?.userIsOwner
     }

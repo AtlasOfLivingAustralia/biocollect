@@ -314,3 +314,5 @@ methodType = [
     'opportunistic',
     'systematic'
 ]
+
+notification.enabled=false

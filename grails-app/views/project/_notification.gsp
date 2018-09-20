@@ -36,6 +36,19 @@
         </div>
     </div>
     <div class="control-group">
+        <label class="control-label"><g:message code="notification.bulkActions"/> </label>
+        <div class="controls" id="notification-selected-members">
+            <div class="row-fluid" >
+                <div class="span12" >
+                    <button class="btn btn-default">Select all Members</button>
+                    <button class="btn btn-default">Select only Admins</button>
+                    <button class="btn btn-default">Select only Editors</button>
+                    <button class="btn btn-default">Select only Project Participants</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="control-group">
         <div class="control-label">
             <label class="control-label"><g:message code="notification.projectMembers"/> </label>
         </div>
@@ -47,7 +60,7 @@
                         <th>User Id</th>
                         <th>User Name</th>
                         <th>Role</th>
-                        <th>Actions</th>
+                        <th>Select/De-select member</th>
                         </thead>
                         <tbody data-bind="foreach: transients.members">
                         <tr>
