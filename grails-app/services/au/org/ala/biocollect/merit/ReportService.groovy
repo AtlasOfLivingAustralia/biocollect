@@ -609,7 +609,7 @@ class ReportService {
         }
 
         Map projectStatusByTypeAsScores = projectStatusByType.collectEntries { key, value ->
-            String title = messageSource.getMessage('project.facets.typeOfProject.'+key, null, "Unspecified", Locale.default)
+            String title = messageSource.getMessage('facets.typeOfProject.'+key, null, "Unspecified", Locale.default)
             [(key):asScore(title, value)]
         }
         [projectStatusByType:projectStatusByTypeAsScores,

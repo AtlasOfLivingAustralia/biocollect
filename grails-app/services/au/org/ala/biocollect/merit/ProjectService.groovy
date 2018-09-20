@@ -381,6 +381,39 @@ class ProjectService {
     }
 
     /**
+     * Does the current user have moderator permission for the requested projectId?
+     *
+     * @param userId
+     * @param projectId
+     * @return
+     */
+    def isUserModeratorForProject(userId, projectId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserModeratorForProject?projectId=${projectId}&userId=${userId}"
+        webService.getJson(url)?.userIsModerator // either will be true or false
+    }
+
+    /**
+     * Does the current user have permission to edit the requested projectId?
+     * Checks for the ADMIN role in CAS and then checks the UserPermission
+     * lookup in ecodata.
+     *
+     * @param userId
+     * @param projectId
+     * @return boolean
+     */
+    def canUserModerateForProject(userId, projectId) {
+        def userCanModerate
+
+        if (userService.userIsSiteAdmin()) {
+            userCanModerate = true
+        } else {
+            userCanModerate = userService.canUserModerateForProject(userId, projectId)
+        }
+
+        userCanModerate
+    }
+
+    /**
      * Does the current user have permission to edit the requested projectId?
      * Checks for the ADMIN role in CAS and then checks the UserPermission
      * lookup in ecodata.

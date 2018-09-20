@@ -1,10 +1,6 @@
 package au.org.ala.biocollect.merit
 
-import au.org.ala.biocollect.DateUtils
-import au.org.ala.biocollect.OrganisationService
-import au.org.ala.biocollect.PdfGenerationService
-import au.org.ala.biocollect.ProjectActivityService
-import au.org.ala.biocollect.VocabService
+import au.org.ala.biocollect.*
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
 import au.org.ala.biocollect.projectresult.Initiator
@@ -42,6 +38,7 @@ class ProjectController {
     FormSpeciesFieldParserService formSpeciesFieldParserService
     CollectoryService collectoryService
     PdfGenerationService pdfGenerationService
+    UtilService utilService
 
     def grailsApplication
 
@@ -71,7 +68,7 @@ class ProjectController {
             project.sites?.sort {it.name}
             project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
             if(project.origin){
-                project.origin = messageSource.getMessage("project.facets.origin." + project.origin, [].toArray(), project.origin, Locale.default)
+                project.origin = messageSource.getMessage("facets.origin." + project.origin, [].toArray(), project.origin, Locale.default)
             }
 
             String view = 'project'
@@ -589,7 +586,7 @@ class ProjectController {
             }
 
             facets = projectService.addFacetExpandCollapseState(facets)
-            projectService.getDisplayNamesForFacets(facets, allFacetConfig)
+            utilService.getDisplayNamesForFacets(facets, allFacetConfig)
         }
 
         projects?.each{ Map project ->
@@ -1071,46 +1068,50 @@ class ProjectController {
 
     @PreAuthorise(accessLevel = 'admin')
     def sendEmailToMembers(String id) {
-        Map payload = request.JSON
-        List recipients = payload?.recipients
-        String subject = payload?.subject
-        String body = payload?.body
+        if(grailsApplication.config.notification.enabled?.toBoolean()){
+            Map payload = request.JSON
+            List recipients = payload?.recipients
+            String subject = payload?.subject
+            String body = payload?.body
 
-        if(id){
-            if (recipients && subject && body) {
-                def result = projectService.sendEmailNotificationToMembers(subject, body, recipients, id)
-                if (result.success) {
-                    render ( status: HttpStatus.SC_OK, text: result.message )
+            if(id){
+                if (recipients && subject && body) {
+                    def result = projectService.sendEmailNotificationToMembers(subject, body, recipients, id)
+                    if (result.success) {
+                        render ( status: HttpStatus.SC_OK, text: result.message )
+                    } else {
+                        render ( status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: result.message )
+                    }
                 } else {
-                    render ( status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: result.message )
+                    render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameters in payload - subject, recipients,  body" )
                 }
             } else {
-                render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameters in payload - subject, recipients,  body" )
+                render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameter - id" )
             }
-        } else {
-            render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameter - id" )
         }
     }
 
     @PreAuthorise(accessLevel = 'admin')
     def sendTestEmail(String id) {
-        Map payload = request.JSON
-        String subject = payload?.subject
-        String body = payload?.body
+        if(grailsApplication.config.notification.enabled?.toBoolean()){
+            Map payload = request.JSON
+            String subject = payload?.subject
+            String body = payload?.body
 
-        if(id){
-            if (subject && body) {
-                def result = projectService.sendTestEmail(subject, body)
-                if (result.success) {
-                    render ( status: HttpStatus.SC_OK, text: result.message )
+            if(id){
+                if (subject && body) {
+                    def result = projectService.sendTestEmail(subject, body)
+                    if (result.success) {
+                        render ( status: HttpStatus.SC_OK, text: result.message )
+                    } else {
+                        render ( status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: result.message )
+                    }
                 } else {
-                    render ( status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: result.message )
+                    render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameters in payload - subject, recipients,  body" )
                 }
             } else {
-                render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameters in payload - subject, recipients,  body" )
+                render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameter - id" )
             }
-        } else {
-            render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameter - id" )
         }
     }
 

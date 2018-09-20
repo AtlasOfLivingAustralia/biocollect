@@ -79,6 +79,11 @@ class AclFilterFilters {
                                 errorMsg = "Access denied: User does not have <b>admin</b> permission ${projectId?'for project':''}"
                             }
                             break
+                        case 'moderator':
+                            if (!projectService.canUserModerateForProject(userId, projectId)) {
+                                errorMsg = "Access denied: User does not have <b>moderator</b> permission ${projectId?'for project':''}"
+                            }
+                            break
                         case 'editor':
                             if (!projectService.canUserEditProject(userId, projectId)) {
                                 errorMsg = "Access denied: User does not have <b>editor</b> permission ${projectId?'for project':''}"

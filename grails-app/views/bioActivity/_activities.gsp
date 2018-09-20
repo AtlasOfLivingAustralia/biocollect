@@ -58,14 +58,22 @@
                             <div class="alert alert-info hide" id="downloadStartedMsg"><i class="fa fa-spin fa-spinner">&nbsp;&nbsp;</i>Preparing download, please wait...</div>
 
                             <div class="row-fluid" data-bind="visible: version().length == 0">
-                                <div class="span9">
+                                <div class="span12">
                                     <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record(s)</h3>
-                                </div>
-                                <div class="span3 padding-top-0 margin-bottom-2">
-                                    <button data-bind="click: download, disable: transients.loading" data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}" class="btn btn-primary pull-right padding-top-1"><span class="fa fa-download">&nbsp;</span>Download</button>
+                                    <div class="pull-right margin-bottom-2 margin-top-1">
+                                        <span>Bulk actions -
+                                            <div class="btn-group">
+                                                <button data-bind="disable: !transients.showBulkActionButtons(), click: bulkDelete" class="btn btn-default"><span class="fa fa-trash">&nbsp;</span> <g:message code="project.bulkactions.delete"/></button>
+                                                <button data-bind="disable: !transients.showBulkActionButtons()" class="btn btn-default"><span class="fa fa-lock">&nbsp;</span> <g:message code="project.bulkactions.embargo"/></button>
+                                                <button data-bind="disable: !transients.showBulkActionButtons()" class="btn btn-default"><span class="fa fa-unlock">&nbsp;</span> <g:message code="project.bulkactions.release"/></button>
+                                            </div>
+                                        </span>
+                                        <button data-bind="click: download, disable: transients.loading" data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}" class="btn btn-primary padding-top-1"><span class="fa fa-download">&nbsp;</span>Download</button>
+                                    </div>
+
                                 </div>
                             </div>
-                            <div class="row-fluid" data-bind="visible: transients.showEmailDownloadPrompt()">
+                        <div class="row-fluid" data-bind="visible: transients.showEmailDownloadPrompt()">
                                 <div class="well info-panel">
                                     <div class="margin-bottom-2">
                                         <span class="fa fa-info-circle">&nbsp;&nbsp;</span>This download may take several minutes. Please provide your email address, and we will notify you by email when the download is ready.
@@ -99,6 +107,9 @@
                                         </th>
                                         <th>
                                             Action
+                                        </th>
+                                        <th>
+                                            Select item
                                         </th>
                                     </tr>
                                 </thead>
@@ -166,9 +177,9 @@
                                                             data-bind="text: $parent.ownerName"></span>
                                                     </div>
                                                     <div data-bind="visible: coordinates && coordinates[0]">
-                                                        Coordinate: <span class="ellipsis-50 display-inline-block"
+                                                        Coordinate: <span class="display-inline-block ellipsis-50"
                                                             data-bind="text: coordinates[0], attr: {title: coordinates[0]}"></span>
-                                                        <span class="ellipsis-50 display-inline-block"
+                                                        <span class="display-inline-block ellipsis-50"
                                                             data-bind="text: ',' + coordinates[1], attr: {title: coordinates[1]}"></span>
                                                     </div>
                                                     <div data-bind="visible: $parent.name() && !fcConfig.hideProjectAndSurvey">
@@ -197,6 +208,9 @@
                                                     <button class="btn btn-small btn-default margin-top-5" data-bind="click: function(){ $parent.transients.parent.remove($parent) }" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
                                                 </span>
                                             </div>
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" data-bind="disable: !$parent.userCanModerate, value: $parent.activityId, checked: $parent.transients.parent.transients.activitiesToDelete"/>
                                         </td>
                                     </tr>
                                     <!-- /ko -->
@@ -258,7 +272,10 @@
                                                 </span>
                                             </div>
                                         </td>
-                                    </tr>
+                                        <td>
+                                            <input type="checkbox" data-bind="disable: !userCanModerate, value: activityId, checked: transients.parent.transients.activitiesToDelete"/>
+                                        </td>
+                                </tr>
                                     <!-- /ko -->
                                     <!-- /ko -->
                                 </tbody>
