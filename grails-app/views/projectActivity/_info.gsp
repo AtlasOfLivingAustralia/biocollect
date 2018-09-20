@@ -83,7 +83,7 @@
                                 data-validation-engine="validate[required]">
                             <option value=""><g:message code="project.survey.info.methodType.noSelection.displayName"/></option>
                             <g:each in="${grailsApplication.config.methodType}" var="type">
-                                <option value="${type}"><g:message code="project.facets.methodType.${type}"/></option>
+                                <option value="${type}"><g:message code="facets.methodType.${type}"/></option>
                             </g:each>
                         </select>
                     </div>
@@ -361,21 +361,21 @@
                                            data-bind="checked: spatialAccuracy"
                                            value="<g:message code="project.survey.info.spatialAccuracy.high.value"/>"
                                            data-validation-engine="validate[required]" >
-                                    <g:message code="project.facets.spatialAccuracy.high"/>
+                                    <g:message code="facets.spatialAccuracy.high"/>
                                 </label>
                                 <label class="radio">
                                     <input name="spatialAccuracy" class="form-control" type="radio"
                                            data-bind="checked: spatialAccuracy"
                                            value="<g:message code="project.survey.info.spatialAccuracy.moderate.value"/>"
                                            data-validation-engine="validate[required]" >
-                                    <g:message code="project.facets.spatialAccuracy.moderate"/>
+                                    <g:message code="facets.spatialAccuracy.moderate"/>
                                 </label>
                                 <label class="radio">
                                     <input name="spatialAccuracy" class="form-control" type="radio"
                                            data-bind="checked: spatialAccuracy"
                                            value="<g:message code="project.survey.info.spatialAccuracy.low.value"/>"
                                            data-validation-engine="validate[required]" >
-                                    <g:message code="project.facets.spatialAccuracy.low"/>
+                                    <g:message code="facets.spatialAccuracy.low"/>
                                 </label>
                             </div>
                             <div class="span6">
@@ -396,28 +396,28 @@
                                            data-bind="checked: speciesIdentification"
                                            value="<g:message code="project.survey.info.speciesIdentification.high.value"/>"
                                            data-validation-engine="validate[required]" >
-                                    <g:message code="project.facets.speciesIdentification.high"/>
+                                    <g:message code="facets.speciesIdentification.high"/>
                                 </label>
                                 <label class="radio">
                                     <input name="speciesIdentification" class="form-control" type="radio"
                                            data-bind="checked: speciesIdentification"
                                            value="<g:message code="project.survey.info.speciesIdentification.moderate.value"/>"
                                            data-validation-engine="validate[required]" >
-                                    <g:message code="project.facets.speciesIdentification.moderate"/>
+                                    <g:message code="facets.speciesIdentification.moderate"/>
                                 </label>
                                 <label class="radio">
                                     <input name="speciesIdentification" class="form-control" type="radio"
                                            data-bind="checked: speciesIdentification"
                                            value="<g:message code="project.survey.info.speciesIdentification.low.value"/>"
                                            data-validation-engine="validate[required]" >
-                                    <g:message code="project.facets.speciesIdentification.low"/>
+                                    <g:message code="facets.speciesIdentification.low"/>
                                 </label>
                                 <label class="radio">
                                     <input name="speciesIdentification" class="form-control" type="radio"
                                            data-bind="checked: speciesIdentification"
                                            value="<g:message code="project.survey.info.speciesIdentification.na.value"/>"
                                            data-validation-engine="validate[required]" >
-                                    <g:message code="project.facets.speciesIdentification.na"/>
+                                    <g:message code="facets.speciesIdentification.na"/>
                                 </label>
                                 %{-- species identification confidence - END--}%
                             </div>
@@ -440,21 +440,21 @@
                                            data-bind="checked: temporalAccuracy"
                                            value="<g:message code="project.survey.info.temporalAccuracy.high.value"/>"
                                            data-validation-engine="validate[required]" >
-                                    <g:message code="project.facets.temporalAccuracy.high"/>
+                                    <g:message code="facets.temporalAccuracy.high"/>
                                 </label>
                                 <label class="radio">
                                     <input name="temporalAccuracy" class="form-control" type="radio"
                                            data-bind="checked: temporalAccuracy"
                                            value="<g:message code="project.survey.info.temporalAccuracy.moderate.value"/>"
                                            data-validation-engine="validate[required]" >
-                                    <g:message code="project.facets.temporalAccuracy.moderate"/>
+                                    <g:message code="facets.temporalAccuracy.moderate"/>
                                 </label>
                                 <label class="radio">
                                     <input name="temporalAccuracy" class="form-control" type="radio"
                                            data-bind="checked: temporalAccuracy"
                                            value="<g:message code="project.survey.info.temporalAccuracy.low.value"/>"
                                            data-validation-engine="validate[required]" >
-                                    <g:message code="project.facets.temporalAccuracy.low"/>
+                                    <g:message code="facets.temporalAccuracy.low"/>
                                 </label>
                             </div>
                             <div class="span6">
@@ -474,21 +474,21 @@
                                            data-bind="checked: nonTaxonomicAccuracy"
                                            value="<g:message code="project.survey.info.nonTaxonomicAccuracy.high.value"/>"
                                            data-validation-engine="validate[required]" >
-                                    <g:message code="project.facets.nonTaxonomicAccuracy.high"/>
+                                    <g:message code="facets.nonTaxonomicAccuracy.high"/>
                                 </label>
                                 <label class="radio">
                                     <input name="nonTaxonomicAccuracy" class="form-control" type="radio"
                                            data-bind="checked: nonTaxonomicAccuracy"
                                            value="<g:message code="project.survey.info.nonTaxonomicAccuracy.moderate.value"/>"
                                            data-validation-engine="validate[required]" >
-                                    <g:message code="project.facets.nonTaxonomicAccuracy.moderate"/>
+                                    <g:message code="facets.nonTaxonomicAccuracy.moderate"/>
                                 </label>
                                 <label class="radio">
                                     <input name="nonTaxonomicAccuracy" class="form-control" type="radio"
                                            data-bind="checked: nonTaxonomicAccuracy"
                                            value="<g:message code="project.survey.info.nonTaxonomicAccuracy.low.value"/>"
                                            data-validation-engine="validate[required]" >
-                                    <g:message code="project.facets.nonTaxonomicAccuracy.low"/>
+                                    <g:message code="facets.nonTaxonomicAccuracy.low"/>
                                 </label>
                             </div>
                         </div>
@@ -527,7 +527,7 @@
                                     <div class="span6">
                                         <label class="checkbox">
                                             <input type="checkbox" value="${dqMethod}" data-bind="checked: transients.dataQualityAssuranceMethods"/>
-                                            <g:message code="project.facets.dataQualityAssuranceMethods.${dqMethod}"/>
+                                            <g:message code="facets.dataQualityAssuranceMethods.${dqMethod}"/>
                                         </label>
                                     </div>
                                 </g:each>
@@ -585,7 +585,7 @@
             %{--<div class="span6">--}%
             %{--<label class="checkbox">--}%
             %{--<input type="checkbox" value="${daMethod}" data-bind="checked: transients.dataAccessMethods"/>--}%
-            %{--<g:message code="project.facets.dataAccessMethods.${daMethod}"/>--}%
+            %{--<g:message code="facets.dataAccessMethods.${daMethod}"/>--}%
             %{--</label>--}%
             %{--</div>--}%
             %{--</g:each>--}%
@@ -649,8 +649,8 @@
                     <div class="controls">
                         <select id="isDataManagementPolicyDocumented" name="isDataManagementPolicyDocumented" class="full-width" data-bind="value: transients.isDataManagementPolicyDocumented" data-validation-engine="validate[required]">
                             <option selected value="">- Please select an option -</option>
-                            <option value="<g:message code="project.survey.info.isDataManagementPolicyDocumented.yes.value"/>"><g:message code="project.facets.isDataManagementPolicyDocumented.yes"/></option>
-                            <option value="<g:message code="project.survey.info.isDataManagementPolicyDocumented.no.value"/>"><g:message code="project.facets.isDataManagementPolicyDocumented.no"/></option>
+                            <option value="<g:message code="project.survey.info.isDataManagementPolicyDocumented.yes.value"/>"><g:message code="facets.isDataManagementPolicyDocumented.yes"/></option>
+                            <option value="<g:message code="project.survey.info.isDataManagementPolicyDocumented.no.value"/>"><g:message code="facets.isDataManagementPolicyDocumented.no"/></option>
                         </select>
                     </div>
                 </div>
