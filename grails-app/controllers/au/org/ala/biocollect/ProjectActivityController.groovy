@@ -190,21 +190,6 @@ class ProjectActivityController {
     }
 
     /**
-     * Get Single Species name and guid for the given project activity identifier
-     * @param id projectActivity identifier
-     * @return
-     */
-    def getSingleSpecies(String id, String output, String dataFieldName) {
-        Map result = projectActivityService.getSingleSpecies(id, output, dataFieldName)
-        if(!result.isSingle){
-            result = [message: 'Not available']
-        }
-
-        render result as JSON
-    }
-
-
-    /**
      * Get the list of species fields, for the specified survey, grouped by outputs
      * This will enable the fine configuration of species by field
      * @param id Survey name

@@ -73,7 +73,7 @@ class ProjectController {
             project.sites?.sort {it.name}
             project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
             if(project.origin){
-                project.origin = messageSource.getMessage("project.facets.origin." + project.origin, [].toArray(), project.origin, Locale.default)
+                project.origin = messageSource.getMessage("facets.origin." + project.origin, [].toArray(), project.origin, Locale.default)
             }
 
             String view = 'project'
@@ -1006,20 +1006,6 @@ class ProjectController {
     def getFacets(){
         List facets = projectService.getFacets()
         render text: [facets: facets] as JSON, contentType: 'application/json'
-    }
-
-    /**
-     * Get Single Species name and guid for the given project identifier
-     * @param id project identifier
-     * @return
-     */
-    def getSingleSpecies(String id, String output, String dataFieldName, String surveyName) {
-        Map result = projectService.getSingleSpecies(id, output, dataFieldName, surveyName)
-        if(!result.isSingle){
-            result = [message: 'Not available']
-        }
-
-        render result as JSON
     }
 
     //Search species by project activity species constraint.

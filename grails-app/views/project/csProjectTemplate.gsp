@@ -98,7 +98,7 @@
         getMembersForProjectIdPaginatedUrl: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}",
         removeUserRoleUrl:"${createLink(controller:'user', action:'removeUserWithRoleFromProject')}",
         absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
-        opportunisticDisplayName: "<g:message code="project.facets.methodType.opportunistic"/>",
+        opportunisticDisplayName: "<g:message code="facets.methodType.opportunistic"/>",
         projectNotificationUrl: "${createLink(controller: 'project', action: 'sendEmailToMembers')}",
         surveyMethods: <fc:getSurveyMethods/>
         },
