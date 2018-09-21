@@ -184,25 +184,6 @@ class SpeciesService {
 
     }
 
-
-    Map getSingleSpecies(Map speciesFieldConfig) {
-        Map result = [isSingle: false]
-
-        switch (speciesFieldConfig?.type) {
-            case 'SINGLE_SPECIES':
-                result.isSingle = true
-
-                if (speciesFieldConfig?.singleSpecies?.guid) {
-                    result.name = formatSpeciesName(speciesFieldConfig.speciesDisplayFormat, speciesFieldConfig.singleSpecies)
-                    result.guid = speciesFieldConfig.singleSpecies?.guid
-                    result.scientificName = speciesFieldConfig.singleSpecies?.scientificName
-                    result.commonName = speciesFieldConfig.singleSpecies?.commonName
-                }
-                break
-        }
-        result
-    }
-
     /**
      * formats a name into the specified format
      * if species does not match to a taxon, then mention it in name.
