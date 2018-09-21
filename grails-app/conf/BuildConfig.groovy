@@ -112,7 +112,7 @@ grails.project.dependency.resolution = {
         compile ":mail:1.0.7"
         compile ":excel-export:0.2.0"
         compile ":excel-import:1.0.1"
-        compile ":ecodata-client-plugin:1.0.4-SNAPSHOT"
+        compile ":ecodata-client-plugin:1.0.4"
         compile (":images-client-plugin:0.6.1") {
             excludes "resources"
         }
