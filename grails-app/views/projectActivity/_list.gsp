@@ -79,28 +79,28 @@
                                                     <div class="row-fluid margin-bottom-10">
                                                         <span class="span3" data-bind="css: spatialAccuracy, visible: spatialAccuracy">
                                                             <g:message code="project.survey.info.spatialAccuracy.text"/> -
-                                                            <!-- ko if: spatialAccuracy() == 'low' --> <g:message code="project.facets.spatialAccuracy.low"/> <!-- /ko -->
-                                                            <!-- ko if: spatialAccuracy() == 'moderate' --> <g:message code="project.facets.spatialAccuracy.moderate"/> <!-- /ko -->
-                                                            <!-- ko if: spatialAccuracy() == 'high' --> <g:message code="project.facets.spatialAccuracy.high"/> <!-- /ko -->
+                                                            <!-- ko if: spatialAccuracy() == 'low' --> <g:message code="facets.spatialAccuracy.low"/> <!-- /ko -->
+                                                            <!-- ko if: spatialAccuracy() == 'moderate' --> <g:message code="facets.spatialAccuracy.moderate"/> <!-- /ko -->
+                                                            <!-- ko if: spatialAccuracy() == 'high' --> <g:message code="facets.spatialAccuracy.high"/> <!-- /ko -->
                                                         </span>
                                                         <span class="span3" data-bind="css: speciesIdentification, visible: speciesIdentification">
                                                             <g:message code="project.survey.info.speciesIdentification.text"/> -
-                                                            <!-- ko if: speciesIdentification() == 'low' --> <g:message code="project.facets.speciesIdentification.low"/> <!-- /ko -->
-                                                            <!-- ko if: speciesIdentification() == 'moderate' --> <g:message code="project.facets.speciesIdentification.moderate"/> <!-- /ko -->
-                                                            <!-- ko if: speciesIdentification() == 'high' --> <g:message code="project.facets.speciesIdentification.high"/> <!-- /ko -->
-                                                            <!-- ko if: speciesIdentification() == 'na' --> <g:message code="project.facets.speciesIdentification.na"/> <!-- /ko -->
+                                                            <!-- ko if: speciesIdentification() == 'low' --> <g:message code="facets.speciesIdentification.low"/> <!-- /ko -->
+                                                            <!-- ko if: speciesIdentification() == 'moderate' --> <g:message code="facets.speciesIdentification.moderate"/> <!-- /ko -->
+                                                            <!-- ko if: speciesIdentification() == 'high' --> <g:message code="facets.speciesIdentification.high"/> <!-- /ko -->
+                                                            <!-- ko if: speciesIdentification() == 'na' --> <g:message code="facets.speciesIdentification.na"/> <!-- /ko -->
                                                         </span>
                                                         <span class="span3" data-bind="css: temporalAccuracy, visible: temporalAccuracy">
                                                             <g:message code="project.survey.info.temporalAccuracy.text"/> -
-                                                            <!-- ko if: temporalAccuracy() == 'low' --> <g:message code="project.facets.temporalAccuracy.low"/> <!-- /ko -->
-                                                            <!-- ko if: temporalAccuracy() == 'moderate' --> <g:message code="project.facets.temporalAccuracy.moderate"/> <!-- /ko -->
-                                                            <!-- ko if: temporalAccuracy() == 'high' --> <g:message code="project.facets.temporalAccuracy.high"/> <!-- /ko -->
+                                                            <!-- ko if: temporalAccuracy() == 'low' --> <g:message code="facets.temporalAccuracy.low"/> <!-- /ko -->
+                                                            <!-- ko if: temporalAccuracy() == 'moderate' --> <g:message code="facets.temporalAccuracy.moderate"/> <!-- /ko -->
+                                                            <!-- ko if: temporalAccuracy() == 'high' --> <g:message code="facets.temporalAccuracy.high"/> <!-- /ko -->
                                                         </span>
                                                         <span class="span3" data-bind="css: nonTaxonomicAccuracy, visible: nonTaxonomicAccuracy">
                                                             <g:message code="project.survey.info.nonTaxonomicAccuracy.text"/> -
-                                                            <!-- ko if: nonTaxonomicAccuracy() == 'low' --> <g:message code="project.facets.nonTaxonomicAccuracy.low"/> <!-- /ko -->
-                                                            <!-- ko if: nonTaxonomicAccuracy() == 'moderate' --> <g:message code="project.facets.nonTaxonomicAccuracy.moderate"/> <!-- /ko -->
-                                                            <!-- ko if: nonTaxonomicAccuracy() == 'high' --> <g:message code="project.facets.nonTaxonomicAccuracy.high"/> <!-- /ko -->
+                                                            <!-- ko if: nonTaxonomicAccuracy() == 'low' --> <g:message code="facets.nonTaxonomicAccuracy.low"/> <!-- /ko -->
+                                                            <!-- ko if: nonTaxonomicAccuracy() == 'moderate' --> <g:message code="facets.nonTaxonomicAccuracy.moderate"/> <!-- /ko -->
+                                                            <!-- ko if: nonTaxonomicAccuracy() == 'high' --> <g:message code="facets.nonTaxonomicAccuracy.high"/> <!-- /ko -->
                                                         </span>
                                                     </div>
                                                     <!-- ko if: transients.activityCount -->
@@ -183,7 +183,7 @@
                                                         <div class="span8">
                                                             <g:each in="${grailsApplication.config.methodType}" var="type">
                                                                 <!-- ko if: methodType() === '${type}' -->
-                                                                <div><g:message code="project.facets.methodType.${type}"/></div>
+                                                                <div><g:message code="facets.methodType.${type}"/></div>
                                                                 <!-- /ko -->
                                                             </g:each>
                                                         </div>
@@ -307,7 +307,7 @@
                                                             <g:each in="${grailsApplication.config.dataQualityAssuranceMethods}" var="dqMethod">
                                                                 <!-- ko if: dataQualityAssuranceMethods().indexOf('${dqMethod}') > -1 -->
                                                                 <div>
-                                                                    <g:message code="project.facets.dataQualityAssuranceMethods.${dqMethod}"/>
+                                                                    <g:message code="facets.dataQualityAssuranceMethods.${dqMethod}"/>
                                                                 </div>
                                                                 <!-- /ko -->
                                                             </g:each>
@@ -356,7 +356,7 @@
                                                             %{--<g:each in="${grailsApplication.config.dataAccessMethods}" var="daMethod">--}%
                                                                 %{--<!-- ko if: dataAccessMethods().indexOf('${daMethod}') > -1 -->--}%
                                                                 %{--<div>--}%
-                                                                    %{--<g:message code="project.facets.dataAccessMethods.${daMethod}"/>--}%
+                                                                    %{--<g:message code="facets.dataAccessMethods.${daMethod}"/>--}%
                                                                 %{--</div>--}%
                                                                 %{--<!-- /ko -->--}%
                                                             %{--</g:each>--}%
@@ -391,12 +391,12 @@
                                                         <div class="span8">
                                                             <!-- ko if: isDataManagementPolicyDocumented() -->
                                                             <span>
-                                                                <g:message code="project.facets.isDataManagementPolicyDocumented.yes"/>
+                                                                <g:message code="facets.isDataManagementPolicyDocumented.yes"/>
                                                             </span>
                                                             <!-- /ko -->
                                                             <!-- ko ifnot: isDataManagementPolicyDocumented() -->
                                                             <span>
-                                                                <g:message code="project.facets.isDataManagementPolicyDocumented.no"/>
+                                                                <g:message code="facets.isDataManagementPolicyDocumented.no"/>
                                                             </span>
                                                             <!-- /ko -->
                                                         </div>

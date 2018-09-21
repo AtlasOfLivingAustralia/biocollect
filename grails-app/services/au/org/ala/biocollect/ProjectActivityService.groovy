@@ -318,34 +318,6 @@ class ProjectActivityService {
     }
 
     /**
-     * Convert facet names and terms to a human understandable text.
-     * @param facets
-     * @return
-     */
-    List getDisplayNamesForFacets(facets, List facetConfig) {
-        facetConfig = facetConfig ?: activityService.getDefaultFacets()
-        facets?.each { facet ->
-            switch (facet.name) {
-                case 'userId':
-                    List userIds = facet.terms.collect { it.term }
-                    Map users = authService.getUserDetailsById(userIds, false)?.users
-                    facet.terms.each { term ->
-                        term.title = users[term.term]?.displayName
-                    }
-                    break;
-                default:
-                    facet.terms?.each { term ->
-                        term.title = messageSource.getMessage("projectActivity.facets." + facet.name + "." + term.term, [].toArray(), term.name, Locale.default)
-                    }
-            }
-
-            Map facetSetting = facetConfig.find { it.name == facet.name }
-            facet.title = facetSetting?.title
-            facet.helpText = facetSetting?.helpText
-        }
-    }
-
-    /**
      * This function translates view name to page name. Page name is then used in hub configuration to get the facet
      * configuration for that page.
      * @param view

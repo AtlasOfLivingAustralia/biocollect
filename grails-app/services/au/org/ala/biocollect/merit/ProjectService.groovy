@@ -808,22 +808,6 @@ class ProjectService {
     }
 
     /**
-     * Convert facet names and terms to a human understandable text.
-     * @param facets
-     * @return
-     */
-    List getDisplayNamesForFacets(List facets, List facetConfig){
-        facets?.each { facet ->
-            Map config = facetConfig.find { it.name == facet.name }
-            facet.title = config?.title
-            facet.helpText = config?.helpText
-            facet.terms?.each{ term ->
-                term.title = messageSource.getMessage("project.facets."+facet.name+"."+term.term, [].toArray(), term.name, Locale.default)
-            }
-        }
-    }
-
-    /**
      * Check if project has mobile application attached.
      * @param project
      * @return
@@ -922,21 +906,6 @@ class ProjectService {
         }
 
         facets
-    }
-
-    /**
-     * Look for SINGLE_SPECIES for the given project
-     * @param projectId project activity identifier
-     * @param output Identity of field for specific configuration.
-     * @param dataFieldName Identity of field for specific configuration.
-     * @param surveyName Identity of field for specific configuration.
-     * @return map containing species name, guid and isSingle field to indicate whether it's of a 'SINGLE_SPECIES' category.
-     */
-
-    Map getSingleSpecies(String projectId, String output, String dataFieldName, String surveyName) {
-
-        Map speciesFieldConfig = findSpeciesFieldConfig(projectId, surveyName, dataFieldName, output)
-        speciesService.getSingleSpecies(speciesFieldConfig)
     }
 
 

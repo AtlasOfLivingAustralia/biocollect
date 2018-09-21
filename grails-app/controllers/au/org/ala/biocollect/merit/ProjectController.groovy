@@ -1003,20 +1003,6 @@ class ProjectController {
         render text: [facets: facets] as JSON, contentType: 'application/json'
     }
 
-    /**
-     * Get Single Species name and guid for the given project identifier
-     * @param id project identifier
-     * @return
-     */
-    def getSingleSpecies(String id, String output, String dataFieldName, String surveyName) {
-        Map result = projectService.getSingleSpecies(id, output, dataFieldName, surveyName)
-        if(!result.isSingle){
-            result = [message: 'Not available']
-        }
-
-        render result as JSON
-    }
-
     //Search species by project activity species constraint.
     def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName, String surveyName){
 
