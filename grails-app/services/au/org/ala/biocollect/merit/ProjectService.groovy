@@ -401,13 +401,13 @@ class ProjectService {
      * @param projectId
      * @return boolean
      */
-    def canUserModerateForProject(userId, projectId) {
+    def canUserModerateProjects(userId, projectIds) {
         def userCanModerate
 
         if (userService.userIsSiteAdmin()) {
             userCanModerate = true
         } else {
-            userCanModerate = userService.canUserModerateForProject(userId, projectId)
+            userCanModerate = userService.canUserModerateForProjects(userId, projectIds)
         }
 
         userCanModerate
@@ -518,7 +518,7 @@ class ProjectService {
         } else {
             String url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProject?projectId=${activity?.projectId}&userId=${userId}"
             boolean userIsProjectEditor = webService.getJson(url)?.userIsEditor ?: false
-            if (userIsProjectEditor && activity?.userId == userId) {
+            if (userIsProjectEditor || (activity?.userId == userId)) {
                 userCanEdit = true
             }
         }

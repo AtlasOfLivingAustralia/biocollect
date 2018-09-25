@@ -1,5 +1,7 @@
 package au.org.ala.biocollect.merit
 
+import grails.converters.JSON
+import org.springframework.http.HttpStatus
 
 /**
  * Grails Filter to check for controller methods annotated with <code>@{@link PreAuthorise}</code>
@@ -80,8 +82,8 @@ class AclFilterFilters {
                             }
                             break
                         case 'moderator':
-                            if (!projectService.canUserModerateForProject(userId, projectId)) {
-                                errorMsg = "Access denied: User does not have <b>moderator</b> permission ${projectId?'for project':''}"
+                            if (!projectService.canUserModerateProjects(userId, projectId)) {
+                                errorMsg = "Access denied: User does not have <b>moderator</b> permission ${projectId?'for project(s)':''}"
                             }
                             break
                         case 'editor':
@@ -101,8 +103,10 @@ class AclFilterFilters {
                         flash.message = errorMsg
                         if (params.returnTo) {
                             redirect(url: params.returnTo)
-                        } else {
+                        } else if (projectId){
                             redirect(controller: pa.redirectController(), action: pa.redirectAction(), id: projectId)
+                        } else {
+                            render text: [error: errorMsg] as JSON, status: HttpStatus.UNAUTHORIZED
                         }
                         return false
                     }

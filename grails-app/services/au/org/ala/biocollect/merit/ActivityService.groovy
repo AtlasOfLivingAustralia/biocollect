@@ -110,7 +110,21 @@ class ActivityService {
     }
 
     def bulkDelete(List ids) {
-        webService.doPost(grailsApplication.config.ecodata.service.url + '/activity/bulkDelte', [ids: ids])
+        webService.doPost(grailsApplication.config.ecodata.service.url + '/activityBulkDelete', [ids: ids])
+    }
+
+    def bulkEmbargo(List ids) {
+        if (ids) {
+            String params = "id=" + ids.join('&id=')
+            webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: true])
+        }
+    }
+
+    def bulkRelease(List ids) {
+        if (ids) {
+            String params = "id=" + ids.join('&id=')
+            webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: false])
+        }
     }
 
     def isUserOwnerForActivity(userId, id) {
