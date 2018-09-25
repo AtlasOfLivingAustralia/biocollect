@@ -36,6 +36,7 @@ class BioActivityController {
     UtilService utilService
 
     static int MAX_FLIMIT = 500
+    static allowedMethods = ['bulkDelete': 'POST']
 
     /**
      * Update Activity by activityId or
@@ -266,7 +267,7 @@ class BioActivityController {
         } else if (!activity || activity.error) {
             flash.message = "Invalid activity - ${id}"
             if(!mobile)  redirect(controller: 'project', action: 'index', id: projectId)
-        } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+        } else if (projectService.canUserModerateProjects(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
             model = activityAndOutputModel(activity, activity.projectId)
             model.pActivity = pActivity
@@ -301,7 +302,7 @@ class BioActivityController {
         if (!userId) {
             response.status = 401
             result = [status: 401, error: "Access denied: User has not been authenticated."]
-        } else if (projectService.isUserAdminForProject(userId, activity?.projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+        } else if (projectService.canUserModerateProjects(userId, activity?.projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             def resp = activityService.delete(id)
             if (resp == SC_OK) {
                 result = [status: resp, text: 'deleted']
@@ -317,15 +318,39 @@ class BioActivityController {
         render result as JSON
     }
 
-    @PreAuthorise(accessLevel = 'moderator', projectIdParam = 'projectId')
+    @PreAuthorise(accessLevel = 'moderator', projectIdParam = 'projectIds')
     def bulkDelete() {
-        Map payload = request.JSON
-        List ids = payload.ids
+        List ids = params.ids?.split(',')
         if ( ids ) {
-            Map resp = activityService.bulkDelete(ids)
-            render text: (resp as JSON), status: resp.statusCode
+            Map result = activityService.bulkDelete(ids)
+            Map resp = result?.resp
+            render text: (resp as JSON), status: result.statusCode
         } else {
-            render (text: "JSON payload must have 'ids' property.", status: HttpStatus.SC_BAD_REQUEST)
+            render (text: "Missing parameter 'ids'", status: HttpStatus.SC_BAD_REQUEST)
+        }
+    }
+
+    @PreAuthorise(accessLevel = 'moderator', projectIdParam = 'projectIds')
+    def bulkEmbargo() {
+        List ids = params.ids?.split(',')
+        if ( ids ) {
+            Map result = activityService.bulkEmbargo(ids)
+            Map resp = result?.resp
+            render text: (resp as JSON), status: result.statusCode
+        } else {
+            render (text: "Missing parameter 'ids'", status: HttpStatus.SC_BAD_REQUEST)
+        }
+    }
+
+    @PreAuthorise(accessLevel = 'moderator', projectIdParam = 'projectIds')
+    def bulkRelease() {
+        List ids = params.ids?.split(',')
+        if ( ids ) {
+            Map result = activityService.bulkRelease(ids)
+            Map resp = result?.resp
+            render text: (resp as JSON), status: result.statusCode
+        } else {
+            render (text: "Missing parameter 'ids'", status: HttpStatus.SC_BAD_REQUEST)
         }
     }
 
@@ -343,16 +368,16 @@ class BioActivityController {
         }
         def pActivity = projectActivityService.get(activity?.projectActivityId, "all", params?.version)
 
-        boolean embargoed = projectActivityService.isEmbargoed(pActivity)
+        boolean embargoed = (activity.embargoed == true) || projectActivityService.isEmbargoed(pActivity)
         boolean userIsOwner = userId && activityService.isUserOwnerForActivity(userId, id)
-        boolean userIsAdmin = userId && projectService.isUserAdminForProject(userId, pActivity?.projectId)
+        boolean userIsModerator = userId && projectService.canUserModerateProjects(userId, pActivity?.projectId)
         boolean userIsAlaAdmin = userService.userIsAlaOrFcAdmin()
 
         def members = projectService.getMembersForProjectId(activity?.projectId)
         boolean userIsProjectMember = members.find{it.userId == userId} || userIsAlaAdmin
 
         if (activity && pActivity) {
-            if (embargoed && !userIsAdmin && !userIsOwner && !userIsAlaAdmin) {
+            if (embargoed && !userIsModerator && !userIsOwner && !userIsAlaAdmin) {
                 flash.message = "Access denied: You do not have permission to access the requested resource."
                 redirect(controller: 'project', action: 'index', id: activity.projectId)
             } else {
@@ -361,7 +386,7 @@ class BioActivityController {
                 model.pActivity = pActivity
                 model.id = pActivity.projectActivityId
                 model.userIsProjectMember = userIsProjectMember
-                model.hasEditRights = userIsOwner || userIsAdmin
+                model.hasEditRights = userIsOwner || userIsModerator
                 model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', action: 'index', id: pActivity?.projectId)
                 params.mobile ? model.mobile = true : ''
 
@@ -610,7 +635,7 @@ class BioActivityController {
         activities = activities?.collect {
             Map doc = it._source
             if ( !userCanModerateForProjects.hasProperty ( doc.projectId ) ) {
-                userCanModerateForProjects[doc.projectId] = projectService.canUserModerateForProject(queryParams.userId, doc.projectId)
+                userCanModerateForProjects[doc.projectId] = projectService.canUserModerateProjects(queryParams.userId, doc.projectId)
             }
 
             Map result =
@@ -633,7 +658,7 @@ class BioActivityController {
                     projectId        : doc.projectActivity?.projectId,
                     thumbnailUrl     : doc.thumbnailUrl,
                     showCrud         : (doc.userId == queryParams.userId) ||
-                                        (queryParams.userId && doc.projectId && (projectService.isUserAdminForProject(queryParams.userId, doc.projectId))),
+                                        (queryParams.userId && doc.projectId && (userCanModerateForProjects[doc.projectId])),
                     userCanModerate  : userCanModerateForProjects[doc.projectId]
 
             ]

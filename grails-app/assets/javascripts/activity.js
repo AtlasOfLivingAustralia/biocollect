@@ -268,72 +268,147 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     };
 
     self.bulkDelete = function (activity) {
-        var numberOfActivities = self.transients.activitiesToDelete().length;
-        bootbox.confirm("Are you sure you want to delete " + numberOfActivities + " activities?", function (result) {
+        var activities = self.transients.activitiesToDelete(),
+            numberOfActivities = activities.length;
+
+        bootbox.confirm("Are you sure you want to delete " + numberOfActivities + (numberOfActivities === 1 ? " activity?": " activities?"), function (result) {
             if (result) {
-                var bulkDeletePayload = self.getBulkDeletePayloads(),
-                    promises = [],
-                    counter = 0;
-                for (var projectId in bulkDeletePayload) {
-                    var url = fcConfig.activityBulkDeleteUrl + "?projectId=" + projectId;
-                    promises.push($.ajax({
-                        url: url,
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(bulkDeletePayload[projectId]),
-                        success: function (data) {
-                            counter ++;
-                            if (counter === promises.length) {
-                                if (data.text == 'deleted') {
-                                    showAlert("Successfully deleted. Indexing is in process, search result will be updated in few minutes.", "alert-success", self.transients.placeHolder);
-                                    setTimeout(function () {
-                                        location.reload();
-                                    }, 3000);
-                                } else {
-                                    showAlert("Error deleting the survey, please try again later.", "alert-error", self.transients.placeHolder);
-                                }
-                            }
-                        },
-                        error: function (data) {
-                            counter ++;
-                            if (counter === promises.length) {
-                                if (data.status == 401) {
-                                    var message = $.parseJSON(data.responseText);
-                                    bootbox.alert(message.error);
-                                } else if (data.status == 404) {
-                                    showAlert("Record not available. Indexing might be in process, refreshing the page now..", "alert-error", self.transients.placeHolder);
-                                    setTimeout(function () {
-                                        location.reload();
-                                    }, 3000);
-                                } else {
-                                    alert('An unhandled error occurred: ' + data);
-                                }
-                            }
+                var projectIds = self.getProjectIdOfSelectedActivities(),
+                    url = fcConfig.activityBulkDeleteUrl;
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'ids': activities.join(','),
+                        'projectIds': projectIds.join(',')
+                    },
+                    success: function (data) {
+                        if (data.message == 'deleted') {
+                            showAlert ("Successfully deleted. Indexing is in process, search result will be updated in few minutes.", "alert-success", self.transients.placeHolder);
+                            setTimeout (function () {
+                                location.reload();
+                            }, 3000);
+                            self.transients.activitiesToDelete.removeAll();
+                        } else {
+                            showAlert("Error deleting activities.", "alert-error", self.transients.placeHolder);
                         }
-                    }));
-                }
+                    },
+                    error: function (data) {
+                        var message = data.responseText;
+                        if (data.status == 401) {
+                            bootbox.alert(message.error);
+                        } else {
+                            bootbox.alert('An unhandled error occurred: ' + message.message);
+                        }
+                    }
+                });
             }
         });
     };
 
-    self.getBulkDeletePayloads = function () {
+    self.bulkRelease = function (activity) {
+        var activities = self.transients.activitiesToDelete(),
+            numberOfActivities = activities.length;
+
+        bootbox.confirm("Are you sure you want to release " + numberOfActivities + (numberOfActivities === 1 ? " activity?": " activities?"), function (result) {
+            if (result) {
+                var projectIds = self.getProjectIdOfSelectedActivities(),
+                    url = fcConfig.activityBulkReleaseUrl;
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'ids': activities.join(','),
+                        'projectIds': projectIds.join(',')
+                    },
+                    success: function (data) {
+                        if (data.message == 'updated') {
+                            showAlert ("Successfully released activities. Indexing is in process, search result will be updated in few minutes. Reloading this page in 3 seconds.", "alert-success", self.transients.placeHolder);
+                            setTimeout (function () {
+                                location.reload();
+                            }, 3000);
+                            self.transients.activitiesToDelete.removeAll();
+                        } else {
+                            showAlert("Error releasing activities.", "alert-error", self.transients.placeHolder);
+                        }
+                    },
+                    error: function (data) {
+                        var message = data.responseText;
+                        if (data.status == 401) {
+                            bootbox.alert(message.error);
+                        } else {
+                            bootbox.alert('An unhandled error occurred: ' + message.message);
+                        }
+                    }
+                });
+            }
+        });
+    };
+
+    self.bulkEmbargo = function (activity) {
+        var activities = self.transients.activitiesToDelete(),
+            numberOfActivities = activities.length;
+
+        bootbox.confirm("Are you sure you want to embargo " + numberOfActivities + (numberOfActivities === 1 ? " activity?": " activities?"), function (result) {
+            if (result) {
+                var projectIds = self.getProjectIdOfSelectedActivities(),
+                    url = fcConfig.activityBulkEmbargoUrl;
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'ids': activities.join(','),
+                        'projectIds': projectIds.join(',')
+                    },
+                    success: function (data) {
+                        if (data.message == 'updated') {
+                            showAlert ("Successfully embargoed activities. Indexing is in process, search result will be updated in few minutes. Reloading this page in 3 seconds.", "alert-success", self.transients.placeHolder);
+                            setTimeout (function () {
+                                location.reload();
+                            }, 3000);
+                            self.transients.activitiesToDelete.removeAll();
+                        } else {
+                            showAlert("Error embargoing activities.", "alert-error", self.transients.placeHolder);
+                        }
+                    },
+                    error: function (data) {
+                        var message = data.responseText;
+                        if (data.status == 401) {
+                            bootbox.alert(message.error);
+                        } else {
+                            bootbox.alert('An unhandled error occurred: ' + message.message);
+                        }
+                    }
+                });
+            }
+        });
+    };
+
+    self.getProjectIdOfSelectedActivities = function () {
         var activityIds = self.transients.activitiesToDelete(),
+            projects = {},
             activities = self.activities(),
-            result = {};
+            projectIds = [];
 
         activityIds.forEach(function (id) {
             var activity = $.grep(activities, function (act) {
                 return act.activityId() === id
             })[0];
 
-            if (!result[activity.projectId()]) {
-                result[activity.projectId()] = {ids: []};
-            }
-
-            result[activity.projectId()].ids.push(id);
+            projects[activity.projectId()] = true;
         });
 
-        return result;
+        for ( var projectId in projects ) {
+            projectIds.push(projectId);
+        }
+
+        return projectIds;
     };
 
     /**

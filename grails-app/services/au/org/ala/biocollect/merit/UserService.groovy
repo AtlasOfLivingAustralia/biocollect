@@ -233,9 +233,9 @@ class UserService {
         return results?.userIsEditor
     }
 
-    def canUserModerateForProject(userId, projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserModerateForProject?projectId=${projectId}&userId=${userId}"
-        def results = webService.getJson(url)
+    Boolean canUserModerateForProjects(userId, projectIds) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserModerateProjects"
+        def results = webService.doPostWithParams(url, [projectIds: projectIds, userId: userId])?.resp
         return results?.userCanModerate
     }
 

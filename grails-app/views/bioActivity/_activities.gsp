@@ -64,8 +64,8 @@
                                         <span>Bulk actions -
                                             <div class="btn-group">
                                                 <button data-bind="disable: !transients.showBulkActionButtons(), click: bulkDelete" class="btn btn-default"><span class="fa fa-trash">&nbsp;</span> <g:message code="project.bulkactions.delete"/></button>
-                                                <button data-bind="disable: !transients.showBulkActionButtons()" class="btn btn-default"><span class="fa fa-lock">&nbsp;</span> <g:message code="project.bulkactions.embargo"/></button>
-                                                <button data-bind="disable: !transients.showBulkActionButtons()" class="btn btn-default"><span class="fa fa-unlock">&nbsp;</span> <g:message code="project.bulkactions.release"/></button>
+                                                <button data-bind="disable: !transients.showBulkActionButtons(), click: bulkEmbargo" class="btn btn-default"><span class="fa fa-lock">&nbsp;</span> <g:message code="project.bulkactions.embargo"/></button>
+                                                <button data-bind="disable: !transients.showBulkActionButtons(), click: bulkRelease" class="btn btn-default"><span class="fa fa-unlock">&nbsp;</span> <g:message code="project.bulkactions.release"/></button>
                                             </div>
                                         </span>
                                         <button data-bind="click: download, disable: transients.loading" data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}" class="btn btn-primary padding-top-1"><span class="fa fa-download">&nbsp;</span>Download</button>
