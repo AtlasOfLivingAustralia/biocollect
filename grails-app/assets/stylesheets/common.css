@@ -775,6 +775,10 @@ input.full-width-input {
     font-size: 11px;
 }
 
+.text-align-center {
+    text-align: center !important;
+}
+
 @media (min-width: 980px) {
     #content-starting-point{
         margin-top: 70px;

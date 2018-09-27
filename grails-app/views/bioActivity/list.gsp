@@ -18,6 +18,8 @@
             activityEditUrl: "${createLink(controller: 'bioActivity', action: 'edit')}",
             activityDeleteUrl: "${createLink(controller: 'bioActivity', action: 'delete')}",
             activityBulkDeleteUrl: "${createLink(controller: 'bioActivity', action: 'bulkDelete')}",
+            activityBulkEmbargoUrl: "${createLink(controller: 'bioActivity', action: 'bulkEmbargo')}",
+            activityBulkReleaseUrl: "${createLink(controller: 'bioActivity', action: 'bulkRelease')}",
             activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
             searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities', params: [projectId: projectId])}",
