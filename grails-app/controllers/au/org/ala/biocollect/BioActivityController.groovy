@@ -36,7 +36,7 @@ class BioActivityController {
     UtilService utilService
 
     static int MAX_FLIMIT = 500
-    static allowedMethods = ['bulkDelete': 'POST']
+    static allowedMethods = ['bulkDelete': 'POST', bulkRelease: 'POST', bulkEmbargo: 'POST']
 
     /**
      * Update Activity by activityId or
@@ -312,7 +312,7 @@ class BioActivityController {
             }
         } else {
             response.status = 401
-            result = [status: 401, error: "Access denied: User is not an admin or owner of this activity - ${id}"]
+            result = [status: 401, error: "Access denied: User is not an admin, moderator or owner of this activity - ${id}"]
         }
 
         render result as JSON

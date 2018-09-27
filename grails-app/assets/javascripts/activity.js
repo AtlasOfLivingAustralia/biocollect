@@ -52,7 +52,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.transients.downloadEmail = ko.observable(user ? user.userName : null);
     self.transients.loading = ko.observable(false);
     self.transients.activitiesToDelete = ko.observableArray([]);
-    self.transients.showBulkActionButtons = ko.pureComputed(function () {
+    self.transients.isBulkActionsEnabled = ko.pureComputed(function () {
         var activities = self.activities(), show = false;
         activities.forEach(function (item) {
             if (item.userCanModerate) {
@@ -60,7 +60,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             }
         });
 
-        return show && !!self.transients.activitiesToDelete().length;
+        return show;
     });
 
     self.sort.subscribe(function (newValue) {
@@ -286,13 +286,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                     },
                     success: function (data) {
                         if (data.message == 'deleted') {
-                            showAlert ("Successfully deleted. Indexing is in process, search result will be updated in few minutes.", "alert-success", self.transients.placeHolder);
+                            bootbox.alert("Successfully deleted activities. Indexing is in process, search result will be updated in few minutes. Reloading this page in 3 seconds.");
                             setTimeout (function () {
                                 location.reload();
                             }, 3000);
                             self.transients.activitiesToDelete.removeAll();
                         } else {
-                            showAlert("Error deleting activities.", "alert-error", self.transients.placeHolder);
+                            bootbox.alert("Error deleting activities.");
                         }
                     },
                     error: function (data) {
@@ -327,21 +327,21 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                     },
                     success: function (data) {
                         if (data.message == 'updated') {
-                            showAlert ("Successfully released activities. Indexing is in process, search result will be updated in few minutes. Reloading this page in 3 seconds.", "alert-success", self.transients.placeHolder);
+                            bootbox.alert ("Successfully released activities. Search result will take a few minutes to update. This page will be automatically reloaded in 3 seconds.");
                             setTimeout (function () {
                                 location.reload();
                             }, 3000);
                             self.transients.activitiesToDelete.removeAll();
                         } else {
-                            showAlert("Error releasing activities.", "alert-error", self.transients.placeHolder);
+                            bootbox.alert ("Error releasing activities.");
                         }
                     },
                     error: function (data) {
                         var message = data.responseText;
                         if (data.status == 401) {
-                            bootbox.alert(message.error);
+                            bootbox.alert (message.error);
                         } else {
-                            bootbox.alert('An unhandled error occurred: ' + message.message);
+                            bootbox.alert ('An unhandled error occurred: ' + message.message);
                         }
                     }
                 });
@@ -368,13 +368,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                     },
                     success: function (data) {
                         if (data.message == 'updated') {
-                            showAlert ("Successfully embargoed activities. Indexing is in process, search result will be updated in few minutes. Reloading this page in 3 seconds.", "alert-success", self.transients.placeHolder);
+                            bootbox.alert ("Successfully embargoed activities. Search result will take a few minutes to update. Reloading this page in 3 seconds.");
                             setTimeout (function () {
                                 location.reload();
                             }, 3000);
                             self.transients.activitiesToDelete.removeAll();
                         } else {
-                            showAlert("Error embargoing activities.", "alert-error", self.transients.placeHolder);
+                            bootbox.alert ("Error embargoing activities.");
                         }
                     },
                     error: function (data) {
