@@ -146,7 +146,9 @@
             <g:if test="${hasEditRights}">
                 <a class="btn btn-primary" href="${createLink(controller: 'bioActivity', action: 'edit')}/${activity.activityId}">Edit</a>
             </g:if>
+            <!--
             <button type="button" id="cancel" class="btn">return</button>
+            -->
         </div>
     </g:if>
 </div>
