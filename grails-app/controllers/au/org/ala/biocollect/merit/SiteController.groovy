@@ -747,6 +747,19 @@ class SiteController {
                 query.push(queryParams.query);
             }
 
+            if (queryParams.fq && (queryParams.fq instanceof String)) {
+                queryParams.fq = [queryParams.fq]
+            }
+            else if (queryParams.fq instanceof String[]) {
+                queryParams.fq = queryParams.fq as List
+            }
+            else if (!queryParams.fq) {
+                queryParams.fq = []
+            }
+
+            queryParams.fq.addAll(searchService.allProjectsInHub(request)?.collect {
+                "projects:${it}"
+            })
             queryParams.query = query.join(' AND ')
             queryParams.remove('hub')
             queryParams.remove('hubFq')

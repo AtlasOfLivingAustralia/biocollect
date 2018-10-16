@@ -1,18 +1,22 @@
 <div class="row-fluid">
     <div class="span12">
-        <h4><strong>Facets</strong></h4>
         <!-- ko foreach:facets -->
         <div class="row-fluid" data-bind="visible: terms().length">
-            <h5><a href="#" data-bind="click: toggle"> <span data-bind="css:{ 'icon-chevron-right': !show(), 'icon-chevron-down': show}"></span><span  data-bind="text: metadata.displayName"></span> (<span data-bind="text:total"></span>)</a></h5>
-            <ul data-bind="slideVisible: show" class="unstyled facet-window">
+            <button data-bind="click: toggle" class="btn btn-block btn-text-left">
+                &nbsp;
+                <i data-bind="css: {'icon-plus': !show(), 'icon-minus': show}"></i>
+                <strong data-bind="text: metadata.displayName"></strong>
+            </button>
+            <div data-bind="slideVisible: show" class="facet-window">
                 <!-- ko foreach: terms -->
-                <li data-bind="visible:count, attr:{title:displayName}">
-                    <input type="checkbox" data-bind="attr: {id: term}, checked: checked">
-                    <a href="#" class="inline-flex" data-bind="click: $root.addFacetTerm"> <span class="label-ellipsis" data-bind="text:displayName"></span>&nbsp;(<span data-bind="text:count"></span>)</a>
-                </li>
+                <label class="control-label checkbox" data-bind="visible:count, attr:{title:displayName}">
+                    <input type="checkbox" data-bind="checked: checked"/>
+                    <span data-bind="click: $root.addFacetTerm, attr: {title:displayName}" class="label-ellipsis"> <!-- ko text: displayName --> <!-- /ko --> (<span data-bind="text:count"></span>)</span>
+                </label>
                 <!-- /ko -->
-            </ul>
+            </div>
         </div>
+        &nbsp;
         <!-- /ko -->
     </div>
 </div>

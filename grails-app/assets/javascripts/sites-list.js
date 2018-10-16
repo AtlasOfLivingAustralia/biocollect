@@ -55,7 +55,9 @@ function SitesListViewModel(params) {
     self.loadSites = function (offset) {
         if(!self.doNotLoad()){
             var params = self.constructQueryParams(offset);
-            self.error('')
+            self.error('');
+            self.sitesLoaded(false);
+
             $.ajax({
                 url: fcConfig.listSitesUrl,
                 data: params,
@@ -74,11 +76,11 @@ function SitesListViewModel(params) {
 
                     self.pagination.loadPagination(self.pagination.currentPage(), data.total)
 
-                    self.sitesLoaded(true)
+                    self.sitesLoaded(true);
                 },
                 error: function (xhr) {
                     self.error(xhr.responseText);
-
+                    self.sitesLoaded(true);
                 }
             })
         }
@@ -207,7 +209,7 @@ function SitesListViewModel(params) {
 
     /**
      * add a facet to refine list when checked
-     * @param FacetTermViewModel
+     * @param SiteFacetTermViewModel
      */
     self.addToRefineList = function(model){
         model.checked(true);
@@ -216,7 +218,7 @@ function SitesListViewModel(params) {
 
     /**
      * remove a facet from refine list when unchecked
-     * @param FacetTermViewModel
+     * @param SiteFacetTermViewModel
      */
     self.removeFromRefineList = function(model){
         self.refineList.remove(model);
@@ -228,13 +230,13 @@ function SitesListViewModel(params) {
      */
     self.addRefineListToSelected = function(){
         var selected = self.selectedFacets();
-        var refine = self.refineList.removeAll()
+        var refine = self.refineList.removeAll();
         refine && refine.forEach(function(fq){
             fq.checked(false);
             selected.push(fq);
         });
         self.selectedFacets(selected);
-    }
+    };
 
     self.selectedFacets.subscribe(self.pagination.first);
     self.searchTerm.subscribe(self.pagination.first);
@@ -351,7 +353,7 @@ function FacetViewModelForSiteList(facet) {
 
     var terms = $.map(facet.terms ? facet.terms : [], function (term, index) {
         term.facet = self;
-        return new FacetTermViewModel(term);
+        return new SiteFacetTermViewModel(term);
     });
 
     self.terms(terms);
@@ -364,7 +366,7 @@ function FacetViewModelForSiteList(facet) {
     }
 };
 
-function FacetTermViewModel(term) {
+function SiteFacetTermViewModel(term) {
     var self = this;
     if (!term) term = {};
 
@@ -376,7 +378,7 @@ function FacetTermViewModel(term) {
        return decodeCamelCase(self.term()) || 'Unknown';
     });
     self.showTerm = ko.observable(term.showTerm || true);
-    self.id = ko.observable(generateTermId(self));
+    self.id = ko.observable(generateSiteTermId(self));
     self.checked = ko.observable(false);
 
     /**
@@ -399,7 +401,7 @@ function FacetTermViewModel(term) {
     })
 };
 
-function generateTermId(term) {
+function generateSiteTermId(term) {
     var name, term
     name = term.facet.name()
     term = term.term()

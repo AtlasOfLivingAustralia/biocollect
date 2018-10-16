@@ -63,4 +63,9 @@ class SearchController {
             render status: HttpStatus.INTERNAL_SERVER_ERROR, text: "An error occurred - ${ex.message}"
         }
     }
+
+    def getAllProjectsInHub () {
+        def projects = searchService.allProjectsInHub(request)
+        render( text: projects as JSON, contentType: 'application/json')
+    }
 }
