@@ -1,31 +1,11 @@
-<!--
-/*
- * Copyright (C) 2016 Atlas of Living Australia
- * All Rights Reserved.
- *
- * The contents of this file are subject to the Mozilla Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
- * 
- * Created by Temi on 29/01/16.
- */
--->
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <g:if test="${myFavourites}">
-        <title><g:message code="site.myFavouriteSites.heading"/></title>
-    </g:if>
-    <g:else>
-        <title><g:message code="site.allSites.heading"/></title>
-    </g:else>
+    <g:set var="title" value="${myFavourites? message(code: "site.myFavouriteSites.heading") : message(code: "site.allSites.heading")}"/>
+    <title>${title}</title>
     <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumb" content="${title}"/>
     <script>
         var fcConfig = {
             listSitesUrl: '${createLink(controller: 'site', action: 'elasticsearch')}',
@@ -51,7 +31,7 @@
 </head>
 
 <body>
-<div id="siteSearch" class="container-fluid">
+<div id="siteSearch" class="container-fluid margin-top-10">
     <g:if test="${myFavourites}">
         <div class="row-fluid">
             <div class="span6" id="heading">
@@ -59,7 +39,7 @@
             </div>
         </div>
     </g:if>
-
+    <g:render template="/site/searchSite"></g:render>
     <div class="row-fluid">
         <div class="span3 well">
             <bc:koLoading>
@@ -68,9 +48,9 @@
             </bc:koLoading>
         </div>
 
-        <div class="span7">
+        <div class="span9">
+
             <bc:koLoading>
-                <g:render template="/site/searchSite"></g:render>
                 <div class="alert alert-block hide well" data-bind="slideVisible: error() != ''">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                     <span data-bind="text: error"></span>
@@ -84,6 +64,12 @@
                 <div class="row-fluid">
                     <div class="well">
                         <div class="span12 margin-top-10">
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <h3 data-bind="visible: sitesLoaded">Found <!-- ko text: pagination.totalResults --> <!-- /ko --> sites</h3>
+                                    <span data-bind="visible: !sitesLoaded()"><span class="fa fa-spin fa-spinner"></span>&nbsp;Sites Loading...</span>
+                                </div>
+                            </div>
                             <ul class="nav nav-tabs" id="siteListResultTab">
                                 <li><a href="#list" id="list-tab" data-toggle="tab">List</a></li>
                                 <li><a href="#map" id="map-tab" data-toggle="tab">Map</a></li>

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse
  */
 class SearchService {
     def webService, commonService, cacheService, metadataService
+    SettingService settingService
     def grailsApplication
     def elasticBaseUrl
 
@@ -56,8 +57,8 @@ class SearchService {
     def allProjects(params, String searchTerm = null) {
         addDefaultFacetQuery(params)
         //params.max = 9999
-        params.flimit = 999
-        params.fsort = "term"
+        params.flimit = params.flimit?:999
+        params.fsort = params.fsort?:"term"
         //params.offset = 0
 
         params.query = "docType:project"
@@ -65,7 +66,7 @@ class SearchService {
             params.query += " AND " + searchTerm
         }
 
-        params.facets = "statesFacet,lgasFacet,nrmsFacet,organisationFacet,mvgsFacet"
+        params.facets = params.facets?:"statesFacet,lgasFacet,nrmsFacet,organisationFacet,mvgsFacet"
         //def url = elasticBaseUrl + commonService.buildUrlParamsFromMap(params)
         def url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
@@ -105,9 +106,9 @@ class SearchService {
      * @throws Exception
      */
     Map searchForSites(GrailsParameterMap params) throws SocketTimeoutException, Exception{
-        String url = grailsApplication.config.ecodata.service.url + '/search/elastic' + commonService.buildUrlParamsFromMap(params)
+        String url = grailsApplication.config.ecodata.service.url + '/search/elasticPost'
         log.debug "url = $url"
-        Map response = webService.getJson(url, null, true)
+        Map response = webService.doPost(url, params)
         if(response.error){
             if(response.error.contains('Timed out')){
                 throw new SocketTimeoutException(response.error)
@@ -117,7 +118,16 @@ class SearchService {
 
         }
 
-        response
+        response?.resp
+    }
+
+    def allProjectsInHub(request) {
+        String hubId = settingService.getHubConfig().hubId
+        cacheService.get('projects-in-hub-'+ hubId, {
+            GrailsParameterMap params = new GrailsParameterMap([flimit: 1000000, facets: "projectId", size: 0], request)
+            Map searchHits = allProjects(params)
+            searchHits?.facets?.projectId?.terms?.collect { it.term }
+        })
     }
 
     def allProjectsWithSites(params, String searchTerm = null) {
