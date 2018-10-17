@@ -780,6 +780,26 @@
         </div>
         <!-- /ko -->
     </div>
+
+    <g:if test="${grailsApplication.config.termsOfUseUrl}">
+        <div class="row-fluid" style="display: none" data-bind="visible: !isExternal()">
+            <div class="well">
+                <h4 class="block-header"><g:message code="project.details.termsOfUseAgreement"/></h4>
+
+                <div class="clearfix">
+                    <label class="control-label span3" for="termsOfUseAgreement"><g:message code="project.details.termsOfUseAgreement"/><fc:iconHelp><g:message code="project.details.termsOfUseAgreement.help"/></fc:iconHelp></label>
+                    <div class="controls span9 large-checkbox">
+                        <input data-bind="checked:termsOfUseAccepted, disable: !transients.termsOfUseClicked()" type="checkbox" id="termsOfUseAgreement" name="termsOfUseAgreement" data-validation-engine="validate[required]" title="<g:message code="project.details.termsOfUseAgreement.checkboxTip"/>"/>
+                        <label for="termsOfUseAgreement"><span></span> I confirm that have read and accept the <a href="${grailsApplication.config.termsOfUseUrl}" data-bind="click: clickTermsOfUse" target="_blank">Terms of Use</a>.</label>
+                        <div class="margin-bottom-1"></div>
+                        <p><g:message code="project.details.termsOfUseAgreement.help"/></p>
+                        <p><img src="${asset.assetPath(src:'cc.png')}" alt="Creative Commons Attribution 3.0"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </g:if>
+
     <script id="scienceTypeTemplate" type="text/html">
         <div class="large-checkbox">
             <input type="checkbox" name="scienceType" class="validate[required]"
