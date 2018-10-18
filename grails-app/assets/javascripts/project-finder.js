@@ -334,9 +334,13 @@ function ProjectFinder() {
 
     function updateLazyLoad() {
         if (!lazyLoad) {
-            lazyLoad = new LazyLoad({
-                elements_selector: "img.lazy"
-            });
+            if (LazyLoad) {
+                lazyLoad = new LazyLoad({
+                    elements_selector: "img.lazy"
+                });
+            } else {
+                setTimeout(updateLazyLoad, 100);
+            }
         } else {
             lazyLoad.update();
         }
