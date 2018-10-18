@@ -49,7 +49,7 @@
     Please tell us about your project by completing the form below.  Questions marked with a * are mandatory.
     </p>
     <form id="projectDetails" class="form-horizontal">
-        <g:render template="details" model="${pageScope.variables}"/>`
+        <g:render template="details" model="${pageScope.variables}"/>
         <div class="well" style="display: none" data-bind="visible: true"> <!-- hide the panel until knockout has finished. Needs to use an inline style for this to work. -->
             <div class="alert warning" data-bind="visible: !termsOfUseAccepted() && !isExternal()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
             <button type="button" id="save" class="btn btn-primary" data-bind="disable: (!termsOfUseAccepted() && !isExternal())"><g:message code="g.save"/></button>

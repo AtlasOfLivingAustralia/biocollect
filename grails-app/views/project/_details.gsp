@@ -799,6 +799,7 @@
             </div>
         </div>
     </g:if>
+
     <script id="scienceTypeTemplate" type="text/html">
         <div class="large-checkbox">
             <input type="checkbox" name="scienceType" class="validate[required]"
