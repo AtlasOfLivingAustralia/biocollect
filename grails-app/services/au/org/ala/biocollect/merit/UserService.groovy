@@ -227,6 +227,12 @@ class UserService {
         return results?.userIsEditor
     }
 
+    def isUserEditorForProjects(userId, projectIds) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserEditorForProjects?projectIds=${projectIds}&userId=${userId}"
+        def results = webService.getJson(url)
+        return results?.userIsEditor
+    }
+
     def canUserEditProject(userId, projectId) {
         def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProject?projectId=${projectId}&userId=${userId}"
         def results = webService.getJson(url)

@@ -51,6 +51,7 @@ class ProjectService {
     MessageSource messageSource
     SpeciesService speciesService
     FormSpeciesFieldParserService formSpeciesFieldParserService
+    SearchService searchService
 
     def list(brief = false, citizenScienceOnly = false) {
         def params = brief ? '?brief=true' : ''
@@ -235,6 +236,7 @@ class ProjectService {
             body = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) attempted to create a new project ${props.name}, but an error occurred during creation: ${result.detail} : ${result.error}."
         }
 
+        searchService.clearCachedProjectsInHubs()
         emailService.sendEmail(subject, body, ["${grailsApplication.config.biocollect.support.email.address}"])
 
         result
@@ -462,6 +464,16 @@ class ProjectService {
         canManageSites && canUserEditProject(userId, projectId, merit)
     }
 
+    def isUserEditorForProjects (String userId, String projectIds) {
+        boolean userIsEditor = false
+        if (userService.userIsSiteAdmin()) {
+            userIsEditor = true
+        } else {
+            userIsEditor = userService.isUserEditorForProjects(userId, projectIds)
+        }
+        userIsEditor
+    }
+
     /**
      * Does the current user have permission to edit the requested projectId?
      * Checks for the ADMIN role in CAS and then checks the UserPermission
@@ -492,7 +504,7 @@ class ProjectService {
         }
 
         if(isAdmin){
-            response?.resp?.each{ key, value ->
+            response?.content?.each{ key, value ->
                 if(value != null){
                     permissions[key] = true
                 } else {
@@ -500,7 +512,7 @@ class ProjectService {
                 }
             }
         } else {
-            permissions = response.resp;
+            permissions = response.content;
         }
 
         permissions

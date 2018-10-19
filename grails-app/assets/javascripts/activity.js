@@ -855,7 +855,7 @@ var ActivityRecordViewModel = function (activity) {
         projectActivityOpen = moment(activity.endDate).isAfter(moment());
     }
     self.showAdd = ko.observable(projectActivityOpen);
-    self.readOnly = ko.observable(fcConfig.version.length > 0)//183,238,252
+    self.readOnly = ko.observable((fcConfig.version || '' ).length > 0)//183,238,252
 
     var allRecords = $.map(activity.records ? activity.records : [], function (record, index) {
         return new RecordVM(record);

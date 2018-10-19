@@ -39,7 +39,10 @@ class AclFilterFilters {
 
                 if (controllerClass.isAnnotationPresent(PreAuthorise) || method.isAnnotationPresent(PreAuthorise)) {
                     PreAuthorise pa = method.getAnnotation(PreAuthorise)?:controllerClass.getAnnotation(PreAuthorise)
-                    projectId = params[pa.projectIdParam()]
+                    if ((controllerClass != ProjectController) && (!pa.projectIdParam()?.equals('id'))) {
+                        projectId = params[pa.projectIdParam()]
+                    }
+
                     def accessLevel = pa.accessLevel()
 
                     def errorMsg
@@ -95,6 +98,29 @@ class AclFilterFilters {
                             if(!userId){
                                 errorMsg = "Access denied: You are not logged in."
                             }
+                            break;
+                        case 'editSite':
+                            if (!userId) {
+                                errorMsg = "Access denied: You are not logged in."
+                            } else {
+                                def site = request.JSON?.site
+                                if (site) {
+                                    boolean privateSite = site['visibility'] ? (site['visibility'] == 'private' ? true : false) : false
+                                    if (!privateSite) {
+                                        if (site && site.projects) {
+                                            // Converting to list since JSONArray.join is adding Quotes in joined string
+                                            // example - '"abc","cdf"'
+                                            String projectIds = site.projects.toList().join(',')
+                                            if (!projectService.isUserEditorForProjects(userId, projectIds)) {
+                                                errorMsg = "Access denied: User is not an editor for all the projects this site is associated with."
+                                            }
+                                        } else {
+                                            errorMsg = "Access denied: Site must be associated with at least one project"
+                                        }
+                                    }
+                                }
+                            }
+                            break;
                         default:
                             log.warn "Unexpected role: ${accessLevel}"
                     }

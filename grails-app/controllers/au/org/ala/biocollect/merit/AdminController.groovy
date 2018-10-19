@@ -462,6 +462,9 @@ class AdminController {
 
         HubSettings settings = new HubSettings(json)
         settingService.updateHubSettings(settings)
+        if ( settings.hubId ) {
+            searchService.clearCachedProjectsInHub(settings.hubId)
+        }
 
         def message = [status:'ok']
         render message as JSON
