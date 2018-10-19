@@ -130,6 +130,15 @@ class SearchService {
         })
     }
 
+    def clearCachedProjectsInHubs() {
+        cacheService.clearCacheMatchingPattern("^projects-in-hub-.+")
+    }
+
+    def clearCachedProjectsInHub(String hubId) {
+        String key = "projects-in-hub-" + hubId
+        cacheService.clear(key)
+    }
+
     def allProjectsWithSites(params, String searchTerm = null) {
         addDefaultFacetQuery(params)
         params.flimit =  params.flimit ?: 999

@@ -109,7 +109,7 @@
         <div class="span12">
             <div class="row-fluid controls-row">
                 <fc:textField data-bind="value: site().extent().geometry().decimalLatitude"
-                              data-validation-engine="validate[required,custom[number],min[-90],max[0]]"
+                              data-validation-engine="validate[required,custom[number],min[-90],max[90]]"
                               outerClass="span6" label="${message(code:'site.point.lat')}"/>
                 <fc:textField data-bind="value: site().extent().geometry().decimalLongitude"
                               data-validation-engine="validate[required,custom[number],min[-180],max[180]]"
@@ -159,7 +159,7 @@
 
         <div class="row-fluid controls-row">
             <fc:textField data-bind="value:geometry().decimalLatitude" outerClass="span4" label="${message(code:'site.poi.lat')}"
-                          data-validation-engine="validate[required,custom[number],min[-90],max[0]]"
+                          data-validation-engine="validate[required,custom[number],min[-90],max[90]]"
                           data-prompt-position="topRight:-150"/>
             <fc:textField data-bind="value:geometry().decimalLongitude" outerClass="span4" label="${message(code:'site.poi.lng')}"
                           data-validation-engine="validate[required,custom[number],min[-180],max[180]]"/>
@@ -184,7 +184,6 @@
 
 <asset:script type="text/javascript">
 function initSiteViewModel(allowPointsOfInterest, edit) {
-
     // server side generated paths & properties
     var SERVER_CONF = {
         siteData: ${site ?: [] as grails.converters.JSON},

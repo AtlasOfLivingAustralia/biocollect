@@ -53,6 +53,14 @@ class CacheService {
         cache = [:]
     }
 
+    def clearCacheMatchingPattern (String pattern) {
+        cache.each { String key, value ->
+            if ( key.matches(pattern) ) {
+                cache[key].resp = null
+            }
+        }
+    }
+
     /**
      * Info provider based on an external metadata file.
      * Loading any key will load results for all keys in the file.

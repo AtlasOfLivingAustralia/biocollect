@@ -113,6 +113,9 @@ class SiteController {
             flash.message = "Access denied: User does not have <b>editor</b> permission to edit site: ${id}"
             redirect(controller:'home', action:'index')
         } else {
+            String projectIds = result.site.projects.toList().join(',')
+            String userId = authService.getUserId()
+            result.userCanEdit = projectService.isUserEditorForProjects(userId, projectIds)
             result
         }
     }
@@ -461,80 +464,66 @@ class SiteController {
         }
     }
 
+    @PreAuthorise(accessLevel = "editSite")
     def ajaxUpdate(String id) {
         def result = [:]
         String userId = userService.getCurrentUserId(request)
 
-
-
-        if (!userId) {
-            Map error  = [status: 401, error:"Access denied: User has not been authenticated."]
-            response.status = 401
-            render error as JSON
-        } else {
-            def postBody = request.JSON
-            Boolean isCreateSiteRequest = !id
-            log.debug "Body: " + postBody
-            log.debug "Params:"
-            params.each { println it }
-            //todo: need to detect 'cleared' values which will be missing from the params - implement _destroy
-            def values = [:]
-            postBody.site?.each { k, v ->
-                if (!(k in ignore)) {
-                    values[k] = v //reMarshallRepeatingObjects(v);
-                }
+        def postBody = request.JSON
+        Boolean isCreateSiteRequest = !id
+        log.debug "Body: " + postBody
+        log.debug "Params:"
+        params.each { println it }
+        //todo: need to detect 'cleared' values which will be missing from the params - implement _destroy
+        def values = [:]
+        postBody.site?.each { k, v ->
+            if (!(k in ignore)) {
+                values[k] = v //reMarshallRepeatingObjects(v);
             }
-            log.debug(values as JSON).toString()
-            //Compatible with previous records without visibility field
-            boolean privateSite = values['visibility'] ? (values['visibility'] == 'private' ? true : false) : false;
+        }
+        log.debug(values as JSON).toString()
+        //Compatible with previous records without visibility field
+        boolean privateSite = values['visibility'] ? (values['visibility'] == 'private' ? true : false) : false
 
-            if(privateSite){
-                //Do not check permission if site is private
-                //This design is specially for sightings
-                result = siteService.updateRaw(id, values,userId)
-            }else{
-
-                values.projects?.each { projectId ->
-                    if (!projectService.canUserEditSitesForProject(userId, projectId)) {
-                        log.error("Error: Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}")
-                        render status: 401, error: 'Error: Access denied: User is not en editor or is not allowed to manage sites';
+        if(privateSite){
+            //Do not check permission if site is private
+            //This design is specially for sightings
+            result = siteService.updateRaw(id, values,userId)
+        }
+        else {
+            result = siteService.updateRaw(id, values, userId)
+            String siteId = result.id
+            if(siteId) {
+                if(isCreateSiteRequest){
+                    String projectId = postBody?.projectId
+                    Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
+                    if (projectId && isAdmin) {
+                        siteService.addSitesToSiteWhiteListInWorksProjects([siteId], [projectId], true);
+                    } else {
+                        siteService.addSitesToSiteWhiteListInWorksProjects([siteId], values.projects)
                     }
-                }
 
-                result = siteService.updateRaw(id, values, userId)
-                String siteId = result.id
-                if(siteId) {
-                    if(isCreateSiteRequest){
-                        String projectId = postBody?.projectId
-                        Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
-                        if (projectId && isAdmin) {
-                            siteService.addSitesToSiteWhiteListInWorksProjects([siteId], [projectId], true);
-                        } else {
-                            siteService.addSitesToSiteWhiteListInWorksProjects([siteId], values.projects)
-                        }
+                    if (postBody?.pActivityId) {
+                        def pActivity = projectActivityService.get(postBody.pActivityId);
 
-                        if (postBody?.pActivityId) {
-                            def pActivity = projectActivityService.get(postBody.pActivityId);
+                        if (result?.status != 'error') {
+                            pActivity.sites.add(siteId)
 
-                            if (result?.status != 'error') {
-                                pActivity.sites.add(siteId)
-
-                                projectActivityService.update(postBody.pActivityId, pActivity)
-                            }
+                            projectActivityService.update(postBody.pActivityId, pActivity)
                         }
                     }
-                } else {
-                    result.status = 'error';
-                    result.message = 'Could not save site';
                 }
-            }
-
-
-            if (result.status == 'error') {
-                render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${result.message}"
             } else {
-                render status: HttpStatus.SC_OK, text: result as JSON, contentType: "application/json"
+                result.status = 'error';
+                result.message = 'Could not save site';
             }
+        }
+
+
+        if (result.status == 'error') {
+            render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${result.message}"
+        } else {
+            render status: HttpStatus.SC_OK, text: result as JSON, contentType: "application/json"
         }
     }
 

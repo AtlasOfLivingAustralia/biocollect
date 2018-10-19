@@ -12,6 +12,7 @@ class RoleService {
     public static final String PROJECT_PARTICIPANT_ROLE = 'projectParticipant'
     public static final String LOGGED_IN_USER_ROLE = 'loggedInUser'
     public static final String READ_ONLY_ROLE = 'siteReadOnly'
+    public static final String EDIT_SITE_ROLE = 'editSite'
 
     private List roles(Boolean clearCache = false) {
         if (clearCache) {
@@ -42,7 +43,7 @@ class RoleService {
 
     public List getAugmentedRoles() {
         def rolesCopy = getRoles().clone()
-        rolesCopy.addAll(["alaAdmin","siteAdmin","officer",READ_ONLY_ROLE, LOGGED_IN_USER_ROLE]) // augment roles with these extra ones TODO: refactor this
+        rolesCopy.addAll(["alaAdmin","siteAdmin","officer",READ_ONLY_ROLE, LOGGED_IN_USER_ROLE, EDIT_SITE_ROLE]) // augment roles with these extra ones TODO: refactor this
 
         return rolesCopy
     }
