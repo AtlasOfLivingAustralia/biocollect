@@ -873,15 +873,6 @@ var ActivityRecordViewModel = function (activity) {
     self.transients.imageTitle = ko.observable(activity.thumbnailUrl? '' : 'No image' );
 };
 
-ActivityRecordViewModel.prototype.getPropertyValue = RecordVM.prototype.getPropertyValue = function (config) {
-    var property = this['rawData'][config.propertyName];
-    if(!property && this['parent']){
-        property = this['parent']['rawData'][config.propertyName];
-    }
-
-    return ko.unwrap(property);
-};
-
 var RecordVM = function (record) {
     var self = this;
     if (!record) record = {};
@@ -896,6 +887,15 @@ var RecordVM = function (record) {
     self.eventTime = record.eventTime;
     self.individualCount = ko.observable(record.individualCount);
     self.eventDate =  ko.observable(record.eventDate).extend({simpleDate: false});
+};
+
+ActivityRecordViewModel.prototype.getPropertyValue = RecordVM.prototype.getPropertyValue = function (config) {
+    var property = this['rawData'][config.propertyName];
+    if(!property && this['parent']){
+        property = this['parent']['rawData'][config.propertyName];
+    }
+
+    return ko.unwrap(property);
 };
 
 function generateTermId(term) {
