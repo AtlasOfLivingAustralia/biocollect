@@ -315,4 +315,146 @@ methodType = [
     'systematic'
 ]
 
+datapage.defaultColumns = [
+        [
+                type: "image",
+                displayName: "Image"
+        ],
+        [
+                type: "identification",
+                displayName: "Identification"
+        ],
+        [
+                type: "symbols",
+                displayName: ""
+        ],
+        [
+                type: "details",
+                displayName: "Details"
+        ],
+        [
+                type: "action",
+                displayName: "Action"
+        ]
+        ,
+        [
+                type: "checkbox",
+                displayName: "Select item"
+        ]
+]
+
+datapage.allColumns = datapage.defaultColumns + [
+        [
+                type: "property",
+                propertyName: "surveyYearFacet",
+                displayName: "Survey Year"
+        ]
+        ,
+        [
+                type: "property",
+                propertyName: "projectNameFacet",
+                displayName: "Project name"
+        ]
+        ,
+        [
+                type: "property",
+                propertyName: "projectActivityNameFacet",
+                displayName: "Survey name"
+        ]
+        ,
+        [
+                type: "property",
+                propertyName: "organisationNameFacet",
+                displayName: "Organisation name"
+        ]
+        ,
+        [
+                type: "property",
+                propertyName: "surveyMonthFacet",
+                displayName: "Survey month"
+        ],
+        [
+                type: "property",
+                propertyName: "isDataManagementPolicyDocumented",
+                displayName: ""
+        ],
+        [
+                type: "property",
+                propertyName: "dataQualityAssuranceMethods",
+                displayName: ""
+        ],
+        [
+                type: "property",
+                propertyName: "nonTaxonomicAccuracy",
+                displayName: ""
+        ],
+        [
+                type: "property",
+                propertyName: "temporalAccuracy",
+                displayName: ""
+        ],
+        [
+                type: "property",
+                propertyName: "activityLastUpdatedMonthFacet",
+                displayName: ""
+        ],
+        [
+                type: "property",
+                propertyName: "activityLastUpdatedYearFacet",
+                displayName: ""
+        ],
+        [
+                type: "property",
+                propertyName: "associatedProgramFacet",
+                displayName: ""
+        ],
+        [
+                type: "property",
+                propertyName: "siteNameFacet",
+                displayName: ""
+        ],
+        [
+                type: "property",
+                propertyName: "spatialAccuracy",
+                displayName: ""
+        ],
+        [
+                type: "property",
+                propertyName: "associatedSubProgramFacet",
+                displayName: ""
+        ],
+        [
+                type: "property",
+                propertyName: "methodType",
+                displayName: ""
+        ],
+        [
+                type: "property",
+                propertyName: "activityOwnerNameFacet",
+                displayName: "Owner"
+        ]
+]
+
+
+activitypropertypath = [
+        surveyYearFacet: ['surveyYear'],
+        projectNameFacet: ['projectActivity', 'projectName'],
+        projectActivityNameFacet: ['projectActivity', 'name'],
+        organisationNameFacet: ['projectActivity', 'organisationName'],
+        surveyMonthFacet: ['projectActivity', 'surveyMonth'],
+        isDataManagementPolicyDocumented: ['projectActivity', 'isDataManagementPolicyDocumented'],
+        dataQualityAssuranceMethods: ['projectActivity', 'dataQualityAssuranceMethods'],
+        nonTaxonomicAccuracy: ['projectActivity', 'nonTaxonomicAccuracy'],
+        temporalAccuracy: ['projectActivity', 'temporalAccuracy'],
+        speciesIdentification: ['projectActivity', 'speciesIdentification'],
+        activityLastUpdatedMonthFacet: ['projectActivity', 'lastUpdatedMonth'],
+        activityLastUpdatedYearFacet: ['projectActivity', 'lastUpdatedYear'],
+        associatedProgramFacet: ['associatedProgram'],
+        siteNameFacet: ['sites', 'name'],
+        associatedSubProgramFacet: ['projectActivity', 'associatedSubProgram'],
+        spatialAccuracy: ['projectActivity', 'spatialAccuracy'],
+        methodType: ['projectActivity', 'methodType'],
+        activityOwnerNameFacet: ['projectActivity', 'activityOwnerName']
+]
+
 notification.enabled=false

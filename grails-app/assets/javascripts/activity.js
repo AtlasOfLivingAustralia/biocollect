@@ -1,4 +1,4 @@
-var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit, doNotStoreFacetFiltering) {
+var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit, doNotStoreFacetFiltering, columnConfig) {
     var self = this;
 
     var features, featureType = 'record', alaMap, results, radio;
@@ -21,8 +21,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.facets = ko.observableArray();
     self.total = ko.observable(0);
     self.filter = ko.observable(false);
-
-    self.version = ko.observable(fcConfig.version)
+    self.version = ko.observable(fcConfig.version);
+    self.columnConfig = columnConfig || {};
     
     self.toggleFilter = function () {
         self.filter(!self.filter())
@@ -825,6 +825,7 @@ var ActivityRecordViewModel = function (activity) {
     var self = this;
     if (!activity) activity = {};
 
+    self.rawData = activity;
     self.activityId = ko.observable(activity.activityId);
     self.showCrud = ko.observable(activity.showCrud);
     self.userCanModerate = activity.userCanModerate;
@@ -858,6 +859,7 @@ var ActivityRecordViewModel = function (activity) {
     self.readOnly = ko.observable((fcConfig.version || '' ).length > 0)//183,238,252
 
     var allRecords = $.map(activity.records ? activity.records : [], function (record, index) {
+        record.parent = self;
         return new RecordVM(record);
     });
     self.records(allRecords);
@@ -871,10 +873,20 @@ var ActivityRecordViewModel = function (activity) {
     self.transients.imageTitle = ko.observable(activity.thumbnailUrl? '' : 'No image' );
 };
 
+ActivityRecordViewModel.prototype.getPropertyValue = RecordVM.prototype.getPropertyValue = function (config) {
+    var property = this['rawData'][config.propertyName];
+    if(!property && this['parent']){
+        property = this['parent']['rawData'][config.propertyName];
+    }
+
+    return ko.unwrap(property);
+};
+
 var RecordVM = function (record) {
     var self = this;
     if (!record) record = {};
-
+    self.rawData = record;
+    self.parent = record.parent;
     self.occurrenceID = ko.observable(record.occurrenceID);
     self.guid = ko.observable(record.guid);
     self.name = ko.observable(record.name);

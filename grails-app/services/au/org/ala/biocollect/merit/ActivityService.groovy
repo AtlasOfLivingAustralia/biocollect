@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.ProjectActivityService
+import au.org.ala.biocollect.UtilService
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.joda.time.DateTime
 import org.joda.time.Period
@@ -17,6 +18,7 @@ class ActivityService {
     UserService userService
     CacheService cacheService
     OutputService outputService
+    UtilService utilService
 
     public static final String PROGRESS_PLANNED = 'planned'
     public static final String PROGRESS_FINISHED = 'finished'
@@ -288,6 +290,26 @@ class ActivityService {
         facets + getDefaultFacets()
     }
 
+    List getDynamicIndexNamesAsColumnConfig () {
+        cacheService.get("dynamic-index-names-as-column-config", {
+            Map facets = getDynamicFacets()
+            List result = []
+
+            facets?.each { name, value ->
+                Map config = [
+                        type: "property",
+                        propertyName: name,
+                        displayName : ""
+                ]
+
+                result.add(config)
+            }
+
+            result
+
+        })
+    }
+
     /**
      * Update output site when activity site changes. This is done to synchronize site used in activity and output.
      * Works projects can choose a site for an activity on work schedule tab. In such a situation, this function is
@@ -324,5 +346,27 @@ class ActivityService {
                 }
             }
         }
+    }
+
+    def addAdditionalProperties (List additionalPropertyConfig, Map doc, Map result) {
+        additionalPropertyConfig?.each { Map config ->
+            def value = doc
+            List path = grailsApplication.config.activitypropertypath[config.propertyName] ?: [config.propertyName]
+            path?.each { String prop ->
+                if (value instanceof Map) {
+                    value = value[prop]
+                } else if (value instanceof List) {
+                    value = value?.collect {
+                        it[prop]
+                    }?.join(', ')
+                }
+            }
+
+            if (value != doc) {
+                result[config.propertyName] = utilService.getDisplayNameForValue(config.propertyName, value)
+            }
+        }
+
+        result
     }
 }

@@ -632,6 +632,10 @@ class BioActivityController {
         List activities = searchResult?.hits?.hits
         List facets
         Map userCanModerateForProjects = [:]
+        List additionalPropertyConfig = SettingService.hubConfig.getDataColumns(grailsApplication)?.findAll {
+            it.type == 'property'
+        }
+
         activities = activities?.collect {
             Map doc = it._source
             if ( !userCanModerateForProjects.hasProperty ( doc.projectId ) ) {
@@ -660,8 +664,9 @@ class BioActivityController {
                     showCrud         : (doc.userId == queryParams.userId) ||
                                         (queryParams.userId && doc.projectId && (userCanModerateForProjects[doc.projectId])),
                     userCanModerate  : userCanModerateForProjects[doc.projectId]
-
             ]
+
+            activityService.addAdditionalProperties(additionalPropertyConfig, doc, result)
             result
         }
 
@@ -1144,8 +1149,14 @@ class BioActivityController {
         }
     }
 
-    def getFacets(){
+    def getFacets () {
         List facets = activityService.getFacets()
         render text: [facets: facets] as JSON, contentType: 'application/json'
+    }
+
+    def getDataColumns () {
+        List columns = grailsApplication.config.datapage.allColumns
+        columns += activityService.getDynamicIndexNamesAsColumnConfig()
+        render text: [columns: columns] as JSON, contentType: 'application/json'
     }
 }
