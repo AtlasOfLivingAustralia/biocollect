@@ -109,6 +109,13 @@ class HubSettings extends JSONObject {
     }
 
     /**
+     * Get hub's dataColumn value. If not present, return default value from grailApplication bean.
+     */
+    List getDataColumns (def grailsApplication) {
+        this['dataColumns'] ?: grailsApplication.config.datapage.defaultColumns
+    }
+
+    /**
      * Get facets without special meaning like 'date', 'geoMap' etc.
      * @param facets
      * @return

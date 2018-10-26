@@ -9,7 +9,8 @@
             getHubUrl:"${createLink(controller: 'admin', action: 'loadHubSettings')}",
             saveHubUrl:"${createLink(controller: 'admin', action: 'saveHubSettings')}",
             listProjectFacetUrl: "${createLink(controller: 'project', action: 'getFacets')}",
-            listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}"
+            listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}",
+            listDataColumnsUrl: "${createLink(controller: 'bioActivity', action: 'getDataColumns')}"
         };
     </asset:script>
 </head>
@@ -58,6 +59,7 @@
         <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubBanner"  data-toggle="tab">Banner</a></li>
         <li><a href="#hubContent"  data-toggle="tab">Content</a></li>
         <li><a href="#hubFacet"  data-toggle="tab">Facets</a></li>
+        <li><a href="#hubData"  data-toggle="tab">Data</a></li>
         <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubHomepage"  data-toggle="tab">Homepage</a></li>
     </ul>
     <div class="tab-content">
@@ -485,6 +487,15 @@
                 </div>
             </div>
         </div>
+        <div class="tab-pane" id="hubData">
+            <div class="border-bottom-4">
+                <h4><strong>Configure data page table columns</strong></h4>
+                <div class="overflow-x">
+                    <!-- ko template: { name: 'templateDataPageColumnConfiguration' } -->
+                    <!-- /ko -->
+                </div>
+            </div>
+        </div>
         <div class="tab-pane" id="hubHomepage">
             <div data-bind="visible: transients.isSkinAConfigurableTemplate">
                 <div>
@@ -517,7 +528,6 @@
             </div>
         </div>
     </div>
-
     <div class="form-actions">
         <button type="button" id="save" data-bind="click:save" class="btn btn-primary">Save</button>
         <button type="button" id="cancel" class="btn">Cancel</button>
@@ -1028,6 +1038,46 @@
         <td colspan="6">Pick a facet <select data-bind="options: transients.facetList, optionsText:'formattedName', value: transients.selectedFacet"></select></td>
         <td>
             <button class="btn btn-small btn-default" data-bind="click: add"><i class="icon-plus"></i> Add</button>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+</script>
+<script id="templateDataPageColumnConfiguration" type="text/html">
+<table class="table table-custom-border borderless">
+    <thead>
+    <tr>
+        <th>Column</th>
+        <th>Display name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- ko foreach: dataColumns -->
+    <tr>
+        <td data-bind="text: name">
+
+        </td>
+        <td>
+            <input type="text"  data-bind="value:displayName" placeholder="Give a custom name for column.">
+        </td>
+        <td>
+            <button class="btn btn-small btn-danger" data-bind="click: $parent.removeDataColumn"><i class="icon-remove icon-white"></i> Remove</button>
+        </td>
+    </tr>
+    <!-- /ko -->
+    <!-- ko ifnot: dataColumns().length -->
+    <tr>
+        <td colspan="3">
+            No columns selected.
+        </td>
+    </tr>
+    <!-- /ko -->
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="2">Pick a column <select data-bind="options: transients.defaultDataColumns, optionsText: 'name', value: transients.selectedDataColumn"></select></td>
+        <td>
+            <button class="btn btn-small btn-default" data-bind="click: addDataColumn"><i class="icon-plus"></i> Add</button>
         </td>
     </tr>
     </tfoot>

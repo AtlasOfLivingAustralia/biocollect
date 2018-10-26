@@ -95,22 +95,15 @@
                             <table class="full-width table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            Image
+                                        <!-- ko foreach : columnConfig -->
+                                        <!-- ko if:  type != 'checkbox' -->
+                                        <th data-bind="text: displayName"></th>
+                                        <!-- /ko -->
+                                        <!-- ko if:  type == 'checkbox' -->
+                                        <th data-bind="visible: $parent.transients.isBulkActionsEnabled, text: displayName">
                                         </th>
-                                        <th>
-                                            Identification
-                                        </th>
-                                        <th></th>
-                                        <th>
-                                            Details
-                                        </th>
-                                        <th>
-                                            Action
-                                        </th>
-                                        <th data-bind="visible: transients.isBulkActionsEnabled">
-                                            Select item
-                                        </th>
+                                        <!-- /ko -->
+                                        <!-- /ko -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -118,41 +111,47 @@
                                     <!-- ko if: records().length > 0-->
                                     <!-- ko foreach : records -->
                                     <tr>
+                                        <!-- ko foreach: $root.columnConfig -->
+                                        <!-- ko if: type == 'image' -->
                                         <td>
                                             <div class="projectLogo">
                                                 <a href=""
-                                                   data-bind="attr:{href:fcConfig.imageLeafletViewer + '?file=' + encodeURIComponent((multimedia[0] && multimedia[0].identifier) || '${noImageUrl}')}, fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade', type: 'iframe', width:'80%'}"
+                                                   data-bind="attr:{href:fcConfig.imageLeafletViewer + '?file=' + encodeURIComponent(($parent.multimedia[0] && $parent.multimedia[0].identifier) || '${noImageUrl}')}, fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade', type: 'iframe', width:'80%'}"
                                                    target="fancybox">
-                                                    <img class="image-logo image-window" data-bind="attr:{title:(multimedia[0] && multimedia[0].title) || 'No Image', src:(multimedia[0] && multimedia[0].identifier) || '${noImageUrl}'}"  onload="findLogoScalingClass(this, 200, 150)">
+                                                    <img class="image-logo image-window" data-bind="attr:{title:($parent.multimedia[0] && $parent.multimedia[0].title) || 'No Image', src:($parent.multimedia[0] && $parent.multimedia[0].identifier) || '${noImageUrl}'}"  onload="findLogoScalingClass(this, 200, 150)">
                                                 </a>
                                             </div>
                                         </td>
-                                        <td class="span3">
+                                        <!-- /ko -->
+                                        <!-- ko if: type == 'identification' -->
+                                        <td>
                                             <div>
-                                                <!-- ko if: name() -->
+                                                <!-- ko if: $parent.name() -->
                                                 <a target="_blank"
-                                                   data-bind="visible: guid, attr:{href: $root.transients.bieUrl + '/species/' + guid()}">
-                                                    <span data-bind="text: name"></span>
+                                                   data-bind="visible: $parent.guid, attr:{href: $root.transients.bieUrl + '/species/' + $parent.guid()}">
+                                                    <span data-bind="text: $parent.name"></span>
                                                 </a>
-                                                <span data-bind="visible: !guid()">
-                                                    <span data-bind="text: name"></span>
+                                                <span data-bind="visible: !$parent.guid()">
+                                                    <span data-bind="text: $parent.name"></span>
                                                 </span>
                                                 <!-- /ko -->
                                             </div>
                                             <div>
-                                                <span data-bind="text: commonName"></span>
+                                                <span data-bind="text: $parent.commonName"></span>
                                             </div>
                                         </td>
+                                        <!-- /ko -->
+                                        <!-- ko if: type == 'symbols' -->
                                         <td>
                                             <div>
-                                                <!-- ko if: $parent.embargoed() -->
+                                                <!-- ko if: $parents[1].embargoed() -->
                                                 <a href="#" class="helphover"
-                                                   data-bind="popover: {title:'Only project members can access the record.', content:'Embargoed until : ' + moment($parent.embargoUntil()).format('DD/MM/YYYY')}">
+                                                   data-bind="popover: {title:'Only project members can access the record.', content:'Embargoed until : ' + moment($parents[1].embargoUntil()).format('DD/MM/YYYY')}">
                                                     <span class="fa fa-lock"></span>
                                                 </a>
                                                 <!--/ko -->
                                                 &nbsp;&nbsp;
-                                                <!-- ko if: individualCount() === 0 -->
+                                                <!-- ko if: $parent.individualCount() === 0 -->
                                                 <a href="#" class="helphover"
                                                    data-bind="popover: {content:'The record indicates absence of the species'}">
                                                     <span class="fa fa-caret-up fa-2x" style="vertical-align: -3px;"></span>
@@ -160,122 +159,151 @@
                                                 <!--/ko -->
                                             </div>
                                         </td>
+                                        <!-- /ko -->
+                                        <!-- ko if: type == 'details' -->
                                         <td>
                                             <div class="row-fluid">
                                                 <div class="span12">
-                                                    <div data-bind="visible: eventDate.formattedDate">
+                                                    <div data-bind="visible: $parent.eventDate.formattedDate">
                                                         Recorded on: <span
-                                                            data-bind="text: eventDate.formattedDate"></span>
-                                                        <span data-bind="visible: eventTime, text: eventTime"></span>
+                                                            data-bind="text: $parent.eventDate.formattedDate"></span>
+                                                        <span data-bind="visible: $parent.eventTime, text: $parent.eventTime"></span>
                                                     </div>
-                                                    <div data-bind="visible: $parent.lastUpdated">
+                                                    <div data-bind="visible: $parents[1].lastUpdated">
                                                         Submitted on: <span
-                                                            data-bind="text: $parent.lastUpdated.formattedDate"></span>
+                                                            data-bind="text: $parents[1].lastUpdated.formattedDate"></span>
                                                     </div>
-                                                    <div data-bind="visible: $parent.ownerName">
+                                                    <div data-bind="visible: $parents[1].ownerName">
                                                         Recorded by: <span
-                                                            data-bind="text: $parent.ownerName"></span>
+                                                            data-bind="text: $parents[1].ownerName"></span>
                                                     </div>
-                                                    <div data-bind="visible: coordinates && coordinates[0]">
+                                                    <div data-bind="visible: $parent.coordinates && $parent.coordinates[0]">
                                                         Coordinate: <span class="display-inline-block ellipsis-50"
-                                                            data-bind="text: coordinates[0], attr: {title: coordinates[0]}"></span>
+                                                            data-bind="text: $parent.coordinates[0], attr: {title: $parent.coordinates[0]}"></span>
                                                         <span class="display-inline-block ellipsis-50"
-                                                            data-bind="text: ',' + coordinates[1], attr: {title: coordinates[1]}"></span>
+                                                            data-bind="text: ',' + $parent.coordinates[1], attr: {title: $parent.coordinates[1]}"></span>
                                                     </div>
-                                                    <div data-bind="visible: $parent.name() && !fcConfig.hideProjectAndSurvey">
+                                                    <div data-bind="visible: $parents[1].name() && !fcConfig.hideProjectAndSurvey">
                                                         Survey name:
-                                                        <a data-bind="attr:{'href': $parent.transients.addUrl}">
-                                                            <span data-bind="text: $parent.name"></span>
+                                                        <a data-bind="attr:{'href': $parents[1].transients.addUrl}">
+                                                            <span data-bind="text: $parents[1].name"></span>
                                                         </a>
                                                     </div>
-                                                    <div data-bind="visible: $parent.projectName() && !fcConfig.hideProjectAndSurvey">
+                                                    <div data-bind="visible: $parents[1].projectName() && !fcConfig.hideProjectAndSurvey">
                                                         Project name: <a
-                                                            data-bind="attr:{'href': $parent.projectUrl()}"><span
-                                                                data-bind="text: $parent.projectName"></span></a>
+                                                            data-bind="attr:{'href': $parents[1].projectUrl()}"><span
+                                                                data-bind="text: $parents[1].projectName"></span></a>
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
+                                        <!-- /ko -->
+                                        <!-- ko if: type == 'action' -->
                                         <td>
                                             <div>
                                                 <span>
-                                                    <a data-bind="attr: {href: $parent.transients.viewUrl}" title="View record" class="btn btn-small editBtn btn-default margin-top-5"><i class="fa fa-file-o"></i> View</a>
+                                                    <a data-bind="attr: {href: $parents[1].transients.viewUrl}" title="View record" class="btn btn-small editBtn btn-default margin-top-5"><i class="fa fa-file-o"></i> View</a>
                                                 </span>
-                                                <span data-bind="visible: !$parent.readOnly(), if: $parent.showCrud()">
-                                                    <a data-bind="attr: {href: $parent.transients.editUrl }" title="Edit record" class="btn btn-small editBtn btn-default margin-top-5"><i class="fa fa-pencil"></i> Edit</a>
+                                                <span data-bind="visible: !$parents[1].readOnly(), if: $parents[1].showCrud()">
+                                                    <a data-bind="attr: {href: $parents[1].transients.editUrl }" title="Edit record" class="btn btn-small editBtn btn-default margin-top-5"><i class="fa fa-pencil"></i> Edit</a>
                                                 </span>
-                                                <span data-bind="visible: !$parent.readOnly(), if: $parent.showCrud()">
-                                                    <button class="btn btn-small btn-default margin-top-5" data-bind="click: function(){ $parent.transients.parent.remove($parent) }" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
+                                                <span data-bind="visible: !$parents[1].readOnly(), if: $parents[1].showCrud()">
+                                                    <button class="btn btn-small btn-default margin-top-5" data-bind="click: function(){ $parents[1].transients.parent.remove($parents[1]) }" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
                                                 </span>
                                             </div>
                                         </td>
-                                        <td class="text-align-center" data-bind="visible: $parent.transients.parent.transients.isBulkActionsEnabled">
-                                            <input type="checkbox" data-bind="disable: !$parent.userCanModerate, value: $parent.activityId, checked: $parent.transients.parent.transients.activitiesToDelete"/>
+                                        <!-- /ko -->
+                                        <!-- ko if: type == 'checkbox' -->
+                                        <td class="text-align-center">
+                                            <input type="checkbox" data-bind="visible: $parents[1].transients.parent.transients.isBulkActionsEnabled, disable: !$parents[1].userCanModerate, value: $parents[1].activityId, checked: $parents[1].transients.parent.transients.activitiesToDelete"/>
                                         </td>
+                                        <!-- /ko -->
+                                        <!-- ko if:  type == 'property' -->
+                                        <td>
+                                            <div data-bind="text: $parent.getPropertyValue($data)"></div>
+                                        </td>
+                                        <!-- /ko -->
+
+                                    <!-- /ko -->
                                     </tr>
                                     <!-- /ko -->
                                     <!-- /ko -->
                                     <!-- ko if: !records() || !records().length -->
                                     <tr>
-                                        <td>
-                                            <div class="projectLogo">
-                                                <img class="image-logo wide" data-bind="attr:{title:transients.imageTitle, src:transients.thumbnailUrl} " />
-                                            </div>
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                            <div>
-                                                <!-- ko if: embargoed() -->
-                                                <a href="#" class="helphover"
-                                                   data-bind="popover: {title:'Indicates that only project members can access the record.', content:'Embargoed until : ' + moment(embargoUntil()).format('DD/MM/YYYY')}">
-                                                    <span class="fa fa-lock"></span>
-                                                </a>
-                                                <!--/ko -->
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="row-fluid">
-                                                <div class="span12">
-                                                    <div data-bind="visible: lastUpdated">
-                                                        Submitted on: <span
-                                                            data-bind="text: lastUpdated.formattedDate"></span>
-                                                    </div>
-                                                    <div data-bind="visible: ownerName">
-                                                        Recorded by: <span
-                                                            data-bind="text: ownerName"></span>
-                                                    </div>
-                                                    <div data-bind="visible: name() && !fcConfig.hideProjectAndSurvey">
-                                                        Survey name:
-                                                        <a data-bind="attr:{'href': transients.addUrl}">
-                                                            <span data-bind="text: name"></span>
-                                                        </a>
-                                                    </div>
-                                                    <div data-bind="visible: projectName() && !fcConfig.hideProjectAndSurvey">
-                                                        Project name: <a
-                                                            data-bind="attr:{'href': projectUrl()}"><span
-                                                                data-bind="text: projectName"></span></a>
+                                        <!-- ko foreach: $root.columnConfig -->
+                                            <!-- ko if:  type == 'image' -->
+                                            <td>
+                                                <div class="projectLogo">
+                                                    <img class="image-logo wide" data-bind="attr:{title:$parent.transients.imageTitle, src:$parent.transients.thumbnailUrl} " />
+                                                </div>
+                                            </td>
+                                            <!-- /ko -->
+                                            <!-- ko if:  type == 'symbols' -->
+                                            <td>
+                                                <div>
+                                                    <!-- ko if: $parent.embargoed() -->
+                                                    <a href="#" class="helphover"
+                                                       data-bind="popover: {title:'Indicates that only project members can access the record.', content:'Embargoed until : ' + moment($parent.embargoUntil()).format('DD/MM/YYYY')}">
+                                                        <span class="fa fa-lock"></span>
+                                                    </a>
+                                                    <!--/ko -->
+                                                </div>
+                                            </td>
+                                            <!-- /ko -->
+                                            <!-- ko if:  type == 'property' -->
+                                            <td>
+                                                <div data-bind="text: $parent.getPropertyValue($data)"></div>
+                                            </td>
+                                            <!-- /ko -->
+                                            <!-- ko if:  type == 'details' -->
+                                            <td>
+                                                <div class="row-fluid">
+                                                    <div class="span12">
+                                                        <div data-bind="visible: $parent.lastUpdated">
+                                                            Submitted on: <span
+                                                                data-bind="text: $parent.lastUpdated.formattedDate"></span>
+                                                        </div>
+                                                        <div data-bind="visible: $parent.ownerName">
+                                                            Recorded by: <span
+                                                                data-bind="text: $parent.ownerName"></span>
+                                                        </div>
+                                                        <div data-bind="visible: $parent.name() && !fcConfig.hideProjectAndSurvey">
+                                                            Survey name:
+                                                            <a data-bind="attr:{'href': $parent.transients.addUrl}">
+                                                                <span data-bind="text: $parent.name"></span>
+                                                            </a>
+                                                        </div>
+                                                        <div data-bind="visible: $parent.projectName() && !fcConfig.hideProjectAndSurvey">
+                                                            Project name: <a
+                                                                data-bind="attr:{'href': $parent.projectUrl()}"><span
+                                                                    data-bind="text: $parent.projectName"></span></a>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div data-bind="if: showCrud()">
-                                                <span>
-                                                    <a data-bind="attr:{'href': transients.viewUrl}" title="View record" class="btn btn-small editBtn btn-default"><i class="fa fa-file-o"></i> View</a>
-                                                </span>
-                                                <span data-bind="visible: !readOnly()">
-                                                    <a data-bind="attr:{'href': transients.editUrl}" title="Edit record" class="btn btn-small editBtn btn-default"><i class="fa fa-pencil"></i> Edit</a>
-                                                </span>
-                                                <span data-bind="visible: !readOnly()">
-                                                    <button class="btn btn-small btn-default" data-bind="click: $parent.remove" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td class="text-align-center" data-bind="visible: transients.parent.transients.isBulkActionsEnabled">
-                                            <input type="checkbox" data-bind="disable: !userCanModerate, value: activityId, checked: transients.parent.transients.activitiesToDelete"/>
-                                        </td>
-                                </tr>
+                                            </td>
+                                            <!-- /ko -->
+                                            <!-- ko if:  type == 'action' -->
+                                            <td>
+                                                <div data-bind="if: showCrud()">
+                                                    <span>
+                                                        <a data-bind="attr:{'href': $parent.transients.viewUrl}" title="View record" class="btn btn-small editBtn btn-default"><i class="fa fa-file-o"></i> View</a>
+                                                    </span>
+                                                    <span data-bind="visible: !$parent.readOnly()">
+                                                        <a data-bind="attr:{'href': $parent.transients.editUrl}" title="Edit record" class="btn btn-small editBtn btn-default"><i class="fa fa-pencil"></i> Edit</a>
+                                                    </span>
+                                                    <span data-bind="visible: !$parent.readOnly()">
+                                                        <button class="btn btn-small btn-default" data-bind="click: $parents[1].remove" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <!-- /ko -->
+                                            <!-- ko if:  type == 'checkbox' -->
+                                            <td class="text-align-center">
+                                                <input type="checkbox" data-bind="visible: $parent.transients.parent.transients.isBulkActionsEnabled, disable: !$parent.userCanModerate, value: $parent.activityId, checked: $parent.transients.parent.transients.activitiesToDelete"/>
+                                            </td>
+                                            <!-- /ko -->
+                                    <!-- /ko -->
+                                    </tr>
                                     <!-- /ko -->
                                     <!-- /ko -->
                                 </tbody>
@@ -338,7 +366,8 @@
         } else {
             user = null;
         }
-        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false});
+        var columnConfig = ${hubConfig.getDataColumns(grailsApplication) as grails.converters.JSON};
+        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false}, columnConfig);
         ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('survey-all-activities-and-records-content'));
         $('#dataMapTab').on('shown',function(){
             activitiesAndRecordsViewModel.transients.alaMap.redraw();

@@ -1,6 +1,7 @@
 var hubConfigs = {
     availableProjectFacets: [],
-    availableDataFacets: []
+    availableDataFacets: [],
+    availableDataColumns: []
 };
 
 var HubSettingsViewModel = function (programsModel, options) {
@@ -57,6 +58,10 @@ var HubSettingsViewModel = function (programsModel, options) {
         hubConfigs.availableDataFacets = facets;
     }, 'json');
 
+    $.get(config.listDataColumnsUrl, function (data) {
+        hubConfigs.availableDataColumns = data.columns;
+    }, 'json');
+
     $.get(config.listHubsUrl, function (data) {
         self.hubs(data);
         if (self.hubs().indexOf(config.currentHub) >= 0) {
@@ -108,6 +113,7 @@ var HubSettings = function (settings, config) {
         myProjectRecords : new FacetConfigurationViewModel(settings.pages.myProjectRecords, hubConfigs.availableDataFacets),
         projectFinder: new FacetConfigurationViewModel(settings.pages.projectFinder, hubConfigs.availableProjectFacets)
     };
+    self.dataColumns = ko.observableArray();
     /**
      * Set home page only if the configurable template is chosen. Otherwise, do nothing. If user had previously chosen
      * configurable template but not anymore, then do not change homepage.
@@ -200,7 +206,9 @@ var HubSettings = function (settings, config) {
         facetList: ko.observableArray(hubConfigs.availableProjectFacets.slice()),
         dataFacetList: ko.observableArray(hubConfigs.availableDataFacets.slice()),
         selectedValue: ko.observable(),
-        selectedDataFacet: ko.observable()
+        selectedDataFacet: ko.observable(),
+        selectedDataColumn: ko.observable(),
+        defaultDataColumns: ko.observableArray()
     };
 
     self.loadSettings = function (settings) {
@@ -236,7 +244,8 @@ var HubSettings = function (settings, config) {
         settings.customBreadCrumbs.forEach(function (breadcrumb) {
             self.customBreadCrumbs.push(new CustomBreadCrumbsViewModel(breadcrumb));
         });
-
+        self.loadDefaultDataColumns(hubConfigs.availableDataColumns);
+        self.loadDataColumns(settings.dataColumns || []);
     };
 
 
@@ -259,15 +268,15 @@ var HubSettings = function (settings, config) {
 
     self.addFacet = function () {
         var facet = self.transients.selectedValue();
-        self.addFacetToSelectionAndRemoveFromList(facet, self.facets, self.transients.facetList);
+        self.addAndRemoveFromArrays(facet, self.facets, self.transients.facetList);
     };
 
     self.addDataFacet = function () {
         var facet = self.transients.selectedDataFacet();
-        self.addFacetToSelectionAndRemoveFromList(facet, self.dataFacets, self.transients.dataFacetList);
+        self.addAndRemoveFromArrays(facet, self.dataFacets, self.transients.dataFacetList);
     };
 
-    self.addFacetToSelectionAndRemoveFromList = function (facet, add, remove) {
+    self.addAndRemoveFromArrays = function (facet, add, remove) {
         add.push(facet);
         var index = remove.indexOf(facet);
         if (index >= 0) {
@@ -284,18 +293,25 @@ var HubSettings = function (settings, config) {
     };
 
     self.removeFacetFromSelectionAndAddToList = function (facet, remove, add) {
-        var index = remove.indexOf(facet);
-        if(index >= 0){
-            remove.splice(index, 1);
-            index = add.indexOf(facet);
-            if(index == -1){
-                add.push(facet);
-                add.sort(function (a,b) {
-                    return a.title() < b.title()? - 1 : 1;
-                })
-            }
+        var modified = self.removeAndAddToArrays(facet, remove, add);
+        if (modified) {
+            add.sort(function (a,b) {
+                return a.title() < b.title()? - 1 : 1;
+            });
         }
-    }
+    };
+
+    self.removeDataColumn = function (column) {
+        var modified = self.removeAndAddToArrays(column, self.dataColumns, self.transients.defaultDataColumns);
+        if (modified) {
+            self.sortUnselectedColumns();
+        }
+    };
+
+    self.addDataColumn = function () {
+        var columnModel = self.transients.selectedDataColumn();
+        self.addAndRemoveFromArrays(columnModel, self.dataColumns, self.transients.defaultDataColumns);
+    };
 
     self.save = function () {
         if ($(config.formSelector).validationEngine('validate')) {
@@ -335,6 +351,58 @@ var HubSettings = function (settings, config) {
     self.loadSettings(settings);
 
 
+};
+
+HubSettings.prototype.sortUnselectedColumns = function () {
+    this.transients.defaultDataColumns.sort(function (a,b) {
+        return a.name().toLowerCase() < b.name().toLowerCase() ? - 1 : 1;
+    });
+};
+
+HubSettings.prototype.loadDefaultDataColumns = function (columns) {
+    var self = this;
+    columns.forEach(function (column) {
+        self.transients.defaultDataColumns.push(new ColumnViewModel(column));
+    });
+};
+
+HubSettings.prototype.loadDataColumns = function (columns) {
+    var self = this;
+    columns.forEach(function (column) {
+        var columnModels = $.grep(self.transients.defaultDataColumns(), function (defaultColumn) {
+                if(column.type === 'property') {
+                    return (column.type === defaultColumn.type) && (column.propertyName === defaultColumn.propertyName);
+                } else {
+                    return (column.type === defaultColumn.type);
+                }
+            }),
+            columnModel = columnModels[0];
+
+        if (!columnModel) {
+            columnModel = new ColumnViewModel(column);
+        } else {
+            columnModel.load(column);
+        }
+
+        self.addAndRemoveFromArrays(columnModel, self.dataColumns, self.transients.defaultDataColumns);
+    });
+
+    self.sortUnselectedColumns();
+};
+
+HubSettings.prototype.removeAndAddToArrays =  function (item, remove, add) {
+    var index = remove.indexOf(item),
+        addArrayModified = false;
+    if (index >= 0) {
+        remove.splice(index, 1);
+        index = add.indexOf(item);
+        if (index == -1) {
+            add.push(item);
+            addArrayModified = true;
+        }
+    }
+
+    return addArrayModified;
 };
 
 var TemplateConfigurationViewModel = function (config) {
@@ -515,10 +583,10 @@ function FacetConfigurationViewModel(config, availableFacets) {
 
     self.add = function () {
         var facet = self.transients.selectedFacet();
-        self.addFacetToSelectionAndRemoveFromList(facet, self.facets, self.transients.facetList);
+        self.addAndRemoveFromArrays(facet, self.facets, self.transients.facetList);
     };
 
-    self.addFacetToSelectionAndRemoveFromList = function (facet, add, remove) {
+    self.addAndRemoveFromArrays = function (facet, add, remove) {
         add.push(facet);
         var index = remove.indexOf(facet);
         if (index >= 0) {
@@ -603,6 +671,32 @@ function CustomBreadCrumbsViewModel(config) {
     self.removeLink = function (data) {
         self.breadCrumbs.remove(data);
     };
+};
+
+function ColumnViewModel(data) {
+    var self = this;
+    self.type = data.type;
+    self.displayName = ko.observable(data.displayName);
+    self.propertyName = data.propertyName;
+    self.name = ko.pureComputed(function () {
+        var displayName = self.displayName(),
+            name ;
+        if (self.type === 'property') {
+            name = self.propertyName;
+        } else {
+            name = self.type;
+        }
+
+        if (displayName) {
+            return displayName + ' ( ' + name + ' )';
+        }
+
+        return name;
+    });
+};
+
+ColumnViewModel.prototype.load = function (data) {
+    this.displayName(data.displayName || this.displayName());
 };
 
 var colorScheme = {

@@ -111,4 +111,25 @@ class UtilService {
             facet.helpText = facetSetting?.helpText
         }
     }
+
+    /**
+     * Convert facet names and terms to a human understandable text.
+     * @param facets
+     * @return
+     */
+    def getDisplayNameForValue(String name, value) {
+        switch (name) {
+            case 'userId':
+                Map users = authService.getUserDetailsById([value], false)?.users
+                value = users[value]?.displayName
+                break;
+            default:
+                if (value instanceof String) {
+                    value = messageSource.getMessage("facets." + name + "." + value, [].toArray(), value?:"", Locale.default)
+                }
+                break;
+        }
+
+        value
+    }
 }
