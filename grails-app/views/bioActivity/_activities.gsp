@@ -238,6 +238,10 @@
                                                 </div>
                                             </td>
                                             <!-- /ko -->
+                                            <!-- ko if: type == 'identification' -->
+                                            <td>
+                                            </td>
+                                            <!-- /ko -->
                                             <!-- ko if:  type == 'symbols' -->
                                             <td>
                                                 <div>
@@ -284,7 +288,7 @@
                                             <!-- /ko -->
                                             <!-- ko if:  type == 'action' -->
                                             <td>
-                                                <div data-bind="if: showCrud()">
+                                                <div data-bind="if: $parent.showCrud()">
                                                     <span>
                                                         <a data-bind="attr:{'href': $parent.transients.viewUrl}" title="View record" class="btn btn-small editBtn btn-default"><i class="fa fa-file-o"></i> View</a>
                                                     </span>
