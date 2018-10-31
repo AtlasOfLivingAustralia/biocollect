@@ -22,7 +22,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.total = ko.observable(0);
     self.filter = ko.observable(false);
     self.version = ko.observable(fcConfig.version);
-    self.columnConfig = columnConfig || {};
+    self.columnConfig = columnConfig || [];
     
     self.toggleFilter = function () {
         self.filter(!self.filter())

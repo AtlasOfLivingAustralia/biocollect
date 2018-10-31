@@ -60,6 +60,10 @@
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <span data-bind="text: message"></span>
     </div>
+    <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Heads up!</strong> You can only edit the site if you have at least 'editor' privilege on all projects associated with the site. Check the projects this site is associated with on the 'Projects' tab below.
+    </div>
     <ul class="breadcrumb pull-right">
         <li>
             <g:set var="disabled">${(!user) ? "disabled='disabled' title='login required'" : ''}</g:set>
