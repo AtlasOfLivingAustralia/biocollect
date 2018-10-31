@@ -208,8 +208,11 @@ var HubSettings = function (settings, config) {
         selectedValue: ko.observable(),
         selectedDataFacet: ko.observable(),
         selectedDataColumn: ko.observable(),
-        defaultDataColumns: ko.observableArray()
+        defaultDataColumns: ko.observableArray(),
+        sortColumn: ko.observable()
     };
+
+    self.transients.sortColumn.subscribe(self.setSortColumn, self);
 
     self.loadSettings = function (settings) {
         self.hubId(settings.hubId);
@@ -246,6 +249,7 @@ var HubSettings = function (settings, config) {
         });
         self.loadDefaultDataColumns(hubConfigs.availableDataColumns);
         self.loadDataColumns(settings.dataColumns || []);
+        self.loadSortColumn();
     };
 
 
@@ -274,14 +278,6 @@ var HubSettings = function (settings, config) {
     self.addDataFacet = function () {
         var facet = self.transients.selectedDataFacet();
         self.addAndRemoveFromArrays(facet, self.dataFacets, self.transients.dataFacetList);
-    };
-
-    self.addAndRemoveFromArrays = function (facet, add, remove) {
-        add.push(facet);
-        var index = remove.indexOf(facet);
-        if (index >= 0) {
-            remove.splice(index, 1);
-        }
     };
 
     self.removeFacet = function (facet) {
@@ -403,6 +399,50 @@ HubSettings.prototype.removeAndAddToArrays =  function (item, remove, add) {
     }
 
     return addArrayModified;
+};
+
+/**
+ * Add value to array and remove that value from another array.
+ * @param facet - value to add
+ * @param add
+ * @param remove
+ */
+HubSettings.prototype.addAndRemoveFromArrays = function (facet, add, remove) {
+    add.push(facet);
+    var index = remove.indexOf(facet);
+    if (index >= 0) {
+        remove.splice(index, 1);
+    }
+};
+
+/**
+ * Get current sort column and update model. Model is bound to UI radio button.
+ */
+HubSettings.prototype.loadSortColumn = function () {
+    var self = this,
+        columns = self.dataColumns() || [];
+    columns.forEach(function (column) {
+        if(column.sort()){
+            self.transients.sortColumn(column.code());
+        }
+    });
+};
+
+/**
+ * Update the sort flag on all columns based on the passed value.
+ * @param selectedColumn - ColumnViewModel.code
+ */
+HubSettings.prototype.setSortColumn = function (selectedColumn) {
+    var self = this,
+        columns = self.dataColumns();
+
+    columns.forEach(function (column) {
+         if (column.code() === selectedColumn) {
+            column.sort(true);
+        } else {
+            column.sort(false);
+        }
+    });
 };
 
 var TemplateConfigurationViewModel = function (config) {
@@ -678,6 +718,17 @@ function ColumnViewModel(data) {
     self.type = data.type;
     self.displayName = ko.observable(data.displayName);
     self.propertyName = data.propertyName;
+    self.dataType = data.dataType || '';
+    self.sort = ko.observable(data.sort || false);
+    self.order = ko.observable(data.order || 'asc');
+    self.code = ko.pureComputed(function () {
+        if (self.type === 'property') {
+            return self.propertyName;
+        } else {
+            return self.type;
+        }
+    });
+
     self.name = ko.pureComputed(function () {
         var displayName = self.displayName(),
             name ;
@@ -693,10 +744,29 @@ function ColumnViewModel(data) {
 
         return name;
     });
+
+    self.isSortable = ko.pureComputed(function () {
+        var exceptions, index, inclusions;
+        if (self.dataType) {
+            // If column is a dynamic facet, then not all dataType is sortable e.g. stringList.
+            // ES throws exception if sorted on those fields.
+            // Below is the list of dataTypes that are sortable.
+            inclusions = ['text', 'number', 'boolean', 'date'];
+            index = inclusions.indexOf(self.dataType);
+            return index >= 0;
+        } else {
+            // The below type cannot be sorted.
+            exceptions = ['image', 'details', 'checkbox', 'action', 'symbols'];
+            index = exceptions.indexOf(self.code());
+            return !(index >= 0);
+        }
+    });
 };
 
 ColumnViewModel.prototype.load = function (data) {
     this.displayName(data.displayName || this.displayName());
+    this.sort(data.sort || this.sort());
+    this.order(data.order || this.order());
 };
 
 var colorScheme = {

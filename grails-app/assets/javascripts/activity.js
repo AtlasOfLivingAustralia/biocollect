@@ -35,8 +35,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     };
 
     self.searchTerm = ko.observable('');
-    self.order = ko.observable('DESC');
-    self.sort = ko.observable('lastUpdated');
+    self.order = ko.observable();
+    self.sort = ko.observable();
 
     self.filterViewModel = new FilterViewModel({
         parent: self,
@@ -63,24 +63,19 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return show;
     });
 
-    self.sort.subscribe(function (newValue) {
-        self.refreshPage();
-    });
-
     self.search = function () {
         fetchDataForTabs()
     };
 
     self.clearData = function() {
         self.searchTerm('');
-        self.order('DESC');
-        self.sort('lastUpdated');
+        self.loadSortColumn(true, true);
+        self.filterViewModel.selectedFacets.removeAll();
         alaMap.resetMap();
     };
 
     self.reset = function () {
         self.clearData();
-        self.filterViewModel.selectedFacets.removeAll();
     };
 
     self.getFacetTerms = function (facets) {
@@ -126,7 +121,47 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         });
 
         return found.length > 0;
-    }
+    };
+
+    self.sortClass = function (column) {
+        if( self.sort() === column.code ) {
+            if (self.order() === 'asc') {
+                return 'fa fa-sort-up'
+            } else {
+                return 'fa fa-sort-down'
+            }
+        } else  {
+            return 'fa fa-sort'
+        }
+    };
+
+    self.getSortColumn = function () {
+        var result;
+        self.columnConfig.forEach(function (column) {
+            if(column.sort){
+                result = column
+            }
+        });
+
+        return result;
+    };
+
+    self.loadSortColumn = function (doNotRefresh, doNotChangeOrder) {
+        var column = self.getSortColumn();
+        if (column) {
+            self.sortByColumn(column, null, doNotRefresh, doNotChangeOrder);
+        }
+    };
+
+    /**
+     * event handler
+     */
+    self.sortByColumn = function (data, event, doNotRefresh, doNotChangeOrder) {
+        self.sortButtonClick({ id: data.code, order: data.order}, doNotRefresh);
+        if(!doNotChangeOrder) {
+            data.order = data.order === 'asc' ? 'desc' : 'asc';
+        }
+    };
 
     self.load = function (data, page) {
         var activities = data.activities;
@@ -771,15 +806,17 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     self.filterViewModel.selectedFacets.subscribe(fetchDataForTabs);
 
-    self.sortButtonClick = function(data){
+    self.sortButtonClick = function(data, doNotRefersh){
         // remove subscribe event on order so that we can set it and page will not refresh. will only refresh when
         // sort is set.
         self.order(data.order);
         self.sort(data.id);
+        !doNotRefersh && self.refreshPage();
     };
 
     var restored = facetsLocalStorageHandler("restore");
     var orgTerm = fcConfig.organisationName;
+    self.loadSortColumn(true);
     if (orgTerm) {
         self.filterViewModel.selectedFacets.push(new FacetTermViewModel({
             term: orgTerm,

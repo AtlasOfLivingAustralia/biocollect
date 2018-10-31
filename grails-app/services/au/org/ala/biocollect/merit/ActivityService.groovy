@@ -290,6 +290,10 @@ class ActivityService {
         facets + getDefaultFacets()
     }
 
+    /**
+     * Add dynamic facets to list of possible columns to choose when configuring data page columns.
+     * @return
+     */
     List getDynamicIndexNamesAsColumnConfig () {
         cacheService.get("dynamic-index-names-as-column-config", {
             Map facets = getDynamicFacets()
@@ -299,7 +303,8 @@ class ActivityService {
                 Map config = [
                         type: "property",
                         propertyName: name,
-                        displayName : ""
+                        displayName : "",
+                        dataType: value[0]?.dataType
                 ]
 
                 result.add(config)

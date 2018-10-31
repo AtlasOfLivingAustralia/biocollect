@@ -318,28 +318,47 @@ methodType = [
 datapage.defaultColumns = [
         [
                 type: "image",
-                displayName: "Image"
+                displayName: "Image",
+                isSortable: false
         ],
         [
-                type: "identification",
-                displayName: "Identification"
+                type: "recordNameFacet",
+                displayName: "Identification",
+                isSortable: true,
+                sort: false,
+                order: 'asc',
+                code: "recordNameFacet"
         ],
         [
                 type: "symbols",
-                displayName: ""
+                displayName: "",
+                isSortable: false
         ],
         [
                 type: "details",
-                displayName: "Details"
+                displayName: "Details",
+                isSortable: false
+        ],
+        [
+                type: "property",
+                propertyName: "lastUpdated",
+                code: "lastUpdated",
+                displayName: "Last updated",
+                dataType: 'date',
+                isSortable: true,
+                sort: true,
+                order: 'desc'
         ],
         [
                 type: "action",
-                displayName: "Action"
+                displayName: "Action",
+                isSortable: false
         ]
         ,
         [
                 type: "checkbox",
-                displayName: "Select item"
+                displayName: "Select item",
+                isSortable: false
         ]
 ]
 
