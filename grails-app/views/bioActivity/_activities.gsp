@@ -5,7 +5,7 @@
 <div id="survey-all-activities-and-records-content">
     <div id="data-result-placeholder"></div>
     <div data-bind="visible: version().length == 0">
-        <g:render template="../bioActivity/search"/>
+        <g:render template="search"/>
     </div>
 
     <div class="row-fluid">
@@ -97,7 +97,18 @@
                                     <tr>
                                         <!-- ko foreach : columnConfig -->
                                         <!-- ko if:  type != 'checkbox' -->
-                                        <th data-bind="text: displayName"></th>
+                                        <th>
+                                            <!-- ko if: isSortable -->
+                                            <div class="pointer" data-bind="click: $parent.sortByColumn">
+                                                <!-- ko text: displayName --> <!-- /ko -->
+                                                <span data-bind="css: $parent.sortClass($data)"></span>
+                                            </div>
+
+                                            <!-- /ko -->
+                                            <!-- ko ifnot: isSortable -->
+                                            <!-- ko text: displayName --><!-- /ko -->
+                                            <!-- /ko -->
+                                        </th>
                                         <!-- /ko -->
                                         <!-- ko if:  type == 'checkbox' -->
                                         <th data-bind="visible: $parent.transients.isBulkActionsEnabled, text: displayName">
@@ -123,7 +134,7 @@
                                             </div>
                                         </td>
                                         <!-- /ko -->
-                                        <!-- ko if: type == 'identification' -->
+                                        <!-- ko if: type == 'recordNameFacet' -->
                                         <td>
                                             <div>
                                                 <!-- ko if: $parent.name() -->
@@ -220,7 +231,12 @@
                                         <!-- /ko -->
                                         <!-- ko if:  type == 'property' -->
                                         <td>
+                                            <!-- ko if: dataType == 'date' -->
+                                            <div data-bind="text: moment($parent.getPropertyValue($data)).format('DD/MM/YYYY')"></div>
+                                            <!-- /ko -->
+                                            <!-- ko ifnot: dataType == 'date' -->
                                             <div data-bind="text: $parent.getPropertyValue($data)"></div>
+                                            <!-- /ko -->
                                         </td>
                                         <!-- /ko -->
 
@@ -238,7 +254,7 @@
                                                 </div>
                                             </td>
                                             <!-- /ko -->
-                                            <!-- ko if: type == 'identification' -->
+                                            <!-- ko if: type == 'recordNameFacet' -->
                                             <td>
                                             </td>
                                             <!-- /ko -->
@@ -256,7 +272,12 @@
                                             <!-- /ko -->
                                             <!-- ko if:  type == 'property' -->
                                             <td>
+                                                <!-- ko if: dataType == 'date' -->
+                                                <div data-bind="text: moment($parent.getPropertyValue($data)).format('DD/MM/YYYY')"></div>
+                                                <!-- /ko -->
+                                                <!-- ko ifnot: dataType == 'date' -->
                                                 <div data-bind="text: $parent.getPropertyValue($data)"></div>
+                                                <!-- /ko -->
                                             </td>
                                             <!-- /ko -->
                                             <!-- ko if:  type == 'details' -->
@@ -306,7 +327,7 @@
                                                 <input type="checkbox" data-bind="visible: $parent.transients.parent.transients.isBulkActionsEnabled, disable: !$parent.userCanModerate, value: $parent.activityId, checked: $parent.transients.parent.transients.activitiesToDelete"/>
                                             </td>
                                             <!-- /ko -->
-                                    <!-- /ko -->
+                                        <!-- /ko -->
                                     </tr>
                                     <!-- /ko -->
                                     <!-- /ko -->

@@ -1049,6 +1049,9 @@
     <tr>
         <th>Column</th>
         <th>Display name</th>
+        <th>Sort by column</th>
+        <th>Order of sorting</th>
+        <th>Action</th>
     </tr>
     </thead>
     <tbody>
@@ -1058,11 +1061,21 @@
 
         </td>
         <td>
-            <input type="text"  data-bind="value:displayName" placeholder="Give a custom name for column.">
+            <input type="text"  data-bind="value:displayName" placeholder="Give a custom name for column." />
+        </td>
+        <td>
+            <input type="radio" name="sort" data-bind="value: code, checked: $parent.transients.sortColumn, disable: !isSortable()" />
+        </td>
+        <td>
+            <select data-bind="value: order, disable: !isSortable()">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
         </td>
         <td>
             <button class="btn btn-small btn-danger" data-bind="click: $parent.removeDataColumn"><i class="icon-remove icon-white"></i> Remove</button>
         </td>
+
     </tr>
     <!-- /ko -->
     <!-- ko ifnot: dataColumns().length -->
@@ -1075,8 +1088,8 @@
     </tbody>
     <tfoot>
     <tr>
-        <td colspan="2">Pick a column <select data-bind="options: transients.defaultDataColumns, optionsText: 'name', value: transients.selectedDataColumn"></select></td>
-        <td>
+        <td colspan="5">
+            Pick a column <select data-bind="options: transients.defaultDataColumns, optionsText: 'name', value: transients.selectedDataColumn"></select>
             <button class="btn btn-small btn-default" data-bind="click: addDataColumn"><i class="icon-plus"></i> Add</button>
         </td>
     </tr>
