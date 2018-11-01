@@ -5,7 +5,7 @@
 <div id="survey-all-activities-and-records-content">
     <div id="data-result-placeholder"></div>
     <div data-bind="visible: version().length == 0">
-        <g:render template="search"/>
+        <g:render template="../bioActivity/search"/>
     </div>
 
     <div class="row-fluid">
