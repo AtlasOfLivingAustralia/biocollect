@@ -166,6 +166,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     var self = $.extend(this, pActivitiesVM);
     var surveyInfoTab = '#survey-info-tab';
     var project = pActivitiesVM.project;
+    var errorMsgSurveyInfo = "Failed to save survey. Are you sure all mandatory fields in 'Survey Info' tab is filled?";
     self.placeHolder = placeHolder;
     self.datesOptions = [60, 90, 120, 180];
     self.formNames = ko.observableArray($.map(self.pActivityForms ? self.pActivityForms : [], function (obj, i) {
@@ -360,7 +361,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                     self.updateLogo(data);
                     showAlert("Successfully created", "alert-success", self.placeHolder);
                 } else {
-                    showAlert(data.error ? data.error : "Error creating the survey", "alert-error", self.placeHolder);
+                    showAlert(errorMsgSurveyInfo, "alert-error", self.placeHolder);
                 }
             },
             error: function (data) {
@@ -383,7 +384,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                     self.updateProjectResources(data);
                     showAlert("Successfully updated ", "alert-success", self.placeHolder);
                 } else {
-                    showAlert(data.error ? data.error : "Error updating the survey", "alert-error", self.placeHolder);
+                    showAlert(errorMsgSurveyInfo, "alert-error", self.placeHolder);
                 }
             },
             error: function (data) {
@@ -400,7 +401,9 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
             type: 'DELETE',
             success: function (data) {
                 if (data.error) {
-                    showAlert("Error deleting the survey, please try again later.", "alert-error", self.placeHolder);
+                    showAlert("An error happened while deleting the survey. The error might have happened " +
+                        "because some mandatory fields in 'Survey Info' tab are empty. Please fill them and " +
+                        "save the survey before trying to delete again.", "alert-error", self.placeHolder);
                 } else {
                     self.projectActivities.remove(pActivity);
                     if (self.projectActivities().length > 0) {
@@ -460,11 +463,15 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                         if (result && result.message == 'updated') {
                             location.reload();
                         } else {
-                            showAlert(data.error ? data.error : "Error unpublishing the survey", "alert-error", self.placeHolder);
+                            showAlert (
+                                "An error happened while un-publishing the survey. The error might have happened " +
+                                "because some mandatory fields in 'Survey Info' tab are empty. Please fill them and " +
+                                "save the survey before trying to un-publish again.", "alert-error", self.placeHolder
+                            );
                         }
                     },
                     error: function (data) {
-                        showAlert("Error unpublishing the survey -" + data.status, "alert-error", self.placeHolder);
+                        showAlert(errorMsgSurveyInfo, "alert-error", self.placeHolder);
                     },
                     complete: function(){
                         $.unblockUI();
