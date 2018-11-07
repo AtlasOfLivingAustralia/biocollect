@@ -28,7 +28,9 @@ class DownloadController {
 
             String downloadUrl = "${grailsApplication.config.ecodata.service.url}/search/downloadAllData.xlsx"
             params.reportType="works"
-            params.query = params.query?:"*:*"
+            params.max=1000
+            params.offset=0
+            params.query = params.q?:"*:*"
             params.downloadUrl = g.createLink(action:'downloadProjectDataFile', absolute: true)+'/'
 
             Map resp = webService.doPostWithParams(downloadUrl, params)
