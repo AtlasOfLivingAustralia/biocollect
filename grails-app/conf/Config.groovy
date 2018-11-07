@@ -134,6 +134,7 @@ projectdata.industries.enabled = false
 
 environments {
     development {
+        bugherd.integration = 'false'
         security.cas.appServerName = 'http://devt.ala.org.au:8087/'
         grails.logging.jul.usebridge = true
         emailFilter = /[A-Z0-9._%-]+@csiro\.au|chris\.godwin\.ala@gmail.com/
