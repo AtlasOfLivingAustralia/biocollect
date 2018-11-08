@@ -116,6 +116,21 @@ class HubSettings extends JSONObject {
     }
 
     /**
+     * The configuration for a Hub can specify that the hub homepage be buttons or the project finder.
+     */
+    String getHubHomePageType() {
+        this.templateConfiguration?.homePage?.homePageConfig
+    }
+
+    /**
+     * Hubs can elect to display a button on the project finder (and my projects) to download an excel file
+     * with project details.
+     */
+    boolean showProjectFinderDownloadButton() {
+        this.templateConfiguration?.homePage?.projectFinderConfig?.showProjectDownloadButton ?: false
+    }
+
+    /**
      * Get facets without special meaning like 'date', 'geoMap' etc.
      * @param facets
      * @return

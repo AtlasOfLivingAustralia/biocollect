@@ -813,6 +813,11 @@
                             <input type="checkbox" name="showProjectRegion" data-bind="checked: showProjectRegionSwitch"> Show project region button
                         </label>
                     </div>
+                    <div class="control-group">
+                        <label class="checkbox">
+                            <input type="checkbox" name="showProjectDownloadButton" data-bind="checked: showProjectDownloadButton"> Show project download button (hub admins only)
+                        </label>
+                    </div>
                 </div>
             <!-- /ko -->
         </div>
