@@ -4,7 +4,7 @@
             <div class="project-results">
                 <div id="pt-result-heading" class="inline-block margin-bottom-20">
                     <span id="pt-resultsReturned"></span>
-                    <g:if test="${fc.userIsAlaOrFcAdmin()}">
+                    <g:if test="${showProjectDownloadButton}">
                         <a data-bind="visible: pageProjects().length > 0, click: download" href="${downloadLink}" id="pt-downloadLink" class="btn btn-warning btn-mini"
                            title="${message(code: 'project.download.tooltip')}">
                             <i class="icon-download icon-white"></i>&nbsp;<g:message code="g.download"/></a>

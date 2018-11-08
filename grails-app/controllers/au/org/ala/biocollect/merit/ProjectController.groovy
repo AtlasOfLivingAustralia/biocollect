@@ -356,7 +356,8 @@ class ProjectController {
     def myProjects() {
         Map result = projectFinder()
         result.isUserPage = true
-
+        HubSettings hubConfig = SettingService.hubConfig
+        result.showProjectDownloadButton = hubConfig.showProjectFinderDownloadButton() && userService.doesUserHaveHubRole(RoleService.PROJECT_ADMIN_ROLE)
         render view: 'projectFinder',  model:  result
     }
 
