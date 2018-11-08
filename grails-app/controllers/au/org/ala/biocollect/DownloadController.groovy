@@ -1,11 +1,8 @@
 package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.CommonService
-import au.org.ala.biocollect.merit.RoleService
 import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.merit.WebService
-import groovyx.net.http.ContentType
-import net.sf.json.JSON
 class DownloadController {
 
     WebService webService
@@ -20,26 +17,6 @@ class DownloadController {
             String fileExtension = params.fileExtension ?: 'zip'
             webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/search/downloadProjectDataFile/${params.id}?fileExtension=${fileExtension}", true, true)
         }
-    }
-
-
-    def downloadWorksProjects() {
-        if (userService.doesUserHaveHubRole(RoleService.PROJECT_ADMIN_ROLE)) {
-
-            String downloadUrl = "${grailsApplication.config.ecodata.service.url}/search/downloadAllData.xlsx"
-            params.reportType="works"
-            params.max=1000
-            params.offset=0
-            params.query = params.q?:"*:*"
-            params.downloadUrl = g.createLink(action:'downloadProjectDataFile', absolute: true)+'/'
-
-            Map resp = webService.doPostWithParams(downloadUrl, params)
-            render resp as JSON
-        }
-        else {
-            render status:401, text: "Unauthorized"
-        }
-
     }
 
     def file() {

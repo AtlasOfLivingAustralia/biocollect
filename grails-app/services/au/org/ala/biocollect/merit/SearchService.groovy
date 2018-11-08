@@ -20,7 +20,7 @@ class SearchService {
         elasticBaseUrl = grailsApplication.config.ecodata.service.url + '/search/elastic'
     }
 
-    private def addDefaultFacetQuery(params) {
+    def addDefaultFacetQuery(params) {
         def defaultFacetQuery = SettingService.getHubConfig().defaultFacetQuery
         if (defaultFacetQuery) {
             params.hubFq = defaultFacetQuery

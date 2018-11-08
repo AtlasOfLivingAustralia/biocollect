@@ -606,6 +606,33 @@ class ProjectController {
     }
 
     /**
+     * Despite the name, this method will return all projects matched by the query, but the contents of the
+     * download are tailored to works type projects.  Specificially Outcomes and Budget information which
+     * is only available in works projects is included.
+    */
+    def downloadWorksProjects() {
+        if (userService.doesUserHaveHubRole(RoleService.PROJECT_ADMIN_ROLE)) {
+
+            String downloadUrl = "${grailsApplication.config.ecodata.service.url}/search/downloadAllData.xlsx"
+            params.fq = params.getList('fq[]')
+            GrailsParameterMap downloadParams = buildProjectSearch(params)
+
+            downloadParams.reportType="works"
+            downloadParams.max=1000
+            downloadParams.offset=0
+            downloadParams.downloadUrl = g.createLink(controller:'download', action:'downloadProjectDataFile', absolute: true)+'/'
+            searchService.addDefaultFacetQuery(downloadParams)
+            downloadUrl += "?"+commonService.buildUrlParamsFromMap(downloadParams)
+            Map resp = webService.doPostWithParams(downloadUrl, [:])
+            render resp as net.sf.json.JSON
+        }
+        else {
+            render status:401, text: "Unauthorized"
+        }
+
+    }
+
+    /**
      *
      * Uses same criteria as search to retreive the projects with site information suitable to render a shared/_sites.gsp map
      */
