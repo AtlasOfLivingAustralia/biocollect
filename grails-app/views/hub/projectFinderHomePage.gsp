@@ -49,7 +49,7 @@
         flimit: ${grailsApplication.config.facets.flimit},
         noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
         sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
-        downloadWorksProjectsUrl: "${createLink(controller:'download', action:'downloadWorksProjects')}"
+        downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}"
   }
     </asset:script>
     <g:render template="/shared/conditionalLazyLoad"/>
