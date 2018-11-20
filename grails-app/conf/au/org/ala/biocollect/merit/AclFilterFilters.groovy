@@ -22,7 +22,7 @@ class AclFilterFilters {
                 Class controllerClass = controller?.clazz
                 def method = controllerClass.getMethod(actionName?:"index", [] as Class[])
                 def roles = roleService.getAugmentedRoles()
-                def userId = userService.getCurrentUserId()
+                def userId = userService.getCurrentUserId(request)
                 def projectId = params.projectId
 
                 if(!projectId){

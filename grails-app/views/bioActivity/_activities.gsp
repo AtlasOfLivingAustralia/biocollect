@@ -232,7 +232,7 @@
                                         <!-- ko if:  type == 'property' -->
                                         <td>
                                             <!-- ko if: dataType == 'date' -->
-                                            <div data-bind="text: moment($parent.getPropertyValue($data)).format('DD/MM/YYYY')"></div>
+                                            <div data-bind="text: $parent.getPropertyValue($data) && moment($parent.getPropertyValue($data)).format('DD/MM/YYYY')"></div>
                                             <!-- /ko -->
                                             <!-- ko ifnot: dataType == 'date' -->
                                             <div data-bind="text: $parent.getPropertyValue($data)"></div>
