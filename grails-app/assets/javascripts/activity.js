@@ -932,7 +932,13 @@ ActivityRecordViewModel.prototype.getPropertyValue = RecordVM.prototype.getPrope
         property = this['parent']['rawData'][config.propertyName];
     }
 
-    return ko.unwrap(property);
+    property = ko.unwrap(property);
+
+    if (config.dataType == 'date' && ( property instanceof Array)) {
+       return property[0]
+    } else {
+        return property
+    }
 };
 
 function generateTermId(term) {
