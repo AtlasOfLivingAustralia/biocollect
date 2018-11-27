@@ -1,21 +1,29 @@
 package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.RoleService
 import au.org.ala.biocollect.merit.SettingService
+import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.util.Environment
 
 class HubController {
     SettingService settingService
+    UserService userService
     def index() {
-        HubSettings hubSettings = SettingService.hubConfig;
-            switch (hubSettings?.templateConfiguration?.homePage?.homePageConfig){
+        HubSettings hubSettings = SettingService.hubConfig
+        switch (hubSettings.getHubHomePageType()){
             case 'buttons':
-                render view: 'buttonHomePage', model: [homepage: true];
-                break;
+                render view: 'buttonHomePage', model: [homepage: true]
+                break
             case 'projectfinder':
-                render view: 'projectFinderHomePage', model: [homepage: true];
-                break;
+                Map model = [homepage:true, showProjectDownloadButton:showProjectFinderDownloadButton(hubSettings)]
+                render view: 'projectFinderHomePage', model: model
+                break
         }
+    }
+
+    private showProjectFinderDownloadButton(HubSettings hub) {
+        hub.showProjectFinderDownloadButton() && userService.doesUserHaveHubRole(RoleService.PROJECT_ADMIN_ROLE)
     }
 
     def getStyleSheet() {
