@@ -57,6 +57,7 @@
         flimit: ${grailsApplication.config.facets.flimit},
         noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
         sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
+        downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}",
 
         <g:if test="${isUserPage}">
             <g:if test="${isWorks}">
@@ -152,7 +153,7 @@
     </g:if>
     });
 
-    var projectFinder = new ProjectFinder();
+    var projectFinder = new ProjectFinder(fcConfig);
 </asset:script>
 </body>
 </html>

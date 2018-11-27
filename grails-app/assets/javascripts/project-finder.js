@@ -8,7 +8,7 @@
 //= require leaflet-manifest.js
 //= require_self
 
-function ProjectFinder() {
+function ProjectFinder(config) {
 
     var self = this;
     /* holds all projects */
@@ -45,7 +45,7 @@ function ProjectFinder() {
     var alaMap;
 
     /* window into current page */
-    function PageVM() {
+    function PageVM(config) {
         this.self = this;
         this.pageProjects = ko.observableArray();
         this.facets = ko.observableArray();
@@ -68,12 +68,12 @@ function ProjectFinder() {
         this.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
         this.sortKeys = ko.observableArray(self.sortKeys);
         this.download = function (obj, e) {
-            var params = $.param(self.getParams(), true);
-            var href = $(e.target).attr('href');
-            var domain = href.slice(0, href.indexOf('?'));
-            $(e.target).attr('href', domain + '?' + 'download=true&' + params);
-            return true;
-        }
+            bootbox.alert("The download may take several minutes to complete.  Once it is complete, an email will be sent to your registered email address.");
+            $.post(config.downloadWorksProjectsUrl, self.getParams()).fail(function() {
+                bootbox.alert("There was an error attempting your download.  Please try again or contact support.");
+            });
+            return false;
+        };
 
         self.resizeGrid = function () {
             var width = $( window ).width();
@@ -227,7 +227,7 @@ function ProjectFinder() {
         })
     }
 
-    pageWindow = new PageVM();
+    pageWindow = new PageVM(config);
     ko.applyBindings(pageWindow, document.getElementById('project-finder-container'));
 
     this.getParams = function () {

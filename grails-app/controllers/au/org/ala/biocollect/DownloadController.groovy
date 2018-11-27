@@ -1,22 +1,21 @@
 package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.CommonService
+import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.merit.WebService
-import groovyx.net.http.ContentType
-import org.apache.commons.io.FilenameUtils
-
 class DownloadController {
 
     WebService webService
+    CommonService commonService
+    UserService userService
 
     def downloadProjectDataFile() {
         if (!params.id) {
             response.setStatus(400)
             render "A download ID is required"
         } else {
-            response.setContentType(ContentType.BINARY.toString())
-            response.setHeader('Content-Disposition', 'Attachment;Filename="data.zip"')
-
-            webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/search/downloadProjectDataFile/${params.id}", true, true)
+            String fileExtension = params.fileExtension ?: 'zip'
+            webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/search/downloadProjectDataFile/${params.id}?fileExtension=${fileExtension}", true, true)
         }
     }
 

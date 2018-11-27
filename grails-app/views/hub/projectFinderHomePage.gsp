@@ -48,7 +48,8 @@
         hideWorldWideBtn: ${!hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.showProjectRegionSwitch},
         flimit: ${grailsApplication.config.facets.flimit},
         noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
-        sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}'
+        sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
+        downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}"
   }
     </asset:script>
     <g:render template="/shared/conditionalLazyLoad"/>
@@ -95,7 +96,7 @@
         amplify.store('pt-view-state','listView');
     </g:elseif>
 
-    var projectFinder = new ProjectFinder();
+    var projectFinder = new ProjectFinder(fcConfig);
 </asset:script>
 </body>
 </html>
