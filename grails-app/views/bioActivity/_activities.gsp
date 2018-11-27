@@ -224,7 +224,7 @@
                                             </div>
                                         </td>
                                         <!-- /ko -->
-                                        <!-- ko if: type == 'checkbox' -->
+                                        <!-- ko if: type == 'checkbox' && $parents[1].transients.parent.transients.isBulkActionsEnabled() -->
                                         <td class="text-align-center">
                                             <input type="checkbox" data-bind="visible: $parents[1].transients.parent.transients.isBulkActionsEnabled, disable: !$parents[1].userCanModerate, value: $parents[1].activityId, checked: $parents[1].transients.parent.transients.activitiesToDelete"/>
                                         </td>
@@ -232,7 +232,7 @@
                                         <!-- ko if:  type == 'property' -->
                                         <td>
                                             <!-- ko if: dataType == 'date' -->
-                                            <div data-bind="text: moment($parent.getPropertyValue($data)).format('DD/MM/YYYY')"></div>
+                                            <div data-bind="text: $parent.getPropertyValue($data) && moment($parent.getPropertyValue($data)).format('DD/MM/YYYY')"></div>
                                             <!-- /ko -->
                                             <!-- ko ifnot: dataType == 'date' -->
                                             <div data-bind="text: $parent.getPropertyValue($data)"></div>
@@ -273,7 +273,7 @@
                                             <!-- ko if:  type == 'property' -->
                                             <td>
                                                 <!-- ko if: dataType == 'date' -->
-                                                <div data-bind="text: moment($parent.getPropertyValue($data)).format('DD/MM/YYYY')"></div>
+                                                <div data-bind="text: $parent.getPropertyValue($data) && moment($parent.getPropertyValue($data)).format('DD/MM/YYYY')"></div>
                                                 <!-- /ko -->
                                                 <!-- ko ifnot: dataType == 'date' -->
                                                 <div data-bind="text: $parent.getPropertyValue($data)"></div>
@@ -309,20 +309,22 @@
                                             <!-- /ko -->
                                             <!-- ko if:  type == 'action' -->
                                             <td>
-                                                <div data-bind="if: $parent.showCrud()">
+                                                <div>
                                                     <span>
                                                         <a data-bind="attr:{'href': $parent.transients.viewUrl}" title="View record" class="btn btn-small editBtn btn-default"><i class="fa fa-file-o"></i> View</a>
                                                     </span>
+                                                    <!-- ko if: $parent.showCrud -->
                                                     <span data-bind="visible: !$parent.readOnly()">
                                                         <a data-bind="attr:{'href': $parent.transients.editUrl}" title="Edit record" class="btn btn-small editBtn btn-default"><i class="fa fa-pencil"></i> Edit</a>
                                                     </span>
                                                     <span data-bind="visible: !$parent.readOnly()">
                                                         <button class="btn btn-small btn-default" data-bind="click: $parents[1].remove" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
                                                     </span>
+                                                    <!-- /ko -->
                                                 </div>
                                             </td>
                                             <!-- /ko -->
-                                            <!-- ko if:  type == 'checkbox' -->
+                                            <!-- ko if:  type == 'checkbox' && $parent.transients.parent.transients.isBulkActionsEnabled() -->
                                             <td class="text-align-center">
                                                 <input type="checkbox" data-bind="visible: $parent.transients.parent.transients.isBulkActionsEnabled, disable: !$parent.userCanModerate, value: $parent.activityId, checked: $parent.transients.parent.transients.activitiesToDelete"/>
                                             </td>

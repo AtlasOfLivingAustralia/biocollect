@@ -47,7 +47,7 @@
 <!-- /ko -->
 <!-- end model binding -->
 
-<g:if test="${metaModel.supportsSites?.toBoolean()}">
+<g:if test="${metaModel?.supportsSites?.toBoolean()}">
     <div >
         <h3 class="text-center text-error well-title">Site Details</h3>
         <div class="output-block text-center well">
@@ -60,7 +60,7 @@
     </div>
 </g:if>
 
-<g:if test="${metaModel.supportsPhotoPoints?.toBoolean()}">
+<g:if test="${metaModel?.supportsPhotoPoints?.toBoolean()}">
     <h3 class="text-center text-error well-title">Photo Points</h3>
     <div class="output-block well" data-bind="with:transients.photoPointModel">
         <g:render template="/site/photoPoints"></g:render>
