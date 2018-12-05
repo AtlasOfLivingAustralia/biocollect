@@ -68,4 +68,24 @@ class SearchController {
         def projects = searchService.allProjectsInHub(request)
         render( text: projects as JSON, contentType: 'application/json')
     }
+
+   /*
+    * Returns Lists KVP values
+    * @param id unique species guid
+    * @param listId unique list id
+    *
+    * Example: /search/getSpeciesTranslation?id=urn:lsid:biodiversity.org.au:afd.taxon:4136b6d0-b5be-45d4-8323-e96e03d94218&listId=dr8016
+    * */
+    def getSpeciesTranslation(String id, String listId) {
+        def items = webService.getJson("${grailsApplication.config.lists.baseURL}/ws/speciesListItems/${listId}?includeKVP=true")?:[]
+        def kvp = [:]
+        if(items instanceof List){
+            items.each {
+                if("${it.lsid}" == "${id}") {
+                    kvp = it.kvpValues
+                }
+            }
+        }
+        render kvp as JSON
+    }
 }
