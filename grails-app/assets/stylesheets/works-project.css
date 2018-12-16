@@ -172,6 +172,16 @@ table.budget .funding-source {
     width: 10%;
 }
 
+table.budget .due-date {
+    width:6em;
+    padding-right: 30px;
+}
+
+.budget-table-read-only table.budget .due-date {
+    width:7%;
+    padding-right: 5px;
+}
+
 table.budget select, table.budget textarea, table.budget input {
     width: 100%;
     box-sizing: border-box;
@@ -186,6 +196,10 @@ table.budget input {
 
 .project-dashboard .project-statistics {
     page-break-before: always;
+}
+
+.project-dashboard .margin-right-20 {
+    margin-right: 0;
 }
 
 .project-dashboard tr.Milestone {
