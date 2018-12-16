@@ -10,13 +10,13 @@
       "name":"Bird Survey - Western Sydney",
       "outputId":"",
       "data":{
-        "surveyType":"I - Incidental",
+        "surveyType":"",
         "surveyStartDate":"2018-12-16T13:00:00Z",
         "surveyStartTime":"10:06 AM",
         "surveyFinishDate":"2018-12-16T13:00:00Z",
         "surveyFinishTime":"10:06 AM",
-        "notes":"notes test",
-        "recordedBy":"John Appleseed",
+        "notes":"",
+        "recordedBy":"",
         "locationAccuracy":null,
         "location":"daf1c429-b4c9-4d70-acda-f65ae14133ae",
         "locationLatitude":-26.677458329734765,
@@ -26,18 +26,18 @@
         "speciesSightings":[
           {
             "species":{
-              "guid":"urn:lsid:biodiversity.org.au:afd.taxon:6c4cfe42-65cf-4538-81ac-8440fe7916b9",
-              "name":"Little Corella (Cacatua sanguinea)",
-              "scientificName":"Cacatua sanguinea",
-              "commonName":"Little Corella",
-              "outputSpeciesId":"2dfb9c09-0ba6-4078-8348-f5133e84bc34",
-              "listId":"dr7900"
+              "guid":"",
+              "name":"",
+              "scientificName":"",
+              "commonName":"",
+              "outputSpeciesId":"",
+              "listId":""
             },
-            "individualCount":"1",
-            "abundanceCode":"C",
-            "breedingStatus":"NB - nest",
-            "habitatCode":"Mangroves",
-            "sightingComments":"test",
+            "individualCount":"",
+            "abundanceCode":"",
+            "breedingStatus":"",
+            "habitatCode":"",
+            "sightingComments":"",
             "sightingPhoto":[
 
             ]
