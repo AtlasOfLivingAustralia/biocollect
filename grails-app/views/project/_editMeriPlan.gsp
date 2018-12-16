@@ -221,6 +221,7 @@
                         <th class="funding-source">Funding source</th>
                         <th class="payment-status">Status <fc:iconHelp title="Payment Status">(P) Processing, (C) Complete</fc:iconHelp></th>
                         <th class="description">Description <fc:iconHelp title="Description">Describe how funding distribution will address this investment priority</fc:iconHelp></th>
+						<th class="due-date">Date due</th>
 						<!-- ko foreach: details.budget.headers -->
 						<th style="text-align: center;" width="10%" ><div style="text-align: center;" data-bind="text:data"></div>$</th>
 						<!-- /ko -->
@@ -236,7 +237,7 @@
                         <td class="funding-source"><input data-bind="value:fundingSource"></td>
                         <td class="payment-status"><select data-bind="value:paymentStatus, options:paymentStatus.options"></select></td>
                         <td class="description"><textarea data-bind="value: description, disable: $parent.isProjectDetailsLocked()" rows="3"></textarea></td>
-
+						<td class="due-date"><fc:datePicker class="input-small" targetField="dueDate.date" name="dueDate"/></td>
 						<!-- ko foreach: costs -->
 						<td><div style="text-align: center;">
 							<input style="text-align: center; width: 98%;" class="input-xlarge" data-bind="value: dollar, numeric: $root.number, disable: $root.isProjectDetailsLocked()" data-validation-engine="validate[custom[number]]"/>
@@ -259,6 +260,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
+						<td></td>
 						<td style="text-align: right;" ><b>Total </b></td>
 						<!-- ko foreach: details.budget.columnTotal -->
 						<td style="text-align: center;" width="10%"><span data-bind="text:data.formattedCurrency"></span></td>
