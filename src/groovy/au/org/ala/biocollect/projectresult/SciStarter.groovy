@@ -42,7 +42,7 @@ class SciStarter {
             Map siteGeom;
             doc?.sites?.each { site ->
                 if (doc?.projectSiteId == site.siteId) {
-                    siteGeom = site.extent?.geometry;
+                    siteGeom = site.geoIndex
                 }
             }
 
@@ -75,7 +75,7 @@ class SciStarter {
                 coverage               : siteGeom,
                 links                  : trimmedLinks,
                 startDate              : doc.plannedStartDate,
-                url                    : params.url + "/project/index/" + doc.projectId
+                url                    : params.url + "/acsa/project/index/" + doc.projectId
             ]
         }
     }

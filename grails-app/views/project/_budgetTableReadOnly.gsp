@@ -1,4 +1,4 @@
-<div id="keq" class="margin-bottom-10 margin-right-20">
+<div class="budget-table-read-only margin-bottom-10 margin-right-20">
     <label><b>Project Budget</b></label>
     <table class="budget">
         <thead>
@@ -9,6 +9,7 @@
             <th class="funding-source">Funding source</th>
             <th class="payment-status">Status <fc:iconHelp title="Payment Status">(P) Processing, (C) Complete</fc:iconHelp></th>
             <th class="description">Description</th>
+            <th class="due-date">Date due</th>
             <!-- ko foreach: details.budget.headers -->
             <th style="text-align: center;" width="10%" ><div style="text-align: center;" data-bind="text:data"></div>$</th>
             <!-- /ko -->
@@ -25,6 +26,7 @@
             <td class="payment-status"><span data-bind="text:paymentStatus"></span></td>
 
             <td class="description"><div style="text-align: left;"><span data-bind="text: description"></span></div></td>
+            <td class="due-date"><span data-bind="text:dueDate.formattedDate()"></span></td>
 
             <!-- ko foreach: costs -->
             <td><div style="text-align: center;"><span style="width: 90%;" data-bind="text: dollar.formattedCurrency"></span></div></td>
@@ -36,6 +38,7 @@
         </tbody>
         <tfoot>
         <tr>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
