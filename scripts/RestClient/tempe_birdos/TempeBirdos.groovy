@@ -41,8 +41,7 @@ def SERVER_URL = "https://biocollect.ala.org.au"
 def ADD_NEW_ACTIVITY_URL = "/ws/bioactivity/save?pActivityId="
 def IMAGE_UPLOAD_URL = 'https://biocollect.ala.org.au/ws/attachment/upload'
 def SITE_CREATION_URL = '/site/ajaxUpdate'
-def PROJECT_ACTIVITY_ID = "58df20ef-0f2b-47d5-a632-b1fa84ffe376"
-def SPECIES_URL = "/search/searchSpecies/${PROJECT_ACTIVITY_ID}?limit=1&hub=ecoscience"
+def SPECIES_URL = "https://biocollect.ala.org.au/search/searchSpecies/58df20ef-0f2b-47d5-a632-b1fa84ffe376?limit=10&hub=ala&dataFieldName=species&output=Bird%20Survey%20-%20Western%20Sydney"
 
 def header = []
 def values = []
@@ -282,16 +281,12 @@ Paths.get(xlsx).withInputStream { input ->
                 println("siteId: ${siteId}");
             }
 
-            // Time
-
             activity.outputs[0].data.recordedBy = record."recordedBy" instanceof String ? (record."recordedBy")?.trim() : ''
             activity.outputs[0].data.surveyType = record."surveyType" instanceof String ? (record."surveyType")?.trim() : ''
             activity.outputs[0].data.notes = record."notes" instanceof String ? (record."notes")?.trim() : ''
-            activity.outputs[0].data.abundanceCode = record."notes" instanceof String ? (record."notes")?.trim() : ''
-
+            activity.outputs[0].data.abundanceCode = record."Abundance" instanceof String ? (record."Abundance")?.trim() : ''
             activity.outputs[0].data.breedingStatus = record."Breeding" instanceof String ? (record."Breeding")?.trim() : ''
             activity.outputs[0].data.habitatCode = record."Habitat Code" instanceof String ? (record."Habitat Code")?.trim() : ''
-            activity.outputs[0].data.sightingComments = record."sightingComments" instanceof String ? (record."sightingComments")?.trim() : ''
 
 
             // Site information.
@@ -306,7 +301,9 @@ Paths.get(xlsx).withInputStream { input ->
             // Get species name
             def species = [name: '', guid: '', scientificName: '', commonName: '', outputSpeciesId: outputSpeciesId, listId: "dr7900"]
             def rows = []
-            def speciesResponse = new URL(SERVER_URL + SPECIES_URL + "&q=${record.'species'}").text
+            def query = record."species"
+            query = URLEncoder.encode(query, "UTF-8");
+            def speciesResponse = new URL(SPECIES_URL + "&q=${query}").text
             def speciesJSON = new groovy.json.JsonSlurper()
             def autoCompleteList = speciesJSON.parseText(speciesResponse)?.autoCompleteList
 
@@ -320,25 +317,23 @@ Paths.get(xlsx).withInputStream { input ->
                     species.guid = item.guid
                     species.scientificName = item.scientificName
                     species.commonName = item.commonName
-                    species.listId = "dr7900"
+                    species.listId = "dr9563"
                 }
             }
             def speciesSightings = []
             def speciesMap = {}
             speciesMap.species = species
             speciesMap.individualCount = record."individualCount" instanceof String ? (record."individualCount")?.trim() : ''
+            speciesMap.sightingComments = record."sightingComments" instanceof String ? (record."sightingComments")?.trim() : ''
             speciesMap.sightingPhoto = []
             speciesSightings << speciesMap
+            activity.outputs[0].data.speciesSightings = speciesSightings
 
             for (i = 0; i < sightingPhotos.size(); i++) {
                 activity.outputs[0].data.sightingPhoto << sightingPhotos.get(i)
             }
 
-            // Do data validation.
-            if (!DEBUG_AND_VALIDATE) {
-                println(new groovy.json.JsonBuilder( activity ).toString())
-            }
-            //println(new groovy.json.JsonBuilder( activity ).toString())
+            println(new groovy.json.JsonBuilder( activity ).toString())
             println("-----END----")
 
             if(siteId) {
