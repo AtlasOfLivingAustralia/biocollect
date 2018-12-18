@@ -1,5 +1,5 @@
 // Groovy Rest Client.
-// > cd /Users/sat01a/All/sat01a_git/merged/biocollect-3/scripts/RestClient/gonna_watch
+// > cd /Users/sat01a/All/sat01a_git/merged/biocollect-4/scripts/RestClient
 // > export PATH=$PATH:/Users/sat01a/All/j2ee/groovy-2.4.11/bin
 // > groovy RestClient.groovy
 // To get the example post data, enable debugger at this.save and print the variable or right click and store as global variable.
@@ -29,10 +29,10 @@ import groovyx.net.http.Method
 import groovyx.net.http.ContentType
 
 // IMPORTANT CONFIGURATION
-def DEBUG_AND_VALIDATE = true;
+def DEBUG_AND_VALIDATE = false;
 def USERNAME = ""
 def AUTH_KEY = ""
-def xlsx = "data_october_26.xlsx"
+def xlsx = "data_load.xlsx"
 
 def DATA_TEMPLATE_FILE = "data_template.json"
 def SITE_TEMPLATE_FILE = "site_template.json"
@@ -107,17 +107,16 @@ Paths.get(xlsx).withInputStream { input ->
     // Loop through the activities
     activities?.eachWithIndex { activityRow, activityIndex ->
 
-        //if ((activityIndex >= 0 && activityIndex < activities?.size())) { // 183
-          if ((activityIndex >= 0 && activityIndex <= 1)) { // 183
+        if ((activityIndex >= 0 && activityIndex < activities?.size())) { // 183
+        //if ((activityIndex >= 0 && activityIndex < 1)) { // 183
             record = activityRow
             def jsonSlurper = new groovy.json.JsonSlurper()
             def activity = jsonSlurper.parseText(jsonStr)
 
             // Reset sightings photo.
             activity.outputs[0].data.sightingPhoto = []
-            activity.projectId = record."BioCollect Project ID"
 
-            println("-----START----")
+            println("-----${activityIndex}. START----")
 
             //Convert Date to UTC date.
             TimeZone tz = TimeZone.getTimeZone("UTC");
@@ -131,17 +130,18 @@ Paths.get(xlsx).withInputStream { input ->
             try {
                 if(record."surveyStartDate") {
                     isoDate = df.format(record."surveyStartDate");
-                    record."surveyStartDate" = isoDate
+                    activity.outputs[0].data.surveyStartDate = isoDate
+
                 }
                 if(record."surveyFinishDate") {
                     isoDate = df.format(record."surveyFinishDate");
-                    record."surveyFinishDate" = isoDate
+                    activity.outputs[0].data.surveyFinishDate = isoDate
                 }
                 if(record."Time") {
-                    activity.outputs[0].data.surveyStartTime = df.format(record."Time");
+                    activity.outputs[0].data.surveyStartTime = "7:30 AM";
                 }
                 if(record."End Time") {
-                    activity.outputs[0].data.surveyFinishDate = df.format(record."End Time");
+                    activity.outputs[0].data.surveyFinishTime = "9:30 AM";
                 }
             } catch (Exception ex) {
                 println("Date format error >>  >> ${ex}")
@@ -233,7 +233,7 @@ Paths.get(xlsx).withInputStream { input ->
                     }
 
                 } else {
-                    println("No image to attach")
+                    //println("No image to attach")
                 }
             }
 
@@ -284,10 +284,45 @@ Paths.get(xlsx).withInputStream { input ->
             activity.outputs[0].data.recordedBy = record."recordedBy" instanceof String ? (record."recordedBy")?.trim() : ''
             activity.outputs[0].data.surveyType = record."surveyType" instanceof String ? (record."surveyType")?.trim() : ''
             activity.outputs[0].data.notes = record."notes" instanceof String ? (record."notes")?.trim() : ''
+
+
+            // Validate Abundance, Breeding and Habitat Code.
+            def constraint1= ["A","B","C","D","E","X"];
+            def constraint2= ["NB - nest","NY - young","DY - juvenile","B - breeding"];
+            def constraint3= ["Not provided","Tidal Area","Mangroves","Saltmarsh","River (width >2m)","River (width <2m)","Freshwater Wetland (Lagoon/Swamp)","Sandstone Woodland",
+                              "Heathland","Tall Smooth Euc. Forest","Casuarina Forest","Urban Area", "Parks/Gardens", "Restored Local Native Vegetation – Terrestrial","Restored Local Native Vegetation – Riparian"];
+
+
+            //2 juveniles, female, NB-Nest
+            switch(record."Breeding"){
+                case "DY - juvenile" :
+                case "juveniles present":
+                    record."Breeding" = "DY - juvenile"
+                    break;
+                case "NB-Nest":
+                case "NB - nest":
+                    record."Breeding" = "NB - nest"
+                    break;
+
+            }
+            if(record."Abundance" && !constraint1?.find{it == record."Abundance"}) {
+                println("Warning:: Constraint 1: (${activityIndex}) >> "+ record."Abundance"  +" not in  constraint1 list")
+            }
+
+            if(record."Breeding" && !constraint2?.find{it == record."Breeding"}) {
+                println("Warning:: Constraint 2: (${activityIndex}) >> "+ record."Breeding"  +" not in  constraint2 list")
+            }
+
+            if(record."Habitat Code" && !constraint3?.find{it == record."Habitat Code"}) {
+                println("Warning:: Constraint 3: (${activityIndex}) >> "+ record."Habitat Code"  +" not in  constraint3 list")
+            }
+
             activity.outputs[0].data.abundanceCode = record."Abundance" instanceof String ? (record."Abundance")?.trim() : ''
             activity.outputs[0].data.breedingStatus = record."Breeding" instanceof String ? (record."Breeding")?.trim() : ''
             activity.outputs[0].data.habitatCode = record."Habitat Code" instanceof String ? (record."Habitat Code")?.trim() : ''
 
+            activity.outputs[0].data.locationLatitude = record."locationLatitude"
+            activity.outputs[0].data.locationLongitude = record."locationLongitude"
 
             // Site information.
             activity.outputs[0].data.location = siteId
@@ -321,9 +356,10 @@ Paths.get(xlsx).withInputStream { input ->
                 }
             }
             def speciesSightings = []
-            def speciesMap = {}
+            def speciesMap = [:]
             speciesMap.species = species
-            speciesMap.individualCount = record."individualCount" instanceof String ? (record."individualCount")?.trim() : ''
+            Double count = Double.parseDouble(record."individualCount")
+            speciesMap.individualCount = "${count.intValue()}"
             speciesMap.sightingComments = record."sightingComments" instanceof String ? (record."sightingComments")?.trim() : ''
             speciesMap.sightingPhoto = []
             speciesSightings << speciesMap
@@ -334,7 +370,7 @@ Paths.get(xlsx).withInputStream { input ->
             }
 
             println(new groovy.json.JsonBuilder( activity ).toString())
-            println("-----END----")
+
 
             if(siteId) {
                 def connection = new URL("${SERVER_URL}${ADD_NEW_ACTIVITY_URL}"+record."Survey ID").openConnection() as HttpURLConnection
@@ -356,6 +392,8 @@ Paths.get(xlsx).withInputStream { input ->
             } else {
                 println("Error: (${activityIndex}) activity creation skipped due to missing siteId")
             }
+
+            println("-----END----")
         }
     }
 
