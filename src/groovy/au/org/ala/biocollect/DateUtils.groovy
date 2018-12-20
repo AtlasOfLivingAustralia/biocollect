@@ -112,7 +112,15 @@ class DateUtils {
 
 
     static String isoToDisplayFormat(String isoDate) {
-        return displayFormat(parse(isoDate))
+        try {
+            return displayFormat(parse(isoDate))
+        }
+        catch (Exception e) {
+            // In the case an invalid date is somehow stored, return a blank field.
+            return ""
+        }
+
+
     }
 
     /**

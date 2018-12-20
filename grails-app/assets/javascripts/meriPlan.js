@@ -284,6 +284,7 @@ function BudgetRowViewModel(o,period) {
     if(!o) o = {};
     self.shortLabel = ko.observable(o.shortLabel);
     self.description = ko.observable(o.description);
+    self.dueDate = ko.observable(o.dueDate).extend({simpleDate:false});
     self.paymentStatus = ko.observable(o.paymentStatus);
     self.paymentStatus.options = ['', "P", "C"];
     self.paymentNumber = ko.observable(o.paymentNumber);
