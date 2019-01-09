@@ -240,7 +240,7 @@
 						<td class="due-date"><fc:datePicker class="input-small" targetField="dueDate.date" name="dueDate"/></td>
 						<!-- ko foreach: costs -->
 						<td><div style="text-align: center;">
-							<input style="text-align: center; width: 98%;" class="input-xlarge" data-bind="value: dollar, numeric: $root.number, disable: $root.isProjectDetailsLocked()" data-validation-engine="validate[custom[number]]"/>
+							<input type="number" step="any" style="text-align: center; width: 98%;" class="input-xlarge" data-bind="value: dollar, disable: $root.isProjectDetailsLocked()" data-validation-engine="validate[custom[number]]"/>
 						</div>
 						</td>
 						<!-- /ko -->
