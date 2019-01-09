@@ -30,6 +30,7 @@ function MERIPlan(project, themes, key) {
 
     self.projectThemes =  $.map(themes, function(theme, i) { return theme.name; });
     self.projectThemes.push("Milestone");
+    self.projectThemes.push("Variation");
     self.projectThemes.push("MERI & Admin");
     self.projectThemes.push("Others");
 
