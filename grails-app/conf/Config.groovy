@@ -318,11 +318,6 @@ methodType = [
 
 datapage.defaultColumns = [
         [
-                type: "image",
-                displayName: "Image",
-                isSortable: false
-        ],
-        [
                 type: "recordNameFacet",
                 displayName: "Identification",
                 isSortable: true,
