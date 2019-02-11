@@ -9,3 +9,7 @@
     max-height: 200px;
     overflow-y: auto;
 }
+
+#newspeciesNameSearch {
+    z-index: 1050
+}
