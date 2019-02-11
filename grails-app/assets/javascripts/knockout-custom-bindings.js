@@ -413,9 +413,10 @@ ko.bindingHandlers.fusedAutocomplete = {
         options.select = function (event, ui) {
             var selectedItem = ui.item;
             params.name(selectedItem.source.name);
-            params.guid(selectedItem.source.guid);
             params.scientificName(selectedItem.source.scientificName);
             params.commonName(selectedItem.source.commonName);
+            // updating guid last since a lot of code have subscribed to this observable
+            params.guid(selectedItem.source.guid);
         };
 
         if (!$(element).autocomplete(options).data("ui-autocomplete")) {

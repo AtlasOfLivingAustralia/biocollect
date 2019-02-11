@@ -53,6 +53,8 @@
                                                         source: $parent.transients.bioSearch,
                                                         name: transients.name,
                                                         guid: transients.guid,
+                                                        scientificName:transients.scientificName,
+                                                        commonName:transients.commonName,
                                                         matchUnknown: true
                                                     }" >
                     <button class="btn" data-bind="click: $parent.newSpeciesLists.clearSearchValue "><i class="icon-remove"></i></button>
