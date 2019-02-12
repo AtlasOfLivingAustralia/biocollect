@@ -209,7 +209,7 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
         jsData.description = self.newSpeciesLists.description();
         jsData.listItems = "";
 
-        var lists = ko.mapping.toJS(self.newSpeciesLists);
+        var lists = ko.mapping.toJS(self.newSpeciesLists, { 'ignore': ["transients"] });
         $.each(lists.allSpecies, function (index, species) {
             var UNMATCHED_TAXON = " (Unmatched taxon)";
 
@@ -241,7 +241,7 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
                 else {
                     showAlert("Successfully added the new species list - " + self.newSpeciesLists.listName() + " (" + data.id + ")", "alert-success", divId);
                     self.newSpeciesLists.dataResourceUid(data.id);
-                    self.speciesLists.push(new SpeciesList(ko.mapping.toJS(self.newSpeciesLists)));
+                    self.speciesLists.push(new SpeciesList(ko.mapping.toJS(self.newSpeciesLists, { 'ignore': ["transients"] })));
                     self.newSpeciesLists = new NewSpeciesListViewModel();
                     self.transients.toggleShowAddSpeciesLists();
                 }
@@ -288,17 +288,15 @@ var NewSpeciesListViewModel = function (o) {
     self.inputSpeciesViewModel = new SpeciesViewModel({}, fcConfig);
     self.inputSpeciesViewModel.transients.searchValue = ko.observable("");
 
-    self.inputSpeciesViewModel.transients.name.subscribe(function (newName) {
-        if(newName) {
-            var newSpecies = new SpeciesViewModel({}, fcConfig);
-            newSpecies.name(newName);
-            newSpecies.guid(self.inputSpeciesViewModel.transients.guid());
-            if(self.inputSpeciesViewModel.transients.guid()) {
-                newSpecies.transients.bieUrl(self.inputSpeciesViewModel.transients.bieUrl());
-            }
-            self.allSpecies.push(newSpecies);
+    self.inputSpeciesViewModel.transients.guid.subscribe(function (newName) {
+        var newSpecies = new SpeciesViewModel({}, fcConfig);
+        newSpecies.name(self.inputSpeciesViewModel.transients.name());
+        newSpecies.guid(self.inputSpeciesViewModel.transients.guid());
+        if(self.inputSpeciesViewModel.transients.guid()) {
+            newSpecies.transients.bieUrl(self.inputSpeciesViewModel.transients.bieUrl());
         }
 
+        self.allSpecies.push(newSpecies);
         self.clearSearchValue();
     });
 
