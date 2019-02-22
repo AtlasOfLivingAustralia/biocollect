@@ -58,7 +58,8 @@ class SiteController {
     def createForProject(){
         def project = projectService.getRich(params.projectId)
         // permissions check
-        if (!projectService.canUserEditSitesForProject(userService.getCurrentUserId(), params.projectId)) {
+        def userCanEditSite = projectService.canUserEditSitesForProject(userService.getCurrentUserId(), params.projectId)
+        if (!userCanEditSite) {
             flash.message = "Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}"
             redirect(controller:'project', action:'index', id: params.projectId)
         }
@@ -68,7 +69,7 @@ class SiteController {
 
 
         render view: 'edit', model: [create:true, project:project, documents:[], projectSite:project.projectSite,
-                                     pActivityId: params?.pActivityId]
+                                     pActivityId: params?.pActivityId, userCanEdit: userCanEditSite]
     }
 
     def index(String id) {
