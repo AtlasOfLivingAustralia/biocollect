@@ -50,6 +50,8 @@
         currentId: 0,
         //default center
         defaultCenter: new google.maps.LatLng(-28.5, 133.5),
+        // default site to zoom
+        defaultZoomArea: null,
         //default center
         defaultZoom: 3,
         // default overlay options
@@ -150,7 +152,9 @@
                         position: ll,
                         title: loc.name
                     });
-                    self.featureBounds.extend(ll);
+                    if (!self.defaultZoomArea || self.defaultZoomArea == loc.id) {
+                        self.featureBounds.extend(ll);
+                    }
                     self.addFeature(f, loc);
                     loaded = true;
                 } else if (loc.type === 'dot') {
@@ -179,7 +183,10 @@
                         this.allMarkers.push(markerMap);
                     }
 
-                    self.featureBounds.extend(ll);
+                    if (!self.defaultZoomArea || self.defaultZoomArea == loc.id) {
+                        self.featureBounds.extend(ll);
+                    }
+
                     self.addFeature(f, loc, iw);
                     loaded = true;
                 } else if (loc.type.toLowerCase() === 'circle') {
@@ -192,8 +199,11 @@
                     });
                     //set the extend of the map
                     //console.log("f.getBounds()",f.getBounds());
-                    self.featureBounds.extend(f.getBounds().getNorthEast());
-                    self.featureBounds.extend(f.getBounds().getSouthWest());
+                    if (!self.defaultZoomArea || self.defaultZoomArea == loc.id) {
+                        self.featureBounds.extend(f.getBounds().getNorthEast());
+                        self.featureBounds.extend(f.getBounds().getSouthWest());
+                    }
+
                     self.addFeature(f, loc, iw);
                     loaded = true;
                 } else if (loc.type.toLowerCase() === 'polygon') {
@@ -209,7 +219,10 @@
                     // flatten arrays to array of points
                     points = [].concat.apply([], paths);
                     // extend bounds by each point
-                    $.each(points, function (i,obj) {self.featureBounds.extend(obj);});
+                    if (!self.defaultZoomArea || self.defaultZoomArea == loc.id) {
+                        $.each(points, function (i,obj) {self.featureBounds.extend(obj);});
+                    }
+
                     self.addFeature(f, loc, iw);
                     loaded = true;
                 } else if (loc.type.toLowerCase() === 'pid') {
@@ -229,8 +242,10 @@
                                 // The bounding box of a point is a linestring with two points
                                 pointArray = [pointArray[0], pointArray[1], pointArray[0], pointArray[1]];
                             }
-                            self.featureBounds.extend(new google.maps.LatLng(pointArray[1].split(" ")[1],pointArray[1].split(" ")[0]));
-                            self.featureBounds.extend(new google.maps.LatLng(pointArray[3].split(" ")[1],pointArray[3].split(" ")[0]));
+                            if (!self.defaultZoomArea || self.defaultZoomArea == loc.id) {
+                                self.featureBounds.extend(new google.maps.LatLng(pointArray[1].split(" ")[1], pointArray[1].split(" ")[0]));
+                                self.featureBounds.extend(new google.maps.LatLng(pointArray[3].split(" ")[1], pointArray[3].split(" ")[0]));
+                            }
                             if (!loc.areaKmSq) {
                                 loc.areaKmSq = data.area_km ? data.area_km : 0;
                             }

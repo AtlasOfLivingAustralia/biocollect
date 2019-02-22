@@ -479,7 +479,7 @@ var PointOfInterest = function (data, hasDocuments) {
 
 
 
-var SitesViewModel =  function(sites, map, mapFeatures, isUserEditor, projectId) {
+var SitesViewModel =  function(sites, map, mapFeatures, isUserEditor, projectId, projectDefaultZoomArea) {
 
     var self = this;
     // sites
@@ -585,6 +585,7 @@ var SitesViewModel =  function(sites, map, mapFeatures, isUserEditor, projectId)
             }
             return f;
         });
+        map.defaultZoomArea = projectDefaultZoomArea;
         map.replaceAllFeatures(features);
         self.removeMarkers();
 
