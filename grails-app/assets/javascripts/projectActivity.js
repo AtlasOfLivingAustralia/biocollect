@@ -9,7 +9,7 @@ var ProjectActivity = function (params) {
     var project = params.project ? params.project : {};
     var user = params.user ? params.user : {};
     var tabDocumentId = params.tabDocumentId || "#documents-tab";
-    pActivity.stats = pActivity.stats || {};
+    var stats = pActivity.stats || {};
 
     var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
     self.project = project;
@@ -39,10 +39,10 @@ var ProjectActivity = function (params) {
     self.dataManagementPolicyDescription = ko.observable(pActivity.dataManagementPolicyDescription || "");
     self.dataManagementPolicyURL = ko.observable(pActivity.dataManagementPolicyURL || "");
     self.dataManagementPolicyDocument = ko.observable();
-    self.transients.publicAccess = pActivity.stats.publicAccess? "True" : "False";
-    self.transients.activityLastUpdated = pActivity.stats.activityLastUpdated;
-    self.transients.speciesRecorded = ko.observable(pActivity.stats.speciesRecorded).extend({integer:0});
-    self.transients.activityCount = ko.observable(pActivity.stats.activityCount).extend({integer:0});
+    self.transients.publicAccess = stats.publicAccess? "True" : "False";
+    self.transients.activityLastUpdated = stats.activityLastUpdated;
+    self.transients.speciesRecorded = ko.observable(stats.speciesRecorded).extend({integer:0});
+    self.transients.activityCount = ko.observable(stats.activityCount).extend({integer:0});
     self.transients.isDataManagementPolicyDocumented = ko.computed({
         read: function () {
             if(self.isDataManagementPolicyDocumented() === false) {
