@@ -30,6 +30,7 @@
         projectListUrl: "${createLink(controller: 'project', action: 'search', params:[initiator:'biocollect'])}",
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
+        paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
         isCitizenScience: false,
         showAllProjects: false,
         meritProjectLogo:"${asset.assetPath(src:'merit_project_logo.jpg')}",
@@ -55,10 +56,12 @@
     <div class="row-fluid">
         <div class="span12 padding10-small-screen" id="heading">
             <h1 class="pull-left"><g:message code="project.works.heading"/></h1>
+            <g:if test="${!hubConfig.content?.hideProjectFinderHelpButtons}">
             <div class="pull-right">
-                <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</a>
-                <a class="btn btn-info" href="${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</a>
+                <button class="btn btn-info btn-getttingstarted" onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</button>
+                <button class="btn btn-info btn-whatisthis" onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</button>
             </div>
+            </g:if>
         </div>
     </div>
 

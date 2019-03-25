@@ -24,31 +24,35 @@
     <div class="row-fluid" data-bind="">
         <div class="span6" id="column1">
             <div class="well span12">
-                <div class="well-title"><g:message code="project.display.about" /></div>
+                <div class="well-title">${hubConfig.getTextForAboutTheProject(grailsApplication.config.content.defaultOverriddenLabels)}</div>
                 <div data-bind="visible:aim">
-                    <div class="text-small-heading"><g:message code="project.display.aim" /></div>
+                    <div class="text-small-heading">${hubConfig.getTextForAim(grailsApplication.config.content.defaultOverriddenLabels)}</div>
                     <span data-bind="text:aim"></span>
                     <p/>
                 </div>
                 <div data-bind="visible:description">
-                    <div class="text-small-heading"><g:message code="project.display.description" /></div>
+                    <div class="text-small-heading">${hubConfig.getTextForDescription(grailsApplication.config.content.defaultOverriddenLabels)}</div>
                     <span data-bind="html:description.markdownToHtml()"></span>
                 </div>
+                <g:if test="${hubConfig?.content?.hideProjectAboutOriginallyRegistered != true}">
                 <div data-bind="visible: origin">
                     <div class="text-small-heading"><g:message code="project.display.origin" /></div>
                     <span data-bind="text:origin"></span>
                     <p/>
                 </div>
+                </g:if>
+                <g:if test="${hubConfig?.content?.hideProjectAboutContributing != true}">
                 <div data-bind="visible:!isExternal()" class="margin-top-1 margin-bottom-1">
                     <img src="${asset.assetPath(src: "ala-logo-small.png")}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
 
                 </div>
+                </g:if>
             </div>
         </div>
         <div class="span6" id="column2">
             <div class="well">
                 <div class="well-title" data-bind="visible:projectType() == 'survey'"><g:message code="project.display.involved" /></div>
-                <div class="well-title" data-bind="visible:projectType() != 'survey'"><g:message code="project.display.information" /></div>
+                <div class="well-title" data-bind="visible:projectType() != 'survey'">${hubConfig.getTextForProjectInformation(grailsApplication.config.content.defaultOverriddenLabels)}</div>
                 <div data-bind="visible:getInvolved">
                     <div data-bind="html:getInvolved.markdownToHtml()"></div>
                     <p/>
@@ -100,12 +104,12 @@
                         </g:if>
 
                         <div data-bind="visible:associatedProgram">
-                            <div class="text-small-heading"><g:message code="project.display.program" /></div>
+                            <div class="text-small-heading">${hubConfig.getTextForProgramName(grailsApplication.config.content.defaultOverriddenLabels)}</div>
                             <span data-bind="text:associatedProgram"></span>
                             <p/>
                         </div>
                         <div data-bind="visible:associatedSubProgram">
-                            <div class="text-small-heading"><g:message code="project.display.subprogram" /></div>
+                            <div class="text-small-heading">${hubConfig.getTextForSubprogramName(grailsApplication.config.content.defaultOverriddenLabels)}</div>
                             <span data-bind="text:associatedSubProgram"></span>
                             <p/>
                         </div>
@@ -136,6 +140,7 @@
                             <span data-bind="text:industries().join(', ')"></span>
                             <p/>
                         </div>
+                        <g:if test="${(hubConfig?.content?.hideProjectAboutCountries != true) || (hubConfig?.content?.hideProjectAboutParticipateInProject != true) }">
                         <div data-bind="visible: countries().length">
                             <div class="text-small-heading">
                                 <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
@@ -148,11 +153,14 @@
                             <span data-bind="text:countries().join(', ')"></span>
                             <p/>
                         </div>
+                        </g:if>
+                        <g:if test="${hubConfig?.content?.hideProjectAboutUNRegions != true}">
                         <div data-bind="visible: uNRegions().length">
                             <div class="text-small-heading"><g:message code="project.display.unregions" /></div>
                             <span data-bind="text:uNRegions().join(', ')"></span>
                             <p/>
                         </div>
+                        </g:if>
                         %{-- TODO: swap fields. check issue - biocollect#667 --}%
                         <div data-bind="visible:managerEmail">
                             <div class="text-small-heading"><g:message code="project.display.contact.name" /></div>
@@ -197,7 +205,7 @@
     <g:if test="${projectSite?.extent?.geometry}">
     <div class="row-fluid">
         <div class="span12 well" style="height: 100%; width: 100%">
-            <div class="well-title"><g:message code="project.display.site" /></div>
+            <div class="well-title">${hubConfig.getTextForProjectArea(grailsApplication.config.content.defaultOverriddenLabels)}</div>
             <m:map id="projectSiteMap" width="100%" height="512px"/>
         </div>
     </div>
@@ -222,6 +230,7 @@
                 useMyLocation: false,
                 allowSearchLocationByAddress: false,
                 allowSearchRegionByAddress: false,
+                baseLayer: "${project.baseLayer}" || "${grailsApplication.config.map.baseLayers?.find { it.default == true } .code}",
                 wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
                 wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
             }

@@ -5,6 +5,7 @@ import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.util.Environment
+import grails.converters.JSON
 
 class HubController {
     SettingService settingService
@@ -48,5 +49,9 @@ class HubController {
         }
 
         render view: 'configurableHubTemplate1', contentType: 'text/css', model: config;
+    }
+
+    def defaultOverriddenLabels() {
+        render text: grailsApplication.config.content.defaultOverriddenLabels as JSON, contentType: 'application/json'
     }
 }

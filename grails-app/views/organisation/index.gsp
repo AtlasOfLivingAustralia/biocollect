@@ -71,6 +71,7 @@
             flimit: ${grailsApplication.config.facets.flimit},
             occurrenceUrl: "",
             spatialUrl: "",
+            paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
             absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}"
         };
     </asset:script>

@@ -1,12 +1,3 @@
-<style type="text/css">
-.projecttag {
-    background: orange;
-    color: white;
-    padding: 4px;
-    white-space: nowrap;
-}
-</style>
-
 <span class="projecttag" data-bind="visible:isDIY() && projectType() == 'survey' "><g:message code="facets.tags.isDIY"/></span>
 <span class="projecttag" data-bind="visible:isSuitableForChildren() && projectType() == 'survey'"><g:message code="facets.tags.isSuitableForChildren"/></span>
 <span class="projecttag" data-bind="visible:isHome() && projectType() == 'survey' "><g:message code="facets.tags.isHome"/></span>

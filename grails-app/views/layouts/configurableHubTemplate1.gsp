@@ -210,7 +210,7 @@
     <div id="custom-footer">
         <div class="${fluidLayout ? 'container-fluid' : 'container'} hidden-print">
             <div class="row-fluid  navbar-inverse">
-                <div class="span5">
+                <div class="span4">
                     <ul class="nav">
                         <g:if test="${hubConfig.templateConfiguration?.footer?.links}">
                             <g:each in="${hubConfig.templateConfiguration?.footer?.links}" var="link">
@@ -221,7 +221,7 @@
                         </g:if>
                     </ul>
                 </div><!--/.spanX -->
-                <div class="span4 smlinks text-right">
+                <div class="span2 smlinks text-right">
                     <div id="smlinks">
                         <g:if test="${hubConfig.templateConfiguration?.footer?.socials}">
                             <g:each in="${hubConfig.templateConfiguration?.footer?.socials}" var="social">
@@ -231,16 +231,29 @@
                         </g:if>
                     </div>
                 </div><!--/.spanX -->
-                <div class="span3">
-                    <a class="brand" href="http://ala.org.au/" id="alaLink" title="ALA home page">
-                        <img src="${asset.assetPath(src:'mdba/ALA-logo-BW-124x109.png')}" alt="Powered by ALA logo"
-                               class="headerLogo"/>
-                        <div id="alaHeadingText"><div id="poweredBy">powered by</div>
-
-                            <div id="alaBy" class="visible-desktop">Atlas of Living Australia</div>
-
-                            <div class="hidden-desktop">ALA</div></div>
-                    </a>
+                <div class="span6">
+                    <div class="row-fluid">
+                        <g:each in="${hubConfig.templateConfiguration?.footer?.logos}" var="logo">
+                            <g:if test="${logo.href}">
+                                <a href="${logo.href}" title="Link to website" target="_blank">
+                                    <img class="logo" src="${logo.url}" alt="Website logo"/>
+                                </a>
+                            </g:if>
+                            <g:else>
+                                <img class="logo" src="${logo.url}" alt="Website logo"/>
+                            </g:else>
+                        </g:each>
+                        <a class="brand" href="http://ala.org.au/" id="alaLink" title="ALA home page">
+                            <span>
+                                <img src="${asset.assetPath(src:'mdba/ALA-logo-BW-124x109.png')}" alt="Powered by ALA logo"
+                                     class="headerLogo"/>
+                                <div id="alaHeadingText"><div id="poweredBy">powered by</div>
+                                    <div id="alaBy" class="visible-desktop">Atlas of Living Australia</div>
+                                    <div class="hidden-desktop">ALA</div>
+                                </div>
+                            </span>
+                        </a>
+                    </div>
                 </div>
             </div><!--/.row -->
         </div><!--/.contaier -->

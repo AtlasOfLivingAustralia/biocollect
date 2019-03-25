@@ -443,6 +443,10 @@ class AdminController {
                 it.url == document.url
             }
 
+            def logo = json.templateConfiguration?.footer?.logos?.find {
+                it.url == document.url
+            }
+
             def response = documentService.saveStagedImageDocument(document)
             if (response?.content.documentId) {
                 def savedDoc = documentService.get(response.content.documentId)
@@ -451,6 +455,9 @@ class AdminController {
                 }
                 else if (savedDoc.role == 'logo') {
                     json.logoUrl = savedDoc.url
+                }
+                else if (savedDoc.role == 'footerlogo') {
+                    logo.url = savedDoc.url
                 }
             }
 

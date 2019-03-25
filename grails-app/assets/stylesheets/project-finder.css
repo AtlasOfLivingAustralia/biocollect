@@ -191,3 +191,10 @@ input[type=checkbox] {
 .project-results {
     font-size: 20px;
 }
+
+.projecttag {
+  background: orange;
+  color: white;
+  padding: 4px;
+  white-space: nowrap;
+}

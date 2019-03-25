@@ -57,6 +57,7 @@
         flimit: ${grailsApplication.config.facets.flimit},
         noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
         sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
+        paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
         downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}",
 
         <g:if test="${isUserPage}">
@@ -118,12 +119,14 @@
                             code="project.citizenScience.portalLink"/></button>
                 </g:if>
                 <g:else>
+                    <g:if test="${!hubConfig.content?.hideProjectFinderHelpButtons}">
                     <div class="pull-right">
-                        <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i
-                                class="icon-info-sign icon-white"></i> Getting started</a>
-                        <a class="btn btn-info" href="${createLink(controller: 'home', action: 'whatIsThis')}"><i
-                                class="icon-question-sign icon-white"></i> What is this?</a>
+                        <button class="btn btn-info btn-gettingstarted" onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}'"><i
+                                class="icon-info-sign icon-white"></i> Getting started</button>
+                        <button class="btn btn-info btn-whatisthis" onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}'"><i
+                                class="icon-question-sign icon-white"></i> What is this?</button>
                     </div>
+                    </g:if>
                 </g:else>
             </div>
         </div>

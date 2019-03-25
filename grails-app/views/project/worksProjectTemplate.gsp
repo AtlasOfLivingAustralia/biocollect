@@ -135,6 +135,7 @@
 <body>
 
 <bc:koLoading>
+    <g:render template="/shared/backToSearchResults"/>
     <g:render template="banner"/>
     <div class="container-fluid">
         <div id="project-results-placeholder"></div>
