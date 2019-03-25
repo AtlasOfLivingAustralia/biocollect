@@ -25,6 +25,9 @@ function ProjectFinder(config) {
 
     /* The map must only be initialised once, so keep track of when that has happened */
     var mapInitialised = false;
+
+    /* Stores selected project id when a link is selected */
+    var selectedProjectId;
     var spatialFilter = null;
 
     var geoSearch = {};
@@ -108,7 +111,9 @@ function ProjectFinder(config) {
          * project finder page. This flag is used to decide if about page of the project should be shown.
          * @returns {boolean}
          */
-        this.setTrafficFromProjectFinderFlag = function(){
+        this.setTrafficFromProjectFinderFlag = function(project){
+            selectedProjectId = project.transients.projectId;
+            updateHash();
             amplify.store('traffic-from-project-finder-page',true);
             // to execute default action of anchor tag, true must be returned.
             return true;
@@ -227,6 +232,14 @@ function ProjectFinder(config) {
         })
     }
 
+    function scrollToProject () {
+        if (selectedProjectId) {
+            scrollToView('#'+ selectedProjectId);
+            // clear selected project id when viewing a page, or filter querying
+            selectedProjectId = undefined;
+        }
+    }
+
     pageWindow = new PageVM(config);
     ko.applyBindings(pageWindow, document.getElementById('project-finder-container'));
 
@@ -267,7 +280,8 @@ function ProjectFinder(config) {
             geoSearchJSON: JSON.stringify(geoSearch),
             skipDefaultFilters:fcConfig.showAllProjects,
             isWorldWide: isWorldWide,
-            q: ($('#pt-search').val() || '' ).toLowerCase()
+            projectId: selectedProjectId,
+            q: this.getQuery()
         };
 
         map.max =  perPage // Page size
@@ -284,6 +298,15 @@ function ProjectFinder(config) {
         }
 
         return map
+    };
+
+    this.getQuery = function () {
+        var query = ($('#pt-search').val() || '' ).toLowerCase();
+        if ((query.length >= 3) && (query.indexOf('*') == -1)) {
+            query += '*';
+        }
+
+        return query;
     };
 
     /**
@@ -316,7 +339,7 @@ function ProjectFinder(config) {
                 self.pago.init(projectVMs);
                 pageWindow.filterViewModel.setFacets(data.facets || []);
                 updateLazyLoad();
-
+                setTimeout(scrollToProject, 500);
                 // Issue map search in parallel to 'standard' search
                 // standard search is required to drive facet display
                 self.doMapSearch(projectVMs);
@@ -431,9 +454,10 @@ function ProjectFinder(config) {
 
     this.paginationInfo = function () {
         if (total > 0) {
-            var start = offset + 1
+            var start = offset + 1;
             var end = Math.min(total, start + perPage - 1);
-            return "Showing " + start + " to " + end + " of " + total + " " + (total > 1 ? "projects.": "project.");
+            var message = fcConfig.paginationMessage || 'Showing XXXX to YYYY of ZZZZ projects';
+            return message.replace('XXXX', start).replace('YYYY', end).replace('ZZZZ', total);
         } else {
             return "No projects found."
         }
@@ -518,7 +542,7 @@ function ProjectFinder(config) {
                             popup: generatePopup(project)
                         };
 
-                        if(project.coverage.centre && project.coverage.centre.length == 2) {
+                        if (project.coverage.centre && project.coverage.centre.length == 2) {
                             point.lat = parseFloat(project.coverage.centre[1]);
                             point.lng = parseFloat(project.coverage.centre[0]);
                         } else {
@@ -850,6 +874,8 @@ function ProjectFinder(config) {
 
         setGeoSearch(params.geoSearch);
         pageWindow.filterViewModel.setFilterQuery(params.fq);
+        offset = params.offset || offset;
+        selectedProjectId = params.projectId;
 
         if (fcConfig.associatedPrograms) {
             $.each(fcConfig.associatedPrograms, function (i, program) {
@@ -862,6 +888,11 @@ function ProjectFinder(config) {
         checkButton($("#pt-aus-world"), params.isWorldWide || 'false');
         
         $('#pt-search').val(params.q).focus()
+    }
+
+    function updateHash() {
+        var hash = constructHash();
+        window.location.hash = hash;
     }
 
     function setGeoSearch(geoSearchHash) {

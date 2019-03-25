@@ -10,7 +10,8 @@
             saveHubUrl:"${createLink(controller: 'admin', action: 'saveHubSettings')}",
             listProjectFacetUrl: "${createLink(controller: 'project', action: 'getFacets')}",
             listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}",
-            listDataColumnsUrl: "${createLink(controller: 'bioActivity', action: 'getDataColumns')}"
+            listDataColumnsUrl: "${createLink(controller: 'bioActivity', action: 'getDataColumns')}",
+            defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}"
         };
     </asset:script>
 </head>
@@ -255,7 +256,45 @@
                             </table>
                         </div>
                     </div>
-                    <!-- /ko -->
+                    <div>
+                        <h3>Footer Logo</h3>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Href</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- ko foreach: logos -->
+                                <tr>
+                                    <td>
+                                        <img class="span3" data-bind="visible: url, attr:{src:url}">
+                                    </td>
+                                    <td>
+                                        <input type="text" data-bind="value: href"></input>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-small btn-danger" data-bind="visible:$data, click:remove"><i class="icon icon-remove icon-white"></i> Remove Banner</button>
+                                    </td>
+                                </tr>
+                                <!-- /ko -->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <span class="btn fileinput-button pull-right  btn-small"
+                                              data-url="${createLink(controller: 'image', action:'upload')}"
+                                              data-role="footerlogo"
+                                              data-owner-type="hubId"
+                                              data-bind="attr:{'data-owner-id':name}, stagedImageUpload:$parents[1].documents"><i class="icon-plus"></i> <input id="footerLogo" type="file" name="files"><span>Add a Logo</span></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                <!-- /ko -->
                 <!-- /ko -->
             </div>
 
@@ -341,6 +380,49 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: showNote"> Show note on record listing page
                 </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectFinderHelpButtons"> Hide 'Getting Started' & 'What is this?' buttons on project finder
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicator"> Hide project status indicator on project finder
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectBackButton"> Hide 'Back to search results' button on project page
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectFinderProjectTags"> Hide project tags
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectFinderNoImagePlaceholder"> Hide image display section when project has no uploaded image
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectBlogTab"> Hide blog tab on project page
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectStatusIndicator"> Hide project status indicator
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectAboutOriginallyRegistered"> Hide 'project originally registered in'
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectAboutContributing"> Hide 'This project is  contributing data to the Atlas of Living Australia'.
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectAboutParticipateInProject"> Hide 'You can participate in this project in'
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectAboutUNRegions"> Hide 'UN Regions'
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectAboutCountries"> Hide 'Countries'
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectAboutScienceTypes"> Hide 'Science types'
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectSurveyDownloadXLSX"> Hide 'Download XLSX template'
+                </div>
+
                 <div class="margin-top-1 row-fluid" data-bind="slideVisible: showNote">
                     <textarea class="span6" data-bind="value: recordNote">
 
@@ -412,6 +494,44 @@
                     </div>
                 </g:each>
                 <!-- /ko -->
+
+                <h3>Label overrides</h3>
+                <small>Configure overrides for certain sections</small>
+                <!-- ko with:content -->
+                <table class="table">
+                <thead>
+                <tr>
+                    <td>Page</td>
+                    <td>Default text</td>
+                    <td>Enable</td>
+                    <td>Custom text</td>
+                    <td>Notes</td>
+                </tr>
+                </thead>
+                <tbody data-bind="foreach: overriddenLabels">
+                <tr>
+                    <td>
+                        <label data-bind="text: page"></label>
+                    </td>
+                    <td>
+                        <label data-bind="text: defaultText"></label>
+                    </td>
+                    <td>
+                        <div class="checkbox">
+                            <label><input type="checkbox" data-bind="checked: showCustomText"></label>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="text" data-bind="value: customText">
+                    </td>
+                    <td>
+                        <label data-bind="text: notes"></label>
+                    </td>
+                </tr>
+                </tbody>
+                </table>
+                <!-- /ko -->
+
 
             </div>
         </div>
@@ -698,6 +818,46 @@
             <td><div class="previewColor" data-bind="style:{'background-color':titleTextColor}"></div></td>
         </tr>
         <tr>
+            <td>'Getting started' button background colour</td>
+            <td><input type="text" data-bind="value: gettingStartedButtonBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':gettingStartedButtonBackgroundColor}"></div></td>
+        </tr>
+        <tr>
+            <td>'Getting started' button text colour</td>
+            <td><input type="text" data-bind="value: gettingStartedButtonTextColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':gettingStartedButtonTextColor}"></div></td>
+        </tr>
+        <tr>
+            <td>'What is this' button background colour</td>
+            <td><input type="text" data-bind="value: whatIsThisButtonBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':whatIsThisButtonBackgroundColor}"></div></td>
+        </tr>
+        <tr>
+            <td>'What is this' button text colour</td>
+            <td><input type="text" data-bind="value: whatIsThisButtonTextColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':whatIsThisButtonTextColor}"></div></td>
+        </tr>
+        <tr>
+            <td>'Add a record' button background colour</td>
+            <td><input type="text" data-bind="value: addARecordButtonBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':addARecordButtonBackgroundColor}"></div></td>
+        </tr>
+        <tr>
+            <td>'Add a record' button text colour</td>
+            <td><input type="text" data-bind="value: addARecordButtonTextColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':addARecordButtonTextColor}"></div></td>
+        </tr>
+        <tr>
+            <td>'View records' button background colour</td>
+            <td><input type="text" data-bind="value: viewRecordsButtonBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':viewRecordsButtonBackgroundColor}"></div></td>
+        </tr>
+        <tr>
+            <td>'View records' button text colour</td>
+            <td><input type="text" data-bind="value: viewRecordsButtonTextColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':viewRecordsButtonTextColor}"></div></td>
+        </tr>
+        <tr>
             <td>Primary button colour</td>
             <td><input type="text" data-bind="value: primaryButtonBackgroundColor"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':primaryButtonBackgroundColor}"></div></td>
@@ -706,6 +866,26 @@
             <td>Primary button text colour</td>
             <td><input type="text" data-bind="value: primaryButtonTextColor"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':primaryButtonTextColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Make standalone primary button an outline button (transparent background)<br/>
+                <small>
+                    All standalone primary buttons will be render like an outline button using style defined below.
+                Primary buttons associated with a button group or input will use the above style.
+                </small>
+            </td>
+            <td><input type="checkbox" data-bind="checked: makePrimaryButtonAnOutlineButton"/></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Primary outline button text colour</td>
+            <td><input type="text" data-bind="value: primaryButtonOutlineTextColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':primaryButtonOutlineTextColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Primary outline button text hover colour</td>
+            <td><input type="text" data-bind="value: primaryButtonOutlineTextHoverColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':primaryButtonOutlineTextHoverColor}"></div></td>
         </tr>
         <tr>
             <td>Default button colour</td>
@@ -726,6 +906,26 @@
             <td>Default button background colour when active</td>
             <td><input type="text" data-bind="value: defaultButtonBackgroundColorActive"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonBackgroundColorActive}"></div></td>
+        </tr>
+        <tr>
+            <td>Make standalone default button an outline button (transparent background)<br/>
+                <small>
+                    All standalone default buttons will be render like an outline button using style defined below.
+                    Default buttons associated with a button group or input will use the above style.
+                </small>
+            </td>
+            <td><input type="checkbox" data-bind="checked: makeDefaultButtonAnOutlineButton"/></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Default outline button text colour</td>
+            <td><input type="text" data-bind="value: defaultButtonOutlineTextColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonOutlineTextColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Default outline button text hover colour</td>
+            <td><input type="text" data-bind="value: defaultButtonOutlineTextHoverColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonOutlineTextHoverColor}"></div></td>
         </tr>
         <tr>
             <td>Breadcrumbs background colour</td>
@@ -752,6 +952,16 @@
             <td>Nav background colour</td>
             <td><input type="text" data-bind="value: navBackgroundColor"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':navBackgroundColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Tag background colour</td>
+            <td><input type="text" data-bind="value: tagBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':tagBackgroundColor}"></div></td>
+        </tr>
+        <tr>
+            <td>Tag text colour</td>
+            <td><input type="text" data-bind="value: tagTextColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':tagTextColor}"></div></td>
         </tr>
         <tr>
             <td>Facet background colour</td>
@@ -927,9 +1137,22 @@
                         <h3  data-bind="style:{color: defaultButtonTextColor}">Default button</h3>
                     </div>
                 </div>
+                <div class="row-fluid" data-bind="visible: makeDefaultButtonAnOutlineButton() || makePrimaryButtonAnOutlineButton()">
+                    <div class="offset4 span2 text-center drawBorder" data-bind="style:{'background-color': 'transparent', 'border-color': primaryButtonOutlineTextColor}, visible: makePrimaryButtonAnOutlineButton">
+                        <h3  data-bind="style:{color: primaryButtonOutlineTextColor}">Primary outline button</h3>
+                    </div>
+                    <div class="span2 text-center drawBorder" data-bind="style:{'background-color': 'transparent', 'border-color': defaultButtonOutlineTextColor}, visible: makeDefaultButtonAnOutlineButton">
+                        <h3  data-bind="style:{color: defaultButtonOutlineTextColor}">Default outline button</h3>
+                    </div>
+                </div>
                 <div class="row-fluid">
                     <div class="offset4 span4 drawBorder height100" data-bind="style:{'background-color': wellBackgroundColor}">
                         <h3>Well colour</h3>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="offset4 span4 drawBorder height100" data-bind="style:{'background-color': tagBackgroundColor, color: tagTextColor}">
+                        <h3>Tag colour</h3>
                     </div>
                 </div>
                 <div class="row-fluid">

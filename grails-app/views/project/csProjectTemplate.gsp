@@ -133,6 +133,7 @@
 <body>
 
 <bc:koLoading>
+    <g:render template="/shared/backToSearchResults"/>
     <g:if test="${!mobile}">
         <g:render template="banner"/>
     </g:if>

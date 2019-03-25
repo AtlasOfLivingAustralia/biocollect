@@ -37,7 +37,9 @@
             </a>
         </div>
         <div class="header-days">
+            <g:if test="${hubConfig?.content?.hideProjectStatusIndicator != true}">
             <g:render template="dayscount"/>
+            </g:if>
             <span class="header-dates project-start-date" data-bind="visible:plannedStartDate,text:'Start date: ' + moment(plannedStartDate()).format('DD MMMM, YYYY')"></span>
             <br/>
             <span class="header-dates project-end-date" data-bind="visible:plannedEndDate,text:'End date: ' + moment(plannedEndDate()).format('DD MMMM, YYYY')"></span>

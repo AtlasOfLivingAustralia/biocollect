@@ -120,6 +120,7 @@ class ProjectController {
                 println model.pActivityForms
             }
             model.mobile = params.mobile ?:false
+            model.showBackButton = request.getHeader('referer') ? true:false
             if(projectService.isWorks(project)){
                 model.activityTypes = projectService.addSpeciesFieldsToActivityTypesList(metadataService.activityTypesList(project.associatedProgram))
             }
@@ -183,6 +184,11 @@ class ProjectController {
             config.remove('activites')
         }
 
+        HubSettings hubConfig = SettingService.hubConfig
+        if (hubConfig?.content?.hideProjectBlogTab == true) {
+            config.remove('news')
+        }
+
         config
     }
 
@@ -204,6 +210,11 @@ class ProjectController {
         if(project.isExternal) {
             config.remove('data')
             config.remove('activites')
+        }
+
+        HubSettings hubConfig = SettingService.hubConfig
+        if (hubConfig?.content?.hideProjectBlogTab == true) {
+            config.remove('news')
         }
 
         config
@@ -242,6 +253,11 @@ class ProjectController {
                        dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab', activities:activities],
                        admin:[label:'Admin', template:'worksAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
                        ]
+
+        HubSettings hubConfig = SettingService.hubConfig
+        if (hubConfig?.content?.hideProjectBlogTab == true) {
+            content.remove('news')
+        }
 
         if(!params.userIsProjectAdmin){
             content.remove('admin')

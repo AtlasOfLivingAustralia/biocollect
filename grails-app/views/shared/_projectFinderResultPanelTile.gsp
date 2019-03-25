@@ -10,10 +10,10 @@
     </div>
 </div>
 <script id="projectCell" type="text/html">
-<div data-bind="attr:{class:'well tile span' + 12 / $root.columns()}">
+<div data-bind="attr:{class:'well tile span' + 12 / $root.columns(), id: transients.projectId}">
     <div class="row-fluid">
         <div class="span12 padding-left-5" style="min-width: 80px;">
-            <div>
+            <div data-bind="visible: !(!transients.imageUrl && ${hubConfig?.content?.hideProjectFinderNoImagePlaceholder == true})">
                 <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
                     <img class="image-logo lazy" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name, 'data-src':transients.imageUrl || '${noImageUrl}'}" onerror="imageError(this, '${noImageUrl}');"/>
                 </a>

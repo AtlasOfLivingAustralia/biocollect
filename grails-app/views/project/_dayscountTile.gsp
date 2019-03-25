@@ -1,3 +1,4 @@
+<g:if test="${hubConfig?.content?.hideProjectFinderStatusIndicator != true}">
 <div class="dayscount" data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() > 0">
     <strong>Status: </strong> <span data-bind="text:transients.daysRemaining"></span> <span>days to go</span>
 </div>
@@ -10,6 +11,7 @@
 <div class="dayscount" data-bind="visible:transients.daysSince() < 0">
     <strong>Status: </strong> <span>Starts in </span> <span data-bind="text:-transients.daysSince()"></span><span> days</span>
 </div>
+</g:if>
 <span class="dayscount" data-bind="visible:plannedStartDate">
     <small data-bind="text:'Start date: ' + moment(plannedStartDate()).format('DD MMMM, YYYY')"></small>
 </span>

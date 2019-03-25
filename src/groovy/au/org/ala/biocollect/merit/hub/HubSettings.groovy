@@ -130,6 +130,47 @@ class HubSettings extends JSONObject {
         this.templateConfiguration?.homePage?.projectFinderConfig?.showProjectDownloadButton ?: false
     }
 
+    String findLabelOverrideForIndex (int i, List defaults) {
+        List overrides = this.content?.overriddenLabels ?: defaults
+        Map config = overrides?.grep { it.id == i }?.get(0)
+        if (config?.showCustomText) {
+            config.customText
+        } else {
+            config?.defaultText
+        }
+    }
+
+    String getTextForShowingProjects (List defaults) {
+        findLabelOverrideForIndex(1, defaults)
+    }
+
+    String getTextForAboutTheProject (List defaults) {
+        findLabelOverrideForIndex(2, defaults)
+    }
+
+    String getTextForAim (List defaults) {
+        findLabelOverrideForIndex(3, defaults)
+    }
+    String getTextForDescription (List defaults) {
+        findLabelOverrideForIndex(4, defaults)
+    }
+
+    String getTextForProjectInformation (List defaults) {
+        findLabelOverrideForIndex(5, defaults)
+    }
+
+    String getTextForProgramName (List defaults) {
+        findLabelOverrideForIndex(6, defaults)
+    }
+
+    String getTextForSubprogramName (List defaults) {
+        findLabelOverrideForIndex(7, defaults)
+    }
+
+    String getTextForProjectArea (List defaults) {
+        findLabelOverrideForIndex(8, defaults)
+    }
+
     /**
      * Get facets without special meaning like 'date', 'geoMap' etc.
      * @param facets

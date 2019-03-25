@@ -477,4 +477,84 @@ activitypropertypath = [
         activityOwnerNameFacet: ['projectActivity', 'activityOwnerName']
 ]
 
+content.defaultOverriddenLabels = [
+        [
+            id: 1,
+            showCustomText: false,
+            page: 'Project finder',
+            defaultText: 'Showing XXXX to YYYY of ZZZZ projects',
+            customText:'',
+            notes: 'This text is generated dynamically. XXXX, YYYY & ZZZZ are replaced with dynamically generated content.'
+        ],
+        [
+            id: 2,
+            showCustomText: false,
+            page: 'Project > "About" tab',
+            defaultText: 'About the project',
+            customText:'',
+            notes: 'Section heading on project\'s about tab.'
+        ],
+        [
+            id: 3,
+            showCustomText: false,
+            page: 'Project > "About" tab',
+            defaultText: 'Aim',
+            customText:'',
+            notes: 'Section heading on project\'s about tab.'
+        ],
+        [
+            id: 4,
+            showCustomText: false,
+            page: 'Project > "About" tab',
+            defaultText: 'Description',
+            customText:'',
+            notes: 'Section heading on project\'s about tab.'
+        ],
+        [
+            id: 5,
+            showCustomText: false,
+            page: 'Project > "About" tab',
+            defaultText: 'Project information',
+            customText:'',
+            notes: 'Section heading on project\'s about tab.'
+        ],
+        [
+            id: 6,
+            showCustomText: false,
+            page: 'Project > "About" tab',
+            defaultText: 'Program name',
+            customText:'',
+            notes: 'Section heading on project\'s about tab.'
+        ],
+        [
+            id: 7,
+            showCustomText: false,
+            page: 'Project > "About" tab',
+            defaultText: 'Subprogram name',
+            customText:'',
+            notes: 'Section heading on project\'s about tab.'
+        ],
+        [
+            id: 8,
+            showCustomText: false,
+            page: 'Project > "About" tab',
+            defaultText: 'Project Area',
+            customText:'',
+            notes: 'Section heading for Map.'
+        ]
+]
+
+map.baseLayers = [
+        [
+                'code': 'minimal',
+                'displayText': 'Road map',
+                'default': false
+        ],
+        [
+                'code': 'worldimagery',
+                'displayText': 'Satellite',
+                'default': true
+        ]
+]
+
 notification.enabled=false

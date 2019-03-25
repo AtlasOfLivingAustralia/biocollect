@@ -49,6 +49,7 @@
         flimit: ${grailsApplication.config.facets.flimit},
         noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
         sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
+        paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
         downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}"
   }
     </asset:script>
@@ -79,23 +80,26 @@
             <h1 class="pull-left">${hubConfig.title}</h1>
         </div>
         <div class="span6">
+            <g:if test="${!hubConfig.content?.hideProjectFinderHelpButtons}">
             <div class="pull-right margin-top-10 margin-bottom-10">
-                <a class="btn btn-info" href="${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</a>
-                <a class="btn btn-info" href="${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</a>
+                <button class="btn btn-gettingstarted btn-info" onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}'"><i class="icon-info-sign icon-white"></i> Getting started</button>
+                <button class="btn btn-whatisthis btn-info" onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}'"><i class="icon-question-sign icon-white"></i> What is this?</button>
             </div>
+            </g:if>
         </div>
     </div>
 
     <g:render template="/shared/projectFinder" model="${[doNotShowSearchBtn: true]}"/>
 </div>
 <asset:script type="text/javascript">
+    if (!amplify.store('pt-view-state')) {
     <g:if test="${hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.defaultView == 'grid'}">
         amplify.store('pt-view-state','tileView');
     </g:if>
     <g:elseif test="${hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.defaultView == 'list'}">
         amplify.store('pt-view-state','listView');
     </g:elseif>
-
+    }
     var projectFinder = new ProjectFinder(fcConfig);
 </asset:script>
 </body>

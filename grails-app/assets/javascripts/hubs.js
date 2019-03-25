@@ -1,7 +1,8 @@
 var hubConfigs = {
     availableProjectFacets: [],
     availableDataFacets: [],
-    availableDataColumns: []
+    availableDataColumns: [],
+    defaultOverriddenLabels: undefined
 };
 
 var HubSettingsViewModel = function (programsModel, options) {
@@ -68,6 +69,8 @@ var HubSettingsViewModel = function (programsModel, options) {
             self.selectedHubUrlPath(config.currentHub);
         }
     }, 'json');
+
+    hubConfigs.defaultOverriddenLabels = $.get(config.defaultOverriddenLabelsURL, undefined, 'json');
 
     self.selectedHubUrlPath.subscribe(function () {
         self.selectedHub(undefined);
@@ -137,6 +140,19 @@ var HubSettings = function (settings, config) {
                     self.templateConfiguration().banner().images.push(new ImageViewModel({
                         url: document.url,
                         caption: ''
+                    }));
+                }
+            } else if (document.role == 'footerlogo') {
+                var duplicate = self.templateConfiguration().footer().logos().find(function (item) {
+                    return item.url() == document.url;
+                });
+
+                if(!duplicate){
+                    var parent = self.templateConfiguration().footer();
+                    parent.logos.push(new LogoViewModel({
+                        url: document.url,
+                        href: '',
+                        parent: parent
                     }));
                 }
             }
@@ -464,7 +480,74 @@ function ContentViewModel(config) {
     self.showNote = ko.observable(config.showNote || false);
     self.recordNote = ko.observable(config.recordNote || '');
     self.industries = ko.observable(config.industries || false);
+    self.hideProjectFinderHelpButtons = ko.observable(config.hideProjectFinderHelpButtons || false);
+    self.hideProjectFinderStatusIndicator = ko.observable(config.hideProjectFinderStatusIndicator || false);
+    self.hideProjectFinderProjectTags = ko.observable(config.hideProjectFinderProjectTags || false);
+    self.hideProjectFinderNoImagePlaceholder = ko.observable(config.hideProjectFinderNoImagePlaceholder || false);
+    self.hideProjectBlogTab = ko.observable(config.hideProjectBlogTab || false);
+    self.hideProjectStatusIndicator = ko.observable(config.hideProjectStatusIndicator || false);
+    self.hideProjectBackButton = ko.observable(config.hideProjectBackButton || false);
+    self.hideProjectAboutOriginallyRegistered = ko.observable(config.hideProjectAboutOriginallyRegistered || false);
+    self.hideProjectAboutContributing = ko.observable(config.hideProjectAboutContributing || false);
+    self.hideProjectAboutParticipateInProject = ko.observable(config.hideProjectAboutParticipateInProject || false);
+    self.hideProjectAboutUNRegions = ko.observable(config.hideProjectAboutUNRegions || false);
+    self.hideProjectAboutCountries = ko.observable(config.hideProjectAboutCountries || false);
+    self.hideProjectAboutScienceTypes = ko.observable(config.hideProjectAboutScienceTypes || false);
+    self.hideProjectSurveyDownloadXLSX = ko.observable(config.hideProjectSurveyDownloadXLSX || false);
+    self.overriddenLabels = ko.observableArray();
+    self.load(config);
 }
+
+ContentViewModel.prototype.load = function (config) {
+    var self = this;
+    config = config || {};
+    hubConfigs.defaultOverriddenLabels.then(function (data) {
+        data && data.forEach(function (value) {
+            var label = new LabelOverrideViewModel(value),
+                savedValue = self.findOverriddenLabel(label.id, config.overriddenLabels);
+            label.load(savedValue);
+
+            self.overriddenLabels.push(label);
+        });
+    });
+};
+
+ContentViewModel.prototype.findOverriddenLabel = function (id, labels) {
+    var self = this,
+        result, label;
+
+    labels = labels || [];
+    for (var i = 0; i < labels.length; i++) {
+        label = labels[i];
+        if (label.id == id) {
+            result = label;
+            break;
+        }
+    }
+
+    return result;
+};
+
+function LabelOverrideViewModel(config) {
+    config = config || {};
+    var self = this;
+    self.id = config.id;
+    self.showCustomText = ko.observable(config.showCustomText || false);
+    self.page = config.page || '';
+    self.defaultText = config.defaultText || '';
+    self.customText = ko.observable(config.customText || '');
+    self.notes = config.notes || '';
+}
+
+LabelOverrideViewModel.prototype.load = function (value) {
+    var self = this;
+    value = value || {};
+    self.showCustomText(value.showCustomText || self.showCustomText());
+    self.page = value.page || self.page;
+    self.defaultText = value.defaultText ||  self.defaultText;
+    self.customText(value.customText || self.customText());
+    self.notes = value.notes || self.notes;
+};
 
 var HeaderViewModel = function (config) {
     var self = this;
@@ -491,10 +574,16 @@ var FooterViewModel = function (config) {
         return new SocialMediaViewModel(social);
     });
 
+    config.logos = $.map(config.logos || [], function (logo) {
+        logo.parent = self;
+        return new LogoViewModel(logo);
+    });
+
     self.links = ko.observableArray(config.links);
     self.socials = ko.observableArray(config.socials);
     self.style = ko.observable(config.style);
     self.type = ko.observable(config.type||'');
+    self.logos = ko.observableArray(config.logos);
 
     self.addLink = function () {
         self.links.push(new LinkViewModel({}));
@@ -536,10 +625,26 @@ var StyleViewModel = function (config) {
     self.headerBannerBackgroundColor = ko.observable(config.headerBannerBackgroundColor || '');
     self.navBackgroundColor = ko.observable(config.navBackgroundColor || '');
     self.navTextColor = ko.observable(config.navTextColor || '');
+    self.gettingStartedButtonTextColor = ko.observable(config.gettingStartedButtonTextColor || '');
+    self.gettingStartedButtonBackgroundColor = ko.observable(config.gettingStartedButtonBackgroundColor || '');
+    self.whatIsThisButtonTextColor= ko.observable(config.whatIsThisButtonTextColor || '');
+    self.whatIsThisButtonBackgroundColor= ko.observable(config.whatIsThisButtonBackgroundColor || '');
+    self.addARecordButtonBackgroundColor = ko.observable(config.addARecordButtonBackgroundColor || '');
+    self.addARecordButtonTextColor = ko.observable(config.addARecordButtonTextColor || '');
+    self.viewRecordsButtonBackgroundColor= ko.observable(config.viewRecordsButtonBackgroundColor || '');
+    self.viewRecordsButtonTextColor= ko.observable(config.viewRecordsButtonTextColor || '');
     self.primaryButtonBackgroundColor= ko.observable(config.primaryButtonBackgroundColor || '');
     self.primaryButtonTextColor= ko.observable(config.primaryButtonTextColor || '');
+    self.primaryButtonOutlineTextColor= ko.observable(config.primaryButtonOutlineTextColor || '');
+    self.primaryButtonOutlineTextHoverColor= ko.observable(config.primaryButtonOutlineTextHoverColor || '');
+    self.makePrimaryButtonAnOutlineButton= ko.observable(config.makePrimaryButtonAnOutlineButton || false);
     self.defaultButtonBackgroundColor= ko.observable(config.defaultButtonBackgroundColor || '');
     self.defaultButtonTextColor= ko.observable(config.defaultButtonTextColor || '');
+    self.defaultButtonOutlineTextColor= ko.observable(config.defaultButtonOutlineTextColor || '');
+    self.defaultButtonOutlineTextHoverColor= ko.observable(config.defaultButtonOutlineTextHoverColor || '');
+    self.makeDefaultButtonAnOutlineButton= ko.observable(config.makeDefaultButtonAnOutlineButton || false);
+    self.tagBackgroundColor= ko.observable(config.tagBackgroundColor || '');
+    self.tagTextColor= ko.observable(config.tagTextColor || '');
     self.hrefColor= ko.observable(config.hrefColor || '');
     self.facetBackgroundColor= ko.observable(config.facetBackgroundColor || '');
     self.tileBackgroundColor= ko.observable(config.tileBackgroundColor || '');
@@ -611,6 +716,20 @@ function ImageViewModel (config) {
 
     self.url = ko.observable(config.url || '')
     self.caption = ko.observable(config.caption || '')
+};
+
+function LogoViewModel(config) {
+    var self = this;
+    self.url = ko.observable(config.url || '');
+    self.href = ko.observable(config.href || '');
+
+    self.transients = {};
+    self.transients.parent = config.parent;
+};
+
+LogoViewModel.prototype.remove = function (logo) {
+    var self = this;
+    self.transients.parent && self.transients.parent.logos.remove(logo);
 };
 
 function FacetConfigurationViewModel(config, availableFacets) {
@@ -785,10 +904,20 @@ var colorScheme = {
     headerBannerBackgroundColor: '#ffffff',
     navBackgroundColor: '#e5e6e7',
     navTextColor: '#5f5d60',
+    gettingStartedButtonBackgroundColor: '#009080',
+    gettingStartedButtonTextColor: '#fff',
+    whatIsThisButtonBackgroundColor: '#009080',
+    whatIsThisButtonTextColor: '#fff',
     primaryButtonBackgroundColor: '#009080',
     primaryButtonTextColor: '#fff',
+    primaryButtonOutlineTextColor: '#007bff',
+    primaryButtonOutlineTextHoverColor: '#000',
     defaultButtonBackgroundColor: '#f5f5f5',
     defaultButtonTextColor: '#000',
+    defaultButtonOutlineTextColor: '#343a40',
+    defaultButtonOutlineTextHoverColor: '#000',
+    tagBackgroundColor: 'orange',
+    tagTextColor: 'white',
     hrefColor:'#009080',
     facetBackgroundColor: '#f5f5f5',
     tileBackgroundColor: '#f5f5f5',

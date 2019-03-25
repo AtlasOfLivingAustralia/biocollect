@@ -147,6 +147,33 @@ class TemplateTagLib {
         }
     }
 
+    def convertHexToRGBA = { attrs ->
+        String colour = attrs.hex?.replace('#', '')
+        if (colour && attrs.alpha) {
+            String red, green, blue
+            if (colour.size() == 6) {
+                red = colour.substring(0,2)
+                green = colour.substring(2,4)
+                blue = colour.substring(4,6)
+            } else if (colour.size() == 3) {
+                red = colour[0] + colour[0]
+                green = colour[1] + colour[1]
+                blue = colour[2] + colour[2]
+            } else {
+                return
+            }
+
+            try {
+                int redInt = Integer.parseInt(red, 16)
+                int greenInt = Integer.parseInt(green, 16)
+                int blueInt = Integer.parseInt(blue, 16)
+                out << "rgba(${redInt},${greenInt},${blueInt}, ${attrs.alpha})"
+            } catch (NumberFormatException nfe) {
+                log.error("Error occurred while converting hex to integer.", nfe);
+            }
+        }
+    }
+
 
     private String getLinkUrl (Map link){
         String url;

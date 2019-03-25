@@ -605,13 +605,15 @@
                     </td>
                     <td>
                         <div class="survey-row-layout survey-add-record">
-                            <div><button class="btn btn-success btn-sm" data-bind="click: addActivity, visible: $parent.userCanEdit($data)" title="Click to add a record to this survey"> Add a record</button></div>
-                            <div class="margin-top-1"><button class="btn btn-info btn-sm" data-bind="click: listActivityRecords" title="Click to view existing records from this survey"> View records</button></div>
+                            <div><button class="btn btn-success btn-sm btn-addarecord" data-bind="click: addActivity, visible: $parent.userCanEdit($data)" title="Click to add a record to this survey"> Add a record</button></div>
+                            <div class="margin-top-1"><button class="btn btn-info btn-sm btn-viewrecords" data-bind="click: listActivityRecords" title="Click to view existing records from this survey"> View records</button></div>
                             <br><br>
                             %{--<div class="margin-top-1"><a href="#" class="btn btn-primary btn-sm" data-bind="click: bulkDataLoad, visible: $parent.userCanEdit($data)" title="Opens bulk data loading page"> Load Data</a></div>--}%
+                            <g:if test="${hubConfig?.content?.hideProjectSurveyDownloadXLSX != true}">
                             <div><a data-bind="attr: { href: downloadFormTemplateUrl, title: 'Download survey form template for bulk data upload (.xlsx)', target: pActivityFormName }"  >
                                 Download form template (.xlsx)
                             </a></div>
+                            </g:if>
                             <g:if test="${grailsApplication.config.aekosEnabled? Boolean.parseBoolean(grailsApplication.config.aekosEnabled): false}">
                                 <br><br><br>
                                 <div><a href="#" data-bind="visible: transients.isAekosData,

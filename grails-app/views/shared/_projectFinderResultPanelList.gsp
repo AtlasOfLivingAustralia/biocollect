@@ -2,9 +2,9 @@
         <g:set var="noImageUrl" value="${asset.assetPath(src: "no-image-2.png")}"/>
         <table data-table-list class="project-finder-table">
             <tbody data-bind="foreach:pageProjects">
-                <tr>
+                <tr data-bind="attr: {id: transients.projectId}">
                     <td class="projectLogoTd">
-                        <div class="projectLogo project-row-layout">
+                        <div class="projectLogo project-row-layout" data-bind="visible: !(!transients.imageUrl && ${hubConfig?.content?.hideProjectFinderNoImagePlaceholder == true})">
                             <img class="image-logo lazy" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name, 'data-src':transients.imageUrl || '${noImageUrl}'}" onload="findLogoScalingClass(this)" onerror="imageError(this, '${noImageUrl}');"/>
                         </div>
                     </td>
@@ -24,9 +24,11 @@
                                 <i class="icon-info-sign"></i>&nbsp;<span data-bind="html:transients.links"/>
                             </div>
                             <div data-bind="visible: isSciStarter" class="inline-block">&nbsp;|&nbsp;<img class="logo-small" src="${asset.assetPath(src: 'robot.png')}" title="Project is sourced from SciStarter"></div>
+                            <g:if test="${hubConfig?.content?.hideProjectFinderProjectTags != true}">
                             <div style="line-height:2.2em" data-bind="visible:!isMERIT()">
                                 TAGS:&nbsp;<g:render template="/project/tags"/>
                             </div>
+                            </g:if>
                             <div data-bind="if: !isExternal()">
                                 <img src="${asset.assetPath(src: "ala-logo-small.png")}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
                             </div>
@@ -34,7 +36,9 @@
                     </td>
                     <td class="span2">
                         <div class="project-row-layout project-row-status">
+                            <g:if test="${hubConfig?.content?.hideProjectFinderStatusIndicator != true}">
                             <g:render template="/project/dayscount"/>
+                            </g:if>
                             <span data-bind="visible:plannedStartDate">
                                 <small data-bind="text:'Start date: ' + moment(plannedStartDate()).format('DD MMMM, YYYY')"></small>
                             </span>
