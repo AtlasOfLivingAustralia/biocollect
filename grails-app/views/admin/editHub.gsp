@@ -416,10 +416,10 @@
                     <input type="checkbox" data-bind="checked: hideProjectAboutParticipateInProject"> Hide 'You can participate in this project in'
                 </div>
                 <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideProjectAboutUNRegions"> Hide 'UN Regions'
+                    <input type="checkbox" data-bind="checked: hideProjectAboutCountries"> Hide 'Countries'
                 </div>
                 <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideProjectAboutCountries"> Hide 'Countries'
+                    <input type="checkbox" data-bind="checked: hideProjectAboutUNRegions"> Hide 'UN Regions'
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectAboutScienceTypes"> Hide 'Science types'
