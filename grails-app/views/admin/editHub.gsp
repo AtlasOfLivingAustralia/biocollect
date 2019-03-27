@@ -123,7 +123,7 @@
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label" for="skin">Preview</label>
+                            <label class="control-label" for="skin" id="preview">Preview</label>
                             <div class="controls">
                                 <!-- ko template: { name: 'templatePreviewHomePage'} -->
                                 <!-- /ko -->
@@ -364,36 +364,41 @@
         <div class="tab-pane" id="hubContent">
             <div>
                 <h3>Settings</h3>
+                <small>Hide or show certain components on Biocollect</small>
                 <!-- ko with: content-->
+                <h5>Global</h5>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideBreadCrumbs"> Hide bread crumbs
                 </div>
                 <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideProjectAndSurvey"> Hide project and survey when listing records on pages like all records
-                </div>
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideCancelButtonOnForm"> Hide cancel button on form create page
-                </div>
-                <div class="checkbox">
                     <input type="checkbox" data-bind="checked: isContainer"> Content should be in a fixed width container
                 </div>
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: showNote"> Show note on record listing page
-                </div>
+
+
+                <h5>Project finder</h5>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectFinderHelpButtons"> Hide 'Getting Started' & 'What is this?' buttons on project finder
                 </div>
                 <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicator"> Hide project status indicator on project finder
+                    <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicatorTile"> Hide project status indicator (Tile view)
                 </div>
                 <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideProjectBackButton"> Hide 'Back to search results' button on project page
+                    <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicatorList"> Hide project status indicator (List view)
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectFinderProjectTags"> Hide project tags
                 </div>
                 <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideProjectFinderNoImagePlaceholder"> Hide image display section when project has no uploaded image
+                    <input type="checkbox" data-bind="checked: hideProjectFinderNoImagePlaceholderTile"> Hide image when project has no uploaded image (Tile view)
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectFinderNoImagePlaceholderList"> Hide image when project has no uploaded image (List view)
+                </div>
+
+
+                <h5>Project page</h5>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectBackButton"> Hide 'Back to search results' button on project page
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectBlogTab"> Hide blog tab on project page
@@ -423,10 +428,24 @@
                     <input type="checkbox" data-bind="checked: hideProjectSurveyDownloadXLSX"> Hide 'Download XLSX template'
                 </div>
 
+
+                <h5>Record listing</h5>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectAndSurvey"> Hide project and survey when listing records on pages like all records
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: showNote"> Show note on record listing page
+                </div>
                 <div class="margin-top-1 row-fluid" data-bind="slideVisible: showNote">
                     <textarea class="span6" data-bind="value: recordNote">
 
                     </textarea>
+                </div>
+
+
+                <h5>Data entry page</h5>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideCancelButtonOnForm"> Hide cancel button on form create page
                 </div>
                 <!-- /ko -->
                 <h3>Quick links</h3>
@@ -773,141 +792,185 @@
         </thead>
         <tbody>
         <tr>
+            <td colspan="2">
+                <strong>Header</strong>
+                <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showHeader} } -->
+                <!-- /ko -->
+            </td>
+            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
+        </tr>
+        <tr data-bind="visible: transients.showHeader">
             <td>Menu background colour</td>
             <td><input type="text" data-bind="value: menuBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':menuBackgroundColor}"></div></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: menuTextColor, backgroundColor: menuBackgroundColor, text: 'Menu'}}"></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showHeader">
             <td>Menu text colour</td>
             <td><input type="text" data-bind="value: menuTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':menuTextColor}"></div></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showHeader">
             <td>Header banner space background colour</td>
             <td><input type="text" data-bind="value: headerBannerBackgroundColor"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':headerBannerBackgroundColor}"></div></td>
         </tr>
         <tr>
+            <td colspan="2">
+                <strong>Banner</strong>
+                <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showBanner} } -->
+                <!-- /ko -->
+            </td>
+            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
+        </tr>
+        <tr data-bind="visible: transients.showBanner">
             <td>Banner background colour</td>
             <td><input type="text" data-bind="value: bannerBackgroundColor"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':bannerBackgroundColor}"></div></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showBanner">
             <td>Inset panel background colour</td>
             <td><input type="text" data-bind="value: insetBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':insetBackgroundColor}"></div></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: insetTextColor, backgroundColor: insetBackgroundColor, text: 'Inset'}}"></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showBanner">
             <td>Inset panel text colour</td>
             <td><input type="text" data-bind="value: insetTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':insetTextColor}"></div></td>
         </tr>
         <tr>
+            <td colspan="2">
+                <strong>Global styles</strong>
+                <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showGlobal} } -->
+                <!-- /ko -->
+            </td>
+            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
+        </tr>
+        <tr data-bind="visible: transients.showGlobal">
             <td>Body background colour</td>
             <td><input type="text" data-bind="value: bodyBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':bodyBackgroundColor}"></div></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: bodyTextColor, backgroundColor: bodyBackgroundColor, text: 'Body'}}"></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showGlobal">
             <td>Body text colour</td>
             <td><input type="text" data-bind="value: bodyTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':bodyTextColor}"></div></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showGlobal">
             <td>Title text colour</td>
             <td><input type="text" data-bind="value: titleTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':titleTextColor}"></div></td>
+            <td data-bind="template: {name: 'textPreview', data: {textColor: titleTextColor, backgroundColor: 'transparent', text: 'Title'}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showGlobal">
+            <td>Breadcrumbs background colour</td>
+            <td><input type="text" data-bind="value: breadCrumbBackGroundColour"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':breadCrumbBackGroundColour}"></div></td>
+        </tr>
+        <tr data-bind="visible: transients.showGlobal">
+            <td>Href colour</td>
+            <td><input type="text" data-bind="value: hrefColor"/></td>
+            <td data-bind="template: {name: 'textPreview', data: {textColor: hrefColor, backgroundColor: 'transparent', text: 'Anchor'}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showGlobal">
+            <td>Well background colour</td>
+            <td><input type="text" data-bind="value: wellBackgroundColor"/></td>
+            <td><div class="previewColor" data-bind="style:{'background-color':wellBackgroundColor}"></div></td>
         </tr>
         <tr>
-            <td>'Getting started' button background colour</td>
-            <td><input type="text" data-bind="value: gettingStartedButtonBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':gettingStartedButtonBackgroundColor}"></div></td>
+            <td colspan="2">
+                <strong>Buttons</strong>
+                <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showButtons} } -->
+                <!-- /ko -->
+            </td>
+            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
         </tr>
-        <tr>
-            <td>'Getting started' button text colour</td>
-            <td><input type="text" data-bind="value: gettingStartedButtonTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':gettingStartedButtonTextColor}"></div></td>
-        </tr>
-        <tr>
-            <td>'What is this' button background colour</td>
-            <td><input type="text" data-bind="value: whatIsThisButtonBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':whatIsThisButtonBackgroundColor}"></div></td>
-        </tr>
-        <tr>
-            <td>'What is this' button text colour</td>
-            <td><input type="text" data-bind="value: whatIsThisButtonTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':whatIsThisButtonTextColor}"></div></td>
-        </tr>
-        <tr>
-            <td>'Add a record' button background colour</td>
-            <td><input type="text" data-bind="value: addARecordButtonBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':addARecordButtonBackgroundColor}"></div></td>
-        </tr>
-        <tr>
-            <td>'Add a record' button text colour</td>
-            <td><input type="text" data-bind="value: addARecordButtonTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':addARecordButtonTextColor}"></div></td>
-        </tr>
-        <tr>
-            <td>'View records' button background colour</td>
-            <td><input type="text" data-bind="value: viewRecordsButtonBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':viewRecordsButtonBackgroundColor}"></div></td>
-        </tr>
-        <tr>
-            <td>'View records' button text colour</td>
-            <td><input type="text" data-bind="value: viewRecordsButtonTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':viewRecordsButtonTextColor}"></div></td>
-        </tr>
-        <tr>
+        <tr data-bind="visible: transients.showButtons">
             <td>Primary button colour</td>
             <td><input type="text" data-bind="value: primaryButtonBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':primaryButtonBackgroundColor}"></div></td>
+            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: primaryButtonBackgroundColor, textColor: primaryButtonTextColor}}"></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showButtons">
             <td>Primary button text colour</td>
             <td><input type="text" data-bind="value: primaryButtonTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':primaryButtonTextColor}"></div></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>Default button colour</td>
+            <td><input type="text" data-bind="value: defaultButtonBackgroundColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: defaultButtonBackgroundColor, textColor: defaultButtonTextColor}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>Default button text colour</td>
+            <td><input type="text" data-bind="value: defaultButtonTextColor"/></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>Default button colour when active</td>
+            <td><input type="text" data-bind="value: defaultButtonColorActive"/></td>
+            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: defaultButtonBackgroundColorActive, textColor: defaultButtonColorActive}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>Default button background colour when active</td>
+            <td><input type="text" data-bind="value: defaultButtonBackgroundColorActive"/></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>'Getting started' button background colour</td>
+            <td><input type="text" data-bind="value: gettingStartedButtonBackgroundColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: gettingStartedButtonBackgroundColor, textColor: gettingStartedButtonTextColor}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>'Getting started' button text colour</td>
+            <td><input type="text" data-bind="value: gettingStartedButtonTextColor"/></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>'What is this' button background colour</td>
+            <td><input type="text" data-bind="value: whatIsThisButtonBackgroundColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: whatIsThisButtonBackgroundColor, textColor: whatIsThisButtonTextColor}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>'What is this' button text colour</td>
+            <td><input type="text" data-bind="value: whatIsThisButtonTextColor"/></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>'Add a record' button background colour</td>
+            <td><input type="text" data-bind="value: addARecordButtonBackgroundColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: addARecordButtonBackgroundColor, textColor: addARecordButtonTextColor}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>'Add a record' button text colour</td>
+            <td><input type="text" data-bind="value: addARecordButtonTextColor"/></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>'View records' button background colour</td>
+            <td><input type="text" data-bind="value: viewRecordsButtonBackgroundColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: viewRecordsButtonBackgroundColor, textColor: viewRecordsButtonTextColor}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>'View records' button text colour</td>
+            <td><input type="text" data-bind="value: viewRecordsButtonTextColor"/></td>
         </tr>
         <tr>
+            <td colspan="2">
+                <strong>Outline buttons</strong>
+                <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showOutlineButtons} } -->
+                <!-- /ko -->
+            </td>
+            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
+        </tr>
+        <tr data-bind="visible: transients.showOutlineButtons">
             <td>Make standalone primary button an outline button (transparent background)<br/>
                 <small>
                     All standalone primary buttons will be render like an outline button using style defined below.
-                Primary buttons associated with a button group or input will use the above style.
+                    Primary buttons associated with a button group or input will use the above style.
                 </small>
             </td>
             <td><input type="checkbox" data-bind="checked: makePrimaryButtonAnOutlineButton"/></td>
             <td></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showOutlineButtons">
             <td>Primary outline button text colour</td>
             <td><input type="text" data-bind="value: primaryButtonOutlineTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':primaryButtonOutlineTextColor}"></div></td>
+            <td rowspan="2" data-bind="template: {name: 'outlineButtonPreview', data: {textColor: primaryButtonOutlineTextColor, hoverTextColor: primaryButtonOutlineTextHoverColor}}"></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showOutlineButtons">
             <td>Primary outline button text hover colour</td>
             <td><input type="text" data-bind="value: primaryButtonOutlineTextHoverColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':primaryButtonOutlineTextHoverColor}"></div></td>
         </tr>
-        <tr>
-            <td>Default button colour</td>
-            <td><input type="text" data-bind="value: defaultButtonBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonBackgroundColor}"></div></td>
-        </tr>
-        <tr>
-            <td>Default button text colour</td>
-            <td><input type="text" data-bind="value: defaultButtonTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonTextColor}"></div></td>
-        </tr>
-        <tr>
-            <td>Default button colour when active</td>
-            <td><input type="text" data-bind="value: defaultButtonColorActive"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonColorActive}"></div></td>
-        </tr>
-        <tr>
-            <td>Default button background colour when active</td>
-            <td><input type="text" data-bind="value: defaultButtonBackgroundColorActive"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonBackgroundColorActive}"></div></td>
-        </tr>
-        <tr>
+        <tr data-bind="visible: transients.showOutlineButtons">
             <td>Make standalone default button an outline button (transparent background)<br/>
                 <small>
                     All standalone default buttons will be render like an outline button using style defined below.
@@ -917,76 +980,72 @@
             <td><input type="checkbox" data-bind="checked: makeDefaultButtonAnOutlineButton"/></td>
             <td></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showOutlineButtons">
             <td>Default outline button text colour</td>
             <td><input type="text" data-bind="value: defaultButtonOutlineTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonOutlineTextColor}"></div></td>
+            <td rowspan="2" data-bind="template: {name: 'outlineButtonPreview', data: {textColor: defaultButtonOutlineTextColor, hoverTextColor: defaultButtonOutlineTextHoverColor}}"></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showOutlineButtons">
             <td>Default outline button text hover colour</td>
             <td><input type="text" data-bind="value: defaultButtonOutlineTextHoverColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':defaultButtonOutlineTextHoverColor}"></div></td>
         </tr>
         <tr>
-            <td>Breadcrumbs background colour</td>
-            <td><input type="text" data-bind="value: breadCrumbBackGroundColour"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':breadCrumbBackGroundColour}"></div></td>
+            <td colspan="2">
+                <strong>Other components</strong>
+                <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showOtherComponents} } -->
+                <!-- /ko -->
+            </td>
+            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
         </tr>
-        <tr>
-            <td>Href colour</td>
-            <td><input type="text" data-bind="value: hrefColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':hrefColor}"></div></td>
-        </tr>
-        <tr>
-            <td>Well background colour</td>
-            <td><input type="text" data-bind="value: wellBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':wellBackgroundColor}"></div></td>
-        </tr>
-
-        <tr>
+        <tr data-bind="visible: transients.showOtherComponents">
             <td>Nav text colour</td>
             <td><input type="text" data-bind="value: navTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{color:navTextColor}"></div></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: navTextColor, backgroundColor: navBackgroundColor, text: 'Nav'}}"></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showOtherComponents">
             <td>Nav background colour</td>
             <td><input type="text" data-bind="value: navBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':navBackgroundColor}"></div></td>
         </tr>
-        <tr>
-            <td>Tag background colour</td>
-            <td><input type="text" data-bind="value: tagBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':tagBackgroundColor}"></div></td>
-        </tr>
-        <tr>
-            <td>Tag text colour</td>
-            <td><input type="text" data-bind="value: tagTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':tagTextColor}"></div></td>
-        </tr>
-        <tr>
+        <tr data-bind="visible: transients.showOtherComponents">
             <td>Facet background colour</td>
             <td><input type="text" data-bind="value: facetBackgroundColor"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':facetBackgroundColor}"></div></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showOtherComponents">
             <td>Tile background colour</td>
             <td><input type="text" data-bind="value: tileBackgroundColor"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':tileBackgroundColor}"></div></td>
         </tr>
+        <tr data-bind="visible: transients.showOtherComponents">
+            <td>Tag background colour</td>
+            <td><input type="text" data-bind="value: tagBackgroundColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: tagTextColor, backgroundColor: tagBackgroundColor, text: 'Tag'}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showOtherComponents">
+            <td>Tag text colour</td>
+            <td><input type="text" data-bind="value: tagTextColor"/></td>
+        </tr>
         <tr>
+            <td colspan="2">
+                <strong>Footer</strong>
+                <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showFooter} } -->
+                <!-- /ko -->
+            </td>
+            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
+        </tr>
+        <tr data-bind="visible: transients.showFooter">
             <td>Footer background colour</td>
             <td><input type="text" data-bind="value: footerBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':footerBackgroundColor}"></div></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: footerTextColor, backgroundColor: footerBackgroundColor, text: 'Contact us'}}"></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showFooter">
             <td>Footer text colour</td>
             <td><input type="text" data-bind="value: footerTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':footerTextColor}"></div></td>
         </tr>
-        <tr>
+        <tr data-bind="visible: transients.showFooter">
             <td>Social media icon colour</td>
             <td><input type="text" data-bind="value: socialTextColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':socialTextColor}"></div></td>
+            <td rowspan="2" data-bind="template: {name: 'socialMediaPreview', data: {textColor: socialTextColor}}"></td>
         </tr>
         </tbody>
     </table>
@@ -1116,7 +1175,7 @@
 
         </div>
         <div class="row-fluid">
-            <div class="previewBanner row-fluid"  data-bind="style:{'background-color': bannerBackgroundColor}">
+            <div class="previewBanner row-fluid margin-bottom-20"  data-bind="style:{'background-color': bannerBackgroundColor}">
                 <div class="offset2 span8 previewBannerImage">
                     <div class="previewLogo text-center"><p>Logo</p></div>
                     <div class="previewInset" data-bind="style:{'background-color': insetBackgroundColor}">
@@ -1126,50 +1185,50 @@
                 </div>
             </div>
             <div class="row-fluid previewBody" data-bind="style:{'background-color': bodyBackgroundColor}">
-                <h1 data-bind="style:{color: titleTextColor}">Title text</h1>
-                <h1 data-bind="style:{color: bodyTextColor}">Body text</h1>
-                <a href="#" data-bind="style:{color: hrefColor}">Link to</a>
-                <div class="row-fluid">
-                    <div class="offset4 span2 text-center" data-bind="style:{'background-color': primaryButtonBackgroundColor}">
-                        <h3  data-bind="style:{color: primaryButtonTextColor}">Primary button</h3>
-                    </div>
-                    <div class="span2 text-center" data-bind="style:{'background-color': defaultButtonBackgroundColor}">
-                        <h3  data-bind="style:{color: defaultButtonTextColor}">Default button</h3>
-                    </div>
-                </div>
-                <div class="row-fluid" data-bind="visible: makeDefaultButtonAnOutlineButton() || makePrimaryButtonAnOutlineButton()">
-                    <div class="offset4 span2 text-center drawBorder" data-bind="style:{'background-color': 'transparent', 'border-color': primaryButtonOutlineTextColor}, visible: makePrimaryButtonAnOutlineButton">
-                        <h3  data-bind="style:{color: primaryButtonOutlineTextColor}">Primary outline button</h3>
-                    </div>
-                    <div class="span2 text-center drawBorder" data-bind="style:{'background-color': 'transparent', 'border-color': defaultButtonOutlineTextColor}, visible: makeDefaultButtonAnOutlineButton">
-                        <h3  data-bind="style:{color: defaultButtonOutlineTextColor}">Default outline button</h3>
-                    </div>
-                </div>
-                <div class="row-fluid">
-                    <div class="offset4 span4 drawBorder height100" data-bind="style:{'background-color': wellBackgroundColor}">
-                        <h3>Well colour</h3>
-                    </div>
-                </div>
-                <div class="row-fluid">
-                    <div class="offset4 span4 drawBorder height100" data-bind="style:{'background-color': tagBackgroundColor, color: tagTextColor}">
-                        <h3>Tag colour</h3>
+                <div class="row-fluid margin-bottom-20">
+                    <div class="span4"><h1 data-bind="style:{color: titleTextColor}">Title text</h1></div>
+                    <div class="span4"><h1 data-bind="style:{color: bodyTextColor}">Body text</h1></div>
+                    <div class="span4">
+                        <!-- ko template: {name: 'textPreview', data: {textColor: hrefColor, backgroundColor: 'transparent', text: 'Anchor'}} -->
+                        <!-- /ko -->
                     </div>
                 </div>
                 <div class="row-fluid">
                     <div class="offset4 span2">
-                        <button class="well nav-well text-center" data-bind="style:{'background-color': navBackgroundColor}">
-                            <h3  data-bind="style:{color: navTextColor}">Nav button</h3>
-                        </button>
+                        <!-- ko template: {name: 'buttonPreview', data: {textColor: primaryButtonTextColor, backgroundColor: primaryButtonBackgroundColor}} -->
+                        <!-- /ko -->
                     </div>
                     <div class="span2">
-                        <button class="well nav-well text-center" data-bind="style:{'background-color': navBackgroundColor}">
-                            <h3  data-bind="style:{color: navTextColor}">Nav button</h3>
-                        </button>
+                        <!-- ko template: {name: 'buttonPreview', data: {textColor: defaultButtonTextColor, backgroundColor: defaultButtonBackgroundColor}} -->
+                        <!-- /ko -->
+                    </div>
+                </div>
+                <div class="row-fluid" data-bind="visible: makeDefaultButtonAnOutlineButton() || makePrimaryButtonAnOutlineButton()">
+                    <div class="offset4 span2">
+                        <!-- ko template: {name: 'outlineButtonPreview', data: {textColor: primaryButtonOutlineTextColor, hoverTextColor: primaryButtonOutlineTextHoverColor}} -->
+                        <!-- /ko -->
+                    </div>
+                    <div class="span2">
+                        <!-- ko template: {name: 'outlineButtonPreview', data: {textColor: defaultButtonOutlineTextColor, hoverTextColor: defaultButtonOutlineTextHoverColor}} -->
+                        <!-- /ko -->
+                    </div>
+                </div>
+                <div class="row-fluid margin-bottom-20">
+                    <div class="offset4 span2">
+                        <!-- ko template: {name: 'textPreview', data: {textColor: tagTextColor, backgroundColor: tagBackgroundColor, text: 'Tag'}} -->
+                        <!-- /ko -->
+                    </div>
+                    <div class="span2">
+                        <!-- ko template: {name: 'textPreview', data: {textColor: navTextColor, backgroundColor: navBackgroundColor, text: 'Nav'}} -->
+                        <!-- /ko -->
                     </div>
                 </div>
                 <div class="row-fluid ">
-                    <div class="offset1 span2 drawBorder height100" data-bind="style:{'background-color': facetBackgroundColor}"><h3>Facet Background</h3></div>
-                    <div class="span8 drawBorder height100" data-bind="style:{'background-color': tileBackgroundColor}"><h3>Tile Background</h3></div>
+                    <div class="span4 drawBorder height100" data-bind="style:{'background-color': facetBackgroundColor}"><h3>Facet Background</h3></div>
+                    <div class="span4 drawBorder height100" data-bind="style:{'background-color': tileBackgroundColor}"><h3>Tile Background</h3></div>
+                    <div class="span4 drawBorder height100" data-bind="style:{'background-color': wellBackgroundColor}">
+                        <h3>Well colour</h3>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1323,6 +1382,37 @@
     </tr>
     </tfoot>
 </table>
+</script>
+<script id="buttonPreview" type="text/html">
+    <div class="text-center btn-preview" data-bind="style:{'background-color': backgroundColor, color: textColor, borderColor: backgroundColor}">
+        Click me
+    </div>
+</script>
+<script id="outlineButtonPreview" type="text/html">
+<div class="text-center btn-preview-outline" data-bind="style:{'background-color': 'transparent', color: textColor, borderColor: textColor}">
+    Click me
+</div>
+<div class="text-center btn-preview-outline" data-bind="style:{'background-color': textColor, color: hoverTextColor, borderColor: textColor}">
+    On hover
+</div>
+</script>
+<script id="textPreview" type="text/html">
+<div class="text-center drawBorder margin-top-5" data-bind="style:{'background-color': backgroundColor, color: textColor, 'border-color': backgroundColor}, html: text">
+</div>
+</script>
+<script id="socialMediaPreview" type="text/html">
+<a class="do-not-mark-external" href="" data-bind="style:{color: textColor}">
+    <span class="fa-stack fa-lg">
+    <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+    <i class="fa fa-twitter fa-stack-1x"></i>
+    </span>
+</a>
+</script>
+<script id="collapseExpandComponent" type="text/html">
+<div class="inline">
+    <i class="icon-plus" data-bind="visible: !flag(), click: flag(true)"></i>
+    <i class="icon-minus" data-bind="visible: flag, click: flag(false)"></i>
+</div>
 </script>
 <asset:script type="text/javascript">
 

@@ -741,8 +741,9 @@ section#breadcrumb {
 }
 
 #custom-footer #alaLink.brand {
-  margin-left:10px;
-  margin-top: 10px;
+  margin-top:10px;
+  margin-right: 10px;
+  display: inline-block;
 }
 
 #custom-footer .brand .headerLogo {
@@ -752,7 +753,7 @@ section#breadcrumb {
 #custom-footer .logo {
   max-height: 100px;
   max-width: 200px;
-  margin-left:10px;
+  margin-right:10px;
   margin-top: 10px;
   vertical-align: top;
 }

@@ -31,7 +31,7 @@
 }
 
 .previewBody{
-    height: 600px;
+    height: 400px;
 }
 
 .previewWell{
@@ -56,4 +56,26 @@
 
 .border-bottom-4{
     border-bottom: solid 4px black;
+}
+
+.btn-preview {
+    width: 70px;
+    height: 25px;
+    padding: 3px;
+    border: 1px;
+    border-style: solid;
+}
+
+.btn-preview-outline {
+    width: 70px;
+    height: 25px;
+    padding: 3px;
+    margin-top: 5px;
+    border-radius: 3px;
+    border: 1px;
+    border-style: solid;
+}
+
+.inline {
+    display: inline;
 }

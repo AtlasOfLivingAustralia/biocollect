@@ -1,4 +1,4 @@
-<g:if test="${hubConfig?.content?.hideProjectFinderStatusIndicator != true}">
+<g:if test="${hubConfig?.content?.hideProjectFinderStatusIndicatorTile != true}">
 <div class="dayscount" data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() > 0">
     <strong>Status: </strong> <span data-bind="text:transients.daysRemaining"></span> <span>days to go</span>
 </div>

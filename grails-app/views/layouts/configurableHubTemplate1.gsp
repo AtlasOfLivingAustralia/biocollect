@@ -221,38 +221,38 @@
                         </g:if>
                     </ul>
                 </div><!--/.spanX -->
-                <div class="span2 smlinks text-right">
-                    <div id="smlinks">
-                        <g:if test="${hubConfig.templateConfiguration?.footer?.socials}">
-                            <g:each in="${hubConfig.templateConfiguration?.footer?.socials}" var="social">
-                                <config:getSocialMediaLinkFromConfig
-                                        config="${social}"></config:getSocialMediaLinkFromConfig>
-                            </g:each>
-                        </g:if>
-                    </div>
-                </div><!--/.spanX -->
-                <div class="span6">
-                    <div class="row-fluid">
-                        <g:each in="${hubConfig.templateConfiguration?.footer?.logos}" var="logo">
-                            <g:if test="${logo.href}">
-                                <a href="${logo.href}" title="Link to website" target="_blank">
-                                    <img class="logo" src="${logo.url}" alt="Website logo"/>
-                                </a>
+                <div class="span8">
+                    <div class="pull-right smlinks text-right">
+                        <div id="smlinks">
+                            <g:if test="${hubConfig.templateConfiguration?.footer?.socials}">
+                                <g:each in="${hubConfig.templateConfiguration?.footer?.socials}" var="social">
+                                    <config:getSocialMediaLinkFromConfig
+                                            config="${social}"></config:getSocialMediaLinkFromConfig>
+                                </g:each>
                             </g:if>
-                            <g:else>
-                                <img class="logo" src="${logo.url}" alt="Website logo"/>
-                            </g:else>
-                        </g:each>
-                        <a class="brand" href="http://ala.org.au/" id="alaLink" title="ALA home page">
-                            <span>
+                        </div>
+                    </div><!--/.spanX -->
+                    <div class="pull-right">
+                        <div class="row-fluid text-right">
+                            <g:each in="${hubConfig.templateConfiguration?.footer?.logos}" var="logo">
+                                <g:if test="${logo.href}">
+                                    <a href="${logo.href}" title="Link to website" target="_blank">
+                                        <img class="logo" src="${logo.url}" alt="Website logo"/>
+                                    </a>
+                                </g:if>
+                                <g:else>
+                                    <img class="logo" src="${logo.url}" alt="Website logo"/>
+                                </g:else>
+                            </g:each>
+                            <a class="brand text-left" href="http://ala.org.au/" id="alaLink" title="ALA home page">
                                 <img src="${asset.assetPath(src:'mdba/ALA-logo-BW-124x109.png')}" alt="Powered by ALA logo"
                                      class="headerLogo"/>
                                 <div id="alaHeadingText"><div id="poweredBy">powered by</div>
                                     <div id="alaBy" class="visible-desktop">Atlas of Living Australia</div>
                                     <div class="hidden-desktop">ALA</div>
                                 </div>
-                            </span>
-                        </a>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div><!--/.row -->
