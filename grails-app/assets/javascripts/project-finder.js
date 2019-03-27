@@ -306,7 +306,7 @@ function ProjectFinder(config) {
     this.getQuery = function () {
         var query = ($('#pt-search').val() || '' ).toLowerCase();
         if ((query.length >= 3) && (query.indexOf('*') == -1)) {
-            query += '*';
+            query = '*' + query + '*';
         }
 
         return query;
@@ -360,7 +360,7 @@ function ProjectFinder(config) {
 
     function updateLazyLoad() {
         if (!lazyLoad) {
-            if (typeof LazyLoad === 'undefined') {
+            if (typeof LazyLoad !== 'undefined') {
                 lazyLoad = new LazyLoad({
                     elements_selector: "img.lazy"
                 });
