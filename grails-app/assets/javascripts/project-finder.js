@@ -227,9 +227,12 @@ function ProjectFinder(config) {
      * @param selector
      */
     function scrollToView(selector) {
-        $("html, body").animate({
-            scrollTop: $(selector).offset().top
-        })
+        var offset = $(selector).offset()
+        if (offset) {
+            $("html, body").animate({
+                scrollTop: offset.top
+            })
+        }
     }
 
     function scrollToProject () {
@@ -357,7 +360,7 @@ function ProjectFinder(config) {
 
     function updateLazyLoad() {
         if (!lazyLoad) {
-            if (LazyLoad) {
+            if (typeof LazyLoad === 'undefined') {
                 lazyLoad = new LazyLoad({
                     elements_selector: "img.lazy"
                 });
@@ -846,6 +849,7 @@ function ProjectFinder(config) {
     }
 
     function parseHash() {
+        pageWindow.filterViewModel.switchOffSearch(true);
         var hash = decodeURIComponent(window.location.hash.substr(1)).split("&");
 
         var params = {
@@ -887,7 +891,8 @@ function ProjectFinder(config) {
         checkButton($("#pt-per-page"), params.max || '20');
         checkButton($("#pt-aus-world"), params.isWorldWide || 'false');
         
-        $('#pt-search').val(params.q).focus()
+        $('#pt-search').val(params.q).focus();
+        pageWindow.filterViewModel.switchOffSearch(false);
     }
 
     function updateHash() {

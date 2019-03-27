@@ -4,7 +4,7 @@
             <tbody data-bind="foreach:pageProjects">
                 <tr data-bind="attr: {id: transients.projectId}">
                     <td class="projectLogoTd">
-                        <div class="projectLogo project-row-layout" data-bind="visible: !(!transients.imageUrl && ${hubConfig?.content?.hideProjectFinderNoImagePlaceholder == true})">
+                        <div class="projectLogo project-row-layout" data-bind="visible: !(!transients.imageUrl && ${hubConfig?.content?.hideProjectFinderNoImagePlaceholderList == true})">
                             <img class="image-logo lazy" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name, 'data-src':transients.imageUrl || '${noImageUrl}'}" onload="findLogoScalingClass(this)" onerror="imageError(this, '${noImageUrl}');"/>
                         </div>
                     </td>
@@ -36,7 +36,7 @@
                     </td>
                     <td class="span2">
                         <div class="project-row-layout project-row-status">
-                            <g:if test="${hubConfig?.content?.hideProjectFinderStatusIndicator != true}">
+                            <g:if test="${hubConfig?.content?.FhideProjectFinderStatusIndicatorList != true}">
                             <g:render template="/project/dayscount"/>
                             </g:if>
                             <span data-bind="visible:plannedStartDate">

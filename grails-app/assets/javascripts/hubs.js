@@ -481,9 +481,11 @@ function ContentViewModel(config) {
     self.recordNote = ko.observable(config.recordNote || '');
     self.industries = ko.observable(config.industries || false);
     self.hideProjectFinderHelpButtons = ko.observable(config.hideProjectFinderHelpButtons || false);
-    self.hideProjectFinderStatusIndicator = ko.observable(config.hideProjectFinderStatusIndicator || false);
+    self.hideProjectFinderStatusIndicatorTile = ko.observable(config.hideProjectFinderStatusIndicatorTile || false);
+    self.hideProjectFinderStatusIndicatorList = ko.observable(config.hideProjectFinderStatusIndicatorList || false);
     self.hideProjectFinderProjectTags = ko.observable(config.hideProjectFinderProjectTags || false);
-    self.hideProjectFinderNoImagePlaceholder = ko.observable(config.hideProjectFinderNoImagePlaceholder || false);
+    self.hideProjectFinderNoImagePlaceholderList = ko.observable(config.hideProjectFinderNoImagePlaceholderList || false);
+    self.hideProjectFinderNoImagePlaceholderTile = ko.observable(config.hideProjectFinderNoImagePlaceholderTile || false);
     self.hideProjectBlogTab = ko.observable(config.hideProjectBlogTab || false);
     self.hideProjectStatusIndicator = ko.observable(config.hideProjectStatusIndicator || false);
     self.hideProjectBackButton = ko.observable(config.hideProjectBackButton || false);
@@ -652,6 +654,15 @@ var StyleViewModel = function (config) {
     self.defaultButtonColorActive= ko.observable(config.defaultButtonColorActive || '');
     self.defaultButtonBackgroundColorActive= ko.observable(config.defaultButtonBackgroundColorActive || '');
     self.breadCrumbBackGroundColour = ko.observable(config.breadCrumbBackGroundColour || '');
+
+    self.transients = {};
+    self.transients.showHeader = ko.observable(false);
+    self.transients.showBanner = ko.observable(false);
+    self.transients.showGlobal = ko.observable(false);
+    self.transients.showButtons = ko.observable(false);
+    self.transients.showOutlineButtons = ko.observable(false);
+    self.transients.showOtherComponents = ko.observable(false);
+    self.transients.showFooter = ko.observable(false);
 };
 
 var SocialMediaViewModel = function (config) {
