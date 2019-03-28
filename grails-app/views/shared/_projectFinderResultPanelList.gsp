@@ -36,7 +36,7 @@
                     </td>
                     <td class="span2">
                         <div class="project-row-layout project-row-status">
-                            <g:if test="${hubConfig?.content?.FhideProjectFinderStatusIndicatorList != true}">
+                            <g:if test="${hubConfig?.content?.hideProjectFinderStatusIndicatorList != true}">
                             <g:render template="/project/dayscount"/>
                             </g:if>
                             <span data-bind="visible:plannedStartDate">
