@@ -89,6 +89,8 @@ function ProjectFinder(config) {
             } else if (width >= 992) {
                 self.columns(4);
             }
+
+            updateLazyLoad();
         };
 
         $( window ).resize(function () {
@@ -284,7 +286,7 @@ function ProjectFinder(config) {
             skipDefaultFilters:fcConfig.showAllProjects,
             isWorldWide: isWorldWide,
             projectId: selectedProjectId,
-            q: this.getQuery()
+            q: this.getQuery(true)
         };
 
         map.max =  perPage // Page size
@@ -303,10 +305,18 @@ function ProjectFinder(config) {
         return map
     };
 
-    this.getQuery = function () {
+    this.getQuery = function (partialSearch) {
         var query = ($('#pt-search').val() || '' ).toLowerCase();
-        if ((query.length >= 3) && (query.indexOf('*') == -1)) {
+        if (partialSearch && ((query.length >= 3) && (query.indexOf('*') == -1))) {
             query = '*' + query + '*';
+        }
+
+        return query;
+    };
+
+    this.santitizeQuery = function (query) {
+        if (query) {
+            query = query.replace(/^\*/g, '').replace(/\*$/g, '');
         }
 
         return query;
@@ -875,7 +885,7 @@ function ProjectFinder(config) {
             }
         }
 
-
+        params.q = self.santitizeQuery(params.q);
         setGeoSearch(params.geoSearch);
         pageWindow.filterViewModel.setFilterQuery(params.fq);
         offset = params.offset || offset;
