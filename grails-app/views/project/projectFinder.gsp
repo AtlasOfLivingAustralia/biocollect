@@ -58,6 +58,7 @@
         noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
         sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
         paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
+        enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false},
         downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}",
 
         <g:if test="${isUserPage}">

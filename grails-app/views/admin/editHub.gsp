@@ -394,6 +394,9 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectFinderNoImagePlaceholderList"> Hide image when project has no uploaded image (List view)
                 </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: enablePartialSearch"> Enable partial search
+                </div>
 
 
                 <h5>Project page</h5>

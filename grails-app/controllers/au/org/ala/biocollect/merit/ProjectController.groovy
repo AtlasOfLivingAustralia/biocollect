@@ -787,7 +787,7 @@ class ProjectController {
 
         // query construction
         if(trimmedParams.q){
-            trimmedParams.query += " AND " + trimmedParams.q;
+            trimmedParams.query += " AND (${trimmedParams.q})";
             trimmedParams.q = null
         }
 
