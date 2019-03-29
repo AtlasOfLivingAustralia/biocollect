@@ -33,6 +33,7 @@ function ProjectFinder(config) {
     var geoSearch = {};
 
     var refreshSearch = false;
+    var enablePartialSearch = config.enablePartialSearch || false;
 
     var filterQuery, lazyLoad;
 
@@ -307,8 +308,10 @@ function ProjectFinder(config) {
 
     this.getQuery = function (partialSearch) {
         var query = ($('#pt-search').val() || '' ).toLowerCase();
-        if (partialSearch && ((query.length >= 3) && (query.indexOf('*') == -1))) {
-            query = '*' + query + '*';
+        if (enablePartialSearch) {
+            if (partialSearch && ((query.length >= 3) && (query.indexOf('*') == -1))) {
+                query = '*' + query + '*';
+            }
         }
 
         return query;

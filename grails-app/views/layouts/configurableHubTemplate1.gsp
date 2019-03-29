@@ -222,7 +222,7 @@
                     </ul>
                 </div><!--/.spanX -->
                 <div class="span8">
-                    <div class="pull-right smlinks text-right">
+                    <div class="smlinks inline-block">
                         <div id="smlinks">
                             <g:if test="${hubConfig.templateConfiguration?.footer?.socials}">
                                 <g:each in="${hubConfig.templateConfiguration?.footer?.socials}" var="social">

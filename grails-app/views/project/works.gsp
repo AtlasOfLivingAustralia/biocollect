@@ -74,7 +74,7 @@
         document.location.href = "${createLink(controller:'project',action:'create',params:[works:true])}";
     });
 
-    var projectFinder = new ProjectFinder();
+    var projectFinder = new ProjectFinder({enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false}});
 
 </asset:script>
 </body>

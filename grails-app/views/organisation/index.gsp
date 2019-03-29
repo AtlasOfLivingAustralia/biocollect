@@ -185,7 +185,7 @@
         initialiseData("allrecords");
     });
     $(function() {
-        var projectFinder = new ProjectFinder();
+        var projectFinder = new ProjectFinder({enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false}});
     });
 </asset:script>
 

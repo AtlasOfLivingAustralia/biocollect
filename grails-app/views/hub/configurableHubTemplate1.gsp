@@ -757,3 +757,7 @@ section#breadcrumb {
   margin-top: 10px;
   vertical-align: top;
 }
+
+.inline-block {
+    display: inline-block;
+}
