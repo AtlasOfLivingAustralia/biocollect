@@ -29,6 +29,7 @@
         lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
         dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}",
         countriesUrl: "${createLink(controller: 'project', action: 'getCountries')}",
+        hideProjectEditScienceTypes: ${!!hubConfig?.content?.hideProjectEditScienceTypes},
         uNRegionsUrl: "${createLink(controller: 'project', action: 'getUNRegions')}"
         },
         here = window.location.href;

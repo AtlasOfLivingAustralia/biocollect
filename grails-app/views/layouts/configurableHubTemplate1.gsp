@@ -237,11 +237,11 @@
                             <g:each in="${hubConfig.templateConfiguration?.footer?.logos}" var="logo">
                                 <g:if test="${logo.href}">
                                     <a href="${logo.href}" title="Link to website" target="_blank">
-                                        <img class="logo" src="${logo.url}" alt="Website logo"/>
+                                        <img class="footer-logo" src="${logo.url}" alt="Website logo"/>
                                     </a>
                                 </g:if>
                                 <g:else>
-                                    <img class="logo" src="${logo.url}" alt="Website logo"/>
+                                    <img class="footer-logo" src="${logo.url}" alt="Website logo"/>
                                 </g:else>
                             </g:each>
                             <a class="brand text-left" href="http://ala.org.au/" id="alaLink" title="ALA home page">
