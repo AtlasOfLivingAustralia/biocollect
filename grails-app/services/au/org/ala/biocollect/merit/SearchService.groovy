@@ -243,18 +243,20 @@ class SearchService {
      */
     List standardiseFacets(Map facets, List orderList) {
         List results = []
-        if(orderList){
-            orderList.each { k ->
-                Map result = formatFacet(facets[k], k)
-                if(result){
-                    results << result
+        if(facets) {
+            if(orderList){
+                orderList.each { k ->
+                    Map result = formatFacet(facets[k], k)
+                    if(result){
+                        results << result
+                    }
                 }
-            }
-        } else {
-            facets?.each { k, v ->
-                Map result = formatFacet(facets[k], k)
-                if(result){
-                    results << result
+            } else {
+                facets?.each { k, v ->
+                    Map result = formatFacet(facets[k], k)
+                    if(result){
+                        results << result
+                    }
                 }
             }
         }
@@ -283,7 +285,7 @@ class SearchService {
      * @return
      */
     List standardisePresenceAbsenceFacets(List facets, List configs){
-        facets.each { facet ->
+        facets?.each { facet ->
             Map facetConfig = configs?.find({ it.name == facet.name })
             if(facetConfig){
                 if(facet.ranges.size() == 2){

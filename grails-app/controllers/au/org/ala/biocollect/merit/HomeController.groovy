@@ -110,7 +110,7 @@ class HomeController {
     def geoService() {
         params.max = params.max?:9999
         if(params.geo){
-            params.facets = StringUtils.join(SettingService.getHubConfig().availableFacets,',')
+            params.facets = StringUtils.join(SettingService.getHubConfig().availableFacets?:[],',')
             render searchService.allProjectsWithSites(params) as JSON
         } else {
             render searchService.allProjects(params) as JSON
