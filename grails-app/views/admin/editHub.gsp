@@ -419,13 +419,13 @@
                     <input type="checkbox" data-bind="checked: hideProjectAboutParticipateInProject"> Hide 'You can participate in this project in'
                 </div>
                 <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideProjectAboutCountries"> Hide 'Countries'
+                    <input type="checkbox" data-bind="checked: hideProjectEditCountries"> Hide 'Countries' (Edit page)
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectEditScienceTypes"> Hide 'Science types' (Edit page)
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectAboutUNRegions"> Hide 'UN Regions'
-                </div>
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideProjectAboutScienceTypes"> Hide 'Science types'
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectSurveyDownloadXLSX"> Hide 'Download XLSX template'

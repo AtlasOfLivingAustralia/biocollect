@@ -140,7 +140,7 @@
                             <span data-bind="text:industries().join(', ')"></span>
                             <p/>
                         </div>
-                        <g:if test="${(hubConfig?.content?.hideProjectAboutCountries != true) && (hubConfig?.content?.hideProjectAboutParticipateInProject != true) }">
+                        <g:if test="${hubConfig?.content?.hideProjectAboutParticipateInProject != true}">
                         <div data-bind="visible: countries().length">
                             <div class="text-small-heading">
                                 <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">

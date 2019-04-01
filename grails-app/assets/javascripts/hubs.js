@@ -493,8 +493,8 @@ function ContentViewModel(config) {
     self.hideProjectAboutContributing = ko.observable(config.hideProjectAboutContributing || false);
     self.hideProjectAboutParticipateInProject = ko.observable(config.hideProjectAboutParticipateInProject || false);
     self.hideProjectAboutUNRegions = ko.observable(config.hideProjectAboutUNRegions || false);
-    self.hideProjectAboutCountries = ko.observable(config.hideProjectAboutCountries || false);
-    self.hideProjectAboutScienceTypes = ko.observable(config.hideProjectAboutScienceTypes || false);
+    self.hideProjectEditCountries = ko.observable(config.hideProjectEditCountries || false);
+    self.hideProjectEditScienceTypes = ko.observable(config.hideProjectEditScienceTypes || false);
     self.hideProjectSurveyDownloadXLSX = ko.observable(config.hideProjectSurveyDownloadXLSX || false);
     self.enablePartialSearch = ko.observable(config.enablePartialSearch || false);
     self.overriddenLabels = ko.observableArray();

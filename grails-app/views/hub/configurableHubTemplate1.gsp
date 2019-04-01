@@ -750,7 +750,7 @@ section#breadcrumb {
   height: 36px;
 }
 
-#custom-footer .logo {
+#custom-footer .footer-logo {
   max-height: 100px;
   max-width: 200px;
   margin-right:10px;

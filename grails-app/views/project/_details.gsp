@@ -309,6 +309,7 @@
                 </div>
             </div>
             </config:optionalContent>
+            <g:if test="${!hubConfig.content?.hideProjectEditCountries}">
             <div class="row-fluid">
                 <div class="clearfix control-group">
                     <label class="control-label span3" for="associatedOrgList"><g:message code="project.details.countries.label"/>:<fc:iconHelp><g:message code="project.details.countries.help"/></fc:iconHelp><i class="req-field"></i></label>
@@ -323,7 +324,7 @@
                                 <!-- /ko -->
                                 <select class="span12" id="countries"
                                         data-bind="options: $root.transients.countries, event:{change: $root.transients.selectCountry}, optionsCaption: '<g:message code="project.details.countries.placeholder"/>'"
-                                        ></select>
+                                ></select>
                             </div>
                             <div class="span8">
                                 <div class="row-fluid">
@@ -347,6 +348,8 @@
                     </div>
                 </div>
             </div>
+            </g:if>
+            <g:if test="${!hubConfig.content?.hideProjectEditScienceTypes}">
             <div class="clearfix control-group" data-bind="if:isEcoScience()">
                 <label class="control-label span3"><g:message code="project.details.scienceType"/><fc:iconHelp><g:message code="project.details.scienceType.help"/></fc:iconHelp></label>
 
@@ -376,6 +379,7 @@
                     </div>
                 </div>
             </div>
+            </g:if>
         </div>
     </div>
     </div>
@@ -572,7 +576,7 @@
                                 rows="2"/>
                 </div>
             </div>
-
+            <g:if test="${!hubConfig.content?.hideProjectEditScienceTypes}">
             <div id="scienceTypeControlGroup" class="clearfix control-group">
                 <label class="control-label span3"
                        ><g:message code="project.details.scienceType"/><fc:iconHelp><g:message code="project.details.scienceType.help"/></fc:iconHelp><i class="req-field"></i></label>
@@ -603,7 +607,7 @@
                     </div>
                 </div>
             </div>
-
+            </g:if>
             <div class="clearfix control-group">
                 <label class="control-label span3"><g:message code="project.details.difficulty"/><fc:iconHelp><g:message code="project.details.difficulty.help"/></fc:iconHelp></label>
 
