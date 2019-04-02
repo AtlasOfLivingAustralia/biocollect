@@ -1,3 +1,4 @@
+<g:if test="${!hubConfig.content.hideProjectStatusIndicator}">
 <style type="text/css">
 .daysline-positive {
     margin: 2px 0;
@@ -19,3 +20,4 @@
 </div>
 <b data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() == 0"><g:message code="project.display.status" /></b>
 <div class="daysline-zero" data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() == 0"></div>
+</g:if>
