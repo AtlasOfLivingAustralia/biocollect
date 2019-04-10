@@ -175,26 +175,28 @@
                         %{-- TODO END--}%
                     </div>
                 </div>
-                <hr/>
-                <div class="row-fluid">
-                    <div class="media span8"  data-bind="visible:isSciStarter">
-                        <a class="pull-left" href="#">
-                            <div class="media-object sciStarterLogo"></div>
-                        </a>
-                        <div class="media-body">
-                            <h4 class="media-heading">Project sourced from SciStarter</h4>
+                <hr data-bind="visible: setTimeout(0,function(){$('#contentGetStartedMobileAppTag').val() != ''})" />
+                <div id="contentGetStartedMobileAppTag">
+                    <div class="row-fluid">
+                        <div class="media span8"  data-bind="visible:isSciStarter">
+                            <a class="pull-left" href="#">
+                                <div class="media-object sciStarterLogo"></div>
+                            </a>
+                            <div class="media-body">
+                                <h4 class="media-heading">Project sourced from SciStarter</h4>
+                            </div>
+                        </div>
+                        <div id="surveyLink" class="span4 pull-right" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb()) && projectType() == 'survey' ">
+                            <a class="btn pull-right" data-bind="showTabOrRedirect: { url: isExternal() ? urlWeb() : '', tabId: '#activities-tab'}"><g:message code="project.display.join" /></a>
+                            <p class="clearfix"/>
                         </div>
                     </div>
-                    <div id="surveyLink" class="span4 pull-right" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb()) && projectType() == 'survey' ">
-                        <a class="btn pull-right" data-bind="showTabOrRedirect: { url: isExternal() ? urlWeb() : '', tabId: '#activities-tab'}"><g:message code="project.display.join" /></a>
-                        <p class="clearfix"/>
+                    <g:render template="/shared/listDocumentLinks"
+                              model="${[transients:transients,imageUrl:asset.assetPath(src:'filetypes')]}"/>
+                    <p/>
+                    <div style="line-height:2.2em">
+                        <g:render template="tags" />
                     </div>
-                </div>
-                <g:render template="/shared/listDocumentLinks"
-                          model="${[transients:transients,imageUrl:asset.assetPath(src:'filetypes')]}"/>
-                <p/>
-                <div style="line-height:2.2em">
-                    <g:render template="tags" />
                 </div>
             </div>
         </div>

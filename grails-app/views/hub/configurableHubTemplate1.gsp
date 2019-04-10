@@ -59,6 +59,12 @@ section#breadcrumb {
 #main-content a:focus {
   color: ${hrefcolor};
 }
+
+<g:if test="${defaulttextcolor && defaultbackgroundcolor}">
+    <g:render template="clearButtonStyle" model="${[selector: '.btn']}" />
+    <g:render template="clearButtonStyle" model="${[selector: '.btn-default']}" />
+</g:if>
+
 #main-content .btn.btn-default {
   color: ${defaulttextcolor};
   background-color: ${defaultbackgroundcolor};
@@ -81,6 +87,11 @@ section#breadcrumb {
   background-color: ${defaultbtnbackgroundcoloractive};
   background-position: center center;
 }
+
+<g:if test="${primarytextcolor && primarybackgroundcolor}">
+    <g:render template="clearButtonStyle" model="${[selector: '.btn-primary']}" />
+</g:if>
+
 #main-content .btn-primary {
   color: ${primarytextcolor};
   background-color: ${primarybackgroundcolor};
