@@ -396,6 +396,16 @@ function ProjectViewModel(project, isUserEditor) {
 
 
     self.transients = self.transients || {};
+    self.transients.checkVisibility = function (checkElementId, visibleElementId) {
+        function check() {
+            if($(checkElementId).val() == '') {
+                $(visibleElementId).hide();
+            }
+        }
+
+        setTimeout(check, 500);
+        return true;
+    };
 
     var legalCustodianOrganisationTypeVal = project.legalCustodianOrganisationType? project.legalCustodianOrganisationType: "";
     self.legalCustodianOrganisationType = ko.observable(legalCustodianOrganisationTypeVal);

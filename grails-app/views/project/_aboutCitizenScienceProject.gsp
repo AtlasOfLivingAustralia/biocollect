@@ -175,7 +175,7 @@
                         %{-- TODO END--}%
                     </div>
                 </div>
-                <hr data-bind="visible: setTimeout(0,function(){$('#contentGetStartedMobileAppTag').val() != ''})" />
+                <hr id="hrGetStartedMobileAppTag" data-bind="visible: transients.checkVisibility('#contentGetStartedMobileAppTag', '#hrGetStartedMobileAppTag')" />
                 <div id="contentGetStartedMobileAppTag">
                     <div class="row-fluid">
                         <div class="media span8"  data-bind="visible:isSciStarter">
