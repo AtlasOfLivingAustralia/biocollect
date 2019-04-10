@@ -1413,8 +1413,8 @@
 </script>
 <script id="collapseExpandComponent" type="text/html">
 <div class="inline">
-    <i class="icon-plus" data-bind="visible: !flag(), click: flag(true)"></i>
-    <i class="icon-minus" data-bind="visible: flag, click: flag(false)"></i>
+    <i class="icon-plus" data-bind="visible: !flag(), click: function(){flag(true)}"></i>
+    <i class="icon-minus" data-bind="visible: flag, click: function(){flag(false)}"></i>
 </div>
 </script>
 <asset:script type="text/javascript">
