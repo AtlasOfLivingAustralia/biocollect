@@ -403,7 +403,7 @@ function ProjectViewModel(project, isUserEditor) {
             }
         }
 
-        setTimeout(check, 500);
+        setTimeout(check, 50);
         return true;
     };
 
