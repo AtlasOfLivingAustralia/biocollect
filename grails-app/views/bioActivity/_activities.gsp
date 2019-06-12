@@ -134,7 +134,7 @@
                                                 </a>
                                                 -->
                                                 <a data-bind="attr: {href: $parents[1].transients.viewUrl}">
-                                                    <img class="image-logo wide" data-bind="attr:{src:$parent.thumbnailUrl}"/>
+                                                    <img class="image-logo image-window" onload="findLogoScalingClass(this, 200, 150)" data-bind="attr:{src:$parent.thumbnailUrl}"/>
                                                 </a>
                                             </div>
                                         </td>
