@@ -126,10 +126,15 @@
                                         <!-- ko if: type == 'image' -->
                                         <td>
                                             <div class="projectLogo">
+                                                <!--
                                                 <a href=""
                                                    data-bind="attr:{href:fcConfig.imageLeafletViewer + '?file=' + encodeURIComponent(($parent.multimedia[0] && $parent.multimedia[0].identifier) || '${noImageUrl}')}, fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade', type: 'iframe', width:'80%'}"
                                                    target="fancybox">
                                                     <img class="image-logo image-window" data-bind="attr:{title:($parent.multimedia[0] && $parent.multimedia[0].title) || 'No Image', src:($parent.multimedia[0] && $parent.multimedia[0].identifier) || '${noImageUrl}'}"  onload="findLogoScalingClass(this, 200, 150)">
+                                                </a>
+                                                -->
+                                                <a data-bind="attr: {href: $parents[1].transients.viewUrl}">
+                                                    <img class="image-logo wide" data-bind="attr:{src:$parent.thumbnailUrl}"/>
                                                 </a>
                                             </div>
                                         </td>
