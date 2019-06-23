@@ -530,7 +530,6 @@ class ProjectController {
                 projectSite.projects += id
 
             def siteUpdate = siteService.update(values.projectSiteId, projectSite)
-            log.info(siteUpdate)
         }
         if (result.error) {
             log.error(result.error);
