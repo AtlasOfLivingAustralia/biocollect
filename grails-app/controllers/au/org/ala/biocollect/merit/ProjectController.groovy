@@ -75,7 +75,7 @@ class ProjectController {
                 // Project site is missing, update site and sync project site info
                 project.projectSite = siteService.get(project.projectSiteId, [view:'brief'])
                 List projectIds = project.projectSite?.projects
-                projectIds = projectIds?.findAll{it != '' && it != null}
+                projectIds = projectIds?.findAll{it != '' && it != null} ?: []
                 projectIds << project.projectId
                 siteService.update(project.projectSiteId, [projects: projectIds])
             }
