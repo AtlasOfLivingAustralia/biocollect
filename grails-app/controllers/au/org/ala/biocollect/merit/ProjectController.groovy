@@ -64,9 +64,22 @@ class ProjectController {
             // redirect to MERIT to view the project.
             redirect(uri:grailsApplication.config.merit.project.url+'/'+id)
         }
+
         else {
             project.sites?.sort {it.name}
-            project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
+
+
+            if(project.sites?.find{it.siteId == project.projectSiteId}) {
+                project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
+            } else if(project.projectSiteId) {
+                // Project site is missing, update site and sync project site info
+                project.projectSite = siteService.get(project.projectSiteId, [view:'brief'])
+                List projectIds = project.projectSite?.projects
+                projectIds = projectIds?.findAll{it != '' && it != null} ?: []
+                projectIds << project.projectId
+                siteService.update(project.projectSiteId, [projects: projectIds])
+            }
+
             if(project.origin){
                 project.origin = messageSource.getMessage("facets.origin." + project.origin, [].toArray(), project.origin, Locale.default)
             }
@@ -517,7 +530,6 @@ class ProjectController {
                 projectSite.projects += id
 
             def siteUpdate = siteService.update(values.projectSiteId, projectSite)
-            log.info(siteUpdate)
         }
         if (result.error) {
             log.error(result.error);
