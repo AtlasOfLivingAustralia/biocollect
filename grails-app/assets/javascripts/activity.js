@@ -886,6 +886,15 @@ var ActivityRecordViewModel = function (activity) {
         return fcConfig.projectIndexUrl + '/' + self.projectId() +
             (fcConfig.version !== undefined ? "?version=" + fcConfig.version : '');
     });
+
+    self.transients = {};
+    self.transients.viewUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityViewUrl : fcConfig.activityViewUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo, dataVersion: fcConfig.version});
+    self.transients.editUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityEditUrl : fcConfig.activityEditUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
+    self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo: fcConfig.returnTo});
+    self.transients.parent = activity.parent;
+    self.transients.thumbnailUrl = ko.observable(activity.thumbnailUrl ||  fcConfig.imageLocation + "no-image-2.png");
+    self.transients.imageTitle = ko.observable(activity.thumbnailUrl? '' : 'No image' );
+
     self.records = ko.observableArray();
     self.siteUrl = fcConfig.siteViewUrl + '/' + self.siteId();
     var projectActivityOpen = true;
@@ -897,17 +906,10 @@ var ActivityRecordViewModel = function (activity) {
 
     var allRecords = $.map(activity.records ? activity.records : [], function (record, index) {
         record.parent = self;
+        record.thumbnailUrl = self.transients.thumbnailUrl();
         return new RecordVM(record);
     });
     self.records(allRecords);
-
-    self.transients = {};
-    self.transients.viewUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityViewUrl : fcConfig.activityViewUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo, dataVersion: fcConfig.version});
-    self.transients.editUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityEditUrl : fcConfig.activityEditUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
-    self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo: fcConfig.returnTo});
-    self.transients.parent = activity.parent;
-    self.transients.thumbnailUrl = ko.observable(activity.thumbnailUrl ||  fcConfig.imageLocation + "no-image-2.png");
-    self.transients.imageTitle = ko.observable(activity.thumbnailUrl? '' : 'No image' );
 };
 
 var RecordVM = function (record) {
@@ -924,6 +926,7 @@ var RecordVM = function (record) {
     self.eventTime = record.eventTime;
     self.individualCount = ko.observable(record.individualCount);
     self.eventDate =  ko.observable(record.eventDate).extend({simpleDate: false});
+    self.thumbnailUrl = ko.observable(record.thumbnailUrl);
 };
 
 ActivityRecordViewModel.prototype.getPropertyValue = RecordVM.prototype.getPropertyValue = function (config) {
