@@ -87,8 +87,7 @@
     <g:layoutHead/>
     <link rel="stylesheet" type="text/css"
           href="${createLink(controller: 'hub', action: 'getStyleSheet')}?hub=${hubConfig.urlPath}&ver=${hubConfig.lastUpdated}">
-    <link href="https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico" rel="shortcut icon"
-          type="image/x-icon"/>
+    <link href="${grailsApplication.config.skin.favicon}"  rel="icon"/>
 </head>
 
 <body class="${pageProperty(name: 'body.class') ?: 'nav-collections'}" id="${pageProperty(name: 'body.id')}"
