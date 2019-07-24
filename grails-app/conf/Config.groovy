@@ -111,6 +111,9 @@ merit.baseURL="https://fieldcapture-test.ala.org.au"
 
 app.view.nocache = false
 
+// rel icon config
+skin.favicon="https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png"
+
 // Markdown configuration to match behaviour of the JavaScript editor.
 markdown.hardwraps = true
 
