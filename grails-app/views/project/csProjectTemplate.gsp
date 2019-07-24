@@ -183,7 +183,7 @@
         var projectViewModel = new ProjectViewModel(project, ${user?.isEditor?:false});
         var user = <fc:modelAsJavascript model="${user}"/>;
         var vocabList = <fc:modelAsJavascript model="${vocabList}" />;
-        var projectArea = <fc:modelAsJavascript model="${projectSite.extent.geometry}"/>;
+        var projectArea = <fc:modelAsJavascript model="${projectSite?.extent?.geometry}"/>;
         var licences = <fc:modelAsJavascript model="${licences}"/>;
 
         var ViewModel = function() {
