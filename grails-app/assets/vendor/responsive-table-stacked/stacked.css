@@ -10,9 +10,14 @@
         left: -9999px;
     }
 
+    table.responsive-table-stacked tbody tr td:nth-child(1) {
+        border-top-width: 5px;
+    }
+
     table.responsive-table-stacked tbody td {
         position: relative;
         width: auto !important;
+        text-align: left !important;
     }
 
     table.responsive-table-stacked tbody td:before {
@@ -42,9 +47,14 @@
         left: -9999px;
     }
 
+    table.responsive-table-stacked tbody tr td:nth-child(1) {
+        border-top-width: 5px;
+    }
+
     table.responsive-table-stacked tbody td {
         position: relative;
         width: auto !important;
+        text-align: left !important;
     }
 
     table.responsive-table-stacked tbody td:before {
