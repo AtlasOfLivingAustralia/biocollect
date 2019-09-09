@@ -323,7 +323,7 @@
                                                         <a data-bind="attr:{'href': $parent.transients.editUrl}" title="Edit record" class="btn btn-small editBtn btn-default"><i class="fa fa-pencil"></i> Edit</a>
                                                     </span>
                                                     <span data-bind="visible: !$parent.readOnly()">
-                                                        <button class="btn btn-small btn-default" data-bind="click: $parents[1].transients.parent.remove($parents[1]" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
+                                                        <button class="btn btn-small btn-default" data-bind="click: $parents[1].transients.parent.remove($parents[1])" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
                                                     </span>
                                                     <!-- /ko -->
                                                 </div>
