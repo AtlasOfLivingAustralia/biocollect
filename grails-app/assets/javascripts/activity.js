@@ -864,7 +864,7 @@ var ActivityRecordViewModel = function (activity) {
                     contentType: 'application/json',
                     success: function (data) {
                         if (data.text == 'deleted') {
-                            blockUIWithMessage("Successfully deleted, reloading the page...");
+                            blockUIWithMessage("Successfully deleted, after indexing record will be removed. <br>Reloading the page...");
                         } else {
                             blockUIWithMessage("Error deleting the record, please try again later.");
                         }
