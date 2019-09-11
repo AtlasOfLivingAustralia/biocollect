@@ -853,7 +853,7 @@ var ActivityRecordViewModel = function (activity) {
 
     self.delete = function () {
 
-        bootbox.confirm("Are you sure you want to delete the survey and records?", function (result) {
+        bootbox.confirm("Are you sure you want to delete the record?", function (result) {
             if (result) {
                 var url = fcConfig.activityDeleteUrl + "/" + self.activityId();
                 // Don't allow another save to be initiated.
