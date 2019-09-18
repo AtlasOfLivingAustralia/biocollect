@@ -18,26 +18,26 @@ import groovyx.net.http.Method
 import groovyx.net.http.ContentType
 
 def SIGHTINGS_URL = "https://biocollect.ala.org.au/sightings/project/getMembersForProjectIdPaginated/f813c99c-1a1d-4096-8eeb-cbc40e321101";
-    println("Building sightings users")
-    def start = 0;
-    for(int i=0; i < 86; i++) {
-        def SIGHTINGS = SIGHTINGS_URL + "?start=${start}"+ "&length=100";
-        start = start + 100
-        def connection = new URL("${SIGHTINGS}").openConnection() as HttpURLConnection
+println("Building sightings users")
+def start = 0;
+for(int i=0; i < 86; i++) {
+    def SIGHTINGS = SIGHTINGS_URL + "?start=${start}"+ "&length=100";
+    start = start + 100
+    def connection = new URL("${SIGHTINGS}").openConnection() as HttpURLConnection
 
-        connection.setRequestProperty('Cookie', '')
-        connection.setRequestProperty('Content-Type', 'application/json;charset=utf-8');
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
-        def jsonSlurper = new groovy.json.JsonSlurper()
-        def response = jsonSlurper.parseText(connection.inputStream.text)
-        def rows = response?.data
-        rows?.each {
-            println(it."userId" + "||||" + it."userName" + "||||"+ it."displayName")
-        }
-        Thread.sleep(1000)
+    connection.setRequestProperty('Cookie', '')
+    connection.setRequestProperty('Content-Type', 'application/json;charset=utf-8');
+    connection.setRequestMethod("POST");
+    connection.setDoOutput(true);
+    def jsonSlurper = new groovy.json.JsonSlurper()
+    def response = jsonSlurper.parseText(connection.inputStream.text)
+    def rows = response?.data
+    rows?.each {
+        println(it."userId" + "||||" + it."userName" + "||||"+ it."displayName")
     }
+    Thread.sleep(1000)
+}
 
-    println("Done - index = ${start} ")
+println("Done - index = ${start} ")
 
 

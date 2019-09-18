@@ -53,14 +53,15 @@
                             </div>
                         <!-- /ko -->
 
-                        <!-- ko if: activities().length > 0 -->
+                            <!-- ko if: activities().length > 0 -->
 
                             <div class="alert alert-info hide" id="downloadStartedMsg"><i class="fa fa-spin fa-spinner">&nbsp;&nbsp;</i>Preparing download, please wait...</div>
 
                             <div class="row-fluid" data-bind="visible: version().length == 0">
                                 <div class="span12">
                                     <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record(s)</h3>
-                                    <div class="pull-right margin-bottom-2 margin-top-1" data-bind="visible: transients.isBulkActionsEnabled">
+                                    <div class="pull-right margin-bottom-2 margin-top-1">
+                                        <!-- ko if:  transients.isBulkActionsEnabled -->
                                         <span>Bulk actions -
                                             <div class="btn-group">
                                                 <button data-bind="disable: !transients.activitiesToDelete().length, click: bulkDelete" class="btn btn-default"><span class="fa fa-trash">&nbsp;</span> <g:message code="project.bulkactions.delete"/></button>
@@ -68,6 +69,7 @@
                                                 <button data-bind="disable: !transients.activitiesToDelete().length, click: bulkRelease" class="btn btn-default"><span class="fa fa-unlock">&nbsp;</span> <g:message code="project.bulkactions.release"/></button>
                                             </div>
                                         </span>
+                                        <!-- /ko -->
                                         <button data-bind="click: download, disable: transients.loading" data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}" class="btn btn-primary padding-top-1"><span class="fa fa-download">&nbsp;</span>Download</button>
                                     </div>
 
