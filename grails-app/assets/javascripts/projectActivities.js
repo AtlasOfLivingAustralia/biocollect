@@ -345,6 +345,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     self.create = function (pActivity, caller){
         var pActivity = self.current();
         var url = fcConfig.projectActivityCreateUrl;
+        blockUIWithMessage("Saving...");
         $.ajax({
             url: url,
             type: 'POST',
@@ -359,19 +360,25 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                         }
                     });
                     self.updateLogo(data);
-                    showAlert("Successfully created", "alert-success", self.placeHolder);
+                    blockUIWithMessage("Successfully created");
                 } else {
-                    showAlert(errorMsgSurveyInfo, "alert-error", self.placeHolder);
+                    blockUIWithMessage(errorMsgSurveyInfo);
                 }
             },
             error: function (data) {
-                showAlert("Error creating the survey -" + data.status, "alert-error", self.placeHolder);
+                blockUIWithMessage("Error creating the survey -" + data.status);
+            },
+            complete: function() {
+                setTimeout(function () {
+                    $.unblockUI();
+                }, 2500);
             }
         });
     };
 
     self.update = function(pActivity, caller){
         var url =  fcConfig.projectActivityUpdateUrl + "/" + pActivity.projectActivityId();
+        blockUIWithMessage("Saving...");
         $.ajax({
             url: url,
             type: 'POST',
@@ -382,13 +389,18 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                 if (result && result.message == 'updated') {
                     self.updateLogo(data);
                     self.updateProjectResources(data);
-                    showAlert("Successfully updated ", "alert-success", self.placeHolder);
+                    blockUIWithMessage("Successfully updated...");
                 } else {
-                    showAlert(errorMsgSurveyInfo, "alert-error", self.placeHolder);
+                    blockUIWithMessage(errorMsgSurveyInfo);
                 }
             },
             error: function (data) {
-                showAlert("Error updating the survey -" + data.status, "alert-error", self.placeHolder);
+                blockUIWithMessage("Error updating the survey -" + data.status);
+            },
+            complete: function() {
+                setTimeout(function () {
+                    $.unblockUI();
+                }, 2500);
             }
         });
     };
