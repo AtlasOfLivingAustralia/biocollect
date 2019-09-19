@@ -19,6 +19,7 @@ var ProjectActivity = function (params) {
     self.selectFromSitesOnly = ko.observable(pActivity.selectFromSitesOnly);
     self.legalCustodianOrganisation = ko.utils.unwrapObservable(pActivity.legalCustodianOrganisation || organisationName);
     self.sites = ko.observableArray();
+    self.excludeProjectSite = ko.observable(pActivity.excludeProjectSite ? pActivity.excludeProjectSite : false);
     self.allowPolygons = ko.observable(('allowPolygons' in pActivity)? pActivity.allowPolygons : false);
     self.allowPoints = ko.observable(('allowPoints' in pActivity)? pActivity.allowPoints : true);
     self.defaultZoomArea = ko.observable(('defaultZoomArea' in pActivity)? pActivity.defaultZoomArea : project?project.projectSiteId:'');
@@ -630,6 +631,7 @@ var ProjectActivity = function (params) {
             jsData.selectFromSitesOnly = self.selectFromSitesOnly();
             jsData.baseLayersName = self.baseLayersName();
             jsData.allowPolygons = self.allowPolygons();
+            jsData.excludeProjectSite = self.excludeProjectSite();
             jsData.allowPoints = self.allowPoints();
             jsData.defaultZoomArea = self.defaultZoomArea();
         }
