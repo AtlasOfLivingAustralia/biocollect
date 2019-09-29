@@ -98,6 +98,7 @@ class BioActivityController {
                 def photoPoints = postBody.remove('photoPoints')
                 postBody.projectActivityId = pActivity.projectActivityId
                 postBody.userId = userId
+                pActivity?.visibility?.alaAdminEnforcedEmbargo ? postBody.embargoed = true : null
 
                 result = activityService.update(id, postBody)
 

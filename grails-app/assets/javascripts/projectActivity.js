@@ -833,9 +833,9 @@ var SurveyVisibilityViewModel = function (visibility) {
     }
 
     self.embargoOption = ko.observable(visibility.embargoOption ? visibility.embargoOption : 'NONE');   // 'NONE', 'DAYS', 'DATE' -> See au.org.ala.ecodata.EmbargoOptions in Ecodata
-
     self.embargoForDays = ko.observable(visibility.embargoForDays ? visibility.embargoForDays : 10).extend({numeric:0});     // 1 - 180 days
     self.embargoUntil = ko.observable(visibility.embargoUntil).extend({simpleDate: true});
+    self.alaAdminEnforcedEmbargo = ko.observable(visibility.alaAdminEnforcedEmbargo);
 };
 
 var AlertViewModel = function (alert) {

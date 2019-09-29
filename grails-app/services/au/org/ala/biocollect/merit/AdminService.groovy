@@ -21,7 +21,7 @@ class AdminService {
      * Triggers a full site re-index.
      */
     def reIndexAll() {
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/admin/reIndexAll')
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/admin/reIndexAll', 50000, true)
     }
 
     static outputDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ")
