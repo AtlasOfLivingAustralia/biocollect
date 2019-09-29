@@ -164,7 +164,7 @@
                                             <div>
                                                 <!-- ko if: $parents[1].embargoed() -->
                                                 <a href="#" class="helphover"
-                                                   data-bind="popover: {title:'Only project members can access the record.', content:'Embargoed until : ' + moment($parents[1].embargoUntil()).format('DD/MM/YYYY')}">
+                                                   data-bind="popover: {title:'Embargoed', content:'Indicates that only project members can access the record'}">
                                                     <span class="fa fa-lock"></span>
                                                 </a>
                                                 <!--/ko -->
@@ -269,10 +269,10 @@
                                             <!-- ko if:  type == 'symbols' -->
                                             <td>
                                                 <div>
+                                                    <span data-bind="text: $parent.embargoed()"></span>
                                                     <!-- ko if: $parent.embargoed() -->
                                                     <a href="#" class="helphover"
-                                                       data-bind="popover: {title:'Indicates that only project members can access the record.', content:'Embargoed until : ' + moment($parent.embargoUntil()).format('DD/MM/YYYY')}">
-                                                        <span class="fa fa-lock"></span>
+                                                       data-bind="popover: {title:'Embargoed.', content:'Indicates that only project members can access the record'}">
                                                     </a>
                                                     <!--/ko -->
                                                 </div>
@@ -376,9 +376,11 @@
                                 <span data-bind="if: !transients.loading()">No Results</span>
                             </span>
                         </span>
+
                         <span data-bind="visible: transients.totalPoints() > 0 && !transients.loadingMap() ">
-                            <m:map id="recordOrActivityMap" width="100%"/>
+                            <m:map height="650px" width="auto" id="recordOrActivityMap" />
                         </span>
+                        
                     </div>
                     <!-- ko stopBinding:true -->
                     <div class="tab-pane" id="imageGallery">
