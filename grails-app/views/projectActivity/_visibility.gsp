@@ -42,11 +42,11 @@
                 <g:if test="${fc.userIsAlaOrFcAdmin()}">
                     <hr>
                     <h4>ALA ADMIN Only: </h4>
-                    <input type="checkbox" data-bind="checked: visibility.alaAdminEnforcedEmbargo"/> Embargo all new records/activities
+                    <input type="checkbox" data-bind="checked: visibility.alaAdminEnforcedEmbargo"/> <g:message code="project.survey.visibility.adminEmbargo"/>
                     <hr>
                 </g:if>
                 <!-- ko if: visibility.alaAdminEnforcedEmbargo() -->
-                    <span class="text-muted">Important: All new records will be embargoed for this survey. Project Moderator/Admin can release records via "Data tab". For more information please contact us at <a href='${grailsApplication.config.biocollect.support.email.address}'>${grailsApplication.config.biocollect.support.email.address}</a></span>
+                    <span class="text-muted"><g:message code="project.survey.visibility.adminEmbargo.important"/><a href='${grailsApplication.config.biocollect.support.email.address}'>${grailsApplication.config.biocollect.support.email.address}</a></span>
                 <!-- /ko -->
                 <g:render template="../projectActivity/indexingNote"/>
             <!-- /ko -->
