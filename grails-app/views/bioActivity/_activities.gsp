@@ -269,7 +269,6 @@
                                             <!-- ko if:  type == 'symbols' -->
                                             <td>
                                                 <div>
-                                                    <span data-bind="text: $parent.embargoed()"></span>
                                                     <!-- ko if: $parent.embargoed() -->
                                                     <a href="#" class="helphover"
                                                        data-bind="popover: {title:'Embargoed.', content:'Indicates that only project members can access the record'}">
