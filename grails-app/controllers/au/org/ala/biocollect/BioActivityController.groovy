@@ -247,8 +247,10 @@ class BioActivityController {
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
             addOutputModel(model)
             addDefaultSpecies(activity)
-            // Remove projectSite from the survey site list
-            model?.projectSite && model.pActivity?.excludeProjectSite ? model.pActivity.sites?.remove(model.projectSite) : null
+            if(model?.projectSite && model.pActivity?.excludeProjectSite) {
+                // Remove projectSite from the survey site list
+                model.pActivity.sites?.remove(model.projectSite)
+            }
         }
 
         if (mobile && flash.message) {
@@ -278,9 +280,10 @@ class BioActivityController {
             model.id = id
             model.speciesConfig = [surveyConfig: [speciesFields: pActivity?.speciesFields]]
             model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'bioActivity', action: 'index') + "/" + id
-            // Remove projectSite from the survey site list
-            model?.projectSite && model.pActivity?.excludeProjectSite ? model.pActivity.sites?.remove(model.projectSite) : null
-
+            if(model?.projectSite && model.pActivity?.excludeProjectSite) {
+                // Remove projectSite from the survey site list
+                model.pActivity.sites?.remove(model.projectSite)
+            }
         } else {
             flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
             if(!mobile)  redirect(controller: 'project', action: 'index', id: projectId)

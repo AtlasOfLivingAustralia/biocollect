@@ -378,7 +378,7 @@
                         </span>
 
                         <span data-bind="visible: transients.totalPoints() > 0 && !transients.loadingMap() ">
-                            <m:map height="650px" width="auto" id="recordOrActivityMap" />
+                            <m:map height="800px" width="auto" id="recordOrActivityMap" />
                         </span>
                         
                     </div>
