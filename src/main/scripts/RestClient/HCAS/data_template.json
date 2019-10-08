@@ -1,0 +1,39 @@
+{
+  "activityId": "",
+  "projectStage": "",
+  "mainTheme": "",
+  "type": "Ecological Condition Score Moderation",
+  "projectId": "405fdfe2-c22c-46c6-806d-cc7f644a0824",
+  "siteId": "",
+  "outputs": [
+    {
+      "name": "Ecological Condition Score Moderation",
+      "outputId": "",
+      "data": {
+        "recordedBy": "",
+        "submissionDate": "",
+        "overallConditionBestEstimate": "",
+        "overallConditionTable": [
+          {
+            "overallConditionCategory": "Upper",
+            "overallConditionRating": ""
+          },
+          {
+            "overallConditionCategory": "Lower",
+            "overallConditionRating": ""
+          }
+        ],
+        "comments": "",
+        "sitePhoto":
+        [
+
+        ],
+        "mvgGroup": "",
+        "huchinsonGroup": "",
+        "completionStatus": ""
+      },
+      "outputNotCompleted": false,
+      "appendTableRows": true
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-<%@ page import="grails.converters.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
@@ -72,7 +72,7 @@
     </div>
 
     <div class="main-content" style="display:none;">
-        <g:render template="../bioActivity/activities"/>
+        <g:render template="/bioActivity/activities"/>
     </div>
     <div class="loading-message">
         <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...

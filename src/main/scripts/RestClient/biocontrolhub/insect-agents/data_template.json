@@ -1,0 +1,48 @@
+{
+  "activityId": "",
+  "projectStage": "",
+  "mainTheme": "",
+  "type": "Weed Biological Control - Agent Record - Insect agents",
+  "projectId": "",
+  "siteId": "",
+  "outputs": [
+    {
+      "name": "Weed Biological Control - Agent Record for target species - Insect agents",
+      "outputId": "",
+      "data": {
+        "recordedBy": "",
+        "eventDate": "",
+        "eventTime": "",
+        "observationId": "",
+        "targetSpecies": {},
+        "agentSpecies": {},
+        "recordType": "",
+        "numberOfTargetPlantsExamined": "",
+        "numberOfAgentsObserved": "",
+        "numberOfAffectedPlants": "",
+        "collectedBy": "",
+        "verifiedBy": "",
+        "observationNotes": "",
+        "sightingPhoto": [],
+        "locationPhotopoint": [],
+        "locationAccuracy": 50,
+        "locationNotes": "location notes",
+        "locationSource": "Google maps",
+        "location": "",
+        "locationLatitude": -32.238875664174124,
+        "locationLongitude": 140.6622290611267,
+        "locationCentroidLatitude": null,
+        "locationCentroidLongitude": null,
+        "state": "",
+        "nearestTown": "",
+        "moderatorComments": ""
+      },
+      "outputNotCompleted": false,
+      "selectFromSitesOnly": false,
+      "checkMapInfo": {
+        "validation": true
+      },
+      "_callbacks": {}
+    }
+  ]
+}

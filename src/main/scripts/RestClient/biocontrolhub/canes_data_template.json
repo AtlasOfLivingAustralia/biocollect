@@ -1,0 +1,54 @@
+{
+  "activityId": "",
+  "projectStage": "",
+  "mainTheme": "",
+  "type": "Weed Biological Control - Agent Record - Target species with canes",
+  "projectId": "ef09ff0d-2af2-4c58-bee7-3198d4f6db4f",
+  "siteId": "",
+  "outputs": [
+    {
+      "name": "Weed Biological Control - Agent Record for target species with canes",
+      "outputId": "",
+      "data": {
+        "recordedBy": "",
+        "eventDate": "",
+        "eventTime": "",
+        "recordType": "",
+        "targetSpecies": {
+          "name": "Rubus fruticosus (blackberry)",
+          "guid": "NZOR-4-88322",
+          "scientificName": "Rubus fruticosus",
+          "commonName": "blackberry",
+          "outputSpeciesId": ""
+        },
+        "agentSpecies": {
+          "name": "Phragmidium violaceum (Violet Bramble Rust)",
+          "guid": "NZOR-4-85430",
+          "scientificName": "Phragmidium violaceum",
+          "commonName": "Violet Bramble Rust",
+          "outputSpeciesId": ""
+        },
+        "numberOfTargetPlantsExamined": "",
+        "numberOfCanesExamined": "",
+        "numberOfInfectedCanes": "",
+        "collectedBy": "",
+        "verifiedBy": "",
+        "observationNotes": "",
+        "sightingPhoto": [],
+        "locationAccuracy": 0,
+        "locationSource": "Google maps",
+        "location": "",
+        "locationLatitude": -28.370189188370222,
+        "locationLongitude": 139.05577898025513,
+        "locationCentroidLatitude": null,
+        "locationCentroidLongitude": null
+      },
+      "outputNotCompleted": false,
+      "selectFromSitesOnly": false,
+      "checkMapInfo": {
+        "validation": true
+      },
+      "_callbacks": {}
+    }
+  ]
+}

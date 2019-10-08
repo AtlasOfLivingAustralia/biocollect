@@ -4,11 +4,13 @@ import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.cas.util.AuthenticationCookieUtils
 import grails.converters.JSON
 import groovy.json.JsonSlurper
+import groovy.util.logging.Slf4j
 import groovy.xml.MarkupBuilder
-import org.codehaus.groovy.grails.web.json.JSONArray
-import org.codehaus.groovy.grails.web.json.JSONObject
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.grails.web.json.JSONArray
+import org.grails.web.json.JSONObject
+import grails.web.servlet.mvc.GrailsParameterMap
 
+@Slf4j
 class FCTagLib {
 
     static namespace = "fc"

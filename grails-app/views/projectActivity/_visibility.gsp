@@ -9,7 +9,7 @@
                         <h2 class="strong">Step 2 of 7 - Set visibility constraints on survey data</h2>
                     </div>
                     <div class="span2 text-right">
-                        <g:render template="../projectActivity/status"/>
+                        <g:render template="/projectActivity/status"/>
                     </div>
                 </div>
 
@@ -48,7 +48,7 @@
                 <!-- ko if: visibility.alaAdminEnforcedEmbargo() -->
                     <span class="text-muted"><g:message code="project.survey.visibility.adminEmbargo.important"/><a href='${grailsApplication.config.biocollect.support.email.address}'>${grailsApplication.config.biocollect.support.email.address}</a></span>
                 <!-- /ko -->
-                <g:render template="../projectActivity/indexingNote"/>
+                <g:render template="/projectActivity/indexingNote"/>
             <!-- /ko -->
         <!-- /ko -->
 </div>

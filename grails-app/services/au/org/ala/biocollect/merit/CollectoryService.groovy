@@ -1,6 +1,6 @@
 package au.org.ala.biocollect.merit
 
-import org.codehaus.groovy.grails.commons.GrailsApplication
+import grails.core.GrailsApplication
 
 
 

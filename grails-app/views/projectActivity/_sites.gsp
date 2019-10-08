@@ -7,7 +7,7 @@
             <h2 class="strong">Step 6 of 7 - Specify the area or places where the survey will be undertaken</h2>
         </div>
         <div class="span2 text-right">
-            <g:render template="../projectActivity/status"/>
+            <g:render template="/projectActivity/status"/>
         </div>
     </div>
 

@@ -4,8 +4,7 @@ import au.org.ala.web.AuthService
 import grails.converters.JSON
 import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
-
+import grails.web.servlet.mvc.GrailsParameterMap
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
 
@@ -84,10 +83,12 @@ class SiteController {
             }
             //siteService.injectLocationMetadata(site)
             def user = userService.getUser()
+            def mapFeatures = siteService.getMapFeatures(site)
+            println mapFeatures
 
             def result = [site               : site,
              //activities: activityService.activitiesForProject(id),
-             mapFeatures        : siteService.getMapFeatures(site),
+             mapFeatures        : mapFeatures,
              isSiteStarredByUser: userService.isSiteStarredByUser(user?.userId ?: "0", site.siteId)?.isSiteStarredByUser,
              user               : user
             ]
@@ -482,9 +483,10 @@ class SiteController {
                 values[k] = v //reMarshallRepeatingObjects(v);
             }
         }
-        log.debug(values as JSON).toString()
+
         //Compatible with previous records without visibility field
         boolean privateSite = values['visibility'] ? (values['visibility'] == 'private' ? true : false) : false
+
 
         if(privateSite){
             //Do not check permission if site is private

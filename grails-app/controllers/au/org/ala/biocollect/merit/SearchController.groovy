@@ -4,7 +4,8 @@ import org.apache.commons.lang.StringUtils
 import org.springframework.http.HttpStatus
 
 class SearchController {
-    def searchService, webService, speciesService, grailsApplication, commonService, projectActivityService
+    def searchService, webService, speciesService, commonService, projectActivityService
+    grails.core.GrailsApplication grailsApplication
 
     /**
      * Main search page that takes its input from the search bar in the header
@@ -36,7 +37,7 @@ class SearchController {
             def result = projectActivityService.searchSpecies(id, q, limit, output, dataFieldName)
             render result as JSON
         } catch (Exception ex){
-            log.error( ex )
+            log.error( ex.message )
             render status: HttpStatus.INTERNAL_SERVER_ERROR, text: "An error occurred - ${ex.message}"
         }
     }

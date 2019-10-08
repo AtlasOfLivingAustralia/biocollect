@@ -14,15 +14,15 @@
  */
 
 package au.org.ala.biocollect.merit
-import grails.converters.JSON
 import groovyx.net.http.HTTPBuilder
+import grails.converters.JSON
 import groovyx.net.http.Method
 import org.apache.http.entity.mime.HttpMultipartMode
 import org.apache.http.entity.mime.MultipartEntity
 import org.apache.http.entity.mime.content.InputStreamBody
 import org.apache.http.entity.mime.content.StringBody
-import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
-import org.codehaus.groovy.grails.web.servlet.HttpHeaders
+import org.grails.web.converters.exceptions.ConverterException
+import grails.web.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.multipart.MultipartFile
 
@@ -170,7 +170,8 @@ class WebService {
             }
             conn.setRequestProperty(ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             def json = responseText(conn)
-            return JSON.parse(json)
+            def result = JSON.parse(json)
+            return result
         } catch (ConverterException e) {
             def error = ['error': "Failed to parse json. ${e.getClass()} ${e.getMessage()} URL= ${url}."]
             log.error error
@@ -189,7 +190,7 @@ class WebService {
             def error = [error: "Failed to get json from web service. ${e.getClass()} ${e.getMessage()} URL= ${url}.",
                          statusCode: conn?.responseCode?:"",
                          detail: conn?.errorStream?.text]
-            log.error error, e
+            log.error error.toString(), e
             return error
         }
     }
@@ -281,7 +282,7 @@ class WebService {
             def error = [error: "Failed calling web service. ${e.getMessage()} URL= ${url}.",
                     statusCode: conn?.responseCode?:"",
                     detail: conn?.errorStream?.text]
-            log.error(error, e)
+            log.error(error.toString(), e.toString())
             return error
         }
     }

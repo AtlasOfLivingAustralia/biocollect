@@ -76,7 +76,7 @@ class UtilService {
             result.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
             result.content = "Failed calling web service. ${e.getClass()} ${e.getMessage()} URL= ${url}."
         }
-        log.info("Result of Submission to Aekos: " + result)
+        log.info("Result of Submission to Aekos: " + result.toString())
         result
     }
 

@@ -1,6 +1,17 @@
 Biocollect 
 ==========
 
+## Migration from 2.x to 3.3.9
+
+### Grails framework: 3.3.9
+
+### TODO
+    * Optimize external config to grails-app/conf/application.yml or Application.groovy
+    * log.debug and other methods do not accept objects any more
+    * Some invalid url redirect in UrlMapping 
+    
+
+
 ## Build status
 
 ### Master branch

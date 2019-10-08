@@ -1,0 +1,18 @@
+Reading data-cleaned.xlsx file
+Successfully loaded data-cleaned.xlsx file
+Total activities to upload = 181
+Loading data_template file
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51529
+Downloading image file...
+File name images//Varanus_giganteus//5_0_IMG_0099.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//Varanus_giganteus//5_1_IMG_0103.JPG
+Uploading image...
+Image upload successful. - 1
+{"activityId":"","projectStage":"","mainTheme":"","type":"Goanna Watch - Discovery Circle","projectId":"dc147397-82c0-4754-854f-8014b8d0d470","siteId":"","outputs":[{"name":"Goanna Watch - Discovery Circle","outputId":"","data":{"species":{"name":"Varanus giganteus (Perentie)","guid":"urn:lsid:biodiversity.org.au:afd.taxon:bc745220-f67c-41e7-b287-c4134bcdb1fb","scientificName":"Varanus giganteus","commonName":"Perentie"},"sightingPhoto":[{"name":"5_0_IMG_0099.JPG","size":5190664,"isoDate":"2015-01-28T06:17:50Z","contentType":"image/jpeg","date":"28-01-2015","time":"17:17","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=5_0_IMG_0099.JPG","thumbnail_url":"https://biocollect.ala.org.au/image?id=5_0_IMG_0099-thumb.JPG","delete_url":"https://biocollect.ala.org.au/image/delete?filename=5_0_IMG_0099.JPG","delete_type":"DELETE","attribution":""},{"name":"5_1_IMG_0103.JPG","size":4681009,"isoDate":"2015-01-28T06:22:36Z","contentType":"image/jpeg","date":"28-01-2015","time":"17:22","decimalLatitude":"","decimalLongitude":"","verbatimLatitude":null,"verbatimLongitude":null,"url":"https://biocollect.ala.org.au/image?id=5_1_IMG_0103.JPG","thumbnail_url":"https://biocollect.ala.org.au/image?id=5_1_IMG_0103-thumb.JPG","delete_url":"https://biocollect.ala.org.au/image/delete?filename=5_1_IMG_0103.JPG","delete_type":"DELETE","attribution":""}],"surveyStartDate":"2015-01-18T01:47:00Z","surveyStartTime":"12:47 PM","lifeStatus":"Alive","observedBehaviour":"Yes, the goanna climbed a tree","fullLengthInMetresClassRange":"Over 1.5. metres","distinguishingTraitsOnTail":"Yes","distinguishingTraitsOnFace":"Yes","distinguishingTraitsOnJaw":"Yes","identificationConfidence":"","notes":"General comments: Saw this goanna on 2 occasions - first time he climbed a tree to \"hide\" from us. Next day came down to the water but was spooked by us being there and retreated to his hollow log. He/she was very large. Well over a metre. Campsite 10 on the Katarapko Creek; Type of micro-habitat: In lower branches; At what height was the goanna?: 0.5m-5.0m; Location description: Public Land (e.g. National Park); Survey effort: 24 Hrs : 0 mins; Cloud cover: 0/8: Sky completely clear; Temperature: Warm (20-30 degrees Celsius)","individualCount":1,"comments":"","recordedBy":"Ellen Choat","verifiedBy":"","locationAccuracy":null,"location":null,"locationLatitude":"-34.408507","locationLongitude":"140.539428","locationCentroidLatitude":null,"locationCentroidLongitude":null,"nearestLocationName":"Katarapko Creek","landHolderStatus":"Yes"},"outputNotCompleted":false}]}
+-----END----
+200: {"resp":{"activityId":"6be2c43b-ce79-4af8-8d96-b40f02a4d7f4","message":"created"},"statusCode":200,"error":null}
+Completed..

@@ -7,7 +7,7 @@ import au.org.ala.biocollect.projectresult.Initiator
 import au.org.ala.web.AuthService
 import grails.converters.JSON
 import org.apache.http.HttpStatus
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
 import org.springframework.context.MessageSource
 
@@ -40,7 +40,7 @@ class ProjectController {
     PdfGenerationService pdfGenerationService
     UtilService utilService
 
-    def grailsApplication
+    //def grailsApplication
 
     static defaultAction = "index"
     static ignore = ['action','controller','id']
@@ -530,9 +530,10 @@ class ProjectController {
                 projectSite.projects += id
 
             def siteUpdate = siteService.update(values.projectSiteId, projectSite)
+            log.info(siteUpdate.toString())
         }
         if (result.error) {
-            log.error(result.error);
+            log.error(result.error.toString());
             render result as JSON
         } else {
             render result.resp as JSON
@@ -653,7 +654,7 @@ class ProjectController {
             searchService.addDefaultFacetQuery(downloadParams)
             downloadUrl += "?"+commonService.buildUrlParamsFromMap(downloadParams)
             Map resp = webService.doPostWithParams(downloadUrl, [:])
-            render resp as net.sf.json.JSON
+            render resp as JSON
         }
         else {
             render status:401, text: "Unauthorized"
@@ -799,7 +800,7 @@ class ProjectController {
 
         // query construction
         if(trimmedParams.q){
-            trimmedParams.query += " AND (${trimmedParams.q})";
+            trimmedParams.query += " AND " + trimmedParams.q;
             trimmedParams.q = null
         }
 

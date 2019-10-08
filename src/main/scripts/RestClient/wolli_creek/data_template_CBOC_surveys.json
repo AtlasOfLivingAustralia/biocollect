@@ -1,0 +1,55 @@
+{
+  "activityId": "",
+  "projectStage": "",
+  "mainTheme": "",
+  "type": "Wolli Creek Birdos - CBOC Observations",
+  "projectId": "abdd9f05-a757-420b-85a6-3e8ae31c2d4f",
+  "siteId": "",
+  "outputs": [
+    {
+      "name": "Wolli Ck - CBOC observations",
+      "outputId": "",
+      "data": {
+        "surveyType": "",
+        "surveyStartDate": "",
+        "surveyStartTime": "",
+        "surveyFinishDate": "",
+        "surveyFinishTime": "",
+        "notes": "",
+        "recordedBy": "",
+        "locationAccuracy": null,
+        "location": "",
+        "locationLatitude": null,
+        "locationLongitude": null,
+        "locationCentroidLatitude": null,
+        "locationCentroidLongitude": null,
+        "burnt":false,
+        "wetland":"Not applicable",
+        "cbocObserverCode":"None",
+        "cbocSurveyReferenceNumber":"",
+        "speciesSightings": [
+          {
+            "species": {
+              "name": "",
+              "guid": "",
+              "scientificName": "",
+              "commonName": "",
+              "outputSpeciesId": ""
+            },
+            "individualCount": 1,
+            "raouNumber":0,
+            "abundanceCode":"",
+            "breedingStatus":"",
+            "habitatCode":"Not provided",
+            "sightingComments": "",
+            "sightingPhoto": [
+
+            ]
+          }
+        ]
+      },
+      "outputNotCompleted": false,
+      "appendTableRows": true
+    }
+  ]
+}
