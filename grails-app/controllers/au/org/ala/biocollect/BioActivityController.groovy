@@ -8,9 +8,9 @@ import grails.converters.JSON
 import groovyx.net.http.ContentType
 import org.apache.commons.io.FilenameUtils
 import org.apache.http.HttpStatus
-import org.codehaus.groovy.grails.web.json.JSONArray
-import org.codehaus.groovy.grails.web.mapping.LinkGenerator
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.grails.web.json.JSONArray
+import grails.web.mapping.LinkGenerator
+import grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
 
@@ -200,6 +200,9 @@ class BioActivityController {
     def edit(String id) {
         Map model = editActivity(id)
         model?.title = messageSource.getMessage('record.edit.title', [].toArray(), '', Locale.default)
+        //May relates to the known grails.converter.JSON issue
+        //Remove this seem-useless statement may causes issue
+        model.toString()
         model
     }
 

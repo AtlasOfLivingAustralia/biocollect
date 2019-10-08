@@ -6,9 +6,10 @@ import org.apache.http.HttpStatus
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.ss.util.CellReference
-import org.codehaus.groovy.grails.web.json.JSONArray
+import org.grails.web.json.JSONArray
 import org.grails.plugins.excelimport.ExcelImportService
 import org.springframework.context.MessageSource
+import grails.core.GrailsApplication
 
 class ActivityController {
 
@@ -19,7 +20,7 @@ class ActivityController {
     UserService userService
     ExcelImportService excelImportService
     WebService webService
-    def grailsApplication
+    GrailsApplication grailsApplication
     SpeciesService speciesService
     DocumentService documentService
     ProjectActivityService projectActivityService
@@ -83,7 +84,11 @@ class ActivityController {
 
     def addOutputModel(model) {
         // the activity meta-model
-        model.metaModel = metadataService.getActivityModel(model.activity.type)
+        def metaModel = metadataService.getActivityModel(model.activity.type)
+        if (metaModel){
+            model.metaModel = metaModel
+        }else
+            throw new Exception("Meta model: " + model.activity.type +' cannot be found!')
         // the array of output models
         model.outputModels = model.metaModel?.outputs?.collectEntries {
             [ it, metadataService.getDataModelFromOutputName(it)] }
@@ -100,7 +105,7 @@ class ActivityController {
             }
 
             Map model = activityAndOutputModel(activity, activity.projectId)
-            respond model as Object, [model: model, view: 'index']
+            respond model
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }
@@ -170,8 +175,12 @@ class ActivityController {
 
             Map model = activityAndOutputModel(activity, activity.projectId)
             model.canEditSites = projectService.canUserEditSitesForProject(userId, activity.projectId)
+            //Have to have this. grails.converters.JSON behave strangely
+            //Without this do-nothing call, will cause NULL ref error
+            model.toString()
 
-            model
+            respond model
+
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }

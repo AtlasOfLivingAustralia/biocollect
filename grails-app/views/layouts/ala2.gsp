@@ -179,7 +179,7 @@
 <!-- JS resources-->
 <asset:deferredScripts />
 
-<g:if test="${java.lang.Boolean.parseBoolean(grailsApplication.config.bugherd.integration)}">
+<g:if test="${grailsApplication.config.bugherd.integration}">
     <script type="text/javascript">
         (function (d, t) {
             var bh = d.createElement(t), s = d.getElementsByTagName(t)[0];

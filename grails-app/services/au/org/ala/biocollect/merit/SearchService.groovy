@@ -2,7 +2,7 @@ package au.org.ala.biocollect.merit
 
 import groovy.json.JsonSlurper
 import org.apache.commons.lang.StringUtils
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import grails.web.servlet.mvc.GrailsParameterMap
 
 import javax.annotation.PostConstruct
 import javax.servlet.http.HttpServletResponse
@@ -188,7 +188,7 @@ class SearchService {
             def jsonObj = new JsonSlurper().parseText(jsonstring)
             jsonObj
         } catch(Exception e){
-            log.error(e.getMessage(), e)
+            log.error(e.getMessage(), e.toString())
             [error:'Problem retrieving home page facets from: ' + url]
         }
     }

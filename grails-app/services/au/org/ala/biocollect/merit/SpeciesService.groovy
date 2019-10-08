@@ -140,7 +140,7 @@ class SpeciesService {
 
         def encodedQuery = URLEncoder.encode(searchTerm ?: '', "UTF-8")
         String url = "${grailsApplication.config.bie.baseURL}/ws"
-        if (fq) {
+         if (fq) {
             String encodedFacetQuery = URLEncoder.encode(fq, 'UTF-8')
             url += "/search.json?q=${encodedQuery}&fq=${encodedFacetQuery}&pageSize=${limit}"
         }

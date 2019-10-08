@@ -1,0 +1,60 @@
+{
+  "activityId":"",
+  "projectStage":"",
+  "mainTheme":"",
+  "type":"Bird Survey - Western Sydney",
+  "projectId":"92c69a2a-7c72-4575-abf5-7bd90225b361",
+  "siteId":"",
+  "outputs":[
+    {
+      "name":"Bird Survey - Western Sydney",
+      "outputId":"",
+      "data":{
+        "surveyType":"",
+        "surveyStartDate":"",
+        "surveyStartTime":"",
+        "surveyFinishDate":"",
+        "surveyFinishTime":"",
+        "notes":"",
+        "recordedBy":"",
+        "locationAccuracy":null,
+        "location":"",
+        "locationLatitude":-26.677458329734765,
+        "locationLongitude":133.99810373783112,
+        "locationCentroidLatitude":null,
+        "locationCentroidLongitude":null,
+        "speciesSightings":[
+          {
+            "species":{
+              "guid":"",
+              "name":"",
+              "scientificName":"",
+              "commonName":"",
+              "outputSpeciesId":"",
+              "listId":""
+            },
+            "individualCount":"",
+            "abundanceCode":"",
+            "breedingStatus":"",
+            "habitatCode":"",
+            "sightingComments":"",
+            "sightingPhoto":[
+
+            ]
+          }
+        ]
+      },
+      "outputNotCompleted":false,
+      "selectFromSitesOnly":false,
+      "checkMapInfo":{
+        "validation":true
+      },
+      "mapElementId":"locationMap",
+      "_callbacks":{
+        "sitechanged":[
+          null
+        ]
+      }
+    }
+  ]
+}

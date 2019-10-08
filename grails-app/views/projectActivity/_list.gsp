@@ -461,7 +461,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <g:if test="${grailsApplication.config.aekosEnabled? Boolean.parseBoolean(grailsApplication.config.aekosEnabled): false}">
+                            <g:if test="${grailsApplication.config.aekosEnabled}">
 
                                 <br/>
                                 <br/>
@@ -614,7 +614,7 @@
                                 Download form template (.xlsx)
                             </a></div>
                             </g:if>
-                            <g:if test="${grailsApplication.config.aekosEnabled? Boolean.parseBoolean(grailsApplication.config.aekosEnabled): false}">
+                            <g:if test="${grailsApplication.config.aekosEnabled}">
                                 <br><br><br>
                                 <div><a href="#" data-bind="visible: transients.isAekosData,
                                                             click: showAekosDetails,

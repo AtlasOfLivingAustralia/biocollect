@@ -8,7 +8,7 @@
                     <h2 class="strong">Step 1 of 7 - Describe the survey</h2>
                 </div>
                 <div class="span2 text-right">
-                    <g:render template="../projectActivity/status"/>
+                    <g:render template="/projectActivity/status"/>
                 </div>
             </div>
             <div class="row-fluid">
@@ -722,7 +722,7 @@
                     <hr class="border-bottom-separator"/>
                 </div>
             </div>
-            <g:render template="../projectActivity/indexingNote"/>
+            <g:render template="/projectActivity/indexingNote"/>
             <!-- /ko -->
         <!-- /ko -->
 </div>

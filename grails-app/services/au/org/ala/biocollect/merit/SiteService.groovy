@@ -4,9 +4,9 @@ import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.Point
 import com.vividsolutions.jts.io.WKTReader
 import grails.converters.JSON
-import org.codehaus.groovy.grails.web.json.JSONArray
-import org.codehaus.groovy.grails.web.mapping.LinkGenerator
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.grails.web.json.JSONArray
+import grails.web.mapping.LinkGenerator
+import grails.web.servlet.mvc.GrailsParameterMap
 import org.geotools.kml.v22.KMLConfiguration
 import org.geotools.xml.Parser
 import org.opengis.feature.simple.SimpleFeature
@@ -311,9 +311,6 @@ class SiteService {
         }
 
         def asJSON = featuresMap as JSON
-
-        log.debug asJSON
-
         asJSON
     }
 

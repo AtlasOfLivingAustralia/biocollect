@@ -8,7 +8,7 @@
                 </div>
 
                 <div class="span2 text-right">
-                    <g:render template="../projectActivity/status"/>
+                    <g:render template="/projectActivity/status"/>
                 </div>
             </div>
 
@@ -50,7 +50,7 @@
                         </p>
                     </div>
                     <div class="span2 text-right">
-                        <g:render template="../projectActivity/status"/>
+                        <g:render template="/projectActivity/status"/>
                     </div>
                 </div>
                 <div class="row-fluid">

@@ -1,6 +1,6 @@
 package au.org.ala.biocollect.merit
 
-import org.codehaus.groovy.grails.web.json.JSONObject
+import org.grails.web.json.JSONObject
 
 class RoleService {
     def metadataService, cacheService

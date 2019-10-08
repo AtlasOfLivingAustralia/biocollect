@@ -216,7 +216,7 @@
                         </h3>
                     </div>
                 </div>
-                <g:render template="../shared/pagination"/>
+                <g:render template="/shared/pagination"/>
                 <!-- ko foreach : activities -->
                 <div class="row-fluid">
                     <div class="span12">
@@ -312,7 +312,7 @@
                 <hr/>
                 <!-- /ko -->
                 <div class="margin-top-2"></div>
-                <g:render template="../shared/pagination"/>
+                <g:render template="/shared/pagination"/>
                 <!-- ko if : activities().length > 0 -->
                 <div class="row-fluid">
                     <div class="span12 pull-right">

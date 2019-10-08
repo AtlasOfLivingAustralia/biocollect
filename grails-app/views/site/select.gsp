@@ -98,7 +98,7 @@
                         </div>
                     </li>
                 </ul>
-                <g:render template="../shared/pagination"/>
+                <g:render template="/shared/pagination"/>
                 <div class="row-fluid margin-top-2">
                     <button class="btn btn-primary" data-bind="click: useSelectedSites">Update sites</button>
                     <button class="btn" data-bind="click: cancelUpdate">Cancel</button>

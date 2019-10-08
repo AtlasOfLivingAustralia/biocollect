@@ -12,7 +12,7 @@ import static groovyx.net.http.Method.GET
 
 class ResourceController {
 
-    def grailsApplication
+    grails.core.GrailsApplication grailsApplication
 
     def viewer() {}
 

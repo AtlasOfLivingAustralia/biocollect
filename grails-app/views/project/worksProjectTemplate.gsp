@@ -139,7 +139,7 @@
     <g:render template="banner"/>
     <div class="container-fluid">
         <div id="project-results-placeholder"></div>
-        <g:render template="../shared/flashScopeMessage"/>
+        <g:render template="/shared/flashScopeMessage"/>
 
         <g:if test="${params?.version}">
             <div class="well">

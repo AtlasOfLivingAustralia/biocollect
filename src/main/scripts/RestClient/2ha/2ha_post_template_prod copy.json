@@ -1,0 +1,868 @@
+{
+  "activityId": "",
+  "projectStage": "",
+  "mainTheme": "",
+  "type": "2-ha Track Plot Datasheet",
+  "projectId": "0d37298f-f7a0-40e3-9a5c-5ff0b1caaeff",
+  "siteId": "",
+  "outputs": [
+    {
+      "name": "2-ha Track Plot Method",
+      "outputId": "",
+      "data": {
+        "recordedBy": "Sathish Babu Sathyamoorthy",
+        "collectedBy": "Peter Brenton",
+        "surveyDate": "2017-01-16T13:00:00Z",
+        "plotId": "Q01",
+        "surveyStartTime": "10:01 AM",
+        "surveyFinishTime": "10:01 AM",
+        "sampleType": "Targeted (for particular species)",
+        "sampleSequence": "Initial sample",
+        "eventRemarks": "general comments",
+        "zone": "50",
+        "easting": "1",
+        "northing": "2",
+        "relativeLocation": "3",
+        "distanceFromWater": "4",
+        "distanceFromRoad": "5",
+        "habitatType": "Sand dune (dunefield)",
+        "habitatTypeOther": "other habitat",
+        "vegTypeTableOverstorey": [
+          {
+            "vegTypeOverstorey": "Main overstorey vegetation type",
+            "vegDescriptionOverstorey": "over storey"
+          }
+        ],
+        "vegTypeTableUnderstorey": [
+          {
+            "vegTypeUnderstorey": "Main understorey vegetation type",
+            "vegDescriptionUnderstorey": "understorey"
+          }
+        ],
+        "ephemeralVegPresent": "Present",
+        "timeSinceWeatherEvent": "0 h",
+        "timeSinceFire": "1-2 years",
+        "visibility": "Distinct shadow",
+        "shadowLength": "13",
+        "trackingSurface": "3 - If present, you would be able to distinguish camel, human, dingo, emu or kangaroo tracks only",
+        "trackingSurfaceSuitability": "7",
+        "trackingSurfaceSuitabilityTable": [
+          {
+            "trackingSurfaceSuitabilityCategory": "Category 1 - could distinguish tracks of category 2 & 3 animals, plus hopping mice, rodents, small birds, insects etc",
+            "percentOfPlotSuitable": "8"
+          },
+          {
+            "trackingSurfaceSuitabilityCategory": "Category 2 - could distinguish tracks of category 3 animals, plus fox, cat, rabbit, echidna, goannas",
+            "percentOfPlotSuitable": "9"
+          },
+          {
+            "trackingSurfaceSuitabilityCategory": "Category 3 - could distinguish tracks of camel, dingo, human, emu or kangaroo",
+            "percentOfPlotSuitable": "10"
+          },
+          {
+            "trackingSurfaceSuitabilityCategory": "Category 4 - no tracks of any animals could be distinguished",
+            "percentOfPlotSuitable": "11"
+          }
+        ],
+        "trackingSurfaceContinuity": "3 - Majority of sandy patches less than 1m in width",
+        "location": "a7bc4b1e-f194-44b9-b9c8-bc61ee3be3d9",
+        "locationLatitude": -27.449790329784214,
+        "locationLongitude": 133.05404663085938,
+        "locationLatLonDisabled": false,
+        "locationCentroidLatitude": null,
+        "locationCentroidLongitude": null,
+        "locationSitesArray": [
+          {
+            "status": "active",
+            "lastUpdated": "2016-08-12T06:21:13Z",
+            "type": "",
+            "externalId": "",
+            "id": "57aaae09e4b002f8c0345871",
+            "poi": [],
+            "projects": [
+              "0d37298f-f7a0-40e3-9a5c-5ff0b1caaeff"
+            ],
+            "geoIndex": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    137.83447265625,
+                    -32.589773826489946
+                  ],
+                  [
+                    139.68017578125,
+                    -32.83011966421889
+                  ],
+                  [
+                    141.064453125,
+                    -32.97770250065029
+                  ],
+                  [
+                    143.63525390625,
+                    -32.92238776364208
+                  ],
+                  [
+                    144.90966796874997,
+                    -32.34878173362752
+                  ],
+                  [
+                    146.1181640625,
+                    -32.01403821476133
+                  ],
+                  [
+                    146.9091796875,
+                    -31.41591303470203
+                  ],
+                  [
+                    147.7001953125,
+                    -29.82768283316683
+                  ],
+                  [
+                    147.85400390625,
+                    -26.75188935315114
+                  ],
+                  [
+                    147.568359375,
+                    -24.203282406795257
+                  ],
+                  [
+                    147.10693359375,
+                    -23.862128546160342
+                  ],
+                  [
+                    146.88720703125,
+                    -23.6811523246274
+                  ],
+                  [
+                    144.68994140625,
+                    -21.78133377609352
+                  ],
+                  [
+                    143.26171875,
+                    -21.02441839544478
+                  ],
+                  [
+                    142.4267578125,
+                    -20.634223824311718
+                  ],
+                  [
+                    139.32861328124997,
+                    -19.62334109344853
+                  ],
+                  [
+                    138.0322265625,
+                    -19.56123960868549
+                  ],
+                  [
+                    133.96728515625,
+                    -19.31259504857207
+                  ],
+                  [
+                    133.70361328125,
+                    -19.250374573555064
+                  ],
+                  [
+                    130.45166015625,
+                    -19.354062219328657
+                  ],
+                  [
+                    128.759765625,
+                    -19.37479185378547
+                  ],
+                  [
+                    128.232421875,
+                    -19.37479185378547
+                  ],
+                  [
+                    126.03515625,
+                    -19.478400421772484
+                  ],
+                  [
+                    122.36572265625,
+                    -19.60264326091046
+                  ],
+                  [
+                    120.34423828125,
+                    -20.057376223504566
+                  ],
+                  [
+                    119.17968749999999,
+                    -20.078014872734084
+                  ],
+                  [
+                    118.65234374999999,
+                    -20.366669626907086
+                  ],
+                  [
+                    118.10302734374999,
+                    -20.407862179165182
+                  ],
+                  [
+                    116.98242187499999,
+                    -20.81917883639069
+                  ],
+                  [
+                    116.6748046875,
+                    -20.757552278566166
+                  ],
+                  [
+                    116.08154296875001,
+                    -21.16791832057558
+                  ],
+                  [
+                    115.26855468749999,
+                    -21.658857847763606
+                  ],
+                  [
+                    114.76318359375,
+                    -21.90370517792316
+                  ],
+                  [
+                    114.2578125,
+                    -22.655991074307952
+                  ],
+                  [
+                    113.9501953125,
+                    -22.51397797250145
+                  ],
+                  [
+                    113.88427734374999,
+                    -22.7370755664734
+                  ],
+                  [
+                    113.90625,
+                    -23.323492566561406
+                  ],
+                  [
+                    113.53271484375,
+                    -24.087993561829137
+                  ],
+                  [
+                    114.3017578125,
+                    -25.905086993799426
+                  ],
+                  [
+                    114.23583984374999,
+                    -26.4178478617943
+                  ],
+                  [
+                    113.92822265625,
+                    -26.967512786909733
+                  ],
+                  [
+                    114.23583984374999,
+                    -27.80642959973408
+                  ],
+                  [
+                    115.02685546875,
+                    -29.215850334293197
+                  ],
+                  [
+                    116.71874999999999,
+                    -30.549394532952906
+                  ],
+                  [
+                    119.17968749999999,
+                    -31.30333602139157
+                  ],
+                  [
+                    122.34374999999999,
+                    -32.06991421230703
+                  ],
+                  [
+                    124.23339843749999,
+                    -32.55274012092822
+                  ],
+                  [
+                    124.98046874999999,
+                    -32.608284943811924
+                  ],
+                  [
+                    126.5185546875,
+                    -32.06991421230703
+                  ],
+                  [
+                    127.13378906249999,
+                    -32.12575608817543
+                  ],
+                  [
+                    129.375,
+                    -31.47215095552798
+                  ],
+                  [
+                    130.78125,
+                    -31.37840234358218
+                  ],
+                  [
+                    132.01171875,
+                    -31.603241387896553
+                  ],
+                  [
+                    132.4072265625,
+                    -31.84620581604607
+                  ],
+                  [
+                    133.22021484375,
+                    -31.939483862425494
+                  ],
+                  [
+                    134.01123046874997,
+                    -32.255920922670164
+                  ],
+                  [
+                    134.40673828125,
+                    -32.682291150081944
+                  ],
+                  [
+                    137.83447265625,
+                    -32.589773826489946
+                  ]
+                ]
+              ]
+            },
+            "area": "4361048.287791213",
+            "siteId": "a7bc4b1e-f194-44b9-b9c8-bc61ee3be3d9",
+            "extent": {
+              "source": "drawn",
+              "geometry": {
+                "fid": "",
+                "mvs": "Casuarina and Allocasuarina open woodlands with a hummock grass understorey",
+                "other": [
+                  "Australian Coral Ecoregions",
+                  "RAMSAR wetland regions",
+                  "Directory of Important Wetlands",
+                  "NSW Local Land Services Regions",
+                  "National Native Title Register (NNTR, Determinations of Native Title) - boundaries and core attributes",
+                  "Great Eastern Ranges Initiative",
+                  "Indigenous Protected Areas 2013",
+                  "Indigenous Land Use Agreements"
+                ],
+                "centre": [
+                  "131.1299320811194",
+                  "-26.040389151868798"
+                ],
+                "state": [
+                  "Queensland (including Coastal Waters)",
+                  "South Australia (including Coastal Waters)",
+                  "New South Wales (including Coastal Waters)",
+                  "Northern Territory (including Coastal Waters)",
+                  "Western Australia (including Coastal Waters)"
+                ],
+                "layerName": "",
+                "datum": "",
+                "type": "Polygon",
+                "ibra": [
+                  "Dampierland",
+                  "Central Ranges",
+                  "Great Sandy Desert",
+                  "Mulga Lands",
+                  "Geraldton Sandplains",
+                  "Mallee",
+                  "Coolgardie",
+                  "Mitchell Grass Downs",
+                  "Murray Darling Depression",
+                  "Broken Hill Complex",
+                  "Brigalow Belt South",
+                  "Pilbara",
+                  "Desert Uplands",
+                  "Carnarvon",
+                  "Simpson Strzelecki Dunefields",
+                  "Gascoyne",
+                  "Stony Plains",
+                  "Yalgoo",
+                  "Nullarbor",
+                  "Murchison",
+                  "Avon Wheatbelt",
+                  "Brigalow Belt North",
+                  "Channel Country",
+                  "Finke",
+                  "Gawler",
+                  "Cobar Peneplain",
+                  "Darling Riverine Plains",
+                  "Hampton",
+                  "Great Victoria Desert",
+                  "Gibson Desert",
+                  "Flinders Lofty Block",
+                  "MacDonnell Ranges",
+                  "Mount Isa Inlier",
+                  "Davenport Murchison Ranges",
+                  "Burt Plain",
+                  "Gulf Plains",
+                  "Little Sandy Desert",
+                  "Eyre Yorke Block",
+                  "Ord Victoria Plain",
+                  "Tanami"
+                ],
+                "imcra4_pb": [
+                  "Northwest Shelf Province",
+                  "Spencer Gulf Shelf Province",
+                  "Great Australian Bight Shelf Transition"
+                ],
+                "areaKmSq": 4361048.287791213,
+                "nrm": [
+                  "Border Rivers Maranoa-Balonne",
+                  "Burdekin",
+                  "South Australian Arid Lands",
+                  "Western",
+                  "North West NSW",
+                  "Avon",
+                  "Alinytjara Wilurara",
+                  "Rangelands",
+                  "Central West",
+                  "Fitzroy",
+                  "Desert Channels",
+                  "Eyre Peninsula",
+                  "Northern and Yorke",
+                  "Northern Territory",
+                  "South West Queensland",
+                  "Southern Gulf",
+                  "Northern Agricultural",
+                  "South Australian Murray Darling Basin"
+                ],
+                "bbox": "",
+                "name": "",
+                "cmz": [
+                  "Brigalow woodlands",
+                  "Eastern Australia woodlands",
+                  "South Eastern Australia mallee woodlands",
+                  "Mitchell grasslands",
+                  "North Australian tropical savanna woodlands",
+                  "Eastern Australia mulga shrublands",
+                  "Western Australian temperate sandplain woodlands",
+                  "South Western Australia temperate woodlands",
+                  "Arid shrublands and desert",
+                  "South Eastern Australia temperate woodlands",
+                  "South Western Australia mallee woodlands"
+                ],
+                "coordinates": [
+                  [
+                    [
+                      137.83447265625,
+                      -32.589773826489946
+                    ],
+                    [
+                      139.68017578125,
+                      -32.83011966421889
+                    ],
+                    [
+                      141.064453125,
+                      -32.97770250065029
+                    ],
+                    [
+                      143.63525390625,
+                      -32.92238776364208
+                    ],
+                    [
+                      144.90966796874997,
+                      -32.34878173362752
+                    ],
+                    [
+                      146.1181640625,
+                      -32.01403821476133
+                    ],
+                    [
+                      146.9091796875,
+                      -31.41591303470203
+                    ],
+                    [
+                      147.7001953125,
+                      -29.82768283316683
+                    ],
+                    [
+                      147.85400390625,
+                      -26.75188935315114
+                    ],
+                    [
+                      147.568359375,
+                      -24.203282406795257
+                    ],
+                    [
+                      147.10693359375,
+                      -23.862128546160342
+                    ],
+                    [
+                      146.88720703125,
+                      -23.6811523246274
+                    ],
+                    [
+                      144.68994140625,
+                      -21.78133377609352
+                    ],
+                    [
+                      143.26171875,
+                      -21.02441839544478
+                    ],
+                    [
+                      142.4267578125,
+                      -20.634223824311718
+                    ],
+                    [
+                      139.32861328124997,
+                      -19.62334109344853
+                    ],
+                    [
+                      138.0322265625,
+                      -19.56123960868549
+                    ],
+                    [
+                      133.96728515625,
+                      -19.31259504857207
+                    ],
+                    [
+                      133.70361328125,
+                      -19.250374573555064
+                    ],
+                    [
+                      130.45166015625,
+                      -19.354062219328657
+                    ],
+                    [
+                      128.759765625,
+                      -19.37479185378547
+                    ],
+                    [
+                      128.232421875,
+                      -19.37479185378547
+                    ],
+                    [
+                      126.03515625,
+                      -19.478400421772484
+                    ],
+                    [
+                      122.36572265625,
+                      -19.60264326091046
+                    ],
+                    [
+                      120.34423828125,
+                      -20.057376223504566
+                    ],
+                    [
+                      119.17968749999999,
+                      -20.078014872734084
+                    ],
+                    [
+                      118.65234374999999,
+                      -20.366669626907086
+                    ],
+                    [
+                      118.10302734374999,
+                      -20.407862179165182
+                    ],
+                    [
+                      116.98242187499999,
+                      -20.81917883639069
+                    ],
+                    [
+                      116.6748046875,
+                      -20.757552278566166
+                    ],
+                    [
+                      116.08154296875001,
+                      -21.16791832057558
+                    ],
+                    [
+                      115.26855468749999,
+                      -21.658857847763606
+                    ],
+                    [
+                      114.76318359375,
+                      -21.90370517792316
+                    ],
+                    [
+                      114.2578125,
+                      -22.655991074307952
+                    ],
+                    [
+                      113.9501953125,
+                      -22.51397797250145
+                    ],
+                    [
+                      113.88427734374999,
+                      -22.7370755664734
+                    ],
+                    [
+                      113.90625,
+                      -23.323492566561406
+                    ],
+                    [
+                      113.53271484375,
+                      -24.087993561829137
+                    ],
+                    [
+                      114.3017578125,
+                      -25.905086993799426
+                    ],
+                    [
+                      114.23583984374999,
+                      -26.4178478617943
+                    ],
+                    [
+                      113.92822265625,
+                      -26.967512786909733
+                    ],
+                    [
+                      114.23583984374999,
+                      -27.80642959973408
+                    ],
+                    [
+                      115.02685546875,
+                      -29.215850334293197
+                    ],
+                    [
+                      116.71874999999999,
+                      -30.549394532952906
+                    ],
+                    [
+                      119.17968749999999,
+                      -31.30333602139157
+                    ],
+                    [
+                      122.34374999999999,
+                      -32.06991421230703
+                    ],
+                    [
+                      124.23339843749999,
+                      -32.55274012092822
+                    ],
+                    [
+                      124.98046874999999,
+                      -32.608284943811924
+                    ],
+                    [
+                      126.5185546875,
+                      -32.06991421230703
+                    ],
+                    [
+                      127.13378906249999,
+                      -32.12575608817543
+                    ],
+                    [
+                      129.375,
+                      -31.47215095552798
+                    ],
+                    [
+                      130.78125,
+                      -31.37840234358218
+                    ],
+                    [
+                      132.01171875,
+                      -31.603241387896553
+                    ],
+                    [
+                      132.4072265625,
+                      -31.84620581604607
+                    ],
+                    [
+                      133.22021484375,
+                      -31.939483862425494
+                    ],
+                    [
+                      134.01123046874997,
+                      -32.255920922670164
+                    ],
+                    [
+                      134.40673828125,
+                      -32.682291150081944
+                    ],
+                    [
+                      137.83447265625,
+                      -32.589773826489946
+                    ]
+                  ]
+                ],
+                "uncertainty": "",
+                "elect": [
+                  "FARRER",
+                  "O'CONNOR",
+                  "GREY",
+                  "FLYNN",
+                  "KENNEDY",
+                  "LINGIARI",
+                  "MARANOA",
+                  "PARKES",
+                  "DURACK"
+                ],
+                "precision": "",
+                "pid": 6639747,
+                "decimalLatitude": -26.114038537102676,
+                "mvg": "Other Open Woodlands",
+                "decimalLongitude": 130.693359375,
+                "locality": "Gunbarrel Hwy, South Australia, Australia",
+                "radius": "",
+                "lga": [
+                  "Coolgardie (S)",
+                  "Cue (S)",
+                  "Northampton (S)",
+                  "Wentworth (A)",
+                  "Derby-West Kimberley (S)",
+                  "Winton (S)",
+                  "Mount Magnet (S)",
+                  "Mount Marshall (S)",
+                  "Maranoa (R)",
+                  "MacDonnell (S)",
+                  "Diamantina (S)",
+                  "Nungarin (S)",
+                  "Morawa (S)",
+                  "Kalgoorlie/Boulder (C)",
+                  "Mount Remarkable (DC)",
+                  "Leonora (S)",
+                  "Maralinga Tjarutja (AC)",
+                  "Halls Creek (S)",
+                  "Broken Hill (C)",
+                  "Longreach (R)",
+                  "Menzies (S)",
+                  "Broome (S)",
+                  "Blackall Tambo (R)",
+                  "Mount Isa (C)",
+                  "Murweh (S)",
+                  "Yalgoo (S)",
+                  "Orroroo/Carrieton (DC)",
+                  "Coober Pedy (DC)",
+                  "Wongan-Ballidu (S)",
+                  "Roxby Downs (M)",
+                  "Flinders (S)",
+                  "Exmouth (S)",
+                  "Alice Springs (T)",
+                  "Geraldton-Greenough (C)",
+                  "Three Springs (S)",
+                  "Boulia (S)",
+                  "Murchison (S)",
+                  "Mukinbudin (S)",
+                  "Mullewa (S)",
+                  "Irwin (S)",
+                  "East Pilbara (S)",
+                  "Bourke (A)",
+                  "Brewarrina (A)",
+                  "Bogan (A)",
+                  "Barcaldine (R)",
+                  "Quilpie (S)",
+                  "Port Augusta (C)",
+                  "Port Hedland (T)",
+                  "Perenjori (S)",
+                  "Paroo (S)",
+                  "Balonne (S)",
+                  "Walgett (A)",
+                  "Upper Gascoyne (S)",
+                  "Unincorporated NT",
+                  "Unincorporated NSW",
+                  "Unincorporated SA",
+                  "Streaky Bay (DC)",
+                  "Shark Bay (S)",
+                  "Richmond (S)",
+                  "Anangu Pitjantjatjara (AC)",
+                  "Ashburton (S)",
+                  "Cloncurry (S)",
+                  "Cobar (A)",
+                  "Chapman Valley (S)",
+                  "Central Desert (S)",
+                  "Central Darling (A)",
+                  "Central Highlands (R)",
+                  "Ceduna (DC)",
+                  "Ngaanyatjarraku (S)",
+                  "Sandstone (S)",
+                  "Barkly (S)",
+                  "McKinlay (S)",
+                  "Moora (S)",
+                  "Westonia (S)",
+                  "Peterborough (DC)",
+                  "Warren (A)",
+                  "Wiluna (S)",
+                  "Coorow (S)",
+                  "Yilgarn (S)",
+                  "Carnamah (S)",
+                  "Carnarvon (S)",
+                  "Dundas (S)",
+                  "Mingenew (S)",
+                  "Koorda (S)",
+                  "Barcoo (S)",
+                  "Wudinna (DC)",
+                  "Bulloo (S)",
+                  "Roebourne (S)",
+                  "Laverton (S)",
+                  "Flinders Ranges (DC)",
+                  "Meekatharra (S)",
+                  "Dalwallinu (S)"
+                ],
+                "aream2": 4434332682035.37
+              }
+            },
+            "description": "",
+            "name": "Project area for Tracking Australia - arid wildlife track-based monitoring ",
+            "dateCreated": "2016-08-10T04:31:05Z",
+            "notes": "",
+            "isSciStarter": false
+          }
+        ],
+        "locationLoading": false,
+        "locationMap": {
+          "DEFAULT_CENTRE": {
+            "lat": -28,
+            "lng": 134
+          }
+        },
+        "sightingEvidenceTable": [
+          {
+            "species": {
+              "name": "Rabbit (Oryctolagus cuniculus)",
+              "guid": "urn:lsid:biodiversity.org.au:afd.taxon:692effa3-b719-495f-a86f-ce89e2981652",
+              "scientificName": "Oryctolagus cuniculus",
+              "commonName": "Rabbit",
+              "outputSpeciesId": "c6119ce0-56b7-43f2-afb8-99e3bcb3f334"
+            },
+            "tracksOnPlot": true,
+            "tracksAdjacent": true,
+            "animalObserved": true,
+            "diggingsObserved": false,
+            "scatsObserved": false,
+            "abundanceClass": "1 - Signs in all four quarters of plot",
+            "evidenceAgeClass": "1 - 1-2 days old",
+            "comments": "comments, measurements"
+          }
+        ]
+      },
+      "outputNotCompleted": false,
+      "vegTypeTableOverstoreyTableDataUploadVisible": false,
+      "vegTypeTableOverstoreyTableDataUploadOptions": {
+        "url": "/bioActivity/extractDataFromExcelTemplate?pActivityId=9bf45b75-d7c6-4607-8c65-847fb0eb56bb&hub=ecoscience",
+        "uploadTemplateId": "vegTypeTableOverstoreytemplate-upload",
+        "downloadTemplateId": "vegTypeTableOverstoreytemplate-download",
+        "formData": {
+          "type": "2-ha Track Plot Method",
+          "listName": "vegTypeTableOverstorey"
+        }
+      },
+      "appendTableRows": true,
+      "vegTypeTableUnderstoreyTableDataUploadVisible": false,
+      "vegTypeTableUnderstoreyTableDataUploadOptions": {
+        "url": "/bioActivity/extractDataFromExcelTemplate?pActivityId=9bf45b75-d7c6-4607-8c65-847fb0eb56bb&hub=ecoscience",
+        "uploadTemplateId": "vegTypeTableUnderstoreytemplate-upload",
+        "downloadTemplateId": "vegTypeTableUnderstoreytemplate-download",
+        "formData": {
+          "type": "2-ha Track Plot Method",
+          "listName": "vegTypeTableUnderstorey"
+        }
+      },
+      "trackingSurfaceSuitabilityTableTableDataUploadVisible": false,
+      "trackingSurfaceSuitabilityTableTableDataUploadOptions": {
+        "url": "/bioActivity/extractDataFromExcelTemplate?pActivityId=9bf45b75-d7c6-4607-8c65-847fb0eb56bb&hub=ecoscience",
+        "uploadTemplateId": "trackingSurfaceSuitabilityTabletemplate-upload",
+        "downloadTemplateId": "trackingSurfaceSuitabilityTabletemplate-download",
+        "formData": {
+          "type": "2-ha Track Plot Method",
+          "listName": "trackingSurfaceSuitabilityTable"
+        }
+      },
+      "sightingEvidenceTableTableDataUploadVisible": false,
+      "sightingEvidenceTableTableDataUploadOptions": {
+        "url": "/bioActivity/extractDataFromExcelTemplate?pActivityId=9bf45b75-d7c6-4607-8c65-847fb0eb56bb&hub=ecoscience",
+        "uploadTemplateId": "sightingEvidenceTabletemplate-upload",
+        "downloadTemplateId": "sightingEvidenceTabletemplate-download",
+        "formData": {
+          "type": "2-ha Track Plot Method",
+          "listName": "sightingEvidenceTable"
+        }
+      }
+    }
+  ]
+}

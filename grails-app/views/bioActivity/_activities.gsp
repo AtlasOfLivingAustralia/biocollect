@@ -1,11 +1,11 @@
 <%@ page import="grails.converters.JSON" %>
 <g:set var="noImageUrl" value="${asset.assetPath([src: "no-image-2.png"])}"/>
-<g:render template="../shared/legend"/>
+<g:render template="/shared/legend"/>
 <!-- ko stopBinding: true -->
 <div id="survey-all-activities-and-records-content">
     <div id="data-result-placeholder"></div>
     <div data-bind="visible: version().length == 0">
-        <g:render template="../bioActivity/search"/>
+        <g:render template="/bioActivity/search"/>
     </div>
 
     <div class="row-fluid">
@@ -93,7 +93,7 @@
                                 </div>
                             </div>
 
-                            <g:render template="../shared/pagination"/>
+                            <g:render template="/shared/pagination"/>
                             <table class="full-width table table-hover">
                                 <thead>
                                     <tr>
@@ -343,7 +343,7 @@
                                 </tbody>
                             </table>
                             <div class="margin-top-2"></div>
-                            <g:render template="../shared/pagination"/>
+                            <g:render template="/shared/pagination"/>
                             <!-- ko if : activities().length > 0 -->
                             <div class="row-fluid">
                                 <div class="span12 pull-right">
@@ -392,17 +392,20 @@
     </div>
 </div>
 <!-- /ko -->
+
 <asset:script type="text/javascript">
     var activitiesAndRecordsViewModel, alaMap, results;
     function initialiseData(view) {
-        var user = '${user as grails.converters.JSON}',
-            configImageGallery;
+        var user = '${user ? user as grails.converters.JSON : "{}"}',
+        configImageGallery;
         if (user) {
             user = JSON.parse(user);
         } else {
             user = null;
         }
-        var columnConfig = ${hubConfig.getDataColumns(grailsApplication) as grails.converters.JSON};
+
+        var columnConfig =${ hubConfig.getDataColumns(grailsApplication) as grails.converters.JSON}
+
         activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false}, columnConfig);
         ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('survey-all-activities-and-records-content'));
         $('#dataMapTab').on('shown',function(){

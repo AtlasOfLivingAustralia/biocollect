@@ -193,7 +193,7 @@ class ImageController {
                 result = [files:[md]]
             }
         }
-        log.debug result
+        log.debug result.toString()
 
         if(!user){
             render ([error: 'Invalid user'] as JSON)

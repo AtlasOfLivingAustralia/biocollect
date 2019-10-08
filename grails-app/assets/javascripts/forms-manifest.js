@@ -12,7 +12,7 @@
 //= require jquery.timeentry.package-2.0.1/jquery.timeentry.min.js
 
 // select
-//= require select
+// require select
 
 // select2
 //= require select2/4.0.3/js/select2.full

@@ -40,7 +40,7 @@ class MetadataService {
         })
 
         def programs = allPrograms
-        def hubPrograms = SettingService.getHubConfig().supportedPrograms?:allPrograms.programs.findAll { !it.isMeritProgramme }.collect { it.name }
+        def hubPrograms = SettingService.getHubConfig()?.supportedPrograms?:allPrograms.programs.findAll { !it.isMeritProgramme }.collect { it.name }
 
         if (hubPrograms) {
             programs = [programs:[]]
