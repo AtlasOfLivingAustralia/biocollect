@@ -9,19 +9,22 @@ import javax.annotation.PostConstruct
 
 class UserService {
    def grailsApplication, authService, webService
-    def auditBaseUrl = ""
+    //def auditBaseUrl = ""
 
     static String USER_NAME_HEADER_FIELD = "userName"
     static String AUTH_KEY_HEADER_FIELD = "authKey"
 
-    @PostConstruct
+    String getAuditBaseUrl () {
+        return grailsApplication.config.getProperty('ecodata.service.url') + '/audit'
+    }
+    /*@PostConstruct
     private void init() {
         try {
             auditBaseUrl = grailsApplication.config.ecodata.service.url + '/audit'
         } catch (e) {
             log.debug("This configuration property does not get initialized in test environment", e)
         }
-    }
+    }*/
 
     def getCurrentUserDisplayName() {
         getUser()?.displayName?:""
