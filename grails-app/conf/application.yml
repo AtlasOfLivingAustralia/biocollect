@@ -82,7 +82,7 @@ security:
 
 #External URL
 debugUI: true
-aekosEnabled: true
+aekosEnabled: false
 enableReporting: true
 bugherd:
   integration : false
