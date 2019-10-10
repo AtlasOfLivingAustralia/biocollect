@@ -110,7 +110,7 @@ class OutputController {
                 values[k] = v
             }
         }
-        log.debug (values as JSON).toString()
+        log.debug ((values as JSON).toString())
         log.debug "id=${id} class=${id.getClass()}"
         def result = outputService.update(id, values)
         log.debug "result is " + result

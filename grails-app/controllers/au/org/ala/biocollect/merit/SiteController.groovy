@@ -149,11 +149,11 @@ class SiteController {
             }
         } catch (SocketTimeoutException sTimeout){
             log.error(sTimeout.message)
-            log.error(sTimeout.stackTrace)
+            log.error(sTimeout.stackTrace.toString())
             return {text: 'Webserive call timed out'; status: HttpStatus.SC_REQUEST_TIMEOUT} as JSON;
         } catch (Exception e){
             log.error(e.message)
-            log.error(e.stackTrace)
+            log.error(e.stackTrace.toString())
             return {text: 'Internal server error'; status: HttpStatus.SC_INTERNAL_SERVER_ERROR} as JSON;
         }
     }
@@ -168,7 +168,7 @@ class SiteController {
                 response.sendError(404, "Couldn't find project activity $id")
                 return
             }
-            log.info(pActivity.sites)
+            log.info(pActivity.sites.toString())
             render pActivity.sites as JSON
 
         } else if (params.entityType == "project") {
@@ -243,11 +243,11 @@ class SiteController {
             }
         } catch (SocketTimeoutException sTimeout){
             log.error(sTimeout.message)
-            log.error(sTimeout.stackTrace)
+            log.error(sTimeout.stackTrace.toString())
             render(text: 'Webserive call timed out', status: HttpStatus.SC_REQUEST_TIMEOUT);
         } catch (Exception e){
             log.error(e.message)
-            log.error(e.stackTrace)
+            log.error(e.stackTrace.toString())
             render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -264,7 +264,7 @@ class SiteController {
                 render (text: response.error, status:  HttpStatus.SC_INTERNAL_SERVER_ERROR)
             }
         } catch (Exception e){
-            log.error(e.message, e)
+            log.error(e.message, e.toString())
             render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -280,7 +280,7 @@ class SiteController {
                 render (text: response.error, status:  HttpStatus.SC_INTERNAL_SERVER_ERROR)
             }
         } catch (Exception e){
-            log.error(e.message, e)
+            log.error(e.message, e.toString())
             render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }

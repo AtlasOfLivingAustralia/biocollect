@@ -116,7 +116,8 @@ class MetadataService {
 
     def getModelNameFromType(type) {
         log.debug "Getting model name for ${type}"
-        log.debug activitiesModel()
+        def activitiesModel = activitiesModel()
+        log.debug (activitiesModel.toString())
         return activitiesModel().activities.find({it.name == type})?.template
     }
 

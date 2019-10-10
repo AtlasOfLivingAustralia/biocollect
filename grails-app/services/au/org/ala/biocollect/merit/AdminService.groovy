@@ -186,7 +186,7 @@ class AdminService {
             }
         } catch (Exception e){
             //this will be thrown if its a PNG....
-            log.debug(e.getMessage(),e)
+            log.debug(e.getMessage(),e.toString())
         }
 
         return exif

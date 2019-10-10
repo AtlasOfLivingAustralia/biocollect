@@ -67,7 +67,7 @@ class BioActivityController {
         log.debug("pActivityId = ${pActivityId}")
         log.debug("id = ${id}")
         log.debug("projectId = ${projectId}")
-        log.debug (postBody as JSON).toString()
+        log.debug((postBody as JSON).toString())
 
         String userId = userService.getCurrentUserId(request)
         if (!userId) {
@@ -826,7 +826,7 @@ class BioActivityController {
             photoPoints.photoPoints.each { photoPoint ->
                 def photos = photoPoint.remove('photos')
                 def result = siteService.addPhotoPoint(photoPoints.siteId, photoPoint)
-                log.debug(result)
+                log.debug(result.toString())
                 if (!result.error) {
                     photos.each { photo ->
                         photo.poiId = result?.resp?.poiId

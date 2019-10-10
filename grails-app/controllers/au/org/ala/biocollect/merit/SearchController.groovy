@@ -37,7 +37,7 @@ class SearchController {
             def result = projectActivityService.searchSpecies(id, q, limit, output, dataFieldName)
             render result as JSON
         } catch (Exception ex){
-            log.error( ex.message )
+            log.error( ex.message.toString() )
             render status: HttpStatus.INTERNAL_SERVER_ERROR, text: "An error occurred - ${ex.message}"
         }
     }
@@ -60,7 +60,7 @@ class SearchController {
                 render status: HttpStatus.BAD_REQUEST, text: 'Parameter druid is required.'
             }
         } catch (Exception ex){
-            log.error( ex )
+            log.error( ex.toString() )
             render status: HttpStatus.INTERNAL_SERVER_ERROR, text: "An error occurred - ${ex.message}"
         }
     }
