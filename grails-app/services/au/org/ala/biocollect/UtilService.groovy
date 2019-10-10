@@ -72,7 +72,7 @@ class UtilService {
 
         } catch (Exception e) {
             e.printStackTrace()
-            log.error("Failed sending request to ${url}", e)
+            log.error("Failed sending request to ${url}", e.toString())
             result.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
             result.content = "Failed calling web service. ${e.getClass()} ${e.getMessage()} URL= ${url}."
         }

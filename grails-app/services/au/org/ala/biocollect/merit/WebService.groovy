@@ -51,13 +51,13 @@ class WebService {
             return responseText(conn)
         } catch (SocketTimeoutException e) {
             def error = [error: "Timed out calling web service. URL= ${url}."]
-            log.error error
+            log.error error.toString()
             return error
         } catch (Exception e) {
             def error = [error: "Failed calling web service. ${e.getClass()} ${e.getMessage()} URL= ${url}.",
                     statusCode: conn?.responseCode?:"",
                     detail: conn?.errorStream?.text]
-            log.error error
+            log.error error.toString()
             return error
         }
     }
@@ -174,23 +174,23 @@ class WebService {
             return result
         } catch (ConverterException e) {
             def error = ['error': "Failed to parse json. ${e.getClass()} ${e.getMessage()} URL= ${url}."]
-            log.error error
+            log.error error.toString()
             return error
         } catch (SocketTimeoutException e) {
             def error = [error: "Timed out getting json. URL= ${url}."]
-            log.error error, e
+            log.error error, e.toString()
             return error
         } catch (ConnectException ce) {
             log.info "Exception class = ${ce.getClass().name} - ${ce.getMessage()}"
             def error = [error: "ecodata service not available. URL= ${url}."]
-            log.error error, ce
+            log.error error, ce.toString()
             return error
         } catch (Exception e) {
             log.info "Exception class = ${e.getClass().name} - ${e.getMessage()}"
             def error = [error: "Failed to get json from web service. ${e.getClass()} ${e.getMessage()} URL= ${url}.",
                          statusCode: conn?.responseCode?:"",
                          detail: conn?.errorStream?.text]
-            log.error error.toString(), e
+            log.error error.toString(), e.toString()
             return error
         }
     }
@@ -243,13 +243,13 @@ class WebService {
             def error = [error: "Timed out calling web service. URL= ${url}.",
                          statusCode: conn?.responseCode?:"",
                          detail: conn?.errorStream?.text]
-            log.error(error, e)
+            log.error(error, e.toString())
             return error
         } catch (Exception e) {
             def error = [error: "Failed calling web service. ${e.getMessage()} URL= ${url}.",
                          statusCode: conn?.responseCode?:"",
                          detail: conn?.errorStream?.text]
-            log.error(error, e)
+            log.error(error, e.toString())
             return error
         }
     }
@@ -276,7 +276,7 @@ class WebService {
             return [resp: JSON.parse(resp?:"{}"), statusCode: conn.responseCode] // fail over to empty json object if empty response string otherwise JSON.parse fails
         } catch (SocketTimeoutException e) {
             def error = [error: "Timed out calling web service. URL= ${url}."]
-            log.error(error, e)
+            log.error(error, e.toString())
             return error
         } catch (Exception e) {
             def error = [error: "Failed calling web service. ${e.getMessage()} URL= ${url}.",
@@ -317,13 +317,13 @@ class WebService {
             return [resp: JSON.parse(resp?:"{}"), statusCode: conn.responseCode] // fail over to empty json object if empty response string otherwise JSON.parse fails
         } catch (SocketTimeoutException e) {
             def error = [error: "Timed out calling web service. URL= ${url}."]
-            log.error(error, e)
+            log.error(error, e.toString())
             return error
         } catch (Exception e) {
             def error = [error: "Failed calling web service. ${e.getMessage()} URL= ${url}.",
                          statusCode: conn?.responseCode?:"",
                          detail: conn?.errorStream?.text]
-            log.error(error, e)
+            log.error(error, e.toString())
             return error
         }
     }
@@ -341,7 +341,7 @@ class WebService {
             }
             return conn.getResponseCode()
         } catch(Exception e){
-            log.error e
+            log.error e.toString()
             return 500
         } finally {
             if (conn != null){

@@ -430,7 +430,7 @@ class ProjectActivityService {
             log.info("Error occurred while downloading data: " + result + " Download status error: " + status)
         } else {
             result = [status: 404, error: "Aekos Submission Url is not configured"]
-            log.info(result)
+            log.info(result.toString())
         }
         result
     }

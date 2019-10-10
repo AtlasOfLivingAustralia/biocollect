@@ -264,7 +264,7 @@ class ActivityController {
                 values[k] = v
             }
         }
-        log.debug (values as JSON).toString()
+        log.debug((values as JSON).toString())
 
         def result = [:]
 

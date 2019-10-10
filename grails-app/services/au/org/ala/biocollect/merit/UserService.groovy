@@ -22,7 +22,7 @@ class UserService {
         try {
             auditBaseUrl = grailsApplication.config.ecodata.service.url + '/audit'
         } catch (e) {
-            log.debug("This configuration property does not get initialized in test environment", e)
+            log.debug("This configuration property does not get initialized in test environment", e.toString())
         }
     }*/
 
