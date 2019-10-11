@@ -144,7 +144,7 @@ images:
   baseURL: "https://images.ala.org.au"
 
 lists:
-  baseURL:  "https://lists-test.ala.org.au/public/speciesLists"
+  baseURL: "https://lists.ala.org.au" # "https://lists-test.ala.org.au/public/speciesLists"
   commonFields: ['rawScientificName', 'matchedName', 'commonName']
 
 merit:
