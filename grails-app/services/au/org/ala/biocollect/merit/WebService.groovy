@@ -183,7 +183,7 @@ class WebService {
         } catch (ConnectException ce) {
             log.info "Exception class = ${ce.getClass().name} - ${ce.getMessage()}"
             def error = [error: "ecodata service not available. URL= ${url}."]
-            log.error error, ce.toString()
+            log.error error.toString(), ce
             return error
         } catch (Exception e) {
             log.info "Exception class = ${e.getClass().name} - ${e.getMessage()}"

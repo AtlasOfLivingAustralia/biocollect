@@ -5,7 +5,6 @@ import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
 import au.org.ala.web.UserDetails
 import grails.converters.JSON
-import groovyx.net.http.ContentType
 import org.apache.commons.io.FilenameUtils
 import org.apache.http.HttpStatus
 import org.grails.web.json.JSONArray
@@ -571,12 +570,12 @@ class BioActivityController {
     }
 
     def downloadProjectData() {
-        response.setContentType(ContentType.BINARY.toString())
+        response.setContentType("application/zip")
         response.setHeader('Content-Disposition', 'Attachment;Filename="data.zip"')
-
         Map queryParams = constructDefaultSearchParams(params)
         queryParams.isMerit = false
         searchService.downloadProjectData(response, queryParams)
+        return null
     }
 
     private GrailsParameterMap constructDefaultSearchParams(Map params) {

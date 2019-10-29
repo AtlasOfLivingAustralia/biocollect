@@ -84,7 +84,11 @@ dependencies {
     }
 
     compile "joda-time:joda-time:2.3"
-    compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
+  //  compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
+
+    // Used by the scripts
+    compile 'org.grails.plugins:http-builder-helper:1.1.0'
+
     compile "org.apache.httpcomponents:httpcore:4.4.1"
     compile "org.apache.httpcomponents:httpclient:4.4.1"
 
@@ -111,7 +115,11 @@ dependencies {
 
     //ALA plugins
     //TODO Same namespace?
-    compile "au.org.ala.plugins.grails:images-client-plugin:0.9-SNAPSHOT"
+    compile ("au.org.ala.plugins.grails:images-client-plugin:1.2") {
+        exclude group: 'commons-httpclient', module: 'commons-httpclient'
+    }
+
+  //  compile "au.org.ala.plugins.grails:images-client-plugin:0.9-SNAPSHOT"
     compile "org.grails.plugins:ala-auth:3.0.2"
     runtime "org.grails.plugins:ala-bootstrap3:3.0.4"
     compile "org.grails.plugins:ala-admin-plugin:2.1"
