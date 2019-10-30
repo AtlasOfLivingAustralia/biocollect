@@ -199,7 +199,7 @@ class SearchService {
             def jsonObj = new JsonSlurper().parseText(jsonstring)
             jsonObj
         } catch(Exception e){
-            log.error(e.getMessage(), e.toString())
+            log.error(e.getMessage(), e)
             [error:'Problem retrieving home page facets from: ' + url]
         }
     }

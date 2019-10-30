@@ -169,7 +169,7 @@ class TemplateTagLib {
                 int blueInt = Integer.parseInt(blue, 16)
                 out << "rgba(${redInt},${greenInt},${blueInt}, ${attrs.alpha})"
             } catch (NumberFormatException nfe) {
-                log.error("Error occurred while converting hex to integer.", nfe.toString());
+                log.error("Error occurred while converting hex to integer.", nfe);
             }
         }
     }
