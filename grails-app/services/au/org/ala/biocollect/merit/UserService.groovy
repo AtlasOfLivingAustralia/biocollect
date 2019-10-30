@@ -63,8 +63,8 @@ class UserService {
                 return new UserDetails(result.resp.firstName + result.resp.lastName, result.resp.userName, result.resp.userId)
             }
         } else {
-            log.error("Failed to get user details for parameters: ${(params as JSON).toString()}")
-            log.error((result as JSON).toString(true))
+            log.error ("Failed to get user details for parameters: ${(params as JSON).toString()}")
+            log.error ((result as JSON).toString(true))
         }
 
         return null

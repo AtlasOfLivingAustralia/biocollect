@@ -55,7 +55,7 @@ class ProjectController {
             flash.message = "Project not found with id: ${id}"
             if (project?.error) {
                 flash.message += "<br/>${project.error}"
-                log.warn project.error
+                log.warn project.error.toString()
             }
             redirect(controller: 'home', model: [error: flash.message])
         }

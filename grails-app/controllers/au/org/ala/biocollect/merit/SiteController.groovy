@@ -148,12 +148,10 @@ class SiteController {
                 return result as JSON
             }
         } catch (SocketTimeoutException sTimeout){
-            log.error(sTimeout.message)
-            log.error(sTimeout.stackTrace.toString())
+            log.error (sTimeout.message, sTimeout)
             return {text: 'Webserive call timed out'; status: HttpStatus.SC_REQUEST_TIMEOUT} as JSON;
         } catch (Exception e){
-            log.error(e.message)
-            log.error(e.stackTrace.toString())
+            log.error (e.message, e)
             return {text: 'Internal server error'; status: HttpStatus.SC_INTERNAL_SERVER_ERROR} as JSON;
         }
     }
@@ -242,12 +240,10 @@ class SiteController {
                 render result as JSON
             }
         } catch (SocketTimeoutException sTimeout){
-            log.error(sTimeout.message)
-            log.error(sTimeout.stackTrace.toString())
+            log.error (sTimeout.message, sTimeout)
             render(text: 'Webserive call timed out', status: HttpStatus.SC_REQUEST_TIMEOUT);
         } catch (Exception e){
-            log.error(e.message)
-            log.error(e.stackTrace.toString())
+            log.error (e.message, e)
             render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -264,7 +260,7 @@ class SiteController {
                 render (text: response.error, status:  HttpStatus.SC_INTERNAL_SERVER_ERROR)
             }
         } catch (Exception e){
-            log.error(e.message, e.toString())
+            log.error (e.message, e)
             render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -280,7 +276,7 @@ class SiteController {
                 render (text: response.error, status:  HttpStatus.SC_INTERNAL_SERVER_ERROR)
             }
         } catch (Exception e){
-            log.error(e.message, e.toString())
+            log.error (e.message, e)
             render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
