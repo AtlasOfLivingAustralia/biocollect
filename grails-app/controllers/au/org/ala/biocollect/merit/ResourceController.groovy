@@ -48,9 +48,10 @@ class ResourceController {
         def location = http.request(GET, TEXT) {
             uri.path = 'api/pdf';
             //NameValuePair nameValuePair = new NameValuePair().
-            List<NameValuePair> listParams = new ArrayList<NameValuePair>();
-            listParams.add(new BasicNameValuePair('docUrl', url))
-            uri.queryParams(listParams)
+           // List<NameValuePair> listParams = new ArrayList<NameValuePair>();
+           // listParams.add(new BasicNameValuePair('docUrl', url))
+           // uri.queryParams = listParams
+            uri.setParameter('docUrl', url)
             //uri.queryParams = ['docUrl': url]
 
         //    uri.query = ['docUrl': url]
