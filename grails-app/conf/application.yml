@@ -163,7 +163,7 @@ mobile:
 
 
 pdfgen:
-  baseURL: "http://pdfgen.ala.org.au/"
+  baseURL: "https://pdfgen.ala.org.au/"
 
 sld:
   polgon:
