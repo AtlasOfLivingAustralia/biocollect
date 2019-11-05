@@ -87,10 +87,16 @@ dependencies {
   //  compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
 
     // Used by the scripts
-    compile 'org.grails.plugins:http-builder-helper:1.1.0'
+    compile ('org.grails.plugins:http-builder-helper:1.1.0')  {
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
 
-    compile "org.apache.httpcomponents:httpcore:4.4.1"
-    compile "org.apache.httpcomponents:httpclient:4.4.1"
+
+  //  compile "org.grails:http-client"
+
+   // compile "org.apache.httpcomponents:httpcore:4.4.1"
+   // compile "org.apache.httpcomponents:httpclient:4.4.1"
+    compile "org.apache.httpcomponents:httpclient:4.5.7"
 
     testCompile "org.grails:grails-test-mixins:3.3.0"
     testRuntime 'com.github.detro:phantomjsdriver:1.2.0'
@@ -134,7 +140,7 @@ springBoot {
 
 
 bootRun {
-    jvmArgs('-Dspring.output.ansi.enabled=always')
+    jvmArgs('-Dspring.output.ansi.enabled=always', '-Xmx6000m')
     addResources = true
 }
 
