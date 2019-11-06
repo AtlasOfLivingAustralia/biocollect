@@ -4,7 +4,8 @@ import grails.converters.JSON
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.client.protocol.HttpClientContext
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -32,7 +33,10 @@ class ResourceController {
 
         try {
             HttpClientContext context = HttpClientContext.create()
-            HttpGet httpGet = new HttpGet("${grailsApplication.config.pdfgen.baseURL}/api/pdf?docUrl=" + url)
+            URIBuilder builder = new URIBuilder("${grailsApplication.config.pdfgen.baseURL}")
+            builder.setPath("api/pdf").setParameter('docUrl', url)
+            URI uri = builder.build();
+            HttpGet httpGet = new HttpGet(uri)
             log.debug("Sending file to be converted into pdf: " + httpGet.getRequestLine())
 
             httpclient.execute(httpGet, context)
