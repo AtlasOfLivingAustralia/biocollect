@@ -38,20 +38,20 @@ class ResourceController {
     def pdfUrl() {
         def url = params.file
 
-        def uri = new URIBuilder(grailsApplication.config.pdfgen.baseURL)
-                .setParameter("http.protocol.handle-redirects","false")
+        def uri = new URIBuilder(grailsApplication.config.pdfgen.baseURL).setPath('api/pdf').setParameter('docUrl', url)
+               // .setParameter("http.protocol.handle-redirects","false")
 
 
         def http = new HTTPBuilder(uri)
         //HttpClient ahc = http.client
 
         def location = http.request(GET, TEXT) {
-            uri.path = 'api/pdf';
+          //  uri.path = 'api/pdf';
             //NameValuePair nameValuePair = new NameValuePair().
            // List<NameValuePair> listParams = new ArrayList<NameValuePair>();
            // listParams.add(new BasicNameValuePair('docUrl', url))
            // uri.queryParams = listParams
-            uri.setParameter('docUrl', url)
+           // uri.setParameter('docUrl', url)
             //uri.queryParams = ['docUrl': url]
 
         //    uri.query = ['docUrl': url]
