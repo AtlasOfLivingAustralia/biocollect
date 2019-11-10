@@ -39,7 +39,6 @@ environments:
             config:
                locations:
                   - file:///data/biocollect/config/biocollect-config.properties
-                  - file:///data/biocollect/config/logback.groovy
             #system level config
         server:
            #port: 80
