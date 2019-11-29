@@ -587,7 +587,7 @@ class ProjectController {
         GrailsParameterMap queryParams = buildProjectSearch(params)
         boolean skipDefaultFilters = params.getBoolean('skipDefaultFilters', false)
         Map searchResult = searchService.findProjects(queryParams, skipDefaultFilters);
-        List projects = Builder.build(params, searchResult.hits?.hits)
+        List projects = Builder.build(params, searchResult.hits?.hits, grailsApplication, messageSource)
         List facets
 
         // format facets to a way acceptable for JS view model
