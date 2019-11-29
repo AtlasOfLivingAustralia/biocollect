@@ -26,7 +26,7 @@ class Builder {
      * @param projects list of projects
      * @return list of projects
      */
-    static List build(GrailsParameterMap params, List projects) {
+    static List build(GrailsParameterMap params, List projects, def grailsApplication, def messageSource) {
         List result = []
         switch (params.initiator) {
             case Initiator.scistarter.name():
@@ -34,6 +34,9 @@ class Builder {
                 break
             case Initiator.ala.name():
                 result = ALA.build(projects, params)
+                break
+            case Initiator.seed.name():
+                result = Seed.build(projects, params, grailsApplication, messageSource)
                 break
             case Initiator.biocollect.name():
             default:
