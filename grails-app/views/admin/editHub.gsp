@@ -1325,9 +1325,11 @@
     </tbody>
     <tfoot>
     <tr>
-        <td colspan="6">Pick a facet <select data-bind="options: transients.facetList, optionsText:'formattedName', value: transients.selectedFacet"></select></td>
+        <td colspan="6">
+            Pick a facet <select data-bind="options: transients.facetList, optionsText:'formattedName', value: transients.selectedFacet"></select>
+            <button class="btn btn-small btn-default" data-bind="click: add"><i class="icon-plus"></i> Add</button></td>
         <td>
-            <button class="btn btn-small btn-default" data-bind="click: add"><i class="icon-plus"></i> Add</button>
+
         </td>
     </tr>
     </tfoot>
