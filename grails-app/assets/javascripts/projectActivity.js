@@ -19,6 +19,7 @@ var ProjectActivity = function (params) {
     self.selectFromSitesOnly = ko.observable(pActivity.selectFromSitesOnly);
     self.legalCustodianOrganisation = ko.utils.unwrapObservable(pActivity.legalCustodianOrganisation || organisationName);
     self.sites = ko.observableArray();
+    self.excludeProjectSite = ko.observable(pActivity.excludeProjectSite ? pActivity.excludeProjectSite : false);
     self.allowPolygons = ko.observable(('allowPolygons' in pActivity)? pActivity.allowPolygons : false);
     self.allowPoints = ko.observable(('allowPoints' in pActivity)? pActivity.allowPoints : true);
     self.defaultZoomArea = ko.observable(('defaultZoomArea' in pActivity)? pActivity.defaultZoomArea : project?project.projectSiteId:'');
@@ -630,6 +631,7 @@ var ProjectActivity = function (params) {
             jsData.selectFromSitesOnly = self.selectFromSitesOnly();
             jsData.baseLayersName = self.baseLayersName();
             jsData.allowPolygons = self.allowPolygons();
+            jsData.excludeProjectSite = self.excludeProjectSite();
             jsData.allowPoints = self.allowPoints();
             jsData.defaultZoomArea = self.defaultZoomArea();
         }
@@ -831,9 +833,9 @@ var SurveyVisibilityViewModel = function (visibility) {
     }
 
     self.embargoOption = ko.observable(visibility.embargoOption ? visibility.embargoOption : 'NONE');   // 'NONE', 'DAYS', 'DATE' -> See au.org.ala.ecodata.EmbargoOptions in Ecodata
-
     self.embargoForDays = ko.observable(visibility.embargoForDays ? visibility.embargoForDays : 10).extend({numeric:0});     // 1 - 180 days
     self.embargoUntil = ko.observable(visibility.embargoUntil).extend({simpleDate: true});
+    self.alaAdminEnforcedEmbargo = ko.observable(visibility.alaAdminEnforcedEmbargo);
 };
 
 var AlertViewModel = function (alert) {

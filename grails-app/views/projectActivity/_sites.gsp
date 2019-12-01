@@ -159,6 +159,17 @@
     </div>
 
 
+    <div class="row-fluid">
+
+        <div class="span12">
+            <p>
+                <h3><g:message code="project.survey.site.config"/></h3>
+                <input type="checkbox" data-bind="checked: excludeProjectSite"/> <g:message code="project.survey.site.config.content"/>
+            </p>
+        </div>
+
+    </div>
+
     <!--
     Not supported.
     <div class="row-fluid">

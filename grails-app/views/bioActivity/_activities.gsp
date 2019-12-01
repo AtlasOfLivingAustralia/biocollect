@@ -53,14 +53,15 @@
                             </div>
                         <!-- /ko -->
 
-                        <!-- ko if: activities().length > 0 -->
+                            <!-- ko if: activities().length > 0 -->
 
                             <div class="alert alert-info hide" id="downloadStartedMsg"><i class="fa fa-spin fa-spinner">&nbsp;&nbsp;</i>Preparing download, please wait...</div>
 
                             <div class="row-fluid" data-bind="visible: version().length == 0">
                                 <div class="span12">
                                     <h3 class="text-left margin-bottom-2">Found <span data-bind="text: total()"></span> record(s)</h3>
-                                    <div class="pull-right margin-bottom-2 margin-top-1" data-bind="visible: transients.isBulkActionsEnabled">
+                                    <div class="pull-right margin-bottom-2 margin-top-1">
+                                        <!-- ko if:  transients.isBulkActionsEnabled -->
                                         <span>Bulk actions -
                                             <div class="btn-group">
                                                 <button data-bind="disable: !transients.activitiesToDelete().length, click: bulkDelete" class="btn btn-default"><span class="fa fa-trash">&nbsp;</span> <g:message code="project.bulkactions.delete"/></button>
@@ -68,6 +69,7 @@
                                                 <button data-bind="disable: !transients.activitiesToDelete().length, click: bulkRelease" class="btn btn-default"><span class="fa fa-unlock">&nbsp;</span> <g:message code="project.bulkactions.release"/></button>
                                             </div>
                                         </span>
+                                        <!-- /ko -->
                                         <button data-bind="click: download, disable: transients.loading" data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}" class="btn btn-primary padding-top-1"><span class="fa fa-download">&nbsp;</span>Download</button>
                                     </div>
 
@@ -162,7 +164,7 @@
                                             <div>
                                                 <!-- ko if: $parents[1].embargoed() -->
                                                 <a href="#" class="helphover"
-                                                   data-bind="popover: {title:'Only project members can access the record.', content:'Embargoed until : ' + moment($parents[1].embargoUntil()).format('DD/MM/YYYY')}">
+                                                   data-bind="popover: {title:'Embargoed', content:'Indicates that only project members can access the record'}">
                                                     <span class="fa fa-lock"></span>
                                                 </a>
                                                 <!--/ko -->
@@ -224,7 +226,8 @@
                                                     <a data-bind="attr: {href: $parents[1].transients.editUrl }" title="Edit record" class="btn btn-small editBtn btn-default margin-top-5"><i class="fa fa-pencil"></i> Edit</a>
                                                 </span>
                                                 <span data-bind="visible: !$parents[1].readOnly(), if: $parents[1].showCrud()">
-                                                    <button class="btn btn-small btn-default margin-top-5" data-bind="click: function(){ $parents[1].transients.parent.remove($parents[1]) }" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
+                                                    <button class="btn btn-small btn-default margin-top-5" data-bind="click: $parents[1].delete" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
+
                                                 </span>
                                             </div>
                                         </td>
@@ -268,8 +271,7 @@
                                                 <div>
                                                     <!-- ko if: $parent.embargoed() -->
                                                     <a href="#" class="helphover"
-                                                       data-bind="popover: {title:'Indicates that only project members can access the record.', content:'Embargoed until : ' + moment($parent.embargoUntil()).format('DD/MM/YYYY')}">
-                                                        <span class="fa fa-lock"></span>
+                                                       data-bind="popover: {title:'Embargoed.', content:'Indicates that only project members can access the record'}">
                                                     </a>
                                                     <!--/ko -->
                                                 </div>
@@ -323,7 +325,7 @@
                                                         <a data-bind="attr:{'href': $parent.transients.editUrl}" title="Edit record" class="btn btn-small editBtn btn-default"><i class="fa fa-pencil"></i> Edit</a>
                                                     </span>
                                                     <span data-bind="visible: !$parent.readOnly()">
-                                                        <button class="btn btn-small btn-default" data-bind="click: $parents[1].remove" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
+                                                        <button class="btn btn-small btn-default" data-bind="click: $parent.delete" title="Delete record"><i class="fa fa-trash"></i>&nbsp;Delete</button>
                                                     </span>
                                                     <!-- /ko -->
                                                 </div>
@@ -373,9 +375,11 @@
                                 <span data-bind="if: !transients.loading()">No Results</span>
                             </span>
                         </span>
+
                         <span data-bind="visible: transients.totalPoints() > 0 && !transients.loadingMap() ">
-                            <m:map id="recordOrActivityMap" width="100%"/>
+                            <m:map height="800px" width="auto" id="recordOrActivityMap" />
                         </span>
+                        
                     </div>
                     <!-- ko stopBinding:true -->
                     <div class="tab-pane" id="imageGallery">

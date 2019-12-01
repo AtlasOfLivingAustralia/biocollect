@@ -266,42 +266,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return getSelectedTermsForRefinement().length > 0;
     };
 
-    self.remove = function (activity) {
-        bootbox.confirm("Are you sure you want to delete the survey and records?", function (result) {
-            if (result) {
-                var url = fcConfig.activityDeleteUrl + "/" + activity.activityId();
-                $.ajax({
-                    url: url,
-                    type: 'DELETE',
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if (data.text == 'deleted') {
-                            showAlert("Successfully deleted. Indexing is in process, search result will be updated in few minutes.", "alert-success", self.transients.placeHolder);
-                            setTimeout(function () {
-                                location.reload();
-                            }, 3000);
-                        } else {
-                            showAlert("Error deleting the survey, please try again later.", "alert-error", self.transients.placeHolder);
-                        }
-                    },
-                    error: function (data) {
-                        if (data.status == 401) {
-                            var message = $.parseJSON(data.responseText);
-                            bootbox.alert(message.error);
-                        } else if (data.status == 404) {
-                            showAlert("Record not available. Indexing might be in process, refreshing the page now..", "alert-error", self.transients.placeHolder);
-                            setTimeout(function () {
-                                location.reload();
-                            }, 3000);
-                        } else {
-                            alert('An unhandled error occurred: ' + data);
-                        }
-                    }
-                });
-            }
-        });
-    };
-
     self.bulkDelete = function (activity) {
         var activities = self.transients.activitiesToDelete(),
             numberOfActivities = activities.length;
@@ -887,6 +851,44 @@ var ActivityRecordViewModel = function (activity) {
             (fcConfig.version !== undefined ? "?version=" + fcConfig.version : '');
     });
 
+    self.delete = function () {
+
+        bootbox.confirm("Are you sure you want to delete the record?", function (result) {
+            if (result) {
+                var url = fcConfig.activityDeleteUrl + "/" + self.activityId();
+                // Don't allow another save to be initiated.
+                blockUIWithMessage("Deleting...");
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.text == 'deleted') {
+                            blockUIWithMessage("Successfully deleted, after indexing record will be removed. <br>Reloading the page...");
+                        } else {
+                            blockUIWithMessage("Error deleting the record, please try again later.");
+                        }
+                    },
+                    error: function (data) {
+                        if (data.status == 401) {
+                            var message = $.parseJSON(data.responseText);
+                            blockUIWithMessage(message.error);
+                        } else if (data.status == 404) {
+                            blockUIWithMessage("Record not available. Indexing might be in process, reloading the page...");
+                        } else {
+                            blockUIWithMessage('An unhandled error occurred, please try again later.');
+                        }
+                    },
+                    complete: function() {
+                        setTimeout(function () {
+                            //$.unblockUI(); Don't unblock this, let the reload do the work.
+                            location.reload();
+                        }, 2500);
+                    }
+                });
+            }
+        });
+    };
     self.transients = {};
     self.transients.viewUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityViewUrl : fcConfig.activityViewUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo, dataVersion: fcConfig.version});
     self.transients.editUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityEditUrl : fcConfig.activityEditUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
