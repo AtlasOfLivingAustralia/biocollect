@@ -27,12 +27,12 @@ class Seed {
      * @return
      */
     static List build(List projects, GrailsParameterMap params, def grailsApplication, def messageSource) {
-
+        def serverURL = grailsApplication?.config?.grails?.serverURL?:""
         projects.collect {
             Map doc = it._source;
 
             // no need to ship the whole link object down to browser
-            def trimmedLinks = doc.links.collect {
+            def trimmedLinks = doc.links?.collect {
                 [
                         role: it.role,
                         url : it.url
@@ -51,11 +51,11 @@ class Seed {
                         name: it.name,
                         description: it.description,
                         dataAccessMethod : it.dataAccessMethods?.collect {
-                            messageSource?.getMessage("facets.dataAccessMethods." + it, [].toArray(), it, Locale.default)
+                            messageSource?.getMessage("facets.dataAccessMethods." + it, [].toArray(), it, Locale.default)?:it
                         },
-                        datasetExternalURL:  grailsApplication?.config.grails.serverURL + '/bioActivity/projectRecords/' + it.projectActivityId
+                        datasetExternalURL:  serverURL + '/bioActivity/projectRecords/' + it.projectActivityId
                 ]
-                pActivity.putAll(it.stats)
+                pActivity.putAll(it.stats?:[:])
                 pActivity
             }
 
