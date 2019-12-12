@@ -28,8 +28,11 @@ function ProjectFinder(config) {
 
     /* Stores selected project id when a link is selected */
     var selectedProjectId;
+
+    /* ALA.Map instance used in pop-up for for geographic filter */
     var spatialFilter = null;
 
+    /* a GeoJson geometry fragment that represents query built from geographic filter popup */
     var geoSearch = {};
 
     var refreshSearch = false;
@@ -202,6 +205,7 @@ function ProjectFinder(config) {
     }
 
     function initialiseMap() {
+        console.log('Initialising geographic filter map. Is map already initialised? ', mapInitialised);
         if (!mapInitialised) {
             spatialFilter = new ALA.Map("mapFilter", {
                 wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
@@ -211,6 +215,11 @@ function ProjectFinder(config) {
 
             var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService, fcConfig.regionListUrl);
             spatialFilter.addControl(regionSelector);
+
+            // geoSearch may have been set before map was initialised
+            console.log('Updating filter with value that may have been set before initialisation: ', geoSearch);
+            writeUpdatedGeographicFilters();
+
             spatialFilter.subscribe(geoSearchChanged);
             mapInitialised = true;
         }
@@ -849,6 +858,7 @@ function ProjectFinder(config) {
         }
 
         if (!_.isEmpty(geoSearch)) {
+            console.log('Set geographic filter to query string: ', geoSearch);
             hash.push('geoSearch=' + LZString.compressToBase64(JSON.stringify(geoSearch)));
         }
 
@@ -916,22 +926,12 @@ function ProjectFinder(config) {
     function setGeoSearch(geoSearchHash) {
         if (geoSearchHash && typeof geoSearchHash !== 'undefined') {
             geoSearch = JSON.parse(LZString.decompressFromBase64(geoSearchHash));
+            console.log('Set geographic filter with data from querystring: ', geoSearch);
 
-            toggleButton($('#pt-map-filter'), true);
-
-            var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geoSearch);
-            geoJson = ALA.MapUtils.getStandardGeoJSONForCircleGeometry(geoJson);
-            if (geoSearch.pointSearch) {
-                geoJson.features[0].properties = {};
-                delete geoJson.features[0].geometry.pointSearch;
-            } else if (geoSearch.pid) {
-                // Special case for WMS layers: need to move the PID attribute to the properties object in the GeoJSON
-                // The pid was stored in the geometry in the url hash, but that is not valid GeoJSON, so it needs to be
-                // moved. The ALA Map's setGeoJSON method will look for a pid in the properties and create a WMS layer.
-                geoJson.features[0].properties.pid = geoSearch.pid;
-            }
-
-            spatialFilter.setGeoJSON(geoJson);
+            writeUpdatedGeographicFilters();
+            refreshGeofilterButtons();
+        } else {
+            console.log('No data available in querystring for geographic filter.');
         }
     }
 
@@ -995,6 +995,29 @@ function ProjectFinder(config) {
         }
     }
 
+    function writeUpdatedGeographicFilters() {
+        var geoSearchValue = geoSearch;
+        if(geoSearchValue && validSearchGeometry(geoSearchValue) && spatialFilter) {
+            console.log('Updating geographic filter map with data: ', geoSearchValue);
+            toggleButton($('#pt-map-filter'), true);
+            var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geoSearchValue);
+            geoJson = ALA.MapUtils.getStandardGeoJSONForCircleGeometry(geoJson);
+            if (geoSearchValue.pointSearch) {
+                geoJson.features[0].properties = {};
+                delete geoJson.features[0].geometry.pointSearch;
+            } else if (geoSearchValue.pid) {
+                // Special case for WMS layers: need to move the PID attribute to the properties object in the GeoJSON
+                // The pid was stored in the geometry in the url hash, but that is not valid GeoJSON, so it needs to be
+                // moved. The ALA Map's setGeoJSON method will look for a pid in the properties and create a WMS layer.
+                geoJson.features[0].properties.pid = geoSearchValue.pid;
+            }
+            spatialFilter.setGeoJSON(geoJson);
+        } else {
+            console.log('No data for geographic filter or map is not ready yet.',
+                geoSearchValue, spatialFilter);
+        }
+    }
+
     function validSearchGeometry(geometry) {
         var valid = false;
 
@@ -1006,7 +1029,8 @@ function ProjectFinder(config) {
             valid = geometry.coordinates && geometry.coordinates.length == 2
         }
 
-        return valid
+        console.log('Validating geographic filter geometry data: ', geometry, 'Is it valid?', valid);
+        return valid;
     }
 
 
