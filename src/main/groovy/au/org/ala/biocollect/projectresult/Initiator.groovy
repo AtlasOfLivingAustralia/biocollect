@@ -16,5 +16,5 @@
 package au.org.ala.biocollect.projectresult
 
 enum Initiator {
-    ala, scistarter, biocollect
+    ala, scistarter, biocollect, seed
 }
