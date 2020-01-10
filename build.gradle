@@ -47,6 +47,8 @@ def imgscalrVersion = "4.2"
 def httpmimeVersion = "4.2.1"
 def jtsVersion = "1.8"
 def geoToolsVersion = "11.1"
+// Set to true it needed only for development
+boolean inplace = true
 
 
 dependencies {
@@ -73,7 +75,7 @@ dependencies {
     testCompile "org.grails.plugins:geb"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
-    compile group: 'org.apache.commons', name: 'commons-io', version: '1.3.2'
+    compile "commons-io:commons-io:2.6"
     compile "com.drewnoakes:metadata-extractor:${metadataExtractorVersion}"
     compile "org.imgscalr:imgscalr-lib:${imgscalrVersion}"
     compile "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
@@ -131,7 +133,9 @@ dependencies {
     runtime "org.grails.plugins:ala-bootstrap3:3.0.4"
     compile "org.grails.plugins:ala-admin-plugin:2.1"
     compile "org.grails.plugins:ala-map-plugin:3.0-SNAPSHOT"
-    compile "org.grails.plugins:ecodata-client-plugin:3.0-SNAPSHOT"
+    if (!inplace) {
+        compile "org.grails.plugins:ecodata-client-plugin:3.0-SNAPSHOT"
+    }
 }
 
 springBoot {
@@ -157,7 +161,19 @@ assets {
 
 }
 
+if (inplace) {
+    grails {
+        exploded = true
+        plugins {
+            compile (project(':ecodata-client-plugin'))
+        }
+    }
 
+    // Make ecodata-client-plugin _Events task is called
+    assetCompile.dependsOn("ecodata-client-plugin:_Events")
+    compileGroovy.dependsOn("ecodata-client-plugin:_Events")
+    bootRun.dependsOn("ecodata-client-plugin:_Events")
+}
 
 //grailsPublish {
 //    websiteUrl = 'https://github.com/AtlasOfLivingAustralia/biocollect'
