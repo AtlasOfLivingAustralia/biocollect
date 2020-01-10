@@ -1,2 +1,8 @@
 rootProject.name='biocollect'
 
+boolean inplace = true
+
+if (inplace) {
+    include ':ecodata-client-plugin'
+    project(':ecodata-client-plugin').projectDir = new File(settingsDir,'../ecodata-client-plugin')
+}

@@ -15,7 +15,7 @@
 
 package au.org.ala.biocollect.projectresult
 
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import grails.web.servlet.mvc.GrailsParameterMap
 
 class Seed {
 
