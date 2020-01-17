@@ -196,6 +196,7 @@ function FilterViewModel(config){
                 sanitisedList.push(item)
             }
         })
+        parent.resetPageOffSet();
 
         self.selectedFacets.push.apply(self.selectedFacets, sanitisedList)
         self.hideAllTerms(sanitisedList);
