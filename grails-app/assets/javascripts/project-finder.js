@@ -60,6 +60,9 @@ function ProjectFinder(config) {
 
             self.doSearch();
         }
+        this.resetPageOffSet = function () {
+            self.resetPageOffSet();
+        }
         this.getFacetTerms = function (facets) {
             return self.getFacetTerms(facets);
         }
@@ -384,6 +387,10 @@ function ProjectFinder(config) {
             lazyLoad.update();
         }
     }
+
+    this.resetPageOffSet = function() {
+        offset = 0;
+    };
 
     /**
      * this is the function calling server with the latest query.
@@ -759,6 +766,7 @@ function ProjectFinder(config) {
 
     $('#pt-search-link').click(function () {
         self.setTextSearchSettings();
+        self.resetPageOffSet();
         self.doSearch();
     });
 
