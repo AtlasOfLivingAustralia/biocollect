@@ -149,6 +149,12 @@
                 </div>
             </div>
 
+            <div class="clearfix control-group">
+                <label class="control-label span3" for="bushfire"><g:message code="project.details.bushfire"/><fc:iconHelp><g:message code="project.details.bushfire.help"/></fc:iconHelp></label>
+                <div class="controls span9"> <select id="bushfire" data-bind="booleanValue:isBushfire, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Please Select'"></select></div>
+                </select>
+            </div>
+
             <div id="associatedOrgs">
                 <div class="row-fluid">
                     <div class="clearfix control-group">
