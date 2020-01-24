@@ -22,3 +22,4 @@
 //= require pagination.js
 //= require polyfill/es6-promise.auto.js
 //= require restoreTab.js
+//= require izitoast/izitoast.min.js

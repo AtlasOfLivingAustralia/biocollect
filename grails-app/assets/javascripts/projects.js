@@ -430,6 +430,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.hasTeachingMaterials = ko.observable($.inArray("hasTeachingMaterials", project.tags) >= 0);
     self.isCitizenScience = ko.observable(project.isCitizenScience);
     self.isDIY = ko.observable($.inArray("isDIY", project.tags) >= 0);
+    self.isBushfire = ko.observable(project.isBushfire);
     self.isHome = ko.observable($.inArray("isHome", project.tags) >= 0);
     self.mobileApp = ko.observable(project.mobileApp);
     self.isWorks = ko.observable(project.isWorks);
@@ -475,7 +476,6 @@ function ProjectViewModel(project, isUserEditor) {
             contentType: 'application/json',
             success: function (data) {
                 if (data.error) {
-                    console.error(data)
                     bootbox.alert("Error "+ data.error);
                 }
                 else {
@@ -483,9 +483,7 @@ function ProjectViewModel(project, isUserEditor) {
                 }
             },
             error: function (data) {
-                console.error(data)
                 bootbox.alert("Error updating, try again later");
-
             }
         });
     };
@@ -1068,10 +1066,47 @@ function ProjectViewModel(project, isUserEditor) {
         });
     };
 
-    self.transients.getCountries()
-    self.transients.getUNRegions()
-    self.transients.getDataCollectionWhiteList()
+    self.transients.getCountries();
+    self.transients.getUNRegions();
+    self.transients.getDataCollectionWhiteList();
+    self.showBushfireBanner = function() {
+        if(self.isBushfire() == undefined || self.isBushfire() == null) {
+            iziToast.question({
+                timeout: 20000,
+                close: false,
+                overlay: false,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 999,
+                title: 'Bushfire',
+                message: 'Is this project associated with bushfire recovery or monitoring activities?',
+                position: 'bottomRight',
+                icon: 'fa fa-fire',
+
+                buttons: [
+                    ['<button><b>YES</b></button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        self.updateProject({isBushfire:true});
+                    }, true],
+                    ['<button>NO</button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'no' }, toast, 'button');
+                        self.updateProject({isBushfire:false});
+                    }],
+                    ['<button>Don\'t show this again</button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        // Store it against the local browser
+                    }],
+                ],
+                onClosing: function(instance, toast, closedBy) {
+                },
+                onClosed: function(instance, toast, closedBy) {
+                }
+            });
+        }
+    };
 };
+
+
 
 /**
  * View model for use by the project create and edit pages.  Extends the ProjectViewModel to provide support
@@ -1226,7 +1261,6 @@ function CreateEditProjectViewModel(project, isUserEditor, options) {
     self.removeAssociatedOrganisation = function(org, event) {
         self.associatedOrgs.remove(org);
     };
-
 
     self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch', 'granteeOrganisation', 'sponsorOrganisation']);
     self.transients.existingLinks = project.links;
