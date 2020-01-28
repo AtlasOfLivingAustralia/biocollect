@@ -469,6 +469,7 @@ function ProjectViewModel(project, isUserEditor) {
     });
 
     self.updateProject = function(jsonData){
+        blockUIWithMessage("Processing...");
         return $.ajax({
             url: fcConfig.projectUpdateUrl,
             type: 'POST',
@@ -476,14 +477,19 @@ function ProjectViewModel(project, isUserEditor) {
             contentType: 'application/json',
             success: function (data) {
                 if (data.error) {
-                    bootbox.alert("Error "+ data.error);
+                    blockUIWithMessage("<span class=\"fa fa-exclamation\"></span> Error "+ data.error);
                 }
                 else {
-                    bootbox.alert("Successfully updated");
+                    blockUIWithMessage("<span class=\"fa fa-check\"></span> Successfully updated");
                 }
             },
             error: function (data) {
-                bootbox.alert("Error updating, try again later");
+                blockUIWithMessage("<span class=\"fa fa-exclamation\"></span> Error updating, try again later");
+            },
+            complete: function() {
+                setTimeout(function () {
+                    $.unblockUI();
+                }, 2500);
             }
         });
     };
@@ -1069,8 +1075,16 @@ function ProjectViewModel(project, isUserEditor) {
     self.transients.getCountries();
     self.transients.getUNRegions();
     self.transients.getDataCollectionWhiteList();
+
+    // Don't show the banner if user requested to ignore the banner or if user already answered YES or NO.
     self.showBushfireBanner = function() {
-        if(self.isBushfire() == undefined || self.isBushfire() == null) {
+        var BUSHFIRE_BANNER_KEY = "Dont-Show-Bush-Fire-Banner";
+        var bushFireValue = amplify.store(BUSHFIRE_BANNER_KEY);
+        if(bushFireValue == 'YES') {
+            return;
+        }
+        else if(self.isBushfire() == undefined || self.isBushfire() == null) {
+
             iziToast.question({
                 timeout: 20000,
                 close: false,
@@ -1080,7 +1094,7 @@ function ProjectViewModel(project, isUserEditor) {
                 zindex: 999,
                 title: 'Bushfire',
                 message: 'Is this project associated with bushfire recovery or monitoring activities?',
-                position: 'bottomRight',
+                position: 'topRight',
                 icon: 'fa fa-fire',
 
                 buttons: [
@@ -1094,7 +1108,7 @@ function ProjectViewModel(project, isUserEditor) {
                     }],
                     ['<button>Don\'t show this again</button>', function (instance, toast) {
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                        // Store it against the local browser
+                        amplify.store(BUSHFIRE_BANNER_KEY, "YES");
                     }],
                 ],
                 onClosing: function(instance, toast, closedBy) {
