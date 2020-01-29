@@ -41,12 +41,13 @@
                     <p/>
                 </div>
                 </g:if>
-                <g:if test="${hubConfig?.content?.hideProjectAboutContributing != true}">
-                <div data-bind="visible:!isExternal()" class="margin-top-1 margin-bottom-1">
-                    <img src="${asset.assetPath(src: "ala-logo-small.png")}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
 
-                </div>
+                <g:if test="${hubConfig?.content?.hideProjectAboutContributing != true}">
+                    <div data-bind="visible:!isExternal()" class="margin-top-1 margin-bottom-1">
+                        <img src="${asset.assetPath(src: "ala-logo-small.png")}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
+                    </div>
                 </g:if>
+
             </div>
         </div>
         <div class="span6" id="column2">
@@ -196,6 +197,9 @@
                     <p/>
                     <div style="line-height:2.2em">
                         <g:render template="tags" />
+                    </div>
+                    <div data-bind="if:isBushfire()" class="margin-top-1 margin-bottom-1">
+                        <span class="fa fa-fire"></span> <g:message code="project.bushfireInfo"/>
                     </div>
                 </div>
             </div>
