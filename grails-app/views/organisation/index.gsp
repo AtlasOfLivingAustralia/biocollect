@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,6 +15,11 @@
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
     <asset:script type="text/javascript">
         var fcConfig = {
+            intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+            featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             viewProjectUrl: "${createLink(controller:'project', action:'index')}",
             updateProjectUrl: "${createLink(controller: 'project', action:'ajaxUpdate')}",
@@ -25,8 +31,6 @@
             organisationViewUrl: '${g.createLink(action:"index", id:"${organisation.organisationId}")}',
             organisationMembersUrl: "${loadPermissionsUrl}",
             regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
-            featuresService: "${createLink(controller: 'proxy', action: 'features')}",
-            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
             imageLocation:"${asset.assetPath(src:'')}",
             logoLocation:"${asset.assetPath(src:'filetypes')}",
             adHocReportsUrl: '${g.createLink(action:"getAdHocReportTypes")}',
@@ -35,7 +39,6 @@
             submitReportUrl: '${g.createLink( action:'ajaxSubmitReport', id:"${organisation.organisationId}")}',
             approveReportUrl: '${g.createLink( action:'ajaxApproveReport', id:"${organisation.organisationId}")}',
             spatialService: '${createLink(controller:'proxy',action:'feature')}',
-            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
             spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
             rejectReportUrl: '${g.createLink( action:'ajaxRejectReport', id:"${organisation.organisationId}")}',
             defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
@@ -65,14 +68,14 @@
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
             recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
-            organisationName: '${organisation.name}',
             version: "${params.version?:''}",
             hideWorldWideBtn: true,
             flimit: ${grailsApplication.config.facets.flimit},
             occurrenceUrl: "",
             spatialUrl: "",
             paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
-            absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}"
+            absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
         };
     </asset:script>
     <style type="text/css">
@@ -100,6 +103,7 @@
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <asset:javascript src="project-finder.js" />
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 <body>
 

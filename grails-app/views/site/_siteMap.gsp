@@ -17,6 +17,9 @@
 </div>
 <script>
     function initMap(params, id) {
+        var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+        var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
+
         var mapOptions = $.extend({
             drawControl: false,
             singleMarker: false,
@@ -27,15 +30,19 @@
             showReset: false,
             zoomToObject: true,
             markerOrShapeNotBoth: false,
-            wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
-            wmsFeatureUrl: fcConfig.featureService + "?featureId="
+            baseLayer: baseLayersAndOverlays.baseLayer,
+            otherLayers: baseLayersAndOverlays.otherLayers,
+            overlays: baseLayersAndOverlays.overlays,
+            overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+            wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+            wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
         }, params);
 
         var map = new ALA.Map('map', mapOptions);
 
         L.Icon.Default.imagePath = $('#' + id).attr('data-leaflet-img');
 
-        map.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", map.fitBounds, "bottomleft");
+        map.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", map.fitBounds, "bottomright");
 
         return map;
     }

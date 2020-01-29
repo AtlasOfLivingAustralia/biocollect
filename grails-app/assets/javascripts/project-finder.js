@@ -203,10 +203,16 @@ function ProjectFinder(config) {
 
     function initialiseMap() {
         if (!mapInitialised) {
+            var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+            var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
             spatialFilter = new ALA.Map("mapFilter", {
-                wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
-                wmsFeatureUrl: fcConfig.featureService + "?featureId=",
-                myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location"
+                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
+                wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location",
+                baseLayer: baseLayersAndOverlays.baseLayer,
+                otherLayers: baseLayersAndOverlays.otherLayers,
+                overlays: baseLayersAndOverlays.overlays,
+                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault
             });
 
             var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService, fcConfig.regionListUrl);
@@ -527,7 +533,8 @@ function ProjectFinder(config) {
      * @param features
      */
     self.doMapSearch = function (projects){
-
+        var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+        var baseLayerOverlayConfig = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
         var mapOptions = {
             drawControl: false,
             showReset: false,
@@ -535,12 +542,20 @@ function ProjectFinder(config) {
             useMyLocation: false,
             allowSearchLocationByAddress: false,
             allowSearchRegionByAddress: false,
+            defaultLayersControl: true,
+            singleDraw: false,
+            wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
+            wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+            baseLayer: baseLayerOverlayConfig.baseLayer,
+            otherLayers: baseLayerOverlayConfig.otherLayers,
+            overlays: baseLayerOverlayConfig.overlays,
+            overlayLayersSelectedByDefault: baseLayerOverlayConfig.overlayLayersSelectedByDefault
         };
 
         if(!self.pfMap){
             self.pfMap = new ALA.Map("pfMap", mapOptions);
-
-            self.pfMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", self.pfMap.fitBounds, "bottomleft");
+            Biocollect.MapUtilities.intersectOverlaysAndShowOnPopup(self.pfMap);
+            self.pfMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", self.pfMap.fitBounds, "bottomright");
         }
 
         var features = [];

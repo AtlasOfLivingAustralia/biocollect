@@ -12,6 +12,11 @@
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>
     <asset:script type="text/javascript">
         var fcConfig = {
+            intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+            featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             blogUpdateUrl: "${grailsApplication.config.grails.serverURL}/blog/update",
             blogViewUrl: "${grailsApplication.config.grails.serverURL}/blog/index",

@@ -169,6 +169,8 @@
         </div>
 
     </div>
+    <h3><g:message code="project.survey.map.config.title"/></h3>
+    <map-config-selector params="allBaseLayers: fcConfig.allBaseLayers, allOverlays: fcConfig.allOverlays, mapLayersConfig: mapLayersConfig"></map-config-selector>
 
     <!--
     Not supported.

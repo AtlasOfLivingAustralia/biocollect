@@ -224,6 +224,8 @@
     if ((typeof map === 'undefined' || Object.keys(map).length == 0)) {
         var projectArea = <fc:modelAsJavascript model="${projectSite.extent.geometry}"/>;
         if (projectArea) {
+            var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+            var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
             var mapOptions = {
                 drawControl: false,
                 showReset: false,
@@ -231,9 +233,12 @@
                 useMyLocation: false,
                 allowSearchLocationByAddress: false,
                 allowSearchRegionByAddress: false,
-                baseLayer: "${project.baseLayer}" || "${grailsApplication.config.map.baseLayers?.find { it.default == true } .code}",
-                wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
-                wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
+                baseLayer: baseLayersAndOverlays.baseLayer,
+                otherLayers: baseLayersAndOverlays.otherLayers,
+                overlays: baseLayersAndOverlays.overlays,
+                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
             }
 
             map = new ALA.Map("projectSiteMap", mapOptions);
