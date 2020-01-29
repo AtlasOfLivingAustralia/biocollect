@@ -519,6 +519,8 @@ class BioActivityController {
                                 view: view,
                                 spotterId:  params.spotterId,
                                 projectActivityId: params.projectActivityId,
+                                pActivity: projectActivity,
+                                project: project,
                                 title: "${messageSource.getMessage('project.userrecords.title', [].toArray(), '', Locale.default)} ${user.getDisplayName()}",
                                 occurrenceUrl: occurrenceUrl,
                                 spatialUrl: spatialUrl,

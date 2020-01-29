@@ -19,6 +19,25 @@ cache:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
 
+before_install:
+  - export TZ=Australia/Canberra
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`)
+
+install:
+  - cd ~/.nvm
+  - source ~/.nvm/nvm.sh
+  - nvm install $TRAVIS_NODE_VERSION
+
+before_script:
+  - cd $TRAVIS_BUILD_DIR
+  - npm install
+
+script:
+  - cd $TRAVIS_BUILD_DIR
+  - ./gradlew clean && ./gradlew build
+  - node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
+
+
 after_success:
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && travis_retry ./gradlew publish'
 

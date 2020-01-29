@@ -254,17 +254,237 @@ content.defaultOverriddenLabels = [
         ]
 ]
 
-map.baseLayers = [
-        [
-                'code': 'minimal',
-                'displayText': 'Road map',
-                'default': false
-        ],
-        [
-                'code': 'worldimagery',
-                'displayText': 'Satellite',
-                'default': true
+/*
+ * Notes:
+ * These are all approximately (but not exactly) the same. It is important that 'GetMap' requests include the 'SRS' (default is EPSG:3857).
+ * EPSG:4283 GDA94
+ * EPSG:4326 WGS 84
+ * EPSG:3857 WGS 84 / Pseudo-Mercator
+ */
+
+// Bounds are in EPSG:4326.
+def boundsSrs = "EPSG:4283"
+def bounds = [:]
+def defaultCqlFilter = ""
+if (bounds.size()) {
+        defaultCqlFilter = "BBOX(the_geom,${bounds.lngWestMin},${bounds.latSouthMin},${bounds.lngEastMax},${bounds.latNorthMax},'${boundsSrs}')"
+}
+if (!map.baseLayers) {
+        map.baseLayers = [
+                [
+                        'code': 'minimal',
+                        'displayText': 'Road map',
+                        'isSelected': false
+                ],
+                [
+                        'code': 'worldimagery',
+                        'displayText': 'Satellite',
+                        'isSelected': false
+                ],
+                [
+                        'code': 'detailed',
+                        'displayText': 'Detailed',
+                        'isSelected': false
+                ],
+                [
+                        'code': 'topographic',
+                        'displayText': 'ESRI Topographic',
+                        'isSelected': true
+                ],
+                [
+                        'code': 'googlehybrid',
+                        'displayText': 'Google hybrid',
+                        'isSelected': false
+                ],
+                [
+                        'code': 'googleroadmap',
+                        'displayText': 'Google roadmap',
+                        'isSelected': false
+                ],
+                [
+                        'code': 'googleterrain',
+                        'displayText': 'Google terrain',
+                        'isSelected': false
+                ]
         ]
-]
+}
+
+if(!map.overlays) {
+        map.overlays = [
+                [
+                        alaId       : 'cl917',
+                        alaName     : 'australian_coral_ecoregions',
+                        layerName   : 'aust_coral_ecoregions',
+                        title: 'Australian Coral Ecoregions',
+                        defaultSelected: false,
+                        boundaryColour  : '#e66101',
+                        showPropertyName: false,
+                        fillColour      : '',
+                        textColour      : '',
+                        userAccessRestriction: 'anyUser',
+                        inLayerShapeList     : true,
+                        opacity: 0.5,
+                        changeLayerColour: false,
+                        display     : [
+                                cqlFilter     : defaultCqlFilter,
+                                propertyName  : 'ECONAME'
+                        ],
+                        style       : [ : ],
+                        bounds      : bounds,
+                        restrictions: [ : ]
+                ],
+                [
+                        alaId       : 'cl22',
+                        alaName     : 'aus1',
+                        layerName   : 'aust_states_territories',
+                        title         : 'Australian States',
+                        defaultSelected: false,
+                        boundaryColour  : '#fdb863',
+                        showPropertyName: false,
+                        fillColour      : '',
+                        textColour      : '',
+                        userAccessRestriction: 'anyUser',
+                        inLayerShapeList     : true,
+                        opacity: 0.5,
+                        
+                        display     : [
+                                cqlFilter     : defaultCqlFilter,
+                                propertyName  : 'NAME_1'
+                        ],
+                        style       : [:],
+                        bounds      : bounds,
+                        restrictions: [:]
+                ],
+                [
+                        alaId       : 'cl10923',
+                        alaName     : 'psma_lga_2018',
+                        layerName   : 'aust_local_govt_areas',
+                        title         : 'Local Gov. Areas',
+                        defaultSelected: false,
+                        boundaryColour  : '#b2abd2',
+                        showPropertyName: false,
+                        fillColour      : '',
+                        textColour      : '',
+                        userAccessRestriction: 'anyUser',
+                        inLayerShapeList     : true,
+                        opacity: 0.5,
+                        changeLayerColour: false,
+                        display     : [
+                                cqlFilter     : defaultCqlFilter,
+                                propertyName  : 'ABB_NAME'
+                        ],
+                        style       : [:],
+                        bounds      : bounds,
+                        restrictions: [:]
+                ],
+                [
+                        alaId       : 'cl1059',
+                        alaName     : 'drainage_divisions_level2',
+                        layerName   : 'aust_river_basins',
+                        title         : 'River Basins',
+                        defaultSelected: false,
+                        boundaryColour  : '#005ce6',
+                        showPropertyName: false,
+                        fillColour      : '#bef7cf',
+                        textColour      : '#FFF',
+                        userAccessRestriction: 'anyUser',
+                        inLayerShapeList     : true,
+                        opacity: 0.5,
+                        changeLayerColour: false,
+                        display     : [
+                                cqlFilter     : defaultCqlFilter,
+                                propertyName  : 'Level2Name'
+                        ],
+                        style       : [:],
+                        bounds      : bounds,
+                        restrictions: [:]
+                ],
+                [
+                        alaId       : 'cl10947',
+                        alaName     : 'nrm2017_qld2019',
+                        layerName   : 'aust_nrm_regions',
+                        title         : 'Regions',
+                        defaultSelected: false,
+                        boundaryColour  : '#5e3c99',
+                        showPropertyName: false,
+                        fillColour      : '',
+                        textColour      : '',
+                        userAccessRestriction: 'anyUser',
+                        inLayerShapeList     : true,
+                        opacity: 0.5,
+                        changeLayerColour: false,
+                        display     : [
+                                cqlFilter     : defaultCqlFilter,
+                                propertyName  : 'NRM_REGION'
+                        ],
+                        style       : [:],
+                        bounds      : bounds,
+                        restrictions: [:]
+                ],
+                [
+                        alaId       : 'cl10922',
+                        alaName     : 'psma_state_electoral_2018',
+                        layerName   : 'aust_state_govt_electorates',
+                        title         : "State Gov't Electorates",
+                        defaultSelected: false,
+                        boundaryColour  : '#ff00c5',
+                        showPropertyName: false,
+                        fillColour      : '',
+                        textColour      : '#0070ff',
+                        userAccessRestriction: 'anyUser',
+                        inLayerShapeList     : true,
+                        opacity: 0.5,
+                        changeLayerColour: false,
+                        display     : [
+                                cqlFilter     : defaultCqlFilter,
+                                propertyName  : 'NAME'
+                        ],
+                        style       : [:],
+                        bounds      : bounds,
+                        restrictions: [:]
+                ],
+                [
+                        alaId       : 'cl1083',
+                        alaName     : 'user_uploaded_objects',
+                        layerName   : 'qld_gbr_catchment',
+                        title         : "GBR Catchment",
+                        defaultSelected: false,
+                        boundaryColour  : '#000000',
+                        showPropertyName: false,
+                        fillColour      : '',
+                        textColour      : '',
+                        userAccessRestriction: 'anyUser',
+                        inLayerShapeList     : false,
+                        opacity: 0.5,
+                        changeLayerColour: false,
+                        display     : [
+                                cqlFilter     : defaultCqlFilter,
+                                propertyName  : '',
+                                pids          : []
+                        ],
+                        style       : [:],
+                        bounds      : bounds,
+                        restrictions: [:]
+                ],[
+                        alaId       : 'el671',
+                        alaName     : 'evap_cv',
+                        layerName   : 'evap_cv',
+                        title         : "Evaporation - variability",
+                        defaultSelected: false,
+                        userAccessRestriction: 'anyUser',
+                        inLayerShapeList     : false,
+                        opacity: 0.5,
+                        changeLayerColour: false,
+                        display     : [
+                                cqlFilter     : defaultCqlFilter,
+                                propertyName  : '',
+                                pids          : []
+                        ],
+                        style       : [:],
+                        bounds      : bounds,
+                        restrictions: [:]
+                ]
+        ]
+}
 
 settings.surveyMethods="fielddata.survey.methods"

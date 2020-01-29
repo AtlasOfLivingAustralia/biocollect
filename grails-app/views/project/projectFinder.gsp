@@ -1,4 +1,5 @@
 <%@ page import="grails.converters.JSON; au.org.ala.biocollect.merit.SettingPageType" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <g:if test="${isUserPage}">
@@ -29,13 +30,14 @@
     <asset:stylesheet src="project-finder.css" />
     <asset:script type="text/javascript">
     var fcConfig = {
-        baseUrl: "${grailsApplication.config.grails.serverURL}",
-        spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
-        regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
+        baseUrl: "${grailsApplication.config.grails.serverURL}",
+        spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
+        regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
         geocodeUrl: "${grailsApplication.config.google.geocode.url}",
         siteMetaDataUrl: "${createLink(controller: 'site', action: 'locationMetadataForPoint')}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
@@ -60,6 +62,7 @@
         paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
         enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false},
         downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}",
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
 
         <g:if test="${isUserPage}">
             <g:if test="${isWorks}">
@@ -100,6 +103,7 @@
     <asset:javascript src="project-activity-manifest.js" />
     <asset:javascript src="projects-manifest.js" />
     <asset:javascript src="project-finder.js" />
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 
 <body>
