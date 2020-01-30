@@ -24,12 +24,20 @@
     <div class="row-fluid" data-bind="">
         <div class="span6" id="column1">
             <div class="well span12">
+
                 <div class="well-title">${hubConfig.getTextForAboutTheProject(grailsApplication.config.content.defaultOverriddenLabels)}</div>
+                <div data-bind="if:isBushfire()" class="margin-top-1 margin-bottom-1">
+                    <div class="alert alert-success">
+                        <span class="fa fa-fire"></span> <g:message code="project.bushfireInfo"/>
+                    </div>
+                </div>
+
                 <div data-bind="visible:aim">
                     <div class="text-small-heading">${hubConfig.getTextForAim(grailsApplication.config.content.defaultOverriddenLabels)}</div>
                     <span data-bind="text:aim"></span>
                     <p/>
                 </div>
+
                 <div data-bind="visible:description">
                     <div class="text-small-heading">${hubConfig.getTextForDescription(grailsApplication.config.content.defaultOverriddenLabels)}</div>
                     <span data-bind="html:description.markdownToHtml()"></span>
@@ -41,6 +49,7 @@
                     <p/>
                 </div>
                 </g:if>
+
 
                 <g:if test="${hubConfig?.content?.hideProjectAboutContributing != true}">
                     <div data-bind="visible:!isExternal()" class="margin-top-1 margin-bottom-1">
@@ -203,9 +212,7 @@
                     <div style="line-height:2.2em">
                         <g:render template="tags" />
                     </div>
-                    <div data-bind="if:isBushfire()" class="margin-top-1 margin-bottom-1">
-                        <span class="fa fa-fire"></span> <g:message code="project.bushfireInfo"/>
-                    </div>
+
                 </div>
             </div>
         </div>
