@@ -240,7 +240,7 @@
             $('#about-tab').tab('show');
         }
 
-        <g:if test="${fc.userIsAlaOrFcAdmin() || projectContent.admin.visible}">
+        <g:if test="${(fc.userIsAlaOrFcAdmin() || projectContent.admin.visible) && !project.isExternal}">
             projectViewModel.showBushfireBanner()
         </g:if>
     });
