@@ -857,12 +857,15 @@
         <label data-bind="html: '<span></span> ' + $data, attr:{for:'checkbox'+$index()}"></label>
     </div>
     </script>
+
     <script id="industryTemplate" type="text/html">
     <div class="large-checkbox">
         <input type="checkbox" name="industries"
                data-bind="value: $data, attr:{id:'industry-'+$index()}, checked: $root.industries"/>
         <label data-bind="html: '<span></span> ' + $data, attr:{for:'industry-'+$index()}"></label>
     </div>
+    </script>
+    
     <script id="bushfireCategoriesTemplate" type="text/html">
     <div class="large-checkbox">
         <input type="checkbox" name="bushfireCategories"
