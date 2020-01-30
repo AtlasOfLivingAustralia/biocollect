@@ -136,6 +136,11 @@
                         </div>
                     </div>
                     <div class="span6">
+                        <div data-bind="visible: bushfireCategories().length">
+                            <div class="text-small-heading"><g:message code="project.display.bushfireCategories"/></div>
+                            <span data-bind="text:bushfireCategories().join(', ')"></span>
+                            <p/>
+                        </div>
                         <div data-bind="visible: industries().length">
                             <div class="text-small-heading"><g:message code="project.display.industries"/></div>
                             <span data-bind="text:industries().join(', ')"></span>

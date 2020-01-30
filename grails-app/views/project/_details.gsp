@@ -315,6 +315,23 @@
                 </div>
             </div>
             </config:optionalContent>
+
+            <config:optionalContent key="${au.org.ala.biocollect.merit.hub.HubSettings.CONTENT_BUSHFIRE_CATEGORIES}">
+                <div class="row-fluid">
+                    <div class="clearfix control-group">
+                        <label class="control-label span3"><g:message code="project.details.bushfireCategories.label"/>:<fc:iconHelp><g:message code="project.details.bushfireCategories.help"/></fc:iconHelp></label>
+
+                        <div class="span9">
+                            <!-- ko foreach: transients.bushfireCategories -->
+                            <!-- ko template: { name:'bushfireCategoriesTemplate'} -->
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                </div>
+            </config:optionalContent>
+
+
             <g:if test="${!hubConfig.content?.hideProjectEditCountries}">
             <div class="row-fluid">
                 <div class="clearfix control-group">
@@ -845,6 +862,12 @@
         <input type="checkbox" name="industries"
                data-bind="value: $data, attr:{id:'industry-'+$index()}, checked: $root.industries"/>
         <label data-bind="html: '<span></span> ' + $data, attr:{for:'industry-'+$index()}"></label>
+    </div>
+    <script id="bushfireCategoriesTemplate" type="text/html">
+    <div class="large-checkbox">
+        <input type="checkbox" name="bushfireCategories"
+               data-bind="value: $data, attr:{id:'bushfireCategories-'+$index()}, checked: $root.bushfireCategories"/>
+        <label data-bind="html: '<span></span> ' + $data, attr:{for:'bushfireCategories-'+$index()}"></label>
     </div>
     </script>
 </bc:koLoading>
