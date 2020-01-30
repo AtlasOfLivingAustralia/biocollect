@@ -244,15 +244,30 @@ if (grails.cache.config) {
     }
 }
 
+
+
+
 if (!grails.cache.ehcache) {
     grails {
         cache {
+            enabled = true
             ehcache {
                 cacheManagerName = appName + '-ehcache'
-                reloadable = false
+                reloadable = true
+                diskStore = '/data/${appName}/ehcache'
             }
         }
     }
+}
+grails.cache.config = {
+
+    provider {
+        name "${appName}-ehcache"
+    }
+    diskStore {
+        path "/data/${appName}/ehcache"
+    }
+    
 }
 
 /******************************************************************************\
