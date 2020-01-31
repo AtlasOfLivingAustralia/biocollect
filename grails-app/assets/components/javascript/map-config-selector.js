@@ -144,8 +144,7 @@ ko.components.register('map-config-selector', {
                     });
                 }
 
-                var baseLayerOverlayConfig = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration({baseLayers: ko.toJS(self.baseLayers), overlays: overlays});
-                // var baseLayerConfig = Biocollect.MapUtilities.getALAMapBaseLayerOptions([ko.toJS(previewObject)]);
+                var baseLayerOverlayConfig = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration({baseLayers: ko.toJS(self.baseLayers), overlays: ko.toJS(overlays)});
                 alaMap = new ALA.Map(alaMapId, {
                     baseLayer: baseLayerOverlayConfig.baseLayer,
                     otherLayers: baseLayerOverlayConfig.otherLayers,
@@ -176,7 +175,7 @@ ko.components.register('map-config-selector', {
                     contentType: "application/json"
                 });
             } else {
-                return new Promise().resolve(undefined);
+                return $.Deferred().resolve(undefined);
             }
         }
 
