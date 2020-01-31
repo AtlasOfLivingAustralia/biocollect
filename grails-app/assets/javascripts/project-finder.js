@@ -271,9 +271,98 @@ function ProjectFinder(config) {
         var sortBy = getActiveButtonValues($("#pt-sort"));
         perPage = parseInt(getActiveButtonValues($("#pt-per-page"))[0]);
 
-        pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
-            fq.push(facet.getQueryText())
-        });
+        var queryString = '';
+
+        if (pageWindow.filterViewModel.redefineFacet()) {
+
+            var selectedList = pageWindow.filterViewModel.selectedFacets();
+            var origFacetList = pageWindow.filterViewModel.origSelectedFacet();
+
+            // Separate AND from OR condtion
+            var uniqueFacetTerm = [];
+            selectedList.forEach(function (item) {
+                if (item.facet.type == 'terms') {
+                    if (uniqueFacetTerm.indexOf(item.facet.name()) == -1) {
+                        uniqueFacetTerm.push(item.facet.name())
+                    }
+                }
+            });
+            var dupFacet = {};
+            uniqueFacetTerm.forEach(function (name) {
+                var tempList = [];
+                var mixedTempList = [];
+                selectedList.forEach(function(item) {
+                    // if this facet is part of the original OR condition, ignore it
+                    var found = origFacetList.find(function (orig) {
+                        //if (item.facet.name() == orig.facet.name() && item.term() == orig.term()) {
+                        if (item.type == 'term' && item.id() == orig.id()) {
+                            return true;
+                        }
+                    });
+                    if (!found) {
+                        // if the facet name exist but not term, treat the others as AND condition
+                        var nameFound = origFacetList.find(function (orig) {
+                            if (item.facet.name() == orig.facet.name()) {
+                                return true;
+                            }
+                        });
+                        if (item.facet.name() == name) {
+                            if (nameFound) {
+                                mixedTempList.push(item);
+                            } else
+                                tempList.push(item);
+                        }
+                    }
+                });
+                if (tempList.length > 1) {
+                    dupFacet[name] = tempList;
+                } else if (mixedTempList.length > 0) {
+                    dupFacet[name] = mixedTempList;
+                }
+            });
+
+            var fqList = [];
+
+            for (var term in dupFacet) {
+                var andFacetTermList = [];
+                var facetList = dupFacet[term];
+                facetList.forEach(function (item) {
+                    selectedList = selectedList.filter(function(element) {
+                        return !(element.type == "term" && element.id() == item.id())
+                    });
+                    andFacetTermList.push(item.exclude? '-"' + item.term() + '"': '"' + item.term() + '"');
+                });
+
+
+                var termStrList = '';
+                if (andFacetTermList.length > 0) {
+                    termStrList = '(' + andFacetTermList.join(' AND ') + ')';
+                }
+
+                if (termStrList.length > 0) {
+                    if (queryString.length > 0) {
+                        queryString = queryString +  ' AND ';
+                    }
+                    queryString = queryString + term + ':' + termStrList;
+                }
+            }
+
+            selectedList.forEach(function (facet) {
+                fq.push(facet.getQueryText())
+            });
+
+        } else {
+            pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
+                fq.push(facet.getQueryText())
+            });
+        }
+
+        var query = this.getQuery(true);
+        if (query.length > 0 && queryString.length > 0) {
+            query = query + ' AND ' + queryString;
+        } else {
+            query = queryString;
+        }
 
         var map = {
             fq: fq,
@@ -290,7 +379,7 @@ function ProjectFinder(config) {
             skipDefaultFilters:fcConfig.showAllProjects,
             isWorldWide: isWorldWide,
             projectId: selectedProjectId,
-            q: this.getQuery(true)
+            q: query
         };
 
         map.max =  perPage // Page size
@@ -352,6 +441,9 @@ function ProjectFinder(config) {
             success: function (data) {
                 var projectVMs = [], facets;
                 total = data.total;
+                if (total == 0 && pageWindow.filterViewModel.redefineFacet() && pageWindow.filterViewModel.origSelectedFacet().length > 0) {
+                    bootbox.alert ("There are no projects within the Main Filter that fulfils the conditions in the Sub Filter. Please click 'Clear all' to redefine the search criteria. ")
+                }
                 $.each(data.projects, function (i, project) {
                     projectVMs.push(new ProjectViewModel(project, false));
                 });
@@ -425,6 +517,8 @@ function ProjectFinder(config) {
         geoSearch = {};
         refreshGeofilterButtons();
         pageWindow.filterViewModel.selectedFacets.removeAll();
+        pageWindow.filterViewModel.origSelectedFacet.removeAll();
+        pageWindow.filterViewModel.redefineFacet(false);
     }
     /*************************************************\
      *  Show filtered projects on current page

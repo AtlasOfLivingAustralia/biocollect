@@ -9,8 +9,33 @@
         <div>
             <h4 data-bind="visible: selectedFacets().length"><g:message code="project.search.currentFilters"/></h4>
             <ul>
-                <!-- ko foreach:selectedFacets -->
+                <span data-bind="visible: redefineFacet() && origSelectedFacet().length > 0"><b>Main Filters</b></span>
+                <!-- ko foreach:otherFilters() -->
                 <li><strong data-bind="if: exclude">[EXCLUDE]</strong> <span data-bind="text: displayNameWithoutCount()"></span><a href="#" data-bind="click: remove"><i class="icon-remove"></i></a></li>
+                <!-- /ko  -->
+
+                <div data-bind="if: redefineFacet()">
+
+                    <!-- ko foreach:origSelectedFacet -->
+                    <div data-bind="if: ($index() > 0)">
+                        <span data-bind="if: $parent.redefineFacet()">OR</span>
+                    </div>
+                    <li><strong data-bind="if: exclude">[EXCLUDE]</strong> <span data-bind="text: displayNameWithoutCount()"></span><a href="#" data-bind="click: remove"><i class="icon-remove"></i></a></li>
+                    <!-- /ko  -->
+
+                    <br>
+                    <span data-bind="visible: (origSelectedFacet().length > 0 && subFilter().length > 0)"><b>Sub Filters</b></span>
+
+                </div>
+
+
+                <!-- ko foreach:subFilter() -->
+
+                <div data-bind="if: ($index() > 0)">
+                    <span data-bind="if: $parent.redefineFacet()">AND</span>
+                </div>
+                <li><strong data-bind="if: exclude">[EXCLUDE]</strong> <span data-bind="text: displayNameWithoutCount()"></span><a href="#" data-bind="click: remove"><i class="icon-remove"></i></a>
+                </li>
                 <!-- /ko  -->
             </ul>
         </div>
