@@ -544,6 +544,7 @@ function ProjectFinder(config) {
             allowSearchRegionByAddress: false,
             defaultLayersControl: true,
             singleDraw: false,
+            trackWindowHeight: true,
             wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
             wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
             baseLayer: baseLayerOverlayConfig.baseLayer,
