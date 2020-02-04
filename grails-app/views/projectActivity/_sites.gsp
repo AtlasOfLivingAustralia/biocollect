@@ -119,15 +119,11 @@
 
     <div class="row-fluid">
         Default zoom area:
-        <select id="siteToZoom1" data-bind="value: defaultZoomArea">
+        <select id="siteToZoom1" data-bind="value: defaultZoomArea" >
+            <option value="">Choose a zoom area</option>
         <!-- ko foreach: sites -->
            <!-- ko if: added() -->
-              <!-- ko if: siteId != $parent.defaultZoomArea -->
-                    <option data-bind="text: name, value: siteId" ></option>
-              <!-- /ko -->
-              <!-- ko if: siteId == $parent.defaultZoomArea -->
-                <option data-bind="text: name, value: siteId"  selected></option>
-              <!-- /ko -->
+                <option data-bind="text: name, value: siteId" ></option>
            <!-- /ko -->
         <!-- /ko -->
         </select>

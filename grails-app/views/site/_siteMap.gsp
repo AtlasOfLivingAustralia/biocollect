@@ -30,6 +30,7 @@
             showReset: false,
             zoomToObject: true,
             markerOrShapeNotBoth: false,
+            trackWindowHeight: true,
             baseLayer: baseLayersAndOverlays.baseLayer,
             otherLayers: baseLayersAndOverlays.otherLayers,
             overlays: baseLayersAndOverlays.overlays,

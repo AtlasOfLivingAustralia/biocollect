@@ -593,6 +593,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             useMyLocation: false,
             allowSearchLocationByAddress: false,
             allowSearchRegionByAddress: false,
+            trackWindowHeight: true,
             baseLayer: baseLayersAndOverlays.baseLayer,
             otherLayers: baseLayersAndOverlays.otherLayers,
             overlays: baseLayersAndOverlays.overlays,
