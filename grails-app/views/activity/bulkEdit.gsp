@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
 <g:set var="mapService" bean="mapService"></g:set>
 <html>
 <head>
