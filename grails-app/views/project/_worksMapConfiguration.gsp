@@ -108,22 +108,18 @@
     <div class="row-fluid">
         <div class="span12">
             <h4>Additional map options</h4>
-            <auth:ifAnyGranted roles="ROLE_ADMIN">
-                <label for="map-tiles">
-                    Map tiles:
-                    <select id="map-tiles" data-bind="value: baseLayersName, optionsCaption: 'Choose...'">
-                        <option>Google Maps</option>
-                        <option>Open Layers</option>
-                    </select>
-                </label>
-
-            </auth:ifAnyGranted>
-
             <label>
                 Default zoom area:
                 <select id="siteToZoom"
                         data-bind='options: transients.sites, optionsText: "name", optionsValue: "siteId", value: defaultZoomArea;'></select>
             </label>
+
+            <div class="row-fluid">
+                <div class="well">
+                    <h4 class="block-header"><g:message code="project.works.mapConfiguration.title"/></h4>
+                    <map-config-selector params="allBaseLayers: fcConfig.allBaseLayers, allOverlays: fcConfig.allOverlays, mapLayersConfig: $parent.mapLayersConfig"></map-config-selector>
+                </div>
+            </div>
 
         </div>
     </div>

@@ -144,13 +144,6 @@
             </label>
             <span class="help-block">User can only select from exisiting site </span>
 
-            <auth:ifAnyGranted roles="ROLE_ADMIN">
-                <label for="map-tiles">Map tiles</label>
-                <select id="map-tiles" data-bind="value: baseLayersName, optionsCaption: 'Choose...', disable: transients.warning()">
-                    <option>Google Maps</option>
-                    <option>Open Layers</option>
-                </select>
-            </auth:ifAnyGranted>
         </div>
     </div>
 

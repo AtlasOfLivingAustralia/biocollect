@@ -619,8 +619,7 @@ class SiteService {
             "allowPolygons" : true,
             "allowAdditionalSurveySites" : false,
             "selectFromSitesOnly" : false,
-            "defaultZoomArea" : defaultZoomSiteId,
-            "baseLayersName" : "Open Layers"
+            "defaultZoomArea" : defaultZoomSiteId
         ]
     }
 }
