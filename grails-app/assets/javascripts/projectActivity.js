@@ -23,7 +23,6 @@ var ProjectActivity = function (params) {
     self.allowPolygons = ko.observable(('allowPolygons' in pActivity)? pActivity.allowPolygons : false);
     self.allowPoints = ko.observable(('allowPoints' in pActivity)? pActivity.allowPoints : true);
     self.defaultZoomArea = ko.observable(('defaultZoomArea' in pActivity)? pActivity.defaultZoomArea : project?project.projectSiteId:'');
-    self.baseLayersName = ko.observable(pActivity.baseLayersName);
     self.mapLayersConfig = pActivity.mapLayersConfig || {};
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
     self.usageGuide = ko.observable(pActivity.usageGuide || "");
@@ -604,7 +603,7 @@ var ProjectActivity = function (params) {
         else if (by == "info") {
             var ignore = self.ignore.concat(['current',
                 'access', 'species', 'sites', 'transients', 'endDate','visibility','pActivityFormName', 'restrictRecordToSites',
-                'allowAdditionalSurveySites', 'baseLayersName', 'mapLayersConfig', 'project']);
+                'allowAdditionalSurveySites', 'mapLayersConfig', 'project']);
             ignore = $.grep(ignore, function (item, i) {
                 return item != "documents";
             });
@@ -630,7 +629,6 @@ var ProjectActivity = function (params) {
             jsData.restrictRecordToSites = self.restrictRecordToSites();
             jsData.allowAdditionalSurveySites = self.allowAdditionalSurveySites();
             jsData.selectFromSitesOnly = self.selectFromSitesOnly();
-            jsData.baseLayersName = self.baseLayersName();
             jsData.mapLayersConfig = ko.toJS(self.mapLayersConfig);
             jsData.allowPolygons = self.allowPolygons();
             jsData.excludeProjectSite = self.excludeProjectSite();

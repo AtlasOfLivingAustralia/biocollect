@@ -399,7 +399,8 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
 
     self.saveMapConfig = function () {
         var data = {
-            mapConfiguration: self.mapConfiguration.toJS()
+            mapConfiguration: self.mapConfiguration.toJS(),
+            mapLayersConfig: ko.toJS(self.mapLayersConfig)
         };
 
         self.mapConfiguration.transients.loading(true);

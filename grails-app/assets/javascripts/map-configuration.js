@@ -33,7 +33,6 @@ function MapConfiguration(config, project)
     self.allowAdditionalSurveySites = ko.observable(config.allowAdditionalSurveySites);
     self.selectFromSitesOnly = ko.observable(config.selectFromSitesOnly);
     self.defaultZoomArea = ko.observable(config.defaultZoomArea || project.projectSiteId);
-    self.baseLayersName = ko.observable(config.baseLayersName);
     self.sites = ko.observableArray(config.sites || []);
     self.toJS = function () {
         return ko.mapping.toJS(self, {ignore: ['transients']});
