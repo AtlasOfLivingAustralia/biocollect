@@ -150,7 +150,7 @@
 <bc:koLoading>
     <g:render template="/shared/backToSearchResults"/>
     <g:render template="banner"/>
-    <div class="container-fluid">
+    <div class="container-fluid" id="worksProjectContent">
         <div id="project-results-placeholder"></div>
         <g:render template="/shared/flashScopeMessage"/>
 

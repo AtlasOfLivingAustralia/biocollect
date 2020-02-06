@@ -267,7 +267,7 @@
 
     %{-- Map on about tab needs redrawing since leaflet viewer shows base layer on top left corner. #1253--}%
     var firstMapRedrawOnAboutTab = true;
-    $('#about-tab').on("shown", function() {
+    $('#csProjectContent,#worksProjectContent').on("knockout-visible", function() {
         firstMapRedrawOnAboutTab && map && map.redraw && map.redraw();
         firstMapRedrawOnAboutTab = false;
     });
