@@ -51,5 +51,18 @@ class HomeControllerSpec extends Specification {
         response.forwardedUrl == '/aController/anAction'
     }
 
+    def "optional project content must have bushfireCategores and industries facet" (){
+        given:
+        HubSettings settings = new HubSettings()
+        SettingService.setHubConfig(settings)
+
+        when:
+        def model = controller.index()
+
+        then:
+        HubSettings.OPTIONAL_PROJECT_CONTENT?.find{it == 'bushfireCategories'}
+        HubSettings.OPTIONAL_PROJECT_CONTENT?.find{it == 'industries'}
+        model.containsKey('hubConfig')
+    }
 
 }
