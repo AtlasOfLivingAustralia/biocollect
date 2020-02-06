@@ -453,6 +453,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
     self.alaHarvest = ko.observable(project.alaHarvest ? true : false);
     self.industries = ko.observableArray(project.industries);
+    self.bushfireCategories = ko.observableArray(project.bushfireCategories);
     self.transients.notification = new EmailViewModel(fcConfig);
     self.transients.yesNoOptions = ["Yes","No"];
     self.transients.alaHarvest = ko.computed({
@@ -967,6 +968,16 @@ function ProjectViewModel(project, isUserEditor) {
 
     self.transients.index = ko.observable();
     self.transients.industries = ['Bananas','Cropping','Grazing','Sugarcane'];
+    self.transients.bushfireCategories = ['Post fire assessment and recovery - ecology and or biodiversity monitoring, documenting regrowth etc.',
+        'Wildlife and endangered species support - water sources, identifying remaining habitat, predators etc.',
+        'Air quality, cloud, smoke monitoring etc.',
+        'Water quality - including runoff issues',
+        'Health and well-being, respiratory issues, mental health & trauma, community sustainability etc.',
+        'Climate change observations, local weather conditions',
+        'Soil condition',
+        'Geography and spatial data',
+        'Other'
+    ];
 
     self.loadPrograms = function (programsModel) {
         $.each(programsModel.programs, function (i, program) {

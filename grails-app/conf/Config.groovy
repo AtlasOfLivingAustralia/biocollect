@@ -244,6 +244,7 @@ if (grails.cache.config) {
     }
 }
 
+
 if (!grails.cache.ehcache) {
     grails {
         cache {
