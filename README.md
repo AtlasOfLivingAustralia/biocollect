@@ -1,16 +1,9 @@
 Biocollect 
 ==========
 
-## Migration from 2.x to 3.3.9
+## Migration from 2.x to 3.3.11
 
-### Grails framework: 3.3.9
-
-### TODO
-    * Optimize external config to grails-app/conf/application.yml or Application.groovy
-    * log.debug and other methods do not accept objects any more
-    * Some invalid url redirect in UrlMapping 
-    
-
+### Grails framework: 3.3.11
 
 ## Build status
 
@@ -30,12 +23,20 @@ New server side classes that are custom to Biocollect should be under the packag
 ## General Information
 
 ### Technologies
-  * Grails framework: 2.4.5
+  * Grails framework: 3.3.11
+  * Java 8
   * Knockout JS
   * JQuery
+  * Gradle
+  
 
 ### Setup
-* This project requires you to run the [ecodata project](https://github.com/AtlasOfLivingAustralia/ecodata) on port `8080`.
+
+* This project requires you to run the [ecodata project](https://github.com/AtlasOfLivingAustralia/ecodata) on port `8081`.
+
+* Follow this guide to setup biocollect in Intellij
+
+
 * You will need the following local directories:
 ```
   /data/biocollect/config
