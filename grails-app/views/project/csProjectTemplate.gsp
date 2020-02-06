@@ -148,7 +148,7 @@
         <g:render template="banner"/>
     </g:if>
 
-    <div class="container-fluid">
+    <div class="container-fluid" id="csProjectContent">
         <div id="project-results-placeholder"></div>
         <g:render template="/shared/flashScopeMessage"/>
 
