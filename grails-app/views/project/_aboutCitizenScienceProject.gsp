@@ -35,7 +35,7 @@
                 <div data-bind="visible:aim">
                     <div class="text-small-heading">${hubConfig.getTextForAim(grailsApplication.config.content.defaultOverriddenLabels)}</div>
                     <span data-bind="text:aim"></span>
-                    <p/>
+
                 </div>
 
                 <div data-bind="visible:description">
