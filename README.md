@@ -1,10 +1,6 @@
 Biocollect 
 ==========
 
-## Migration from 2.x to 3.3.11
-
-### Grails framework: 3.3.11
-
 ## Build status
 
 ### Master branch
@@ -30,21 +26,12 @@ New server side classes that are custom to Biocollect should be under the packag
   * Gradle
   
 
-### Setup
+### Development Setup
 
 * This project requires you to run the [ecodata project](https://github.com/AtlasOfLivingAustralia/ecodata) on port `8081`.
 
-* Follow this guide to setup biocollect in Intellij
+* [Use this guide to setup Biocollect in Intellij](setup.md)
 
-
-* You will need the following local directories:
-```
-  /data/biocollect/config
-  /data/biocollect/images
-```
-* Add the external config file.
-* The app is expected to run in port 8087 locally. Just add the option `-Dserver.port=8087` to the run-app command:
-![Imgur](http://i.imgur.com/syIKPgy.png)
 
 ### Running Javascript automatic tests
 * Executing the tests requires node.js
