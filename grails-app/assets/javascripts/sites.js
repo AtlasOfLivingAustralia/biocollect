@@ -157,6 +157,10 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         }, false);
     };
 
+    self.refreshCoordinates = function () {
+        updateSiteMarkerPosition();
+    };
+
     function createPointOfInterest(poi, hasDocuments) {
         var pointOfInterest = new PointOfInterest(poi, hasDocuments);
 
