@@ -784,3 +784,9 @@ input.full-width-input {
         margin-top: 70px;
     }
 }
+
+@media (max-width: 767px) {
+    .modal.fade {
+        top: -500px;
+    }
+}
