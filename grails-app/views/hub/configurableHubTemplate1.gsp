@@ -367,11 +367,20 @@ section#breadcrumb {
 #main-content #bannerHubOuter .logo {
   left: 80px;
   top: -25px;
-  max-width: 250px;
-  max-height: 250px;
+  max-width: 350px;
+  max-height: 300px;
   position: absolute;
   z-index: 5;
 }
+
+@media (max-width: 767px) {
+    #main-content #bannerHubOuter .logo {
+        left: 25px;
+        max-width: 250px;
+        max-height: 200px;
+    }
+}
+
 #main-content #pt-search {
   Min-width: 150px;
   Max-width: 300px;
@@ -712,6 +721,11 @@ section#breadcrumb {
   color: ${footertextcolor};
   text-decoration: none;
 }
+
+#custom-footer .navbar-inverse .nav > li {
+  color: ${footertextcolor};
+}
+
 #custom-footer .navbar-inverse .nav > li > a:hover {
   text-decoration: underline;
 }
@@ -752,8 +766,7 @@ section#breadcrumb {
 }
 
 #custom-footer #alaLink.brand {
-  margin-top:10px;
-  margin-right: 10px;
+  margin: 15px;
   display: inline-block;
 }
 
@@ -764,8 +777,7 @@ section#breadcrumb {
 #custom-footer .footer-logo {
   max-height: 100px;
   max-width: 200px;
-  margin-right:10px;
-  margin-top: 10px;
+  margin: 15px;
   vertical-align: top;
 }
 
