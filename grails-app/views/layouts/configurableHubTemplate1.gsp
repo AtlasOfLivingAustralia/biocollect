@@ -233,24 +233,26 @@
                     </div><!--/.spanX -->
                     <div class="pull-right">
                         <div class="row-fluid text-right">
-                            <g:each in="${hubConfig.templateConfiguration?.footer?.logos}" var="logo">
-                                <g:if test="${logo.href}">
-                                    <a href="${logo.href}" title="Link to website" target="_blank">
+                            <div class="span12">
+                                <g:each in="${hubConfig.templateConfiguration?.footer?.logos}" var="logo">
+                                    <g:if test="${logo.href}">
+                                        <a href="${logo.href}" title="Link to website" target="_blank" class="do-not-mark-external">
+                                            <img class="footer-logo" src="${logo.url}" alt="Website logo"/>
+                                        </a>
+                                    </g:if>
+                                    <g:else>
                                         <img class="footer-logo" src="${logo.url}" alt="Website logo"/>
-                                    </a>
-                                </g:if>
-                                <g:else>
-                                    <img class="footer-logo" src="${logo.url}" alt="Website logo"/>
-                                </g:else>
-                            </g:each>
-                            <a class="brand text-left" href="http://ala.org.au/" id="alaLink" title="ALA home page">
-                                <img src="${asset.assetPath(src:'mdba/ALA-logo-BW-124x109.png')}" alt="Powered by ALA logo"
-                                     class="headerLogo"/>
-                                <div id="alaHeadingText"><div id="poweredBy">powered by</div>
-                                    <div id="alaBy" class="visible-desktop">Atlas of Living Australia</div>
-                                    <div class="hidden-desktop">ALA</div>
-                                </div>
-                            </a>
+                                    </g:else>
+                                </g:each>
+                                <a class="brand text-left" href="http://ala.org.au/" id="alaLink" title="ALA home page">
+                                    <img src="${asset.assetPath(src:'mdba/ALA-logo-BW-124x109.png')}" alt="Powered by ALA logo"
+                                         class="headerLogo"/>
+                                    <div id="alaHeadingText"><div id="poweredBy">powered by</div>
+                                        <div id="alaBy" class="visible-desktop">Atlas of Living Australia</div>
+                                        <div class="hidden-desktop">ALA</div>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
