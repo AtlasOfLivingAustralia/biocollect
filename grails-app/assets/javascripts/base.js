@@ -7,3 +7,4 @@
 //= require jquery.appear/jquery.appear.js
 //= require bootstrap/js/bootstrap.js
 //= require bootstrap-combobox/bootstrap-combobox.js
+//= require fieldcapture-application.js
