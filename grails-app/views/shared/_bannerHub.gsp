@@ -2,7 +2,7 @@
     <div id="bannerHubOuter">
         <g:if test="${hubConfig.logoUrl}">
             <div class="logo">
-                <img src="${hubConfig.logoUrl}">
+                <img class="image-logo" src="${hubConfig.logoUrl}" onload="findLogoScalingClass(this)">
             </div>
         </g:if>
 

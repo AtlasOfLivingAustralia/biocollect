@@ -367,8 +367,8 @@ section#breadcrumb {
 #main-content #bannerHubOuter .logo {
   left: 80px;
   top: -25px;
-  max-width: 350px;
-  max-height: 300px;
+  width: 350px;
+  height: 300px;
   position: absolute;
   z-index: 5;
 }
@@ -376,8 +376,8 @@ section#breadcrumb {
 @media (max-width: 767px) {
     #main-content #bannerHubOuter .logo {
         left: 25px;
-        max-width: 250px;
-        max-height: 200px;
+        width: 250px;
+        height: 200px;
     }
 }
 
