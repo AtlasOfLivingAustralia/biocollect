@@ -7,6 +7,8 @@
 // leaflet
 //= require leaflet-manifest.js
 //= require_self
+// responsive table
+//= require responsive-table-stacked/stacked.js
 
 function ProjectFinder(config) {
 

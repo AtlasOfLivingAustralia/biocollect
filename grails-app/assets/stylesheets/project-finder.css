@@ -2,6 +2,7 @@
  *= require leaflet-manifest
  *= require facets-filter-view.css
  *= require project-daystogo.css
+ *= require responsive-table-stacked/stacked.css
  */
 
 .projectLogo {

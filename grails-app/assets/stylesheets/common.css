@@ -201,6 +201,10 @@ select,input[type="text"],input[type="password"],input[type="datetime"],input[ty
     margin-left: 20px;
 }
 
+.margin-bottom-0, #overviewDocumentList input[type="text"].margin-bottom-0 {
+    margin-bottom: 0;
+}
+
 .margin-bottom-1 {
     display: inline-block;
     margin-bottom: 10px;
