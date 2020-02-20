@@ -33,6 +33,14 @@ section#breadcrumb {
   /* Echo out a label for the example */
   /*image display size on project finder*/
 }
+
+@media (max-width: 767px) {
+    #main-content>.container-fluid, #custom-footer .container-fluid {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+}
+
 #main-content h1, #main-content h2, #main-content h3, #main-content h4, #main-content h5 {
   font-family: Roboto, Helvetica, "Helvetica Neue", Arial, sans-serif;
   font-weight: 500;
