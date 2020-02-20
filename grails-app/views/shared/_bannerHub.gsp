@@ -2,7 +2,7 @@
     <div id="bannerHubOuter">
         <g:if test="${hubConfig.logoUrl}">
             <div class="logo">
-                <img src="${hubConfig.logoUrl}">
+                <img class="image-logo" src="${hubConfig.logoUrl}" onload="findLogoScalingClass(this)">
             </div>
         </g:if>
 
@@ -12,9 +12,10 @@
                     <g:set var="images" value="${hubConfig.templateConfiguration.banner.images}"></g:set>
                     <g:each var="image" in="${images}" status="index">
                         <div class="item ${index ==0? 'active' :''}">
-                            <img src="${image.url}">
+                            <div class="" style="background: url(${image.url}) no-repeat center top; max-height: 500px; min-height: 300px; background-size: cover;">
+                            </div>
                             <g:if test="${image.caption}">
-                                <div class="carousel-caption">
+                                <div class="carousel-caption hidden-phone">
                                     <p>${image.caption}</p>
                                 </div>
                             </g:if>
