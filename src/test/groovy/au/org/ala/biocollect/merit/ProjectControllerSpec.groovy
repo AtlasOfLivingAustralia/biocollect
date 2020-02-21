@@ -1,20 +1,7 @@
-package au.org.ala.biocollect.au.org.ala.biocollect.merit
+package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.VocabService
-import au.org.ala.biocollect.merit.ActivityService
-import au.org.ala.biocollect.merit.AuditService
-import au.org.ala.biocollect.merit.BlogService
-import au.org.ala.biocollect.merit.CollectoryService
-import au.org.ala.biocollect.merit.CommonService
-import au.org.ala.biocollect.merit.DocumentService
-import au.org.ala.biocollect.merit.MetadataService
-import au.org.ala.biocollect.merit.ProjectController
-import au.org.ala.biocollect.merit.ProjectService
-import au.org.ala.biocollect.merit.RoleService
-import au.org.ala.biocollect.merit.SettingService
-import au.org.ala.biocollect.merit.SiteService
-import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
 import grails.test.mixin.TestFor
@@ -22,7 +9,6 @@ import spock.lang.Specification
 
 import static org.apache.http.HttpStatus.SC_OK
 import static org.apache.http.HttpStatus.SC_REQUEST_TIMEOUT
-
 /**
  * Specification for the ProjectController
  */
