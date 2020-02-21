@@ -1,4 +1,5 @@
 var ProjectActivity = function (params) {
+    var SITE_CREATE = 'sitecreate', SITE_PICK = 'sitepick', SITE_PICK_CREATE = 'sitepickcreate';
     if(!params) params = {};
     var pActivity = params.pActivity ? params.pActivity : {};
     var projectId = params.projectId ? params.projectId : "";
@@ -15,15 +16,28 @@ var ProjectActivity = function (params) {
     self.project = project;
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
-    self.allowAdditionalSurveySites = ko.observable(pActivity.allowAdditionalSurveySites);
-    self.selectFromSitesOnly = ko.observable(pActivity.selectFromSitesOnly);
+    /**
+     * Check this flag, if A site could be created and attached to ProjectActivity. The created site is a visible site and
+     * available to admin to include in the pre-determined list of sites.
+     * If this option is unchecked, the drawing controls create private site. Private site is not visible or indexed.
+     */
+    self.addCreatedSiteToListOfSelectedSites = ko.observable(pActivity.addCreatedSiteToListOfSelectedSites);
+    /**
+     * selectFromSitesOnly removed
+     * Use surveySiteOption = 'sitepick' instead.
+     * Data to be migrated by a script.
+     */
     self.legalCustodianOrganisation = ko.utils.unwrapObservable(pActivity.legalCustodianOrganisation || organisationName);
     self.sites = ko.observableArray();
-    self.excludeProjectSite = ko.observable(pActivity.excludeProjectSite ? pActivity.excludeProjectSite : false);
+    /**
+     * excludeProjectSite removed
+     * Replaced with un-checking project area from the site list.
+     */
     self.allowPolygons = ko.observable(('allowPolygons' in pActivity)? pActivity.allowPolygons : false);
     self.allowPoints = ko.observable(('allowPoints' in pActivity)? pActivity.allowPoints : true);
-    self.defaultZoomArea = ko.observable(('defaultZoomArea' in pActivity)? pActivity.defaultZoomArea : project?project.projectSiteId:'');
-    self.baseLayersName = ko.observable(pActivity.baseLayersName);
+    self.allowLine = ko.observable(('allowLine' in pActivity)? pActivity.allowLine : false);
+    self.defaultZoomArea = ko.observable(pActivity.defaultZoomArea || project.projectSiteId);
+    self.mapLayersConfig = pActivity.mapLayersConfig || {};
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
     self.usageGuide = ko.observable(pActivity.usageGuide || "");
     self.relatedDatasets = ko.observableArray (pActivity.relatedDatasets || []);
@@ -40,6 +54,8 @@ var ProjectActivity = function (params) {
     self.dataManagementPolicyDescription = ko.observable(pActivity.dataManagementPolicyDescription || "");
     self.dataManagementPolicyURL = ko.observable(pActivity.dataManagementPolicyURL || "");
     self.dataManagementPolicyDocument = ko.observable();
+    self.surveySiteOption = ko.observable(pActivity.surveySiteOption || SITE_PICK);
+    self.transients.surveySiteOption = self.surveySiteOption();
     self.transients.publicAccess = stats.publicAccess? "True" : "False";
     self.transients.activityLastUpdated = stats.activityLastUpdated;
     self.transients.speciesRecorded = ko.observable(stats.speciesRecorded).extend({integer:0});
@@ -120,17 +136,41 @@ var ProjectActivity = function (params) {
         }
     });
 
-    self.selectFromSitesOnly.subscribe(function(checked){
-        if(checked){
-            self.allowAdditionalSurveySites(false);
+    /**
+     * Does sanity check when switching between options. Makes sure certain options are cleared when survey site option
+     * change.
+     */
+    self.surveySiteOption.subscribe(function(newOption) {
+        switch (newOption) {
+            case SITE_CREATE:
+                self.clearSelectedSites();
+                break;
+            case SITE_PICK:
+                self.clearCreateSiteOptions();
+                break;
+            case SITE_PICK_CREATE:
+                // do nothing
+                break;
         }
-    }.bind(self));
+    });
 
-    self.allowAdditionalSurveySites.subscribe(function(checked){
-        if(checked){
-            self.selectFromSitesOnly(false);
-        }
-    }.bind(self));
+    self.clearSelectedSites = function() {
+        $.each(self.sites(), function (index, site) {
+            site.added(false);
+        });
+
+        // Must only be able to add user created site to  pre-determined list when pick & create option is selected.
+        self.addCreatedSiteToListOfSelectedSites(false);
+    };
+
+    self.clearCreateSiteOptions = function() {
+        self.allowPoints(false);
+        self.allowPolygons(false);
+        self.allowLine(false);
+
+        // Must only be able to add user created site to  pre-determined list when pick & create option is selected.
+        self.addCreatedSiteToListOfSelectedSites(false);
+    };
 
     self.previewUrl = ko.observable('');
 
@@ -209,6 +249,11 @@ var ProjectActivity = function (params) {
         console.log("pActivityFormName about to change old form: " + oldValue);
         // console.log("Survey: " + self.name());
         self.transients.oldFormName = oldValue;
+    };
+
+    // hack - added because click handler initialisation run set surveySiteOption
+    self.transients.setSurveySiteOption = function () {
+        self.surveySiteOption(this.value);
     };
 
     self.transients.isDataAvailable = function (){
@@ -603,7 +648,7 @@ var ProjectActivity = function (params) {
         else if (by == "info") {
             var ignore = self.ignore.concat(['current',
                 'access', 'species', 'sites', 'transients', 'endDate','visibility','pActivityFormName', 'restrictRecordToSites',
-                'allowAdditionalSurveySites', 'baseLayersName', 'project']);
+                'addCreatedSiteToListOfSelectedSites', 'mapLayersConfig', 'project']);
             ignore = $.grep(ignore, function (item, i) {
                 return item != "documents";
             });
@@ -627,13 +672,13 @@ var ProjectActivity = function (params) {
             });
             jsData.sites = sites;
             jsData.restrictRecordToSites = self.restrictRecordToSites();
-            jsData.allowAdditionalSurveySites = self.allowAdditionalSurveySites();
-            jsData.selectFromSitesOnly = self.selectFromSitesOnly();
-            jsData.baseLayersName = self.baseLayersName();
+            jsData.addCreatedSiteToListOfSelectedSites = self.addCreatedSiteToListOfSelectedSites();
+            jsData.mapLayersConfig = ko.toJS(self.mapLayersConfig);
             jsData.allowPolygons = self.allowPolygons();
-            jsData.excludeProjectSite = self.excludeProjectSite();
             jsData.allowPoints = self.allowPoints();
+            jsData.allowLine = self.allowLine();
             jsData.defaultZoomArea = self.defaultZoomArea();
+            jsData.surveySiteOption = self.surveySiteOption();
         }
         else if (by == "visibility") {
             jsData = {};
@@ -766,6 +811,31 @@ var ProjectActivity = function (params) {
 
 
     self.setDataManagementDocumentObserables(self.findDocumentById(pActivity.dataManagementPolicyDocument));
+
+    /**
+     * If user cannot create site, then addCreatedSiteToListOfSelectedSites should be cleared.
+     */
+    function clearAddCreatedSiteToListOfSelectedSitesIfUserCannotCreateSite(createSite) {
+        if( !createSite )
+            if (self.isUserSiteCreationConfigValid())
+                self.addCreatedSiteToListOfSelectedSites(false);
+    };
+
+    self.allowPoints.subscribe(clearAddCreatedSiteToListOfSelectedSitesIfUserCannotCreateSite);
+    self.allowPolygons.subscribe(clearAddCreatedSiteToListOfSelectedSitesIfUserCannotCreateSite);
+    self.allowLine.subscribe(clearAddCreatedSiteToListOfSelectedSitesIfUserCannotCreateSite);
+
+    self.isUserSiteCreationConfigValid = function () {
+        if (!(self.allowPolygons() || self.allowPoints() || self.allowLine())) {
+            return "Configuration not valid - Either points, polygon or line drawing should be enabled."
+        }
+    };
+
+    self.isSiteSelectionConfigValid = function () {
+        if (!self.getNumberOfSitesForSurvey()) {
+            return "Configuration not valid - At least one site must be selected."
+        }
+    };
 };
 
 var SiteList = function (o, surveySites, pActivity) {
@@ -801,9 +871,37 @@ var SiteList = function (o, surveySites, pActivity) {
     self.transients = {};
 
     /**
+     * Check if site delete button is to be disabled. If answer is no to each of the below statements, then site can be
+     * deleted.
+     * 1. Are data associated with site.
+     * 2. Is site selected by project.
+     * 3. Is site a project area.
+     * @returns {*|boolean|boolean}
+     */
+    self.transients.isSiteDeleteDisabled = function () {
+        var site = this;
+        var isDataPresent = self.transients.isDataForSite();
+        if (isDataPresent) {
+            return true
+        } else {
+            // is site selected/checked?
+            if(self.added()) {
+                return true;
+            }
+            // is site a project area?
+            else if (self.isProjectArea()) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    };
+
+    /**
      * checks if this site has data associated for the provided project activity.
      */
-    self.transients.isDataForSite = ko.computed(function(){
+    self.transients.isDataForSite = function() {
         // if ajax call is not complete return has data so that the button is disabled
         if(!pActivity.transients.siteWithDataAjaxFlag()){
             return true
@@ -815,7 +913,22 @@ var SiteList = function (o, surveySites, pActivity) {
         });
 
         return results && results.length > 0
-    });
+    };
+
+    self.transients.deleteSite = function (){
+        var url = fcConfig.siteDeleteUrl + '?siteId=' + self.siteId();
+        $.ajax({
+            url: url,
+            success: function(){
+                bootbox.alert('Successfully deleted site. Redirecting in 3 seconds.');
+                setTimeout(function(){ window.location.reload()}, 3000);
+            },
+            error: function(xhr){
+                var message = JSON.parse(xhr.responseText)
+                bootbox.alert(message.error);
+            }
+        })
+    }
 };
 
 var ImagesViewModel = function (image) {
@@ -948,8 +1061,32 @@ function isEmbargoDateRequired(field, rules, i, options) {
     }
 }
 
+function isUserSiteCreationConfigValid (field, rules, i, options) {
+    field = field && field[0];
+    var model = ko.dataFor(field);
+    if (['sitecreate', 'sitepickcreate'].indexOf(model.surveySiteOption()) > -1) {
+        var msg = model.isUserSiteCreationConfigValid();
+        if (msg) {
+            rules.push('required');
+            return msg;
+        }
+    }
+}
+
+function isSiteSelectionConfigValid (field, rules, i, options) {
+    field = field && field[0];
+    var model = ko.dataFor(field);
+    if (['sitepick', 'sitepickcreate'].indexOf(model.surveySiteOption()) > -1) {
+        var msg = model.isSiteSelectionConfigValid();
+        if (msg) {
+            rules.push('required');
+            return msg;
+        }
+    }
+}
+
 function initialiseValidator() {
-    var tabs = ['info', 'species', 'form', 'access', 'visibility', 'alert'];
+    var tabs = ['info', 'species', 'form', 'access', 'visibility', 'alert', 'location'];
     $.each(tabs, function (index, label) {
         $('#project-activities-' + label + '-validation').validationEngine({promptPosition: "topLeft"});
     });
