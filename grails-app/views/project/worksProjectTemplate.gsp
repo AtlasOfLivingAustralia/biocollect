@@ -117,7 +117,8 @@
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
         allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}"
         },
         here = window.location.href;
 

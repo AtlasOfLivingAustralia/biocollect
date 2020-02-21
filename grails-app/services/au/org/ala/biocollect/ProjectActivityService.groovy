@@ -36,6 +36,10 @@ class ProjectActivityService {
     CacheService cacheService
     SettingService settingService
 
+    def search(params) {
+        webService.doPost(grailsApplication.config.ecodata.service.url + '/projectActivity/search', params)
+    }
+
     def getAllByProject(projectId, levelOfDetail = "", version = null, stats = false) {
         def params = '?'
         params += levelOfDetail ? "view=${levelOfDetail}&" : ''

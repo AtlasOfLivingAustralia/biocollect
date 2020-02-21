@@ -57,7 +57,7 @@
                 <g:render template="/admin/addPermissions" model="[addUserUrl:g.createLink(controller:'user', action:'addUserAsRoleToProject'), entityId:project.projectId]"/>
                 <g:render template="/admin/permissionTablePaginated"/>
             </div>
-            <div id="mapConfiguration" class="pill-pane">
+            <div id="mapConfiguration" class="pill-pane validationEngineContainer">
                 <g:render template="worksMapConfiguration"></g:render>
             </div>
             <!-- DOCUMENTS -->

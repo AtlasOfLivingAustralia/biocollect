@@ -318,6 +318,11 @@ select,input[type="text"],input[type="password"],input[type="datetime"],input[ty
 .padding-top-0 {
     padding-top: 10px;
 }
+
+.padding-top-20 {
+    padding-top: 20px;
+}
+
 .searchResultSection {
     padding-left: 20px;
 }

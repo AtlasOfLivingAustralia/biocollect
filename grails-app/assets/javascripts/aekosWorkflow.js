@@ -576,7 +576,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
         var jsData;
         var ignore = self.ignore.concat(['current', 'pActivityForms', 'pActivityFormImages', 'projectViewModel', 'selectedTab',
             'access', 'species', 'sites', 'transients', 'endDate','visibility','pActivityFormName', 'restrictRecordToSites', 'user',
-            'allowAdditionalSurveySites', 'project', 'currentSubmissionRecord', 'currentSubmissionPackage', 'siteCoordinates', 'selectedIbraRegion', 'animalSpecies', 'plantSpecies', 'parentProjectActivities',
+            'addCreatedSiteToListOfSelectedSites', 'project', 'currentSubmissionRecord', 'currentSubmissionPackage', 'siteCoordinates', 'selectedIbraRegion', 'animalSpecies', 'plantSpecies', 'parentProjectActivities',
             'noSpeciesClassification', 'submissionName', 'displayDate']);
         ignore = $.grep(ignore, function (item, i) {
             return item != "documents";

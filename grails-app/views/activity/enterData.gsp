@@ -39,7 +39,7 @@
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
         sites: <fc:modelAsJavascript model="${project?.sites ?: []}"/>,
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
-        allowAdditionalSurveySites: ${canEditSites}
+        addCreatedSiteToListOfSelectedSites: ${canEditSites}
         },
         here = document.location.href;
     </asset:script>
@@ -248,7 +248,7 @@
         self.speciesConfig = <fc:modelAsJavascript model="${speciesConfig}"/>;
         // We only need the sites from a pActivity within works projects
         self.pActivity = self.project;
-        self.pActivity.allowAdditionalSurveySites =  ${canEditSites};
+        self.pActivity.addCreatedSiteToListOfSelectedSites =  ${canEditSites};
     }
 
     var activityLevelData = new ActivityLevelData();

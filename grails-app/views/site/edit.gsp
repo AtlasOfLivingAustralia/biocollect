@@ -80,7 +80,7 @@
 <body>
     <div class="container-fluid validationEngineContainer" id="validation-container">
         <bs:form action="update" inline="true">
-            <g:render template="siteDetails" />
+            <g:render template="siteDetails" model="${[showLine: true]}"/>
             <div class="row-fluid">
                 <div class="form-actions span12">
                     <button type="button" id="save" class="btn btn-primary">Save changes</button>

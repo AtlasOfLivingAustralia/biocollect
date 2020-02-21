@@ -1,56 +1,4 @@
 <div class="row-fluid">
-    <div class="span12">
-        <div class="alert alert-info">
-            <div class="row-fluid">
-                <div class="span6">
-                    <h5><strong>Base Layer Help!</strong></h5>
-                    Choose the type of map (base layer e.g. street map, statelite map etc.) to be shown to users of your project or survey. The settings are
-                    inherited in the order Hub, Project and Survey. This means if the map setting is present on a Project and
-                    Survey (ProjectActivity) has not setting, then map shown on Survey will be according to Project
-                    setting. If you want your Survey to show a different map, then you have the
-                    option of setting it on the Survey's 'Location' tab.<br>
-                    <strong>+ Add</strong> Select a base layer e.g. - Satellite map, Road map, Topographic map etc.<br>
-                    <strong>Preview <i class="icon-hand-down"></i></strong> See selected base layers and overlays on a map.
-                    <h6><strong>Actions</strong></h6>
-                    <strong>- Remove</strong> Removes selected base layer.<br>
-                    <strong><i class="icon-arrow-up"></i> Move up</strong> Change the order of base layers by moving this base layer up.<br>
-                    <strong><i class="icon-arrow-down"></i> Move down</strong> Change the order of base layers by moving this base layer down.<br>
-                    <strong>Show / Hide options</strong> Show or hide base layer options
-                    <h6><strong>Options</strong></h6>
-                    <strong>Display name</strong> Change that text appearing on the layer selection panel<br>
-                    <strong>Is this base layer selected by default?</strong> The selected layer will be show by default
-                    to the users. Users will have the option to select other base layers you have selected here.<br>
-
-                </div>
-                <div class="span6">
-                    <h5><strong>Overlay Help!</strong></h5>
-                    Similar to base layer, you can choose the type of overlay that will be shown to users. The settings are
-                    inherited like base layers.<br>
-                    <strong>+ Add</strong> Select an overlay e.g. Australian Coral Ecoregions, Local Gov. Areas etc.<br>
-                    <strong>Preview <i class="icon-hand-down"></i></strong> See selected base layers and overlays on a map.
-                    <h6><strong>Actions</strong></h6>
-                    <strong>- Remove</strong>  Removes selected overlay.<br>
-                    <strong><i class="icon-arrow-up"></i> Move up</strong> Change the order of overlays by moving this overlay up.<br>
-                    <strong><i class="icon-arrow-down"></i> Move down</strong> Change the order of overlays by moving this overlay down.<br>
-                    <strong>Show / Hide options</strong> Show or hide overlay options
-                    <h6><strong>Options</strong></h6>
-                    <strong>Display name</strong> Change that text appearing on the layer selection panel<br>
-                    <strong>Is overlay selected by default?</strong> The selected overlay will be shown on map by default.
-                    Others are available for selection on the layer control (present on map at top right corner) <br>
-                    <strong>Layer opacity</strong> Opacity of the overlay when displayed on map
-                    <h6><strong>Contextual layer options</strong></h6>
-                    <strong>Change the colour of overlay?</strong> It is possible to change the rendering of a contextual layer e.g. Australian state and territories.<br>
-                    <strong>Border colour</strong> Overlay can have many shapes. Set the shape's border colour. <br>
-                    <strong>Fill colour</strong> Set the shape's fill colour. <br>
-                    <strong>Display label on overlay</strong> The value of each shape can be displayed on the map. Check to display the text on overlay.<br>
-                    <strong>Colour of text</strong> Set label colour.<br>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row-fluid">
     <div class="span6">
         <h5><strong>Base layers</strong></h5>
         <div class="row-fluid">
@@ -252,6 +200,58 @@
 <div class="row-fluid" data-bind="slideVisible: (baseLayers().length > 0 || overlays().length > 0) && showMap()">
     <div class="span12">
         <div id="previewBaseLayer" style="width: 100%; height: 500px" data-bind="attr: {'data-leaflet-img': fcConfig.leafletAssetURL}">
+        </div>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="alert alert-info">
+            <div class="row-fluid">
+                <div class="span6">
+                    <h5><strong>Base Layer Help!</strong></h5>
+                    Choose the type of map (base layer e.g. street map, statelite map etc.) to be shown to users of your project or survey. The settings are
+                    inherited in the order Hub, Project and Survey. This means if the map setting is present on a Project and
+                    Survey (ProjectActivity) has not setting, then map shown on Survey will be according to Project
+                    setting. If you want your Survey to show a different map, then you have the
+                    option of setting it on the Survey's 'Location' tab.<br>
+                    <strong>+ Add</strong> Select a base layer e.g. - Satellite map, Road map, Topographic map etc.<br>
+                    <strong>Preview <i class="icon-hand-down"></i></strong> See selected base layers and overlays on a map.
+                    <h6><strong>Actions</strong></h6>
+                    <strong>- Remove</strong> Removes selected base layer.<br>
+                    <strong><i class="icon-arrow-up"></i> Move up</strong> Change the order of base layers by moving this base layer up.<br>
+                    <strong><i class="icon-arrow-down"></i> Move down</strong> Change the order of base layers by moving this base layer down.<br>
+                    <strong>Show / Hide options</strong> Show or hide base layer options
+                    <h6><strong>Options</strong></h6>
+                    <strong>Display name</strong> Change that text appearing on the layer selection panel<br>
+                    <strong>Is this base layer selected by default?</strong> The selected layer will be show by default
+                    to the users. Users will have the option to select other base layers you have selected here.<br>
+
+                </div>
+                <div class="span6">
+                    <h5><strong>Overlay Help!</strong></h5>
+                    Similar to base layer, you can choose the type of overlay that will be shown to users. The settings are
+                    inherited like base layers.<br>
+                    <strong>+ Add</strong> Select an overlay e.g. Australian Coral Ecoregions, Local Gov. Areas etc.<br>
+                    <strong>Preview <i class="icon-hand-down"></i></strong> See selected base layers and overlays on a map.
+                    <h6><strong>Actions</strong></h6>
+                    <strong>- Remove</strong>  Removes selected overlay.<br>
+                    <strong><i class="icon-arrow-up"></i> Move up</strong> Change the order of overlays by moving this overlay up.<br>
+                    <strong><i class="icon-arrow-down"></i> Move down</strong> Change the order of overlays by moving this overlay down.<br>
+                    <strong>Show / Hide options</strong> Show or hide overlay options
+                    <h6><strong>Options</strong></h6>
+                    <strong>Display name</strong> Change that text appearing on the layer selection panel<br>
+                    <strong>Is overlay selected by default?</strong> The selected overlay will be shown on map by default.
+                    Others are available for selection on the layer control (present on map at top right corner) <br>
+                    <strong>Layer opacity</strong> Opacity of the overlay when displayed on map
+                    <h6><strong>Contextual layer options</strong></h6>
+                    <strong>Change the colour of overlay?</strong> It is possible to change the rendering of a contextual layer e.g. Australian state and territories.<br>
+                    <strong>Border colour</strong> Overlay can have many shapes. Set the shape's border colour. <br>
+                    <strong>Fill colour</strong> Set the shape's fill colour. <br>
+                    <strong>Display label on overlay</strong> The value of each shape can be displayed on the map. Check to display the text on overlay.<br>
+                    <strong>Colour of text</strong> Set label colour.<br>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>
