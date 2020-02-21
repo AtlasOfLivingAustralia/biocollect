@@ -249,10 +249,6 @@ class BioActivityController {
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
             addOutputModel(model)
             addDefaultSpecies(activity)
-            if(model?.projectSite && model.pActivity?.excludeProjectSite) {
-                // Remove projectSite from the survey site list
-                model.pActivity.sites?.remove(model.projectSite)
-            }
         }
 
         if (mobile && flash.message) {
@@ -282,10 +278,6 @@ class BioActivityController {
             model.id = id
             model.speciesConfig = [surveyConfig: [speciesFields: pActivity?.speciesFields]]
             model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'bioActivity', action: 'index') + "/" + id
-            if(model?.projectSite && model.pActivity?.excludeProjectSite) {
-                // Remove projectSite from the survey site list
-                model.pActivity.sites?.remove(model.projectSite)
-            }
         } else {
             flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
             if(!mobile)  redirect(controller: 'project', action: 'index', id: projectId)
@@ -1140,6 +1132,16 @@ class BioActivityController {
      */
     public getSitesWithDataForProjectActivity(String id){
         def result = activityService.getSitesWithDataForProjectActivity(id)
+        render result as JSON
+    }
+
+    /**
+     * Get all sites that this project activity has record against.
+     * @param id
+     * @return
+     */
+    public getSitesWithDataForProject (String id) {
+        def result = activityService.getSitesWithDataForProject(id)
         render result as JSON
     }
 

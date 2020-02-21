@@ -246,8 +246,9 @@
             if (projectArea.pid && projectArea.pid != 'null' && projectArea.pid != "undefined") {
                 map.addWmsLayer(projectArea.pid);
             } else {
-                var geometry = _.pick(projectArea, "type", "coordinates");
+                var geometry = projectArea;
                 var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                geoJson = ALA.MapUtils.getStandardGeoJSONForCircleGeometry(geoJson);
                 map.setGeoJSON(geoJson);
             }
         }

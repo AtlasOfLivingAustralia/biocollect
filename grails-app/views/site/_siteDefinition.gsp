@@ -195,7 +195,7 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         allowPointsOfInterest: allowPointsOfInterest,
         readonly: edit? true : false,
         drawOptions: {
-            polyline: false
+            polyline: ${showLine ?: false}
         }
     };
 

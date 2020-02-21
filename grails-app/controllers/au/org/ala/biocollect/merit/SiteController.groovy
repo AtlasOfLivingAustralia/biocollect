@@ -209,13 +209,25 @@ class SiteController {
             return
         }
 
-        def site = siteService.get(siteId, [raw:'true'])
-        def projects = site.projects
-        projects.remove(projectId)
+        def result
+        if (siteService.canRemoveProjectFromSite(siteId, projectId)) {
+            def site = siteService.get(siteId, [raw:'true'])
+            def projects = site.projects
+            projects.remove(projectId)
+            siteService.update(siteId, [projects:projects])
 
-        def result = siteService.update(siteId, [projects:projects])
-        render result as JSON
+            // is site zombie i.e. not associated with a project? Delete if yes.
+            if (siteService.canDeleteSite(siteId)) {
+                def statusCode = siteService.delete(siteId)
+                result = [statusCode: statusCode, message: "Deleted site!"]
+            } else {
+                result = [statusCode: HttpStatus.SC_OK, message: "Updated site!"]
+            }
+        } else {
+            result = [error: "Cannot delete site as it is associated with entities.", statusCode: HttpStatus.SC_FORBIDDEN]
+        }
 
+        render text: result as JSON, status: result.statusCode
     }
 
     def ajaxDelete(String id) {
