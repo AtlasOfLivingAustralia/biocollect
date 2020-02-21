@@ -1,0 +1,257 @@
+<div class="row-fluid">
+    <div class="span6">
+        <h5><strong>Base layers</strong></h5>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="form-horizontal">
+                    <div data-bind="foreach: baseLayers" style="max-height: 500px; overflow-y: scroll">
+                        <div class="margin-bottom-5">
+                            <h5><strong>Base layer - <!-- ko text:code --> <!-- /ko --></strong></h5>
+                            <button class="btn btn-mini btn-danger" data-bind="click: removeBaseLayer"><i
+                                    class="icon-minus icon-white remove-base-layer"></i> Remove
+                            </button>
+                            <button class="btn btn-mini  btn-default move-up-base-layer" data-bind="click: moveUp, enable: canMoveUp($data)"><i
+                                    class="icon-arrow-up"></i> Move up
+                            </button>
+                            <button class="btn btn-mini btn-default move-down-base-layer" data-bind="click: moveDown, enable: canMoveDown($data)"><i
+                                    class="icon-arrow-down"></i> Move down
+                            </button>
+                            <button class="btn btn-mini btn-default" data-toggle="collapse"
+                                    data-bind="attr: {'data-target': '#baseLayer-' + $index()}"> Show / Hide options
+                            </button>
+                        </div>
+                        <div data-bind="attr: {id: 'baseLayer-' + $index()}" class="collapse in">
+                            <div class="control-group">
+                                <label class="control-label">Display name</label>
+                                <div class="controls">
+                                    <input type="text" data-bind="value: displayText"/>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Is this base layer selected by default?</label>
+                                <div class="controls">
+                                    <input type="radio" name="defaultBaseMap"
+                                           data-bind="checked: $parent.codeChecked, value: code"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-bind="visible: baseLayers().length == 0">
+                        No base layer selected.
+                    </div>
+                    <h5><strong>Actions</strong></h5>
+                    <div class="control-group">
+                        <div class="control-label">
+                            Choose base layer
+                        </div>
+                        <div class="controls">
+                            <select data-bind="options: allBaseLayers, optionsText: 'displayText', value: selectedBaseLayer, optionCaption: 'Choose base layer ...'"></select>
+                            <button class="btn btn-default add-base-layer" data-bind="click: addBaseLayerClickHandler, disable: allBaseLayers().length == 0"><i
+                                    class="icon icon-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                    <div class="control-group" >
+                        <div class="control-label">
+                            Preview selected base layers and overlays on map
+                        </div>
+                        <div class="controls">
+                            <button class="btn btn-default" data-bind="click: previewLayer, enable:baseLayers().length > 0 || overlays().length > 0">Preview <i
+                                    class="icon-hand-down"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="span6">
+        <h5><strong>Overlays</strong></h5>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="form-horizontal">
+                    <div data-bind="foreach: overlays" style="max-height: 500px; overflow-y: scroll">
+                        <div class="margin-bottom-5">
+                            <h5><strong>Overlay - <!-- ko text:alaName --> <!-- /ko --></strong></h5>
+                            <button class="btn btn-mini btn-danger" data-bind="click: removeOverlay"><i
+                                    class="icon-minus icon-white remove-overlay"></i> Remove
+                            </button>
+                            <button class="btn btn-mini btn-default move-up-overlay" data-bind="click: moveUp, enable: canMoveUp($data)"><i
+                                    class="icon-arrow-up"></i> Move up
+                            </button>
+                            <button class="btn btn-mini btn-default move-up-overlay" data-bind="click: moveDown, enable: canMoveDown($data)"><i
+                                    class="icon-arrow-down"></i> Move down
+                            </button>
+                            <button class="btn btn-mini btn-default" data-toggle="collapse"
+                                    data-bind="attr: {'data-target': '#overlay-' + $index()}"> Show / Hide options
+                            </button>
+                        </div>
+                        <div data-bind="attr: {id: 'overlay-' + $index()}" class="collapse in">
+                            <div class="control-group">
+                                <label class="control-label">Display name</label>
+                                <div class="controls">
+                                    <input type="text" data-bind="value: title"/>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Is overlay selected by default?</label>
+                                <div class="controls">
+                                    <input type="checkbox"
+                                           data-bind="checked: defaultSelected"/>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Layer opacity</label>
+                                <div class="controls">
+                                    <input type="text"
+                                           data-bind="value: opacity" placeholder="a value between 0 and 1"/>
+                                </div>
+                            </div>
+                            <!-- ko if: Biocollect.MapUtilities.isContextualLayer(alaId) -->
+                            <div class="control-group">
+                                <label class="control-label">Change the colour of overlay?</label>
+                                <div class="controls">
+                                    <input type="checkbox"
+                                           data-bind="checked: changeLayerColour"/>
+                                </div>
+                            </div>
+                            <!-- ko if: changeLayerColour -->
+                            <div class="control-group">
+                                <label class="control-label">Border colour</label>
+                                <div class="controls">
+                                    <input type="text"
+                                           data-bind="value: boundaryColour" placeholder="hex colour e.g. #fdb863"/>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Fill colour</label>
+                                <div class="controls">
+                                    <input type="text"
+                                           data-bind="value: fillColour" placeholder="hex colour e.g. #fdb863"/>
+                                </div>
+                            </div>
+                            <!-- /ko -->
+                            <div class="control-group">
+                                <label class="control-label">Display label on overlay</label>
+                                <div class="controls">
+                                    <input type="checkbox"
+                                           data-bind="checked: showPropertyName"/>
+                                </div>
+                            </div>
+                            <div data-bind="slideVisible: showPropertyName">
+                                <div class="control-group">
+                                    <label class="control-label">Colour of label text</label>
+                                    <div class="controls">
+                                        <input type="text"
+                                               data-bind="value: textColour" placeholder="hex colour e.g. #fdb863"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /ko -->
+                            <!-- ko if: $parent.showAdvancedFeatures -->
+                            <div class="control-group">
+                                <label class="control-label">User restriction</label>
+                                <div class="controls">
+                                    <select data-bind="value: userAccessRestriction">
+                                        <option value="anyUser" selected>Any user</option>
+                                        <option value="loggedInUser" selected>Logged in user</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">In layer shape list</label>
+                                <div class="controls">
+                                    <input type="checkbox"
+                                           data-bind="checked: inLayerShapeList"/>
+                                </div>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                    <div data-bind="visible: overlays().length == 0">
+                        No overlay selected.
+                    </div>
+                    <h5><strong>Actions</strong></h5>
+                    <div class="control-group">
+                        <div class="control-label">
+                            Choose overlay
+                        </div>
+                        <div class="controls">
+                            <select data-bind="options: allOverlays, optionsText: 'title', value: selectedOverlay, optionCaption: 'Choose overlay ...'"></select>
+                            <button class="btn btn-default add-overlay" data-bind="click: addOverlayClickHandler, disable: allOverlays().length == 0"><i
+                                    class="icon icon-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            Preview selected base layers and overlays on map
+                        </div>
+                        <div class="controls">
+                            <button class="btn btn-default" data-bind="click: previewLayer, enable:baseLayers().length > 0 || overlays().length > 0">Preview <i
+                                    class="icon-hand-down"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="row-fluid" data-bind="slideVisible: (baseLayers().length > 0 || overlays().length > 0) && showMap()">
+    <div class="span12">
+        <div id="previewBaseLayer" style="width: 100%; height: 500px" data-bind="attr: {'data-leaflet-img': fcConfig.leafletAssetURL}">
+        </div>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="alert alert-info">
+            <div class="row-fluid">
+                <div class="span6">
+                    <h5><strong>Base Layer Help!</strong></h5>
+                    Choose the type of map (base layer e.g. street map, statelite map etc.) to be shown to users of your project or survey. The settings are
+                    inherited in the order Hub, Project and Survey. This means if the map setting is present on a Project and
+                    Survey (ProjectActivity) has not setting, then map shown on Survey will be according to Project
+                    setting. If you want your Survey to show a different map, then you have the
+                    option of setting it on the Survey's 'Location' tab.<br>
+                    <strong>+ Add</strong> Select a base layer e.g. - Satellite map, Road map, Topographic map etc.<br>
+                    <strong>Preview <i class="icon-hand-down"></i></strong> See selected base layers and overlays on a map.
+                    <h6><strong>Actions</strong></h6>
+                    <strong>- Remove</strong> Removes selected base layer.<br>
+                    <strong><i class="icon-arrow-up"></i> Move up</strong> Change the order of base layers by moving this base layer up.<br>
+                    <strong><i class="icon-arrow-down"></i> Move down</strong> Change the order of base layers by moving this base layer down.<br>
+                    <strong>Show / Hide options</strong> Show or hide base layer options
+                    <h6><strong>Options</strong></h6>
+                    <strong>Display name</strong> Change that text appearing on the layer selection panel<br>
+                    <strong>Is this base layer selected by default?</strong> The selected layer will be show by default
+                    to the users. Users will have the option to select other base layers you have selected here.<br>
+
+                </div>
+                <div class="span6">
+                    <h5><strong>Overlay Help!</strong></h5>
+                    Similar to base layer, you can choose the type of overlay that will be shown to users. The settings are
+                    inherited like base layers.<br>
+                    <strong>+ Add</strong> Select an overlay e.g. Australian Coral Ecoregions, Local Gov. Areas etc.<br>
+                    <strong>Preview <i class="icon-hand-down"></i></strong> See selected base layers and overlays on a map.
+                    <h6><strong>Actions</strong></h6>
+                    <strong>- Remove</strong>  Removes selected overlay.<br>
+                    <strong><i class="icon-arrow-up"></i> Move up</strong> Change the order of overlays by moving this overlay up.<br>
+                    <strong><i class="icon-arrow-down"></i> Move down</strong> Change the order of overlays by moving this overlay down.<br>
+                    <strong>Show / Hide options</strong> Show or hide overlay options
+                    <h6><strong>Options</strong></h6>
+                    <strong>Display name</strong> Change that text appearing on the layer selection panel<br>
+                    <strong>Is overlay selected by default?</strong> The selected overlay will be shown on map by default.
+                    Others are available for selection on the layer control (present on map at top right corner) <br>
+                    <strong>Layer opacity</strong> Opacity of the overlay when displayed on map
+                    <h6><strong>Contextual layer options</strong></h6>
+                    <strong>Change the colour of overlay?</strong> It is possible to change the rendering of a contextual layer e.g. Australian state and territories.<br>
+                    <strong>Border colour</strong> Overlay can have many shapes. Set the shape's border colour. <br>
+                    <strong>Fill colour</strong> Set the shape's fill colour. <br>
+                    <strong>Display label on overlay</strong> The value of each shape can be displayed on the map. Check to display the text on overlay.<br>
+                    <strong>Colour of text</strong> Set label colour.<br>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

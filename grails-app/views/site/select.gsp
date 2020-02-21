@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,6 +7,11 @@
     <title>Add existing site | Field Capture</title>
     <asset:script type="text/javascript">
         var fcConfig = {
+            intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+            featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
@@ -15,6 +21,7 @@
             spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
             spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
             sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
         },
         returnTo = "${params.returnTo}";
@@ -23,6 +30,7 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="siteSelection.js"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 
 <body>

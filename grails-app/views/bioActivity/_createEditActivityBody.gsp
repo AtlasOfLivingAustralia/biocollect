@@ -191,6 +191,8 @@
 
         if(metaModel.supportsSites) {
             var mapFeatures = <fc:modelAsJavascript model="${mapFeatures}"/>;
+            var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+            var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
             var mapOptions = {
                 drawControl: false,
                 showReset: true,
@@ -198,8 +200,12 @@
                 useMyLocation: false,
                 allowSearchLocationByAddress: false,
                 allowSearchRegionByAddress: false,
-                wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
-                wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
+                baseLayer: baseLayersAndOverlays.baseLayer,
+                otherLayers: baseLayersAndOverlays.otherLayers,
+                overlays: baseLayersAndOverlays.overlays,
+                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
             };
 
             activityLevelData.siteMap = new ALA.Map("activitySiteMap", mapOptions);

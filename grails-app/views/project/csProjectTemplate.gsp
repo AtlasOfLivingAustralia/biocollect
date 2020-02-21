@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" import="grails.converters.JSON;"%>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,6 +13,11 @@
     <asset:stylesheet src="projects.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         homePagePath: "${createLink(controller: 'home', action: 'index')}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
@@ -105,6 +111,9 @@
         projectNotificationUrl: "${createLink(controller: 'project', action: 'sendEmailToMembers', params: [id: project.projectId])}",
         projectTestNotificationUrl: "${createLink(controller: 'project', action: 'sendTestEmail', params: [id: project.projectId])}",
         opportunisticDisplayName: "<g:message code="facets.methodType.opportunistic"/>",
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
         surveyMethods: <fc:getSurveyMethods/>
         },
         here = window.location.href;
@@ -129,6 +138,7 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 <body>
 
@@ -138,7 +148,7 @@
         <g:render template="banner"/>
     </g:if>
 
-    <div class="container-fluid">
+    <div class="container-fluid" id="csProjectContent">
         <div id="project-results-placeholder"></div>
         <g:render template="/shared/flashScopeMessage"/>
 

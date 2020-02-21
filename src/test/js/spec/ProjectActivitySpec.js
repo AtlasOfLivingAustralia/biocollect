@@ -79,6 +79,46 @@ describe("ProjectActivityViewModel Spec", function () {
         expect(speciesVM.asJS("species")).toEqual(params.pActivity);
     });
 
+    it("siteSurveyOption change should clear selected sites and draw options", function () {
+        var params = {
+            sites: [{
+                siteId: 'ghh',
+                name: 'Test',
+                extent: {
+                    geometry: {
+                        ibra: ""
+                    }
+                }
+            }],
+            pActivity: {
+                sites : [
+                    'ghh'
+                ],
+                allowPoints: true,
+                allowPolygons: true,
+                surveySiteOption: ''
+            }
+        };
+
+        var pActivity = new ProjectActivity(params);
+        expect(pActivity.getNumberOfSitesForSurvey()).toEqual(1);
+
+        pActivity.surveySiteOption('sitepickcreate');
+        expect(pActivity.getNumberOfSitesForSurvey()).toEqual(1);
+        expect(pActivity.allowPoints()).toEqual(true);
+        expect(pActivity.allowPolygons()).toEqual(true);
+
+        pActivity.surveySiteOption('sitepick');
+        expect(pActivity.getNumberOfSitesForSurvey()).toEqual(1);
+        expect(pActivity.allowPoints()).toEqual(false);
+        expect(pActivity.allowPolygons()).toEqual(false);
+
+        pActivity.surveySiteOption('sitecreate');
+        expect(pActivity.getNumberOfSitesForSurvey()).toEqual(0);
+        expect(pActivity.allowPoints()).toEqual(false);
+        expect(pActivity.allowPolygons()).toEqual(false);
+    })
+
 });
 
 describe("pActivityInfo Spec", function () {

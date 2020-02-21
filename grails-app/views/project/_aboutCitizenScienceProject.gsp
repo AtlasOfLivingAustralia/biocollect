@@ -224,6 +224,8 @@
     if ((typeof map === 'undefined' || Object.keys(map).length == 0)) {
         var projectArea = <fc:modelAsJavascript model="${projectSite.extent.geometry}"/>;
         if (projectArea) {
+            var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+            var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
             var mapOptions = {
                 drawControl: false,
                 showReset: false,
@@ -231,9 +233,12 @@
                 useMyLocation: false,
                 allowSearchLocationByAddress: false,
                 allowSearchRegionByAddress: false,
-                baseLayer: "${project.baseLayer}" || "${grailsApplication.config.map.baseLayers?.find { it.default == true } .code}",
-                wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
-                wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
+                baseLayer: baseLayersAndOverlays.baseLayer,
+                otherLayers: baseLayersAndOverlays.otherLayers,
+                overlays: baseLayersAndOverlays.overlays,
+                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
             }
 
             map = new ALA.Map("projectSiteMap", mapOptions);
@@ -241,8 +246,9 @@
             if (projectArea.pid && projectArea.pid != 'null' && projectArea.pid != "undefined") {
                 map.addWmsLayer(projectArea.pid);
             } else {
-                var geometry = _.pick(projectArea, "type", "coordinates");
+                var geometry = projectArea;
                 var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                geoJson = ALA.MapUtils.getStandardGeoJSONForCircleGeometry(geoJson);
                 map.setGeoJSON(geoJson);
             }
         }
@@ -259,6 +265,14 @@
     }
 
     setTimeout(placeAssociatedOrgs, 2000);
+
+    %{-- Map on about tab needs redrawing since leaflet viewer shows base layer on top left corner. #1253--}%
+    var firstMapRedrawOnAboutTab = true;
+    $('#csProjectContent,#worksProjectContent').on("knockout-visible", function() {
+        firstMapRedrawOnAboutTab && map && map.redraw && map.redraw();
+        firstMapRedrawOnAboutTab = false;
+    });
+
 </asset:script>
 
 

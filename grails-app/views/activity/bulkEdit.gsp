@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
@@ -15,6 +16,7 @@
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         saveUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
         returnTo: "${params.returnTo}"
         },
         here = document.location.href;

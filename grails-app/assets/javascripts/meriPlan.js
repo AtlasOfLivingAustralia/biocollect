@@ -358,6 +358,7 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
         meriPlanSelector: '#edit-meri-plan',
         saveToolbarSelector: '#project-details-save',
         floatingSaveSelector: '#floating-save',
+        mapConfigurationSelector: "#mapConfiguration",
         storageKey: 'meri-plan-'+project.projectId,
         autoSaveIntervalInSeconds:60,
         restoredDataWarningSelector:'#restoredData',
@@ -375,7 +376,7 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
     var themes = [];
     $.extend(self, new MERIPlan(project, themes, config.storageKey));
 
-    $(config.meriPlanSelector).validationEngine();
+    $(config.meriPlanSelector + "," + config.mapConfigurationSelector).validationEngine();
 
     autoSaveModel(self.details, config.saveUrl, config);
     configureFloatingSave(self.details.dirtyFlag, {floatingSaveSelector:config.floatingSaveSelector, saveButtonSelector:config.saveToolbarSelector});
@@ -398,8 +399,13 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
     };
 
     self.saveMapConfig = function () {
+        if (!$(config.mapConfigurationSelector).validationEngine('validate')) {
+            return;
+        }
+
         var data = {
-            mapConfiguration: self.mapConfiguration.toJS()
+            mapConfiguration: self.mapConfiguration.toJS(),
+            mapLayersConfig: ko.toJS(self.mapLayersConfig)
         };
 
         self.mapConfiguration.transients.loading(true);
