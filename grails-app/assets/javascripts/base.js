@@ -8,3 +8,4 @@
 //= require bootstrap/js/bootstrap.js
 //= require bootstrap-combobox/bootstrap-combobox.js
 //= require ala-map-no-jquery-us.js
+//= require fieldcapture-application.js
