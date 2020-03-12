@@ -430,6 +430,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.hasTeachingMaterials = ko.observable($.inArray("hasTeachingMaterials", project.tags) >= 0);
     self.isCitizenScience = ko.observable(project.isCitizenScience);
     self.isDIY = ko.observable($.inArray("isDIY", project.tags) >= 0);
+    self.isBushfire = ko.observable(project.isBushfire);
     self.isHome = ko.observable($.inArray("isHome", project.tags) >= 0);
     self.mobileApp = ko.observable(project.mobileApp);
     self.isWorks = ko.observable(project.isWorks);
@@ -453,6 +454,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
     self.alaHarvest = ko.observable(project.alaHarvest ? true : false);
     self.industries = ko.observableArray(project.industries);
+    self.bushfireCategories = ko.observableArray(project.bushfireCategories);
     self.transients.notification = new EmailViewModel(fcConfig);
     self.transients.yesNoOptions = ["Yes","No"];
     self.transients.alaHarvest = ko.computed({
@@ -469,6 +471,7 @@ function ProjectViewModel(project, isUserEditor) {
     });
 
     self.updateProject = function(jsonData){
+        blockUIWithMessage("Processing...");
         return $.ajax({
             url: fcConfig.projectUpdateUrl,
             type: 'POST',
@@ -476,17 +479,19 @@ function ProjectViewModel(project, isUserEditor) {
             contentType: 'application/json',
             success: function (data) {
                 if (data.error) {
-                    console.error(data)
-                    bootbox.alert("Error "+ data.error);
+                    blockUIWithMessage("<span class=\"fa fa-exclamation\"></span> Error "+ data.error);
                 }
                 else {
-                    bootbox.alert("Successfully updated");
+                    blockUIWithMessage("<span class=\"fa fa-check\"></span> Successfully updated");
                 }
             },
             error: function (data) {
-                console.error(data)
-                bootbox.alert("Error updating, try again later");
-
+                blockUIWithMessage("<span class=\"fa fa-exclamation\"></span> Error updating, try again later");
+            },
+            complete: function() {
+                setTimeout(function () {
+                    $.unblockUI();
+                }, 2500);
             }
         });
     };
@@ -964,6 +969,16 @@ function ProjectViewModel(project, isUserEditor) {
 
     self.transients.index = ko.observable();
     self.transients.industries = ['Bananas','Cropping','Grazing','Sugarcane'];
+    self.transients.bushfireCategories = ['Post fire assessment and recovery - ecology and or biodiversity monitoring, documenting regrowth etc.',
+        'Wildlife and endangered species support - water sources, identifying remaining habitat, predators etc.',
+        'Air quality, cloud, smoke monitoring etc.',
+        'Water quality - including runoff issues',
+        'Health and well-being, respiratory issues, mental health & trauma, community sustainability etc.',
+        'Climate change observations, local weather conditions',
+        'Soil condition',
+        'Geography and spatial data',
+        'Other'
+    ];
 
     self.loadPrograms = function (programsModel) {
         $.each(programsModel.programs, function (i, program) {
@@ -1069,10 +1084,55 @@ function ProjectViewModel(project, isUserEditor) {
         });
     };
 
-    self.transients.getCountries()
-    self.transients.getUNRegions()
-    self.transients.getDataCollectionWhiteList()
+    self.transients.getCountries();
+    self.transients.getUNRegions();
+    self.transients.getDataCollectionWhiteList();
+
+    // Don't show the banner if user requested to ignore the banner or if user already answered YES or NO.
+    self.showBushfireBanner = function() {
+        var BUSHFIRE_BANNER_KEY = "Dont-Show-Bush-Fire-Banner";
+        var bushFireValue = amplify.store(BUSHFIRE_BANNER_KEY);
+        if(bushFireValue == 'YES') {
+            return;
+        }
+        else if(self.isBushfire() == undefined || self.isBushfire() == null) {
+
+            iziToast.question({
+                timeout: 20000,
+                close: false,
+                overlay: false,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 999,
+                title: 'Bushfire',
+                message: 'Is this project associated with bushfire recovery or monitoring activities?',
+                position: 'topRight',
+                icon: 'fa fa-fire',
+
+                buttons: [
+                    ['<button><b>YES</b></button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        self.updateProject({isBushfire:true});
+                    }, true],
+                    ['<button>NO</button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'no' }, toast, 'button');
+                        self.updateProject({isBushfire:false});
+                    }],
+                    ['<button>Don\'t show this again</button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        amplify.store(BUSHFIRE_BANNER_KEY, "YES");
+                    }],
+                ],
+                onClosing: function(instance, toast, closedBy) {
+                },
+                onClosed: function(instance, toast, closedBy) {
+                }
+            });
+        }
+    };
 };
+
+
 
 /**
  * View model for use by the project create and edit pages.  Extends the ProjectViewModel to provide support
@@ -1227,7 +1287,6 @@ function CreateEditProjectViewModel(project, isUserEditor, options) {
     self.removeAssociatedOrganisation = function(org, event) {
         self.associatedOrgs.remove(org);
     };
-
 
     self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch', 'granteeOrganisation', 'sponsorOrganisation']);
     self.transients.existingLinks = project.links;

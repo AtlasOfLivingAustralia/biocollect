@@ -481,6 +481,7 @@ function ContentViewModel(config) {
     self.showNote = ko.observable(config.showNote || false);
     self.recordNote = ko.observable(config.recordNote || '');
     self.industries = ko.observable(config.industries || false);
+    self.bushfireCategories = ko.observable(config.bushfireCategories || false);
     self.hideProjectFinderHelpButtons = ko.observable(config.hideProjectFinderHelpButtons || false);
     self.hideProjectFinderStatusIndicatorTile = ko.observable(config.hideProjectFinderStatusIndicatorTile || false);
     self.hideProjectFinderStatusIndicatorList = ko.observable(config.hideProjectFinderStatusIndicatorList || false);
