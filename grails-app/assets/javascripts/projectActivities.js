@@ -216,8 +216,14 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     };
 
     self.saveInfo = function () {
+        $('.validationEngineContainer').validationEngine();
         return self.genericUpdate("info");
     };
+
+    self.showInfoNext = ko.computed(function(){
+        var pActivity = self.current();
+        return pActivity && pActivity.projectActivityId()
+    });
 
     self.saveVisibility = function () {
         return self.genericUpdate("visibility");
