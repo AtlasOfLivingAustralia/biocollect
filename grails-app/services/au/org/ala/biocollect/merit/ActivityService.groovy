@@ -72,6 +72,10 @@ class ActivityService {
         webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDistinctSitesForProjectActivity/'+ id)
     }
 
+    def getSitesWithDataForProject(id){
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDistinctSitesForProject/'+ id)
+    }
+
     def get(id, version = null, userId = null, hideMemberOnlyFlds = false) {
         def params = '?hideMemberOnlyFlds=' + hideMemberOnlyFlds
         if (version) {

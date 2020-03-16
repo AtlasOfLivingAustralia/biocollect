@@ -1,4 +1,5 @@
-<%@ page import="java.text.SimpleDateFormat" contentType="text/html;charset=UTF-8" %>
+<%@ page import="java.text.SimpleDateFormat; grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,15 +12,16 @@
 
     <asset:script type="text/javascript">
         var fcConfig = {
-            serverUrl: "${grailsApplication.config.grails.serverURL}",
-            siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
-            siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
-            siteListUrl: "${createLink(controller: 'site', action: 'list')}",
-            addStarSiteUrl: "${createLink(controller: 'site', action: 'ajaxAddToFavourites')}",
-            removeStarSiteUrl: "${createLink(controller: 'site', action: 'ajaxRemoveFromFavourites')}",
+            intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
             spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
+            serverUrl: "${grailsApplication.config.grails.serverURL}",
+            siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
+            siteListUrl: "${createLink(controller: 'site', action: 'list')}",
+            addStarSiteUrl: "${createLink(controller: 'site', action: 'ajaxAddToFavourites')}",
+            removeStarSiteUrl: "${createLink(controller: 'site', action: 'ajaxRemoveFromFavourites')}",
             spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
             spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
             spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
@@ -41,9 +43,9 @@
             recordListUrl: "${createLink(controller: 'record', action: 'ajaxList')}",
             recordDeleteUrl: "${createLink(controller: 'record', action: 'delete')}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
-            siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
-            speciesPage: "${grailsApplication.config.bie.baseURL}/species/"
+            speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
             },
             here = "${createLink(controller: 'site', action: 'index', id: site.siteId)}";
     </asset:script>
@@ -52,6 +54,7 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 
 <body>
@@ -358,6 +361,8 @@
 <asset:script type="text/javascript">
         $(function(){
             var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
+            var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+            var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
 
             var mapOptions = {
                 drawControl: false,
@@ -367,8 +372,12 @@
                 draggableMarkers: false,
                 showReset: false,
                 maxZoom: 20,
-                wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
-                wmsFeatureUrl: fcConfig.featureService + "?featureId="
+                baseLayer: baseLayersAndOverlays.baseLayer,
+                otherLayers: baseLayersAndOverlays.otherLayers,
+                overlays: baseLayersAndOverlays.overlays,
+                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
             };
             var smallMap = new ALA.Map("smallMap", mapOptions);
 

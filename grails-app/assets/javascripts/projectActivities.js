@@ -216,8 +216,14 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     };
 
     self.saveInfo = function () {
+        $('.validationEngineContainer').validationEngine();
         return self.genericUpdate("info");
     };
+
+    self.showInfoNext = ko.computed(function(){
+        var pActivity = self.current();
+        return pActivity && pActivity.projectActivityId()
+    });
 
     self.saveVisibility = function () {
         return self.genericUpdate("visibility");
@@ -240,12 +246,11 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     };
 
     self.saveSites = function () {
-        var jsData = self.current().asJS("sites");
-        if (jsData.sites && jsData.sites.length > 0) {
-            self.genericUpdate("sites");
-        } else {
-            showAlert("No site associated with this survey", "alert-error", self.placeHolder);
+        if (!$('#project-activities-locations-validation').validationEngine('validate')) {
+            return;
         }
+
+        self.genericUpdate("sites");
     };
 
     self.saveSitesBeforeRedirect = function(redirectUrl) {

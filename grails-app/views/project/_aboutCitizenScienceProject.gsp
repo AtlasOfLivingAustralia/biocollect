@@ -24,12 +24,20 @@
     <div class="row-fluid" data-bind="">
         <div class="span6" id="column1">
             <div class="well span12">
+
                 <div class="well-title">${hubConfig.getTextForAboutTheProject(grailsApplication.config.content.defaultOverriddenLabels)}</div>
+                <div data-bind="if:isBushfire()" class="margin-top-1 margin-bottom-1">
+                    <div class="alert alert-success">
+                        <span class="fa fa-fire"></span> <g:message code="project.bushfireInfo"/>
+                    </div>
+                </div>
+
                 <div data-bind="visible:aim">
                     <div class="text-small-heading">${hubConfig.getTextForAim(grailsApplication.config.content.defaultOverriddenLabels)}</div>
                     <span data-bind="text:aim"></span>
-                    <p/>
+
                 </div>
+
                 <div data-bind="visible:description">
                     <div class="text-small-heading">${hubConfig.getTextForDescription(grailsApplication.config.content.defaultOverriddenLabels)}</div>
                     <span data-bind="html:description.markdownToHtml()"></span>
@@ -41,12 +49,14 @@
                     <p/>
                 </div>
                 </g:if>
-                <g:if test="${hubConfig?.content?.hideProjectAboutContributing != true}">
-                <div data-bind="visible:!isExternal()" class="margin-top-1 margin-bottom-1">
-                    <img src="${asset.assetPath(src: "ala-logo-small.png")}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
 
-                </div>
+
+                <g:if test="${hubConfig?.content?.hideProjectAboutContributing != true}">
+                    <div data-bind="visible:!isExternal()" class="margin-top-1 margin-bottom-1">
+                        <img src="${asset.assetPath(src: "ala-logo-small.png")}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
+                    </div>
                 </g:if>
+
             </div>
         </div>
         <div class="span6" id="column2">
@@ -135,6 +145,11 @@
                         </div>
                     </div>
                     <div class="span6">
+                        <div data-bind="visible: bushfireCategories().length">
+                            <div class="text-small-heading"><g:message code="project.display.bushfireCategories"/></div>
+                            <span data-bind="text:bushfireCategories().join(', ')"></span>
+                            <p/>
+                        </div>
                         <div data-bind="visible: industries().length">
                             <div class="text-small-heading"><g:message code="project.display.industries"/></div>
                             <span data-bind="text:industries().join(', ')"></span>
@@ -197,6 +212,7 @@
                     <div style="line-height:2.2em">
                         <g:render template="tags" />
                     </div>
+
                 </div>
             </div>
         </div>
@@ -224,6 +240,8 @@
     if ((typeof map === 'undefined' || Object.keys(map).length == 0)) {
         var projectArea = <fc:modelAsJavascript model="${projectSite.extent.geometry}"/>;
         if (projectArea) {
+            var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+            var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
             var mapOptions = {
                 drawControl: false,
                 showReset: false,
@@ -231,9 +249,12 @@
                 useMyLocation: false,
                 allowSearchLocationByAddress: false,
                 allowSearchRegionByAddress: false,
-                baseLayer: "${project.baseLayer}" || "${grailsApplication.config.map.baseLayers?.find { it.default == true } .code}",
-                wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
-                wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
+                baseLayer: baseLayersAndOverlays.baseLayer,
+                otherLayers: baseLayersAndOverlays.otherLayers,
+                overlays: baseLayersAndOverlays.overlays,
+                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
             }
 
             map = new ALA.Map("projectSiteMap", mapOptions);
@@ -241,8 +262,9 @@
             if (projectArea.pid && projectArea.pid != 'null' && projectArea.pid != "undefined") {
                 map.addWmsLayer(projectArea.pid);
             } else {
-                var geometry = _.pick(projectArea, "type", "coordinates");
+                var geometry = projectArea;
                 var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                geoJson = ALA.MapUtils.getStandardGeoJSONForCircleGeometry(geoJson);
                 map.setGeoJSON(geoJson);
             }
         }
@@ -259,6 +281,14 @@
     }
 
     setTimeout(placeAssociatedOrgs, 2000);
+
+    %{-- Map on about tab needs redrawing since leaflet viewer shows base layer on top left corner. #1253--}%
+    var firstMapRedrawOnAboutTab = true;
+    $('#csProjectContent,#worksProjectContent').on("knockout-visible", function() {
+        firstMapRedrawOnAboutTab && map && map.redraw && map.redraw();
+        firstMapRedrawOnAboutTab = false;
+    });
+
 </asset:script>
 
 

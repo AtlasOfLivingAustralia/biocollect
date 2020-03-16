@@ -15,7 +15,8 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
     self.totalPages = ko.observable();
     self.perPage = 10;
     self.pagination = new PaginationViewModel({}, self);
-
+    var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+    var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
     var mapOptions = {
         drawControl: false,
         singleMarker: false,
@@ -25,8 +26,12 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
         draggableMarkers: false,
         showReset: false,
         maxZoom: 100,
-        wmsLayerUrl: config.spatialWms + "/wms/reflect?",
-        wmsFeatureUrl: config.featureService + "?featureId="
+        baseLayer: baseLayersAndOverlays.baseLayer,
+        otherLayers: baseLayersAndOverlays.otherLayers,
+        overlays: baseLayersAndOverlays.overlays,
+        overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+        wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+        wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
     };
 
     self.map = new ALA.Map("siteMap", mapOptions);

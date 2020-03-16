@@ -1,4 +1,5 @@
 <%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,6 +22,7 @@
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         createUrl: "${createLink(action: 'create')}/",
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
         projectViewUrl: "${createLink(controller:'project', action:'index')}/"
         },
         here = document.location.href;

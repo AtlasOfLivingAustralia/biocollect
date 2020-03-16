@@ -1,5 +1,6 @@
 <%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
-<g:set var="projectService" bean="projectService"></g:set>
+`<g:set var="projectService" bean="projectService"></g:set>`
+<g:set var="mapService" bean="mapService"></g:set>
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
@@ -10,6 +11,11 @@
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         projectUpdateUrl: "${createLink(action:'ajaxCreate')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
@@ -30,7 +36,11 @@
         dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}",
         countriesUrl: "${createLink(controller: 'project', action: 'getCountries')}",
         hideProjectEditScienceTypes: ${!!hubConfig?.content?.hideProjectEditScienceTypes},
-        uNRegionsUrl: "${createLink(controller: 'project', action: 'getUNRegions')}"
+        uNRegionsUrl: "${createLink(controller: 'project', action: 'getUNRegions')}",
+        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
         },
         here = window.location.href;
 
@@ -41,6 +51,7 @@
     <asset:javascript src="organisation.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 
 <body>

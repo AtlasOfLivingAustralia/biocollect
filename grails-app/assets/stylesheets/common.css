@@ -201,6 +201,10 @@ select,input[type="text"],input[type="password"],input[type="datetime"],input[ty
     margin-left: 20px;
 }
 
+.margin-bottom-0, #overviewDocumentList input[type="text"].margin-bottom-0 {
+    margin-bottom: 0;
+}
+
 .margin-bottom-1 {
     display: inline-block;
     margin-bottom: 10px;
@@ -318,6 +322,11 @@ select,input[type="text"],input[type="password"],input[type="datetime"],input[ty
 .padding-top-0 {
     padding-top: 10px;
 }
+
+.padding-top-20 {
+    padding-top: 20px;
+}
+
 .searchResultSection {
     padding-left: 20px;
 }
@@ -782,5 +791,11 @@ input.full-width-input {
 @media (min-width: 980px) {
     #content-starting-point{
         margin-top: 70px;
+    }
+}
+
+@media (max-width: 767px) {
+    .modal.fade {
+        top: -500px;
     }
 }

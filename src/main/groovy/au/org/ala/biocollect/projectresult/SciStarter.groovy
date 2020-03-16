@@ -56,6 +56,8 @@ class SciStarter {
                 lastUpdated            : doc.lastUpdated,
                 status                 : doc.status,
                 managerEmail           : doc.manager,
+                isBushfire             : doc.isBushfire?.toBoolean(),
+                bushfireCategories     : doc.bushfireCategories,
                 organisationName       : doc.organisationName,
                 description            : doc.description,
                 getInvolved            : doc.getInvolved,

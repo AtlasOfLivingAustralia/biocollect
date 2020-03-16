@@ -81,6 +81,6 @@
     <h2><g:message code="site.details.extent.heading"/></h2>
     <fc:iconHelp title="Extent of the site"><g:message code="site.details.extent.help"/></fc:iconHelp>
 
-    <g:render template="/site/siteDefinition"/>
+    <g:render template="/site/siteDefinition" model="${[showLine: true]}"/>
 </div>
 <!-- /ko -->

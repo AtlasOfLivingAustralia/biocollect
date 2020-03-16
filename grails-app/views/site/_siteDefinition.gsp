@@ -127,6 +127,12 @@
                 <fc:textField data-bind="value: site().extent().geometry().datum" outerClass="span4" label="${message(code:'site.point.datum')}"
                               placeholder="WGS84" readonly="readonly"/>
             </div>
+
+            <div class="row-fluid  controls-row">
+                <button type="button" data-bind="click: refreshCoordinates"
+                        class="btn">Refresh Coordinates
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -195,7 +201,7 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         allowPointsOfInterest: allowPointsOfInterest,
         readonly: edit? true : false,
         drawOptions: {
-            polyline: false
+            polyline: ${showLine ?: false}
         }
     };
 

@@ -13,7 +13,6 @@
 //= require moment/moment.min.js
 //= require moment/moment-timezone-with-data.min.js
 //= require vkbeautyfy/vkbeautify.0.99.00.beta.js
-//= require fieldcapture-application.js
 //= require knockout-dates.js
 //= require knockout-custom-bindings.js
 //= require knockout-custom-extenders.js
@@ -22,3 +21,5 @@
 //= require pagination.js
 //= require polyfill/es6-promise.auto.js
 //= require restoreTab.js
+//= require components.js
+//= require izitoast/izitoast.min.js

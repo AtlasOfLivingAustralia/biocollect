@@ -14,5 +14,6 @@
  *= require projectSpeciesFieldsConfiguration.css
  *= require jquery-gantt/css/style.css
  *= require gantt.css
+ *= require izitoast/izitoast.min.css
 
  */
