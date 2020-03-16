@@ -24,6 +24,7 @@ environments:
             email:
               replyTo: "biocollect-dev<no-reply>@ala.org.au"
               sender: "biocollect-dev@ala.org.au"
+        debugUI: true
     test:
         grails:
           config:
@@ -34,6 +35,7 @@ environments:
         security:
            cas:
               appServerName: https://biocollect-test.ala.org.au
+        debugUI: false
     production:
         grails:
             config:
@@ -42,7 +44,7 @@ environments:
             #system level config
         server:
            #port: 80
-           serverURL: http://biocollect.ala.org.au
+           serverURL: https://biocollect.ala.org.au
 
 #            security:
 #              cas:
@@ -52,7 +54,7 @@ environments:
               email:
                 replyTo: "biocollect<no-reply>@ala.org.au"
                 sender: "biocollect-local@ala.org.au"
-
+        debugUI: false
 
 app:
   default:
@@ -80,7 +82,6 @@ security:
       logoutUrl: "https://auth.ala.org.au/cas/logout"
 
 #External URL
-debugUI: true
 aekosEnabled: false
 enableReporting: true
 bugherd:

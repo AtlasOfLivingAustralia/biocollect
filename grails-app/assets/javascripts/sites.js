@@ -157,6 +157,10 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         }, false);
     };
 
+    self.refreshCoordinates = function () {
+        updateSiteMarkerPosition();
+    };
+
     function createPointOfInterest(poi, hasDocuments) {
         var pointOfInterest = new PointOfInterest(poi, hasDocuments);
 
@@ -235,12 +239,18 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     };
 
     function initialiseViewModel() {
+        var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+        var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
         var options =  {
             maxZoom: 20,
             wmsLayerUrl: mapOptions.spatialWms + "/wms/reflect?",
             wmsFeatureUrl: mapOptions.featureService + "?featureId=",
             drawOptions: mapOptions.drawOptions,
-            showReset: false
+            showReset: false,
+            baseLayer: baseLayersAndOverlays.baseLayer,
+            otherLayers: baseLayersAndOverlays.otherLayers,
+            overlays: baseLayersAndOverlays.overlays,
+            overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
         };
 
         if(mapOptions.readonly){
@@ -271,7 +281,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             self.pointsOfInterest([]);
             self.loadGeometry({});
             self.loadSite(site || {});
-        }, "bottomleft");
+        }, "bottomright");
 
 
 

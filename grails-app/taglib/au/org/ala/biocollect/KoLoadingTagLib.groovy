@@ -15,7 +15,8 @@ class KoLoadingTagLib {
     </div>"""
 
     // we need to use inline style instead of CSS because Knockout's visible binding uses inline styles, and so will overwrite any css rules.
-    static final String WRAPPER_OPEN = """<div style="display: none" data-bind="visible: true">"""
+    // It also triggers 'knockout-visible' event on all children elements of the wrapper 'div'.
+    static final String WRAPPER_OPEN = """<div style="display: none" data-bind="visible: function(element){setTimeout(function(){\$(element).children().trigger('knockout-visible')},0); return true}(\$element)">"""
     static final String WRAPPER_CLOSE = "</div>"
 
     def koLoading = { attrs, body ->

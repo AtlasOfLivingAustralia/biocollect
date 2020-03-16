@@ -44,7 +44,8 @@ function FilterViewModel(config){
     self.showMoreFacet  = ko.observable();
     self.searchText = ko.observable();
     self.switchOffSearch = ko.observable(false);
-
+    self.redefineFacet = ko.observable();
+    self.origSelectedFacet = ko.observableArray();
 
     self.createFacetViewModel = function (facet) {
         var facetVm;
@@ -189,8 +190,25 @@ function FilterViewModel(config){
      * merges checked facet terms with selected facets. This will trigger an ajax call to update projects.
      */
     self.mergeTempToRefine = function () {
-        var tempList = self.tempListOfFacets()
-        var sanitisedList = []
+        var tempList = self.tempListOfFacets();
+        var sanitisedList = [];
+
+        var termSelectedFacets = ko.utils.arrayFilter(self.selectedFacets(), function (facet) {
+                                        if (facet.type == "term") {
+                                            return true;
+                                        }
+                                        return false;
+                                    });
+
+        if (termSelectedFacets.length > 0) {
+            // This is original OR condition
+            if (!self.redefineFacet()) {
+                self.origSelectedFacet(termSelectedFacets);
+            }
+            self.redefineFacet(true);
+        } else {
+            self.redefineFacet(false);
+        };
         tempList.forEach(function (item) {
             if(!isDuplicate(self.selectedFacets(), item)){
                 sanitisedList.push(item)
@@ -198,7 +216,7 @@ function FilterViewModel(config){
         })
         parent.resetPageOffSet();
 
-        self.selectedFacets.push.apply(self.selectedFacets, sanitisedList)
+        self.selectedFacets.push.apply(self.selectedFacets, sanitisedList);
         self.hideAllTerms(sanitisedList);
         self.tempListOfFacets.removeAll()
     }
@@ -207,9 +225,38 @@ function FilterViewModel(config){
      * clears all facet selection
      */
     self.reset = function () {
-        self.showAllTerms(self.selectedFacets())
-        self.tempListOfFacets.removeAll()
-        self.selectedFacets.removeAll()
+        self.showAllTerms(self.selectedFacets());
+        self.redefineFacet(false);
+        self.tempListOfFacets.removeAll();
+        self.selectedFacets.removeAll();
+        self.origSelectedFacet.removeAll();
+    }
+
+    self.otherFilters = function() {
+        var otherFilter = ko.utils.arrayFilter(self.selectedFacets(), function (facet) {
+            if (facet.type != "term") {
+                return true;
+            }
+            return false;
+        })
+        return otherFilter;
+    }
+
+    self.subFilter = function() {
+        var subFilter = ko.utils.arrayFilter(self.selectedFacets(), function (facet) {
+                            if (facet.type == "term") {
+                                var found = self.origSelectedFacet().find(function (orig) {
+                                    //if (item.facet.name() == orig.facet.name() && item.term() == orig.term()) {
+                                    if (facet.id() == orig.id()) {
+                                        return true;
+                                    }
+                                });
+                                return !found;
+                            } else {
+                                return false;
+                            }
+                        });
+        return subFilter;
     }
 
     /**
@@ -530,7 +577,10 @@ function FacetTermViewModel(term) {
     })
 
     self.remove = function () {
-        self.facet.ref.selectedFacets.remove(self)
+        self.facet.ref.selectedFacets.remove(self);
+        self.facet.ref.origSelectedFacet.remove(function (item){
+            return (item.facet.name() == self.facet.name() && self.term() == item.term())
+        });
     }
 };
 
@@ -870,6 +920,20 @@ function isDuplicate(original, checkMe) {
 
     return duplicate
 }
+
+//Change facet to query search for AND join if more than one facet in same category is selected
+function checkSelectedFacetTitle(original, checkMe) {
+    var exist = false
+
+    original && original.forEach(function (term) {
+        if (checkMe.facet.name() == term.facet.name()) {
+            exist = true
+        }
+    })
+
+    return exist
+}
+
 
 function findFacetTerm(list, checkMe) {
     var found

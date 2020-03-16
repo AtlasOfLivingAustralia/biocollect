@@ -444,7 +444,7 @@ class ProjectService {
     }
 
     /**
-     * Check whether a works project has the allowAdditionalSurveySites and the user has permission to edit the project
+     * Check whether a works project has the addCreatedSiteToListOfSelectedSites and the user has permission to edit the project
      * If the project is not Works the default behaviour is to just call canUserEditProject.
      * @param userId The user calling the controller
      * @param projectId The project to check
@@ -457,7 +457,7 @@ class ProjectService {
 
         if(isWorks(project)) {
             canManageSites = userService.userIsSiteAdmin() || userService.isUserAdminForProject(userId, projectId)  ||
-                    project?.mapConfiguration?.allowAdditionalSurveySites && userService.isUserEditorForProject(userId, projectId)
+                    project?.mapConfiguration?.addCreatedSiteToListOfSelectedSites && userService.isUserEditorForProject(userId, projectId)
         }
 
         // Not sure if merit check is still relevant but just in case we rely on canUserEditProject behaviour

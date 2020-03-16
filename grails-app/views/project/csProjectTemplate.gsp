@@ -1,9 +1,10 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" import="grails.converters.JSON;"%>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
-    <title>${project?.name.encodeAsHTML()} | Project | Field Capture</title>
+    <title>${project?.name.encodeAsHTML()} | Project | BioCollect</title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
@@ -12,6 +13,11 @@
     <asset:stylesheet src="projects.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         homePagePath: "${createLink(controller: 'home', action: 'index')}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
@@ -105,6 +111,9 @@
         projectNotificationUrl: "${createLink(controller: 'project', action: 'sendEmailToMembers', params: [id: project.projectId])}",
         projectTestNotificationUrl: "${createLink(controller: 'project', action: 'sendTestEmail', params: [id: project.projectId])}",
         opportunisticDisplayName: "<g:message code="facets.methodType.opportunistic"/>",
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
         surveyMethods: <fc:getSurveyMethods/>
         },
         here = window.location.href;
@@ -129,6 +138,7 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 <body>
 
@@ -138,7 +148,7 @@
         <g:render template="banner"/>
     </g:if>
 
-    <div class="container-fluid">
+    <div class="container-fluid" id="csProjectContent">
         <div id="project-results-placeholder"></div>
         <g:render template="/shared/flashScopeMessage"/>
 
@@ -239,6 +249,10 @@
             amplify.store('traffic-from-project-finder-page',false)
             $('#about-tab').tab('show');
         }
+
+        <g:if test="${(fc.userIsAlaOrFcAdmin() || projectContent.admin.visible) && !project.isExternal}">
+            projectViewModel.showBushfireBanner()
+        </g:if>
     });
 </asset:script>
 </body>

@@ -1,15 +1,21 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>${project?.name.encodeAsHTML()} | Project | Field Capture</title>
+    <title>${project?.name.encodeAsHTML()} | Project | BioCollect</title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         projectUpdateUrl: "${createLink(action: 'ajaxUpdate', id: project.projectId)}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
@@ -57,7 +63,11 @@
         createBlogEntryUrl: "${createLink(controller: 'blog', action:'create', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}",
         editBlogEntryUrl: "${createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}",
         deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}",
-        flimit: ${grailsApplication.config.facets.flimit}
+        flimit: ${grailsApplication.config.facets.flimit},
+        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
         },
         here = window.location.href;
 
@@ -75,6 +85,7 @@
     <![endif]-->
     <asset:javascript src="common.js"/>
     <asset:javascript src="projects-manifest.js"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 <body>
 <div class="container-fluid">
@@ -392,7 +403,11 @@
                         wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
                     };
 
-                    map = new ALA.Map("map", {});
+                    var baseLayerConfig = Biocollect.MapUtilities.getALAMapBaseLayerOptions(fcConfig.mapLayersConfig.baseLayers);
+                    map = new ALA.Map("map", {
+                        baseLayer: baseLayerConfig.baseLayer,
+                        otherLayers: baseLayerConfig.otherLayers
+                    });
                     var mapFeatures = ${mapFeatures};
                     var sitesViewModel = new SitesViewModel(project.sites, map, mapFeatures, ${user?.isEditor?:false});
                     ko.applyBindings(sitesViewModel, document.getElementById('sitesList'));

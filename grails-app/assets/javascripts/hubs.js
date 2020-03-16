@@ -242,6 +242,7 @@ var HubSettings = function (settings, config) {
         self.homePagePath(self.orBlank(settings.homePagePath));
         self.defaultFacetQuery([]);
         self.content(new ContentViewModel(settings.content || {}));
+        self.mapLayersConfig = settings.mapLayersConfig || {};
         self.quickLinks(mapLinks(settings.quickLinks));
         self.templateConfiguration(new TemplateConfigurationViewModel(settings.templateConfiguration || {}));
         if (settings.defaultFacetQuery && settings.defaultFacetQuery instanceof Array) {
@@ -480,6 +481,7 @@ function ContentViewModel(config) {
     self.showNote = ko.observable(config.showNote || false);
     self.recordNote = ko.observable(config.recordNote || '');
     self.industries = ko.observable(config.industries || false);
+    self.bushfireCategories = ko.observable(config.bushfireCategories || false);
     self.hideProjectFinderHelpButtons = ko.observable(config.hideProjectFinderHelpButtons || false);
     self.hideProjectFinderStatusIndicatorTile = ko.observable(config.hideProjectFinderStatusIndicatorTile || false);
     self.hideProjectFinderStatusIndicatorList = ko.observable(config.hideProjectFinderStatusIndicatorList || false);

@@ -22,7 +22,8 @@ class HubSettings extends JSONObject {
 
     /** Keys for checking sections of supported optional content.  Note these keys are used as javascript variables so shouldn't contain spaces etc. */
     static final String CONTENT_INDUSTRIES = 'industries'
-    static final List OPTIONAL_PROJECT_CONTENT = [CONTENT_INDUSTRIES]
+    static final String CONTENT_BUSHFIRE_CATEGORIES = 'bushfireCategories'
+    static final List OPTIONAL_PROJECT_CONTENT = [CONTENT_INDUSTRIES,CONTENT_BUSHFIRE_CATEGORIES]
 
     public HubSettings() {
         super()

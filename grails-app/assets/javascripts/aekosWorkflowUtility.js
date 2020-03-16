@@ -160,7 +160,7 @@ AEKOS.Map = function () {
 
         if(!alaMap){
             alaMap = new ALA.Map("aekosDatasetMap", mapOptions);
-            alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomleft");
+            alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomright");
         }
 
         if (recordPoints && recordPoints[0] != undefined) {

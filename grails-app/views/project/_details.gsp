@@ -149,6 +149,7 @@
                 </div>
             </div>
 
+
             <div id="associatedOrgs">
                 <div class="row-fluid">
                     <div class="clearfix control-group">
@@ -309,6 +310,10 @@
                 </div>
             </div>
             </config:optionalContent>
+
+
+
+
             <g:if test="${!hubConfig.content?.hideProjectEditCountries}">
             <div class="row-fluid">
                 <div class="clearfix control-group">
@@ -349,6 +354,28 @@
                 </div>
             </div>
             </g:if>
+
+
+            <div class="clearfix control-group">
+                <label class="control-label span3" for="bushfire"><g:message code="project.details.bushfire"/><fc:iconHelp><g:message code="project.details.bushfire.help"/></fc:iconHelp></label>
+                <div class="controls span9"> <select id="bushfire" data-bind="booleanValue:isBushfire, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Please Select'"></select></div>
+            </div>
+
+            <config:optionalContent key="${au.org.ala.biocollect.merit.hub.HubSettings.CONTENT_BUSHFIRE_CATEGORIES}">
+                <div class="row-fluid">
+                    <div class="clearfix control-group">
+                        <label class="control-label span3"><g:message code="project.details.bushfireCategories.label"/>:<fc:iconHelp><g:message code="project.details.bushfireCategories.help"/></fc:iconHelp></label>
+
+                        <div class="span9">
+                            <!-- ko foreach: transients.bushfireCategories -->
+                            <!-- ko template: { name:'bushfireCategoriesTemplate'} -->
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                </div>
+            </config:optionalContent>
+
             <g:if test="${!hubConfig.content?.hideProjectEditScienceTypes}">
             <div class="clearfix control-group" data-bind="if:isEcoScience()">
                 <label class="control-label span3"><g:message code="project.details.scienceType"/><fc:iconHelp><g:message code="project.details.scienceType.help"/></fc:iconHelp></label>
@@ -789,14 +816,7 @@
     <div class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.configuration"/></h4>
-            <div class="clearfix control-group">
-                <label class="control-label span3" for="baseLayer"><g:message code="project.details.baseLayers"/><fc:iconHelp><g:message code="project.details.baseLayers.help"/></fc:iconHelp></label>
-
-                <div class="controls span4">
-                    <select id="baseLayer" data-bind='value:baseLayer, options:${grailsApplication.config.map.baseLayers as JSON}, optionsText:"displayText", optionsValue:"code", optionsCaption:"Select a base layer"'>
-                    </select>
-                </div>
-            </div>
+            <map-config-selector params="allBaseLayers: fcConfig.allBaseLayers, allOverlays: fcConfig.allOverlays, mapLayersConfig: mapLayersConfig"></map-config-selector>
         </div>
     </div>
 
@@ -834,11 +854,20 @@
         <label data-bind="html: '<span></span> ' + $data, attr:{for:'checkbox'+$index()}"></label>
     </div>
     </script>
+
     <script id="industryTemplate" type="text/html">
     <div class="large-checkbox">
         <input type="checkbox" name="industries"
                data-bind="value: $data, attr:{id:'industry-'+$index()}, checked: $root.industries"/>
         <label data-bind="html: '<span></span> ' + $data, attr:{for:'industry-'+$index()}"></label>
+    </div>
+    </script>
+
+    <script id="bushfireCategoriesTemplate" type="text/html">
+    <div class="large-checkbox">
+        <input type="checkbox" name="bushfireCategories"
+               data-bind="value: $data, attr:{id:'bushfireCategories-'+$index()}, checked: $root.bushfireCategories"/>
+        <label data-bind="html: '<span></span> ' + $data, attr:{for:'bushfireCategories-'+$index()}"></label>
     </div>
     </script>
 </bc:koLoading>
