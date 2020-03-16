@@ -138,7 +138,7 @@
             }
         </style>
     <![endif]-->
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.google.maps.url}"></script>
     <asset:stylesheet src="projects-manifest.css"/>
     <asset:javascript src="common.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
