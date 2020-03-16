@@ -161,7 +161,7 @@
    </div>
 </bc:koLoading>
 
-<asset:script type="text/javascript">
+<asset:script type="text/javascript" asset-defer="true">
         $(function () {
             // set project tab selection if a 'tab' parameter is set
             var projectTab = getUrlParameterValue('tab');
@@ -390,6 +390,6 @@
     }
 
 </asset:script>
-
+<asset:deferredScripts/>
 </body>
 </html>
