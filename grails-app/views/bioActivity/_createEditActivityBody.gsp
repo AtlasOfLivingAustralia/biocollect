@@ -190,7 +190,7 @@
         outputModelConfig = _.extend(fcConfig, outputModelConfig);
 
         if(metaModel.supportsSites) {
-            var mapFeatures = <fc:modelAsJavascript model="${mapFeatures}"/>;
+            var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
             var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
             var mapOptions = {
