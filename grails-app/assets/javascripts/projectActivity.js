@@ -109,6 +109,17 @@ var ProjectActivity = function (params) {
         }
     });
 
+    self.transients.toggleSiteOptionPanel = function() {
+        var id = this.accordionLinkId;
+        // Need to trigger a click event to have consistent accordion behaviour.
+        // Programatically calling collapse function does not close open accordion panel.
+        setTimeout(function () {
+            $(id).trigger('click');
+        }, 0);
+
+        return true;
+    };
+
     function diffArrays(a, b) {
         var diff = [];
         a && a.forEach(function (item) {
@@ -251,9 +262,10 @@ var ProjectActivity = function (params) {
         self.transients.oldFormName = oldValue;
     };
 
-    // hack - added because click handler initialisation run set surveySiteOption
+    // hack - added because click handler initialisation run resets surveySiteOption
     self.transients.setSurveySiteOption = function () {
-        self.surveySiteOption(this.value);
+        if(this.value != self.surveySiteOption())
+            self.surveySiteOption(this.value);
     };
 
     self.transients.isDataAvailable = function (){
