@@ -125,15 +125,6 @@ ko.components.register('map-config-selector', {
             var previewObject = this;
             self.showMap(true);
 
-            if(alaMap) {
-                var mapImpl = alaMap.getMapImpl();
-                mapImpl.eachLayer(function (layer) {
-                    mapImpl.removeLayer(layer);
-                });
-
-                alaMap.destroy();
-            }
-
             getOverlayStyle(fcConfig.layersStyle).then(function (data) {
                 var overlays = ko.toJS(self.overlays);
                 if ( data && overlays && overlays.length > 0) {
@@ -142,6 +133,15 @@ ko.components.register('map-config-selector', {
                             overlay.sld = data[overlay.alaId];
                         }
                     });
+                }
+
+                if(alaMap) {
+                    var mapImpl = alaMap.getMapImpl();
+                    mapImpl.eachLayer(function (layer) {
+                        mapImpl.removeLayer(layer);
+                    });
+
+                    alaMap.destroy();
                 }
 
                 var baseLayerOverlayConfig = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration({baseLayers: ko.toJS(self.baseLayers), overlays: ko.toJS(overlays)});
@@ -243,10 +243,31 @@ ko.components.register('map-config-selector', {
         }
 
         function BaseMapViewModel(baseMapOptions) {
+            var me = this;
             this.code = ko.observable(baseMapOptions.code);
             this.displayText = ko.observable(baseMapOptions.displayText || "");
             this.isSelected = ko.observable(baseMapOptions.isSelected || false);
             this.removeBaseLayer = self.removeBaseLayer;
+
+            this.transients = {
+                changed: ko.observable(false),
+                update: function () {
+                    me.transients.changed(true);
+                },
+                clear: function () {
+                    me.transients.changed(false);
+                }
+            };
+
+            this.transients.changed.extend({rateLimit: { timeout: 500, method: "notifyWhenChangesStop" }});
+            this.transients.changed.subscribe(function (value) {
+                if (value) {
+                    self.previewLayer();
+                    me.transients.clear();
+                }
+            });
+            this.displayText.subscribe(this.transients.update);
+            this.isSelected.subscribe(this.transients.update);
 
             this.moveDown = function (baseLayer) {
                 self.moveDown(self.baseLayers, baseLayer);
@@ -267,6 +288,7 @@ ko.components.register('map-config-selector', {
         }
 
         function OverlayViewModel(overlayMapOptions) {
+            var me = this;
             this.alaId = overlayMapOptions.alaId;
             this.alaName = overlayMapOptions.alaName;
             this.layerName = overlayMapOptions.layerName;
@@ -282,6 +304,34 @@ ko.components.register('map-config-selector', {
             this.changeLayerColour =  ko.observable(overlayMapOptions.changeLayerColour || false);
             this.style = overlayMapOptions.style;
             this.display = overlayMapOptions.display;
+
+            this.transients = {
+                changed: ko.observable(false),
+                update: function () {
+                    me.transients.changed(true);
+                },
+                clear: function () {
+                    me.transients.changed(false);
+                }
+            };
+
+            this.transients.changed.extend({rateLimit: { timeout: 500, method: "notifyWhenChangesStop" }});
+            this.transients.changed.subscribe(function (value) {
+                if (value) {
+                    self.previewLayer();
+                    me.transients.clear();
+                }
+            });
+            this.title.subscribe(this.transients.update);
+            this.defaultSelected.subscribe(this.transients.update);
+            this.boundaryColour.subscribe(this.transients.update);
+            this.fillColour.subscribe(this.transients.update);
+            this.textColour.subscribe(this.transients.update);
+            this.showPropertyName.subscribe(this.transients.update);
+            this.userAccessRestriction.subscribe(this.transients.update);
+            this.inLayerShapeList.subscribe(this.transients.update);
+            this.opacity.subscribe(this.transients.update);
+            this.changeLayerColour.subscribe(this.transients.update);
 
             this.moveDown = function (overlay) {
                 self.moveDown(self.overlays, overlay);
@@ -316,6 +366,9 @@ ko.components.register('map-config-selector', {
         OverlayViewModel.prototype.removeOverlay = self.removeOverlay;
 
         load({baseLayers: baseLayers, overlays: overlays, allBaseLayers: params.allBaseLayers, allOverlays: params.allOverlays});
+
+        self.selectedBaseLayer.subscribe(self.previewLayer);
+        self.selectedOverlay.subscribe(self.previewLayer);
     },
     template:componentService.getTemplate('map-config-selector')
 
