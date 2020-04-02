@@ -130,7 +130,6 @@ ecodata:
 google:
   maps:
     base: "https://maps.googleapis.com/maps/api/js?key="
-    #apiKey:  "AIzaSyA0HqqmZZT8n7bSeQ5rMZdhaCGTj4Kf_VA"
     #url: "${google.maps.base}${google.maps.apiKey ?: 'You.Need.To.Add.A.Config.Property.Named.google.maps.apiKey'}"
 
 #    geocode:
