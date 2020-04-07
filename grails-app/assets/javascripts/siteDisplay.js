@@ -52,6 +52,7 @@ Biocollect.SiteDisplay = function() {
             var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
             var mapOptions = {
+                addLayersControlHeading: true,
                 drawControl: false,
                 singleMarker: false,
                 singleDraw: false,

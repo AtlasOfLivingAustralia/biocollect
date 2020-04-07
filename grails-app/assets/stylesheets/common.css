@@ -535,6 +535,9 @@ input.padding-14, .padding-14{
     background-color: black;
 }
 
+.bg-selected-color {
+    background-color: #f9fafb;
+}
 
 .speciesThumbnail {
     height:150px;
@@ -798,4 +801,25 @@ input.full-width-input {
     .modal.fade {
         top: -500px;
     }
+}
+
+/*jquery ui slider custom class*/
+.slider {
+    width: 90%;
+}
+
+.slider > .ui-slider-handle {
+    width: 2em;
+    height: 1.6em;
+    top: 50%;
+    margin-top: -.8em;
+    text-align: center;
+    line-height: 1.6em;
+    font-size: 12px;
+    margin-left: -12px;
+}
+
+/* make bigger separation between rows */
+dd {
+    margin-bottom: 10px;
 }

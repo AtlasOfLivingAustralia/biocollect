@@ -79,7 +79,7 @@ describe("ProjectActivityViewModel Spec", function () {
         expect(speciesVM.asJS("species")).toEqual(params.pActivity);
     });
 
-    it("siteSurveyOption change should clear selected sites and draw options", function () {
+    it("surveySiteOption change should clear selected sites and draw options", function () {
         var params = {
             sites: [{
                 siteId: 'ghh',

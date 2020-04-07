@@ -130,11 +130,6 @@ ecodata:
 google:
   maps:
     base: "https://maps.googleapis.com/maps/api/js?key="
-    #url: "${google.maps.base}${google.maps.apiKey ?: 'You.Need.To.Add.A.Config.Property.Named.google.maps.apiKey'}"
-
-#    geocode:
-#      url: "https://maps.googleapis.com/maps/api/geocode/json?"
-
 
 headerAndFooter:
   baseURL: "https://www.ala.org.au/commonui-bs2" #"https://www.ala.org.au/commonui-bs2-v2/commonui-bs2"

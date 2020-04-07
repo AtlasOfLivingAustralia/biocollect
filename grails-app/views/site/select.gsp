@@ -39,50 +39,72 @@
 
     <div class="row-fluid">
         <bc:koLoading>
-            <div class="well span6">
+            <div class="span6">
                 <div class="row-fluid">
                     <div class="span5">
-                        <form class="form-search" data-bind="submit: searchSites">
+                        <span data-bind="text: matchingSiteCount()"
+                                                                   class=""></span> matching sites.
+                    </div>
+                    <div class="span7">
+                        <form class="form-search  pull-right" data-bind="submit: searchSites">
                             <div class="input-append">
                                 <input type="text" class="search-query" data-bind="value: currentSearch"
                                        placeholder="Filter..."/>
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </div>
-                            <div class="span12">
-                            </div>
-                            <div class="span12">
-                                    <div class=" btn-group span6" data-toggle="buttons-checkbox">
-                                        <button type="button" class="btn  btn-small btn-info"
-                                                    data-bind="click: toggleMyFavourites">Only Favourites<i data-bind="visible: myFavourites"
-                                                    class="toggleIndicator icon-remove icon-white"></i></button>
-                                    </div>
-                            </div>
-                            <div class="row-fluid margin-top-2" ><span data-bind="text: matchingSiteCount()"
-                                       class=""></span> matching sites.</div>
                         </form>
                     </div>
                 </div>
 
                 <ul data-bind="foreach: sites" style="margin: 0px;">
-                    <li style="list-style: none;">
+                    <li style="list-style: none;" data-bind="attr: {id: siteId}">
                         <div class="row-fluid margin-bottom-1">
                             <span class="span8">
-                                <strong>
-                                    <span data-bind="text:name"></span>
-                                </strong>
-                                <br/>
+                                <h4 data-bind="text:name"></h4>
 
                                 <div data-bind="visible:$data.extent === undefined">No georeference information available</div>
-
-                                <div data-bind="visible:$data.extent !== undefined && extent.geometry != null && extent.geometry.state != null">
-                                    State:&nbsp;<span
-                                        data-bind="text:$data.extent !== undefined && extent.geometry != null ? extent.geometry.state : ''"></span>
-                                </div>
-
-                                <div data-bind="visible:$data.extent !== undefined && extent.geometry != null && extent.geometry.lga != null">
-                                    LGA:&nbsp;<span
-                                        data-bind="text:$data.extent !== undefined && extent.geometry != null ? extent.geometry.lga : ''"></span>
-                                </div>
+                                <dl>
+                                    <dt data-bind="if:$data.extent !== undefined && extent.geometry != null && extent.geometry.state != null && extent.geometry.state != undefined && extent.geometry.state != ''"><State></State></dt>
+                                    <dd data-bind="if:$data.extent !== undefined && extent.geometry != null && extent.geometry.state != null && extent.geometry.state != undefined && extent.geometry.state != ''">
+                                        <!-- ko if: ((extent.geometry.state.join && extent.geometry.state.join(', ') || extent.geometry.state ).length <= 71) -->
+                                        <div
+                                                data-bind="text:$data.extent !== undefined && extent.geometry != null ? extent.geometry.state : ''"></div>
+                                        <!-- /ko -->
+                                        <!-- ko if: ((extent.geometry.state.join && extent.geometry.state.join(', ') || extent.geometry.state ).length > 71) -->
+                                        <div class="inline-block">
+                                            <div class="state-data in collapse">
+                                                <!-- ko text: extent.geometry.state.join(', ').slice(0, 71) + '...' --> <!-- /ko -->
+                                                <button class="btn btn-mini collapsed" data-toggle="collapse" data-bind="attr: { 'data-target': '#' + siteId + ' .state-data' }">Show more</button>
+                                            </div>
+                                            <div class="state-data collapse">
+                                                <!-- ko text: extent.geometry.state --> <!-- /ko -->
+                                                <button class="btn btn-mini" data-toggle="collapse" data-bind="attr: { 'data-target': '#' + siteId + ' .state-data' }">Show less</button>
+                                            </div>
+                                        </div>
+                                        <!-- /ko -->
+                                    </dd>
+                                    <dt data-bind="if:$data.extent !== undefined && extent.geometry != null && ((extent.geometry.lga != null) && (extent.geometry.lga != undefined) && (extent.geometry.lga != ''))">
+                                        LGA
+                                    </dt>
+                                    <dd data-bind="if:$data.extent !== undefined && extent.geometry != null && ((extent.geometry.lga != null) && (extent.geometry.lga != undefined) && (extent.geometry.lga != ''))">
+                                        <!-- ko if: (((extent.geometry.lga.join && extent.geometry.lga.join(', ')) || extent.geometry.lga ).length <= 71) -->
+                                        <div
+                                                data-bind="text:$data.extent !== undefined && extent.geometry != null ? extent.geometry.lga : ''"></div>
+                                        <!-- /ko -->
+                                        <!-- ko if: (((extent.geometry.lga.join && extent.geometry.lga.join(', ')) || extent.geometry.lga).length > 71) -->
+                                        <div data-bind="attr: {id: siteId}">
+                                            <div class="lga-data in collapse">
+                                                <!-- ko text: (extent.geometry.lga.join && extent.geometry.lga.join(', ') || extent.geometry.lga ).slice(0, 71) + '...' --> <!-- /ko -->
+                                                <button class="btn btn-mini collapsed" data-toggle="collapse" data-bind="attr: { 'data-target': '#' + siteId + ' .lga-data' }">Show more</button>
+                                            </div>
+                                            <div class="lga-data collapse">
+                                                <!-- ko text: extent.geometry.lga --> <!-- /ko -->
+                                                <button class="btn btn-mini" data-toggle="collapse" data-bind="attr: { 'data-target': '#' + siteId + ' .lga-data' }">Show less</button>
+                                            </div>
+                                        </div>
+                                        <!-- /ko -->
+                                    </dd>
+                                </dl>
                             </span>
                             <span class="span2">
                                 <button class="viewOnMap btn btn-small"
@@ -107,32 +129,33 @@
                     </li>
                 </ul>
                 <g:render template="/shared/pagination"/>
-                <div class="row-fluid margin-top-2">
-                    <button class="btn btn-primary" data-bind="click: useSelectedSites">Update sites</button>
+                <div class="row-fluid margin-top-2 text-right">
+                    <button class="btn btn-primary" data-bind="click: useSelectedSites">Add sites</button>
                     <button class="btn" data-bind="click: cancelUpdate">Cancel</button>
                 </div>
             </div>
         </bc:koLoading>
 
         <div class="span6">
-            <m:map id="siteMap"/>
+            <m:map id="siteMap" width="100%"/>
         </div>
     </div>
+%{--                    Due to large number of sites, the below binding takes a lot of time to execute.  --}%
+%{--    <g:if env="development">--}%
+%{--        <div class="container-fluid">--}%
+%{--            <div class="expandable-debug">--}%
+%{--                <hr/>--}%
 
-    <g:if env="development">
-        <div class="container-fluid">
-            <div class="expandable-debug">
-                <hr/>
+%{--                <h3>Debug</h3>--}%
 
-                <h3>Debug</h3>
+%{--                <div>--}%
+%{--                    <h4>KO model</h4>--}%
 
-                <div>
-                    <h4>KO model</h4>
-                    <pre data-bind="text:ko.toJSON($root,null,2)"></pre>
-                </div>
-            </div>
-        </div>
-    </g:if>
+%{--                    <pre data-bind="text:ko.toJSON($root,null,2)"></pre>--}%
+%{--                </div>--}%
+%{--            </div>--}%
+%{--        </div>--}%
+%{--    </g:if>--}%
 </div>
 </body>
 <asset:script type="text/javascript">

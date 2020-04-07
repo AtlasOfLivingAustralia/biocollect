@@ -587,6 +587,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         drawType = drawType || 'cluster';
         var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
         var mapOptions = {
+            addLayersControlHeading: true,
             drawControl: false,
             showReset: false,
             draggableMarkers: false,

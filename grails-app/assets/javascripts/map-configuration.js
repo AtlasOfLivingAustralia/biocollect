@@ -53,6 +53,7 @@ function MapConfiguration(config, project)
     self.transients.siteWithDataAjaxFlag = ko.observable(false);
     self.transients.sitesWithData = ko.observableArray([]);
     self.transients.sites = project.sites;
+    self.transients.isSelectAllSites = ko.observable(false);
     self.transients.selectedSites = ko.computed(function () {
         var sites = self.sites(),
             result = [];
@@ -82,6 +83,36 @@ function MapConfiguration(config, project)
 
         return result;
     });
+
+    self.transients.selectAllSites = function () {
+        var sites = self.sites(),
+            unSelectedSites = self.transients.unSelectedSites();
+
+        if (self.transients.isSelectAllSites()) {
+            unSelectedSites = unSelectedSites.map(function (site) {
+                return site.siteId;
+            });
+
+            sites.push.apply(sites, unSelectedSites);
+            self.sites(sites);
+        } else {
+            self.sites.removeAll();
+        }
+
+        // allow default action
+        return true;
+    };
+
+    self.transients.areAllSitesSelected = ko.computed(function () {
+        var sites = self.sites() || [],
+            allSites = self.transients.sites || [];
+        return sites.length == allSites.length;
+    });
+
+    self.transients.areAllSitesSelected.subscribe(function(value){
+        self.transients.isSelectAllSites(value);
+    });
+
     self.transients.siteUrl = function (site) {
         return fcConfig.siteViewUrl + '/' + site.siteId
     };

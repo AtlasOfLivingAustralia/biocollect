@@ -37,7 +37,11 @@ var ProjectActivity = function (params) {
     self.allowPoints = ko.observable(('allowPoints' in pActivity)? pActivity.allowPoints : true);
     self.allowLine = ko.observable(('allowLine' in pActivity)? pActivity.allowLine : false);
     self.defaultZoomArea = ko.observable(pActivity.defaultZoomArea || project.projectSiteId);
-    self.mapLayersConfig = pActivity.mapLayersConfig || {};
+    // clone project map layer configuration. Since this object is shared by different project activities this will make
+    // sure changes made in one activity does not change the other actvity setting.
+    var projectMapLayersConfig = project.mapLayersConfig || {};
+    var clonedProjectMapLayersConfig = {baseLayers: $.extend([], projectMapLayersConfig.baseLayers) , overlays: $.extend([], projectMapLayersConfig.overlays)};
+    self.mapLayersConfig = pActivity.mapLayersConfig || project.mapLayersConfig || {};
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
     self.usageGuide = ko.observable(pActivity.usageGuide || "");
     self.relatedDatasets = ko.observableArray (pActivity.relatedDatasets || []);
@@ -56,6 +60,7 @@ var ProjectActivity = function (params) {
     self.dataManagementPolicyDocument = ko.observable();
     self.surveySiteOption = ko.observable(pActivity.surveySiteOption || SITE_PICK);
     self.transients.surveySiteOption = self.surveySiteOption();
+    self.transients.isSelectAllSites = ko.observable(false);
     self.transients.publicAccess = stats.publicAccess? "True" : "False";
     self.transients.activityLastUpdated = stats.activityLastUpdated;
     self.transients.speciesRecorded = ko.observable(stats.speciesRecorded).extend({integer:0});
@@ -145,6 +150,31 @@ var ProjectActivity = function (params) {
                 }
             }
         }
+    });
+
+    self.transients.selectAllSites = function () {
+        var isSelected = self.transients.isSelectAllSites();
+        $.each(self.sites(), function (index, site) {
+            site.added(isSelected);
+        });
+
+        // allow default action
+        return true;
+    };
+
+    self.transients.areAllSitesSelected = ko.computed(function () {
+        var allSelected = true;
+        $.each(self.sites(), function (index, site) {
+            if (!site.added()) {
+                allSelected = false
+            }
+        });
+
+        return allSelected;
+    });
+
+    self.transients.areAllSitesSelected.subscribe(function(value){
+        self.transients.isSelectAllSites(value);
     });
 
     /**
@@ -569,6 +599,7 @@ var ProjectActivity = function (params) {
         });
     };
     self.loadSites(sites, pActivity.sites);
+    self.transients.isSelectAllSites(self.transients.areAllSitesSelected());
 
     self.submissionRecords = ko.observableArray();
 

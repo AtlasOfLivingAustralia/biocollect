@@ -403,7 +403,7 @@ if(!map.overlays) {
                         alaId       : 'cl10930',
                         alaName     : 'nrm_regions_2017',
                         layerName   : '',
-                        title         : 'Management regions',
+                        title         : 'NRM Regions',
                         defaultSelected: false,
                         boundaryColour  : '#b2abd2',
                         showPropertyName: false,
@@ -437,7 +437,7 @@ if(!map.overlays) {
                         changeLayerColour: false,
                         display     : [
                                 cqlFilter     : defaultCqlFilter,
-                                propertyName  : 'LEVEL2NAME'
+                                propertyName  : 'Level2Name'
                         ],
                         style       : [:],
                         bounds      : bounds,

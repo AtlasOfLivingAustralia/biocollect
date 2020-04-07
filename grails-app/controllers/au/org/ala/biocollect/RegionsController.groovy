@@ -34,7 +34,7 @@ class RegionsController {
             Map result = [:]
             layers.each { layer ->
                 // get the style content for the layer
-                if (layer.changeLayerColour) {
+                if (layer.changeLayerColour || layer.showPropertyName) {
                     def xml = mapService.buildXml(layer)
                     result[layer.alaId] = xml.toString()
                 }

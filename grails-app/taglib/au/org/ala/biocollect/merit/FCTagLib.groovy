@@ -730,6 +730,7 @@ class FCTagLib {
     def siteFacet = {attrs ->
         Map site = attrs.site
         String facetName = attrs.facet
+        Integer trimSize = attrs.trimSize ?: 50
 
         MarkupBuilder mb = new MarkupBuilder(out)
         Map geom =  site?.extent?.geometry?:[:]
@@ -751,8 +752,41 @@ class FCTagLib {
                 }
 
             }
-            mb.dd(value.toString())
+
+            String details = value.toString();
+            if(attrs.showPreview) {
+                def preview
+                if(details.size() > trimSize) {
+                    def idName =  "${facetName}Facet"
+                    preview = details.substring(0, trimSize - 1) + " ..."
+
+                    mb.dd() {
+                        mb.div(id: idName) {
+                            mb.div(class: "facet-data collapse in") {
+                                mkp.yield(preview)
+                                mb.button(class: "btn btn-mini", 'data-toggle': 'collapse', 'data-target': "#${idName} .facet-data") {
+                                    mkp.yield(g.message(code: "site.btn.showmore.title"))
+                                }
+                            }
+
+                            mb.div(class: "facet-data collapse") {
+                                mkp.yield(details)
+                                mb.button(class: "btn btn-mini", 'data-toggle': 'collapse', 'data-target': "#${idName} .facet-data") {
+                                    mkp.yield(g.message(code: "site.btn.showless.title"))
+                                }
+                            }
+
+                        }
+                    }
+                }
+                else
+                    mb.dd(details)
+            }
+            else
+                mb.dd(details)
         }
+
+        mb
     }
 
     def attributeSafeValue = { attrs ->

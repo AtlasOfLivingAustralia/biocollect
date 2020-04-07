@@ -22,16 +22,16 @@
                                    data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-pick-link'}), clickBubble: false" value="sitepick"/>
                             <a id="site-pick-link" data-toggle="collapse" data-parent="#site-accordion" href="#site-pick"
                                data-bind="click: transients.setSurveySiteOption.bind({value: 'sitepick'})">
-                                <g:message code="mapConfiguration.sites.pick.title"/>
+                                <h4><g:message code="mapConfiguration.sites.pick.title"/></h4>
                             </a>
                         </label>
                     </div>
 
                 </div>
 
-                <div id="site-pick" class="accordion-body collapse"  data-bind="css: { 'in': transients.surveySiteOption == 'sitepick' }">
-                    <div class="accordion-inner">
-                        <div data-bind="if: surveySiteOption() === 'sitepick', slideVisible: surveySiteOption() === 'sitepick'">
+                <div id="site-pick" class="accordion-body collapse"  data-bind="css: { 'in': transients.surveySiteOption == 'sitepick'}">
+                    <div class="accordion-inner" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepick'}">
+                        <div class="margin-left-30" data-bind="if: surveySiteOption() === 'sitepick', slideVisible: surveySiteOption() === 'sitepick'">
                             <h5><strong><g:message
                                     code="mapConfiguration.user.pick.site.title"/></strong></h5>
                             <h5><small><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h5>
@@ -51,15 +51,15 @@
                                    data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-create-link'}), clickBubble: false" value="sitecreate"/>
                             <a id="site-create-link" data-toggle="collapse" data-parent="#site-accordion" href="#site-create"
                                data-bind="click: transients.setSurveySiteOption.bind({value:'sitecreate'})">
-                                <g:message code="mapConfiguration.sites.create.title"/>
+                                <h4><g:message code="mapConfiguration.sites.create.title"/></h4>
                             </a>
                         </label>
                     </div>
                 </div>
 
                 <div id="site-create" class="accordion-body collapse"  data-bind="css: { 'in': transients.surveySiteOption == 'sitecreate' }">
-                    <div class="accordion-inner">
-                        <div data-bind="if: surveySiteOption() === 'sitecreate', slideVisible: surveySiteOption() === 'sitecreate'">
+                    <div class="accordion-inner" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitecreate'}">
+                        <div class="margin-left-30" data-bind="if: surveySiteOption() === 'sitecreate', slideVisible: surveySiteOption() === 'sitecreate'">
                             <h5><strong><g:message
                                     code="mapConfiguration.user.created.site.title"/></strong></h5>
                             <h5><small><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h5>
@@ -79,15 +79,15 @@
                                    data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-pick-create-link'}), clickBubble: false" value="sitepickcreate"/>
                             <a id="site-pick-create-link" data-toggle="collapse" data-parent="#site-accordion"
                                href="#site-pick-create" data-bind="click: transients.setSurveySiteOption.bind({value:'sitepickcreate'})">
-                                <g:message code="mapConfiguration.sites.both.title"/>
+                                <h4><g:message code="mapConfiguration.sites.both.title"/></h4>
                             </a>
                         </label>
                     </div>
                 </div>
 
                 <div id="site-pick-create" class="accordion-body collapse" data-bind="css: { 'in': transients.surveySiteOption == 'sitepickcreate' }">
-                    <div class="accordion-inner">
-                        <div data-bind="if: surveySiteOption() === 'sitepickcreate', slideVisible: surveySiteOption() === 'sitepickcreate'">
+                    <div class="accordion-inner" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepickcreate'}">
+                        <div class="margin-left-30" data-bind="if: surveySiteOption() === 'sitepickcreate', slideVisible: surveySiteOption() === 'sitepickcreate'">
                             <h5><strong><g:message
                                     code="mapConfiguration.user.pick.site.title"/></strong></h5>
                             <h5><small><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h5>
@@ -124,7 +124,7 @@
         <div class="row-fluid">
             <div class="span12">
                 <map-config-selector
-                        params="allBaseLayers: fcConfig.allBaseLayers, allOverlays: fcConfig.allOverlays, mapLayersConfig: $parent.mapLayersConfig"></map-config-selector>
+                        params="allBaseLayers: fcConfig.allBaseLayers, allOverlays: fcConfig.allOverlays, mapLayersConfig: $parent.mapLayersConfig, type: 'project'"></map-config-selector>
             </div>
         </div>
 
@@ -150,6 +150,14 @@
     <div id="survey-site-list" class="row-fluid">
         <div class="span12">
             <div style="max-height: 500px; overflow-y: auto;">
+                <div class="row-fluid" data-bind="if: transients.sites.length">
+                    <div class="span6">
+                        <label class="checkbox">
+                            <input type="checkbox" data-bind="checked: transients.isSelectAllSites, click: transients.selectAllSites">
+                            <g:message code="mapConfiguration.site.selectall.title"/>
+                        </label>
+                    </div>
+                </div>
                 <!-- ko foreach: transients.sites -->
                 <div class="row-fluid">
                     <div class="span6">
