@@ -21,6 +21,8 @@
         var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
 
         var mapOptions = $.extend({
+            addLayersControlHeading: true,
+            allowSearchLocationByAddress: false,
             drawControl: false,
             singleMarker: false,
             singleDraw: false,

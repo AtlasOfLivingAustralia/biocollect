@@ -211,6 +211,7 @@ function ProjectFinder(config) {
             var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
             spatialFilter = new ALA.Map("mapFilter", {
+                addLayersControlHeading: true,
                 wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
                 wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
                 myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location",
@@ -639,6 +640,7 @@ function ProjectFinder(config) {
         var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
         var baseLayerOverlayConfig = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
         var mapOptions = {
+            addLayersControlHeading: true,
             drawControl: false,
             showReset: false,
             draggableMarkers: false,

@@ -254,61 +254,64 @@ Biocollect.MapUtilities = {
                         map.startLoading();
 
                         // layer ids is comma separated
-                        var layerIds = map.getOverlayLayers().map(function (value) {
+                        var layerIds = map.getOverlayLayers('selected').map(function (value) {
                             return value.customLayerId;
                         }).join(',');
-                        var intersectQs = 'layerId=' + layerIds + '&lat=' + e.latlng.lat + '&lng=' + e.latlng.lng;
-                        var intersectUrl = config.intersectService + '?' + intersectQs;
 
-                        $.ajax(
-                            // get the layers + object in layer that intersect
-                            {url: intersectUrl, dataType: 'json'}
-                        ).then(function (data) {
+                        if (layerIds) {
+                            var intersectQs = 'layerId=' + layerIds + '&lat=' + e.latlng.lat + '&lng=' + e.latlng.lng;
+                            var intersectUrl = config.intersectService + '?' + intersectQs;
 
-                            // get the most recently selected overlay
-                            var topLayer = map.getTopSelectedOverlayLayer();
-                            var topLayerId = topLayer ? topLayer.customLayerId : null;
+                            $.ajax(
+                                // get the layers + object in layer that intersect
+                                {url: intersectUrl, dataType: 'json'}
+                            ).then(function (data) {
 
-                            // show a popup on the map that lists each layer + object
-                            var popupContentItems = [];
-                            data.forEach(function (item) {
+                                // get the most recently selected overlay
+                                var topLayer = map.getTopSelectedOverlayLayer();
+                                var topLayerId = topLayer ? topLayer.customLayerId : null;
 
-                                var overlayLayer = map.getOverlayLayers().find(function (value) {
-                                    return value.customLayerId === item.field;
+                                // show a popup on the map that lists each layer + object
+                                var popupContentItems = [];
+                                data.forEach(function (item) {
+
+                                    var overlayLayer = map.getOverlayLayers().find(function (value) {
+                                        return value.customLayerId === item.field;
+                                    });
+
+                                    var overlayTitle = overlayLayer.customLayerTitle;
+
+                                    var popupContentItem = '';
+                                    if (item.pid) {
+                                        popupContentItem = '<li>' + overlayTitle + ': ' + item.value + '</li>';
+                                    } else if (item.units) {
+                                        popupContentItem = '<li>' + overlayTitle + ': ' + item.value + item.units + '</li>';
+                                    } else {
+                                        popupContentItem = '<li>' + overlayTitle + ': (none)</li>';
+                                    }
+                                    popupContentItems.push(popupContentItem);
+
+                                    if (item.pid && topLayerId && item.field === topLayerId) {
+                                        // at the click location, zoom / pan to the most recently selected overlay layer
+                                        console.log('[Map] Zooming to ' + overlayTitle + ' (' + overlayLayer.customLayerId + '): ' + item.value + '.');
+                                        var objectUrl = config.wmsFeatureUrl + item.pid;
+                                        $.ajax({url: objectUrl, dataType: 'json'}).then(function (data) {
+                                            var latLngs = ALA.MapUtils.bboxToPointArray(data.bbox, true);
+                                            var bounds = new L.LatLngBounds(latLngs);
+                                            map.getMapImpl().fitBounds(bounds);
+                                        });
+                                    }
+
                                 });
 
-                                var overlayTitle = overlayLayer.customLayerTitle;
+                                L.popup()
+                                    .setLatLng(e.latlng)
+                                    .setContent('<p>At this location:</p><ul>' + popupContentItems.join('') + '</ul>')
+                                    .openOn(map.getMapImpl());
 
-                                var popupContentItem = '';
-                                if (item.pid) {
-                                    popupContentItem = '<li>' + overlayTitle + ': ' + item.value + '</li>';
-                                } else if (item.units) {
-                                    popupContentItem = '<li>' + overlayTitle + ': ' + item.value + item.units + '</li>';
-                                } else {
-                                    popupContentItem = '<li>' + overlayTitle + ': (none)</li>';
-                                }
-                                popupContentItems.push(popupContentItem);
-
-                                if (item.pid && topLayerId && item.field === topLayerId) {
-                                    // at the click location, zoom / pan to the most recently selected overlay layer
-                                    console.log('[Map] Zooming to ' + overlayTitle + ' (' + overlayLayer.customLayerId + '): ' + item.value + '.');
-                                    var objectUrl = config.wmsFeatureUrl + item.pid;
-                                    $.ajax({url: objectUrl, dataType: 'json'}).then(function (data) {
-                                        var latLngs = ALA.MapUtils.bboxToPointArray(data.bbox, true);
-                                        var bounds = new L.LatLngBounds(latLngs);
-                                        map.getMapImpl().fitBounds(bounds);
-                                    });
-                                }
-
+                                map.finishLoading();
                             });
-
-                            L.popup()
-                                .setLatLng(e.latlng)
-                                .setContent('<p>At this location:</p><ul>' + popupContentItems.join('') + '</ul>')
-                                .openOn(map.getMapImpl());
-
-                            map.finishLoading();
-                        });
+                        }
                     },
 
                     /**
@@ -369,7 +372,7 @@ Biocollect.MapUtilities = {
             requestParams.push('cql_filter=' + encodeURIComponent(cqlFilter));
         }
 
-        if (Biocollect.MapUtilities.isContextualLayer(layerId) && overlay.changeLayerColour && sldStyle) {
+        if (Biocollect.MapUtilities.isContextualLayer(layerId) && (overlay.changeLayerColour || overlay.showPropertyName) && sldStyle) {
             requestParams.push('sld_body=' + encodeURIComponent(sldStyle));
         }
 
@@ -410,11 +413,14 @@ Biocollect.MapUtilities = {
         var result = {
             overlays: {},
             overlayLayersSelectedByDefault: []
-        };
+        },
+        zIndex = overlays.length;
 
         overlays.forEach(function (overlay) {
             var overlayLayer = Biocollect.MapUtilities.addLoadedOverlayLayer(config, overlay);
             result.overlays[overlayLayer.title] = overlayLayer.layer;
+            overlayLayer.layer.setZIndex(zIndex);
+            zIndex --;
 
             if(overlayLayer.isSelected){
                 result.overlayLayersSelectedByDefault.push(overlayLayer.title);

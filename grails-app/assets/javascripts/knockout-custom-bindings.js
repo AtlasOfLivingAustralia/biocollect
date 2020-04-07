@@ -977,6 +977,47 @@ ko.bindingHandlers.validateObservable = {
     }
 };
 
+ko.bindingHandlers.slider = {
+    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        var $element = $(element),
+            params = valueAccessor(),
+            observable,
+            value,
+            max = 10,
+            min = 0,
+            step = 1;
+
+        if (ko.isObservable(params)) {
+            observable = params;
+            value = observable();
+        } else {
+            observable = params.model;
+            value = observable();
+            max = params.max;
+            min = params.min;
+            step = params.step;
+        }
+
+        $element.html("<div class=\"ui-slider-handle\"></div>");
+        var handle = $element.find(".ui-slider-handle");
+        var config = {
+            max : max,
+            min : min,
+            step : step,
+            value : value,
+            create: function() {
+                handle.text( $( this ).slider( "value" ) );
+            },
+            slide: function( event, ui ) {
+                handle.text( ui.value );
+                observable(ui.value);
+            }
+        };
+
+        $element.slider(config);
+    }
+};
+
 function randomMax8HexChars() {
     return (((1 + Math.random()) * 0x100000000) | 0).toString(16).substring(1);
 }

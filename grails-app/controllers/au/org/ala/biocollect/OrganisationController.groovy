@@ -53,7 +53,6 @@ class OrganisationController {
 
         [about   : [label: 'About', visible: true, stopBinding: false, type: 'tab', default: true, includeProjectList: includeProjectList],
          projects: [label: 'Projects', visible: true, stopBinding: true, type: 'tab', template: '/shared/projectFinder', model: [allowGeographicFilter: false]],
-         sites   : [label: 'Map', visible: hasViewAccess, stopBinding: true, type: 'tab', projectCount: organisation.projects?.size() ?: 0, showShapefileDownload: hasAdminAccess],
          data    : [label: 'Data', visible: true, stopBinding: true, type: 'tab', template: '/bioActivity/activities', modalId: 'chooseMoreFacets'],
          admin   : [label: 'Admin', visible: hasAdminAccess, type: 'tab']]
     }
@@ -117,33 +116,6 @@ class OrganisationController {
             render result as JSON
         } else {
             render result.resp as JSON
-        }
-    }
-
-    /**
-     * Responds with a download of a zipped shapefile containing all sites used by projects run
-     * by an organisation.
-     * @param id the organisationId of the organisation.
-     */
-    def downloadShapefile(String id) {
-
-        def userId = userService.getCurrentUserId()
-
-        if (id && userId) {
-            if (organisationService.isUserAdminForOrganisation(id) || organisationService.isUserGrantManagerForOrganisation(id)) {
-                def organisation = organisationService.get(id)
-                def params = [fq: 'organisationFacet:' + organisation.name, query: "docType:project"]
-
-                def url = grailsApplication.config.ecodata.service.url + '/search/downloadShapefile' + commonService.buildUrlParamsFromMap(params)
-                def resp = webService.proxyGetRequest(response, url, true, true, 960000)
-                if (resp.status != 200) {
-                    render view: '/error', model: [error: resp.error]
-                }
-            } else {
-                render status: 403, text: 'Permission denied'
-            }
-        } else {
-            render status: 400, text: 'Missing parameter organisationId'
         }
     }
 

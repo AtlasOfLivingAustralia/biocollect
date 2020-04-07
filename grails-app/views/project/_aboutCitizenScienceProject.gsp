@@ -243,12 +243,16 @@
             var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
             var mapOptions = {
+                addLayersControlHeading: true,
                 drawControl: false,
                 showReset: false,
                 draggableMarkers: false,
                 useMyLocation: false,
                 allowSearchLocationByAddress: false,
                 allowSearchRegionByAddress: false,
+                trackWindowHeight: true,
+                autoZIndex: false,
+                preserveZIndex: true,
                 baseLayer: baseLayersAndOverlays.baseLayer,
                 otherLayers: baseLayersAndOverlays.otherLayers,
                 overlays: baseLayersAndOverlays.overlays,
@@ -258,9 +262,10 @@
             }
 
             map = new ALA.Map("projectSiteMap", mapOptions);
+            Biocollect.MapUtilities.intersectOverlaysAndShowOnPopup(map);
 
             if (projectArea.pid && projectArea.pid != 'null' && projectArea.pid != "undefined") {
-                map.addWmsLayer(projectArea.pid);
+                map.addWmsLayer(projectArea.pid, {opacity: 1, zIndex: 1000});
             } else {
                 var geometry = projectArea;
                 var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);

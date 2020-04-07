@@ -6,6 +6,12 @@ ko.components.register('map-config-selector', {
             overlays = mapLayersConfig.overlays,
             alaMapId = 'previewBaseLayer',
             alaMap;
+
+        if (ko.isObservable(baseLayers))
+            baseLayers = ko.toJS(baseLayers);
+
+        if (ko.isObservable(overlays))
+            overlays = ko.toJS(overlays);
         // models
         self.baseLayers = mapLayersConfig.baseLayers = ko.observableArray();
         self.overlays = mapLayersConfig.overlays = ko.observableArray();
@@ -129,7 +135,7 @@ ko.components.register('map-config-selector', {
                 var overlays = ko.toJS(self.overlays);
                 if ( data && overlays && overlays.length > 0) {
                     overlays.forEach(function (overlay) {
-                        if(overlay.changeLayerColour) {
+                        if (overlay.changeLayerColour || overlay.showPropertyName) {
                             overlay.sld = data[overlay.alaId];
                         }
                     });
@@ -150,16 +156,26 @@ ko.components.register('map-config-selector', {
                     otherLayers: baseLayerOverlayConfig.otherLayers,
                     overlays: baseLayerOverlayConfig.overlays,
                     overlayLayersSelectedByDefault: baseLayerOverlayConfig.overlayLayersSelectedByDefault,
+                    addLayersControlHeading: true,
                     drawControl: false,
                     allowSearchLocationByAddress: false,
-                    allowSearchByRegionByAddress: false,
+                    allowSearchRegionByAddress: false,
                     useMyLocation: false,
                     scrollWheelZoom: true,
                     touchZoom: true,
                     dragging: true
                 });
+
+                // When initialised for the first time, the map is displayed correctly.
+                // This is because map container is not visible at the time of creation.
+                // The below code overcomes this issue.
+                setTimeout(function() {
+                    alaMap.getMapImpl().invalidateSize();
+                }, 250);
             });
         };
+
+        self.noDefaultAction =  function () {};
 
         /**
          * Get SLD style for selected overlays
@@ -263,11 +279,16 @@ ko.components.register('map-config-selector', {
             this.transients.changed.subscribe(function (value) {
                 if (value) {
                     self.previewLayer();
-                    me.transients.clear();
                 }
+
+                me.transients.clear();
             });
             this.displayText.subscribe(this.transients.update);
-            this.isSelected.subscribe(this.transients.update);
+            this.isSelected.subscribe(function(newValue){
+                if (newValue) {
+                    me.transients.update(true);
+                }
+            });
 
             this.moveDown = function (baseLayer) {
                 self.moveDown(self.baseLayers, baseLayer);
@@ -319,8 +340,9 @@ ko.components.register('map-config-selector', {
             this.transients.changed.subscribe(function (value) {
                 if (value) {
                     self.previewLayer();
-                    me.transients.clear();
                 }
+
+                me.transients.clear();
             });
             this.title.subscribe(this.transients.update);
             this.defaultSelected.subscribe(this.transients.update);
@@ -367,8 +389,8 @@ ko.components.register('map-config-selector', {
 
         load({baseLayers: baseLayers, overlays: overlays, allBaseLayers: params.allBaseLayers, allOverlays: params.allOverlays});
 
-        self.selectedBaseLayer.subscribe(self.previewLayer);
-        self.selectedOverlay.subscribe(self.previewLayer);
+        self.baseLayers.subscribe(self.previewLayer);
+        self.overlays.subscribe(self.previewLayer);
     },
     template:componentService.getTemplate('map-config-selector')
 

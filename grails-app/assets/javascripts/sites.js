@@ -15,6 +15,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         name: ko.observable(),
         siteId: ko.observable(),
         externalId: ko.observable(),
+        catchment: ko.observable(),
         type: ko.observable(),
         area: ko.observable(),
         description: ko.observable(),
@@ -64,6 +65,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         siteModel.name(exists(site, "name"));
         siteModel.siteId(exists(site, "siteId"));
         siteModel.externalId(exists(site, "externalId"));
+        siteModel.catchment(exists(site, "catchment"));
         siteModel.type(exists(site, "type"));
         siteModel.area(exists(site, "area"));
         siteModel.description(exists(site, "description"));
@@ -242,6 +244,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
         var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
         var options =  {
+            addLayersControlHeading: true,
             maxZoom: 20,
             wmsLayerUrl: mapOptions.spatialWms + "/wms/reflect?",
             wmsFeatureUrl: mapOptions.featureService + "?featureId=",
@@ -252,6 +255,12 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             overlays: baseLayersAndOverlays.overlays,
             overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
         };
+
+        for (var option in mapOptions) {
+            if (mapOptions.hasOwnProperty(option)){
+                options[option] = mapOptions[option];
+            }
+        }
 
         if(mapOptions.readonly){
             var readonlyProps = {

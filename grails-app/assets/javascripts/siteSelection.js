@@ -6,7 +6,6 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
     self.projectId = projectId;
     self.projects = [projectId];
     self.currentSearch = ko.observable('');
-    self.myFavourites = ko.observable(false);
     self.sites = ko.observableArray([]);
     self.matchingSiteCount = ko.observable(0);
     self.currentProjectSites = ko.observableArray(currentProjectSites);
@@ -18,6 +17,8 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
     var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
     var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
     var mapOptions = {
+        addLayersControlHeading: true,
+        trackWindowHeight: true,
         drawControl: false,
         singleMarker: false,
         useMyLocation: false,
@@ -112,18 +113,12 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
         var query = self.currentSearch();
         var max = self.pagination.resultsPerPage();
         var newOffset = offset;
-        var myFavourites = self.myFavourites();
-        queryForSites(query, max, newOffset, myFavourites, null);
+        queryForSites(query, max, newOffset, null);
     }
 
-    self.toggleMyFavourites = function () {
-        self.myFavourites(!self.myFavourites());
-        self.searchSites();
-    }
-
-    function queryForSites(query, max, offset, myFavourites, callbackFcn) {
+    function queryForSites(query, max, offset, callbackFcn) {
         $.ajax({
-            url: self.config.siteQueryUrl + query + "&max=" + max + "&offset=" + offset+"&myFavourites="+myFavourites,
+            url: self.config.siteQueryUrl + query + "&max=" + max + "&offset=" + offset,
             type: 'GET',
             contentType: 'application/json',
             success: function (data) {
@@ -133,8 +128,6 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
                 $.each(data.hits.hits, function (idx, hit) {
                     var isProjectSite = ($.inArray(hit._source.siteId, self.currentProjectSites()) >= 0 );
                     hit._source.isProjectSite = ko.observable(isProjectSite);
-                    console.log(JSON.stringify(hit, undefined, 2))
-                    console.log("----------")
                     self.sites.push(hit._source);
                 });
 

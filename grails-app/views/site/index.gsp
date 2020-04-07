@@ -71,16 +71,6 @@
         <li>
             <g:set var="disabled">${(!user) ? "disabled='disabled' title='login required'" : ''}</g:set>
         %{--Favourite functionality only available to authenticated users --}%
-            <g:if test="${user}">
-                <g:if test="${isSiteStarredByUser}">
-                    <button class="btn btn-small" id="starBtn"><i
-                            class="icon-star"></i><span>Remove from favourites</span></button>
-                </g:if>
-                <g:else>
-                    <button class="btn btn-small" id="starBtn" ${disabled}><i
-                            class="icon-star-empty"></i><span>Add to favourites</span></button>
-                </g:else>
-            </g:if>
             <g:link action="edit" id="${site.siteId}" class="btn btn-small"><i
                     class="icon-edit"></i> Edit site</g:link>
             <g:if test="${site?.extent?.geometry?.pid}">
@@ -127,6 +117,8 @@
                 <dd>${site.externalId ?: 'Not specified'}</dd>
                 <dt>Type</dt>
                 <dd>${site.type ?: 'Not specified'}</dd>
+                <dt>Catchment</dt>
+                <dd>${site.catchment ?: 'Not specified'}</dd>
                 <dt>Area</dt>
                 <dd>
                     <g:if test="${site?.extent?.geometry?.area}">
@@ -137,9 +129,9 @@
                     </g:else>
                 </dd>
                 <g:if test="${site.extent?.geometry}">
-                    <fc:siteFacet site="${site}" label="State/territory" facet="state"/>
-                    <fc:siteFacet label="Local government area" site="${site}" facet="lga"/>
-                    <fc:siteFacet label="NRM" site="${site}" facet="nrm"/>
+                    <fc:siteFacet site="${site}" label="State/territory" facet="state" showPreview="${true}" trimSize="${80}"/>
+                    <fc:siteFacet label="Local government area" site="${site}" facet="lga" showPreview="${true}" trimSize="${80}"/>
+                    <fc:siteFacet label="NRM" site="${site}" facet="nrm" showPreview="${true}" trimSize="${80}"/>
                     <dt>Locality</dt>
                     <dd>${site.extent.geometry.locality ?: 'Not specified'}</dd>
                     <dt data-toggle="tooltip" title="NVIS major vegetation group">NVIS major vegetation group</dt>
@@ -165,18 +157,19 @@
         </div>
     </div>
 
+    <h3><g:message code="site.associated.title"/>:</h3>
     <div id="detailsLinkedToSite">
         <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a href="#sitePhotopoints" data-toggle="tab">Photo points</a></li>
             <g:if test="${site.projects}">
                 <li><a href="#siteProjects" data-toggle="tab">Projects</a></li>
             </g:if>
-            <li><a href="#siteActivities" data-toggle="tab">Records</a></li>
+            <li class="active"><a href="#siteActivities" data-toggle="tab">Surveys & Activities</a></li>
+            <li><a href="#sitePhotopoints" data-toggle="tab">Photo points</a></li>
         </ul>
 
         <div class="tab-content">
             <!-- ko stopBinding: true -->
-            <div class="tab-pane active" id="sitePhotopoints">
+            <div class="tab-pane" id="sitePhotopoints">
                 <g:render template="poiGallery"
                           model="${[siteId: site.siteId, siteElementId: 'sitePhotopoints']}"></g:render>
             </div>
@@ -197,7 +190,7 @@
                 </g:if>
             </div>
 
-            <div class="tab-pane" id="siteActivities">
+            <div class="tab-pane active" id="siteActivities">
                 <!-- ko if: activities().length == 0 -->
                 <div class="row-fluid">
                     <h4 class="text-left margin-bottom-five">
@@ -365,6 +358,8 @@
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
 
             var mapOptions = {
+                addLayersControlHeading: true,
+                allowSearchLocationByAddress: false,
                 drawControl: false,
                 singleMarker: false,
                 useMyLocation: false,
@@ -400,14 +395,6 @@
                 }
             }
             initPoiGallery(params,'sitePhotopoints');
-
-            // Star button click event
-            $("#starBtn").click(function(e) {
-                var isStarred = ($("#starBtn i").attr("class") == "icon-star");
-                toggleStarred(isStarred);
-            });
-
-
         });
         function Message (){
             var self = this;
@@ -435,45 +422,6 @@
                 }
             })
         }
-
-
-       /**
-        * Star/Unstar project for user - send AJAX and update UI
-        *
-        * @param boolean isProjectStarredByUser
-        */
-        function toggleStarred(isProjectStarredByUser) {
-            if (isProjectStarredByUser) {
-              // remove star
-              var url = fcConfig.removeStarSiteUrl + '/' + "${site.siteId}"
-                $.ajax({
-                    url: url,
-                    success: function(){
-                        msg.message('Site removed from favourites.');
-                        $("#starBtn i").removeClass("icon-star").addClass("icon-star-empty");
-                        $("#starBtn span").text(" Add to favourites");
-                    },
-                    error: function(xhr){
-                        msg.message(xhr.responseText);
-                    }
-                })
-            } else {
-                // add star
-                var url = fcConfig.addStarSiteUrl + '/' + "${site.siteId}"
-                $.ajax({
-                    url: url,
-                    success: function(){
-                        msg.message('Site added to favourites.');
-                        $("#starBtn i").removeClass("icon-star-empty").addClass("icon-star");
-                        $("#starBtn span").text(" Remove from favourites");
-                    },
-                    error: function(xhr){
-                    msg.message(xhr.responseText);
-                    }
-                })
-            }
-        }
-
 </asset:script>
 </body>
 </html>
