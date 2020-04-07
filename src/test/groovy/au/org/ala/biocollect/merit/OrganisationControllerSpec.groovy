@@ -126,7 +126,6 @@ class OrganisationControllerSpec extends Specification {
         then:
         model.organisation == testOrg
         model.content.about.visible == true
-        model.content.sites.visible == false
         model.content.admin.visible == false
     }
 
@@ -142,7 +141,6 @@ class OrganisationControllerSpec extends Specification {
         then:
         model.organisation == testOrg
         model.content.about.visible == true
-        model.content.sites.visible == true
         model.content.admin.visible == false
     }
 
@@ -158,7 +156,6 @@ class OrganisationControllerSpec extends Specification {
         then:
         model.organisation == testOrg
         model.content.about.visible == true
-        model.content.sites.visible == true
         model.content.admin.visible == true
     }
 
@@ -174,7 +171,6 @@ class OrganisationControllerSpec extends Specification {
         then:
         model.organisation == testOrg
         model.content.about.visible == true
-        model.content.sites.visible == true
         model.content.admin.visible == true
     }
 
@@ -190,7 +186,6 @@ class OrganisationControllerSpec extends Specification {
         then:
         model.organisation == testOrg
         model.content.about.visible == true
-        model.content.sites.visible == true
         model.content.admin.visible == false
     }
 
