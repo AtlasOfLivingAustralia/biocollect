@@ -140,22 +140,6 @@
             <m:map id="siteMap" width="100%"/>
         </div>
     </div>
-%{--                    Due to large number of sites, the below binding takes a lot of time to execute.  --}%
-%{--    <g:if env="development">--}%
-%{--        <div class="container-fluid">--}%
-%{--            <div class="expandable-debug">--}%
-%{--                <hr/>--}%
-
-%{--                <h3>Debug</h3>--}%
-
-%{--                <div>--}%
-%{--                    <h4>KO model</h4>--}%
-
-%{--                    <pre data-bind="text:ko.toJSON($root,null,2)"></pre>--}%
-%{--                </div>--}%
-%{--            </div>--}%
-%{--        </div>--}%
-%{--    </g:if>--}%
 </div>
 </body>
 <asset:script type="text/javascript">
