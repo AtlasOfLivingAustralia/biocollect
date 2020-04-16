@@ -368,8 +368,8 @@ function ProjectFinder(config) {
         }
 
         var query = this.getQuery(true);
-        if (query.length > 0 && queryString.length > 0) {
-            query = query + ' AND ' + queryString;
+        if (query.length > 0) {
+            query = query + ((queryString.length > 0)? ' AND ' + queryString: "");
         } else {
             query = queryString;
         }
