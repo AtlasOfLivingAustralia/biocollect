@@ -20,3 +20,26 @@ button.btn.btn-text-left{
     max-height: 200px;
     overflow-y: scroll;
 }
+
+section.filter-section {
+    padding-bottom: 10px;
+}
+
+ul.custom-bullet {
+    list-style-type: none;
+}
+
+.custom-bullet li {
+    display: block;
+}
+
+ul.custom-bullet, ol {
+    margin: 0 0 0 5px;
+}
+
+.custom-bullet li ~ li:before {
+    font-family: 'FontAwesome';
+    font-size: 10px;
+    content: '\f054';
+}
+
