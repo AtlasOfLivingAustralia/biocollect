@@ -140,7 +140,8 @@ function FilterViewModel(config){
             }
 
             fqs.forEach(function (fq) {
-                var nameAndValue = fq.split(':');
+                var decodedfq = decodeURIComponent(fq)
+                var nameAndValue = decodedfq.split(':');
                 var exclude = false, facet;
                 if(nameAndValue[0] && nameAndValue[0].indexOf('-') == 0){
                     exclude = true;
