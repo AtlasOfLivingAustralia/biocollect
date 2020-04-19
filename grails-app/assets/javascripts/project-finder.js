@@ -589,7 +589,7 @@ function ProjectFinder(config) {
 
     this.paginationInfo = function () {
         if (total > 0) {
-            var start = offset + 1;
+            var start = parseInt(offset) + 1;
             var end = Math.min(total, start + perPage - 1);
             var message = fcConfig.paginationMessage || 'Showing XXXX to YYYY of ZZZZ projects';
             return message.replace('XXXX', start).replace('YYYY', end).replace('ZZZZ', total);
