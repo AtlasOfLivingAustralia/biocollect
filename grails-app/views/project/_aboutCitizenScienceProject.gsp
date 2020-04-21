@@ -265,7 +265,7 @@
             Biocollect.MapUtilities.intersectOverlaysAndShowOnPopup(map);
 
             if (projectArea.pid && projectArea.pid != 'null' && projectArea.pid != "undefined") {
-                map.addWmsLayer(projectArea.pid, {opacity: 1, zIndex: 1000});
+                map.addWmsLayer(projectArea.pid, {opacity: 0.5, zIndex: 1000});
             } else {
                 var geometry = projectArea;
                 var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);

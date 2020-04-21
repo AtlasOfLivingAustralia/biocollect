@@ -211,6 +211,8 @@ function ProjectFinder(config) {
             var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
             spatialFilter = new ALA.Map("mapFilter", {
+                autoZIndex: false,
+                preserveZIndex: true,
                 addLayersControlHeading: true,
                 allowSearchRegionByAddress: false,
                 wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
@@ -649,6 +651,8 @@ function ProjectFinder(config) {
         var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
         var baseLayerOverlayConfig = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
         var mapOptions = {
+            autoZIndex: false,
+            preserveZIndex: true,
             addLayersControlHeading: true,
             drawControl: false,
             showReset: false,
@@ -657,7 +661,6 @@ function ProjectFinder(config) {
             allowSearchLocationByAddress: false,
             allowSearchRegionByAddress: false,
             defaultLayersControl: true,
-            singleDraw: false,
             trackWindowHeight: true,
             wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
             wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,

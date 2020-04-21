@@ -41,98 +41,87 @@
         <bc:koLoading>
             <div class="span6">
                 <div class="row-fluid">
+                    <!-- ko if: !loading() -->
                     <div class="span5">
                         <span data-bind="text: matchingSiteCount()"
                                                                    class=""></span> matching sites.
                     </div>
+                    <!-- /ko -->
+                    <!-- ko if: loading -->
+                    <div class="span5">
+                        <div>
+                            <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
+                        </div>
+                    </div>
+                    <!-- /ko -->
                     <div class="span7">
                         <form class="form-search  pull-right" data-bind="submit: searchSites">
                             <div class="input-append">
                                 <input type="text" class="search-query" data-bind="value: currentSearch"
-                                       placeholder="Filter..."/>
+                                       placeholder="Search by keyword"/>
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </div>
                         </form>
                     </div>
                 </div>
-
-                <ul data-bind="foreach: sites" style="margin: 0px;">
-                    <li style="list-style: none;" data-bind="attr: {id: siteId}">
-                        <div class="row-fluid margin-bottom-1">
-                            <span class="span8">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>
+                            <g:message code="site.details.siteName"/>
+                        </th>
+                        <th>
+                            <g:message code="actions"/>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- ko foreach: sites -->
+                        <tr data-bind="attr: {id: siteId}">
+                            <td>
                                 <h4 data-bind="text:name"></h4>
-
-                                <div data-bind="visible:$data.extent === undefined">No georeference information available</div>
-                                <dl>
-                                    <dt data-bind="if:$data.extent !== undefined && extent.geometry != null && extent.geometry.state != null && extent.geometry.state != undefined && extent.geometry.state != ''"><State></State></dt>
-                                    <dd data-bind="if:$data.extent !== undefined && extent.geometry != null && extent.geometry.state != null && extent.geometry.state != undefined && extent.geometry.state != ''">
-                                        <!-- ko if: ((extent.geometry.state.join && extent.geometry.state.join(', ') || extent.geometry.state ).length <= 71) -->
-                                        <div
-                                                data-bind="text:$data.extent !== undefined && extent.geometry != null ? extent.geometry.state : ''"></div>
-                                        <!-- /ko -->
-                                        <!-- ko if: ((extent.geometry.state.join && extent.geometry.state.join(', ') || extent.geometry.state ).length > 71) -->
-                                        <div class="inline-block">
-                                            <div class="state-data in collapse">
-                                                <!-- ko text: extent.geometry.state.join(', ').slice(0, 71) + '...' --> <!-- /ko -->
-                                                <button class="btn btn-mini collapsed" data-toggle="collapse" data-bind="attr: { 'data-target': '#' + siteId + ' .state-data' }">Show more</button>
-                                            </div>
-                                            <div class="state-data collapse">
-                                                <!-- ko text: extent.geometry.state --> <!-- /ko -->
-                                                <button class="btn btn-mini" data-toggle="collapse" data-bind="attr: { 'data-target': '#' + siteId + ' .state-data' }">Show less</button>
-                                            </div>
-                                        </div>
-                                        <!-- /ko -->
-                                    </dd>
-                                    <dt data-bind="if:$data.extent !== undefined && extent.geometry != null && ((extent.geometry.lga != null) && (extent.geometry.lga != undefined) && (extent.geometry.lga != ''))">
-                                        LGA
-                                    </dt>
-                                    <dd data-bind="if:$data.extent !== undefined && extent.geometry != null && ((extent.geometry.lga != null) && (extent.geometry.lga != undefined) && (extent.geometry.lga != ''))">
-                                        <!-- ko if: (((extent.geometry.lga.join && extent.geometry.lga.join(', ')) || extent.geometry.lga ).length <= 71) -->
-                                        <div
-                                                data-bind="text:$data.extent !== undefined && extent.geometry != null ? extent.geometry.lga : ''"></div>
-                                        <!-- /ko -->
-                                        <!-- ko if: (((extent.geometry.lga.join && extent.geometry.lga.join(', ')) || extent.geometry.lga).length > 71) -->
-                                        <div data-bind="attr: {id: siteId}">
-                                            <div class="lga-data in collapse">
-                                                <!-- ko text: (extent.geometry.lga.join && extent.geometry.lga.join(', ') || extent.geometry.lga ).slice(0, 71) + '...' --> <!-- /ko -->
-                                                <button class="btn btn-mini collapsed" data-toggle="collapse" data-bind="attr: { 'data-target': '#' + siteId + ' .lga-data' }">Show more</button>
-                                            </div>
-                                            <div class="lga-data collapse">
-                                                <!-- ko text: extent.geometry.lga --> <!-- /ko -->
-                                                <button class="btn btn-mini" data-toggle="collapse" data-bind="attr: { 'data-target': '#' + siteId + ' .lga-data' }">Show less</button>
-                                            </div>
-                                        </div>
-                                        <!-- /ko -->
-                                    </dd>
-                                </dl>
-                            </span>
-                            <span class="span2">
-                                <button class="viewOnMap btn btn-small"
+                            </td>
+                            <td>
+                                <button class="viewOnMap btn btn-small margin-top-5"
                                         data-bind="click: $parent.mapSite, disable:$data.extent === undefined">
                                     <i class="icon-eye-open"></i>
                                     Preview
                                 </button>
-                            </span>
-                            <span class="span2 ">
-                                <button class="addSite btn btn-success btn-small pull-right"
+                                <button class="addSite btn btn-success btn-small margin-top-5"
                                         data-bind="click: $parent.addSite, visible: !isProjectSite()">
                                     <i class="icon-plus icon-white"></i>
-                                    Add
+                                    Select
                                 </button>
-                                <button class="removeSite btn btn-danger btn-small pull-right"
+                                <button class="removeSite btn btn-danger btn-small margin-top-5"
                                         data-bind="click: $parent.removeSite, visible: isProjectSite() ">
                                     <i class="icon-minus  icon-white"></i>
                                     Remove
                                 </button>
-                            </span>
-                        </div>
-                    </li>
-                </ul>
-                <g:render template="/shared/pagination"/>
-                <div class="row-fluid margin-top-2 text-right">
-                    <button class="btn btn-primary" data-bind="click: useSelectedSites">Add sites</button>
-                    <button class="btn" data-bind="click: cancelUpdate">Cancel</button>
-                </div>
+                            </td>
+                        </tr>
+                    <!-- /ko -->
+                        <tr data-bind="if: (sites().length == 0) && !loading() ">
+                            <td colspan="2"><g:message code="site.details.nosites"/></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <g:render template="/shared/pagination"/>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12 text-right">
+                                        <button class="btn btn-primary margin-top-5" data-bind="click: useSelectedSites">Add selected sites</button>
+                                        <button class="btn margin-top-5" data-bind="click: cancelUpdate">Cancel</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </bc:koLoading>
 

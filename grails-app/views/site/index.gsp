@@ -358,8 +358,11 @@
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
 
             var mapOptions = {
+                autoZIndex: false,
+                preserveZIndex: true,
                 addLayersControlHeading: true,
                 allowSearchLocationByAddress: false,
+                allowSearchRegionByAddress: false,
                 drawControl: false,
                 singleMarker: false,
                 useMyLocation: false,

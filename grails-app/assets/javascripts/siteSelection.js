@@ -7,6 +7,7 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
     self.projects = [projectId];
     self.currentSearch = ko.observable('');
     self.sites = ko.observableArray([]);
+    self.loading = ko.observable(true);
     self.matchingSiteCount = ko.observable(0);
     self.currentProjectSites = ko.observableArray(currentProjectSites);
 
@@ -17,6 +18,8 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
     var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
     var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
     var mapOptions = {
+        autoZIndex: false,
+        preserveZIndex: true,
         addLayersControlHeading: true,
         trackWindowHeight: true,
         drawControl: false,
@@ -117,11 +120,13 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
     }
 
     function queryForSites(query, max, offset, callbackFcn) {
+        self.loading(true);
         $.ajax({
             url: self.config.siteQueryUrl + query + "&max=" + max + "&offset=" + offset,
             type: 'GET',
             contentType: 'application/json',
             success: function (data) {
+                self.loading(false);
                 self.sites.removeAll();
                 self.matchingSiteCount(data.hits.total);
 
@@ -137,6 +142,7 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
                 callbackFcn && callbackFcn(data);
             },
             error: function () {
+                self.loading(false);
                 alert('There was a problem searching for sites.');
             }
         });

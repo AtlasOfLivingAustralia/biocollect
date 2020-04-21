@@ -28,7 +28,13 @@ ko.components.register('map-config-selector', {
 
         // helper functions
         self.addBaseLayerClickHandler = function() {
-            self.addBaseLayer(self.selectedBaseLayer());
+            var baseLayer = self.selectedBaseLayer();
+            if ((self.baseLayers().length == 0) && baseLayer) {
+                baseLayer.isSelected(true);
+                self.codeChecked(baseLayer.code());
+            }
+
+            self.addBaseLayer(baseLayer);
         };
 
         self.addOverlayClickHandler = function() {
@@ -163,7 +169,9 @@ ko.components.register('map-config-selector', {
                     useMyLocation: false,
                     scrollWheelZoom: true,
                     touchZoom: true,
-                    dragging: true
+                    dragging: true,
+                    autoZIndex: false,
+                    preserveZIndex: true
                 });
 
                 // When initialised for the first time, the map is displayed correctly.
