@@ -267,6 +267,8 @@
                     var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
                     var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
                     var mapOptions = {
+                        autoZIndex: false,
+                        preserveZIndex: true,
                         drawControl: false,
                         showReset: false,
                         draggableMarkers: false,

@@ -244,6 +244,8 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
         var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
         var options =  {
+            autoZIndex: false,
+            preserveZIndex: true,
             addLayersControlHeading: true,
             maxZoom: 20,
             wmsLayerUrl: mapOptions.spatialWms + "/wms/reflect?",
@@ -253,7 +255,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             baseLayer: baseLayersAndOverlays.baseLayer,
             otherLayers: baseLayersAndOverlays.otherLayers,
             overlays: baseLayersAndOverlays.overlays,
-            overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+            overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault
         };
 
         for (var option in mapOptions) {
