@@ -1,6 +1,6 @@
 ---
 appName:
-  - "biocollect"
+  "biocollect"
 layout:
   skin: "ala2"
 
@@ -16,9 +16,6 @@ environments:
         server:
            port: 8087
            serverURL: http://devt.ala.org.au:8087
-#        security:
-#          cas:
-#             appServerName: 'http://devt.ala.org.au:8087'
         biocollect:
           system:
             email:
@@ -30,25 +27,12 @@ environments:
           config:
              locations:
                 - file:///data/biocollect/config/biocollect-config.properties
-        server:
-             serverURL: https://biocollect-test.ala.org.au
-        security:
-           cas:
-              appServerName: https://biocollect-test.ala.org.au
         debugUI: false
     production:
         grails:
             config:
                locations:
                   - file:///data/biocollect/config/biocollect-config.properties
-            #system level config
-        server:
-           #port: 80
-           serverURL: https://biocollect.ala.org.au
-
-#            security:
-#              cas:
-#                 appServerName: 'http://biocollect.ala.org.au'
         biocollect:
            system:
               email:
@@ -123,8 +107,6 @@ collectory:
 
 ecodata:
   baseURL: "https://ecodata.ala.org.au/"
-#  service:
-#    url: "${ecodata.baseURL}/ws"
 
 
 google:
@@ -143,8 +125,6 @@ lists:
 
 merit:
   baseURL: "https://fieldcapture-test.ala.org.au"
-#  project:
-#    url:  "${merit.baseURL}/project/index"
 
 mdba:
   baseUrl: "http://mdba-test.ala.org.au"
@@ -175,22 +155,10 @@ speciesConfiguration:
 
 spatial:
    baseURL: "https://spatial.ala.org.au/"
-#   layersUrl: "${spatial.baseURL}/layers-service"
-#   geoserverUrl: "${spatial.baseURL}/geoserver"
-#   wms:
-#     url: "${spatial.baseURL}/geoserver/ALA/wms?"
-#     cache:
-#         url: "${spatial.baseURL}/geoserver/gwc/service/wms?"
-
-
-
 
 upload:
    images:
-      #url : "${grails.serverURL}/image?id="
       path: "/data/${appName}/images/"
-   #file:
-      #url : "${grails.serverURL}/file?id="
    path: "/data/${appName}/"
    extensions:
       blacklist : ['exe','js','php','asp','aspx','com','bat']
@@ -306,11 +274,6 @@ grails:
 
 
 
-#info:
-#    app:
-#        name: '@info.app.name@'
-#        version: '@info.app.version@'
-#        grailsVersion: '@info.app.grailsVersion@'
 spring:
     main:
         banner-mode: "off"

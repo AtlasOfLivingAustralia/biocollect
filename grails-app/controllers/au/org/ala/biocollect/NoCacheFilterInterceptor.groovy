@@ -7,9 +7,9 @@ class NoCacheFilterInterceptor {
     private static final String HEADER_EXPIRES = "Expires";
     private static final String HEADER_CACHE_CONTROL = "Cache-Control";
 
+    int order = 1
     NoCacheFilterInterceptor() {
-        match(controller:"*", action:"*") // using strings
-        //matchAll()
+        matchAll()
     }
 
 

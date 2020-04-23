@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>An error has occurred</title>
+    <title><g:if env="development">Grails Runtime Exception</g:if><g:else>Error</g:else></title>
     <meta name="layout" content="${hubConfig.skin}">
     <meta name="breadcrumb" content="Error"/>
     <link rel="stylesheet" href="${asset.assetPath(src: 'errors.css')}" type="text/css">
@@ -9,17 +9,15 @@
 
 <body>
 <div id="wrapper" class="container-fluid">
-    <h1 style="margin:20px 0;">An error occurred</h1>
-    <g:if test="${exception}">
+    <g:if env="development">
         <g:renderException exception="${exception}"/>
     </g:if>
-    <g:elseif test="${errorMessage}">
-        <p>${errorMessage}</p>
-    </g:elseif>
-    <g:elseif test="${response.status == 404}">
-        <p>404 - The requested page was not found</p>
-    </g:elseif>
-    <div class="space-before space-after">&nbsp</div>
+    <g:else>
+        <ul class="errors">
+            <li>An error has occurred</li>
+        </ul>
+    </g:else>
 </div>
 </body>
 </html>
+
