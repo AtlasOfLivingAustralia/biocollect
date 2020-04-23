@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus
 
 
 class AclFilterInterceptor {
+    int order = 3
     def userService, projectService, roleService
 
     def roles = []

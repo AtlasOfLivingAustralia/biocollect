@@ -1,14 +1,9 @@
-package au.org.ala.biocollect.au.org.ala.biocollect.merit
+package au.org.ala.biocollect.merit
 
-import au.org.ala.biocollect.merit.HomeController
-import au.org.ala.biocollect.merit.MetadataService
-import au.org.ala.biocollect.merit.SearchService
-import au.org.ala.biocollect.merit.SettingService
-import au.org.ala.biocollect.merit.UserService
+
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.test.mixin.TestFor
 import spock.lang.Specification
-
 /**
  * Tests the HomeController class.
  */
