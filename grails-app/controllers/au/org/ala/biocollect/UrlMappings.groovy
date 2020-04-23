@@ -21,12 +21,6 @@ class UrlMappings {
                         }
                 }
 
-//                "/$hub?/$controller/ws/$action/$id" {
-//                        constraints {
-//                                hub validator: {val, obj -> isHubValid( val)}
-//                        }
-//                }
-
                 "/$controller/$action?/$id?(.$format)?"{
 
                 }
