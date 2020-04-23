@@ -55,7 +55,7 @@ security:
       casProperties: "casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,authenticateOnlyIfLoggedInFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath,gatewayStorageClass"
       uriExclusionFilterPattern: "/assets/.*,/images.*,/css.*,/js.*,/less.*,/ajax/bulkLookupQuestions,/uploads/.*"
       authenticateOnlyIfLoggedInPattern: ".*"
-      uriFilterPattern: ".*/user/.*,.*/site/(?!(index|list|elasticsearch|getImages|getPoiImages|ajaxUpdate|checkSiteName)).*,.*/project/(?!(index|search|citizenScience|listRecordImages|projectSummaryReportCallback)).*,.*/activity/(?!index).*,.*/output/(?!index).*,.*/image/(?!index).*,.*/admin/.*,i.*/proxy/speciesListPost,.*/proxy/documentUpdate,.*/proxy/deleteDocument,.*/home/advanced,.*/organisation/(?!index).*,.*/organisation/(?!list).*,.*/bioActivity/create/.*,.*/bioActivity/edit/.*,.*/bioActivity/list,/sight/.*"
+      uriFilterPattern: ".*/user/.*,.*/site/(?!(index|list|elasticsearch|getImages|getPoiImages|ajaxUpdate|checkSiteName|ajaxList)).*,.*/project/(?!(index|search|citizenScience|listRecordImages|projectSummaryReportCallback)).*,.*/activity/(?!index).*,.*/output/(?!index).*,.*/image/(?!index).*,.*/admin/.*,i.*/proxy/speciesListPost,.*/proxy/documentUpdate,.*/proxy/deleteDocument,.*/home/advanced,.*/organisation/(?!index).*,.*/organisation/(?!list).*,.*/bioActivity/create/.*,.*/bioActivity/edit/.*,.*/bioActivity/list,/sight/.*"
       readOnlyOfficerRole: "ROLE_FC_READ_ONLY"
       alaAdminRole : "ROLE_ADMIN"
       officerRole : "ROLE_FC_OFFICER"
