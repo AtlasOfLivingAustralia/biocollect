@@ -150,12 +150,12 @@
     <div id="survey-site-list" class="row-fluid">
         <div class="span12">
             <div style="max-height: 500px; overflow-y: auto;">
-                <div class="row-fluid" data-bind="if: transients.sites.length">
+                <div class="row-fluid" data-bind="if: transients.sites.length > 1">
                     <div class="span6">
-                        <label class="checkbox">
-                            <input type="checkbox" data-bind="checked: transients.isSelectAllSites, click: transients.selectAllSites">
-                            <g:message code="mapConfiguration.site.selectall.title"/>
-                        </label>
+                        <div class="large-checkbox">
+                            <input id="selectall" type="checkbox" data-bind="checked: transients.isSelectAllSites, click: transients.selectAllSites">
+                            <label for="selectall"><span></span> <g:message code="mapConfiguration.site.selectall.title"/></label>
+                        </div>
                     </div>
                 </div>
                 <!-- ko foreach: transients.sites -->
