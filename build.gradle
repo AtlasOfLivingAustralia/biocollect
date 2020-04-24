@@ -128,7 +128,7 @@ dependencies {
     }
 
   //  compile "au.org.ala.plugins.grails:images-client-plugin:0.9-SNAPSHOT"
-    compile "org.grails.plugins:ala-auth:3.0.2"
+    compile "org.grails.plugins:ala-auth:3.1.2"
     runtime "org.grails.plugins:ala-bootstrap3:3.0.4"
     compile "org.grails.plugins:ala-admin-plugin:2.1"
     if (!inplace) {
