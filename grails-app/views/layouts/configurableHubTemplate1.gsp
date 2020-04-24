@@ -5,8 +5,9 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="app.version" content="${g.meta(name: 'app.version')}"/>
-    <meta name="app.build" content="${g.meta(name: 'app.build')}"/>
+    <meta name="app.version" content="${g.meta(name: 'info.app.version')}"/>
+    <meta name="app.build" content="${g.meta(name: 'META-INF/grails.build.info')}"/>
+    <meta name="app.warDeployed" content="${g.meta(name: 'info.app.warDeployed')}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><g:layoutTitle/></title>
     <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap.min.css"/>

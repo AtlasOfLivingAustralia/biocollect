@@ -151,8 +151,7 @@ ko.bindingHandlers.photoPointUpload = {
         var target = config.target; // Expected to be a ko.observableArray
         $(element).fileupload({
             url:config.url,
-            autoUpload:true,
-            forceIframeTransport: true
+            autoUpload:true
         }).on('fileuploadadd', function(e, data) {
             complete(false);
             progress(1);
@@ -255,7 +254,6 @@ ko.bindingHandlers.imageUpload = {
         $(element).fileupload({
             url:config.url,
             autoUpload:true,
-            forceIframeTransport: false,
             dropZone: dropZone
         }).on('fileuploadadd', function(e, data) {
             previewElem.html('');
@@ -357,8 +355,7 @@ ko.bindingHandlers.fileUploadWithProgress = {
 // Expected to be a ko.observableArray
         $(element).fileupload({
             url: config.url,
-            autoUpload: true,
-            forceIframeTransport: true
+            autoUpload: true
         }).on('fileuploadadd', function (e, data) {
             complete(false);
             progress(1);

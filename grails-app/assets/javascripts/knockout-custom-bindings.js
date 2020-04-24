@@ -280,8 +280,7 @@ ko.bindingHandlers.stagedImageUpload = {
         // Expected to be a ko.observableArray
         $(element).fileupload({
             url: config.url,
-            autoUpload: true,
-            forceIframeTransport: true
+            autoUpload: true
         }).on('fileuploadadd', function (e, data) {
             complete(false);
             progress(1);
@@ -699,7 +698,7 @@ ko.bindingHandlers.ticks = {
 ko.bindingHandlers.fileUploadNoImage = {
     init: function (element, options) {
 
-        var defaults = {autoUpload: true, forceIframeTransport: true};
+        var defaults = {autoUpload: true};
         var settings = {};
         $.extend(settings, defaults, options());
         $(element).fileupload(settings);
