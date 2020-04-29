@@ -4,7 +4,9 @@ appName:
 layout:
   skin: "ala2"
 
-loggerLevel: "DEBUG"
+server:
+  session:
+    timeout: 3600
 
 environments:
     development:
@@ -22,12 +24,14 @@ environments:
               replyTo: "biocollect-dev<no-reply>@ala.org.au"
               sender: "biocollect-dev@ala.org.au"
         debugUI: true
+        loggerLevel: "DEBUG"
     test:
         grails:
           config:
              locations:
                 - file:///data/biocollect/config/biocollect-config.properties
         debugUI: false
+        loggerLevel: "DEBUG"
     production:
         grails:
             config:
@@ -39,6 +43,7 @@ environments:
                 replyTo: "biocollect<no-reply>@ala.org.au"
                 sender: "biocollect-local@ala.org.au"
         debugUI: false
+        loggerLevel: "INFO"
 
 app:
   default:
