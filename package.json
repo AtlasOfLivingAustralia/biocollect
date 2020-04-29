@@ -8,7 +8,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "jquery": "3.4.1",
+    "jquery": "3.5.0",
     "karma": "^0.12.32",
     "karma-chrome-launcher": "^0.2.0",
     "karma-coverage": "^0.4.2",
