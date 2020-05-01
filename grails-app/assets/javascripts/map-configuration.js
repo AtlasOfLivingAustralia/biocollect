@@ -133,8 +133,15 @@ function MapConfiguration(config, project)
         var url = fcConfig.siteDeleteUrl + '?siteId=' + site.siteId;
         $.ajax({
             url: url,
-            success: function(){
-                bootbox.alert('Successfully deleted site. Redirecting in 3 seconds.');
+            contentType: "application/json",
+            success: function (message) {
+                var displayText;
+                if (message.message)
+                    displayText = message.message + " Reloading in 3 seconds."
+                else
+                    displayText = 'Successfully deleted site. Reloading in 3 seconds.';
+
+                bootbox.alert(displayText);
                 setTimeout(function(){ window.location.reload()}, 3000);
             },
             error: function(xhr){
