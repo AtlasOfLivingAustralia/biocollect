@@ -76,7 +76,6 @@ enableReporting: true
 bugherd:
   integration : false
 emailFilter: "/[A-Z0-9._%-]+@csiro.au"
-termsOfUseUrl: true
 download:
   email:
     threshold: 100
