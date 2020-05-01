@@ -3,13 +3,11 @@ language: groovy
 jdk:
 - openjdk8
 
-#script:
-#  - jdk_switcher use openjdk8
-#  - export JAVA_HOME=$HOME/openjdk8
 sudo: false
 branches:
   only:
-  - grails-3.3.10
+  - master
+  - dev
   - /^feature\/.*$/
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
