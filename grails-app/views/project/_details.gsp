@@ -806,7 +806,7 @@
         <div class="well" id="sitemap">
             <h4 class="block-header"><g:message code="project.details.site"/><i class="req-field"></i></h4>
             <p>
-                A project area should represent the smallest area which contains all of the data collected in a single activity or survey event.
+                <g:message code="project.projectarea.title"/>
             </p>
             <g:render template="/site/siteDefinition" />
         </div>
@@ -816,14 +816,7 @@
     <div class="row-fluid">
         <div class="well">
             <h4 class="block-header"><g:message code="project.details.configuration"/></h4>
-            <div class="clearfix control-group">
-                <label class="control-label span3" for="baseLayer"><g:message code="project.details.baseLayers"/><fc:iconHelp><g:message code="project.details.baseLayers.help"/></fc:iconHelp></label>
-
-                <div class="controls span4">
-                    <select id="baseLayer" data-bind='value:baseLayer, options:${grailsApplication.config.map.baseLayers as JSON}, optionsText:"displayText", optionsValue:"code", optionsCaption:"Select a base layer"'>
-                    </select>
-                </div>
-            </div>
+            <map-config-selector params="allBaseLayers: fcConfig.allBaseLayers, allOverlays: fcConfig.allOverlays, mapLayersConfig: mapLayersConfig"></map-config-selector>
         </div>
     </div>
 

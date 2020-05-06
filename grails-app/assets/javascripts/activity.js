@@ -585,15 +585,23 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
      */
     self.plotOnMap = function (features, drawType){
         drawType = drawType || 'cluster';
-
+        var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
         var mapOptions = {
+            autoZIndex: false,
+            preserveZIndex: true,
+            addLayersControlHeading: true,
             drawControl: false,
             showReset: false,
             draggableMarkers: false,
             useMyLocation: false,
             allowSearchLocationByAddress: false,
             allowSearchRegionByAddress: false,
-        };
+            trackWindowHeight: true,
+            baseLayer: baseLayersAndOverlays.baseLayer,
+            otherLayers: baseLayersAndOverlays.otherLayers,
+            overlays: baseLayersAndOverlays.overlays,
+            overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+    };
 
         if(!alaMap){
             self.transients.alaMap = alaMap = new ALA.Map("recordOrActivityMap", mapOptions);
@@ -611,8 +619,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 onClick: self.getActivityOrRecords
             });
             alaMap.addControl(radio);
-            alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomleft");
-            self.addLegend()
+            alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomright");
+            self.addLegend();
         }
 
         self.transients.totalPoints(features && features.length ? features.length : 0);

@@ -5,8 +5,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="app.version" content="${g.meta(name: 'app.version')}"/>
-    <meta name="app.build" content="${g.meta(name: 'app.build')}"/>
+    <meta name="app.version" content="${g.meta(name: 'info.app.version')}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><g:layoutTitle/></title>
     <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap.min.css"/>
@@ -319,7 +318,7 @@
         }); // end document ready
     </asset:script>
 </g:if>
-<g:if test="${java.lang.Boolean.parseBoolean(grailsApplication.config.bugherd.integration)}">
+<g:if test="${grailsApplication.config.bugherd.integration}">
     <asset:script type="text/javascript">
         (function (d, t) {
             var bh = d.createElement(t), s = d.getElementsByTagName(t)[0];

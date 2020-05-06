@@ -2,9 +2,10 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
-import grails.plugin.cache.Cacheable
+//import grails.plugin.cache.Cacheable
+import org.springframework.cache.annotation.Cacheable
 import groovy.text.GStringTemplateEngine
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
+import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.web.context.request.RequestAttributes
 
 class SettingService {
@@ -162,7 +163,6 @@ class SettingService {
         cacheService.get(hubCacheKey(urlPath), {
             String url = grailsApplication.config.ecodata.service.url + '/hub/findByUrlPath/' + urlPath
             Map json = webService.getJson(url, null, true)
-
             json.hubId ? new HubSettings(new HashMap(json)) : null
         })
     }

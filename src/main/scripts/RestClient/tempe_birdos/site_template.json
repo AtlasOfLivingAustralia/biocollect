@@ -1,0 +1,26 @@
+{
+  "pActivityId": "58df20ef-0f2b-47d5-a632-b1fa84ffe376",
+  "site": {
+    "name": "Private site for survey: Tempe Birdos - updated survey",
+    "visibility": "private",
+    "projects": [
+      "92c69a2a-7c72-4575-abf5-7bd90225b361"
+    ],
+    "extent": {
+      "geometry": {
+        "centre": [
+          134.91820335388184,
+          -27.996017813515078
+        ],
+        "type": "Point",
+        "areaKmSq": 0,
+        "coordinates": [
+          134.91820335388184,
+          -27.996017813515078
+        ]
+      },
+      "source": "Point"
+    },
+    "asyncUpdate": false
+  }
+}

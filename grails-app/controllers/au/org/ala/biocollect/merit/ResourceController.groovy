@@ -1,18 +1,19 @@
 package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
-import groovyx.net.http.HTTPBuilder
 
-import org.apache.http.impl.client.AbstractHttpClient
-import org.apache.http.params.BasicHttpParams
-
-import static groovyx.net.http.ContentType.TEXT
-import static groovyx.net.http.Method.GET
-
+import org.apache.http.HttpHost;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.client.utils.URIUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 
 class ResourceController {
 
-    def grailsApplication
+    grails.core.GrailsApplication grailsApplication
 
     def viewer() {}
 
@@ -28,27 +29,36 @@ class ResourceController {
     def pdfUrl() {
         def url = params.file
 
-        def http = new HTTPBuilder(grailsApplication.config.pdfgen.baseURL)
-        AbstractHttpClient ahc = http.client
-        BasicHttpParams params = new BasicHttpParams();
-        params.setParameter("http.protocol.handle-redirects",false)
-        ahc.setParams(params)
+        CloseableHttpClient httpclient = HttpClients.custom().setRedirectStrategy(new LaxRedirectStrategy()).build()
 
-        def location = http.request(GET, TEXT) {
-            uri.path = 'api/pdf';
-            uri.query = ['docUrl': url]
+        try {
+            HttpClientContext context = HttpClientContext.create()
+            URIBuilder builder = new URIBuilder("${grailsApplication.config.pdfgen.baseURL}")
+            builder.setPath("api/pdf").setParameter('docUrl', url)
+            URI uri = builder.build();
+            HttpGet httpGet = new HttpGet(uri)
+            log.debug("Sending file to be converted into pdf: " + httpGet.getRequestLine())
 
-            response.success = { rsp ->
-                rsp.headers?.Location
+            httpclient.execute(httpGet, context)
+            HttpHost target = context.getTargetHost()
+            List<URI> redirectLocations = context.getRedirectLocations()
+            URI location = URIUtils.resolve(httpGet.getURI(), target, redirectLocations)
+            log.debug("Generated pdf location can be obtained from: " + location.toString())
+
+            if (!location) {
+                def error = ['error': 'error getting pdf url']
+                render error as JSON, status: 500
             }
+
+            def result = ['location': location.toString()]
+            render result as JSON
+
+        } catch (Exception e) {
+            log.error ("Error occurred during pdf generation. " + e.message, e)
+        } finally {
+            httpclient.close()
         }
 
-        if (!location) {
-            def error = ['error': 'error getting pdf url']
-            render error as JSON, status: 500
-        }
-
-        def result = ['location': location]
-        render result as JSON
     }
+
 }

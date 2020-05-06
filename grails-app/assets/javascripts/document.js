@@ -235,7 +235,6 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
             return [{name:'document', value:documentViewModel.toJSONString()}]
         },
         autoUpload:false,
-        forceIframeTransport: true,
         getFilesFromResponse: function(data) { // This is to support file upload on pages that include the fileupload-ui which expects a return value containing an array of files.
             return data;
         }

@@ -8,7 +8,7 @@
                 </div>
 
                 <div class="span2 text-right">
-                    <g:render template="../projectActivity/status"/>
+                    <g:render template="/projectActivity/status"/>
                 </div>
 
             </div>
@@ -17,13 +17,13 @@
 
             <div class="row-fluid">
                 <div class="span12 text-left">
-                    <g:render template="../projectActivity/speciesAlert"/>
+                    <g:render template="/projectActivity/speciesAlert"/>
                 </div>
              </div>
 
             <div class="row-fluid">
                 <div class="span12 text-left">
-                    <g:render template="../projectActivity/emailList"/>
+                    <g:render template="/projectActivity/emailList"/>
                 </div>
             </div>
 

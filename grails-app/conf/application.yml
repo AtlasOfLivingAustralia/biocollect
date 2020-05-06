@@ -1,0 +1,325 @@
+---
+appName:
+  "biocollect"
+layout:
+  skin: "ala2"
+
+server:
+  session:
+    timeout: 3600
+
+environments:
+    development:
+        grails:
+           config:
+              locations:
+                 - file:///data/biocollect/config/biocollect-config-grails3.properties
+        #system level config
+        server:
+           port: 8087
+           serverURL: http://devt.ala.org.au:8087
+        biocollect:
+          system:
+            email:
+              replyTo: "biocollect-dev<no-reply>@ala.org.au"
+              sender: "biocollect-dev@ala.org.au"
+        debugUI: true
+        loggerLevel: "DEBUG"
+    test:
+        grails:
+          config:
+             locations:
+                - file:///data/biocollect/config/biocollect-config.properties
+        debugUI: false
+        loggerLevel: "DEBUG"
+    production:
+        grails:
+            config:
+               locations:
+                  - file:///data/biocollect/config/biocollect-config.properties
+        biocollect:
+           system:
+              email:
+                replyTo: "biocollect<no-reply>@ala.org.au"
+                sender: "biocollect-local@ala.org.au"
+        debugUI: false
+        loggerLevel: "INFO"
+
+app:
+  default:
+    hub: "ala"
+  view:
+    nocache: false
+  http:
+    header:
+      userId: "X-ALA-userId"
+
+
+security:
+   cas:
+      casProperties: "casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,uriExclusionFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath,gatewayStorageClass"
+      uriExclusionFilterPattern: "/assets/.*,/images.*,/css.*,/js.*,/less.*,/ajax/bulkLookupQuestions,/uploads/.*"
+      authenticateOnlyIfLoggedInPattern: ".*"
+      uriFilterPattern: ".*/user/.*,.*/site/(?!(index|list|elasticsearch|getImages|getPoiImages|ajaxUpdate|checkSiteName|ajaxList)).*,.*/project/(?!(index|search|citizenScience|listRecordImages|projectSummaryReportCallback)).*,.*/activity/(?!index).*,.*/output/(?!index).*,.*/image/(?!index).*,.*/admin/.*,i.*/proxy/speciesListPost,.*/proxy/documentUpdate,.*/proxy/deleteDocument,.*/home/advanced,.*/organisation/(?!index).*,.*/organisation/(?!list).*,.*/bioActivity/create/.*,.*/bioActivity/edit/.*,.*/bioActivity/list,/sight/.*"
+      readOnlyOfficerRole: "ROLE_FC_READ_ONLY"
+      alaAdminRole : "ROLE_ADMIN"
+      officerRole : "ROLE_FC_OFFICER"
+      adminRole : "ROLE_FC_ADMIN"
+      casServerName: "https://auth.ala.org.au"
+      casServerLoginUrl: "https://auth.ala.org.au/cas/login"
+      casServerUrlPrefix: "https://auth.ala.org.au/cas"
+      logoutUrl: "https://auth.ala.org.au/cas/logout"
+
+#External URL
+aekosEnabled: false
+enableReporting: true
+bugherd:
+  integration : false
+emailFilter: "/[A-Z0-9._%-]+@csiro.au"
+download:
+  email:
+    threshold: 100
+notification:
+  enabled: false
+# Specific configurations used by Biocollect
+facets:
+  flimit: 15
+
+
+aekosSubmission:
+  url: "http://shared-uat.ecoinformatics.org.au:8080/shared-web/api/submission/create"
+aekosMintedDoi:
+  url: "http://shared-uat.aekos.org.au:8080/AEKOS.AekosSearchPortal/dataset"
+
+acsaUrl: 'http://csna.gaiaresources.com.au/wordpress/'
+
+bie:
+  baseURL: "https://bie.ala.org.au"
+
+biocache:
+  baseURL: "https://biocache.ala.org.au"
+
+biocollect:
+  support:
+    email:
+      address: "biocollect-support@ala.org.au"
+
+collectory:
+  service:
+    url: "https://collections.ala.org.au"
+
+
+ecodata:
+  baseURL: "https://ecodata.ala.org.au/"
+
+
+google:
+  maps:
+    base: "https://maps.googleapis.com/maps/api/js?key="
+
+headerAndFooter:
+  baseURL: "https://www.ala.org.au/commonui-bs2" #"https://www.ala.org.au/commonui-bs2-v2/commonui-bs2"
+
+images:
+  baseURL: "https://images.ala.org.au"
+
+lists:
+  baseURL: "https://lists.ala.org.au" # "https://lists-test.ala.org.au/public/speciesLists"
+  commonFields: ['rawScientificName', 'matchedName', 'commonName']
+
+merit:
+  baseURL: "https://fieldcapture-test.ala.org.au"
+
+mdba:
+  baseUrl: "http://mdba-test.ala.org.au"
+  searchUrl: "/occurrences/search?fq=data_hub_uid:dh10#tab_mapView"
+
+mobile:
+  auth:
+    check:
+      url:  "https://m.ala.org.au/mobileauth/mobileKey/checkKey"
+
+
+pdfgen:
+  baseURL: "https://pdfgen.ala.org.au/"
+
+sld:
+  polgon:
+    default:
+      url: "http://fish.ala.org.au/data/alt-dist.sld"
+    highlight:
+      url: "http://fish.ala.org.au/data/fc-highlight.sld"
+
+speciesConfiguration:
+  default: [
+            "type": "ALL_SPECIES",
+            "speciesDisplayFormat": "SCIENTIFICNAME(COMMONNAME)"
+           ]
+
+
+spatial:
+   baseURL: "https://spatial.ala.org.au/"
+
+upload:
+   images:
+      path: "/data/${appName}/images/"
+   path: "/data/${appName}/"
+   extensions:
+      blacklist : ['exe','js','php','asp','aspx','com','bat']
+
+
+
+grails:
+    project:
+      groupId: "au.org.ala"
+
+    profile: web
+    codegen:
+        defaultPackage: au.org.ala.biocollect
+    cache:
+       defaults:
+          eternal: true
+          overflowToDisk: false
+          maxElementsInMemory: 20000
+          timeToLiveSeconds: 3600
+          name: 'vocabListCache'
+       ehcache:
+            cacheManagerName : "${appName}-ehcache"
+            reloadable : false
+    mime:
+        file:
+          extensions: true
+        use:
+          accept:
+            header: true
+        disable:
+            accept:
+                header:
+                    userAgents:
+                        - Gecko
+                        - WebKit
+                        - Presto
+                        - Trident
+        types:
+            all: '*/*'
+            atom: application/atom+xml
+            css: text/css
+            csv: text/csv
+            form: application/x-www-form-urlencoded
+            html:
+              - text/html
+              - application/xhtml+xml
+            js: text/javascript
+            json:
+              - application/json
+              - text/json
+            multipartForm: multipart/form-data
+            pdf: application/pdf
+            rss: application/rss+xml
+            text: text/plain
+            hal:
+              - application/hal+json
+              - application/hal+xml
+            xml:
+              - text/xml
+              - application/xml
+    urlmapping:
+        cache:
+            maxsize: 1000
+    controllers:
+        defaultScope: singleton
+        upload:
+          maxFileSize: 26214400 #25Mb
+          maxRequestSize: 26214400 #25Mb
+    converters:
+        encoding: UTF-8
+    views:
+        default:
+            codec: none
+        gsp:
+            encoding: UTF-8
+            htmlcodec: xml
+            codecs:
+                expression: none  #${ } will be html encoded if set to default to html
+                scriptlets: html
+                taglib: none
+                staticparts: none
+            sitemesh:
+              preprocess: true
+
+    resources:
+      resourceLocatorEnabled: true
+      adhoc:
+          patterns: ['/images/*', '/css/*', '/js/*', '/plugins/*', '/vendor/*']
+          includes: ['/images/**', '/css/**', '/js/**', '/plugins/**', '/vendor/**']
+
+    scaffolding:
+      templates:
+        domainSuffix: 'Instance'
+    json:
+      legacy:
+        builder: false
+    # enabled native2ascii conversion of i18n properties files
+    enable:
+      native2ascii: true
+    # packages to include in Spring bean scanning
+    spring:
+      bean:
+        packages: []
+    # whether to disable processing of multi part requests
+    web:
+      disable:
+        multipart: false
+
+    # request parameters to mask when logging exceptions
+    exceptionresolver:
+      params:
+        exclude: ['password']
+
+
+
+spring:
+    main:
+        banner-mode: "off"
+    groovy:
+        template:
+            check-template-location: false
+
+
+
+# Spring Actuator Endpoints are Disabled by Default
+endpoints:
+    enabled: false
+    jmx:
+        enabled: true
+
+webservice:
+    connectTimeout: 6000000
+    readTimeout: 6000000
+
+
+
+markdown:
+  hardwraps: true
+
+# Sightings
+coordinates:
+  sources: ["Google maps", "Google earth", "GPS device", "camera/phone", "physical maps", "other"]
+sighting:
+  fields:
+    excludes: ['errors','timeZoneOffset','eventDateNoTime','eventDateTime','class','log','constraints','$constraints']
+
+  licenses: ['Creative Commons Attribution','Creative Commons Attribution-Noncommercial','Creative Commons Attribution-Share Alike','Creative Commons Attribution-Noncommercial-Share Alike']
+
+sortFields: ['scientificName','commonName','eventDate','dateCreated','lastUpdated','locality','multimedia']
+accuracyValues: [0,10,50,100,500,1000,5000,10000]
+flag:
+  issues: ['IDENTIFICATION','GEOCODING_ISSUE','TEMPORAL_ISSUE','HABITAT_ISSUE','--','INAPPROPRIATE_IMAGE']
+showBiocacheLinks: false
+identify:
+  subgroupFacet: "names_and_lsid"
+  enabled: true
+projectdata:
+  industries:
+    enabled: false
+

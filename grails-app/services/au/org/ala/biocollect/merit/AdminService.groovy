@@ -45,7 +45,7 @@ class AdminService {
             try {
                 def activity = activityService.get(photoPointOutput.activityId)
                 if (!activity || activity.error) {
-                    log.error("No activity for photopoint: ${photoPointOutput.outputId}, activityId:${photoPointOutput.activityId}")
+                    log.error ("No activity for photopoint: ${photoPointOutput.outputId}, activityId:${photoPointOutput.activityId}")
                     writer.println("No activity for photopoint: ${photoPointOutput.outputId}, activityId:${photoPointOutput.activityId}")
 
                 } else {
@@ -186,7 +186,7 @@ class AdminService {
             }
         } catch (Exception e){
             //this will be thrown if its a PNG....
-            log.debug(e.getMessage(),e)
+            log.debug(e.getMessage(),e.toString())
         }
 
         return exif

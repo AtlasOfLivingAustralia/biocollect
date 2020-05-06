@@ -1,4 +1,5 @@
-<%@ page import="grails.converters.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
@@ -24,6 +25,7 @@
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/"
         },
         here = document.location.href;

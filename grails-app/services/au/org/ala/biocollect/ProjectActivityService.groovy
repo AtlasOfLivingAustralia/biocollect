@@ -36,6 +36,10 @@ class ProjectActivityService {
     CacheService cacheService
     SettingService settingService
 
+    def search(params) {
+        webService.doPost(grailsApplication.config.ecodata.service.url + '/projectActivity/search', params)
+    }
+
     def getAllByProject(projectId, levelOfDetail = "", version = null, stats = false) {
         def params = '?'
         params += levelOfDetail ? "view=${levelOfDetail}&" : ''
@@ -430,7 +434,7 @@ class ProjectActivityService {
             log.info("Error occurred while downloading data: " + result + " Download status error: " + status)
         } else {
             result = [status: 404, error: "Aekos Submission Url is not configured"]
-            log.info(result)
+            log.info(result.toString())
         }
         result
     }

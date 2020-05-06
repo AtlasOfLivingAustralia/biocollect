@@ -280,8 +280,7 @@ ko.bindingHandlers.stagedImageUpload = {
         // Expected to be a ko.observableArray
         $(element).fileupload({
             url: config.url,
-            autoUpload: true,
-            forceIframeTransport: true
+            autoUpload: true
         }).on('fileuploadadd', function (e, data) {
             complete(false);
             progress(1);
@@ -699,7 +698,7 @@ ko.bindingHandlers.ticks = {
 ko.bindingHandlers.fileUploadNoImage = {
     init: function (element, options) {
 
-        var defaults = {autoUpload: true, forceIframeTransport: true};
+        var defaults = {autoUpload: true};
         var settings = {};
         $.extend(settings, defaults, options());
         $(element).fileupload(settings);
@@ -974,6 +973,47 @@ ko.bindingHandlers.validateObservable = {
         } else {
             throw "KO error: validateObservable binding cannot be used on an input element or any element which has 'type' property."
         }
+    }
+};
+
+ko.bindingHandlers.slider = {
+    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        var $element = $(element),
+            params = valueAccessor(),
+            observable,
+            value,
+            max = 10,
+            min = 0,
+            step = 1;
+
+        if (ko.isObservable(params)) {
+            observable = params;
+            value = observable();
+        } else {
+            observable = params.model;
+            value = observable();
+            max = params.max;
+            min = params.min;
+            step = params.step;
+        }
+
+        $element.html("<div class=\"ui-slider-handle\"></div>");
+        var handle = $element.find(".ui-slider-handle");
+        var config = {
+            max : max,
+            min : min,
+            step : step,
+            value : value,
+            create: function() {
+                handle.text( $( this ).slider( "value" ) );
+            },
+            slide: function( event, ui ) {
+                handle.text( ui.value );
+                observable(ui.value);
+            }
+        };
+
+        $element.slider(config);
     }
 };
 

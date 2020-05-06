@@ -5,25 +5,35 @@
     <title>Metadata | Admin | Data capture | Atlas of Living Australia</title>
     <asset:script type="text/javascript">
         fcConfig = {
+            intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+            featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
             listHubsUrl:"${createLink(controller: 'admin', action: 'listHubs')}",
             getHubUrl:"${createLink(controller: 'admin', action: 'loadHubSettings')}",
             saveHubUrl:"${createLink(controller: 'admin', action: 'saveHubSettings')}",
             listProjectFacetUrl: "${createLink(controller: 'project', action: 'getFacets')}",
             listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}",
             listDataColumnsUrl: "${createLink(controller: 'bioActivity', action: 'getDataColumns')}",
-            defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}"
+            defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}",
+            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+            leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
         };
     </asset:script>
 </head>
 
 <body>
+<asset:stylesheet src="leaflet-manifest.css"/>
 <asset:stylesheet src="admin.css"/>
 <asset:stylesheet src="fileupload-ui-manifest.css"/>
+<asset:javascript src="leaflet-manifest.js"/>
 <asset:javascript src="common.js"/>
 <asset:javascript src="fileupload-manifest.js"/>
 <asset:javascript src="document.js"/>
 <asset:javascript src="hubs.js"/>
-
+<script src="${grailsApplication.config.google.maps.url}" async defer></script>
 <content tag="pageTitle">Create / Edit Hub</content>
 
 <div class="alert alert-info">
@@ -61,6 +71,7 @@
         <li><a href="#hubContent"  data-toggle="tab">Content</a></li>
         <li><a href="#hubFacet"  data-toggle="tab">Facets</a></li>
         <li><a href="#hubData"  data-toggle="tab">Data</a></li>
+        <li><a href="#hubMap"  data-toggle="tab">Map</a></li>
         <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubHomepage"  data-toggle="tab">Homepage</a></li>
     </ul>
     <div class="tab-content">
@@ -635,6 +646,14 @@
                 <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageColumnConfiguration' } -->
                     <!-- /ko -->
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="hubMap">
+            <div class="border-bottom-4">
+                <h4><strong>Configure base layers for maps shown on this hub</strong></h4>
+                <div class="overflow-x">
+                    <map-config-selector params="allBaseLayers: fcConfig.allBaseLayers, allOverlays: fcConfig.allOverlays, mapLayersConfig: mapLayersConfig"></map-config-selector>
                 </div>
             </div>
         </div>

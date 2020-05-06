@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <html>
 <head>
     <g:set var="title" value="${myFavourites? message(code: "site.myFavouriteSites.heading") : message(code: "site.allSites.heading")}"/>
@@ -8,6 +9,11 @@
     <meta name="breadcrumb" content="${title}"/>
     <script>
         var fcConfig = {
+            intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+            featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
             listSitesUrl: '${createLink(controller: 'site', action: 'elasticsearch')}',
             viewSiteUrl: '${createLink(controller: 'site', action: 'index')}',
             editSiteUrl: '${createLink(controller: 'site', action: 'edit')}',
@@ -16,10 +22,9 @@
             poiGalleryUrl: "${createLink(controller: 'site', action: 'getImages')}",
             imagesForPoiUrl: "${createLink(controller: 'site', action: 'getPoiImages')}",
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
-            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
-            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
             activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             myFavourites: "${myFavourites}"
         }
     </script>
@@ -28,6 +33,7 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 
 <body>

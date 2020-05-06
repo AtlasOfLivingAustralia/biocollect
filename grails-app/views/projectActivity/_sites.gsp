@@ -4,184 +4,129 @@
     <!-- ko if: current -->
     <div class="row-fluid">
         <div class="span10 text-left">
-            <h2 class="strong">Step 6 of 7 - Specify the area or places where the survey will be undertaken</h2>
+            <h2 class="strong"><g:message code="survey.sites.title"/> </h2>
         </div>
         <div class="span2 text-right">
-            <g:render template="../projectActivity/status"/>
+            <g:render template="/projectActivity/status"/>
         </div>
     </div>
 
     <g:render template="/projectActivity/warning"/>
 
     <div class="row-fluid">
-        <div class="span12 text-left">
-            <p>You can constrain the survey to a particular geographic area and/or to particular pre-determined sites.</p>
-        </div>
-    </div>
-    <h3>Add or remove sites to the survey</h3>
-    <div class="row-fluid">
-        <div class="span6 ">
-            <table class="table white-background table-custom-border borderless">
-                <thead>
-                <tr>
-                    <th class="text-left">Sites associated with this survey:
-                        <a href="#" data-bind="popover: {content:'Sites listed here will be selectable on the data collection form. If you don\'t want a particular site to be available for selection in this survey, click the arrow to move it into the \'Sites associated with the project\' column. Note that the survey must have at least one site associated with it.'}"><i  class="icon-question-sign"></i></a>
-                    </th>
-                </tr>
-                </thead>
-
-                <tbody>
-                <!-- ko foreach: sites -->
-                    <!-- ko ko ifnot: name() == '*' -->
-                       <tr data-bind="visible: added()">
-                            <!-- ko ifnot: isProjectArea -->
-                            <td>
-                                <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
-                                <button class="btn btn-mini pull-right btn-default" data-bind="click: removeSite, disable: transients.isDataForSite"  title="Remove this site from survey">
-                                    <span class="icon-arrow-right"></span>
-                                </button>
-                            </td>
-                            <!-- /ko -->
-                        </tr>
-                     <!-- /ko -->
-                <!-- /ko -->
-                <!-- ko ko if: getNumberOfSitesForSurvey() == 0 -->
-                <tr>
-                    <td>
-                        <i>Add sites to survey from the column on right using the <span class="icon-arrow-left"></span> button.</i>
-                    </td>
-                </tr>
-                <!-- /ko -->
-                </tbody>
-
-            </table>
-        </div>
-
-        <div class="span6 pre-scrollable" >
-            <table class="table table-custom-border borderless white-background ">
-                <thead>
-                <tr>
-                    <th>Sites associated with this project:
-                        <a href="#" data-bind="popover: {content:'Sites listed here are associated with the project, but are not used by this particular survey. If you want a particular site to be available for selection in this survey, click on the arrow to move it into the \'Sites associated with the survey\' column.'}"><i  class="icon-question-sign"></i></a>
-                    </th>
-                </tr>
-                </thead>
-
-                <tbody >
-                <!-- ko foreach: sites -->
-                        <tr data-bind="visible: !added()">
-                            <td>
-                                <button class="btn btn-mini btn-primary" data-bind="click: addSite" title="Add this site to survey">
-                                    <span class="icon-arrow-left icon-white"></span>
-                                </button>
-                                <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
-                            </td>
-                        </tr>
-
-                <!-- /ko -->
-                <!-- ko if:sites().length == 0 -->
-                <tr>
-                    <td>
-                        No sites found in this project. Please use the above actions to add sites to this project.
-                    </td>
-                </tr>
-                <!-- /ko -->
-                </tbody>
-
-            </table>
-        </div>
-
-    </div>
-    <div class="row-fluid">
         <div class="span12">
-            <h3>Or, add custom site using the below options</h3>
-            <div class="">
-                <div class="btn-group btn-group-justified" style="margin-bottom: 5px">
-                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToCreate, disable: transients.warning()"><i class="icon-plus"></i> Add new site </button>
-                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToSelect, disable: transients.warning()"><i class="icon-folder-open"></i> Choose existing sites </button>
-                    <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToUpload, disable: transients.warning()"><i class="icon-arrow-up"></i> Upload locations from shapefile </button>
+            <h3><g:message code="mapConfiguration.step.one.title"/></h3>
+        </div>
+    </div>
+
+    <div class="accordion" id="site-accordion">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <div class="accordion-toggle">
+                    <label class="radio">
+                        <input type="radio" name="siteType"
+                               data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-pick-link'}), clickBubble: false" value="sitepick"/>
+                        <a id="site-pick-link" data-toggle="collapse" data-parent="#site-accordion" href="#site-pick"
+                           data-bind="click: transients.setSurveySiteOption.bind({value: 'sitepick'})">
+                            <h4><g:message code="mapConfiguration.sites.pick.title"/></h4>
+                        </a>
+                    </label>
+                </div>
+            </div>
+
+            <div id="site-pick" class="accordion-body collapse" data-bind="css: { 'in': transients.surveySiteOption == 'sitepick' }">
+                <div class="accordion-inner" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepick' }">
+                    <div class="margin-left-30" data-bind="if: surveySiteOption() === 'sitepick', slideVisible: surveySiteOption() === 'sitepick'">
+                        <h5><strong><g:message
+                                code="mapConfiguration.user.pick.site.title"/></strong></h5>
+                        <h5><small><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h5>
+                        <!-- ko template: {name: 'template-sites-pick-one'} -->
+                        <!-- /ko -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <div class="accordion-toggle">
+                    <label class="radio">
+                        <input type="radio" name="siteType"
+                               data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-create-link'}), clickBubble: false" value="sitecreate"/>
+                            <a id="site-create-link" data-toggle="collapse" data-parent="#site-accordion" href="#site-create"
+                           data-bind="click: transients.setSurveySiteOption.bind({value:'sitecreate'})">
+                                <h4><g:message code="mapConfiguration.sites.create.title"/></h4>
+                            </a>
+                    </label>
+                </div>
+            </div>
+
+            <div id="site-create" class="accordion-body collapse" data-bind="css: { 'in': transients.surveySiteOption == 'sitecreate' }">
+                <div class="accordion-inner" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitecreate' }">
+                    <div class="margin-left-30" data-bind="if: surveySiteOption() === 'sitecreate', slideVisible: surveySiteOption() === 'sitecreate'">
+                        <h5><strong><g:message code="mapConfiguration.user.created.site.title"/></strong></h5>
+                        <h5><small><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h5>
+                        <!-- ko template: {name: 'template-site-create'} -->
+                        <!-- /ko -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <div class="accordion-toggle">
+                    <label class="radio">
+                        <input type="radio" name="siteType"
+                               data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-pick-create-link'}), clickBubble: false" value="sitepickcreate"/>
+                        <a id="site-pick-create-link" data-toggle="collapse" data-parent="#site-accordion"
+                           href="#site-pick-create" data-bind="click: transients.setSurveySiteOption.bind({value:'sitepickcreate'})">
+                            <h4><g:message code="mapConfiguration.sites.both.title"/></h4>
+                        </a>
+                    </label>
+                </div>
+            </div>
+
+            <div id="site-pick-create" class="accordion-body collapse" data-bind="css: { 'in': transients.surveySiteOption == 'sitepickcreate' }">
+                <div class="accordion-inner" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepickcreate' }">
+                    <div class="margin-left-30" data-bind="if: surveySiteOption() === 'sitepickcreate', slideVisible: surveySiteOption() === 'sitepickcreate'">
+                        <h5><strong><g:message code="mapConfiguration.user.pick.site.title"/></strong></h5>
+                        <h5><small><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h5>
+                        <!-- ko template: {name: 'template-sites-pick-one'} -->
+                        <!-- /ko -->
+
+                        <hr/>
+
+                        <h5><strong><g:message
+                                code="mapConfiguration.user.created.site.title"/></strong></h5>
+                        <h5><small><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h5>
+                        <!-- ko template: {name: 'template-site-create'} -->
+                        <!-- /ko -->
+
+                        <hr>
+
+                        <h5><strong><g:message
+                                code="mapConfiguration.map.behaviour.title"/></strong></h5>
+                        <!-- ko template: {name: 'template-site-add-to-project'} -->
+                        <!-- /ko -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row-fluid">
-        <div class="span12">
-            <h3>Allowed Geo types</h3>
-                <label class="checkbox">
-                    <input type="checkbox" data-bind="checked: allowPolygons"/> Polygons allowed <a href="#" data-bind="popover: {content:'Allow to create a polygon or select a site of a polygon.'}"><i class="icon-question-sign"></i></a>
-                </label>
-                <label class="checkbox">
-                    <input type="checkbox" data-bind="checked: allowPoints"/> Points allowed  <i class="icon-question-sign"></i>
-                </label>
-        </div>
-    </div>
-
-
-    <div class="row-fluid">
-        Default zoom area:
-        <select id="siteToZoom1" data-bind="value: defaultZoomArea">
-        <!-- ko foreach: sites -->
-           <!-- ko if: added() -->
-              <!-- ko if: siteId != $parent.defaultZoomArea -->
-                    <option data-bind="text: name, value: siteId" ></option>
-              <!-- /ko -->
-              <!-- ko if: siteId == $parent.defaultZoomArea -->
-                <option data-bind="text: name, value: siteId"  selected></option>
-              <!-- /ko -->
-           <!-- /ko -->
-        <!-- /ko -->
-        </select>
-
-    </div>
-
 
     <div class="row-fluid">
         <div class="span12">
-            <h3>Additional site options</h3>
-            <label class="checkbox">
-                <input type="checkbox" data-bind="checked: allowAdditionalSurveySites, disable: transients.warning()"/> Allow additional survey sites
-            </label>
-            <span class="help-block">Check this box if you want to allow users to add or edit site polygons on the survey record.</span>
-
-            <label class="checkbox">
-                <input type="checkbox" data-bind="checked: selectFromSitesOnly, disable: transients.warning()"/> ONLY Select from existing sites
-            </label>
-            <span class="help-block">User can only select from exisiting site </span>
-
-            <auth:ifAnyGranted roles="ROLE_ADMIN">
-                <label for="map-tiles">Map tiles</label>
-                <select id="map-tiles" data-bind="value: baseLayersName, optionsCaption: 'Choose...', disable: transients.warning()">
-                    <option>Google Maps</option>
-                    <option>Open Layers</option>
-                </select>
-            </auth:ifAnyGranted>
+            <h3><g:message code="mapConfiguration.step.two.title"/></h3>
         </div>
     </div>
-
 
     <div class="row-fluid">
-
         <div class="span12">
-            <p>
-                <h3><g:message code="project.survey.site.config"/></h3>
-                <input type="checkbox" data-bind="checked: excludeProjectSite"/> <g:message code="project.survey.site.config.content"/>
-            </p>
-        </div>
-
+            <map-config-selector params="allBaseLayers: fcConfig.allBaseLayers, allOverlays: fcConfig.allOverlays, mapLayersConfig: mapLayersConfig, type: 'survey'"></map-config-selector>        </div>
     </div>
 
-    <!--
-    Not supported.
-    <div class="row-fluid">
-
-        <div class="span12">
-            <p>
-                <input type="checkbox" data-bind="checked: restrictRecordToSites"/> Restrict record locations to the selected survey sites
-            </p>
-        </div>
-
-    </div>
-    -->
     <!-- /ko -->
     <!-- /ko -->
 </div>
@@ -197,3 +142,105 @@
     </div>
     <!-- /ko -->
 <!-- /ko -->
+
+<script id="template-sites-pick-one" type="text/html">
+<div>
+    <div id="sites-pick-one-message-container"></div>
+    <div id="survey-site-list" class="row-fluid" data-validation-engine="validate[funcCall[isSiteSelectionConfigValid]]" data-prompt-position="inline" data-position-type="inline" data-prompt-target="sites-pick-one-message-container">
+        <div class="span12">
+            <div style="max-height: 500px; overflow-y: auto;">
+                <div class="row-fluid" data-bind="if: sites().length > 1">
+                    <div class="span6">
+                        <div class="large-checkbox">
+                            <input id="selectall" type="checkbox" data-bind="checked: transients.isSelectAllSites, click: transients.selectAllSites">
+                            <label for="selectall"><span></span> <g:message code="mapConfiguration.site.selectall.title"/></label>
+                        </div>
+                    </div>
+                </div>
+                <!-- ko foreach: sites -->
+                <div class="row-fluid">
+                    <div class="span6">
+                        <label class="checkbox">
+                            <input type="checkbox" data-bind="checked: added">
+                            <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
+                        </label>
+                    </div>
+                    <div class="span6">
+                        <a class="btn btn-mini btn-default" target="_blank" data-bind="attr:{href: siteUrl}" role="button">
+                            <i class="icon-eye-open"></i>
+                            <g:message code="btn.view"/>
+                        </a>
+                        <button class="btn btn-mini btn-danger" data-bind="disable: transients.isSiteDeleteDisabled(), click: transients.deleteSite">
+                            <i class="icon-remove icon-white"></i>
+                            <g:message code="btn.delete"/>
+                        </button>
+                    </div>
+                </div>
+                <!-- /ko -->
+            </div>
+            <div class="row-fluid padding-top-10">
+                <div class="span12">
+                    <label>
+                        <g:message code="mapConfiguration.site.create.choose.title"></g:message>
+                        <button class="btn-default btn btn-small" data-bind="click: $parent.redirectToSelect, disable: transients.warning()"><i class="icon-folder-open"></i> <g:message code="mapConfiguration.site.existing.selection"></g:message> </button>
+                        <button class="btn-default btn btn-small" data-bind="click: $parent.redirectToCreate, disable: transients.warning()"><i class="icon-plus"></i> <g:message code="mapConfiguration.site.create"></g:message> </button>
+                        <button class="btn-default btn btn-small" data-bind="click: $parent.redirectToUpload, disable: transients.warning()"><i class="icon-arrow-up"></i> <g:message code="mapConfiguration.site.upload"></g:message> </button>
+                    </label>
+                </div>
+            </div>
+
+            <!-- ko if:sites().length == 0 -->
+            <div class="alert-info">
+                <g:message code="mapConfiguration.site.selection.title" />
+            </div>
+            <!-- /ko -->
+        </div>
+    </div>
+</div>
+</script>
+<script id="template-site-create" type="text/html">
+<div data-validation-engine="validate[funcCall[isUserSiteCreationConfigValid]]"
+     data-prompt-position="inline" data-position-type="inline" data-prompt-target="site-create-message-container">
+    <div id="site-create-message-container"></div>
+    <div id="survey-site-create" class="row-fluid">
+        <div class="span12">
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: allowPoints"/>  <g:message code="mapConfiguration.site.point" />
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: allowPolygons"/> <g:message code="mapConfiguration.site.polygon" />
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: allowLine"/> <g:message code="mapConfiguration.site.line" />
+            </label>
+        </div>
+    </div>
+</div>
+</script>
+<script id="template-site-add-to-project" type="text/html">
+<div class="row-fluid">
+    <div class="span6">
+        <label class="checkbox">
+            <input type="checkbox" data-bind="checked: addCreatedSiteToListOfSelectedSites, disable: !!isUserSiteCreationConfigValid()"/>
+            <g:message code="mapConfiguration.site.create.add.to.project"/>
+        </label>
+        <span class="help-block"><g:message
+                code="mapConfiguration.addCreatedSiteToListOfSelectedSites.help.text"/></span>
+    </div>
+</div>
+</script>
+<script id="template-site-zoom" type="text/html">
+<div class="row-fluid">
+    <div class="span6">
+        <label>
+            <g:message code="mapConfiguration.zoom.area"/>
+            <select id="siteToZoom1" data-bind="value: defaultZoomArea, foreach: sites">
+                <!-- ko if: added() || isProjectArea() -->
+                <option data-bind="text: name, value: siteId, attr: {selected: siteId() == $parent.defaultZoomArea()}"></option>
+                <!-- /ko -->
+            </select>
+        </label>
+        <span class="help-block"><g:message code="mapConfiguration.zoom.area.help.text"/> </span>
+    </div>
+</div>
+</script>

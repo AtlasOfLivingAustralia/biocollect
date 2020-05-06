@@ -270,7 +270,7 @@
         }); // end document ready
     </asset:script>
 </g:if>
-<g:if test="${java.lang.Boolean.parseBoolean(grailsApplication.config.bugherd.integration)}">
+<g:if test="${grailsApplication.config.bugherd.integration}">
     <asset:script type="text/javascript">
         (function (d, t) {
             var bh = d.createElement(t), s = d.getElementsByTagName(t)[0];

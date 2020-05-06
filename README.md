@@ -19,20 +19,19 @@ New server side classes that are custom to Biocollect should be under the packag
 ## General Information
 
 ### Technologies
-  * Grails framework: 2.4.5
+  * Grails framework: 3.3.11
+  * Java 8
   * Knockout JS
   * JQuery
+  * Gradle
+  
 
-### Setup
-* This project requires you to run the [ecodata project](https://github.com/AtlasOfLivingAustralia/ecodata) on port `8080`.
-* You will need the following local directories:
-```
-  /data/biocollect/config
-  /data/biocollect/images
-```
-* Add the external config file.
-* The app is expected to run in port 8087 locally. Just add the option `-Dserver.port=8087` to the run-app command:
-![Imgur](http://i.imgur.com/syIKPgy.png)
+### Development Setup
+
+* This project requires you to run the [ecodata project](https://github.com/AtlasOfLivingAustralia/ecodata) on port `8081`.
+
+* [Use this guide to setup Biocollect in Intellij](setup.md)
+
 
 ### Running Javascript automatic tests
 * Executing the tests requires node.js

@@ -1,7 +1,7 @@
 package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.UserService
-import grails.plugin.mail.MailService
+import grails.plugins.mail.MailService
 
 /**
  * Sends email messages to notify interested parties of changes.

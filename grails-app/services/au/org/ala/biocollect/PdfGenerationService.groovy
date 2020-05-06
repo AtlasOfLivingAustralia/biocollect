@@ -2,7 +2,7 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.CommonService
 import au.org.ala.biocollect.merit.WebService
-import org.codehaus.groovy.grails.commons.GrailsApplication
+import grails.core.GrailsApplication
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse

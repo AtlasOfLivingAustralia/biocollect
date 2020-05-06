@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,6 +7,11 @@
     <title>Add existing site | Field Capture</title>
     <asset:script type="text/javascript">
         var fcConfig = {
+            intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+            featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
@@ -15,6 +21,7 @@
             spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
             spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
             sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
         },
         returnTo = "${params.returnTo}";
@@ -23,6 +30,7 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="siteSelection.js"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 
 <body>
@@ -31,100 +39,96 @@
 
     <div class="row-fluid">
         <bc:koLoading>
-            <div class="well span6">
+            <div class="span6">
                 <div class="row-fluid">
+                    <!-- ko if: !loading() -->
                     <div class="span5">
-                        <form class="form-search" data-bind="submit: searchSites">
+                        <span data-bind="text: matchingSiteCount()"
+                                                                   class=""></span> matching sites.
+                    </div>
+                    <!-- /ko -->
+                    <!-- ko if: loading -->
+                    <div class="span5">
+                        <div>
+                            <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
+                        </div>
+                    </div>
+                    <!-- /ko -->
+                    <div class="span7">
+                        <form class="form-search  pull-right" data-bind="submit: searchSites">
                             <div class="input-append">
                                 <input type="text" class="search-query" data-bind="value: currentSearch"
-                                       placeholder="Filter..."/>
+                                       placeholder="Search by keyword"/>
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </div>
-                            <div class="span12">
-                            </div>
-                            <div class="span12">
-                                    <div class=" btn-group span6" data-toggle="buttons-checkbox">
-                                        <button type="button" class="btn  btn-small btn-info"
-                                                    data-bind="click: toggleMyFavourites">Only Favourites<i data-bind="visible: myFavourites"
-                                                    class="toggleIndicator icon-remove icon-white"></i></button>
-                                    </div>
-                            </div>
-                            <div class="row-fluid margin-top-2" ><span data-bind="text: matchingSiteCount()"
-                                       class=""></span> matching sites.</div>
                         </form>
                     </div>
                 </div>
-
-                <ul data-bind="foreach: sites" style="margin: 0px;">
-                    <li style="list-style: none;">
-                        <div class="row-fluid margin-bottom-1">
-                            <span class="span8">
-                                <strong>
-                                    <span data-bind="text:name"></span>
-                                </strong>
-                                <br/>
-
-                                <div data-bind="visible:$data.extent === undefined">No georeference information available</div>
-
-                                <div data-bind="visible:$data.extent !== undefined && extent.geometry != null && extent.geometry.state != null">
-                                    State:&nbsp;<span
-                                        data-bind="text:$data.extent !== undefined && extent.geometry != null ? extent.geometry.state : ''"></span>
-                                </div>
-
-                                <div data-bind="visible:$data.extent !== undefined && extent.geometry != null && extent.geometry.lga != null">
-                                    LGA:&nbsp;<span
-                                        data-bind="text:$data.extent !== undefined && extent.geometry != null ? extent.geometry.lga : ''"></span>
-                                </div>
-                            </span>
-                            <span class="span2">
-                                <button class="viewOnMap btn btn-small"
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>
+                            <g:message code="site.details.siteName"/>
+                        </th>
+                        <th>
+                            <g:message code="actions"/>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- ko foreach: sites -->
+                        <tr data-bind="attr: {id: siteId}">
+                            <td>
+                                <h4 data-bind="text:name"></h4>
+                            </td>
+                            <td>
+                                <button class="viewOnMap btn btn-small margin-top-5"
                                         data-bind="click: $parent.mapSite, disable:$data.extent === undefined">
                                     <i class="icon-eye-open"></i>
                                     Preview
                                 </button>
-                            </span>
-                            <span class="span2 ">
-                                <button class="addSite btn btn-success btn-small pull-right"
+                                <button class="addSite btn btn-success btn-small margin-top-5"
                                         data-bind="click: $parent.addSite, visible: !isProjectSite()">
                                     <i class="icon-plus icon-white"></i>
-                                    Add
+                                    Select
                                 </button>
-                                <button class="removeSite btn btn-danger btn-small pull-right"
+                                <button class="removeSite btn btn-danger btn-small margin-top-5"
                                         data-bind="click: $parent.removeSite, visible: isProjectSite() ">
                                     <i class="icon-minus  icon-white"></i>
                                     Remove
                                 </button>
-                            </span>
-                        </div>
-                    </li>
-                </ul>
-                <g:render template="../shared/pagination"/>
-                <div class="row-fluid margin-top-2">
-                    <button class="btn btn-primary" data-bind="click: useSelectedSites">Update sites</button>
-                    <button class="btn" data-bind="click: cancelUpdate">Cancel</button>
-                </div>
+                            </td>
+                        </tr>
+                    <!-- /ko -->
+                        <tr data-bind="if: (sites().length == 0) && !loading() ">
+                            <td colspan="2"><g:message code="site.details.nosites"/></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <g:render template="/shared/pagination"/>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span12 text-right">
+                                        <button class="btn btn-primary margin-top-5" data-bind="click: useSelectedSites">Add selected sites</button>
+                                        <button class="btn margin-top-5" data-bind="click: cancelUpdate">Cancel</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </bc:koLoading>
 
         <div class="span6">
-            <m:map id="siteMap"/>
+            <m:map id="siteMap" width="100%"/>
         </div>
     </div>
-
-    <g:if env="development">
-        <div class="container-fluid">
-            <div class="expandable-debug">
-                <hr/>
-
-                <h3>Debug</h3>
-
-                <div>
-                    <h4>KO model</h4>
-                    <pre data-bind="text:ko.toJSON($root,null,2)"></pre>
-                </div>
-            </div>
-        </div>
-    </g:if>
 </div>
 </body>
 <asset:script type="text/javascript">

@@ -1,4 +1,5 @@
-<%@ page import="grails.converters.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
@@ -12,6 +13,11 @@
     <asset:stylesheet src="facets-filter-view.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+            intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+            featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+            featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
             activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
@@ -45,6 +51,7 @@
             hideProjectAndSurvey: ${hubConfig.content?.hideProjectAndSurvey?:false},
             occurrenceUrl: "${occurrenceUrl}",
             spatialUrl: "${spatialUrl}",
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}"
         },
         here = document.location.href;
@@ -55,6 +62,7 @@
     <asset:javascript src="projectActivityInfo.js"/>
     <asset:javascript src="facets.js"/>
     <asset:javascript src="projects.js"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 <body>
 
@@ -72,7 +80,7 @@
     </div>
 
     <div class="main-content" style="display:none;">
-        <g:render template="../bioActivity/activities"/>
+        <g:render template="/bioActivity/activities"/>
     </div>
     <div class="loading-message">
         <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...

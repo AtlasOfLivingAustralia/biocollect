@@ -7,28 +7,20 @@ module.exports = function (config) {
         // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: '',
 
-        plugins: [
-            'karma-jquery',
-            'karma-chrome-launcher',
-            'karma-jasmine',
-            'karma-jasmine-jquery',
-            'karma-coverage',
-            'karma-firefox-launcher',
-            'karma-phantomjs-launcher'
-        ],
+        plugins: ['@metahub/karma-jasmine-jquery', 'karma-*'],
 
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
         frameworks: [
-            'jquery-1.11.0', // Because we are using a grails plugin for jquery it is not easily available via a project path.
+            'jquery-3.3.1', // Because we are using a grails plugin for jquery it is not easily available via a project path.
             'jasmine-jquery',
             'jasmine'],
 
 
         // list of files / patterns to load in the browser
         files: [
-            'grails-app/assets/vendor/knockout.js/knockout-3.3.0.min.js',
+            'grails-app/assets/vendor/knockout/3.4.0/knockout-3.4.0.js',
             'grails-app/assets/vendor/knockout.js/knockout.mapping-latest.js',
             'grails-app/assets/vendor/underscore/underscore-1.8.3.min.js',
             'grails-app/assets/javascripts/knockout-dates.js',
@@ -43,6 +35,9 @@ module.exports = function (config) {
             'grails-app/assets/javascripts/organisation.js',
             'grails-app/assets/javascripts/pagination.js',
             'grails-app/assets/javascripts/sites.js',
+            'node_modules/leaflet/dist/leaflet.js',
+            'grails-app/assets/vendor/leaflet-plugins-2.0.0/layer/tile/Google.js',
+            'grails-app/assets/javascripts/MapUtilities.js',
             '../ecodata-client-plugin/grails-app/assets/vendor/select2/4.0.3/js/select2.full.js',
             '../ecodata-client-plugin/grails-app/assets/vendor/typeahead/0.11.1/bloodhound.js',
             '../ecodata-client-plugin/grails-app/assets/javascripts/speciesModel.js',
@@ -52,7 +47,10 @@ module.exports = function (config) {
             'grails-app/assets/javascripts/aekosWorkflow.js',
             'grails-app/assets/javascripts/aekosWorkflowUtility.js',
             'grails-app/assets/javascripts/speciesFieldsSettings.js',
-            'test/js/spec/**/*.js'
+            'grails-app/assets/components/components.js',
+            'grails-app/assets/components/compile/*.js',
+            'grails-app/assets/components/javascript/*.js',
+            'src/test/js/spec/**/*.js'
         ],
 
 
@@ -68,7 +66,7 @@ module.exports = function (config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['progress', 'coverage'],
+        // reporters: ['progress', 'coverage'],
 
         // web server port
         port: 9876,
@@ -89,7 +87,7 @@ module.exports = function (config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['Chrome','Firefox','PhantomJS'],
+        browsers: ['Chrome','ChromeHeadless'],
 
 
         // Continuous Integration mode

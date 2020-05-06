@@ -1,12 +1,13 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.ProjectActivityService
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.Point
 import com.vividsolutions.jts.io.WKTReader
 import grails.converters.JSON
-import org.codehaus.groovy.grails.web.json.JSONArray
-import org.codehaus.groovy.grails.web.mapping.LinkGenerator
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.grails.web.json.JSONArray
+import grails.web.mapping.LinkGenerator
+import grails.web.servlet.mvc.GrailsParameterMap
 import org.geotools.kml.v22.KMLConfiguration
 import org.geotools.xml.Parser
 import org.opengis.feature.simple.SimpleFeature
@@ -19,6 +20,8 @@ class SiteService {
     ProjectService projectService
     LinkGenerator grailsLinkGenerator
     ReportService reportService
+    ProjectActivityService projectActivityService
+    SiteService siteService
 
     def list() {
         webService.getJson(grailsApplication.config.ecodata.service.url + '/site/').list
@@ -311,9 +314,6 @@ class SiteService {
         }
 
         def asJSON = featuresMap as JSON
-
-        log.debug asJSON
-
         asJSON
     }
 
@@ -453,6 +453,118 @@ class SiteService {
     }
 
     /**
+     * Checks if a site can be deleted. Conditions to be met for delete are
+     * 1. No activity(s) associated with the site
+     * 2. No project activity(s) associated with the site
+     * 3. Site is not a project area
+     * 4. No project(s) associated with the site
+     * @param siteId
+     * @return Boolean - true if more than one activity is associated with a site
+     */
+    Boolean canDeleteSite(String siteId) throws SocketTimeoutException, Exception{
+        if (isSiteProjectArea(siteId)) {
+            return false
+        }
+        else if (anyProjectUsingSite(siteId)) {
+            return false
+        }
+        else if (areWorksProjectsWithSite(siteId)) {
+            return false
+        }
+        else if (anyProjectActivitiesWithSite(siteId)) {
+            return false
+        }
+        else if(areActivitiesAssociatedWithSiteInProject(siteId)) {
+            return false
+        }
+
+        return true
+    }
+
+    /**
+     * Checks if a site can be deleted. Conditions to be met for delete are
+     * 1. No activity(s) associated with the site
+     * 2. No project activity(s) associated with the site
+     * 3. Site is not a project area
+     * 4. No project(s) associated with the site
+     * @param siteId
+     * @return Boolean - true if more than one activity is associated with a site
+     */
+    Boolean canRemoveProjectFromSite(String siteId, String projectId) throws SocketTimeoutException, Exception{
+        if (isSiteProjectArea(siteId, projectId)) {
+            return false
+        }
+        else if (areWorksProjectsWithSite(siteId, projectId)) {
+            return false
+        }
+        else if (areProjectActivitiesWithSiteInProject(siteId, projectId)) {
+            return false
+        }
+        else if (areActivitiesAssociatedWithSiteInProject(siteId, projectId)) {
+            return false
+        }
+
+        return true
+    }
+
+    Boolean areProjectActivitiesWithSiteInProject(String siteId, String projectId = null) {
+        Map criteria = [
+                "sites" : siteId
+        ]
+
+        if (projectId)
+            criteria["projectId"] = projectId
+
+        projectActivityService.search(criteria)?.resp?.projectActivities?.size() > 0
+    }
+
+    Boolean areWorksProjectsWithSite(String siteId, String projectId = null) {
+        Map criteria = [
+                "mapConfiguration.sites": siteId,
+                "view": "basic"
+        ]
+
+        if (projectId)
+            criteria["projectId"] = projectId
+
+        projectService.search(criteria)?.resp?.projects?.size() > 0
+    }
+
+    Boolean isSiteProjectArea (String siteId, String projectId = null) {
+        Map criteria = [
+                "projectSiteId": siteId,
+                "view": "basic"
+        ]
+
+        if (projectId)
+            criteria["projectId"] = projectId
+
+        projectService.search(criteria)?.resp?.projects?.size() > 0
+    }
+
+    Boolean areActivitiesAssociatedWithSiteInProject(String siteId, String projectId = null) {
+        // check for activity associated with the site
+        Map siteCriteria = [
+                "sites" : siteId
+        ]
+
+        if (projectId)
+            siteCriteria['projectId'] = projectId
+
+        Map response = activityService.search(siteCriteria)
+        return  response.resp?.activities?.size() > 0
+    }
+
+    Boolean anyProjectActivitiesWithSite(String siteId) {
+        areProjectActivitiesWithSiteInProject(siteId)
+    }
+
+    Boolean anyProjectUsingSite (String siteId) {
+        def site = siteService.get(siteId, [raw:'true'])
+        site?.projects?.size() > 0
+    }
+
+    /**
      * Checks if a siteId is linked to a project.
      * @param siteId
      * @return Boolean - true if site is project area
@@ -548,7 +660,7 @@ class SiteService {
      */
     Boolean addSiteToProjectSiteWhiteList(String siteId, Map mapConfiguration, Boolean forceAdd = false) {
         Boolean isDirty = false
-        if (mapConfiguration?.allowAdditionalSurveySites || forceAdd) {
+        if (mapConfiguration?.addCreatedSiteToListOfSelectedSites || forceAdd) {
             mapConfiguration.sites = mapConfiguration.sites ?: []
             // check if this site was added previously
             String sitePresent = mapConfiguration.sites.find { it == siteId }
@@ -620,10 +732,9 @@ class SiteService {
             "sites" : [],
             "allowPoints" : true,
             "allowPolygons" : true,
-            "allowAdditionalSurveySites" : false,
-            "selectFromSitesOnly" : false,
-            "defaultZoomArea" : defaultZoomSiteId,
-            "baseLayersName" : "Open Layers"
+            "addCreatedSiteToListOfSelectedSites" : false,
+            "surveySiteOption" : "sitecreate",
+            "defaultZoomArea" : defaultZoomSiteId
         ]
     }
 }

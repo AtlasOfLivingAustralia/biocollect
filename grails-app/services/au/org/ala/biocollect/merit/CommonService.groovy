@@ -1,8 +1,8 @@
 package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
-import org.codehaus.groovy.grails.web.mapping.LinkGenerator
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import grails.web.mapping.LinkGenerator
+import grails.web.servlet.mvc.GrailsParameterMap
 
 import javax.servlet.http.HttpServletRequest
 import javax.xml.bind.DatatypeConverter

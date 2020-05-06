@@ -14,8 +14,8 @@
  */
 package au.org.ala.biocollect
 
-import org.codehaus.groovy.grails.web.json.JSONElement
-import org.codehaus.groovy.grails.web.json.JSONObject
+import org.grails.web.json.JSONElement
+import org.grails.web.json.JSONObject
 
 /**
  * A grails service for interacting with ecodata webservices.

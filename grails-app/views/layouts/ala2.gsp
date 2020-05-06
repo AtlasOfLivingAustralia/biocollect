@@ -4,8 +4,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="app.version" content="${g.meta(name: 'app.version')}"/>
-    <meta name="app.build" content="${g.meta(name: 'app.build')}"/>
+    <meta name="app.version" content="${g.meta(name: 'info.app.version')}"/>
     <meta name="description" content="Atlas of Living Australia Field Capture"/>
     <meta name="author" content="Atlas of Living Australia">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -179,7 +178,7 @@
 <!-- JS resources-->
 <asset:deferredScripts />
 
-<g:if test="${java.lang.Boolean.parseBoolean(grailsApplication.config.bugherd.integration)}">
+<g:if test="${grailsApplication.config.bugherd.integration}">
     <script type="text/javascript">
         (function (d, t) {
             var bh = d.createElement(t), s = d.getElementsByTagName(t)[0];

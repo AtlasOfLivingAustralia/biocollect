@@ -1,4 +1,6 @@
 package au.org.ala.biocollect
+
+import au.org.ala.biocollect.merit.BaseController
 import au.org.ala.biocollect.merit.CommonService
 import au.org.ala.web.AuthService
 

@@ -1,4 +1,5 @@
-<%@ page import="grails.converters.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
@@ -24,6 +25,11 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
     var fcConfig = {
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
@@ -45,6 +51,7 @@
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
         speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         ${(params?.version) ? ',version: ' + params?.version : ''}
         },
         here = document.location.href;
@@ -257,15 +264,24 @@
                 var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
 
                 if (mapFeatures && mapFeatures.features) {
+                    var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+                    var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
                     var mapOptions = {
+                        autoZIndex: false,
+                        preserveZIndex: true,
                         drawControl: false,
                         showReset: false,
                         draggableMarkers: false,
                         useMyLocation: false,
                         allowSearchLocationByAddress: false,
                         allowSearchRegionByAddress: false,
-                        wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
-                        wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
+                        addLayersControlHeading: true,
+                        baseLayer: baseLayersAndOverlays.baseLayer,
+                        otherLayers: baseLayersAndOverlays.otherLayers,
+                        overlays: baseLayersAndOverlays.overlays,
+                        overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                        wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                        wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
                     }
 
                     viewModel.siteMap = new ALA.Map("activitySiteMap", mapOptions);

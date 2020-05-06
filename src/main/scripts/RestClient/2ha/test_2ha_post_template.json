@@ -1,0 +1,564 @@
+{
+  "activityId": "",
+  "projectStage": "",
+  "mainTheme": "",
+  "type": "2-ha Track Plot Datasheet",
+  "projectId": "1d7e9a64-17eb-4b87-8f3c-ccaada60a031",
+  "siteId": "",
+  "outputs": [
+    {
+      "name": "2-ha Track Plot Method",
+      "outputId": "",
+      "data": {
+        "recordedBy": "Sathish Babu Sathyamoorthy",
+        "surveyDate": "2017-01-10T13:00:00Z",
+        "surveyStartTime": "11:04 AM",
+        "surveyFinishTime": "05:04 PM",
+        "zone": "49",
+        "easting": "2",
+        "northing": "2",
+        "relativeLocation": "4",
+        "distanceFromWater": "4",
+        "distanceFromRoad": "5",
+        "habitatType": "Sand dune",
+        "habitatTypeOther": "other habitat",
+        "vegTypeTable": [
+          {
+            "vegType": "Main vegetation overstorey",
+            "vegDescription": "Main vegetation overstorey",
+            "percentCover": "20"
+          },
+          {
+            "vegType": "Main vegetation understorey",
+            "vegDescription": "Main vegetation overstorey",
+            "percentCover": "30"
+          }
+        ],
+        "ephemeralVegPresent": "Present",
+        "timeSinceWeatherEvent": "3 hours",
+        "timeSinceFire": "2 hours",
+        "visibility": "Slight shadow",
+        "shadowLength": "4",
+        "trackingSurface": "2 - If present, you would be able to distinguish all of 3 plus fox, cat, rabbit, echidna, large reptiles and goannas",
+        "trackingSurfaceSuitability": "4",
+        "trackingSurfaceContinuity": "2 - Majority of sandy patches 1-3m in width",
+        "locationLatitude": -37.300275281344305,
+        "locationLongitude": 143.39218139648438,
+        "locationLatLonDisabled": false,
+        "locationCentroidLatitude": null,
+        "locationCentroidLongitude": null,
+        "locationSitesArray": [
+          {
+            "status": "active",
+            "lastUpdated": "2016-12-21T01:31:47Z",
+            "type": "",
+            "externalId": "",
+            "id": "5859db79e4b0dd5a8264b816",
+            "poi": [],
+            "projects": [
+              "1d7e9a64-17eb-4b87-8f3c-ccaada60a031"
+            ],
+            "geoIndex": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    117.87890631705521,
+                    -29.62694987955358
+                  ],
+                  [
+                    115.76953131705523,
+                    -27.465386892812965
+                  ],
+                  [
+                    116.20898444205523,
+                    -22.52879310885938
+                  ],
+                  [
+                    124.20703131705523,
+                    -20.319901096749916
+                  ],
+                  [
+                    133.52343756705523,
+                    -20.072441042371675
+                  ],
+                  [
+                    142.57617194205523,
+                    -21.714595680485054
+                  ],
+                  [
+                    145.30078131705523,
+                    -24.782743333572622
+                  ],
+                  [
+                    146.00390631705523,
+                    -29.24422748419558
+                  ],
+                  [
+                    145.30078131705523,
+                    -33.665838209662944
+                  ],
+                  [
+                    144.07031256705523,
+                    -36.541417545579485
+                  ],
+                  [
+                    141.08203131705523,
+                    -36.541417545579485
+                  ],
+                  [
+                    140.20312506705523,
+                    -35.11631266902153
+                  ],
+                  [
+                    138.6210938170552,
+                    -32.85743953998147
+                  ],
+                  [
+                    137.21484381705523,
+                    -31.593508064656056
+                  ],
+                  [
+                    133.43554694205523,
+                    -30.84187303206272
+                  ],
+                  [
+                    129.83203131705523,
+                    -28.937014549026667
+                  ],
+                  [
+                    126.05273444205521,
+                    -29.24422748419558
+                  ],
+                  [
+                    120.86718756705523,
+                    -30.84187303206272
+                  ],
+                  [
+                    117.87890631705521,
+                    -29.62694987955358
+                  ]
+                ]
+              ]
+            },
+            "area": "3377219.1751122787",
+            "siteId": "81c652fb-c885-4df2-819e-eadd49013a11",
+            "extent": {
+              "source": "drawn",
+              "geometry": {
+                "mvs": "Mallee with hummock grass",
+                "fid": "",
+                "other": [
+                  "RAMSAR wetland regions",
+                  "Directory of Important Wetlands",
+                  "NSW Local Land Services Regions",
+                  "National Native Title Register (NNTR, Determinations of Native Title) - boundaries and core attributes",
+                  "Great Eastern Ranges Initiative",
+                  "Indigenous Protected Areas 2013",
+                  "Indigenous Land Use Agreements"
+                ],
+                "centre": [
+                  "132.3051076478585",
+                  "-26.489612381048918"
+                ],
+                "state": [
+                  "Queensland (including Coastal Waters)",
+                  "Victoria (including Coastal Waters)",
+                  "South Australia (including Coastal Waters)",
+                  "New South Wales (including Coastal Waters)",
+                  "Northern Territory (including Coastal Waters)",
+                  "Western Australia (including Coastal Waters)"
+                ],
+                "layerName": "",
+                "type": "Polygon",
+                "datum": "",
+                "ibra": [
+                  "Central Ranges",
+                  "Great Sandy Desert",
+                  "Mulga Lands",
+                  "Coolgardie",
+                  "Mitchell Grass Downs",
+                  "Murray Darling Depression",
+                  "Broken Hill Complex",
+                  "Pilbara",
+                  "Simpson Strzelecki Dunefields",
+                  "Gascoyne",
+                  "Stony Plains",
+                  "Yalgoo",
+                  "Nullarbor",
+                  "Murchison",
+                  "Channel Country",
+                  "Finke",
+                  "Victorian Midlands",
+                  "Gawler",
+                  "Cobar Peneplain",
+                  "Darling Riverine Plains",
+                  "Great Victoria Desert",
+                  "Gibson Desert",
+                  "Flinders Lofty Block",
+                  "MacDonnell Ranges",
+                  "Mount Isa Inlier",
+                  "Davenport Murchison Ranges",
+                  "NSW South Western Slopes",
+                  "Burt Plain",
+                  "Gulf Plains",
+                  "Little Sandy Desert",
+                  "Riverina",
+                  "Tanami"
+                ],
+                "gerSubRegion": [
+                  "GER Central Victorial Biolinks",
+                  "GER Victorian BioLinks"
+                ],
+                "areaKmSq": 3377219.1751122787,
+                "nrm": [
+                  "South Australian Arid Lands",
+                  "Western",
+                  "Murray",
+                  "North Central",
+                  "Riverina",
+                  "Avon",
+                  "Alinytjara Wilurara",
+                  "Rangelands",
+                  "Desert Channels",
+                  "Northern and Yorke",
+                  "Northern Territory",
+                  "South East",
+                  "South West Queensland",
+                  "Southern Gulf",
+                  "Northern Agricultural",
+                  "Wimmera",
+                  "Mallee",
+                  "South Australian Murray Darling Basin"
+                ],
+                "bbox": "",
+                "name": "",
+                "uncertainty": "",
+                "coordinates": [
+                  [
+                    [
+                      117.87890631705521,
+                      -29.62694987955358
+                    ],
+                    [
+                      115.76953131705523,
+                      -27.465386892812965
+                    ],
+                    [
+                      116.20898444205523,
+                      -22.52879310885938
+                    ],
+                    [
+                      124.20703131705523,
+                      -20.319901096749916
+                    ],
+                    [
+                      133.52343756705523,
+                      -20.072441042371675
+                    ],
+                    [
+                      142.57617194205523,
+                      -21.714595680485054
+                    ],
+                    [
+                      145.30078131705523,
+                      -24.782743333572622
+                    ],
+                    [
+                      146.00390631705523,
+                      -29.24422748419558
+                    ],
+                    [
+                      145.30078131705523,
+                      -33.665838209662944
+                    ],
+                    [
+                      144.07031256705523,
+                      -36.541417545579485
+                    ],
+                    [
+                      141.08203131705523,
+                      -36.541417545579485
+                    ],
+                    [
+                      140.20312506705523,
+                      -35.11631266902153
+                    ],
+                    [
+                      138.6210938170552,
+                      -32.85743953998147
+                    ],
+                    [
+                      137.21484381705523,
+                      -31.593508064656056
+                    ],
+                    [
+                      133.43554694205523,
+                      -30.84187303206272
+                    ],
+                    [
+                      129.83203131705523,
+                      -28.937014549026667
+                    ],
+                    [
+                      126.05273444205521,
+                      -29.24422748419558
+                    ],
+                    [
+                      120.86718756705523,
+                      -30.84187303206272
+                    ],
+                    [
+                      117.87890631705521,
+                      -29.62694987955358
+                    ]
+                  ]
+                ],
+                "cmz": [
+                  "Eastern Australia woodlands",
+                  "South Eastern Australia mallee woodlands",
+                  "South Eastern Australia mixed temperate forests woodlands and grasslands",
+                  "Mitchell grasslands",
+                  "North Australian tropical savanna woodlands",
+                  "Naracoorte woodlands",
+                  "Eastern Australia mulga shrublands",
+                  "Arid shrublands and desert",
+                  "South Eastern Australia temperate woodlands"
+                ],
+                "elect": [
+                  "FARRER",
+                  "MURRAY",
+                  "O'CONNOR",
+                  "BARKER",
+                  "GREY",
+                  "KENNEDY",
+                  "LINGIARI",
+                  "MARANOA",
+                  "MALLEE",
+                  "PARKES",
+                  "DURACK"
+                ],
+                "precision": "",
+                "pid": 6645589,
+                "decimalLatitude": -28.30692929397558,
+                "mvg": "Mallee Woodlands and Shrublands",
+                "decimalLongitude": 130.88671881705523,
+                "locality": "South Australia 5690, Australia",
+                "lga": [
+                  "Coolgardie (S)",
+                  "Cue (S)",
+                  "Campaspe (S)",
+                  "Wentworth (A)",
+                  "Winton (S)",
+                  "Mount Magnet (S)",
+                  "Mount Marshall (S)",
+                  "MacDonnell (S)",
+                  "Goyder (DC)",
+                  "Diamantina (S)",
+                  "Murray (A)",
+                  "Hay (A)",
+                  "Gannawarra (S)",
+                  "Mildura (RC)",
+                  "Mid Murray (DC)",
+                  "Kalgoorlie/Boulder (C)",
+                  "Mount Remarkable (DC)",
+                  "Leonora (S)",
+                  "Maralinga Tjarutja (AC)",
+                  "Halls Creek (S)",
+                  "Broken Hill (C)",
+                  "Longreach (R)",
+                  "Menzies (S)",
+                  "Blackall Tambo (R)",
+                  "Karoonda East Murray (DC)",
+                  "Mount Isa (C)",
+                  "Murweh (S)",
+                  "Yalgoo (S)",
+                  "Orroroo/Carrieton (DC)",
+                  "Carrathool (A)",
+                  "Coober Pedy (DC)",
+                  "Roxby Downs (M)",
+                  "West Wimmera (S)",
+                  "Alice Springs (T)",
+                  "Boulia (S)",
+                  "Buloke (S)",
+                  "Murchison (S)",
+                  "Loxton Waikerie (DC)",
+                  "Hindmarsh (S)",
+                  "East Pilbara (S)",
+                  "Bourke (A)",
+                  "Berri and Barmera (DC)",
+                  "Conargo (A)",
+                  "Renmark Paringa (DC)",
+                  "Quilpie (S)",
+                  "Port Hedland (T)",
+                  "Paroo (S)",
+                  "Northern Grampians (S)",
+                  "Balranald (A)",
+                  "Wakool (A)",
+                  "Upper Gascoyne (S)",
+                  "Unincorporated NT",
+                  "Unincorporated NSW",
+                  "Unincorporated SA",
+                  "Swan Hill (RC)",
+                  "Anangu Pitjantjatjara (AC)",
+                  "Ashburton (S)",
+                  "Tatiara (DC)",
+                  "Cloncurry (S)",
+                  "Cobar (A)",
+                  "Central Desert (S)",
+                  "Central Darling (A)",
+                  "Yarriambiack (S)",
+                  "Ngaanyatjarraku (S)",
+                  "Horsham (RC)",
+                  "Sandstone (S)",
+                  "Loddon (S)",
+                  "Barkly (S)",
+                  "McKinlay (S)",
+                  "Peterborough (DC)",
+                  "Southern Mallee (DC)",
+                  "Wiluna (S)",
+                  "Yilgarn (S)",
+                  "Northern Areas (DC)",
+                  "Barcoo (S)",
+                  "Bulloo (S)",
+                  "Laverton (S)",
+                  "Flinders Ranges (DC)",
+                  "Meekatharra (S)"
+                ],
+                "aream2": 3415836980935.7207
+              }
+            },
+            "description": "",
+            "name": "Project area for Tracking Australia - arid wildlife track-based monitoring ",
+            "dateCreated": "2016-12-21T01:31:37Z",
+            "notes": "",
+            "isSciStarter": false
+          },
+          {
+            "id": "5859f729e4b06a05345935c4",
+            "projects": [
+              "1d7e9a64-17eb-4b87-8f3c-ccaada60a031"
+            ],
+            "siteId": "edfb4f53-0f0f-4c66-b061-ec3cd46701d7",
+            "extent": {
+              "source": "drawn",
+              "geometry": {
+                "elect": [
+                  "GREY"
+                ],
+                "areaKmSq": 716.591174973151,
+                "centre": [
+                  "130.93586082129195",
+                  "-29.227882722040555"
+                ],
+                "nrm": [
+                  "Alinytjara Wilurara"
+                ],
+                "state": [
+                  "South Australia (including Coastal Waters)"
+                ],
+                "pid": 6645592,
+                "type": "Polygon",
+                "ibra": [
+                  "Great Victoria Desert"
+                ],
+                "lga": [
+                  "Maralinga Tjarutja (AC)"
+                ],
+                "cmz": [
+                  "Arid shrublands and desert"
+                ],
+                "coordinates": [
+                  [
+                    [
+                      130.83398424088955,
+                      -29.098417042155983
+                    ],
+                    [
+                      131.04272447526452,
+                      -29.08881689864421
+                    ],
+                    [
+                      131.16357408463955,
+                      -29.251897470126483
+                    ],
+                    [
+                      130.94384752213955,
+                      -29.261482370672727
+                    ],
+                    [
+                      130.89990220963955,
+                      -29.433856792177696
+                    ],
+                    [
+                      130.79003892838955,
+                      -29.39557657252383
+                    ],
+                    [
+                      130.83398424088955,
+                      -29.098417042155983
+                    ]
+                  ]
+                ],
+                "aream2": 713991914.6546438
+              }
+            },
+            "status": "active",
+            "name": "My test site 1",
+            "lastUpdated": "2016-12-21T03:29:48Z",
+            "dateCreated": "2016-12-21T03:29:45Z",
+            "isSciStarter": false
+          }
+        ],
+        "locationLoading": false,
+        "locationMap": {
+          "DEFAULT_CENTRE": {
+            "lat": -28,
+            "lng": 134
+          }
+        },
+        "sightingEvidenceTable": [
+          {
+            "species": {
+              "name": "Rabbit (Oryctolagus cuniculus)",
+              "guid": "urn:lsid:biodiversity.org.au:afd.taxon:692effa3-b719-495f-a86f-ce89e2981652",
+              "scientificName": "Oryctolagus cuniculus",
+              "commonName": "Rabbit",
+              "outputSpeciesId": "1e6bb9c8-b242-44ee-a7c6-f9c9f7af78f0"
+            },
+            "tracksOnPlot": true,
+            "tracksAdjacent": true,
+            "animalObserved": true,
+            "diggingsObserved": true,
+            "scatsObserved": true,
+            "abundanceClass": "1 - Signs in all four quarters of plot",
+            "evidenceAgeClass": "1 - 1-2 days old",
+            "comments": "Comments"
+          }
+        ]
+      },
+      "outputNotCompleted": false,
+      "vegTypeTableTableDataUploadVisible": false,
+      "vegTypeTableTableDataUploadOptions": {
+        "url": "/bioActivity/extractDataFromExcelTemplate?pActivityId=0cc88290-caf9-4092-b5ab-024d7ce6c521&hub=ecoscience",
+        "uploadTemplateId": "vegTypeTabletemplate-upload",
+        "downloadTemplateId": "vegTypeTabletemplate-download",
+        "formData": {
+          "type": "2-ha Track Plot Method",
+          "listName": "vegTypeTable"
+        }
+      },
+      "appendTableRows": true,
+      "sightingEvidenceTableTableDataUploadVisible": false,
+      "sightingEvidenceTableTableDataUploadOptions": {
+        "url": "/bioActivity/extractDataFromExcelTemplate?pActivityId=0cc88290-caf9-4092-b5ab-024d7ce6c521&hub=ecoscience",
+        "uploadTemplateId": "sightingEvidenceTabletemplate-upload",
+        "downloadTemplateId": "sightingEvidenceTabletemplate-download",
+        "formData": {
+          "type": "2-ha Track Plot Method",
+          "listName": "sightingEvidenceTable"
+        }
+      }
+    }
+  ]
+}

@@ -22,14 +22,14 @@
 
             <div class="row-fluid controls-row">
                 <span class="label label-success"><g:message code="site.metadata.area"/></span> <span
-                    data-bind="text: site().extent().geometry().areaKmSq"></span>
+                    data-bind="html: displayAreaInReadableFormat"></span>
             </div>
             <!-- /ko -->
 
             <!-- ko if:site().extent().geometry().type() != 'pid' -->
             <div class="row-fluid controls-row" data-bind="visible: site().extent().geometry().areaKmSq">
                 <span class="label label-success"><g:message code="site.metadata.area"/></span> <span
-                    data-bind="text: site().extent().geometry().areaKmSq"></span>
+                    data-bind="html: displayAreaInReadableFormat"></span>
             </div>
 
             <div class="row-fluid controls-row gazProperties" data-bind="visible: site().extent().geometry().state">
@@ -127,6 +127,12 @@
                 <fc:textField data-bind="value: site().extent().geometry().datum" outerClass="span4" label="${message(code:'site.point.datum')}"
                               placeholder="WGS84" readonly="readonly"/>
             </div>
+
+            <div class="row-fluid  controls-row">
+                <button type="button" data-bind="click: refreshCoordinates"
+                        class="btn">Refresh Coordinates
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -194,8 +200,12 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         spatialWms: '${grailsApplication.config.spatial.geoserverUrl}',
         allowPointsOfInterest: allowPointsOfInterest,
         readonly: edit? true : false,
+        useMyLocation: ${showMyLocation ?: false},
+        allowSearchLocationByAddress: ${showAllowSearchLocationByAddress ?: false},
+        allowSearchRegionByAddress: ${showAllowSearchRegionByAddress ?: true},
         drawOptions: {
-            polyline: false
+            polyline: ${showLine ?: false},
+            marker:  ${showMarker ?: false}
         }
     };
 
@@ -203,6 +213,7 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         siteId: "${site?.siteId}",
         name : "${site?.name?.encodeAsJavaScript()}",
         externalId : "${site?.externalId}",
+        catchment: "${site?.catchment}",
         context : "${site?.context}",
         type : "${site?.type}",
         extent: ${site?.extent ?: 'null'},

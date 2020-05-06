@@ -1,4 +1,4 @@
-<%@ page import="org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
