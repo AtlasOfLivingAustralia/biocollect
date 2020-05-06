@@ -62,6 +62,9 @@ function ProjectFinder(config) {
 
             self.doSearch();
         }
+        this.resetPageOffSet = function () {
+            self.resetPageOffSet();
+        }
         this.getFacetTerms = function (facets) {
             return self.getFacetTerms(facets);
         }
@@ -205,10 +208,20 @@ function ProjectFinder(config) {
 
     function initialiseMap() {
         if (!mapInitialised) {
+            var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+            var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
             spatialFilter = new ALA.Map("mapFilter", {
-                wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
-                wmsFeatureUrl: fcConfig.featureService + "?featureId=",
-                myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location"
+                autoZIndex: false,
+                preserveZIndex: true,
+                addLayersControlHeading: true,
+                allowSearchRegionByAddress: false,
+                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
+                wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location",
+                baseLayer: baseLayersAndOverlays.baseLayer,
+                otherLayers: baseLayersAndOverlays.otherLayers,
+                overlays: baseLayersAndOverlays.overlays,
+                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault
             });
 
             var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService, fcConfig.regionListUrl);
@@ -270,8 +283,103 @@ function ProjectFinder(config) {
         var sortBy = getActiveButtonValues($("#pt-sort"));
         perPage = parseInt(getActiveButtonValues($("#pt-per-page"))[0]);
 
-        pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
-            fq.push(facet.getQueryText())
+        var queryString = '';
+
+      //  if (pageWindow.filterViewModel.redefineFacet()) {
+
+            var selectedList = pageWindow.filterViewModel.selectedFacets();
+            var origFacetList = pageWindow.filterViewModel.origSelectedFacet();
+
+            // Separate AND from OR condtion
+            var uniqueFacetTerm = [];
+            selectedList.forEach(function (item) {
+                if (item.facet.type == 'terms') {
+                    if (uniqueFacetTerm.indexOf(item.facet.name()) == -1) {
+                        uniqueFacetTerm.push(item.facet.name())
+                    }
+                }
+            });
+            var dupFacet = {};
+            uniqueFacetTerm.forEach(function (name) {
+                var tempList = [];
+                var mixedTempList = [];
+                selectedList.forEach(function(item) {
+                    // if this facet is part of the original OR condition, ignore it
+                    var found = origFacetList.find(function (orig) {
+                        //if (item.facet.name() == orig.facet.name() && item.term() == orig.term()) {
+                        if (item.type == 'term' && item.id() == orig.id()) {
+                            return true;
+                        }
+                    });
+                    if (!found) {
+                        // if the facet name exist but not term, treat the others as AND condition
+                        var nameFound = origFacetList.find(function (orig) {
+                            if (item.facet.name() == orig.facet.name()) {
+                                return true;
+                            }
+                        });
+                        if (item.facet.name() == name) {
+                            if (nameFound) {
+                                mixedTempList.push(item);
+                            } else
+                                tempList.push(item);
+                        }
+                    }
+                });
+                if (tempList.length > 1) {
+                    dupFacet[name] = tempList;
+                } else if (mixedTempList.length > 0) {
+                    dupFacet[name] = mixedTempList;
+                }
+            });
+
+            for (var term in dupFacet) {
+                var andFacetTermList = [];
+                var facetList = dupFacet[term];
+                facetList.forEach(function (item) {
+                    selectedList = selectedList.filter(function(element) {
+                        return !(element.type == "term" && element.id() == item.id())
+                    });
+                    andFacetTermList.push(item.exclude? '-"' + item.term() + '"': '"' + item.term() + '"');
+                });
+
+
+                var termStrList = '';
+                if (andFacetTermList.length > 0) {
+                    termStrList = '(' + andFacetTermList.join(' AND ') + ')';
+                }
+
+                if (termStrList.length > 0) {
+                    if (queryString.length > 0) {
+                        queryString = queryString +  ' AND ';
+                    }
+                    queryString = queryString + term + ':' + termStrList;
+                }
+            }
+
+            selectedList.forEach(function (facet) {
+                fq.push(facet.getQueryText())
+            });
+
+      /*  } else {
+            pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
+                fq.push(facet.getQueryText())
+            });
+        }*/
+
+        var query = this.getQuery(true);
+        if (query.length > 0) {
+            query = query + ((queryString.length > 0)? ' AND ' + queryString: "");
+        } else {
+            query = queryString;
+        }
+
+        var queryList = [];
+
+        var selectedFacetList = pageWindow.filterViewModel.selectedFacets();
+
+        selectedFacetList.forEach(function (facet) {
+            queryList.push(facet.getQueryText())
         });
 
         var map = {
@@ -289,7 +397,9 @@ function ProjectFinder(config) {
             skipDefaultFilters:fcConfig.showAllProjects,
             isWorldWide: isWorldWide,
             projectId: selectedProjectId,
-            q: this.getQuery(true)
+            q: query,
+            queryList: queryList,
+            queryText: this.getQuery(true)
         };
 
         map.max =  perPage // Page size
@@ -351,6 +461,9 @@ function ProjectFinder(config) {
             success: function (data) {
                 var projectVMs = [], facets;
                 total = data.total;
+                if (total == 0 && pageWindow.filterViewModel.redefineFacet() && pageWindow.filterViewModel.origSelectedFacet().length > 0) {
+                    bootbox.alert ("There are no projects that fulfil the filter condition. Please click 'Clear all' to redefine the search criteria. ")
+                }
                 $.each(data.projects, function (i, project) {
                     projectVMs.push(new ProjectViewModel(project, false));
                 });
@@ -387,6 +500,10 @@ function ProjectFinder(config) {
         }
     }
 
+    this.resetPageOffSet = function() {
+        offset = 0;
+    };
+
     /**
      * this is the function calling server with the latest query.
      */
@@ -420,6 +537,8 @@ function ProjectFinder(config) {
         geoSearch = {};
         refreshGeofilterButtons();
         pageWindow.filterViewModel.selectedFacets.removeAll();
+        pageWindow.filterViewModel.origSelectedFacet.removeAll();
+        pageWindow.filterViewModel.redefineFacet(false);
     }
     /*************************************************\
      *  Show filtered projects on current page
@@ -472,7 +591,7 @@ function ProjectFinder(config) {
 
     this.paginationInfo = function () {
         if (total > 0) {
-            var start = offset + 1;
+            var start = parseInt(offset) + 1;
             var end = Math.min(total, start + perPage - 1);
             var message = fcConfig.paginationMessage || 'Showing XXXX to YYYY of ZZZZ projects';
             return message.replace('XXXX', start).replace('YYYY', end).replace('ZZZZ', total);
@@ -529,20 +648,32 @@ function ProjectFinder(config) {
      * @param features
      */
     self.doMapSearch = function (projects){
-
+        var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+        var baseLayerOverlayConfig = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
         var mapOptions = {
+            autoZIndex: false,
+            preserveZIndex: true,
+            addLayersControlHeading: true,
             drawControl: false,
             showReset: false,
             draggableMarkers: false,
             useMyLocation: false,
             allowSearchLocationByAddress: false,
             allowSearchRegionByAddress: false,
+            defaultLayersControl: true,
+            trackWindowHeight: true,
+            wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
+            wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+            baseLayer: baseLayerOverlayConfig.baseLayer,
+            otherLayers: baseLayerOverlayConfig.otherLayers,
+            overlays: baseLayerOverlayConfig.overlays,
+            overlayLayersSelectedByDefault: baseLayerOverlayConfig.overlayLayersSelectedByDefault
         };
 
         if(!self.pfMap){
             self.pfMap = new ALA.Map("pfMap", mapOptions);
-
-            self.pfMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", self.pfMap.fitBounds, "bottomleft");
+            Biocollect.MapUtilities.intersectOverlaysAndShowOnPopup(self.pfMap);
+            self.pfMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", self.pfMap.fitBounds, "bottomright");
         }
 
         var features = [];
@@ -761,6 +892,7 @@ function ProjectFinder(config) {
 
     $('#pt-search-link').click(function () {
         self.setTextSearchSettings();
+        self.resetPageOffSet();
         self.doSearch();
     });
 
@@ -844,7 +976,7 @@ function ProjectFinder(config) {
         var hash = [];
         for (var param in params) {
             if (params.hasOwnProperty(param) && params[param] && params[param] != '') {
-                if ((param != 'geoSearchJSON') && (param != 'fq')) {
+                if ((param != 'geoSearchJSON') && (param != 'fq') && (param != 'queryList')) {
                     hash.push(param + "=" + params[param]);
                 }
             }
@@ -856,7 +988,13 @@ function ProjectFinder(config) {
 
         if (!_.isEmpty(params.fq)) {
             params.fq.forEach(function (filter) {
-                hash.push('fq=' + filter)
+                hash.push('fq=' + encodeURIComponent (filter))
+            })
+        }
+
+        if (!_.isEmpty(params.queryList)) {
+            params.queryList.forEach(function (filter) {
+                hash.push('queryList=' + encodeURIComponent (filter))
             })
         }
 
@@ -892,7 +1030,8 @@ function ProjectFinder(config) {
 
         params.q = self.santitizeQuery(params.q);
         setGeoSearch(params.geoSearch);
-        pageWindow.filterViewModel.setFilterQuery(params.fq);
+      //  pageWindow.filterViewModel.setFilterQuery(params.fq);
+        pageWindow.filterViewModel.setFilterQuery(params.queryList);
         offset = params.offset || offset;
         selectedProjectId = params.projectId;
 
@@ -906,7 +1045,7 @@ function ProjectFinder(config) {
         checkButton($("#pt-per-page"), params.max || '20');
         checkButton($("#pt-aus-world"), params.isWorldWide || 'false');
         
-        $('#pt-search').val(params.q).focus();
+        $('#pt-search').val(params.queryText).focus();
         pageWindow.filterViewModel.switchOffSearch(false);
     }
 

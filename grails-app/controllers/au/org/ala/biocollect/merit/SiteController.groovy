@@ -4,8 +4,7 @@ import au.org.ala.web.AuthService
 import grails.converters.JSON
 import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
-
+import grails.web.servlet.mvc.GrailsParameterMap
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
 
@@ -84,10 +83,12 @@ class SiteController {
             }
             //siteService.injectLocationMetadata(site)
             def user = userService.getUser()
+            def mapFeatures = siteService.getMapFeatures(site)
+            println mapFeatures
 
             def result = [site               : site,
              //activities: activityService.activitiesForProject(id),
-             mapFeatures        : siteService.getMapFeatures(site),
+             mapFeatures        : mapFeatures,
              isSiteStarredByUser: userService.isSiteStarredByUser(user?.userId ?: "0", site.siteId)?.isSiteStarredByUser,
              user               : user
             ]
@@ -147,12 +148,10 @@ class SiteController {
                 return result as JSON
             }
         } catch (SocketTimeoutException sTimeout){
-            log.error(sTimeout.message)
-            log.error(sTimeout.stackTrace)
+            log.error (sTimeout.message, sTimeout)
             return {text: 'Webserive call timed out'; status: HttpStatus.SC_REQUEST_TIMEOUT} as JSON;
         } catch (Exception e){
-            log.error(e.message)
-            log.error(e.stackTrace)
+            log.error (e.message, e)
             return {text: 'Internal server error'; status: HttpStatus.SC_INTERNAL_SERVER_ERROR} as JSON;
         }
     }
@@ -167,7 +166,7 @@ class SiteController {
                 response.sendError(404, "Couldn't find project activity $id")
                 return
             }
-            log.info(pActivity.sites)
+            log.info(pActivity.sites.toString())
             render pActivity.sites as JSON
 
         } else if (params.entityType == "project") {
@@ -210,13 +209,25 @@ class SiteController {
             return
         }
 
-        def site = siteService.get(siteId, [raw:'true'])
-        def projects = site.projects
-        projects.remove(projectId)
+        def result
+        if (siteService.canRemoveProjectFromSite(siteId, projectId)) {
+            def site = siteService.get(siteId, [raw:'true'])
+            def projects = site.projects
+            projects.remove(projectId)
+            siteService.update(siteId, [projects:projects])
 
-        def result = siteService.update(siteId, [projects:projects])
-        render result as JSON
+            // is site zombie i.e. not associated with a project? Delete if yes.
+            if (siteService.canDeleteSite(siteId)) {
+                def statusCode = siteService.delete(siteId)
+                result = [statusCode: statusCode, message: "Deleted site!"]
+            } else {
+                result = [statusCode: HttpStatus.SC_OK, message: "Updated site!"]
+            }
+        } else {
+            result = [error: "Cannot delete site as it is associated with entities.", statusCode: HttpStatus.SC_FORBIDDEN]
+        }
 
+        render text: result as JSON, status: result.statusCode
     }
 
     def ajaxDelete(String id) {
@@ -241,12 +252,10 @@ class SiteController {
                 render result as JSON
             }
         } catch (SocketTimeoutException sTimeout){
-            log.error(sTimeout.message)
-            log.error(sTimeout.stackTrace)
+            log.error (sTimeout.message, sTimeout)
             render(text: 'Webserive call timed out', status: HttpStatus.SC_REQUEST_TIMEOUT);
         } catch (Exception e){
-            log.error(e.message)
-            log.error(e.stackTrace)
+            log.error (e.message, e)
             render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -263,7 +272,7 @@ class SiteController {
                 render (text: response.error, status:  HttpStatus.SC_INTERNAL_SERVER_ERROR)
             }
         } catch (Exception e){
-            log.error(e.message, e)
+            log.error (e.message, e)
             render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -279,7 +288,7 @@ class SiteController {
                 render (text: response.error, status:  HttpStatus.SC_INTERNAL_SERVER_ERROR)
             }
         } catch (Exception e){
-            log.error(e.message, e)
+            log.error (e.message, e)
             render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -482,9 +491,10 @@ class SiteController {
                 values[k] = v //reMarshallRepeatingObjects(v);
             }
         }
-        log.debug(values as JSON).toString()
+
         //Compatible with previous records without visibility field
         boolean privateSite = values['visibility'] ? (values['visibility'] == 'private' ? true : false) : false
+
 
         if(privateSite){
             //Do not check permission if site is private

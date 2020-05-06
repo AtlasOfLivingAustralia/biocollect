@@ -450,6 +450,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
     self.imageUrl = ko.observable(project.urlImage);
     self.baseLayer = ko.observable(project.baseLayer || '');
+    self.mapLayersConfig = project.mapLayersConfig || {};
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
     self.alaHarvest = ko.observable(project.alaHarvest ? true : false);
     self.industries = ko.observableArray(project.industries);

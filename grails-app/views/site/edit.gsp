@@ -1,4 +1,5 @@
-<%@ page import="net.sf.json.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,6 +39,11 @@
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
@@ -58,6 +64,7 @@
         sitePageUrl : "${createLink(action: 'index', id: site?.siteId)}",
         homePageUrl : "${createLink(controller: 'home', action: 'index')}",
         ajaxUpdateUrl: "${createLink(action: 'ajaxUpdate', id: site?.siteId)}",
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}"
         },
         here = window.location.href;
@@ -68,11 +75,12 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 <body>
     <div class="container-fluid validationEngineContainer" id="validation-container">
         <bs:form action="update" inline="true">
-            <g:render template="siteDetails" />
+            <g:render template="siteDetails" model="${[showLine: true]}"/>
             <div class="row-fluid">
                 <div class="form-actions span12">
                     <button type="button" id="save" class="btn btn-primary">Save changes</button>

@@ -404,7 +404,7 @@ initialiseOutputViewModel = function(outputViewModelName, dataModel, elementId, 
         documents:activity.documents,
         site:config.site,
         pActivity: config.project,
-        allowAdditionalSurveySites: config.allowAdditionalSurveySites
+        addCreatedSiteToListOfSelectedSites: config.addCreatedSiteToListOfSelectedSites
     };
     ecodata.forms[viewModelInstance] = new ecodata.forms[outputViewModelName](output, dataModel, context, config);
     ecodata.forms[viewModelInstance].initialise(output.data);

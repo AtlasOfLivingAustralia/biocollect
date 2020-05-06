@@ -5,7 +5,7 @@ import au.org.ala.biocollect.merit.ProjectService
 import au.org.ala.biocollect.merit.SearchService
 import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.merit.WebService
-import org.codehaus.groovy.grails.commons.GrailsApplication
+import grails.core.GrailsApplication
 
 class OrganisationService {
 

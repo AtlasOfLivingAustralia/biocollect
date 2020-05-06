@@ -1,6 +1,7 @@
 package au.org.ala.biocollect
 
-import grails.plugin.cache.Cacheable
+//import grails.plugin.cache.Cacheable
+import org.springframework.cache.annotation.Cacheable
 import groovy.json.JsonSlurper
 
 class VocabService {

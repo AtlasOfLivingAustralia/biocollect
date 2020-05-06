@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="grails.converters.JSON" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +11,6 @@
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
 
-    <script src="${grailsApplication.config.google.maps.url}"></script>
     <asset:script type="text/javascript">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -46,6 +46,11 @@
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
         spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
         spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
@@ -104,7 +109,16 @@
         project: ${((project?: [:]) as JSON).toString()},
         commonKeysUrl: "${createLink(controller: 'search', action: 'getCommonKeys')}",
         searchBieUrl: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
-        defaultSpeciesConfiguration: ${(grailsApplication.config.speciesConfiguration.default as JSON).toString()}
+        defaultSpeciesConfiguration: ${(grailsApplication.config.speciesConfiguration.default as JSON).toString()},
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
+        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}"
         },
         here = window.location.href;
 
@@ -124,7 +138,7 @@
             }
         </style>
     <![endif]-->
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.google.maps.url}"></script>
     <asset:stylesheet src="projects-manifest.css"/>
     <asset:javascript src="common.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
@@ -137,9 +151,9 @@
 <bc:koLoading>
     <g:render template="/shared/backToSearchResults"/>
     <g:render template="banner"/>
-    <div class="container-fluid">
+    <div class="container-fluid" id="worksProjectContent">
         <div id="project-results-placeholder"></div>
-        <g:render template="../shared/flashScopeMessage"/>
+        <g:render template="/shared/flashScopeMessage"/>
 
         <g:if test="${params?.version}">
             <div class="well">
@@ -161,7 +175,7 @@
    </div>
 </bc:koLoading>
 
-<asset:script type="text/javascript">
+<asset:script type="text/javascript" asset-defer="true">
         $(function () {
             // set project tab selection if a 'tab' parameter is set
             var projectTab = getUrlParameterValue('tab');
@@ -390,6 +404,6 @@
     }
 
 </asset:script>
-
+<asset:deferredScripts/>
 </body>
 </html>

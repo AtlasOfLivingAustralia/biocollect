@@ -1,4 +1,5 @@
-<%@ page import="au.org.ala.biocollect.merit.ActivityService; grails.converters.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<%@ page import="au.org.ala.biocollect.merit.ActivityService; grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
@@ -40,6 +41,7 @@
         searchBieUrl: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         project:${fc.modelAsJavascript(model:project)},
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
         sites: ${fc.modelAsJavascript(model:project?.sites)}
         },
         here = document.location.href;

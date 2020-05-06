@@ -2,23 +2,28 @@ package au.org.ala.biocollect.merit
 
 import groovy.json.JsonSlurper
 import org.apache.commons.lang.StringUtils
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
-
-import javax.annotation.PostConstruct
+import grails.web.servlet.mvc.GrailsParameterMap
 import javax.servlet.http.HttpServletResponse
 /**
  * Service for ElasticSearch running on ecodata
  */
 class SearchService {
+
     def webService, commonService, cacheService, metadataService
     SettingService settingService
     def grailsApplication
-    def elasticBaseUrl
 
-    @PostConstruct
-    private void init() {
-        elasticBaseUrl = grailsApplication.config.ecodata.service.url + '/search/elastic'
+    String getElasticSearchBaseUrl() {
+        return grailsApplication.config.getProperty("ecodata.service.url") + '/search'
     }
+
+    // TODO: Setting up elasticsearch search base url in SearchService init doesn't work sometimes as it depends on the order of ConfigService being run in bootstrap init
+ /*
+    @PostConstruct
+    void init() {
+       // elasticSearchBaseUrl = grailsApplication.config.getProperty ("ecodata.service.url" + '/search/elastic')
+        elasticSearchBaseUrl = grailsApplication.config.getProperty ("ecodata.service.url") + '/search'
+    }*/
 
     def addDefaultFacetQuery(params) {
         def defaultFacetQuery = SettingService.getHubConfig().defaultFacetQuery
@@ -36,7 +41,8 @@ class SearchService {
         params.query = params.query?:"*:*"
         params.highlight = params.highlight?:true
         params.flimit = 999
-        def url = elasticBaseUrl + commonService.buildUrlParamsFromMap(params)
+        String url = "${elasticSearchBaseUrl}/elastic" + commonService.buildUrlParamsFromMap(params)
+       // def url = elasticBaseUrl + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url)
     }
@@ -49,7 +55,8 @@ class SearchService {
         params.offset = 0
         params.query = "geo.loc.lat:*"
         params.facets = "stateFacet,nrmFacet,lgaFacet,mvgFacet"
-        def url = elasticBaseUrl + commonService.buildUrlParamsFromMap(params)
+        String url = "${elasticSearchBaseUrl}/elastic" + commonService.buildUrlParamsFromMap(params)
+       // def url = elasticBaseUrl + commonService.buildUrlParamsFromMap(params)
         log.debug "allGeoPoints - $url with $params"
         webService.getJson(url)
     }
@@ -68,7 +75,8 @@ class SearchService {
 
         params.facets = params.facets?:"statesFacet,lgasFacet,nrmsFacet,organisationFacet,mvgsFacet"
         //def url = elasticBaseUrl + commonService.buildUrlParamsFromMap(params)
-        def url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
+        String url = "${elasticSearchBaseUrl}/elasticHome" + commonService.buildUrlParamsFromMap(params)
+      //  def url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url)
     }
@@ -83,7 +91,8 @@ class SearchService {
         if (!skipDefaultFacetQuery) {
             addDefaultFacetQuery(params)
         }
-        String url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
+        String url = "${elasticSearchBaseUrl}/elasticHome" + commonService.buildUrlParamsFromMap(params)
+        //String url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url)
     }
@@ -93,7 +102,8 @@ class SearchService {
     }
 
     Map searchProjectActivity(GrailsParameterMap params, String q = null){
-        String url = grailsApplication.config.ecodata.service.url + '/search/elasticProjectActivity' + commonService.buildUrlParamsFromMap(params)
+       // String url = grailsApplication.config.ecodata.service.url + '/search/elasticProjectActivity' + commonService.buildUrlParamsFromMap(params)
+        String url = "${elasticSearchBaseUrl}/elasticProjectActivity" + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url, null, true)
     }
@@ -106,7 +116,8 @@ class SearchService {
      * @throws Exception
      */
     Map searchForSites(GrailsParameterMap params) throws SocketTimeoutException, Exception{
-        String url = grailsApplication.config.ecodata.service.url + '/search/elasticPost'
+        //String url = grailsApplication.config.ecodata.service.url + '/search/elasticPost'
+        String url = "${elasticSearchBaseUrl}/elasticPost"
         log.debug "url = $url"
         Map response = webService.doPost(url, params)
         if(response.error){
@@ -151,7 +162,7 @@ class SearchService {
             }
         }
 
-        def url = grailsApplication.config.ecodata.service.url + '/search/elasticGeo' + commonService.buildUrlParamsFromMap(params)
+        def url = "${elasticSearchBaseUrl}/elasticGeo" + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url)
     }
@@ -165,7 +176,7 @@ class SearchService {
 //        params.query = "docType:site"
         params.fq = "docType:site"
         //def url = elasticBaseUrl + commonService.buildUrlParamsFromMap(params)
-        def url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
+        def url = "${elasticSearchBaseUrl}/elasticHome" + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url)
     }
@@ -181,7 +192,7 @@ class SearchService {
 
         addDefaultFacetQuery(params)
 
-        def url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
+        def url = "${elasticSearchBaseUrl}/elasticHome" + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         def jsonstring = webService.get(url)
         try {
@@ -207,7 +218,7 @@ class SearchService {
             def idList = ids.tokenize(",")
             params.query = "_id:" + idList.join(" OR _id:")
             params.facets = "stateFacet,nrmFacet,lgaFacet,mvgFacet"
-            def url = grailsApplication.config.ecodata.service.url + '/search/elasticPost'
+            def url = "${elasticSearchBaseUrl}/elasticPost"
             webService.doPost(url, params)
         } else if (params.query) {
             def url = elasticBaseUrl + commonService.buildUrlParamsFromMap(params)
@@ -222,7 +233,7 @@ class SearchService {
         cacheService.get("dashboard-"+params, {
             addDefaultFacetQuery(params)
             params.query = 'docType:project'
-            def url = grailsApplication.config.ecodata.service.url + '/search/dashboardReport' + commonService.buildUrlParamsFromMap(params)
+            def url = "${elasticSearchBaseUrl}/dashboardReport" + commonService.buildUrlParamsFromMap(params)
             webService.getJson(url, 1200000)
         })
 
@@ -233,7 +244,7 @@ class SearchService {
         cacheService.get("dashboard-"+params, {
             addDefaultFacetQuery(params)
             params.query = 'docType:project'
-            def url = grailsApplication.config.ecodata.service.url + '/search/report' + commonService.buildUrlParamsFromMap(params)
+            def url = "${elasticSearchBaseUrl}/report" + commonService.buildUrlParamsFromMap(params)
             webService.getJson(url, 1200000)
         })
     }

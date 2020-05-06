@@ -49,7 +49,12 @@ Biocollect.SiteDisplay = function() {
     self.initialiseMap = function(features) {
 
         if(!self.alaMap) {
+            var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+            var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
             var mapOptions = {
+                autoZIndex: false,
+                preserveZIndex: true,
+                addLayersControlHeading: true,
                 drawControl: false,
                 singleMarker: false,
                 singleDraw: false,
@@ -59,13 +64,17 @@ Biocollect.SiteDisplay = function() {
                 draggableMarkers: false,
                 showReset: false,
                 zoomToObject: true,
-                wmsLayerUrl: fcConfig.spatialWms + "/wms/reflect?",
-                wmsFeatureUrl: fcConfig.featureService + "?featureId="
+                baseLayer: baseLayersAndOverlays.baseLayer,
+                otherLayers: baseLayersAndOverlays.otherLayers,
+                overlays: baseLayersAndOverlays.overlays,
+                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
             };
 
             self.alaMap = new ALA.Map("siteMap", mapOptions);
 
-            self.alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", self.alaMap.fitBounds, "bottomleft");
+            self.alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", self.alaMap.fitBounds, "bottomright");
         } else {
             self.alaMap.resetMap()
         }

@@ -1,4 +1,5 @@
-<%@ page import="grails.converters.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
@@ -21,6 +22,11 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
     var fcConfig = {
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
@@ -42,6 +48,7 @@
         activityDataTableUploadUrl: "${createLink(controller:'bioActivity', action:'extractDataFromExcelTemplate', params:[pActivityId:pActivity.projectActivityId])}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}"
         },
         here = document.location.href;

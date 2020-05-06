@@ -1,0 +1,47 @@
+{
+  "activityId": "",
+  "projectStage": "",
+  "mainTheme": "",
+  "type": "Goanna Watch - Discovery Circle",
+  "projectId": "dc147397-82c0-4754-854f-8014b8d0d470",
+  "siteId": "",
+  "outputs": [
+    {
+      "name": "Goanna Watch - Discovery Circle",
+      "outputId": "",
+      "data": {
+        "species": {
+          "name": "Varanus giganteus (Perentie)",
+          "guid": "urn:lsid:biodiversity.org.au:afd.taxon:bc745220-f67c-41e7-b287-c4134bcdb1fb",
+          "scientificName": "Varanus giganteus",
+          "commonName": "Perentie"
+        },
+        "sightingPhoto": [
+        ],
+        "surveyStartDate": "",
+        "surveyStartTime": "",
+        "lifeStatus": "",
+        "observedBehaviour": "",
+        "fullLengthInMetresClassRange": "",
+        "distinguishingTraitsOnTail": "",
+        "distinguishingTraitsOnFace": "",
+        "distinguishingTraitsOnJaw": "",
+        "identificationConfidence": "",
+        "notes": "",
+        "individualCount": "",
+        "comments": "",
+        "recordedBy": "",
+        "verifiedBy": "",
+        "locationAccuracy": null,
+        "location": null,
+        "locationLatitude": 0,
+        "locationLongitude": 0,
+        "locationCentroidLatitude": null,
+        "locationCentroidLongitude": null,
+        "nearestLocationName": "",
+        "landHolderStatus": ""
+      },
+      "outputNotCompleted": false
+    }
+  ]
+}

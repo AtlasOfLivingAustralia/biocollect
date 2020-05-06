@@ -6,8 +6,8 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
     self.projectId = projectId;
     self.projects = [projectId];
     self.currentSearch = ko.observable('');
-    self.myFavourites = ko.observable(false);
     self.sites = ko.observableArray([]);
+    self.loading = ko.observable(true);
     self.matchingSiteCount = ko.observable(0);
     self.currentProjectSites = ko.observableArray(currentProjectSites);
 
@@ -15,8 +15,13 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
     self.totalPages = ko.observable();
     self.perPage = 10;
     self.pagination = new PaginationViewModel({}, self);
-
+    var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+    var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
     var mapOptions = {
+        autoZIndex: false,
+        preserveZIndex: true,
+        addLayersControlHeading: true,
+        trackWindowHeight: true,
         drawControl: false,
         singleMarker: false,
         useMyLocation: false,
@@ -25,8 +30,12 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
         draggableMarkers: false,
         showReset: false,
         maxZoom: 100,
-        wmsLayerUrl: config.spatialWms + "/wms/reflect?",
-        wmsFeatureUrl: config.featureService + "?featureId="
+        baseLayer: baseLayersAndOverlays.baseLayer,
+        otherLayers: baseLayersAndOverlays.otherLayers,
+        overlays: baseLayersAndOverlays.overlays,
+        overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+        wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+        wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
     };
 
     self.map = new ALA.Map("siteMap", mapOptions);
@@ -107,29 +116,23 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
         var query = self.currentSearch();
         var max = self.pagination.resultsPerPage();
         var newOffset = offset;
-        var myFavourites = self.myFavourites();
-        queryForSites(query, max, newOffset, myFavourites, null);
+        queryForSites(query, max, newOffset, null);
     }
 
-    self.toggleMyFavourites = function () {
-        self.myFavourites(!self.myFavourites());
-        self.searchSites();
-    }
-
-    function queryForSites(query, max, offset, myFavourites, callbackFcn) {
+    function queryForSites(query, max, offset, callbackFcn) {
+        self.loading(true);
         $.ajax({
-            url: self.config.siteQueryUrl + query + "&max=" + max + "&offset=" + offset+"&myFavourites="+myFavourites,
+            url: self.config.siteQueryUrl + query + "&max=" + max + "&offset=" + offset,
             type: 'GET',
             contentType: 'application/json',
             success: function (data) {
+                self.loading(false);
                 self.sites.removeAll();
                 self.matchingSiteCount(data.hits.total);
 
                 $.each(data.hits.hits, function (idx, hit) {
                     var isProjectSite = ($.inArray(hit._source.siteId, self.currentProjectSites()) >= 0 );
                     hit._source.isProjectSite = ko.observable(isProjectSite);
-                    console.log(JSON.stringify(hit, undefined, 2))
-                    console.log("----------")
                     self.sites.push(hit._source);
                 });
 
@@ -139,6 +142,7 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
                 callbackFcn && callbackFcn(data);
             },
             error: function () {
+                self.loading(false);
                 alert('There was a problem searching for sites.');
             }
         });

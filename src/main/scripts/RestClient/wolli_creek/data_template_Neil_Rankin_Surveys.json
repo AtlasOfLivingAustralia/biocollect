@@ -1,0 +1,42 @@
+{
+  "activityId": "",
+  "projectStage": "",
+  "mainTheme": "",
+  "type": "Wolli Creek Birdos - Neil Rankin observations",
+  "projectId": "abdd9f05-a757-420b-85a6-3e8ae31c2d4f",
+  "siteId": "",
+  "outputs": [
+    {
+      "name": "Wolli Ck - Rankin observations",
+      "outputId": "",
+      "data": {
+        "surveyType": "",
+        "raouNumber": "1",
+        "species": {
+          "name": "",
+          "guid": "",
+          "scientificName": "",
+          "commonName": "",
+          "outputSpeciesId": ""
+        },
+        "individualCount": "",
+        "surveyStartDate": "",
+        "surveyFinishDate": "",
+        "bookNumber": "",
+        "notes": "",
+        "recordedBy": "",
+        "locationAccuracy": null,
+        "location": "",
+        "locationLatitude": null,
+        "locationLongitude": null,
+        "locationCentroidLatitude": null,
+        "locationCentroidLongitude": null
+      },
+      "outputNotCompleted": false,
+      "selectFromSitesOnly": false,
+      "checkMapInfo": {
+        "validation": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "pActivityId": "ed152222-d29b-4816-afda-5aedc1b11f98",
+  "site": {
+    "name": "Private site for survey: Blackberry rust",
+    "visibility": "private",
+    "projects": [
+      "ef09ff0d-2af2-4c58-bee7-3198d4f6db4f"
+    ],
+    "extent": {
+      "geometry": {
+        "centre": [
+          136.58507823944092,
+          -28.310023107055127
+        ],
+        "type": "Point",
+        "areaKmSq": 0,
+        "coordinates": [
+          136.58507823944092,
+          -28.310023107055127
+        ]
+      },
+      "source": "Point"
+    },
+    "asyncUpdate": true
+  }
+}

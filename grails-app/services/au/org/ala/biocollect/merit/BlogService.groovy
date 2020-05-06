@@ -1,7 +1,7 @@
 package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
-import org.codehaus.groovy.grails.web.json.JSONArray
+import org.grails.web.json.JSONArray
 
 class BlogService {
 

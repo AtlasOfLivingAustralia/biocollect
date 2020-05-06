@@ -1,4 +1,5 @@
 <%@ page import="grails.converters.JSON; au.org.ala.biocollect.merit.SettingPageType" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
@@ -7,19 +8,26 @@
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
         spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
         spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
-        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}"
+        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
     }
     </asset:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
     <asset:javascript src="common.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="siteDisplay.js"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 <body>
 <div id="wrapper" class="container-fluid">

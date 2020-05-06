@@ -1,4 +1,5 @@
-<%@ page import="net.sf.json.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
@@ -11,16 +12,17 @@
 
     <asset:script type="text/javascript">
     var fcConfig = {
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         organisationSearchUrl: "${createLink(controller: 'organisation', action: 'search')}",
         // organisationSearchUrl: "${createLink(controller: 'organisation', action: 'searchMyOrg')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
-        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
-        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
-        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         geocodeUrl: "${grailsApplication.config.google.geocode.url}",
         imageLocation:"${asset.assetPath(src:'')}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
@@ -31,7 +33,11 @@
         lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
         countriesUrl: "${createLink(controller: 'project', action: 'getCountries')}",
         uNRegionsUrl: "${createLink(controller: 'project', action: 'getUNRegions')}",
-        dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}"
+        dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}",
+        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
         },
         here = window.location.href;
 
@@ -42,6 +48,7 @@
     <asset:javascript src="organisation.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 
 <body>

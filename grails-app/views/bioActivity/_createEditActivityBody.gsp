@@ -1,4 +1,4 @@
-<%@ page import="grails.converters.JSON; org.codehaus.groovy.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
 <g:set var="showCreate" value="${activity.activityId ||  (!activity.activityId && !hubConfig.content?.hideCancelButtonOnForm)}"></g:set>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
@@ -190,7 +190,9 @@
         outputModelConfig = _.extend(fcConfig, outputModelConfig);
 
         if(metaModel.supportsSites) {
-            var mapFeatures = <fc:modelAsJavascript model="${mapFeatures}"/>;
+            var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
+            var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+            var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
             var mapOptions = {
                 drawControl: false,
                 showReset: true,
@@ -198,8 +200,15 @@
                 useMyLocation: false,
                 allowSearchLocationByAddress: false,
                 allowSearchRegionByAddress: false,
-                wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=",
-                wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?"
+                addLayersControlHeading: true,
+                autoZIndex: false,
+                preserveZIndex: true,
+                baseLayer: baseLayersAndOverlays.baseLayer,
+                otherLayers: baseLayersAndOverlays.otherLayers,
+                overlays: baseLayersAndOverlays.overlays,
+                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
             };
 
             activityLevelData.siteMap = new ALA.Map("activitySiteMap", mapOptions);

@@ -242,6 +242,7 @@ var HubSettings = function (settings, config) {
         self.homePagePath(self.orBlank(settings.homePagePath));
         self.defaultFacetQuery([]);
         self.content(new ContentViewModel(settings.content || {}));
+        self.mapLayersConfig = settings.mapLayersConfig || {};
         self.quickLinks(mapLinks(settings.quickLinks));
         self.templateConfiguration(new TemplateConfigurationViewModel(settings.templateConfiguration || {}));
         if (settings.defaultFacetQuery && settings.defaultFacetQuery instanceof Array) {

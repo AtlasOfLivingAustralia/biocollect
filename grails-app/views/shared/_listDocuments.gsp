@@ -3,7 +3,7 @@
         <div class="btn-toolbar text-right">
             <div class="input-prepend input-append text-left">
                 <span class="add-on"><i class="fa fa-filter"></i></span>
-                <input class="span2 margin-bottom-0" type="text" data-bind="textInput: documentFilter">
+                <input class="margin-bottom-0" type="text" data-bind="textInput: documentFilter">
                 <div class="btn-group">
                     <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
                         <span data-bind="text: documentFilterField().label"></span>

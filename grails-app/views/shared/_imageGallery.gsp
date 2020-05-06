@@ -1,7 +1,7 @@
 <bc:koLoading>
     <div class="image-gallery">
         <ul class="thumbnails">
-            <g:render template="../shared/pagination"/>
+            <g:render template="/shared/pagination"/>
 
             <!-- ko foreach: recordImages -->
             <li>
@@ -28,7 +28,7 @@
         </ul>
 
         <div class="margin-top-2"></div>
-        <g:render template="../shared/pagination"/>
+        <g:render template="/shared/pagination"/>
 
         <span data-bind="if: transients.loading()"><span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...</span>
         <!-- ko if: recordImages().length == 0 && !error() -->

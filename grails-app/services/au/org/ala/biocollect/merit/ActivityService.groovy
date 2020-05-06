@@ -3,7 +3,7 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.UtilService
-import org.codehaus.groovy.grails.commons.GrailsApplication
+import grails.core.GrailsApplication
 import org.joda.time.DateTime
 import org.joda.time.Period
 import org.joda.time.format.DateTimeFormat
@@ -70,6 +70,10 @@ class ActivityService {
 
     def getSitesWithDataForProjectActivity(id){
         webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDistinctSitesForProjectActivity/'+ id)
+    }
+
+    def getSitesWithDataForProject(id){
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDistinctSitesForProject/'+ id)
     }
 
     def get(id, version = null, userId = null, hideMemberOnlyFlds = false) {

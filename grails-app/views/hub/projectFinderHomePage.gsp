@@ -1,4 +1,5 @@
 <%@ page import="grails.converters.JSON; au.org.ala.biocollect.merit.SettingPageType" contentType="text/html;charset=UTF-8" %>
+<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
@@ -10,6 +11,11 @@
     <asset:stylesheet src="project-finder.css" />
     <asset:script type="text/javascript">
     var fcConfig = {
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -51,13 +57,15 @@
         sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
         paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
         enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false},
-        downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}"
+        downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}",
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
   }
     </asset:script>
     <g:render template="/shared/conditionalLazyLoad"/>
     <asset:javascript src="common.js" />
     <asset:javascript src="projects-manifest.js" />
     <asset:javascript src="project-finder.js" />
+    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
     <style>
         %{-- Added to this page only to make image slider full page width --}%
         #main-content, #bannerHubContainer{

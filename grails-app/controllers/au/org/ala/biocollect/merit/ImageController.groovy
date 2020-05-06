@@ -63,7 +63,7 @@ class ImageController {
             }
         } catch (Exception e){
             //this will be thrown if its a PNG....
-            log.debug(e.getMessage(),e)
+            log.debug(e.getMessage(),e.toString())
         }
 
         return exif
@@ -193,7 +193,7 @@ class ImageController {
                 result = [files:[md]]
             }
         }
-        log.debug result
+        log.debug result.toString()
 
         if(!user){
             render ([error: 'Invalid user'] as JSON)

@@ -5,12 +5,11 @@ import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
 import au.org.ala.web.UserDetails
 import grails.converters.JSON
-import groovyx.net.http.ContentType
 import org.apache.commons.io.FilenameUtils
 import org.apache.http.HttpStatus
-import org.codehaus.groovy.grails.web.json.JSONArray
-import org.codehaus.groovy.grails.web.mapping.LinkGenerator
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.grails.web.json.JSONArray
+import grails.web.mapping.LinkGenerator
+import grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
 
@@ -67,7 +66,7 @@ class BioActivityController {
         log.debug("pActivityId = ${pActivityId}")
         log.debug("id = ${id}")
         log.debug("projectId = ${projectId}")
-        log.debug (postBody as JSON).toString()
+        log.debug((postBody as JSON).toString())
 
         String userId = userService.getCurrentUserId(request)
         if (!userId) {
@@ -200,6 +199,9 @@ class BioActivityController {
     def edit(String id) {
         Map model = editActivity(id)
         model?.title = messageSource.getMessage('record.edit.title', [].toArray(), '', Locale.default)
+        //May relates to the known grails.converter.JSON issue
+        //Remove this seem-useless statement may causes issue
+        model.toString()
         model
     }
 
@@ -247,10 +249,6 @@ class BioActivityController {
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
             addOutputModel(model)
             addDefaultSpecies(activity)
-            if(model?.projectSite && model.pActivity?.excludeProjectSite) {
-                // Remove projectSite from the survey site list
-                model.pActivity.sites?.remove(model.projectSite)
-            }
         }
 
         if (mobile && flash.message) {
@@ -280,10 +278,6 @@ class BioActivityController {
             model.id = id
             model.speciesConfig = [surveyConfig: [speciesFields: pActivity?.speciesFields]]
             model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'bioActivity', action: 'index') + "/" + id
-            if(model?.projectSite && model.pActivity?.excludeProjectSite) {
-                // Remove projectSite from the survey site list
-                model.pActivity.sites?.remove(model.projectSite)
-            }
         } else {
             flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
             if(!mobile)  redirect(controller: 'project', action: 'index', id: projectId)
@@ -517,6 +511,8 @@ class BioActivityController {
                                 view: view,
                                 spotterId:  params.spotterId,
                                 projectActivityId: params.projectActivityId,
+                                pActivity: projectActivity,
+                                project: project,
                                 title: "${messageSource.getMessage('project.userrecords.title', [].toArray(), '', Locale.default)} ${user.getDisplayName()}",
                                 occurrenceUrl: occurrenceUrl,
                                 spatialUrl: spatialUrl,
@@ -568,12 +564,12 @@ class BioActivityController {
     }
 
     def downloadProjectData() {
-        response.setContentType(ContentType.BINARY.toString())
+        response.setContentType("application/zip")
         response.setHeader('Content-Disposition', 'Attachment;Filename="data.zip"')
-
         Map queryParams = constructDefaultSearchParams(params)
         queryParams.isMerit = false
         searchService.downloadProjectData(response, queryParams)
+        return null
     }
 
     private GrailsParameterMap constructDefaultSearchParams(Map params) {
@@ -823,7 +819,7 @@ class BioActivityController {
             photoPoints.photoPoints.each { photoPoint ->
                 def photos = photoPoint.remove('photos')
                 def result = siteService.addPhotoPoint(photoPoints.siteId, photoPoint)
-                log.debug(result)
+                log.debug(result.toString())
                 if (!result.error) {
                     photos.each { photo ->
                         photo.poiId = result?.resp?.poiId
@@ -1136,6 +1132,16 @@ class BioActivityController {
      */
     public getSitesWithDataForProjectActivity(String id){
         def result = activityService.getSitesWithDataForProjectActivity(id)
+        render result as JSON
+    }
+
+    /**
+     * Get all sites that this project activity has record against.
+     * @param id
+     * @return
+     */
+    public getSitesWithDataForProject (String id) {
+        def result = activityService.getSitesWithDataForProject(id)
         render result as JSON
     }
 

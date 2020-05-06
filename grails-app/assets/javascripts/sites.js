@@ -15,6 +15,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         name: ko.observable(),
         siteId: ko.observable(),
         externalId: ko.observable(),
+        catchment: ko.observable(),
         type: ko.observable(),
         area: ko.observable(),
         description: ko.observable(),
@@ -64,6 +65,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         siteModel.name(exists(site, "name"));
         siteModel.siteId(exists(site, "siteId"));
         siteModel.externalId(exists(site, "externalId"));
+        siteModel.catchment(exists(site, "catchment"));
         siteModel.type(exists(site, "type"));
         siteModel.area(exists(site, "area"));
         siteModel.description(exists(site, "description"));
@@ -157,6 +159,10 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         }, false);
     };
 
+    self.refreshCoordinates = function () {
+        updateSiteMarkerPosition();
+    };
+
     function createPointOfInterest(poi, hasDocuments) {
         var pointOfInterest = new PointOfInterest(poi, hasDocuments);
 
@@ -235,13 +241,28 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     };
 
     function initialiseViewModel() {
+        var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+        var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
         var options =  {
+            autoZIndex: false,
+            preserveZIndex: true,
+            addLayersControlHeading: true,
             maxZoom: 20,
             wmsLayerUrl: mapOptions.spatialWms + "/wms/reflect?",
             wmsFeatureUrl: mapOptions.featureService + "?featureId=",
             drawOptions: mapOptions.drawOptions,
-            showReset: false
+            showReset: false,
+            baseLayer: baseLayersAndOverlays.baseLayer,
+            otherLayers: baseLayersAndOverlays.otherLayers,
+            overlays: baseLayersAndOverlays.overlays,
+            overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault
         };
+
+        for (var option in mapOptions) {
+            if (mapOptions.hasOwnProperty(option)){
+                options[option] = mapOptions[option];
+            }
+        }
 
         if(mapOptions.readonly){
             var readonlyProps = {
@@ -271,7 +292,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             self.pointsOfInterest([]);
             self.loadGeometry({});
             self.loadSite(site || {});
-        }, "bottomleft");
+        }, "bottomright");
 
 
 

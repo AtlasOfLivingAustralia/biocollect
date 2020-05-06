@@ -1,0 +1,310 @@
+Reading data-cleaned.xlsx file
+Successfully loaded data-cleaned.xlsx file
+Total activities to upload = 181
+Loading data_template file
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51525
+Empty classRange
+-----END----
+200: {"resp":{"activityId":"ddd753cd-2aad-4976-907f-04afdd535f4b","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51528
+-----END----
+200: {"resp":{"activityId":"51f274a5-ee97-4402-9940-2e81108d6c6a","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51532
+-----END----
+200: {"resp":{"activityId":"a0d28eb8-c07e-4acb-b952-be69dc2ddb89","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51545
+-----END----
+200: {"resp":{"activityId":"5c259bad-2a58-4afd-8670-442e5eef44e4","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51549
+-----END----
+200: {"resp":{"activityId":"6c59cc6a-be7c-42f9-80d4-6f3b72e12ac3","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51575
+-----END----
+200: {"resp":{"activityId":"87da7592-2670-4c88-bf2e-c4f8e1942b0f","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51582
+Downloading image file...
+File name images//unknown//Photo by Margaret Perry 12th Oct. 2015 sighting.jpg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"ac29da6a-245e-4ca1-9f58-d42bede2d9ee","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51584
+-----END----
+200: {"resp":{"activityId":"f3ea2d09-cbb1-48bb-ad42-06466b2b78dd","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51585
+-----END----
+200: {"resp":{"activityId":"3fa2bd17-a390-4f7f-bbb8-148fd4a16ea7","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51586
+-----END----
+200: {"resp":{"activityId":"ad4a5c5f-448e-4210-9f6c-ddf3061398bd","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51601
+-----END----
+200: {"resp":{"activityId":"bc1c3d68-17d5-487d-be76-7342f1c32e2b","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51602
+-----END----
+200: {"resp":{"activityId":"1852bbed-c3f5-4d38-86d9-955f06f77007","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51607
+Downloading image file...
+File name images//unknown//IMG_1339.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//unknown//IMG_1343.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"9edb2ecf-daef-4f3f-b5c7-319a5e6246e6","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51615
+-----END----
+200: {"resp":{"activityId":"92e062fe-727d-4486-a354-0a4a1f68b055","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51616
+-----END----
+200: {"resp":{"activityId":"b814cef8-2b59-430c-ba5a-5e0ef589dd43","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51639
+-----END----
+200: {"resp":{"activityId":"57de9116-c9e8-4374-bedb-8da26eab2a04","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51642
+-----END----
+200: {"resp":{"activityId":"f2bb229d-1d5e-49b4-89cd-9c8356101a61","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51645
+-----END----
+200: {"resp":{"activityId":"133d38ee-a773-4012-bda9-2af429a8ea7b","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51646
+-----END----
+200: {"resp":{"activityId":"43e7a48a-8d72-49e4-be10-d0333bce0509","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51700
+-----END----
+200: {"resp":{"activityId":"92546348-d775-4478-a1bc-bdf574954674","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51725
+-----END----
+200: {"resp":{"activityId":"3aad5fac-e709-459d-9b6c-e5d4b1ca5752","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51730
+Downloading image file...
+File name images//unknown//Unknown Goanna.jpg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//unknown//Unknown Goanna_02.jpg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"94f9fa00-3044-42fa-acb2-2823e4ee4692","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51731
+Downloading image file...
+File name images//unknown//image.jpeg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"9ba97482-5cfc-429e-9481-1dca6b07b2e7","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51761
+-----END----
+200: {"resp":{"activityId":"34841234-798f-4488-91b7-c2b5da5bd966","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51763
+Downloading image file...
+File name images//unknown//June Edwards - goanna near house Oct 2017 (3).JPG
+Uploading image...
+Image upload successful. - 0
+Empty classRange
+-----END----
+200: {"resp":{"activityId":"b2df9ba3-1efc-45c2-aa6b-a8cfb8e9d192","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51767
+Downloading image file...
+File name images//unknown//Marg Perry (1) Nov 17.JPG
+Uploading image...
+Image upload successful. - 0
+Empty classRange
+-----END----
+200: {"resp":{"activityId":"71b32bc6-0973-4a0c-b418-aec7af828fe8","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51768
+Downloading image file...
+File name images//unknown//Marg Perry (2) Nov 17.JPG
+Uploading image...
+Image upload successful. - 0
+Empty behaviour
+Empty classRange
+-----END----
+200: {"resp":{"activityId":"069e66a7-ad05-490b-8543-151b93438b8b","message":"created"},"statusCode":200,"error":null}
+Completed..
+pro:gonna_watch sat01a$
+pro:gonna_watch sat01a$ groovy RestClient.groovy
+Reading data-cleaned.xlsx file
+Successfully loaded data-cleaned.xlsx file
+Total activities to upload = 181
+Loading data_template file
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51525
+Empty classRange
+-----END----
+200: {"resp":{"activityId":"bcd65fcb-a136-418f-b0df-7930ca601751","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51528
+-----END----
+200: {"resp":{"activityId":"fd2a00a2-4807-4ed1-a3ce-17276275894e","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51532
+-----END----
+200: {"resp":{"activityId":"a49bf588-11bf-48f8-9205-4d857a98052e","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51545
+-----END----
+200: {"resp":{"activityId":"b124a5fe-a2b1-4b45-9746-4becbe85b644","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51549
+-----END----
+200: {"resp":{"activityId":"61b197e7-6e46-4331-a181-87fb763aac26","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51575
+-----END----
+200: {"resp":{"activityId":"34a70348-81a4-46eb-80fe-b927eb357de7","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51582
+Downloading image file...
+File name images//unknown//32_0_Photo_by_Margaret_Perry_12th_Oct._2015_sighting.jpg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"ecbc29aa-0e00-4977-ae5b-48ab5934152f","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51584
+-----END----
+200: {"resp":{"activityId":"036000d7-4d43-45bf-b6cf-1d694b3837a7","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51585
+-----END----
+200: {"resp":{"activityId":"65db0ed7-2ce4-4e19-b0c1-994bf25d4aa2","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51586
+-----END----
+200: {"resp":{"activityId":"97ad1c4d-3067-487f-a607-9e604f906429","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51601
+-----END----
+200: {"resp":{"activityId":"40173472-19b3-4650-959b-c60a9f0d549f","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51602
+-----END----
+200: {"resp":{"activityId":"1a429552-bcda-4956-b0f9-3557799b2fab","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51607
+Downloading image file...
+File name images//unknown//57_0_IMG_1339.JPG
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//unknown//57_1_IMG_1343.JPG
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"58ea8e37-5555-4d6d-8e5a-38d17fa74722","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51615
+-----END----
+200: {"resp":{"activityId":"625bac7a-2fd5-4bbb-809e-239cf2303e62","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51616
+-----END----
+200: {"resp":{"activityId":"a8105fe4-9dc6-4576-bfcc-68408b72a4e0","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51639
+-----END----
+200: {"resp":{"activityId":"4a14f5ca-e567-4aa8-9c25-5f0600053349","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51642
+-----END----
+200: {"resp":{"activityId":"3b0d6b61-c002-4e4a-80ea-6c023736bd5e","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51645
+-----END----
+200: {"resp":{"activityId":"40a8e5cf-fce8-4571-962f-5685333ff782","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51646
+-----END----
+200: {"resp":{"activityId":"678b1efe-3be6-46d6-8118-89c3e99ce998","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51700
+-----END----
+200: {"resp":{"activityId":"67cdb8a8-efb6-4a7e-8a99-ba8f27a7a26e","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51725
+-----END----
+200: {"resp":{"activityId":"a55c5044-ebce-4210-a5f4-711e741b8592","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51730
+Downloading image file...
+File name images//unknown//141_0_Unknown_Goanna.jpg
+Uploading image...
+Image upload successful. - 0
+Downloading image file...
+File name images//unknown//141_1_Unknown_Goanna_02.jpg
+Uploading image...
+Image upload successful. - 1
+-----END----
+200: {"resp":{"activityId":"0d1c9ee7-9964-449a-99b9-5578071a6aa2","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51731
+Downloading image file...
+File name images//unknown//142_0_image.jpeg
+Uploading image...
+Image upload successful. - 0
+-----END----
+200: {"resp":{"activityId":"2b29beb0-a29b-427a-beca-d17ef7ccbb96","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51761
+-----END----
+200: {"resp":{"activityId":"79a57673-157c-4d7f-8f29-008ee73cfff1","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51763
+Downloading image file...
+File name images//unknown//174_0_June_Edwards_-_goanna_near_house_Oct_2017_(3).JPG
+Uploading image...
+Image upload successful. - 0
+Empty classRange
+-----END----
+200: {"resp":{"activityId":"5396c7ab-7e5c-41fd-8155-457f960a9c63","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51767
+Downloading image file...
+File name images//unknown//178_0_Marg_Perry_(1)_Nov_17.JPG
+Uploading image...
+Image upload successful. - 0
+Empty classRange
+-----END----
+200: {"resp":{"activityId":"ecd0975a-64da-402e-a891-5b7184bd58a8","message":"created"},"statusCode":200,"error":null}
+-----START----
+urn:lsid:bdrs.ala.org.au:Record:51768
+Downloading image file...
+File name images//unknown//179_0_Marg_Perry_(2)_Nov_17.JPG
+Uploading image...
+Image upload successful. - 0
+Empty behaviour
+Empty classRange
+-----END----
+200: {"resp":{"activityId":"d303ee52-0929-4301-839e-a9defd3c98a2","message":"created"},"statusCode":200,"error":null}
+Completed..

@@ -1,0 +1,26 @@
+{
+  "pActivityId": "",
+  "site": {
+    "name": "",
+    "visibility": "private",
+    "projects": [
+      ""
+    ],
+    "extent": {
+      "geometry": {
+        "centre": [
+          136.58507823944092,
+          -28.310023107055127
+        ],
+        "type": "Point",
+        "areaKmSq": 0,
+        "coordinates": [
+          136.58507823944092,
+          -28.310023107055127
+        ]
+      },
+      "source": "Point"
+    },
+    "asyncUpdate": true
+  }
+}
