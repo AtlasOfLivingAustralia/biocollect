@@ -160,22 +160,18 @@ class ProjectActivityService {
             return "pActivityFormName is missing"
         }
 
-        if (props?.sites) {
-            if (!(props.sites instanceof List)) {
-                return "sites is not a list"
-            } else if (props.sites.size() == 0) {
-                return "no sites defined"
-            } else {
-                props.sites.each {
-                    def site = siteService.get(it)
-                    if (site?.error) {
-                        error = "\"${it}\" is not a valid siteId"
-                    }
+        if (published) {
+            if (['sitecreate', 'sitepickcreate'].contains(props.surveySiteOption)) {
+                if (!isUserSiteCreationConfigValid(props)) {
+                    return "Location configuration is not valid. Either points, polygons or lines must be selected."
                 }
             }
-        } else if (published) {
-            //error, no sites
-            return "sites are missing"
+
+            if (['sitepick', 'sitepickcreate'].contains(props.surveySiteOption)) {
+                if (!isSiteSelectionConfigValid(props)) {
+                    return "Location configuration is not valid. Must select one or more sites."
+                }
+            }
         }
 
         attributesAdded.each {
@@ -486,5 +482,13 @@ class ProjectActivityService {
         }
 
         entries
+    }
+
+    Boolean isUserSiteCreationConfigValid (props) {
+        props?.allowPolygons || props?.allowPoints || props?.allowLine
+    }
+
+    Boolean isSiteSelectionConfigValid (props) {
+        props?.sites ? true : false
     }
 }
