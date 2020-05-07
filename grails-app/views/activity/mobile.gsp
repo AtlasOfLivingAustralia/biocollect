@@ -8,6 +8,11 @@
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile', absolute:true)}",
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
