@@ -21,6 +21,8 @@
 // emitter
 //= require emitter/emitter.js
 
+//= require jquery.fileDownload/jQuery.fileDownload
+
 // image-viewer
 //= require fancybox/jquery.fancybox.js
 //= require ala-image-viewer.js

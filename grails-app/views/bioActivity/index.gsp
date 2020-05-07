@@ -52,6 +52,7 @@
         noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
         speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         ${(params?.version) ? ',version: ' + params?.version : ''}
         },
         here = document.location.href;
