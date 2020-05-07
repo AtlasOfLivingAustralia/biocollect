@@ -39,6 +39,7 @@
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
         sites: <fc:modelAsJavascript model="${project?.sites ?: []}"/>,
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         addCreatedSiteToListOfSelectedSites: ${canEditSites}
         },
         here = document.location.href;

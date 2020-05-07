@@ -79,10 +79,8 @@ class ProxyController {
                 def extension = FilenameUtils.getExtension(originalFilename)?.toLowerCase()
                 if (extension && !grailsApplication.config.upload.extensions.blacklist.contains(extension)){
                     def result =  webService.postMultipart(url, [document:params.document], f).content as JSON
-
-                    // This is returned to the browswer as a text response due to workaround the warning
-                    // displayed by IE8/9 when JSON is returned from an iframe submit.
-                    response.setContentType('text/plain;charset=UTF8')
+                    // iframe submit no longer supported.
+                    response.setContentType('application/json')
                     render result.toString();
                 } else {
                     response.setStatus(400)
@@ -90,7 +88,7 @@ class ProxyController {
                     def error = [error: "Files with the extension '.${extension}' are not permitted.",
                     statusCode: "400",
                     detail: "Files with the extension ${extension} are not permitted."] as JSON
-                    response.setContentType('text/plain;charset=UTF8')
+                    response.setContentType('application/json')
                     render error.toString()
                 }
             } else {
@@ -99,14 +97,13 @@ class ProxyController {
                 def error = [error: "Unable to retrieve the file name.",
                 statusCode: "400",
                 detail: "Unable to retrieve the file name."] as JSON
-                response.setContentType('text/plain;charset=UTF8')
+                response.setContentType('application/json')
                 render error.toString()
             }
         } else {
-            // This is returned to the browswer as a text response due to workaround the warning
-            // displayed by IE8/9 when JSON is returned from an iframe submit.
+            // iframe submit no longer supported.
             def result = webService.doPost(url, JSON.parse(params.document)) as JSON;
-            response.setContentType('text/plain;charset=UTF8')
+            response.setContentType('application/json')
 
             render result.toString()
         }
@@ -128,16 +125,18 @@ class ProxyController {
      * Returns an excel template that can be used to populate a table of data in an output form.
      */
     def excelOutputTemplate() {
+        String url =  "${grailsApplication.config.ecodata.service.url}/metadata/excelOutputTemplate"
+        String expandList = params.expandList?:""
 
-        String paramStr = ""
-        if (params.listName)
-            paramStr = "&listName=${params.listName?.encodeAsURL()}"
-        else if (params.expandList)
-            paramStr = "&expandList=" + params.expandList
+        if (params.data) {
+            webService.proxyPostRequest(response, url,
+                    [listName:params.listName, type:params.type, data:params.data, editMode:params.editMode, allowExtraRows:params.allowExtraRows, autosizeColumns:false, expandList: expandList])
+        }
+        else {
+            url += "?type=${params.type?.encodeAsURL()}&listName=${params.listName?.encodeAsURL()}&listName=${expandList?.encodeAsURL()}"
+            webService.proxyGetRequest(response, url)
+        }
 
-        String url =  "${grailsApplication.config.ecodata.service.url}/metadata/excelOutputTemplate?type=${params.type?.encodeAsURL()}" + paramStr
-
-        webService.proxyGetRequest(response, url)
         return null
     }
 

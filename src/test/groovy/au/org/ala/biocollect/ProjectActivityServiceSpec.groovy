@@ -77,14 +77,14 @@ class ProjectActivityServiceSpec extends Specification {
 
     def "validate should check site configuration and show appropriate errors"() {
         def message
-        when: "Do not check site configuration during projectActivity creation"
+        when: "Do not check site configuration if survey is not published"
         projectActivity.published = false
         message = service.validate(projectActivity, 'abc')
 
         then:
         message == null
 
-        when: "check validity for site creation setting"
+        when: "check validity for site creation setting when survey published"
         projectActivity.surveySiteOption = "sitecreate"
         projectActivity.allowPolygons = false
         projectActivity.allowLine = false
@@ -95,7 +95,7 @@ class ProjectActivityServiceSpec extends Specification {
         then:
         message == "Location configuration is not valid. Either points, polygons or lines must be selected."
 
-        when: "check validity for site creation setting"
+        when: "check validity for site creation setting when survey published"
         projectActivity.surveySiteOption = "sitecreate"
         projectActivity.allowPolygons = true
         projectActivity.allowLine = false
@@ -106,7 +106,7 @@ class ProjectActivityServiceSpec extends Specification {
         then:
         message == null
 
-        when: "check validity for site pick setting"
+        when: "check validity for site pick setting when survey published"
         projectActivity.surveySiteOption = "sitepick"
         projectActivity.sites = []
         projectActivity.allowPolygons = true
@@ -118,7 +118,7 @@ class ProjectActivityServiceSpec extends Specification {
         then:
         message == "Location configuration is not valid. Must select one or more sites."
 
-        when: "check validity for site pick setting"
+        when: "check validity for site pick setting when survey published"
         projectActivity.surveySiteOption = "sitepick"
         projectActivity.sites = ['abc']
         projectActivity.published = true
@@ -127,7 +127,7 @@ class ProjectActivityServiceSpec extends Specification {
         then:
         message == null
 
-        when: "check validity for site pick & create setting"
+        when: "check validity for site pick & create setting when survey published"
         projectActivity.surveySiteOption = "sitepickcreate"
         projectActivity.sites = []
         projectActivity.allowPolygons = false
@@ -139,7 +139,7 @@ class ProjectActivityServiceSpec extends Specification {
         then:
         message == "Location configuration is not valid. Must select one or more sites."
 
-        when: "check validity for site pick & create setting"
+        when: "check validity for site pick & create setting when survey published"
         projectActivity.surveySiteOption = "sitepickcreate"
         projectActivity.sites = ['abc']
         projectActivity.allowPolygons = false
@@ -151,7 +151,7 @@ class ProjectActivityServiceSpec extends Specification {
         then:
         message == "Location configuration is not valid. Either points, polygons or lines must be selected."
 
-        when: "check validity for site pick & create setting"
+        when: "check validity for site pick & create setting when survey published"
         projectActivity.surveySiteOption = "sitepickcreate"
         projectActivity.sites = ['abc']
         projectActivity.allowPolygons = true

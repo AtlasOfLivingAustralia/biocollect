@@ -23,6 +23,7 @@
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         createUrl: "${createLink(action: 'create')}/",
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         projectViewUrl: "${createLink(controller:'project', action:'index')}/"
         },
         here = document.location.href;

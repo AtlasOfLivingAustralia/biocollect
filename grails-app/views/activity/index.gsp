@@ -42,6 +42,7 @@
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         project:${fc.modelAsJavascript(model:project)},
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         sites: ${fc.modelAsJavascript(model:project?.sites)}
         },
         here = document.location.href;

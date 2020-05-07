@@ -17,6 +17,7 @@
         saveUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         returnTo: "${params.returnTo}"
         },
         here = document.location.href;

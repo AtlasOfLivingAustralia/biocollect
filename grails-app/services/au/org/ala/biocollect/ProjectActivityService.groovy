@@ -9,6 +9,7 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 //import org.springframework.util.FileCopyUtils
 class ProjectActivityService {
+    public static final SITE_CREATE = 'sitecreate', SITE_PICK = 'sitepick', SITE_PICK_CREATE = 'sitepickcreate'
 
     public static final SPECIAL_FACETS = [
             GeoMap: [
@@ -161,13 +162,13 @@ class ProjectActivityService {
         }
 
         if (published) {
-            if (['sitecreate', 'sitepickcreate'].contains(props.surveySiteOption)) {
+            if ([SITE_CREATE, SITE_PICK_CREATE].contains(props.surveySiteOption)) {
                 if (!isUserSiteCreationConfigValid(props)) {
                     return "Location configuration is not valid. Either points, polygons or lines must be selected."
                 }
             }
 
-            if (['sitepick', 'sitepickcreate'].contains(props.surveySiteOption)) {
+            if ([SITE_PICK, SITE_PICK_CREATE].contains(props.surveySiteOption)) {
                 if (!isSiteSelectionConfigValid(props)) {
                     return "Location configuration is not valid. Must select one or more sites."
                 }
@@ -269,8 +270,10 @@ class ProjectActivityService {
     def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName) {
         def pActivity = get(id)
         Map speciesConfig = getSpeciesConfigForProjectActivity(pActivity, output, dataFieldName)
-        def result = speciesService.searchSpeciesForConfig(speciesConfig, q, limit)
-        speciesService.formatSpeciesNameInAutocompleteList(speciesConfig.speciesDisplayFormat, result)
+        if (speciesConfig) {
+            def result = speciesService.searchSpeciesForConfig(speciesConfig, q, limit)
+            speciesService.formatSpeciesNameInAutocompleteList(speciesConfig.speciesDisplayFormat, result)
+        }
     }
 
     /**
@@ -489,6 +492,6 @@ class ProjectActivityService {
     }
 
     Boolean isSiteSelectionConfigValid (props) {
-        props?.sites ? true : false
+        props?.sites
     }
 }

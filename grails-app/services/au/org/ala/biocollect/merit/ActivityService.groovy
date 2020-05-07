@@ -234,8 +234,6 @@ class ActivityService {
      * @return
      */
     void lookupSpeciesInOutputData(String projectActivityId, String outputName, String listName, List outputData) {
-
-        Map singleSpecies = projectActivityService.getSingleSpecies(projectActivityId)
         def model = metadataService.annotatedOutputDataModel(outputName)
         if (listName) {
             model = model.find { it.name == listName }?.columns
@@ -243,6 +241,7 @@ class ActivityService {
 
         // Do species lookup
         def speciesField = model.find { it.dataType == 'species' }
+        Map singleSpecies = projectActivityService.getSingleSpecies(projectActivityId, outputName, speciesField.name)
         if (speciesField) {
             outputData.each { row ->
                 String name = row[speciesField.name]
@@ -250,7 +249,7 @@ class ActivityService {
                 if (singleSpecies.isSingle && (speciesField.validate == 'required' || row[speciesField.name])) {
                     row[speciesField.name] = [name: singleSpecies.name, listId: "not applicable", guid: singleSpecies.guid]
                 } else if (!singleSpecies.isSingle) {
-                    Map speciesSearchResults = projectActivityService.searchSpecies(projectActivityId, name, 10)
+                    Map speciesSearchResults = projectActivityService.searchSpecies(projectActivityId, name, 10, outputName, speciesField.name)
                     Map species = speciesService.findMatch(speciesSearchResults, name)
                     if (species) {
                         row[speciesField.name] = [name: species.name, listId: species.listId, guid: species.guid]

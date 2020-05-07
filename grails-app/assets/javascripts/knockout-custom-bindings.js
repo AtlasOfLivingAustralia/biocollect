@@ -296,8 +296,7 @@ ko.bindingHandlers.stagedImageUpload = {
             size(data.total);
         }).on('fileuploaddone', function (e, data) {
 
-            var result = $.parseJSON(data.result);
-
+            var result = data.result;
             if (!result) {
                 result = {};
                 error('No response from server');
