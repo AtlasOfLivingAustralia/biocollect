@@ -133,7 +133,7 @@ dependencies {
     compile "org.grails.plugins:ala-admin-plugin:2.1"
     if (!inplace) {
         compile "org.grails.plugins:ala-map-plugin:3.0"
-        compile "org.grails.plugins:ecodata-client-plugin:3.0"
+        compile "org.grails.plugins:ecodata-client-plugin:3.0.1-SNAPSHOT"
     }
 }
 
