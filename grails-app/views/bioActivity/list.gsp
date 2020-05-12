@@ -52,6 +52,7 @@
             occurrenceUrl: "${occurrenceUrl}",
             spatialUrl: "${spatialUrl}",
             mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+            excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
             absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}"
         },
         here = document.location.href;

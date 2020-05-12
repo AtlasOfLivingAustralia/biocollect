@@ -196,9 +196,11 @@ class ImageController {
         log.debug result.toString()
 
         if(!user){
+            response.addHeader('Content-Type','application/json')
             render ([error: 'Invalid user'] as JSON)
         } else {
-            response.addHeader('Content-Type','text/plain')
+            // iframe submit no longer supported.
+            response.addHeader('Content-Type','application/json')
             def json = result as JSON
             render json.toString()
         }

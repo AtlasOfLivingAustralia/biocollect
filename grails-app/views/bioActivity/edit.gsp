@@ -47,13 +47,14 @@
         speciesSearchUrl: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10])}",
         bioActivityUpdate: "${createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId, id: id])}",
         bioActivityMobileUpdate: "${createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId, id: id, isMobile: true])}",
-        activityDataTableUploadUrl: "${createLink(controller:'bioActivity', action:'extractDataFromExcelTemplate', id:projectActivityId)}",
+        excelDataUploadUrl: "${createLink(controller:'bioActivity', action:'extractDataFromExcelTemplate', id:projectActivityId)}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         bioActivityView: "${createLink(controller: 'bioActivity', action: 'index')}/",
         activityId: "${id}",
         returnTo: "${returnTo}",
         returnToMobile: "${createLink(controller: 'mobile', action: 'status')}#successfully-posted",
+        excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
         },
         here = document.location.href;

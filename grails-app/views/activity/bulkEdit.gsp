@@ -11,12 +11,18 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
     var fcConfig = {
+        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         organisationViewUrl: "${createLink(controller: 'organisation', action: 'index', id: organisation.organisationId)}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         saveUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         returnTo: "${params.returnTo}"
         },
         here = document.location.href;

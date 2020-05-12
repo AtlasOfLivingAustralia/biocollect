@@ -879,6 +879,25 @@ var ProjectActivity = function (params) {
             return "Configuration not valid - At least one site must be selected."
         }
     };
+
+    self.isSiteConfigValid = function () {
+        var msg
+        if (['sitecreate', 'sitepickcreate'].indexOf(self.surveySiteOption()) > -1) {
+            msg = self.isUserSiteCreationConfigValid();
+            if (msg) {
+                return false;
+            }
+        }
+
+        if (['sitepick', 'sitepickcreate'].indexOf(self.surveySiteOption()) > -1) {
+            msg = self.isSiteSelectionConfigValid();
+            if (msg) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 };
 
 var SiteList = function (o, surveySites, pActivity) {
