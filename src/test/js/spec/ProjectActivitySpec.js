@@ -119,6 +119,62 @@ describe("ProjectActivityViewModel Spec", function () {
         expect(pActivity.allowPolygons()).toEqual(false);
     })
 
+    it("isSiteConfigValid should check if site configuration is valid", function () {
+        var params = {
+            sites: [{
+                siteId: 'ghh',
+                name: 'Test',
+                extent: {
+                    geometry: {
+                        ibra: ""
+                    }
+                }
+            }],
+            pActivity: {
+                sites : [
+                    'ghh'
+                ],
+                allowPoints: false,
+                allowPolygons: false,
+                surveySiteOption: 'sitecreate'
+            }
+        };
+
+        var site = new SiteList({
+            siteId: 'ghh',
+            name: 'Test',
+            extent: {
+                geometry: {
+                    ibra: ""
+                }
+            }
+        });
+        site.added(true);
+
+        var pActivity = new ProjectActivity(params);
+        expect(pActivity.isSiteConfigValid()).toEqual(false);
+
+        pActivity.allowPoints(true);
+        expect(pActivity.isSiteConfigValid()).toEqual(true);
+
+        pActivity.surveySiteOption('sitepick');
+        pActivity.sites([]);
+        expect(pActivity.isSiteConfigValid()).toEqual(false);
+
+        pActivity.sites([site]);
+        expect(pActivity.isSiteConfigValid()).toEqual(true);
+
+
+        pActivity.surveySiteOption('sitepickcreate');
+        pActivity.sites([]);
+        pActivity.allowPoints(false);
+        expect(pActivity.isSiteConfigValid()).toEqual(false);
+
+        pActivity.sites([site]);
+        pActivity.allowPoints(true);
+        expect(pActivity.isSiteConfigValid()).toEqual(true);
+    })
+
 });
 
 describe("pActivityInfo Spec", function () {

@@ -206,7 +206,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         } else if (current.isInfoValid() &&
             current.areSpeciesValid() &&
             jsData.pActivityFormName &&
-            (jsData.sites && jsData.sites.length > 0)
+            current.isSiteConfigValid()
         ) {
             jsData.published = true;
             return self.publish(jsData);
@@ -254,8 +254,8 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     };
 
     self.saveSitesBeforeRedirect = function(redirectUrl) {
-        var jsData = self.current().asJS("sites");
-        if (jsData.sites && jsData.sites.length > 0) {
+        var current = self.current();
+        if (current && current.isSiteConfigValid()) {
             self.genericUpdate("sites");
         }
         window.location.href = redirectUrl;

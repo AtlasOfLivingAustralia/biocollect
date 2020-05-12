@@ -896,19 +896,16 @@ class BioActivityController {
                     result = data
                 }
 
-                // This is returned to the browswer as a text response due to workaround the warning
-                // displayed by IE8/9 when JSON is returned from an iframe submit.
-                response.setContentType('text/plain;charset=UTF8')
+                // iframe no longer supported
+                response.setContentType('application/json')
                 def resultJson = result as JSON
                 render resultJson.toString()
             }
         } else {
             response.status = SC_BAD_REQUEST
             result = [status: SC_BAD_REQUEST, error: 'No file attachment found']
-            // This is returned to the browswer as a text response due to workaround the warning
-            // displayed by IE8/9 when JSON is returned from an iframe submit.
-
-            response.setContentType('text/plain;charset=UTF8')
+            // iframe no longer supported
+            response.setContentType('application/json')
             def resultJson = result as JSON
             render resultJson.toString()
         }

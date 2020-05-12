@@ -9,6 +9,7 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 //import org.springframework.util.FileCopyUtils
 class ProjectActivityService {
+    public static final SITE_CREATE = 'sitecreate', SITE_PICK = 'sitepick', SITE_PICK_CREATE = 'sitepickcreate'
 
     public static final SPECIAL_FACETS = [
             GeoMap: [
@@ -160,22 +161,18 @@ class ProjectActivityService {
             return "pActivityFormName is missing"
         }
 
-        if (props?.sites) {
-            if (!(props.sites instanceof List)) {
-                return "sites is not a list"
-            } else if (props.sites.size() == 0) {
-                return "no sites defined"
-            } else {
-                props.sites.each {
-                    def site = siteService.get(it)
-                    if (site?.error) {
-                        error = "\"${it}\" is not a valid siteId"
-                    }
+        if (published) {
+            if ([SITE_CREATE, SITE_PICK_CREATE].contains(props.surveySiteOption)) {
+                if (!isUserSiteCreationConfigValid(props)) {
+                    return "Location configuration is not valid. Either points, polygons or lines must be selected."
                 }
             }
-        } else if (published) {
-            //error, no sites
-            return "sites are missing"
+
+            if ([SITE_PICK, SITE_PICK_CREATE].contains(props.surveySiteOption)) {
+                if (!isSiteSelectionConfigValid(props)) {
+                    return "Location configuration is not valid. Must select one or more sites."
+                }
+            }
         }
 
         attributesAdded.each {
@@ -273,8 +270,10 @@ class ProjectActivityService {
     def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName) {
         def pActivity = get(id)
         Map speciesConfig = getSpeciesConfigForProjectActivity(pActivity, output, dataFieldName)
-        def result = speciesService.searchSpeciesForConfig(speciesConfig, q, limit)
-        speciesService.formatSpeciesNameInAutocompleteList(speciesConfig.speciesDisplayFormat, result)
+        if (speciesConfig) {
+            def result = speciesService.searchSpeciesForConfig(speciesConfig, q, limit)
+            speciesService.formatSpeciesNameInAutocompleteList(speciesConfig.speciesDisplayFormat, result)
+        }
     }
 
     /**
@@ -486,5 +485,13 @@ class ProjectActivityService {
         }
 
         entries
+    }
+
+    Boolean isUserSiteCreationConfigValid (props) {
+        props?.allowPolygons || props?.allowPoints || props?.allowLine
+    }
+
+    Boolean isSiteSelectionConfigValid (props) {
+        props?.sites
     }
 }
