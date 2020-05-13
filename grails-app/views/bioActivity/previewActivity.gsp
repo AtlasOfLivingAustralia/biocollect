@@ -3,14 +3,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="ajaxLayout"/>
+    <meta name="layout" content="${hubConfig.skin}"/>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:stylesheet src="common.css"/>
     <asset:stylesheet src="forms-manifest.css"/>
     <g:if test="${hubConfig.skin == "configurableHubTemplate1"}">
         <link rel="stylesheet" type="text/css"
-              href="${createLink(controller: 'hub', action: 'getStyleSheet')}?hub=${hubConfig.urlPath}&ver=${hubConfig.lastUpdated}">
+              href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">
     </g:if>
     <asset:script type="text/javascript">
     var fcConfig = {
