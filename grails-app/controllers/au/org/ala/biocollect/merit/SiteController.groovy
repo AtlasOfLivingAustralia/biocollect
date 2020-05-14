@@ -52,6 +52,9 @@ class SiteController {
     def create(){
         render view: 'edit', model: [create:true, documents:[]]
     }
+    def createSystematic(){
+        render view: 'createSystematic', model: [create:true, documents:[]]
+    }
 
 
     def createForProject(){
