@@ -85,7 +85,7 @@
     </asset:script>
     <g:layoutHead/>
     <link rel="stylesheet" type="text/css"
-          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?hub=${hubConfig.urlPath}&ver=${hubConfig.lastUpdated}">
+          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">
     <link href="${grailsApplication.config.skin.favicon}"  rel="icon"/>
 </head>
 
