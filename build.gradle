@@ -18,7 +18,6 @@ plugins {
 }
 
 version "5.1-SNAPSHOT"
-group "au.org.ala"
 
 apply plugin:"eclipse"
 apply plugin:"idea"
@@ -133,7 +132,7 @@ dependencies {
     compile "org.grails.plugins:ala-admin-plugin:2.1"
     if (!inplace) {
         compile "org.grails.plugins:ala-map-plugin:3.0"
-        compile "org.grails.plugins:ecodata-client-plugin:3.0.1"
+        compile "org.grails.plugins:ecodata-client-plugin:3.0.2"
     }
 }
 

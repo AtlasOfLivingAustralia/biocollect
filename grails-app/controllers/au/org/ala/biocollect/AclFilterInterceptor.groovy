@@ -31,7 +31,13 @@ class AclFilterInterceptor {
             return true
 
 
-        def method = controllerClass.getMethod(actionName?:"index", [] as Class[])
+        def method
+        def controllerActionName = actionName?:"index"
+        try {
+            method = controllerClass.getMethod(controllerActionName, [] as Class[])
+        } catch (NoSuchMethodException noMethod) {
+            log.error "No method, ${controllerActionName}, found for controller - ${controllerName}."
+        }
 
         def roles = roleService.getAugmentedRoles()
         def userId = userService.getCurrentUserId(request)
@@ -49,8 +55,8 @@ class AclFilterInterceptor {
             params.userIsAlaAdmin = false
         }
 
-        if (controllerClass.isAnnotationPresent(PreAuthorise) || method.isAnnotationPresent(PreAuthorise)) {
-            PreAuthorise pa = method.getAnnotation(PreAuthorise)?:controllerClass.getAnnotation(PreAuthorise)
+        if (controllerClass.isAnnotationPresent(PreAuthorise) || method?.isAnnotationPresent(PreAuthorise)) {
+            PreAuthorise pa = method?.getAnnotation(PreAuthorise)?:controllerClass.getAnnotation(PreAuthorise)
             if ((controllerClass != ProjectController) && (!pa.projectIdParam()?.equals('id'))) {
                 projectId = params[pa.projectIdParam()]
             }
