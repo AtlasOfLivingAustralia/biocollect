@@ -37,6 +37,9 @@
 </head>
 
 <body>
+    <g:link action="createSystematic" class="btn btn-small">
+    <i class="icon-plus"></i> <g:message code="mapConfiguration.site.create"></g:message> 
+    </g:link>
 <div id="siteSearch" class="container-fluid margin-top-10">
     <g:if test="${myFavourites}">
         <div class="row-fluid">
