@@ -48,7 +48,7 @@ def httpmimeVersion = "4.2.1"
 def jtsVersion = "1.8"
 def geoToolsVersion = "11.1"
 // Set to true it needed only for development
-boolean inplace = true
+boolean inplace = false
 
 
 dependencies {
