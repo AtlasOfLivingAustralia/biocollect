@@ -44,19 +44,31 @@ class SettingService {
     def loadHubConfig(hub) {
 
         if (!hub) {
-            hub = grailsApplication.config.app.default.hub?:'default'
-            GrailsWebRequest.lookup()?.params.hub = hub
+            // assign hub using the logic
+            // 1. Use previous hub from cookie.
+            // 2. Otherwise, use default hub setting.
             String previousHub = cookieService.getCookie(LAST_ACCESSED_HUB)
             if (!previousHub) {
+                hub = grailsApplication.config.app.default.hub?:'default'
                 cookieService.setCookie(LAST_ACCESSED_HUB, hub, -1 /* -1 means the cookie expires when the browser is closed */)
+            }
+            else {
+                hub = previousHub
             }
         }
         else {
+            // Hub value in multiple places like url path and in parameter causes Array to be passed instead of String.
+            // This causes setCookie method to throw exception since it expects String.
+            if (hub && ((hub instanceof List) || hub.getClass().isArray())) {
+                hub = hub[0]
+            }
+
             // Store the most recently accessed hub in a cookie so that 404 errors can be presented with the
             // correct skin.
             cookieService.setCookie(LAST_ACCESSED_HUB, hub, -1 /* -1 means the cookie expires when the browser is closed */)
         }
 
+        GrailsWebRequest.lookup().params.hub = hub
         def settings = getHubSettings(hub)
         if (!settings) {
             log.warn("no settings returned for hub ${hub}!")
