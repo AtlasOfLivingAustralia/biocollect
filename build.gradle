@@ -17,7 +17,7 @@ plugins {
     id 'war'
 }
 
-version "5.0.2"
+version "5.0.3-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin:"eclipse"
