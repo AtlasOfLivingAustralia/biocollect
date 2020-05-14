@@ -44,16 +44,10 @@ class SettingService {
     def loadHubConfig(hub) {
 
         if (!hub) {
-            // assign hub using the logic
-            // 1. Use previous hub from cookie.
-            // 2. Otherwise, use default hub setting.
+            hub = grailsApplication.config.app.default.hub?:'default'
             String previousHub = cookieService.getCookie(LAST_ACCESSED_HUB)
             if (!previousHub) {
-                hub = grailsApplication.config.app.default.hub?:'default'
                 cookieService.setCookie(LAST_ACCESSED_HUB, hub, -1 /* -1 means the cookie expires when the browser is closed */)
-            }
-            else {
-                hub = previousHub
             }
         }
         else {
