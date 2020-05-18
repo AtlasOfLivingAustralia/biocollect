@@ -20,7 +20,7 @@ var HubSettingsViewModel = function (programsModel, options) {
 
     self.transients = {
         programNames: programNames,
-        availableSkins: ['nrm', 'ala2', 'mdba', 'ala', 'configurableHubTemplate1', 'lu'],
+        availableSkins: ['nrm', 'ala2', 'mdba', 'ala', 'configurableHubTemplate1'],
         configurableTemplates: ['configurableHubTemplate1'],
         defaultHomePage: '/project/citizenScience',
         hubHomePage: '/hub/index'
