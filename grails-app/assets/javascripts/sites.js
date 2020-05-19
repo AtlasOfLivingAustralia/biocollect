@@ -52,6 +52,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         })
     });
     self.pointsOfInterest = ko.observableArray();
+    self.transectParts = ko.observableArray();
     self.showPointAttributes = ko.observable(false);
     self.allowPointsOfInterest = ko.observable(mapOptions.allowPointsOfInterest || false);
     self.displayAreaInReadableFormat = null;
@@ -159,6 +160,18 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         }, false);
     };
 
+    // systematic
+    self.newTransectPart = function () {
+        var centre = self.map.getCentre();
+        createTransectPart({
+            name: "S" + (self.transectParts().length + 1),
+            geometry: {
+                decimalLatitude: centre.lat,
+                decimalLongitude: centre.lng
+            }
+        }, false);
+    };
+
     self.refreshCoordinates = function () {
         updateSiteMarkerPosition();
     };
@@ -177,6 +190,23 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         pointOfInterestMarkers.addLayer(pointOfInterest.marker);
 
         self.pointsOfInterest.push(pointOfInterest);
+    }
+    // systematic
+    function createTransectPart(part, hasDocuments) {
+        var transectPart = new PointOfInterest(part, hasDocuments);
+
+        transectPart.geometry().decimalLatitude.subscribe(self.renderPointsOfInterest);
+        transectPart.geometry().decimalLongitude.subscribe(self.renderPointsOfInterest);
+
+        transectPart.marker = ALA.MapUtils.createMarker(part.geometry.decimalLatitude, part.geometry.decimalLongitude, transectPart.name, {
+            icon: pointOfInterestIcon,
+            draggable: true
+        });
+        transectPart.marker.on("dragend", transectPart.dragEvent);
+        pointOfInterestMarkers.addLayer(transectPart.marker);
+
+        self.transectParts.push(transectPart);
+        console.log(self.transectParts);
     }
 
     self.renderPointsOfInterest = function () {
