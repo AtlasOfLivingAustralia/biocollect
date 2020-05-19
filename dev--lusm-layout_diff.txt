@@ -1,0 +1,1783 @@
+diff --git a/grails-app/assets/javascripts/hubs.js b/grails-app/assets/javascripts/hubs.js
+index 3290a1ac..4fd2603d 100644
+--- a/grails-app/assets/javascripts/hubs.js
++++ b/grails-app/assets/javascripts/hubs.js
+@@ -20,7 +20,7 @@ var HubSettingsViewModel = function (programsModel, options) {
+ 
+     self.transients = {
+         programNames: programNames,
+-        availableSkins: ['nrm', 'ala2', 'mdba', 'ala', 'configurableHubTemplate1'],
++        availableSkins: ['nrm', 'ala2', 'mdba', 'ala', 'configurableHubTemplate1', 'lu'],
+         configurableTemplates: ['configurableHubTemplate1'],
+         defaultHomePage: '/project/citizenScience',
+         hubHomePage: '/hub/index'
+diff --git a/grails-app/assets/javascripts/systematicSites.js b/grails-app/assets/javascripts/systematicSites.js
+new file mode 100644
+index 00000000..e04a7be1
+--- /dev/null
++++ b/grails-app/assets/javascripts/systematicSites.js
+@@ -0,0 +1,734 @@
++'use strict';
++
++var SiteViewModel = function (mapContainerId, site, mapOptions) {
++    var self = $.extend(this, new Documents());
++
++    var pointOfInterestIcon = ALA.MapUtils.createIcon("https://maps.google.com/mapfiles/marker_yellow.png");
++    var pointOfInterestMarkers = new L.FeatureGroup();
++    var latSubscriber = null;
++    var lngSubscriber = null;
++
++    self.transients = {
++        loadingGazette: ko.observable(false)
++    };
++    self.site = ko.observable({
++        name: ko.observable(),
++        siteId: ko.observable(),
++        externalId: ko.observable(),
++        catchment: ko.observable(),
++        type: ko.observable(),
++        area: ko.observable(),
++        description: ko.observable(),
++        notes: ko.observable(),
++        projects: ko.observableArray(),
++        extent: ko.observable({
++            source: ko.observable(),
++            geometry:  ko.observable({
++                decimalLatitude: ko.observable(),
++                decimalLongitude: ko.observable(),
++                uncertainty: ko.observable(),
++                precision: ko.observable(),
++                datum: ko.observable(),
++
++                type: ko.observable(),
++                nrm: ko.observable(),
++                state: ko.observable(),
++                lga: ko.observable(),
++                locality: ko.observable(),
++                mvg: ko.observable(),
++                mvs: ko.observable(),
++
++                radius: ko.observable(),
++                areaKmSq: ko.observable(),
++                coordinates: ko.observable(),
++                centre: ko.observable(),
++
++                bbox: ko.observable(),
++                pid: ko.observable(),
++                name: ko.observable(),
++                fid: ko.observable(),
++                layerName: ko.observable()
++            })
++        })
++    });
++    self.pointsOfInterest = ko.observableArray();
++    self.showPointAttributes = ko.observable(false);
++    self.allowPointsOfInterest = ko.observable(mapOptions.allowPointsOfInterest || false);
++    self.displayAreaInReadableFormat = null;
++
++    self.site().extent().geometry().areaKmSq.subscribe(function(val){
++        self.site().area(val)
++    });
++
++    self.loadSite = function (site) {
++        var siteModel = self.site();
++        siteModel.name(exists(site, "name"));
++        siteModel.siteId(exists(site, "siteId"));
++        siteModel.externalId(exists(site, "externalId"));
++        siteModel.catchment(exists(site, "catchment"));
++        siteModel.type(exists(site, "type"));
++        siteModel.area(exists(site, "area"));
++        siteModel.description(exists(site, "description"));
++        siteModel.notes(exists(site, "notes"));
++        siteModel.projects(site.projects || []);
++
++        if (site.extent) {
++            self.site().extent().source(exists(site.extent, "source"));
++            self.loadGeometry(site.extent.geometry || {});
++        } else {
++            self.site().extent().source('');
++            self.loadGeometry({});
++        }
++
++        if(self.site().extent().geometry().areaKmSq()){
++            self.site().area(self.site().extent().geometry().areaKmSq())
++        }
++
++        if (!_.isEmpty(site.poi)) {
++            site.poi.forEach(function (poi) {
++                createPointOfInterest(poi, self.hasPhotoPointDocuments(poi))
++            });
++        }
++
++        self.displayAreaInReadableFormat = ko.computed(function(){
++            if(self.site().area()){
++                return convertKMSqToReadableUnit(self.site().area())
++            }
++        });
++    };
++
++    self.hasPhotoPointDocuments = function (poi) {
++        if (!self.site.documents) {
++            return;
++        }
++        var hasDoc = false;
++        $.each(self.site.documents, function (i, doc) {
++            if (doc.poiId === poi.poiId) {
++                hasDoc = true;
++                return false;
++            }
++        });
++        return hasDoc;
++    };
++
++    self.loadGeometry = function (geometry) {
++        var geometryObservable = self.site().extent().geometry();
++        geometryObservable.decimalLatitude(exists(geometry, 'decimalLatitude')),
++        geometryObservable.decimalLongitude(exists(geometry, 'decimalLongitude')),
++        geometryObservable.uncertainty(exists(geometry, 'uncertainty')),
++        geometryObservable.precision(exists(geometry, 'precision')),
++        geometryObservable.datum(exists(geometry, 'datum')),
++        geometryObservable.type(exists(geometry, 'type')),
++        geometryObservable.nrm(exists(geometry, 'nrm')),
++        geometryObservable.state(exists(geometry, 'state')),
++        geometryObservable.lga(exists(geometry, 'lga')),
++        geometryObservable.locality(exists(geometry, 'locality')),
++        geometryObservable.mvg(exists(geometry, 'mvg')),
++        geometryObservable.mvs(exists(geometry, 'mvs')),
++        geometryObservable.radius(exists(geometry, 'radius')),
++        geometryObservable.areaKmSq(exists(geometry, 'areaKmSq')),
++        geometryObservable.coordinates(exists(geometry, 'coordinates')),
++        geometryObservable.centre(exists(geometry, 'centre')),
++        geometryObservable.bbox(exists(geometry, 'bbox')),
++        geometryObservable.pid(exists(geometry, 'pid')),
++        geometryObservable.name(exists(geometry, 'name')),
++        geometryObservable.fid(exists(geometry, 'fid')),
++        geometryObservable.layerName(exists(geometry, 'layerName'))
++
++        latSubscriber = geometryObservable.decimalLatitude.subscribe(updateSiteMarkerPosition);
++        lngSubscriber = geometryObservable.decimalLongitude.subscribe(updateSiteMarkerPosition);
++
++        if (!_.isEmpty(geometry) && self.site().extent().source() != 'none') {
++            var validGeoJson = Biocollect.MapUtilities.featureToValidGeoJson(geometry);
++            self.map.setGeoJSON(validGeoJson);
++            self.showPointAttributes(geometry.type == "Point");
++        }
++        loadGazetteInformation(geometryObservable.decimalLatitude(), geometryObservable.decimalLongitude());
++
++        return geometryObservable;
++    };
++
++    self.newPointOfInterest = function () {
++        var centre = self.map.getCentre();
++        createPointOfInterest({
++            name: "Point of interest #" + (self.pointsOfInterest().length + 1),
++            geometry: {
++                decimalLatitude: centre.lat,
++                decimalLongitude: centre.lng
++            }
++        }, false);
++    };
++
++    self.refreshCoordinates = function () {
++        updateSiteMarkerPosition();
++    };
++
++    function createPointOfInterest(poi, hasDocuments) {
++        var pointOfInterest = new PointOfInterest(poi, hasDocuments);
++
++        pointOfInterest.geometry().decimalLatitude.subscribe(self.renderPointsOfInterest);
++        pointOfInterest.geometry().decimalLongitude.subscribe(self.renderPointsOfInterest);
++
++        pointOfInterest.marker = ALA.MapUtils.createMarker(poi.geometry.decimalLatitude, poi.geometry.decimalLongitude, pointOfInterest.name, {
++            icon: pointOfInterestIcon,
++            draggable: true
++        });
++        pointOfInterest.marker.on("dragend", pointOfInterest.dragEvent);
++        pointOfInterestMarkers.addLayer(pointOfInterest.marker);
++
++        self.pointsOfInterest.push(pointOfInterest);
++    }
++
++    self.renderPointsOfInterest = function () {
++        pointOfInterestMarkers.clearLayers();
++
++        self.pointsOfInterest().forEach(function (pointOfInterest) {
++            var marker  = ALA.MapUtils.createMarker(
++                pointOfInterest.geometry().decimalLatitude(),
++                pointOfInterest.geometry().decimalLongitude(),
++                pointOfInterest.name,
++                {icon: pointOfInterestIcon, draggable: true}
++            );
++
++            marker.on("dragend", pointOfInterest.dragEvent);
++
++            pointOfInterestMarkers.addLayer(marker);
++        });
++    };
++
++    self.removePointOfInterest = function (pointOfInterest) {
++        if (pointOfInterest.hasPhotoPointDocuments) {
++            return;
++        }
++        self.pointsOfInterest.remove(pointOfInterest);
++        self.renderPointsOfInterest();
++    };
++
++    self.toJS = function() {
++        var js = ko.toJS(self.site);
++
++        // legacy support - it was possible to have no extent for a site. This step will delete geometry before saving.
++        if(js.extent.source == 'none'){
++            delete js.extent.geometry;
++        }
++
++        js.poi = [];
++        self.pointsOfInterest().forEach(function (poi) {
++            js.poi.push(poi.toJSON())
++        });
++        js.geoIndex = Biocollect.MapUtilities.constructGeoIndexObject(js);
++
++        return js;
++    };
++
++    self.modelAsJSON = function () {
++        return JSON.stringify(self.toJS());
++    };
++
++    self.saved = function () {
++        return self.site().siteId();
++    };
++
++    self.isValid = function(mandatory) {
++        var valid = true;
++
++        if (mandatory) {
++            var js = self.toJS();
++            valid = js && js.extent && js.extent.geometry && js.extent.geometry.type && js.extent.geometry.type != null && js.extent.geometry.type != "";
++        }
++
++        return valid;
++    };
++
++    function initialiseViewModel() {
++        var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
++        var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
++        var options =  {
++            autoZIndex: false,
++            preserveZIndex: true,
++            addLayersControlHeading: true,
++            maxZoom: 20,
++            wmsLayerUrl: mapOptions.spatialWms + "/wms/reflect?",
++            wmsFeatureUrl: mapOptions.featureService + "?featureId=",
++            drawOptions: mapOptions.drawOptions,
++            showReset: false,
++            baseLayer: baseLayersAndOverlays.baseLayer,
++            otherLayers: baseLayersAndOverlays.otherLayers,
++            overlays: baseLayersAndOverlays.overlays,
++            overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault
++        };
++
++        for (var option in mapOptions) {
++            if (mapOptions.hasOwnProperty(option)){
++                options[option] = mapOptions[option];
++            }
++        }
++
++        if(mapOptions.readonly){
++            var readonlyProps = {
++                drawControl: false,
++                singleMarker: false,
++                useMyLocation: false,
++                allowSearchLocationByAddress: false,
++                allowSearchRegionByAddress: false,
++                draggableMarkers: false,
++                showReset: false
++            };
++            for(var prop in readonlyProps){
++                options[prop] = readonlyProps[prop]
++            }
++        }
++
++        self.map = new ALA.Map(mapContainerId, options);
++
++        if(!mapOptions.readonly){
++            var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(self.map, mapOptions.featuresService, mapOptions.regionListUrl);
++            self.map.addControl(regionSelector);
++        }
++
++        self.map.addButton("<span class='fa fa-undo reset-map' title='Reset map'></span>", function () {
++            self.map.resetMap();
++            pointOfInterestMarkers.clearLayers();
++            self.pointsOfInterest([]);
++            self.loadGeometry({});
++            self.loadSite(site || {});
++        }, "bottomright");
++
++
++
++        self.map.registerListener("draw:created", function (event) {
++            if (event.layerType == ALA.MapConstants.LAYER_TYPE.MARKER) {
++                updatePointLatLng(event.layer.getLatLng().lat, event.layer.getLatLng().lng);
++            }
++        });
++
++        // We'll track the points of interest as a separate feature group manually attached to the underlying map
++        // implementation so that we can take advantage of the single-layer controls provided by ALA.Map to control the
++        // site region.
++        self.map.getMapImpl().addLayer(pointOfInterestMarkers);
++
++        self.loadSite(site);
++
++        self.map.subscribe(listenToSiteChanges);
++    }
++
++    function getSiteMarker() {
++        return self.map.getAllMarkers().length == 1 ? self.map.getAllMarkers()[0] : null;
++    }
++
++    function listenToSiteChanges() {
++        var siteMarker = getSiteMarker();
++
++        if (siteMarker) {
++            siteMarker.bindPopup(self.site().name());
++            siteMarker.on("dragend", function (event) {
++                updatePointLatLng(event.target.getLatLng().lat, event.target.getLatLng().lng);
++            });
++            updatePointLatLng(siteMarker.getLatLng().lat, siteMarker.getLatLng().lng);
++
++            self.map.fitBounds();
++
++            self.showPointAttributes(true);
++        } else {
++            var bounds = self.map.getBounds();
++            updatePointLatLng(bounds ? bounds.getCenter().lat : null, bounds ? bounds.getCenter().lng : null);
++            self.showPointAttributes(false);
++        }
++
++        updateGeometry();
++    }
++
++    function updatePointLatLng(lat, lng) {
++        latSubscriber.dispose();
++        lngSubscriber.dispose();
++        if (self.site() && self.site().extent) {
++            self.site().extent().geometry().decimalLatitude(lat);
++            self.site().extent().geometry().decimalLongitude(lng);
++            latSubscriber = self.site().extent().geometry().decimalLatitude.subscribe(updateSiteMarkerPosition);
++            lngSubscriber = self.site().extent().geometry().decimalLongitude.subscribe(updateSiteMarkerPosition);
++        }
++    }
++
++    function updateSiteMarkerPosition() {
++        var siteMarker = getSiteMarker();
++
++        var geometry = self.site().extent().geometry();
++        if (siteMarker && geometry.decimalLatitude() && geometry.decimalLongitude()) {
++            siteMarker.setLatLng(new L.LatLng(geometry.decimalLatitude(), geometry.decimalLongitude()));
++            self.map.fitBounds();
++            loadGazetteInformation(geometry.decimalLatitude(), geometry.decimalLongitude());
++        }
++    }
++
++    function updateGeometry() {
++        var geoJson = self.map.getGeoJSON();
++
++        if (geoJson && geoJson.features && geoJson.features.length > 0) {
++            var feature = geoJson.features[0];
++            var geometryType = feature.geometry.type;
++            var latLng = null;
++            var lat;
++            var lng;
++            var bounds = self.map.getBounds();
++            if (geometryType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
++                // the ALA Map plugin uses valid GeoJSON, which specifies coordinates as [lng, lat]
++                lat = feature.geometry.coordinates[1];
++                lng = feature.geometry.coordinates[0];
++                self.site().extent().geometry().centre(latLng);
++            } else if (bounds) {
++                lat = bounds.getCenter().lat;
++                lng = bounds.getCenter().lng;
++            }
++
++            var geoType = determineExtentType(feature);
++            self.site().extent().geometry().type(geoType);
++            self.site().extent().source(geoType == "Point" ? "Point" : geoType == "pid" ? "pid" : "drawn");
++            self.site().extent().geometry().radius(feature.properties.radius);
++
++            // the feature created by a WMS layer will have the area in the 'area_km' property
++            if (feature.properties.area_km) {
++                self.site().extent().geometry().areaKmSq(feature.properties.area_km);
++            } else {
++                self.site().extent().geometry().areaKmSq(ALA.MapUtils.calculateAreaKmSq(feature));
++            }
++            self.site().extent().geometry().coordinates(feature.geometry.coordinates);
++
++            self.site().extent().geometry().bbox(exists(feature.properties, 'bbox'));
++            self.site().extent().geometry().pid(exists(feature.properties, 'pid'));
++            self.site().extent().geometry().name(exists(feature.properties, 'name'));
++            self.site().extent().geometry().fid(exists(feature.properties, 'fid'));
++            self.site().extent().geometry().layerName(exists(feature.properties, 'fieldname'));
++
++            loadGazetteInformation(lat, lng);
++        } else {
++            self.loadGeometry({});
++        }
++    }
++
++    function loadGazetteInformation(lat, lng) {
++        if (!_.isUndefined(lat) && lat && !_.isUndefined(lng) && lng) {
++            self.transients.loadingGazette(true);
++            $.ajax({
++                url: fcConfig.siteMetaDataUrl + "?lat=" + lat + "&lon=" + lng,
++                dataType: "json"
++            }).done(function (data) {
++                self.site().extent().geometry().nrm(exists(data, 'nrm'));
++                self.site().extent().geometry().state(exists(data, 'state'));
++                self.site().extent().geometry().lga(exists(data, 'lga'));
++                self.site().extent().geometry().locality(exists(data, 'locality'));
++                self.site().extent().geometry().mvg(exists(data, 'mvg'));
++                self.site().extent().geometry().mvs(exists(data, 'mvs'));
++            }).always(function (data) {
++                self.transients.loadingGazette(false);
++            });
++        }
++    }
++
++    function determineExtentType(geoJsonFeature) {
++        var type = null;
++
++        if (geoJsonFeature.geometry.type === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
++            if (geoJsonFeature.properties.radius) {
++                type = ALA.MapConstants.DRAW_TYPE.CIRCLE_TYPE;
++            } else {
++                type = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
++            }
++        } else if (geoJsonFeature.geometry.type === ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE) {
++            if (geoJsonFeature.properties.pid) {
++                type = "pid";
++            } else {
++                type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
++            }
++        } else if (geoJsonFeature.geometry.type == ALA.MapConstants.DRAW_TYPE.LINE_TYPE) {
++            type = geoJsonFeature.geometry.type
++        }
++
++        return type;
++    }
++
++    initialiseViewModel();
++};
++
++var PointOfInterest = function (data, hasDocuments) {
++    var self = this;
++
++    self.marker = null;
++    self.poiId = ko.observable(exists(data, 'poiId'));
++    self.name = ko.observable(exists(data, 'name'));
++    self.type = ko.observable(exists(data, 'type'));
++    self.description = ko.observable(exists(data, 'description'));
++
++    if (!_.isUndefined(data.geometry)) {
++        self.geometry = ko.observable({
++            type: ALA.MapConstants.DRAW_TYPE.POINT_TYPE,
++            decimalLatitude: ko.observable(exists(data.geometry, 'decimalLatitude')),
++            decimalLongitude: ko.observable(exists(data.geometry, 'decimalLongitude')),
++            uncertainty: ko.observable(exists(data.geometry, 'uncertainty')),
++            precision: ko.observable(exists(data.geometry, 'precision')),
++            datum: ko.observable(exists(data.geometry, 'datum')),
++            bearing: ko.observable(exists(data.geometry, 'bearing'))
++        });
++    }
++    self.hasPhotoPointDocuments = hasDocuments;
++
++    self.dragEvent = function (event) {
++        var lat = event.target.getLatLng().lat;
++        var lng = event.target.getLatLng().lng;
++        self.geometry().decimalLatitude(lat);
++        self.geometry().decimalLongitude(lng);
++    };
++
++    self.hasCoordinate = function () {
++        return !isNaN(self.geometry().decimalLatitude()) && !isNaN(self.geometry().decimalLongitude());
++    };
++
++    self.toJSON = function () {
++        var js = {
++            poiId: self.poiId(),
++            name: self.name(),
++            type: self.type(),
++            description: self.description(),
++            geometry: ko.toJS(self.geometry)
++        };
++
++        if (self.hasCoordinate()) {
++            js.geometry.coordinates = [js.geometry.decimalLatitude, js.geometry.decimalLongitude];
++        }
++        return js;
++    };
++};
++
++
++
++var SitesViewModel =  function(sites, map, mapFeatures, isUserEditor, projectId, projectDefaultZoomArea) {
++
++    var self = this;
++    // sites
++    var features = [];
++    if (mapFeatures.features) {
++        features = mapFeatures.features;
++    }
++
++    self.sites = $.map(sites, function (site, i) {
++        var feature = features[i] || site.extent ? site.extent.geometry : null;
++        site.feature = feature;
++        site.selected = ko.observable(false);
++        return site;
++    });
++    self.selectedSiteIds = ko.computed(function() {
++        var siteIds = [];
++        $.each(self.sites, function(i, site) {
++            if (site.selected()) {
++                siteIds.push(site.siteId);
++            }
++        });
++        return siteIds;
++    });
++    self.sitesFilter = ko.observable("");
++    self.throttledFilter = ko.computed(self.sitesFilter).extend({throttle: 400});
++    self.filteredSites = ko.observableArray(self.sites);
++    self.displayedSites = ko.observableArray();
++    self.offset = ko.observable(0);
++    self.pageSize = 10;
++    self.isUserEditor = ko.observable(isUserEditor);
++    self.getSiteName = function (siteId) {
++        var site;
++        if (siteId !== undefined && siteId !== '') {
++            site = $.grep(self.sites, function (obj, i) {
++                return (obj.siteId === siteId);
++            });
++            if (site.length > 0) {
++                return site[0].name();
++            }
++        }
++        return '';
++    };
++    // Animation callbacks for the lists
++    self.showElement = function (elem) {
++        if (elem.nodeType === 1) $(elem).hide().slideDown()
++    };
++    self.hideElement = function (elem) {
++        if (elem.nodeType === 1) $(elem).slideUp(function () {
++            $(elem).remove();
++        })
++    };
++
++    var previousIndicies = [];
++    function compareIndicies(indicies1, indicies2) {
++
++        if (indicies1 == indicies2) {
++            return true;
++        }
++
++        if (indicies1.length != indicies2.length) {
++            return false;
++        }
++        for (var i=0; i<indicies1.length; i++) {
++            if (indicies1[i] != indicies2[i]) {
++                return false;
++            }
++        }
++        return true;
++    }
++    /** Callback from datatables event listener so we can keep the map in sync with the table filter / pagination */
++    self.sitesFiltered = function(indicies) {
++        if (compareIndicies(indicies || [], previousIndicies)) {
++            return;
++        }
++        self.displayedSites([]);
++        if (indicies) {
++            for (var i=0; i<indicies.length; i++) {
++                self.displayedSites.push(self.sites[indicies[i]]);
++            }
++        }
++        self.displaySites();
++        previousIndicies.splice(0, previousIndicies.length);
++        Array.prototype.push.apply(previousIndicies, indicies);
++
++    };
++
++    self.highlightSite = function(index) {
++        map.highlightFeatureById(self.sites[index].siteId);
++    };
++
++    self.unHighlightSite = function(index) {
++        map.unHighlightFeatureById(self.sites[index].siteId);
++    };
++
++    self.displaySites = function () {
++        map.clearFeatures();
++
++        var features = $.map(self.displayedSites(), function (obj, i) {
++            var f = obj.feature;
++            if (f) {
++                f.popup = obj.name;
++                f.id = obj.siteId;
++            }
++            return f;
++        });
++        map.defaultZoomArea = projectDefaultZoomArea;
++        map.replaceAllFeatures(features);
++        self.removeMarkers();
++
++        $.each(self.displayedSites(), function(i, site) {
++            if (site.poi) {
++                $.each(site.poi, function(j, poi) {
++                    if (poi.geometry) {
++                        self.addMarker(poi.geometry.decimalLatitude, poi.geometry.decimalLongitude, poi.name);
++                    }
++
++                });
++            }
++        });
++
++    };
++
++    var markersArray = [];
++
++    self.addMarker = function(lat, lng, name) {
++
++        var infowindow = new google.maps.InfoWindow({
++            content: '<span class="poiMarkerPopup">' + name +'</span>'
++        });
++
++        var marker = new google.maps.Marker({
++            position: new google.maps.LatLng(lat,lng),
++            title:name,
++            draggable:false,
++            map:map.map
++        });
++
++        marker.setIcon('https://maps.google.com/mapfiles/marker_yellow.png');
++
++        google.maps.event.addListener(marker, 'click', function() {
++            infowindow.open(map.map, marker);
++        });
++
++        markersArray.push(marker);
++    };
++
++    self.removeMarkers = function() {
++        if (markersArray) {
++            for (var i in markersArray) {
++                markersArray[i].setMap(null);
++            }
++        }
++        markersArray = [];
++    };
++
++
++    this.removeSelectedSites = function () {
++        bootbox.confirm("Are you sure you want to remove these sites?", function (result) {
++            if (result) {
++                var siteIds = self.selectedSiteIds();
++
++                $.ajax({
++                    url: fcConfig.sitesDeleteUrl,
++                    type: 'POST',
++                    data: JSON.stringify({siteIds:siteIds}),
++                    contentType: 'application/json'
++                }).done(function(data) {
++                    if (data.warnings && data.warnings.length) {
++                        bootbox.alert("Not all sites were able to be deleted.  Sites associated with an activity were not deleted.", function() {
++                            document.location.href = here;
++                        });
++                    }
++                    else {
++                        document.location.href = here;
++                    }
++                }).fail(function(data) {
++                    bootbox.alert("An error occurred while deleting the sites.  Please contact support if the problem persists.", function() {
++                        document.location.href = here;
++                    })
++                });
++            }
++        });
++    };
++    this.editSite = function (site) {
++        var url = fcConfig.siteEditUrl + '/' + site.siteId + '?returnTo=' + encodeURIComponent(fcConfig.returnTo);
++        document.location.href = url;
++    };
++    this.deleteSite = function (site) {
++        bootbox.confirm("Are you sure you want to remove this site from this project?", function (result) {
++            if (result) {
++
++                $.get(fcConfig.siteDeleteUrl + '?siteId=' + site.siteId, function (data) {
++                    if (data.warnings && data.warnings.length) {
++                        bootbox.alert("The site could not be deleted as it is used by a project activity.");
++                    }
++                    else {
++                        document.location.href = here;
++                    }
++                });
++
++            }
++        });
++    };
++    this.viewSite = function (site) {
++        var url = fcConfig.siteViewUrl + '/' + site.siteId + '?returnTo=' + encodeURIComponent(fcConfig.returnTo);
++        if (projectId) {
++            url += '&projectId='+projectId;
++        }
++        document.location.href = url;
++    };
++    this.addSite = function () {
++        document.location.href = fcConfig.siteCreateUrl;
++    };
++    this.addExistingSite = function () {
++        document.location.href = fcConfig.siteSelectUrl;
++    };
++    this.uploadShapefile = function () {
++        document.location.href = fcConfig.siteUploadUrl;
++    };
++    this.downloadShapefile = function() {
++        window.open(fcConfig.shapefileDownloadUrl, '_blank');
++    };
++    self.triggerGeocoding = function () {
++        ko.utils.arrayForEach(self.sites, function (site) {
++            map.getAddressById(site.name(), site.setAddress);
++        });
++    };
++
++    self.displaySites();
++};
++
+diff --git a/grails-app/assets/stylesheets/lu.css b/grails-app/assets/stylesheets/lu.css
+new file mode 100644
+index 00000000..fd02c6ba
+--- /dev/null
++++ b/grails-app/assets/stylesheets/lu.css
+@@ -0,0 +1,7 @@
++/*
++ *= require biocollect-banner.css
++ */
++
++ .form-control, input.form-control, .input-append .add-on {
++    padding: 4px 5px;
++}
+\ No newline at end of file
+diff --git a/grails-app/conf/application.yml b/grails-app/conf/application.yml
+index 3bc569b0..03edd84c 100644
+--- a/grails-app/conf/application.yml
++++ b/grails-app/conf/application.yml
+@@ -1,12 +1,10 @@
+ ---
+ appName:
+-  "biocollect"
++  - "biocollect"
+ layout:
+   skin: "ala2"
+ 
+-server:
+-  session:
+-    timeout: 3600
++loggerLevel: "DEBUG"
+ 
+ environments:
+     development:
+@@ -17,33 +15,46 @@ environments:
+         #system level config
+         server:
+            port: 8087
+-           serverURL: http://devt.ala.org.au:8087
++           serverURL: http://localhost:8087
++#        security:
++#          cas:
++#             appServerName: 'http://canmove-dev.ekol.lu.se:8087'
+         biocollect:
+           system:
+             email:
+               replyTo: "biocollect-dev<no-reply>@ala.org.au"
+               sender: "biocollect-dev@ala.org.au"
+         debugUI: true
+-        loggerLevel: "DEBUG"
+     test:
+         grails:
+           config:
+              locations:
+                 - file:///data/biocollect/config/biocollect-config.properties
++        server:
++             serverURL: https://localhost:8087
++        security:
++           cas:
++              appServerName: https://localhost:8087
+         debugUI: false
+-        loggerLevel: "DEBUG"
+     production:
+         grails:
+             config:
+                locations:
+                   - file:///data/biocollect/config/biocollect-config.properties
++            #system level config
++        server:
++           #port: 80
++           serverURL: http://localhost:8087
++
++#            security:
++#              cas:
++#                 appServerName: 'http://biocollect.ala.org.au'
+         biocollect:
+            system:
+               email:
+                 replyTo: "biocollect<no-reply>@ala.org.au"
+                 sender: "biocollect-local@ala.org.au"
+         debugUI: false
+-        loggerLevel: "INFO"
+ 
+ app:
+   default:
+@@ -57,18 +68,18 @@ app:
+ 
+ security:
+    cas:
+-      casProperties: "casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,uriExclusionFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath,gatewayStorageClass"
++      casProperties: "casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,authenticateOnlyIfLoggedInFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath,gatewayStorageClass"
+       uriExclusionFilterPattern: "/assets/.*,/images.*,/css.*,/js.*,/less.*,/ajax/bulkLookupQuestions,/uploads/.*"
+       authenticateOnlyIfLoggedInPattern: ".*"
+-      uriFilterPattern: ".*/user/.*,.*/site/(?!(index|list|elasticsearch|getImages|getPoiImages|ajaxUpdate|checkSiteName|ajaxList)).*,.*/project/(?!(index|search|citizenScience|listRecordImages|projectSummaryReportCallback)).*,.*/activity/(?!index).*,.*/output/(?!index).*,.*/image/(?!index).*,.*/admin/.*,i.*/proxy/speciesListPost,.*/proxy/documentUpdate,.*/proxy/deleteDocument,.*/home/advanced,.*/organisation/(?!index).*,.*/organisation/(?!list).*,.*/bioActivity/create/.*,.*/bioActivity/edit/.*,.*/bioActivity/list,/sight/.*"
++      uriFilterPattern: ".*"
+       readOnlyOfficerRole: "ROLE_FC_READ_ONLY"
+       alaAdminRole : "ROLE_ADMIN"
+       officerRole : "ROLE_FC_OFFICER"
+       adminRole : "ROLE_FC_ADMIN"
+-      casServerName: "https://auth.ala.org.au"
+-      casServerLoginUrl: "https://auth.ala.org.au/cas/login"
+-      casServerUrlPrefix: "https://auth.ala.org.au/cas"
+-      logoutUrl: "https://auth.ala.org.au/cas/logout"
++      casServerName: "https://auth.bioatlas.se"
++      casServerLoginUrl: "https://auth.bioatlas.se/cas/login"
++      casServerUrlPrefix: "https://auth.bioatlas.se/cas"
++      logoutUrl: "https://auth.bioatlas.se/cas/logout"
+ 
+ #External URL
+ aekosEnabled: false
+@@ -76,6 +87,7 @@ enableReporting: true
+ bugherd:
+   integration : false
+ emailFilter: "/[A-Z0-9._%-]+@csiro.au"
++termsOfUseUrl: true
+ download:
+   email:
+     threshold: 100
+@@ -94,10 +106,10 @@ aekosMintedDoi:
+ acsaUrl: 'http://csna.gaiaresources.com.au/wordpress/'
+ 
+ bie:
+-  baseURL: "https://bie.ala.org.au"
++  baseURL: "https://species.bioatlas.se"
+ 
+ biocache:
+-  baseURL: "https://biocache.ala.org.au"
++  baseURL: "https://records.bioatlas.se"
+ 
+ biocollect:
+   support:
+@@ -106,49 +118,54 @@ biocollect:
+ 
+ collectory:
+   service:
+-    url: "https://collections.ala.org.au"
++    url: "https://collections.bioatlas.se/ws"
+ 
+ 
+ ecodata:
+-  baseURL: "https://ecodata.ala.org.au/"
++  baseURL: "https://canmove-dev.ekol.lu.se:8080/"
++#  service:
++#    url: "${ecodata.baseURL}/ws"
+ 
+ 
+ google:
+   maps:
+     base: "https://maps.googleapis.com/maps/api/js?key="
++    apiKey:  "AIzaSyA0HqqmZZT8n7bSeQ5rMZdhaCGTj4Kf_VA"
++    url: "${google.maps.base}${google.maps.apiKey ?: 'You.Need.To.Add.A.Config.Property.Named.google.maps.apiKey'}"
+ 
+-headerAndFooter:
+-  baseURL: "https://www.ala.org.au/commonui-bs2" #"https://www.ala.org.au/commonui-bs2-v2/commonui-bs2"
++#    geocode:
++#      url: "https://maps.googleapis.com/maps/api/geocode/json?"
+ 
++
++headerAndFooter:
++  # baseURL: "https://www.ala.org.au/commonui-bs2" #"https://www.ala.org.au/commonui-bs2-v2/commonui-bs2"
++  baseURL: "https://static.bioatlas.se/bs3"
+ images:
+-  baseURL: "https://images.ala.org.au"
++  baseURL: "https://images.bioatlas.se"
+ 
+ lists:
+-  baseURL: "https://lists.ala.org.au" # "https://lists-test.ala.org.au/public/speciesLists"
++  baseURL: "https://lists.bioatlas.se" 
+   commonFields: ['rawScientificName', 'matchedName', 'commonName']
+ 
+-merit:
+-  baseURL: "https://fieldcapture-test.ala.org.au"
+-
+-mdba:
+-  baseUrl: "http://mdba-test.ala.org.au"
+-  searchUrl: "/occurrences/search?fq=data_hub_uid:dh10#tab_mapView"
++# mdba:
++#   baseUrl: "http://mdba-test.ala.org.au"
++#   searchUrl: "/occurrences/search?fq=data_hub_uid:dh10#tab_mapView"
+ 
+-mobile:
+-  auth:
+-    check:
+-      url:  "https://m.ala.org.au/mobileauth/mobileKey/checkKey"
++# mobile:
++#   auth:
++#     check:
++#       url:  "https://m.ala.org.au/mobileauth/mobileKey/checkKey"
+ 
+ 
+ pdfgen:
+   baseURL: "https://pdfgen.ala.org.au/"
+ 
+-sld:
+-  polgon:
+-    default:
+-      url: "http://fish.ala.org.au/data/alt-dist.sld"
+-    highlight:
+-      url: "http://fish.ala.org.au/data/fc-highlight.sld"
++# sld:
++#   polgon:
++#     default:
++#       url: "http://fish.ala.org.au/data/alt-dist.sld"
++#     highlight:
++#       url: "http://fish.ala.org.au/data/fc-highlight.sld"
+ 
+ speciesConfiguration:
+   default: [
+@@ -158,7 +175,17 @@ speciesConfiguration:
+ 
+ 
+ spatial:
+-   baseURL: "https://spatial.ala.org.au/"
++   baseURL: "https://spatial.bioatlas.se/"
++   layersUrl: "https://spatial.bioatlas.se/ws"
++   geoserverUrl: "https://spatial.bioatlas.se/geoserver"
++   wms:
++    # url: "${spatial.baseURL}/geoserver/ALA/wms?"
++    url: "https://spatial.bioatlas.se/geoserver/ALA/wms?"
++    cache:
++        url: "https://spatial.bioatlas.se/geoserver/gwc/service/wms?"
++
++
++
+ 
+ upload:
+    images:
+@@ -278,6 +305,11 @@ grails:
+ 
+ 
+ 
++#info:
++#    app:
++#        name: '@info.app.name@'
++#        version: '@info.app.version@'
++#        grailsVersion: '@info.app.grailsVersion@'
+ spring:
+     main:
+         banner-mode: "off"
+@@ -323,3 +355,9 @@ projectdata:
+   industries:
+     enabled: false
+ 
++
++userDetails: 
++  url: "https://auth.bioatlas.se/userdetails/"
++
++userDetailsById:
++  path: "getUserDetails"
+\ No newline at end of file
+diff --git a/grails-app/controllers/au/org/ala/biocollect/merit/SiteController.groovy b/grails-app/controllers/au/org/ala/biocollect/merit/SiteController.groovy
+index 8ddc5291..a72b8e04 100644
+--- a/grails-app/controllers/au/org/ala/biocollect/merit/SiteController.groovy
++++ b/grails-app/controllers/au/org/ala/biocollect/merit/SiteController.groovy
+@@ -52,6 +52,9 @@ class SiteController {
+     def create(){
+         render view: 'edit', model: [create:true, documents:[]]
+     }
++    def createSystematic(){
++        render view: 'createSystematic', model: [create:true, documents:[]]
++    }
+ 
+ 
+     def createForProject(){
+diff --git a/grails-app/views/layouts/lu.gsp b/grails-app/views/layouts/lu.gsp
+new file mode 100644
+index 00000000..622b47a6
+--- /dev/null
++++ b/grails-app/views/layouts/lu.gsp
+@@ -0,0 +1,190 @@
++<%@ page contentType="text/html;charset=UTF-8" %>
++<%@ page import="grails.util.Environment; au.org.ala.biocollect.merit.SettingPageType" %>
++<!DOCTYPE html>
++<html lang="en">
++<head>
++    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
++    <meta name="app.version" content="${g.meta(name: 'app.version')}"/>
++    <meta name="app.build" content="${g.meta(name: 'app.build')}"/>
++    <meta name="description" content="BioAtlas - BioCollect"/>
++    <meta name="author" content="Lund University">
++    <meta name="viewport" content="width=device-width, initial-scale=1.0">
++    <title><g:layoutTitle/></title>
++    <link href="${grailsApplication.config.skin.favicon}"  rel="icon"/>
++    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap.min.css"/>
++    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap-responsive.min.css"/>
++    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/ala-styles.css"/>
++    <asset:stylesheet src="base.css"/>
++    <asset:stylesheet src="lu.css"/>
++    <asset:javascript src="base.js"/>
++    <g:layoutHead/>
++</head>
++
++<body class="${pageProperty(name: 'body.class') ?: 'nav-getinvolved'}" id="${pageProperty(name: 'body.id')}"
++      onload="${pageProperty(name: 'body.onload')}">
++<ala:systemMessage/>
++<g:set var="introText"><fc:getSettingContent settingType="${SettingPageType.INTRO}"/></g:set>
++<g:set var="userLoggedIn"><fc:userIsLoggedIn/></g:set>
++<div id="body-wrapper">
++    <g:if test="${fc.announcementContent()}">
++        <div id="announcement">
++            ${fc.announcementContent()}
++        </div>
++    </g:if>
++
++    <g:render template="/project/systematicMonitoringBanner" model="${[fc: fc, hf: hf]}"></g:render>
++    <g:if test="${isCitizenScience && !isUserPage}" model="${[hubConfig: hubConfig]}">
++        <g:render template="/shared/bannerCitizenScience"/>
++    </g:if>
++    <g:if test="${isEcoScience && !isUserPage}">
++        <g:render template="/shared/bannerEcoScience"/>
++    </g:if>
++
++    <g:set var="index" value="1"></g:set>
++    <g:set var="metaName" value="${'meta.breadcrumbParent' + index}"/>
++    <g:if test="${pageProperty(name: "meta.breadcrumb")}">
++        <section id="breadcrumb" class="${cssClassName}">
++            <div class="container-fluid">
++                <div class="row">
++                    <ul class="breadcrumb-list">
++                        <g:while test="${pageProperty(name: metaName)}">
++                            <g:set value="${pageProperty(name: metaName).tokenize(',')}" var="parentArray"/>
++                            <li><a href="${parentArray[0]}">${parentArray[1]}</a></li>
++                            <% index++ %>
++                            <g:set var="metaName" value="${'meta.breadcrumbParent' + index}"/>
++                        </g:while>
++                        <li class="active">${pageProperty(name: "meta.breadcrumb")}</li>
++                    </ul>
++                </div>
++            </div>
++        </section>
++    </g:if>
++
++    <div class="container-fluid" id="main-content">
++        <g:layoutBody/>
++    </div><!--/.container-->
++
++    <div class="container hidden-desktop">
++        <%-- Borrowed from http://marcusasplund.com/optout/ --%>
++        <a class="btn btn-small toggleResponsive"><i class="icon-resize-full"></i> <span>Desktop</span> version</a>
++    </div>
++
++    <%-- <div id="ala-footer">
++        <hf:footer/>
++    </div> --%>
++
++    <g:if test="${Environment.current == Environment.DEVELOPMENT}">
++        <div id="footer">
++            <div id="footer-wrapper">
++                <div class="container-fluid">
++                    <fc:footerContent/>
++                </div>
++
++                <div class="container-fluid">
++                    <div class="large-space-before">
++                        <button class="btn btn-mini" id="toggleFluid">toggle fixed/fluid width</button>
++                        <g:if test="${userLoggedIn && introText}">
++                            <button class="btn btn-mini" type="button" data-toggle="modal"
++                                    data-target="#introPopup">display user intro</button>
++                        </g:if>
++                    </div>
++                </div>
++            </div>
++        </div>
++    </g:if>
++</div><!-- /#body-wrapper -->
++<g:if test="${userLoggedIn && introText}">
++%{-- User Intro Popup --}%
++    <div id="introPopup" class="modal hide fade">
++        <div class="modal-header hide">
++            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
++
++            <h3>User Introduction</h3>
++        </div>
++
++        <div class="modal-body">
++            ${introText}
++        </div>
++
++        <div class="modal-footer">
++            <label for="hideIntro" class="pull-left">
++                <g:checkBox name="hideIntro" style="margin:0;"/>&nbsp;
++                Do not display this message again (current browser only)
++            </label>
++            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
++        </div>
++    </div>
++</g:if>
++<asset:script type="text/javascript">
++    // Prevent console.log() killing IE
++    if (typeof console == "undefined") {
++        this.console = {log: function() {}};
++    }
++
++    $(document).ready(function (e) {
++
++        $.ajaxSetup({ cache: false });
++
++        $("#toggleFluid").click(function(el){
++            var fluidNo = $('div.container-fluid').length;
++            var fixNo = $('div.container').length;
++            //console.log("counts", fluidNo, fixNo);
++            if (fluidNo > fixNo) {
++                $('div.container-fluid').addClass('container').removeClass('container-fluid');
++            } else {
++                $('div.container').addClass('container-fluid').removeClass('container');
++            }
++        });
++
++        // Set up a timer that will periodically poll the server to keep the session alive
++        var intervalSeconds = 5 * 60;
++
++        setInterval(function() {
++            $.ajax("${createLink(controller: 'ajax', action: 'keepSessionAlive')}").done(function(data) {});
++        }, intervalSeconds * 1000);
++
++        //make sure external link icon is not added to links in footer.
++        $('#ala-footer').find('a').addClass('do-not-mark-external')
++
++    }); // end document ready
++
++</asset:script>
++<g:if test="${userLoggedIn}">
++    <asset:script type="text/javascript">
++        $(document).ready(function (e) {
++            // Show introduction popup (with cookie check)
++            var cookieName = "hide-intro";
++            var introCookie = $.cookie(cookieName);
++            //  document.referrer is empty following login from AUTH
++            if (!introCookie && !document.referrer) {
++                $('#introPopup').modal('show');
++            } else {
++                $('#hideIntro').prop('checked', true);
++            }
++            // console.log("referrer", document.referrer);
++            // don't show popup if user has clicked checkbox on popup
++            $('#hideIntro').click(function () {
++                if ($(this).is(':checked')) {
++                    $.cookie(cookieName, 1);
++                } else {
++                    $.removeCookie(cookieName);
++                }
++            });
++        }); // end document ready
++    </asset:script>
++</g:if>
++<!-- JS resources-->
++<asset:deferredScripts />
++
++<g:if test="${grailsApplication.config.bugherd.integration}">
++    <script type="text/javascript">
++        (function (d, t) {
++            var bh = d.createElement(t), s = d.getElementsByTagName(t)[0];
++            bh.type = 'text/javascript';
++            bh.src = '//www.bugherd.com/sidebarv2.js?apikey=2wgeczqfyixard6e9xxfnq';
++            s.parentNode.insertBefore(bh, s);
++        })(document, 'script');
++    </script>
++</g:if>
++</body>
++</html>
+\ No newline at end of file
+diff --git a/grails-app/views/project/_systematicMonitoringBanner.gsp b/grails-app/views/project/_systematicMonitoringBanner.gsp
+new file mode 100644
+index 00000000..d8d55879
+--- /dev/null
++++ b/grails-app/views/project/_systematicMonitoringBanner.gsp
+@@ -0,0 +1,86 @@
++<g:set var="settingService" bean="settingService"></g:set>
++<nav role='navigation' id="biocollectNav"
++    class="${hubConfig.defaultFacetQuery.contains('isEcoScience:true') ? 'ecoScienceNav' : ''}"
++>
++    <ul id='main'>
++        <g:set var="path" value="${request.getServletPath()}"/>
++        <li class="pull-left">
++            <a id="biocollectlogo" class="white-background" href="${grailsApplication.config.biocollect.homepageUrl}"><img src="${asset.assetPath(src:"icons/BioCollect24.jpg")}" width="193"></a>
++        </li>
++        <%-- <li class="${(path ==~ /.*project\/projectFinder.*/) ? 'active' : ''}">
++            <a href="${createLink(controller: 'home', action: 'index')}" class="btnSearch"><span class="fa fa-search"></span>Search</a>
++        </li> --%>
++        <li class="${(path ==~ /.*bioActivity\/allRecords.*/) ? 'active' : ''}">
++                <a href="${createLink(controller: 'bioActivity', action: 'allRecords')}" class="btnAllData"><span class="fa fa-database"></span>All Records</a>
++        </li>
++        <li class="${(path ==~ /.*site\/.*/) ? 'active' : ''}">
++            <a href="${createLink(controller: 'site', action: 'list')}" class="btnSite"><span class="fa fa-map-marker"></span>Sites</a>
++        </li>
++        <%-- <li class="${(path ==~ /.*project\/create.*/) ? 'active' : ''}">
++            <a href="<fc:getNewProjectLinkForHub hubConfig="${hubConfig}"/>" class="btnNewProject"><span class="fa fa-plus"></span>New Project</a>
++        </li> --%>
++        <g:if test="${fc.userIsSiteAdmin()}">
++            <li class="${(path ==~ /.*admin\/index.*/) ? 'active' : ''}">
++                <a href="${createLink(controller: 'admin')}" class="btnAdministration"><span class="fa fa-lock"></span>Admin</a>
++            </li>
++        </g:if>
++        <g:if test="${fc.currentUserDisplayName()}">
++            <li class="${(path ==~ /.*user\/index.*/) || (path ==~ /.*bioActivity\/list.*/) || (path ==~ /.*project\/myProjects.*/) ? 'active' : ''} dropdown-submenu pull-left" role="menu">
++                <a href="#" ><span class="fa fa-user"></span><fc:currentUserDisplayName/></a>
++                <ul>
++                    <!--
++                    <li><a href="${createLink(controller: 'user', action: 'index')}" class="btnMyDashboard"><span class="fa fa-dashboard"></span>My Dashboard</a></li>
++                    -->
++                    <g:if test="${!settingService.isWorksHub()}">
++                        <li><a href="${createLink(controller: 'bioActivity', action: 'list')}" class="btnMyData"><span class="fa fa-database"></span>My Data</a></li>
++                    </g:if>
++                    <li><a href="${createLink(controller: 'project', action: 'myProjects')}" class="btnMyProjects"><span class="fa fa-folder"></span>My Projects</a></li>
++                    <li><a href="${createLink(controller: 'organisation', action: 'myOrganisations')}" class="btnMyOrganisation"><span class="fa fa-building"></span>My Organisation</a></li>
++                    <li><a href="${createLink(controller: 'site', action: 'myFavourites')}" class="btnMyFavouriteSites"><span class="fa fa-map-marker"></span>My Sites</a></li>
++                </ul>
++            </li>
++        </g:if>
++        <li><fc:loginLogoutButton logoutUrl="${grailsApplication.config.grails.serverURL}/logout/logout"
++                                  iconLogin="fa fa-sign-in" iconLogout="fa fa-sign-out" cssClass="nothing"/></li>
++        <li class="more" data-width="80" style="display: none">
++            <a href="#"><span class="fa fa-ellipsis-h"></span>More</a>
++            <ul class="more-ul"></ul>
++        </li>
++        <li class="pull-right"><a href="http://bioatlas.se" class="ala-link do-not-mark-external"><span
++                class="ala-icon">&nbsp;</span>${grailsApplication.config.organization.name}</a></li>
++    </ul>
++</nav>
++<asset:script>
++    function calcWidth() {
++        var navwidth = 0;
++        var morewidth = $('#main .more').outerWidth(true);
++        $('#main > li:not(.more)').each(function() {
++            navwidth += $(this).outerWidth( true );
++        });
++        var availablespace = $('nav').outerWidth(true) - morewidth;
++
++        if (navwidth > availablespace) {
++            var lastItem = $('#main > li:not(.more)').last();
++            lastItem.attr('data-width', lastItem.outerWidth(true));
++            lastItem.prependTo($('#main .more ul.more-ul'));
++            calcWidth();
++        } else {
++            var firstMoreElement = $('#main li.more li').first();
++            while ((navwidth = navwidth + firstMoreElement.data('width')) < availablespace) {
++                firstMoreElement.insertBefore($('#main .more'));
++                firstMoreElement = $('#main li.more li').first();
++            }
++        }
++
++        if ($('.more li').length > 0) {
++            $('.more').css('display','inline-block');
++        } else {
++            $('.more').css('display','none');
++        }
++    }
++    $(window).on('resize',function(){
++        calcWidth();
++    });
++    $('#biocollectNav').show();
++    calcWidth();
++</asset:script>
+\ No newline at end of file
+diff --git a/grails-app/views/site/_siteDetails.gsp b/grails-app/views/site/_siteDetails.gsp
+index eb30e9b3..c81d6a19 100644
+--- a/grails-app/views/site/_siteDetails.gsp
++++ b/grails-app/views/site/_siteDetails.gsp
+@@ -1,7 +1,7 @@
+ <!-- ko stopBinding: true -->
+ <div class="well" id="sitemap">
+     <div class="row-fluid">
+-        <h2>Site create/edit</h2>
++        <h2><g:message code="site.details.title"/></h2>
+ 
+         <p class="media-heading">
+             <g:message code="site.details.help"/>
+@@ -39,12 +39,12 @@
+     <g:if test="${hideSiteMetadata != true}">
+ 
+         <div class="row-fluid">
+-            <div class="span3">
++            <%-- <div class="span3">
+                 <label for="externalId"><g:message code="site.details.externalId"/>
+                 <fc:iconHelp title="${message(code: 'site.details.externalId')}"><g:message code="site.details.externalId.help"/></fc:iconHelp>
+                 </label>
+                 <input data-bind="value: site().externalId" id="externalId" type="text" class="span12"/>
+-            </div>
++            </div> --%>
+ 
+             <div class="span3">
+                 <label for="siteType"><g:message code="site.details.type"/> <fc:iconHelp
+@@ -87,7 +87,9 @@
+ 
+     <h2><g:message code="site.details.extent.heading"/></h2>
+     <fc:iconHelp title="Extent of the site"><g:message code="site.details.extent.help"/></fc:iconHelp>
++<%-- TODO if systematic monitoring then --%>
++    <%-- <g:render template="/site/siteDefinition" model="${[showLine: true, showMyLocation: true, showAllowSearchLocationByAddress: false, showAllowSearchRegionByAddress: true, showMarker: true]}"/> --%>
++    <g:render template="/site/systematicSiteDefinition" model="${[showLine: true, showMyLocation: true, showAllowSearchLocationByAddress: false, showAllowSearchRegionByAddress: true, showMarker: true]}"/>
+ 
+-    <g:render template="/site/siteDefinition" model="${[showLine: true, showMyLocation: true, showAllowSearchLocationByAddress: false, showAllowSearchRegionByAddress: true, showMarker: true]}"/>
+ </div>
+ <!-- /ko -->
+diff --git a/grails-app/views/site/_systematicSiteDefinition.gsp b/grails-app/views/site/_systematicSiteDefinition.gsp
+new file mode 100644
+index 00000000..fa29f683
+--- /dev/null
++++ b/grails-app/views/site/_systematicSiteDefinition.gsp
+@@ -0,0 +1,229 @@
++<div id="sitedef" class="row-fluid">
++    <div class="span7">
++        <m:map id="mapForSystematic" width="100%"/>
++    </div>
++
++    <div class="span5">
++        <div data-bind="visible: showPointAttributes(), template: { name: 'point'}"></div>
++
++        <div class="well well-small" data-bind="visible: site().extent().geometry().type">
++            <div data-bind="if: transients.loadingGazette()"><span class="fa fa-spin fa-spinner"></span></div>
++
++            <!-- ko if:site().extent().geometry().type() == 'pid' -->
++            <div class="row-fluid controls-row">
++                <span class="label label-success"><g:message code="site.metadata.name"/> </span> <span
++                    data-bind="text: site().extent().geometry().name"></span>
++            </div>
++
++            <div class="row-fluid controls-row">
++                <span class="label label-success"><g:message code="site.metadata.layer"/></span> <span
++                    data-bind="text: site().extent().geometry().layerName"></span>
++            </div>
++
++            <div class="row-fluid controls-row">
++                <span class="label label-success"><g:message code="site.metadata.area"/></span> <span
++                    data-bind="html: displayAreaInReadableFormat"></span>
++            </div>
++            <!-- /ko -->
++
++            <!-- ko if:site().extent().geometry().type() != 'pid' --> 
++            <div class="row-fluid controls-row" data-bind="visible: site().extent().geometry().areaKmSq">
++                <span class="label label-success"><g:message code="site.metadata.area"/></span> <span
++                    data-bind="html: displayAreaInReadableFormat"></span>
++            </div>
++
++            <%-- <div class="row-fluid controls-row gazProperties" data-bind="visible: site().extent().geometry().state">
++                <span class="label label-success"><g:message code="site.metadata.state"/></span> <span
++                    data-bind="expandable: site().extent().geometry().state"></span>
++            </div> --%>
++
++            <div class="row-fluid controls-row gazProperties" data-bind="visible: site().extent().geometry().nrm">
++                <span class="label label-success"><g:message code="site.metadata.nrm"/></span> <span
++                    data-bind="expandable: site().extent().geometry().nrm"></span>
++            </div>
++
++            <div class="row-fluid controls-row" data-bind="visible: site().extent().geometry().centre">
++                <span class="label label-success"><g:message code="site.metadata.centre"/></span> <span
++                    data-bind="text: site().extent().geometry().centre"></span>
++            </div>
++
++            <div class="row-fluid controls-row circleProperties propertyGroup"
++                 data-bind="visible: site().extent().geometry().radius">
++                <span class="label label-success"><g:message code="site.metadata.radius"/></span> <span
++                    data-bind="text: site().extent().geometry().radius"></span>
++            </div>
++            <!-- /ko -->
++        </div>
++
++        <div class="well well-small" data-bind="visible: allowPointsOfInterest()">
++            <h4><g:message code="site.poi.title"/>
++            <fc:iconHelp title="${message(code: 'site.poi.title')}"><g:message code="site.poi.help"/></fc:iconHelp>
++            </h4>
++
++            <div class="row-fluid" id="pointsOfInterest">
++                <div class="span12" data-bind="foreach: pointsOfInterest">
++                    <div>
++                        <div data-bind="template: { name: 'poi'}"></div>
++                        <button type="button" class="btn btn-danger" style="margin-bottom:20px;"
++                                data-bind="click: $parent.removePointOfInterest, visible:!hasPhotoPointDocuments">Remove</button>
++                    </div>
++                    <hr/>
++                </div>
++            </div>
++
++            <div class="row-fluid">
++                <button type="button" data-bind="click: newPointOfInterest"
++                        class="btn">Add <span
++                        data-bind="visible: pointsOfInterest.length > 0">another&nbsp;</span>POI
++                </button>
++            </div>
++        </div>
++    </div>
++</div>
++
++<!-- Template containing additional attributes for a Point shape type -->
++<script type="text/html" id="point">
++<div class="well well-small">
++    <div class="drawLocationDiv row-fluid">
++        <div class="span12">
++            <div class="row-fluid controls-row">
++                <fc:textField data-bind="value: site().extent().geometry().decimalLatitude"
++                              data-validation-engine="validate[required,custom[number],min[-90],max[90]]"
++                              outerClass="span6" label="${message(code:'site.point.lat')}"/>
++                <fc:textField data-bind="value: site().extent().geometry().decimalLongitude"
++                              data-validation-engine="validate[required,custom[number],min[-180],max[180]]"
++                              data-prompt-position="topRight:-150" outerClass="span6" label="${message(code:'site.point.lng')}"/>
++            </div>
++
++            <div class="row-fluid controls-row">
++                <fc:textField data-bind="value: site().extent().geometry().uncertainty" outerClass="span4"
++                              data-validation-engine="validate[min[0],custom[integer]]"
++                              label="${message(code:'site.point.uncertainty')}"/>
++                <fc:textField data-bind="value: site().extent().geometry().precision" outerClass="span4"
++                              data-validation-engine="validate[min[0],custom[number]]"
++                              label="${message(code:'site.point.precision')}"/>
++                %{-- CG - only supporting WGS84 at the moment --}%
++                <fc:textField data-bind="value: site().extent().geometry().datum" outerClass="span4" label="${message(code:'site.point.datum')}"
++                              placeholder="WGS84" readonly="readonly"/>
++            </div>
++
++            <div class="row-fluid  controls-row">
++                <button type="button" data-bind="click: refreshCoordinates"
++                        class="btn">Refresh Coordinates
++                </button>
++            </div>
++        </div>
++    </div>
++</div>
++</script>
++
++<!-- Template containing Point of Interest form fields -->
++<script type="text/html" id="poi">
++<div class="drawLocationDiv row-fluid">
++    <div class="span12">
++        <div class="row-fluid alert" style="box-sizing:border-box;" data-bind="visible:hasPhotoPointDocuments">
++            <g:message code="site.poi.tip"/>
++        </div>
++
++        <div class="row-fluid controls-row">
++            <fc:textField data-bind="value:name" outerClass="span6" label="${message(code:'site.poi.name')}"
++                          data-validation-engine="validate[required]"/>
++            <div class="span6">
++                <label for="type"><g:message code="site.poi.type"/></label>
++                <g:select data-bind="value: type"
++                          name='type'
++                          from="['choose type', 'photopoint', 'location of previous surveys', 'other']"
++                          keys="['none', 'photopoint', 'survey', 'other']"/>
++            </div>
++        </div>
++
++        <div class="row-fluid controls-row">
++            <fc:textArea rows="2" data-bind="value:description" outerClass="span12" class="span12"
++                         label="${message(code:'site.poi.description')}"/>
++        </div>
++
++        <div class="row-fluid controls-row">
++            <fc:textField data-bind="value:geometry().decimalLatitude" outerClass="span4" label="${message(code:'site.poi.lat')}"
++                          data-validation-engine="validate[required,custom[number],min[-90],max[90]]"
++                          data-prompt-position="topRight:-150"/>
++            <fc:textField data-bind="value:geometry().decimalLongitude" outerClass="span4" label="${message(code:'site.poi.lng')}"
++                          data-validation-engine="validate[required,custom[number],min[-180],max[180]]"/>
++            <fc:textField data-bind="value:geometry().bearing" outerClass="span4" label="${message(code:'site.poi.bearing')}"
++                          data-validation-engine="validate[custom[number],min[0],max[360]]"
++                          data-prompt-position="topRight:-150"/>
++        </div>
++
++        <div class="row-fluid controls-row" style="display:none;">
++            <fc:textField data-bind="value:geometry().uncertainty, enable: hasCoordinate()" outerClass="span4"
++                          label="${message(code:'site.poi.uncertainty')}"/>
++            <fc:textField data-bind="value:geometry().precision, enable: hasCoordinate()" outerClass="span4"
++                          label="${message(code:'site.poi.precision')}"/>
++            <fc:textField data-bind="value:geometry().datum, enable: hasCoordinate()" outerClass="span4"
++                          label="${message(code:'site.poi.datum')}"
++                          placeholder="e.g. WGS84"/>
++        </div>
++    </div>
++</div>
++</script>
++
++
++<asset:script type="text/javascript">
++function initSiteViewModel(allowPointsOfInterest, edit) {
++    // server side generated paths & properties
++    var SERVER_CONF = {
++        siteData: ${site ?: [] as grails.converters.JSON},
++        spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
++        regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
++        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
++        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
++        spatialWms: '${grailsApplication.config.spatial.geoserverUrl}',
++        allowPointsOfInterest: allowPointsOfInterest,
++        readonly: edit? true : false,
++        useMyLocation: ${showMyLocation ?: false},
++        allowSearchLocationByAddress: ${showAllowSearchLocationByAddress ?: false},
++        allowSearchRegionByAddress: ${showAllowSearchRegionByAddress ?: true},
++        drawOptions: {
++            polyline: ${showLine ?: true},
++            marker:  ${showMarker ?: true}
++        }
++    };
++
++    var savedSiteData = {
++        siteId: "${site?.siteId}",
++        name : "${site?.name?.encodeAsJavaScript()}",
++        externalId : "${site?.externalId}",
++        catchment: "${site?.catchment}",
++        context : "${site?.context}",
++        type : "${site?.type}",
++        extent: ${site?.extent ?: 'null'},
++        poi: ${site?.poi ?: '[]'},
++        area : "${site?.area}",
++        description : "${site?.description?.encodeAsJavaScript()}",
++        notes : "${site?.notes?.encodeAsJavaScript()}",
++        documents : JSON.parse('${(siteDocuments ?: documents).encodeAsJavaScript() ?: '{}'}'),
++    <g:if test="${project}">
++        projects : ['${project.projectId}'],
++    </g:if>
++    <g:else>
++        projects : ${site?.projects ?: '[]'}
++    </g:else>
++    };
++
++    var siteViewModel = new SystematicSiteViewModel("mapForSystematic", savedSiteData, SERVER_CONF)
++    var map = siteViewModel.map;
++
++    <g:if  test="${project?.projectSite?.extent?.geometry}">
++        var source = "${project.projectSite.extent.source}"
++        var projectArea = <fc:modelAsJavascript model="${project.projectSite.extent.geometry}"/>;
++        var geometry = Biocollect.MapUtilities.featureToValidGeoJson(projectArea);
++        if(source != 'none'){
++            map.setGeoJSON(geometry);
++        }
++    </g:if>
++
++
++    ko.applyBindings(siteViewModel, document.getElementById("sitemap"));
++
++    return siteViewModel;
++}
++</asset:script>
+diff --git a/grails-app/views/site/createSystematic.gsp b/grails-app/views/site/createSystematic.gsp
+new file mode 100644
+index 00000000..c72195a4
+--- /dev/null
++++ b/grails-app/views/site/createSystematic.gsp
+@@ -0,0 +1,182 @@
++<%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
++<g:set var="mapService" bean="mapService"></g:set>
++<!DOCTYPE html>
++<html>
++<head>
++  <meta name="layout" content="${hubConfig.skin}"/>
++  <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | Sites </title>
++    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
++    <meta name="breadcrumbParent2"
++          content="${createLink(controller: 'site', action: 'list')},Sites"/>
++    <g:if test="${project}">
++        <meta name="breadcrumb" content="Create new site for ${project?.name?.encodeAsHTML()}"/>
++    </g:if>
++    <g:elseif test="${create}">
++        <meta name="breadcrumb" content="Create"/>
++    </g:elseif>
++    <g:else>
++        <meta name="breadcrumbParent3"
++              content="${createLink(controller: 'site', action: 'index')}/${site?.siteId},${site?.name?.encodeAsHTML()}"/>
++        <meta name="breadcrumb" content="Edit"/>
++    </g:else>
++
++    <style type="text/css">
++    legend {
++        border: none;
++        margin-bottom: 5px;
++    }
++    h1 input[type="text"] {
++        color: #333a3f;
++        font-size: 28px;
++        /*line-height: 40px;*/
++        font-weight: bold;
++        font-family: Arial, Helvetica, sans-serif;
++        height: 42px;
++    }
++    .no-border { border-top: none !important; }
++  </style>
++    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
++    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
++    <asset:script type="text/javascript">
++    var fcConfig = {
++        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
++        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
++        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
++        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
++        layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
++        spatialService: '${createLink(controller:'proxy',action:'feature')}',
++        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
++        featuresService: "${createLink(controller: 'proxy', action: 'features')}",
++        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
++        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
++        geocodeUrl: "${grailsApplication.config.google.geocode.url}",
++        siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
++        <g:if test="${project}">
++            pageUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'site', action:'createForProject', params:[projectId:project.projectId,checkForState:true])}",
++            projectUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'project', action:'index', id:project.projectId)}",
++        </g:if>
++        <g:elseif test="${site}">
++            pageUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'site', action:'edit', id: site?.siteId, params:[checkForState:true])}",
++        </g:elseif>
++        <g:else>
++            pageUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'site', action:'create', params:[checkForState:true])}",
++        </g:else>
++        sitePageUrl : "${createLink(action: 'index', id: site?.siteId)}",
++        homePageUrl : "${createLink(controller: 'home', action: 'index')}",
++        ajaxUpdateUrl: "${createLink(action: 'ajaxUpdate', id: site?.siteId)}",
++        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
++        returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}"
++        },
++        here = window.location.href;
++
++    </asset:script>
++    <asset:stylesheet src="sites-manifest.css"/>
++    <asset:stylesheet src="leaflet-manifest.css"/>
++    <asset:javascript src="common.js"/>
++    <asset:javascript src="leaflet-manifest.js"/>
++    <asset:javascript src="sites-manifest.js"/>
++    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
++</head>
++<body>
++    <div class="container-fluid validationEngineContainer" id="validation-container">
++        <bs:form action="update" inline="true">
++            <g:render template="siteDetails" model="${[showLine: true]}"/>
++            <div class="row-fluid">
++                <div class="form-actions span12">
++                    <button type="button" id="save" class="btn btn-primary">Save changes</button>
++                    <button type="button" id="cancel" class="btn">Cancel</button>
++                </div>
++            </div>
++        </bs:form>
++    </div>
++    <g:if env="development">
++    <div class="container-fluid">
++        <div class="expandable-debug">
++            <hr />
++            <h3>Debug</h3>
++            <div>
++                <h4>KO model</h4>
++                <pre data-bind="text:ko.toJSON($root,null,2)"></pre>
++                <h4>Activities</h4>
++                <pre>${site?.activities?.encodeAsHTML()}</pre>
++                <h4>Site</h4>
++                <pre>${site?.encodeAsHTML()}</pre>
++                <h4>Projects</h4>
++                <pre>${projects?.encodeAsHTML()}</pre>
++                <h4>Features</h4>
++                <pre>${mapFeatures}</pre>
++            </div>
++        </div>
++    </div>
++    </g:if>
++
++<asset:script type="text/javascript">
++    $(function(){
++
++        $('#validation-container').validationEngine('attach', {scroll: false});
++
++        $('.helphover').popover({animation: true, trigger:'hover'});
++
++        var siteViewModel = initSiteViewModel(true, ${!userCanEdit});
++        $('#cancel').click(function () {
++            if(siteViewModel.saved()){
++                document.location.href = fcConfig.sitePageUrl;
++            } if(fcConfig.projectUrl){
++                document.location.href = fcConfig.projectUrl;
++            }else {
++                document.location.href = fcConfig.homePageUrl;
++            }
++        });
++
++        $('#save').click(function () {
++            if ($('#validation-container').validationEngine('validate')) {
++                var json = siteViewModel.toJS();
++                //validate  if extent.geometry.pid, then update extent.source to pid, extent.geometry.type to pid
++                if (json.extent.geometry.pid){
++                    json.extent.source = 'pid';
++                    json.extent.geometry.type = 'pid'
++                }
++                var data = {
++                    site: json
++                    <g:if test="${project?.projectId}">
++                        ,
++                        projectId: '${project?.projectId.encodeAsHTML()}'
++                    </g:if>
++
++                    <g:if test="${pActivityId}">
++                        ,
++                        pActivityId: '${pActivityId.encodeAsHTML()}'
++                    </g:if>
++                };
++
++                $.ajax({
++                    url: fcConfig.ajaxUpdateUrl,
++                    type: 'POST',
++                    data: JSON.stringify(data),
++                    contentType: 'application/json',
++                    success: function (data) {
++                        if(data.status == 'created'){
++                        <g:if test="${project}">
++                            document.location.href = fcConfig.projectUrl;
++                        </g:if>
++                        <g:else>
++                            document.location.href = fcConfig.sitePageUrl + '/' + data.id;
++                        </g:else>
++                        } else if(data.status == 'updated'){
++                            document.location.href = fcConfig.sitePageUrl;
++                        } else {
++                            bootbox.alert('There was a problem saving this site', function() {location.reload();});
++                        }
++                    },
++                    error: function (data) {
++                        var errorMessage = data.responseText || 'There was a problem saving this site'
++                        bootbox.alert(errorMessage);
++                    }
++                });
++            }
++        });
++    });
++</asset:script>
++
++</body>
++</html>
+\ No newline at end of file
+diff --git a/grails-app/views/site/list.gsp b/grails-app/views/site/list.gsp
+index a6298136..f3508e95 100644
+--- a/grails-app/views/site/list.gsp
++++ b/grails-app/views/site/list.gsp
+@@ -37,6 +37,9 @@
+ </head>
+ 
+ <body>
++    <g:link action="createSystematic" class="btn btn-small">
++    <i class="icon-plus"></i> <g:message code="mapConfiguration.site.create"></g:message> 
++    </g:link>
+ <div id="siteSearch" class="container-fluid margin-top-10">
+     <g:if test="${myFavourites}">
+         <div class="row-fluid">

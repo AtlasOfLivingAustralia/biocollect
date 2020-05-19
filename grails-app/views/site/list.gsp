@@ -37,9 +37,6 @@
 </head>
 
 <body>
-    <g:link action="createSystematic" class="btn btn-small">
-    <i class="icon-plus"></i> <g:message code="mapConfiguration.site.create"></g:message> 
-    </g:link>
 <div id="siteSearch" class="container-fluid margin-top-10">
     <g:if test="${myFavourites}">
         <div class="row-fluid">
@@ -47,6 +44,17 @@
                 <h1 class="pull-left"><g:message code="site.myFavouriteSites.heading"/></h1>
             </div>
         </div>
+
+                    <%-- <!-- only logged in users can add a site - url should be generated -->
+                    <div class="row-fluid">
+                <g:link action="createSystematic" class="btn btn-small">
+    <i class="icon-plus"></i> <g:message code="mapConfiguration.site.create"></g:message> 
+    </g:link> --%>
+    <!--temporary fix-->
+ <div class="row-fluid">
+    <a href="http://localhost:8087/site/createSystematic?projectId=1e62b24d-b9de-480a-9d87-585d3a404544&hub=ala&pActivityId=7ca923bd-b831-44fa-8088-9fd868b73f15" class="btn btn-small">
+    <i class="icon-plus"></i> <g:message code="mapConfiguration.site.create"></g:message> </a>
+
     </g:if>
     <g:render template="/site/searchSite"></g:render>
     <div class="row-fluid">

@@ -6,64 +6,15 @@
     <div class="span5">
         <div data-bind="visible: showPointAttributes(), template: { name: 'point'}"></div>
 
-        <div class="well well-small" data-bind="visible: site().extent().geometry().type">
-            <div data-bind="if: transients.loadingGazette()"><span class="fa fa-spin fa-spinner"></span></div>
-
-            <!-- ko if:site().extent().geometry().type() == 'pid' -->
-            <div class="row-fluid controls-row">
-                <span class="label label-success"><g:message code="site.metadata.name"/> </span> <span
-                    data-bind="text: site().extent().geometry().name"></span>
-            </div>
-
-            <div class="row-fluid controls-row">
-                <span class="label label-success"><g:message code="site.metadata.layer"/></span> <span
-                    data-bind="text: site().extent().geometry().layerName"></span>
-            </div>
-
-            <div class="row-fluid controls-row">
-                <span class="label label-success"><g:message code="site.metadata.area"/></span> <span
-                    data-bind="html: displayAreaInReadableFormat"></span>
-            </div>
-            <!-- /ko -->
-
-            <!-- ko if:site().extent().geometry().type() != 'pid' --> 
-            <div class="row-fluid controls-row" data-bind="visible: site().extent().geometry().areaKmSq">
-                <span class="label label-success"><g:message code="site.metadata.area"/></span> <span
-                    data-bind="html: displayAreaInReadableFormat"></span>
-            </div>
-
-            <%-- <div class="row-fluid controls-row gazProperties" data-bind="visible: site().extent().geometry().state">
-                <span class="label label-success"><g:message code="site.metadata.state"/></span> <span
-                    data-bind="expandable: site().extent().geometry().state"></span>
-            </div> --%>
-
-            <div class="row-fluid controls-row gazProperties" data-bind="visible: site().extent().geometry().nrm">
-                <span class="label label-success"><g:message code="site.metadata.nrm"/></span> <span
-                    data-bind="expandable: site().extent().geometry().nrm"></span>
-            </div>
-
-            <div class="row-fluid controls-row" data-bind="visible: site().extent().geometry().centre">
-                <span class="label label-success"><g:message code="site.metadata.centre"/></span> <span
-                    data-bind="text: site().extent().geometry().centre"></span>
-            </div>
-
-            <div class="row-fluid controls-row circleProperties propertyGroup"
-                 data-bind="visible: site().extent().geometry().radius">
-                <span class="label label-success"><g:message code="site.metadata.radius"/></span> <span
-                    data-bind="text: site().extent().geometry().radius"></span>
-            </div>
-            <!-- /ko -->
-        </div>
-
         <div class="well well-small" data-bind="visible: allowPointsOfInterest()">
-            <h4><g:message code="site.poi.title"/>
-            <fc:iconHelp title="${message(code: 'site.poi.title')}"><g:message code="site.poi.help"/></fc:iconHelp>
+            <h4><g:message code="site.transect.title"/>
+            <fc:iconHelp title="${message(code: 'site.transect.title')}"><g:message code="site.transect.help"/></fc:iconHelp>
             </h4>
 
-            <div class="row-fluid" id="pointsOfInterest">
-                <div class="span12" data-bind="foreach: pointsOfInterest">
+            <div class="row-fluid" id="transectParts">
+                <div class="span12" data-bind="foreach: transectParts">
                     <div>
-                        <div data-bind="template: { name: 'poi'}"></div>
+                        <div data-bind="template: { name: 'transectPart'}"></div>
                         <button type="button" class="btn btn-danger" style="margin-bottom:20px;"
                                 data-bind="click: $parent.removePointOfInterest, visible:!hasPhotoPointDocuments">Remove</button>
                     </div>
@@ -72,9 +23,8 @@
             </div>
 
             <div class="row-fluid">
-                <button type="button" data-bind="click: newPointOfInterest"
-                        class="btn">Add <span
-                        data-bind="visible: pointsOfInterest.length > 0">another&nbsp;</span>POI
+                <button type="button" data-bind="click: newTransectPart"
+                        class="btn"><g:message code="site.transect.addSegment"/>
                 </button>
             </div>
         </div>
@@ -118,7 +68,7 @@
 </script>
 
 <!-- Template containing Point of Interest form fields -->
-<script type="text/html" id="poi">
+<script type="text/html" id="transectPart">
 <div class="drawLocationDiv row-fluid">
     <div class="span12">
         <div class="row-fluid alert" style="box-sizing:border-box;" data-bind="visible:hasPhotoPointDocuments">
@@ -134,6 +84,22 @@
                           name='type'
                           from="['choose type', 'photopoint', 'location of previous surveys', 'other']"
                           keys="['none', 'photopoint', 'survey', 'other']"/>
+            </div>
+        </div>
+        <div class="row-fluid controls-row">
+            <div class="span6">
+                <label for="habitat"><g:message code="site.transect.transectPart.habitat"/></label>
+                <g:select data-bind="value: habitat"
+                          name='habitat'
+                          from="['choose habitat type', 'Lövskog', 'Blandskog', 'Barrskog', 'Hygge', 'other']"
+                          keys="['none', '1', '2', '3', '4', 'other']"/>
+            </div>
+            <div class="span6">
+                <label for="detail"><g:message code="site.transect.transectPart.detail"/></label>
+                <g:select data-bind="value: detail"
+                          name='detail'
+                          from="['choose detaljkoder', 'Kraftledningsgata', 'Grusväg', 'other']"
+                          keys="['none', '1', '2', 'other']"/>
             </div>
         </div>
 
@@ -209,7 +175,7 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
     </g:else>
     };
 
-    var siteViewModel = new SystematicSiteViewModel("mapForSystematic", savedSiteData, SERVER_CONF)
+    var siteViewModel = new SiteViewModel("mapForSystematic", savedSiteData, SERVER_CONF)
     var map = siteViewModel.map;
 
     <g:if  test="${project?.projectSite?.extent?.geometry}">
