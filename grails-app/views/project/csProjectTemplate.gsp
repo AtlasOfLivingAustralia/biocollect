@@ -44,6 +44,7 @@
         downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData',params: [projectId:project.projectId])}",
         getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params:[version: params.version])}",
         siteCreateUrl: "${createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId])}",
+        siteCreateSystematicUrl: "${createLink(controller: 'site', action: 'createSystematic', params: [projectId:project.projectId])}",
         siteSelectUrl: "${createLink(controller: 'site', action: 'select', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
         siteUploadUrl: "${createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
         starProjectUrl: "${createLink(controller: 'project', action: 'starProject')}",

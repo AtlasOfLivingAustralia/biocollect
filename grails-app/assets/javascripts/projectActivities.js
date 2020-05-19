@@ -265,6 +265,10 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         var pActivity = self.current();
         self.saveSitesBeforeRedirect(fcConfig.siteCreateUrl + '&pActivityId=' + pActivity.projectActivityId());
     };
+    self.redirectToCreateSystematic = function(){
+        var pActivity = self.current();
+        self.saveSitesBeforeRedirect(fcConfig.siteCreateSystematicUrl + '&pActivityId=' + pActivity.projectActivityId());
+    };
 
     self.redirectToSelect = function(){
         self.saveSitesBeforeRedirect(fcConfig.siteSelectUrl);
