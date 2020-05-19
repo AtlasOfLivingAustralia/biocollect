@@ -163,6 +163,7 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         type : "${site?.type}",
         extent: ${site?.extent ?: 'null'},
         poi: ${site?.poi ?: '[]'},
+        transectParts: ${site?.transectParts ?: '[]'},
         area : "${site?.area}",
         description : "${site?.description?.encodeAsJavaScript()}",
         notes : "${site?.notes?.encodeAsJavaScript()}",
