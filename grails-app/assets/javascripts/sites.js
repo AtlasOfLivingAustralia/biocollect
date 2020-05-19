@@ -52,7 +52,6 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         })
     });
     self.pointsOfInterest = ko.observableArray();
-    self.transectParts = ko.observableArray();
     self.showPointAttributes = ko.observable(false);
     self.allowPointsOfInterest = ko.observable(mapOptions.allowPointsOfInterest || false);
     self.displayAreaInReadableFormat = null;
@@ -88,13 +87,6 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         if (!_.isEmpty(site.poi)) {
             site.poi.forEach(function (poi) {
                 createPointOfInterest(poi, self.hasPhotoPointDocuments(poi))
-            });
-        }
-
-        // systematic
-        if (!_.isEmpty(site.transectParts)) {
-            site.transectParts.forEach(function (transectPart) {
-                createTransectPart(transectPart, self.hasPhotoPointDocuments(transectPart))
             });
         }
 
@@ -167,18 +159,6 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         }, false);
     };
 
-    // systematic
-    self.newTransectPart = function () {
-        var centre = self.map.getCentre();
-        createTransectPart({
-            name: "S" + (self.transectParts().length + 1),
-            geometry: {
-                decimalLatitude: centre.lat,
-                decimalLongitude: centre.lng
-            }
-        }, false);
-    };
-
     self.refreshCoordinates = function () {
         updateSiteMarkerPosition();
     };
@@ -197,23 +177,6 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         pointOfInterestMarkers.addLayer(pointOfInterest.marker);
 
         self.pointsOfInterest.push(pointOfInterest);
-    }
-    // systematic
-    function createTransectPart(part, hasDocuments) {
-        var transectPart = new TransectPart(part, hasDocuments);
-
-        transectPart.geometry().decimalLatitude.subscribe(self.renderPointsOfInterest);
-        transectPart.geometry().decimalLongitude.subscribe(self.renderPointsOfInterest);
-
-        transectPart.marker = ALA.MapUtils.createMarker(part.geometry.decimalLatitude, part.geometry.decimalLongitude, transectPart.name, {
-            icon: pointOfInterestIcon,
-            draggable: true
-        });
-        transectPart.marker.on("dragend", transectPart.dragEvent);
-        pointOfInterestMarkers.addLayer(transectPart.marker);
-
-        self.transectParts.push(transectPart);
-        console.log(self.transectParts);
     }
 
     self.renderPointsOfInterest = function () {
@@ -252,13 +215,6 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         js.poi = [];
         self.pointsOfInterest().forEach(function (poi) {
             js.poi.push(poi.toJSON())
-        });
-        js.geoIndex = Biocollect.MapUtilities.constructGeoIndexObject(js);
-
-        //systematic 
-        js.transectParts = [];
-        self.transectParts().forEach(function (transectPart) {
-            js.transectParts.push(transectPart.toJSON())
         });
         js.geoIndex = Biocollect.MapUtilities.constructGeoIndexObject(js);
 
@@ -542,59 +498,7 @@ var PointOfInterest = function (data, hasDocuments) {
     };
 };
 
-// systematic
-var TransectPart = function (data, hasDocuments) {
-    var self = this;
 
-    self.marker = null;
-    self.poiId = ko.observable(exists(data, 'poiId'));
-    self.name = ko.observable(exists(data, 'name'));
-    self.type = ko.observable(exists(data, 'type'));
-    self.detail = ko.observable(exists(data, 'detail'));
-    self.habitat = ko.observable(exists(data, 'habitat'));
-    self.description = ko.observable(exists(data, 'description'));
-
-    if (!_.isUndefined(data.geometry)) {
-        self.geometry = ko.observable({
-            type: ALA.MapConstants.DRAW_TYPE.POINT_TYPE,
-            decimalLatitude: ko.observable(exists(data.geometry, 'decimalLatitude')),
-            decimalLongitude: ko.observable(exists(data.geometry, 'decimalLongitude')),
-            uncertainty: ko.observable(exists(data.geometry, 'uncertainty')),
-            precision: ko.observable(exists(data.geometry, 'precision')),
-            datum: ko.observable(exists(data.geometry, 'datum')),
-            bearing: ko.observable(exists(data.geometry, 'bearing'))
-        });
-    }
-    self.hasPhotoPointDocuments = hasDocuments;
-
-    self.dragEvent = function (event) {
-        var lat = event.target.getLatLng().lat;
-        var lng = event.target.getLatLng().lng;
-        self.geometry().decimalLatitude(lat);
-        self.geometry().decimalLongitude(lng);
-    };
-
-    self.hasCoordinate = function () {
-        return !isNaN(self.geometry().decimalLatitude()) && !isNaN(self.geometry().decimalLongitude());
-    };
-
-    self.toJSON = function () {
-        var js = {
-            poiId: self.poiId(),
-            name: self.name(),
-            type: self.type(),
-            habitat: self.habitat(),
-            detail: self.detail(),
-            description: self.description(),
-            geometry: ko.toJS(self.geometry)
-        };
-
-        if (self.hasCoordinate()) {
-            js.geometry.coordinates = [js.geometry.decimalLatitude, js.geometry.decimalLongitude];
-        }
-        return js;
-    };
-};
 
 var SitesViewModel =  function(sites, map, mapFeatures, isUserEditor, projectId, projectDefaultZoomArea) {
 
