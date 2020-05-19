@@ -1,7 +1,7 @@
 <!-- ko stopBinding: true -->
 <div class="well" id="sitemap">
     <div class="row-fluid">
-        <h2><g:message code="site.details.title"/></h2>
+        <h2>Site create/edit</h2>
 
         <p class="media-heading">
             <g:message code="site.details.help"/>
@@ -39,12 +39,12 @@
     <g:if test="${hideSiteMetadata != true}">
 
         <div class="row-fluid">
-            <%-- <div class="span3">
+            <div class="span3">
                 <label for="externalId"><g:message code="site.details.externalId"/>
                 <fc:iconHelp title="${message(code: 'site.details.externalId')}"><g:message code="site.details.externalId.help"/></fc:iconHelp>
                 </label>
                 <input data-bind="value: site().externalId" id="externalId" type="text" class="span12"/>
-            </div> --%>
+            </div>
 
             <div class="span3">
                 <label for="siteType"><g:message code="site.details.type"/> <fc:iconHelp
@@ -87,9 +87,7 @@
 
     <h2><g:message code="site.details.extent.heading"/></h2>
     <fc:iconHelp title="Extent of the site"><g:message code="site.details.extent.help"/></fc:iconHelp>
-<%-- TODO if systematic monitoring then --%>
-    <%-- <g:render template="/site/siteDefinition" model="${[showLine: true, showMyLocation: true, showAllowSearchLocationByAddress: false, showAllowSearchRegionByAddress: true, showMarker: true]}"/> --%>
-    <g:render template="/site/systematicSiteDefinition" model="${[showLine: true, showMyLocation: true, showAllowSearchLocationByAddress: false, showAllowSearchRegionByAddress: true, showMarker: true]}"/>
 
+    <g:render template="/site/siteDefinition" model="${[showLine: true, showMyLocation: true, showAllowSearchLocationByAddress: false, showAllowSearchRegionByAddress: true, showMarker: true]}"/>
 </div>
 <!-- /ko -->
