@@ -10,6 +10,8 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     self.transients = {
         loadingGazette: ko.observable(false)
     };
+
+    // create model for a new site
     self.site = ko.observable({
         name: ko.observable(),
         siteId: ko.observable(),
@@ -84,6 +86,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         }
 
         if (!_.isEmpty(site.poi)) {
+            console.log("poi: ", site.poi);
             site.poi.forEach(function (poi) {
                 createPointOfInterest(poi, self.hasPhotoPointDocuments(poi))
             });
@@ -91,6 +94,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
         // systematic
         if (!_.isEmpty(site.transectParts)) {
+            console.log("poi: ", site.transectParts);
             site.transectParts.forEach(function (transectPart) {
                 createTransectPart(transectPart, self.hasPhotoPointDocuments(transectPart))
             });
@@ -155,6 +159,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     };
 
     self.newPointOfInterest = function () {
+        console.log(site);
         var centre = self.map.getCentre();
         createPointOfInterest({
             name: "Point of interest #" + (self.pointsOfInterest().length + 1),
@@ -167,6 +172,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
     // systematic
     self.newTransectPart = function () {
+        console.log(site);
         var centre = self.map.getCentre();
         createTransectPart({
             name: "S" + (self.transectParts().length + 1),
@@ -198,16 +204,16 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     }
     // systematic
     function createTransectPart(part, hasDocuments) {
-
+        getTransectPart();
         var transectPart = new TransectPart(part, hasDocuments);
         // getTransectPart();
 
-        transectPart.marker = ALA.MapUtils.createMarker(part.geometry.decimalLatitude, part.geometry.decimalLongitude, transectPart.name, {
-            icon: pointOfInterestIcon,
-            draggable: true
-        });
-        transectPart.marker.on("dragend", transectPart.dragEvent);
-        pointOfInterestMarkers.addLayer(transectPart.marker);
+        // transectPart.marker = ALA.MapUtils.createMarker(part.geometry.decimalLatitude, part.geometry.decimalLongitude, transectPart.name, {
+        //     icon: pointOfInterestIcon,
+        //     draggable: true
+        // });
+        // transectPart.marker.on("dragend", transectPart.dragEvent);
+        // pointOfInterestMarkers.addLayer(transectPart.marker);
 
         self.transectParts.push(transectPart);
         console.log(self.transectParts);
@@ -474,46 +480,47 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
     function getTransectPart() {
         var geoJson = self.map.getGeoJSON();
+        console.log("features from map:", geoJson.features);
 
-        if (geoJson && geoJson.features && geoJson.features.length > 0) {
-            var feature = geoJson.features[0];
-            var geometryType = feature.geometry.type;
-            var latLng = null;
-            var lat;
-            var lng;
-            var bounds = self.map.getBounds();
-            if (geometryType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
-                // the ALA Map plugin uses valid GeoJSON, which specifies coordinates as [lng, lat]
-                lat = feature.geometry.coordinates[1];
-                lng = feature.geometry.coordinates[0];
-                self.site().extent().geometry().centre(latLng);
-            } else if (bounds) {
-                lat = bounds.getCenter().lat;
-                lng = bounds.getCenter().lng;
-            }
+        // if (geoJson && geoJson.features && geoJson.features.length > 0) {
+        //     var feature = geoJson.features[0];
+        //     var geometryType = feature.geometry.type;
+        //     var latLng = null;
+        //     var lat;
+        //     var lng;
+        //     var bounds = self.map.getBounds();
+        //     if (geometryType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
+        //         // the ALA Map plugin uses valid GeoJSON, which specifies coordinates as [lng, lat]
+        //         lat = feature.geometry.coordinates[1];
+        //         lng = feature.geometry.coordinates[0];
+        //         self.site().extent().geometry().centre(latLng);
+        //     } else if (bounds) {
+        //         lat = bounds.getCenter().lat;
+        //         lng = bounds.getCenter().lng;
+        //     }
 
-            var geoType = determineExtentType(feature);
-            self.site().extent().geometry().type(geoType);
-            self.site().extent().source(geoType == "Point" ? "Point" : geoType == "pid" ? "pid" : "drawn");
-            self.site().extent().geometry().radius(feature.properties.radius);
+        //     var geoType = determineExtentType(feature);
+        //     self.site().extent().geometry().type(geoType);
+        //     self.site().extent().source(geoType == "Point" ? "Point" : geoType == "pid" ? "pid" : "drawn");
+        //     self.site().extent().geometry().radius(feature.properties.radius);
 
-            // the feature created by a WMS layer will have the area in the 'area_km' property
-            if (feature.properties.area_km) {
-                self.site().extent().geometry().areaKmSq(feature.properties.area_km);
-            } else {
-                self.site().extent().geometry().areaKmSq(ALA.MapUtils.calculateAreaKmSq(feature));
-            }
-            self.site().extent().geometry().coordinates(feature.geometry.coordinates);
+        //     // the feature created by a WMS layer will have the area in the 'area_km' property
+        //     if (feature.properties.area_km) {
+        //         self.site().extent().geometry().areaKmSq(feature.properties.area_km);
+        //     } else {
+        //         self.site().extent().geometry().areaKmSq(ALA.MapUtils.calculateAreaKmSq(feature));
+        //     }
+        //     self.site().extent().geometry().coordinates(feature.geometry.coordinates);
 
-            self.site().extent().geometry().bbox(exists(feature.properties, 'bbox'));
-            self.site().extent().geometry().pid(exists(feature.properties, 'pid'));
-            self.site().extent().geometry().name(exists(feature.properties, 'name'));
-            self.site().extent().geometry().fid(exists(feature.properties, 'fid'));
-            self.site().extent().geometry().layerName(exists(feature.properties, 'fieldname'));
+        //     self.site().extent().geometry().bbox(exists(feature.properties, 'bbox'));
+        //     self.site().extent().geometry().pid(exists(feature.properties, 'pid'));
+        //     self.site().extent().geometry().name(exists(feature.properties, 'name'));
+        //     self.site().extent().geometry().fid(exists(feature.properties, 'fid'));
+        //     self.site().extent().geometry().layerName(exists(feature.properties, 'fieldname'));
 
-        } else {
-            self.loadGeometry({});
-        }
+        // } else {
+        //     self.loadGeometry({});
+        // }
     }
 
     function determineExtentType(geoJsonFeature) {
@@ -604,11 +611,17 @@ var TransectPart = function (data, hasDocuments) {
 
     if (!_.isUndefined(data.geometry)) {
         self.geometry = ko.observable({
-            type: ALA.MapConstants.DRAW_TYPE.LINE_TYPE,
+            type: ALA.MapConstants.DRAW_TYPE.POINT_TYPE,
+            decimalLatitude: ko.observable(exists(data.geometry, 'decimalLatitude')),
+            decimalLongitude: ko.observable(exists(data.geometry, 'decimalLongitude')),
             coordinates: []
         });
     }
     self.hasPhotoPointDocuments = hasDocuments;
+
+    self.hasCoordinate = function () {
+        return !isNaN(self.geometry().decimalLatitude()) && !isNaN(self.geometry().decimalLongitude());
+    };
 
     self.toJSON = function () {
         var js = {
@@ -627,3 +640,5 @@ var TransectPart = function (data, hasDocuments) {
         return js;
     };
 };
+
+
