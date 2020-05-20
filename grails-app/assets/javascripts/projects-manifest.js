@@ -19,6 +19,7 @@
 // projects
 //= require projects.js
 //= require sites.js
+//= require systematicSites.js
 //= require map-configuration.js
 //= require meriPlan.js
 //= require risks.js

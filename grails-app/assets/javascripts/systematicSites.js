@@ -3,15 +3,18 @@
 var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     var self = $.extend(this, new Documents());
 
-    // var pointOfInterestIcon = ALA.MapUtils.createIcon("https://maps.google.com/mapfiles/marker_yellow.png");
-    // var pointOfInterestMarkers = new L.FeatureGroup();
-    // var latSubscriber = null;
-    // var lngSubscriber = null;
-
+    var pointOfInterestIcon = ALA.MapUtils.createIcon("https://maps.google.com/mapfiles/marker_yellow.png");
+    var pointOfInterestMarkers = new L.FeatureGroup();
+    var latSubscriber = null;
+    var lngSubscriber = null;
+    self.transients = {
+        loadingGazette: ko.observable(false)
+    };
     self.site = ko.observable({
         name: ko.observable(),
         siteId: ko.observable(),
         externalId: ko.observable(),
+        catchment: ko.observable(),
         type: ko.observable(),
         area: ko.observable(),
         description: ko.observable(),
@@ -22,8 +25,17 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             geometry:  ko.observable({
                 decimalLatitude: ko.observable(),
                 decimalLongitude: ko.observable(),
-
+                uncertainty: ko.observable(),
+                precision: ko.observable(),
+                datum: ko.observable(),
                 type: ko.observable(),
+                nrm: ko.observable(),
+                state: ko.observable(),
+                lga: ko.observable(),
+                locality: ko.observable(),
+                mvg: ko.observable(),
+                mvs: ko.observable(),
+
                 radius: ko.observable(),
                 areaKmSq: ko.observable(),
                 coordinates: ko.observable(),
@@ -32,6 +44,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
                 bbox: ko.observable(),
                 pid: ko.observable(),
                 name: ko.observable(),
+                fid: ko.observable(),
                 layerName: ko.observable()
             })
         })
@@ -50,6 +63,8 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         var siteModel = self.site();
         siteModel.name(exists(site, "name"));
         siteModel.siteId(exists(site, "siteId"));
+        siteModel.externalId(exists(site, "externalId"));
+        siteModel.catchment(exists(site, "catchment"));
         siteModel.type(exists(site, "type"));
         siteModel.area(exists(site, "area"));
         siteModel.description(exists(site, "description"));
@@ -106,8 +121,16 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         var geometryObservable = self.site().extent().geometry();
         geometryObservable.decimalLatitude(exists(geometry, 'decimalLatitude')),
         geometryObservable.decimalLongitude(exists(geometry, 'decimalLongitude')),
+        geometryObservable.uncertainty(exists(geometry, 'uncertainty')),
+        geometryObservable.precision(exists(geometry, 'precision')),
         geometryObservable.datum(exists(geometry, 'datum')),
         geometryObservable.type(exists(geometry, 'type')),
+        geometryObservable.nrm(exists(geometry, 'nrm')),
+        geometryObservable.state(exists(geometry, 'state')),
+        geometryObservable.lga(exists(geometry, 'lga')),
+        geometryObservable.locality(exists(geometry, 'locality')),
+        geometryObservable.mvg(exists(geometry, 'mvg')),
+        geometryObservable.mvs(exists(geometry, 'mvs')),
         geometryObservable.radius(exists(geometry, 'radius')),
         geometryObservable.areaKmSq(exists(geometry, 'areaKmSq')),
         geometryObservable.coordinates(exists(geometry, 'coordinates')),
@@ -115,6 +138,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         geometryObservable.bbox(exists(geometry, 'bbox')),
         geometryObservable.pid(exists(geometry, 'pid')),
         geometryObservable.name(exists(geometry, 'name')),
+        geometryObservable.fid(exists(geometry, 'fid')),
         geometryObservable.layerName(exists(geometry, 'layerName'))
 
         latSubscriber = geometryObservable.decimalLatitude.subscribe(updateSiteMarkerPosition);
@@ -125,6 +149,8 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             self.map.setGeoJSON(validGeoJson);
             self.showPointAttributes(geometry.type == "Point");
         }
+        loadGazetteInformation(geometryObservable.decimalLatitude(), geometryObservable.decimalLongitude());
+
         return geometryObservable;
     };
 
@@ -174,10 +200,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     function createTransectPart(part, hasDocuments) {
 
         var transectPart = new TransectPart(part, hasDocuments);
-        getTransectPart();
-
-        transectPart.geometry().decimalLatitude.subscribe(self.renderPointsOfInterest);
-        transectPart.geometry().decimalLongitude.subscribe(self.renderPointsOfInterest);
+        // getTransectPart();
 
         transectPart.marker = ALA.MapUtils.createMarker(part.geometry.decimalLatitude, part.geometry.decimalLongitude, transectPart.name, {
             icon: pointOfInterestIcon,
@@ -209,6 +232,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
     // systematic 
     self.renderTransectParts = function () {
+        
         
     };
 
@@ -380,6 +404,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         if (siteMarker && geometry.decimalLatitude() && geometry.decimalLongitude()) {
             siteMarker.setLatLng(new L.LatLng(geometry.decimalLatitude(), geometry.decimalLongitude()));
             self.map.fitBounds();
+            loadGazetteInformation(geometry.decimalLatitude(), geometry.decimalLongitude());
         }
     }
 
@@ -422,10 +447,31 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             self.site().extent().geometry().fid(exists(feature.properties, 'fid'));
             self.site().extent().geometry().layerName(exists(feature.properties, 'fieldname'));
 
+            loadGazetteInformation(lat, lng);
+
         } else {
             self.loadGeometry({});
         }
     }
+    function loadGazetteInformation(lat, lng) {
+        if (!_.isUndefined(lat) && lat && !_.isUndefined(lng) && lng) {
+            self.transients.loadingGazette(true);
+            $.ajax({
+                url: fcConfig.siteMetaDataUrl + "?lat=" + lat + "&lon=" + lng,
+                dataType: "json"
+            }).done(function (data) {
+                self.site().extent().geometry().nrm(exists(data, 'nrm'));
+                self.site().extent().geometry().state(exists(data, 'state'));
+                self.site().extent().geometry().lga(exists(data, 'lga'));
+                self.site().extent().geometry().locality(exists(data, 'locality'));
+                self.site().extent().geometry().mvg(exists(data, 'mvg'));
+                self.site().extent().geometry().mvs(exists(data, 'mvs'));
+            }).always(function (data) {
+                self.transients.loadingGazette(false);
+            });
+        }
+    }
+
     function getTransectPart() {
         var geoJson = self.map.getGeoJSON();
 
