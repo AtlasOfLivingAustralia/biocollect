@@ -4,14 +4,38 @@
     </div>
 
     <div class="span5">
-        <div data-bind="visible: showPointAttributes(), template: { name: 'additionalAttributes'}"></div>
+        <div data-bind="visible: showPointAttributes(), template: { name: 'point'}"></div>
 
         <div class="well well-small" data-bind="visible: allowPointsOfInterest()">
             <h4><g:message code="site.transect.title"/>
             <fc:iconHelp title="${message(code: 'site.transect.title')}"><g:message code="site.transect.help"/></fc:iconHelp>
-            </h4>
+</h4>
+            <div class="row-fluid" id="pointsOfInterest">
+                <div class="span12" data-bind="foreach: pointsOfInterest">
+                    <div>
+                        <div data-bind="template: { name: 'poi'}"></div>
+                        <button type="button" class="btn btn-danger" style="margin-bottom:20px;"
+                                data-bind="click: $parent.removePointOfInterest, visible:!hasPhotoPointDocuments">Remove</button>
+                    </div>
+                    <hr/>
+                </div>
+            </div>
+                        <div class="row-fluid" id="transectParts">
+                <div class="span12" data-bind="foreach: transectParts">
+                    <div>
+                        <div data-bind="template: { name: 'poi'}"></div>
+                        <button type="button" class="btn btn-danger" style="margin-bottom:20px;"
+                                data-bind="click: $parent.removePointOfInterest, visible:!hasPhotoPointDocuments">Remove</button>
+                    </div>
+                    <hr/>
+                </div>
+            </div>
 
             <div class="row-fluid">
+                <%-- <button type="button" data-bind="click: newPointOfInterest"
+                        class="btn">Add <span
+                        data-bind="visible: pointsOfInterest.length > 0">another&nbsp;</span>POI
+                </button> --%>
                 <button type="button" data-bind="click: newTransectPart"
                         class="btn"><g:message code="site.transect.addSegment"/>
                 </button>
@@ -21,7 +45,7 @@
 </div>
 
 <!-- Template containing additional attributes for a Point shape type -->
-<%-- <script type="text/html" id="point">
+<script type="text/html" id="point">
 <div class="well well-small">
     <div class="drawLocationDiv row-fluid">
         <div class="span12">
@@ -54,10 +78,10 @@
         </div>
     </div>
 </div>
-</script> --%>
+</script>
 
 <!-- Template containing Point of Interest form fields -->
-<script type="text/html" id="additionalAttributes">
+<script type="text/html" id="poi">
 <div class="drawLocationDiv row-fluid">
     <div class="span12">
         <div class="row-fluid alert" style="box-sizing:border-box;" data-bind="visible:hasPhotoPointDocuments">
@@ -74,7 +98,7 @@
                           from="['choose type', 'photopoint', 'location of previous surveys', 'other']"
                           keys="['none', 'photopoint', 'survey', 'other']"/>
             </div>
-        </div>
+        </div>      
         <div class="row-fluid controls-row">
             <div class="span6">
                 <label for="habitat"><g:message code="site.transect.transectPart.habitat"/></label>
@@ -91,32 +115,6 @@
                           keys="['none', '1', '2', 'other']"/>
             </div>
         </div>
-
-        <%-- <div class="row-fluid controls-row">
-            <fc:textArea rows="2" data-bind="value:description" outerClass="span12" class="span12"
-                         label="${message(code:'site.poi.description')}"/>
-        </div> --%>
-<%-- 
-        <div class="row-fluid controls-row">
-            <fc:textField data-bind="value:geometry().decimalLatitude" outerClass="span4" label="${message(code:'site.poi.lat')}"
-                          data-validation-engine="validate[required,custom[number],min[-90],max[90]]"
-                          data-prompt-position="topRight:-150"/>
-            <fc:textField data-bind="value:geometry().decimalLongitude" outerClass="span4" label="${message(code:'site.poi.lng')}"
-                          data-validation-engine="validate[required,custom[number],min[-180],max[180]]"/>
-            <fc:textField data-bind="value:geometry().bearing" outerClass="span4" label="${message(code:'site.poi.bearing')}"
-                          data-validation-engine="validate[custom[number],min[0],max[360]]"
-                          data-prompt-position="topRight:-150"/>
-        </div>
-
-        <div class="row-fluid controls-row" style="display:none;">
-            <fc:textField data-bind="value:geometry().uncertainty, enable: hasCoordinate()" outerClass="span4"
-                          label="${message(code:'site.poi.uncertainty')}"/>
-            <fc:textField data-bind="value:geometry().precision, enable: hasCoordinate()" outerClass="span4"
-                          label="${message(code:'site.poi.precision')}"/>
-            <fc:textField data-bind="value:geometry().datum, enable: hasCoordinate()" outerClass="span4"
-                          label="${message(code:'site.poi.datum')}"
-                          placeholder="e.g. WGS84"/>
-        </div> --%>
     </div>
 </div>
 </script>
@@ -152,7 +150,7 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         type : "${site?.type}",
         extent: ${site?.extent ?: 'null'},
         poi: ${site?.poi ?: '[]'},
-        transectParts: ${site?.transectParts ?: '[]'},
+        transectParts: ${site?.poi ?: '[]'},
         area : "${site?.area}",
         description : "${site?.description?.encodeAsJavaScript()}",
         notes : "${site?.notes?.encodeAsJavaScript()}",

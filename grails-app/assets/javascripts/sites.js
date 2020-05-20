@@ -731,4 +731,3 @@ var SitesViewModel =  function(sites, map, mapFeatures, isUserEditor, projectId,
 
     self.displaySites();
 };
-
