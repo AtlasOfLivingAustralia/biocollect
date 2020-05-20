@@ -4,23 +4,12 @@
     </div>
 
     <div class="span5">
-        <div data-bind="visible: showPointAttributes(), template: { name: 'point'}"></div>
+        <div data-bind="visible: showPointAttributes(), template: { name: 'additionalAttributes'}"></div>
 
         <div class="well well-small" data-bind="visible: allowPointsOfInterest()">
             <h4><g:message code="site.transect.title"/>
             <fc:iconHelp title="${message(code: 'site.transect.title')}"><g:message code="site.transect.help"/></fc:iconHelp>
             </h4>
-
-            <div class="row-fluid" id="transectParts">
-                <div class="span12" data-bind="foreach: transectParts">
-                    <div>
-                        <div data-bind="template: { name: 'transectPart'}"></div>
-                        <button type="button" class="btn btn-danger" style="margin-bottom:20px;"
-                                data-bind="click: $parent.removePointOfInterest, visible:!hasPhotoPointDocuments">Remove</button>
-                    </div>
-                    <hr/>
-                </div>
-            </div>
 
             <div class="row-fluid">
                 <button type="button" data-bind="click: newTransectPart"
@@ -32,7 +21,7 @@
 </div>
 
 <!-- Template containing additional attributes for a Point shape type -->
-<script type="text/html" id="point">
+<%-- <script type="text/html" id="point">
 <div class="well well-small">
     <div class="drawLocationDiv row-fluid">
         <div class="span12">
@@ -65,10 +54,10 @@
         </div>
     </div>
 </div>
-</script>
+</script> --%>
 
 <!-- Template containing Point of Interest form fields -->
-<script type="text/html" id="transectPart">
+<script type="text/html" id="additionalAttributes">
 <div class="drawLocationDiv row-fluid">
     <div class="span12">
         <div class="row-fluid alert" style="box-sizing:border-box;" data-bind="visible:hasPhotoPointDocuments">
@@ -103,11 +92,11 @@
             </div>
         </div>
 
-        <div class="row-fluid controls-row">
+        <%-- <div class="row-fluid controls-row">
             <fc:textArea rows="2" data-bind="value:description" outerClass="span12" class="span12"
                          label="${message(code:'site.poi.description')}"/>
-        </div>
-
+        </div> --%>
+<%-- 
         <div class="row-fluid controls-row">
             <fc:textField data-bind="value:geometry().decimalLatitude" outerClass="span4" label="${message(code:'site.poi.lat')}"
                           data-validation-engine="validate[required,custom[number],min[-90],max[90]]"
@@ -127,7 +116,7 @@
             <fc:textField data-bind="value:geometry().datum, enable: hasCoordinate()" outerClass="span4"
                           label="${message(code:'site.poi.datum')}"
                           placeholder="e.g. WGS84"/>
-        </div>
+        </div> --%>
     </div>
 </div>
 </script>
@@ -176,7 +165,7 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
     </g:else>
     };
 
-    var siteViewModel = new SiteViewModel("mapForSystematic", savedSiteData, SERVER_CONF)
+    var siteViewModel = new SystematicSiteViewModel("mapForSystematic", savedSiteData, SERVER_CONF)
     var map = siteViewModel.map;
 
     <g:if  test="${project?.projectSite?.extent?.geometry}">
