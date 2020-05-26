@@ -25,7 +25,7 @@
                     <div>
                         <div data-bind="template: { name: 'poi'}"></div>
                         <button type="button" class="btn btn-danger" style="margin-bottom:20px;"
-                                data-bind="click: $parent.removePointOfInterest, visible:!hasPhotoPointDocuments">Remove</button>
+                                data-bind="click: $parent.removeTransectPart, visible:!hasPhotoPointDocuments">Remove</button>
                     </div>
                     <hr/>
                 </div>
@@ -91,26 +91,28 @@
         <div class="row-fluid controls-row">
             <fc:textField data-bind="value:name" outerClass="span6" label="${message(code:'site.poi.name')}"
                           data-validation-engine="validate[required]"/>
-            <div class="span6">
+            <%-- <div class="span6">
                 <label for="type"><g:message code="site.poi.type"/></label>
                 <g:select data-bind="value: type"
                           name='type'
                           from="['choose type', 'photopoint', 'location of previous surveys', 'other']"
                           keys="['none', 'photopoint', 'survey', 'other']"/>
-            </div>
+            </div> --%>
         </div>      
         <div class="row-fluid controls-row">
             <div class="span6">
                 <label for="habitat"><g:message code="site.transect.transectPart.habitat"/></label>
                 <g:select data-bind="value: habitat"
-                          name='habitat'
+                          name="habitat"
+                          multiple="true"
                           from="['choose habitat type', 'Lövskog', 'Blandskog', 'Barrskog', 'Hygge', 'other']"
                           keys="['none', '1', '2', '3', '4', 'other']"/>
             </div>
             <div class="span6">
                 <label for="detail"><g:message code="site.transect.transectPart.detail"/></label>
                 <g:select data-bind="value: detail"
-                          name='detail'
+                          name="detail"
+                          multiple="true"
                           from="['choose detaljkoder', 'Kraftledningsgata', 'Grusväg', 'other']"
                           keys="['none', '1', '2', 'other']"/>
             </div>
@@ -165,15 +167,15 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
 
     var siteViewModel = new SystematicSiteViewModel("mapForSystematic", savedSiteData, SERVER_CONF)
     var map = siteViewModel.map;
-
-    <g:if  test="${project?.projectSite?.extent?.geometry}">
+<!-- temporary fix to be zoomed in on Sweden - should be done in map-plugin!-->
+    <%-- <g:if  test="${project?.projectSite?.extent?.geometry}">
         var source = "${project.projectSite.extent.source}"
         var projectArea = <fc:modelAsJavascript model="${project.projectSite.extent.geometry}"/>;
         var geometry = Biocollect.MapUtilities.featureToValidGeoJson(projectArea);
         if(source != 'none'){
             map.setGeoJSON(geometry);
         }
-    </g:if>
+    </g:if> --%>
 
 
     ko.applyBindings(siteViewModel, document.getElementById("sitemap"));
