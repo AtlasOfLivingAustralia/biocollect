@@ -3,7 +3,7 @@
 var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     var self = $.extend(this, new Documents());
 
-    var pointOfInterestIcon = ALA.MapUtils.createIcon("https://maps.google.com/mapfiles/marker_yellow.png");
+    // var pointOfInterestIcon = ALA.MapUtils.createIcon("https://maps.google.com/mapfiles/marker_yellow.png");
     var pointOfInterestMarkers = new L.FeatureGroup();
     var latSubscriber = null;
     var lngSubscriber = null;
@@ -55,7 +55,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     self.transectParts = ko.observableArray();
     self.showPointAttributes = ko.observable(false);
     self.allowPointsOfInterest = ko.observable(mapOptions.allowPointsOfInterest || false);
-    self.displayAreaInReadableFormat = null;
+    // self.displayAreaInReadableFormat = null;
 
     self.site().extent().geometry().areaKmSq.subscribe(function(val){
         self.site().area(val)
@@ -73,17 +73,17 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         siteModel.notes(exists(site, "notes"));
         siteModel.projects(site.projects || []);
 
-        if (site.extent) {
-            self.site().extent().source(exists(site.extent, "source"));
-            self.loadGeometry(site.extent.geometry || {});
-        } else {
-            self.site().extent().source('');
+        // if (site.extent) {
+        //     self.site().extent().source(exists(site.extent, "source"));
+        //     self.loadGeometry(site.extent.geometry || {});
+        // } else {
+            // self.site().extent().source('');
             self.loadGeometry({});
-        }
+        // }
 
-        if(self.site().extent().geometry().areaKmSq()){
-            self.site().area(self.site().extent().geometry().areaKmSq())
-        }
+        // if(self.site().extent().geometry().areaKmSq()){
+        //     self.site().area(self.site().extent().geometry().areaKmSq())
+        // }
 
         if (!_.isEmpty(site.poi)) {
             site.poi.forEach(function (poi) {
@@ -147,7 +147,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
         if (!_.isEmpty(geometry) && self.site().extent().source() != 'none') {
             var validGeoJson = Biocollect.MapUtilities.featureToValidGeoJson(geometry);
-            self.map.setGeoJSON(validGeoJson);
+            // self.map.setGeoJSON(validGeoJson);
             self.showPointAttributes(geometry.type == "Point");
         }
         loadGazetteInformation(geometryObservable.decimalLatitude(), geometryObservable.decimalLongitude());
@@ -156,17 +156,17 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     };
 
 
-    self.newPointOfInterest = function () {
-        console.log(site);
-        var centre = self.map.getCentre();
-        createPointOfInterest({
-            name: "P" + (self.pointsOfInterest().length + 1),
-            geometry: {
-                decimalLatitude: centre.lat,
-                decimalLongitude: centre.lng
-            }
-        }, false);
-    };
+    // self.newPointOfInterest = function () {
+    //     console.log(site);
+    //     var centre = self.map.getCentre();
+    //     createPointOfInterest({
+    //         name: "P" + (self.pointsOfInterest().length + 1),
+    //         geometry: {
+    //             decimalLatitude: centre.lat,
+    //             decimalLongitude: centre.lng
+    //         }
+    //     }, false);
+    // };
 
     self.newTransectPart = function () {
         console.log("site", site);
@@ -184,21 +184,21 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         updateSiteMarkerPosition();
     };
 
-    function createPointOfInterest(poi, hasDocuments) {
-        var pointOfInterest = new PointOfInterest(poi, hasDocuments);
+    // function createPointOfInterest(poi, hasDocuments) {
+    //     var pointOfInterest = new PointOfInterest(poi, hasDocuments);
 
-        pointOfInterest.geometry().decimalLatitude.subscribe(self.renderPointsOfInterest);
-        pointOfInterest.geometry().decimalLongitude.subscribe(self.renderPointsOfInterest);
+    //     pointOfInterest.geometry().decimalLatitude.subscribe(self.renderPointsOfInterest);
+    //     pointOfInterest.geometry().decimalLongitude.subscribe(self.renderPointsOfInterest);
 
-        pointOfInterest.marker = ALA.MapUtils.createMarker(poi.geometry.decimalLatitude, poi.geometry.decimalLongitude, pointOfInterest.name, {
-            icon: pointOfInterestIcon,
-            draggable: true
-        });
-        pointOfInterest.marker.on("dragend", pointOfInterest.dragEvent);
-        pointOfInterestMarkers.addLayer(pointOfInterest.marker);
+    //     pointOfInterest.marker = ALA.MapUtils.createMarker(poi.geometry.decimalLatitude, poi.geometry.decimalLongitude, pointOfInterest.name, {
+    //         icon: pointOfInterestIcon,
+    //         draggable: true
+    //     });
+    //     pointOfInterest.marker.on("dragend", pointOfInterest.dragEvent);
+    //     pointOfInterestMarkers.addLayer(pointOfInterest.marker);
 
-        self.pointsOfInterest.push(pointOfInterest);
-    }
+    //     self.pointsOfInterest.push(pointOfInterest);
+    // }
 
     function createTransectPart(part, hasDocuments) {
         var transectPart = new TransectPart(part, hasDocuments);
@@ -206,22 +206,22 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         self.transectParts.push(transectPart);
     }
 
-    self.renderPointsOfInterest = function () {
-        pointOfInterestMarkers.clearLayers();
+    // self.renderPointsOfInterest = function () {
+    //     pointOfInterestMarkers.clearLayers();
 
-        self.pointsOfInterest().forEach(function (pointOfInterest) {
-            var marker  = ALA.MapUtils.createMarker(
-                pointOfInterest.geometry().decimalLatitude(),
-                pointOfInterest.geometry().decimalLongitude(),
-                pointOfInterest.name,
-                {icon: pointOfInterestIcon, draggable: true}
-            );
+    //     self.pointsOfInterest().forEach(function (pointOfInterest) {
+    //         var marker  = ALA.MapUtils.createMarker(
+    //             pointOfInterest.geometry().decimalLatitude(),
+    //             pointOfInterest.geometry().decimalLongitude(),
+    //             pointOfInterest.name,
+    //             {icon: pointOfInterestIcon, draggable: true}
+    //         );
 
-            marker.on("dragend", pointOfInterest.dragEvent);
+    //         marker.on("dragend", pointOfInterest.dragEvent);
 
-            pointOfInterestMarkers.addLayer(marker);
-        });
-    };
+    //         pointOfInterestMarkers.addLayer(marker);
+    //     });
+    // };
 
     self.renderTransectParts = function () {        
         self.transectParts().forEach(function (transectPart) {
@@ -230,13 +230,13 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         });
     };
 
-    self.removePointOfInterest = function (pointOfInterest) {
-        if (pointOfInterest.hasPhotoPointDocuments) {
-            return;
-        }
-        self.pointsOfInterest.remove(pointOfInterest);
-        self.renderPointsOfInterest();
-    };
+    // self.removePointOfInterest = function (pointOfInterest) {
+    //     if (pointOfInterest.hasPhotoPointDocuments) {
+    //         return;
+    //     }
+    //     self.pointsOfInterest.remove(pointOfInterest);
+    //     self.renderPointsOfInterest();
+    // };
 
     self.removeTransectPart = function (transectPart) {
         if (transectPart.hasPhotoPointDocuments) {
@@ -387,51 +387,51 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         }
     }
 
-    function updateGeometry() {
-        var geoJson = self.map.getGeoJSON();
+    // function updateGeometry() {
+    //     var geoJson = self.map.getGeoJSON();
 
-        if (geoJson && geoJson.features && geoJson.features.length > 0) {
-            var feature = geoJson.features[0];
-            var geometryType = feature.geometry.type;
-            var latLng = null;
-            var lat;
-            var lng;
-            var bounds = self.map.getBounds();
-            if (geometryType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
-                // the ALA Map plugin uses valid GeoJSON, which specifies coordinates as [lng, lat]
-                lat = feature.geometry.coordinates[1];
-                lng = feature.geometry.coordinates[0];
-                self.site().extent().geometry().centre(latLng);
-            } else if (bounds) {
-                lat = bounds.getCenter().lat;
-                lng = bounds.getCenter().lng;
-            }
+    //     if (geoJson && geoJson.features && geoJson.features.length > 0) {
+    //         var feature = geoJson.features[0];
+    //         var geometryType = feature.geometry.type;
+    //         var latLng = null;
+    //         var lat;
+    //         var lng;
+    //         var bounds = self.map.getBounds();
+    //         if (geometryType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
+    //             // the ALA Map plugin uses valid GeoJSON, which specifies coordinates as [lng, lat]
+    //             lat = feature.geometry.coordinates[1];
+    //             lng = feature.geometry.coordinates[0];
+    //             self.site().extent().geometry().centre(latLng);
+    //         } else if (bounds) {
+    //             lat = bounds.getCenter().lat;
+    //             lng = bounds.getCenter().lng;
+    //         }
 
-            var geoType = determineExtentType(feature);
-            self.site().extent().geometry().type(geoType);
-            self.site().extent().source(geoType == "Point" ? "Point" : geoType == "pid" ? "pid" : "drawn");
-            self.site().extent().geometry().radius(feature.properties.radius);
+    //         var geoType = determineExtentType(feature);
+    //         self.site().extent().geometry().type(geoType);
+    //         self.site().extent().source(geoType == "Point" ? "Point" : geoType == "pid" ? "pid" : "drawn");
+    //         self.site().extent().geometry().radius(feature.properties.radius);
 
-            // the feature created by a WMS layer will have the area in the 'area_km' property
-            if (feature.properties.area_km) {
-                self.site().extent().geometry().areaKmSq(feature.properties.area_km);
-            } else {
-                self.site().extent().geometry().areaKmSq(ALA.MapUtils.calculateAreaKmSq(feature));
-            }
-            self.site().extent().geometry().coordinates(feature.geometry.coordinates);
+    //         // the feature created by a WMS layer will have the area in the 'area_km' property
+    //         if (feature.properties.area_km) {
+    //             self.site().extent().geometry().areaKmSq(feature.properties.area_km);
+    //         } else {
+    //             self.site().extent().geometry().areaKmSq(ALA.MapUtils.calculateAreaKmSq(feature));
+    //         }
+    //         self.site().extent().geometry().coordinates(feature.geometry.coordinates);
 
-            self.site().extent().geometry().bbox(exists(feature.properties, 'bbox'));
-            self.site().extent().geometry().pid(exists(feature.properties, 'pid'));
-            self.site().extent().geometry().name(exists(feature.properties, 'name'));
-            self.site().extent().geometry().fid(exists(feature.properties, 'fid'));
-            self.site().extent().geometry().layerName(exists(feature.properties, 'fieldname'));
+    //         self.site().extent().geometry().bbox(exists(feature.properties, 'bbox'));
+    //         self.site().extent().geometry().pid(exists(feature.properties, 'pid'));
+    //         self.site().extent().geometry().name(exists(feature.properties, 'name'));
+    //         self.site().extent().geometry().fid(exists(feature.properties, 'fid'));
+    //         self.site().extent().geometry().layerName(exists(feature.properties, 'fieldname'));
 
-            loadGazetteInformation(lat, lng);
+    //         loadGazetteInformation(lat, lng);
 
-        } else {
-            self.loadGeometry({});
-        }
-    }
+    //     } else {
+    //         self.loadGeometry({});
+    //     }
+    // }
     function loadGazetteInformation(lat, lng) {
         if (!_.isUndefined(lat) && lat && !_.isUndefined(lng) && lng) {
             self.transients.loadingGazette(true);
@@ -462,28 +462,6 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             self.loadGeometry({});
         }
         return feature;
-    }
-
-    function determineExtentType(geoJsonFeature) {
-        var type = null;
-
-        if (geoJsonFeature.geometry.type === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
-            if (geoJsonFeature.properties.radius) {
-                type = ALA.MapConstants.DRAW_TYPE.CIRCLE_TYPE;
-            } else {
-                type = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
-            }
-        } else if (geoJsonFeature.geometry.type === ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE) {
-            if (geoJsonFeature.properties.pid) {
-                type = "pid";
-            } else {
-                type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
-            }
-        } else if (geoJsonFeature.geometry.type == ALA.MapConstants.DRAW_TYPE.LINE_TYPE) {
-            type = geoJsonFeature.geometry.type
-        }
-
-        return type;
     }
 
     initialiseViewModel();
@@ -537,6 +515,27 @@ var PointOfInterest = function (data, hasDocuments) {
         return js;
     };
 };
+// function determineExtentType(geoJsonFeature) {
+//     var type = null;
+
+//     if (geoJsonFeature.geometry.type === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
+//         if (geoJsonFeature.properties.radius) {
+//             type = ALA.MapConstants.DRAW_TYPE.CIRCLE_TYPE;
+//         } else {
+//             type = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
+//         }
+//     } else if (geoJsonFeature.geometry.type === ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE) {
+//         if (geoJsonFeature.properties.pid) {
+//             type = "pid";
+//         } else {
+//             type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
+//         }
+//     } else if (geoJsonFeature.geometry.type == ALA.MapConstants.DRAW_TYPE.LINE_TYPE) {
+//         type = geoJsonFeature.geometry.type
+//     }
+
+//     return type;
+// }
 
 var TransectPart = function (data, hasDocuments) {
     var self = this;
@@ -549,8 +548,9 @@ var TransectPart = function (data, hasDocuments) {
     self.description = ko.observable(exists(data, 'description'));
     console.log("data geometry", data.geometry);
     if (!_.isUndefined(data.geometry)) {
+        
         self.geometry = ko.observable({
-            type: ALA.MapConstants.DRAW_TYPE.LINE_TYPE,
+            type: data.geometry.type,
             decimalLatitude: ko.observable(exists(data.geometry, 'decimalLatitude')),
             decimalLongitude: ko.observable(exists(data.geometry, 'decimalLongitude')),
             coordinates: ko.observable(exists(data.geometry, 'coordinates'))
