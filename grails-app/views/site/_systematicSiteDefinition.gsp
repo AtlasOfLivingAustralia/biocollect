@@ -102,19 +102,11 @@
         <div class="row-fluid controls-row">
             <div class="span6">
                 <label for="habitat"><g:message code="site.transect.transectPart.habitat"/></label>
-                <g:select data-bind="value: habitat"
-                          name="habitat"
-                          multiple="true"
-                          from="['choose habitat type', 'Lövskog', 'Blandskog', 'Barrskog', 'Hygge', 'other']"
-                          keys="['none', '1', '2', '3', '4', 'other']"/>
+                <select data-bind="options: habitatList, selectedOptions: habitat" multiple="true" size="6"></select>
             </div>
             <div class="span6">
                 <label for="detail"><g:message code="site.transect.transectPart.detail"/></label>
-                <g:select data-bind="value: detail"
-                          name="detail"
-                          multiple="true"
-                          from="['choose detaljkoder', 'Kraftledningsgata', 'Grusväg', 'other']"
-                          keys="['none', '1', '2', 'other']"/>
+                <select data-bind="options: detailList, selectedOptions: detail" multiple="true" size="6"></select>
             </div>
         </div>
     </div>
@@ -152,7 +144,7 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         type : "${site?.type}",
         extent: ${site?.extent ?: 'null'},
         poi: ${site?.poi ?: '[]'},
-        transectParts: ${site?.poi ?: '[]'},
+        transectParts: ${site?.transectParts ?: '[]'},
         area : "${site?.area}",
         description : "${site?.description?.encodeAsJavaScript()}",
         notes : "${site?.notes?.encodeAsJavaScript()}",
