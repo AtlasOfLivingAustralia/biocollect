@@ -430,25 +430,22 @@ var TransectPart = function (data, hasDocuments) {
     self.description = ko.observable(exists(data, 'description'));
     console.log("data geometry", data.geometry);
     if (!_.isUndefined(data.geometry)) {
-
-        if (data.geometry.type === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
-            if (data.properties.radius) {
-                type = ALA.MapConstants.DRAW_TYPE.CIRCLE_TYPE;
-            } else {
-                type = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
-            }
-        } else if (data.geometry.type === ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE) {
+        var geoType = data.geometry.type;
+        // TODO: check if circle is needed - removed the option now
+        if (geoType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
+                geoType = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
+            } else if (geoType === ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE) {
             if (data.properties.pid) {
-                type = "pid";
+                geoType = "pid";
             } else {
-                type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
+                geoType = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
             }
-        } else if (data.geometry.type == ALA.MapConstants.DRAW_TYPE.LINE_TYPE) {
-            type = data.geometry.type
+        } else if (geoType == ALA.MapConstants.DRAW_TYPE.LINE_TYPE) {
+            geoType = geoType
         }
 
         self.geometry = ko.observable({
-            type: type,
+            type: geoType,
             decimalLatitude: ko.observable(exists(data.geometry, 'decimalLatitude')),
             decimalLongitude: ko.observable(exists(data.geometry, 'decimalLongitude')),
             coordinates: ko.observable(exists(data.geometry, 'coordinates'))
