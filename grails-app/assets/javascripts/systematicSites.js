@@ -250,11 +250,12 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             wmsLayerUrl: mapOptions.spatialWms + "/wms/reflect?",
             wmsFeatureUrl: mapOptions.featureService + "?featureId=",
             drawOptions: mapOptions.drawOptions,
-            singleDraw: false,
+            singleDraw: mapOptions.singleDraw,
+            markerOrShapeNotBoth: mapOptions.markerOrShapeNotBoth,
             showReset: false,
-            baseLayer: baseLayersAndOverlays.baseLayer
+            baseLayer: baseLayersAndOverlays.baseLayer,
+            otherLayers: baseLayersAndOverlays.otherLayers
             // ,
-            // otherLayers: baseLayersAndOverlays.otherLayers,
             // overlays: baseLayersAndOverlays.overlays,
             // overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault
         };
@@ -268,7 +269,8 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         if(mapOptions.readonly){
             var readonlyProps = {
                 drawControl: false,
-                // singleMarker: false,
+                singleMarker: false,
+                markerOrShapeNotBoth: false,
                 useMyLocation: false,
                 allowSearchLocationByAddress: false,
                 allowSearchRegionByAddress: false,
