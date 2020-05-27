@@ -4,9 +4,10 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     var self = $.extend(this, new Documents());
 
     // var pointOfInterestIcon = ALA.MapUtils.createIcon("https://maps.google.com/mapfiles/marker_yellow.png");
-    var pointOfInterestMarkers = new L.FeatureGroup();
-    var latSubscriber = null;
-    var lngSubscriber = null;
+    // var pointOfInterestMarkers = new L.FeatureGroup();
+    var transectFeatureGroup = new L.FeatureGroup();
+    // var latSubscriber = null;
+    // var lngSubscriber = null;
     self.transients = {
         loadingGazette: ko.observable(false)
     };
@@ -85,11 +86,11 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         //     self.site().area(self.site().extent().geometry().areaKmSq())
         // }
 
-        if (!_.isEmpty(site.poi)) {
-            site.poi.forEach(function (poi) {
-                createPointOfInterest(poi, self.hasPhotoPointDocuments(poi))
-            });
-        }
+        // if (!_.isEmpty(site.poi)) {
+        //     site.poi.forEach(function (poi) {
+        //         createPointOfInterest(poi, self.hasPhotoPointDocuments(poi))
+        //     });
+        // }
 
         if (!_.isEmpty(site.transectParts)) {
             site.transectParts.forEach(function (transectPart) {
@@ -142,15 +143,15 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         geometryObservable.fid(exists(geometry, 'fid')),
         geometryObservable.layerName(exists(geometry, 'layerName'))
 
-        latSubscriber = geometryObservable.decimalLatitude.subscribe(updateSiteMarkerPosition);
-        lngSubscriber = geometryObservable.decimalLongitude.subscribe(updateSiteMarkerPosition);
+        // latSubscriber = geometryObservable.decimalLatitude.subscribe(updateSiteMarkerPosition);
+        // lngSubscriber = geometryObservable.decimalLongitude.subscribe(updateSiteMarkerPosition);
 
         if (!_.isEmpty(geometry) && self.site().extent().source() != 'none') {
             var validGeoJson = Biocollect.MapUtilities.featureToValidGeoJson(geometry);
-            // self.map.setGeoJSON(validGeoJson);
+            self.map.setGeoJSON(validGeoJson);
             self.showPointAttributes(geometry.type == "Point");
         }
-        loadGazetteInformation(geometryObservable.decimalLatitude(), geometryObservable.decimalLongitude());
+        // loadGazetteInformation(geometryObservable.decimalLatitude(), geometryObservable.decimalLongitude());
 
         return geometryObservable;
     };
@@ -159,7 +160,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         console.log("site", site);
         var feature = getTransectPart();
         createTransectPart({
-            name: "S" + (self.transectParts().length + 1),
+            name: "S" + (feature.properties.name + 1),
             geometry: {
                 type: feature.geometry.type,
                 coordinates: feature.geometry.coordinates
@@ -171,13 +172,18 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         updateSiteMarkerPosition();
     };
 
-    function createTransectPart(part, hasDocuments) {
-        var transectPart = new TransectPart(part, hasDocuments);
+    function createTransectPart(feature, hasDocuments) {
+        var transectPart = new TransectPart(feature, hasDocuments);
+        // transectPart.feature = feature;
+        // transectPart.feature.on();
         console.log("part: ", transectPart);
         self.transectParts.push(transectPart);
+        // TODO: add feature to feature group 
+        // transectFeatureGroup.addLayer(transectPart.feature);
     }
 
-    self.renderTransectParts = function () {        
+    self.renderTransectParts = function () {  
+        transectFeatureGroup.clearLayers();      
         self.transectParts().forEach(function (transectPart) {
             self.map.setGeoJSON(transectPart.geometry);
             // marker.on("dragend", pointOfInterest.dragEvent);
@@ -246,10 +252,11 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             drawOptions: mapOptions.drawOptions,
             singleDraw: false,
             showReset: false,
-            baseLayer: baseLayersAndOverlays.baseLayer,
-            otherLayers: baseLayersAndOverlays.otherLayers,
-            overlays: baseLayersAndOverlays.overlays,
-            overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault
+            baseLayer: baseLayersAndOverlays.baseLayer
+            // ,
+            // otherLayers: baseLayersAndOverlays.otherLayers,
+            // overlays: baseLayersAndOverlays.overlays,
+            // overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault
         };
 
         for (var option in mapOptions) {
@@ -261,7 +268,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         if(mapOptions.readonly){
             var readonlyProps = {
                 drawControl: false,
-                singleMarker: false,
+                // singleMarker: false,
                 useMyLocation: false,
                 allowSearchLocationByAddress: false,
                 allowSearchRegionByAddress: false,
@@ -282,7 +289,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
         self.map.addButton("<span class='fa fa-undo reset-map' title='Reset map'></span>", function () {
             self.map.resetMap();
-            pointOfInterestMarkers.clearLayers();
+            // pointOfInterestMarkers.clearLayers();
             self.pointsOfInterest([]);
             self.transectParts([]);
             self.loadGeometry({});
@@ -291,66 +298,68 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
 
 
-        self.map.registerListener("draw:created", function (event) {
-            if (event.layerType == ALA.MapConstants.LAYER_TYPE.MARKER) {
-                updatePointLatLng(event.layer.getLatLng().lat, event.layer.getLatLng().lng);
-            }
-        });
+        // self.map.registerListener("draw:created", function (event) {
+        //     console.log(event);
+        //     console.log("event on layer: ", event.layerType);
+        //     if (event.layerType == ALA.MapConstants.LAYER_TYPE.MARKER) {
+        //         updatePointLatLng(event.layer.getLatLng().lat, event.layer.getLatLng().lng);
+        //     }
+        // });
 
         // We'll track the points of interest as a separate feature group manually attached to the underlying map
         // implementation so that we can take advantage of the single-layer controls provided by ALA.Map to control the
         // site region.
-        self.map.getMapImpl().addLayer(pointOfInterestMarkers);
+        self.map.getMapImpl().addLayer(transectFeatureGroup);
 
         self.loadSite(site);
 
         // self.map.subscribe(listenToSiteChanges);
     }
 
-    function getSiteMarker() {
-        return self.map.getAllMarkers().length == 1 ? self.map.getAllMarkers()[0] : null;
-    }
+    // function getSiteMarker() {
+    //     return self.map.getAllMarkers().length == 1 ? self.map.getAllMarkers()[0] : null;
+    // }
 
-    function updatePointLatLng(lat, lng) {
-        latSubscriber.dispose();
-        lngSubscriber.dispose();
-        if (self.site() && self.site().extent) {
-            self.site().extent().geometry().decimalLatitude(lat);
-            self.site().extent().geometry().decimalLongitude(lng);
-            latSubscriber = self.site().extent().geometry().decimalLatitude.subscribe(updateSiteMarkerPosition);
-            lngSubscriber = self.site().extent().geometry().decimalLongitude.subscribe(updateSiteMarkerPosition);
-        }
-    }
+    // function updatePointLatLng(lat, lng) {
+    //     latSubscriber.dispose();
+    //     lngSubscriber.dispose();
+    //     if (self.site() && self.site().extent) {
+    //         self.site().extent().geometry().decimalLatitude(lat);
+    //         self.site().extent().geometry().decimalLongitude(lng);
+    //         latSubscriber = self.site().extent().geometry().decimalLatitude.subscribe(updateSiteMarkerPosition);
+    //         lngSubscriber = self.site().extent().geometry().decimalLongitude.subscribe(updateSiteMarkerPosition);
+    //     }
+    // }
 
-    function updateSiteMarkerPosition() {
-        var siteMarker = getSiteMarker();
+    // function updateSiteMarkerPosition() {
+    //     var siteMarker = getSiteMarker();
 
-        var geometry = self.site().extent().geometry();
-        if (siteMarker && geometry.decimalLatitude() && geometry.decimalLongitude()) {
-            siteMarker.setLatLng(new L.LatLng(geometry.decimalLatitude(), geometry.decimalLongitude()));
-            self.map.fitBounds();
-            loadGazetteInformation(geometry.decimalLatitude(), geometry.decimalLongitude());
-        }
-    }
+    //     var geometry = self.site().extent().geometry();
+    //     if (siteMarker && geometry.decimalLatitude() && geometry.decimalLongitude()) {
+    //         siteMarker.setLatLng(new L.LatLng(geometry.decimalLatitude(), geometry.decimalLongitude()));
+    //         self.map.fitBounds();
+    //         loadGazetteInformation(geometry.decimalLatitude(), geometry.decimalLongitude());
+    //     }
+    // }
 
-    function loadGazetteInformation(lat, lng) {
-        if (!_.isUndefined(lat) && lat && !_.isUndefined(lng) && lng) {
-            self.transients.loadingGazette(true);
-            $.ajax({
-                url: fcConfig.siteMetaDataUrl + "?lat=" + lat + "&lon=" + lng,
-                dataType: "json"
-            }).done(function (data) {
-                self.site().extent().geometry().nrm(exists(data, 'nrm'));
-                self.site().extent().geometry().state(exists(data, 'state'));
-                self.site().extent().geometry().lga(exists(data, 'lga'));
-                self.site().extent().geometry().locality(exists(data, 'locality'));
-                self.site().extent().geometry().mvg(exists(data, 'mvg'));
-                self.site().extent().geometry().mvs(exists(data, 'mvs'));
-            }).always(function (data) {
-                self.transients.loadingGazette(false);
-            });
-        }
-    }
+    // function loadGazetteInformation(lat, lng) {
+    //     if (!_.isUndefined(lat) && lat && !_.isUndefined(lng) && lng) {
+    //         self.transients.loadingGazette(true);
+    //         $.ajax({
+    //             url: fcConfig.siteMetaDataUrl + "?lat=" + lat + "&lon=" + lng,
+    //             dataType: "json"
+    //         }).done(function (data) {
+    //             self.site().extent().geometry().nrm(exists(data, 'nrm'));
+    //             self.site().extent().geometry().state(exists(data, 'state'));
+    //             self.site().extent().geometry().lga(exists(data, 'lga'));
+    //             self.site().extent().geometry().locality(exists(data, 'locality'));
+    //             self.site().extent().geometry().mvg(exists(data, 'mvg'));
+    //             self.site().extent().geometry().mvs(exists(data, 'mvs'));
+    //         }).always(function (data) {
+    //             self.transients.loadingGazette(false);
+    //         });
+    //     }
+    // }
 
     function getTransectPart() {
         var geoJson = self.map.getGeoJSON();
@@ -359,9 +368,12 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         // console.log(siteCentroid);
         if (geoJson && geoJson.features && geoJson.features.length > 0) {
             var feature = geoJson.features[geoJson.features.length-1];
+            feature.properties.name = geoJson.features.length-1;
+            console.log("check for name", feature);
+            // TODO attach onclick/ onchange event to trigger change in transectParts to modify coordinates
         } else {
             // self.loadGeometry({});
-            // TODO
+            // TODO - should be a message in template systematicSiteDefinition.gsp
             alert("Draw a feature first");
         }
         return feature;
@@ -370,64 +382,68 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     initialiseViewModel();
 };
 
-var PointOfInterest = function (data, hasDocuments) {
-    var self = this;
+// var PointOfInterest = function (data, hasDocuments) {
+//     var self = this;
 
-    self.marker = null;
-    self.poiId = ko.observable(exists(data, 'poiId'));
-    self.name = ko.observable(exists(data, 'name'));
-    self.type = ko.observable(exists(data, 'type'));
-    self.description = ko.observable(exists(data, 'description'));
+//     self.marker = null;
+//     self.poiId = ko.observable(exists(data, 'poiId'));
+//     self.name = ko.observable(exists(data, 'name'));
+//     self.type = ko.observable(exists(data, 'type'));
+//     self.description = ko.observable(exists(data, 'description'));
 
-    if (!_.isUndefined(data.geometry)) {
-        self.geometry = ko.observable({
-            type: ALA.MapConstants.DRAW_TYPE.POINT_TYPE,
-            decimalLatitude: ko.observable(exists(data.geometry, 'decimalLatitude')),
-            decimalLongitude: ko.observable(exists(data.geometry, 'decimalLongitude')),
-            uncertainty: ko.observable(exists(data.geometry, 'uncertainty')),
-            precision: ko.observable(exists(data.geometry, 'precision')),
-            datum: ko.observable(exists(data.geometry, 'datum')),
-            bearing: ko.observable(exists(data.geometry, 'bearing'))
-        });
-    }
-    self.hasPhotoPointDocuments = hasDocuments;
+//     if (!_.isUndefined(data.geometry)) {
+//         self.geometry = ko.observable({
+//             type: ALA.MapConstants.DRAW_TYPE.POINT_TYPE,
+//             decimalLatitude: ko.observable(exists(data.geometry, 'decimalLatitude')),
+//             decimalLongitude: ko.observable(exists(data.geometry, 'decimalLongitude')),
+//             uncertainty: ko.observable(exists(data.geometry, 'uncertainty')),
+//             precision: ko.observable(exists(data.geometry, 'precision')),
+//             datum: ko.observable(exists(data.geometry, 'datum')),
+//             bearing: ko.observable(exists(data.geometry, 'bearing'))
+//         });
+//     }
+//     self.hasPhotoPointDocuments = hasDocuments;
 
-    self.dragEvent = function (event) {
-        var lat = event.target.getLatLng().lat;
-        var lng = event.target.getLatLng().lng;
-        self.geometry().decimalLatitude(lat);
-        self.geometry().decimalLongitude(lng);
-    };
+//     self.dragEvent = function (event) {
+//         var lat = event.target.getLatLng().lat;
+//         var lng = event.target.getLatLng().lng;
+//         self.geometry().decimalLatitude(lat);
+//         self.geometry().decimalLongitude(lng);
+//     };
 
-    self.hasCoordinate = function () {
-        return !isNaN(self.geometry().decimalLatitude()) && !isNaN(self.geometry().decimalLongitude());
-    };
+//     self.hasCoordinate = function () {
+//         return !isNaN(self.geometry().decimalLatitude()) && !isNaN(self.geometry().decimalLongitude());
+//     };
 
-    self.toJSON = function () {
-        var js = {
-            poiId: self.poiId(),
-            name: self.name(),
-            type: self.type(),
-            description: self.description(),
-            geometry: ko.toJS(self.geometry)
-        };
+//     self.toJSON = function () {
+//         var js = {
+//             poiId: self.poiId(),
+//             name: self.name(),
+//             type: self.type(),
+//             description: self.description(),
+//             geometry: ko.toJS(self.geometry)
+//         };
 
-        if (self.hasCoordinate()) {
-            js.geometry.coordinates = [js.geometry.decimalLatitude, js.geometry.decimalLongitude];
-        }
-        return js;
-    };
-};
+//         if (self.hasCoordinate()) {
+//             js.geometry.coordinates = [js.geometry.decimalLatitude, js.geometry.decimalLongitude];
+//         }
+//         return js;
+//     };
+// };
 
 var TransectPart = function (data, hasDocuments) {
     var self = this;
+    self.feature = null;
 
     self.poiId = ko.observable(exists(data, 'poiId'));
     self.name = ko.observable(exists(data, 'name'));
     self.type = ko.observable(exists(data, 'type'));
-    self.detail = ko.observable(exists(data, 'detail'));
-    self.habitat = ko.observable(exists(data, 'habitat'));
     self.description = ko.observable(exists(data, 'description'));
+    self.detailList = ko.observableArray(['choose detaljkoder', 'Kraftledningsgata', 'Grusväg', 'other']);
+    self.detail = ko.observableArray();
+    self.habitatList = ko.observableArray(['choose habitat type', 'Lövskog', 'Blandskog', 'Barrskog', 'Hygge', 'other']);
+    self.habitat = ko.observableArray();
+
     console.log("data geometry", data.geometry);
     if (!_.isUndefined(data.geometry)) {
         var geoType = data.geometry.type;
@@ -452,6 +468,16 @@ var TransectPart = function (data, hasDocuments) {
         });
     }
     self.hasPhotoPointDocuments = hasDocuments;
+
+    // TODO - will this work for all types of geometry? 
+    self.editTransectPart = function (event) {
+        // var lat = event.target.getLatLng().lat;
+        // var lng = event.target.getLatLng().lng;
+        // self.geometry().decimalLatitude(lat);
+        // self.geometry().decimalLongitude(lng);
+        console.log(event.target.getLatLng());
+        self.geometry().coordinates(event.target.getLatLng())
+    };
 
     self.hasCoordinate = function () {
         return !isNaN(self.geometry().coordinates());
