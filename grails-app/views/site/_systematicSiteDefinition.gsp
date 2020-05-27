@@ -126,6 +126,8 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         spatialWms: '${grailsApplication.config.spatial.geoserverUrl}',
         allowPointsOfInterest: allowPointsOfInterest,
         readonly: edit? true : false,
+        singleDraw: false,
+        markerOrShapeNotBoth: false,
         useMyLocation: ${showMyLocation ?: false},
         allowSearchLocationByAddress: ${showAllowSearchLocationByAddress ?: false},
         allowSearchRegionByAddress: ${showAllowSearchRegionByAddress ?: true},
