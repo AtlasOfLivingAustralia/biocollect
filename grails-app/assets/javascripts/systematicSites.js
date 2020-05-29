@@ -172,28 +172,51 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         updateSiteMarkerPosition();
     };
 
+    // TODO
+    // called both for creating a new transect part and for reading an existing one from the site to be edited 
+    // so be mindful of how the feature is saved should work with this too 
     function createTransectPart(feature, hasDocuments) {
         var transectPart = new TransectPart(feature, hasDocuments);
-        // transectPart.feature = feature;
-        // transectPart.feature.on();
-        console.log("part: ", transectPart);
+        if (feature.geometry.type == "LineString"){
+            transectPart.feature = ALA.MapUtils.createSegment(feature.geometry.coordinates, transectPart.name);
+        } else if (feature.geometry.type == "Point"){
+            transectPart.feature = ALA.MapUtils.createMarker(feature.geometry.coordinates[1],feature.geometry.coordinates[0], transectPart.name);
+        } else if (feature.geometry.type == "Polygon"){
+            transectPart.feature = ALA.MapUtils.createPolygon(feature.geometry.coordinates, transectPart.name);
+        }
+        // Add feature to the FeatureGroup that displays on map
+        transectFeatureGroup.addLayer(transectPart.feature)
+        console.log(transectFeatureGroup.getLayers());
+        console.log("feature to compare with point", transectPart.feature);
+
+        // Add feature to be saved in site collection
         self.transectParts.push(transectPart);
-        // TODO: add feature to feature group 
-        // transectFeatureGroup.addLayer(transectPart.feature);
     }
 
-    self.renderTransectParts = function () {  
-        transectFeatureGroup.clearLayers();      
+    self.renderTransectParts = function () { 
+        transectFeatureGroup.clearLayers();
+        // TODO remove the layer or call mapimpl to nullify everything
         self.transectParts().forEach(function (transectPart) {
-            self.map.setGeoJSON(transectPart.geometry);
-            // marker.on("dragend", pointOfInterest.dragEvent);
+            var feature = null;
+            console.log("type", transectPart.geometry().type);
+
+            if (transectPart.geometry().type == "LineString"){
+                feature = ALA.MapUtils.createSegment(transectPart.geometry().coordinates(), transectPart.name);
+            } else if (transectPart.geometry().type == "Point"){
+                feature = ALA.MapUtils.createMarker(transectPart.geometry().coordinates()[1],transectPart.geometry().coordinates()[0], transectPart.name);
+            } else if (transectPart.geometry().type == "Polygon"){
+                feature = ALA.MapUtils.createPolygon(transectPart.geometry().coordinates(), transectPart.name);
+            }
+            transectFeatureGroup.addLayer(feature);
+            console.log('featuregroup',transectFeatureGroup);
         });
+        
     };
 
     self.removeTransectPart = function (transectPart) {
-        if (transectPart.hasPhotoPointDocuments) {
-            return;
-        }
+        // if (transectPart.hasPhotoPointDocuments) {
+        //     return;
+        // }
         self.transectParts.remove(transectPart);
         self.renderTransectParts();
     };
@@ -252,6 +275,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             drawOptions: mapOptions.drawOptions,
             singleDraw: mapOptions.singleDraw,
             markerOrShapeNotBoth: mapOptions.markerOrShapeNotBoth,
+            singleMarker: mapOptions.singleMarker,
             showReset: false,
             baseLayer: baseLayersAndOverlays.baseLayer,
             otherLayers: baseLayersAndOverlays.otherLayers
@@ -366,8 +390,6 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     function getTransectPart() {
         var geoJson = self.map.getGeoJSON();
         console.log("features from map:", geoJson.features);
-        // var siteCentroid = ALA.MapUtils.calculateCentroid(geoJson.features[0]);
-        // console.log(siteCentroid);
         if (geoJson && geoJson.features && geoJson.features.length > 0) {
             var feature = geoJson.features[geoJson.features.length-1];
             feature.properties.name = geoJson.features.length-1;
@@ -437,7 +459,7 @@ var TransectPart = function (data, hasDocuments) {
     var self = this;
     self.feature = null;
 
-    self.poiId = ko.observable(exists(data, 'poiId'));
+    self.transectPartId = ko.observable(exists(data, 'transectPartId'));
     self.name = ko.observable(exists(data, 'name'));
     self.type = ko.observable(exists(data, 'type'));
     self.description = ko.observable(exists(data, 'description'));
@@ -446,21 +468,22 @@ var TransectPart = function (data, hasDocuments) {
     self.habitatList = ko.observableArray(['choose habitat type', 'Lövskog', 'Blandskog', 'Barrskog', 'Hygge', 'other']);
     self.habitat = ko.observableArray();
 
-    console.log("data geometry", data.geometry);
     if (!_.isUndefined(data.geometry)) {
         var geoType = data.geometry.type;
+
         // TODO: check if circle is needed - removed the option now
-        if (geoType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
-                geoType = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
-            } else if (geoType === ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE) {
-            if (data.properties.pid) {
-                geoType = "pid";
-            } else {
-                geoType = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
-            }
-        } else if (geoType == ALA.MapConstants.DRAW_TYPE.LINE_TYPE) {
-            geoType = geoType
-        }
+        // if (geoType === ALA.MapConstants.DRAW_TYPE.POINT_TYPE) {
+        //         geoType = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
+        //     } 
+            // else if (geoType === ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE) {
+            // if (data.properties.pid) {
+            //     geoType = "pid";
+            // } else {
+                // geoType = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
+        //     }
+        // } else if (geoType == ALA.MapConstants.DRAW_TYPE.LINE_TYPE) {
+        //     geoType = geoType;
+        // }
 
         self.geometry = ko.observable({
             type: geoType,
@@ -481,13 +504,13 @@ var TransectPart = function (data, hasDocuments) {
         self.geometry().coordinates(event.target.getLatLng())
     };
 
-    self.hasCoordinate = function () {
-        return !isNaN(self.geometry().coordinates());
-    };
+    // self.hasCoordinate = function () {
+    //     return !isNaN(self.geometry().coordinates());
+    // };
 
     self.toJSON = function () {
         var js = {
-            poiId: self.poiId(),
+            transectPartId: self.transectPartId(),
             name: self.name(),
             type: self.type(),
             habitat: self.habitat(),
@@ -496,9 +519,9 @@ var TransectPart = function (data, hasDocuments) {
             geometry: ko.toJS(self.geometry)
         };
 
-        if (self.hasCoordinate()) {
-            js.geometry.coordinates = [js.geometry.decimalLatitude, js.geometry.decimalLongitude];
-        }
+        // if (self.hasCoordinate()) {
+        //     js.geometry.coordinates = [js.geometry.decimalLatitude, js.geometry.decimalLongitude];
+        // }
         return js;
     };
 };
