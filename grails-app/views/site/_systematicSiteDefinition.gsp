@@ -128,6 +128,7 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         readonly: edit? true : false,
         singleDraw: false,
         markerOrShapeNotBoth: false,
+        singleMarker: false,
         useMyLocation: ${showMyLocation ?: false},
         allowSearchLocationByAddress: ${showAllowSearchLocationByAddress ?: false},
         allowSearchRegionByAddress: ${showAllowSearchRegionByAddress ?: true},
