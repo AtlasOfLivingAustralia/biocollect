@@ -605,10 +605,11 @@
                     </td>
                     <td>
                         <div class="survey-row-layout survey-add-record">
-                            <div><button class="btn btn-success btn-sm btn-addarecord" data-bind="click: addActivity, visible: $parent.userCanEdit($data)" title="Click to add a record to this survey"> Add a record</button></div>
-                            <div class="margin-top-1"><button class="btn btn-info btn-sm btn-viewrecords" data-bind="click: listActivityRecords" title="Click to view existing records from this survey"> View records</button></div>
+                            <div><button class="btn btn-success btn-sm btn-addarecord" data-bind="click: addActivity, visible: $parent.userCanEdit($data)" title="Click to add a record to this survey"><g:message code="project.survey.addRecord" /></button></div>
+                            <div class="margin-top-1"><button class="btn btn-info btn-sm btn-addarecord" data-bind="click: redirectToCreateSystematic" title="Click to add a new site to this survey"><i class="icon-plus"></i><g:message code="project.survey.addNewSite" /></button></div>
+                            <div class="margin-top-1"><button class="btn btn-info btn-sm btn-viewrecords" data-bind="click: listActivityRecords" title="Click to view existing records from this survey"><g:message code="project.survey.viewRecords" /></button></div>
                             <br><br>
-                            %{--<div class="margin-top-1"><a href="#" class="btn btn-primary btn-sm" data-bind="click: bulkDataLoad, visible: $parent.userCanEdit($data)" title="Opens bulk data loading page"> Load Data</a></div>--}%
+                            %{--<div class="margin-top-1"><a href="#" class="btn btn-primary btn-sm" data-bind="click: bulkDataLoad, visible: $parent.userCanEdit($data)" title="Opens bulk data loading page"><g:message code="project.survey.loadData" /></a></div>--}%
                             <g:if test="${hubConfig?.content?.hideProjectSurveyDownloadXLSX != true}">
                             <div><a data-bind="attr: { href: downloadFormTemplateUrl, title: 'Download survey form template for bulk data upload (.xlsx)', target: pActivityFormName }"  >
                                 Download form template (.xlsx)
