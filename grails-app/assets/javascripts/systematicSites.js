@@ -1,16 +1,8 @@
 'use strict';
 
 var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
-    var self = $.extend(this, new Documents());
 
-    // var pointOfInterestIcon = ALA.MapUtils.createIcon("https://maps.google.com/mapfiles/marker_yellow.png");
-    // var pointOfInterestMarkers = new L.FeatureGroup();
-    var latSubscriber = null;
-    var lngSubscriber = null;
-    var coordSubscriber = null;
-    self.transients = {
-        loadingGazette: ko.observable(false)
-    };
+    var self = $.extend(this, new Documents());
 
     // create model for a new site
     self.site = ko.observable({
@@ -56,12 +48,9 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     self.transectParts = ko.observableArray();
     self.showPointAttributes = ko.observable(false);
     self.allowPointsOfInterest = ko.observable(mapOptions.allowPointsOfInterest || false);
-    // self.displayAreaInReadableFormat = null;
+    self.displayAreaInReadableFormat = null; //because the extention is a centroid - a point
 
-    self.site().extent().geometry().areaKmSq.subscribe(function(val){
-        self.site().area(val)
-    });
-
+    // to edit existing site load saved values
     self.loadSite = function (site) {
         var siteModel = self.site();
         siteModel.name(exists(site, "name"));
@@ -82,42 +71,16 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             self.loadGeometry({});
         }
 
-        // if(self.site().extent().geometry().areaKmSq()){
-        //     self.site().area(self.site().extent().geometry().areaKmSq())
-        // }
-
-        // if (!_.isEmpty(site.poi)) {
-        //     site.poi.forEach(function (poi) {
-        //         createPointOfInterest(poi, self.hasPhotoPointDocuments(poi))
-        //     });
-        // }
-
+        // if transect parts are saved - get them 
         if (!_.isEmpty(site.transectParts)) {
             site.transectParts.forEach(function (transectPart) {
-                createTransectPart(transectPart, false)
+                createTransectPart(transectPart)
             });
         }
 
-        self.displayAreaInReadableFormat = ko.computed(function(){
-            if(self.site().area()){
-                return convertKMSqToReadableUnit(self.site().area())
-            }
-        });
     };
 
-    self.hasPhotoPointDocuments = function (poi) {
-        if (!self.site.documents) {
-            return;
-        }
-        var hasDoc = false;
-        $.each(self.site.documents, function (i, doc) {
-            if (doc.poiId === poi.poiId) {
-                hasDoc = true;
-                return false;
-            }
-        });
-        return hasDoc;
-    };
+    // load the extent separately as it can be modified
 
     self.loadGeometry = function (geometry) {
         var geometryObservable = self.site().extent().geometry();
@@ -143,46 +106,45 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         geometryObservable.fid(exists(geometry, 'fid')),
         geometryObservable.layerName(exists(geometry, 'layerName'))
 
-        // latSubscriber = geometryObservable.decimalLatitude.subscribe(updateSiteMarkerPosition);
-        // lngSubscriber = geometryObservable.decimalLongitude.subscribe(updateSiteMarkerPosition);
-
         if (!_.isEmpty(geometry) && self.site().extent().source() != 'none') {
             var validGeoJson = Biocollect.MapUtilities.featureToValidGeoJson(geometry);
             self.map.setGeoJSON(validGeoJson);
             self.showPointAttributes(geometry.type == "Point");
         }
-        // loadGazetteInformation(geometryObservable.decimalLatitude(), geometryObservable.decimalLongitude());
 
         return geometryObservable;
     };
 
     self.newTransectPart = function () {
+        // get features drawn on the map
         getTransectPart();
-        console.log("transectFeatureGroup ", transectFeatureGroup);
 
-        transectFeatureGroup.eachLayer(function(e) { 
-            console.log(typeof e);
-            let layer = e.target;
-            layer.bindPopup('popup');
-            layer.bindTooltip('label') 
-            return layer  
-            })
-        transectFeatureGroup.addTo(self.map);
+        // iterate on features and add them to map individually 
+        // transectFeatureGroup.eachLayer(function(e) { 
+        //     console.log(typeof e);
+        //     let layer = e.target;
+        //     layer.bindPopup('popup');
+        //     layer.bindTooltip('label') 
+        //     return layer  
+        //     })
+        // transectFeatureGroup.addTo(self.map);
     };
 
-    self.refreshCoordinates = function () {
-        updateSiteMarkerPosition();
-    };
+    // TODO a function to check whether features are drawn on map
+    // displays prompt to draw on map first 
+    self.noFeaturesAreDrawn = function () {
+        var featuresAreDrawn = false;
+        var geoJson = self.map.getGeoJSON();
+        if (geoJson.features.length < 1){
+            featuresAreDrawn = true;
+        }
+        return featuresAreDrawn;
+    }
 
     // TODO
     // called both for creating a new transect part and for reading an existing one from the site to be edited 
-    // so be mindful of how the feature is saved should work with this too 
-    function createTransectPart(feature, hasDocuments) {
-        var transectPart = new TransectPart(feature, hasDocuments);
-        console.log("feature created", feature);
-        console.log("name", transectPart.name());
-        // transectPart.geometry().coordinates.subscribe(self.renderTransectParts);
-        var tooltip = {permanent: true, direction: "center"};
+    function createTransectPart(feature) {
+        var transectPart = new TransectPart(feature);
         var label = String(transectPart.name());
         if (feature.geometry.type == "LineString"){
             console.log("coords for line:", feature.geometry.coordinates);
@@ -200,7 +162,6 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         // transectFeatureGroup.addLayer(layer);
         // Add feature to be saved in site collection
         self.transectParts.push(transectPart);
-        console.log("transect parts:", transectParts);
     }
 
     self.renderTransectParts = function () { 
@@ -234,11 +195,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     };
 
     self.removeTransectPart = function (transectPart) {
-        if (transectPart.hasPhotoPointDocuments) {
-            return;
-        }
         self.transectParts.remove(transectPart);
-        console.log(transectParts)
         self.renderTransectParts();
     };
 
@@ -249,12 +206,6 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         if(js.extent.source == 'none'){
             delete js.extent.geometry;
         }
-
-        js.poi = [];
-        self.pointsOfInterest().forEach(function (poi) {
-            js.poi.push(poi.toJSON())
-        });
-        js.geoIndex = Biocollect.MapUtilities.constructGeoIndexObject(js);
 
         js.transectParts = [];
         self.transectParts().forEach(function (transectPart) {
@@ -273,17 +224,6 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         return self.site().siteId();
     };
 
-    self.isValid = function(mandatory) {
-        var valid = true;
-
-        if (mandatory) {
-            var js = self.toJS();
-            valid = js && js.extent && js.extent.geometry && js.extent.geometry.type && js.extent.geometry.type != null && js.extent.geometry.type != "";
-        }
-
-        return valid;
-    };
-
     function initialiseViewModel() {
         var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
         var options =  {
@@ -300,9 +240,6 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             showReset: false,
             baseLayer: baseLayersAndOverlays.baseLayer,
             otherLayers: baseLayersAndOverlays.otherLayers
-            // ,
-            // overlays: baseLayersAndOverlays.overlays,
-            // overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault
         };
 
         for (var option in mapOptions) {
@@ -311,7 +248,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             }
         }
 
-        if(mapOptions.readonly){
+        if (mapOptions.readonly){
             var readonlyProps = {
                 drawControl: false,
                 singleMarker: false,
@@ -336,78 +273,40 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
         self.map.addButton("<span class='fa fa-undo reset-map' title='Reset map'></span>", function () {
             self.map.resetMap();
-            // pointOfInterestMarkers.clearLayers();
-            self.pointsOfInterest([]);
             self.transectParts([]);
             self.loadGeometry({});
             self.loadSite(site || {});
         }, "bottomright");
 
         self.map.registerListener("draw:created", function (event) {
-            console.log("event", event);
-            console.log("event target: ", event.target);
+            var geoJson = self.map.getGeoJSON();
+            var count = geoJson.features.length;
+            var layer = event.layer;
+            var geoType = event.layerType;
+            if (geoType  == "LineString"){
+                geoType = "Line"
+            } 
+            console.log(layer);
+            layer.bindPopup("This is " + geoType + " " + count);
         });
-
-        // We'll track the points of interest as a separate feature group manually attached to the underlying map
-        // implementation so that we can take advantage of the single-layer controls provided by ALA.Map to control the
-        // site region.
-        // self.map.getMapImpl().addLayer(transectFeatureGroup);
 
         self.loadSite(site);
 
-        // self.map.subscribe(listenToSiteChanges);
+        self.map.subscribe(listenToSiteChanges);
     }
 
-    // function getSiteMarker() {
-    //     return self.map.getAllMarkers().length == 1 ? self.map.getAllMarkers()[0] : null;
-    // }
+    function listenToSiteChanges () {
+        console.log("site changes");
+    }
 
-    // function updatePointLatLng(lat, lng) {
-    //     latSubscriber.dispose();
-    //     lngSubscriber.dispose();
-    //     if (self.site() && self.site().extent) {
-    //         self.site().extent().geometry().decimalLatitude(lat);
-    //         self.site().extent().geometry().decimalLongitude(lng);
-    //         latSubscriber = self.site().extent().geometry().decimalLatitude.subscribe(updateSiteMarkerPosition);
-    //         lngSubscriber = self.site().extent().geometry().decimalLongitude.subscribe(updateSiteMarkerPosition);
-    //     }
-    // }
-
-    // function updateSiteMarkerPosition() {
-    //     var siteMarker = getSiteMarker();
-
-    //     var geometry = self.site().extent().geometry();
-    //     if (siteMarker && geometry.decimalLatitude() && geometry.decimalLongitude()) {
-    //         siteMarker.setLatLng(new L.LatLng(geometry.decimalLatitude(), geometry.decimalLongitude()));
-    //         self.map.fitBounds();
-    //         loadGazetteInformation(geometry.decimalLatitude(), geometry.decimalLongitude());
-    //     }
-    // }
-
-    // function loadGazetteInformation(lat, lng) {
-    //     if (!_.isUndefined(lat) && lat && !_.isUndefined(lng) && lng) {
-    //         self.transients.loadingGazette(true);
-    //         $.ajax({
-    //             url: fcConfig.siteMetaDataUrl + "?lat=" + lat + "&lon=" + lng,
-    //             dataType: "json"
-    //         }).done(function (data) {
-    //             self.site().extent().geometry().nrm(exists(data, 'nrm'));
-    //             self.site().extent().geometry().state(exists(data, 'state'));
-    //             self.site().extent().geometry().lga(exists(data, 'lga'));
-    //             self.site().extent().geometry().locality(exists(data, 'locality'));
-    //             self.site().extent().geometry().mvg(exists(data, 'mvg'));
-    //             self.site().extent().geometry().mvs(exists(data, 'mvs'));
-    //         }).always(function (data) {
-    //             self.transients.loadingGazette(false);
-    //         });
-    //     }
-    // }
 
     function getTransectPart() {
+        // self.map.modifyDrawnItems();
         var geoJson = self.map.getGeoJSON();
-        self.map.setGeoJSON(geoJson);
+        console.log("geojson", geoJson);
         var features = geoJson.features;
         console.log("features from map:", features);
+
         if (features && features.length > 0) {
             for (let index in features){
                 createTransectPart({
@@ -416,73 +315,22 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
                         type: features[index].geometry.type,
                         coordinates: features[index].geometry.coordinates
                     }
-                }, false);
-            }
-            
+                });
+            }     
         } else {
-            // self.loadGeometry({});
             // TODO - should be a message in template systematicSiteDefinition.gsp
-            alert("Draw a feature first");
+            return false;
         }
-        // return feature;
     }
 
     initialiseViewModel();
 };
 
-// var PointOfInterest = function (data, hasDocuments) {
-//     var self = this;
-
-//     self.marker = null;
-//     self.poiId = ko.observable(exists(data, 'poiId'));
-//     self.name = ko.observable(exists(data, 'name'));
-//     self.type = ko.observable(exists(data, 'type'));
-//     self.description = ko.observable(exists(data, 'description'));
-
-//     if (!_.isUndefined(data.geometry)) {
-//         self.geometry = ko.observable({
-//             type: ALA.MapConstants.DRAW_TYPE.POINT_TYPE,
-//             decimalLatitude: ko.observable(exists(data.geometry, 'decimalLatitude')),
-//             decimalLongitude: ko.observable(exists(data.geometry, 'decimalLongitude')),
-//             uncertainty: ko.observable(exists(data.geometry, 'uncertainty')),
-//             precision: ko.observable(exists(data.geometry, 'precision')),
-//             datum: ko.observable(exists(data.geometry, 'datum')),
-//             bearing: ko.observable(exists(data.geometry, 'bearing'))
-//         });
-//     }
-//     self.hasPhotoPointDocuments = hasDocuments;
-
-//     self.dragEvent = function (event) {
-//         var lat = event.target.getLatLng().lat;
-//         var lng = event.target.getLatLng().lng;
-//         self.geometry().decimalLatitude(lat);
-//         self.geometry().decimalLongitude(lng);
-//     };
-
-//     self.hasCoordinate = function () {
-//         return !isNaN(self.geometry().decimalLatitude()) && !isNaN(self.geometry().decimalLongitude());
-//     };
-
-//     self.toJSON = function () {
-//         var js = {
-//             poiId: self.poiId(),
-//             name: self.name(),
-//             type: self.type(),
-//             description: self.description(),
-//             geometry: ko.toJS(self.geometry)
-//         };
-
-//         if (self.hasCoordinate()) {
-//             js.geometry.coordinates = [js.geometry.decimalLatitude, js.geometry.decimalLongitude];
-//         }
-//         return js;
-//     };
-// };
-
-var TransectPart = function (data, hasDocuments) {
+var TransectPart = function (data) {
     var self = this;
     self.feature = null;
 
+    // create attributes that can be assigned to transect part
     self.transectPartId = ko.observable(exists(data, 'transectPartId'));
     self.name = ko.observable(exists(data, 'name'));
     self.type = ko.observable(exists(data, 'type'));
@@ -501,6 +349,7 @@ var TransectPart = function (data, hasDocuments) {
     });
     self.length = null;
 
+    // create geometry
     if (!_.isUndefined(data.geometry)) {
         var geoType = data.geometry.type;
         self.geometry = ko.observable({
@@ -510,9 +359,8 @@ var TransectPart = function (data, hasDocuments) {
             coordinates: ko.observable(exists(data.geometry, 'coordinates'))
         });
     }
-    self.hasPhotoPointDocuments = hasDocuments;
 
-    // TODO - will this work for all types of geometry? 
+    // TODO - probably will not be used? 
     self.editEvent = function (event) {
         console.log("edited tp");     
         console.log(event.target.getLatLng());   
@@ -520,10 +368,6 @@ var TransectPart = function (data, hasDocuments) {
 
         self.geometry().coordinates(event.target.getLatLng())
     };
-
-    // self.hasCoordinate = function () {
-    //     return !isNaN(self.geometry().coordinates());
-    // };
 
     self.toJSON = function () {
         var js = {
@@ -535,10 +379,6 @@ var TransectPart = function (data, hasDocuments) {
             description: self.description(),
             geometry: ko.toJS(self.geometry)
         };
-
-        // if (self.hasCoordinate()) {
-        //     js.geometry.coordinates = [js.geometry.decimalLatitude, js.geometry.decimalLongitude];
-        // }
         return js;
     };
 };
