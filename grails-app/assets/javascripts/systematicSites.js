@@ -5,7 +5,6 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
     // var pointOfInterestIcon = ALA.MapUtils.createIcon("https://maps.google.com/mapfiles/marker_yellow.png");
     // var pointOfInterestMarkers = new L.FeatureGroup();
-    var transectFeatureGroup = new L.FeatureGroup();
     var latSubscriber = null;
     var lngSubscriber = null;
     var coordSubscriber = null;
@@ -158,14 +157,17 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     };
 
     self.newTransectPart = function () {
-        var drawnItem = getTransectPart();
-        createTransectPart({
-            name: "S" + (drawnItem.properties.name + 1),
-            geometry: {
-                type: drawnItem.geometry.type,
-                coordinates: drawnItem.geometry.coordinates
-            }
-        }, false);
+        getTransectPart();
+        console.log("transectFeatureGroup ", transectFeatureGroup);
+
+        transectFeatureGroup.eachLayer(function(e) { 
+            console.log(typeof e);
+            let layer = e.target;
+            layer.bindPopup('popup');
+            layer.bindTooltip('label') 
+            return layer  
+            })
+        transectFeatureGroup.addTo(self.map);
     };
 
     self.refreshCoordinates = function () {
@@ -177,25 +179,28 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     // so be mindful of how the feature is saved should work with this too 
     function createTransectPart(feature, hasDocuments) {
         var transectPart = new TransectPart(feature, hasDocuments);
-        console.log("part created", transectPart);
-        transectPart.geometry().coordinates.subscribe(self.renderTransectParts);
-
+        console.log("feature created", feature);
+        console.log("name", transectPart.name());
+        // transectPart.geometry().coordinates.subscribe(self.renderTransectParts);
+        var tooltip = {permanent: true, direction: "center"};
+        var label = String(transectPart.name());
         if (feature.geometry.type == "LineString"){
-            transectPart.feature = ALA.MapUtils.createSegment(feature.geometry.coordinates, transectPart.name);
+            console.log("coords for line:", feature.geometry.coordinates);
+            transectPart.feature = ALA.MapUtils.createSegment(feature.geometry.coordinates, label);
         } else if (feature.geometry.type == "Point"){
-            transectPart.feature = ALA.MapUtils.createMarker(feature.geometry.coordinates[1],feature.geometry.coordinates[0], transectPart.name);
+            transectPart.feature = ALA.MapUtils.createMarker(feature.geometry.coordinates[1],feature.geometry.coordinates[0], label, {});
         } else if (feature.geometry.type == "Polygon"){
-            transectPart.feature = ALA.MapUtils.createPolygon(feature.geometry.coordinates, transectPart.name);
+            transectPart.feature = ALA.MapUtils.createPolygon(feature.geometry.coordinates,label);
         }
-        // console.log("part after coords", transectPart.feature.getLatLngs());
-        console.log("part after", transectPart);
 
-        transectPart.feature.on("click", transectPart.editEvent);
+        // transectPart.feature.on("click", transectPart.editEvent);
         // Add feature to the FeatureGroup that displays on map
-        transectFeatureGroup.addLayer(transectPart.feature)
-
+        // var layer = transectPart.feature;
+        // console.log(typeof layer);
+        // transectFeatureGroup.addLayer(layer);
         // Add feature to be saved in site collection
         self.transectParts.push(transectPart);
+        console.log("transect parts:", transectParts);
     }
 
     self.renderTransectParts = function () { 
@@ -338,22 +343,15 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             self.loadSite(site || {});
         }, "bottomright");
 
-        self.map.registerListener("draw:edited", function (event) {
+        self.map.registerListener("draw:created", function (event) {
             console.log("event", event);
             console.log("event target: ", event.target);
-            console.log("event layer: ", event.layers);
-        });
-
-        self.map.registerListener("draw:created", function (event) {
-            if (event.layerType == ALA.MapConstants.LAYER_TYPE.MARKER) {
-                // updatePointLatLng(event.layer.getLatLng().lat, event.layer.getLatLng().lng);
-            }
         });
 
         // We'll track the points of interest as a separate feature group manually attached to the underlying map
         // implementation so that we can take advantage of the single-layer controls provided by ALA.Map to control the
         // site region.
-        self.map.getMapImpl().addLayer(transectFeatureGroup);
+        // self.map.getMapImpl().addLayer(transectFeatureGroup);
 
         self.loadSite(site);
 
@@ -407,17 +405,26 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
     function getTransectPart() {
         var geoJson = self.map.getGeoJSON();
-        console.log("features from map:", geoJson.features);
-        if (geoJson && geoJson.features && geoJson.features.length > 0) {
-            var feature = geoJson.features[geoJson.features.length-1];
-            feature.properties.name = geoJson.features.length-1;
-            // TODO attach onclick/ onchange event to trigger change in transectParts to modify coordinates
+        self.map.setGeoJSON(geoJson);
+        var features = geoJson.features;
+        console.log("features from map:", features);
+        if (features && features.length > 0) {
+            for (let index in features){
+                createTransectPart({
+                    name: index,
+                    geometry: {
+                        type: features[index].geometry.type,
+                        coordinates: features[index].geometry.coordinates
+                    }
+                }, false);
+            }
+            
         } else {
             // self.loadGeometry({});
             // TODO - should be a message in template systematicSiteDefinition.gsp
             alert("Draw a feature first");
         }
-        return feature;
+        // return feature;
     }
 
     initialiseViewModel();
@@ -480,13 +487,13 @@ var TransectPart = function (data, hasDocuments) {
     self.name = ko.observable(exists(data, 'name'));
     self.type = ko.observable(exists(data, 'type'));
     self.description = ko.observable(exists(data, 'description'));
-    self.detailList = ko.observableArray(['choose detaljkoder', 'Kraftledningsgata', 'Grusväg', 'other']);
+    self.detailList = ko.observableArray(['choose detaljkoder', 'Kraftledningsgata', 'Grusväg']);
     self.detailSelected = ko.observableArray();
     self.detailOther = ko.observableArray();
     self.detail = ko.computed(function(){
             return self.detailSelected().concat(self.detailOther());
     });
-    self.habitatList = ko.observableArray(['choose habitat type', 'Lövskog', 'Blandskog', 'Barrskog', 'Hygge', 'other']);
+    self.habitatList = ko.observableArray(['Lövskog', 'Blandskog', 'Barrskog', 'Hygge']);
     self.habitatSelected = ko.observableArray();
     self.habitatOther = ko.observableArray();
     self.habitat = ko.computed(function(){
@@ -507,7 +514,10 @@ var TransectPart = function (data, hasDocuments) {
 
     // TODO - will this work for all types of geometry? 
     self.editEvent = function (event) {
-        console.log("edited tp");        
+        console.log("edited tp");     
+        console.log(event.target.getLatLng());   
+        console.log("lat: ", event.target.getLatLng().lat);   
+
         self.geometry().coordinates(event.target.getLatLng())
     };
 
