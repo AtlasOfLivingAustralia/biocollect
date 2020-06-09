@@ -4,109 +4,64 @@
     </div>
 
     <div class="span5">
-        <div data-bind="visible: showPointAttributes(), template: { name: 'point'}"></div>
-
         <div class="well well-small" data-bind="visible: allowPointsOfInterest()">
             <h4><g:message code="site.transect.title"/>
             <fc:iconHelp title="${message(code: 'site.transect.title')}"><g:message code="site.transect.help"/></fc:iconHelp>
-</h4>
-            <div class="row-fluid" id="pointsOfInterest">
-                <div class="span12" data-bind="foreach: pointsOfInterest">
-                    <div>
-                        <div data-bind="template: { name: 'poi'}"></div>
-                        <button type="button" class="btn btn-danger" style="margin-bottom:20px;"
-                                data-bind="click: $parent.removePointOfInterest, visible:!hasPhotoPointDocuments">Remove</button>
-                    </div>
-                    <hr/>
-                </div>
-            </div>
-                        <div class="row-fluid" id="transectParts">
+            </h4>
+            <div class="row-fluid" id="transectParts">
                 <div class="span12" data-bind="foreach: transectParts">
                     <div>
                         <div data-bind="template: { name: 'poi'}"></div>
                         <button type="button" class="btn btn-danger" style="margin-bottom:20px;"
-                                data-bind="click: $parent.removeTransectPart, visible:!hasPhotoPointDocuments">Remove</button>
+                                data-bind="click: $parent.removeTransectPart, visible:true"><g:message code="g.remove"/></button>
                     </div>
                     <hr/>
                 </div>
             </div>
 
             <div class="row-fluid">
-                <%-- <button type="button" data-bind="click: newPointOfInterest"
-                        class="btn">Add <span
-                        data-bind="visible: pointsOfInterest.length > 0">another&nbsp;</span>POI
-                </button> --%>
                 <button type="button" data-bind="click: newTransectPart"
-                        class="btn"><g:message code="site.transect.addSegment"/>
+                        class="btn"><g:message code="g.add"/>
                 </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Template containing additional attributes for a Point shape type -->
-<script type="text/html" id="point">
-<div class="well well-small">
-    <div class="drawLocationDiv row-fluid">
-        <div class="span12">
-            <div class="row-fluid controls-row">
-                <fc:textField data-bind="value: site().extent().geometry().decimalLatitude"
-                              data-validation-engine="validate[required,custom[number],min[-90],max[90]]"
-                              outerClass="span6" label="${message(code:'site.point.lat')}"/>
-                <fc:textField data-bind="value: site().extent().geometry().decimalLongitude"
-                              data-validation-engine="validate[required,custom[number],min[-180],max[180]]"
-                              data-prompt-position="topRight:-150" outerClass="span6" label="${message(code:'site.point.lng')}"/>
-            </div>
-
-            <div class="row-fluid controls-row">
-                <fc:textField data-bind="value: site().extent().geometry().uncertainty" outerClass="span4"
-                              data-validation-engine="validate[min[0],custom[integer]]"
-                              label="${message(code:'site.point.uncertainty')}"/>
-                <fc:textField data-bind="value: site().extent().geometry().precision" outerClass="span4"
-                              data-validation-engine="validate[min[0],custom[number]]"
-                              label="${message(code:'site.point.precision')}"/>
-                %{-- CG - only supporting WGS84 at the moment --}%
-                <fc:textField data-bind="value: site().extent().geometry().datum" outerClass="span4" label="${message(code:'site.point.datum')}"
-                              placeholder="WGS84" readonly="readonly"/>
-            </div>
-
-            <div class="row-fluid  controls-row">
-                <button type="button" data-bind="click: refreshCoordinates"
-                        class="btn">Refresh Coordinates
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-</script>
-
-<!-- Template containing Point of Interest form fields -->
+<!-- Template containing Transect part form fields -->
 <script type="text/html" id="poi">
 <div class="drawLocationDiv row-fluid">
     <div class="span12">
-        <div class="row-fluid alert" style="box-sizing:border-box;" data-bind="visible:hasPhotoPointDocuments">
-            <g:message code="site.poi.tip"/>
+    <!-- This error message should only come up if no features are drawn on map -->
+        <div class="row-fluid alert" style="box-sizing:border-box;" data-bind="visible:false">
+            <g:message code="site.transect.transectPart.tip"/>
         </div>
 
         <div class="row-fluid controls-row">
             <fc:textField data-bind="value:name" outerClass="span6" label="${message(code:'site.poi.name')}"
                           data-validation-engine="validate[required]"/>
-            <%-- <div class="span6">
-                <label for="type"><g:message code="site.poi.type"/></label>
-                <g:select data-bind="value: type"
-                          name='type'
-                          from="['choose type', 'photopoint', 'location of previous surveys', 'other']"
-                          keys="['none', 'photopoint', 'survey', 'other']"/>
-            </div> --%>
-        </div>      
+        </div>
+        <h4 data-bind="text: geometry.type"></h4>      
+        <h4 data-bind="text: geometry.type"></h4>      
+
         <div class="row-fluid controls-row">
             <div class="span6">
                 <label for="habitat"><g:message code="site.transect.transectPart.habitat"/></label>
-                <select data-bind="options: habitatList, selectedOptions: habitat" multiple="true" size="6"></select>
+                <select data-bind="options: habitatList, selectedOptions: habitatSelected" multiple="true" size="6"></select>
             </div>
             <div class="span6">
                 <label for="detail"><g:message code="site.transect.transectPart.detail"/></label>
-                <select data-bind="options: detailList, selectedOptions: detail" multiple="true" size="6"></select>
+                <select data-bind="options: detailList, selectedOptions: detailSelected" multiple="true" size="6"></select>
+            </div>
+        </div>
+        <div class="row-fluid controls-row">
+            <div class="span6">
+                <label for="habitatOther"><g:message code="g.other"/></label>
+                <input type="text" data-bind="value:habitatOther" multiple="true" size="6">
+            </div>
+            <div class="span6">
+                <label for="detailOther"><g:message code="g.other"/></label>
+                <input type="text" data-bind="value:detailOther" multiple="true" size="6">
             </div>
         </div>
     </div>
@@ -134,7 +89,8 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         allowSearchRegionByAddress: ${showAllowSearchRegionByAddress ?: true},
         drawOptions: {
             polyline: ${showLine ?: true},
-            marker:  ${showMarker ?: true}
+            marker:  ${showMarker ?: true},
+            circle: false
         }
     };
 
