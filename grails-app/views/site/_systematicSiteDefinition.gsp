@@ -9,6 +9,11 @@
             <fc:iconHelp title="${message(code: 'site.transect.title')}"><g:message code="site.transect.help"/></fc:iconHelp>
             </h4>
             <div class="row-fluid" id="transectParts">
+                        <div class="row-fluid">
+                <button type="button" data-bind="click: newTransectPart, visible: transectParts.length < 1"
+                        class="btn"><g:message code="g.add"/>
+                </button>
+            </div>
                 <div class="span12" data-bind="foreach: transectParts">
                     <div>
                         <div data-bind="template: { name: 'poi'}"></div>
@@ -17,12 +22,6 @@
                     </div>
                     <hr/>
                 </div>
-            </div>
-
-            <div class="row-fluid">
-                <button type="button" data-bind="click: newTransectPart"
-                        class="btn"><g:message code="g.add"/>
-                </button>
             </div>
         </div>
     </div>
@@ -36,14 +35,13 @@
         <div class="row-fluid alert" style="box-sizing:border-box;" data-bind="visible:false">
             <g:message code="site.transect.transectPart.tip"/>
         </div>
-
+        <div class="row-fluid controls-row">
+        <h4 data-bind="text: nameToDisplay"></h4>
+        </div>
         <div class="row-fluid controls-row">
             <fc:textField data-bind="value:name" outerClass="span6" label="${message(code:'site.poi.name')}"
                           data-validation-engine="validate[required]"/>
-        </div>
-        <h4 data-bind="text: geometry.type"></h4>      
-        <h4 data-bind="text: geometry.type"></h4>      
-
+        </div>     
         <div class="row-fluid controls-row">
             <div class="span6">
                 <label for="habitat"><g:message code="site.transect.transectPart.habitat"/></label>
@@ -63,6 +61,9 @@
                 <label for="detailOther"><g:message code="g.other"/></label>
                 <input type="text" data-bind="value:detailOther" multiple="true" size="6">
             </div>
+        </div>
+        <div class="">
+            <fc:textField data-bind="value:geometry().coordinates" outerClass="span12" label="${message(code:'g.coordinates')}"/>
         </div>
     </div>
 </div>
