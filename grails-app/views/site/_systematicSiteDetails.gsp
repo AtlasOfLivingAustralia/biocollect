@@ -18,14 +18,6 @@
                    class="span12" id="name" type="text" value="${site?.name?.encodeAsHTML()}"
                    placeholder="${message(code: 'site.details.siteName.placeholder')}"/>
         </div>
-        <g:if test="${hideSiteMetadata != true}">
-        <div class="span3">
-            <label for="siteArea"><g:message code="site.details.area"/>
-                <fc:iconHelp
-                        title="${message(code: 'site.details.area')}"><g:message code="site.details.area.help"/></fc:iconHelp></label>
-            <label readonly data-bind="html: displayAreaInReadableFormat" id="siteArea" type="text" class="span12"/>
-        </div>
-        </g:if>
     </div>
 
     <g:if test="${project && controllerName.equals('site')}">
