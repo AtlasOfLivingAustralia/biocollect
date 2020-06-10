@@ -73,9 +73,15 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
         // if transect parts are saved - get them 
         if (!_.isEmpty(site.transectParts)) {
+            console.log("check for transect");
             site.transectParts.forEach(function (transectPart) {
-                createTransectPart(transectPart)
+                createTransectPart(transectPart);
+                var validGeoJson = Biocollect.MapUtilities.featureToValidGeoJson(transectPart.geometry);
+                self.map.setGeoJSON(validGeoJson);
+                // self.showPointAttributes(geometry.type == "Point");
             });
+            // self.renderTransectParts(transectParts);
+
         }
 
     };
@@ -144,6 +150,9 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     // TODO
     // called both for creating a new transect part and for reading an existing one from the site to be edited 
     function createTransectPart(feature) {
+        console.log("feature", feature)
+
+        console.log("recreate parts")
         var transectPart = new TransectPart(feature);
         var label = transectPart.name();
         if (feature.geometry.type == "LineString"){
@@ -153,7 +162,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         } else if (feature.geometry.type == "Polygon"){
             transectPart.feature = ALA.MapUtils.createPolygon(feature.geometry.coordinates,label);
         }
-
+        console.log("tra part", transectPart);
         // transectPart.feature.on("click", transectPart.editEvent);
         // Add feature to the FeatureGroup that displays on map
         // var layer = transectPart.feature;
@@ -164,9 +173,10 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     }
 
     self.renderTransectParts = function () { 
-        transectFeatureGroup.clearLayers();
+        console.log("rendering");
+        // transectFeatureGroup.clearLayers();
         // TODO remove the layer or call mapimpl to nullify everything
-        console.log(transectParts);
+        // console.log(transectParts);
         self.transectParts().forEach(function (transectPart) {
            console.log('tarnsect part', transectPart);
             if (transectPart.geometry().type == "Polygon"){
@@ -185,10 +195,12 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
                     transectPart.name);
             }
             console.log('feature', feature);
-            feature.on("click", transectPart.editEvent);
+            console.log(typeof feature);
+            // feature.on("click", transectPart.editEvent);
 
-            transectFeatureGroup.addLayer(feature);
-            console.log('featuregroup',transectFeatureGroup);
+            // transectFeatureGroup.addLayer(feature);
+            // console.log('featuregroup',transectFeatureGroup);
+            self.map.addLayer(feature.layer);
         });
         
     };
