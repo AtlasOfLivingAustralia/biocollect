@@ -612,7 +612,7 @@
                     <td>
                         <div class="survey-row-layout survey-add-record">
                             <div><button class="btn btn-success btn-sm btn-addarecord" data-bind="click: addActivity, visible: $parent.userCanEdit($data)" title="<g:message code='project.survey.addRecord'/>"><g:message code="project.survey.addRecord"/></button></div>
-                            <div class="margin-top-1"><button class="btn btn-info btn-sm btn-addarecord" data-bind="click: redirectToCreateSystematic" title="Click to add a new site to this survey"><i class="icon-plus"></i><g:message code="project.survey.addNewSite" /></button></div>
+                            <div class="margin-top-1"><button class="btn btn-success btn-sm btn-addarecord" data-bind="click: redirectToCreateSystematic" title="Click to add a new site to this survey"><g:message code="project.survey.addNewSite" /></button></div>
                             <div class="margin-top-1"><button class="btn btn-info btn-sm btn-viewrecords" data-bind="click: listActivityRecords" title="<g:message code='project.survey.viewRecords'/>"><g:message code="project.survey.viewRecords"/></button></div>
                             <br><br>
                             %{--<div class="margin-top-1"><a href="#" class="btn btn-primary btn-sm" data-bind="click: bulkDataLoad, visible: $parent.userCanEdit($data)" title="<g:message code='project.survey.loadData'/>"><g:message code="project.survey.loadData"/></a></div>--}%
