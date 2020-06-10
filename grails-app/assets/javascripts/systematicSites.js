@@ -145,9 +145,8 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     // called both for creating a new transect part and for reading an existing one from the site to be edited 
     function createTransectPart(feature) {
         var transectPart = new TransectPart(feature);
-        var label = String(transectPart.name());
+        var label = transectPart.name();
         if (feature.geometry.type == "LineString"){
-            console.log("coords for line:", feature.geometry.coordinates);
             transectPart.feature = ALA.MapUtils.createSegment(feature.geometry.coordinates, label);
         } else if (feature.geometry.type == "Point"){
             transectPart.feature = ALA.MapUtils.createMarker(feature.geometry.coordinates[1],feature.geometry.coordinates[0], label, {});
@@ -283,11 +282,14 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             var count = geoJson.features.length;
             var layer = event.layer;
             var geoType = event.layerType;
-            if (geoType  == "LineString"){
+            if (geoType  == "polyline"){
                 geoType = "Line"
-            } 
-            console.log(layer);
-            layer.bindPopup("This is " + geoType + " " + count);
+            } else if (geoType == "marker") {
+                geoType = "Point"
+            } else if (geoType == "polygon") {
+                geoType = "Area"
+            }
+            layer.bindPopup(geoType + " " + count);
         });
 
         self.loadSite(site);
@@ -309,8 +311,9 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
         if (features && features.length > 0) {
             for (let index in features){
+                let name = parseInt(index) + 1;
                 createTransectPart({
-                    name: index,
+                    name: name,
                     geometry: {
                         type: features[index].geometry.type,
                         coordinates: features[index].geometry.coordinates
@@ -358,16 +361,21 @@ var TransectPart = function (data) {
             decimalLongitude: ko.observable(exists(data.geometry, 'decimalLongitude')),
             coordinates: ko.observable(exists(data.geometry, 'coordinates'))
         });
-    }
-
-    // TODO - probably will not be used? 
-    self.editEvent = function (event) {
-        console.log("edited tp");     
-        console.log(event.target.getLatLng());   
-        console.log("lat: ", event.target.getLatLng().lat);   
-
-        self.geometry().coordinates(event.target.getLatLng())
     };
+
+    self.nameToDisplay = ko.computed(function (){
+        var typeToDisplay = 'unknown type';
+        if (self.geometry().type == 'LineString') {
+            typeToDisplay = 'Line';
+        } else if (self.geometry().type == 'Polygon') {
+            typeToDisplay = 'Area';
+        }
+        else if (self.geometry().type == 'Point') {
+            typeToDisplay = 'Point';
+        }
+        var nameToDisplay = typeToDisplay + ' ' + self.name();
+        return nameToDisplay;
+    });
 
     self.toJSON = function () {
         var js = {
