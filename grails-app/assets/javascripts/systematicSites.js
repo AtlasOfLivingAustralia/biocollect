@@ -3,6 +3,7 @@
 var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
     var self = $.extend(this, new Documents());
+    var transectFeatureGroup = new L.FeatureGroup();
 
     // create model for a new site
     self.site = ko.observable({
@@ -73,15 +74,16 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
         // if transect parts are saved - get them 
         if (!_.isEmpty(site.transectParts)) {
-            console.log("check for transect");
             site.transectParts.forEach(function (transectPart) {
                 createTransectPart(transectPart);
-                var validGeoJson = Biocollect.MapUtilities.featureToValidGeoJson(transectPart.geometry);
-                self.map.setGeoJSON(validGeoJson);
-                // self.showPointAttributes(geometry.type == "Point");
+                
+                // TODO - these two lines will work and display transect parts but they are not related to transect parts
+                // in the correct format of coordinates
+                // 1. sets coordinates in order
+                // var validGeoJson = Biocollect.MapUtilities.featureToValidGeoJson(transectPart.geometry);
+                // 2. adds the features on the map
+                // self.map.setGeoJSON(validGeoJson);
             });
-            // self.renderTransectParts(transectParts);
-
         }
 
     };
@@ -112,28 +114,21 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         geometryObservable.fid(exists(geometry, 'fid')),
         geometryObservable.layerName(exists(geometry, 'layerName'))
 
-        if (!_.isEmpty(geometry) && self.site().extent().source() != 'none') {
-            var validGeoJson = Biocollect.MapUtilities.featureToValidGeoJson(geometry);
-            self.map.setGeoJSON(validGeoJson);
-            self.showPointAttributes(geometry.type == "Point");
-        }
+
+        // This we don't need because we don't want the centroid displayed when site is edited. 
+        // it will be calculated once changes are saved
+        // if (!_.isEmpty(geometry) && self.site().extent().source() != 'none') {
+            // var validGeoJson = Biocollect.MapUtilities.featureToValidGeoJson(geometry);
+            // self.map.setGeoJSON(validGeoJson);
+            // self.showPointAttributes(geometry.type == "Point");
+        // }
 
         return geometryObservable;
     };
 
     self.newTransectPart = function () {
-        // get features drawn on the map
+        // get features from the map
         getTransectPart();
-
-        // iterate on features and add them to map individually 
-        // transectFeatureGroup.eachLayer(function(e) { 
-        //     console.log(typeof e);
-        //     let layer = e.target;
-        //     layer.bindPopup('popup');
-        //     layer.bindTooltip('label') 
-        //     return layer  
-        //     })
-        // transectFeatureGroup.addTo(self.map);
     };
 
     // TODO a function to check whether features are drawn on map
@@ -151,63 +146,65 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     // called both for creating a new transect part and for reading an existing one from the site to be edited 
     function createTransectPart(feature) {
         console.log("feature", feature)
-
-        console.log("recreate parts")
         var transectPart = new TransectPart(feature);
-        var label = transectPart.name();
-        if (feature.geometry.type == "LineString"){
-            transectPart.feature = ALA.MapUtils.createSegment(feature.geometry.coordinates, label);
-        } else if (feature.geometry.type == "Point"){
-            transectPart.feature = ALA.MapUtils.createMarker(feature.geometry.coordinates[1],feature.geometry.coordinates[0], label, {});
-        } else if (feature.geometry.type == "Polygon"){
-            transectPart.feature = ALA.MapUtils.createPolygon(feature.geometry.coordinates,label);
-        }
-        console.log("tra part", transectPart);
-        // transectPart.feature.on("click", transectPart.editEvent);
-        // Add feature to the FeatureGroup that displays on map
-        // var layer = transectPart.feature;
-        // console.log(typeof layer);
-        // transectFeatureGroup.addLayer(layer);
+        var popup = feature.geometry.type + String(feature.name);
+
+        var geojson = Biocollect.MapUtilities.featureToValidGeoJson(feature.geometry);
+        transectPart.feature = ALA.MapUtils.createFeatureFromGeoJson(geojson, popup);
+        // TODO - on edit update coordinates of transectPart.geometry.coordinates 
+        transectPart.feature.on("edit", transectPart.editEvent);
+        // the following line works and adds it to the map but in the wrong order of coordinates (geojson)
+        transectPart.feature.addTo(self.map);
+
+        // console.log("transect part feature", transectPart.feature);
+        
         // Add feature to be saved in site collection
         self.transectParts.push(transectPart);
+        console.log("how are features in transectParts", transectParts);
     }
 
-    self.renderTransectParts = function () { 
-        console.log("rendering");
-        // transectFeatureGroup.clearLayers();
-        // TODO remove the layer or call mapimpl to nullify everything
-        // console.log(transectParts);
-        self.transectParts().forEach(function (transectPart) {
-           console.log('tarnsect part', transectPart);
-            if (transectPart.geometry().type == "Polygon"){
-                var feature = ALA.MapUtils.createPolygon(
-                    transectPart.geometry().coordinates(), 
-                    transectPart.name);
-            } else if (transectPart.geometry().type == "LineString"){
-                console.log(transectPart.geometry().type);
-                var feature = ALA.MapUtils.createSegment(
-                    transectPart.geometry().coordinates(), 
-                    transectPart.name);
-            } else if (transectPart.geometry().type == "Point"){
-                var feature = ALA.MapUtils.createMarker(
-                    transectPart.geometry().coordinates()[1],
-                    transectPart.geometry().coordinates()[0], 
-                    transectPart.name);
-            }
-            console.log('feature', feature);
-            console.log(typeof feature);
-            // feature.on("click", transectPart.editEvent);
+    // self.renderTransectParts = function () { 
+    //     console.log("rendering");
 
-            // transectFeatureGroup.addLayer(feature);
-            // console.log('featuregroup',transectFeatureGroup);
-            self.map.addLayer(feature.layer);
-        });
+    //     self.transectParts().forEach(function(part){
+    //         part.feature.addTo(self.map);
+    //     });
+    //     // transectFeatureGroup.clearLayers();
+    //     // TODO remove the layer or call mapimpl to nullify everything
+    //     // console.log(transectParts);
+    //     self.transectParts().forEach(function (transectPart) {
+    //        console.log('tarnsect part', transectPart);
+    //         if (transectPart.geometry().type == "Polygon"){
+    //             var feature = ALA.MapUtils.createPolygon(
+    //                 transectPart.geometry().coordinates(), 
+    //                 transectPart.name);
+    //         } else if (transectPart.geometry().type == "LineString"){
+    //             console.log(transectPart.geometry().type);
+    //             var feature = ALA.MapUtils.createSegment(
+    //                 transectPart.geometry().coordinates(), 
+    //                 transectPart.name);
+    //         } else if (transectPart.geometry().type == "Point"){
+    //             var feature = ALA.MapUtils.createMarker(
+    //                 transectPart.geometry().coordinates()[1],
+    //                 transectPart.geometry().coordinates()[0], 
+    //                 transectPart.name);
+    //         }
+    //         console.log('feature', feature);
+    //         console.log(typeof feature);
+
+    //         // transectFeatureGroup.addLayer(feature);
+    //         // console.log('featuregroup',transectFeatureGroup);
+    //         // self.map.addLayer(feature.layer);
+    //         self.map.getMapImpl().addLayer(transectFeatureGroup);
+
+    //     });
         
-    };
+    // };
 
     self.removeTransectPart = function (transectPart) {
         self.transectParts.remove(transectPart);
-        self.renderTransectParts();
+        // self.renderTransectParts();
+        self.map.removeLayer(transectPart.feature);
     };
 
     self.toJS = function() {
@@ -318,9 +315,9 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         // self.map.modifyDrawnItems();
         var geoJson = self.map.getGeoJSON();
         console.log("geojson", geoJson);
+        console.log("is this", typeof(geoJson));
         var features = geoJson.features;
         console.log("features from map:", features);
-
         if (features && features.length > 0) {
             for (let index in features){
                 let name = parseInt(index) + 1;
@@ -366,9 +363,8 @@ var TransectPart = function (data) {
 
     // create geometry
     if (!_.isUndefined(data.geometry)) {
-        var geoType = data.geometry.type;
         self.geometry = ko.observable({
-            type: geoType,
+            type: data.geometry.type,
             decimalLatitude: ko.observable(exists(data.geometry, 'decimalLatitude')),
             decimalLongitude: ko.observable(exists(data.geometry, 'decimalLongitude')),
             coordinates: ko.observable(exists(data.geometry, 'coordinates'))
@@ -388,6 +384,14 @@ var TransectPart = function (data) {
         var nameToDisplay = typeToDisplay + ' ' + self.name();
         return nameToDisplay;
     });
+    
+    self.editEvent = function (event) {
+        // TODO - on edit update coordinates of transectPart.geometry.coordinates 
+        console.log("edit", event);
+        console.log("edit layer", event.layer);
+        console.log("edit latlng", event.latlng);
+
+    }
 
     self.toJSON = function () {
         var js = {
