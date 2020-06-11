@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap-responsive.min.css"/>
     <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/ala-styles.css"/>
     <asset:stylesheet src="base.css"/>
-    <asset:stylesheet src="ala2.css"/>
+    <asset:stylesheet src="Common_fonts.css"/>
     <asset:javascript src="base.js"/>
     <g:layoutHead />
     <style type="text/css">
@@ -24,8 +24,14 @@
             padding-top: 0px;
         }
     </style>
+    <link rel="stylesheet" type="text/css"
+          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">
 </head>
-<body><g:layoutBody />
+<body>
+<div id="main-content"
+     class="container-fluid">
+    <g:layoutBody/>
+</div>
 
 <asset:script type="text/javascript">
     $(function() {

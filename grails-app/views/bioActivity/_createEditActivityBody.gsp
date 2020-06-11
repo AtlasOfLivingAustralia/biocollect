@@ -1,5 +1,6 @@
 <%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
 <g:set var="showCreate" value="${activity.activityId ||  (!activity.activityId && !hubConfig.content?.hideCancelButtonOnForm)}"></g:set>
+<bc:koLoading>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
         <g:if test="${!mobile}">
@@ -20,10 +21,12 @@
 <g:set var="user" value="${user}"/>
 <g:each in="${metaModel?.outputs}" var="outputName">
     <g:if test="${outputName != 'Photo Points'}">
-        <script type="text/javascript" src="${createLink(controller: 'dataModel', action: 'getScript', params: [outputName: outputName, edit: true])}"></script>
         <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
         <g:set var="model" value="${outputModels[outputName]}"/>
         <g:set var="output" value="${activity.outputs.find { it.name == outputName }}"/>
+        <g:render template="/output/outputJSModelWithGeodata" plugin="ecodata-client-plugin"
+                  model="${[edit:true, readonly: false, model:model, outputName:outputName]}"></g:render>
+
 
         <g:if test="${!output}">
             <g:set var="output" value="[name: outputName]"/>
@@ -255,3 +258,4 @@
 });
 </asset:script>
 </div>
+</bc:koLoading>

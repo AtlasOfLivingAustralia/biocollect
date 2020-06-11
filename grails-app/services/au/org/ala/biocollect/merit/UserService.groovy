@@ -1,14 +1,12 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
+import au.org.ala.ecodata.forms.UserInfoService
 import au.org.ala.userdetails.UserDetailsFromIdListResponse
-import grails.converters.JSON
-import org.apache.http.HttpStatus
-
-import javax.annotation.PostConstruct
 
 class UserService {
-   def grailsApplication, authService, webService
+    def grailsApplication, authService, webService
+    UserInfoService userInfoService
     //def auditBaseUrl = ""
 
     static String USER_NAME_HEADER_FIELD = "userName"
@@ -36,40 +34,11 @@ class UserService {
         if (request) {
             String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
             String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
-            userId = username && key ? getUserFromAuthKey(username, key)?.userId : ''
+            userId = username && key ? userInfoService.getUserFromAuthKey(username, key)?.userId : ''
         }
 
         userId ?: (getUser()?.userId ?: "")
     }
-
-   /*
-    * Get User details for the given user name and auth key.
-    *
-    * @param username username
-    * @param key mobile auth key
-    * @return userdetails
-    * */
-
-    def UserDetails getUserFromAuthKey(String username, String key) {
-        String url = grailsApplication.config.mobile.auth.check.url
-        Map params = [userName: username, authKey: key]
-        def result = webService.doPostWithParams(url, params)
-
-        if (result.statusCode == HttpStatus.SC_OK && result.resp?.status == 'success') {
-            params = [userName: username]
-            url = grailsApplication.config.userDetails.url + "userDetails/getUserDetails"
-            result = webService.doPostWithParams(url, params)
-            if (result.statusCode == HttpStatus.SC_OK && result.resp) {
-                return new UserDetails(result.resp.firstName + result.resp.lastName, result.resp.userName, result.resp.userId)
-            }
-        } else {
-            log.error ("Failed to get user details for parameters: ${(params as JSON).toString()}")
-            log.error ((result as JSON).toString(true))
-        }
-
-        return null
-    }
-
 
     public UserDetails getUser() {
         def u = authService.userDetails()
