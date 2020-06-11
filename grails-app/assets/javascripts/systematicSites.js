@@ -3,7 +3,7 @@
 var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
     var self = $.extend(this, new Documents());
-    var transectFeatureGroup = new L.FeatureGroup();
+    // var transectFeatureGroup = new L.FeatureGroup();
 
     // create model for a new site
     self.site = ko.observable({
@@ -76,6 +76,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         if (!_.isEmpty(site.transectParts)) {
             site.transectParts.forEach(function (transectPart) {
                 createTransectPart(transectPart);
+                self.renderTransect();
             });
         }
     };
@@ -112,6 +113,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     self.newTransectPart = function () {
         // get features from the map
         getTransectPart();
+        self.renderTransect();
     };
 
 
@@ -144,19 +146,29 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         }
         console.log("tra part", transectPart);
 
-        transectPart.feature.on("edit", transectPart.editEvent);
-        // transectPart.feature.on("draw:edited", transectPart.editEvent);
-
-        // transectPart.feature.on("draw:edited", transectPart.editEvent);
+        transectPart.feature.on("dragend", transectPart.dragEvent);
 
         // Add feature to be saved in site collection
         self.transectParts.push(transectPart);
-    
+        transectFeatureGroup.addLayer(transectPart.feature);
+        console.log("layers of trans feature gr", transectFeatureGroup.getLayers());
         // var geojson = Biocollect.MapUtilities.featureToValidGeoJson(feature.geometry);
         // transectPart.feature = ALA.MapUtils.createFeatureFromGeoJson(geojson, popup);
 
         // the following line works and adds it to the map but in the wrong order of coordinates (geojson)
-        transectPart.feature.addTo(self.map);
+        // transectPart.feature.addTo(self.map);
+    }
+
+    self.renderTransect = function(){
+        self.map.resetMap();
+        transectFeatureGroup.eachLayer(function(layer) {
+            layer.on("dragend", layer.dragEvent)
+        });
+        
+        self.map.getMapImpl().addLayer(transectFeatureGroup);
+
+        // transectFeatureGroup.addTo(self.map);
+        // console.log("added to map", transectFeatureGroup);
     }
 
     self.removeTransectPart = function (transectPart) {
@@ -261,11 +273,23 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
         self.loadSite(site);
 
-        self.map.subscribe(listenToSiteChanges);
-    }
+        var layerId = null;
+        var editedCoords = null;
+        self.map.registerListener(
+        "draw:editstop", function (e) {
+            console.log("editstop");
+            // var newCoords = transectFeatureGroup.getLayer(layerId).getLatLngs();
+            // console.log(newCoords);
 
-    function listenToSiteChanges (event) {
-        console.log("site changes");
+        });
+
+        self.map.registerListener(
+            "draw:edited", function (e) {
+                var layers = e.layers;
+                layers.eachLayer(function(layer) {
+                    layerId = transectFeatureGroup.getLayerId(layer);
+                })
+            });
     }
 
 
@@ -290,6 +314,8 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             return false;
         }
     }
+    // self.map.getMapImpl().addLayer(transectFeatureGroup);
+
 
     initialiseViewModel();
 };
@@ -350,12 +376,20 @@ var TransectPart = function (data) {
         // console.log("edit layer", event.layer); // undefined
         console.log(self.name(), self.geometry());
         console.log(self.feature);
-        console.log("before", self.geometry());
-
-        console.log("this:", this.getLatLngs());
         self.geometry().coordinates = this.getLatLngs();
         console.log("after", self.geometry());
     }
+    self.dragEvent = function (event) {
+        console.log("old geometry", self.geometry());
+
+        var lat = event.target.getLatLng().lat;
+        var lng = event.target.getLatLng().lng;
+        self.geometry().decimalLatitude(lat);
+        self.geometry().decimalLongitude(lng);
+        self.geometry().coordinates([lng, lat]);
+        console.log("new geometry", self.geometry());
+    };
+
 
     self.toJSON = function () {
         var js = {
