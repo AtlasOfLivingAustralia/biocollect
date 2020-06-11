@@ -4,6 +4,7 @@ import au.org.ala.biocollect.*
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
 import au.org.ala.biocollect.projectresult.Initiator
+import au.org.ala.ecodata.forms.UserInfoService
 import au.org.ala.web.AuthService
 import grails.converters.JSON
 import org.apache.http.HttpStatus
@@ -39,6 +40,7 @@ class ProjectController {
     CollectoryService collectoryService
     PdfGenerationService pdfGenerationService
     UtilService utilService
+    UserInfoService userInfoService
 
     //def grailsApplication
 
@@ -132,7 +134,7 @@ class ProjectController {
                 model.vocabList = vocabService.getVocabValues ()
                 println model.pActivityForms
             }
-            model.mobile = params.mobile ?:false
+            model.mobile = params.getBoolean('mobile', false)
             model.showBackButton = request.getHeader('referer') ? true:false
             if(projectService.isWorks(project)){
                 model.activityTypes = projectService.addSpeciesFieldsToActivityTypesList(metadataService.activityTypesList(project.associatedProgram))
@@ -827,7 +829,7 @@ class ProjectController {
             if (trimmedParams.mobile) {
                 String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
                 String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
-                fq.push('allParticipants:' + (username && key ? userService.getUserFromAuthKey(username, key)?.userId : ''))
+                fq.push('allParticipants:' + (username && key ? userInfoService.getUserFromAuthKey(username, key)?.userId : ''))
             } else {
                 fq.push('allParticipants:' + userService.getUser()?.userId);
             }
