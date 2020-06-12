@@ -9,11 +9,11 @@
             <fc:iconHelp title="${message(code: 'site.transect.title')}"><g:message code="site.transect.help"/></fc:iconHelp>
             </h4>
             <div class="row-fluid" id="transectParts">
-                        <div class="row-fluid">
-                <button type="button" data-bind="click: newTransectPart, visible: transectParts.length < 1"
-                        class="btn"><g:message code="g.add"/>
-                </button>
-            </div>
+                <div class="row-fluid">
+                    <button type="button" data-bind="click: newTransectPart, visible: showButton"
+                            class="btn"><g:message code="g.add"/> site attributes
+                    </button>
+                </div>
                 <div class="span12" data-bind="foreach: transectParts">
                     <div>
                         <div data-bind="template: { name: 'poi'}"></div>
@@ -45,11 +45,11 @@
         <div class="row-fluid controls-row">
             <div class="span6">
                 <label for="habitat"><g:message code="site.transect.transectPart.habitat"/></label>
-                <select data-bind="options: habitatList, selectedOptions: habitatSelected" multiple="true" size="6"></select>
+                <select data-bind="options: habitatList, selectedOptions: habitat" multiple="true" size="6"></select>
             </div>
             <div class="span6">
                 <label for="detail"><g:message code="site.transect.transectPart.detail"/></label>
-                <select data-bind="options: detailList, selectedOptions: detailSelected" multiple="true" size="6"></select>
+                <select data-bind="options: detailList, selectedOptions: detail" multiple="true" size="6"></select>
             </div>
         </div>
         <div class="row-fluid controls-row">
@@ -63,7 +63,7 @@
             </div>
         </div>
         <div class="">
-            <fc:textField data-bind="value:geometry().coordinates" outerClass="span12" label="${message(code:'g.coordinates')}"/>
+            <fc:textField data-bind="text:geometry().coordinates" outerClass="span10" label="${message(code:'g.coordinates')}"/>
         </div>
     </div>
 </div>
@@ -71,6 +71,7 @@
 
 
 <asset:script type="text/javascript">
+var transectFeatureGroup = new L.FeatureGroup();
 function initSiteViewModel(allowPointsOfInterest, edit) {
     // server side generated paths & properties
     var SERVER_CONF = {
@@ -80,6 +81,8 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: '${grailsApplication.config.spatial.geoserverUrl}',
+        maxAutoZoom: 14,
+        maxZoom: 17,
         allowPointsOfInterest: allowPointsOfInterest,
         readonly: edit? true : false,
         singleDraw: false,
@@ -92,6 +95,9 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
             polyline: ${showLine ?: true},
             marker:  ${showMarker ?: true},
             circle: false
+        },
+        editOptions: {
+            featureGroup: transectFeatureGroup
         }
     };
 
