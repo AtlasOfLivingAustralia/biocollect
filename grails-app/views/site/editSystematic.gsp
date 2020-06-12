@@ -4,7 +4,7 @@
 <html>
 <head>
   <meta name="layout" content="${hubConfig.skin}"/>
-  <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | Sites </title>
+  <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | Sites | BioCollect</title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'site', action: 'list')},Sites"/>
@@ -117,9 +117,9 @@
 
         $('.helphover').popover({animation: true, trigger:'hover'});
 
-        var siteViewModel = initSiteViewModel(true, ${!userCanEdit});
+        var systematicSiteViewModel = initSiteViewModel(true, ${!userCanEdit});
         $('#cancel').click(function () {
-            if(siteViewModel.saved()){
+            if(systematicSiteViewModel.saved()){
                 document.location.href = fcConfig.sitePageUrl;
             } if(fcConfig.projectUrl){
                 document.location.href = fcConfig.projectUrl;
@@ -130,7 +130,7 @@
 
         $('#save').click(function () {
             if ($('#validation-container').validationEngine('validate')) {
-                var json = siteViewModel.toJS();
+                var json = systematicSiteViewModel.toJS();
                 //validate  if extent.geometry.pid, then update extent.source to pid, extent.geometry.type to pid
                 if (json.extent.geometry.pid){
                     json.extent.source = 'pid';
