@@ -3,7 +3,6 @@
 var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
     var self = $.extend(this, new Documents());
-    // var transectFeatureGroup = new L.FeatureGroup();
 
     // create model for a new site
     self.site = ko.observable({
@@ -117,58 +116,62 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     };
 
 
-    // TODO
-    // called both for creating a new transect part and for reading an existing one from the site to be edited 
-    function createTransectPart(feature) {
+    function createTransectPart(lngLatFeature) {
 
-        console.log("feature", feature)
-        var transectPart = new TransectPart(feature);
-        var geometry = feature.geometry;
+        var transectPart = new TransectPart(lngLatFeature);
+        var geometry = lngLatFeature.geometry;
         var coordinates = geometry.coordinates;
-        var popup = geometry.type + String(feature.name);
-        function toLatLng(coordinates) {
-            coordinates.map(function(coordPair) {
-                let lat = coordPair[1];
-                let lng = coordPair[0];
-                coordPair[0] = lat;
-                coordPair[1] = lng;
-            });
-            return coordinates;
+
+        var typeToDisplay = "unknown type";
+        if (geometry.type == 'LineString') {
+            typeToDisplay = 'Line';
+        } else if (geometry.type == 'Polygon') {
+            typeToDisplay = 'Area';
         }
-        if (geometry.type == "LineString"){
-            let latLngArray = toLatLng(coordinates);
-            transectPart.feature = ALA.MapUtils.createSegment(latLngArray, popup);
-        } else if (geometry.type == "Point"){
+        else if (geometry.type == 'Point') {
+            typeToDisplay = 'Point';
+        }
+        var popup = typeToDisplay + String(lngLatFeature.name);
+
+        /* a geometry to display on leaflet map will be created here so coordinate order needs to be changed
+        from [lng, lat] to [lat, lng] */
+        function toLatLng(lngLatcoords) {
+            var latLngCoords = [];
+            lngLatcoords.forEach(function(lngLat) {
+                let lat = lngLat[1];
+                let lng = lngLat[0];
+                latLngCoords.push([lat, lng]);
+            });
+            return latLngCoords;
+        }
+        if (geometry.type == "Point"){
             transectPart.feature = ALA.MapUtils.createMarker(coordinates[1], coordinates[0], popup, {});
+        } else if (geometry.type == "LineString"){
+            let latLngCoords = toLatLng(coordinates);
+            transectPart.feature = ALA.MapUtils.createSegment(latLngCoords, popup);
         } else if (geometry.type == "Polygon"){
-            let latLngArray = toLatLng(coordinates);
-            transectPart.feature = ALA.MapUtils.createPolygon(latLngArray, popup);
+            let latLngCoords = toLatLng(coordinates);
+            transectPart.feature = ALA.MapUtils.createPolygon(latLngCoords, popup);
         }
         console.log("tra part", transectPart);
 
         transectPart.feature.on("dragend", transectPart.dragEvent);
+        transectPart.feature.on("edit", transectPart.editEvent);
+
 
         // Add feature to be saved in site collection
         self.transectParts.push(transectPart);
         transectFeatureGroup.addLayer(transectPart.feature);
-        console.log("layers of trans feature gr", transectFeatureGroup.getLayers());
-        // var geojson = Biocollect.MapUtilities.featureToValidGeoJson(feature.geometry);
-        // transectPart.feature = ALA.MapUtils.createFeatureFromGeoJson(geojson, popup);
-
-        // the following line works and adds it to the map but in the wrong order of coordinates (geojson)
-        // transectPart.feature.addTo(self.map);
     }
 
     self.renderTransect = function(){
         self.map.resetMap();
         transectFeatureGroup.eachLayer(function(layer) {
-            layer.on("dragend", layer.dragEvent)
+            layer.on("dragend", layer.dragEvent);
+            layer.on("edit", layer.editEvent)
         });
         
         self.map.getMapImpl().addLayer(transectFeatureGroup);
-
-        // transectFeatureGroup.addTo(self.map);
-        // console.log("added to map", transectFeatureGroup);
     }
 
     self.removeTransectPart = function (transectPart) {
@@ -273,14 +276,9 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
         self.loadSite(site);
 
-        var layerId = null;
-        var editedCoords = null;
         self.map.registerListener(
         "draw:editstop", function (e) {
             console.log("editstop");
-            // var newCoords = transectFeatureGroup.getLayer(layerId).getLatLngs();
-            // console.log(newCoords);
-
         });
 
         self.map.registerListener(
@@ -294,7 +292,6 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
 
     function getTransectPart() {
-        // self.map.modifyDrawnItems();
         var geoJson = self.map.getGeoJSON();
         self.map.resetMap();
         var features = geoJson.features;
@@ -314,8 +311,6 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             return false;
         }
     }
-    // self.map.getMapImpl().addLayer(transectFeatureGroup);
-
 
     initialiseViewModel();
 };
@@ -337,9 +332,9 @@ var TransectPart = function (data) {
     //         return self.detailSelected().concat(self.detailOther());
     // });
     self.habitatList = ko.observableArray(['Lövskog', 'Blandskog', 'Barrskog', 'Hygge']);
-    self.habitatSelected = ko.observableArray(exists(data, 'habitat'));
-    self.habitatOther = ko.observableArray();
     self.habitat = ko.observableArray(exists(data, 'habitat'));
+    self.habitatOther = ko.observableArray();
+    // self.habitat = ko.observableArray(exists(data, 'habitat'));
     // self.habitat = ko.computed(function(){
     //     return self.habitatSelected().concat(self.habitatOther());
     // });
@@ -371,12 +366,16 @@ var TransectPart = function (data) {
     
     self.editEvent = function (event) {
         console.log("layer edited");
-        // TODO - on edit update coordinates of transectPart.geometry.coordinates 
-        console.log("edit", event);
-        // console.log("edit layer", event.layer); // undefined
-        console.log(self.name(), self.geometry());
-        console.log(self.feature);
-        self.geometry().coordinates = this.getLatLngs();
+        var newCoords = this.getLatLngs();
+        var coordArray = []; 
+        newCoords.forEach(function(coordPair) {
+            let lat = coordPair.lat;
+            let lng = coordPair.lng;
+            coordArray.push([lng, lat])
+        });
+        console.log(newCoords);
+        console.log(coordArray);
+        self.geometry().coordinates = coordArray;
         console.log("after", self.geometry());
     }
     self.dragEvent = function (event) {
@@ -386,7 +385,7 @@ var TransectPart = function (data) {
         var lng = event.target.getLatLng().lng;
         self.geometry().decimalLatitude(lat);
         self.geometry().decimalLongitude(lng);
-        self.geometry().coordinates([lng, lat]);
+        self.geometry().coordinates([lat, lng]);
         console.log("new geometry", self.geometry());
     };
 
