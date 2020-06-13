@@ -10,7 +10,7 @@
             </h4>
             <div class="row-fluid" id="transectParts">
                 <div class="row-fluid">
-                    <button type="button" data-bind="click: newTransectPart, visible: showButton"
+                    <button type="button" data-bind="click: newTransectPart, visible: true"
                             class="btn"><g:message code="g.add"/> site attributes
                     </button>
                 </div>
@@ -54,16 +54,23 @@
         </div>
         <div class="row-fluid controls-row">
             <div class="span6">
-                <label for="habitatOther"><g:message code="g.other"/></label>
-                <input type="text" data-bind="value:habitatOther" multiple="true" size="6">
+                <label for="habitatAddedByUser"><g:message code="g.other"/></label>
+                <input type="text" data-bind="value:habitatAddedByUser" multiple="true" size="6">
+                <button data-bind="click: addHabitat"><g:message code="g.add"/></button>
+                <textarea data-bind="value:habitat"></textarea>
             </div>
             <div class="span6">
-                <label for="detailOther"><g:message code="g.other"/></label>
-                <input type="text" data-bind="value:detailOther" multiple="true" size="6">
+                <label for="detailAddedByUser"><g:message code="g.other"/></label>
+                <input type="text" data-bind="value:detailAddedByUser, valueUpdate: 'afterkeydown'" multiple="true" size="6">
+                <button data-bind="click: addDetail"><g:message code="g.add"/></button>
+                <label for="habitatAddedByUser">Attributes to save: </label>
+                <div data-bind="foreach: detail">
+                <li data-bind="text: $data"></li><a href="#" data-bind="click: $parent.removeDetail"><i class="fa fa-remove"></i></a>
+                </div>
             </div>
         </div>
         <div class="">
-            <fc:textField data-bind="text:geometry().coordinates" outerClass="span10" label="${message(code:'g.coordinates')}"/>
+            <fc:textField data-bind="value:geometry().coordinates" outerClass="span10" label="${message(code:'g.coordinates')}"/>
         </div>
     </div>
 </div>
