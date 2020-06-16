@@ -5,14 +5,14 @@
 
     <div class="span5">
         <div class="well well-small" data-bind="visible: allowPointsOfInterest()">
-            <h4><g:message code="site.transect.title"/>
-            <fc:iconHelp title="${message(code: 'site.transect.title')}"><g:message code="site.transect.help"/></fc:iconHelp>
-            </h4>
             <div class="row-fluid" id="transectParts">
                 <div class="row-fluid">
-                    <button type="button" data-bind="click: newTransectPart, visible: true"
-                            class="btn"><g:message code="g.add"/> site attributes
+                    <button type="button" data-bind="click: addTransectPartFromMap, visible: transectParts().length < 1"
+                            class="btn"><g:message code="site.transect.transectPart.addFromMap"/> 
                     </button>
+                </div>
+                <div class="row-fluid">
+                    <h4><g:message code="site.transect.transectPart.name.help"/></h4>
                 </div>
                 <div class="span12" data-bind="foreach: transectParts">
                     <div>
@@ -57,6 +57,7 @@
                 <label for="habitatAddedByUser"><g:message code="g.other"/></label>
                 <input type="text" data-bind="value:habitatAddedByUser" multiple="true" size="6">
                 <button data-bind="click: addHabitat"><g:message code="g.add"/></button>
+                <label for="habitatAddedByUser">Attributes to save: </label>
                 <textarea data-bind="value:habitat"></textarea>
             </div>
             <div class="span6">
