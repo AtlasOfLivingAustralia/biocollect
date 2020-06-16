@@ -4,7 +4,7 @@
         <h2><g:message code="site.details.title"/></h2>
 
         <p class="media-heading">
-            <g:message code="site.details.help"/>
+            <g:message code="site.transect.help"/>
         </p>
     </div>
 
@@ -39,8 +39,8 @@
         </div>
     </div>
 
-    <h2><g:message code="site.details.extent.heading"/></h2>
-    <fc:iconHelp title="Extent of the site"><g:message code="site.details.extent.help"/></fc:iconHelp>
+    <h2><g:message code="site.transect.title"/></h2>
+    <fc:iconHelp title="${message(code:'site.transect.title')}"><g:message code="site.transect.map.help"/></fc:iconHelp>
 <%-- TODO if systematic monitoring then --%>
     <%-- <g:render template="/site/siteDefinition" model="${[showLine: true, showMyLocation: true, showAllowSearchLocationByAddress: false, showAllowSearchRegionByAddress: true, showMarker: true]}"/> --%>
     <g:render template="/site/systematicSiteDefinition" model="${[showLine: true, showMyLocation: true, showAllowSearchLocationByAddress: false, showAllowSearchRegionByAddress: true, showMarker: true]}"/>
