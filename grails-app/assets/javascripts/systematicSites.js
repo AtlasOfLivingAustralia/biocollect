@@ -109,10 +109,16 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         return geometryObservable;
     };
 
-    self.newTransectPart = function () {
-        // get features from the map
-        getTransectPart();
-        self.renderTransect();
+
+
+    self.addTransectPartFromMap = function () {
+
+        var featuresAreDrawn = getTransectPart();
+        if (featuresAreDrawn){
+            self.renderTransect();
+        } else {
+            alert("Draw on the map first.");
+        }
     };
 
     function createTransectPart(lngLatFeature) {
@@ -306,7 +312,8 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
                         coordinates: features[index].geometry.coordinates
                     }
                 });
-            }     
+            }
+            return true;     
         } else {
             // TODO - should be a message in template systematicSiteDefinition.gsp
             return false;
