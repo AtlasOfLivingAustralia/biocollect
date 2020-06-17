@@ -143,8 +143,8 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         function toLatLng(lngLatcoords) {
             var latLngCoords = [];
             lngLatcoords.forEach(function(lngLat) {
-                let lat = lngLat[1];
-                let lng = lngLat[0];
+                var lat = lngLat[1];
+                var lng = lngLat[0];
                 latLngCoords.push([lat, lng]);
             });
             return latLngCoords;
@@ -152,10 +152,10 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         if (geometry.type == "Point"){
             transectPart.feature = ALA.MapUtils.createMarker(coordinates[1], coordinates[0], popup, {});
         } else if (geometry.type == "LineString"){
-            let latLngCoords = toLatLng(coordinates);
+            var latLngCoords = toLatLng(coordinates);
             transectPart.feature = ALA.MapUtils.createSegment(latLngCoords, popup);
         } else if (geometry.type == "Polygon"){
-            let latLngCoords = toLatLng(coordinates);
+            var latLngCoords = toLatLng(coordinates);
             transectPart.feature = ALA.MapUtils.createPolygon(latLngCoords, popup);
         }
         console.log("tra part", transectPart);
@@ -303,8 +303,8 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         self.map.resetMap();
         var features = geoJson.features;
         if (features && features.length > 0) {
-            for (let index in features){
-                let name = parseInt(index) + 1;
+            for (var index in features){
+                var name = parseInt(index) + 1;
                 createTransectPart({
                     name: name,
                     geometry: {
@@ -395,8 +395,8 @@ var TransectPart = function (data) {
         var newCoords = this.getLatLngs();
         var coordArray = []; 
         newCoords.forEach(function(coordPair) {
-            let lat = coordPair.lat;
-            let lng = coordPair.lng;
+            var lat = coordPair.lat;
+            var lng = coordPair.lng;
             coordArray.push([lng, lat])
         });
         console.log(newCoords);
