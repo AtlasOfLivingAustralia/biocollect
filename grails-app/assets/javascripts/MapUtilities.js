@@ -490,5 +490,22 @@ Biocollect.MapUtilities = {
         }
 
         return false;
+    },
+
+    /**
+     *
+     */
+    getLegendURL: function (layer, style) {
+        var params = {
+            request: 'GetLegendGraphic',
+            version: layer.wmsParams.version,
+            format: 'image/png',
+            layer: layer.wmsParams.layers,
+            style: style,
+            legend_options:"dpi:180;forceLabels:on;bgColor:0xf1f8ff;fontAntiAliasing:true;countMatched:true;fontSize:12;fontName:Arial;",
+            rule: ''
+        };
+
+        return  layer._url + L.Util.getParamString(params, layer._url, true);
     }
 };

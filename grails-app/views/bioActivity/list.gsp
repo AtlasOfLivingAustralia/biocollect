@@ -8,7 +8,6 @@
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-    <g:set var="wsParameters" value="${[version: params.version, spotterId: "${spotterId}", projectActivityId: "${projectActivityId}"]}"/>
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:stylesheet src="facets-filter-view.css"/>
     <asset:script type="text/javascript">
@@ -32,11 +31,12 @@
             worksActivityEditUrl: "${createLink(controller: 'activity', action: 'enterData')}",
             worksActivityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
             downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
-            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params: wsParameters)}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
+            wmsActivityURL: "${createLink(controller: 'geoServer', action: 'wms', params: [projectId: projectId])}",
+            createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
             view: "${view}",
             returnTo: "${returnTo}",
             projectLinkPrefix: "${createLink(controller: 'project')}/",

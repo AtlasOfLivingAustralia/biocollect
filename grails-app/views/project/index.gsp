@@ -17,6 +17,8 @@
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
+        wmsActivityURL: "${createLink(controller: 'geoServer', action: 'wms')}",
+        createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
         projectUpdateUrl: "${createLink(action: 'ajaxUpdate', id: project.projectId)}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         projectEditUrl:"${createLink(action:'edit', id:project.projectId)}",
