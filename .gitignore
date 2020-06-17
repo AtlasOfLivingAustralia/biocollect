@@ -11,3 +11,4 @@ out/
 .settings
 .classpath
 .asscache
+grails-app/assets/components/compile/biocollect-templates.js
