@@ -136,6 +136,23 @@ class SiteController {
         }
     }
 
+    def editSystematic(String id) {
+        def result = siteService.getRaw(id)
+        if (!result.site) {
+            render 'no such site'
+        } else if (!isUserMemberOfSiteProjects(result.site) && !userService.userIsAlaAdmin()) {
+            // check user has permissions to edit - user must have edit access to
+            // ALL linked projects to proceed.
+            flash.message = "Access denied: User does not have <b>editor</b> permission to edit site: ${id}"
+            redirect(controller:'home', action:'index')
+        } else {
+            String projectIds = result.site.projects.toList().join(',')
+            String userId = authService.getUserId()
+            result.userCanEdit = projectService.isUserEditorForProjects(userId, projectIds)
+            result
+        }
+    }
+
     /**
      * Api: delete site which is not public and not related to a project anymore
      *
