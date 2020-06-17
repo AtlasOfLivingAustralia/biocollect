@@ -827,3 +827,13 @@ input.full-width-input {
 dd {
     margin-bottom: 10px;
 }
+
+/** activities css */
+.record-map-popup .image-centre {
+    display: block;
+    margin: 0 auto;
+}
+
+.record-map-popup .row-fluid [class*="span"] {
+    min-height: 20px;
+}

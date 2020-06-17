@@ -1,9 +1,19 @@
 var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit, doNotStoreFacetFiltering, columnConfig) {
     var self = this;
 
-    var features, featureType = 'record', alaMap, results, radio;
+    var features, featureType = 'record', alaMap, results,
+        mapTabHeaderId = 'dataMapTab',
+        updateMapOccurrences = true,
+        activityLayer, heatmapLayer, clusterLayer,
+        pointStyleName = 'point_circle',
+        heatmapStyleName = 'heatmap',
+        clusterStyleName = 'cluster',
+        currentlySelectedTab,
+        legendControl,
+        colorByControl;
     self.view = view ? view : 'allrecords';
-    var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500;
+    var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500,
+        MAX_FEATURE_COUNT = 1000;
 
     // These parameters are used when activity is instantiated from sites page.
     // It is used to disable certain aspects like map and auto load feature
@@ -71,7 +81,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         self.searchTerm('');
         self.loadSortColumn(true, true);
         self.filterViewModel.selectedFacets.removeAll();
-        alaMap.resetMap();
     };
 
     self.reset = function () {
@@ -459,50 +468,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     };
 
     /**
-     * function used to create map and plot the fetched points
-     */
-    self.getDataAndShowOnMap = function () {
-        // do not execute code if ignoreMap is set. helpful in situations where map is not included
-        if(ignoreMap){
-            return;
-        }
-
-        var searchTerm = self.searchTerm() || '';
-        var view = self.view;
-        var url =fcConfig.getRecordsForMapping + '&max=10000&searchTerm='+ searchTerm+'&view=' + view;
-        var facetFilters = [];
-        var fq;
-
-        self.plotOnMap(null);
-
-        if(fcConfig.projectId){
-            url += '&projectId=' + fcConfig.projectId;
-        }
-
-        fq = self.urlFacetParameter();
-
-        fq.forEach(function (filter, index) {
-            fq[index] = encodeURI(filter)
-        });
-
-        if(fq.length){
-            url += '&fq=' + fq.join('&fq=');
-        }
-
-        self.transients.loadingMap(true);
-        alaMap.startLoading();
-        $.getJSON(url, function(data) {
-            self.transients.loadingMap(false);
-            results = data;
-            self.generateDotsFromResult(data);
-            alaMap.finishLoading();
-        }).error(function (request, status, error) {
-            console.error("AJAX error", status, error);
-            alaMap.finishLoading();
-        });
-    };
-
-    /**
      * converts ajax data to activities or records according to selection.
      * @param data
      */
@@ -556,117 +521,160 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                         break;
                 }
             });
-
-            if(features.length > 0) {
-                self.plotOnMap(features, type);
-            }
-            // if no records found, then display activities
-            else if (featureType == 'record') {
-                var type = 'activity';
-                self.updateActivityRecordRadioButton(type, radio);
-                self.getActivityOrRecords(type);
-            }
         }
     };
 
-
-    /**
-     * A hack to update activity or record radio buttons.
-     * @param value - value of radio button to be checked - 'activity' or 'record'
-     * @param radio - leaflet radio button control
-     */
-    self.updateActivityRecordRadioButton = function (value, radio) {
-        $(radio._container).find('input[value="' + value + '"]').prop('checked', true);
-    };
 
     /**
      * creates the map and plots the points on map
      * @param features
      */
-    self.plotOnMap = function (features, drawType){
-        drawType = drawType || 'cluster';
-        var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
-        var mapOptions = {
-            autoZIndex: false,
-            preserveZIndex: true,
-            addLayersControlHeading: true,
-            drawControl: false,
-            showReset: false,
-            draggableMarkers: false,
-            useMyLocation: false,
-            allowSearchLocationByAddress: false,
-            allowSearchRegionByAddress: false,
-            trackWindowHeight: true,
-            baseLayer: baseLayersAndOverlays.baseLayer,
-            otherLayers: baseLayersAndOverlays.otherLayers,
-            overlays: baseLayersAndOverlays.overlays,
-            overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
-    };
+    // self.plotOnMap = function (features, drawType){
+    //     drawType = drawType || 'cluster';
+    //     var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
+    //     var mapOptions = {
+    //         autoZIndex: false,
+    //         preserveZIndex: true,
+    //         addLayersControlHeading: true,
+    //         drawControl: false,
+    //         showReset: false,
+    //         draggableMarkers: false,
+    //         useMyLocation: false,
+    //         allowSearchLocationByAddress: false,
+    //         allowSearchRegionByAddress: false,
+    //         trackWindowHeight: true,
+    //         baseLayer: baseLayersAndOverlays.baseLayer,
+    //         otherLayers: baseLayersAndOverlays.otherLayers,
+    //         overlays: baseLayersAndOverlays.overlays,
+    //         overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+    // };
+    //
+    //     if(!alaMap){
+    //         self.transients.alaMap = alaMap = new ALA.Map("recordOrActivityMap", mapOptions);
+    //         radio = new L.Control.Radio({
+    //             name: 'activityOrRecrodsTEST',
+    //             position: 'topleft',
+    //             radioButtons:[{
+    //                 displayName: 'Points ( Species occurrences )',
+    //                 value: 'record',
+    //                 checked: true
+    //             },{
+    //                 displayName: 'Cluster ( Site visits )',
+    //                 value: 'activity'
+    //             }],
+    //             onClick: self.getActivityOrRecords
+    //         });
+    //         alaMap.addControl(radio);
+    //         alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomright");
+    //         self.addLegend();
+    //     }
 
-        if(!alaMap){
-            self.transients.alaMap = alaMap = new ALA.Map("recordOrActivityMap", mapOptions);
-            radio = new L.Control.Radio({
-                name: 'activityOrRecrodsTEST',
-                position: 'topleft',
-                radioButtons:[{
-                    displayName: 'Points ( Species occurrences )',
-                    value: 'record',
-                    checked: true
-                },{
-                    displayName: 'Cluster ( Site visits )',
-                    value: 'activity'
-                }],
-                onClick: self.getActivityOrRecords
+    self.createOrUpdateMap = function (features, drawType){
+        if (ignoreMap)
+            return;
+
+        if (updateMapOccurrences && currentlySelectedTab && (currentlySelectedTab.id  == mapTabHeaderId)) {
+            if(!alaMap){
+                var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
+                var mapOptions = {
+                    drawControl: false,
+                    showReset: false,
+                    draggableMarkers: false,
+                    useMyLocation: false,
+                    allowSearchLocationByAddress: false,
+                    allowSearchRegionByAddress: false,
+                    trackWindowHeight: true,
+                    baseLayer: baseLayersAndOverlays.baseLayer,
+                    otherLayers: baseLayersAndOverlays.otherLayers,
+                    overlays: baseLayersAndOverlays.overlays,
+                    overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                };
+
+                // Create map
+                self.transients.alaMap = alaMap = new ALA.Map("recordOrActivityMap", mapOptions);
+
+                // Control - reset
+                alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomright");
+
+                // Control - colour by
+                colorByControl = new L.Control.Select({
+                    position: 'topright',
+                    label : 'Colour by: ',
+                    selectionAction: colourByEventHandler,
+                    items: []
+                });
+                alaMap.addControl(colorByControl);
+
+                // rendering style - point, cluster, heatmap
+                var radio = new L.Control.Radio({
+                    name: 'recordRendering',
+                    position: 'topleft',
+                    radioButtons:[{
+                        displayName: 'Point',
+                        value: 'point_circle',
+                        checked: true
+                    },{
+                        displayName: 'Heatmap',
+                        value: 'heatmap'
+                    },{
+                        displayName: 'Cluster',
+                        value: 'cluster'
+                    }],
+                    onClick: changeRecordRenderingStyle
+                });
+                alaMap.addControl(radio);
+
+
+                // update colour by when facets change
+                self.filterViewModel.facets.subscribe(function() {
+                    colorByControl.setItems(self.filterViewModel.getColourByFields());
+                });
+
+                // Control - legend
+                legendControl = new L.Control.LegendImage({collapse: true});
+                alaMap.addControl(legendControl);
+
+                alaMap.registerListener('click', mapClickEventHandler);
+            }
+
+
+            activityLayer && alaMap.removeOverlayLayer(activityLayer);
+            var url = constructQueryUrl(fcConfig.wmsActivityURL, 0, false, 0, false);
+            activityLayer = L.nonTiledLayer.wms ( url, {
+                format: 'image/png',
+                transparent: true,
+                layers: 'ecodata:biocollectActivity',
+                styles: pointStyleName,
+                uppercase: true
             });
-            alaMap.addControl(radio);
-            alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomright");
-            self.addLegend();
+
+            alaMap.addOverlayLayer(activityLayer, 'Activity', true);
+
+            heatmapLayer && alaMap.removeOverlayLayer(heatmapLayer);
+            heatmapLayer = L.nonTiledLayer.wms ( url, {
+                format: 'image/png',
+                transparent: true,
+                layers: 'ecodata:biocollectActivity',
+                styles: heatmapStyleName,
+                uppercase: true
+            });
+
+            clusterLayer && alaMap.removeOverlayLayer(clusterLayer);
+            clusterLayer = L.nonTiledLayer.wms ( url, {
+                format: 'image/png',
+                transparent: true,
+                layers: 'ecodata:biocollectActivity',
+                styles: clusterStyleName,
+                uppercase: true
+            });
+
+            // init colour by control
+            colorByControl.setItems(self.filterViewModel.getColourByFields());
+            legendControl.clearLegend();
+
+            // clear flag to disable adding occurrences layer to map
+            updateMapOccurrences = false;
         }
-
-        self.transients.totalPoints(features && features.length ? features.length : 0);
-        if(features && features.length){
-            switch (drawType){
-                case 'cluster':
-                    alaMap.addClusteredPoints(features);
-                    break;
-                case 'point':
-                    alaMap.addPointsOrIcons(features, {}, fcConfig.absenceIconUrl, {
-                        iconSize:     [20, 18],
-                        iconAnchor:   [10, 9],
-                        popupAnchor:  [0, -9]
-                    });
-                    break;
-            }
-        }
-
-        alaMap.redraw()
-    };
-
-
-    self.addLegend = function () {
-        var Legend = L.Control.extend({
-            options: {
-                position: "bottomright",
-                title: 'Legend'
-            },
-            onAdd: function (map) {
-                var container = L.DomUtil.create("div", "leaflet-control-layers");
-                this.container = container;
-                $(container).html("<div style='padding:10px'>" + $('#map-legend').html() + "</div>");
-                return container;
-            }
-        });
-
-        alaMap.addControl(new Legend());
-    };
-
-    /**
-     * function called when  radio button selection changes.
-     * @param value
-     */
-    self.getActivityOrRecords = function(value){
-        featureType = value;
-        self.generateDotsFromResult(results);
     };
 
     /**
@@ -731,23 +739,26 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return url
     });
 
-    function constructQueryUrl(prefix, offset, facetOnly, flimit) {
+    function constructQueryUrl(prefix, offset, facetOnly, flimit, addPaginationParams) {
         if (!offset) offset = 0;
+        addPaginationParams = addPaginationParams == undefined ? true : !!addPaginationParams;
 
         var params = {
-            max: self.pagination.resultsPerPage(),
-            offset: offset,
-            sort: self.sort(),
-            order: self.order(),
-            flimit: flimit || fcConfig.flimit,
-            view: self.view,
-            spotterId: fcConfig.spotterId,
-            projectActivityId: fcConfig.projectActivityId,
-            clientTimezone : moment.tz.guess()
-        },
+                view: self.view,
+                spotterId: fcConfig.spotterId,
+                projectActivityId: fcConfig.projectActivityId,
+                clientTimezone : moment.tz.guess()
+            },
             fq = [],
             rfq;
 
+        if (addPaginationParams) {
+            params.max = self.pagination.resultsPerPage();
+            params.offset = offset;
+            params.sort= self.sort();
+            params.order= self.order();
+            params.flimit= flimit || fcConfig.flimit;
+        }
 
         var filters = '', rfilters = '';
         if (_.isUndefined(facetOnly) || !facetOnly) {
@@ -771,10 +782,100 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     function fetchDataForTabs(){
         if(self.filterViewModel.switchOffSearch()) return;
 
+        updateMapOccurrences = true;
         self.refreshPage();
-        self.getDataAndShowOnMap();
+        self.createOrUpdateMap();
         self.imageGallery && self.imageGallery.fetchRecordImages()
     }
+
+    function mapClickEventHandler(event) {
+        var map = this,
+            size = map.getSize(),
+            // this crs is used to show layer added to map
+            crs = map.options.crs,
+            // these are the SouthWest and NorthEast points
+            // projected from LatLng into used crs
+            sw = crs.project(map.getBounds().getSouthWest()),
+            ne = crs.project(map.getBounds().getNorthEast()),
+            params = {
+                request: 'GetFeatureInfo',
+                service: 'WMS',
+                srs: crs.code,
+                styles: activityLayer.wmsParams.styles,
+                version: activityLayer.wmsParams.version,
+                layers: activityLayer.wmsParams.layers,
+                query_layers: activityLayer.wmsParams.layers,
+                bbox:  sw.x + ',' + sw.y + ',' + ne.x + ',' + ne.y,
+                height: size.y,
+                width: size.x,
+                feature_count: MAX_FEATURE_COUNT,
+                info_format: 'application/json'
+            };
+
+        params[params.version === '1.3.0' ? 'i' : 'x'] = Math.round(event.containerPoint.x);
+        params[params.version === '1.3.0' ? 'j' : 'y'] = Math.round(event.containerPoint.y);
+        var url = activityLayer._wmsUrl + L.Util.getParamString(params, activityLayer._wmsUrl, true);
+        $.get(url , function (data) {
+            var features = data.features;
+
+            if (features && features.length) {
+                L.popup({
+                    maxWidth: 400,
+                    minWidth: 200
+                })
+                    .setLatLng(event.latlng)
+                    .setContent('<div id="template-map-popup-record" style="width: 400px; height: auto" data-bind="template: { name: \'script-popup-template\' }"></div>')
+                    .openOn(alaMap.getMapImpl());
+
+                ko.applyBindings({features: features, index: ko.observable(0)}, document.getElementById('template-map-popup-record'))
+            }
+        });
+    };
+
+    function colourByEventHandler(val) {
+        if (val) {
+            var style = self.filterViewModel.getStyleName(val);
+            if(!style) {
+                var result = self.filterViewModel.getTermsForFacet(val);
+                $.ajax({
+                    url: fcConfig.createStyleURL,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(result),
+                    success: function (data) {
+                        var name = data.name;
+                        self.filterViewModel.setStyleName(val, name);
+                        activityLayer.setParams ({styles: name});
+                        legendControl.updateLegend(Biocollect.MapUtilities.getLegendURL(activityLayer, name));
+                    }
+                });
+            } else {
+                activityLayer.setParams ({styles: style});
+                legendControl.updateLegend(Biocollect.MapUtilities.getLegendURL(activityLayer, style));
+            }
+        } else {
+            activityLayer.setParams ({styles: ''});
+            legendControl.clearLegend();
+        }
+    };
+
+    function changeRecordRenderingStyle(value) {
+        activityLayer && alaMap.removeOverlayLayer(activityLayer);
+        heatmapLayer && alaMap.removeOverlayLayer(heatmapLayer);
+        clusterLayer && alaMap.removeOverlayLayer(clusterLayer);
+
+        switch (value) {
+            case clusterStyleName:
+                alaMap.addOverlayLayer(clusterLayer, 'Cluster', true);
+                break;
+            case heatmapStyleName:
+                alaMap.addOverlayLayer(heatmapLayer, 'Heatmap', true);
+                break;
+            case pointStyleName:
+                alaMap.addOverlayLayer(activityLayer, 'Point', true);
+                break;
+        }
+    };
 
     self.filterViewModel.selectedFacets.subscribe(fetchDataForTabs);
 
@@ -785,6 +886,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         self.sort(data.id);
         !doNotRefersh && self.refreshPage();
     };
+
+    $("#tabDifferentViews a").on('show', function (event) {
+        currentlySelectedTab = event.target;
+        console.log(currentlySelectedTab);
+    }).on('shown', self.createOrUpdateMap);
 
     var restored = facetsLocalStorageHandler("restore");
     var orgTerm = fcConfig.organisationName;

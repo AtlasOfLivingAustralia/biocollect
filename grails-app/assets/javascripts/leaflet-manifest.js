@@ -24,12 +24,14 @@
 // require plugins/ala-map/controls/Select.js
 // require plugins/ala-map/controls/Legend.js
 // require plugins/ala-map/controls/Radio.js
+//= require LegendImage.js
 // require Leaflet.Sleep/Leaflet.Sleep.js
 // require urijs-1.18.0/URI.js
 // require plugins/ala-map/Map.js
 // require plugins/ala-map/OccurrenceMap.js
 // require plugins/ala-map/layers/SmartWmsLayer.js
-
+//= require Leaflet.NonTiledLayer-0.7.3/NonTiledLayer.js
+//= require Leaflet.NonTiledLayer-0.7.3/NonTiledLayer.WMS.js
 
 //= require MapUtilities.js
 //= require siteDisplay.js

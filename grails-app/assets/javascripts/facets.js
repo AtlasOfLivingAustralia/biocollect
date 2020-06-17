@@ -335,6 +335,60 @@ function FilterViewModel(config){
         self.mergeTempToRefine();
     };
 
+    self.getColourByFields = function () {
+        var facets = self.facets(),
+            result = [];
+        
+        facets  && facets.forEach(function (facet) {
+            if (facet instanceof FacetViewModel) {
+                var terms = facet.terms();
+                if (terms && terms.length > 1) {
+                    var resp = facet.getColourByField();
+                    result.push(resp);
+                }
+            }
+        });
+
+        return result
+    };
+
+    self.getTermsForFacet = function (facetName) {
+        var facets = self.facets(),
+            result = {};
+
+        facets && facets.forEach( function (facet) {
+            if (facet.name() == facetName) {
+                result = facet.toJS();
+            }
+        });
+
+        return result;
+    };
+
+    self.setStyleName = function (facetName, value) {
+        var facets = self.facets();
+
+        facets && facets.forEach( function (facet) {
+            if (facet.name() == facetName) {
+                facet.setStyleName(value)
+            }
+        });
+    };
+
+    self.getStyleName = function (facetName) {
+        var facets = self.facets(),
+            result;
+
+        facets && facets.forEach( function (facet) {
+            if (facet.name() == facetName) {
+                 result = facet.getStyleName()
+            }
+        });
+
+        return result;
+    };
+
+
     /**
      * search for a token and show terms matching the token.
      */
@@ -372,6 +426,7 @@ function FacetViewModel(facet) {
         return self.title || cleanName(self.name()) || 'Unknown';
     });
     self.type = facet.type;
+    self.styleName;
 
     if(facet.ref.isFacetSelected(self)){
         state = 'Expanded'
@@ -420,6 +475,29 @@ function FacetViewModel(facet) {
     };
 
     self.terms(self.getTerms(facet));
+
+    self.getColourByField = function (){
+        return  {key: self.name(), value: self.displayName()}
+    };
+
+    self.getStyleName = function () {
+        return self.styleName;
+    };
+
+    self.setStyleName = function (value) {
+        self.styleName = value;
+    };
+
+    self.toJS = function(){
+        var result = {};
+        result.field = self.name();
+        result.type = self.type;
+        result.terms = $.map(self.terms(), function(term){
+            return term.toJS();
+        });
+
+        return result;
+    };
 
     /**
      * Set a flag on a term to indicate that it is selected. 
@@ -556,7 +634,15 @@ function FacetTermViewModel(term) {
      */
     self.addToRefine = function () {
         self.facet.ref.addToRefineList(self);
-    }
+    };
+
+    /**
+     * Collect term details in an Object.
+     * @returns {{displayName: string, count: number, term: string, type: string, title: string}}
+     */
+    self.toJS = function () {
+        return {term: self.term(), displayName: self.displayName(), type: self.type, title: self.title, count: self.count()};
+    };
 
     /**
      * when refine result is clicked, add t
@@ -676,18 +762,26 @@ function FacetRangeViewModel(term) {
      * toggle checked status
      */
     self.filterNow = function () {
-        self.silent(true)
-        self.checked(true)
-        self.silent(false)
+        self.silent(true);
+        self.checked(true);
+        self.silent(false);
         self.facet.ref.addToRefineList(self);
-    }
+    };
 
     /**
      * add to refine list
      */
     self.addToRefine = function () {
         self.facet.ref.addToRefineList(self);
-    }
+    };
+
+    /**
+     * Collect term details in an Object.
+     * @returns {{displayName: string, count: number, term: string, type: string, title: string}}
+     */
+    self.toJS = function () {
+        return {term: self.term(), displayName: self.displayName(), type: self.type, title: self.title, count: self.count(), to: self.to(), from: self.from()};
+    };
 
     /**
      * when refine result is clicked, add t
