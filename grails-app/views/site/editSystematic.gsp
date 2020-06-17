@@ -4,7 +4,7 @@
 <html>
 <head>
   <meta name="layout" content="${hubConfig.skin}"/>
-  <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | <g:message code="g.sites"/> | <g:message code="g.biocollect"/></title>
+  <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | Sites | BioCollect</title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'site', action: 'list')},Sites"/>
@@ -80,11 +80,16 @@
 <body>
     <div class="container-fluid validationEngineContainer" id="validation-container">
         <bs:form action="update" inline="true">
-            <g:render template="systematicSiteDetails" model="${[showLine: true]}"/>
+            <g:if test="${hubConfig?.systematic}">
+                <g:render template="systematicSiteDetails" model="${[showLine: true]}"/>
+            </g:if>
+            <g:if test="${!hubConfig?.systematic}">
+                <g:render template="systematicSiteDetails" model="${[showLine: true]}"/>
+            </g:if>
             <div class="row-fluid">
                 <div class="form-actions span12">
-                    <button type="button" id="save" class="btn btn-primary"><g:message code="g.save"/></button>
-                    <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
+                    <button type="button" id="save" class="btn btn-primary">Save changes</button>
+                    <button type="button" id="cancel" class="btn">Cancel</button>
                 </div>
             </div>
         </bs:form>
