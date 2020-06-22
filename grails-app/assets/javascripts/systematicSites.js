@@ -333,7 +333,8 @@ var TransectPart = function (data) {
     self.type = ko.observable(exists(data, 'type'));
     self.description = ko.observable(exists(data, 'description'));
     
-    self.detailList = ko.observableArray(['Kraftledningsgata', 'Grusväg']);
+    self.detailList = ko.observableArray(['D1. Kraftledningsgata', 'D2. Grusväg', 'D3. Asfaltsväg',
+        'D4. Aktivt bete', 'D5. Upphörd hävd', 'D6. Glänta', 'D7. Åkerren', 'D8. Skyddat område']);
     self.detail = ko.observableArray(exists(data, 'detail'));
     self.detailAddedByUser = ko.observableArray("");
     self.addDetail = function() {
@@ -345,7 +346,10 @@ var TransectPart = function (data) {
     self.removeDetail = function() {
         self.detail.remove(this);    
     }
-    self.habitatList = ko.observableArray(['Lövskog', 'Blandskog', 'Barrskog', 'Hygge']);
+    self.habitatList = ko.observableArray(['Lövskog', 'Blandskog', 'Barrskog', 'Hygge', 'Buskmark', 'Alvamark', 
+        'Ljunghed', 'Sanddynområde', 'Betesmark', 'Åkermark', 'Kärr', 'Mosse', 'Havsstrandsdäng', 
+        'Strandäng vid sjö eller vattendrag', 'Bebyggelse och trädgård', 'Häll- eller blockmark',
+        'Fjällterräng']);
     self.habitat = ko.observableArray(exists(data, 'habitat'));
     self.habitatAddedByUser = ko.observableArray("");
     self.addHabitat = function() {
