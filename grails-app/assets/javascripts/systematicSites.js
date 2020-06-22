@@ -158,12 +158,13 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             var latLngCoords = toLatLng(coordinates);
             transectPart.feature = ALA.MapUtils.createPolygon(latLngCoords, popup);
         }
-        console.log("tra part", transectPart);
-
+        
         transectPart.feature.on("dragend", transectPart.dragEvent);
         transectPart.feature.on("edit", transectPart.editEvent);
-
-
+        if (geometry.type == "LineString"){
+            transectPart.feature.on("mouseover", transectPart.highlight);
+            transectPart.feature.on("mouseout", transectPart.unhighlight);
+        }
         // Add feature to be saved in site collection
         self.transectParts.push(transectPart);
         transectFeatureGroup.addLayer(transectPart.feature);
@@ -178,6 +179,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         });
         
         self.map.getMapImpl().addLayer(transectFeatureGroup);
+        transectFeatureGroup.fitBounds();
     }
 
     self.removeTransectPart = function (transectPart) {
@@ -395,7 +397,6 @@ var TransectPart = function (data) {
     });
     
     self.editEvent = function (event) {
-        console.log("layer edited");
         var newCoords = this.getLatLngs();
         var coordArray = []; 
         newCoords.forEach(function(coordPair) {
@@ -418,6 +419,20 @@ var TransectPart = function (data) {
         console.log("new geometry", self.geometry());
     };
 
+    self.highlight = function (){
+        this.setStyle({
+            'color': '#eb6f10',
+            'weight': 4,
+            'opacity': 1
+        });
+    };
+    self.unhighlight = function (){
+        this.setStyle({
+            'color': 'blue',
+            'weight': 4,
+            'opacity': 1
+        });
+    };
 
     self.toJSON = function () {
         var js = {
