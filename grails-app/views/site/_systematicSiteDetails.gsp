@@ -10,6 +10,8 @@
 
     <div class="row-fluid">
         <div class="span6">
+            <h4><g:message code="site.transect.step.title" /> 1</h4>
+            <label for="name"><g:message code="site.transect.step1"/></label>
             <label for="name"><g:message code="site.details.siteName"/> <fc:iconHelp
                     title="Site name"><g:message code="site.details.siteName.help"/></fc:iconHelp>
                 <span class="req-field"></span>
@@ -20,13 +22,13 @@
         </div>
     </div>
 
-    <g:if test="${project && controllerName.equals('site')}">
+    <%-- <g:if test="${project && controllerName.equals('site')}">
         <div class="row-fluid" style="padding-bottom:15px;">
             <span><g:message code="site.details.projectName"/></span>
             <g:link controller="project" action="index"
                     id="${project?.projectId}">${project?.name?.encodeAsHTML()}</g:link>
         </div>
-    </g:if>
+    </g:if> --%>
     <div class="row-fluid">
         <div class="span6">
             <g:set var="helpDesc" value="${fc.iconHelp(title: message(code: 'site.details.description'), {
@@ -39,10 +41,8 @@
         </div>
     </div>
 
-    <h2><g:message code="site.transect.title"/></h2>
-    <fc:iconHelp title="${message(code:'site.transect.title')}"><g:message code="site.transect.map.help"/></fc:iconHelp>
-<%-- TODO if systematic monitoring then --%>
-    <%-- <g:render template="/site/siteDefinition" model="${[showLine: true, showMyLocation: true, showAllowSearchLocationByAddress: false, showAllowSearchRegionByAddress: true, showMarker: true]}"/> --%>
+    <h4><g:message code="site.transect.step.title" /> 2</h4>
+    <label for="name"><g:message code="site.transect.step2"/></label>
     <g:render template="/site/systematicSiteDefinition" model="${[showLine: true, showMyLocation: true, showAllowSearchLocationByAddress: false, showAllowSearchRegionByAddress: true, showMarker: true]}"/>
 
 </div>
