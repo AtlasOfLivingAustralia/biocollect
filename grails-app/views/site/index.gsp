@@ -155,15 +155,22 @@
             </g:if>
             <g:if test="${hubConfig?.systematic}">
                 <dl class="dl-horizontal">
-                    <dt><g:message code="site.transect.title"/></dt>
+                <table style="border:solid">
+                <%-- <tr> --%>
+                <td>Name</td><td>Naturtypskod</td><td>Detaljkod</td><td>Length</td>
+                <%-- </tr> --%>
+                    <%-- <dt><g:message code="site.transect.title"/></dt> --%>
                     <g:each in="${site.transectParts}">
-                        <dd>${it.name} - ${it?.habitat} - ${it?.detail} - ${it?.length} </dd>
+                    <tr>
+                        <td>${it.name}</td><td>${it?.habitat}</td><td>${it?.detail}</td><td>${it?.length}</td>
+                    </tr>
                     </g:each>
+                </table>
+                <g:if test="${site.notes}">
+                    <dt><g:message code="site.details.notes"/></dt>
+                    <dd>${site.notes?.encodeAsHTML()}</dd>
+                </g:if>
 
-                    <g:if test="${site.notes}">
-                        <dt><g:message code="site.details.notes"/></dt>
-                        <dd>${site.notes?.encodeAsHTML()}</dd>
-                    </g:if>
                 </dl>
             </g:if>
             <script>
