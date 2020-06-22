@@ -383,7 +383,8 @@
 <asset:script type="text/javascript">
         $(function(){
             var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
-            var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+            <%-- TODO - get rid of Australian overlays  --%>
+            <%-- var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig(); --%>
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
 
             var mapOptions = {
@@ -400,11 +401,11 @@
                 showReset: false,
                 maxZoom: 20,
                 baseLayer: baseLayersAndOverlays.baseLayer,
-                otherLayers: baseLayersAndOverlays.otherLayers,
-                overlays: baseLayersAndOverlays.overlays,
-                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
-                wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
-                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
+                <%-- otherLayers: baseLayersAndOverlays.otherLayers, --%>
+                <%-- overlays: baseLayersAndOverlays.overlays,
+                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault, --%>
+                <%-- wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl --%>
             };
             var smallMap = new ALA.Map("smallMap", mapOptions);
 
