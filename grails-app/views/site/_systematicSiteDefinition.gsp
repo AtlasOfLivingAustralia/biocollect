@@ -14,6 +14,12 @@
                 <div class="row-fluid">
                     <h4><g:message code="site.transect.transectPart.name.help"/></h4>
                 </div>
+                <div data-bind="visible: transectParts().length > 0">
+                    <div class="row-fluid">
+                        <h4><g:message code="site.transect.step.title" /> 3</h4>
+                        <label for="name"><g:message code="site.transect.step3"/></label>
+                    </div>
+                </div>
                 <div class="span12" data-bind="foreach: transectParts">
                     <div>
                         <div data-bind="template: { name: 'poi'}"></div>
@@ -57,14 +63,14 @@
                 <label for="habitatAddedByUser"><g:message code="g.other"/></label>
                 <input type="text" data-bind="value:habitatAddedByUser" multiple="true" size="6">
                 <button data-bind="click: addHabitat"><g:message code="g.add"/></button>
-                <label for="habitatAddedByUser">Attributes to save: </label>
+                <label for="habitatAddedByUser"><g:message code="site.transect.transectPart.attributes" />: </label>
                 <textarea data-bind="value:habitat"></textarea>
             </div>
             <div class="span6">
                 <label for="detailAddedByUser"><g:message code="g.other"/></label>
                 <input type="text" data-bind="value:detailAddedByUser, valueUpdate: 'afterkeydown'" multiple="true" size="6">
                 <button data-bind="click: addDetail"><g:message code="g.add"/></button>
-                <label for="habitatAddedByUser">Attributes to save: </label>
+                <label for="habitatAddedByUser"><g:message code="site.transect.transectPart.attributes" />: </label>
                 <div data-bind="foreach: detail">
                 <li data-bind="text: $data"></li><a href="#" data-bind="click: $parent.removeDetail"><i class="fa fa-remove"></i></a>
                 </div>
