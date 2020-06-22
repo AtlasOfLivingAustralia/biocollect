@@ -118,8 +118,8 @@
                 </g:if>
             </div>
 
-            <h3><g:message code="site.details.siteMetadata"/></h3>
             <g:if test="${!hubConfig?.systematic}">
+                <h3><g:message code="site.details.siteMetadata"/></h3>
                 <dl class="dl-horizontal">
                     <dt><g:message code="site.details.externalId"/></dt>
                     <dd>${site.externalId ?: 'Not specified'}</dd>
@@ -157,7 +157,7 @@
                 <dl class="dl-horizontal">
                     <dt><g:message code="site.transect.title"/></dt>
                     <g:each in="${site.transectParts}">
-                        <dd>${it.name} - ${it?.habitat} - ${it?.detail} </dd>
+                        <dd>${it.name} - ${it?.habitat} - ${it?.detail} - ${it?.length} </dd>
                     </g:each>
 
                     <g:if test="${site.notes}">
@@ -401,12 +401,22 @@
             };
             var smallMap = new ALA.Map("smallMap", mapOptions);
 
-
             if(mapFeatures.features === undefined || mapFeatures.features.length == 0){
                 $('#siteNotDefined').show();
             } else {
                 var geoJson = Biocollect.MapUtilities.featureToValidGeoJson(mapFeatures.features[0]);
                 smallMap.setGeoJSON(geoJson);
+            }
+
+            var transectParts = mapFeatures.transectParts;
+            if(transectParts === undefined || transectParts.length == 0){
+                $('#siteNotDefined').show();
+            } else {
+                for (var part of transectParts) {
+                    var geoJson = Biocollect.MapUtilities.featureToValidGeoJson(part.geometry);
+                    geoJson.properties.popupContent = part.name;
+                    smallMap.setTransectFromGeoJSON(geoJson);
+                }
             }
 
 
