@@ -298,7 +298,7 @@ class SiteService {
      * @param site
      */
     def getMapFeatures(site) {
-        def featuresMap = [zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []]
+        def featuresMap = [zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: [],transectParts: []]
         switch (site.extent?.source?.toLowerCase()) {
             case 'point':
                 featuresMap.features << site.extent.geometry
@@ -312,6 +312,19 @@ class SiteService {
             default:
                 featuresMap = [:]
         }
+        
+        // if site not sensitive show details
+        // if (!site?.isSensitive){
+            if (site?.transectParts){
+                def transectPartsArr = site.transectParts
+                transectPartsArr.each {
+                    def part = [:]
+                    part.name = it.name
+                    part.geometry = it.geometry
+                    featuresMap.transectParts.push(part)
+                }
+            }
+        // }
 
         def asJSON = featuresMap as JSON
         asJSON
