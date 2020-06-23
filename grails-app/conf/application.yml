@@ -116,6 +116,8 @@ ecodata:
 google:
   maps:
     base: "https://maps.googleapis.com/maps/api/js?key="
+  geocode:
+    url: "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&latlng="
 
 headerAndFooter:
   baseURL: "https://www.ala.org.au/commonui-bs2" #"https://www.ala.org.au/commonui-bs2-v2/commonui-bs2"
