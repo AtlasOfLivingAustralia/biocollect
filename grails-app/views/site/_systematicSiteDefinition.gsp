@@ -8,7 +8,7 @@
             <div class="row-fluid" id="transectParts">
                 <div class="row-fluid">
                     <button type="button" data-bind="click: addTransectPartFromMap, visible: transectParts().length < 1"
-                            class="btn"><g:message code="site.transect.transectPart.addFromMap"/> 
+                            class="btn"><g:message code="site.transect.transectPart.saveFromMap"/> 
                     </button>
                 </div>
                 <div class="row-fluid">
