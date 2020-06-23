@@ -83,8 +83,8 @@
             <g:render template="siteDetails" model="${[showLine: true]}"/>
             <div class="row-fluid">
                 <div class="form-actions span12">
-                    <button type="button" id="save" class="btn btn-primary">Save changes</button>
-                    <button type="button" id="cancel" class="btn">Cancel</button>
+                    <button type="button" id="save" class="btn btn-primary"><g:message code="g.save"/></button>
+                    <button type="button" id="cancel" class="btn"><g:message code="g.cancel" /></button>
                 </div>
             </div>
         </bs:form>
