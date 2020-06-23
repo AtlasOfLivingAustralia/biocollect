@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.GeometryUtils
 import au.org.ala.biocollect.ProjectActivityService
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.Point
@@ -736,5 +737,72 @@ class SiteService {
             "surveySiteOption" : "sitecreate",
             "defaultZoomArea" : defaultZoomSiteId
         ]
+    }
+
+    Map checkPointInsideProjectAreaAndAddress (String lat, String lng, String projectId) {
+        Map response = [
+                isPointInsideProjectArea: false,
+                address: null
+        ]
+
+        response.isPointInsideProjectArea = isPointInsideProjectArea(lat, lng, projectId)
+        if (!response.isPointInsideProjectArea) {
+            response.address = lookupAddressOfPoint(lat, lng)
+        }
+
+        response
+    }
+
+    String lookupAddressOfPoint (String lat, String lng) {
+        if (lat && lng) {
+            Map address = getLocationMetadataForPoint(lat, lng)
+            return address?.formatted_address
+        }
+    }
+
+    Map getLocationMetadataForPoint (String lat, String lng) {
+        if (grailsApplication.config.google.api.key) {
+            def localityUrl = grailsApplication.config.google.geocode.url + "${lat},${lng}&key=${grailsApplication.config.google.maps.apiKey}"
+            def result = webService.getJson(localityUrl)
+            if (!result?.error) {
+                return result.results ? result.results[0] : null
+            }
+        }
+    }
+
+    boolean isPointInsideProjectArea (String lat, String lng, String projectId) {
+        Map projectArea = getProjectAreaForProject(projectId)
+        Map pointGeoJSON = createGeoJSONFromPoint(lat, lng)
+        if ( projectArea?.geoIndex && pointGeoJSON) {
+            return GeometryUtils.doShapesIntersect(projectArea.geoIndex, pointGeoJSON)
+        }
+
+        false
+    }
+
+    Map getProjectAreaForProject(String projectId) {
+        Map project = projectService.get(projectId)
+        if (!project.error) {
+            String siteId = project.projectSiteId
+            Map projectArea = siteService.get(siteId)
+            if (!projectArea.error) {
+                return projectArea
+            }
+        }
+    }
+
+    Map createGeoJSONFromPoint (String lat, String lng) {
+        if (lat && lng) {
+            double latitude = Double.parseDouble(lat)
+            double longitude = Double.parseDouble(lng)
+
+            [
+                "type" : "Point",
+                "coordinates" : [
+                    longitude,
+                    latitude
+                ]
+            ]
+        }
     }
 }

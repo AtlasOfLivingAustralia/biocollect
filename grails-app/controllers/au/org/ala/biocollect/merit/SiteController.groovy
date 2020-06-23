@@ -830,6 +830,15 @@ class SiteController {
         }
     }
 
+    def checkPointInsideProjectAreaAndAddress (String lat, String lng, String projectId) {
+        if (lat && lng && projectId) {
+            Map result = siteService.checkPointInsideProjectAreaAndAddress(lat, lng, projectId)
+            render (text: result as JSON, contentType: 'application/json')
+        } else {
+            render(text: "Parameter(s) missing. The following parameters are requied - lat, lng and projectId", status: HttpStatus.SC_BAD_REQUEST);
+        }
+    }
+
     /**
      * Check each of the site's projects if logged in user is a member
      *
