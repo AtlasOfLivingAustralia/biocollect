@@ -36,8 +36,8 @@ repositories {
     maven { url "http://download.osgeo.org/webdav/geotools"}
     maven { url "https://repo.grails.org/grails/core" }
     maven { url "https://nexus.ala.org.au/content/groups/public/" }
-    maven { url "https://mvnrepository.com" }
-    maven { url "http://maven.geotoolkit.org"}
+//    maven { url "https://mvnrepository.com" }
+//    maven { url "http://maven.geotoolkit.org"}
     mavenCentral()
 
 }
@@ -81,8 +81,12 @@ dependencies {
     compile "org.imgscalr:imgscalr-lib:${imgscalrVersion}"
     compile "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
     compile "com.vividsolutions:jts:${jtsVersion}"
-    compile "org.geotools:gt-geojson:${geoToolsVersion}"
-    compile ("org.geotools.xsd:gt-xsd-kml:${geoToolsVersion}")
+    compile "org.geotools:gt-geojson:${geoToolsVersion}" {
+        exclude group: 'javax.media', module: 'jai_core'
+    }
+    compile ("org.geotools.xsd:gt-xsd-kml:${geoToolsVersion}") {
+        exclude group: 'javax.media', module: 'jai_core'
+    }
 
     compile "joda-time:joda-time:2.3"
   //  compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
