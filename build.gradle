@@ -33,7 +33,7 @@ apply from: 'https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-bui
 repositories {
     mavenLocal()
     //for missing jai_core.jar
-  //  maven { url "http://download.osgeo.org/webdav/geotools"}
+    maven { url "http://download.osgeo.org/webdav/geotools"}
     maven { url "https://repo.grails.org/grails/core" }
     maven { url "https://nexus.ala.org.au/content/groups/public/" }
     mavenCentral()
@@ -81,9 +81,7 @@ dependencies {
     compile "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
     compile "com.vividsolutions:jts:${jtsVersion}"
     compile "org.geotools:gt-geojson:${geoToolsVersion}"
-    compile ("org.geotools.xsd:gt-xsd-kml:${geoToolsVersion}") {
-        exclude group: 'javax.media', module: 'jai_core'
-    }
+    compile ("org.geotools.xsd:gt-xsd-kml:${geoToolsVersion}")
 
     compile "joda-time:joda-time:2.3"
   //  compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
