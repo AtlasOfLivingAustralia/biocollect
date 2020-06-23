@@ -178,8 +178,9 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             layer.on("edit", layer.editEvent)
         });
         
-        self.map.getMapImpl().addLayer(transectFeatureGroup);
-        transectFeatureGroup.fitBounds();
+        self.map.getMapImpl();
+        self.map.addLayer(transectFeatureGroup);
+        self.map.fitBounds();
     }
 
     self.removeTransectPart = function (transectPart) {
@@ -407,7 +408,6 @@ var TransectPart = function (data) {
         console.log(newCoords);
         console.log(coordArray);
         self.geometry().coordinates = coordArray;
-        console.log("after", self.geometry());
     }
     self.dragEvent = function (event) {
 
@@ -416,7 +416,6 @@ var TransectPart = function (data) {
         self.geometry().decimalLatitude(lat);
         self.geometry().decimalLongitude(lng);
         self.geometry().coordinates([lng, lat]);
-        console.log("new geometry", self.geometry());
     };
 
     self.highlight = function (){
