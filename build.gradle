@@ -36,8 +36,9 @@ repositories {
     maven { url "http://download.osgeo.org/webdav/geotools"}
     maven { url "https://repo.grails.org/grails/core" }
     maven { url "https://nexus.ala.org.au/content/groups/public/" }
+    maven { url "https://mvnrepository.com" }
+    maven { url "http://maven.geotoolkit.org"}
     mavenCentral()
-   // maven { url "http://maven.geotoolkit.org"}
 
 }
 
