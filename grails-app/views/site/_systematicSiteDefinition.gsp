@@ -76,8 +76,8 @@
                 </div>
             </div>
         </div>
-        <div class="">
-            <fc:textField data-bind="value:geometry().coordinates" outerClass="span10" label="${message(code:'g.coordinates')}"/>
+        <div>
+            <fc:textField disabled data-bind="value:geometry().coordinates" outerClass="span10" label="${message(code:'g.coordinates')}"/>
         </div>
     </div>
 </div>
