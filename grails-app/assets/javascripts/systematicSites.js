@@ -298,27 +298,11 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         });
 
         self.loadSite(site);
-
-        // self.map.registerListener(
-        // "draw:editstop", function (e) {
-        //     console.log("editstop");
-        // });
-
-        // self.map.registerListener(
-        //     "draw:edited", function (e) {
-        //         var layers = e.layers;
-        //         layers.eachLayer(function(layer) {
-        //             layerId = transectFeatureGroup.getLayerId(layer);
-        //         })
-        //     });
     }
 
-
+    // get features newly drawn on map  
     function getTransectPart() {
         var geoJson = self.map.getGeoJSON();
-        // TODO don't get all features but only ones that were added after the button was clicked
-        // self.map.resetMap();
-        
         var features = geoJson.features;
         console.log(features);
         
