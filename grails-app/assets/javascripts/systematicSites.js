@@ -114,11 +114,21 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     self.addTransectPartFromMap = function () {
 
         var featuresAreDrawn = getTransectPart();
-        if (featuresAreDrawn){
+        var layersCount = self.map.countFeatures();
+        console.log("layers", layersCount);
+        var countTransectParts = self.transectParts().length;
+        console.log("transect parts", countTransectParts);
+
+        if (featuresAreDrawn && layersCount == countTransectParts){
+            console.log("add first sites");
+            self.renderTransect();
+        } else if (featuresAreDrawn && layersCount < countTransectParts) {
+            console.log("add the newly drawn sites");
             self.renderTransect();
         } else {
             alert("Draw on the map first.");
         }
+
     };
 
     function createTransectPart(lngLatFeature) {
@@ -177,7 +187,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             layer.on("dragend", layer.dragEvent);
             layer.on("edit", layer.editEvent)
         });
-        
+
         self.map.getMapImpl();
         self.map.addLayer(transectFeatureGroup);
         self.map.fitBounds();
@@ -303,11 +313,22 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
     function getTransectPart() {
         var geoJson = self.map.getGeoJSON();
-        self.map.resetMap();
+        // TODO don't get all features but only ones that were added after the button was clicked
+        // self.map.resetMap();
+        
         var features = geoJson.features;
+        console.log(features);
+        
         if (features && features.length > 0) {
-            for (var index in features){
-                var name = parseInt(index) + 1;
+            var i = self.transectParts().length;
+            var index = 0; 
+            if (i == 0){
+                index  = 0;
+            } else if (i > 0){
+                index = 1; 
+            }
+            for (index; index < features.length; index++){
+                var name = self.transectParts().length + 1;
                 createTransectPart({
                     name: name,
                     geometry: {
