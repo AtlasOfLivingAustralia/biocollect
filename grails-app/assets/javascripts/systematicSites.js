@@ -363,38 +363,37 @@ var TransectPart = function (data) {
     self.detailList = ko.observableArray(['D1. Kraftledningsgata', 'D2. Grusväg', 'D3. Asfaltsväg',
         'D4. Aktivt bete', 'D5. Upphörd hävd', 'D6. Glänta', 'D7. Åkerren', 'D8. Skyddat område']);
     self.detail = ko.observableArray(exists(data, 'detail'));
-    self.detailAddedByUser = ko.observableArray("");
     self.addDetail = function() {
-        if (self.detailAddedByUser() != "") {
-            self.detail.push(self.detailAddedByUser()); // Adds the item. 
-            self.detailAddedByUser(""); // Clears the text box, because it's bound to the "detailAddedByUser" observable
-        }
+        self.detail.push(this); 
     };
-    self.removeDetail = function() {
-        self.detail.remove(this);    
-    }
+    self.splitDetailStr = function () {
+        console.log(typeof self.detail());
+        if (typeof self.detail() == 'string'){
+            console.log("splitting")
+            var detailArray = self.detail().split(",");
+            self.detail(detailArray);
+        }
+        console.log(self.detail());
+        return self.detail();
+    };
+
     self.habitatList = ko.observableArray(['Lövskog', 'Blandskog', 'Barrskog', 'Hygge', 'Buskmark', 'Alvamark', 
         'Ljunghed', 'Sanddynområde', 'Betesmark', 'Åkermark', 'Kärr', 'Mosse', 'Havsstrandsdäng', 
         'Strandäng vid sjö eller vattendrag', 'Bebyggelse och trädgård', 'Häll- eller blockmark',
         'Fjällterräng']);
     self.habitat = ko.observableArray(exists(data, 'habitat'));
-    self.habitatAddedByUser = ko.observableArray("");
     self.addHabitat = function() {
-        if (self.habitatAddedByUser() != "") {
-            self.habitat.push(self.habitatAddedByUser()); 
-            self.habitatAddedByUser(""); // Clears the text box
-        }
+        self.habitat.push(this); 
     };
-    // self.habitatList = ko.observableArray(['Lövskog', 'Blandskog', 'Barrskog', 'Hygge']);
-    // self.habitat = ko.observableArray([
-    //     { fromList: ko.observableArray(exists(data.habitat, 'fromList')), 
-    //     userGenerated: ko.observableArray(exists(data.habitat, 'userGenerated')) }
-    // ]);
-    // self.habitatOther = ko.observableArray();
-    // self.habitat = ko.observableArray(exists(data, 'habitat'));
-    // self.habitat = ko.computed(function(){
-    //     return self.habitatSelected().concat(self.habitatOther());
-    // });
+    self.splitHabitatStr = function () {
+        if (typeof self.habitat() == 'string'){
+            var habitatArray = self.habitat().split(",");
+            self.habitat(habitatArray);
+        }
+        console.log(self.habitat());
+        return self.habitat();
+    };
+
     self.length = null;
 
     // create geometry
@@ -429,8 +428,6 @@ var TransectPart = function (data) {
             var lng = coordPair.lng;
             coordArray.push([lng, lat])
         });
-        console.log(newCoords);
-        console.log(coordArray);
         self.geometry().coordinates = coordArray;
     }
     self.dragEvent = function (event) {

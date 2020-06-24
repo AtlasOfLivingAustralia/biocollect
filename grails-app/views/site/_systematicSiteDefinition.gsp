@@ -51,28 +51,25 @@
         <div class="row-fluid controls-row">
             <div class="span6">
                 <label for="habitat"><g:message code="site.transect.transectPart.habitat"/></label>
-                <select data-bind="options: habitatList, selectedOptions: habitat" multiple="true" size="6"></select>
+                <div data-bind="foreach: habitatList">
+                    <a href="#" data-bind="click: $parent.addHabitat, text: $data"></a>
+                </div>
             </div>
             <div class="span6">
                 <label for="detail"><g:message code="site.transect.transectPart.detail"/></label>
-                <select data-bind="options: detailList, selectedOptions: detail" multiple="true" size="6"></select>
+                <div data-bind="foreach: detailList">
+                    <a href="#" data-bind="click: $parent.addDetail, text: $data"></a>
+                </div>
             </div>
         </div>
         <div class="row-fluid controls-row">
             <div class="span6">
-                <label for="habitatAddedByUser"><g:message code="g.other"/></label>
-                <input type="text" data-bind="value:habitatAddedByUser" multiple="true" size="6">
-                <button data-bind="click: addHabitat"><g:message code="g.add"/></button>
                 <label for="habitatAddedByUser"><g:message code="site.transect.transectPart.attributes" />: </label>
-                <textarea data-bind="value:habitat"></textarea>
+                <textarea data-bind="value:habitat, event: { change: splitHabitatStr}"></textarea>
             </div>
             <div class="span6">
-                <label for="detailAddedByUser"><g:message code="g.other"/></label>
-                <input type="text" data-bind="value:detailAddedByUser, valueUpdate: 'afterkeydown'" multiple="true" size="6">
-                <button data-bind="click: addDetail"><g:message code="g.add"/></button>
-                <label for="habitatAddedByUser"><g:message code="site.transect.transectPart.attributes" />: </label>
-                <div data-bind="foreach: detail">
-                <li data-bind="text: $data"></li><a href="#" data-bind="click: $parent.removeDetail"><i class="fa fa-remove"></i></a>
+                <label for="detailAddedByUser"><g:message code="site.transect.transectPart.attributes" />: </label>
+                <textarea data-bind="value:detail, event: { change: splitDetailStr}"></textarea>
                 </div>
             </div>
         </div>
