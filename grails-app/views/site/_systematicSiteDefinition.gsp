@@ -5,12 +5,12 @@
 
     <div class="span5">
         <div class="well well-small" data-bind="visible: allowPointsOfInterest()">
+            <div class="row-fluid">
+                <button type="button" data-bind="click: addTransectPartFromMap"
+                        class="btn"><g:message code="site.transect.transectPart.saveFromMap"/> 
+                </button>
+            </div>
             <div class="row-fluid" id="transectParts">
-                <div class="row-fluid">
-                    <button type="button" data-bind="click: addTransectPartFromMap, visible: transectParts().length < 1"
-                            class="btn"><g:message code="site.transect.transectPart.saveFromMap"/> 
-                    </button>
-                </div>
                 <div class="row-fluid">
                     <h4><g:message code="site.transect.transectPart.name.help"/></h4>
                 </div>
