@@ -171,6 +171,9 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         
         transectPart.feature.on("dragend", transectPart.dragEvent);
         transectPart.feature.on("edit", transectPart.editEvent);
+        transectPart.feature.on("mouseover", transectPart.select);
+        transectPart.feature.on("mouseout", transectPart.deselect);
+
         if (geometry.type == "LineString"){
             transectPart.feature.on("mouseover", transectPart.highlight);
             transectPart.feature.on("mouseout", transectPart.unhighlight);
@@ -452,6 +455,13 @@ var TransectPart = function (data) {
             'weight': 4,
             'opacity': 1
         });
+    };
+    self.borderColor = ko.observable('');
+    self.select = function() {
+        self.borderColor('solid red')
+    };
+    self.deselect = function() {
+        self.borderColor('')
     };
 
     self.toJSON = function () {
