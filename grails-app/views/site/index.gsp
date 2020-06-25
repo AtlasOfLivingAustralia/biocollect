@@ -157,12 +157,12 @@
                 <dl class="dl-horizontal">
                 <table style="border:solid">
                 <%-- <tr> --%>
-                <td>Name</td><td>Naturtypskod</td><td>Detaljkod</td><td>Length</td>
+                <td><g:message code="site.metadata.name" /></td><td><g:message code="site.transect.transectPart.habitat" /></td><td>Detaljkod</td><td><g:message code="site.transect.transectPart.length" /> (m)</td>
                 <%-- </tr> --%>
                     <%-- <dt><g:message code="site.transect.title"/></dt> --%>
                     <g:each in="${site.transectParts}">
                     <tr>
-                        <td>${it.name}</td><td>${it?.habitat}</td><td>${it?.detail}</td><td>${it?.length}</td>
+                        <td>${it.name}</td><td>${it?.habitat}</td><td>${it?.detail}</td><td><g:formatNumber number="${it?.length}" type="number" maxFractionDigits="2"/></td>
                     </tr>
                     </g:each>
                 </table>
