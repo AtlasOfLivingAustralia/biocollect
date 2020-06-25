@@ -73,6 +73,10 @@
                 </div>
             </div>
         </div>
+        <div class="row-fluid controls-row">
+            <label><g:message code="site.details.description" />: </label>
+            <textarea data-bind="value:description"></textarea>
+        </div>
         <div>
             <fc:textField disabled data-bind="value:geometry().coordinates" outerClass="span10" label="${message(code:'g.coordinates')}"/>
         </div>
