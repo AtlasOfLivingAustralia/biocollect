@@ -782,10 +782,10 @@ class SiteService {
 
     Map getProjectAreaForProject(String projectId) {
         Map project = projectService.get(projectId)
-        if (!project.error) {
+        if (!project?.error) {
             String siteId = project.projectSiteId
-            Map projectArea = siteService.get(siteId)
-            if (!projectArea.error) {
+            Map projectArea = get(siteId)
+            if (!projectArea?.error) {
                 return projectArea
             }
         }
