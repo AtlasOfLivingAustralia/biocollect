@@ -43,13 +43,7 @@
             <div class="span6" id="heading">
                 <h1 class="pull-left"><g:message code="site.myFavouriteSites.heading"/></h1>
             </div>
-        </div>
-
-        <!-- only logged in users can add a site - url should be generated -->
-        <div class="row-fluid">
-            <g:link action="createSystematic" class="btn btn-small">
-            <i class="icon-plus"></i> <g:message code="mapConfiguration.site.create"></g:message> 
-            </g:link>
+        
         </div>
     </g:if>
     <g:render template="/site/searchSite"></g:render>
