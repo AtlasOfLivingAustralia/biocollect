@@ -1,5 +1,8 @@
 package au.org.ala.biocollect
 
+import grails.converters.JSON
+import org.grails.web.converters.marshaller.json.CollectionMarshaller
+import org.grails.web.converters.marshaller.json.MapMarshaller
 import spock.lang.Specification
 
 /*
@@ -21,6 +24,8 @@ import spock.lang.Specification
 
 class GeometryUtilsSpec extends Specification {
     def setup() {
+        JSON.registerObjectMarshaller(new MapMarshaller())
+        JSON.registerObjectMarshaller(new CollectionMarshaller())
     }
 
     def "The GeometryUtils class provides a convenience method to check intersection of a point with a shape"() {
@@ -41,17 +46,17 @@ class GeometryUtilsSpec extends Specification {
         ]
 
 
-//        when:
-//        boolean intersect = GeometryUtils.doShapesIntersect(shape, point)
-//
-//        then:
-//        intersect == true
-//
-//        when:
-//        intersect = GeometryUtils.doShapesIntersect(shape, pointOutside)
-//
-//        then:
-//        intersect == false
+        when:
+        boolean intersect = GeometryUtils.doShapesIntersect(shape, point)
+
+        then:
+        intersect == true
+
+        when:
+        intersect = GeometryUtils.doShapesIntersect(shape, pointOutside)
+
+        then:
+        intersect == false
 
     }
 
