@@ -317,7 +317,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             for (index; index < features.length; index++){
                 var name = self.transectParts().length + 1;
                 createTransectPart({
-                    name: name,
+                    name: String(name),
                     geometry: {
                         type: features[index].geometry.type,
                         coordinates: features[index].geometry.coordinates
@@ -353,7 +353,6 @@ var TransectPart = function (data) {
     self.splitDetailStr = function () {
         console.log(typeof self.detail());
         if (typeof self.detail() == 'string'){
-            console.log("splitting")
             var detailArray = self.detail().split(",");
             self.detail(detailArray);
         }
