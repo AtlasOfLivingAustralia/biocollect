@@ -183,8 +183,12 @@
                     <label>
                         <g:message code="mapConfiguration.site.create.choose.title"></g:message>
                         <button class="btn-default btn btn-small" data-bind="click: $parent.redirectToSelect, disable: transients.warning()"><i class="icon-folder-open"></i> <g:message code="mapConfiguration.site.existing.selection"></g:message> </button>
-                        <button class="btn-default btn btn-small" data-bind="click: $parent.redirectToCreate, disable: transients.warning()"><i class="icon-plus"></i> <g:message code="mapConfiguration.site.create"></g:message> </button>
-                        <button class="btn-default btn btn-small" data-bind="click: $parent.redirectToCreateSystematic, disable: transients.warning()"><i class="icon-plus"></i> Create new systematic site </button>
+                        <g:if test="${hubConfig?.isSystematic}">
+                            <button class="btn-default btn btn-small" data-bind="click: $parent.redirectToCreateSystematic, disable: transients.warning()"><i class="icon-plus"></i> <g:message code="mapConfiguration.site.createSystematic"/> </button>
+                        </g:if>
+                        <g:else>
+                            <button class="btn-default btn btn-small" data-bind="click: $parent.redirectToCreate, disable: transients.warning()"><i class="icon-plus"></i> <g:message code="mapConfiguration.site.create"></g:message> </button>
+                        </g:else>
                         <button class="btn-default btn btn-small" data-bind="click: $parent.redirectToUpload, disable: transients.warning()"><i class="icon-arrow-up"></i> <g:message code="mapConfiguration.site.upload"></g:message> </button>
                     </label>
                 </div>

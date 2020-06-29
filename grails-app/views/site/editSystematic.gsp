@@ -80,12 +80,12 @@
 <body>
     <div class="container-fluid validationEngineContainer" id="validation-container">
         <bs:form action="update" inline="true">
-            <g:if test="${hubConfig?.systematic}">
+            <g:if test="${hubConfig?.isSystematic}">
                 <g:render template="systematicSiteDetails" model="${[showLine: true]}"/>
             </g:if>
-            <g:if test="${!hubConfig?.systematic}">
-                <g:render template="systematicSiteDetails" model="${[showLine: true]}"/>
-            </g:if>
+            <g:else>
+                <g:render template="siteDetails" model="${[showLine: true]}"/>
+            </g:else>
             <div class="row-fluid">
                 <div class="form-actions span12">
                     <button type="button" id="save" class="btn btn-primary"  data-bind="visible: transectParts().length < 0"><g:message code="g.save"/></button>
