@@ -71,7 +71,11 @@
         <li>
             <g:set var="disabled">${(!user) ? "disabled='disabled' title='login required'" : ''}</g:set>
         %{--Favourite functionality only available to authenticated users --}%
-            <g:if test="${!hubConfig?.systematic}">
+            <g:if test="${hubConfig?.isSystematic && fc.userIsAlaAdmin()}">
+                <g:link action="editSystematic" id="${site.siteId}" class="btn btn-small"><i
+                    class="icon-edit"></i> <g:message code="site.details.editSystematic"/> </g:link>
+            </g:if>
+            <g:else>
                 <g:link action="edit" id="${site.siteId}" class="btn btn-small"><i
                     class="icon-edit"></i> <g:message code="site.details.editSite"/> </g:link>
                 %{-- TODO - delete button could be for volunteers too but maybe have an alert before delete happens --}%
@@ -80,11 +84,7 @@
                             class="fa fa-remove"></i> <g:message code="site.details.deleteSite"/> 
                     </div>
                 </g:if>
-            </g:if>
-            <g:if test="${hubConfig?.systematic}">
-                <g:link action="editSystematic" id="${site.siteId}" class="btn btn-small"><i
-                    class="icon-edit"></i> <g:message code="site.details.editSystematic"/> </g:link>
-            </g:if>
+            </g:else>
             <g:if test="${site?.extent?.geometry?.pid}">
                 <a href="${grailsApplication.config.spatial.layersUrl}/shape/shp/${site.extent.geometry.pid}"
                    class="btn btn-small">
@@ -118,7 +118,28 @@
                 </g:if>
             </div>
 
-            <g:if test="${!hubConfig?.systematic}">
+            <g:if test="${hubConfig?.isSystematic}">
+                <dl class="dl-horizontal">
+                <table style="border:solid">
+                <%-- <tr> --%>
+                <td><g:message code="site.metadata.name" /></td><td><g:message code="site.transect.transectPart.habitat" /></td><td>Detaljkod</td><td><g:message code="site.transect.transectPart.length" /> (m)</td>
+                <%-- </tr> --%>
+                    <%-- <dt><g:message code="site.transect.title"/></dt> --%>
+                    <g:each in="${site.transectParts}">
+                    <tr>
+                        <td>${it.name}</td><td>${it?.habitat}</td><td>${it?.detail}</td><td><g:formatNumber number="${it?.length}" type="number" maxFractionDigits="2"/></td>
+                    </tr>
+                    </g:each>
+                </table>
+                <g:if test="${site.notes}">
+                    <dt><g:message code="site.details.notes"/></dt>
+                    <dd>${site.notes?.encodeAsHTML()}</dd>
+                </g:if>
+
+                </dl>
+            </g:if>
+
+            <g:else>
                 <h3><g:message code="site.details.siteMetadata"/></h3>
                 <dl class="dl-horizontal">
                     <dt><g:message code="site.details.externalId"/></dt>
@@ -152,27 +173,7 @@
                         <dd>${site.notes?.encodeAsHTML()}</dd>
                     </g:if>
                 </dl>
-            </g:if>
-            <g:if test="${hubConfig?.systematic}">
-                <dl class="dl-horizontal">
-                <table style="border:solid">
-                <%-- <tr> --%>
-                <td><g:message code="site.metadata.name" /></td><td><g:message code="site.transect.transectPart.habitat" /></td><td>Detaljkod</td><td><g:message code="site.transect.transectPart.length" /> (m)</td>
-                <%-- </tr> --%>
-                    <%-- <dt><g:message code="site.transect.title"/></dt> --%>
-                    <g:each in="${site.transectParts}">
-                    <tr>
-                        <td>${it.name}</td><td>${it?.habitat}</td><td>${it?.detail}</td><td><g:formatNumber number="${it?.length}" type="number" maxFractionDigits="2"/></td>
-                    </tr>
-                    </g:each>
-                </table>
-                <g:if test="${site.notes}">
-                    <dt><g:message code="site.details.notes"/></dt>
-                    <dd>${site.notes?.encodeAsHTML()}</dd>
-                </g:if>
-
-                </dl>
-            </g:if>
+            </g:else>
             <script>
                 $('.dl-horizontal').tooltip()
             </script>
