@@ -130,28 +130,30 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
 
         var transectPart = new TransectPart(lngLatFeature);
         var geometry = lngLatFeature.geometry;
-        var coordinates = geometry.coordinates;
+        var lngLatCoordinates = geometry.coordinates;
         var popup = transectPart.name();
 
         /* a geometry to display on leaflet map will be created here so coordinate order needs to be changed
         from [lng, lat] that came from geoJSON to [lat, lng] for any leaflet feature */
-        function toLatLng(lngLatcoords) {
-            var latLngCoords = [];
-            lngLatcoords.forEach(function(lngLat) {
+        function toLatLng(lngLatCoordinates) {
+            var latLngCoordinates = [];
+            lngLatCoordinates.forEach(function(lngLat) {
                 var lat = lngLat[1];
                 var lng = lngLat[0];
-                latLngCoords.push([lat, lng]);
+                latLngCoordinates.push([lat, lng]);
             });
-            return latLngCoords;
+            return latLngCoordinates;
         }
+
         if (geometry.type == "Point"){
-            transectPart.feature = ALA.MapUtils.createMarker(coordinates[1], coordinates[0], popup, {});
+            transectPart.feature = ALA.MapUtils.createMarker(lngLatCoordinates[1], lngLatCoordinates[0], popup, {});
         } else if (geometry.type == "LineString"){
-            var latLngCoords = toLatLng(coordinates);
-            transectPart.feature = ALA.MapUtils.createSegment(latLngCoords, popup);
+            var latLngCoordinates = toLatLng(lngLatCoordinates);
+            transectPart.feature = ALA.MapUtils.createSegment(latLngCoordinates, popup);
         } else if (geometry.type == "Polygon"){
-            var latLngCoords = toLatLng(coordinates);
-            transectPart.feature = ALA.MapUtils.createPolygon(latLngCoords, popup);
+            // polygon coordinates have one additional level of nesting in a geojson so take index 0
+            var latLngCoordinates = toLatLng(lngLatCoordinates[0]);
+            transectPart.feature = ALA.MapUtils.createPolygon(latLngCoordinates, popup);
         }
         
         transectPart.feature.on("dragend", transectPart.dragEvent);
@@ -161,7 +163,6 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             transectPart.feature.on("mouseover", transectPart.highlight);
             transectPart.feature.on("mouseout", transectPart.unhighlight);
         }
-        // Add feature to be saved in site collection
         self.transectParts.push(transectPart);
         transectFeatureGroup.addLayer(transectPart.feature);
     }
