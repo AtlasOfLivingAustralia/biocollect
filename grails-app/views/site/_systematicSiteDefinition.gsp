@@ -42,7 +42,7 @@
             <g:message code="site.transect.transectPart.tip"/>
         </div>
         <div class="row-fluid controls-row">
-        <h4 data-bind="text: nameToDisplay"></h4>
+        <h4 data-bind="text: name"></h4>
         </div>
         <div class="row-fluid controls-row">
             <fc:textField data-bind="value:name" outerClass="span6" label="${message(code:'site.poi.name')}"
