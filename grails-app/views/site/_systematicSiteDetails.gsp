@@ -21,14 +21,6 @@
                    placeholder="${message(code: 'site.details.siteName.placeholder')}"/>
         </div>
     </div>
-
-    <%-- <g:if test="${project && controllerName.equals('site')}">
-        <div class="row-fluid" style="padding-bottom:15px;">
-            <span><g:message code="site.details.projectName"/></span>
-            <g:link controller="project" action="index"
-                    id="${project?.projectId}">${project?.name?.encodeAsHTML()}</g:link>
-        </div>
-    </g:if> --%>
     <div class="row-fluid">
         <div class="span6">
             <g:set var="helpDesc" value="${fc.iconHelp(title: message(code: 'site.details.description'), {
