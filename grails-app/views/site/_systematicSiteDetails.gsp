@@ -35,7 +35,7 @@
 
     <h4><g:message code="site.transect.step.title" /> 2</h4>
     <label for="name"><g:message code="site.transect.step2"/></label>
-    <g:render template="/site/systematicSiteDefinition" model="${[showLine: true, showMyLocation: true, showAllowSearchLocationByAddress: false, showAllowSearchRegionByAddress: true, showMarker: true]}"/>
+    <g:render template="/site/systematicSiteDefinition" model="${[showPolygon: true, showLine: true, showMyLocation: true, showAllowSearchLocationByAddress: false, showAllowSearchRegionByAddress: false, showMarker: true]}"/>
 
 </div>
 <!-- /ko -->
