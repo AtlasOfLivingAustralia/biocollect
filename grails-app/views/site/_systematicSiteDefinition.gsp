@@ -140,17 +140,6 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
 
     var siteViewModel = new SystematicSiteViewModel("mapForSystematic", savedSiteData, SERVER_CONF)
     var map = siteViewModel.map;
-<!-- temporary fix to be zoomed in on Sweden - should be done in map-plugin!-->
-    <%-- <g:if  test="${project?.projectSite?.extent?.geometry}">
-        var source = "${project.projectSite.extent.source}"
-        var projectArea = <fc:modelAsJavascript model="${project.projectSite.extent.geometry}"/>;
-        var geometry = Biocollect.MapUtilities.featureToValidGeoJson(projectArea);
-        if(source != 'none'){
-            map.setGeoJSON(geometry);
-        }
-    </g:if> --%>
-
-
     ko.applyBindings(siteViewModel, document.getElementById("sitemap"));
 
     return siteViewModel;
