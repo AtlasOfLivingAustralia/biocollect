@@ -91,13 +91,13 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
     // server side generated paths & properties
     var SERVER_CONF = {
         siteData: ${site ?: [] as grails.converters.JSON},
-        spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
+        <%-- spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
         regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
-        featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+        featureService: "${createLink(controller: 'proxy', action: 'feature')}", --%>
         spatialWms: '${grailsApplication.config.spatial.geoserverUrl}',
         maxAutoZoom: 14,
-        maxZoom: 17,
+        maxZoom: 20,
         allowPointsOfInterest: allowPointsOfInterest,
         readonly: edit? true : false,
         singleDraw: false,
@@ -109,6 +109,7 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         drawOptions: {
             polyline: ${showLine ?: true},
             marker:  ${showMarker ?: true},
+            polygon: ${showPolygon ?: true},
             circle: false
         },
         editOptions: {
