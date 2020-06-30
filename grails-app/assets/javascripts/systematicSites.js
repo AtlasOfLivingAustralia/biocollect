@@ -108,7 +108,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         return geometryObservable;
     };
 
-
+    
     self.addTransectPartFromMap = function () {
 
         var featuresAreDrawn = getTransectPart();
@@ -130,17 +130,7 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         var transectPart = new TransectPart(lngLatFeature);
         var geometry = lngLatFeature.geometry;
         var coordinates = geometry.coordinates;
-
-        var typeToDisplay = "unknown type";
-        if (geometry.type == 'LineString') {
-            typeToDisplay = 'Line';
-        } else if (geometry.type == 'Polygon') {
-            typeToDisplay = 'Area';
-        }
-        else if (geometry.type == 'Point') {
-            typeToDisplay = 'Point';
-        }
-        var popup = typeToDisplay + String(lngLatFeature.name);
+        var popup = transectPart.name();
 
         /* a geometry to display on leaflet map will be created here so coordinate order needs to be changed
         from [lng, lat] to [lat, lng] */
@@ -278,25 +268,32 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             var geoJson = self.map.getGeoJSON();
             var count = geoJson.features.length;
             var layer = event.layer;
-            var geoType = event.layerType;
-            if (geoType  == "polyline"){
-                geoType = "Line"
-            } else if (geoType == "marker") {
-                geoType = "Point"
-            } else if (geoType == "polygon") {
-                geoType = "Area"
-            }
-            layer.bindPopup(geoType + " " + count);
+            console.log();
+            var geoType = determineGeoType(event.layerType);
+            layer.bindPopup(geoType + count);
         });
 
         self.loadSite(site);
     }
 
-    // get features newly drawn on map  
+    // convert feature type into more human-friendly
+    function determineGeoType (geoType){
+        var type = null;
+        if (geoType == 'LineString' || geoType == 'polyline') {
+            type = 'Line';
+        } else if (geoType == 'Polygon' || geoType == 'polygon') {
+            type = 'Area';
+        }
+        else if (geoType == 'Point' || geoType == 'marker') {
+            type = 'Point';
+        }
+        return type;
+    }
+
+    // checks if new features have been drawn on the map - if yes creates new transectPart object from each new feature  
     function getTransectPart() {
         var geoJson = self.map.getGeoJSON();
         var features = geoJson.features;
-        console.log(features);
         
         if (features && features.length > 0) {
             var i = self.transectParts().length;
@@ -306,13 +303,17 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
             } else if (i > 0){
                 index = 1; 
             }
+            
             for (index; index < features.length; index++){
+                var geoType = features[index].geometry.type;
+                var coordinates = features[index].geometry.coordinates;
                 var name = self.transectParts().length + 1;
+
                 createTransectPart({
-                    name: String(name),
+                    name: determineGeoType(geoType) + String(name),
                     geometry: {
-                        type: features[index].geometry.type,
-                        coordinates: features[index].geometry.coordinates
+                        type: geoType,
+                        coordinates: coordinates
                     }
                 });
             }
@@ -380,20 +381,6 @@ var TransectPart = function (data) {
             coordinates: ko.observable(exists(data.geometry, 'coordinates'))
         });
     };
-
-    self.nameToDisplay = ko.computed(function (){
-        var typeToDisplay = 'unknown type';
-        if (self.geometry().type == 'LineString') {
-            typeToDisplay = 'Line';
-        } else if (self.geometry().type == 'Polygon') {
-            typeToDisplay = 'Area';
-        }
-        else if (self.geometry().type == 'Point') {
-            typeToDisplay = 'Point';
-        }
-        var nameToDisplay = typeToDisplay + ' ' + self.name();
-        return nameToDisplay;
-    });
     
     self.editEvent = function (event) {
         var newCoords = this.getLatLngs();
@@ -443,7 +430,7 @@ var TransectPart = function (data) {
     };
 };
 
-// TODO - figure out what happens below!!! 
+// TODO 
 
 var SitesViewModel =  function(sites, map, mapFeatures, isUserEditor, projectId, projectDefaultZoomArea) {
 
