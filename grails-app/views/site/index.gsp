@@ -384,8 +384,7 @@
 <asset:script type="text/javascript">
         $(function(){
             var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
-            <%-- TODO - get rid of Australian overlays  --%>
-            <%-- var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig(); --%>
+            var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
 
             var mapOptions = {
@@ -402,11 +401,11 @@
                 showReset: false,
                 maxZoom: 20,
                 baseLayer: baseLayersAndOverlays.baseLayer,
-                <%-- otherLayers: baseLayersAndOverlays.otherLayers, --%>
-                <%-- overlays: baseLayersAndOverlays.overlays,
-                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault, --%>
-                <%-- wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
-                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl --%>
+                otherLayers: baseLayersAndOverlays.otherLayers,
+                overlays: baseLayersAndOverlays.overlays,
+                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
             };
             var smallMap = new ALA.Map("smallMap", mapOptions);
 
@@ -417,6 +416,7 @@
                 smallMap.setGeoJSON(geoJson);
             }
 
+            <%-- if site is systematic display all parts of the transect --%>
             var transectParts = mapFeatures.transectParts;
             if(transectParts === undefined || transectParts.length == 0){
                 $('#siteNotDefined').show();
