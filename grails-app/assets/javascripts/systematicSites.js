@@ -80,7 +80,6 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
         }
     };
 
-    // load the extent separately as it can be modified
 
     self.loadGeometry = function (geometry) {
         var geometryObservable = self.site().extent().geometry();
@@ -110,20 +109,15 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     };
 
 
-
     self.addTransectPartFromMap = function () {
 
         var featuresAreDrawn = getTransectPart();
         var layersCount = self.map.countFeatures();
-        console.log("layers", layersCount);
         var countTransectParts = self.transectParts().length;
-        console.log("transect parts", countTransectParts);
 
         if (featuresAreDrawn && layersCount == countTransectParts){
-            console.log("add first sites");
             self.renderTransect();
         } else if (featuresAreDrawn && layersCount < countTransectParts) {
-            console.log("add the newly drawn sites");
             self.renderTransect();
         } else {
             alert("Draw on the map first.");
@@ -199,8 +193,6 @@ var SystematicSiteViewModel = function (mapContainerId, site, mapOptions) {
     self.removeTransectPart = function (transectPart) {
         self.transectParts.remove(transectPart);
         transectFeatureGroup.removeLayer(transectPart.feature);
-        // self.renderTransectParts();
-        // self.map.removeLayer(transectPart.feature);
     };
 
     self.toJS = function() {
