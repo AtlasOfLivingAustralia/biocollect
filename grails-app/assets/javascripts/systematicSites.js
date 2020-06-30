@@ -428,13 +428,6 @@ var TransectPart = function (data) {
             'opacity': 1
         });
     };
-    self.borderColor = ko.observable('');
-    self.select = function() {
-        self.borderColor('solid red')
-    };
-    self.deselect = function() {
-        self.borderColor('')
-    };
 
     self.toJSON = function () {
         var js = {
