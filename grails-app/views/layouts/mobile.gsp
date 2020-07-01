@@ -33,20 +33,18 @@
     <g:layoutBody/>
 </div>
 
-<asset:script type="text/javascript">
-    $(function() {
-        $.ajaxSetup({
-            cache: false,
-            xhrFields: {
-                withCredentials: true
-            },
-            beforeSend: function(xhr){
-                xhr.setRequestHeader('authKey', "${authKey}");
+<script type="text/javascript">
+    $.ajaxSetup({
+        cache: false,
+        xhrFields: {
+            withCredentials: true
+        },
+        beforeSend: function(xhr){
+            xhr.setRequestHeader('authKey', "${authKey}");
                 xhr.setRequestHeader('userName', "${userName}");
             }
-        });
     });
-</asset:script>
+</script>
 <asset:deferredScripts/>
 </body>
 </html>
