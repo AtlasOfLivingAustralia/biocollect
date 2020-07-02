@@ -17,7 +17,7 @@ plugins {
     id 'war'
 }
 
-version "5.0.3"
+version "5.0.4-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin:"eclipse"
@@ -33,11 +33,12 @@ apply from: 'https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-bui
 repositories {
     mavenLocal()
     //for missing jai_core.jar
-  //  maven { url "http://download.osgeo.org/webdav/geotools"}
+    maven { url "https://mvnrepository.com" }
+    maven { url "http://maven.geotoolkit.org"}
     maven { url "https://repo.grails.org/grails/core" }
     maven { url "https://nexus.ala.org.au/content/groups/public/" }
+
     mavenCentral()
-   // maven { url "http://maven.geotoolkit.org"}
 
 }
 
@@ -46,7 +47,7 @@ def metadataExtractorVersion = "2.6.2"
 def imgscalrVersion = "4.2"
 def httpmimeVersion = "4.2.1"
 def jtsVersion = "1.8"
-def geoToolsVersion = "11.1"
+def geoToolsVersion = "11.2"
 // Set to true it needed only for development
 boolean inplace = false
 
@@ -80,10 +81,11 @@ dependencies {
     compile "org.imgscalr:imgscalr-lib:${imgscalrVersion}"
     compile "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
     compile "com.vividsolutions:jts:${jtsVersion}"
-    //compile "org.geotools.xsd:gt-xsd-kml:${geoToolsVersion}"
-    compile ("org.geotools.xsd:gt-xsd-kml:${geoToolsVersion}") {
-        exclude group: 'javax.media', module: 'jai_core'
-    }
+
+    compile "org.geotools.xsd:gt-xsd-kml:${geoToolsVersion}"
+    compile "org.geotools:gt-shapefile:${geoToolsVersion}"
+    compile "org.geotools:gt-geojson:${geoToolsVersion}"
+    compile "org.geotools:gt-epsg-hsql:${geoToolsVersion}"
 
     compile "joda-time:joda-time:2.3"
   //  compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
@@ -133,7 +135,7 @@ dependencies {
     compile "org.grails.plugins:ala-admin-plugin:2.1"
     if (!inplace) {
         compile "org.grails.plugins:ala-map-plugin:3.0"
-        compile "org.grails.plugins:ecodata-client-plugin:3.0.2"
+        compile "org.grails.plugins:ecodata-client-plugin:3.0.3"
     }
 }
 
