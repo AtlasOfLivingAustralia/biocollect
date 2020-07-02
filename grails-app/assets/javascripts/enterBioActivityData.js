@@ -61,29 +61,34 @@ function Master(activityId, config) {
      * Collect the activity form data into a single javascript object
      * @returns JS object containing form data, or null if there is no data
      */
-    self.collectData = function () {
-        var activityData, outputs = [], photoPoints;
-        $.each(this.subscribers, function (i, obj) {
-            if (obj.model === 'activityModel') {
-                activityData = obj.get();
-            } else if (obj.model === 'photoPoints' && obj.isDirty()) {
-                photoPoints = obj.get();
+    self.modelAsJS = function () {
+        var activityData, outputs = [];
+        $.each(this.subscribers, function(i, obj) {
+            if (obj.isDirty()) {
+                if (obj.model === 'activityModel') {
+                    activityData = obj.get();
+                }
+                else {
+                    outputs.push(obj.get());
+                }
             }
-            else { // Update outputs unconditionally, backend needs the activityModel and outputs to
-                // create derived data even if outputs didn't change
-                outputs.push(obj.get());
-            }
-
         });
-        if (outputs.length === 0 && activityData === undefined && photoPoints === undefined) {
-            return {validation: false, message: "Nothing need to be updated!"};
-        }
 
-        if (activityData === undefined) {
-            activityData = {}
+        if (activityData === undefined && outputs.length == 0) {
+            return undefined;
+        }
+        if (!activityData) {
+            activityData = {};
         }
         activityData.outputs = outputs;
+
         return activityData;
+    };
+
+    self.modelAsJSON = function() {
+        var jsData = self.modelAsJS();
+
+        return jsData ? JSON.stringify(jsData) : undefined;
     };
 
     self.removeTemporarySite = function () {
@@ -124,7 +129,7 @@ function Master(activityId, config) {
      */
     self.save = function () {
         if ($('#validation-container').validationEngine('validate')) {
-            var toSave = this.collectData();
+            var toSave = this.modelAsJS();
             toSave = JSON.stringify(toSave);
 
             // Don't allow another save to be initiated.

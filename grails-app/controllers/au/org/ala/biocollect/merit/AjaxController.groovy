@@ -5,8 +5,8 @@ import org.grails.web.json.JSONObject
 
 class AjaxController {
 
-    def authService
     def locationService
+    def userInfoService
 
     /**
      * Simple action that can be called by long running pages periodically to keep the container session alive.
@@ -18,7 +18,7 @@ class AjaxController {
     }
 
     def getBookmarkLocations() {
-        def userId = authService.userId
+        def userId = userInfoService.getCurrentUser()?.userId
         def result = locationService.getBookmarkLocationsForUser(userId)
 
         if (result.hasProperty("error")) {
@@ -29,7 +29,7 @@ class AjaxController {
     }
 
     def saveBookmarkLocation() {
-        def userId = authService.userId
+        def userId = userInfoService.getCurrentUser()?.userId
         JSONObject bookmark = request.JSON
         bookmark.put("userId", userId)
         log.debug "post json = ${request.JSON}"
