@@ -201,10 +201,12 @@
                                 <h4 class="media-heading">Project sourced from SciStarter</h4>
                             </div>
                         </div>
+                        <g:if test="${!mobile}">
                         <div id="surveyLink" class="span4 pull-right" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb()) && projectType() == 'survey' ">
                             <a class="btn pull-right" data-bind="showTabOrRedirect: { url: isExternal() ? urlWeb() : '', tabId: '#activities-tab'}"><g:message code="project.display.join" /></a>
                             <p class="clearfix"/>
                         </div>
+                        </g:if>
                     </div>
                     <g:render template="/shared/listDocumentLinks"
                               model="${[transients:transients,imageUrl:asset.assetPath(src:'filetypes')]}"/>
