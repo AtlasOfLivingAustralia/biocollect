@@ -366,7 +366,6 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         if (geoJson && geoJson.features && geoJson.features.length > 0) {
             var feature = geoJson.features[0];
             var geometryType = feature.geometry.type;
-            var latLng = null;
             var lat;
             var lng;
             var bounds = self.map.getBounds();
@@ -374,10 +373,11 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
                 // the ALA Map plugin uses valid GeoJSON, which specifies coordinates as [lng, lat]
                 lat = feature.geometry.coordinates[1];
                 lng = feature.geometry.coordinates[0];
-                self.site().extent().geometry().centre(latLng);
+                self.site().extent().geometry().centre([lng, lat]);
             } else if (bounds) {
                 lat = bounds.getCenter().lat;
                 lng = bounds.getCenter().lng;
+                self.site().extent().geometry().centre([]);
             }
 
             var geoType = determineExtentType(feature);
