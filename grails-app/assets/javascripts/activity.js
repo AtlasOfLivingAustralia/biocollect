@@ -10,11 +10,15 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         clusterStyleName = 'cluster',
         currentlySelectedTab,
         legendControl,
-        colorByControl;
+        colorByControl,
+        layerNamesLookupRequests = {} ;
+
     self.view = view ? view : 'allrecords';
     var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500,
-        MAX_FEATURE_COUNT = 1000;
+        MAX_FEATURE_COUNT = 1000, GENERAL_LAYER = '_general', INFO_LAYER = '_info', INDICES_LAYER = '_indices';
 
+    layerNamesLookupRequests[GENERAL_LAYER] = layerNamesLookupRequests[INFO_LAYER] = undefined;
+    layerNamesLookupRequests[INDICES_LAYER] = {};
     // These parameters are used when activity is instantiated from sites page.
     // It is used to disable certain aspects like map and auto load feature
     ignoreMap = !!ignoreMap;
@@ -639,33 +643,14 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
 
             activityLayer && alaMap.removeOverlayLayer(activityLayer);
-            var url = constructQueryUrl(fcConfig.wmsActivityURL, 0, false, 0, false);
-            activityLayer = L.nonTiledLayer.wms ( url, {
-                format: 'image/png',
-                transparent: true,
-                layers: 'ecodata:biocollectActivity',
-                styles: pointStyleName,
-                uppercase: true
-            });
-
-            alaMap.addOverlayLayer(activityLayer, 'Activity', true);
-
-            heatmapLayer && alaMap.removeOverlayLayer(heatmapLayer);
-            heatmapLayer = L.nonTiledLayer.wms ( url, {
-                format: 'image/png',
-                transparent: true,
-                layers: 'ecodata:biocollectActivity',
-                styles: heatmapStyleName,
-                uppercase: true
-            });
-
-            clusterLayer && alaMap.removeOverlayLayer(clusterLayer);
-            clusterLayer = L.nonTiledLayer.wms ( url, {
-                format: 'image/png',
-                transparent: true,
-                layers: 'ecodata:biocollectActivity',
-                styles: clusterStyleName,
-                uppercase: true
+            var typeAndIndices = getLayerTypeAndIndices();
+            console.log(typeAndIndices);
+            getLayerNameRequest(typeAndIndices.type, typeAndIndices.indices).done(function (data) {
+                var layerName = data.layerName;
+                if (layerName) {
+                    console.log('Setting layerName - ' + layerName);
+                    initMapOverlaysWithLayer(layerName);
+                }
             });
 
             // init colour by control
@@ -676,6 +661,51 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             updateMapOccurrences = false;
         }
     };
+
+    function getLayerTypeAndIndices () {
+        var result = {
+            type: INDICES_LAYER,
+            indices: colorByControl.selectedItemValue
+        };
+
+        if (!colorByControl.selectedItemValue) {
+            result.type = GENERAL_LAYER;
+            result.indices = undefined;
+        }
+
+        return result;
+    }
+
+    function initMapOverlaysWithLayer (layerName) {
+        var url = constructQueryUrl(fcConfig.wmsActivityURL, 0, false, 0, false);
+        activityLayer = L.nonTiledLayer.wms ( url, {
+            format: 'image/png',
+            transparent: true,
+            layers: layerName,
+            styles: pointStyleName,
+            uppercase: true
+        });
+
+        alaMap.addOverlayLayer(activityLayer, 'Activity', true);
+
+        heatmapLayer && alaMap.removeOverlayLayer(heatmapLayer);
+        heatmapLayer = L.nonTiledLayer.wms ( url, {
+            format: 'image/png',
+            transparent: true,
+            layers: layerName,
+            styles: heatmapStyleName,
+            uppercase: true
+        });
+
+        clusterLayer && alaMap.removeOverlayLayer(clusterLayer);
+        clusterLayer = L.nonTiledLayer.wms ( url, {
+            format: 'image/png',
+            transparent: true,
+            layers: layerName,
+            styles: clusterStyleName,
+            uppercase: true
+        });
+    }
 
     /**
      * when map is updated on invisible, this function is used to redraw the map.
@@ -833,26 +863,36 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     };
 
     function colourByEventHandler(val) {
+        colorByControl.selectedItemValue = val;
+
         if (val) {
-            var style = self.filterViewModel.getStyleName(val);
-            if(!style) {
-                var result = self.filterViewModel.getTermsForFacet(val);
-                $.ajax({
-                    url: fcConfig.createStyleURL,
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(result),
-                    success: function (data) {
-                        var name = data.name;
-                        self.filterViewModel.setStyleName(val, name);
-                        activityLayer.setParams ({styles: name});
-                        legendControl.updateLegend(Biocollect.MapUtilities.getLegendURL(activityLayer, name));
+            var typeAndIndices = getLayerTypeAndIndices();
+            getLayerNameRequest(typeAndIndices.type, typeAndIndices.indices).done(function (data) {
+                var layerName = data.layerName;
+                if (layerName) {
+                    console.log('Updating layerName - ' + layerName);
+                    activityLayer.setParams({layers: layerName});
+                    var style = self.filterViewModel.getStyleName(val);
+                    if(!style) {
+                        var result = self.filterViewModel.getTermsForFacet(val);
+                        $.ajax({
+                            url: fcConfig.createStyleURL,
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(result),
+                            success: function (data) {
+                                var name = data.name;
+                                self.filterViewModel.setStyleName(val, name);
+                                activityLayer.setParams ({styles: name});
+                                legendControl.updateLegend(Biocollect.MapUtilities.getLegendURL(activityLayer, name));
+                            }
+                        });
+                    } else {
+                        activityLayer.setParams ({styles: style});
+                        legendControl.updateLegend(Biocollect.MapUtilities.getLegendURL(activityLayer, style));
                     }
-                });
-            } else {
-                activityLayer.setParams ({styles: style});
-                legendControl.updateLegend(Biocollect.MapUtilities.getLegendURL(activityLayer, style));
-            }
+                }
+            });
         } else {
             activityLayer.setParams ({styles: ''});
             legendControl.clearLegend();
@@ -873,6 +913,70 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 break;
             case pointStyleName:
                 alaMap.addOverlayLayer(activityLayer, 'Point', true);
+                break;
+        }
+    };
+
+    function getLayerNameRequest(type, indices) {
+        var request, indicesConcat;
+
+        switch (type) {
+            case GENERAL_LAYER:
+            case INFO_LAYER:
+                request = layerNamesLookupRequests[type];
+                break;
+            case INDICES_LAYER:
+                if (indices === undefined) {
+                    return
+                }
+                else if (typeof indices === 'string') {
+                    indices = [indices]
+                }
+
+                indicesConcat = indices.join(',');
+                request = layerNamesLookupRequests[INDICES_LAYER][indicesConcat];
+                break;
+        }
+
+        if (!request) {
+            if (!fcConfig.getLayerNameURL){
+                console.warn("Property fcConfig.getLayerNameURL must be provided");
+                return ;
+            }
+
+            var request = $.get({
+                url: fcConfig.getLayerNameURL,
+                data: {
+                    type: type,
+                    indices: indicesConcat || ''
+                }
+            }).fail(function () {
+                setLayerNameRequest(type, indices, undefined);
+            });
+
+            setLayerNameRequest(type, indices, request);
+        }
+
+        return request;
+    };
+
+    function setLayerNameRequest(type, indices, request) {
+        var indicesConcat;
+        switch (type) {
+            case GENERAL_LAYER:
+            case INFO_LAYER:
+                layerNamesLookupRequests[type] = request;
+                break;
+            case INDICES_LAYER:
+                if (indices === undefined) {
+                    return;
+                }
+                else if (typeof indices === 'string') {
+                    indices = [indices];
+                }
+
+                indicesConcat = indices.join(',');
+                layerNamesLookupRequests[INDICES_LAYER][indicesConcat] = request;
                 break;
         }
     };
