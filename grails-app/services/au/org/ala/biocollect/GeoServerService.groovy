@@ -27,4 +27,8 @@ class GeoServerService {
     def createStyle (params) {
         webService.doPost("${grailsApplication.config.ecodata.baseURL}/ws/geoServer/createStyle", params.getJSON())
     }
+
+    def getLayerName (type, indices) {
+        webService.doGet("${grailsApplication.config.ecodata.baseURL}/ws/geoServer/getLayerName", [type: type, indices: indices])
+    }
 }
