@@ -141,9 +141,11 @@
                 self.allLocationsLoaded();
             }
         },
-        loadFeature: function(loc, iw){
+        loadFeature: function(loc, iw, ignoreDefaultArea){
             var self = this, f;
             var loaded = false;
+            ignoreDefaultArea = ignoreDefaultArea || false;
+
             if(loc != null && loc.type != null){
                 if (loc.type.toLowerCase() === 'point') {
                     var ll = new google.maps.LatLng(Number(loc.coordinates[1]), Number(loc.coordinates[0]));
@@ -152,7 +154,7 @@
                         position: ll,
                         title: loc.name
                     });
-                    if (!self.defaultZoomArea || self.defaultZoomArea == loc.id) {
+                    if ((!self.defaultZoomArea || self.defaultZoomArea == loc.id) || ignoreDefaultArea) {
                         self.featureBounds.extend(ll);
                     }
                     self.addFeature(f, loc);
@@ -183,7 +185,7 @@
                         this.allMarkers.push(markerMap);
                     }
 
-                    if (!self.defaultZoomArea || self.defaultZoomArea == loc.id) {
+                    if ((!self.defaultZoomArea || self.defaultZoomArea == loc.id) || ignoreDefaultArea) {
                         self.featureBounds.extend(ll);
                     }
 
@@ -199,7 +201,7 @@
                     });
                     //set the extend of the map
                     //console.log("f.getBounds()",f.getBounds());
-                    if (!self.defaultZoomArea || self.defaultZoomArea == loc.id) {
+                    if ((!self.defaultZoomArea || self.defaultZoomArea == loc.id)  || ignoreDefaultArea) {
                         self.featureBounds.extend(f.getBounds().getNorthEast());
                         self.featureBounds.extend(f.getBounds().getSouthWest());
                     }
@@ -219,7 +221,7 @@
                     // flatten arrays to array of points
                     points = [].concat.apply([], paths);
                     // extend bounds by each point
-                    if (!self.defaultZoomArea || self.defaultZoomArea == loc.id) {
+                    if ((!self.defaultZoomArea || self.defaultZoomArea == loc.id)  || ignoreDefaultArea) {
                         $.each(points, function (i,obj) {self.featureBounds.extend(obj);});
                     }
 
@@ -242,7 +244,7 @@
                                 // The bounding box of a point is a linestring with two points
                                 pointArray = [pointArray[0], pointArray[1], pointArray[0], pointArray[1]];
                             }
-                            if (!self.defaultZoomArea || self.defaultZoomArea == loc.id) {
+                            if ((!self.defaultZoomArea || self.defaultZoomArea == loc.id)  || ignoreDefaultArea) {
                                 self.featureBounds.extend(new google.maps.LatLng(pointArray[1].split(" ")[1], pointArray[1].split(" ")[0]));
                                 self.featureBounds.extend(new google.maps.LatLng(pointArray[3].split(" ")[1], pointArray[3].split(" ")[0]));
                             }
@@ -276,11 +278,20 @@
                 iw = new google.maps.InfoWindow({maxWidth: 360});
             }
 
+            // List of features sometimes does not contain default zoom area. Hence map zoom to an extent not containing
+            // sites. The below setting tells loadFeature to ignore the default zoom area check and add site to extent
+            // calculation.
+            var defaultArea = $.grep(features, function (loc) {
+                    return loc.id == self.defaultZoomArea;
+                }),
+                ignoreDefaultArea = defaultArea.length === 0;
+
+
             $.each(features, function (i,loc) {
                 //console.log('Loading feature with type:' + loc.type + "|" + loc.latitude);
                 if(loc != null){
 
-                    self.loadFeature(loc, iw);
+                    self.loadFeature(loc, iw, ignoreDefaultArea);
                     //self.locationLoaded();
                 }
             });
