@@ -1,13 +1,13 @@
 <!-- ko with: filterViewModel-->
 <div class="row-fluid">
     <div id="pt-selectors" class="well">
-        <h4><g:message code="project.search.heading"/></h4>
+        <h4><strong><g:message code="project.search.heading"/></strong></h4>
         <div id="filter-buttons">
             <button class="btn btn-small facetSearch" data-bind="click: mergeTempToRefine"><i class="icon-filter"></i>Refine</button>
             <button class="btn btn-small clearFacet" data-bind="click: $root.reset"><i class="icon-remove-sign"></i>Clear all</button>
         </div>
         <div>
-            <h4 data-bind="visible: selectedFacets().length"><g:message code="project.search.currentFilters"/></h4>
+            <h4><strong data-bind="visible: selectedFacets().length"><g:message code="project.search.currentFilters"/></strong></h4>
             <ul class="unstyled">
                 <!-- ko foreach:selectedFacets -->
                 <li class="row-fluid">

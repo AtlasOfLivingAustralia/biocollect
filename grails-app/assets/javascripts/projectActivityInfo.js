@@ -51,7 +51,7 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     self.listActivityRecords = function() {
         $('#data-tab').tab('show');
         if (!_.isUndefined(activitiesAndRecordsViewModel)) {
-            activitiesAndRecordsViewModel.selectFacetTerm(self.name(), "Survey");
+            activitiesAndRecordsViewModel.selectSurveyFacet(self.name());
         }
     };
 
