@@ -74,6 +74,27 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         alaMap.resetMap();
     };
 
+    self.selectSurveyFacet = function (surveyName) {
+        var exists = false;
+        self.filterViewModel.selectedFacets().forEach(function (facet) {
+            if(facet.term() == surveyName) {
+                exists = true;
+            }
+        });
+        if(!exists) {
+            self.filterViewModel.selectedFacets.push(new FacetTermViewModel({
+                term: surveyName,
+                facet: new FacetViewModel({
+                    name: "projectActivityNameFacet",
+                    title: 'Survey name',
+                    ref: self.filterViewModel,
+                    type: 'terms'
+                })
+            }));
+            self.refreshPage();
+        }
+    };
+
     self.reset = function () {
         self.clearData();
     };

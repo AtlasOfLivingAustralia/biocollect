@@ -20,7 +20,7 @@
     </g:if>
 
     %{-- this will ultimately follow through to the comment controller using url mapping --}%
-    <g:set var="commentUrl" value="${resource(dir:'/bioActivity')}/${activity.activityId}/comment"></g:set>
+    <g:set var="commentUrl" value="/bioActivity/${activity.activityId}/comment"></g:set>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
@@ -155,11 +155,11 @@
     <g:if test="${!mobile}">
         <div class="form-actions">
             <g:if test="${hasEditRights}">
-                <a class="btn btn-primary" href="${createLink(controller: 'bioActivity', action: 'edit')}/${activity.activityId}">Edit</a>
+                <a class="btn btn-primary btn-large" href="${createLink(controller: 'bioActivity', action: 'edit')}/${activity.activityId}"><span class="fa fa-edit"></span> Edit</a>
             </g:if>
-            <!--
-            <button type="button" id="cancel" class="btn">return</button>
-            -->
+            <g:if test="${userIsProjectMember}">
+                <a class="btn btn-primary  btn-large" href="${createLink(controller: 'bioActivity', action: 'create')}/${pActivity.projectActivityId}"><span class="fa fa-plus"></span> Add new record</a>
+            </g:if>
         </div>
     </g:if>
 </div>
