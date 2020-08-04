@@ -502,10 +502,10 @@ Biocollect.MapUtilities = {
             format: 'image/png',
             layer: layer.wmsParams.layers,
             style: style,
-            legend_options:"dpi:180;forceLabels:on;bgColor:0xf1f8ff;fontAntiAliasing:true;countMatched:true;fontSize:12;fontName:Arial;",
+            legend_options:"dpi:180;forceLabels:on;bgColor:#f2f9fc;fontAntiAliasing:true;countMatched:true;fontSize:12;fontName:Arial;",
             rule: ''
         };
 
-        return  layer._url + L.Util.getParamString(params, layer._url, true);
+        return  layer._wmsUrl + L.Util.getParamString(params, layer._wmsUrl, true);
     }
 };

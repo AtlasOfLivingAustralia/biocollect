@@ -17,7 +17,7 @@ plugins {
     id 'war'
 }
 
-version "5.1-SNAPSHOT"
+version "5.2-SNAPSHOT"
 
 apply plugin:"eclipse"
 apply plugin:"idea"
