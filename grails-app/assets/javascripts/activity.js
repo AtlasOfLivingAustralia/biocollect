@@ -4,20 +4,45 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     var features, featureType = 'record', alaMap, results,
         mapTabHeaderId = 'dataMapTab',
         updateMapOccurrences = true,
-        activityLayer, heatmapLayer, clusterLayer,
+        activityLayer,
         pointStyleName = 'point_circle',
         heatmapStyleName = 'heatmap',
         clusterStyleName = 'cluster',
+        selectedLayerID = pointStyleName,
+        selectedColourByIndex = '',
+        selectedStyle = '',
+        selectedLayerName,
         currentlySelectedTab,
         legendControl,
         colorByControl,
+        playerControl,
         layerNamesLookupRequests = {} ;
 
     self.view = view ? view : 'allrecords';
     var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500,
-        MAX_FEATURE_COUNT = 1000, GENERAL_LAYER = '_general', INFO_LAYER = '_info', INDICES_LAYER = '_indices';
+        MAX_FEATURE_COUNT = 1000,
+        GENERAL_LAYER = '_general',
+        INFO_LAYER = '_info',
+        INDICES_LAYER = '_indices',
+        INFO_LAYER_DEFAULT = 'default',
+        TIMESERIES_LAYER = '_time',
+        TIME_DIMENSION = 'dateCreated',
+        STATE_POINT = 'point',
+        STATE_HEATMAP = 'heatmap',
+        STATE_CLUSTER = 'cluster',
+        STATE_POINT_INDEX = 'point+index',
+        STATE_HEATMAP_INDEX = 'heatmap+index',
+        STATE_CLUSTER_INDEX = 'cluster+index',
+        STATE_POINT_TIME = 'point+time',
+        STATE_HEATMAP_TIME = 'heatmap+time',
+        STATE_CLUSTER_TIME = 'cluster+time',
+        STATE_POINT_INDEX_TIME = 'point+index+time',
+        STATE_HEATMAP_INDEX_TIME = 'heatmap+index+time',
+        STATE_CLUSTER_INDEX_TIME = 'cluster+index+time';
 
-    layerNamesLookupRequests[GENERAL_LAYER] = layerNamesLookupRequests[INFO_LAYER] = undefined;
+    layerNamesLookupRequests[GENERAL_LAYER] =  undefined;
+    layerNamesLookupRequests[TIMESERIES_LAYER] = {};
+    layerNamesLookupRequests[INFO_LAYER] = {};
     layerNamesLookupRequests[INDICES_LAYER] = {};
     // These parameters are used when activity is instantiated from sites page.
     // It is used to disable certain aspects like map and auto load feature
@@ -423,157 +448,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return projectIds;
     };
 
-    /**
-     * creates popup on the map
-     * @param projectLinkPrefix
-     * @param projectId
-     * @param projectName
-     * @param activityUrl
-     * @param surveyName
-     * @param speciesName
-     * @returns {string}
-     */
-    self.generatePopup = function (projectLinkPrefix, projectId, projectName, activityUrl, surveyName, speciesName, imageUrl){
-        var template =
-            '    <div>' +
-            '      IMAGE_TAG' +
-            '      SPECIES_NAME' +
-            '      ACTIVITY_LINK' +
-            '      PROJECT_LINK' +
-            '    </div>';
-
-        var version = fcConfig.version === undefined ? "" : "?version=" + fcConfig.version
-        var activityTemp = "";
-        if (activityUrl && surveyName) {
-            activityTemp = "<div><i class='icon-home'></i> <a target='_blank' href='" +
-                activityUrl + version +"'>" +surveyName + " (record)</a></div>";
-        }
-        template = template.replace("ACTIVITY_LINK", activityTemp);
-
-        var projectTemp = "";
-        if(projectName && !fcConfig.hideProjectAndSurvey){
-            projectTemp ="<div><a target='_blank' href="+projectLinkPrefix+projectId+version+"><i class='icon-map-marker'></i>&nbsp;" +projectName + " (project)</a></div>";
-        }
-        template = template.replace("PROJECT_LINK", projectTemp);
-
-        var speciesTemp = "";
-        if (speciesName) {
-            speciesTemp = "<strong><i class='icon-camera'></i>&nbsp;" + speciesName + "</strong>";
-        }
-        template = template.replace("SPECIES_NAME", speciesTemp);
-
-        var image = "";
-        if(imageUrl) {
-            image = "<div class='projectLogo'><img class='image-logo image-window' onload='findLogoScalingClass(this, 200, 150)' src='" + imageUrl + "'/></div>"
-        }
-
-        template = template.replace('IMAGE_TAG', image);
-        return template;
-    };
-
-    /**
-     * converts ajax data to activities or records according to selection.
-     * @param data
-     */
-    self.generateDotsFromResult = function (data){
-        features = [];
-        var geoPoints = data, type;
-
-        if (geoPoints.activities) {
-            $.each(geoPoints.activities, function(index, activity) {
-                var projectId = activity.projectId;
-                var projectName = activity.name;
-                var activityUrl = fcConfig.activityViewUrl+'/'+activity.activityId;
-
-                switch (featureType){
-                    case 'record':
-                        if (activity.records && activity.records.length > 0) {
-                            $.each(activity.records, function(k, el) {
-                                if(el.coordinates && el.coordinates.length && el.coordinates[1] && !isNaN(el.coordinates[1]) && el.coordinates[0] && !isNaN(el.coordinates[0])){
-                                    var type = el.individualCount == 0 ? 'icon' : 'circle';
-                                    var imageUrl = el.multimedia && el.multimedia[0] &&  el.multimedia[0].identifier;
-                                    features.push({
-                                        // the ES index always returns the coordinate array in [lat, lng] order
-                                        lat: el.coordinates[0],
-                                        lng: el.coordinates[1],
-                                        popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, el.name, imageUrl),
-                                        type: type
-                                    });
-                                }
-                            });
-                        }
-                        type = 'point';
-                        break;
-                    case 'activity':
-                        if(activity.coordinates && activity.coordinates.length && activity.coordinates[1] && !isNaN(activity.coordinates[1]) && activity.coordinates[0] && !isNaN(activity.coordinates[0])){
-                            // get image from records
-                            var imageUrl;
-                            activity.records = activity.records || [];
-                            for(var i = 0; (i < activity.records.length) && !imageUrl; i++){
-                                var el = activity.records[i];
-                                imageUrl = el.multimedia && el.multimedia[0] &&  el.multimedia[0].identifier
-                            }
-
-                            features.push({
-                                // the ES index always returns the coordinate array in [lat, lng] order
-                                lng: activity.coordinates[0],
-                                lat: activity.coordinates[1],
-                                popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, null, imageUrl)
-                            });
-                        }
-                        type = 'cluster';
-                        break;
-                }
-            });
-        }
-    };
-
-
-    /**
-     * creates the map and plots the points on map
-     * @param features
-     */
-    // self.plotOnMap = function (features, drawType){
-    //     drawType = drawType || 'cluster';
-    //     var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
-    //     var mapOptions = {
-    //         autoZIndex: false,
-    //         preserveZIndex: true,
-    //         addLayersControlHeading: true,
-    //         drawControl: false,
-    //         showReset: false,
-    //         draggableMarkers: false,
-    //         useMyLocation: false,
-    //         allowSearchLocationByAddress: false,
-    //         allowSearchRegionByAddress: false,
-    //         trackWindowHeight: true,
-    //         baseLayer: baseLayersAndOverlays.baseLayer,
-    //         otherLayers: baseLayersAndOverlays.otherLayers,
-    //         overlays: baseLayersAndOverlays.overlays,
-    //         overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
-    // };
-    //
-    //     if(!alaMap){
-    //         self.transients.alaMap = alaMap = new ALA.Map("recordOrActivityMap", mapOptions);
-    //         radio = new L.Control.Radio({
-    //             name: 'activityOrRecrodsTEST',
-    //             position: 'topleft',
-    //             radioButtons:[{
-    //                 displayName: 'Points ( Species occurrences )',
-    //                 value: 'record',
-    //                 checked: true
-    //             },{
-    //                 displayName: 'Cluster ( Site visits )',
-    //                 value: 'activity'
-    //             }],
-    //             onClick: self.getActivityOrRecords
-    //         });
-    //         alaMap.addControl(radio);
-    //         alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomright");
-    //         self.addLegend();
-    //     }
-
-    self.createOrUpdateMap = function (features, drawType){
+    self.createOrUpdateMap = function (){
         if (ignoreMap)
             return;
 
@@ -588,6 +463,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                     allowSearchLocationByAddress: false,
                     allowSearchRegionByAddress: false,
                     trackWindowHeight: true,
+                    loadingControlOptions: {
+                        position: 'topleft'
+                    },
                     baseLayer: baseLayersAndOverlays.baseLayer,
                     otherLayers: baseLayersAndOverlays.otherLayers,
                     overlays: baseLayersAndOverlays.overlays,
@@ -604,10 +482,24 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 colorByControl = new L.Control.Select({
                     position: 'topright',
                     label : 'Colour by: ',
-                    selectionAction: colourByEventHandler,
+                    selectionAction: changeColourByIndex,
                     items: []
                 });
                 alaMap.addControl(colorByControl);
+
+                // Control - colour by
+                playerControl = new L.Control.Player({
+                    position: 'bottomright',
+                    startYear: 2015,
+                    endYear: 2020,
+                    interval: 1,
+                    timeout: 4
+                });
+                playerControl.on('play', self.play);
+                playerControl.on('stop', self.stop);
+                playerControl.on('forward', self.play);
+                playerControl.on('backward', self.play);
+                alaMap.addControl(playerControl);
 
                 // rendering style - point, cluster, heatmap
                 var radio = new L.Control.Radio({
@@ -615,16 +507,18 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                     position: 'topleft',
                     radioButtons:[{
                         displayName: 'Point',
-                        value: 'point_circle',
-                        checked: true
+                        value: pointStyleName,
+                        checked: selectedLayerID === pointStyleName
                     },{
                         displayName: 'Heatmap',
-                        value: 'heatmap'
+                        value: heatmapStyleName,
+                        checked: selectedLayerID === heatmapStyleName
                     },{
                         displayName: 'Cluster',
-                        value: 'cluster'
+                        value: clusterStyleName,
+                        checked: selectedLayerID === clusterStyleName
                     }],
-                    onClick: changeRecordRenderingStyle
+                    onClick: changeOverlayLayer
                 });
                 alaMap.addControl(radio);
 
@@ -642,17 +536,18 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             }
 
 
-            activityLayer && alaMap.removeOverlayLayer(activityLayer);
+            selectedColourByIndex = undefined;
             var typeAndIndices = getLayerTypeAndIndices();
-            console.log(typeAndIndices);
             getLayerNameRequest(typeAndIndices.type, typeAndIndices.indices).done(function (data) {
                 var layerName = data.layerName;
                 if (layerName) {
                     console.log('Setting layerName - ' + layerName);
-                    initMapOverlaysWithLayer(layerName);
+                    selectedLayerName = layerName;
+                    refreshMapComponents();
                 }
             });
 
+            updateDateRange();
             // init colour by control
             colorByControl.setItems(self.filterViewModel.getColourByFields());
             legendControl.clearLegend();
@@ -665,10 +560,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     function getLayerTypeAndIndices () {
         var result = {
             type: INDICES_LAYER,
-            indices: colorByControl.selectedItemValue
+            indices: selectedColourByIndex
         };
 
-        if (!colorByControl.selectedItemValue) {
+        if (!selectedColourByIndex) {
             result.type = GENERAL_LAYER;
             result.indices = undefined;
         }
@@ -676,35 +571,184 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return result;
     }
 
-    function initMapOverlaysWithLayer (layerName) {
+    function getCurrentState() {
+        var isPlayerActive = playerControl.isPlayerActive();
+        switch (selectedLayerID) {
+            case clusterStyleName:
+                if (selectedColourByIndex && isPlayerActive) {
+                    return STATE_CLUSTER_INDEX_TIME;
+                }
+                else if (isPlayerActive) {
+                    return STATE_CLUSTER_TIME;
+                }
+                else if (selectedColourByIndex) {
+                    return STATE_CLUSTER_INDEX;
+                }
+                else {
+                    return STATE_CLUSTER;
+                }
+
+                break;
+            case heatmapStyleName:
+                if (selectedColourByIndex && isPlayerActive) {
+                    return STATE_HEATMAP_INDEX_TIME;
+                }
+                else if (isPlayerActive) {
+                    return STATE_HEATMAP_TIME;
+                }
+                else if (selectedColourByIndex) {
+                    return STATE_HEATMAP_INDEX;
+                }
+                else {
+                    return STATE_HEATMAP;
+                }
+
+                break;
+            case pointStyleName:
+                if (selectedColourByIndex && isPlayerActive) {
+                    return STATE_POINT_INDEX_TIME;
+                }
+                else if (isPlayerActive) {
+                    return STATE_POINT_TIME;
+                }
+                else if (selectedColourByIndex) {
+                    return STATE_POINT_INDEX;
+                }
+                else {
+                    return STATE_POINT;
+                }
+
+                break;
+        }
+    }
+
+    function getParametersForState(state) {
+        var params = {};
+        state = state || getCurrentState();
+        addCommonParameters(params);
+
+        switch (state) {
+            case STATE_CLUSTER:
+                params.styles = clusterStyleName;
+                break;
+            case STATE_CLUSTER_INDEX:
+                params.styles = clusterStyleName;
+                addCQLParameter(params);
+                break;
+            case STATE_CLUSTER_TIME:
+                params.styles = clusterStyleName;
+                addTimeParameter(params);
+                break;
+            case STATE_CLUSTER_INDEX_TIME:
+                params.styles = clusterStyleName;
+                addTimeParameter(params);
+                addCQLParameter(params);
+                break;
+            case STATE_POINT:
+                params.styles = pointStyleName;
+                break;
+            case STATE_POINT_INDEX:
+                params.styles = selectedStyle;
+                addCQLParameter(params);
+                break;
+            case STATE_POINT_TIME:
+                params.styles = pointStyleName;
+                addTimeParameter(params);
+                break;
+            case STATE_POINT_INDEX_TIME:
+                params.styles = selectedStyle;
+                addTimeParameter(params);
+                addCQLParameter(params);
+                break;
+            case STATE_HEATMAP:
+                params.styles = heatmapStyleName;
+                break;
+            case STATE_HEATMAP_INDEX:
+                params.styles = heatmapStyleName;
+                addWeightParameter(params);
+                addCQLParameter(params);
+                break;
+            case STATE_HEATMAP_TIME:
+                params.styles = heatmapStyleName;
+                addTimeParameter(params);
+                break;
+            case STATE_HEATMAP_INDEX_TIME:
+                params.styles = heatmapStyleName;
+                addWeightParameter(params);
+                addTimeParameter(params);
+                addCQLParameter(params);
+                break;
+        }
+
+        return params;
+    }
+
+    function addTimeParameter (params) {
+        params = params || {};
+        var playerState = playerControl.getCurrentDuration();
+        params.time = playerState.interval[0] + "/" + playerState.interval[1];
+        return params;
+    }
+
+    function addWeightParameter (params) {
+        params = params || {};
+        params.env = "weight:" + selectedColourByIndex;
+        return params;
+    }
+
+    function addCommonParameters (params) {
+        params = params || {};
+        params.layers = selectedLayerName;
+        return params;
+    }
+
+    function addCQLParameter(params) {
+        params = params || {};
+        params.cql_filter = selectedColourByIndex + " IS NOT NULL";
+        return params;
+    }
+
+
+    function initMapOverlaysWithLayer () {
         var url = constructQueryUrl(fcConfig.wmsActivityURL, 0, false, 0, false);
+
+        activityLayer && alaMap.removeOverlayLayer(activityLayer);
         activityLayer = L.nonTiledLayer.wms ( url, {
             format: 'image/png',
-            transparent: true,
-            layers: layerName,
-            styles: pointStyleName,
-            uppercase: true
+            transparent: true
         });
 
-        alaMap.addOverlayLayer(activityLayer, 'Activity', true);
+        playerControl && activityLayer.on('load', playerControl.startTimerForNextFrame, playerControl);
+    }
 
-        heatmapLayer && alaMap.removeOverlayLayer(heatmapLayer);
-        heatmapLayer = L.nonTiledLayer.wms ( url, {
-            format: 'image/png',
-            transparent: true,
-            layers: layerName,
-            styles: heatmapStyleName,
-            uppercase: true
-        });
+    self.play = function (state) {
+        switch (state.intervalType) {
+            case 'year':
+                if (state.interval) {
+                    getLayerNameRequest(TIMESERIES_LAYER, selectedColourByIndex).done(function(data){
+                        if (data.layerName) {
+                            selectedLayerName = data.layerName;
+                            refreshMapComponents();
+                            activityLayer && activityLayer.fire('loading');
+                        }
+                    });
+                }
+                break;
+        }
+    }
 
-        clusterLayer && alaMap.removeOverlayLayer(clusterLayer);
-        clusterLayer = L.nonTiledLayer.wms ( url, {
-            format: 'image/png',
-            transparent: true,
-            layers: layerName,
-            styles: clusterStyleName,
-            uppercase: true
-        });
+    self.stop = function (state) {
+        switch (state.intervalType) {
+            case 'year':
+                var typeAndIndices = getLayerTypeAndIndices();
+                getLayerNameRequest(typeAndIndices.type, typeAndIndices.indices).done(function (data) {
+                    if (data.layerName) {
+                        selectedLayerName = data.layerName;
+                        refreshMapComponents();
+                    }
+                });
+                break;
+        }
     }
 
     /**
@@ -819,112 +863,170 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     }
 
     function mapClickEventHandler(event) {
-        var map = this,
-            size = map.getSize(),
-            // this crs is used to show layer added to map
-            crs = map.options.crs,
-            // these are the SouthWest and NorthEast points
-            // projected from LatLng into used crs
-            sw = crs.project(map.getBounds().getSouthWest()),
-            ne = crs.project(map.getBounds().getNorthEast()),
-            params = {
-                request: 'GetFeatureInfo',
-                service: 'WMS',
-                srs: crs.code,
-                styles: activityLayer.wmsParams.styles,
-                version: activityLayer.wmsParams.version,
-                layers: activityLayer.wmsParams.layers,
-                query_layers: activityLayer.wmsParams.layers,
-                bbox:  sw.x + ',' + sw.y + ',' + ne.x + ',' + ne.y,
-                height: size.y,
-                width: size.x,
-                feature_count: MAX_FEATURE_COUNT,
-                info_format: 'application/json'
-            };
+        var map = this;
+        getLayerNameRequest(INFO_LAYER, selectedColourByIndex).done(function(data){
+            if(data.layerName) {
+                var size = map.getSize(),
+                    // this crs is used to show layer added to map
+                    crs = map.options.crs,
+                    // these are the SouthWest and NorthEast points
+                    // projected from LatLng into used crs
+                    sw = crs.project(map.getBounds().getSouthWest()),
+                    ne = crs.project(map.getBounds().getNorthEast()),
+                    params = {
+                        request: 'GetFeatureInfo',
+                        service: 'WMS',
+                        srs: crs.code,
+                        version: activityLayer.wmsParams.version,
+                        layers: data.layerName,
+                        query_layers: data.layerName,
+                        styles: activityLayer.wmsParams.styles,
+                        bbox:  sw.x + ',' + sw.y + ',' + ne.x + ',' + ne.y,
+                        height: size.y,
+                        width: size.x,
+                        feature_count: MAX_FEATURE_COUNT,
+                        info_format: 'application/json'
+                    };
 
-        params[params.version === '1.3.0' ? 'i' : 'x'] = Math.round(event.containerPoint.x);
-        params[params.version === '1.3.0' ? 'j' : 'y'] = Math.round(event.containerPoint.y);
-        var url = activityLayer._wmsUrl + L.Util.getParamString(params, activityLayer._wmsUrl, true);
-        $.get(url , function (data) {
-            var features = data.features;
+                if (activityLayer.wmsParams.cql_filter) {
+                    params.cql_filter = activityLayer.wmsParams.cql_filter;
+                }
 
-            if (features && features.length) {
-                L.popup({
-                    maxWidth: 400,
-                    minWidth: 200
-                })
-                    .setLatLng(event.latlng)
-                    .setContent('<div id="template-map-popup-record" style="width: 400px; height: auto" data-bind="template: { name: \'script-popup-template\' }"></div>')
-                    .openOn(alaMap.getMapImpl());
+                params[params.version === '1.3.0' ? 'i' : 'x'] = Math.round(event.containerPoint.x);
+                params[params.version === '1.3.0' ? 'j' : 'y'] = Math.round(event.containerPoint.y);
+                var url = activityLayer._wmsUrl + L.Util.getParamString(params, activityLayer._wmsUrl, true);
+                // show loading GIF
+                activityLayer.fire && activityLayer.fire('loading');
+                $.get(url , function (data) {
+                    var features = data.features;
 
-                ko.applyBindings({features: features, index: ko.observable(0)}, document.getElementById('template-map-popup-record'))
+                    if (features && features.length) {
+                        L.popup({
+                            maxWidth: 400,
+                            minWidth: 200
+                        })
+                            .setLatLng(event.latlng)
+                            .setContent('<div id="template-map-popup-record" style="width: 400px; height: auto" data-bind="template: { name: \'script-popup-template\' }"></div>')
+                            .openOn(alaMap.getMapImpl());
+
+                        ko.applyBindings({features: features, index: ko.observable(0)}, document.getElementById('template-map-popup-record'))
+                    }
+                }).done(function() {
+                    // remove loading GIF
+                    activityLayer.fire && activityLayer.fire('load');
+                });
+            }
+        })
+    };
+    // todo: cql not cleared properly
+    function changeColourByIndex(index) {
+        var typeAndIndices;
+
+        selectedColourByIndex = index;
+        updateDateRange();
+        typeAndIndices = getLayerTypeAndIndices();
+        getLayerNameRequest(typeAndIndices.type, typeAndIndices.indices).done(function (data) {
+            var layerName = data.layerName;
+            if (layerName) {
+                console.log('Updating layerName - ' + layerName);
+                selectedLayerName = layerName;
+                if (index) {
+                    var terms = self.filterViewModel.getTermsForFacet(index);
+                    createStyleFromTerms(terms).done(function (data) {
+                        selectedStyle = data.name;
+                        self.filterViewModel.setStyleName(index, selectedStyle);
+                        refreshMapComponents();
+                    });
+                } else {
+                    selectedStyle = '';
+                    refreshMapComponents();
+                }
             }
         });
     };
 
-    function colourByEventHandler(val) {
-        colorByControl.selectedItemValue = val;
+    /**
+     * Update map depending on colour by selection and rendering (point, heatmap etc.) selection.
+     */
+    function refreshMapComponents () {
+        var state = getCurrentState(),
+            params = getParametersForState(state);
 
-        if (val) {
-            var typeAndIndices = getLayerTypeAndIndices();
-            getLayerNameRequest(typeAndIndices.type, typeAndIndices.indices).done(function (data) {
-                var layerName = data.layerName;
-                if (layerName) {
-                    console.log('Updating layerName - ' + layerName);
-                    activityLayer.setParams({layers: layerName});
-                    var style = self.filterViewModel.getStyleName(val);
-                    if(!style) {
-                        var result = self.filterViewModel.getTermsForFacet(val);
-                        $.ajax({
-                            url: fcConfig.createStyleURL,
-                            method: 'POST',
-                            contentType: 'application/json',
-                            data: JSON.stringify(result),
-                            success: function (data) {
-                                var name = data.name;
-                                self.filterViewModel.setStyleName(val, name);
-                                activityLayer.setParams ({styles: name});
-                                legendControl.updateLegend(Biocollect.MapUtilities.getLegendURL(activityLayer, name));
-                            }
-                        });
-                    } else {
-                        activityLayer.setParams ({styles: style});
-                        legendControl.updateLegend(Biocollect.MapUtilities.getLegendURL(activityLayer, style));
-                    }
-                }
-            });
-        } else {
-            activityLayer.setParams ({styles: ''});
-            legendControl.clearLegend();
-        }
-    };
-
-    function changeRecordRenderingStyle(value) {
-        activityLayer && alaMap.removeOverlayLayer(activityLayer);
-        heatmapLayer && alaMap.removeOverlayLayer(heatmapLayer);
-        clusterLayer && alaMap.removeOverlayLayer(clusterLayer);
-
-        switch (value) {
-            case clusterStyleName:
-                alaMap.addOverlayLayer(clusterLayer, 'Cluster', true);
+        initMapOverlaysWithLayer()
+        activityLayer && activityLayer.setParams(params);
+        alaMap.addOverlayLayer(activityLayer, 'Activity', true);
+        switch (state) {
+            case STATE_POINT:
+            case STATE_POINT_TIME:
+                legendControl.clearLegend();
                 break;
-            case heatmapStyleName:
-                alaMap.addOverlayLayer(heatmapLayer, 'Heatmap', true);
-                break;
-            case pointStyleName:
-                alaMap.addOverlayLayer(activityLayer, 'Point', true);
+            default:
+                legendControl.updateLegend(Biocollect.MapUtilities.getLegendURL(activityLayer, params.styles));
                 break;
         }
+    }
+
+    function createStyleFromTerms(terms) {
+        return $.ajax({
+            url: fcConfig.createStyleURL,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(terms)
+        });
+    }
+
+    function changeOverlayLayer(value) {
+        var currentSettings = getLayerTypeAndIndices(),
+            layerNameRequest = getLayerNameRequest(currentSettings.type, currentSettings.indices);
+
+        selectedLayerID = value;
+        layerNameRequest && layerNameRequest.done(function (data) {
+            if (data.layerName) {
+                selectedLayerName = data.layerName;
+                refreshMapComponents();
+            }
+        });
     };
+
+    function getDateRange() {
+        var url = constructQueryUrl(fcConfig.dateRangeURL, 0, true, 0, false),
+            params = {
+                dateFields: TIME_DIMENSION
+            };
+
+        if (selectedColourByIndex) {
+            params.exists = selectedColourByIndex;
+        }
+
+        return $.get({
+            url: url,
+            data: params
+        });
+    };
+
+    function updateDateRange() {
+        getDateRange().done(function (range) {
+            if (range[TIME_DIMENSION]) {
+                playerControl && playerControl.setYearRange(range[TIME_DIMENSION]);
+            }
+        })
+    }
 
     function getLayerNameRequest(type, indices) {
         var request, indicesConcat;
 
         switch (type) {
             case GENERAL_LAYER:
-            case INFO_LAYER:
                 request = layerNamesLookupRequests[type];
                 break;
+            case INFO_LAYER:
+                if (!indices) {
+                    indices = [INFO_LAYER_DEFAULT];
+                }
+            case TIMESERIES_LAYER:
+                if (indices == undefined) {
+                    indices = [];
+                }
             case INDICES_LAYER:
                 if (indices === undefined) {
                     return
@@ -934,7 +1036,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 }
 
                 indicesConcat = indices.join(',');
-                request = layerNamesLookupRequests[INDICES_LAYER][indicesConcat];
+                request = layerNamesLookupRequests[type][indicesConcat];
                 break;
         }
 
@@ -964,10 +1066,14 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         var indicesConcat;
         switch (type) {
             case GENERAL_LAYER:
-            case INFO_LAYER:
                 layerNamesLookupRequests[type] = request;
                 break;
+            case INFO_LAYER:
+                if (!indices) {
+                    indices = [INFO_LAYER_DEFAULT];
+                }
             case INDICES_LAYER:
+            case TIMESERIES_LAYER:
                 if (indices === undefined) {
                     return;
                 }
@@ -976,7 +1082,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 }
 
                 indicesConcat = indices.join(',');
-                layerNamesLookupRequests[INDICES_LAYER][indicesConcat] = request;
+                layerNamesLookupRequests[type][indicesConcat] = request;
                 break;
         }
     };
