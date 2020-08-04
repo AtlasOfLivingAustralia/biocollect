@@ -1,6 +1,6 @@
 rootProject.name='biocollect'
 
-boolean inplace = true
+boolean inplace = false
 
 if (inplace) {
     include ':ecodata-client-plugin'
