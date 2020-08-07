@@ -512,4 +512,8 @@ if(!map.overlays) {
         ]
 }
 
+if (!map.wms.maxFeatures) {
+        map.wms.maxFeatures = 100000
+}
+
 settings.surveyMethods="fielddata.survey.methods"

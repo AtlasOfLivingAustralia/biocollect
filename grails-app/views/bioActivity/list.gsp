@@ -36,7 +36,7 @@
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
-            wmsActivityURL: "${createLink(controller: 'geoServer', action: 'wms', params: [projectId: projectId, maxFeatures: 10000])}",
+            wmsActivityURL: "${createLink(controller: 'geoServer', action: 'wms', params: [projectId: projectId, maxFeatures: grailsApplication.config.map.wms.maxFeatures])}",
             createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
             getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
             view: "${view}",

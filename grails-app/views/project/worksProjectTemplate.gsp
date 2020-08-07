@@ -50,7 +50,7 @@
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-        wmsActivityURL: "${createLink(controller: 'geoServer', action: 'wms', params: [projectId: project.projectId, maxFeatures: 100000])}",
+        wmsActivityURL: "${createLink(controller: 'geoServer', action: 'wms', params: [projectId: project.projectId, maxFeatures: grailsApplication.config.map.wms.maxFeatures])}",
         createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
         dateRangeURL: "${createLink(controller: 'bioActivity', action: 'getMinMaxYearForQuery', params: [projectId: projectId])}",
         getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
