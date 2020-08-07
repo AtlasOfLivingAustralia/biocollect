@@ -131,8 +131,8 @@ dependencies {
     runtime "org.grails.plugins:ala-bootstrap3:3.0.4"
     compile "org.grails.plugins:ala-admin-plugin:2.1"
     if (!inplace) {
-        compile "org.grails.plugins:ala-map-plugin:3.0"
-        compile "org.grails.plugins:ecodata-client-plugin:3.0.2"
+        compile "org.grails.plugins:ala-map-plugin:3.1-SNAPSHOT"
+        compile "org.grails.plugins:ecodata-client-plugin:3.1-SNAPSHOT"
     }
 }
 
