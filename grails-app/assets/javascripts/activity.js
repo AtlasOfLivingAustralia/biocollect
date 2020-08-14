@@ -8,9 +8,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         pointStyleName = 'point_circle',
         heatmapStyleName = 'heatmap',
         clusterStyleName = 'cluster',
+        colourByControlId = "colour-by-select",
+        sizeControlId = "size-slider",
+        activityDisplayStyleId = "activity-display-style",
         selectedLayerID = pointStyleName,
         selectedColourByIndex = '',
         selectedStyle = '',
+        selectedSize = 5,
         selectedLayerName,
         currentlySelectedTab,
         legendControl,
@@ -466,6 +470,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                     loadingControlOptions: {
                         position: 'topleft'
                     },
+                    overlayControlPosition: "topleft",
                     baseLayer: baseLayersAndOverlays.baseLayer,
                     otherLayers: baseLayersAndOverlays.otherLayers,
                     overlays: baseLayersAndOverlays.overlays,
@@ -478,16 +483,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 // Control - reset
                 alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomright");
 
-                // Control - colour by
-                colorByControl = new L.Control.Select({
-                    position: 'topright',
-                    label : 'Colour by: ',
-                    selectionAction: changeColourByIndex,
-                    items: []
-                });
-                alaMap.addControl(colorByControl);
-
-                // Control - colour by
                 playerControl = new L.Control.Player({
                     position: 'bottomright',
                     startYear: 2015,
@@ -501,35 +496,71 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 playerControl.on('backward', self.play);
                 alaMap.addControl(playerControl);
 
-                // rendering style - point, cluster, heatmap
-                var radio = new L.Control.Radio({
-                    name: 'recordRendering',
-                    position: 'topleft',
-                    radioButtons:[{
-                        displayName: 'Point',
-                        value: pointStyleName,
-                        checked: selectedLayerID === pointStyleName
+                var selectionControl = new L.Control.HorizontalMultiInput({
+                    id: 'display-style-colour-by-size-control',
+                    position: 'topright',
+                    items:  [{
+                        type: "select",
+                        id: activityDisplayStyleId,
+                        name: activityDisplayStyleId + "-name",
+                        label: "Display:",
+                        values: [{
+                            value: 'Point',
+                            key: pointStyleName,
+                            selected: selectedLayerID === pointStyleName
+                        },{
+                            value: 'Heatmap',
+                            key: heatmapStyleName,
+                            selected: selectedLayerID === heatmapStyleName
+                        },{
+                            value: 'Cluster',
+                            key: clusterStyleName,
+                            selected: selectedLayerID === clusterStyleName
+                        }]
                     },{
-                        displayName: 'Heatmap',
-                        value: heatmapStyleName,
-                        checked: selectedLayerID === heatmapStyleName
-                    },{
-                        displayName: 'Cluster',
-                        value: clusterStyleName,
-                        checked: selectedLayerID === clusterStyleName
-                    }],
-                    onClick: changeOverlayLayer
+                        type: "select",
+                        id: colourByControlId,
+                        name: colourByControlId + "-name",
+                        label: "Colour by:",
+                        values: []
+                    }, {
+                        type: "slider",
+                        id: sizeControlId,
+                        label: "Size:",
+                        options: {
+                            min: 1,
+                            max: 9,
+                            step: 1,
+                            value: selectedSize,
+                            length: '100px'
+                        }
+                    }]
                 });
-                alaMap.addControl(radio);
+                alaMap.addControl(selectionControl);
 
+                selectionControl.on('change', function (data) {
+                    switch (data.item.id) {
+                        case activityDisplayStyleId:
+                            changeOverlayLayer(data.value);
+                            break;
+                        case colourByControlId:
+                            changeColourByIndex(data.value);
+                            break;
+                        case sizeControlId:
+                            changeSize(data.value);
+                            break;
+                    }
+                });
 
                 // update colour by when facets change
                 self.filterViewModel.facets.subscribe(function() {
-                    colorByControl.setItems(self.filterViewModel.getColourByFields());
+                    var options = self.filterViewModel.getColourByFields();
+                    options = addEmptyOption(options);
+                    selectionControl.setSelectOptions(colourByControlId, options);
                 });
 
                 // Control - legend
-                legendControl = new L.Control.LegendImage({collapse: true});
+                legendControl = new L.Control.LegendImage({collapse: true, position: "topright"});
                 alaMap.addControl(legendControl);
 
                 alaMap.registerListener('click', mapClickEventHandler);
@@ -549,13 +580,21 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
             updateDateRange();
             // init colour by control
-            colorByControl.setItems(self.filterViewModel.getColourByFields());
+            var options = self.filterViewModel.getColourByFields();
+            options = addEmptyOption(options);
+            selectionControl.setSelectOptions(colourByControlId, options);
             legendControl.clearLegend();
 
             // clear flag to disable adding occurrences layer to map
             updateMapOccurrences = false;
         }
     };
+
+    function addEmptyOption(values) {
+        values = values || [];
+        values.unshift({key: ""});
+        return values;
+    }
 
     function getLayerTypeAndIndices () {
         var result = {
@@ -646,17 +685,21 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 break;
             case STATE_POINT:
                 params.styles = pointStyleName;
+                params.env = "size:" + selectedSize;
                 break;
             case STATE_POINT_INDEX:
                 params.styles = selectedStyle;
+                params.env = "size:" + selectedSize;
                 addCQLParameter(params);
                 break;
             case STATE_POINT_TIME:
                 params.styles = pointStyleName;
+                params.env = "size:" + selectedSize;
                 addTimeParameter(params);
                 break;
             case STATE_POINT_INDEX_TIME:
                 params.styles = selectedStyle;
+                params.env = "size:" + selectedSize;
                 addTimeParameter(params);
                 addCQLParameter(params);
                 break;
@@ -945,6 +988,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         });
     };
 
+    function changeSize(size) {
+        selectedSize = size;
+        refreshMapComponents();
+    }
+
     /**
      * Update map depending on colour by selection and rendering (point, heatmap etc.) selection.
      */
@@ -955,15 +1003,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         initMapOverlaysWithLayer()
         activityLayer && activityLayer.setParams(params);
         alaMap.addOverlayLayer(activityLayer, 'Activity', true);
-        switch (state) {
-            case STATE_POINT:
-            case STATE_POINT_TIME:
-                legendControl.clearLegend();
-                break;
-            default:
-                legendControl.updateLegend(Biocollect.MapUtilities.getLegendURL(activityLayer, params.styles));
-                break;
-        }
+        legendControl.updateLegend(Biocollect.MapUtilities.getLegendURL(activityLayer, params.styles));
     }
 
     function createStyleFromTerms(terms) {
