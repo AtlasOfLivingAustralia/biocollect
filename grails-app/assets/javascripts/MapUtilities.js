@@ -166,6 +166,7 @@ Biocollect.MapUtilities = {
                     // See https://cartodb.com/location-data-services/basemaps/
                     url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
                     options: {
+                        uniqueName: 'minimal',
                         subdomains: "abcd",
                         attribution: 'Map data &copy; <a target="_blank" rel="noopener noreferrer" href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, imagery &copy; <a target="_blank" rel="noopener noreferrer" href="http://cartodb.com/attributions">CartoDB</a>',
                         maxZoom: 21,
@@ -179,6 +180,7 @@ Biocollect.MapUtilities = {
                     // see https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9
                     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                     options: {
+                        uniqueName: 'worldimagery',
                         attribution: '<a target="_blank" rel="noopener noreferrer" href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9">Tiles from Esri</a> &mdash; Sources: Esri, DigitalGlobe, Earthstar Geographics, CNES/Airbus DS, GeoEye, USDA FSA, USGS, Aerogrid, IGN, IGP, and the GIS User Community',
                         maxZoom: 21,
                         maxNativeZoom: 17
@@ -191,6 +193,7 @@ Biocollect.MapUtilities = {
                     // see https://wiki.openstreetmap.org/wiki/Standard_tile_layer
                     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     options: {
+                        uniqueName: 'detailed',
                         subdomains: "abc",
                         attribution: '&copy; <a target="_blank" rel="noopener noreferrer" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
                         maxZoom: 21,
@@ -204,6 +207,7 @@ Biocollect.MapUtilities = {
                     // see https://www.arcgis.com/home/item.html?id=30e5fe3149c34df1ba922e6f5bbf808f
                     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
                     options: {
+                        uniqueName: 'topographic',
                         attribution: '<a target="_blank" rel="noopener noreferrer" href="https://www.arcgis.com/home/item.html?id=30e5fe3149c34df1ba922e6f5bbf808f">Tiles from Esri</a> &mdash; Sources: Esri, HERE, Garmin, Intermap, INCREMENT P, GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), &copy; OpenStreetMap contributors, GIS User Community',
                         maxZoom: 21,
                         maxNativeZoom: 17
@@ -212,13 +216,13 @@ Biocollect.MapUtilities = {
                 layer = L.tileLayer(option.url, option.options);
                 break;
             case 'googlehybrid':
-                layer = new L.Google('HYBRID', {maxZoom: 21, nativeMaxZoom: 21});
+                layer = new L.Google('HYBRID', {uniqueName: 'googlehybrid', maxZoom: 21, nativeMaxZoom: 21});
                 break;
             case 'googleroadmap':
-                layer = new L.Google('ROADMAP', {maxZoom: 21, nativeMaxZoom: 21});
+                layer = new L.Google('ROADMAP', {uniqueName: 'googleroadmap', maxZoom: 21, nativeMaxZoom: 21});
                 break;
             case 'googleterrain':
-                layer = new L.Google('TERRAIN', {maxZoom: 21, nativeMaxZoom: 21});
+                layer = new L.Google('TERRAIN', {uniqueName: 'googleterrain', maxZoom: 21, nativeMaxZoom: 21});
                 break;
         }
 
@@ -363,6 +367,7 @@ Biocollect.MapUtilities = {
 
         var newLayerOptions = {
             layers: alaName,
+            uniqueName: alaName,
             format: 'image/png',
             transparent: true,
             styles: ''
