@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Create | Organisation | Field Capture</title>
+    <title>Create | Organisation | BioCollect</title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
@@ -12,9 +12,9 @@
     <asset:script type="text/javascript">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
-            organisationSaveUrl: "${createLink(action:'ajaxUpdate')}",
-            organisationViewUrl: "${createLink(action:'index')}",
-            documentUpdateUrl: "${createLink(controller:"proxy", action:"documentUpdate")}",
+            organisationSaveUrl: "${createLink(action: 'ajaxUpdate')}",
+            organisationViewUrl: "${createLink(action: 'index')}",
+            documentUpdateUrl: "${createLink(controller: "proxy", action: "documentUpdate")}",
             returnTo: "${params.returnTo}"
             };
     </asset:script>
@@ -33,8 +33,8 @@
     <asset:javascript src="cors/jquery.xdr-transport.js"/>
     <asset:javascript src="organisation.js"/>
 
-
 </head>
+
 <body>
 <div class="container-fluid">
     <g:render template="organisationDetails"/>
@@ -85,15 +85,13 @@
         $('.validationEngineContainer').validationEngine();
 
         $("#cancel").on("click", function() {
-            document.location.href = "${createLink(action:'list')}";
+            document.location.href = "${createLink(action: 'list')}";
         });
 
     });
 
-
 </asset:script>
 
 </body>
-
 
 </html>
