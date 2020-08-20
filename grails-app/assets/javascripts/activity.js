@@ -11,15 +11,17 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         colourByControlId = "colour-by-select",
         sizeControlId = "size-slider",
         activityDisplayStyleId = "activity-display-style",
-        selectedLayerID = pointStyleName,
+        selectedTimeSeriesIndex = fcConfig.timeSeriesOnIndex || 'dateCreated',
+        selectedLayerID,
         selectedColourByIndex = '',
         selectedStyle = '',
         selectedSize = 5,
         selectedLayerName,
         currentlySelectedTab,
         legendControl,
-        colorByControl,
+        selectionControl,
         playerControl,
+        mapDisplays = [],
         layerNamesLookupRequests = {} ;
 
     self.view = view ? view : 'allrecords';
@@ -30,7 +32,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         INDICES_LAYER = '_indices',
         INFO_LAYER_DEFAULT = 'default',
         TIMESERIES_LAYER = '_time',
-        TIME_DIMENSION = 'dateCreated',
         STATE_POINT = 'point',
         STATE_HEATMAP = 'heatmap',
         STATE_CLUSTER = 'cluster',
@@ -194,6 +195,21 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             self.sortByColumn(column, null, doNotRefresh, doNotChangeOrder);
         }
     };
+
+    self.loadMapDisplays = function (displays) {
+        displays.forEach(function (display) {
+            display.selected = display.isDefault == display.key
+            if (display.selected) {
+                selectedLayerID = display.key;
+            }
+
+            mapDisplays.push(display);
+        });
+
+        if (!selectedLayerID) {
+            selectedLayerID = mapDisplays[0].key;
+        }
+    }
 
     /**
      * event handler
@@ -496,7 +512,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 playerControl.on('backward', self.play);
                 alaMap.addControl(playerControl);
 
-                var selectionControl = new L.Control.HorizontalMultiInput({
+                selectionControl = new L.Control.HorizontalMultiInput({
                     id: 'display-style-colour-by-size-control',
                     position: 'topright',
                     items:  [{
@@ -504,19 +520,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                         id: activityDisplayStyleId,
                         name: activityDisplayStyleId + "-name",
                         label: "Display:",
-                        values: [{
-                            value: 'Point',
-                            key: pointStyleName,
-                            selected: selectedLayerID === pointStyleName
-                        },{
-                            value: 'Heatmap',
-                            key: heatmapStyleName,
-                            selected: selectedLayerID === heatmapStyleName
-                        },{
-                            value: 'Cluster',
-                            key: clusterStyleName,
-                            selected: selectedLayerID === clusterStyleName
-                        }]
+                        values: mapDisplays
                     },{
                         type: "select",
                         id: colourByControlId,
@@ -541,7 +545,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 selectionControl.on('change', function (data) {
                     switch (data.item.id) {
                         case activityDisplayStyleId:
-                            changeOverlayLayer(data.value);
+                            changeActivityDisplayStyle(data.value);
                             break;
                         case colourByControlId:
                             changeColourByIndex(data.value);
@@ -761,14 +765,22 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             transparent: true
         });
 
-        playerControl && activityLayer.on('load', playerControl.startTimerForNextFrame, playerControl);
+        playerControl && activityLayer.on('load tileerror', playerControl.startTimerForNextFrame, playerControl);
+    }
+
+    function getIndicesForTimeSeries() {
+        if (selectedColourByIndex) {
+            return selectedTimeSeriesIndex + ',' + selectedColourByIndex;
+        }
+
+        return selectedTimeSeriesIndex;
     }
 
     self.play = function (state) {
         switch (state.intervalType) {
             case 'year':
                 if (state.interval) {
-                    getLayerNameRequest(TIMESERIES_LAYER, selectedColourByIndex).done(function(data){
+                    getLayerNameRequest(TIMESERIES_LAYER, getIndicesForTimeSeries()).done(function(data){
                         if (data.layerName) {
                             selectedLayerName = data.layerName;
                             refreshMapComponents();
@@ -935,6 +947,14 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                     params.cql_filter = activityLayer.wmsParams.cql_filter;
                 }
 
+                if (playerControl.isPlayerActive()) {
+                    params.cql_filter = params.cql_filter || "";
+                    var time = playerControl.getCurrentDuration(),
+                        timeCQL = selectedTimeSeriesIndex + " >= '" + time.interval[0] + "-01-01' AND " + selectedTimeSeriesIndex + " <= '" + time.interval[1] + "-12-31'";
+
+                    params.cql_filter = params.cql_filter ? params.cql_filter + " AND " + timeCQL : timeCQL;
+                }
+
                 params[params.version === '1.3.0' ? 'i' : 'x'] = Math.round(event.containerPoint.x);
                 params[params.version === '1.3.0' ? 'j' : 'y'] = Math.round(event.containerPoint.y);
                 var url = activityLayer._wmsUrl + L.Util.getParamString(params, activityLayer._wmsUrl, true);
@@ -1015,7 +1035,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         });
     }
 
-    function changeOverlayLayer(value) {
+    function changeActivityDisplayStyle (value) {
         var currentSettings = getLayerTypeAndIndices(),
             layerNameRequest = getLayerNameRequest(currentSettings.type, currentSettings.indices);
 
@@ -1031,7 +1051,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     function getDateRange() {
         var url = constructQueryUrl(fcConfig.dateRangeURL, 0, true, 0, false),
             params = {
-                dateFields: TIME_DIMENSION
+                dateFields: selectedTimeSeriesIndex
             };
 
         if (selectedColourByIndex) {
@@ -1046,8 +1066,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     function updateDateRange() {
         getDateRange().done(function (range) {
-            if (range[TIME_DIMENSION]) {
-                playerControl && playerControl.setYearRange(range[TIME_DIMENSION]);
+            if (range[selectedTimeSeriesIndex]) {
+                playerControl && playerControl.setYearRange(range[selectedTimeSeriesIndex]);
             }
         })
     }
@@ -1145,6 +1165,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     var restored = facetsLocalStorageHandler("restore");
     var orgTerm = fcConfig.organisationName;
     self.loadSortColumn(true);
+    self.loadMapDisplays(fcConfig.mapDisplays);
     if (orgTerm) {
         self.filterViewModel.selectedFacets.push(new FacetTermViewModel({
             term: orgTerm,

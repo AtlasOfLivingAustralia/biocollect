@@ -55,7 +55,9 @@
             spatialUrl: "${spatialUrl}",
             mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-            absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}"
+            absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
+            timeSeriesOnIndex: "${hubConfig.timeSeriesOnIndex}",
+            mapDisplays: ${mapService.getMapDisplays() as JSON}
         },
         here = document.location.href;
     </asset:script>

@@ -76,7 +76,11 @@
             spatialUrl: "",
             paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
             absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+            dateRangeURL: "${createLink(controller: 'bioActivity', action: 'getMinMaxYearForQuery', params: [projectId: projectId])}",
+            getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
+            timeSeriesOnIndex: "${hubConfig.timeSeriesOnIndex}",
+            mapDisplays: ${mapService.getMapDisplays() as JSON}
         };
     </asset:script>
     <style type="text/css">

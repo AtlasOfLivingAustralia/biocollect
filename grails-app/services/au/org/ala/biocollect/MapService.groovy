@@ -114,6 +114,20 @@ class MapService {
         overlays
     }
 
+    List getMapDisplays() {
+        def user = userService.getUser(),
+            hub = SettingService.hubConfig
+        List mapDisplays = hub.mapDisplays ?: grailsApplication.config.map.data.displays
+
+        if (user) {
+            mapDisplays = mapDisplays.findAll { it.showLoggedIn }
+        } else {
+            mapDisplays = mapDisplays.findAll { it.showLoggedOut }
+        }
+
+        mapDisplays
+    }
+
     /**
      * Filter the list of layers based on the user.
      * @param layers
