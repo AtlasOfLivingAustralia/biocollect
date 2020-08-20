@@ -19,6 +19,7 @@
             defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}",
             allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
             allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+            allMapDisplays: ${grailsApplication.config.map.data.displays as grails.converters.JSON},
             leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
         };
     </asset:script>
@@ -654,6 +655,20 @@
                 <h4><strong>Configure base layers for maps shown on this hub</strong></h4>
                 <div class="overflow-x">
                     <map-config-selector params="allBaseLayers: fcConfig.allBaseLayers, allOverlays: fcConfig.allOverlays, mapLayersConfig: mapLayersConfig"></map-config-selector>
+                </div>
+                <h4><strong>Configure map display style</strong></h4>
+                <div class="overflow-x">
+                    <!-- ko template: { name: 'templateMapDisplayStyle' }-->
+                    <!-- /ko -->
+                </div>
+                <h4><strong>Configure index for time series animation</strong></h4>
+                <div class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label" for="time-series-index">Pick a date field for time series animation</label>
+                        <div class="controls">
+                            <select id="time-series-index" data-bind="options: hubConfigs.availableIndexForTimeSeries, value: timeSeriesOnIndex"></select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1406,6 +1421,32 @@
     </tr>
     </tfoot>
 </table>
+</script>
+<script id="templateMapDisplayStyle" type="text/html">
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Display text</th>
+                    <th>Show logged out?</th>
+                    <th>Show logged in?</th>
+                    <th>Is default?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- ko foreach: mapDisplays -->
+                <tr>
+                    <td><input type="text" data-bind="value: value"/> </td>
+                    <td><div class="checkbox"><input type="checkbox" data-bind="checked: showLoggedOut"/></div> </td>
+                    <td><div class="checkbox"><input type="checkbox" data-bind="checked: showLoggedIn"/></div> </td>
+                    <td><div class="radio"><input type="radio" name="selected-display" data-bind="checked: $parent.transients.isDefaultMapDisplay, value: key"/></div> </td>
+                </tr>
+                <!-- /ko -->
+            </tbody>
+        </table>
+    </div>
+</div>
 </script>
 <script id="buttonPreview" type="text/html">
     <div class="text-center btn-preview" data-bind="style:{'background-color': backgroundColor, color: textColor, borderColor: backgroundColor}">

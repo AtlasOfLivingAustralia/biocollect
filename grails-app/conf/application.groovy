@@ -516,4 +516,30 @@ if (!map.wms.maxFeatures) {
         map.wms.maxFeatures = 100000
 }
 
+if (!map.data.displays) {
+        map.data.displays = [
+                [
+                        value: "Point",
+                        key: "point_circle",
+                        showLoggedOut: true,
+                        showLoggedIn: true,
+                        isDefault: "point"
+                ],
+                [
+                        value: "Heatmap",
+                        key: "heatmap",
+                        showLoggedOut: true,
+                        showLoggedIn: true,
+                        isDefault: "point"
+                ],
+                [
+                        value: "Cluster",
+                        key: "cluster",
+                        showLoggedOut: true,
+                        showLoggedIn: true,
+                        isDefault: "point"
+                ]
+        ]
+}
+
 settings.surveyMethods="fielddata.survey.methods"

@@ -117,7 +117,9 @@
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
         allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
         allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-        surveyMethods: <fc:getSurveyMethods/>
+        surveyMethods: <fc:getSurveyMethods/>,
+        timeSeriesOnIndex: "${hubConfig.timeSeriesOnIndex}",
+        mapDisplays: ${mapService.getMapDisplays() as JSON}
         },
         here = window.location.href;
 
