@@ -20,7 +20,9 @@
                                         fusedAutocomplete:{
                                             source: alert.transients.bioSearch,
                                             name: alert.transients.species.transients.name,
-                                            guid: alert.transients.species.transients.guid
+                                            guid: alert.transients.species.transients.guid,
+                                            scientificName: alert.transients.species.transients.scientificName,
+                                            commonName: alert.transients.species.transients.commonName
                                         }" >
          <div class="margin-bottom-5"></div>
          <button class="btn-default btn block btn-small" data-toggle="tooltip" title="Enter valid species name"
