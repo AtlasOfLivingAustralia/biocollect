@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Edit | ${activity.activityId ?: 'new'} | ${site.name} | ${site.projectName} | Field Capture</title>
+    <title>Edit | ${activity.activityId ?: 'new'} | ${site.name} | ${site.projectName} | <g:message code="g.biocollect"/></title>
     <md:modelStyles model="${model}"/>
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:javascript src="jstz/jstz.min.js"/>

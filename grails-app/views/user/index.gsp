@@ -10,7 +10,7 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>User Dashboard | Field Capture</title>
+    <title>User Dashboard | <g:message code="g.biocollect"/></title>
 </head>
 <body>
 <div id="wrapper" class="container-fluid">
