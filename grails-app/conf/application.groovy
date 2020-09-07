@@ -526,6 +526,20 @@ if (!map.data.displays) {
                         isDefault: "point"
                 ],
                 [
+                        value: "Polygon",
+                        key: "polygon_sites",
+                        showLoggedOut: true,
+                        showLoggedIn: true,
+                        isDefault: "point"
+                ],
+                [
+                        value: "Line",
+                        key: "line_sites",
+                        showLoggedOut: true,
+                        showLoggedIn: true,
+                        isDefault: "point"
+                ],
+                [
                         value: "Heatmap",
                         key: "heatmap",
                         showLoggedOut: true,

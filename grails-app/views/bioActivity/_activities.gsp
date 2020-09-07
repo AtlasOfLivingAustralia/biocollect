@@ -1,4 +1,5 @@
 <%@ page import="grails.converters.JSON" %>
+<asset:stylesheet src="map-activity.css"/>
 <g:set var="noImageUrl" value="${asset.assetPath([src: "no-image-2.png"])}"/>
 <!-- ko stopBinding: true -->
 <div id="survey-all-activities-and-records-content">

@@ -8,10 +8,16 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         pointStyleName = 'point_circle',
         heatmapStyleName = 'heatmap',
         clusterStyleName = 'cluster',
+        polygonStyleName = 'polygon_sites',
+        lineStyleName = 'line_sites',
+        lineSelectorStyleName = 'line_selector',
+        shapeRenderingLayers = [pointStyleName, polygonStyleName, lineStyleName],
         colourByControlId = "colour-by-select",
         sizeControlId = "size-slider",
         activityDisplayStyleId = "activity-display-style",
         selectedTimeSeriesIndex = fcConfig.timeSeriesOnIndex || 'dateCreated',
+        colourByLabel = "Colour by:",
+        filterByLabel = "Filter by:",
         selectedLayerID,
         selectedColourByIndex = '',
         selectedStyle = '',
@@ -21,6 +27,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         legendControl,
         selectionControl,
         playerControl,
+        opacity = 0.1,
         mapDisplays = [],
         layerNamesLookupRequests = {} ;
 
@@ -33,15 +40,23 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         INFO_LAYER_DEFAULT = 'default',
         TIMESERIES_LAYER = '_time',
         STATE_POINT = 'point',
+        STATE_POLYGON = 'polygon',
+        STATE_LINE = 'line',
         STATE_HEATMAP = 'heatmap',
         STATE_CLUSTER = 'cluster',
         STATE_POINT_INDEX = 'point+index',
+        STATE_POLYGON_INDEX = 'polygon+index',
+        STATE_LINE_INDEX = 'line+index',
         STATE_HEATMAP_INDEX = 'heatmap+index',
         STATE_CLUSTER_INDEX = 'cluster+index',
         STATE_POINT_TIME = 'point+time',
+        STATE_POLYGON_TIME = 'polygon+time',
+        STATE_LINE_TIME = 'line+time',
         STATE_HEATMAP_TIME = 'heatmap+time',
         STATE_CLUSTER_TIME = 'cluster+time',
         STATE_POINT_INDEX_TIME = 'point+index+time',
+        STATE_POLYGON_INDEX_TIME = 'polygon+index+time',
+        STATE_LINE_INDEX_TIME = 'line+index+time',
         STATE_HEATMAP_INDEX_TIME = 'heatmap+index+time',
         STATE_CLUSTER_INDEX_TIME = 'cluster+index+time';
 
@@ -525,7 +540,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                         type: "select",
                         id: colourByControlId,
                         name: colourByControlId + "-name",
-                        label: "Colour by:",
+                        label: colourByLabel,
                         values: []
                     }, {
                         type: "slider",
@@ -591,8 +606,36 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
             // clear flag to disable adding occurrences layer to map
             updateMapOccurrences = false;
+            setSelectionControlState();
         }
     };
+
+    function setSelectionControlState() {
+        setLabelOnMapDisplaySelection();
+        enableDisableSizeControl();
+    }
+
+    function setLabelOnMapDisplaySelection() {
+        if (shapeRenderingLayers.indexOf(selectedLayerID) >= 0) {
+            selectionControl.changeLabel(colourByLabel, colourByControlId);
+        } else {
+            selectionControl.changeLabel(filterByLabel, colourByControlId);
+        }
+    };
+
+    function enableDisableSizeControl () {
+        var item = {
+            type: 'slider',
+            id : sizeControlId
+        };
+
+        if (shapeRenderingLayers.indexOf(selectedLayerID) >= 0) {
+            selectionControl.disableItem(false, item);
+        } else {
+            selectionControl.disableItem(true, item);
+        }
+    };
+
 
     function addEmptyOption(values) {
         values = values || [];
@@ -662,6 +705,37 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 }
 
                 break;
+            case polygonStyleName:
+                if (selectedColourByIndex && isPlayerActive) {
+                    return STATE_POLYGON_INDEX_TIME
+                }
+                else if (isPlayerActive) {
+                    return STATE_POLYGON_TIME;
+                }
+                else if (selectedColourByIndex) {
+                    return STATE_POLYGON_INDEX;
+                }
+                else {
+                    return STATE_POLYGON;
+                }
+
+                break;
+            case lineStyleName:
+                if (selectedColourByIndex && isPlayerActive) {
+                    return STATE_LINE_INDEX_TIME;
+                }
+                else if (isPlayerActive) {
+                    return STATE_LINE_TIME;
+                }
+                else if (selectedColourByIndex) {
+                    return STATE_LINE_INDEX;
+                }
+                else {
+                    return STATE_LINE;
+                }
+
+                break;
+
         }
     }
 
@@ -689,21 +763,61 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 break;
             case STATE_POINT:
                 params.styles = pointStyleName;
-                params.env = "size:" + selectedSize;
+                params.env = "size:" + selectedSize + ";";
                 break;
             case STATE_POINT_INDEX:
                 params.styles = selectedStyle;
-                params.env = "size:" + selectedSize;
+                params.env = "size:" + selectedSize + ";";
                 addCQLParameter(params);
                 break;
             case STATE_POINT_TIME:
                 params.styles = pointStyleName;
-                params.env = "size:" + selectedSize;
+                params.env = "size:" + selectedSize + ";";
                 addTimeParameter(params);
                 break;
             case STATE_POINT_INDEX_TIME:
                 params.styles = selectedStyle;
-                params.env = "size:" + selectedSize;
+                params.env = "size:" + selectedSize + ";";
+                addTimeParameter(params);
+                addCQLParameter(params);
+                break;
+            case STATE_POLYGON:
+                params.styles = polygonStyleName;
+                params.env = "size:" + selectedSize + ";";
+                break;
+            case STATE_POLYGON_INDEX:
+                params.styles = selectedStyle;
+                params.env = "size:" + selectedSize + ";";
+                addCQLParameter(params);
+                break;
+            case STATE_POLYGON_TIME:
+                params.styles = polygonStyleName;
+                params.env = "size:" + selectedSize + ";";
+                addTimeParameter(params);
+                break;
+            case STATE_POLYGON_INDEX_TIME:
+                params.styles = selectedStyle;
+                params.env = "size:" + selectedSize + ";";
+                addTimeParameter(params);
+                addCQLParameter(params);
+                break;
+            case STATE_LINE:
+                params.styles = lineStyleName;
+                params.env = "size:" + selectedSize + ";";
+                break;
+            case STATE_LINE_INDEX:
+                params.styles = selectedStyle;
+                params.env = "size:" + selectedSize + ";";
+                addCQLParameter(params);
+                break;
+            case STATE_LINE_TIME:
+                params.styles = lineStyleName;
+                params.env = "size:" + selectedSize + ";";
+                addTimeParameter(params);
+                break;
+            case STATE_LINE_INDEX_TIME:
+                params.styles = selectedStyle;
+                params.env = "size:" + selectedSize + ";";
                 addTimeParameter(params);
                 addCQLParameter(params);
                 break;
@@ -727,6 +841,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 break;
         }
 
+        if (opacity) {
+            params.env += "opacity:" + opacity + ";";
+        }
+
         return params;
     }
 
@@ -739,7 +857,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     function addWeightParameter (params) {
         params = params || {};
-        params.env = "weight:" + selectedColourByIndex;
+        params.env = "weight:" + selectedColourByIndex + ";";
         return params;
     }
 
@@ -762,7 +880,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         activityLayer && alaMap.removeOverlayLayer(activityLayer);
         activityLayer = L.nonTiledLayer.wms ( url, {
             format: 'image/png',
-            transparent: true
+            transparent: true,
+            maxZoom: 21
         });
 
         playerControl && activityLayer.on('load tileerror', playerControl.startTimerForNextFrame, playerControl);
@@ -928,6 +1047,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                     // projected from LatLng into used crs
                     sw = crs.project(map.getBounds().getSouthWest()),
                     ne = crs.project(map.getBounds().getNorthEast()),
+                    styleName = activityLayer.wmsParams.styles == lineStyleName ? lineSelectorStyleName : activityLayer.wmsParams.styles,
                     params = {
                         request: 'GetFeatureInfo',
                         service: 'WMS',
@@ -935,7 +1055,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                         version: activityLayer.wmsParams.version,
                         layers: data.layerName,
                         query_layers: data.layerName,
-                        styles: activityLayer.wmsParams.styles,
+                        styles: styleName,
                         bbox:  sw.x + ',' + sw.y + ',' + ne.x + ',' + ne.y,
                         height: size.y,
                         width: size.x,
@@ -994,17 +1114,25 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 console.log('Updating layerName - ' + layerName);
                 selectedLayerName = layerName;
                 if (index) {
-                    var terms = self.filterViewModel.getTermsForFacet(index);
-                    createStyleFromTerms(terms).done(function (data) {
-                        selectedStyle = data.name;
-                        self.filterViewModel.setStyleName(index, selectedStyle);
-                        refreshMapComponents();
-                    });
+                    createStyleForMapDisplayAndColourByIndex(selectedLayerID, index);
                 } else {
                     selectedStyle = '';
                     refreshMapComponents();
                 }
             }
+        });
+    };
+
+    function createStyleForMapDisplayAndColourByIndex(mapDisplay, index) {
+        var terms = self.filterViewModel.getTermsForFacet(index);
+        if (canMapDisplayBeColoured(mapDisplay)) {
+            terms.style = mapDisplay;
+        }
+
+        createStyleFromTerms(terms).done(function (data) {
+            selectedStyle = data.name;
+            self.filterViewModel.setStyleName(index, selectedStyle);
+            refreshMapComponents();
         });
     };
 
@@ -1043,9 +1171,15 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         layerNameRequest && layerNameRequest.done(function (data) {
             if (data.layerName) {
                 selectedLayerName = data.layerName;
-                refreshMapComponents();
+                if (selectedColourByIndex) {
+                    createStyleForMapDisplayAndColourByIndex(selectedLayerID, selectedColourByIndex);
+                } else {
+                    refreshMapComponents();
+                }
             }
         });
+
+        setSelectionControlState();
     };
 
     function getDateRange() {
@@ -1073,7 +1207,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     }
 
     function getLayerNameRequest(type, indices) {
-        var request, indicesConcat;
+        var request, indicesConcat, styleCode;
 
         switch (type) {
             case GENERAL_LAYER:
@@ -1096,7 +1230,12 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 }
 
                 indicesConcat = indices.join(',');
-                request = layerNamesLookupRequests[type][indicesConcat];
+                styleCode = getStyleNameForIndicesLayer();
+                if (!styleCode) {
+                    styleCode = indicesConcat;
+                }
+
+                request = layerNamesLookupRequests[type][styleCode];
                 break;
         }
 
@@ -1122,8 +1261,18 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return request;
     };
 
+    function getStyleNameForIndicesLayer() {
+        if (canMapDisplayBeColoured(selectedLayerID)) {
+            return selectedLayerID+selectedColourByIndex;
+        }
+    };
+
+    function canMapDisplayBeColoured (index) {
+        return shapeRenderingLayers.indexOf(index) >= 0;
+    };
+
     function setLayerNameRequest(type, indices, request) {
-        var indicesConcat;
+        var indicesConcat, styleCode;
         switch (type) {
             case GENERAL_LAYER:
                 layerNamesLookupRequests[type] = request;
@@ -1142,7 +1291,12 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 }
 
                 indicesConcat = indices.join(',');
-                layerNamesLookupRequests[type][indicesConcat] = request;
+                styleCode = getStyleNameForIndicesLayer()
+                if (!styleCode) {
+                    styleCode = indicesConcat;
+                }
+
+                layerNamesLookupRequests[type][styleCode] = request;
                 break;
         }
     };
