@@ -10,7 +10,7 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Search Results | Field Capture</title>
+    <title>Search Results | <g:message code="g.biocollect"/></title>
 </head>
 <body>
 <div id="wrapper" class="container-fluid">
