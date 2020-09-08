@@ -1,27 +1,27 @@
-function ImageViewModel(prop, skipFindingDocument){
+function ImageViewModel(prop, skipFindingDocument) {
     var self = this, document;
     var documents
 
     // used by image gallery plugin. document is passed to the function.
-    if(!skipFindingDocument){
+    if (!skipFindingDocument) {
         // activityLevelData is a global variable
         documents = activityLevelData.activity.documents;
         // dereferencing the document using documentId
-        documents && documents.forEach(function(doc){
+        documents && documents.forEach(function (doc) {
             // newer implementation is passing document object.
             var docId = prop.documentId || prop;
-            if(doc.documentId === docId){
+            if (doc.documentId === docId) {
                 prop = doc;
             }
         });
     }
 
-    if(typeof prop !== 'object'){
+    if (typeof prop !== 'object') {
         console.error('Could not find the required document.')
         return;
     }
 
-    self.dateTaken = ko.observable(prop.dateTaken || (new Date()).toISOStringNoMillis()).extend({simpleDate:false});
+    self.dateTaken = ko.observable(prop.dateTaken || (new Date()).toISOStringNoMillis()).extend({simpleDate: false});
     self.contentType = ko.observable(prop.contentType);
     self.url = prop.url;
     self.filesize = prop.filesize;
@@ -41,11 +41,11 @@ function ImageViewModel(prop, skipFindingDocument){
     self.activityName = prop.activityName;
     self.activityId = prop.activityId;
     self.isEmbargoed = prop.isEmbargoed;
-    self.identifier=prop.identifier;
+    self.identifier = prop.identifier;
 
 
-    self.remove = function(images, data, event){
-        if(data.documentId){
+    self.remove = function (images, data, event) {
+        if (data.documentId) {
             // change status when image is already in ecodata
             data.status('deleted')
         } else {
@@ -53,23 +53,25 @@ function ImageViewModel(prop, skipFindingDocument){
         }
     }
 
-    self.getActivityLink = function(){
+    self.getActivityLink = function () {
         return fcConfig.activityViewUrl + '/' + self.activityId;
     }
 
-    self.getProjectLink = function(){
+    self.getProjectLink = function () {
         return fcConfig.projectIndexUrl + '/' + self.projectId;
     }
 
-    self.getImageViewerUrl = function(){
+    self.getImageViewerUrl = function () {
+        // Let the image viewer render high res image.
+        self.url = self.url ? self.url.split("/image/proxyImageThumbnailLarge?imageId=").join("/image/proxyImage?imageId=") : self.url;
         return fcConfig.imageLeafletViewer + '?file=' + encodeURIComponent(self.url);
     }
 
-    self.summary = function(){
+    self.summary = function () {
         var picBy = 'Picture by ' + self.attribution() + '. ';
-        var takenOn = 'Taken on ' + self.dateTaken.formattedDate() +'.';
+        var takenOn = 'Taken on ' + self.dateTaken.formattedDate() + '.';
         var message = '';
-        if(self.attribution()){
+        if (self.attribution()) {
             message += picBy;
         }
 
