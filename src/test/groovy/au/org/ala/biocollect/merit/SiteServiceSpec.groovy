@@ -25,9 +25,24 @@ import spock.lang.Specification
 // adding the below Mixin to enable JSON conversion
 @TestMixin(ControllerUnitTestMixin)
 class SiteServiceSpec extends Specification {
-    def projectSite
+    def projectSite, projectSiteWithPid
 
     def setup() {
+        service.grailsApplication = [
+                "config": [
+                        spatial : [
+                                baseURL: ""
+                        ],
+                        ecodata : [
+                                service: [url: ""]
+                        ],
+                        google : [
+                                api: [
+                                        key: ""
+                                ]
+                        ]
+                ]
+        ]
         service.projectService = Mock(ProjectService)
         service.webService = Mock(WebService)
         service.commonService = Mock(CommonService)
@@ -37,7 +52,14 @@ class SiteServiceSpec extends Specification {
                         "coordinates": [[[0, 0], [0, 3], [1, 10], [5, 10], [0, 0]]]
                 ]
         ]
-
+        projectSiteWithPid =  [
+                extent: [
+                        geometry: [
+                                type: "pid",
+                                pid: "123"
+                        ]
+                ]
+        ]
     }
 
     def "checkPointInsideProjectAreaAndAddress should detect if point falls inside or outside project area"() {
@@ -60,6 +82,19 @@ class SiteServiceSpec extends Specification {
         1 * service.webService.getJson(_) >> projectSite
 
         response.isPointInsideProjectArea == false
+        response.address == null
+    }
+
+    def "checkPointInsideProjectAreaAndAddress should get geoJSON of pid"() {
+        when:
+        Map response = service.checkPointInsideProjectAreaAndAddress('9', '1', 'abc')
+
+        then:
+        1 * service.commonService.buildUrlParamsFromMap(_) >> ""
+        1 * service.projectService.get(_) >> [projectSiteId: 'site1']
+        1 * service.webService.getJson("/site/site1") >> projectSiteWithPid
+        1 * service.webService.getJson("/ws/shape/geojson/123") >> projectSite
+        response.isPointInsideProjectArea == true
         response.address == null
     }
 }
