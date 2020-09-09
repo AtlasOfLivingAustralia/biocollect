@@ -775,7 +775,14 @@ class SiteService {
     boolean isPointInsideProjectArea(String lat, String lng, String projectId) {
         Map projectArea = getProjectAreaForProject(projectId)
         Map pointGeoJSON = createGeoJSONFromPoint(lat, lng)
-        if (projectArea?.geoIndex && pointGeoJSON) {
+        if ((projectArea?.extent?.geometry?.type == "pid") && pointGeoJSON) {
+            def pidURL =  "${grailsApplication.config.spatial.baseURL}/ws/shape/geojson/${projectArea?.extent?.geometry?.pid}"
+            def geoJSON = webService.getJson(pidURL)
+            if (!geoJSON.error) {
+                return  GeometryUtils.doShapesIntersect(geoJSON, pointGeoJSON)
+            }
+        }
+        else if (projectArea?.geoIndex && pointGeoJSON) {
             return GeometryUtils.doShapesIntersect(projectArea.geoIndex, pointGeoJSON)
         }
 
