@@ -19,8 +19,8 @@
     <asset:stylesheet src="forms-manifest.css"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
-    var fcConfig = {
-        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        var fcConfig = {
+            intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
@@ -28,21 +28,23 @@
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         createUrl: "${createLink(action: 'create')}/",
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
-        excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-        projectViewUrl: "${createLink(controller:'project', action:'index')}/"
+        excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
+        projectViewUrl: "${createLink(controller: 'project', action: 'index')}/"
         },
         here = document.location.href;
     </asset:script>
     <asset:javascript src="common.js"/>
     <asset:javascript src="forms-manifest.js"/>
 </head>
+
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
         <div class="row-fluid">
             <div class="span6">
                 <label for="type">Type of activity</label>
-                <select data-bind="value: type, popover:{title:'', content:transients.activityDescription, trigger:'manual', autoShow:true}" id="type" data-validation-engine="validate[required]" class="input-xlarge">
+                <select data-bind="value: type, popover:{title:'', content:transients.activityDescription, trigger:'manual', autoShow:true}"
+                        id="type" data-validation-engine="validate[required]" class="input-xlarge">
                     <g:each in="${activityTypes}" var="t" status="i">
                         <g:if test="${i == 0 && create}">
                             <option></option>

@@ -10,8 +10,8 @@
     <meta name="breadcrumb" content="${title}"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
-    var fcConfig = {
-        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        var fcConfig = {
+            intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
@@ -22,13 +22,13 @@
         saveUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
-        excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
+        excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         returnTo: "${params.returnTo}"
         },
         here = document.location.href;
     </asset:script>
-    <asset:javascript src="common.js" />
-    <asset:javascript src="forms-manifest.js" />
+    <asset:javascript src="common.js"/>
+    <asset:javascript src="forms-manifest.js"/>
     <style type="text/css">
     input.editor-text {
         box-sizing: border-box;
@@ -136,19 +136,19 @@
         return val || "0";
     }
     <g:each in="${outputModels}" var="outputModel">
-    <g:if test="${outputModel.name != 'Photo Points'}">
-        <g:set var="blockId" value="${fc.toSingleWord([name: outputModel.name])}"/>
-        <g:set var="model" value="${outputModel.dataModel}"/>
+        <g:if test="${outputModel.name != 'Photo Points'}">
+            <g:set var="blockId" value="${fc.toSingleWord([name: outputModel.name])}"/>
+            <g:set var="model" value="${outputModel.dataModel}"/>
 
-        var viewModelName = "${blockId}ViewModel",
+            var viewModelName = "${blockId}ViewModel",
                 viewModelInstance = viewModelName + "Instance";
                 //load dynamic models - usually objects in a list
-        <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}" edit="true"
-                           viewModelInstance="${blockId}ViewModelInstance"/>
+            <md:jsModelObjects model="${model}" site="${site}" speciesLists="${speciesLists}" edit="true"
+                               viewModelInstance="${blockId}ViewModelInstance"/>
 
-        this[viewModelName] = function (output) {
-            var self = this;
-            self.name = "${outputModel.name}";
+            this[viewModelName] = function (output) {
+                var self = this;
+                self.name = "${outputModel.name}";
                 self.outputId = orBlank(output.outputId);
 
                 self.data = {};
@@ -156,54 +156,55 @@
                 self.transients.dummy = ko.observable();
 
                 // add declarations for dynamic data
-        <md:jsViewModel model="${model}" output="${outputModel.name}" edit="true"
-                        viewModelInstance="${blockId}ViewModelInstance" readonly="${false}" surveyName="${surveyName}"/>
+            <md:jsViewModel model="${model}" output="${outputModel.name}" edit="true"
+                            viewModelInstance="${blockId}ViewModelInstance" readonly="${false}"
+                            surveyName="${surveyName}"/>
 
-        // this will be called when generating a savable model to remove transient properties
-        self.removeBeforeSave = function (jsData) {
-            // add code to remove any transients added by the dynamic tags
-        <md:jsRemoveBeforeSave model="${model}"/>
-        delete jsData.activityType;
-        delete jsData.transients;
-        return jsData;
+            // this will be called when generating a savable model to remove transient properties
+            self.removeBeforeSave = function (jsData) {
+                // add code to remove any transients added by the dynamic tags
+            <md:jsRemoveBeforeSave model="${model}"/>
+            delete jsData.activityType;
+            delete jsData.transients;
+            return jsData;
+        };
+
+    // this returns a JS object ready for saving
+    self.modelForSaving = function () {
+        // get model as a plain javascript object
+        var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
+        // get rid of any transient observables
+        return self.removeBeforeSave(jsData);
     };
 
-// this returns a JS object ready for saving
-self.modelForSaving = function () {
-    // get model as a plain javascript object
-    var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
-    // get rid of any transient observables
-    return self.removeBeforeSave(jsData);
-};
+    // this is a version of toJSON that just returns the model as it will be saved
+    // it is used for detecting when the model is modified (in a way that should invoke a save)
+    // the ko.toJSON conversion is preserved so we can use it to view the active model for debugging
+    self.modelAsJSON = function () {
+        return JSON.stringify(self.modelForSaving());
+    };
 
-// this is a version of toJSON that just returns the model as it will be saved
-// it is used for detecting when the model is modified (in a way that should invoke a save)
-// the ko.toJSON conversion is preserved so we can use it to view the active model for debugging
-self.modelAsJSON = function () {
-    return JSON.stringify(self.modelForSaving());
-};
+    self.loadData = function (data) {// load dynamic data
+            <md:jsLoadModel model="${model}"/>
 
-self.loadData = function (data) {// load dynamic data
-        <md:jsLoadModel model="${model}"/>
+            // if there is no data in tables then add an empty row for the user to add data
+            if (typeof self.addRow === 'function' && self.rowCount() === 0) {
+                self.addRow();
+            }
+            self.transients.dummy.notifySubscribers();
+        };
 
-        // if there is no data in tables then add an empty row for the user to add data
-        if (typeof self.addRow === 'function' && self.rowCount() === 0) {
-            self.addRow();
+        if (output && output.data) {
+            self.loadData(output.data);
         }
-        self.transients.dummy.notifySubscribers();
+        self.dirtyFlag = ko.dirtyFlag(self, false);
     };
-
-    if (output && output.data) {
-        self.loadData(output.data);
-    }
-    self.dirtyFlag = ko.dirtyFlag(self, false);
-};
-    </g:if>
-</g:each>
+        </g:if>
+    </g:each>
 
     var activityLinkFormatter = function( row, cell, value, columnDef, dataContext ) {
         return '<a title="'+dataContext.projectName+'" target="project"
-                       href="'+fcConfig.projectViewUrl+dataContext.projectId+'">'+value+'</a>';
+                   href="'+fcConfig.projectViewUrl+dataContext.projectId+'">'+value+'</a>';
         };
 
         var activities = <fc:modelAsJavascript model="${activities}"/>;

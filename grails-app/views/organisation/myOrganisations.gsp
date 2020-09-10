@@ -21,7 +21,7 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>My Organisations | BioCollect</title>
+    <title>My Organisations | <g:message code="g.biocollect"/></title>
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>
     <asset:script type="text/javascript">
         var fcConfig = {

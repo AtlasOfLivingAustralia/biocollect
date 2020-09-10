@@ -16,12 +16,12 @@
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
     <meta name="breadcrumb" content="${activity.type}"/>
 
-    <g:set var="commentUrl" value="${resource(dir:'/activity')}/${activity.activityId}/comment"></g:set>
+    <g:set var="commentUrl" value="${resource(dir: '/activity')}/${activity.activityId}/comment"></g:set>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
-    var fcConfig = {
-        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        var fcConfig = {
+            intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
@@ -31,7 +31,7 @@
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
-        imageLocation:"${asset.assetPath(src:'')}",
+        imageLocation:"${asset.assetPath(src: '')}",
         createCommentUrl : "${commentUrl}",
         commentListUrl:"${commentUrl}",
         updateCommentUrl:"${commentUrl}",
@@ -45,10 +45,10 @@
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
         searchBieUrl: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
-        project:${fc.modelAsJavascript(model:project)},
+        project:${fc.modelAsJavascript(model: project)},
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
-        excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-        sites: ${fc.modelAsJavascript(model:project?.sites)}
+        excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
+        sites: ${fc.modelAsJavascript(model: project?.sites)}
         },
         here = document.location.href;
     </asset:script>
@@ -57,23 +57,29 @@
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="meritActivity.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <g:set var="pActivity" value="${[commentsAllowed:false]}"/>
+    <g:set var="pActivity" value="${[commentsAllowed: false]}"/>
 </head>
+
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
         <g:if test="${editInMerit}">
             <div class="alert alert-error">
-                <strong>Note:</strong> This activity can only be edited in the <a href="${g.createLink(action:'edit',  id:activity.activityId, base:grailsApplication.config.merit.url)}" target="_merit">MERIT system</a>
+                <strong>Note:</strong> This activity can only be edited in the <a
+                    href="${g.createLink(action: 'edit', id: activity.activityId, base: grailsApplication.config.merit.url)}"
+                    target="_merit">MERIT system</a>
             </div>
         </g:if>
 
 
         <div class="row-fluid title-block well well-small input-block-level">
             <div class="span12 title-attribute">
-                <h1><span data-bind="click:goToProject" class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
+                <h1><span data-bind="click:goToProject"
+                          class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
+
                 <h3>Activity: <span data-bind="text:type"></span></h3>
-                <h4><span>${project.associatedProgram?.encodeAsHTML()}</span> <span>${project.associatedSubProgram?.encodeAsHTML()}</span></h4>
+                <h4><span>${project.associatedProgram?.encodeAsHTML()}</span> <span>${project.associatedSubProgram?.encodeAsHTML()}</span>
+                </h4>
             </div>
         </div>
 
@@ -81,27 +87,38 @@
             <div class="${mapFeatures.toString() != '{}' ? 'span9' : 'span12'}" style="font-size: 1.2em">
                 <!-- Common activity fields -->
                 <div class="row-fluid">
-                    <span class="span6"><span class="label">Description:</span> <span data-bind="text:description"></span></span>
+                    <span class="span6"><span class="label">Description:</span> <span
+                            data-bind="text:description"></span></span>
                     <span class="span6"><span class="label">Type:</span> <span data-bind="text:type"></span></span>
                 </div>
+
                 <div class="row-fluid">
-                    <span class="span6"><span class="label">Starts:</span> <span data-bind="text:startDate.formattedDate"></span></span>
-                    <span class="span6"><span class="label">Ends:</span> <span data-bind="text:endDate.formattedDate"></span></span>
+                    <span class="span6"><span class="label">Starts:</span> <span
+                            data-bind="text:startDate.formattedDate"></span></span>
+                    <span class="span6"><span class="label">Ends:</span> <span
+                            data-bind="text:endDate.formattedDate"></span></span>
                 </div>
+
                 <div class="row-fluid">
-                    <span class="span6"><span class="label">Project stage:</span> <span data-bind="text:projectStage"></span></span>
-                    <span class="span6"><span class="label">Major theme:</span> <span data-bind="text:mainTheme"></span></span>
+                    <span class="span6"><span class="label">Project stage:</span> <span
+                            data-bind="text:projectStage"></span></span>
+                    <span class="span6"><span class="label">Major theme:</span> <span data-bind="text:mainTheme"></span>
+                    </span>
                 </div>
+
                 <div class="row-fluid">
-                    <span class="span6"><span class="label">Activity status:</span> <span data-bind="text:progress"></span></span>
+                    <span class="span6"><span class="label">Activity status:</span> <span
+                            data-bind="text:progress"></span></span>
                 </div>
             </div>
         </div>
 
         <g:if env="development" test="${!printView}">
             <div class="expandable-debug">
-                <hr />
+                <hr/>
+
                 <h3>Debug</h3>
+
                 <div>
                     <h4>KO model</h4>
                     <pre data-bind="text:ko.toJSON($root,null,2)"></pre>
@@ -131,14 +148,14 @@
 
         <g:if test="${outputName != 'Photo Points'}">
             <g:render template="/output/outputJSModel" plugin="ecodata-client-plugin"
-                      model="${[viewModelInstance:activity.activityId+fc.toSingleWord([name: outputName])+'ViewModel',
-                                edit:false, model:outputModels[outputName],
-                                outputName:outputName]}"></g:render>
+                      model="${[viewModelInstance: activity.activityId + fc.toSingleWord([name: outputName]) + 'ViewModel',
+                                edit             : false, model: outputModels[outputName],
+                                outputName       : outputName]}"></g:render>
             <g:render template="/output/readOnlyOutput"
-                      model="${[activity:activity,
-                                outputModel:outputModels[outputName],
-                                outputName:outputName,
-                                activityModel:metaModel,
+                      model="${[activity     : activity,
+                                outputModel  : outputModels[outputName],
+                                outputName   : outputName,
+                                activityModel: metaModel,
                                 disablePrepop: activity.progress != au.org.ala.biocollect.merit.ActivityService.PROGRESS_PLANNED]}"
                       plugin="ecodata-client-plugin"></g:render>
 
@@ -186,9 +203,9 @@
             activityLevelData.metaModel,
             activityLevelData.themes);
         ko.applyBindings(viewModel);
-        <g:if test="${pActivity.commentsAllowed}">
-            ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
-        </g:if>
+    <g:if test="${pActivity.commentsAllowed}">
+        ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
+    </g:if>
 
     });
 </asset:script>
