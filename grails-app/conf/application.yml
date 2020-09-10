@@ -325,3 +325,8 @@ projectdata:
   industries:
     enabled: false
 
+userDetails: 
+  url: "https://auth.ala.org.au/userdetails/"
+
+userDetailsById:
+  path: "getUserDetails"
