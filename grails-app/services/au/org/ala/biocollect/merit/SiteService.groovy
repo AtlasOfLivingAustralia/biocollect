@@ -778,7 +778,7 @@ class SiteService {
         if ((projectArea?.extent?.geometry?.type == "pid") && pointGeoJSON) {
             def pidURL =  "${grailsApplication.config.spatial.baseURL}/ws/shape/geojson/${projectArea?.extent?.geometry?.pid}"
             def geoJSON = webService.getJson(pidURL)
-            if (!geoJSON.error) {
+            if (!geoJSON?.error) {
                 return  GeometryUtils.doShapesIntersect(geoJSON, pointGeoJSON)
             }
         }
