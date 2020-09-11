@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta name="layout" content="mobile"/>
-    <title> Mobile | Bio Collect</title>
+    <title> Mobile | <g:message code="g.biocollect"/></title>
     <asset:script type="text/javascript">
     var fcConfig = {
         };

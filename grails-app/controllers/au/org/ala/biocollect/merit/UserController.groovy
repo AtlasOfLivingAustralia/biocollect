@@ -164,12 +164,18 @@ class UserController {
      */
     def checkEmailExists() {
         String email = params.email
-
-        if (email) {
-            render userService.checkEmailExists(email)
-        } else {
-            render status:400, text: 'Required param not provided: email'
+        def userId
+        if(email) {
+            userId =  userService.checkEmailExists(email)
         }
+        if(!email) {
+            render status:400, text: 'Required param not provided: email'
+        } else if(!userId) {
+            render status:400, text: 'This user does not have an active Atlas of Living Australia account. Please ask the user to register with the ALA before adding them as a project member'
+        } else {
+            render userId
+        }
+
     }
 
 }
