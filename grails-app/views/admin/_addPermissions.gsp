@@ -1,12 +1,12 @@
 <form class="form-horizontal" id="userAccessForm">
     <div class="control-group">
-        <label class="control-label" for="emailAddress">User's email address</label>
+        <label class="control-label" for="emailAddress"><g:message code="project.admin.permissions.email"/>User's email address</label>
         <div class="controls">
             <input class="input-xlarge validate[required,custom[email]]" id="emailAddress" placeholder="enter a user's email address" type="text"/>
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label" for="addUserRole">Permission level</label>
+        <label class="control-label" for="addUserRole"><g:message code="project.admin.permissions.level"/></label>
         <div class="controls" id="rolesSelect">
             <g:render id="addUserRole" template="/admin/userRolesSelect" model="[roles:roles, includeEmptyOption: true]"/>
         </div>
@@ -16,16 +16,16 @@
     </g:if>
     <g:elseif test="${projects}">
         <div class="control-group">
-            <label class="control-label" for="projectId">Project</label>
+            <label class="control-label" for="projectId"><g:message code="g.project"/></label>
             <div class="controls nowrap">
                 <g:select name="project" id="projectId" class="input-xlarge combobox validate[required]" from="${projects}" optionValue="name" optionKey="projectId" noSelection="['':'start typing a project name']" />
             </div>
         </div>
     </g:elseif>
-    <g:else><div class="alert alert-error">Missing model - either <code>projectId</code> or <code>projects</code> must be provided</div></g:else>
+    <g:else><div class="alert alert-error"><g:message code="project.admin.permissions.missingmodel"/></div></g:else>
     <div class="control-group">
         <div class="controls">
-            <button id="addUserRoleBtn" class="btn btn-primary btn-small">Submit</button>
+            <button id="addUserRoleBtn" class="btn btn-primary btn-small"><g:message code="g.submit"/></button>
             <g:img uri="${asset.assetPath(src:'spinner.gif')}" id="spinner1" class="hide spinner" alt="spinner icon"/>
         </div>
     </div>
@@ -36,11 +36,11 @@
 </div>
 <div class="clearfix">&nbsp;</div>
 <div class="clearfix hide bbAlert1">
-    The email address did not match a registered user. This may because:
+    <g:message code="project.admin.permissions.noemail"/>
     <ul>
-        <li>the email address is incorrect</li>
-        <li>the user is not registered - see the <a href="${grailsApplication.config.user.registration.url}"
-                target='_blank' style='text-decoration: underline;'>sign-up page</a>.
+        <li><g:message code="project.admin.permissions.incorrectemail"/></li>
+        <li><g:message code="project.admin.permissions.emailnotregistered"/> <a href="${grailsApplication.config.user.registration.url}"
+                target='_blank' style='text-decoration: underline;'><g:message code="project.admin.permissions.signup"/>sign-up page</a>.
         </li>
     </ul>
 </div>
