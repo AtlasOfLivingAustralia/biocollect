@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Create | Project | <g:message code="g.fieldCapture"/></title>
+    <title> <g:message code="g.create"/> | <g:message code="g.project"/> | <g:message code="g.fieldCapture"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="Create Project"/>
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
@@ -56,9 +56,10 @@
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
-    <h2>Register a new project</h2>
+    <h2><g:message code="project.create.register"/></h2>
     <p>
-    Please tell us about your project by completing the form below.  Questions marked with a * are mandatory.
+    <g:message code="project.create.description"/>
+    
     </p>
     <form id="projectDetails" class="form-horizontal">
         <g:render template="details" model="${pageScope.variables}"/>
@@ -105,8 +106,7 @@ $(function(){
     $('#save').click(function () {
         if ($('#projectDetails').validationEngine('validate')) {
             if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
-                bootbox.dialog("Use of this system for data collection is not available for non-biodiversity related projects." +
-                    "Press continue to turn data collection feature off. Otherwise, press cancel to modify the form.",
+                bootbox.dialog("${message(code:'project.create.warningdatacollection')}",
                     [{
                       label: "Continue",
                       className: "btn-primary",
@@ -136,7 +136,7 @@ $(function(){
                             document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
                         }
                     },function(data) {
-                        var responseText = data.responseText || 'An error occurred while saving project.';
+                        var responseText = data.responseText || "${message(code:'project.create.error')}";
                         bootbox.alert(responseText);
                     });
                 } else {

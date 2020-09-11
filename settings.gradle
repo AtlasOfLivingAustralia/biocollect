@@ -1,11 +1,9 @@
-rootProject.name='biocollect'
-
+rootProject.name = 'biocollect'
 boolean inplace = false
 
 if (inplace) {
     include ':ecodata-client-plugin'
-    project(':ecodata-client-plugin').projectDir = new File(settingsDir,'../ecodata-client-plugin')
-
+    project(':ecodata-client-plugin').projectDir = new File(settingsDir, '../ecodata-client-plugin')
     include ':ala-map-plugin'
-    project(':ala-map-plugin').projectDir = new File(settingsDir,'../ala-map-plugin')
+    project(':ala-map-plugin').projectDir = new File(settingsDir, '../ala-map-plugin')
 }

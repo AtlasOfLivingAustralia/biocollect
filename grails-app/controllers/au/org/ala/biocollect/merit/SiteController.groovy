@@ -12,23 +12,23 @@ import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
 class SiteController {
 
     def siteService, projectService, projectActivityService, activityService, metadataService, userService,
-            searchService, importService, webService
+        searchService, importService, webService
 
     AuthService authService
     CommonService commonService
 
     static defaultAction = "index"
 
-    static ignore = ['action','controller','id']
+    static ignore = ['action', 'controller', 'id']
 
     def search = {
         params.fq = "docType:site"
 
         String userId = userService.getCurrentUserId()
 
-        if(userId) {
+        if (userId) {
             def favouriteSiteIds = userService.getStarredSiteIdsForUserId(userId)
-            if(params.remove('myFavourites') == "true"){
+            if (params.remove('myFavourites') == "true") {
                 def terms = [field: "siteId", values: favouriteSiteIds]
                 params.terms = terms
             }
@@ -40,34 +40,34 @@ class SiteController {
         render results as JSON
     }
 
-    def select(){
+    def select() {
         // permissions check
         if (!projectService.canUserEditProject(userService.getCurrentUserId(), params.projectId)) {
             flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${params.projectId}"
-            redirect(controller:'project', action:'index', id: params.projectId)
+            redirect(controller: 'project', action: 'index', id: params.projectId)
         }
-        render view: 'select', model: [project:projectService.get(params.projectId)]
+        render view: 'select', model: [project: projectService.get(params.projectId)]
     }
 
-    def create(){
-        render view: 'edit', model: [create:true, documents:[]]
+    def create() {
+        render view: 'edit', model: [create: true, documents: []]
     }
 
 
-    def createForProject(){
+    def createForProject() {
         def project = projectService.getRich(params.projectId)
         // permissions check
         def userCanEditSite = projectService.canUserEditSitesForProject(userService.getCurrentUserId(), params.projectId)
         if (!userCanEditSite) {
             flash.message = "Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}"
-            redirect(controller:'project', action:'index', id: params.projectId)
+            redirect(controller: 'project', action: 'index', id: params.projectId)
         }
 
-        project.sites?.sort {it.name}
-        project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
+        project.sites?.sort { it.name }
+        project.projectSite = project.sites?.find { it.siteId == project.projectSiteId }
 
 
-        render view: 'edit', model: [create:true, project:project, documents:[], projectSite:project.projectSite,
+        render view: 'edit', model: [create     : true, project: project, documents: [], projectSite: project.projectSite,
                                      pActivityId: params?.pActivityId, userCanEdit: userCanEditSite]
     }
 
@@ -87,10 +87,10 @@ class SiteController {
             println mapFeatures
 
             def result = [site               : site,
-             //activities: activityService.activitiesForProject(id),
-             mapFeatures        : mapFeatures,
-             isSiteStarredByUser: userService.isSiteStarredByUser(user?.userId ?: "0", site.siteId)?.isSiteStarredByUser,
-             user               : user
+                          //activities: activityService.activitiesForProject(id),
+                          mapFeatures        : mapFeatures,
+                          isSiteStarredByUser: userService.isSiteStarredByUser(user?.userId ?: "0", site.siteId)?.isSiteStarredByUser,
+                          user               : user
             ]
 
             if (params.format == 'json')
@@ -113,7 +113,7 @@ class SiteController {
             // check user has permissions to edit - user must have edit access to
             // ALL linked projects to proceed.
             flash.message = "Access denied: User does not have <b>editor</b> permission to edit site: ${id}"
-            redirect(controller:'home', action:'index')
+            redirect(controller: 'home', action: 'index')
         } else {
             String projectIds = result.site.projects.toList().join(',')
             String userId = authService.getUserId()
@@ -131,12 +131,14 @@ class SiteController {
      * @return
      */
     def forceDelete(String id) {
-        try{
+        try {
             // permissions check
             // rule ala admin can only delete a site on condition,
             // 1. site is not assoicated with an acitivity(s)
-            if(!userService.userIsAlaAdmin()){
-                return {status:HttpStatus.SC_UNAUTHORIZED; text: "Access denied: User not authorised to delete"} as JSON
+            if (!userService.userIsAlaAdmin()) {
+                return { status:
+                HttpStatus.SC_UNAUTHORIZED;
+                    text: "Access denied: User not authorised to delete" } as JSON
 
             }
             def status = siteService.delete(id)
@@ -147,19 +149,22 @@ class SiteController {
                 def result = [status: status]
                 return result as JSON
             }
-        } catch (SocketTimeoutException sTimeout){
-            log.error (sTimeout.message, sTimeout)
-            return {text: 'Webserive call timed out'; status: HttpStatus.SC_REQUEST_TIMEOUT} as JSON;
-        } catch (Exception e){
-            log.error (e.message, e)
-            return {text: 'Internal server error'; status: HttpStatus.SC_INTERNAL_SERVER_ERROR} as JSON;
+        } catch (SocketTimeoutException sTimeout) {
+            log.error(sTimeout.message, sTimeout)
+            return { text: 'Webserive call timed out';
+                status:
+                HttpStatus.SC_REQUEST_TIMEOUT } as JSON;
+        } catch (Exception e) {
+            log.error(e.message, e)
+            return { text: 'Internal server error';
+                status:
+                HttpStatus.SC_INTERNAL_SERVER_ERROR } as JSON;
         }
     }
 
 
-
     def ajaxList(String id) {
-        if(params.entityType == "projectActivity") {
+        if (params.entityType == "projectActivity") {
             def pActivity = projectActivityService.get(id, 'all')
 //        def sites = siteService.getSitesFromIdList(pActivity.sites, BRIEF)
             if (!pActivity) {
@@ -176,15 +181,15 @@ class SiteController {
                 return
             }
 
-            render project?.sites  as JSON
+            render project?.sites as JSON
         }
 
     }
 
-    def ajaxDeleteSitesFromProject(String id){
+    def ajaxDeleteSitesFromProject(String id) {
         // permissions check - id is the projectId here
         if (!projectService.canUserEditSitesForProject(userService.getCurrentUserId(), id)) {
-            render status:403, text: "Access denied: User does not have permission to edit sites for project: ${id}"
+            render status: 403, text: "Access denied: User does not have permission to edit sites for project: ${id}"
             return
         }
         def status = siteService.deleteSitesFromProject(id)
@@ -201,20 +206,20 @@ class SiteController {
         def projectId = id
         def siteId = params.siteId
         if (!projectId || !siteId) {
-            render status:400, text:'The siteId parameter is mandatory'
+            render status: 400, text: 'The siteId parameter is mandatory'
             return
         }
         if (!projectService.canUserEditSitesForProject(userService.getCurrentUserId(), projectId)) {
-            render status:403, text: "Access denied: User does not have permission to edit sites for project: ${projectId}"
+            render status: 403, text: "Access denied: User does not have permission to edit sites for project: ${projectId}"
             return
         }
 
         def result
         if (siteService.canRemoveProjectFromSite(siteId, projectId)) {
-            def site = siteService.get(siteId, [raw:'true'])
+            def site = siteService.get(siteId, [raw: 'true'])
             def projects = site.projects
             projects.remove(projectId)
-            siteService.update(siteId, [projects:projects])
+            siteService.update(siteId, [projects: projects])
 
             // is site zombie i.e. not associated with a project? Delete if yes.
             if (siteService.canDeleteSite(siteId)) {
@@ -231,14 +236,14 @@ class SiteController {
     }
 
     def ajaxDelete(String id) {
-        try{
+        try {
             // permissions check
             // rule ala admin can only delete a site on condition,
             // 1. site is not assoicated with an acitivity(s)
-            if(!userService.userIsAlaAdmin()){
-                render status:HttpStatus.SC_UNAUTHORIZED, text: "Access denied: User not authorised to delete"
+            if (!userService.userIsAlaAdmin()) {
+                render status: HttpStatus.SC_UNAUTHORIZED, text: "Access denied: User not authorised to delete"
                 return
-            } else if(siteService.isSiteAssociatedWithProject(id) || siteService.isSiteAssociatedWithActivity(id)){
+            } else if (siteService.isSiteAssociatedWithProject(id) || siteService.isSiteAssociatedWithActivity(id)) {
                 render status: HttpStatus.SC_BAD_REQUEST, text: "Site ${id} has projects or activities associated with it. The site cannot be deleted."
                 return
             }
@@ -251,17 +256,17 @@ class SiteController {
                 def result = [status: status]
                 render result as JSON
             }
-        } catch (SocketTimeoutException sTimeout){
-            log.error (sTimeout.message, sTimeout)
+        } catch (SocketTimeoutException sTimeout) {
+            log.error(sTimeout.message, sTimeout)
             render(text: 'Webserive call timed out', status: HttpStatus.SC_REQUEST_TIMEOUT);
-        } catch (Exception e){
-            log.error (e.message, e)
+        } catch (Exception e) {
+            log.error(e.message, e)
             render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
     def ajaxAddToFavourites(String id) {
-        try{
+        try {
 
             def response = userService.addStarSiteForUser(userService.getCurrentUserId(), id)
             if (!response?.error) {
@@ -269,26 +274,26 @@ class SiteController {
                 render result as JSON
             } else {
                 def result = [status: response.statusCode]
-                render (text: response.error, status:  HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                render(text: response.error, status: HttpStatus.SC_INTERNAL_SERVER_ERROR)
             }
-        } catch (Exception e){
-            log.error (e.message, e)
+        } catch (Exception e) {
+            log.error(e.message, e)
             render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
     def ajaxRemoveFromFavourites(String id) {
-        try{
+        try {
 
             def response = userService.removeStarSiteForUser(userService.getCurrentUserId(), id)
             if (!response?.error) {
                 def result = [status: 'removed']
                 render result as JSON
             } else {
-                render (text: response.error, status:  HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                render(text: response.error, status: HttpStatus.SC_INTERNAL_SERVER_ERROR)
             }
-        } catch (Exception e){
-            log.error (e.message, e)
+        } catch (Exception e) {
+            log.error(e.message, e)
             render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -299,7 +304,7 @@ class SiteController {
 
         // permissions check
         if (!isUserMemberOfSiteProjects(siteService.get(id))) {
-            render status:403, text: "Access denied: User does not have permission to edit site: ${id}"
+            render status: 403, text: "Access denied: User does not have permission to edit site: ${id}"
             return
         }
 
@@ -317,7 +322,7 @@ class SiteController {
         }
         //log.debug (values as JSON).toString()
         siteService.update(id, values)
-        chain(action: 'index', id:  id)
+        chain(action: 'index', id: id)
     }
 
     def uploadShapeFile() {
@@ -330,76 +335,81 @@ class SiteController {
             def f = request.getFile('shapefile')
 
 
-            def result =  siteService.uploadShapefile(f)
+            def result = siteService.uploadShapefile(f)
 
             if (!result.error && result.content.size() > 1) {
                 def content = result.content
                 def shapeFileId = content.remove('shp_id')
                 def firstShape = content["0"]
                 def attributeNames = []
-                firstShape.each {key, value ->
+                firstShape.each { key, value ->
                     attributeNames << key
                 }
-                def shapes = content.collect {key, value ->
-                    [id:(key), values:(value)]
+                def shapes = content.collect { key, value ->
+                    [id: (key), values: (value)]
                 }
                 JSON.use("nullSafe") // JSONNull is rendered as empty string.
-                render view:'upload', model:[projectId: params.projectId, shapeFileId:shapeFileId, shapes:shapes, attributeNames:attributeNames]
-            }
-
-            else {
+                render view: 'upload', model: [projectId: params.projectId, shapeFileId: shapeFileId, shapes: shapes, attributeNames: attributeNames]
+            } else {
                 //flag error for extension
-                def message ='There was an error uploading the shapefile.  Please send an email to support for further assistance.'
+                def message = 'There was an error uploading the shapefile.  Please send an email to support for further assistance.'
 
                 flash.message = "An error was encountered when processing the shapefile: ${message}"
-                render view:'upload', model:[projectId: params.projectId, returnTo:params.returnTo]
+                render view: 'upload', model: [projectId: params.projectId, returnTo: params.returnTo]
             }
 
         } else {
-            render view:'upload', model:[projectId: params.projectId, returnTo:params.returnTo]
+            render view: 'upload', model: [projectId: params.projectId, returnTo: params.returnTo]
         }
     }
 
     def createSitesFromShapefile() {
         def siteData = request.JSON
-        def progress = [total:siteData.sites.size(), uploaded:0]
-
+        def progress = [total: siteData.sites.size(), uploaded: 0]
+        String error
         try {
             session.uploadProgress = progress
-
-            siteData.sites.each {
-                siteService.createSiteFromUploadedShapefile(siteData.shapeFileId, it.id, it.externalId, it.name, it.description?:'No description supplied', siteData.projectId, true)
-                progress.uploaded = progress.uploaded + 1
+            for (int i = 0; i < siteData?.sites?.size(); i++) {
+                Map site = siteData.sites[i]
+                error = siteService.createSiteFromUploadedShapefile(siteData.shapeFileId, site.id, site.externalId, site.name, site.description ?: 'No description supplied', siteData.projectId, true)
+                if (!error) {
+                    progress.uploaded = progress.uploaded + 1
+                } else {
+                    break
+                }
             }
-        }
-        finally {
-            progress.finished = true
+        } catch (Exception ex) {
+            error = "Error uploading sites, please try again later"
+            log.error(error + ex)
         }
 
-        def result = [message:'success', progress:progress]
-        render result as JSON
+        if (!error) {
+            progress.finished = true
+            render([message: 'success', progress: progress]) as JSON
+        } else {
+            progress.finished = false
+            render([message: 'error', progress: progress, error: error]) as JSON
+        }
     }
 
     def siteUploadProgress() {
-        def progress = session.uploadProgress?:[:]
+        def progress = session.uploadProgress ?: [:]
         render progress as JSON
     }
-
-
 
 
     def createGeometryForGrantId(String grantId, String geometryPid, Double centroidLat, Double centroidLong) {
         def projects = importService.allProjectsWithGrantId(grantId)
         if (projects) {
             def sites = []
-            projects.each {project ->
+            projects.each { project ->
                 def metadata = metadataService.getLocationMetadataForPoint(centroidLat, centroidLong)
-                def strLat =  "" + centroidLat + ""
+                def strLat = "" + centroidLat + ""
                 def strLon = "" + centroidLong + ""
                 def values = [extent: [source: 'pid', geometry: [pid: geometryPid, type: 'pid', state: metadata.state, nrm: metadata.nrm, lga: metadata.lga, locality: metadata.locality, centre: [strLon, strLat]]], projects: [project.projectId], name: "Project area for " + grantId]
                 sites << siteService.create(values)
             }
-            def result = [result:sites]
+            def result = [result: sites]
             render result as JSON
         } else {
             render "EMPTY"
@@ -410,14 +420,14 @@ class SiteController {
         def projects = importService.allProjectsWithGrantId(grantId)
         if (projects) {
             def sites = []
-            projects.each {project ->
+            projects.each { project ->
                 def metadata = metadataService.getLocationMetadataForPoint(lat, lon)
-                def strLat =  "" + lat + ""
+                def strLat = "" + lat + ""
                 def strLon = "" + lon + ""
                 def values = [extent: [source: 'point', geometry: [pid: geometryPid, type: 'point', decimalLatitude: strLat, decimalLongitude: strLon, centre: [strLon, strLat], coordinates: [strLon, strLat], datum: "WGS84", state: metadata.state, nrm: metadata.nrm, lga: metadata.lga, locality: metadata.locality, mvg: metadata.mvg, mvs: metadata.mvs]], projects: [project.projectId], name: "Project area for " + grantId]
                 sites << siteService.create(values)
             }
-            def result = [result:sites]
+            def result = [result: sites]
             render result as JSON
         } else {
             render "EMPTY"
@@ -429,7 +439,7 @@ class SiteController {
         if (project) {
             def site = importService.findProjectSiteByName(project, grantId)
             if (site) {
-                def strLat =  "" + lat + ""
+                def strLat = "" + lat + ""
                 def strLon = "" + lon + ""
                 site.extent.geometry.centre = [strLon, strLat]
                 siteService.update(site.siteId, site)
@@ -467,7 +477,7 @@ class SiteController {
             siteService.addSitesToSiteWhiteListInWorksProjects(toAdd, [values.projectId], true)
         }
 
-        if(result.error){
+        if (result.error) {
             response.status = 500
         } else {
             render result as JSON
@@ -496,16 +506,15 @@ class SiteController {
         boolean privateSite = values['visibility'] ? (values['visibility'] == 'private' ? true : false) : false
 
 
-        if(privateSite){
+        if (privateSite) {
             //Do not check permission if site is private
             //This design is specially for sightings
-            result = siteService.updateRaw(id, values,userId)
-        }
-        else {
+            result = siteService.updateRaw(id, values, userId)
+        } else {
             result = siteService.updateRaw(id, values, userId)
             String siteId = result.id
-            if(siteId) {
-                if(isCreateSiteRequest){
+            if (siteId) {
+                if (isCreateSiteRequest) {
                     String projectId = postBody?.projectId
                     Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
                     if (projectId && isAdmin) {
@@ -572,12 +581,12 @@ class SiteController {
 
         if (!lat || !lon) {
             response.status = 400
-            def result = [error:'lat and lon parameters are required']
+            def result = [error: 'lat and lon parameters are required']
             render result as JSON
         }
         if (!lat.isDouble() || !lon.isDouble()) {
             response.status = 400
-            def result = [error:'invalid lat and lon supplied']
+            def result = [error: 'invalid lat and lon supplied']
             render result as JSON
         }
 
@@ -615,7 +624,7 @@ class SiteController {
         value.remove('handling')
         def list = []
         def len = value.collect({ it.value.size() }).max()
-        (0..len-1).each { idx ->
+        (0..len - 1).each { idx ->
             def newMap = [:]
             value.keySet().each { key ->
                 newMap[key] = reMarshallRepeatingObjects(value[key][idx])
@@ -645,7 +654,7 @@ class SiteController {
     }
 
     def stripBlankElements(list) {
-        list.findAll {it}
+        list.findAll { it }
     }
 
     // debug only
@@ -663,21 +672,21 @@ class SiteController {
      * @param id - required - eg. 123,345
      * @return
      */
-    def getImages(){
+    def getImages() {
         List results
-        if(params.id){
+        if (params.id) {
             GrailsParameterMap mParams = new GrailsParameterMap(commonService.parseParams(params), request);
             mParams.userId = authService.getUserId()
-            try{
+            try {
                 results = siteService.getImages(mParams)
                 render(text: results as JSON, contentType: 'application/json')
-            } catch (SocketTimeoutException sTimeout){
+            } catch (SocketTimeoutException sTimeout) {
                 render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
-            } catch (Exception e){
+            } catch (Exception e) {
                 render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
             }
         } else {
-            render( status: HttpStatus.SC_BAD_REQUEST, text: 'Parameter id not found')
+            render(status: HttpStatus.SC_BAD_REQUEST, text: 'Parameter id not found')
         }
     }
 
@@ -687,32 +696,32 @@ class SiteController {
      * @param poiId - required
      * @return
      */
-    def getPoiImages(){
+    def getPoiImages() {
         Map results
-        if(params.siteId && params.poiId){
+        if (params.siteId && params.poiId) {
             GrailsParameterMap mParams = new GrailsParameterMap(commonService.parseParams(params), request);
             mParams.userId = authService.getUserId()
             try {
                 results = siteService.getPoiImages(mParams)
                 render(text: results as JSON, contentType: 'application/json')
-            } catch (SocketTimeoutException sTimeout){
+            } catch (SocketTimeoutException sTimeout) {
                 render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
-            } catch (Exception e){
+            } catch (Exception e) {
                 render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
             }
         } else {
-            render( status: HttpStatus.SC_BAD_REQUEST, text: 'Parameters siteId or poiId not found')
+            render(status: HttpStatus.SC_BAD_REQUEST, text: 'Parameters siteId or poiId not found')
         }
     }
 
-    def list(){
+    def list() {
     }
 
     def myFavourites() {
         def user = userService.getCurrentUserId()
-        if(user){
-            def model = [myFavourites:true]
-            render view:"list", model:model
+        if (user) {
+            def model = [myFavourites: true]
+            render view: "list", model: model
         } else {
             redirect action: 'list'
         }
@@ -722,8 +731,8 @@ class SiteController {
      * This function does an elastic search for sites. All elastic search parameters are supported like fq, max etc.
      * @return
      */
-    def elasticsearch(){
-        try{
+    def elasticsearch() {
+        try {
             List query = ['className:au.org.ala.ecodata.Site', '-type:projectArea']
             String userId = userService.getCurrentUserId()
             Boolean isAlaAdmin = userService.userIsAlaAdmin()
@@ -732,28 +741,26 @@ class SiteController {
             GrailsParameterMap queryParams = commonService.constructDefaultSearchParams(params, request, userId)
 
             def favouriteSiteIds
-            if(userId) {
+            if (userId) {
                 favouriteSiteIds = userService.getStarredSiteIdsForUserId(userId)
-                if(params.remove('myFavourites')){
+                if (params.remove('myFavourites')) {
                     def terms = [field: "siteId", values: favouriteSiteIds]
                     queryParams.terms = terms
                 }
             }
 
-            if(!queryParams.facets){
-                queryParams.facets="typeFacet,className,organisationFacet,stateFacet,lgaFacet,nrmFacet,siteSurveyNameFacet,siteProjectNameFacet,photoType"
+            if (!queryParams.facets) {
+                queryParams.facets = "typeFacet,className,organisationFacet,stateFacet,lgaFacet,nrmFacet,siteSurveyNameFacet,siteProjectNameFacet,photoType"
             }
-            if(queryParams.query){
+            if (queryParams.query) {
                 query.push(queryParams.query);
             }
 
             if (queryParams.fq && (queryParams.fq instanceof String)) {
                 queryParams.fq = [queryParams.fq]
-            }
-            else if (queryParams.fq instanceof String[]) {
+            } else if (queryParams.fq instanceof String[]) {
                 queryParams.fq = queryParams.fq as List
-            }
-            else if (!queryParams.fq) {
+            } else if (!queryParams.fq) {
                 queryParams.fq = []
             }
 
@@ -767,21 +774,21 @@ class SiteController {
             List sites = searchResult?.hits?.hits
             List facets = []
             List projectIds = []
-            sites?.each{
-                if(it._source?.projects?.size()){
-                    projectIds.push(StringUtils.join(it._source?.projects,','))
+            sites?.each {
+                if (it._source?.projects?.size()) {
+                    projectIds.push(StringUtils.join(it._source?.projects, ','))
                 }
             }
             // JSON Array join is inserting quotes around each array element. Hence using StringUtil.join method.
             String pIds = StringUtils.join(projectIds, ',')
             Map permissions = [:]
             // when sites are not associated with a project canUserEditProjects will throw exception.
-            if(projectIds.size()>0 && userId){
+            if (projectIds.size() > 0 && userId) {
                 permissions = projectService.canUserEditProjects(userId, pIds)
             }
             sites = sites?.collect {
                 Map doc = it._source
-                Boolean canEdit = isAlaAdmin || userId && doc.projects.inject(false){flag, id ->
+                Boolean canEdit = isAlaAdmin || userId && doc.projects.inject(false) { flag, id ->
                     flag || !!permissions[id]
                 }
 
@@ -797,20 +804,20 @@ class SiteController {
                 }
 
                 [
-                        siteId           : doc.siteId,
-                        name             : doc.name,
-                        description      : doc.description,
-                        numberOfPoi      : doc.poi?.size(),
-                        numberOfProjects : doc.projects?.size(),
-                        lastUpdated      : doc.lastUpdated,
-                        type             : doc.type,
-                        extent           : doc.extent,
+                        siteId              : doc.siteId,
+                        name                : doc.name,
+                        description         : doc.description,
+                        numberOfPoi         : doc.poi?.size(),
+                        numberOfProjects    : doc.projects?.size(),
+                        lastUpdated         : doc.lastUpdated,
+                        type                : doc.type,
+                        extent              : doc.extent,
                         // does a logical OR reduce operation on permissions for each projects
-                        canEdit          : canEdit,
+                        canEdit             : canEdit,
                         // only sites with no projects can be deleted
-                        canDelete        : isAlaAdmin && (doc.projects?.size() == 0),
-                        addToFavourites  : addToFavourites,
-                        removeFromFavourites : removeFromFavourites
+                        canDelete           : isAlaAdmin && (doc.projects?.size() == 0),
+                        addToFavourites     : addToFavourites,
+                        removeFromFavourites: removeFromFavourites
                 ]
             }
 
@@ -823,17 +830,17 @@ class SiteController {
             }
 
             render([sites: sites, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
-        } catch (SocketTimeoutException sTimeout){
+        } catch (SocketTimeoutException sTimeout) {
             render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
-        } catch (Exception e){
+        } catch (Exception e) {
             render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
-    def checkPointInsideProjectAreaAndAddress (String lat, String lng, String projectId) {
+    def checkPointInsideProjectAreaAndAddress(String lat, String lng, String projectId) {
         if (lat && lng && projectId) {
             Map result = siteService.checkPointInsideProjectAreaAndAddress(lat, lng, projectId)
-            render (text: result as JSON, contentType: 'application/json')
+            render(text: result as JSON, contentType: 'application/json')
         } else {
             render(text: "Parameter(s) missing. The following parameters are requied - lat, lng and projectId", status: HttpStatus.SC_BAD_REQUEST);
         }

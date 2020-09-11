@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Add existing site | Field Capture</title>
+    <title>Add existing site | <g:message code="g.biocollect"/></title>
     <asset:script type="text/javascript">
         var fcConfig = {
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",

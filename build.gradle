@@ -8,7 +8,6 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        //classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.15.1"
     }
 }
@@ -16,41 +15,33 @@ buildscript {
 plugins {
     id 'war'
 }
-
-version "5.0.5"
+version "5.1"
 group "au.org.ala"
 
-apply plugin:"eclipse"
-apply plugin:"idea"
-apply plugin:"war"
-apply plugin:"org.grails.grails-web"
-apply plugin:"asset-pipeline"
-apply plugin:"org.grails.grails-gsp"
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "war"
+apply plugin: "org.grails.grails-web"
+apply plugin: "asset-pipeline"
+apply plugin: "org.grails.grails-gsp"
 apply from: 'https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/travis_grails_publish.gradle'
-//apply plugin:"org.grails.grails-plugin-publish"
-
 
 repositories {
     mavenLocal()
     //for missing jai_core.jar
     maven { url "https://mvnrepository.com" }
-    maven { url "http://maven.geotoolkit.org"}
+    maven { url "http://maven.geotoolkit.org" }
     maven { url "https://repo.grails.org/grails/core" }
     maven { url "https://nexus.ala.org.au/content/groups/public/" }
-
     mavenCentral()
-
 }
 
-//def tomcatVersion = '7.0.55.2'
 def metadataExtractorVersion = "2.6.2"
 def imgscalrVersion = "4.2"
 def httpmimeVersion = "4.2.1"
 def jtsVersion = "1.8"
 def geoToolsVersion = "11.2"
-// Set to true it needed only for development
-boolean inplace = false
-
+boolean inplace = false // Set to true it needed only for development
 
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-logging"
@@ -58,7 +49,6 @@ dependencies {
     compile "org.grails:grails-core"
     compile "org.springframework.boot:spring-boot-starter-actuator"
     compile "org.springframework.boot:spring-boot-starter-tomcat"
-
     compile "org.grails:grails-dependencies"
     compile "org.grails:grails-logging"
     compile "org.grails:grails-web-boot"
@@ -71,7 +61,6 @@ dependencies {
     console "org.grails:grails-console"
     profile "org.grails.profiles:web"
     compile "com.bertramlabs.plugins:asset-pipeline-grails:2.15.1"
-    //runtime "com.h2database:h2"
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails.plugins:geb"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
@@ -88,54 +77,36 @@ dependencies {
     compile "org.geotools:gt-epsg-hsql:${geoToolsVersion}"
 
     compile "joda-time:joda-time:2.3"
-  //  compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
-
     // Used by the scripts
-    compile ('org.grails.plugins:http-builder-helper:1.1.0')  {
+    compile('org.grails.plugins:http-builder-helper:1.1.0') {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
-
-
-  //  compile "org.grails:http-client"
-
-   // compile "org.apache.httpcomponents:httpcore:4.4.1"
-   // compile "org.apache.httpcomponents:httpclient:4.4.1"
     compile "org.apache.httpcomponents:httpclient:4.5.7"
-
     testCompile "org.grails:grails-test-mixins:3.3.0"
     testRuntime 'com.github.detro:phantomjsdriver:1.2.0'
-
-    //JSON converter
-    //compile 'org.grails.plugins:converters'
     runtime 'org.webjars:jquery:1.12.4'
-    //mimic grails.config.locations like in Grails 2.x
     compile 'org.grails.plugins:external-config:1.4.0'
-//    compile 'org.grails.plugins:external-config:2.0.0.RC1'
     compile "org.grails.plugins:excel-import:3.0.2"
     compile "org.grails.plugins:excel-export:0.2.1"
     compile 'org.grails.plugins:grails-google-visualization:2.2.1'
     compile group: 'org.apache.poi', name: 'poi', version: '3.17'
     compile 'org.grails.plugins:mail:2.0.0.RC6'
 
-
     compile 'org.grails.plugins:grails-markdown:3.0.0'
     compile 'org.grails.plugins:grails-cookie:2.0.3'
-
     compile 'org.grails.plugins:cache:5.0.0.RC1'
 
     //ALA plugins
-    //TODO Same namespace?
-    compile ("au.org.ala.plugins.grails:images-client-plugin:1.2") {
+    compile("au.org.ala.plugins.grails:images-client-plugin:1.2") {
         exclude group: 'commons-httpclient', module: 'commons-httpclient'
     }
-
-  //  compile "au.org.ala.plugins.grails:images-client-plugin:0.9-SNAPSHOT"
     compile "org.grails.plugins:ala-auth:3.0.4"
     runtime "org.grails.plugins:ala-bootstrap3:3.0.4"
     compile "org.grails.plugins:ala-admin-plugin:2.1"
+
     if (!inplace) {
         compile "org.grails.plugins:ala-map-plugin:3.0"
-        compile "org.grails.plugins:ecodata-client-plugin:3.0.3"
+        compile "org.grails.plugins:ecodata-client-plugin:3.0.4"
     }
 }
 
@@ -143,7 +114,6 @@ springBoot {
     buildInfo()
     layout = WAR
 }
-
 
 bootRun {
     jvmArgs('-Dspring.output.ansi.enabled=always', '-Xmx6000m')
@@ -166,8 +136,8 @@ if (inplace) {
     grails {
         exploded = true
         plugins {
-            compile (project(':ecodata-client-plugin'))
-            compile (project(':ala-map-plugin'))
+            compile(project(':ecodata-client-plugin'))
+            compile(project(':ala-map-plugin'))
         }
     }
 

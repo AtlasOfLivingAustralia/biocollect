@@ -4,7 +4,7 @@
 <html>
 <head>
   <meta name="layout" content="${hubConfig.skin}"/>
-  <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | Sites | Field Capture</title>
+  <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | Sites | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'site', action: 'list')},Sites"/>

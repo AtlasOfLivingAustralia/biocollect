@@ -10,7 +10,9 @@
     <div class="span6 text-left">
         <div class="controls block">
             <label for="alertSpecies">Species name:
-                <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.alert.species"/>', content:'<g:message code="project.survey.alert.species.content"/>'}">
+                <a href="#" class="helphover"
+                   data-bind="popover: {title:'<g:message code="project.survey.alert.species"/>', content:'<g:message
+                           code="project.survey.alert.species.content"/>'}">
                     <i class="icon-question-sign"></i>
                 </a>
             </label>
@@ -20,11 +22,15 @@
                                         fusedAutocomplete:{
                                             source: alert.transients.bioSearch,
                                             name: alert.transients.species.transients.name,
-                                            guid: alert.transients.species.transients.guid
-                                        }" >
-         <div class="margin-bottom-5"></div>
-         <button class="btn-default btn block btn-small" data-toggle="tooltip" title="Enter valid species name"
-                    data-bind="click: alert.add, disable: alert.transients.disableSpeciesAdd"><i class="icon-plus" ></i>  Add</button>
+                                            guid: alert.transients.species.transients.guid,
+                                            scientificName: alert.transients.species.transients.scientificName,
+                                            commonName: alert.transients.species.transients.commonName
+                                        }">
+
+            <div class="margin-bottom-5"></div>
+            <button class="btn-default btn block btn-small" data-toggle="tooltip" title="Enter valid species name"
+                    data-bind="click: alert.add, disable: alert.transients.disableSpeciesAdd"><i
+                    class="icon-plus"></i>  Add</button>
         </div>
     </div>
 

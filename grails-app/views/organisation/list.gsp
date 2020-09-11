@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Organisations | Field Capture</title>
+    <title>Organisations | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="Organisations"/>
 
@@ -14,7 +14,7 @@
             createOrganisationUrl: "${createLink(controller: 'organisation', action: 'create')}",
             viewOrganisationUrl: "${createLink(controller: 'organisation', action: 'index')}",
             organisationSearchUrl: "${createLink(controller: 'organisation', action: 'search')}",
-            noLogoImageUrl: "${asset.assetPath(src:'no-image-2.png')}"
+            noLogoImageUrl: "${asset.assetPath(src: 'no-image-2.png')}"
             };
     </asset:script>
     <asset:stylesheet src="organisation.css"/>
@@ -23,7 +23,7 @@
 </head>
 
 <body>
-    <g:render template="organisationListing"></g:render>
+<g:render template="organisationListing"></g:render>
 
 </body>
 

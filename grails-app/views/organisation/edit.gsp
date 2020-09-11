@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Edit | ${organisation.name.encodeAsHTML()} | Field Capture</title>
+    <title>Edit | ${organisation.name.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
@@ -12,16 +12,16 @@
     <asset:script type="text/javascript">
         var fcConfig = {
             serverUrl: "${grailsApplication.config.grails.serverURL}",
-            viewProjectUrl: "${createLink(controller:'project', action:'index')}",
-            documentUpdateUrl: '${g.createLink(controller:"proxy", action:"documentUpdate")}',
-            documentDeleteUrl: '${g.createLink(controller:"proxy", action:"deleteDocument")}',
-            organisationDeleteUrl: '${g.createLink(action:"ajaxDelete", id:"${organisation.organisationId}")}',
-            organisationEditUrl: '${g.createLink(action:"edit", id:"${organisation.organisationId}")}',
-            organisationViewUrl: '${g.createLink(action:"index")}',
-            organisationListUrl: '${g.createLink(action:"list")}',
-            organisationSaveUrl: "${createLink(action:'ajaxUpdate')}",
-            imageUploadUrl: "${createLink(controller: 'image', action:'upload')}",
-            returnTo: "${params.returnTo?:createLink(action:'index', id:organisation.organisationId)}"
+            viewProjectUrl: "${createLink(controller: 'project', action: 'index')}",
+            documentUpdateUrl: '${g.createLink(controller: "proxy", action: "documentUpdate")}',
+            documentDeleteUrl: '${g.createLink(controller: "proxy", action: "deleteDocument")}',
+            organisationDeleteUrl: '${g.createLink(action: "ajaxDelete", id: "${organisation.organisationId}")}',
+            organisationEditUrl: '${g.createLink(action: "edit", id: "${organisation.organisationId}")}',
+            organisationViewUrl: '${g.createLink(action: "index")}',
+            organisationListUrl: '${g.createLink(action: "list")}',
+            organisationSaveUrl: "${createLink(action: 'ajaxUpdate')}",
+            imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
+            returnTo: "${params.returnTo ?: createLink(action: 'index', id: organisation.organisationId)}"
 
             };
     </asset:script>
@@ -40,11 +40,12 @@
     <asset:javascript src="cors/jquery.xdr-transport.js"/>
     <asset:javascript src="organisation.js"/>
 
-
 </head>
+
 <body>
 
-<div class="container-fluid organisation-header organisation-banner image-box" data-bind="style:{'backgroundImage':asBackgroundImage(bannerUrl())}">
+<div class="container-fluid organisation-header organisation-banner image-box"
+     data-bind="style:{'backgroundImage':asBackgroundImage(bannerUrl())}">
     <g:render template="organisationDetails"/>
 
     <div class="form-actions">
@@ -56,8 +57,8 @@
 
 <asset:script type="text/javascript">
 
-   $(function () {
-        var organisation = <fc:modelAsJavascript model="${organisation}"/>;
+    $(function () {
+         var organisation = <fc:modelAsJavascript model="${organisation}"/>;
         var organisationViewModel = new OrganisationViewModel(organisation);
         autoSaveModel(organisationViewModel, fcConfig.organisationSaveUrl,
             {
@@ -97,7 +98,6 @@
         });
 
     });
-
 
 </asset:script>
 

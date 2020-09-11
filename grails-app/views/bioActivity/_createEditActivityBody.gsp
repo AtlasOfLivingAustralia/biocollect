@@ -73,12 +73,13 @@
 <g:if test="${!printView}">
     <div class="form-actions">
         <g:render template="/shared/termsOfUse"/>
+        <br>
         <g:if test="${!preview}">
-            <button type="button" id="save" class="btn btn-primary">Submit</button>
+            <button type="button" id="save" class="btn btn-primary btn-large">Submit</button>
         </g:if>
         <g:if test="${showCreate && !mobile}">
             <g:if test="${!preview}">
-                <button type="button" id="cancel" class="btn">Cancel</button>
+                <button type="button" id="cancel" class="btn btn-large">Cancel</button>
             </g:if>
         </g:if>
     </div>
