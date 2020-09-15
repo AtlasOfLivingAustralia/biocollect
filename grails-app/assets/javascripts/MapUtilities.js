@@ -507,7 +507,7 @@ Biocollect.MapUtilities = {
             format: 'image/png',
             layer: layer.wmsParams.layers,
             style: style,
-            legend_options:"dpi:180;forceLabels:on;bgColor:#f2f9fc;fontAntiAliasing:true;countMatched:true;fontSize:12;fontName:Arial;",
+            legend_options:"dpi:180;forceLabels:on;bgColor:#f2f9fc;fontAntiAliasing:true;countMatched:true;fontSize:6;fontName:Arial;",
             rule: ''
         };
 

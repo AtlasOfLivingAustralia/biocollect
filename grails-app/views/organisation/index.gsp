@@ -80,7 +80,10 @@
             dateRangeURL: "${createLink(controller: 'bioActivity', action: 'getMinMaxYearForQuery', params: [projectId: projectId])}",
             getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
             timeSeriesOnIndex: "${hubConfig.timeSeriesOnIndex}",
-            mapDisplays: ${mapService.getMapDisplays() as JSON}
+            mapDisplays: ${mapService.getMapDisplays() as JSON},
+            mapDisplayHelpText: "<g:message code="map.style.help"/>",
+            mapDisplayColourByHelpText: "<g:message code="map.colour.by.help"/>",
+            mapDisplayFilterByHelpText: "<g:message code="map.filter.by.help"/>"
         };
     </asset:script>
     <style type="text/css">
