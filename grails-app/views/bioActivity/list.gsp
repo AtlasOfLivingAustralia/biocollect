@@ -57,7 +57,10 @@
             excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
             absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
             timeSeriesOnIndex: "${hubConfig.timeSeriesOnIndex}",
-            mapDisplays: ${mapService.getMapDisplays() as JSON}
+            mapDisplays: ${mapService.getMapDisplays() as JSON},
+            mapDisplayHelpText: "<g:message code="map.style.help"/>",
+            mapDisplayColourByHelpText: "<g:message code="map.colour.by.help"/>",
+            mapDisplayFilterByHelpText: "<g:message code="map.filter.by.help"/>"
         },
         here = document.location.href;
     </asset:script>

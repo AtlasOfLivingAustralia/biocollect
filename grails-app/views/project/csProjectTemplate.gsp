@@ -119,7 +119,10 @@
         allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
         surveyMethods: <fc:getSurveyMethods/>,
         timeSeriesOnIndex: "${hubConfig.timeSeriesOnIndex}",
-        mapDisplays: ${mapService.getMapDisplays() as JSON}
+        mapDisplays: ${mapService.getMapDisplays() as JSON},
+        mapDisplayHelpText: "<g:message code="map.style.help"/>",
+        mapDisplayColourByHelpText: "<g:message code="map.colour.by.help"/>",
+        mapDisplayFilterByHelpText: "<g:message code="map.filter.by.help"/>"
         },
         here = window.location.href;
 

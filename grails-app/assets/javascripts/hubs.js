@@ -957,6 +957,7 @@ function MapDisplayViewModel(config) {
     self.showLoggedOut = ko.observable(!!config.showLoggedOut);
     self.showLoggedIn = ko.observable(!!config.showLoggedIn);
     self.isDefault = ko.observable(config.isDefault || "");
+    self.size = config.size;
 }
 
 var colorScheme = {

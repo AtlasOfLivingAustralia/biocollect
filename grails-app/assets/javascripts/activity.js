@@ -216,6 +216,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             display.selected = display.isDefault == display.key
             if (display.selected) {
                 selectedLayerID = display.key;
+                selectedSize = display.size || selectedSize;
             }
 
             mapDisplays.push(display);
@@ -223,6 +224,19 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
         if (!selectedLayerID) {
             selectedLayerID = mapDisplays[0].key;
+            selectedSize = mapDisplays[0].size || selectedSize;
+        }
+    }
+
+    self.getSettingsForStyle = function (style) {
+        if (mapDisplays) {
+            var displays = $.grep(mapDisplays, function(item){
+                return item.key == style;
+            });
+
+            if (displays.length) {
+                return displays[0];
+            }
         }
     }
 
@@ -535,13 +549,15 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                         id: activityDisplayStyleId,
                         name: activityDisplayStyleId + "-name",
                         label: "Display:",
-                        values: mapDisplays
+                        values: mapDisplays,
+                        helpText: fcConfig.mapDisplayHelpText
                     },{
                         type: "select",
                         id: colourByControlId,
                         name: colourByControlId + "-name",
-                        label: colourByLabel,
-                        values: []
+                        label: getLabelForMapDisplay(),
+                        values: [],
+                        helpText: getTooltipForMapDisplay
                     }, {
                         type: "slider",
                         id: sizeControlId,
@@ -611,17 +627,36 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     };
 
     function setSelectionControlState() {
-        setLabelOnMapDisplaySelection();
+        setLabelForMapDisplay();
         enableDisableSizeControl();
     }
 
-    function setLabelOnMapDisplaySelection() {
-        if (shapeRenderingLayers.indexOf(selectedLayerID) >= 0) {
-            selectionControl.changeLabel(colourByLabel, colourByControlId);
-        } else {
-            selectionControl.changeLabel(filterByLabel, colourByControlId);
-        }
+    function setLabelForMapDisplay() {
+        selectionControl.changeLabel(getLabelForMapDisplay(), colourByControlId);
     };
+
+    function getLabelForMapDisplay() {
+        if (shapeRenderingLayers.indexOf(selectedLayerID) >= 0) {
+            return colourByLabel;
+        } else {
+            return filterByLabel;
+        }
+    }
+
+    function setTooltipForMapDisplay() {
+        selectionControl.setPopover({
+            id: colourByControlId,
+            helpText: getTooltipForMapDisplay()
+        });
+    }
+
+    function getTooltipForMapDisplay() {
+        if (shapeRenderingLayers.indexOf(selectedLayerID) >= 0) {
+            return fcConfig.mapDisplayColourByHelpText;
+        } else {
+            return fcConfig.mapDisplayFilterByHelpText;
+        }
+    }
 
     function enableDisableSizeControl () {
         var item = {
@@ -634,7 +669,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         } else {
             selectionControl.disableItem(true, item);
         }
-    };
+    }
 
 
     function addEmptyOption(values) {
@@ -1141,6 +1176,14 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         refreshMapComponents();
     }
 
+    function setDefaultSizeForStyle (style) {
+        if (canMapDisplayBeColoured(style)) {
+            var settings = self.getSettingsForStyle(style),
+                size = (settings && settings.size) || 1;
+            selectionControl.setSize('slider', 'size-slider', size);
+        }
+    };
+
     /**
      * Update map depending on colour by selection and rendering (point, heatmap etc.) selection.
      */
@@ -1168,6 +1211,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             layerNameRequest = getLayerNameRequest(currentSettings.type, currentSettings.indices);
 
         selectedLayerID = value;
+        setDefaultSizeForStyle(selectedLayerID);
         layerNameRequest && layerNameRequest.done(function (data) {
             if (data.layerName) {
                 selectedLayerName = data.layerName;

@@ -523,35 +523,38 @@ if (!map.data.displays) {
                         key: "point_circle",
                         showLoggedOut: true,
                         showLoggedIn: true,
-                        isDefault: "point"
+                        isDefault: "point_circle",
+                        size: 4
                 ],
                 [
                         value: "Polygon",
                         key: "polygon_sites",
                         showLoggedOut: true,
                         showLoggedIn: true,
-                        isDefault: "point"
+                        isDefault: "point_circle",
+                        size: 1
                 ],
                 [
                         value: "Line",
                         key: "line_sites",
                         showLoggedOut: true,
                         showLoggedIn: true,
-                        isDefault: "point"
+                        isDefault: "point_circle",
+                        size: 1
                 ],
                 [
                         value: "Heatmap",
                         key: "heatmap",
                         showLoggedOut: true,
                         showLoggedIn: true,
-                        isDefault: "point"
+                        isDefault: "point_circle"
                 ],
                 [
                         value: "Cluster",
                         key: "cluster",
                         showLoggedOut: true,
                         showLoggedIn: true,
-                        isDefault: "point"
+                        isDefault: "point_circle"
                 ]
         ]
 }
