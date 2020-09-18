@@ -15,7 +15,8 @@ buildscript {
 plugins {
     id 'war'
 }
-version "5.1"
+version "5.1.1"
+
 group "au.org.ala"
 
 apply plugin: "eclipse"
@@ -106,7 +107,7 @@ dependencies {
 
     if (!inplace) {
         compile "org.grails.plugins:ala-map-plugin:3.0"
-        compile "org.grails.plugins:ecodata-client-plugin:3.0.4"
+        compile "org.grails.plugins:ecodata-client-plugin:3.0.5"
     }
 }
 
