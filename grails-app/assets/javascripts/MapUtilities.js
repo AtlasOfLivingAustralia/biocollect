@@ -501,16 +501,18 @@ Biocollect.MapUtilities = {
      *
      */
     getLegendURL: function (layer, style) {
-        var params = {
-            request: 'GetLegendGraphic',
-            version: layer.wmsParams.version,
-            format: 'image/png',
-            layer: layer.wmsParams.layers,
-            style: style,
-            legend_options:"dpi:180;forceLabels:on;bgColor:#f2f9fc;fontAntiAliasing:true;countMatched:true;fontSize:6;fontName:Arial;",
-            rule: ''
-        };
+        if (layer.wmsParams) {
+            var params = {
+                request: 'GetLegendGraphic',
+                version: layer.wmsParams.version,
+                format: 'image/png',
+                layer: layer.wmsParams.layers,
+                style: style,
+                legend_options:"dpi:180;forceLabels:on;bgColor:#f2f9fc;fontAntiAliasing:true;countMatched:true;fontSize:6;fontName:Arial;",
+                rule: ''
+            };
 
-        return  layer._wmsUrl + L.Util.getParamString(params, layer._wmsUrl, true);
+            return  layer._wmsUrl + L.Util.getParamString(params, layer._wmsUrl, true);
+        }
     }
 };

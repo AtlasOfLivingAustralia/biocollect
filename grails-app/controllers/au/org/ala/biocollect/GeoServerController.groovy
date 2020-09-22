@@ -30,4 +30,13 @@ class GeoServerController {
             render (text: [message: "Missing parameters - type - must be provided.", status: HttpStatus.SC_BAD_REQUEST])
         }
     }
+
+    def getHeatmap () {
+        Map response = geoServerService.getHeatmapFeatures(params)
+        if (!response.error) {
+            render (text: response.resp as JSON, contentType: 'application/json', status: response.statusCode)
+        } else {
+            render (text: [error: response.error] as JSON, contentType: 'application/json', status: response.statusCode)
+        }
+    }
 }

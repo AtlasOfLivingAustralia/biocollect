@@ -31,4 +31,8 @@ class GeoServerService {
     def getLayerName (type, indices) {
         webService.doGet("${grailsApplication.config.ecodata.baseURL}/ws/geoServer/getLayerName", [type: type, indices: indices])
     }
+
+    def getHeatmapFeatures(params) {
+        webService.doGet("${grailsApplication.config.ecodata.baseURL}/ws/search/getHeatmap", params)
+    }
 }
