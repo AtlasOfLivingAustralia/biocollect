@@ -21,6 +21,7 @@
         createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
         dateRangeURL: "${createLink(controller: 'bioActivity', action: 'getMinMaxYearForQuery', params: [projectId: projectId])}",
         getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
+        heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap')}",
         projectUpdateUrl: "${createLink(action: 'ajaxUpdate', id: project.projectId)}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         projectEditUrl:"${createLink(action:'edit', id:project.projectId)}",

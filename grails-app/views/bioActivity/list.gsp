@@ -39,6 +39,7 @@
             wmsActivityURL: "${createLink(controller: 'geoServer', action: 'wms', params: [projectId: projectId, maxFeatures: grailsApplication.config.map.wms.maxFeatures])}",
             createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
             getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
+            heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap')}",
             view: "${view}",
             returnTo: "${returnTo}",
             projectLinkPrefix: "${createLink(controller: 'project')}/",

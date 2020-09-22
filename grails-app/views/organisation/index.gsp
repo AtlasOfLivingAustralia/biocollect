@@ -79,6 +79,7 @@
             mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             dateRangeURL: "${createLink(controller: 'bioActivity', action: 'getMinMaxYearForQuery', params: [projectId: projectId])}",
             getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
+            heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap')}",
             timeSeriesOnIndex: "${hubConfig.timeSeriesOnIndex}",
             mapDisplays: ${mapService.getMapDisplays() as JSON},
             mapDisplayHelpText: "<g:message code="map.style.help"/>",

@@ -1,3 +1,5 @@
+//= require snap-svg-0.5.1/snap.svg.js
+//= require self
 var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit, doNotStoreFacetFiltering, columnConfig) {
     var self = this;
 
@@ -599,6 +601,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 alaMap.addControl(legendControl);
 
                 alaMap.registerListener('click', mapClickEventHandler);
+                alaMap.registerListener("zoomend dragend", getHeatmap);
             }
 
 
@@ -890,6 +893,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return params;
     }
 
+    function getTimeRangeQuery() {
+        var playerState = playerControl.getCurrentDuration();
+        return selectedTimeSeriesIndex + ":[" + playerState.interval[0] + "-01-01 TO " + playerState.interval[1] + "-12-31]"
+    }
+
     function addWeightParameter (params) {
         params = params || {};
         params.env = "weight:" + selectedColourByIndex + ";";
@@ -908,16 +916,88 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return params;
     }
 
+    function getBoundingBoxGeoJSON() {
+        var map = alaMap.getMapImpl(),
+            crs = map.options.crs,
+            sw = map.getBounds().getSouthWest(),
+            ne = map.getBounds().getNorthEast(),
+            bbox = {
+                type: "Polygon",
+                coordinates: [[[sw.lng, sw.lat], [ne.lng, sw.lat], [ne.lng, ne.lat], [sw.lng, ne.lat], [sw.lng, sw.lat]]]
+            };
+
+        return bbox;
+    }
+
+    function getHeatmap() {
+        if (selectedLayerID === heatmapStyleName) {
+            activityLayer.fire('loading');
+            var state = getCurrentState(),
+                params = getParametersForState(state),
+                url = constructQueryUrl(fcConfig.heatmapURL, 0, false, 0, false),
+                boundingBoxGeoJSON = getBoundingBoxGeoJSON(),
+                payload = {
+                    geoSearchJSON: JSON.stringify(boundingBoxGeoJSON)
+                };
+
+            if (params.time) {
+                payload.fq =  getTimeRangeQuery();
+            }
+
+            if (selectedColourByIndex) {
+                payload.exists = selectedColourByIndex;
+            }
+
+            $.ajax({
+                url: url,
+                data: payload,
+                success: function (data) {
+                    if (!data.error) {
+                        if (selectedLayerID === heatmapStyleName) {
+                            activityLayer.clearLayers();
+                            activityLayer.addData && activityLayer.addData(data);
+                            updateLegendFromGeoJSON(data);
+                        }
+                    }
+
+                    activityLayer.fire('load');
+                }
+            });
+        }
+    }
 
     function initMapOverlaysWithLayer () {
-        var url = constructQueryUrl(fcConfig.wmsActivityURL, 0, false, 0, false);
+        var url;
 
         activityLayer && alaMap.removeOverlayLayer(activityLayer);
-        activityLayer = L.nonTiledLayer.wms ( url, {
-            format: 'image/png',
-            transparent: true,
-            maxZoom: 21
-        });
+        switch (selectedLayerID) {
+            case heatmapStyleName:
+                activityLayer = L.geoJson(null, {
+                    style: function (feature) {
+                        return {
+                            stroke: false,
+                            fill: true,
+                            fillColor: feature.properties.colour,
+                            fillOpacity: 0.7
+                        };
+                    },
+                    onEachFeature: function (feature, layer) {
+                        layer.bindPopup(String(feature.properties.count));
+                    }
+                });
+
+                getHeatmap();
+                break;
+            default:
+                url = constructQueryUrl(fcConfig.wmsActivityURL, 0, false, 0, false);
+                activityLayer = L.nonTiledLayer.wms ( url, {
+                    format: 'image/png',
+                    transparent: true,
+                    maxZoom: 21
+                });
+                break;
+
+        }
 
         playerControl && activityLayer.on('load tileerror', playerControl.startTimerForNextFrame, playerControl);
     }
@@ -934,13 +1014,19 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         switch (state.intervalType) {
             case 'year':
                 if (state.interval) {
-                    getLayerNameRequest(TIMESERIES_LAYER, getIndicesForTimeSeries()).done(function(data){
-                        if (data.layerName) {
-                            selectedLayerName = data.layerName;
-                            refreshMapComponents();
-                            activityLayer && activityLayer.fire('loading');
-                        }
-                    });
+                    switch (selectedLayerID) {
+                        case heatmapStyleName:
+                            getHeatmap();
+                            break;
+                        default:
+                            getLayerNameRequest(TIMESERIES_LAYER, getIndicesForTimeSeries()).done(function(data){
+                                if (data.layerName) {
+                                    selectedLayerName = data.layerName;
+                                    refreshMapComponents();
+                                    activityLayer && activityLayer.fire('loading');
+                                }
+                            });
+                    }
                 }
                 break;
         }
@@ -949,13 +1035,20 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.stop = function (state) {
         switch (state.intervalType) {
             case 'year':
-                var typeAndIndices = getLayerTypeAndIndices();
-                getLayerNameRequest(typeAndIndices.type, typeAndIndices.indices).done(function (data) {
-                    if (data.layerName) {
-                        selectedLayerName = data.layerName;
-                        refreshMapComponents();
-                    }
-                });
+                switch (selectedLayerID) {
+                    case heatmapStyleName:
+                        getHeatmap();
+                        break;
+                    default:
+                        var typeAndIndices = getLayerTypeAndIndices();
+                        getLayerNameRequest(typeAndIndices.type, typeAndIndices.indices).done(function (data) {
+                            if (data.layerName) {
+                                selectedLayerName = data.layerName;
+                                refreshMapComponents();
+                            }
+                        });
+                        break;
+                }
                 break;
         }
     }
@@ -1072,69 +1165,71 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     }
 
     function mapClickEventHandler(event) {
-        var map = this;
-        getLayerNameRequest(INFO_LAYER, selectedColourByIndex).done(function(data){
-            if(data.layerName) {
-                var size = map.getSize(),
-                    // this crs is used to show layer added to map
-                    crs = map.options.crs,
-                    // these are the SouthWest and NorthEast points
-                    // projected from LatLng into used crs
-                    sw = crs.project(map.getBounds().getSouthWest()),
-                    ne = crs.project(map.getBounds().getNorthEast()),
-                    styleName = activityLayer.wmsParams.styles == lineStyleName ? lineSelectorStyleName : activityLayer.wmsParams.styles,
-                    params = {
-                        request: 'GetFeatureInfo',
-                        service: 'WMS',
-                        srs: crs.code,
-                        version: activityLayer.wmsParams.version,
-                        layers: data.layerName,
-                        query_layers: data.layerName,
-                        styles: styleName,
-                        bbox:  sw.x + ',' + sw.y + ',' + ne.x + ',' + ne.y,
-                        height: size.y,
-                        width: size.x,
-                        feature_count: MAX_FEATURE_COUNT,
-                        info_format: 'application/json'
-                    };
+        if (selectedLayerID !== heatmapStyleName) {
+            var map = this;
+            getLayerNameRequest(INFO_LAYER, selectedColourByIndex).done(function(data){
+                if(data.layerName) {
+                    var size = map.getSize(),
+                        // this crs is used to show layer added to map
+                        crs = map.options.crs,
+                        // these are the SouthWest and NorthEast points
+                        // projected from LatLng into used crs
+                        sw = crs.project(map.getBounds().getSouthWest()),
+                        ne = crs.project(map.getBounds().getNorthEast()),
+                        styleName = activityLayer.wmsParams.styles == lineStyleName ? lineSelectorStyleName : activityLayer.wmsParams.styles,
+                        params = {
+                            request: 'GetFeatureInfo',
+                            service: 'WMS',
+                            srs: crs.code,
+                            version: activityLayer.wmsParams.version,
+                            layers: data.layerName,
+                            query_layers: data.layerName,
+                            styles: styleName,
+                            bbox:  sw.x + ',' + sw.y + ',' + ne.x + ',' + ne.y,
+                            height: size.y,
+                            width: size.x,
+                            feature_count: MAX_FEATURE_COUNT,
+                            info_format: 'application/json'
+                        };
 
-                if (activityLayer.wmsParams.cql_filter) {
-                    params.cql_filter = activityLayer.wmsParams.cql_filter;
-                }
-
-                if (playerControl.isPlayerActive()) {
-                    params.cql_filter = params.cql_filter || "";
-                    var time = playerControl.getCurrentDuration(),
-                        timeCQL = selectedTimeSeriesIndex + " >= '" + time.interval[0] + "-01-01' AND " + selectedTimeSeriesIndex + " <= '" + time.interval[1] + "-12-31'";
-
-                    params.cql_filter = params.cql_filter ? params.cql_filter + " AND " + timeCQL : timeCQL;
-                }
-
-                params[params.version === '1.3.0' ? 'i' : 'x'] = Math.round(event.containerPoint.x);
-                params[params.version === '1.3.0' ? 'j' : 'y'] = Math.round(event.containerPoint.y);
-                var url = activityLayer._wmsUrl + L.Util.getParamString(params, activityLayer._wmsUrl, true);
-                // show loading GIF
-                activityLayer.fire && activityLayer.fire('loading');
-                $.get(url , function (data) {
-                    var features = data.features;
-
-                    if (features && features.length) {
-                        L.popup({
-                            maxWidth: 400,
-                            minWidth: 200
-                        })
-                            .setLatLng(event.latlng)
-                            .setContent('<div id="template-map-popup-record" style="width: 400px; height: auto" data-bind="template: { name: \'script-popup-template\' }"></div>')
-                            .openOn(alaMap.getMapImpl());
-
-                        ko.applyBindings({features: features, index: ko.observable(0)}, document.getElementById('template-map-popup-record'))
+                    if (activityLayer.wmsParams.cql_filter) {
+                        params.cql_filter = activityLayer.wmsParams.cql_filter;
                     }
-                }).done(function() {
-                    // remove loading GIF
-                    activityLayer.fire && activityLayer.fire('load');
-                });
-            }
-        })
+
+                    if (playerControl.isPlayerActive()) {
+                        params.cql_filter = params.cql_filter || "";
+                        var time = playerControl.getCurrentDuration(),
+                            timeCQL = selectedTimeSeriesIndex + " >= '" + time.interval[0] + "-01-01' AND " + selectedTimeSeriesIndex + " <= '" + time.interval[1] + "-12-31'";
+
+                        params.cql_filter = params.cql_filter ? params.cql_filter + " AND " + timeCQL : timeCQL;
+                    }
+
+                    params[params.version === '1.3.0' ? 'i' : 'x'] = Math.round(event.containerPoint.x);
+                    params[params.version === '1.3.0' ? 'j' : 'y'] = Math.round(event.containerPoint.y);
+                    var url = activityLayer._wmsUrl + L.Util.getParamString(params, activityLayer._wmsUrl, true);
+                    // show loading GIF
+                    activityLayer.fire && activityLayer.fire('loading');
+                    $.get(url , function (data) {
+                        var features = data.features;
+
+                        if (features && features.length) {
+                            L.popup({
+                                maxWidth: 400,
+                                minWidth: 200
+                            })
+                                .setLatLng(event.latlng)
+                                .setContent('<div id="template-map-popup-record" style="width: 400px; height: auto" data-bind="template: { name: \'script-popup-template\' }"></div>')
+                                .openOn(alaMap.getMapImpl());
+
+                            ko.applyBindings({features: features, index: ko.observable(0)}, document.getElementById('template-map-popup-record'))
+                        }
+                    }).done(function() {
+                        // remove loading GIF
+                        activityLayer.fire && activityLayer.fire('load');
+                    });
+                }
+            })
+        }
     };
     // todo: cql not cleared properly
     function changeColourByIndex(index) {
@@ -1189,12 +1284,15 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
      */
     function refreshMapComponents () {
         var state = getCurrentState(),
-            params = getParametersForState(state);
+            params = getParametersForState(state),
+            legendURL;
 
         initMapOverlaysWithLayer()
-        activityLayer && activityLayer.setParams(params);
+        activityLayer && activityLayer.setParams && activityLayer.setParams(params);
         alaMap.addOverlayLayer(activityLayer, 'Activity', true);
-        legendControl.updateLegend(Biocollect.MapUtilities.getLegendURL(activityLayer, params.styles));
+        legendURL = Biocollect.MapUtilities.getLegendURL(activityLayer, params.styles);
+        legendURL && legendControl.updateLegend(legendURL);
+        !legendURL && legendControl.clearLegend();
     }
 
     function createStyleFromTerms(terms) {
@@ -1344,6 +1442,64 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 break;
         }
     };
+
+    function getLegendFromGeoJSON (geoJSON) {
+        var legendMapping = {},
+            legends = [];
+        switch (geoJSON.type) {
+            case "FeatureCollection":
+                geoJSON.features && geoJSON.features.forEach(function (feature) {
+                    if (feature.properties) {
+                        legendMapping[feature.properties.label] = feature.properties;
+                    }
+                });
+
+                for(var label in legendMapping) {
+                    legends.push(legendMapping[label]);
+                }
+
+                legends.sort(function (a, b) {
+                    return b.max > a.max;
+                });
+                break;
+        }
+
+        return legends;
+    }
+
+    function getSVGForLegend(legend) {
+        var svg = Snap("100%", "100%"),
+            y = 0,
+            yLineHeight = 20,
+            padding = 10,
+            baseline = 10;
+        legend.forEach(function (item) {
+            var shape = svg.rect(0 + padding, y + padding, 10, 10);
+            shape.attr({fill: item.colour});
+            var label = svg.text(20 + padding , y + baseline + padding, item.label);
+            y += yLineHeight;
+        });
+
+        var text = svg.outerSVG();
+        // snap attaches svg to document. need to remove it.
+        svg.remove();
+        return text;
+
+    }
+
+    function updateLegendWithSVG(svgText) {
+        var prefix = 'data:image/svg+xml,',
+            svgText = encodeURIComponent(svgText),
+            dataURI = prefix + svgText;
+
+        legendControl && legendControl.updateLegend(dataURI);
+    }
+
+    function updateLegendFromGeoJSON (geoJSON) {
+        var legend = getLegendFromGeoJSON(geoJSON);
+        var svg = getSVGForLegend(legend);
+        updateLegendWithSVG(svg);
+    }
 
     self.filterViewModel.selectedFacets.subscribe(fetchDataForTabs);
 
