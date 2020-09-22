@@ -24,3 +24,6 @@
 //= require restoreTab.js
 //= require components.js
 //= require izitoast/izitoast.min.js
+
+//= require ../pivotal/pivotal_core.js
+
