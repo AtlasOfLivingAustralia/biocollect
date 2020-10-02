@@ -8,6 +8,10 @@ class ErrorController {
         render view:'/404'
     }
 
+    def index () {
+        loadRecentHub()
+        render view:'/404'
+    }
     def response500() {
         loadRecentHub()
         render view:'/error'

@@ -12,10 +12,12 @@ class HubController {
     UserService userService
     def index() {
         HubSettings hubSettings = SettingService.hubConfig
-        switch (hubSettings.getHubHomePageType()){
-            case 'buttons':
+        String homepageType = hubSettings.getHubHomePageType()
+        switch (homepageType){
+              case 'buttons':
                 render view: 'buttonHomePage', model: [homepage: true]
                 break
+
             case 'projectfinder':
                 Map model = [homepage:true, showProjectDownloadButton:showProjectFinderDownloadButton(hubSettings)]
                 render view: 'projectFinderHomePage', model: model
