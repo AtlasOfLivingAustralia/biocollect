@@ -54,7 +54,7 @@
         createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
         dateRangeURL: "${createLink(controller: 'bioActivity', action: 'getMinMaxYearForQuery', params: [projectId: projectId])}",
         getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
-        heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap')}",
+        heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap', params: [projectId: project.projectId])}",
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
@@ -122,7 +122,15 @@
         allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
         allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-        sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}"
+        sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}",
+        mapDisplayHelpText: "<g:message code="map.style.help"/>",
+        mapDisplayColourByHelpText: "<g:message code="map.colour.by.help"/>",
+        mapDisplayFilterByHelpText: "<g:message code="map.filter.by.help"/>",
+        clusterLegendTitle: "<g:message code="map.cluster.legend.title"/>",
+        heatmapLegendTitle: "<g:message code="map.heatmap.legend.title"/>",
+        pointLegendTitle: "<g:message code="map.point.legend.title"/>",
+        polygonLegendTitle: "<g:message code="map.polygon.legend.title"/>",
+        lineLegendTitle: "<g:message code="map.line.legend.title"/>"
         },
         here = window.location.href;
 

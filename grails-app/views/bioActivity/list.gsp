@@ -39,7 +39,7 @@
             wmsActivityURL: "${createLink(controller: 'geoServer', action: 'wms', params: [projectId: projectId, maxFeatures: grailsApplication.config.map.wms.maxFeatures])}",
             createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
             getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
-            heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap')}",
+            heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap', params: [projectId: projectId])}",
             view: "${view}",
             returnTo: "${returnTo}",
             projectLinkPrefix: "${createLink(controller: 'project')}/",
@@ -61,7 +61,17 @@
             mapDisplays: ${mapService.getMapDisplays() as JSON},
             mapDisplayHelpText: "<g:message code="map.style.help"/>",
             mapDisplayColourByHelpText: "<g:message code="map.colour.by.help"/>",
-            mapDisplayFilterByHelpText: "<g:message code="map.filter.by.help"/>"
+            mapDisplayFilterByHelpText: "<g:message code="map.filter.by.help"/>",
+            clusterLegendTitle: "<g:message code="map.cluster.legend.title"/>",
+            heatmapLegendTitle: "<g:message code="map.heatmap.legend.title"/>",
+            pointLegendTitle: "<g:message code="map.point.legend.title"/>",
+            polygonLegendTitle: "<g:message code="map.polygon.legend.title"/>",
+            lineLegendTitle: "<g:message code="map.line.legend.title"/>",
+            heatmapHelpText: "<g:message code="map.heatmap.help.text"/>",
+            clusterHelpText: "<g:message code="map.cluster.help.text"/>",
+            lineHelpText: "<g:message code="map.line.help.text"/>",
+            pointHelpText: "<g:message code="map.point.help.text"/>",
+            polygonHelpText: "<g:message code="map.polygon.help.text"/>"
         },
         here = document.location.href;
     </asset:script>

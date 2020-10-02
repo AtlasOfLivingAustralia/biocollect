@@ -82,9 +82,21 @@
             heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap')}",
             timeSeriesOnIndex: "${hubConfig.timeSeriesOnIndex}",
             mapDisplays: ${mapService.getMapDisplays() as JSON},
+            projectMapDisplays: ${grailsApplication.config.map.projectfinder.displays as JSON},
             mapDisplayHelpText: "<g:message code="map.style.help"/>",
             mapDisplayColourByHelpText: "<g:message code="map.colour.by.help"/>",
-            mapDisplayFilterByHelpText: "<g:message code="map.filter.by.help"/>"
+            mapDisplayFilterByHelpText: "<g:message code="map.filter.by.help"/>",
+            clusterLegendTitle: "<g:message code="map.cluster.legend.title"/>",
+            heatmapLegendTitle: "<g:message code="map.heatmap.legend.title"/>",
+            pointLegendTitle: "<g:message code="map.point.legend.title"/>",
+            polygonLegendTitle: "<g:message code="map.polygon.legend.title"/>",
+            lineLegendTitle: "<g:message code="map.line.legend.title"/>",
+            wmsProjectURL: "${createLink(controller: 'geoServer', action: 'wms', params: [maxFeatures: grailsApplication.config.map.wms.maxFeatures])}",
+            heatmapHelpText: "<g:message code="map.heatmap.help.text"/>",
+            clusterHelpText: "<g:message code="map.cluster.help.text"/>",
+            pointHelpText: "<g:message code="map.point.help.text"/>",
+            polygonHelpText: "<g:message code="map.polygon.help.text"/>",
+            lineHelpText: "<g:message code="map.line.help.text"/>"
         };
     </asset:script>
     <style type="text/css">
@@ -201,7 +213,7 @@
         var projectFinder = new ProjectFinder({enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false}});
     });
 </asset:script>
-
+<g:render template="/project/projectPopup"/>
 </body>
 
 

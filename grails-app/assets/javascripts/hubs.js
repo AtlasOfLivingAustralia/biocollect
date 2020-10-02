@@ -233,7 +233,6 @@ var HubSettings = function (settings, config) {
     };
 
     self.transients.sortColumn.subscribe(self.setSortColumn, self);
-    self.transients.isDefaultMapDisplay.subscribe(self.setDefaultMapDisplay, self);
 
     self.loadSettings = function (settings) {
         self.hubId(settings.hubId);
@@ -251,25 +250,7 @@ var HubSettings = function (settings, config) {
         self.quickLinks(mapLinks(settings.quickLinks));
         self.templateConfiguration(new TemplateConfigurationViewModel(settings.templateConfiguration || {}));
         self.timeSeriesOnIndex(settings.timeSeriesOnIndex || 'dateCreated');
-        fcConfig.allMapDisplays.forEach(function (item) {
-            var foundItem = $.grep(settings.mapDisplays || [], function (display) {
-                    return item.key == display.key;
-                });
-
-            var mapDisplay = null;
-
-            if (foundItem.length == 1) {
-                mapDisplay = new MapDisplayViewModel(foundItem[0]);
-            }
-            else if (foundItem.length == 0) {
-                mapDisplay = new MapDisplayViewModel(item);
-            }
-
-            if (mapDisplay) {
-                self.mapDisplays.push(mapDisplay);
-                self.transients.isDefaultMapDisplay(mapDisplay.isDefault());
-            }
-        });
+        self.mapDisplays(settings.mapDisplays);
 
         if (settings.defaultFacetQuery && settings.defaultFacetQuery instanceof Array) {
             $.each(settings.defaultFacetQuery, function (i, obj) {
@@ -495,15 +476,6 @@ HubSettings.prototype.setSortColumn = function (selectedColumn) {
         } else {
             column.sort(false);
         }
-    });
-};
-
-HubSettings.prototype.setDefaultMapDisplay = function (selectedDisplay) {
-    var self = this,
-        displays = self.mapDisplays();
-
-    displays.forEach(function (display) {
-        display.isDefault(selectedDisplay);
     });
 };
 

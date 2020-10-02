@@ -377,6 +377,8 @@ function ProjectViewModel(project, isUserEditor) {
             return  org && org.collectoryInstitutionId ? org.collectoryInstitutionId: "";
     });
 
+    self.mapDisplays = ko.observableArray(project.mapDisplays || []);
+
     self.transients.truncatedOrganisationName = ko.computed(function () {
         return truncate(self.organisationName(), 50);
     });
