@@ -27,6 +27,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         selectedLayerName,
         currentlySelectedTab,
         legendControl,
+        infoPanelControl,
         selectionControl,
         playerControl,
         opacity = 0.1,
@@ -600,6 +601,14 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 legendControl = new L.Control.LegendImage({collapse: true, position: "topright"});
                 alaMap.addControl(legendControl);
 
+                // Control - display help text
+                infoPanelControl = new L.Control.InfoPanel({
+                    content: getHelpText(),
+                    collapse: false,
+                    title: "Help"
+                });
+                alaMap.addControl(infoPanelControl);
+
                 alaMap.registerListener('click', mapClickEventHandler);
                 alaMap.registerListener("zoomend dragend", getHeatmap);
             }
@@ -658,6 +667,36 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             return fcConfig.mapDisplayColourByHelpText;
         } else {
             return fcConfig.mapDisplayFilterByHelpText;
+        }
+    }
+
+    function getLegendTitle() {
+        switch (selectedLayerID) {
+            case clusterStyleName:
+                return fcConfig.clusterLegendTitle;
+            case heatmapStyleName:
+                return fcConfig.heatmapLegendTitle;
+            case pointStyleName:
+                return fcConfig.pointLegendTitle;
+            case polygonStyleName:
+                return fcConfig.polygonLegendTitle;
+            case lineStyleName:
+                return fcConfig.lineLegendTitle;
+        }
+    }
+
+    function getHelpText() {
+        switch (selectedLayerID) {
+            case heatmapStyleName:
+                return fcConfig.heatmapHelpText;
+            case clusterStyleName:
+                return fcConfig.clusterHelpText;
+            case lineStyleName:
+                return fcConfig.lineHelpText;
+            case polygonStyleName:
+                return fcConfig.polygonHelpText;
+            case pointStyleName:
+                return fcConfig.pointHelpText;
         }
     }
 
@@ -1287,12 +1326,12 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             params = getParametersForState(state),
             legendURL;
 
-        initMapOverlaysWithLayer()
+        initMapOverlaysWithLayer();
         activityLayer && activityLayer.setParams && activityLayer.setParams(params);
         alaMap.addOverlayLayer(activityLayer, 'Activity', true);
         legendURL = Biocollect.MapUtilities.getLegendURL(activityLayer, params.styles);
-        legendURL && legendControl.updateLegend(legendURL);
         !legendURL && legendControl.clearLegend();
+        legendURL && legendControl.updateLegend(legendURL, getLegendTitle());
     }
 
     function createStyleFromTerms(terms) {
@@ -1468,17 +1507,20 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     }
 
     function getSVGForLegend(legend) {
-        var svg = Snap("100%", "100%"),
+        var svg = Snap("100%", "auto"),
             y = 0,
             yLineHeight = 20,
             padding = 10,
             baseline = 10;
+
         legend.forEach(function (item) {
             var shape = svg.rect(0 + padding, y + padding, 10, 10);
             shape.attr({fill: item.colour});
             var label = svg.text(20 + padding , y + baseline + padding, item.label);
             y += yLineHeight;
         });
+
+        svg.attr({height:y + padding});
 
         var text = svg.outerSVG();
         // snap attaches svg to document. need to remove it.
@@ -1492,7 +1534,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             svgText = encodeURIComponent(svgText),
             dataURI = prefix + svgText;
 
-        legendControl && legendControl.updateLegend(dataURI);
+        legendControl && legendControl.updateLegend(dataURI, getLegendTitle());
     }
 
     function updateLegendFromGeoJSON (geoJSON) {

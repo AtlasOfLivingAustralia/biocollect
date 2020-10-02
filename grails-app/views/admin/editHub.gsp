@@ -658,8 +658,7 @@
                 </div>
                 <h4><strong>Configure map display style</strong></h4>
                 <div class="overflow-x">
-                    <!-- ko template: { name: 'templateMapDisplayStyle' }-->
-                    <!-- /ko -->
+                    <biocollect-data-map-selector params="mapDisplays: mapDisplays, allMapDisplays: fcConfig.allMapDisplays, showProjectMemberColumn: false "></biocollect-data-map-selector>
                 </div>
                 <h4><strong>Configure index for time series animation</strong></h4>
                 <div class="form-horizontal">
@@ -1421,32 +1420,6 @@
     </tr>
     </tfoot>
 </table>
-</script>
-<script id="templateMapDisplayStyle" type="text/html">
-<div class="row-fluid">
-    <div class="span12">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Display text</th>
-                    <th>Show logged out?</th>
-                    <th>Show logged in?</th>
-                    <th>Is default?</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- ko foreach: mapDisplays -->
-                <tr>
-                    <td><input type="text" data-bind="value: value"/> </td>
-                    <td><div class="checkbox"><input type="checkbox" data-bind="checked: showLoggedOut"/></div> </td>
-                    <td><div class="checkbox"><input type="checkbox" data-bind="checked: showLoggedIn"/></div> </td>
-                    <td><div class="radio"><input type="radio" name="selected-display" data-bind="checked: $parent.transients.isDefaultMapDisplay, value: key"/></div> </td>
-                </tr>
-                <!-- /ko -->
-            </tbody>
-        </table>
-    </div>
-</div>
 </script>
 <script id="buttonPreview" type="text/html">
     <div class="text-center btn-preview" data-bind="style:{'background-color': backgroundColor, color: textColor, borderColor: backgroundColor}">

@@ -516,47 +516,87 @@ if (!map.wms.maxFeatures) {
         map.wms.maxFeatures = 100000
 }
 
-if (!map.data.displays) {
-        map.data.displays = [
-                [
-                        value: "Point",
-                        key: "point_circle",
-                        showLoggedOut: true,
-                        showLoggedIn: true,
-                        isDefault: "heatmap",
-                        size: 4
-                ],
-                [
-                        value: "Polygon",
-                        key: "polygon_sites",
-                        showLoggedOut: true,
-                        showLoggedIn: true,
-                        isDefault: "heatmap",
-                        size: 1
-                ],
-                [
-                        value: "Line",
-                        key: "line_sites",
-                        showLoggedOut: true,
-                        showLoggedIn: true,
-                        isDefault: "heatmap",
-                        size: 1
-                ],
-                [
-                        value: "Heatmap",
-                        key: "heatmap",
-                        showLoggedOut: true,
-                        showLoggedIn: true,
-                        isDefault: "heatmap"
-                ],
-                [
-                        value: "Cluster",
-                        key: "cluster",
-                        showLoggedOut: true,
-                        showLoggedIn: true,
-                        isDefault: "heatmap"
-                ]
+map.data.displays = [
+        [
+                value: "Point",
+                key: "point_circle",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "heatmap",
+                size: 4
+        ],
+        [
+                value: "Polygon",
+                key: "polygon_sites",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "heatmap",
+                size: 1
+        ],
+        [
+                value: "Line",
+                key: "line_sites",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "heatmap",
+                size: 1
+        ],
+        [
+                value: "Heatmap",
+                key: "heatmap",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "heatmap"
+        ],
+        [
+                value: "Cluster",
+                key: "cluster",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "heatmap"
         ]
-}
+]
+
+map.projectfinder.displays = [
+        [
+                value: "Point",
+                key: "point_circle_project",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "polygon_sites_project",
+                size: 4
+        ],
+        [
+                value: "Polygon",
+                key: "polygon_sites_project",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "polygon_sites_project",
+                size: 1
+        ],
+        [
+                value: "Heatmap",
+                key: "heatmap",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "polygon_sites_project"
+        ],
+        [
+                value: "Cluster",
+                key: "cluster_project",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "polygon_sites_project"
+        ]
+]
 
 settings.surveyMethods="fielddata.survey.methods"

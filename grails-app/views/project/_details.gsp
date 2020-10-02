@@ -820,6 +820,13 @@
         </div>
     </div>
 
+    <div class="row-fluid">
+        <div class="well">
+            <h4 class="block-header"><g:message code="project.details.map.display.configuration"/></h4>
+            <biocollect-data-map-selector params="mapDisplays: mapDisplays, allMapDisplays: fcConfig.allMapDisplays, showProjectMemberColumn: true"></biocollect-data-map-selector>
+        </div>
+    </div>
+
     <g:if test="${grailsApplication.config.termsOfUseUrl}">
         <div class="row-fluid" style="display: none" data-bind="visible: !isExternal()">
             <div class="well">

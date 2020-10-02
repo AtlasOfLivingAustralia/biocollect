@@ -23,7 +23,7 @@
         createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
         dateRangeURL: "${createLink(controller: 'bioActivity', action: 'getMinMaxYearForQuery', params: [projectId: projectId])}",
         getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
-        heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap')}",
+        heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap', params: [projectId: project.projectId])}",
         homePagePath: "${createLink(controller: 'home', action: 'index')}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         projectUpdateUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
@@ -120,10 +120,20 @@
         allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
         surveyMethods: <fc:getSurveyMethods/>,
         timeSeriesOnIndex: "${hubConfig.timeSeriesOnIndex}",
-        mapDisplays: ${mapService.getMapDisplays() as JSON},
+        mapDisplays: ${mapService.getMapDisplays(project) as JSON},
         mapDisplayHelpText: "<g:message code="map.style.help"/>",
         mapDisplayColourByHelpText: "<g:message code="map.colour.by.help"/>",
-        mapDisplayFilterByHelpText: "<g:message code="map.filter.by.help"/>"
+        mapDisplayFilterByHelpText: "<g:message code="map.filter.by.help"/>",
+        clusterLegendTitle: "<g:message code="map.cluster.legend.title"/>",
+        heatmapLegendTitle: "<g:message code="map.heatmap.legend.title"/>",
+        pointLegendTitle: "<g:message code="map.point.legend.title"/>",
+        polygonLegendTitle: "<g:message code="map.polygon.legend.title"/>",
+        lineLegendTitle: "<g:message code="map.line.legend.title"/>",
+        heatmapHelpText: "<g:message code="map.heatmap.help.text"/>",
+        clusterHelpText: "<g:message code="map.cluster.help.text"/>",
+        lineHelpText: "<g:message code="map.line.help.text"/>",
+        pointHelpText: "<g:message code="map.point.help.text"/>",
+        polygonHelpText: "<g:message code="map.polygon.help.text"/>"
         },
         here = window.location.href;
 

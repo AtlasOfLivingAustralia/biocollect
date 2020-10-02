@@ -1,0 +1,41 @@
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Display text</th>
+                <th>Show to logged out users?</th>
+                <th>Show to logged in users?</th>
+                <th data-bind="if: showProjectMemberColumn()">Show to project members?</th>
+                <th>Is default?</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- ko foreach: mapDisplays -->
+            <tr>
+                <td><input type="text" data-bind="value: value"/> </td>
+                <td><div class="checkbox"><input type="checkbox" data-bind="checked: showLoggedOut"/></div> </td>
+                <td><div class="checkbox"><input type="checkbox" data-bind="checked: showLoggedIn"/></div> </td>
+                <td data-bind="if: $parent.showProjectMemberColumn()"><div class="checkbox"><input type="checkbox" data-bind="checked: showProjectMembers"/></div> </td>
+                <td><div class="radio"><input type="radio" name="selected-display" data-bind="checked: $parent.transients.isDefaultMapDisplay, value: key"/></div> </td>
+            </tr>
+            <!-- /ko -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="alert alert-info">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h5><strong>Help!</strong></h5>
+                    <p>
+                        Enter help text here.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

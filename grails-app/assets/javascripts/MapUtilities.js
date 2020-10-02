@@ -233,7 +233,7 @@ Biocollect.MapUtilities = {
      * Intersect mouse click position with overlays and show on a popup.
      * @param {ALA.Map} map The map to contain the control
      */
-    intersectOverlaysAndShowOnPopup: function (map) {
+    intersectOverlaysAndShowOnPopup: function (map, callback) {
         // create the layers control
         // set baseLayers to null so it will use the defaults specified when the pfMap was created.
         var config = Biocollect.MapUtilities.getOverlayConfig();
@@ -252,17 +252,20 @@ Biocollect.MapUtilities = {
                  */
                 clickTimeoutID = window.setTimeout(
                     function () {
+                        var customLayerId = [];
                         console.log('[Map] Behaviour: Single click detected.');
 
                         console.log('[Map] Detected click on map at [' + e.latlng.lat + ',' + e.latlng.lng + ']. Loading details for location and zooming to bounds.');
-                        map.startLoading();
 
                         // layer ids is comma separated
-                        var layerIds = map.getOverlayLayers('selected').map(function (value) {
-                            return value.customLayerId;
-                        }).join(',');
+                        map.getOverlayLayers('selected').forEach(function (value) {
+                            value.customLayerId && customLayerId.push(value.customLayerId);
+                        });
+
+                        var layerIds = customLayerId.join(',');
 
                         if (layerIds) {
+                            map.startLoading();
                             var intersectQs = 'layerId=' + layerIds + '&lat=' + e.latlng.lat + '&lng=' + e.latlng.lng;
                             var intersectUrl = config.intersectService + '?' + intersectQs;
 
@@ -287,11 +290,11 @@ Biocollect.MapUtilities = {
 
                                     var popupContentItem = '';
                                     if (item.pid) {
-                                        popupContentItem = '<li>' + overlayTitle + ': ' + item.value + '</li>';
+                                        popupContentItem = overlayTitle + ': ' + item.value;
                                     } else if (item.units) {
-                                        popupContentItem = '<li>' + overlayTitle + ': ' + item.value + item.units + '</li>';
+                                        popupContentItem = overlayTitle + ': ' + item.value + item.units;
                                     } else {
-                                        popupContentItem = '<li>' + overlayTitle + ': (none)</li>';
+                                        popupContentItem = overlayTitle + ': (none)';
                                     }
                                     popupContentItems.push(popupContentItem);
 
@@ -308,11 +311,18 @@ Biocollect.MapUtilities = {
 
                                 });
 
-                                L.popup()
-                                    .setLatLng(e.latlng)
-                                    .setContent('<p>At this location:</p><ul>' + popupContentItems.join('') + '</ul>')
-                                    .openOn(map.getMapImpl());
+                                if (!callback) {
+                                    L.popup()
+                                        .setLatLng(e.latlng)
+                                        .setContent('<p>At this location:</p><ul><li>' + popupContentItems.join('</li><li>') + '</li></ul>')
+                                        .openOn(map.getMapImpl());
+                                }
+                                else {
+                                    callback(popupContentItems, data, e);
+                                }
 
+                                map.finishLoading();
+                            }, function () {
                                 map.finishLoading();
                             });
                         }
@@ -508,7 +518,7 @@ Biocollect.MapUtilities = {
                 format: 'image/png',
                 layer: layer.wmsParams.layers,
                 style: style,
-                legend_options:"dpi:180;forceLabels:on;bgColor:#f2f9fc;fontAntiAliasing:true;countMatched:true;fontSize:6;fontName:Arial;",
+                legend_options:"dpi:90;forceLabels:on;bgColor:#f2f9fc;fontAntiAliasing:true;countMatched:true;fontSize:12;fontName:Arial;",
                 rule: ''
             };
 

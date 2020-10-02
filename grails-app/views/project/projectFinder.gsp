@@ -63,7 +63,23 @@
         enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false},
         downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}",
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-
+        getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
+        wmsProjectURL: "${createLink(controller: 'geoServer', action: 'wms', params: [ maxFeatures: grailsApplication.config.map.wms.maxFeatures])}",
+        createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
+        heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap')}",
+        projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
+        projectMapDisplays: ${grailsApplication.config.map.projectfinder.displays as JSON},
+        mapDisplayHelpText: "<g:message code="project.map.style.help"/>",
+        mapDisplayColourByHelpText: "<g:message code="project.map.colour.by.help"/>",
+        mapDisplayFilterByHelpText: "<g:message code="project.map.filter.by.help"/>",
+        clusterLegendTitle: "<g:message code="project.map.cluster.legend.title"/>",
+        heatmapLegendTitle: "<g:message code="project.map.heatmap.legend.title"/>",
+        pointLegendTitle: "<g:message code="project.map.point.legend.title"/>",
+        polygonLegendTitle: "<g:message code="project.map.polygon.legend.title"/>",
+        heatmapHelpText: "<g:message code="map.heatmap.help.text"/>",
+        clusterHelpText: "<g:message code="map.cluster.help.text"/>",
+        pointHelpText: "<g:message code="map.point.help.text"/>",
+        polygonHelpText: "<g:message code="map.polygon.help.text"/>",
         <g:if test="${isUserPage}">
             <g:if test="${isWorks}">
                 isUserWorksPage: true,
@@ -163,5 +179,6 @@
 
     var projectFinder = new ProjectFinder(fcConfig);
 </asset:script>
+<g:render template="projectPopup"/>
 </body>
 </html>

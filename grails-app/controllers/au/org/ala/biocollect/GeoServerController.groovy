@@ -8,7 +8,7 @@ class GeoServerController {
     static allowedMethods = [wms: 'GET', createStyle: 'POST', 'getLayerName': 'GET']
     
     def wms () {
-        geoServerService.wms(response, params)
+        geoServerService.wms(response, request, params)
         return null
     }
     
@@ -20,7 +20,7 @@ class GeoServerController {
 
     def getLayerName () {
         if (params.type) {
-            def response = geoServerService.getLayerName(params.type, params.indices)
+            def response = geoServerService.getLayerName(params.type, params.indices, params.dataType)
             if (!response.error) {
                 render (text: [layerName: response.resp?.layerName] as JSON, contentType: 'application/json', status: response.statusCode)
             } else {
@@ -32,7 +32,7 @@ class GeoServerController {
     }
 
     def getHeatmap () {
-        Map response = geoServerService.getHeatmapFeatures(params)
+        Map response = geoServerService.getHeatmapFeatures(params, request)
         if (!response.error) {
             render (text: response.resp as JSON, contentType: 'application/json', status: response.statusCode)
         } else {

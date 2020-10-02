@@ -7,12 +7,10 @@ import au.org.ala.biocollect.projectresult.Initiator
 import au.org.ala.ecodata.forms.UserInfoService
 import au.org.ala.web.AuthService
 import grails.converters.JSON
-import org.apache.http.HttpStatus
 import grails.web.servlet.mvc.GrailsParameterMap
+import org.apache.http.HttpStatus
 import org.joda.time.DateTime
 import org.springframework.context.MessageSource
-
-import java.text.SimpleDateFormat
 
 import static org.apache.http.HttpStatus.*
 
@@ -587,7 +585,7 @@ class ProjectController {
      */
     def search() {
 
-        GrailsParameterMap queryParams = buildProjectSearch(params)
+        GrailsParameterMap queryParams = projectService.buildProjectSearch(params, request)
         boolean skipDefaultFilters = params.getBoolean('skipDefaultFilters', false)
         Map searchResult = searchService.findProjects(queryParams, skipDefaultFilters);
         List projects = Builder.build(params, searchResult.hits?.hits, grailsApplication, messageSource)
@@ -647,7 +645,7 @@ class ProjectController {
 
             String downloadUrl = "${grailsApplication.config.ecodata.service.url}/search/downloadAllData.xlsx"
             params.fq = params.getList('fq[]')
-            GrailsParameterMap downloadParams = buildProjectSearch(params)
+            GrailsParameterMap downloadParams = projectService.buildProjectSearch(params, request)
 
             downloadParams.reportType="works"
             downloadParams.max=1000
@@ -669,201 +667,9 @@ class ProjectController {
      * Uses same criteria as search to retreive the projects with site information suitable to render a shared/_sites.gsp map
      */
     def mapSearch() {
-        GrailsParameterMap queryParams = buildProjectSearch(params)
+        GrailsParameterMap queryParams = projectService.buildProjectSearch(params, request)
         render searchService.allProjectsWithSites(queryParams) as JSON
     }
-
-    private GrailsParameterMap buildProjectSearch(GrailsParameterMap params){
-        Builder.override(params)
-
-        List difficulty = [], status =[]
-        Map trimmedParams = commonService.parseParams(params)
-        HubSettings hub = SettingService.hubConfig
-        List allFacetConfig = hub.getFacetsForProjectFinderPage() ?: projectService.getDefaultFacets()
-        trimmedParams.fsort = 'term'
-        trimmedParams.flimit = params.flimit?:15
-        trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
-        trimmedParams.offset = params.offset && params.offset.isNumber() ? params.offset : 0
-        trimmedParams.status = [];
-        trimmedParams.isCitizenScience = params.boolean('isCitizenScience');
-        trimmedParams.isWorks = params.boolean('isWorks');
-        trimmedParams.isBiologicalScience = params.boolean('isBiologicalScience')
-        trimmedParams.isMERIT = params.boolean('isMERIT')
-        trimmedParams.query = "docType:project"
-        trimmedParams.isUserPage = params.boolean('isUserPage');
-        trimmedParams.isUserWorksPage = params.boolean('isUserWorksPage');
-        trimmedParams.isUserEcoSciencePage = params.boolean('isUserEcoSciencePage');
-        trimmedParams.difficulty = params.list('difficulty')
-        trimmedParams.mobile = params.boolean('mobile')
-        trimmedParams.isWorldWide = params.boolean('isWorldWide')
-
-        List fq = [], projectType = []
-        List immutableFq = params.list('fq')
-        immutableFq.each {
-            if(it?.startsWith('status:')){
-                trimmedParams.status?.push ( it.replace('status:',''))
-            } else {
-                it? fq.push(it):null;
-            }
-        }
-
-        if(params.status) {
-            trimmedParams.status = []
-            trimmedParams.status.push(params.status);
-        }
-
-        trimmedParams.fq = fq;
-
-        switch (trimmedParams.sort){
-            case 'organisationSort':
-            case 'nameSort':
-                trimmedParams.order = 'ASC';
-                break;
-            case 'dateCreatedSort':
-            case '_score':
-                trimmedParams.order = 'DESC';
-                break;
-        }
-
-        if(!trimmedParams.facets) {
-            trimmedParams.facets = HubSettings.getFacetConfigForElasticSearch(allFacetConfig)?.collect { it.name }?.join(",")
-        }
-
-        List presenceAbsenceFacets = HubSettings.getFacetConfigWithPresenceAbsenceSetting(allFacetConfig)
-        if(presenceAbsenceFacets){
-            if(!trimmedParams.rangeFacets){
-                trimmedParams.rangeFacets =[]
-            }
-
-            presenceAbsenceFacets?.each {
-                trimmedParams.rangeFacets.add("${it.name}:[* TO 1}")
-                trimmedParams.rangeFacets.add("${it.name}:[1 TO *}")
-            }
-        }
-
-        List histogramFacets = HubSettings.getFacetConfigWithHistogramSetting(allFacetConfig)
-        if(histogramFacets){
-            String facets = histogramFacets?.collect{ "${it.name}:${it.interval}" }?.join(',')
-            trimmedParams.histogramFacets = facets
-        }
-
-        if(trimmedParams.flimit == "-1"){
-            trimmedParams.flimit = MAX_FACET_TERMS;
-        }
-
-        if(trimmedParams.isCitizenScience){
-            projectType.push('isCitizenScience:true')
-            trimmedParams.isCitizenScience = null
-        }
-
-        if(trimmedParams.isBiologicalScience){
-            trimmedParams.isSurvey = null
-            trimmedParams.isBiologicalScience=null
-        }
-
-        if(trimmedParams.isWorks){
-            projectType.push('(projectType:works AND isMERIT:false)')
-            trimmedParams.isWorks = null
-        }
-
-        if(trimmedParams.isEcoScience){
-            projectType.push('(projectType:ecoScience)')
-            trimmedParams.isEcoScience = null
-        }
-
-        if (trimmedParams.isMERIT) {
-            projectType.push('isMERIT:true')
-            trimmedParams.isMERIT = null
-        }
-
-        if(trimmedParams.difficulty){
-            trimmedParams.difficulty.each{
-                difficulty.push("difficulty:${it}")
-            }
-            trimmedParams.query += " AND (${difficulty.join(' OR ')})"
-            trimmedParams.difficulty = null
-        }
-
-        if (projectType) {
-            // append projectType to query. this is used by organisation page.
-            trimmedParams.query += ' AND (' + projectType.join(' OR ') + ')'
-        }
-
-        def programs = ''
-        params.each {
-            if (it.key.startsWith('isProgram') && it.value.toString().toBoolean()) {
-                def programName = it.key.substring('isProgram'.length()).replace('-',' ')
-                if (programs.length()) programs += " OR "
-                programs += " associatedProgram:\"${programName}\""
-                trimmedParams.remove(it.key)
-            }
-        }
-        if (programs.length()) trimmedParams.query += " AND (" + programs + ")"
-
-        // query construction
-        if(trimmedParams.q){
-            trimmedParams.query += " AND " + trimmedParams.q;
-            trimmedParams.q = null
-        }
-
-        if(trimmedParams.status){
-            SimpleDateFormat sdf = new SimpleDateFormat('yyyy-MM-dd');
-            // Do not execute when both active and completed facets are checked.
-            if(trimmedParams.status.size()<2){
-                trimmedParams.status.each{
-                    switch (it){
-                        case 'active':
-                            status.push("-(plannedEndDate:[* TO *] AND -plannedEndDate:>=${sdf.format( new Date())})");
-                            break;
-                        case 'completed':
-                            status.push("(plannedEndDate:<${sdf.format( new Date())})");
-                            break;
-                    }
-                }
-                trimmedParams.query += " AND (${status.join(' OR ')})";
-            }
-            trimmedParams.status = null
-        }
-
-        if (trimmedParams.isUserPage) {
-            if (trimmedParams.mobile) {
-                String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
-                String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
-                fq.push('allParticipants:' + (username && key ? userInfoService.getUserFromAuthKey(username, key)?.userId : ''))
-            } else {
-                fq.push('allParticipants:' + userService.getUser()?.userId);
-            }
-            trimmedParams.isUserPage = null
-        }
-
-        if(trimmedParams.organisationName){
-            fq.push('organisationFacet:'+trimmedParams.organisationName);
-            trimmedParams.organisationName = null
-        }
-
-        if (trimmedParams.isWorldWide) {
-            trimmedParams.isWorldWide = null
-        } else if (trimmedParams.isWorldWide == false) {
-            trimmedParams.query += " AND countries:(Australia OR Worldwide)"
-            trimmedParams.isWorldWide = null
-        }
-
-
-
-        GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
-        trimmedParams.each { key, value ->
-            if (value != null && value) {
-                queryParams.put(key, value)
-            }
-        }
-
-        queryParams.put("geoSearchJSON", params.geoSearchJSON)
-
-        params.url = grailsApplication.config.grails.serverURL
-        queryParams
-    }
-
-
 
     def species(String id) {
         def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED)
