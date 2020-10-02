@@ -14,30 +14,45 @@ class HomeController {
     def metadataService
     def userService
 
-    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
-    def advanced() {
-        [
-                projects   : projectService.list(),
-                sites      : siteService.list(),
-                //sites: siteService.injectLocationMetadata(siteService.list()),
-                activities : activityService.list(),
-                assessments: activityService.assessments(),
-        ]
-    }
+    /*
+     * Main entry to BioCollect home page
+     * Three different home page layout are supported
+     * a. ALA
+     * b. Buttons
+     * c. Catalogue
+     *
+     * Following hub config values will dictate which home page layout to choose.
+     * 0. Default home hub / urlPath == acsa >> ala pivotal home layout
+     * 1. homePagePath URL based >> Determines which controller to handle the request
+     *    Example: /project/projectFinder
+     *             /hub/index
+     * 2. homePagePath non URL based homePagePath with direct URL
+     * 3. templateConfiguration?.homePage?.homePageConfig == projectfinder >> Catalogue layout
+     * 4. templateConfiguration?.homePage?.homePageConfig == buttons >> Buttons layout
+     *
+     */
 
     def index() {
         HubSettings hubSettings = SettingService.hubConfig
-        if (hubSettings.overridesHomePage()) {
-            if(hubSettings.isHomePagePathSimple()){
+        if (hubSettings.urlPath == 'acsa') {
+            render(view: 'home')
+            return
+        } else if (hubSettings.overridesHomePage()) {
+            if (hubSettings.isHomePagePathSimple()) {
                 Map result = hubSettings.getHomePageControllerAndAction()
                 forward(result)
                 return
             } else {
-                redirect([uri: hubSettings['homePagePath'] ])
+                redirect([uri: hubSettings['homePagePath']])
                 return;
             }
+        } else {
+            return projectFinder()
         }
-        return projectFinder()
+    }
+
+    def home() {
+        /* Generic Homepage replaces wordpress BioCollect homepage */
     }
 
     def projectFinder() {
@@ -64,11 +79,6 @@ class HomeController {
             hubConfig: SettingService.getHubConfig()]
     }
 
-    def citizenScience() {
-    }
-
-    def works() {
-    }
 
     /**
      * The purpose of this method is to enable the display of the spatial object corresponding to a selected
@@ -101,10 +111,6 @@ class HomeController {
         }
 
         selectedGeographicFacets
-    }
-
-    def tabbed() {
-        [geoPoints: searchService.allGeoPoints(params)]
     }
 
     def geoService() {

@@ -112,7 +112,19 @@ collectory:
 ecodata:
   baseURL: "https://ecodata.ala.org.au/"
 
-
+contactus:
+  url: "https://www.ala.org.au/contact-us/"
+blog:
+  url: "https://www.ala.org.au/category/citizen-science/"
+facebook:
+  url: "https://www.facebook.com/atlasoflivingaustralia/"
+twitter:
+  url: "https://twitter.com/atlaslivingaust"
+help:
+  aboutBioCollect: "https://support.ala.org.au/support/solutions/folders/6000238139"
+  aboutProjects: "https://support.ala.org.au/support/solutions/folders/6000238245"
+  aboutSurveys: "https://support.ala.org.au/support/solutions/folders/6000238288"
+  aboutNRM: "https://support.ala.org.au/support/solutions/folders/6000238307"
 google:
   maps:
     base: "https://maps.googleapis.com/maps/api/js?key="
