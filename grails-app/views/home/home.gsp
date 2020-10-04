@@ -118,27 +118,30 @@ http://devt.ala.org.au:8087/project/projectFinder#isCitizenScience=true&fq=featu
 
         <section class="section-padding">
             <div class="container">
+
                 <div class="row">
-                    <div class="col-12 col-lg-4">
-                        <h2 class="darker-text">BioCollect provides form-based structured data collection for</h2>
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-12 col-lg-12">
+                                <h2 class="darker-text">BioCollect provides form-based structured data collection for</h2>
+                                <ol>
+                                    <li>Ad-hoc survey-based records</li>
+                                    <li>Method-based systematic structured surveys</li>
+                                    <li>Activity-based projects such as natural resource management intervention projects (e.g. revegetation, site restoration, seed collection, weed and pest management, etc.)</li>
+                                </ol>
+
+                                <p>It also supports upload of unstructured data in the form of data files, grey literature, images, sound bytes, videos, etc.</p>
+
+                                <p>The system is fully integrated with other Atlas tools and we are currently working to enable seamless linkages with other global project finders, and other related national research infrastructure facilities such as the Terrestrial Ecosystem Research Network (TERN) and the Australian National Data Service (ANDS).</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="col-12 col-lg-8">
-                        <ol>
-                            <li>Ad-hoc survey-based records</li>
-                            <li>Method-based systematic structured surveys</li>
-                            <li>Activity-based projects such as natural resource management intervention projects (e.g. revegetation, site restoration, seed collection, weed and pest management, etc.)</li>
-                        </ol>
+                    <div class="col-6">
+                        <iframe src="https://player.vimeo.com/video/244275060?title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-12 col-md-10 offset-0 offset-md-1 text-center mt-5">
-                        <p>It also supports upload of unstructured data in the form of data files, grey literature, images, sound bytes, videos, etc.</p>
-
-                        <p>The system is fully integrated with other Atlas tools and we are currently working to enable seamless linkages with other global project finders, and other related national research infrastructure facilities such as the Terrestrial Ecosystem Research Network (TERN) and the Australian National Data Service (ANDS).</p>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -209,7 +212,7 @@ http://devt.ala.org.au:8087/project/projectFinder#isCitizenScience=true&fq=featu
                                 </p>
                             </div>
                         </div>
-
+                        <!--
                         <div class="d-flex icon-text mobile-app">
                             <div class="image">
                                 <img src="${asset.assetPath(src: "assets/img/icons/mobile-dark.svg")}"
@@ -232,9 +235,13 @@ http://devt.ala.org.au:8087/project/projectFinder#isCitizenScience=true&fq=featu
                                     </a>
                                 </p>
                             </div>
+
                         </div>
+                        -->
                         <ul class="tick">
+                            <!--
                             <li>Record data offline</li>
+                            -->
                             <li>Automatic data upload to the database</li>
                             <li>Integrated device tools for data recording</li>
                             <li>GPS-based search</li>

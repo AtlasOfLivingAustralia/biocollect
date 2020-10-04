@@ -453,6 +453,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.mapLayersConfig = project.mapLayersConfig || {};
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
     self.alaHarvest = ko.observable(project.alaHarvest ? true : false);
+    self.featured = ko.observable(project.featured ? true : false);
     self.industries = ko.observableArray(project.industries);
     self.bushfireCategories = ko.observableArray(project.bushfireCategories);
     self.transients.notification = new EmailViewModel(fcConfig);
@@ -466,6 +467,19 @@ function ProjectViewModel(project, isUserEditor) {
                 self.alaHarvest(true);
             } else if (newValue === 'No') {
                 self.alaHarvest(false);
+            }
+        }
+    });
+
+    self.transients.featured = ko.computed({
+        read: function () {
+            return self.featured() ? 'Yes' : 'No';
+        },
+        write: function (newValue) {
+            if (newValue === 'Yes') {
+                self.featured(true);
+            } else if (newValue === 'No') {
+                self.featured(false);
             }
         }
     });
@@ -498,6 +512,11 @@ function ProjectViewModel(project, isUserEditor) {
 
     self.alaHarvest.subscribe(function(newValue) {
         var data = {alaHarvest: newValue };
+        self.updateProject(data);
+    });
+
+    self.featured.subscribe(function(newValue) {
+        var data = {featured: newValue };
         self.updateProject(data);
     });
 

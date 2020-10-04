@@ -26,6 +26,19 @@
     <div class="margin-bottom-20"></div>
     <div class="row-fluid">
         <div class="span4 text-left" >
+            <p>
+                Promote project on homepage?
+            </p>
+        </div>
+        <div class="span4 text-left" >
+            <select data-bind="options: transients.yesNoOptions, value: transients.featured, optionsCaption: 'Please select'"></select>
+        </div>
+    </div>
+
+
+    <div class="margin-bottom-20"></div>
+    <div class="row-fluid">
+        <div class="span4 text-left" >
                 <p>Delete project</p>
         </div>
         <div class="span4 text-left" >
