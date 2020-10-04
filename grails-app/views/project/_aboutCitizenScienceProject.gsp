@@ -31,6 +31,11 @@
                         <span class="fa fa-fire"></span> <g:message code="project.bushfireInfo"/>
                     </div>
                 </div>
+                <div data-bind="if:featured()" class="margin-top-1 margin-bottom-1">
+                    <div class="alert alert-success">
+                        <span class="fa fa-flag"></span> <g:message code="project.featured"/>
+                    </div>
+                </div>
 
                 <div data-bind="visible:aim">
                     <div class="text-small-heading">${hubConfig.getTextForAim(grailsApplication.config.content.defaultOverriddenLabels)}</div>
