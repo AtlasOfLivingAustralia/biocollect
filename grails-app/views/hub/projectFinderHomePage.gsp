@@ -60,7 +60,7 @@
         downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}",
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
-        wmsProjectURL: "${createLink(controller: 'geoServer', action: 'wms', params: [ maxFeatures: grailsApplication.config.map.wms.maxFeatures])}",
+        wmsProjectURL: "${createLink(controller: 'geoServer', action: 'wms', params: [ maxFeatures: grailsApplication.config.map.wms.maxFeatures, tiled: true])}",
         createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
         heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap')}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
