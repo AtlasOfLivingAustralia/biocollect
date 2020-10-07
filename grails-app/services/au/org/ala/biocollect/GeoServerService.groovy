@@ -1,10 +1,7 @@
 package au.org.ala.biocollect
 
-import au.org.ala.biocollect.merit.CommonService
-import au.org.ala.biocollect.merit.ProjectService
-import au.org.ala.biocollect.merit.SettingService
-import au.org.ala.biocollect.merit.UserService
-import au.org.ala.biocollect.merit.WebService
+import au.org.ala.biocollect.merit.*
+import grails.web.http.HttpHeaders
 
 class GeoServerService {
     WebService webService
@@ -33,7 +30,7 @@ class GeoServerService {
         }
 
         String url = "${grailsApplication.config.ecodata.baseURL}/ws/geoServer/wms" + commonService.buildUrlParamsFromMap(params)
-        webService.proxyGetRequest(response, url, true, true)
+        webService.proxyGetRequest(response, url, true, true, null, [HttpHeaders.EXPIRES, HttpHeaders.CACHE_CONTROL, HttpHeaders.CONTENT_DISPOSITION, HttpHeaders.CONTENT_TYPE])
     }
 
     def createStyle (params) {

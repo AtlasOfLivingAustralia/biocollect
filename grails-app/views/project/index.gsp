@@ -17,7 +17,7 @@
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
-        wmsActivityURL: "${createLink(controller: 'geoServer', action: 'wms', params: [projectId: project.projectId, maxFeatures: grailsApplication.config.map.wms.maxFeatures])}",
+        wmsActivityURL: "${createLink(controller: 'geoServer', action: 'wms', params: [projectId: project.projectId, maxFeatures: grailsApplication.config.map.wms.maxFeatures, tiled: true])}",
         createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
         dateRangeURL: "${createLink(controller: 'bioActivity', action: 'getMinMaxYearForQuery', params: [projectId: projectId])}",
         getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",

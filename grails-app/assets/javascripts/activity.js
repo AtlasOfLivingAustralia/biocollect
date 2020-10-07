@@ -1507,7 +1507,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     }
 
     function getSVGForLegend(legend) {
-        var svg = Snap("100%", "auto"),
+        var svg = Snap("100%", "100%"),
             y = 0,
             yLineHeight = 20,
             padding = 10,
