@@ -30,7 +30,8 @@ class GeoServerService {
         }
 
         String url = "${grailsApplication.config.ecodata.baseURL}/ws/geoServer/wms" + commonService.buildUrlParamsFromMap(params)
-        webService.proxyGetRequest(response, url, true, true, null, [HttpHeaders.EXPIRES, HttpHeaders.CACHE_CONTROL, HttpHeaders.CONTENT_DISPOSITION, HttpHeaders.CONTENT_TYPE])
+        int timeout = grailsApplication.config.geoServer.readTimeout as int
+        webService.proxyGetRequest(response, url, true, true, timeout, [HttpHeaders.EXPIRES, HttpHeaders.CACHE_CONTROL, HttpHeaders.CONTENT_DISPOSITION, HttpHeaders.CONTENT_TYPE])
     }
 
     def createStyle (params) {
