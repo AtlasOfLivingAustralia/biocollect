@@ -35,6 +35,7 @@ class UrlMappings {
                         action = [GET: "get", POST: "upload", PUT: "upload", DELETE: "delete"]
                 }
 
+                "/geoServer/wms"(controller: "geoServer", action: "wms")
                 "/project/getAuditMessagesForProject/$id"(controller: "project", action: 'getAuditMessagesForProject')
 
                 "/activity/$entityId/comment"(controller: "comment"){
@@ -124,7 +125,6 @@ class UrlMappings {
                 "/ws/bioactivity/save"(controller:  "bioActivity", action: 'ajaxUpdate')
                 "/ws/bioactivity/delete/$id"(controller:  "bioActivity", action: 'delete')
                 "/ws/bioactivity/search"(controller:  "bioActivity", action: 'searchProjectActivities')
-                "/ws/bioactivity/map"(controller:  "bioActivity", action: 'getProjectActivitiesRecordsForMapping')
         }
 }
 

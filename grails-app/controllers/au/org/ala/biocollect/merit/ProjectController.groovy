@@ -7,12 +7,10 @@ import au.org.ala.biocollect.projectresult.Initiator
 import au.org.ala.ecodata.forms.UserInfoService
 import au.org.ala.web.AuthService
 import grails.converters.JSON
-import org.apache.http.HttpStatus
 import grails.web.servlet.mvc.GrailsParameterMap
+import org.apache.http.HttpStatus
 import org.joda.time.DateTime
 import org.springframework.context.MessageSource
-
-import java.text.SimpleDateFormat
 
 import static org.apache.http.HttpStatus.*
 
@@ -587,7 +585,7 @@ class ProjectController {
      */
     def search() {
 
-        GrailsParameterMap queryParams = buildProjectSearch(params)
+        GrailsParameterMap queryParams = projectService.buildProjectSearch(params, request)
         boolean skipDefaultFilters = params.getBoolean('skipDefaultFilters', false)
         Map searchResult = searchService.findProjects(queryParams, skipDefaultFilters);
         List projects = Builder.build(params, searchResult.hits?.hits, grailsApplication, messageSource)
@@ -647,7 +645,7 @@ class ProjectController {
 
             String downloadUrl = "${grailsApplication.config.ecodata.service.url}/search/downloadAllData.xlsx"
             params.fq = params.getList('fq[]')
-            GrailsParameterMap downloadParams = buildProjectSearch(params)
+            GrailsParameterMap downloadParams = projectService.buildProjectSearch(params, request)
 
             downloadParams.reportType="works"
             downloadParams.max=1000
@@ -669,10 +667,11 @@ class ProjectController {
      * Uses same criteria as search to retreive the projects with site information suitable to render a shared/_sites.gsp map
      */
     def mapSearch() {
-        GrailsParameterMap queryParams = buildProjectSearch(params)
+        GrailsParameterMap queryParams = projectService.buildProjectSearch(params, request)
         render searchService.allProjectsWithSites(queryParams) as JSON
     }
 
+<<<<<<< HEAD
     private GrailsParameterMap buildProjectSearch(GrailsParameterMap params){
         Builder.override(params)
 
@@ -865,6 +864,8 @@ class ProjectController {
 
 
 
+=======
+>>>>>>> feature/map-extension
     def species(String id) {
         def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED)
         def activityTypes = metadataService.activityTypesList();

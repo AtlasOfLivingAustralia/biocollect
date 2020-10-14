@@ -19,6 +19,7 @@
             defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}",
             allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
             allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+            allMapDisplays: ${grailsApplication.config.map.data.displays as grails.converters.JSON},
             leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
         };
     </asset:script>
@@ -654,6 +655,19 @@
                 <h4><strong>Configure base layers for maps shown on this hub</strong></h4>
                 <div class="overflow-x">
                     <map-config-selector params="allBaseLayers: fcConfig.allBaseLayers, allOverlays: fcConfig.allOverlays, mapLayersConfig: mapLayersConfig"></map-config-selector>
+                </div>
+                <h4><strong>Configure map display style</strong></h4>
+                <div class="overflow-x">
+                    <biocollect-data-map-selector params="mapDisplays: mapDisplays, allMapDisplays: fcConfig.allMapDisplays, showProjectMemberColumn: false "></biocollect-data-map-selector>
+                </div>
+                <h4><strong>Configure index for time series animation</strong></h4>
+                <div class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label" for="time-series-index">Pick a date field for time series animation</label>
+                        <div class="controls">
+                            <select id="time-series-index" data-bind="options: hubConfigs.availableIndexForTimeSeries, value: timeSeriesOnIndex"></select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

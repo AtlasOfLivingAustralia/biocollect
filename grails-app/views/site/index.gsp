@@ -41,7 +41,6 @@
             worksActivityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
             searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
             downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
-            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping')}",
             recordListUrl: "${createLink(controller: 'record', action: 'ajaxList')}",
             recordDeleteUrl: "${createLink(controller: 'record', action: 'delete')}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
