@@ -603,3 +603,5 @@ map.projectfinder.displays = [
 ]
 
 settings.surveyMethods="fielddata.survey.methods"
+
+geoServer.readTimeout = 600000
