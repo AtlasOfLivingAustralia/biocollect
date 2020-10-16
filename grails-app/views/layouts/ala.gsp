@@ -18,6 +18,9 @@
     <asset:stylesheet src="base.css"/>
     <asset:stylesheet src="ala2.css"/>
     <asset:javascript src="base.js"/>
+    <script type="text/javascript">
+        i18nInitilisation("${g.createLink(controller: 'home', action: 'i18n')}");
+    </script>
     <g:layoutHead/>
 </head>
 <body class="${pageProperty(name:'body.class')?:'nav-getinvolved'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}" style="padding-top:50px;">

@@ -51,6 +51,6 @@ class GeoServerService {
                 break
         }
 
-        webService.doGet("${grailsApplication.config.ecodata.baseURL}/ws/search/getHeatmap", params)
+        webService.doGet("${grailsApplication.config.ecodata.baseURL}/ws/search/getHeatmap" + commonService.buildUrlParamsFromMap(params), [:])
     }
 }

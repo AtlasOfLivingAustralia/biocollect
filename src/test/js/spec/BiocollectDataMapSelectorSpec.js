@@ -47,17 +47,17 @@ describe("biocollect-data-map-selector component unit tests", function () {
             showLoggedOut: true,
             showLoggedIn: true,
             showProjectMembers: true,
-            isDefault: "point_circle_project",
+            isDefault: "polygon_sites_project",
             size: 1
         },
-            {
-                value: "Heatmap",
-                key: "heatmap",
-                showLoggedOut: true,
-                showLoggedIn: true,
-                showProjectMembers: true,
-                isDefault: "point_circle_project"
-            }];
+        {
+            value: "Heatmap",
+            key: "heatmap",
+            showLoggedOut: true,
+            showLoggedIn: true,
+            showProjectMembers: true,
+            isDefault: "polygon_sites_project"
+        }];
 
         var showProjectMemberColumn = false;
         vm = {
@@ -80,6 +80,26 @@ describe("biocollect-data-map-selector component unit tests", function () {
     it("showProjectMemberColumn should be hidden project member column", function () {
         expect($(mockElement).find('.bdms-project-member-header').text()).toBe("");
     });
+
+    it("should show all provided map displays", function () {
+        expect($(mockElement).find('tbody tr').length).toBe(2);
+    });
+
+    it("should update view model according to user input", function () {
+        $('#biocollectDataMapSelectorId tbody tr:nth-child(1) .bdms-show-logged-out input[type=checkbox]').click()
+        expect(vm.mapDisplays()[0].showLoggedOut()).toBe(false);
+
+        $('#biocollectDataMapSelectorId tr:nth-child(2) .bdms-show-logged-in input[type=checkbox]').click()
+        expect(vm.mapDisplays()[1].showLoggedIn()).toBe(false);
+    });
+
+    // todo: fix this test. not able to trigger radio button change.
+    // it("should change default selector", function () {
+    //     $('#biocollectDataMapSelectorId tbody tr .bdms-default-option input').prop('checked', "heatmap");
+    //     expect(vm.mapDisplays()[0].isDefault()).toBe('heatmap');
+    //     expect(vm.mapDisplays()[1].isDefault()).toBe('heatmap');
+    // });
+
 
     function addLayer(className) {
         $(mockElement).find(className).click();

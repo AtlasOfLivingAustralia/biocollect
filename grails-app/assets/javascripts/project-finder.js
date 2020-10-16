@@ -786,6 +786,7 @@ function ProjectFinder(config) {
             self.pfMap.addControl(infoPanelControl);
 
             lookupProjectOnClick && alaMap.registerListener('click', mapClickEventHandler);
+            alaMap.registerListener("zoomend dragend", getHeatmap);
         }
 
         // clear colour by index
@@ -1192,8 +1193,8 @@ function ProjectFinder(config) {
      * Update map depending on colour by selection and rendering (point, heatmap etc.) selection.
      */
     function refreshMapComponents () {
-        var state = getCurrentState(),
-            params = getParametersForState(state),
+        var state = self.getCurrentState(),
+            params = self.getParametersForState(state),
             legendURL;
 
         initMapOverlaysWithLayer(true);
@@ -1221,7 +1222,7 @@ function ProjectFinder(config) {
         }
     }
 
-    function getCurrentState() {
+    self.getCurrentState = function() {
         switch (selectedLayerID) {
             case clusterStyleName:
                 if (selectedColourByIndex) {
@@ -1262,9 +1263,9 @@ function ProjectFinder(config) {
         }
     }
 
-    function getParametersForState(state) {
+    self.getParametersForState = function(state) {
         var params = {};
-        state = state || getCurrentState();
+        state = state || self.getCurrentState();
         addCommonParameters(params);
 
         switch (state) {
