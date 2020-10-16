@@ -246,7 +246,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             mapDisplays.push(display);
         });
 
-        if (!selectedLayerID) {
+        if (!selectedLayerID && (mapDisplays && mapDisplays.length > 0)) {
             selectedLayerID = mapDisplays[0].key;
             selectedSize = mapDisplays[0].size || selectedSize;
         }
@@ -755,8 +755,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return result;
     }
 
-    function getCurrentState() {
-        var isPlayerActive = playerControl.isPlayerActive();
+    self.getCurrentState = function() {
+        var isPlayerActive = playerControl && playerControl.isPlayerActive();
         switch (selectedLayerID) {
             case clusterStyleName:
                 if (selectedColourByIndex && isPlayerActive) {
@@ -837,9 +837,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         }
     }
 
-    function getParametersForState(state) {
+    self.getParametersForState = function(state) {
         var params = {};
-        state = state || getCurrentState();
+        state = state || self.getCurrentState();
         addCommonParameters(params);
 
         switch (state) {
@@ -992,8 +992,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     function getHeatmap() {
         if (selectedLayerID === heatmapStyleName) {
             activityLayer.fire('loading');
-            var state = getCurrentState(),
-                params = getParametersForState(state),
+            var state = self.getCurrentState(),
+                params = self.getParametersForState(state),
                 url = constructQueryUrl(fcConfig.heatmapURL, 0, false, 0, false),
                 boundingBoxGeoJSON = getBoundingBoxGeoJSON(),
                 payload = {
@@ -1343,8 +1343,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
      * Update map depending on colour by selection and rendering (point, heatmap etc.) selection.
      */
     function refreshMapComponents () {
-        var state = getCurrentState(),
-            params = getParametersForState(state),
+        var state = self.getCurrentState(),
+            params = self.getParametersForState(state),
             legendURL;
 
         initMapOverlaysWithLayer();

@@ -14,10 +14,10 @@
             <!-- ko foreach: mapDisplays -->
             <tr>
                 <td><input type="text" data-bind="value: value"/> </td>
-                <td><div class="checkbox"><input type="checkbox" data-bind="checked: showLoggedOut"/></div> </td>
-                <td><div class="checkbox"><input type="checkbox" data-bind="checked: showLoggedIn"/></div> </td>
-                <td data-bind="if: $parent.showProjectMemberColumn()"><div class="checkbox"><input type="checkbox" data-bind="checked: showProjectMembers"/></div> </td>
-                <td><div class="radio"><input type="radio" name="selected-display" data-bind="checked: $parent.transients.isDefaultMapDisplay, value: key"/></div> </td>
+                <td><div class="checkbox bdms-show-logged-out"><input type="checkbox" data-bind="checked: showLoggedOut"/></div> </td>
+                <td><div class="checkbox bdms-show-logged-in"><input type="checkbox" data-bind="checked: showLoggedIn"/></div> </td>
+                <td data-bind="if: $parent.showProjectMemberColumn()"><div class="checkbox bdms-show-project-members"><input type="checkbox" data-bind="checked: showProjectMembers"/></div> </td>
+                <td><div class="radio bdms-default-option"><input type="radio" name="selected-display" data-bind="checked: $parent.transients.isDefaultMapDisplay, value: key"/></div> </td>
             </tr>
             <!-- /ko -->
             </tbody>
@@ -30,9 +30,8 @@
         <div class="alert alert-info">
             <div class="row-fluid">
                 <div class="span12">
-                    <h5><strong>Help!</strong></h5>
-                    <p>
-                        Enter help text here.
+                    <h5><strong data-bind="text: $i18n('biocollect.data.map.selector.help.title', '')"></strong></h5>
+                    <p data-bind="html: $i18n('biocollect.data.map.selector.help.content', '')">
                     </p>
                 </div>
             </div>

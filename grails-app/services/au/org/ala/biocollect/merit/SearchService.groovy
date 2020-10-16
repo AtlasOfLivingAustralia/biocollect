@@ -275,6 +275,16 @@ class SearchService {
         })
     }
 
+    def addFullNameToFacets (Map facets, Map propertyPathDetails) {
+        facets?.each { k, v ->
+            if (propertyPathDetails[k] && !k.endsWith('Facet')) {
+                v.path = propertyPathDetails[k]?.joing('.')
+            }
+        }
+
+        facets
+    }
+
     /**
      * Standardise facet results
      */
