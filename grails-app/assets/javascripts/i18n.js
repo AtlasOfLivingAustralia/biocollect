@@ -18,12 +18,14 @@
 function i18nInitilisation (i18nURL) {
     var messages = {},
         deffer = $.Deferred();
-    $.get(i18nURL).done(function (data) {
-        messages = data;
-        deffer.resolve();
-    }).fail(function () {
-        deffer.reject();
-    });
+    if(i18nURL) {
+        $.get(i18nURL).done(function (data) {
+            messages = data;
+            deffer.resolve();
+        }).fail(function () {
+            deffer.reject();
+        });
+    }
 
     $i18nLookup = function(key, defaultValue) {
         if (messages[key] !== undefined) {

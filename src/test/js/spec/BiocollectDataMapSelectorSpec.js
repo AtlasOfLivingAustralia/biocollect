@@ -20,6 +20,7 @@ describe("biocollect-data-map-selector component unit tests", function () {
     var mockElement = null;
     var facetFilterVM = null;
     beforeAll(function () {
+        window.$i18n = function() {}
         window.fcConfig = {
             allMapDisplays: [{
                 value: "Polygon",
