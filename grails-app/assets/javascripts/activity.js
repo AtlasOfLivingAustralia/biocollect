@@ -32,7 +32,16 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         playerControl,
         opacity = 0.1,
         mapDisplays = [],
-        layerNamesLookupRequests = {} ;
+        layerNamesLookupRequests = {},
+        colourByBlackList = [
+            'isDataManagementPolicyDocumented',
+            'dataQualityAssuranceMethods',
+            'nonTaxonomicAccuracy',
+            'temporalAccuracy',
+            'spatialAccuracy',
+            'methodType',
+            'speciesIdentification'
+        ];
 
     self.view = view ? view : 'allrecords';
     var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500,
@@ -614,6 +623,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 // update colour by when facets change
                 self.filterViewModel.facets.subscribe(function() {
                     var options = self.filterViewModel.getColourByFields();
+                    options = self.sanitizeOptions(options);
                     options = addEmptyOption(options);
                     selectionControl.setSelectOptions(colourByControlId, options);
                 });
@@ -649,6 +659,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             updateDateRange();
             // init colour by control
             var options = self.filterViewModel.getColourByFields();
+            options = self.sanitizeOptions(options);
             options = addEmptyOption(options);
             selectionControl.setSelectOptions(colourByControlId, options);
             legendControl.clearLegend();
@@ -658,6 +669,18 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             setSelectionControlState();
         }
     };
+
+    self.sanitizeOptions = function (options) {
+        var whiteList = []
+        options = options || [];
+        options.forEach(function(option){
+            if ( colourByBlackList.indexOf(option.key) == -1 ) {
+                whiteList.push(option);
+            }
+        });
+
+        return whiteList;
+    }
 
     function setSelectionControlState() {
         setLabelForMapDisplay();
