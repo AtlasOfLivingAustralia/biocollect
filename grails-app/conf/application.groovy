@@ -551,15 +551,17 @@ map.data.displays = [
                 showLoggedIn: true,
                 showProjectMembers: true,
                 isDefault: "heatmap"
-        ],
-        [
-                value: "Cluster",
-                key: "cluster",
-                showLoggedOut: true,
-                showLoggedIn: true,
-                showProjectMembers: true,
-                isDefault: "heatmap"
         ]
+//        TODO: fix clustering on GeoServer before enabling.
+//        ,
+//        [
+//                value: "Cluster",
+//                key: "cluster",
+//                showLoggedOut: true,
+//                showLoggedIn: true,
+//                showProjectMembers: true,
+//                isDefault: "heatmap"
+//        ]
 ]
 
 map.projectfinder.displays = [

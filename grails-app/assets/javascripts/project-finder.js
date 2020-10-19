@@ -80,7 +80,8 @@ function ProjectFinder(config) {
         infoPanelControl,
         mapDisplays = [],
         lookupProjectOnClick = config.lookupProjectOnClick || true,
-        lookupOverlaysOnClick = config.lookupOverlaysOnClick || true;
+        lookupOverlaysOnClick = config.lookupOverlaysOnClick || true,
+        colourByBlackList = ['status'];
 
     layerNamesLookupRequests[GENERAL_LAYER] =  undefined;
     layerNamesLookupRequests[INFO_LAYER] = {};
@@ -1446,7 +1447,7 @@ function ProjectFinder(config) {
 
     function sanitizeColourByList (colourBy) {
         var newList = [],
-            blackList = ['status'];
+            blackList = colourByBlackList;
 
         if (colourBy) {
             colourBy.forEach(function (item) {
