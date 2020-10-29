@@ -4,7 +4,7 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Edit | ${activity.activityId ?: 'new'} | ${site.name} | ${site.projectName} | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: 'g.home')}"/>
     <meta name="breadcrumb" content="Edit output"/>
 
     <md:modelStyles model="${model}" edit="true"/>

@@ -4,10 +4,10 @@
 <html>
 <head>
   <meta name="layout" content="${hubConfig.skin}"/>
-  <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | Sites | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+  <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | ${message(code: 'g.sites')} | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: 'g.home')}"/>
     <meta name="breadcrumbParent2"
-          content="${createLink(controller: 'site', action: 'list')},Sites"/>
+          content="${createLink(controller: 'site', action: 'list')},${message(code: 'g.sites')}"/>
     <g:if test="${project}">
         <meta name="breadcrumb" content="Create new site for ${project?.name?.encodeAsHTML()}"/>
     </g:if>
