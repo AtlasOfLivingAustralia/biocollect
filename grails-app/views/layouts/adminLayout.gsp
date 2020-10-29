@@ -40,7 +40,7 @@
 
         <ul class="breadcrumb">
             <li>
-                <g:link controller="home">Home</g:link>
+                <g:link controller="home"><g:message code='g.home'/></g:link>
                 <span class="divider">/</span>
 
             </li>

@@ -28,7 +28,7 @@
             <div class="control-group">
                 <div class="controls">
                     <g:textField class="search-query input-medium" name="search"/>
-                    <button type="submit" class="btn">Search</button>
+                    <button type="submit" class="btn"><g:message code='g.search'/></button>
                 </div>
             </div>
         </form>

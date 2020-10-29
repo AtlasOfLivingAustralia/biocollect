@@ -27,7 +27,7 @@
             <g:form controller="search" method="GET" class=" form-horizontal pull-right" style="padding-top:5px;">
                 <div class="input-append">
                     <g:textField class="input-large" name="query"/>
-                    <button class="btn" type="submit">Search</button>
+                    <button class="btn" type="submit"><g:message code='g.search'/></button>
                 </div>
             </g:form>
         </div>
