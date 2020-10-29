@@ -142,9 +142,9 @@
             <div class="modal-footer control-group">
                 <div class="controls">
                     <button type="button" class="btn btn-success"
-                            data-bind="enable:saveEnabled, click:function () { save(); }, visible:!complete(), attr:{'title':saveHelp}">Save</button>
-                    <button class="btn" data-bind="click:cancel, visible:!complete()">Cancel</button>
-                    <button class="btn" data-bind="click:close, visible:complete()">Close</button>
+                            data-bind="enable:saveEnabled, click:function () { save(); }, visible:!complete(), attr:{'title':saveHelp}"><g:message code='g.save'/></button>
+                    <button class="btn" data-bind="click:cancel, visible:!complete()"><g:message code='g.cancel'/></button>
+                    <button class="btn" data-bind="click:close, visible:complete()"><g:message code='g.close'/></button>
 
                 </div>
             </div>

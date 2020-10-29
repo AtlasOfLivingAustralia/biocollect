@@ -75,11 +75,11 @@
         <g:render template="/shared/termsOfUse"/>
         <br>
         <g:if test="${!preview}">
-            <button type="button" id="save" class="btn btn-primary btn-large">Submit</button>
+            <button type="button" id="save" class="btn btn-primary btn-large"><g:message code='g.submit'></button>
         </g:if>
         <g:if test="${showCreate && !mobile}">
             <g:if test="${!preview}">
-                <button type="button" id="cancel" class="btn btn-large">Cancel</button>
+                <button type="button" id="cancel" class="btn btn-large"><g:message code='g.cancel'/></button>
             </g:if>
         </g:if>
     </div>

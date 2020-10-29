@@ -59,8 +59,8 @@
                         </div>
                         <g:if test="${!ajax}">
                             <div class="row-fluid">
-                                <a class="btn" href="${returnUrl}">Cancel</a>
-                                <button class="btn btn-primary">Save</button>
+                                <a class="btn" href="${returnUrl}"><g:message code='g.cancel'/></a>
+                                <button class="btn btn-primary"><g:message code='g.save'/></button>
                             </div>
                         </g:if>
                         <g:else>

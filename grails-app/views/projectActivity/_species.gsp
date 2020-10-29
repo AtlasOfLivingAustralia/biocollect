@@ -85,7 +85,7 @@
 
                 <div class="span12">
                     <button class="btn-primary btn block btn-small"
-                            data-bind="click: $parent.saveSpecies"><i class="icon-white  icon-hdd" ></i>Save</button>
+                            data-bind="click: $parent.saveSpecies"><i class="icon-white  icon-hdd" ></i><g:message code='g.save'/></button>
                     <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-form-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
                     <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-locations-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
                 </div>

@@ -113,7 +113,7 @@
                 <g:checkBox name="hideIntro" style="margin:0;"/>&nbsp;
                 Do not display this message again (current browser only)
             </label>
-            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            <button class="btn" data-dismiss="modal" aria-hidden="true"><g:message code='g.close'/></button>
         </div>
     </div>
 </g:if>

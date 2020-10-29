@@ -285,7 +285,7 @@ http://sourceforge.net/adobe/cmap/wiki/License/
                     <input type="password" id="password" class="toolbarField" />
                 </div>
                 <div class="buttonRow">
-                    <button id="passwordCancel" class="overlayButton"><span data-l10n-id="password_cancel">Cancel</span></button>
+                    <button id="passwordCancel" class="overlayButton"><span data-l10n-id="password_cancel"><g:message code='g.cancel'/></span></button>
                     <button id="passwordSubmit" class="overlayButton"><span data-l10n-id="password_ok">OK</span></button>
                 </div>
             </div>
@@ -331,7 +331,7 @@ http://sourceforge.net/adobe/cmap/wiki/License/
                     <span data-l10n-id="document_properties_page_count">Page Count:</span> <p id="pageCountField">-</p>
                 </div>
                 <div class="buttonRow">
-                    <button id="documentPropertiesClose" class="overlayButton"><span data-l10n-id="document_properties_close">Close</span></button>
+                    <button id="documentPropertiesClose" class="overlayButton"><span data-l10n-id="document_properties_close"><g:message code='g.close'/></span></button>
                 </div>
             </div>
         </div>

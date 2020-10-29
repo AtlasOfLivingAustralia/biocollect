@@ -121,7 +121,7 @@
                 <div class="modal-footer control-group">
                     <div class="controls">
                         <button type="button" class="btn btn-success" data-bind="click:accept">Apply</button>
-                        <button class="btn" data-bind="click:cancel">Cancel</button>
+                        <button class="btn" data-bind="click:cancel"><g:message code='g.cancel'/></button>
                     </div>
                 </div>
                 <!-- Group species -->
