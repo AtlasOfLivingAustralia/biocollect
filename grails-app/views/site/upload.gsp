@@ -3,10 +3,10 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Upload | Sites | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <title><g:message code='g.upload'/> | <g:message code='g.sites'/> | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')}, ${message(code: 'g.home')}"/>
     <meta name="breadcrumbParent2"
-          content="${createLink(controller: 'site', action: 'list')},Sites"/>
+          content="${createLink(controller: 'site', action: 'list')},${message(code: 'g.sites')}"/>
     <meta name="breadcrumb" content="Upload Sites"/>
 
     <asset:script type="text/javascript">
@@ -54,20 +54,19 @@
                 <div class="margin-bottom-50"></div>
                 <input id="shapefile" type="file" accept="application/zip" name="shapefile"/>
                 <button id="uploadShapeFile" type="button" class="btn btn-success"
-                        onclick="$(this).parent().submit();">Upload Shapefile</button>
-                <button id="cancel" type="button" class="btn btn-default">Cancel</button>
+                        onclick="$(this).parent().submit();"><g:message code="g.upload"/> Shapefile</button>
+                <button id="cancel" type="button" class="btn btn-default"><g:message code="g.cancel"/></button>
             </g:uploadForm>
         </div>
 
     </g:if>
     <g:else>
 
-        <h3>Create project sites from the shape file</h3>
+        <h3><g:message code="site.shapefile.heading"/></h3>
 
         <div class="row-fluid">
             <div class="well">
-                You can select attributes from the uploaded shape file to be used for the name, description and ID for the sites to upload.
-                De-select any sites you do not want to upload.
+                <g:message code="site.shapefile.selectAttributesHeading"/>
             </div>
         </div>
 
@@ -80,19 +79,19 @@
 
                 <fieldset>
                     <div class="span4">
-                        <label for="nameAttribute">Shapefile attribute to use as the site name:</label>
+                        <label for="nameAttribute"><g:message code="site.shapefile.attributeSiteName"/>:</label>
                         <select id="nameAttribute" name="nameAttribute"
                                 data-bind="value:nameAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
                     </div>
 
                     <div class="span4">
-                        <label for="nameAttribute">Shapefile attribute to use as the site description:</label>
+                        <label for="nameAttribute"><g:message code="site.shapefile.attributeDescription"/>:</label>
                         <select id="descriptionAttribute" name="descriptionAttribute"
                                 data-bind="value:descriptionAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
                     </div>
 
                     <div class="span4">
-                        <label for="nameAttribute">Shapefile attribute to use as the site ID:</label>
+                        <label for="nameAttribute"><g:message code="site.shapefile.attributeId"/>:</label>
                         <select id="externalIdAttribute" name="externalIdAttribute"
                                 data-bind="value:externalIdAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
                     </div>
@@ -102,8 +101,8 @@
 
             <div class="row-fluid" style="margin-top:10px; margin-bottom: 20px;">
                 <span class="span3"><button class="btn btn-success"
-                                            data-bind="click:save,disable:selectedCount()<=0">Create sites</button> <button
-                        class="btn" data-bind="click:cancel">Cancel</button></span>
+                                            data-bind="click:save,disable:selectedCount()<=0"><g:message code="site.shapefile.createSites"/></button> <button
+                        class="btn" data-bind="click:cancel"><g:message code="g.cancel"/></button></span>
             </div>
         </form>
 
@@ -113,15 +112,15 @@
                     <thead>
                     <tr>
                         <th colspan="1"></th>
-                        <th colspan="3">Properties to include in uploaded sites</th>
-                        <th data-bind="attr:{colspan:attributeNames().length}">Attributes in uploaded shapefile</th>
+                        <th colspan="3"><g:message code='site.shapefile.includeProps'/></th>
+                        <th data-bind="attr:{colspan:attributeNames().length}"><g:message code='site.shapefile.attributeList'/></th>
                     </tr>
                     <tr>
 
                         <th><input type="checkbox" name="selectAll" data-bind="checked:selectAll"></th>
-                        <th>Site name</th>
-                        <th>Site description</th>
-                        <th>Site ID</th>
+                        <th><g:message code='site.details.siteName'/></th>
+                        <th><g:message code='site.details.siteDescription'/></th>
+                        <th><g:message code='g.site'/> ID</th>
 
                         <!-- ko foreach: attributeNames -->
                         <th data-bind="text:$data"></th>

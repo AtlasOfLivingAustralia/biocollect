@@ -54,7 +54,7 @@ class ProjectController {
         def roles = roleService.getRoles()
 
         if (!project || project.error) {
-            flash.message = "Project not found with id: ${id}"
+            flash.message = message(code: 'project.warn.idNotFound') + ": ${id}"
             if (project?.error) {
                 flash.message += "<br/>${project.error}"
                 log.warn project.error.toString()
@@ -187,12 +187,12 @@ class ProjectController {
         Boolean hasLegacyNewsAndEvents = project.newsAndEvents as Boolean
         Boolean hasLegacyProjectStories = project.projectStories as Boolean
 
-        def config = [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
-         news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab'],
-         activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
-         data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
-         admin:[label:'Admin', template:'CSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
+        def config = [about:[label:message(code: 'project.tab.about'), template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
+         news:[label:message(code: 'project.tab.blog'), template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
+         documents:[label:message(code: 'project.tab.resources'), template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab'],
+         activities:[label:message(code: 'project.tab.surveys'), visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
+         data:[label:message(code: 'project.tab.data'), visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
+         admin:[label:message(code: 'project.tab.admin'), template:'CSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
 
         if(project.isExternal) {
             config.remove('data')
@@ -215,12 +215,12 @@ class ProjectController {
         Boolean hasLegacyNewsAndEvents = project.newsAndEvents as Boolean
         Boolean hasLegacyProjectStories = project.projectStories as Boolean
 
-        def config = [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
-         news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab'],
-         activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
-         data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
-         admin:[label:'Admin', template:'CSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
+        def config = [about:[label:message(code: 'project.tab.about'), template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite],
+         news:[label:message(code: 'project.tab.blog'), template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
+         documents:[label:message(code: 'project.tab.resources'), template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab'],
+         activities:[label:message(code: 'project.tab.surveys'), visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
+         data:[label:message(code: 'project.tab.data'), visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
+         admin:[label:message(code: 'project.tab.admin'), template:'CSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
 
         if(project.isExternal) {
             config.remove('data')
@@ -258,11 +258,11 @@ class ProjectController {
         }
 
 
-        Map content = [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
-                       news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-                       documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab', project:project],
-                       activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:false],
-                       site:[label:'Sites', template:'/site/worksSites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', canEditSites: canEditSites, type:'tab'],
+        Map content = [overview:[label:message(code: 'project.tab.about'), template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
+                       news:[label:message(code: 'project.tab.blog'), template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
+                       documents:[label:message(code: 'project.tab.resources'), template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab', project:project],
+                       activities:[label:message(code: 'project.tab.surveys'), template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:false],
+                       site:[label:message(code: 'project.tab.sites'), template:'/site/worksSites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', canEditSites: canEditSites, type:'tab'],
                        meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, canViewRisks: canViewRisks, type:'tab', template:'viewMeriPlan'],
                        outcomes:[label:'Outcomes', disable:false, visible:user?.isEditor, type:'tab', template:'outcomes'],
                        dashboard:[label:'Dashboard', visible: !project.isExternal, disabled:!user?.hasViewAccess, type:'tab', activities:activities],
@@ -329,7 +329,7 @@ class ProjectController {
     def create() {
         def user = userService.getUser()
         if (!user) {
-            flash.message = "You do not have permission to perform that operation"
+            flash.message = message(code:'project.permission')
             redirect controller: 'home', action: 'index'
             return
         }
@@ -553,7 +553,7 @@ class ProjectController {
         Map result
         if (!id) {
             result.status = 400
-            result.error = 'The project id must be supplied'
+            result.error = message(code: 'project.warn.supplyId')
         }
         else {
             Map plan = request.JSON
@@ -567,11 +567,11 @@ class ProjectController {
     def delete(String id) {
         def resp = projectService.delete(id)
         if(resp == HttpStatus.SC_OK){
-            flash.message = 'Successfully deleted'
+            flash.message = message(code:'g.deleteSuccess')
             render status:resp, text: flash.message
         } else {
             response.status = resp
-            flash.errorMessage = 'Error deleting the project, please try again later.'
+            flash.errorMessage = message(code: 'project.warn.cannotDelete')
             render status:resp, error: flash.errorMessage
         }
     }
@@ -903,14 +903,14 @@ class ProjectController {
             if (projectService.isUserAdminForProject(adminUserId, projectId) || projectService.isUserCaseManagerForProject(adminUserId, projectId)) {
                 render projectService.getMembersForProjectId(projectId) as JSON
             } else {
-                render status:403, text: 'Permission denied'
+                render status:403, text: message(code: 'g.noPermission')
             }
         } else if (adminUserId) {
-            render status:400, text: 'Required params not provided: id'
+            render status:400, text: message(code: 'project.warn.missingParamsId')
         } else if (projectId) {
-            render status:403, text: 'User not logged-in or does not have permission'
+            render status:403, text:  message(code:'project.warn.notLoggedIn')
         } else {
-            render status:500, text: 'Unexpected error'
+            render status:500, text: message(code:'g.unexpectedError')
         }
     }
 
@@ -924,14 +924,14 @@ class ProjectController {
                 asJson results
 
             } else {
-                response.sendError(SC_FORBIDDEN, 'Permission denied')
+                response.sendError(SC_FORBIDDEN, message(code: 'g.noPermission'))
             }
         } else if (adminUserId) {
-            response.sendError(SC_BAD_REQUEST, 'Required params not provided: id')
+            response.sendError(SC_BAD_REQUEST, message(code: 'project.warn.missingParamsId'))
         } else if (projectId) {
-            response.sendError(SC_FORBIDDEN, 'User not logged-in or does not have permission')
+            response.sendError(SC_FORBIDDEN, message(code:'project.warn.notLoggedIn'))
         } else {
-            response.sendError(SC_INTERNAL_SERVER_ERROR, 'Unexpected error')
+            response.sendError(SC_INTERNAL_SERVER_ERROR, message(code:'g.unexpectedError'))
         }
     }
 
@@ -965,7 +965,7 @@ class ProjectController {
             skin = SettingService.getHubConfig().skin
             render view: '/admin/auditMessageDetails', model: [message: results?.message, compare: compare?.message, userDetails: userDetails.user, layoutContent: skin, backToProject: true]
         } else {
-            response.sendError(SC_FORBIDDEN, 'You are not authorized to view this page')
+            response.sendError(SC_FORBIDDEN, message(code: 'project.warn.notAuthorized'))
         }
     }
 
@@ -993,7 +993,7 @@ class ProjectController {
             results.data = data
             asJson results;
         } else {
-            response.sendError(SC_FORBIDDEN, 'You are not authorized to view this page')
+            response.sendError(SC_FORBIDDEN, message(code: 'project.warn.notAuthorized'))
         }
     }
 
