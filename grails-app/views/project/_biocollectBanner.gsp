@@ -8,10 +8,10 @@
             <a id="biocollectlogo" class="white-background" href="${grailsApplication.config.biocollect.homepageUrl}"><img src="${asset.assetPath(src:"icons/BioCollect24.jpg")}" width="193"></a>
         </li>
         <li class="${(path ==~ /.*project\/projectFinder.*/) ? 'active' : ''}">
-            <a href="${createLink(controller: 'home', action: 'index')}" class="btnSearch"><span class="fa fa-search"></span>Search</a>
+            <a href="${createLink(controller: 'home', action: 'index')}" class="btnSearch"><span class="fa fa-search"></span><g:message code='g.search'/></a>
         </li>
         <li class="${(path ==~ /.*bioActivity\/allRecords.*/) ? 'active' : ''}">
-                <a href="${createLink(controller: 'bioActivity', action: 'allRecords')}" class="btnAllData"><span class="fa fa-database"></span>All Records</a>
+                <a href="${createLink(controller: 'bioActivity', action: 'allRecords')}" class="btnAllData"><span class="fa fa-database"></span><g:message code='g.allRecords'/></a>
         </li>
         <li class="${(path ==~ /.*site\/.*/) ? 'active' : ''}">
             <a href="${createLink(controller: 'site', action: 'list')}" class="btnSite"><span class="fa fa-map-marker"></span>Sites</a>

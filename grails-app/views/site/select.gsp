@@ -59,7 +59,7 @@
                             <div class="input-append">
                                 <input type="text" class="search-query" data-bind="value: currentSearch"
                                        placeholder="Search by keyword"/>
-                                <button type="submit" class="btn btn-primary">Search</button>
+                                <button type="submit" class="btn btn-primary"><g:message code='g.search'/></button>
                             </div>
                         </form>
                     </div>

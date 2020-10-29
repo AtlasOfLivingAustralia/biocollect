@@ -15,7 +15,7 @@
                                             }">
                 <button id="clear" class="btn btn-default" data-bind="click: allSpeciesLists.clearSearch"><i class="icon-remove"></i></button>
                 <span class="margin-left-10">
-                <button id="search" class="btn btn-primary" data-bind="click: allSpeciesLists.refreshPage(0)">Search</button>
+                <button id="search" class="btn btn-primary" data-bind="click: allSpeciesLists.refreshPage(0)"><g:message code='g.search'/></button>
 
             </div>
         </div>

@@ -89,8 +89,8 @@
             <div class="pull-right">
                 <div class="nav-collapse collapse pull-right">
                     <ul class="nav">
-                        <li><a class="do-not-mark-external" href="${grailsApplication.config.mdba.baseUrl}/index">Home</a></li>
-                        <li><a class="do-not-mark-external" href="${grailsApplication.config.mdba.baseUrl}/${grailsApplication.config.mdba.searchUrl}">Search</a></li>
+                        <li><a class="do-not-mark-external" href="${grailsApplication.config.mdba.baseUrl}/index"><g:message code='g.home'/></a></li>
+                        <li><a class="do-not-mark-external" href="${grailsApplication.config.mdba.baseUrl}/${grailsApplication.config.mdba.searchUrl}"><g:message code='g.search'/></a></li>
                         <li><a class="do-not-mark-external" href="${grailsApplication.config.mdba.baseUrl}/about">About</a></li>
                         <li><a class="do-not-mark-external" href="${grailsApplication.config.mdba.baseUrl}/help">Help</a></li>
                         <g:if test="${!fc.userIsLoggedIn()}">
