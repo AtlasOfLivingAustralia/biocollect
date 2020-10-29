@@ -103,7 +103,7 @@
     <g:if test="${!printView}">
         <div class="form-actions">
             <button type="button" id="save" class="btn btn-primary">Save changes</button>
-            <button type="button" id="cancel" class="btn">Cancel</button>
+            <button type="button" id="cancel" class="btn"><g:message code='g.cancel'/></button>
         </div>
     </g:if>
 

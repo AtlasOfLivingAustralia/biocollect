@@ -133,7 +133,7 @@
                 <!-- /ko -->
                 <button class="btn-primary btn btn-small block" data-bind="click: function() {submit()}, enable: transients.enableSubmission()"><i class="icon-white  icon-envelope" ></i>  Submit </button>
             <!-- /ko -->
-            <button class="btn-primary btn btn-small block" data-bind="click: hideModal, disable: transients.submissionInProgress()">Cancel</button>
+            <button class="btn-primary btn btn-small block" data-bind="click: hideModal, disable: transients.submissionInProgress()"><g:message code='g.cancel'/></button>
         </div>
 
     </div>

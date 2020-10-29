@@ -13,8 +13,8 @@
             <g:checkBox name="acceptTerms" data-bind="checked:termsAccepted" style="margin:0;"/>&nbsp;
             I agree with the above declaration.
         </label>
-        <button class="btn btn-success" data-bind="click:submitReport, enable:termsAccepted" data-dismiss="modal" aria-hidden="true">Submit</button>
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="btn btn-success" data-bind="click:submitReport, enable:termsAccepted" data-dismiss="modal" aria-hidden="true"><g:message code='g.submit'></button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true"><g:message code='g.cancel'/></button>
     </div>
 </div>
 <!-- /ko -->

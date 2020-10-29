@@ -61,7 +61,7 @@
 
         <div class="form-actions">
             <button type="button" data-bind="click: next" class="btn btn-primary">Next</button>
-            <button type="button" id="cancel" class="btn">Cancel</button>
+            <button type="button" id="cancel" class="btn"><g:message code='g.cancel'/></button>
         </div>
     </div>
 

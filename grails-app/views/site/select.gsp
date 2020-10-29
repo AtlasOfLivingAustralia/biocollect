@@ -115,7 +115,7 @@
                                 <div class="row-fluid">
                                     <div class="span12 text-right">
                                         <button class="btn btn-primary margin-top-5" data-bind="click: useSelectedSites">Add selected sites</button>
-                                        <button class="btn margin-top-5" data-bind="click: cancelUpdate">Cancel</button>
+                                        <button class="btn margin-top-5" data-bind="click: cancelUpdate"><g:message code='g.cancel'/></button>
                                     </div>
                                 </div>
                             </td>

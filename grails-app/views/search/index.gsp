@@ -112,7 +112,7 @@
                                     </ul>
                                 </div>
                                 <div class="modal-footer">
-                                    <a href="#" class="btn" data-dismiss="modal">Close</a>
+                                    <a href="#" class="btn" data-dismiss="modal"><g:message code='g.close'/></a>
                                 </div>
                             </div>
                         </g:if>

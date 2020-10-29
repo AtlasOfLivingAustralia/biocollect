@@ -45,7 +45,7 @@
         <div class="form-actions">
 
             <button type="button" data-bind="click: saveMeriPlan" id="project-details-save" class="btn btn-primary">Save changes</button>
-            <button type="button" id="details-cancel" class="btn" data-bind="click: cancelMeriPlanEdits">Cancel</button>
+            <button type="button" id="details-cancel" class="btn" data-bind="click: cancelMeriPlanEdits"><g:message code='g.cancel'/></button>
         </div>
 
     </div>

@@ -246,7 +246,7 @@
         <div class="form-actions">
             <g:render template="/shared/termsOfUse"/>
             <button type="button" id="save" class="btn btn-primary">Save changes</button>
-            <button type="button" id="cancel" class="btn">Cancel</button>
+            <button type="button" id="cancel" class="btn"><g:message code='g.cancel'/></button>
             <label class="checkbox inline">
                 <input data-bind="checked:transients.markedAsFinished" type="checkbox"> Mark this activity as finished.
             </label>
