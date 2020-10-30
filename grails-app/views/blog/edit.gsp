@@ -6,7 +6,7 @@
     <title>Edit | Blog Entry | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: "g.home")}"/>
     <meta name="breadcrumbParent2"
-          content="${createLink(controller: 'project', action: 'index')}/${blogEntry.projectId},Project"/>
+          content="${createLink(controller: 'project', action: 'index')}/${blogEntry.projectId},${message(code: 'g.project')}"/>
     <meta name="breadcrumb" content="Edit blog entry"/>
     <asset:stylesheet src="fileupload-ui-manifest.css"/>
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>

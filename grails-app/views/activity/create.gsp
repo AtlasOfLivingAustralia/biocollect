@@ -8,7 +8,7 @@
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: 'g.home')}"/>
     <g:if test="${project}">
         <meta name="breadcrumbParent2"
-              content="${createLink(controller: 'project', action: 'index')}/${project?.projectId},Project"/>
+              content="${createLink(controller: 'project', action: 'index')}/${project?.projectId},${message(code: 'g.project')}"/>
     </g:if>
     <g:elseif test="${site}">
         <meta name="breadcrumbParent2"
