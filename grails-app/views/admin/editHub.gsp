@@ -50,7 +50,7 @@
         Configured hubs: <select data-bind="value:selectedHubUrlPath, options:hubs"></select>
     </div>
     <div class="span2">
-        <button class="btn btn-info" data-bind="click:editHub">Edit <span data-bind="text:selectedHubUrlPath"></span></button>
+        <button class="btn btn-info" data-bind="click:editHub"><g:message code='g.edit'/> <span data-bind="text:selectedHubUrlPath"></span></button>
         <button class="btn btn-info" data-bind="click:newHub">New Hub</button>
     </div>
 

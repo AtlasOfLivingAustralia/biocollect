@@ -14,14 +14,14 @@
                 <a href="${createLink(controller: 'bioActivity', action: 'allRecords')}" class="btnAllData"><span class="fa fa-database"></span><g:message code='g.allRecords'/></a>
         </li>
         <li class="${(path ==~ /.*site\/.*/) ? 'active' : ''}">
-            <a href="${createLink(controller: 'site', action: 'list')}" class="btnSite"><span class="fa fa-map-marker"></span>Sites</a>
+            <a href="${createLink(controller: 'site', action: 'list')}" class="btnSite"><span class="fa fa-map-marker"></span><g:message code='g.sites'/></a>
         </li>
         <li class="${(path ==~ /.*project\/create.*/) ? 'active' : ''}">
-            <a href="<fc:getNewProjectLinkForHub hubConfig="${hubConfig}"/>" class="btnNewProject"><span class="fa fa-plus"></span>New Project</a>
+            <a href="<fc:getNewProjectLinkForHub hubConfig="${hubConfig}"/>" class="btnNewProject"><span class="fa fa-plus"></span><g:message code='g.newProject'/></a>
         </li>
         <g:if test="${fc.userIsSiteAdmin()}">
             <li class="${(path ==~ /.*admin\/index.*/) ? 'active' : ''}">
-                <a href="${createLink(controller: 'admin')}" class="btnAdministration"><span class="fa fa-lock"></span>Admin</a>
+                <a href="${createLink(controller: 'admin')}" class="btnAdministration"><span class="fa fa-lock"></span><g:message code='g.admin'/></a>
             </li>
         </g:if>
         <g:if test="${fc.currentUserDisplayName()}">
@@ -32,11 +32,11 @@
                     <li><a href="${createLink(controller: 'user', action: 'index')}" class="btnMyDashboard"><span class="fa fa-dashboard"></span>My Dashboard</a></li>
                     -->
                     <g:if test="${!settingService.isWorksHub()}">
-                        <li><a href="${createLink(controller: 'bioActivity', action: 'list')}" class="btnMyData"><span class="fa fa-database"></span>My Data</a></li>
+                        <li><a href="${createLink(controller: 'bioActivity', action: 'list')}" class="btnMyData"><span class="fa fa-database"></span><g:message code='g.myData'/></a></li>
                     </g:if>
-                    <li><a href="${createLink(controller: 'project', action: 'myProjects')}" class="btnMyProjects"><span class="fa fa-folder"></span>My Projects</a></li>
-                    <li><a href="${createLink(controller: 'organisation', action: 'myOrganisations')}" class="btnMyOrganisation"><span class="fa fa-building"></span>My Organisation</a></li>
-                    <li><a href="${createLink(controller: 'site', action: 'myFavourites')}" class="btnMyFavouriteSites"><span class="fa fa-map-marker"></span>My Favourite Sites</a></li>
+                    <li><a href="${createLink(controller: 'project', action: 'myProjects')}" class="btnMyProjects"><span class="fa fa-folder"></span><g:message code='g.myProjects'/></a></li>
+                    <li><a href="${createLink(controller: 'organisation', action: 'myOrganisations')}" class="btnMyOrganisation"><span class="fa fa-building"></span><g:message code='g.myOrganisation'/></a></li>
+                    <li><a href="${createLink(controller: 'site', action: 'myFavourites')}" class="btnMyFavouriteSites"><span class="fa fa-map-marker"></span><g:message code='g.myFavSites'/></a></li>
                 </ul>
             </li>
         </g:if>
