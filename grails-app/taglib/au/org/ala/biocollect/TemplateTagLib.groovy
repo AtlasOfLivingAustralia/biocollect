@@ -253,10 +253,10 @@ class TemplateTagLib {
     private Map printLoginOrLogoutButton(Map hubConfig){
         if(!fc.userIsLoggedIn()){
             String loginUrl = grailsApplication.config.security.cas.loginUrl + "?service=" + grailsApplication.config.security.cas.appServerName + request.forwardURI + "?hub=" + hubConfig.urlPath
-            return [displayName: 'Login', href: loginUrl, contentType:'external']
+            return [displayName: message(code: 'g.login'), href: loginUrl, contentType:'external']
         } else {
             String logoutUrl = grailsApplication.config.grails.serverURL + "/logout/logout?casUrl=" + grailsApplication.config.security.cas.logoutUrl + "&appUrl=" +  grailsApplication.config.security.cas.appServerName + request.forwardURI + "?hub=" + hubConfig.urlPath
-            return [displayName: 'Logout', href: logoutUrl, contentType:'external']
+            return [displayName: message(code: 'g.logout'), href: logoutUrl, contentType:'external']
         }
     }
 }
