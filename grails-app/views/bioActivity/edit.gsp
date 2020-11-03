@@ -9,7 +9,7 @@
     </g:if>
     <g:else>
         <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
-        <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
+        <title><g:message code='g.edit'/> | ${activity.type} | <g:message code="g.biocollect"/></title>
     </g:else>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: "g.home")}"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${pActivity.projectId},${message(code: "g.project")}"/>

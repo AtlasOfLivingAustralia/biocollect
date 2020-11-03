@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Create | Activity | <g:message code="g.biocollect"/></title>
+    <title><g:message code='g.create'/> | <g:message code='g.activity'/> | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: 'g.home')}"/>
     <g:if test="${project}">
         <meta name="breadcrumbParent2"

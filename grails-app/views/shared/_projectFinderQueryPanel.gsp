@@ -3,8 +3,8 @@
     <div id="pt-selectors" class="well">
         <h4><g:message code="project.search.heading"/></h4>
         <div id="filter-buttons">
-            <button class="btn btn-small facetSearch" data-bind="click: mergeTempToRefine"><i class="icon-filter"></i>Refine</button>
-            <button class="btn btn-small clearFacet" data-bind="click: $root.reset"><i class="icon-remove-sign"></i>Clear all</button>
+            <button class="btn btn-small facetSearch" data-bind="click: mergeTempToRefine"><i class="icon-filter"></i><g:message code='g.refine'/></button>
+            <button class="btn btn-small clearFacet" data-bind="click: $root.reset"><i class="icon-remove-sign"></i><g:message code='g.clearAll'/></button>
         </div>
         <section class="filter-section">
             <h5 data-bind="visible: selectedFacets().length"><g:message code="project.search.currentFilters"/></h5>

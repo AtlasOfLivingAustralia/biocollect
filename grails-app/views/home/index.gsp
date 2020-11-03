@@ -82,9 +82,9 @@
                     <b class="caret"></b>
                 </a>
             </div>
-            <h3 style="margin-bottom:0;">Filter results</h3>
-            <button class="btn btn-small facetSearch"><i class="icon-filter"></i>Refine</button>
-            <button class="btn btn-small clearFacet"><i class="icon-remove-sign"></i>Clear all</button>
+            <h3 style="margin-bottom:0;"><g:message code='project.search.heading'/></h3>
+            <button class="btn btn-small facetSearch"><i class="icon-filter"></i><g:message code='g.refine'/></button>
+            <button class="btn btn-small clearFacet"><i class="icon-remove-sign"></i><g:message code='g.clearAll'/></button>
             <g:if test="${params.fq}">
                 <div class="currentFilters">
                     <h4>Current filters</h4>
@@ -144,7 +144,7 @@
 	                                </div>
 	                                <div class="modal-footer">
 	                                    <div class="pull-left">
-                                            <button class="btn btn-small facetSearch"><i class="icon-filter"></i>Refine</button>
+                                            <button class="btn btn-small facetSearch"><i class="icon-filter"></i><g:message code='g.refine'/></button>
 	                                        <button class="btn btn-small sortAlpha"><i class="icon-filter"></i> Sort by name</button>
 	                                        <button class="btn btn-small sortCount"><i class="icon-filter"></i> Sort by count</button>
 	                                    </div>

@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Edit | ${activity.activityId ?: 'new'} | ${site.name} | ${site.projectName} | <g:message code="g.biocollect"/></title>
+    <title><g:message code='g.edit'/> | ${activity.activityId ?: 'new'} | ${site.name} | ${site.projectName} | <g:message code="g.biocollect"/></title>
     <md:modelStyles model="${model}"/>
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:javascript src="jstz/jstz.min.js"/>
@@ -49,7 +49,7 @@
     <div class="row-fluid">
         <button type="button" class="btn"
                 onclick="document.location.href='${createLink(action:"edit", id:"${output.outputId}")}'"
-        >Edit this data</button>
+        ><g:message code='g.edit'/> this data</button>
     </div>
 
     <hr />

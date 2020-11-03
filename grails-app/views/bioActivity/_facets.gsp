@@ -1,9 +1,9 @@
-<h3>Refine results</h3>
+<h3><g:message code='g.search.refineResults'/></h3>
 <span data-bind="if: $root.transients.loading()">Loading...</span>
 <!-- ko if: selectedFilters().length > 0 -->
 <div class="row-fluid">
     <div class="span12">
-        Results refined by:
+        <g:message code='g.search.refinedBy'/>:
         <ul>
         <!-- ko foreach : selectedFilters -->
             <li>
@@ -18,8 +18,8 @@
 
 <div class="row-fluid" data-bind="if: refinementSelected() || selectedFilters().length > 0">
     <div class="span12">
-        <button class="button btn-sm btn-default" data-bind="click: refineSearch, visible: refinementSelected()"><i class="fa fa-filter">&nbsp;</i>Refine</button>
-        <button class="button btn-sm btn-default" data-bind="click: removeUserSelectedFacet, visible: selectedFilters().length > 0"><i class="fa fa-times-circle-o">&nbsp;</i>Reset</button>
+        <button class="button btn-sm btn-default" data-bind="click: refineSearch, visible: refinementSelected()"><i class="fa fa-filter">&nbsp;</i><g:message code='g.refine'/></button>
+        <button class="button btn-sm btn-default" data-bind="click: removeUserSelectedFacet, visible: selectedFilters().length > 0"><i class="fa fa-times-circle-o">&nbsp;</i><g:message code='g.reset'/></button>
     </div>
 </div>
 
