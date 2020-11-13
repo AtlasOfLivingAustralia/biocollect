@@ -71,6 +71,7 @@
         flimit: ${grailsApplication.config.facets.flimit},
         allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
         allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        allMapDisplays: ${grailsApplication.config.map.data.displays as grails.converters.JSON},
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}",
         timeSeriesOnIndex: "${hubConfig.timeSeriesOnIndex}",

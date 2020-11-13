@@ -106,6 +106,13 @@ class UrlMappings {
                                 hub validator: {val, obj -> isHubValid( val)}
                         }
                 }
+
+                "/$hub/i18n"(controller: "home", action: "i18n") {
+                        constraints {
+                                hub validator: {val, obj -> isHubValid( val)}
+                        }
+                }
+
                 "/admin/user/$id"(controller: "user", action: "show") {
 
                 }
