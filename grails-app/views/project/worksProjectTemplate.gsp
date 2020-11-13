@@ -121,6 +121,7 @@
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
         allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        allMapDisplays: ${grailsApplication.config.map.data.displays as grails.converters.JSON},
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}",
         mapDisplayHelpText: "<g:message code="map.style.help"/>",

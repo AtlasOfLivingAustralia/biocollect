@@ -118,6 +118,7 @@
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
         allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
         allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        allMapDisplays: ${grailsApplication.config.map.data.displays as grails.converters.JSON},
         surveyMethods: <fc:getSurveyMethods/>,
         timeSeriesOnIndex: "${hubConfig.timeSeriesOnIndex}",
         mapDisplays: ${mapService.getMapDisplays(project) as JSON},
