@@ -1,13 +1,14 @@
 describe('Test ActivitiesAndRecordsViewModel', function () {
     var mockElement, mapTab, selectionControl, legendControl, playerControl, infoPanelControl,
-        emptyFn = function(){};
+        emptyFn = function () {
+        };
     beforeAll(function () {
         window.fcConfig = {
             searchProjectActivitiesUrl: '',
             getLayerNameURL: 'getLayerNameURL',
             heatmapURL: '',
-            organisationName:'',
-            projectIndexUrl:'',
+            organisationName: '',
+            projectIndexUrl: '',
             activityDeleteUrl: '',
             worksActivityViewUrl: '',
             worksActivityEditUrl: '',
@@ -36,43 +37,45 @@ describe('Test ActivitiesAndRecordsViewModel', function () {
                 }
             }
         };
-
-        window.L = {
-            geoJson: function () {
-                var self = new function () {};
-                new Emitter(self);
-                self.fire = self.emit;
-                return self;
-            },
-            Control: {
-                Player: function () {
-                    var self = this;
+        if (typeof window.L === 'undefined') {
+            window.L = {
+                geoJson: function () {
+                    var self = new function () {
+                    };
                     new Emitter(self);
                     self.fire = self.emit;
-                    self.isPlayerActive = emptyFn;
-                    self.getCurrentDuration = function() {
-                        return {interval: [1,2]}
-                    }
+                    return self;
                 },
-                HorizontalMultiInput: function () {
-                    var self = this;
-                    new Emitter(self);
-                    self.fire = self.emit;
-                    self.setSelectOptions = emptyFn;
-                    self.changeLabel = emptyFn;
-                    self.disableItem = emptyFn;
-                    self.setSize = emptyFn;
-                },
-                LegendImage: function () {
-                    var self = this;
-                    self.on = emptyFn;
-                    self.clearLegend = emptyFn;
-                },
-                InfoPanel: function () {
-                    var self = this;
-                    self.on = emptyFn;
-                }
+                Control: {}
             }
+        }
+        ;
+        window.L.Control.Player = function () {
+            var self = this;
+            new Emitter(self);
+            self.fire = self.emit;
+            self.isPlayerActive = emptyFn;
+            self.getCurrentDuration = function () {
+                return {interval: [1, 2]}
+            }
+        };
+        window.L.Control.HorizontalMultiInput = function () {
+            var self = this;
+            new Emitter(self);
+            self.fire = self.emit;
+            self.setSelectOptions = emptyFn;
+            self.changeLabel = emptyFn;
+            self.disableItem = emptyFn;
+            self.setSize = emptyFn;
+        };
+        window.L.Control.LegendImage = function () {
+            var self = this;
+            self.on = emptyFn;
+            self.clearLegend = emptyFn;
+        };
+        window.L.Control.InfoPanel = function () {
+            var self = this;
+            self.on = emptyFn;
         };
 
         mockElement = document.createElement('div');

@@ -20,6 +20,7 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
+            'node_modules/leaflet/dist/leaflet.js',
             'grails-app/assets/vendor/knockout/3.4.0/knockout-3.4.0.js',
             'grails-app/assets/vendor/knockout.js/knockout.mapping-latest.js',
             'grails-app/assets/vendor/underscore/underscore-1.8.3.min.js',
@@ -42,7 +43,6 @@ module.exports = function (config) {
             'grails-app/assets/javascripts/project-finder.js',
             'grails-app/assets/javascripts/facets.js',
             'grails-app/assets/javascripts/activity.js',
-            'node_modules/leaflet/dist/leaflet.js',
             'grails-app/assets/vendor/leaflet-plugins-2.0.0/layer/tile/Google.js',
             'grails-app/assets/javascripts/MapUtilities.js',
             '../ecodata-client-plugin/grails-app/assets/vendor/select2/4.0.3/js/select2.full.js',
