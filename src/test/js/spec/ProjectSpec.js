@@ -1,7 +1,8 @@
 describe("ProjectViewModel Spec", function () {
     beforeAll(function() {
         window.fcConfig = {
-            imageLocation:'/'
+            imageLocation:'/',
+            mapLayersConfig: {baseLayers: {}}
         }
     });
     afterAll(function() {
