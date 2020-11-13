@@ -57,7 +57,7 @@ module.exports = function (config) {
             'grails-app/assets/components/components.js',
             'grails-app/assets/components/compile/*.js',
             'grails-app/assets/components/javascript/*.js',
-            'src/test/js/spec/**/*.js'
+            'src/test/js/spec/*.js'
         ],
 
 
