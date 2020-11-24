@@ -41,7 +41,12 @@ describe('Test ProjectFinder', function () {
 
                     },
                     addButton: emptyFn,
-                    registerListener: emptyFn
+                    registerListener: emptyFn,
+                    getMapImpl: function () {
+                        return {
+                            invalidateSize: emptyFn
+                        }
+                    }
                 }
             }
         };
