@@ -366,7 +366,8 @@ describe("SurveyVisibilityViewModel Spec", function () {
             speciesListUrl: "/biocollect/sightings/proxy/speciesItemsForList",
             speciesProfileUrl: "/biocollect/sightings/proxy/speciesProfile",
             noImageUrl: '/biocollect/assets/no-image-2-14a0a809823b65b821d14e1b5f6e2e9f.png',
-            speciesImageUrl:"/biocollect/sightings/species/speciesImage"
+            speciesImageUrl:"/biocollect/sightings/species/speciesImage",
+            mapLayersConfig: {baseLayers: {}}
         }
     });
     afterAll(function() {

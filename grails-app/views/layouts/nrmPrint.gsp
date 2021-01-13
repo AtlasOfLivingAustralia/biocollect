@@ -21,6 +21,9 @@
     <asset:stylesheet src="base.css"/>
     <asset:stylesheet src="nrm-manifest.css"/>
     <asset:javascript src="base.js"/>
+    <script type="text/javascript">
+        i18nInitilisation("${g.createLink(controller: 'home', action: 'i18n')}");
+    </script>
     <asset:stylesheet src="print.css"/>
     <g:layoutHead />
 </head>

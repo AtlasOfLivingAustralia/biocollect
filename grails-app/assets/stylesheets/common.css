@@ -827,3 +827,24 @@ input.full-width-input {
 dd {
     margin-bottom: 10px;
 }
+
+/** activities css */
+.project-map-popup .image-centre, .record-map-popup .image-centre {
+    display: block;
+    margin: 0 auto;
+}
+
+.overlays-map-popup .row-fluid [class*="span"],
+.project-map-popup .row-fluid [class*="span"],
+.record-map-popup .row-fluid [class*="span"] {
+    min-height: 20px;
+}
+
+.project-map-popup dd {
+    line-height: 1.4;
+    margin-bottom: 5px;
+}
+
+.project-map-popup dl {
+    margin-bottom: 5px;
+}

@@ -17,6 +17,9 @@
     <asset:stylesheet src="base.css"/>
     <asset:stylesheet src="ala2.css"/>
     <asset:javascript src="base.js"/>
+    <script type="text/javascript">
+        i18nInitilisation("${g.createLink(controller: 'home', action: 'i18n')}");
+    </script>
 
     <asset:script type="text/javascript">
         // initialise plugins

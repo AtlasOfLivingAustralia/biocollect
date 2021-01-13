@@ -9,3 +9,4 @@
 //= require bootstrap-combobox/bootstrap-combobox.js
 //= require ala-map-no-jquery-us.js
 //= require fieldcapture-application.js
+//= require i18n.js

@@ -1,0 +1,40 @@
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Display text</th>
+                <th>Show to logged out users?</th>
+                <th>Show to logged in users?</th>
+                <th class="bdms-project-member-header" data-bind="if: showProjectMemberColumn()">Show to project members?</th>
+                <th>Is default?</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- ko foreach: mapDisplays -->
+            <tr>
+                <td><input type="text" data-bind="value: value"/> </td>
+                <td><div class="checkbox bdms-show-logged-out"><input type="checkbox" data-bind="checked: showLoggedOut"/></div> </td>
+                <td><div class="checkbox bdms-show-logged-in"><input type="checkbox" data-bind="checked: showLoggedIn"/></div> </td>
+                <td data-bind="if: $parent.showProjectMemberColumn()"><div class="checkbox bdms-show-project-members"><input type="checkbox" data-bind="checked: showProjectMembers"/></div> </td>
+                <td><div class="radio bdms-default-option"><input type="radio" name="selected-display" data-bind="checked: $parent.transients.isDefaultMapDisplay, value: key"/></div> </td>
+            </tr>
+            <!-- /ko -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="alert alert-info">
+            <div class="row-fluid">
+                <div class="span12">
+                    <h5><strong data-bind="text: $i18n('biocollect.data.map.selector.help.title', '')"></strong></h5>
+                    <p data-bind="html: $i18n('biocollect.data.map.selector.help.content', '')">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

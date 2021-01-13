@@ -20,12 +20,17 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
+            'node_modules/leaflet/dist/leaflet.js',
             'grails-app/assets/vendor/knockout/3.4.0/knockout-3.4.0.js',
             'grails-app/assets/vendor/knockout.js/knockout.mapping-latest.js',
             'grails-app/assets/vendor/underscore/underscore-1.8.3.min.js',
             'grails-app/assets/javascripts/knockout-dates.js',
             'grails-app/assets/vendor/wmd/showdown.js',
             'grails-app/assets/vendor/wmd/wmd.js',
+            'grails-app/assets/vendor/amplify/amplify.min.js',
+            'grails-app/assets/vendor/moment/moment.min.js',
+            'grails-app/assets/vendor/moment/moment-timezone-with-data.min.js',
+            'grails-app/assets/vendor/emitter/emitter.js',
             'grails-app/assets/javascripts/document.js',
             'grails-app/assets/vendor/fuse/fuse.min.js',
             'grails-app/assets/javascripts/fieldcapture-application.js',
@@ -35,8 +40,9 @@ module.exports = function (config) {
             'grails-app/assets/javascripts/organisation.js',
             'grails-app/assets/javascripts/pagination.js',
             'grails-app/assets/javascripts/sites.js',
+            'grails-app/assets/javascripts/project-finder.js',
+            'grails-app/assets/javascripts/facets.js',
             'grails-app/assets/javascripts/activity.js',
-            'node_modules/leaflet/dist/leaflet.js',
             'grails-app/assets/vendor/leaflet-plugins-2.0.0/layer/tile/Google.js',
             'grails-app/assets/javascripts/MapUtilities.js',
             '../ecodata-client-plugin/grails-app/assets/vendor/select2/4.0.3/js/select2.full.js',
@@ -51,7 +57,7 @@ module.exports = function (config) {
             'grails-app/assets/components/components.js',
             'grails-app/assets/components/compile/*.js',
             'grails-app/assets/components/javascript/*.js',
-            'src/test/js/spec/**/*.js'
+            'src/test/js/spec/*.js'
         ],
 
 

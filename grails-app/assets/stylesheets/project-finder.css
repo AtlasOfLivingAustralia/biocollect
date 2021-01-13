@@ -198,3 +198,7 @@ input[type=checkbox] {
   padding: 4px;
   white-space: nowrap;
 }
+
+#pfMap {
+    cursor: pointer;
+}

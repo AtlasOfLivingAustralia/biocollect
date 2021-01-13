@@ -453,7 +453,7 @@ section#breadcrumb {
   color: inherit;
   line-height: 1;
 }
-#main-content .image-logo {
+#main-content img.image-logo, .image-logo {
   max-width: 100%;
   max-height: 100%;
 }

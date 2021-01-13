@@ -2,6 +2,7 @@ var hubConfigs = {
     availableProjectFacets: [],
     availableDataFacets: [],
     availableDataColumns: [],
+    availableIndexForTimeSeries: ['dateCreated'],
     defaultOverriddenLabels: undefined
 };
 
@@ -117,6 +118,8 @@ var HubSettings = function (settings, config) {
         projectFinder: new FacetConfigurationViewModel(settings.pages.projectFinder, hubConfigs.availableProjectFacets)
     };
     self.dataColumns = ko.observableArray();
+    self.mapDisplays = ko.observableArray();
+    self.timeSeriesOnIndex = ko.observable();
     /**
      * Set home page only if the configurable template is chosen. Otherwise, do nothing. If user had previously chosen
      * configurable template but not anymore, then do not change homepage.
@@ -225,7 +228,8 @@ var HubSettings = function (settings, config) {
         selectedDataFacet: ko.observable(),
         selectedDataColumn: ko.observable(),
         defaultDataColumns: ko.observableArray(),
-        sortColumn: ko.observable()
+        sortColumn: ko.observable(),
+        isDefaultMapDisplay: ko.observable()
     };
 
     self.transients.sortColumn.subscribe(self.setSortColumn, self);
@@ -245,6 +249,9 @@ var HubSettings = function (settings, config) {
         self.mapLayersConfig = settings.mapLayersConfig || {};
         self.quickLinks(mapLinks(settings.quickLinks));
         self.templateConfiguration(new TemplateConfigurationViewModel(settings.templateConfiguration || {}));
+        self.timeSeriesOnIndex(settings.timeSeriesOnIndex || 'dateCreated');
+        self.mapDisplays(settings.mapDisplays);
+
         if (settings.defaultFacetQuery && settings.defaultFacetQuery instanceof Array) {
             $.each(settings.defaultFacetQuery, function (i, obj) {
                 self.defaultFacetQuery.push({query: ko.observable(obj)});
@@ -265,6 +272,7 @@ var HubSettings = function (settings, config) {
             self.customBreadCrumbs.push(new CustomBreadCrumbsViewModel(breadcrumb));
         });
         self.loadDefaultDataColumns(hubConfigs.availableDataColumns);
+        self.loadAvailableIndexForTimeSeries(hubConfigs.availableDataColumns);
         self.loadDataColumns(settings.dataColumns || []);
         self.loadSortColumn();
     };
@@ -378,6 +386,15 @@ HubSettings.prototype.loadDefaultDataColumns = function (columns) {
         self.transients.defaultDataColumns.push(new ColumnViewModel(column));
     });
 };
+
+HubSettings.prototype.loadAvailableIndexForTimeSeries = function (indices) {
+    var self = this;
+    indices.forEach (function (index) {
+        if (index.dataType === 'date') {
+            hubConfigs.availableIndexForTimeSeries.push(index.propertyName);
+        }
+    })
+}
 
 HubSettings.prototype.loadDataColumns = function (columns) {
     var self = this;
@@ -902,6 +919,18 @@ ColumnViewModel.prototype.load = function (data) {
     this.sort(data.sort || this.sort());
     this.order(data.order || this.order());
 };
+
+function MapDisplayViewModel(config) {
+    var self = this;
+    config = config || {};
+
+    self.value = ko.observable(config.value || "");
+    self.key = ko.observable(config.key || "");
+    self.showLoggedOut = ko.observable(!!config.showLoggedOut);
+    self.showLoggedIn = ko.observable(!!config.showLoggedIn);
+    self.isDefault = ko.observable(config.isDefault || "");
+    self.size = config.size;
+}
 
 var colorScheme = {
     menuBackgroundColor: "#009080",
