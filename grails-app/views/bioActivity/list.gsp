@@ -8,7 +8,6 @@
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: "g.home")}"/>
     <meta name="breadcrumb" content="${title}"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-    <g:set var="wsParameters" value="${[version: params.version, spotterId: "${spotterId}", projectActivityId: "${projectActivityId}"]}"/>
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:stylesheet src="facets-filter-view.css"/>
     <asset:script type="text/javascript">
@@ -29,14 +28,18 @@
             activityAddUrl: "${createLink(controller: 'bioActivity', action: 'create')}",
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
             searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities', params: [projectId: projectId])}",
+            dateRangeURL: "${createLink(controller: 'bioActivity', action: 'getMinMaxYearForQuery', params: [projectId: projectId])}",
             worksActivityEditUrl: "${createLink(controller: 'activity', action: 'enterData')}",
             worksActivityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
             downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
-            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params: wsParameters)}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
+            wmsActivityURL: "${createLink(controller: 'geoServer', action: 'wms', params: [projectId: projectId, maxFeatures: grailsApplication.config.map.wms.maxFeatures, tiled: true])}",
+            createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
+            getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
+            heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap', params: [projectId: projectId])}",
             view: "${view}",
             returnTo: "${returnTo}",
             projectLinkPrefix: "${createLink(controller: 'project')}/",
@@ -53,7 +56,22 @@
             spatialUrl: "${spatialUrl}",
             mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-            absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}"
+            absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
+            timeSeriesOnIndex: "${hubConfig.timeSeriesOnIndex}",
+            mapDisplays: ${mapService.getMapDisplays() as JSON},
+            mapDisplayHelpText: "<g:message code="map.style.help"/>",
+            mapDisplayColourByHelpText: "<g:message code="map.colour.by.help"/>",
+            mapDisplayFilterByHelpText: "<g:message code="map.filter.by.help"/>",
+            clusterLegendTitle: "<g:message code="map.cluster.legend.title"/>",
+            heatmapLegendTitle: "<g:message code="map.heatmap.legend.title"/>",
+            pointLegendTitle: "<g:message code="map.point.legend.title"/>",
+            polygonLegendTitle: "<g:message code="map.polygon.legend.title"/>",
+            lineLegendTitle: "<g:message code="map.line.legend.title"/>",
+            heatmapHelpText: "<g:message code="map.heatmap.help.text"/>",
+            clusterHelpText: "<g:message code="map.cluster.help.text"/>",
+            lineHelpText: "<g:message code="map.line.help.text"/>",
+            pointHelpText: "<g:message code="map.point.help.text"/>",
+            polygonHelpText: "<g:message code="map.polygon.help.text"/>"
         },
         here = document.location.href;
     </asset:script>

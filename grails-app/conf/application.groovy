@@ -512,4 +512,98 @@ if(!map.overlays) {
         ]
 }
 
+if (!map.wms.maxFeatures) {
+        map.wms.maxFeatures = 100000
+}
+
+map.data.displays = [
+        [
+                value: "Point",
+                key: "point_circle",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "heatmap",
+                size: 4
+        ],
+        [
+                value: "Polygon",
+                key: "polygon_sites",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "heatmap",
+                size: 1
+        ],
+        [
+                value: "Line",
+                key: "line_sites",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "heatmap",
+                size: 1
+        ],
+        [
+                value: "Heatmap",
+                key: "heatmap",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "heatmap"
+        ]
+//        TODO: fix clustering on GeoServer before enabling.
+//        ,
+//        [
+//                value: "Cluster",
+//                key: "cluster",
+//                showLoggedOut: true,
+//                showLoggedIn: true,
+//                showProjectMembers: true,
+//                isDefault: "heatmap"
+//        ]
+]
+
+map.projectfinder.displays = [
+        [
+                value: "Point",
+                key: "point_circle_project",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "point_circle_project",
+                size: 9
+        ],
+        [
+                value: "Polygon",
+                key: "polygon_sites_project",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "point_circle_project",
+                size: 1
+        ],
+        [
+                value: "Heatmap",
+                key: "heatmap",
+                showLoggedOut: true,
+                showLoggedIn: true,
+                showProjectMembers: true,
+                isDefault: "point_circle_project"
+        ]
+//        Cluster view is not working in GeoServer. Disabling it for the moment.
+//        TODO: fix clustering of projects on GeoServer.
+//        ,
+//        [
+//                value: "Cluster",
+//                key: "cluster_project",
+//                showLoggedOut: true,
+//                showLoggedIn: true,
+//                showProjectMembers: true,
+//                isDefault: "polygon_sites_project"
+//        ]
+]
+
 settings.surveyMethods="fielddata.survey.methods"
+
+geoServer.readTimeout = 600000

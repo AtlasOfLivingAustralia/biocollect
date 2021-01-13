@@ -35,6 +35,7 @@ class UrlMappings {
                         action = [GET: "get", POST: "upload", PUT: "upload", DELETE: "delete"]
                 }
 
+                "/geoServer/wms"(controller: "geoServer", action: "wms")
                 "/project/getAuditMessagesForProject/$id"(controller: "project", action: 'getAuditMessagesForProject')
 
                 "/activity/$entityId/comment"(controller: "comment"){
@@ -105,6 +106,13 @@ class UrlMappings {
                                 hub validator: {val, obj -> isHubValid( val)}
                         }
                 }
+
+                "/$hub/i18n"(controller: "home", action: "i18n") {
+                        constraints {
+                                hub validator: {val, obj -> isHubValid( val)}
+                        }
+                }
+
                 "/admin/user/$id"(controller: "user", action: "show") {
 
                 }
@@ -124,7 +132,6 @@ class UrlMappings {
                 "/ws/bioactivity/save"(controller:  "bioActivity", action: 'ajaxUpdate')
                 "/ws/bioactivity/delete/$id"(controller:  "bioActivity", action: 'delete')
                 "/ws/bioactivity/search"(controller:  "bioActivity", action: 'searchProjectActivities')
-                "/ws/bioactivity/map"(controller:  "bioActivity", action: 'getProjectActivitiesRecordsForMapping')
         }
 }
 

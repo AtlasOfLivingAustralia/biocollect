@@ -29,7 +29,7 @@ function ProjectFinder(config) {
     var mapInitialised = false;
 
     /* Stores selected project id when a link is selected */
-    var selectedProjectId;
+    var selectedProjectId = "";
     var spatialFilter = null;
 
     var geoSearch = {};
@@ -38,6 +38,54 @@ function ProjectFinder(config) {
     var enablePartialSearch = config.enablePartialSearch || false;
 
     var filterQuery, lazyLoad;
+    var GENERAL_LAYER = '_general',
+        INFO_LAYER = '_info',
+        INDICES_LAYER = '_indices',
+        INFO_LAYER_DEFAULT = 'default',
+        STATE_POINT = 'point',
+        STATE_POLYGON = 'polygon',
+        STATE_HEATMAP = 'heatmap',
+        STATE_CLUSTER = 'cluster',
+        STATE_POINT_INDEX = 'point+index',
+        STATE_POLYGON_INDEX = 'polygon+index',
+        STATE_HEATMAP_INDEX = 'heatmap+index',
+        STATE_CLUSTER_INDEX = 'cluster+index',
+        MAX_FEATURE_COUNT = 1000,
+        MAP_VIEW = 'mapView',
+        DATA_TYPE = 'project';
+
+    var projectWMSLayer,
+        lastMouseClickEvent,
+        pointStyleName = 'point_circle_project',
+        heatmapStyleName = 'heatmap',
+        clusterStyleName = 'cluster_project',
+        polygonStyleName = 'polygon_sites_project',
+        lineStyleName = 'line_sites',
+        lineSelectorStyleName = 'line_selector',
+        shapeRenderingLayers = [pointStyleName, polygonStyleName, lineStyleName],
+        selectedColourByIndex = '',
+        selectedLayerID = polygonStyleName,
+        layerNamesLookupRequests = {},
+        colourByControlId = "colour-by-select",
+        sizeControlId = "size-slider",
+        activityDisplayStyleId = "activity-display-style",
+        colourByLabel = "Colour by:",
+        filterByLabel = "Filter by:",
+        opacity = 0.1,
+        selectedStyle,
+        selectedLayerName,
+        selectionControl,
+        selectedSize = 5,
+        legendControl,
+        infoPanelControl,
+        mapDisplays = [],
+        lookupProjectOnClick = config.lookupProjectOnClick || true,
+        lookupOverlaysOnClick = config.lookupOverlaysOnClick || true,
+        colourByBlackList = ['status'];
+
+    layerNamesLookupRequests[GENERAL_LAYER] =  undefined;
+    layerNamesLookupRequests[INFO_LAYER] = {};
+    layerNamesLookupRequests[INDICES_LAYER] = {};
 
     this.availableProjectTypes = new ProjectViewModel({}, false).transients.availableProjectTypes;
 
@@ -57,6 +105,7 @@ function ProjectFinder(config) {
         this.facets = ko.observableArray();
         this.selectedFacets = ko.observableArray();
         this.columns = ko.observable(2);
+        this.showPagination = ko.observable(true);
         self.columns = this.columns
         this.doSearch = function () {
 
@@ -269,7 +318,7 @@ function ProjectFinder(config) {
         var isUserPage = fcConfig.isUserPage || false;
         var isUserWorksPage = fcConfig.isUserWorksPage || false;
         var isUserEcoSciencePage = fcConfig.isUserEcoSciencePage || false;
-        var organisationName = fcConfig.organisationName;
+        var organisationName = fcConfig.organisationName || "";
         var isCitizenScience = fcConfig.isCitizenScience || false;
         var isWorks = fcConfig.isWorks || false;
         var isBiologicalScience = fcConfig.isBiologicalScience || false;
@@ -667,116 +716,790 @@ function ProjectFinder(config) {
             baseLayer: baseLayerOverlayConfig.baseLayer,
             otherLayers: baseLayerOverlayConfig.otherLayers,
             overlays: baseLayerOverlayConfig.overlays,
-            overlayLayersSelectedByDefault: baseLayerOverlayConfig.overlayLayersSelectedByDefault
+            overlayLayersSelectedByDefault: baseLayerOverlayConfig.overlayLayersSelectedByDefault,
+            loadingControlOptions: {
+                position: 'topleft'
+            },
+            overlayControlPosition: "topleft"
         };
 
         if(!self.pfMap){
-            self.pfMap = new ALA.Map("pfMap", mapOptions);
-            Biocollect.MapUtilities.intersectOverlaysAndShowOnPopup(self.pfMap);
+            alaMap = self.pfMap = new ALA.Map("pfMap", mapOptions);
+            lookupOverlaysOnClick && Biocollect.MapUtilities.intersectOverlaysAndShowOnPopup(self.pfMap,showIntersectsOnPopup);
             self.pfMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", self.pfMap.fitBounds, "bottomright");
+
+            selectionControl = new L.Control.HorizontalMultiInput({
+                id: 'display-style-colour-by-size-control',
+                position: 'topright',
+                items:  [{
+                    type: "select",
+                    id: activityDisplayStyleId,
+                    name: activityDisplayStyleId + "-name",
+                    label: "Display:",
+                    values: mapDisplays,
+                    helpText: fcConfig.mapDisplayHelpText
+                },{
+                    type: "select",
+                    id: colourByControlId,
+                    name: colourByControlId + "-name",
+                    label: getLabelForMapDisplay(),
+                    values: [],
+                    helpText: getTooltipForMapDisplay
+                }, {
+                    type: "slider",
+                    id: sizeControlId,
+                    label: "Size:",
+                    options: {
+                        min: 1,
+                        max: 9,
+                        step: 1,
+                        value: selectedSize,
+                        length: '100px'
+                    }
+                }]
+            });
+            self.pfMap.addControl(selectionControl);
+
+            selectionControl.on('change', function (data) {
+                switch (data.item.id) {
+                    case activityDisplayStyleId:
+                        changeProjectDisplayStyle(data.value);
+                        break;
+                    case colourByControlId:
+                        changeColourByIndex(data.value);
+                        break;
+                    case sizeControlId:
+                        changeSize(data.value);
+                        break;
+                }
+            });
+
+            // Control - legend
+            legendControl = new L.Control.LegendImage({collapse: true, position: "topright"});
+            self.pfMap.addControl(legendControl);
+
+            // Control - display help text
+            infoPanelControl = new L.Control.InfoPanel({
+                content: getHelpText(),
+                collapse: false,
+                title: "Help"
+            });
+            self.pfMap.addControl(infoPanelControl);
+
+            lookupProjectOnClick && alaMap.registerListener('click', mapClickEventHandler);
+            alaMap.registerListener("zoomend dragend", getHeatmap);
         }
 
-        var features = [];
-        // var geoPoints = data;
+        // clear colour by index
+        selectedColourByIndex = '';
 
-        if (projects) {
-            $.each(projects, function (j, project) {
-                var projectId = project.projectId;
-                var projectName = project.name;
+        var typeAndIndices = getLayerTypeAndIndices();
+        getLayerNameRequest(typeAndIndices.type, typeAndIndices.indices).done(function (data) {
+            var layerName = data.layerName;
+            if (layerName) {
+                console.log('Setting layerName - ' + layerName);
+                selectedLayerName = layerName;
+                refreshMapComponents();
+            }
+        });
 
-                if (project.coverage) {
+        var options = pageWindow.filterViewModel.getColourByFields();
+        options = sanitizeColourByList(options);
+        options = addEmptyOption(options);
+        selectionControl.setSelectOptions(colourByControlId, options);
+        legendControl.clearLegend();
+    };
 
-                        var point = {
-                            geometry: Biocollect.MapUtilities.featureToValidGeoJson(project.coverage),
-                            popup: generatePopup(project)
+    function initMapOverlaysWithLayer (noRedraw) {
+        noRedraw = noRedraw || false;
+        projectWMSLayer && self.pfMap.removeOverlayLayer(projectWMSLayer);
+        switch (selectedLayerID) {
+            case heatmapStyleName:
+                projectWMSLayer = L.geoJson(null, {
+                    style: function (feature) {
+                        return {
+                            stroke: false,
+                            fill: true,
+                            fillColor: feature.properties.colour,
+                            fillOpacity: 0.7
                         };
+                    },
+                    onEachFeature: function (feature, layer) {
+                        layer.bindPopup(String(feature.properties.count));
+                    }
+                });
 
-                        if (project.coverage.centre && project.coverage.centre.length == 2) {
-                            point.lat = parseFloat(project.coverage.centre[1]);
-                            point.lng = parseFloat(project.coverage.centre[0]);
-                        } else {
-                            point.lat = parseFloat(project.coverage.decimalLatitude);
-                            point.lng = parseFloat(project.coverage.decimalLongitude);
-                        }
+                getHeatmap();
+                break;
+            default:
+                var params = self.getParams(),
+                    queryString = flattenArrayParameters(params),
+                    url = fcConfig.wmsProjectURL.indexOf('?') > -1 ? fcConfig.wmsProjectURL + '&' + queryString : fcConfig.wmsProjectURL + '?' + queryString;
 
-                        if (isValidPoint(point)) {
-                            features.push(point);
-                        } else {
-                            console.warn('Project ' + project.name() + 'does not have valid coordinates');
+                projectWMSLayer = L.nonTiledLayer.wms (url, {
+                    format: 'image/png',
+                    transparent: true,
+                    maxZoom: 21
+                });
+                params.dataType = DATA_TYPE;
+
+                projectWMSLayer.setParams(params, noRedraw);
+                break;
+        }
+
+        return projectWMSLayer;
+    }
+
+    function getHeatmap() {
+        if (selectedLayerID === heatmapStyleName) {
+            projectWMSLayer.fire('loading');
+            var url = fcConfig.heatmapURL,
+                boundingBoxGeoJSON = getBoundingBoxGeoJSON(),
+                payload = self.getParams();
+
+            payload.geoSearchJSON = JSON.stringify(boundingBoxGeoJSON);
+            payload.dataType = DATA_TYPE;
+            if (selectedColourByIndex) {
+                payload.exists = selectedColourByIndex;
+            }
+
+            $.ajax({
+                url: url,
+                data: payload,
+                success: function (data) {
+                    if (!data.error) {
+                        if (selectedLayerID === heatmapStyleName) {
+                            projectWMSLayer.clearLayers();
+                            projectWMSLayer.addData && projectWMSLayer.addData(data);
+                            updateLegendFromGeoJSON(data);
                         }
+                    }
+
+                    projectWMSLayer && projectWMSLayer.fire('load');
+                },
+                fail: function () {
+                    projectWMSLayer && projectWMSLayer.fire('load');
                 }
             });
         }
+    }
 
-        features && features.length && self.pfMap.addClusteredPoints(features);
-        self.pfMap.redraw()
+    function getLayerTypeAndIndices () {
+        var result = {
+            type: INDICES_LAYER,
+            indices: selectedColourByIndex
+        };
 
+        if (!selectedColourByIndex) {
+            result.type = GENERAL_LAYER;
+            result.indices = undefined;
+        }
+
+        return result;
+    }
+
+    function getLayerNameRequest(type, indices) {
+        var request, indicesConcat, styleCode;
+
+        switch (type) {
+            case GENERAL_LAYER:
+                request = layerNamesLookupRequests[type];
+                break;
+            case INFO_LAYER:
+                if (!indices) {
+                    indices = [INFO_LAYER_DEFAULT];
+                }
+            case INDICES_LAYER:
+                if (indices === undefined) {
+                    return
+                }
+                else if (typeof indices === 'string') {
+                    indices = [indices]
+                }
+
+                indicesConcat = indices.join(',');
+                styleCode = getStyleNameForIndicesLayer();
+                if (!styleCode) {
+                    styleCode = indicesConcat;
+                }
+
+                request = layerNamesLookupRequests[type][styleCode];
+                break;
+        }
+
+        if (!request) {
+            if (!fcConfig.getLayerNameURL){
+                console.warn("Property fcConfig.getLayerNameURL must be provided");
+                return ;
+            }
+
+            var request = $.get({
+                url: fcConfig.getLayerNameURL,
+                data: {
+                    dataType: DATA_TYPE,
+                    type: type,
+                    indices: indicesConcat || ''
+                }
+            }).fail(function () {
+                setLayerNameRequest(type, styleCode, undefined);
+            });
+
+            setLayerNameRequest(type, styleCode, request);
+        }
+
+        return request;
     };
 
-    function generatePopup(project) {
-        var imageUrl = project.transients.imageUrl || fcConfig.noImageUrl
-        var html =
-
-            "<div class='map-popups'>" +
-            "<div class='map-popup'>" +
-            "            <div>" +
-            "            <div class='text-center'>" +
-            "            <a href='transients.indexUrl' click='setTrafficFromProjectFinderFlag()'>" +
-            "            <img class='map-popup-image' alt='No image provided' title='" + project.transients.truncatedName() + "' src='" + imageUrl + "' " +
-            "onerror='imageError(this, fcConfig.noImageUrl);' />" +
-            "            </a>"
-
-        if (project.isSciStarter()) {
-
-            html = html +
-            "        <img class='display-inline-block logo-small'" +
-            "        src='" + fcConfig.sciStarterImageUrl  + "'" +
-            "        title='Project is sourced from SciStarter'>"
+    function setLayerNameRequest(type, styleCode, request) {
+        var cache = layerNamesLookupRequests[type];
+        if (styleCode) {
+            cache = cache[styleCode];
         }
 
-        html = html +
-        "            </div>" +
-        "            </div>"
+        cache = request;
+    };
 
+    function getStyleNameForIndicesLayer() {
+        if (canMapDisplayBeColoured(selectedLayerID)) {
+            return selectedLayerID+selectedColourByIndex;
+        }
+    };
 
-        html = html +
-            "        <div "+
-            "         click='setTrafficFromProjectFinderFlag()'>"+
-            "            <a class='map-popup-title'" +
-            " href='"+project.transients.indexUrl + "'  click='setTrafficFromProjectFinderFlag()'>"+
-            "            <span>" + project.transients.truncatedName() +
-            "</span>"+
-            "            </a>"+
-            "            </div>"
+    function canMapDisplayBeColoured (index) {
+        return shapeRenderingLayers.indexOf(index) >= 0;
+    };
 
-
-        if(project.transients.daysSince() >= 0) {
-            html = html +
-            "            <div class='map-popup-small'>"+
-            "            <span>Started "+project.transients.since() + "&nbsp;</span>"+
-            "        </div>"
-
+    function createStyleForMapDisplayAndColourByIndex(mapDisplay, index) {
+        var terms = pageWindow.filterViewModel.getTermsForFacet(index);
+        if (canMapDisplayBeColoured(mapDisplay)) {
+            terms.style = mapDisplay;
+            terms.dataType = "project";
         }
 
-        html = html +
+        return createStyleFromTerms(terms).done(function (data) {
+            selectedStyle = data.name;
+            pageWindow.filterViewModel.setStyleName(index, selectedStyle);
+            refreshMapComponents();
+        });
+    };
 
-            "<div>" +
-                "<a class='map-popup-organisation' href='"+ project.transients.orgUrl +"'>" +
-                 project.transients.truncatedOrganisationName() +
-                "</a>" +
-            "</div>" +
+    function createStyleFromTerms(terms) {
+        terms.dataType = DATA_TYPE;
 
+        return $.ajax({
+            url: fcConfig.createStyleURL,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(terms)
+        });
+    };
 
-
-            "   <div>"+ project.transients.truncatedAim() + "</div>"+
-
-            "   <div class='map-popup-small'>"+ daysToGoHtml(project) + "</div>"+
-            "</div>" +
-            "</div>"
-
-
-        return html;
+    function getLabelForMapDisplay() {
+        if (shapeRenderingLayers.indexOf(selectedLayerID) >= 0) {
+            return colourByLabel;
+        } else {
+            return filterByLabel;
+        }
     }
+
+    function getTooltipForMapDisplay() {
+        if (shapeRenderingLayers.indexOf(selectedLayerID) >= 0) {
+            return fcConfig.mapDisplayColourByHelpText;
+        } else {
+            return fcConfig.mapDisplayFilterByHelpText;
+        }
+    }
+    
+    function getHelpText() {
+        switch (selectedLayerID) {
+            case heatmapStyleName:
+                return fcConfig.heatmapHelpText;
+            case clusterStyleName:
+                return fcConfig.clusterHelpText;
+            case polygonStyleName:
+                return fcConfig.polygonHelpText;
+            case pointStyleName:
+                return fcConfig.pointHelpText;
+        }
+    }
+
+    function changeProjectDisplayStyle (value) {
+        var currentSettings = getLayerTypeAndIndices(),
+            layerNameRequest = getLayerNameRequest(currentSettings.type, currentSettings.indices);
+
+        selectedLayerID = value;
+        setDefaultSizeForStyle(selectedLayerID);
+        layerNameRequest && layerNameRequest.done(function (data) {
+            if (data.layerName) {
+                selectedLayerName = data.layerName;
+                if (selectedColourByIndex) {
+                    createStyleForMapDisplayAndColourByIndex(selectedLayerID, selectedColourByIndex);
+                } else {
+                    refreshMapComponents();
+                }
+            }
+        });
+
+        setSelectionControlState();
+        infoPanelControl.setContent(getHelpText());
+    };
+
+    function changeColourByIndex(index) {
+        var typeAndIndices;
+
+        selectedColourByIndex = index;
+        typeAndIndices = getLayerTypeAndIndices();
+        getLayerNameRequest(typeAndIndices.type, typeAndIndices.indices).done(function (data) {
+            var layerName = data.layerName;
+            if (layerName) {
+                console.log('Updating layerName - ' + layerName);
+                selectedLayerName = layerName;
+                if (index) {
+                    createStyleForMapDisplayAndColourByIndex(selectedLayerID, index);
+                } else {
+                    selectedStyle = '';
+                    refreshMapComponents();
+                }
+            }
+        });
+    };
+
+    function changeSize(size) {
+        if (selectedSize != size) {
+            selectedSize = size;
+            refreshMapComponents();
+        }
+    }
+
+    function setDefaultSizeForStyle (style) {
+        if (canMapDisplayBeColoured(style)) {
+            var settings = self.getSettingsForStyle(style),
+                size = (settings && settings.size) || 1;
+
+            // to prevent map refresh when slide handler is called.
+            selectedSize = size;
+            selectionControl.setSize('slider', 'size-slider', size);
+        }
+    };
+
+    self.getSettingsForStyle = function (style) {
+        if (mapDisplays) {
+            var displays = $.grep(mapDisplays, function(item){
+                return item.key == style;
+            });
+
+            if (displays.length) {
+                return displays[0];
+            }
+        }
+    }
+
+    function mapClickEventHandler(event) {
+        if (selectedLayerID !== heatmapStyleName) {
+            var map = this;
+            getLayerNameRequest(INFO_LAYER, selectedColourByIndex).done(function(data){
+                if(data.layerName) {
+                    var size = map.getSize(),
+                        // this crs is used to show layer added to map
+                        crs = map.options.crs,
+                        // these are the SouthWest and NorthEast points
+                        // projected from LatLng into used crs
+                        sw = crs.project(map.getBounds().getSouthWest()),
+                        ne = crs.project(map.getBounds().getNorthEast()),
+                        styleName = projectWMSLayer.wmsParams.styles == lineStyleName ? lineSelectorStyleName : projectWMSLayer.wmsParams.styles,
+                        params = {
+                            request: 'GetFeatureInfo',
+                            service: 'WMS',
+                            srs: crs.code,
+                            version: projectWMSLayer.wmsParams.version,
+                            layers: data.layerName,
+                            query_layers: data.layerName,
+                            styles: styleName,
+                            bbox:  sw.x + ',' + sw.y + ',' + ne.x + ',' + ne.y,
+                            height: size.y,
+                            width: size.x,
+                            feature_count: MAX_FEATURE_COUNT,
+                            info_format: 'application/json',
+                            dataType: DATA_TYPE
+                        };
+
+                    if (projectWMSLayer.wmsParams.cql_filter) {
+                        params.cql_filter = projectWMSLayer.wmsParams.cql_filter;
+                    }
+
+                    params[params.version === '1.3.0' ? 'i' : 'x'] = Math.round(event.containerPoint.x);
+                    params[params.version === '1.3.0' ? 'j' : 'y'] = Math.round(event.containerPoint.y);
+                    params = $.extend(params, self.getParams());
+                    var url = projectWMSLayer._wmsUrl + L.Util.getParamString(params, projectWMSLayer._wmsUrl, false);
+                    // show loading GIF
+                    projectWMSLayer.fire && projectWMSLayer.fire('loading');
+                    $.get(url , function (data) {
+                        var features = data.features;
+
+                        if (features && features.length) {
+                            var ePopup = document.getElementById('template-map-popup-record');
+                            if (
+                                !ePopup
+                                || ( ePopup && lastMouseClickEvent
+                                && (lastMouseClickEvent.containerPoint.x != event.containerPoint.x)
+                                && (lastMouseClickEvent.containerPoint.y != event.containerPoint.y))
+                            ) {
+                                L.popup({
+                                    maxWidth: 400,
+                                    minWidth: 200
+                                })
+                                    .setLatLng(event.latlng)
+                                    .setContent('<div id="template-map-popup-record" style="width: 400px; height: auto" data-bind="template: { name: \'script-project-popup-template\' }"></div>')
+                                    .openOn(self.pfMap.getMapImpl());
+
+                                ko.applyBindings(self.popupVM, document.getElementById('template-map-popup-record'));
+                            }
+
+                            self.popupVM.clearProjects();
+                            self.popupVM.projects(features);
+                            lastMouseClickEvent = event;
+                        }
+                    }).done(function() {
+                        // remove loading GIF
+                        projectWMSLayer.fire && projectWMSLayer.fire('load');
+                    });
+                }
+            })
+        }
+    };
+
+    function showIntersectsOnPopup(intersects, raw, event) {
+        if (intersects && intersects.length) {
+            if (!document.getElementById('template-map-popup-project')
+                && lastMouseClickEvent
+                && (lastMouseClickEvent.containerPoint.x != event.containerPoint.x)
+                && (lastMouseClickEvent.containerPoint.y != event.containerPoint.y)) {
+                L.popup({
+                    maxWidth: 400,
+                    minWidth: 200
+                })
+                    .setLatLng(event.latlng)
+                    .setContent('<div id="template-map-popup-project" style="width: 400px; height: auto" data-bind="template: { name: \'script-project-popup-template\' }"></div>')
+                    .openOn(self.pfMap.getMapImpl());
+            }
+
+            self.popupVM.intersects(intersects);
+            ko.applyBindings(self.popupVM, document.getElementById('template-map-popup-project'));
+            lastMouseClickEvent = event;
+            projectWMSLayer.fire && projectWMSLayer.fire('load');
+        }
+    }
+
+    /**
+     * Update map depending on colour by selection and rendering (point, heatmap etc.) selection.
+     */
+    function refreshMapComponents () {
+        var state = self.getCurrentState(),
+            params = self.getParametersForState(state),
+            legendURL;
+
+        initMapOverlaysWithLayer(true);
+        projectWMSLayer && projectWMSLayer.setParams && projectWMSLayer.setParams(params);
+        self.pfMap.addOverlayLayer(projectWMSLayer, 'Projects', true);
+        legendURL = Biocollect.MapUtilities.getLegendURL(projectWMSLayer, params.styles);
+        !legendURL && legendControl.clearLegend();
+        legendURL && legendControl.updateLegend(legendURL, getLegendTitle());
+    }
+
+    self.loadMapDisplays = function (displays) {
+        displays.forEach(function (display) {
+            display.selected = display.isDefault == display.key
+            if (display.selected) {
+                selectedLayerID = display.key;
+                selectedSize = display.size || selectedSize;
+            }
+
+            mapDisplays.push(display);
+        });
+
+        if (!selectedLayerID) {
+            selectedLayerID = mapDisplays[0].key;
+            selectedSize = mapDisplays[0].size || selectedSize;
+        }
+    }
+
+    self.getCurrentState = function() {
+        switch (selectedLayerID) {
+            case clusterStyleName:
+                if (selectedColourByIndex) {
+                    return STATE_CLUSTER_INDEX;
+                }
+                else {
+                    return STATE_CLUSTER;
+                }
+
+                break;
+            case heatmapStyleName:
+                if (selectedColourByIndex) {
+                    return STATE_HEATMAP_INDEX;
+                }
+                else {
+                    return STATE_HEATMAP;
+                }
+
+                break;
+            case pointStyleName:
+                if (selectedColourByIndex) {
+                    return STATE_POINT_INDEX;
+                }
+                else {
+                    return STATE_POINT;
+                }
+
+                break;
+            case polygonStyleName:
+                if (selectedColourByIndex) {
+                    return STATE_POLYGON_INDEX;
+                }
+                else {
+                    return STATE_POLYGON;
+                }
+
+                break;
+        }
+    }
+
+    self.getParametersForState = function(state) {
+        var params = {};
+        state = state || self.getCurrentState();
+        addCommonParameters(params);
+
+        switch (state) {
+            case STATE_CLUSTER:
+                params.styles = clusterStyleName;
+                break;
+            case STATE_CLUSTER_INDEX:
+                params.styles = clusterStyleName;
+                addCQLParameter(params);
+                break;
+            case STATE_POINT:
+                params.styles = pointStyleName;
+                params.env = "size:" + selectedSize + ";";
+                break;
+            case STATE_POINT_INDEX:
+                params.styles = selectedStyle;
+                params.env = "size:" + selectedSize + ";";
+                addCQLParameter(params);
+                break;
+            case STATE_POLYGON:
+                params.styles = polygonStyleName;
+                params.env = "size:" + selectedSize + ";";
+                break;
+            case STATE_POLYGON_INDEX:
+                params.styles = selectedStyle;
+                params.env = "size:" + selectedSize + ";";
+                addCQLParameter(params);
+                break;
+            case STATE_HEATMAP:
+                params.styles = heatmapStyleName;
+                break;
+            case STATE_HEATMAP_INDEX:
+                params.styles = heatmapStyleName;
+                addWeightParameter(params);
+                addCQLParameter(params);
+                break;
+        }
+
+        if (opacity) {
+            params.env = params.env || "";
+            params.env += "opacity:" + opacity + ";";
+        }
+
+        return params;
+    }
+
+    function addCommonParameters (params) {
+        params = params || {};
+        params.layers = selectedLayerName;
+        return params;
+    }
+
+    function addCQLParameter(params) {
+        params = params || {};
+        params.cql_filter = selectedColourByIndex + " IS NOT NULL";
+        return params;
+    }
+
+    function addWeightParameter (params) {
+        params = params || {};
+        params.env = "weight:" + selectedColourByIndex + ";";
+        return params;
+    }
+
+    function setSelectionControlState() {
+        setLabelForMapDisplay();
+        enableDisableSizeControl();
+    }
+
+    function setLabelForMapDisplay() {
+        selectionControl.changeLabel(getLabelForMapDisplay(), colourByControlId);
+    };
+
+    function enableDisableSizeControl () {
+        var item = {
+            type: 'slider',
+            id : sizeControlId
+        };
+
+        if (shapeRenderingLayers.indexOf(selectedLayerID) >= 0) {
+            selectionControl.disableItem(false, item);
+        } else {
+            selectionControl.disableItem(true, item);
+        }
+    }
+
+    function getBoundingBoxGeoJSON() {
+        var map = self.pfMap.getMapImpl(),
+            sw = map.getBounds().getSouthWest(),
+            ne = map.getBounds().getNorthEast(),
+            bbox = {
+                type: "Polygon",
+                coordinates: [[[sw.lng, sw.lat], [ne.lng, sw.lat], [ne.lng, ne.lat], [sw.lng, ne.lat], [sw.lng, sw.lat]]]
+            };
+
+        return bbox;
+    }
+
+    function getLegendTitle() {
+        switch (selectedLayerID) {
+            case clusterStyleName:
+                return fcConfig.clusterLegendTitle;
+            case heatmapStyleName:
+                return fcConfig.heatmapLegendTitle;
+            case pointStyleName:
+                return fcConfig.pointLegendTitle;
+            case polygonStyleName:
+                return fcConfig.polygonLegendTitle;
+        }
+    }
+
+    function getLegendFromGeoJSON (geoJSON) {
+        var legendMapping = {},
+            legends = [];
+        switch (geoJSON.type) {
+            case "FeatureCollection":
+                geoJSON.features && geoJSON.features.forEach(function (feature) {
+                    if (feature.properties) {
+                        legendMapping[feature.properties.label] = feature.properties;
+                    }
+                });
+
+                for(var label in legendMapping) {
+                    legends.push(legendMapping[label]);
+                }
+
+                legends.sort(function (a, b) {
+                    return b.max > a.max;
+                });
+                break;
+        }
+
+        return legends;
+    }
+
+    function updateLegendFromGeoJSON (geoJSON) {
+        var legend = getLegendFromGeoJSON(geoJSON);
+        var svg = getSVGForLegend(legend);
+        updateLegendWithSVG(svg);
+    }
+
+    function getSVGForLegend(legend) {
+        var svg = Snap("100%", "100%"),
+            y = 0,
+            yLineHeight = 20,
+            padding = 10,
+            baseline = 10;
+
+        legend.forEach(function (item) {
+            var shape = svg.rect(0 + padding, y + padding, 10, 10);
+            shape.attr({fill: item.colour});
+            var label = svg.text(20 + padding , y + baseline + padding, item.label);
+            y += yLineHeight;
+        });
+
+        svg.attr({height:y + padding});
+
+        var text = svg.outerSVG();
+        // snap attaches svg to document. need to remove it.
+        svg.remove();
+        return text;
+
+    }
+
+    function updateLegendWithSVG(svgText) {
+        var prefix = 'data:image/svg+xml,',
+            svgText = encodeURIComponent(svgText),
+            dataURI = prefix + svgText;
+
+        legendControl && legendControl.updateLegend(dataURI, getLegendTitle());
+    }
+
+    function addEmptyOption(values) {
+        values = values || [];
+        values.unshift({key: ""});
+        return values;
+    }
+
+    function sanitizeColourByList (colourBy) {
+        var newList = [],
+            blackList = colourByBlackList;
+
+        if (colourBy) {
+            colourBy.forEach(function (item) {
+                if (blackList.indexOf(item.key) == -1) {
+                    newList.push(item);
+                }
+            })
+        }
+
+        return newList;
+    }
+
+    /**
+     * Leaflet WMS layer does not encoded array correctly in GET request.
+     * This function flattens those parameters and remove it from parameter object.
+     * @param params
+     * @returns {string}
+     */
+    function flattenArrayParameters(params) {
+        var output = [];
+        for(var p in params) {
+            if (params[p] instanceof Array) {
+                for (var index in params[p]) {
+                    output.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p][index]));
+                }
+
+                delete params[p];
+            }
+        }
+
+        return output.join('&');
+    }
+
+    function PopupViewModel(data) {
+        var self = this;
+
+        data = data || {};
+        self.intersects = ko.observableArray(data.intersects || []);
+        self.projects = ko.observableArray(data.project||[]);
+        self.index = ko.observable(0);
+
+        self.clearIntersects = function () {
+            self.intersects.removeAll();
+        }
+
+        self.clearProjects = function () {
+            self.projects.removeAll();
+            self.index(0);
+        }
+
+    }
+    /** end of map related functions **/
 
     function daysToGoHtml(project) {
 
@@ -865,6 +1588,7 @@ function ProjectFinder(config) {
             self.pfMap.redraw()
         }
 
+        showHidePagination();
     });
     
     $("#pt-aus-world").on('statechange', function(){
@@ -1033,7 +1757,7 @@ function ProjectFinder(config) {
       //  pageWindow.filterViewModel.setFilterQuery(params.fq);
         pageWindow.filterViewModel.setFilterQuery(params.queryList);
         offset = params.offset || offset;
-        selectedProjectId = params.projectId;
+        selectedProjectId = params.projectId || "";
 
         if (fcConfig.associatedPrograms) {
             $.each(fcConfig.associatedPrograms, function (i, program) {
@@ -1150,14 +1874,28 @@ function ProjectFinder(config) {
         return valid
     }
 
+    /**
+     * Map show all projects. Therefore, hide pagination buttons and text (Showing 10 of xx projects).
+     */
+    function showHidePagination() {
+        if(pageWindow && (pageWindow.viewMode() === MAP_VIEW)) {
+            pageWindow.showPagination(false);
+        } else {
+            pageWindow.showPagination(true);
+        }
+    }
+
 
     if (fcConfig.hideWorldWideBtn) {
         $('#pt-aus-world').hide();
         $('#pt-aus-world-block').hide();
     }
 
+    self.popupVM = new PopupViewModel();
+    self.loadMapDisplays(fcConfig.projectMapDisplays);
     parseHash();
     self.doSearch();
     self.initViewMode();
+    showHidePagination();
 }
 

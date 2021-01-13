@@ -1,9 +1,13 @@
 package au.org.ala.biocollect.merit
 
+import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.json.JsonSlurper
 import org.apache.commons.lang.StringUtils
-import grails.web.servlet.mvc.GrailsParameterMap
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
+
 import javax.servlet.http.HttpServletResponse
+
 /**
  * Service for ElasticSearch running on ecodata
  */
@@ -106,6 +110,28 @@ class SearchService {
         String url = "${elasticSearchBaseUrl}/elasticProjectActivity" + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url, null, true)
+    }
+
+    Map getMinMaxYearForQuery(String fields, GrailsParameterMap params) {
+        if (fields) {
+            params.statFacets = fields
+            params.size = 0
+
+            Map facets = searchProjectActivity(params)?.facets
+            Map response = [:]
+            List dateFields = fields.split(',')
+            dateFields.each { field ->
+                Map facet = facets[field]
+                if (facet) {
+                    Map minMax = [:]
+                    minMax.min = new DateTime((long) facet.min, DateTimeZone.UTC)
+                    minMax.max = new DateTime((long) facet.max, DateTimeZone.UTC)
+                    response[field] = minMax
+                }
+            }
+
+            response
+        }
     }
 
     /**
@@ -247,6 +273,16 @@ class SearchService {
             def url = "${elasticSearchBaseUrl}/report" + commonService.buildUrlParamsFromMap(params)
             webService.getJson(url, 1200000)
         })
+    }
+
+    def addFullNameToFacets (Map facets, Map propertyPathDetails) {
+        facets?.each { k, v ->
+            if (propertyPathDetails[k] && !k.endsWith('Facet')) {
+                v.path = propertyPathDetails[k]?.join('.')
+            }
+        }
+
+        facets
     }
 
     /**

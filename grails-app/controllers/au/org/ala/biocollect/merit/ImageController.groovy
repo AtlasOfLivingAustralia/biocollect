@@ -211,37 +211,43 @@ class ImageController {
         render '{"deleted":true}'
     }
 
-
     /**
      * A convenience method to help serve files in the dev. environment.
      * The content type of the file is derived purely from the file extension.
      */
     def get() {
+        String filename = FilenameUtils.getName(params.id)
+        if (filename != params.id) {
+            response.status = 404
+            return
+        }
+
         String path = grailsApplication.config.upload.images.path
-        File f = new File(FileUtils.fullPath(params.id, path))
+        File f = new File(FileUtils.fullPath(filename, path))
+
         if (!f.exists()) {
             response.status = 404
             return
         }
 
-        // treat method supporting document differently
+        // Treat method supporting document differently
         if (params.role) {
             FileInputStream fis = new FileInputStream(f)
             byte[] buffer = new byte[fis.available()]
             fis.read(buffer)
             fis.close()
 
-            response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(params.id,"utf-8"))
-            response.addHeader("Content-Length",String.valueOf(f.length()))
+            response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(filename, "utf-8"))
+            response.addHeader("Content-Length", String.valueOf(f.length()))
             OutputStream out = new BufferedOutputStream(response.getOutputStream())
             response.setContentType("application/octet-stream")
             out.write(buffer)
             out.flush()
             out.close()
         } else {
-            def ext = FilenameUtils.getExtension(params.id)
+            def ext = FilenameUtils.getExtension(filename)
 
-            response.contentType = 'image/'+ext
+            response.contentType = 'image/' + ext
             response.outputStream << new FileInputStream(f)
             response.outputStream.flush()
         }

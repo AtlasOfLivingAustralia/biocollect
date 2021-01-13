@@ -3,7 +3,7 @@
         <div>
             <div class="project-results">
                 <div id="pt-result-heading" class="inline-block margin-bottom-20">
-                    <span id="pt-resultsReturned"></span>
+                    <span id="pt-resultsReturned" data-bind="visible: showPagination"></span>
                     <g:if test="${showProjectDownloadButton}">
                         <a data-bind="visible: pageProjects().length > 0, click: download" href="${downloadLink}" id="pt-downloadLink" class="btn btn-warning btn-mini"
                            title="${message(code: 'project.download.tooltip')}">
@@ -19,7 +19,7 @@
 
         </div>
         <div data-bind="visible: pageProjects().length > 0">
-            <div id="pt-searchNavBar" class="clearfix">
+            <div id="pt-searchNavBar" class="clearfix" data-bind="visible: showPagination">
                 <div id="pt-navLinks"></div>
             </div>
             <div data-bind="if: viewMode() == 'listView'">
@@ -32,7 +32,7 @@
             <div data-bind="visible: viewMode() == 'mapView'">
                 <g:render template="/shared/projectFinderResultPanelMap"></g:render>
             </div>
-            <div id="pt-searchNavBar" class="clearfix">
+            <div id="pt-searchNavBar" class="clearfix" data-bind="visible: showPagination">
                 <div id="pt-navLinks"></div>
             </div>
         </div>

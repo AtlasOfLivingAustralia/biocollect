@@ -803,6 +803,17 @@ class BioActivityController {
         render model as JSON
     }
 
+    def getMinMaxYearForQuery () {
+        String dateFields = params.dateFields
+        params.remove('dateFields')
+        if (dateFields) {
+            Map result = searchService.getMinMaxYearForQuery(dateFields , params) ?: [:]
+            render text: result as JSON, contentType: "application/json"
+        } else {
+            render text: [error: "Parameter dateFields must be provided."] as JSON, status: HttpStatus.SC_BAD_REQUEST
+        }
+    }
+
     private def listUserActivities(params) {
         Map model = [:]
         def query = [pageSize: params.max ?: 10,

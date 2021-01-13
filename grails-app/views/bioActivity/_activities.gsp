@@ -1,6 +1,6 @@
 <%@ page import="grails.converters.JSON" %>
+<asset:stylesheet src="map-activity.css"/>
 <g:set var="noImageUrl" value="${asset.assetPath([src: "no-image-2.png"])}"/>
-<g:render template="/shared/legend"/>
 <!-- ko stopBinding: true -->
 <div id="survey-all-activities-and-records-content">
     <div id="data-result-placeholder"></div>
@@ -37,7 +37,7 @@
                 </g:if>
                 <ul class="nav nav-tabs" id="tabDifferentViews">
                     <li class="active"><a id="recordVis-tab" href="#recordVis" data-toggle="tab" >List</a></li>
-                    <li class=""><a href="#mapVis" id="dataMapTab" data-bind="attr:{'data-toggle': activities().length > 0 ? 'tab' : ''}">Map</a></li>
+                    <li class=""><a href="#mapVis" id="dataMapTab" data-toggle="tab">Map</a></li>
                     <li class=""><a id="dataImageTab" href="#imageGallery" data-toggle="tab">Images</a></li>
                 </ul>
                 <div class="tab-content">
@@ -361,22 +361,7 @@
                     </div>
 
                     <div class="tab-pane" id="mapVis">
-                        <div class="alert alert-info">
-                            <g:message code="data.map.message"></g:message>
-                        </div>
-                        <span data-bind="visible: transients.loadingMap()">
-                            <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
-                        </span>
-                        <span data-bind="visible: transients.totalPoints() == 0 && !transients.loadingMap()">
-                            <span class="text-left margin-bottom-five">
-                                <span data-bind="if: transients.loading()">
-                                    <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
-                                </span>
-                                <span data-bind="if: !transients.loading()">No Results</span>
-                            </span>
-                        </span>
-
-                        <span data-bind="visible: transients.totalPoints() > 0 && !transients.loadingMap() ">
+                        <span>
                             <m:map height="800px" width="auto" id="recordOrActivityMap" />
                         </span>
                         
@@ -408,10 +393,6 @@
 
         activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false}, columnConfig);
         ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('survey-all-activities-and-records-content'));
-        $('#dataMapTab').on('shown',function(){
-            activitiesAndRecordsViewModel.transients.alaMap.redraw();
-        })
-
         configImageGallery = {
             recordUrl: fcConfig.recordImageListUrl,
             poiUrl: fcConfig.poiImageListUrl,
@@ -447,4 +428,59 @@
     }
 
     tabId && $(tabId).tab('show');
+</asset:script>
+<asset:script type="text/html" id="script-popup-template">
+    <div class="record-map-popup">
+        <div class="container-fluid">
+            <h3>Record (<!-- ko text: index() + 1 --> <!-- /ko --> of <!-- ko text: features.length --> <!-- /ko -->)</h3>
+            <!-- ko foreach: features -->
+            <div data-bind="if: $root.index() == $index()">
+                <div class="row-fluid margin-bottom-10" data-bind="if: $data.properties.thumbnailUrl">
+                    <div class="span12">
+                        <div class="projectLogo image-centre">
+                            <a target="_blank" data-bind="attr: { href: fcConfig.activityViewUrl + '/' + $data.properties.activityId }">
+                                <img class="image-window image-logo" onload="findLogoScalingClass(this, 200, 150)" alt="Click to view record"  data-bind="attr: {src: $data.properties.thumbnailUrl || fcConfig.imageLocation + 'no-image-2.png'}" onerror="imageError(this, fcConfig.imageLocation + 'no-image-2.png');">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row-fluid" data-bind="if: $data.properties.recordNameFacet">
+                    <div class="span6"><span><g:message code="record.popup.scientificname"/></span></div>
+                    <div class="span6" data-bind="text: $data.properties.recordNameFacet"></div>
+                </div>
+                <div class="row-fluid" data-bind="if: $data.properties.projectActivityNameFacet">
+                    <div class="span6"><span><g:message code="record.popup.survey"/></span></div>
+                    <div class="span6" data-bind="text: $data.properties.projectActivityNameFacet"></div>
+                </div>
+                <div class="row-fluid" data-bind="if: $data.properties.projectNameFacet">
+                    <div class="span6"><span><g:message code="record.popup.project"/></span></div>
+                    <div class="span6">
+                        <a title="View details of this project" target="_blank"
+                           data-bind="attr: { href: fcConfig.projectIndexUrl + '/' + $data.properties.projectId }, text: $data.properties.projectNameFacet">
+                        </a>
+                    </div>
+                </div>
+                <div class="row-fluid" data-bind="if: $data.geometry.coordinates">
+                    <div class="span6"><span><g:message code="record.popup.latlon"/></span></div>
+                    <div class="span6">
+                        <!-- ko text: Math.floor($data.geometry.coordinates[1]*10000)/10000 --> <!-- /ko --> &
+                        <!-- ko text: Math.floor($data.geometry.coordinates[0]*10000)/10000 --> <!-- /ko -->
+                    </div>
+                </div>
+                <div class="row-fluid" data-bind="if: $data.properties.surveyMonthFacet && $data.properties.surveyYearFacet">
+                    <div class="span6"><span><g:message code="record.popup.created"/></span></div>
+                    <div class="span6">
+                    <!-- ko text: $data.properties.surveyMonthFacet --> <!-- /ko -->,
+                    <!-- ko text: $data.properties.surveyYearFacet --> <!-- /ko -->
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-mini" title="Previous record" data-bind="click: $root.index($root.index() - 1), disable: $root.index() == 0"><span>«</span></button>
+                    <button type="button" class="btn btn-mini" title="Next record" data-bind="click: $root.index($root.index() + 1), disable: $root.index() == ($root.features.length - 1)"><span>»</span></button>
+                </div>
+                <a class="btn btn-mini" title="View details of this record" target="_blank" data-bind="attr: { href: fcConfig.activityViewUrl + '/' + $data.properties.activityId }"><span><g:message code="record.popup.view"/></span></a>
+            </div>
+            <!-- /ko -->
+        </div>
+    </div>
 </asset:script>

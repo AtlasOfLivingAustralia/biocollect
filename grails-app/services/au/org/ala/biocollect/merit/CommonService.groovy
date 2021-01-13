@@ -3,6 +3,7 @@ package au.org.ala.biocollect.merit
 import grails.converters.JSON
 import grails.web.mapping.LinkGenerator
 import grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.context.MessageSource
 
 import javax.servlet.http.HttpServletRequest
 import javax.xml.bind.DatatypeConverter
@@ -11,7 +12,7 @@ import java.text.SimpleDateFormat
 class CommonService {
 
     UserService userService
-
+    MessageSource messageSource
     LinkGenerator grailsLinkGenerator
 
     List ignores = ["action","controller"]
@@ -90,6 +91,10 @@ class CommonService {
         queryParams.searchTerm = queryParams.searchTerm ?: ''
 
         queryParams
+    }
+
+    def i18n(Locale locale) {
+        messageSource.getMergedProperties(locale)?.properties
     }
 
 }

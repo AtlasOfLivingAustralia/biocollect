@@ -14,6 +14,9 @@
     <asset:stylesheet src="base.css"/>
     <asset:stylesheet src="Common_fonts.css"/>
     <asset:javascript src="base.js"/>
+    <script type="text/javascript">
+        i18nInitilisation("${g.createLink(controller: 'home', action: 'i18n')}");
+    </script>
     <g:set var="styles" value="${hubConfig.templateConfiguration?.styles}"></g:set>
     <asset:script type="text/javascript">
         // initialise plugins
@@ -267,7 +270,7 @@
             m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-        ga('create', 'UA-4355440-1', 'auto');
+        ga('create', '${grailsApplication.config.googleAnalyticsID}' , 'auto');
         ga('send', 'pageview');
     </script>
     <!-- End Google Analytics -->

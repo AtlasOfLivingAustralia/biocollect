@@ -1,10 +1,81 @@
+//= require snap-svg-0.5.1/snap.svg.js
+//= require self
 var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit, doNotStoreFacetFiltering, columnConfig) {
     var self = this;
 
-    var features, featureType = 'record', alaMap, results, radio;
-    self.view = view ? view : 'allrecords';
-    var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500;
+    var features, featureType = 'record', alaMap, results,
+        mapTabHeaderId = 'dataMapTab',
+        updateMapOccurrences = true,
+        activityLayer,
+        pointStyleName = 'point_circle',
+        heatmapStyleName = 'heatmap',
+        clusterStyleName = 'cluster',
+        polygonStyleName = 'polygon_sites',
+        lineStyleName = 'line_sites',
+        lineSelectorStyleName = 'line_selector',
+        shapeRenderingLayers = [pointStyleName, polygonStyleName, lineStyleName],
+        colourByControlId = "colour-by-select",
+        sizeControlId = "size-slider",
+        activityDisplayStyleId = "activity-display-style",
+        selectedTimeSeriesIndex = fcConfig.timeSeriesOnIndex || 'dateCreated',
+        colourByLabel = "Colour by:",
+        filterByLabel = "Filter by:",
+        selectedLayerID,
+        selectedColourByIndex = '',
+        selectedStyle = '',
+        selectedSize = 5,
+        selectedLayerName,
+        currentlySelectedTab,
+        legendControl,
+        infoPanelControl,
+        selectionControl,
+        playerControl,
+        opacity = 0.1,
+        mapDisplays = [],
+        layerNamesLookupRequests = {},
+        colourByBlackList = [
+            'isDataManagementPolicyDocumented',
+            'dataQualityAssuranceMethods',
+            'nonTaxonomicAccuracy',
+            'temporalAccuracy',
+            'spatialAccuracy',
+            'methodType',
+            'speciesIdentification'
+        ];
 
+    self.view = view ? view : 'allrecords';
+    var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500,
+        MAX_FEATURE_COUNT = 1000,
+        GENERAL_LAYER = '_general',
+        INFO_LAYER = '_info',
+        INDICES_LAYER = '_indices',
+        INFO_LAYER_DEFAULT = 'default',
+        TIMESERIES_LAYER = '_time',
+        STATE_POINT = 'point',
+        STATE_POLYGON = 'polygon',
+        STATE_LINE = 'line',
+        STATE_HEATMAP = 'heatmap',
+        STATE_CLUSTER = 'cluster',
+        STATE_POINT_INDEX = 'point+index',
+        STATE_POLYGON_INDEX = 'polygon+index',
+        STATE_LINE_INDEX = 'line+index',
+        STATE_HEATMAP_INDEX = 'heatmap+index',
+        STATE_CLUSTER_INDEX = 'cluster+index',
+        STATE_POINT_TIME = 'point+time',
+        STATE_POLYGON_TIME = 'polygon+time',
+        STATE_LINE_TIME = 'line+time',
+        STATE_HEATMAP_TIME = 'heatmap+time',
+        STATE_CLUSTER_TIME = 'cluster+time',
+        STATE_POINT_INDEX_TIME = 'point+index+time',
+        STATE_POLYGON_INDEX_TIME = 'polygon+index+time',
+        STATE_LINE_INDEX_TIME = 'line+index+time',
+        STATE_HEATMAP_INDEX_TIME = 'heatmap+index+time',
+        STATE_CLUSTER_INDEX_TIME = 'cluster+index+time';
+
+    layerNamesLookupRequests[GENERAL_LAYER] =  undefined;
+    layerNamesLookupRequests[TIMESERIES_LAYER] = {};
+    layerNamesLookupRequests[INFO_LAYER] = {};
+    layerNamesLookupRequests[INDICES_LAYER] = {};
     // These parameters are used when activity is instantiated from sites page.
     // It is used to disable certain aspects like map and auto load feature
     ignoreMap = !!ignoreMap;
@@ -71,7 +142,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         self.searchTerm('');
         self.loadSortColumn(true, true);
         self.filterViewModel.selectedFacets.removeAll();
-        alaMap.resetMap();
     };
 
     self.selectSurveyFacet = function (surveyName) {
@@ -173,6 +243,35 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             self.sortByColumn(column, null, doNotRefresh, doNotChangeOrder);
         }
     };
+
+    self.loadMapDisplays = function (displays) {
+        displays.forEach(function (display) {
+            display.selected = display.isDefault == display.key
+            if (display.selected) {
+                selectedLayerID = display.key;
+                selectedSize = display.size || selectedSize;
+            }
+
+            mapDisplays.push(display);
+        });
+
+        if (!selectedLayerID && (mapDisplays && mapDisplays.length > 0)) {
+            selectedLayerID = mapDisplays[0].key;
+            selectedSize = mapDisplays[0].size || selectedSize;
+        }
+    }
+
+    self.getSettingsForStyle = function (style) {
+        if (mapDisplays) {
+            var displays = $.grep(mapDisplays, function(item){
+                return item.key == style;
+            });
+
+            if (displays.length) {
+                return displays[0];
+            }
+        }
+    }
 
     /**
      * event handler
@@ -431,264 +530,611 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return projectIds;
     };
 
-    /**
-     * creates popup on the map
-     * @param projectLinkPrefix
-     * @param projectId
-     * @param projectName
-     * @param activityUrl
-     * @param surveyName
-     * @param speciesName
-     * @returns {string}
-     */
-    self.generatePopup = function (projectLinkPrefix, projectId, projectName, activityUrl, surveyName, speciesName, imageUrl){
-        var template =
-            '    <div>' +
-            '      IMAGE_TAG' +
-            '      SPECIES_NAME' +
-            '      ACTIVITY_LINK' +
-            '      PROJECT_LINK' +
-            '    </div>';
-
-        var version = fcConfig.version === undefined ? "" : "?version=" + fcConfig.version
-        var activityTemp = "";
-        if (activityUrl && surveyName) {
-            activityTemp = "<div><i class='icon-home'></i> <a target='_blank' href='" +
-                activityUrl + version +"'>" +surveyName + " (record)</a></div>";
-        }
-        template = template.replace("ACTIVITY_LINK", activityTemp);
-
-        var projectTemp = "";
-        if(projectName && !fcConfig.hideProjectAndSurvey){
-            projectTemp ="<div><a target='_blank' href="+projectLinkPrefix+projectId+version+"><i class='icon-map-marker'></i>&nbsp;" +projectName + " (project)</a></div>";
-        }
-        template = template.replace("PROJECT_LINK", projectTemp);
-
-        var speciesTemp = "";
-        if (speciesName) {
-            speciesTemp = "<strong><i class='icon-camera'></i>&nbsp;" + speciesName + "</strong>";
-        }
-        template = template.replace("SPECIES_NAME", speciesTemp);
-
-        var image = "";
-        if(imageUrl) {
-            image = "<div class='projectLogo'><img class='image-logo image-window' onload='findLogoScalingClass(this, 200, 150)' src='" + imageUrl + "'/></div>"
-        }
-
-        template = template.replace('IMAGE_TAG', image);
-        return template;
-    };
-
-    /**
-     * function used to create map and plot the fetched points
-     */
-    self.getDataAndShowOnMap = function () {
-        // do not execute code if ignoreMap is set. helpful in situations where map is not included
-        if(ignoreMap){
+    self.createOrUpdateMap = function (){
+        if (ignoreMap)
             return;
-        }
 
-        var searchTerm = self.searchTerm() || '';
-        var view = self.view;
-        var url =fcConfig.getRecordsForMapping + '&max=10000&searchTerm='+ searchTerm+'&view=' + view;
-        var facetFilters = [];
-        var fq;
+        if (updateMapOccurrences && currentlySelectedTab && (currentlySelectedTab.id  == mapTabHeaderId)) {
+            if(!alaMap){
+                var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
+                var mapOptions = {
+                    drawControl: false,
+                    showReset: false,
+                    draggableMarkers: false,
+                    useMyLocation: false,
+                    allowSearchLocationByAddress: false,
+                    allowSearchRegionByAddress: false,
+                    trackWindowHeight: true,
+                    loadingControlOptions: {
+                        position: 'topleft'
+                    },
+                    overlayControlPosition: "topleft",
+                    baseLayer: baseLayersAndOverlays.baseLayer,
+                    otherLayers: baseLayersAndOverlays.otherLayers,
+                    overlays: baseLayersAndOverlays.overlays,
+                    overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                };
 
-        self.plotOnMap(null);
+                // Create map
+                self.transients.alaMap = alaMap = new ALA.Map("recordOrActivityMap", mapOptions);
 
-        if(fcConfig.projectId){
-            url += '&projectId=' + fcConfig.projectId;
-        }
+                // Control - reset
+                alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomright");
 
-        fq = self.urlFacetParameter();
+                playerControl = new L.Control.Player({
+                    position: 'bottomright',
+                    startYear: 2015,
+                    endYear: 2020,
+                    interval: 1,
+                    timeout: 4
+                });
+                playerControl.on('play', self.play);
+                playerControl.on('stop', self.stop);
+                playerControl.on('forward', self.play);
+                playerControl.on('backward', self.play);
+                alaMap.addControl(playerControl);
 
-        fq.forEach(function (filter, index) {
-            fq[index] = encodeURI(filter)
-        });
-
-        if(fq.length){
-            url += '&fq=' + fq.join('&fq=');
-        }
-
-        self.transients.loadingMap(true);
-        alaMap.startLoading();
-        $.getJSON(url, function(data) {
-            self.transients.loadingMap(false);
-            results = data;
-            self.generateDotsFromResult(data);
-            alaMap.finishLoading();
-        }).error(function (request, status, error) {
-            console.error("AJAX error", status, error);
-            alaMap.finishLoading();
-        });
-    };
-
-    /**
-     * converts ajax data to activities or records according to selection.
-     * @param data
-     */
-    self.generateDotsFromResult = function (data){
-        features = [];
-        var geoPoints = data, type;
-
-        if (geoPoints.activities) {
-            $.each(geoPoints.activities, function(index, activity) {
-                var projectId = activity.projectId;
-                var projectName = activity.name;
-                var activityUrl = fcConfig.activityViewUrl+'/'+activity.activityId;
-
-                switch (featureType){
-                    case 'record':
-                        if (activity.records && activity.records.length > 0) {
-                            $.each(activity.records, function(k, el) {
-                                if(el.coordinates && el.coordinates.length && el.coordinates[1] && !isNaN(el.coordinates[1]) && el.coordinates[0] && !isNaN(el.coordinates[0])){
-                                    var type = el.individualCount == 0 ? 'icon' : 'circle';
-                                    var imageUrl = el.multimedia && el.multimedia[0] &&  el.multimedia[0].identifier;
-                                    features.push({
-                                        // the ES index always returns the coordinate array in [lat, lng] order
-                                        lat: el.coordinates[0],
-                                        lng: el.coordinates[1],
-                                        popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, el.name, imageUrl),
-                                        type: type
-                                    });
-                                }
-                            });
+                selectionControl = new L.Control.HorizontalMultiInput({
+                    id: 'display-style-colour-by-size-control',
+                    position: 'topright',
+                    items:  [{
+                        type: "select",
+                        id: activityDisplayStyleId,
+                        name: activityDisplayStyleId + "-name",
+                        label: "Display:",
+                        values: mapDisplays,
+                        helpText: fcConfig.mapDisplayHelpText
+                    },{
+                        type: "select",
+                        id: colourByControlId,
+                        name: colourByControlId + "-name",
+                        label: getLabelForMapDisplay(),
+                        values: [],
+                        helpText: getTooltipForMapDisplay
+                    }, {
+                        type: "slider",
+                        id: sizeControlId,
+                        label: "Size:",
+                        options: {
+                            min: 1,
+                            max: 9,
+                            step: 1,
+                            value: selectedSize,
+                            length: '100px'
                         }
-                        type = 'point';
-                        break;
-                    case 'activity':
-                        if(activity.coordinates && activity.coordinates.length && activity.coordinates[1] && !isNaN(activity.coordinates[1]) && activity.coordinates[0] && !isNaN(activity.coordinates[0])){
-                            // get image from records
-                            var imageUrl;
-                            activity.records = activity.records || [];
-                            for(var i = 0; (i < activity.records.length) && !imageUrl; i++){
-                                var el = activity.records[i];
-                                imageUrl = el.multimedia && el.multimedia[0] &&  el.multimedia[0].identifier
-                            }
+                    }]
+                });
+                alaMap.addControl(selectionControl);
 
-                            features.push({
-                                // the ES index always returns the coordinate array in [lat, lng] order
-                                lng: activity.coordinates[0],
-                                lat: activity.coordinates[1],
-                                popup: self.generatePopup(fcConfig.projectLinkPrefix,projectId,projectName, activityUrl, activity.name, null, imageUrl)
-                            });
-                        }
-                        type = 'cluster';
-                        break;
+                selectionControl.on('change', function (data) {
+                    switch (data.item.id) {
+                        case activityDisplayStyleId:
+                            changeActivityDisplayStyle(data.value);
+                            break;
+                        case colourByControlId:
+                            changeColourByIndex(data.value);
+                            break;
+                        case sizeControlId:
+                            changeSize(data.value);
+                            break;
+                    }
+                });
+
+                // update colour by when facets change
+                self.filterViewModel.facets.subscribe(function() {
+                    var options = self.filterViewModel.getColourByFields();
+                    options = self.sanitizeOptions(options);
+                    options = addEmptyOption(options);
+                    selectionControl.setSelectOptions(colourByControlId, options);
+                });
+
+                // Control - legend
+                legendControl = new L.Control.LegendImage({collapse: true, position: "topright"});
+                alaMap.addControl(legendControl);
+
+                // Control - display help text
+                infoPanelControl = new L.Control.InfoPanel({
+                    content: getHelpText(),
+                    collapse: false,
+                    title: "Help"
+                });
+                alaMap.addControl(infoPanelControl);
+
+                alaMap.registerListener('click', mapClickEventHandler);
+                alaMap.registerListener("zoomend dragend", getHeatmap);
+            }
+
+
+            selectedColourByIndex = undefined;
+            var typeAndIndices = getLayerTypeAndIndices();
+            getLayerNameRequest(typeAndIndices.type, typeAndIndices.indices).done(function (data) {
+                var layerName = data.layerName;
+                if (layerName) {
+                    console.log('Setting layerName - ' + layerName);
+                    selectedLayerName = layerName;
+                    refreshMapComponents();
                 }
             });
 
-            if(features.length > 0) {
-                self.plotOnMap(features, type);
-            }
-            // if no records found, then display activities
-            else if (featureType == 'record') {
-                var type = 'activity';
-                self.updateActivityRecordRadioButton(type, radio);
-                self.getActivityOrRecords(type);
-            }
+            updateDateRange();
+            // init colour by control
+            var options = self.filterViewModel.getColourByFields();
+            options = self.sanitizeOptions(options);
+            options = addEmptyOption(options);
+            selectionControl.setSelectOptions(colourByControlId, options);
+            legendControl.clearLegend();
+
+            // clear flag to disable adding occurrences layer to map
+            updateMapOccurrences = false;
+            setSelectionControlState();
         }
     };
 
-
-    /**
-     * A hack to update activity or record radio buttons.
-     * @param value - value of radio button to be checked - 'activity' or 'record'
-     * @param radio - leaflet radio button control
-     */
-    self.updateActivityRecordRadioButton = function (value, radio) {
-        $(radio._container).find('input[value="' + value + '"]').prop('checked', true);
-    };
-
-    /**
-     * creates the map and plots the points on map
-     * @param features
-     */
-    self.plotOnMap = function (features, drawType){
-        drawType = drawType || 'cluster';
-        var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
-        var mapOptions = {
-            autoZIndex: false,
-            preserveZIndex: true,
-            addLayersControlHeading: true,
-            drawControl: false,
-            showReset: false,
-            draggableMarkers: false,
-            useMyLocation: false,
-            allowSearchLocationByAddress: false,
-            allowSearchRegionByAddress: false,
-            trackWindowHeight: true,
-            baseLayer: baseLayersAndOverlays.baseLayer,
-            otherLayers: baseLayersAndOverlays.otherLayers,
-            overlays: baseLayersAndOverlays.overlays,
-            overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
-    };
-
-        if(!alaMap){
-            self.transients.alaMap = alaMap = new ALA.Map("recordOrActivityMap", mapOptions);
-            radio = new L.Control.Radio({
-                name: 'activityOrRecrodsTEST',
-                position: 'topleft',
-                radioButtons:[{
-                    displayName: 'Points ( Species occurrences )',
-                    value: 'record',
-                    checked: true
-                },{
-                    displayName: 'Cluster ( Site visits )',
-                    value: 'activity'
-                }],
-                onClick: self.getActivityOrRecords
-            });
-            alaMap.addControl(radio);
-            alaMap.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", alaMap.fitBounds, "bottomright");
-            self.addLegend();
-        }
-
-        self.transients.totalPoints(features && features.length ? features.length : 0);
-        if(features && features.length){
-            switch (drawType){
-                case 'cluster':
-                    alaMap.addClusteredPoints(features);
-                    break;
-                case 'point':
-                    alaMap.addPointsOrIcons(features, {}, fcConfig.absenceIconUrl, {
-                        iconSize:     [20, 18],
-                        iconAnchor:   [10, 9],
-                        popupAnchor:  [0, -9]
-                    });
-                    break;
-            }
-        }
-
-        alaMap.redraw()
-    };
-
-
-    self.addLegend = function () {
-        var Legend = L.Control.extend({
-            options: {
-                position: "bottomright",
-                title: 'Legend'
-            },
-            onAdd: function (map) {
-                var container = L.DomUtil.create("div", "leaflet-control-layers");
-                this.container = container;
-                $(container).html("<div style='padding:10px'>" + $('#map-legend').html() + "</div>");
-                return container;
+    self.sanitizeOptions = function (options) {
+        var whiteList = []
+        options = options || [];
+        options.forEach(function(option){
+            if ( colourByBlackList.indexOf(option.key) == -1 ) {
+                whiteList.push(option);
             }
         });
 
-        alaMap.addControl(new Legend());
+        return whiteList;
+    }
+
+    function setSelectionControlState() {
+        setLabelForMapDisplay();
+        enableDisableSizeControl();
+    }
+
+    function setLabelForMapDisplay() {
+        selectionControl.changeLabel(getLabelForMapDisplay(), colourByControlId);
     };
 
-    /**
-     * function called when  radio button selection changes.
-     * @param value
-     */
-    self.getActivityOrRecords = function(value){
-        featureType = value;
-        self.generateDotsFromResult(results);
-    };
+    function getLabelForMapDisplay() {
+        if (shapeRenderingLayers.indexOf(selectedLayerID) >= 0) {
+            return colourByLabel;
+        } else {
+            return filterByLabel;
+        }
+    }
+
+    function setTooltipForMapDisplay() {
+        selectionControl.setPopover({
+            id: colourByControlId,
+            helpText: getTooltipForMapDisplay()
+        });
+    }
+
+    function getTooltipForMapDisplay() {
+        if (shapeRenderingLayers.indexOf(selectedLayerID) >= 0) {
+            return fcConfig.mapDisplayColourByHelpText;
+        } else {
+            return fcConfig.mapDisplayFilterByHelpText;
+        }
+    }
+
+    function getLegendTitle() {
+        switch (selectedLayerID) {
+            case clusterStyleName:
+                return fcConfig.clusterLegendTitle;
+            case heatmapStyleName:
+                return fcConfig.heatmapLegendTitle;
+            case pointStyleName:
+                return fcConfig.pointLegendTitle;
+            case polygonStyleName:
+                return fcConfig.polygonLegendTitle;
+            case lineStyleName:
+                return fcConfig.lineLegendTitle;
+        }
+    }
+
+    function getHelpText() {
+        switch (selectedLayerID) {
+            case heatmapStyleName:
+                return fcConfig.heatmapHelpText;
+            case clusterStyleName:
+                return fcConfig.clusterHelpText;
+            case lineStyleName:
+                return fcConfig.lineHelpText;
+            case polygonStyleName:
+                return fcConfig.polygonHelpText;
+            case pointStyleName:
+                return fcConfig.pointHelpText;
+        }
+    }
+
+    function enableDisableSizeControl () {
+        var item = {
+            type: 'slider',
+            id : sizeControlId
+        };
+
+        if (shapeRenderingLayers.indexOf(selectedLayerID) >= 0) {
+            selectionControl.disableItem(false, item);
+        } else {
+            selectionControl.disableItem(true, item);
+        }
+    }
+
+
+    function addEmptyOption(values) {
+        values = values || [];
+        values.unshift({key: ""});
+        return values;
+    }
+
+    function getLayerTypeAndIndices () {
+        var result = {
+            type: INDICES_LAYER,
+            indices: selectedColourByIndex
+        };
+
+        if (!selectedColourByIndex) {
+            result.type = GENERAL_LAYER;
+            result.indices = undefined;
+        }
+
+        return result;
+    }
+
+    self.getCurrentState = function() {
+        var isPlayerActive = playerControl && playerControl.isPlayerActive();
+        switch (selectedLayerID) {
+            case clusterStyleName:
+                if (selectedColourByIndex && isPlayerActive) {
+                    return STATE_CLUSTER_INDEX_TIME;
+                }
+                else if (isPlayerActive) {
+                    return STATE_CLUSTER_TIME;
+                }
+                else if (selectedColourByIndex) {
+                    return STATE_CLUSTER_INDEX;
+                }
+                else {
+                    return STATE_CLUSTER;
+                }
+
+                break;
+            case heatmapStyleName:
+                if (selectedColourByIndex && isPlayerActive) {
+                    return STATE_HEATMAP_INDEX_TIME;
+                }
+                else if (isPlayerActive) {
+                    return STATE_HEATMAP_TIME;
+                }
+                else if (selectedColourByIndex) {
+                    return STATE_HEATMAP_INDEX;
+                }
+                else {
+                    return STATE_HEATMAP;
+                }
+
+                break;
+            case pointStyleName:
+                if (selectedColourByIndex && isPlayerActive) {
+                    return STATE_POINT_INDEX_TIME;
+                }
+                else if (isPlayerActive) {
+                    return STATE_POINT_TIME;
+                }
+                else if (selectedColourByIndex) {
+                    return STATE_POINT_INDEX;
+                }
+                else {
+                    return STATE_POINT;
+                }
+
+                break;
+            case polygonStyleName:
+                if (selectedColourByIndex && isPlayerActive) {
+                    return STATE_POLYGON_INDEX_TIME
+                }
+                else if (isPlayerActive) {
+                    return STATE_POLYGON_TIME;
+                }
+                else if (selectedColourByIndex) {
+                    return STATE_POLYGON_INDEX;
+                }
+                else {
+                    return STATE_POLYGON;
+                }
+
+                break;
+            case lineStyleName:
+                if (selectedColourByIndex && isPlayerActive) {
+                    return STATE_LINE_INDEX_TIME;
+                }
+                else if (isPlayerActive) {
+                    return STATE_LINE_TIME;
+                }
+                else if (selectedColourByIndex) {
+                    return STATE_LINE_INDEX;
+                }
+                else {
+                    return STATE_LINE;
+                }
+
+                break;
+
+        }
+    }
+
+    self.getParametersForState = function(state) {
+        var params = {};
+        state = state || self.getCurrentState();
+        addCommonParameters(params);
+
+        switch (state) {
+            case STATE_CLUSTER:
+                params.styles = clusterStyleName;
+                break;
+            case STATE_CLUSTER_INDEX:
+                params.styles = clusterStyleName;
+                addCQLParameter(params);
+                break;
+            case STATE_CLUSTER_TIME:
+                params.styles = clusterStyleName;
+                addTimeParameter(params);
+                break;
+            case STATE_CLUSTER_INDEX_TIME:
+                params.styles = clusterStyleName;
+                addTimeParameter(params);
+                addCQLParameter(params);
+                break;
+            case STATE_POINT:
+                params.styles = pointStyleName;
+                params.env = "size:" + selectedSize + ";";
+                break;
+            case STATE_POINT_INDEX:
+                params.styles = selectedStyle;
+                params.env = "size:" + selectedSize + ";";
+                addCQLParameter(params);
+                break;
+            case STATE_POINT_TIME:
+                params.styles = pointStyleName;
+                params.env = "size:" + selectedSize + ";";
+                addTimeParameter(params);
+                break;
+            case STATE_POINT_INDEX_TIME:
+                params.styles = selectedStyle;
+                params.env = "size:" + selectedSize + ";";
+                addTimeParameter(params);
+                addCQLParameter(params);
+                break;
+            case STATE_POLYGON:
+                params.styles = polygonStyleName;
+                params.env = "size:" + selectedSize + ";";
+                break;
+            case STATE_POLYGON_INDEX:
+                params.styles = selectedStyle;
+                params.env = "size:" + selectedSize + ";";
+                addCQLParameter(params);
+                break;
+            case STATE_POLYGON_TIME:
+                params.styles = polygonStyleName;
+                params.env = "size:" + selectedSize + ";";
+                addTimeParameter(params);
+                break;
+            case STATE_POLYGON_INDEX_TIME:
+                params.styles = selectedStyle;
+                params.env = "size:" + selectedSize + ";";
+                addTimeParameter(params);
+                addCQLParameter(params);
+                break;
+            case STATE_LINE:
+                params.styles = lineStyleName;
+                params.env = "size:" + selectedSize + ";";
+                break;
+            case STATE_LINE_INDEX:
+                params.styles = selectedStyle;
+                params.env = "size:" + selectedSize + ";";
+                addCQLParameter(params);
+                break;
+            case STATE_LINE_TIME:
+                params.styles = lineStyleName;
+                params.env = "size:" + selectedSize + ";";
+                addTimeParameter(params);
+                break;
+            case STATE_LINE_INDEX_TIME:
+                params.styles = selectedStyle;
+                params.env = "size:" + selectedSize + ";";
+                addTimeParameter(params);
+                addCQLParameter(params);
+                break;
+            case STATE_HEATMAP:
+                params.styles = heatmapStyleName;
+                break;
+            case STATE_HEATMAP_INDEX:
+                params.styles = heatmapStyleName;
+                addWeightParameter(params);
+                addCQLParameter(params);
+                break;
+            case STATE_HEATMAP_TIME:
+                params.styles = heatmapStyleName;
+                addTimeParameter(params);
+                break;
+            case STATE_HEATMAP_INDEX_TIME:
+                params.styles = heatmapStyleName;
+                addWeightParameter(params);
+                addTimeParameter(params);
+                addCQLParameter(params);
+                break;
+        }
+
+        if (opacity) {
+            params.env += "opacity:" + opacity + ";";
+        }
+
+        return params;
+    }
+
+    function addTimeParameter (params) {
+        params = params || {};
+        var playerState = playerControl.getCurrentDuration();
+        params.time = playerState.interval[0] + "/" + playerState.interval[1];
+        return params;
+    }
+
+    function getTimeRangeQuery() {
+        var playerState = playerControl.getCurrentDuration();
+        return selectedTimeSeriesIndex + ":[" + playerState.interval[0] + "-01-01 TO " + playerState.interval[1] + "-12-31]"
+    }
+
+    function addWeightParameter (params) {
+        params = params || {};
+        params.env = "weight:" + selectedColourByIndex + ";";
+        return params;
+    }
+
+    function addCommonParameters (params) {
+        params = params || {};
+        params.layers = selectedLayerName;
+        return params;
+    }
+
+    function addCQLParameter(params) {
+        params = params || {};
+        params.cql_filter = selectedColourByIndex + " IS NOT NULL";
+        return params;
+    }
+
+    function getBoundingBoxGeoJSON() {
+        var map = alaMap.getMapImpl(),
+            crs = map.options.crs,
+            sw = map.getBounds().getSouthWest(),
+            ne = map.getBounds().getNorthEast(),
+            bbox = {
+                type: "Polygon",
+                coordinates: [[[sw.lng, sw.lat], [ne.lng, sw.lat], [ne.lng, ne.lat], [sw.lng, ne.lat], [sw.lng, sw.lat]]]
+            };
+
+        return bbox;
+    }
+
+    function getHeatmap() {
+        if (selectedLayerID === heatmapStyleName) {
+            activityLayer.fire('loading');
+            var state = self.getCurrentState(),
+                params = self.getParametersForState(state),
+                url = constructQueryUrl(fcConfig.heatmapURL, 0, false, 0, false),
+                boundingBoxGeoJSON = getBoundingBoxGeoJSON(),
+                payload = {
+                    geoSearchJSON: JSON.stringify(boundingBoxGeoJSON)
+                };
+
+            if (params.time) {
+                payload.fq =  getTimeRangeQuery();
+            }
+
+            if (selectedColourByIndex) {
+                payload.exists = selectedColourByIndex;
+            }
+
+            $.ajax({
+                url: url,
+                data: payload,
+                success: function (data) {
+                    if (!data.error) {
+                        if (selectedLayerID === heatmapStyleName) {
+                            activityLayer.clearLayers();
+                            activityLayer.addData && activityLayer.addData(data);
+                            updateLegendFromGeoJSON(data);
+                        }
+                    }
+
+                    activityLayer.fire('load');
+                }
+            });
+        }
+    }
+
+    function initMapOverlaysWithLayer () {
+        var url;
+
+        activityLayer && alaMap.removeOverlayLayer(activityLayer);
+        switch (selectedLayerID) {
+            case heatmapStyleName:
+                activityLayer = L.geoJson(null, {
+                    style: function (feature) {
+                        return {
+                            stroke: false,
+                            fill: true,
+                            fillColor: feature.properties.colour,
+                            fillOpacity: 0.7
+                        };
+                    },
+                    onEachFeature: function (feature, layer) {
+                        layer.bindPopup(String(feature.properties.count));
+                    }
+                });
+
+                getHeatmap();
+                break;
+            default:
+                url = constructQueryUrl(fcConfig.wmsActivityURL, 0, false, 0, false);
+                activityLayer = L.nonTiledLayer.wms ( url, {
+                    format: 'image/png',
+                    transparent: true,
+                    maxZoom: 21
+                });
+                break;
+
+        }
+
+        playerControl && activityLayer.on('load tileerror', playerControl.startTimerForNextFrame, playerControl);
+    }
+
+    function getIndicesForTimeSeries() {
+        if (selectedColourByIndex) {
+            return selectedTimeSeriesIndex + ',' + selectedColourByIndex;
+        }
+
+        return selectedTimeSeriesIndex;
+    }
+
+    self.play = function (state) {
+        switch (state.intervalType) {
+            case 'year':
+                if (state.interval) {
+                    switch (selectedLayerID) {
+                        case heatmapStyleName:
+                            getHeatmap();
+                            break;
+                        default:
+                            getLayerNameRequest(TIMESERIES_LAYER, getIndicesForTimeSeries()).done(function(data){
+                                if (data.layerName) {
+                                    selectedLayerName = data.layerName;
+                                    refreshMapComponents();
+                                    activityLayer && activityLayer.fire('loading');
+                                }
+                            });
+                    }
+                }
+                break;
+        }
+    }
+
+    self.stop = function (state) {
+        switch (state.intervalType) {
+            case 'year':
+                switch (selectedLayerID) {
+                    case heatmapStyleName:
+                        getHeatmap();
+                        break;
+                    default:
+                        var typeAndIndices = getLayerTypeAndIndices();
+                        getLayerNameRequest(typeAndIndices.type, typeAndIndices.indices).done(function (data) {
+                            if (data.layerName) {
+                                selectedLayerName = data.layerName;
+                                refreshMapComponents();
+                            }
+                        });
+                        break;
+                }
+                break;
+        }
+    }
 
     /**
      * when map is updated on invisible, this function is used to redraw the map.
@@ -752,23 +1198,26 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         return url
     });
 
-    function constructQueryUrl(prefix, offset, facetOnly, flimit) {
+    function constructQueryUrl(prefix, offset, facetOnly, flimit, addPaginationParams) {
         if (!offset) offset = 0;
+        addPaginationParams = addPaginationParams == undefined ? true : !!addPaginationParams;
 
         var params = {
-            max: self.pagination.resultsPerPage(),
-            offset: offset,
-            sort: self.sort(),
-            order: self.order(),
-            flimit: flimit || fcConfig.flimit,
-            view: self.view,
-            spotterId: fcConfig.spotterId,
-            projectActivityId: fcConfig.projectActivityId,
-            clientTimezone : moment.tz.guess()
-        },
+                view: self.view,
+                spotterId: fcConfig.spotterId,
+                projectActivityId: fcConfig.projectActivityId,
+                clientTimezone : moment.tz.guess()
+            },
             fq = [],
             rfq;
 
+        if (addPaginationParams) {
+            params.max = self.pagination.resultsPerPage();
+            params.offset = offset;
+            params.sort= self.sort();
+            params.order= self.order();
+            params.flimit= flimit || fcConfig.flimit;
+        }
 
         var filters = '', rfilters = '';
         if (_.isUndefined(facetOnly) || !facetOnly) {
@@ -792,9 +1241,350 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     function fetchDataForTabs(){
         if(self.filterViewModel.switchOffSearch()) return;
 
+        updateMapOccurrences = true;
         self.refreshPage();
-        self.getDataAndShowOnMap();
+        self.createOrUpdateMap();
         self.imageGallery && self.imageGallery.fetchRecordImages()
+    }
+
+    function mapClickEventHandler(event) {
+        if (selectedLayerID !== heatmapStyleName) {
+            var map = this;
+            getLayerNameRequest(INFO_LAYER, selectedColourByIndex).done(function(data){
+                if(data.layerName) {
+                    var size = map.getSize(),
+                        // this crs is used to show layer added to map
+                        crs = map.options.crs,
+                        // these are the SouthWest and NorthEast points
+                        // projected from LatLng into used crs
+                        sw = crs.project(map.getBounds().getSouthWest()),
+                        ne = crs.project(map.getBounds().getNorthEast()),
+                        styleName = activityLayer.wmsParams.styles == lineStyleName ? lineSelectorStyleName : activityLayer.wmsParams.styles,
+                        params = {
+                            request: 'GetFeatureInfo',
+                            service: 'WMS',
+                            srs: crs.code,
+                            version: activityLayer.wmsParams.version,
+                            layers: data.layerName,
+                            query_layers: data.layerName,
+                            styles: styleName,
+                            bbox:  sw.x + ',' + sw.y + ',' + ne.x + ',' + ne.y,
+                            height: size.y,
+                            width: size.x,
+                            feature_count: MAX_FEATURE_COUNT,
+                            info_format: 'application/json'
+                        };
+
+                    if (activityLayer.wmsParams.cql_filter) {
+                        params.cql_filter = activityLayer.wmsParams.cql_filter;
+                    }
+
+                    if (playerControl.isPlayerActive()) {
+                        params.cql_filter = params.cql_filter || "";
+                        var time = playerControl.getCurrentDuration(),
+                            timeCQL = selectedTimeSeriesIndex + " >= '" + time.interval[0] + "-01-01' AND " + selectedTimeSeriesIndex + " <= '" + time.interval[1] + "-12-31'";
+
+                        params.cql_filter = params.cql_filter ? params.cql_filter + " AND " + timeCQL : timeCQL;
+                    }
+
+                    params[params.version === '1.3.0' ? 'i' : 'x'] = Math.round(event.containerPoint.x);
+                    params[params.version === '1.3.0' ? 'j' : 'y'] = Math.round(event.containerPoint.y);
+                    var url = activityLayer._wmsUrl + L.Util.getParamString(params, activityLayer._wmsUrl, true);
+                    // show loading GIF
+                    activityLayer.fire && activityLayer.fire('loading');
+                    $.get(url , function (data) {
+                        var features = data.features;
+
+                        if (features && features.length) {
+                            L.popup({
+                                maxWidth: 400,
+                                minWidth: 200
+                            })
+                                .setLatLng(event.latlng)
+                                .setContent('<div id="template-map-popup-record" style="width: 400px; height: auto" data-bind="template: { name: \'script-popup-template\' }"></div>')
+                                .openOn(alaMap.getMapImpl());
+
+                            ko.applyBindings({features: features, index: ko.observable(0)}, document.getElementById('template-map-popup-record'))
+                        }
+                    }).done(function() {
+                        // remove loading GIF
+                        activityLayer.fire && activityLayer.fire('load');
+                    });
+                }
+            })
+        }
+    };
+    // todo: cql not cleared properly
+    function changeColourByIndex(index) {
+        var typeAndIndices;
+
+        selectedColourByIndex = index;
+        updateDateRange();
+        typeAndIndices = getLayerTypeAndIndices();
+        getLayerNameRequest(typeAndIndices.type, typeAndIndices.indices).done(function (data) {
+            var layerName = data.layerName;
+            if (layerName) {
+                console.log('Updating layerName - ' + layerName);
+                selectedLayerName = layerName;
+                if (index) {
+                    createStyleForMapDisplayAndColourByIndex(selectedLayerID, index);
+                } else {
+                    selectedStyle = '';
+                    refreshMapComponents();
+                }
+            }
+        });
+    };
+
+    function createStyleForMapDisplayAndColourByIndex(mapDisplay, index) {
+        var terms = self.filterViewModel.getTermsForFacet(index);
+        if (canMapDisplayBeColoured(mapDisplay)) {
+            terms.style = mapDisplay;
+        }
+
+        createStyleFromTerms(terms).done(function (data) {
+            selectedStyle = data.name;
+            self.filterViewModel.setStyleName(index, selectedStyle);
+            refreshMapComponents();
+        });
+    };
+
+    function changeSize(size) {
+        selectedSize = size;
+        refreshMapComponents();
+    }
+
+    function setDefaultSizeForStyle (style) {
+        if (canMapDisplayBeColoured(style)) {
+            var settings = self.getSettingsForStyle(style),
+                size = (settings && settings.size) || 1;
+            selectionControl.setSize('slider', 'size-slider', size);
+        }
+    };
+
+    /**
+     * Update map depending on colour by selection and rendering (point, heatmap etc.) selection.
+     */
+    function refreshMapComponents () {
+        var state = self.getCurrentState(),
+            params = self.getParametersForState(state),
+            legendURL;
+
+        initMapOverlaysWithLayer();
+        activityLayer && activityLayer.setParams && activityLayer.setParams(params);
+        alaMap.addOverlayLayer(activityLayer, 'Activity', true);
+        legendURL = Biocollect.MapUtilities.getLegendURL(activityLayer, params.styles);
+        !legendURL && legendControl.clearLegend();
+        legendURL && legendControl.updateLegend(legendURL, getLegendTitle());
+    }
+
+    function createStyleFromTerms(terms) {
+        return $.ajax({
+            url: fcConfig.createStyleURL,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(terms)
+        });
+    }
+
+    function changeActivityDisplayStyle (value) {
+        var currentSettings = getLayerTypeAndIndices(),
+            layerNameRequest = getLayerNameRequest(currentSettings.type, currentSettings.indices);
+
+        selectedLayerID = value;
+        setDefaultSizeForStyle(selectedLayerID);
+        layerNameRequest && layerNameRequest.done(function (data) {
+            if (data.layerName) {
+                selectedLayerName = data.layerName;
+                if (selectedColourByIndex) {
+                    createStyleForMapDisplayAndColourByIndex(selectedLayerID, selectedColourByIndex);
+                } else {
+                    refreshMapComponents();
+                }
+            }
+        });
+
+        setSelectionControlState();
+    };
+
+    function getDateRange() {
+        var url = constructQueryUrl(fcConfig.dateRangeURL, 0, true, 0, false),
+            params = {
+                dateFields: selectedTimeSeriesIndex
+            };
+
+        if (selectedColourByIndex) {
+            params.exists = selectedColourByIndex;
+        }
+
+        return $.get({
+            url: url,
+            data: params
+        });
+    };
+
+    function updateDateRange() {
+        getDateRange().done(function (range) {
+            if (range[selectedTimeSeriesIndex]) {
+                playerControl && playerControl.setYearRange(range[selectedTimeSeriesIndex]);
+            }
+        })
+    }
+
+    function getLayerNameRequest(type, indices) {
+        var request, indicesConcat, styleCode;
+
+        switch (type) {
+            case GENERAL_LAYER:
+                request = layerNamesLookupRequests[type];
+                break;
+            case INFO_LAYER:
+                if (!indices) {
+                    indices = [INFO_LAYER_DEFAULT];
+                }
+            case TIMESERIES_LAYER:
+                if (indices == undefined) {
+                    indices = [];
+                }
+            case INDICES_LAYER:
+                if (indices === undefined) {
+                    return
+                }
+                else if (typeof indices === 'string') {
+                    indices = [indices]
+                }
+
+                indicesConcat = indices.join(',');
+                styleCode = getStyleNameForIndicesLayer();
+                if (!styleCode) {
+                    styleCode = indicesConcat;
+                }
+
+                request = layerNamesLookupRequests[type][styleCode];
+                break;
+        }
+
+        if (!request) {
+            if (!fcConfig.getLayerNameURL){
+                console.warn("Property fcConfig.getLayerNameURL must be provided");
+                return ;
+            }
+
+            var request = $.get({
+                url: fcConfig.getLayerNameURL,
+                data: {
+                    type: type,
+                    indices: indicesConcat || ''
+                }
+            }).fail(function () {
+                setLayerNameRequest(type, indices, undefined);
+            });
+
+            setLayerNameRequest(type, indices, request);
+        }
+
+        return request;
+    };
+
+    function getStyleNameForIndicesLayer() {
+        if (canMapDisplayBeColoured(selectedLayerID)) {
+            return selectedLayerID+selectedColourByIndex;
+        }
+    };
+
+    function canMapDisplayBeColoured (index) {
+        return shapeRenderingLayers.indexOf(index) >= 0;
+    };
+
+    function setLayerNameRequest(type, indices, request) {
+        var indicesConcat, styleCode;
+        switch (type) {
+            case GENERAL_LAYER:
+                layerNamesLookupRequests[type] = request;
+                break;
+            case INFO_LAYER:
+                if (!indices) {
+                    indices = [INFO_LAYER_DEFAULT];
+                }
+            case INDICES_LAYER:
+            case TIMESERIES_LAYER:
+                if (indices === undefined) {
+                    return;
+                }
+                else if (typeof indices === 'string') {
+                    indices = [indices];
+                }
+
+                indicesConcat = indices.join(',');
+                styleCode = getStyleNameForIndicesLayer()
+                if (!styleCode) {
+                    styleCode = indicesConcat;
+                }
+
+                layerNamesLookupRequests[type][styleCode] = request;
+                break;
+        }
+    };
+
+    function getLegendFromGeoJSON (geoJSON) {
+        var legendMapping = {},
+            legends = [];
+        switch (geoJSON.type) {
+            case "FeatureCollection":
+                geoJSON.features && geoJSON.features.forEach(function (feature) {
+                    if (feature.properties) {
+                        legendMapping[feature.properties.label] = feature.properties;
+                    }
+                });
+
+                for(var label in legendMapping) {
+                    legends.push(legendMapping[label]);
+                }
+
+                legends.sort(function (a, b) {
+                    return b.max > a.max;
+                });
+                break;
+        }
+
+        return legends;
+    }
+
+    function getSVGForLegend(legend) {
+        var svg = Snap("100%", "100%"),
+            y = 0,
+            yLineHeight = 20,
+            padding = 10,
+            baseline = 10;
+
+        legend.forEach(function (item) {
+            var shape = svg.rect(0 + padding, y + padding, 10, 10);
+            shape.attr({fill: item.colour});
+            var label = svg.text(20 + padding , y + baseline + padding, item.label);
+            y += yLineHeight;
+        });
+
+        svg.attr({height:y + padding});
+
+        var text = svg.outerSVG();
+        // snap attaches svg to document. need to remove it.
+        svg.remove();
+        return text;
+
+    }
+
+    function updateLegendWithSVG(svgText) {
+        var prefix = 'data:image/svg+xml,',
+            svgText = encodeURIComponent(svgText),
+            dataURI = prefix + svgText;
+
+        legendControl && legendControl.updateLegend(dataURI, getLegendTitle());
+    }
+
+    function updateLegendFromGeoJSON (geoJSON) {
+        var legend = getLegendFromGeoJSON(geoJSON);
+        var svg = getSVGForLegend(legend);
+        updateLegendWithSVG(svg);
     }
 
     self.filterViewModel.selectedFacets.subscribe(fetchDataForTabs);
@@ -807,9 +1597,15 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         !doNotRefersh && self.refreshPage();
     };
 
+    $("#tabDifferentViews a").on('show', function (event) {
+        currentlySelectedTab = event.target;
+        console.log(currentlySelectedTab);
+    }).on('shown', self.createOrUpdateMap);
+
     var restored = facetsLocalStorageHandler("restore");
     var orgTerm = fcConfig.organisationName;
     self.loadSortColumn(true);
+    self.loadMapDisplays(fcConfig.mapDisplays);
     if (orgTerm) {
         self.filterViewModel.selectedFacets.push(new FacetTermViewModel({
             term: orgTerm,

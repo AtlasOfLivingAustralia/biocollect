@@ -35,7 +35,6 @@
         speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
         searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities',params: [projectId:project.projectId, version: params.version])}",
         downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData',params: [projectId:project.projectId])}",
-        getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params:[version: params.version])}",
         siteCreateUrl: "${createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId])}",
         siteSelectUrl: "${createLink(controller: 'site', action: 'select', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
         siteUploadUrl: "${createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
@@ -51,6 +50,11 @@
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
+        wmsActivityURL: "${createLink(controller: 'geoServer', action: 'wms', params: [projectId: project.projectId, maxFeatures: grailsApplication.config.map.wms.maxFeatures, tiled: true])}",
+        createStyleURL: "${createLink(controller: 'geoServer', action: 'createStyle')}",
+        dateRangeURL: "${createLink(controller: 'bioActivity', action: 'getMinMaxYearForQuery', params: [projectId: projectId])}",
+        getLayerNameURL: "${createLink(controller: 'geoServer', action: 'getLayerName')}",
+        heatmapURL: "${createLink(controller: 'geoServer', action: 'getHeatmap', params: [projectId: project.projectId])}",
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
@@ -117,8 +121,17 @@
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
         allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        allMapDisplays: ${grailsApplication.config.map.data.displays as grails.converters.JSON},
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-        sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}"
+        sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}",
+        mapDisplayHelpText: "<g:message code="map.style.help"/>",
+        mapDisplayColourByHelpText: "<g:message code="map.colour.by.help"/>",
+        mapDisplayFilterByHelpText: "<g:message code="map.filter.by.help"/>",
+        clusterLegendTitle: "<g:message code="map.cluster.legend.title"/>",
+        heatmapLegendTitle: "<g:message code="map.heatmap.legend.title"/>",
+        pointLegendTitle: "<g:message code="map.point.legend.title"/>",
+        polygonLegendTitle: "<g:message code="map.polygon.legend.title"/>",
+        lineLegendTitle: "<g:message code="map.line.legend.title"/>"
         },
         here = window.location.href;
 
