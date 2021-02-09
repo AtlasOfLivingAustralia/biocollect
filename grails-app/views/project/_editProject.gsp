@@ -172,5 +172,5 @@
 
 <div class="form-actions">
     <button type="button" data-bind="click: saveSettings" class="btn btn-primary">Save changes</button>
-    <button type="button" id="cancel" class="btn">Cancel</button>
+    <button type="button" id="cancel" class="btn"><g:message code='g.cancel'/></button>
 </div>

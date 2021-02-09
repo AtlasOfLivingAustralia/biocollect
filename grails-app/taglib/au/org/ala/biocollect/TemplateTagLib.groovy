@@ -64,18 +64,18 @@ class TemplateTagLib {
                 case 'admin':
                     if(userService.userIsAlaAdmin()){
                         out << "<li class=\"main-menu\">";
-                        out << "<a href=\"${url}\">${link.displayName?:'Admin'}</a>";
+                        out << "<a href=\"${url}\">${link.displayName?:message(code: 'g.admin')}</a>";
                         out << "</li>";
                     }
                     break;
                 case 'allrecords':
                     out << "<li class=\"main-menu\">";
-                    out << "<a href=\"${url}\">${link.displayName?:'All Records'}</a>";
+                    out << "<a href=\"${url}\">${link.displayName?:message(code: 'g.allRecords')}</a>";
                     out << "</li>";
                     break;
                 case 'home':
                     out << "<li class=\"main-menu\">";
-                    out << "<a href=\"${url}\">${link.displayName?:'Home'}</a>";
+                    out << "<a href=\"${url}\">${link.displayName?:message(code: 'g.home')}</a>";
                     out << "</li>";
                     break;
                 case 'login':
@@ -86,25 +86,25 @@ class TemplateTagLib {
                     break;
                 case 'newproject':
                     out << "<li class=\"main-menu\">";
-                    out << "<a href=\"${url}\">${link.displayName?:'New project'}</a>";
+                    out << "<a href=\"${url}\">${link.displayName?:message(code:'g.newProject')}</a>";
                     out << "</li>";
                     break;
                 case 'sites':
                     out << "<li class=\"main-menu\">";
-                    out << "<a href=\"${url}\">${link.displayName?:'Sites'}</a>";
+                    out << "<a href=\"${url}\">${link.displayName?:message(code:'g.sites')}</a>";
                     out << "</li>";
                     break;
                 case 'biocacheexplorer':
                     out << "<li class=\"main-menu\">";
-                    out << "<a href=\"${ url }\">${link.displayName?:'Occurrence explorer'}</a>";
+                    out << "<a href=\"${ url }\">${link.displayName?:message(code: 'g.occurrenceExplorer')}</a>";
                     out << "</li>";
                     break;
                 case 'recordSighting':
                     String disabled = isRequestForRecordASighting(link)?"disabled":"";
                     out << "<li class=\"main-menu\">"
-                    out << "<button class=\"btn btn-primary\" style=\"font-size: 13px;\" title=\"Login required\" " +
+                    out << "<button class=\"btn btn-primary\" style=\"font-size: 13px;\" title=\"${message(code:'g.logInRequired')}\" " +
                             "${disabled} onclick=\"window.location = '${url}'\"><i class=\"fa fa-binoculars fa-inverse\">" +
-                            "</i>&nbsp;&nbsp;Record a sighting</button>"
+                            "</i>&nbsp;&nbsp;'${message(code: 'record.create.title')}'</button>"
                     out << "</li>"
                     break;
             }
@@ -253,10 +253,10 @@ class TemplateTagLib {
     private Map printLoginOrLogoutButton(Map hubConfig){
         if(!fc.userIsLoggedIn()){
             String loginUrl = grailsApplication.config.security.cas.loginUrl + "?service=" + grailsApplication.config.security.cas.appServerName + request.forwardURI + "?hub=" + hubConfig.urlPath
-            return [displayName: 'Login', href: loginUrl, contentType:'external']
+            return [displayName: message(code: 'g.login'), href: loginUrl, contentType:'external']
         } else {
             String logoutUrl = grailsApplication.config.grails.serverURL + "/logout/logout?casUrl=" + grailsApplication.config.security.cas.logoutUrl + "&appUrl=" +  grailsApplication.config.security.cas.appServerName + request.forwardURI + "?hub=" + hubConfig.urlPath
-            return [displayName: 'Logout', href: logoutUrl, contentType:'external']
+            return [displayName: message(code: 'g.logout'), href: logoutUrl, contentType:'external']
         }
     }
 }

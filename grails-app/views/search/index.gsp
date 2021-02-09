@@ -20,7 +20,7 @@
             <g:form controller="search" method="GET" class="hide form-horizontal pull-right" style="padding-top:5px;">
                 <div class="input-append">
                     <g:textField class="input-large" name="query" value="${params.query}"/>
-                    <button class="btn" type="submit">Search</button>
+                    <button class="btn" type="submit"><g:message code='g.search'/></button>
                 </div>
             </g:form>
         </div>
@@ -112,7 +112,7 @@
                                     </ul>
                                 </div>
                                 <div class="modal-footer">
-                                    <a href="#" class="btn" data-dismiss="modal">Close</a>
+                                    <a href="#" class="btn" data-dismiss="modal"><g:message code='g.close'/></a>
                                 </div>
                             </div>
                         </g:if>

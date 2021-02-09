@@ -4,11 +4,11 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Create | Activity | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <title><g:message code='g.create'/> | <g:message code='g.activity'/> | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: 'g.home')}"/>
     <g:if test="${project}">
         <meta name="breadcrumbParent2"
-              content="${createLink(controller: 'project', action: 'index')}/${project?.projectId},Project"/>
+              content="${createLink(controller: 'project', action: 'index')}/${project?.projectId},${message(code: 'g.project')}"/>
     </g:if>
     <g:elseif test="${site}">
         <meta name="breadcrumbParent2"
@@ -61,7 +61,7 @@
 
         <div class="form-actions">
             <button type="button" data-bind="click: next" class="btn btn-primary">Next</button>
-            <button type="button" id="cancel" class="btn">Cancel</button>
+            <button type="button" id="cancel" class="btn"><g:message code='g.cancel'/></button>
         </div>
     </div>
 

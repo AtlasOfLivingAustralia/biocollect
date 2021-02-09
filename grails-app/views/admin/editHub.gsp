@@ -51,7 +51,7 @@
         Configured hubs: <select data-bind="value:selectedHubUrlPath, options:hubs"></select>
     </div>
     <div class="span2">
-        <button class="btn btn-info" data-bind="click:editHub">Edit <span data-bind="text:selectedHubUrlPath"></span></button>
+        <button class="btn btn-info" data-bind="click:editHub"><g:message code='g.edit'/> <span data-bind="text:selectedHubUrlPath"></span></button>
         <button class="btn btn-info" data-bind="click:newHub">New Hub</button>
     </div>
 
@@ -704,8 +704,8 @@
         </div>
     </div>
     <div class="form-actions">
-        <button type="button" id="save" data-bind="click:save" class="btn btn-primary">Save</button>
-        <button type="button" id="cancel" class="btn">Cancel</button>
+        <button type="button" id="save" data-bind="click:save" class="btn btn-primary"><g:message code='g.save'/></button>
+        <button type="button" id="cancel" class="btn"><g:message code='g.cancel'/></button>
     </div>
 </div>
 
@@ -721,14 +721,14 @@
                 <option value="external">External link</option>
                 <option value="nolink">No link - text only</option>
                 <option value="">---------</option>
-                <option value="admin">Admin</option>
-                <option value="allrecords">All Records</option>
-                <option value="home">Home</option>
+                <option value="admin"><g:message code='g.admin'/></option>
+                <option value="allrecords"><g:message code='g.allRecords'/></option>
+                <option value="home"><g:message code='g.home'/></option>
                 <option value="login">Login / Logout</option>
-                <option value="newproject">New Project</option>
-                <option value="sites">Sites</option>
+                <option value="newproject"><g:message code='g.newProject'/></option>
+                <option value="sites"><g:message code='g.sites'/></option>
                 <option value="biocacheexplorer">Biocache Explorer</option>
-                <option value="recordSighting">Record a Sighting</option>
+                <option value="recordSighting"><g:message code='record.create.title'/></option>
             </select>
         </td>
         <td>
@@ -1202,9 +1202,9 @@
     <div class="container-fluid">
         <div class="row-fluid previewHeader" data-bind="style:{'background-color': menuBackgroundColor}">
             <ul class="breadcrumb pull-right">
-                <li><a href="#" data-bind="style:{color: menuTextColor}">Home</a> <span class="divider" data-bind="style:{color: menuTextColor}">|</span></li>
-                <li><a href="#" data-bind="style:{color: menuTextColor}">Data</a> <span class="divider" data-bind="style:{color: menuTextColor}">|</span></li>
-                <li><a href="#" data-bind="style:{color: menuTextColor}">Help</a></li>
+                <li><a href="#" data-bind="style:{color: menuTextColor}"><g:message code='g.home'/></a> <span class="divider" data-bind="style:{color: menuTextColor}">|</span></li>
+                <li><a href="#" data-bind="style:{color: menuTextColor}"><g:message code='project.tab.data'/></a> <span class="divider" data-bind="style:{color: menuTextColor}">|</span></li>
+                <li><a href="#" data-bind="style:{color: menuTextColor}"><g:message code='project.works.workschedule.button.help'/></a></li>
             </ul>
         </div>
         <div class="row-fluid previewHeaderBannerSpace" data-bind="style:{'background-color': headerBannerBackgroundColor}">

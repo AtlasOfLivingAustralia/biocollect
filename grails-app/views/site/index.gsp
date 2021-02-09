@@ -5,9 +5,9 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>${site?.name?.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: 'g.home')}"/>
     <meta name="breadcrumbParent2"
-          content="${createLink(controller: 'site', action: 'list')},Sites"/>
+          content="${createLink(controller: 'site', action: 'list')},${message(code: 'g.sites')}"/>
     <meta name="breadcrumb" content="${site.name?.encodeAsHTML()}"/>
 
     <asset:script type="text/javascript">

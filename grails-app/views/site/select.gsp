@@ -59,7 +59,7 @@
                             <div class="input-append">
                                 <input type="text" class="search-query" data-bind="value: currentSearch"
                                        placeholder="Search by keyword"/>
-                                <button type="submit" class="btn btn-primary">Search</button>
+                                <button type="submit" class="btn btn-primary"><g:message code='g.search'/></button>
                             </div>
                         </form>
                     </div>
@@ -115,7 +115,7 @@
                                 <div class="row-fluid">
                                     <div class="span12 text-right">
                                         <button class="btn btn-primary margin-top-5" data-bind="click: useSelectedSites">Add selected sites</button>
-                                        <button class="btn margin-top-5" data-bind="click: cancelUpdate">Cancel</button>
+                                        <button class="btn margin-top-5" data-bind="click: cancelUpdate"><g:message code='g.cancel'/></button>
                                     </div>
                                 </div>
                             </td>

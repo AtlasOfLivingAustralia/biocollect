@@ -3,8 +3,8 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Edit | ${activity.activityId ?: 'new'} | ${site.name} | ${site.projectName} | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <title><g:message code='g.edit'/> | ${activity.activityId ?: 'new'} | ${site.name} | ${site.projectName} | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: 'g.home')}"/>
     <meta name="breadcrumb" content="Edit output"/>
 
     <md:modelStyles model="${model}" edit="true"/>
@@ -51,7 +51,7 @@
 
         <div class="form-actions">
             <button type="button" data-bind="click: save" class="btn btn-primary">Save changes</button>
-            <button type="button" id="cancel" class="btn">Cancel</button>
+            <button type="button" id="cancel" class="btn"><g:message code='g.cancel'/></button>
         </div>
     </form>
 

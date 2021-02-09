@@ -31,7 +31,7 @@
         </div>
 
         <div class="modal-footer" id="footer">
-        <button type="button" id="cancel" class="btn" data-bind="click: hideModal">Cancel</button>
+        <button type="button" id="cancel" class="btn" data-bind="click: hideModal"><g:message code='g.cancel'/></button>
         </div>
    </div>
 </div>

@@ -39,8 +39,8 @@
             </g:if>
             <td style="width:86px;">
                 <span data-bind="visible:(endDate.hasChanged() || startDate.hasChanged())" class="btn-group">
-                    <button data-bind="click:save" type="button" class="btn btn-mini btn-success">Save</button>
-                    <button data-bind="click:revert" type="button" class="btn btn-mini btn-warning">Cancel</button>
+                    <button data-bind="click:save" type="button" class="btn btn-mini btn-success"><g:message code='g.save'/></button>
+                    <button data-bind="click:revert" type="button" class="btn btn-mini btn-warning"><g:message code='g.cancel'/></button>
                 </span>
                 <i data-bind="click:del, visible:!(endDate.hasChanged() || startDate.hasChanged())"
                    class="icon-remove pull-right" title="Delete activity"></i>

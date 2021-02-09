@@ -5,7 +5,7 @@
     <g:set var="title" value="${myFavourites? message(code: "site.myFavouriteSites.heading") : message(code: "site.allSites.heading")}"/>
     <title>${title}</title>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: 'g.home')}"/>
     <meta name="breadcrumb" content="${title}"/>
     <script>
         var fcConfig = {
@@ -72,14 +72,14 @@
                         <div class="span12 margin-top-10">
                             <div class="row-fluid">
                                 <div class="span12">
-                                    <h3 data-bind="visible: sitesLoaded">Found <!-- ko text: pagination.totalResults --> <!-- /ko --> sites</h3>
-                                    <span data-bind="visible: !sitesLoaded()"><span class="fa fa-spin fa-spinner"></span>&nbsp;Sites Loading...</span>
+                                    <h3 data-bind="visible: sitesLoaded"><g:message code="g.found"/> <!-- ko text: pagination.totalResults --> <!-- /ko --> <g:message code="g.sites"/></h3>
+                                    <span data-bind="visible: !sitesLoaded()"><span class="fa fa-spin fa-spinner"></span>&nbsp; <g:message code='site.list.loading'/>...</span>
                                 </div>
                             </div>
                             <ul class="nav nav-tabs" id="siteListResultTab">
-                                <li><a href="#list" id="list-tab" data-toggle="tab">List</a></li>
-                                <li><a href="#map" id="map-tab" data-toggle="tab">Map</a></li>
-                                <li><a href="#images" id="images-tab" data-toggle="tab">Images</a></li>
+                                <li><a href="#list" id="list-tab" data-toggle="tab"><g:message code="g.list"/></a></li>
+                                <li><a href="#map" id="map-tab" data-toggle="tab"><g:message code="g.map"/></a></li>
+                                <li><a href="#images" id="images-tab" data-toggle="tab"><g:message code="g.images"/></a></li>
                             </ul>
 
                             <div class="tab-content">

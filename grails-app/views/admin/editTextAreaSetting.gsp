@@ -27,7 +27,7 @@
                     <a href="${returnUrl}" class="btn"><i class="icon-hand-left"></i> back to ${returnLabel}</a>
                     <g:if test="${params.editMode?.toBoolean()}">
                         <g:if test="${!ajax}">
-                            <h3>Edit &quot;${settingTitle}&quot; content</h3>
+                            <h3><g:message code='g.edit'/> &quot;${settingTitle}&quot; content</h3>
                         </g:if>
                         <g:form id="saveSettingContent" controller="admin" action="saveTextAreaSetting">
                             <g:set var="spanN" value="${ajax ? 'span12' : 'span10'}"/>
@@ -47,8 +47,8 @@
                             </div>
                             <g:if test="${!ajax}">
                                 <div class="row-fluid">
-                                    <a class="btn" href="${returnUrl}">Cancel</a>
-                                    <button class="btn btn-primary">Save</button>
+                                    <a class="btn" href="${returnUrl}"><g:message code='g.cancel'/></a>
+                                    <button class="btn btn-primary"><g:message code='g.save'/></button>
                                 </div>
                             </g:if>
                             <g:else>
@@ -57,7 +57,7 @@
                     </g:if>
                     <g:else>
                         <h1>${settingTitle}<span>&nbsp;&nbsp;<a href="?editMode=true" class="btn btn-small">
-                            <i class="icon-edit"></i>&nbsp;Edit
+                            <i class="icon-edit"></i>&nbsp;<g:message code='g.edit'/>
                         </a></span></h1>
                         <div class="well well-small">
                             <div>${textValue?:''.trim()}</div>

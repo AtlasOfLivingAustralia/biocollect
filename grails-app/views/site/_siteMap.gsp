@@ -5,12 +5,12 @@
         <div><i class="icon-map-marker"></i> <a
                 href="" data-bind="attr:{href: getSiteUrl()}, text: name"></a></div>
 
-        <div data-bind="visible: type"><span><i class="icon-star-empty"></i> Site type:</span> <span data-bind="text: type"></span></div>
+        <div data-bind="visible: type"><span><i class="icon-star-empty"></i> <g:message code='site.metadata.type'/>:</span> <span data-bind="text: type"></span></div>
 
-        <div data-bind="visible: numberOfPoi() != undefined"><span><i class="icon-star-empty"></i> Number of POI:</span> <span
+        <div data-bind="visible: numberOfPoi() != undefined"><span><i class="icon-star-empty"></i> <g:message code='site.metadata.numberOfPOI'/>:</span> <span
                 data-bind="text: numberOfPoi"></span><br></div>
 
-        <div data-bind="visible: numberOfProjects() != undefined"><i class="icon-star-empty"></i> Number of associated projects: <span
+        <div data-bind="visible: numberOfProjects() != undefined"><i class="icon-star-empty"></i> <g:message code='site.list.associatedProjects'/>: <span
                 data-bind="text: numberOfProjects"></span></div>
     </div>
     <!-- /ko -->
@@ -47,7 +47,7 @@
 
         L.Icon.Default.imagePath = $('#' + id).attr('data-leaflet-img');
 
-        map.addButton("<span class='fa fa-refresh reset-map' title='Reset zoom'></span>", map.fitBounds, "bottomright");
+        map.addButton("<span class='fa fa-refresh reset-map' title='${message(code: 'site.map.resetZoom')}'></span>", map.fitBounds, "bottomright");
 
         return map;
     }
