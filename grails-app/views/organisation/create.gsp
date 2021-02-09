@@ -4,7 +4,7 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Create | Organisation | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: "g.home")}"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
     <meta name="breadcrumb" content="New Organisation"/>
@@ -41,7 +41,7 @@
 
     <div class="form-actions">
         <button type="button" id="save" data-bind="click:save" class="btn btn-primary">Create</button>
-        <button type="button" id="cancel" class="btn">Cancel</button>
+        <button type="button" id="cancel" class="btn"><g:message code='g.cancel'/></button>
     </div>
 </div>
 

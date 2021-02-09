@@ -27,8 +27,8 @@
             <thead>
                 <tr>
                     <th>Page Id</th>
-                    <th class="min-width-68">View</th>
-                    <th class="min-width-68">Edit</th>
+                    <th class="min-width-68"><g:message code='g.view'/></th>
+                    <th class="min-width-68"><g:message code='g.edit'/></th>
                 </tr>
             </thead>
             <tbody>
@@ -45,7 +45,7 @@
                         <td>
                             <g:if test="${setting.editLink}">
                                 <a href="${setting.editLink}/${setting.name}?editMode=true" class="btn btn-small">
-                                    <i class="icon-edit"></i>&nbsp;Edit
+                                    <i class="icon-edit"></i>&nbsp;<g:message code='g.edit'/>
                                 </a>
                             </g:if>
                             <g:else>

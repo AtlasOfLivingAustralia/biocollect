@@ -9,11 +9,11 @@
     </g:if>
     <g:else>
         <meta name="layout" content="${hubConfig.skin}"/>
-        <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
+        <title><g:message code="g.edit"/> | ${activity.type} | <g:message code="g.biocollect"/></title>
     </g:else>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: 'g.home')}"/>
     <meta name="breadcrumbParent2"
-          content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
+          content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${message(code: 'g.project')}"/>
     <meta name="breadcrumb" content="${activity.type}"/>
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:javascript src="common.js"/>
@@ -103,7 +103,7 @@
     <g:if test="${!printView}">
         <div class="form-actions">
             <button type="button" id="save" class="btn btn-primary">Save changes</button>
-            <button type="button" id="cancel" class="btn">Cancel</button>
+            <button type="button" id="cancel" class="btn"><g:message code='g.cancel'/></button>
         </div>
     </g:if>
 

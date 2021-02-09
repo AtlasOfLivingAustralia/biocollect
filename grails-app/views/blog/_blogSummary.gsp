@@ -9,8 +9,8 @@
                     <div class="row-fluid">
                         <strong data-bind="text:title"></strong>
                         <div class="pull-right">
-                            <a href data-bind="click:$parent.editBlogEntry">Edit</a> |
-                            <a href data-bind="click:$parent.deleteBlogEntry">Delete</a>
+                            <a href data-bind="click:$parent.editBlogEntry"><g:message code='g.edit'/></a> |
+                            <a href data-bind="click:$parent.deleteBlogEntry"><g:message code='g.delete'/></a>
                         </div>
                     </div>
                     <p data-bind="text:shortContent"></p>
@@ -21,11 +21,11 @@
         </ul>
     </g:if>
     <g:else>
-        No blog entries.
+        <g:message code='project.blog.noEntries'/>.
     </g:else>
 
     <div class="form-actions">
-        <button data-bind="click:newBlogEntry" type="button" id="new" class="btn btn-primary">New Entry</button>
+        <button data-bind="click:newBlogEntry" type="button" id="new" class="btn btn-primary"><g:message code='project.blog.newEntry'/></button>
     </div>
 </div>
 <!-- /ko -->

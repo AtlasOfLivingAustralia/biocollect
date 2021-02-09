@@ -1,1 +1,1 @@
-<label>By submitting you are agreeing with the <a href="${grailsApplication.config.termsOfUseUrl}" target="_blank">Terms of Use</a>.</label>
+<label><g:message code='record.create.agreeWithTerms'/> <a href="${grailsApplication.config.termsOfUseUrl}" target="_blank"><g:message code='record.create.termsOfUseAgreement'/></a>.</label>

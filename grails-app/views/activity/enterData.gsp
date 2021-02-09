@@ -9,11 +9,11 @@
     </g:if>
     <g:else>
         <meta name="layout" content="${hubConfig.skin}"/>
-        <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
+        <title>${message(code: 'g.edit')} | ${activity.type} | <g:message code="g.biocollect"/></title>
     </g:else>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: 'g.home')}"/>
     <meta name="breadcrumbParent2"
-          content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
+          content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${message(code: 'g.project')}"/>
     <meta name="breadcrumb" content="Enter data"/>
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
@@ -246,7 +246,7 @@
         <div class="form-actions">
             <g:render template="/shared/termsOfUse"/>
             <button type="button" id="save" class="btn btn-primary">Save changes</button>
-            <button type="button" id="cancel" class="btn">Cancel</button>
+            <button type="button" id="cancel" class="btn"><g:message code='g.cancel'/></button>
             <label class="checkbox inline">
                 <input data-bind="checked:transients.markedAsFinished" type="checkbox"> Mark this activity as finished.
             </label>

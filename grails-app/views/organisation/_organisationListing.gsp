@@ -19,7 +19,7 @@
             <input id="searchText" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup'"
                    class="input-xxlarge" placeholder="Search organisations..." type="text"/>
             <br>
-            <button class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Search</button>
+            <button class="btn btn-primary btn-sm"><i class="fa fa-search"></i> <g:message code='g.search'/></button>
         </div>
 
         <div class="span4">

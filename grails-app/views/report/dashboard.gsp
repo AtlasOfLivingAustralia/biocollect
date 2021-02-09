@@ -11,7 +11,7 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title>Dashboard | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: "g.home")}"/>
     <meta name="breadcrumb" content="Dashboard"/>
 
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>

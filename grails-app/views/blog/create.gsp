@@ -3,10 +3,10 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Create | Blog Entry | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <title><g:message code='g.create'/> | <g:message code='project.blog.title'/> | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: "g.home")}"/>
     <meta name="breadcrumbParent2"
-          content="${createLink(controller: 'project', action: 'index')}/${blogEntry.projectId},Project"/>
+          content="${createLink(controller: 'project', action: 'index')}/${blogEntry.projectId},${message(code: 'g.project')}"/>
     <meta name="breadcrumb" content="New blog entry"/>
     <asset:stylesheet src="fileupload-ui-manifest.css"/>
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>
@@ -34,7 +34,7 @@
 
     <div class="form-actions">
         <button type="button" id="save" data-bind="click:save" class="btn btn-primary">Create</button>
-        <button type="button" id="cancel" data-bind="click:cancel" class="btn">Cancel</button>
+        <button type="button" id="cancel" data-bind="click:cancel" class="btn"><g:message code='g.cancel'/></button>
     </div>
 </div>
 

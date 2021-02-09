@@ -3,8 +3,8 @@
 <html>
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Edit | ${organisation.name.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <title><g:message code='g.edit'/> | ${organisation.name.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},${message(code: "g.home")}"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
     <meta name="breadcrumb" content="${organisation.name}"/>
@@ -49,8 +49,8 @@
     <g:render template="organisationDetails"/>
 
     <div class="form-actions">
-        <button type="button" id="save" data-bind="click:save" class="btn btn-primary">Save</button>
-        <button type="button" id="cancel" class="btn">Cancel</button>
+        <button type="button" id="save" data-bind="click:save" class="btn btn-primary"><g:message code='g.save'/></button>
+        <button type="button" id="cancel" class="btn"><g:message code='g.cancel'/></button>
     </div>
 
 </div>
