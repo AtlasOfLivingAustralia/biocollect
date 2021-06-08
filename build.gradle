@@ -15,7 +15,7 @@ buildscript {
 plugins {
     id 'war'
 }
-version "5.1.2"
+version "5.1.4-SNAPSHOT"
 
 group "au.org.ala"
 
@@ -101,8 +101,8 @@ dependencies {
     compile("au.org.ala.plugins.grails:images-client-plugin:1.2") {
         exclude group: 'commons-httpclient', module: 'commons-httpclient'
     }
-    compile "org.grails.plugins:ala-auth:3.0.4"
-    runtime "org.grails.plugins:ala-bootstrap3:3.0.4"
+    compile "org.grails.plugins:ala-auth:3.0.5"
+    runtime "org.grails.plugins:ala-bootstrap3:3.2.3"
     compile "org.grails.plugins:ala-admin-plugin:2.1"
 
     if (!inplace) {
