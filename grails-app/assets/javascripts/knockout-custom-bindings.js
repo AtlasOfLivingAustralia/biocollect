@@ -1044,3 +1044,59 @@ $.fn.availableWidth = function() {
         return this.width();
     }
 };
+
+ko.bindingHandlers.chartjs = {
+    init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+        var allBindings = allBindingsAccessor();
+        var chartBinding = allBindings.chartjs;
+        var chartDataConfig;
+
+        var createChartJs = function() {
+            var chartType = ko.unwrap(chartBinding.type);
+            var chartData = ko.toJS(chartBinding.data);
+            var chartOptions = ko.toJS(chartBinding.options);
+            var chartFacetName = ko.unwrap(chartBinding.facetName);
+
+            chartDataConfig = {
+                type: chartType,
+                data: chartData,
+                options: chartOptions
+            };
+
+            var chartInstance = new Chart(element, chartDataConfig);
+            viewModel.setChartInstance(chartInstance);
+             
+        };
+
+        createChartJs();
+    },
+    update: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+        var allBindings = allBindingsAccessor();
+        var chartBinding = allBindings.chartjs;
+        var chartDataConfig;
+
+        var updateChartJs = function() {
+            var chartType = ko.unwrap(chartBinding.type);
+            var chartData = ko.toJS(chartBinding.data);
+            var chartOptions = ko.toJS(chartBinding.options);
+            var chartFacetName = ko.unwrap(chartBinding.facetName);
+
+            chartDataConfig = {
+                type: chartType,
+                legend: {
+                    display: false
+                  },
+                data: chartData,
+                options: chartOptions
+            };
+            
+            var chartInstance = viewModel.chartInstance;
+            chartInstance.destroy();
+            chartInstance = new Chart(element, chartDataConfig);
+        };
+
+        updateChartJs();
+    }
+}
+
+            
