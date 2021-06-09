@@ -1290,19 +1290,27 @@
     <thead>
     <tr>
         <th>Facet name</th>
+        <th>Chart type</th>
         <th>Facet term type</th>
         <th>Expand or Collapse</th>
         <th>Display interval</th>
         <th>Display name</th>
         <th>Help text</th>
         <th>Action</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
     <!-- ko foreach: facets -->
     <tr>
-        <td data-bind="text: formattedName">
-
+        <td data-bind="text: formattedName"></td>
+        <td>
+            <select data-bind="value: chartjsType">
+                <option value="none">None</option>
+                <option value="pie">Pie</option>
+                <option value="bar">Bar</option>
+                <option value="line">Line</option>
+            </select>
         </td>
         <td>
             <select data-bind="value: facetTermType">
@@ -1331,6 +1339,9 @@
         </td>
         <td>
             <button class="btn btn-small btn-danger" data-bind="click: $parent.remove"><i class="icon-remove icon-white"></i> Remove</button>
+        </td>
+        <td>
+            <textarea disabled data-bind="value: chartjsConfig, visible: false" placeholder="Add chart config"></textarea>
         </td>
     </tr>
     <!-- /ko -->
