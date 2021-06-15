@@ -1046,56 +1046,50 @@ $.fn.availableWidth = function() {
 };
 
 ko.bindingHandlers.chartjs = {
-    init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-        var allBindings = allBindingsAccessor();
-        var chartBinding = allBindings.chartjs;
-        var chartDataConfig;
-
-        var createChartJs = function() {
-            var chartType = ko.unwrap(chartBinding.type);
-            var chartData = ko.toJS(chartBinding.data);
-            var chartOptions = ko.toJS(chartBinding.options);
-            var chartFacetName = ko.unwrap(chartBinding.facetName);
-
-            chartDataConfig = {
-                type: chartType,
-                data: chartData,
-                options: chartOptions
-            };
-
-            var chartInstance = new Chart(element, chartDataConfig);
-            viewModel.setChartInstance(chartInstance);
-             
-        };
-
-        createChartJs();
-    },
+    /**
+     * The update callback:
+     * Knockout will call the update callback initially when the binding is applied to an element
+     * and track any dependencies (observables/computeds) that you access.
+     * When any of these dependencies change, the update callback will be called once again.
+     *
+     * The init callback:
+     * Knockout will call your init function once for each DOM element that you use the binding on.
+     * There are two main uses for init:
+     * - To set any initial state for the DOM element
+     * - To register any event handlers so that, for example, when the user clicks on or modifies the DOM element,
+     * you can change the state of the associated observable
+     *
+     * KO will pass exactly the same set of parameters that it passes to the update callback.
+     *
+     * Ref: https://knockoutjs.com/documentation/custom-bindings.html
+     *
+     * @param element The DOM element involved in this binding
+     * @param valueAccessor A JavaScript function that you can call to get the current model property that is involved in this binding.
+     * @param allBindingsAccessor A JavaScript object that you can use to access all the model values bound to this DOM element.
+     * @param viewModel Use bindingContext.$data or bindingContext.$rawData to access the view model instead.
+     * @param bindingContext An object that holds the binding context available to this element’s bindings.
+     */
     update: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-        var allBindings = allBindingsAccessor();
-        var chartBinding = allBindings.chartjs;
-        var chartDataConfig;
+        const allBindings = allBindingsAccessor();
+        const chartBinding = allBindings.chartjs;
+        let chartDataConfig;
 
-        var updateChartJs = function() {
-            var chartType = ko.unwrap(chartBinding.type);
-            var chartData = ko.toJS(chartBinding.data);
-            var chartOptions = ko.toJS(chartBinding.options);
-            var chartFacetName = ko.unwrap(chartBinding.facetName);
+        const chartType = ko.unwrap(chartBinding.type);
+        const chartData = ko.toJS(chartBinding.data);
+        const chartOptions = ko.toJS(chartBinding.options);
 
-            chartDataConfig = {
-                type: chartType,
-                legend: {
-                    display: false
-                  },
-                data: chartData,
-                options: chartOptions
-            };
-            
-            var chartInstance = viewModel.chartInstance;
-            chartInstance.destroy();
-            chartInstance = new Chart(element, chartDataConfig);
+        chartDataConfig = {
+            type: chartType,
+            data: chartData,
+            options: chartOptions
         };
 
-        updateChartJs();
+        const chartInstance = viewModel.chartInstance;
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+
+        viewModel.setChartInstance(new Chart(element, chartDataConfig));
     }
 }
 

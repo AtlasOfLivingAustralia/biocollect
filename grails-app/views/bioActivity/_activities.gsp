@@ -420,17 +420,17 @@
         console.log('============== current view ==============');
         console.log(view);
         console.log('============== current view ==============');
-        if(view == 'allrecords') {
+        if(view === 'allrecords') {
             facetConfig = ${ hubConfig.getFacetConfigForPage('allRecords') };
-        } else if (view == 'myrecords') {
+        } else if (view === 'myrecords') {
             facetConfig = ${ hubConfig.getFacetConfigForPage('myRecords') };
-        } else if (view == 'project') {
+        } else if (view === 'project') {
             facetConfig = ${ hubConfig.getFacetConfigForPage('project') };
-        } else if (view == 'projectrecords') {
+        } else if (view === 'projectrecords') {
             facetConfig = ${ hubConfig.getFacetConfigForPage('projectrecords') };
-        } else if (view == 'myprojectrecords') {
+        } else if (view === 'myprojectrecords') {
             facetConfig = ${ hubConfig.getFacetConfigForPage('myprojectrecords') };
-        } else if (view == 'userprojectactivityrecords') {
+        } else if (view === 'userprojectactivityrecords') {
             facetConfig = ${ hubConfig.getFacetConfigForPage('userprojectactivityrecords') };
         } else {
             facetConfig = ${ hubConfig.getFacetConfigForPage('allRecords') };
