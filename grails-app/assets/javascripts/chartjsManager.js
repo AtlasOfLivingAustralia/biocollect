@@ -7,6 +7,33 @@ function ChartjsManagerViewModel() {
 
     self.chartjsList = ko.observableArray();
 
+    self.chartjsListShow = ko.computed(function () {
+        return self.chartjsList().length > 0;
+    });
+
+    self.chartjsPerRowOptions = ko.observableArray(['1', '2', '3', '4']);
+    self.chartjsPerRowSelected = ko.observable('2');
+    self.chartjsPerRowGroupedItems = ko.pureComputed(function () {
+        const selected = self.chartjsPerRowSelected();
+        const chartList = self.chartjsList();
+        const perRow = parseInt(selected || '2');
+        const result = [];
+        chartList.forEach(function (item, index) {
+            if (index % perRow === 0) {
+                result.push([]);
+            }
+            result[result.length - 1].push(item);
+        });
+        return result;
+    });
+    self.chartjsPerRowSpan = ko.pureComputed(function () {
+        const selected = self.chartjsPerRowSelected();
+        const perRow = 12 / parseInt(selected || '2');
+        const result = 'span' + perRow.toString();
+        return result;
+    });
+
+
     /*
      * Create chart.js dataset data structure for different chart types.
      */
@@ -611,7 +638,7 @@ function ChartjsManagerViewModel() {
 function ChartjsViewModel(chartFacetName, chartType, chartData, chartOptions) {
     const self = this;
 
-    console.warn("[Chart] Created chart type '" + chartType + "' for facet '" + chartFacetName + "'.", chartData, chartOptions);
+    console.log("[Chart] Created chart type '" + chartType + "' for facet '" + chartFacetName + "' with chart data: ", chartData);
 
     self.chartFacetName = ko.observable(chartFacetName);
     self.chartType = ko.observable(chartType);
