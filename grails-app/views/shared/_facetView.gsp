@@ -2,7 +2,7 @@
 <div class="row-fluid">
     <div class="span12">
         <!-- ko foreach: facets -->
-            <!-- ko if: $data instanceof FacetViewModel -->
+            <!-- ko if: $data instanceof FacetViewModel && $data.state() !== 'Hidden' -->
             <div class="row-fluid" data-bind="visible: showTermPanel">
                 <button data-bind="click: toggleState" class="btn btn-block btn-text-left">
                     &nbsp;
@@ -28,7 +28,7 @@
                 </div>
             </div>
             <!-- /ko -->
-            <!-- ko if: $data instanceof DatePickerViewModel -->
+            <!-- ko if: $data instanceof DatePickerViewModel && $data.state() !== 'Hidden' -->
             <div class="row-fluid">
                 <button data-bind="click: toggleState" class="btn btn-block btn-text-left">
                     &nbsp;
