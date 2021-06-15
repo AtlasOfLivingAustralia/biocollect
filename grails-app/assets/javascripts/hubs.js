@@ -832,9 +832,13 @@ function FacetViewModel(config){
     });
 
     self.isNotHistogram = ko.computed(function () {
-        return self.facetTermType() != 'Histogram';
+        return self.facetTermType() !== 'Histogram';
     });
-};
+
+    self.editChartjsConfig = function () {
+        editWithJson('Edit Chart Configuration', self.chartjsConfig);
+    };
+}
 
 function CustomBreadCrumbsViewModel(config) {
     var self = this;

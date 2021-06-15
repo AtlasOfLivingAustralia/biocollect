@@ -1337,8 +1337,7 @@
                 <option value="bar">Bar</option>
                 <option value="line">Line</option>
             </select>
-            <textarea disabled data-bind="value: chartjsConfig, visible: false"
-                      placeholder="Add chart config"></textarea>
+            <button class="btn btn-small" style="margin-top:5px;" data-bind="visible: chartjsType() !== 'none', click: editChartjsConfig">Edit Config</button>
         </td>
         <td>
             <textarea style="width: 170px;" rows="2" data-bind="value:helpText"
@@ -1473,5 +1472,6 @@
 
 </asset:script>
 
+<g:render template="/shared/jsonEditorModal"/>
 </body>
 </html>
