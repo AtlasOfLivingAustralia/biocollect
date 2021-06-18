@@ -404,7 +404,6 @@
 
     var activitiesAndRecordsViewModel, alaMap, results;
     function initialiseData(view) {
-        console.log('initialiseData - for images tab');
         var user = '${user ? user as grails.converters.JSON : "{}"}',
         configImageGallery;
         if (user) {
@@ -416,10 +415,7 @@
         var columnConfig =${ hubConfig.getDataColumns(grailsApplication) as grails.converters.JSON}
 
         var facetConfig; 
-        
-        console.log('============== current view ==============');
-        console.log(view);
-        console.log('============== current view ==============');
+
         if(view === 'allrecords') {
             facetConfig = ${ hubConfig.getFacetConfigForPage('allRecords') };
         } else if (view === 'myrecords') {
@@ -433,6 +429,7 @@
         } else if (view === 'userprojectactivityrecords') {
             facetConfig = ${ hubConfig.getFacetConfigForPage('userprojectactivityrecords') };
         } else {
+            console.warn("[Facets] Unrecognised view name '" + view + "', using allRecords facet config.");
             facetConfig = ${ hubConfig.getFacetConfigForPage('allRecords') };
         }
 
@@ -461,11 +458,6 @@
         }
 
         activitiesAndRecordsViewModel.imageGallery = initialiseImageGallery(configImageGallery);
-        console.log('initialiseData - 2');
-        if(activitiesAndRecordsViewModel !== undefined) {
-            console.log('activitiesAndRecordsViewModel facets '+activitiesAndRecordsViewModel.facets);
-        }
-        console.log('initialiseData - end');
     }
 
     // initialise tab

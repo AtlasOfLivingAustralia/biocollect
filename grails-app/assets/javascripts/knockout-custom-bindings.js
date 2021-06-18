@@ -1065,31 +1065,47 @@ ko.bindingHandlers.chartjs = {
      *
      * @param element The DOM element involved in this binding
      * @param valueAccessor A JavaScript function that you can call to get the current model property that is involved in this binding.
-     * @param allBindingsAccessor A JavaScript object that you can use to access all the model values bound to this DOM element.
+     * @param allBindings A JavaScript object that you can use to access all the model values bound to this DOM element.
      * @param viewModel Use bindingContext.$data or bindingContext.$rawData to access the view model instead.
      * @param bindingContext An object that holds the binding context available to this element’s bindings.
      */
-    update: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-        const allBindings = allBindingsAccessor();
-        const chartBinding = allBindings.chartjs;
-        let chartDataConfig;
+    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        // First get the latest data that we're bound to
+        const value = valueAccessor();
 
-        const chartType = ko.unwrap(chartBinding.type);
-        const chartData = ko.toJS(chartBinding.data);
-        const chartOptions = ko.toJS(chartBinding.options);
+        // Next, whether or not the supplied model property is observable, get its current value
+        const valueUnwrapped = ko.unwrap(value);
 
-        chartDataConfig = {
-            type: chartType,
-            data: chartData,
-            options: chartOptions
-        };
+        // obtain the binding's properties
+        const facetName = ko.unwrap(valueUnwrapped.facetName);
+        const chartType = ko.unwrap(valueUnwrapped.type);
+        const chartData = ko.unwrap(valueUnwrapped.data);
+        const chartOptions = ko.unwrap(valueUnwrapped.options);
 
-        const chartInstance = viewModel.chartInstance;
+        // remove any existing chart
+        const chartInstance = bindingContext.$data.chartInstance;
         if (chartInstance) {
             chartInstance.destroy();
         }
 
-        viewModel.setChartInstance(new Chart(element, chartDataConfig));
+        // set up the new chart
+        if (chartType === 'none' || !chartType) {
+            return;
+        }
+
+        if (chartType && chartData && chartOptions) {
+            console.log("[Chart] Creating chart for facet '" + facetName + "' with chart type '" + chartType + "'.");
+            const chartDataConfig = {
+                type: chartType,
+                data: chartData,
+                options: chartOptions
+            };
+            const chart = new Chart(element, chartDataConfig);
+            bindingContext.$data.setChartInstance(chart);
+        } else {
+            console.warn("[Chart] NOT creating chart for facet '" + facetName + "' with chart type '" + chartType + "' " +
+                "because some required data was not available.", chartData, chartOptions);
+        }
     }
 }
 

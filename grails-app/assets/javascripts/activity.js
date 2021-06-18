@@ -24,7 +24,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.version = ko.observable(fcConfig.version);
     self.columnConfig = columnConfig || [];
     self.facetConfig = facetConfig || [];
-    self.chartjsManager = ko.observable(); 
+    self.chartjsManager = ko.observable();
 
     self.toggleFilter = function () {
         self.filter(!self.filter())
@@ -201,7 +201,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         self.filterViewModel.setFacets(data.facets || []);
 
         var chartjsManagerViewModel = new ChartjsManagerViewModel();
-        chartjsManagerViewModel.setChartsFromFacets(data.facets, self.facetConfig, self.columnConfig);
+        chartjsManagerViewModel.setChartsFromFacets(self.filterViewModel.facets(), self.facetConfig);
         self.chartjsManager(chartjsManagerViewModel);
 
         // only initialise the pagination if we are on the first page load
