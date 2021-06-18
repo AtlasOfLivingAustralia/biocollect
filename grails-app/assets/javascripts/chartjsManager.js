@@ -482,8 +482,10 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         const optXScaleLabels = self.getValueFromChartContainer(chartConfig, 'xLabels', 'array', null);
         const optLegendPosition = self.getValueFromChartContainer(chartConfig, 'legendPosition', 'string', null);
         const optYScaleBeginAtZero = self.getValueFromChartContainer(chartConfig, 'yBeginAtZero', 'bool', null);
+        const optYScaleType = self.getValueFromChartContainer(chartConfig, 'yType', 'string', null);
         const optYScaleDisplay = self.getValueFromChartContainer(chartConfig, 'yDisplay', 'bool', null);
         const optYScaleTitleDisplay = self.getValueFromChartContainer(chartConfig, 'yTitleDisplay', 'bool', null);
+        const optYScaleLabels = self.getValueFromChartContainer(chartConfig, 'yLabels', 'array', null);
         const optXScaleDisplay = self.getValueFromChartContainer(chartConfig, 'xDisplay', 'bool', null);
         const optXScaleTitleDisplay = self.getValueFromChartContainer(chartConfig, 'xTitleDisplay', 'bool', null);
         const optLegendDisplay = self.getValueFromChartContainer(chartConfig, 'legendDisplay', 'bool', null);
@@ -501,6 +503,8 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         self.setContainerValue(options, ['scales', 'y', 'display'], optYScaleDisplay);
         self.setContainerValue(options, ['scales', 'y', 'title', 'display'], optYScaleTitleDisplay);
         self.setContainerValue(options, ['scales', 'y', 'title', 'text'], optYScaleTitle);
+        self.setContainerValue(options, ['scales', 'y', 'type'], optYScaleType);
+        self.setContainerValue(options, ['scales', 'y', 'labels'], optYScaleLabels);
 
         // Work around to avoid RangeError: minimumFractionDigits value is out of range
         // https://github.com/chartjs/Chart.js/issues/8092
