@@ -32,12 +32,13 @@ function ChartjsManagerViewModel() {
         const chartList = self.chartjsList();
         const perRow = parseInt(selected || '2');
         const result = [];
-        chartList.forEach(function (item, index) {
+        for (let index = 0; index < chartList.length; index++) {
+            const item = chartList[index];
             if (index % perRow === 0) {
                 result.push([]);
             }
             result[result.length - 1].push(item);
-        });
+        }
         return result;
     });
 
@@ -116,7 +117,7 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      * @param defaultValue {any|undefined} The value to use if the property is not set.
      * @returns {any} The obtained value or the default or undefined.
      */
-    const getValueFromChartContainer = function (container, propertyName, valueType, defaultValue) {
+    self.getValueFromChartContainer = function (container, propertyName, valueType, defaultValue) {
         const hasProp = Object.prototype.hasOwnProperty.call(container || {}, propertyName);
         let value = undefined;
         if (hasProp) {
@@ -132,16 +133,26 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         let result;
         switch (valueType) {
             case 'bool':
-                result = value === undefined ? false : ((value || '').toString() === 'true');
+                result = value === undefined ? false : (value.toString() === 'true');
                 break;
             case 'array':
                 result = value === undefined ? [] : value;
                 break;
             case 'int':
-                result = value === undefined ? 0 : parseInt((value || '0').toString(), 10);
+                try {
+                    result = value === undefined ? 0 : parseInt(value.toString(), 10);
+                } catch (e) {
+                    console.error("[Chart] Could not convert '" + value + "' to int for property '" + propertyName + "'.", JSON.parse(JSON.stringify(e)));
+                    return value;
+                }
                 break;
             case 'float':
-                result = value === undefined ? 0.0 : parseFloat((value || '0').toString());
+                try {
+                    result = value === undefined ? 0.0 : parseFloat(value.toString());
+                } catch (e) {
+                    console.error("[Chart] Could not convert '" + value + "' to float for property '" + propertyName + "'.", JSON.parse(JSON.stringify(e)));
+                    return value;
+                }
                 break;
             case 'string':
                 result = value === undefined ? '' : (value || '').toString();
@@ -165,7 +176,7 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      * @param keys {string[]} The nested keys.
      * @param value {any} The value to set.
      */
-    const setContainerValue = function (container, keys, value) {
+    self.setContainerValue = function (container, keys, value) {
         if (value === undefined || value === null) {
             return;
         }
@@ -179,7 +190,8 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         }
         const keysCount = keys.length;
         let currentContainer = container;
-        keys.forEach(function (key, index) {
+        for (let index = 0; index < keys.length; index++) {
+            const key = keys[index];
             const hasProp = Object.prototype.hasOwnProperty.call(currentContainer, key);
             const isLast = index === (keysCount - 1);
             if (!hasProp && !isLast) {
@@ -191,7 +203,7 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
             if (!isLast) {
                 currentContainer = currentContainer[key];
             }
-        });
+        }
     }
 
     /**
@@ -200,10 +212,10 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      * @param totalRecords {?int} The total record count.
      * @returns {string} The new chart title.
      */
-    const getMainTitle = function (chartConfig, totalRecords) {
+    self.getMainTitle = function (chartConfig, totalRecords) {
         const facetTitle = (facet.displayName ? facet.displayName() : (facet.title ? ko.unwrap(facet.title) : facet.name));
-        const mainTitle = getValueFromChartContainer(chartConfig, 'mainTitle', 'string', ' items for ' + facetTitle);
-        const insertTotalAt = getValueFromChartContainer(chartConfig, 'mainTitleInsertTotalAt', 'int', 0);
+        const mainTitle = self.getValueFromChartContainer(chartConfig, 'mainTitle', 'string', ' items for ' + facetTitle);
+        const insertTotalAt = self.getValueFromChartContainer(chartConfig, 'mainTitleInsertTotalAt', 'int', 0);
 
         let result = '';
         if (mainTitle) {
@@ -227,27 +239,60 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      * @param maxItems {?int} An optional maximum count.
      * @returns {*[]} The selected items from the array.
      */
-    const getArraySubset = function (items, keepAll, maxItems) {
+    self.getArraySubset = function (items, keepAll, maxItems) {
         if (items === undefined || items === null) {
             return [];
         }
         const result = [];
-        (items || []).forEach(function (label, index) {
+        for (let index = 0; index < items.length; index++) {
+            const label = items[index];
             if (keepAll || !maxItems) {
                 result.push(label);
             } else if (index < maxItems) {
                 result.push(label);
             }
-        });
+        }
         return result;
     };
 
-    const buildChartDataItem = function (value, rangeFrom, rangeTo, count) {
+    self.buildChartDataItem = function (facet, value, rangeFrom, rangeTo, count, title) {
+        if (value === undefined && facet && facet.term) {
+            value = facet.term();
+        }
+        // use the upper bound for the value for range facets
+        if (value === undefined && facet && facet.to) {
+            value = facet.to();
+        }
+
+        if (rangeFrom === undefined && facet && facet.from) {
+            rangeFrom = facet.from();
+        }
+        if (rangeTo === undefined && facet && facet.to) {
+            rangeTo = facet.to();
+        }
+        if (count === undefined && facet && facet.count) {
+            count = facet.count();
+        }
+        if (title === undefined && facet) {
+            if (facet.displayNameWithoutCount) {
+                title = facet.displayNameWithoutCount();
+            } else if (facet.displayName) {
+                title = facet.displayName();
+            } else if (facet.title) {
+                title = facet.title();
+            } else if (facet.name) {
+                title = facet.name();
+            } else {
+                title = 'Unknown Item';
+            }
+        }
+
         return {
             value: value,
             rangeFrom: rangeFrom,
             rangeTo: rangeTo,
             count: count,
+            title: title,
         }
     }
 
@@ -266,22 +311,19 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      * @param ranges {array} The ranges to apply.
      * @returns {*[]} The chart data.
      */
-    const getChartDataRange = function (data, ranges) {
+    self.getChartDataRange = function (data, ranges) {
         const chartData = ranges.map(function (range) {
-            const minVal = getValueFromChartContainer(range, 'minVal', 'float', null);
-            const maxVal = getValueFromChartContainer(range, 'maxVal', 'float', null);
-            let rangeValue = '';
-            rangeValue += (minVal !== null ? 'from ' + minVal.toString() : ' ');
-            rangeValue += (maxVal !== null ? 'to ' + maxVal.toString() : ' ');
-            return buildChartDataItem(rangeValue.trim(), minVal, maxVal, 0);
+            const minVal = self.getValueFromChartContainer(range, 'minVal', 'float', null);
+            const maxVal = self.getValueFromChartContainer(range, 'maxVal', 'float', null);
+            return self.buildChartDataItem(undefined, 0, minVal, maxVal, 0, maxVal);
         });
 
         for (let dataIndex = 0; dataIndex < data.length; dataIndex++) {
             const item = data[dataIndex];
-            const termCount = getValueFromChartContainer(item, 'count', 'int', null);
-            const termValue = getValueFromChartContainer(item, 'value', 'float', null);
+            const termCount = self.getValueFromChartContainer(item, 'count', 'int', null);
+            const termValue = self.getValueFromChartContainer(item, 'value', 'float', null);
             if (termCount === null || termValue === null) {
-                console.warn("[Chart] Could not convert value '" + item.value + "' to float.");
+                console.error("[Chart] Could not convert value '" + item.value + "' to float.");
                 continue;
             }
 
@@ -295,9 +337,19 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
                 }
             }
             if (!isAdded) {
-                console.warn("[Chart] Value '" + termValue + "' did not fit any of the ranges.", ranges);
+                console.warn("[Chart] Value '" + termValue + "' did not fit any of the ranges.",
+                    JSON.parse(JSON.stringify(chartData)),
+                    JSON.parse(JSON.stringify(data)),
+                    JSON.parse(JSON.stringify(ranges)),
+                );
             }
         }
+
+        // update values to be the counts
+        chartData.forEach(function (item) {
+            item.value = item.count;
+        });
+
         return chartData;
     };
 
@@ -307,21 +359,25 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      * For example, for chart data: [3,2,1]
      * sums the total = 3 + 2 + 1 = 6 then calculates the percentage of what each value represents
      * Result: 3 = 50% of 6, 2 = 33.33% of 6 and 1 = 16.67% of 6.
-     * @param data The chart data.
+     * @param rawData The raw data.
      * @param totalRecords The total number of records.
      * @returns {*[]} The updated chart data.
      */
-    const getChartDataPercentages = function (data, totalRecords) {
+    self.getChartDataPercentages = function (rawData, totalRecords) {
         const chartData = [];
-        for (let i = 0; i < data.length; i++) {
-            const itemValue = parseFloat(data[i]);
+        for (let i = 0; i < rawData.length; i++) {
+            const item = rawData[i];
+            const itemValue = parseFloat(item.value.toString());
             if (isNaN(itemValue)) {
-                console.error("[Chart] Cannot convert non-numeric chart data to percentages.", data);
-                return data;
+                console.error("[Chart] Cannot convert non-numeric chart data to percentages.",
+                    totalRecords,
+                    JSON.parse(JSON.stringify(rawData)));
+                return rawData;
             }
             let value = itemValue * 100 / totalRecords;
             value = Math.round((value + Number.EPSILON) * 100) / 100;
-            chartData[i] = value;
+            item.value = value;
+            chartData.push(item);
         }
         return chartData;
     };
@@ -331,11 +387,15 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      * @param facetTerms The facet terms.
      * @returns {*[]} Parsed terms matching the standard facet term array.
      */
-    const getChartDataCustomTerms = function (facetTerms) {
+    self.getChartDataCustomTerms = function (facetTerms) {
         const rawData = [];
+        if (!facetTerms || facetTerms.length < 1) {
+            return rawData;
+        }
         const prefix = 'CustomChartDataItem';
         const sep = '|||';
-        (facetTerms || []).forEach(function (term) {
+        for (let i = 0; i < facetTerms.length; i++) {
+            const term = facetTerms[i];
             const termCount = term.count();
             const termRaw = term.term();
             let termKey = '';
@@ -353,14 +413,15 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
                 return element.value === termKey;
             });
             if (existingIndex < 0) {
-                const newItem = buildChartDataItem(termKey, null, null, 0)
+                const newItem = self.buildChartDataItem(undefined, termKey, null, null, 0, termKey);
                 rawData.push(newItem);
             }
             existingIndex = rawData.findIndex(function (element) {
                 return element.value === termKey;
             });
             rawData[existingIndex].count += (termCount * termValue);
-        });
+        }
+
         return rawData;
     };
 
@@ -375,31 +436,33 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      * @param chartRawData {object} the raw chart data.
      * @returns {{datasets: *[]}} The chart data.
      */
-    const createChartBarData = function (facet, chartConfig, chartRawData) {
-        const borderColors = getValueFromChartContainer(chartConfig, 'borderColorsAvailable', 'array', chartRawData.labels);
-        const borderWidth = getValueFromChartContainer(chartConfig, 'borderWidth', 'int', null);
+    self.createChartBarData = function (facet, chartConfig, chartRawData) {
+        const borderColors = self.getValueFromChartContainer(chartConfig, 'borderColorsAvailable', 'array', chartRawData.labels);
+        const borderWidth = self.getValueFromChartContainer(chartConfig, 'borderWidth', 'int', null);
 
-        const optTitleText = getMainTitle(chartConfig, chartRawData.totalRecords);
+        const optTitleText = self.getMainTitle(chartConfig, chartRawData.totalRecords);
 
-        const mainLabels = getValueFromChartContainer(chartConfig, 'mainLabels', 'array', null);
-        const showAllLabels = getValueFromChartContainer(chartConfig, 'mainLabelsShowAll', 'bool', true);
-        const chartLabels = getArraySubset(mainLabels, showAllLabels, chartRawData.totalTerms);
+        const mainLabels = self.getValueFromChartContainer(chartConfig, 'mainLabels', 'array', null);
+        const showAllLabels = self.getValueFromChartContainer(chartConfig, 'mainLabelsShowAll', 'bool', true);
+        const chartLabels = self.getArraySubset(mainLabels, showAllLabels, chartRawData.totalTerms);
 
-        const bgColorsAvailable = getValueFromChartContainer(chartConfig, 'bgColorsAvailable', 'array', null);
-        const bgColors = getArraySubset(bgColorsAvailable, showAllLabels, chartRawData.totalTerms);
+        const bgColorsAvailable = self.getValueFromChartContainer(chartConfig, 'bgColorsAvailable', 'array', null);
+        const bgColors = self.getArraySubset(bgColorsAvailable, showAllLabels, chartRawData.totalTerms);
 
-        const datasets = {datasets: []};
-        setContainerValue(datasets, ['labels'], chartLabels);
+        const result = {datasets: []};
+        self.setContainerValue(result, ['labels'], chartLabels);
 
         const dataset = {};
-        setContainerValue(dataset, ['label'], optTitleText);
-        setContainerValue(dataset, ['data'], chartRawData.data);
-        setContainerValue(dataset, ['backgroundColor'], bgColors);
-        setContainerValue(dataset, ['borderColor'], borderColors);
-        setContainerValue(dataset, ['borderWidth'], borderWidth);
-        datasets.datasets.push(dataset);
+        self.setContainerValue(dataset, ['label'], optTitleText);
+        self.setContainerValue(dataset, ['data'], chartRawData.data);
+        self.setContainerValue(dataset, ['backgroundColor'], bgColors);
+        self.setContainerValue(dataset, ['borderColor'], borderColors);
+        self.setContainerValue(dataset, ['borderWidth'], borderWidth);
+        result.datasets.push(dataset);
 
-        return datasets;
+        console.warn(JSON.parse(JSON.stringify(result)));
+
+        return result;
     };
 
     /**
@@ -409,51 +472,51 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      * @param chartRawData {object} the raw chart data.
      * @returns {{}} The chart options.
      */
-    const createChartBarOptions = function (facet, chartConfig, chartRawData) {
-        const optTitleText = getMainTitle(chartConfig, chartRawData.totalRecords);
+    self.createChartBarOptions = function (facet, chartConfig, chartRawData) {
+        const optTitleText = self.getMainTitle(chartConfig, chartRawData.totalRecords);
 
-        const optTitlePosition = getValueFromChartContainer(chartConfig, 'mainTitlePosition', 'string', null);
-        const optYScaleTitle = getValueFromChartContainer(chartConfig, 'yTitle', 'string', null);
-        const optXScaleTitle = getValueFromChartContainer(chartConfig, 'xTitle', 'string', null);
-        const optXScaleType = getValueFromChartContainer(chartConfig, 'xType', 'string', null);
-        const optXScaleLabels = getValueFromChartContainer(chartConfig, 'xLabels', 'array', null);
-        const optLegendPosition = getValueFromChartContainer(chartConfig, 'legendPosition', 'string', null);
-        const optYScaleBeginAtZero = getValueFromChartContainer(chartConfig, 'yBeginAtZero', 'bool', null);
-        const optYScaleDisplay = getValueFromChartContainer(chartConfig, 'yDisplay', 'bool', null);
-        const optYScaleTitleDisplay = getValueFromChartContainer(chartConfig, 'yTitleDisplay', 'bool', null);
-        const optXScaleDisplay = getValueFromChartContainer(chartConfig, 'xDisplay', 'bool', null);
-        const optXScaleTitleDisplay = getValueFromChartContainer(chartConfig, 'xTitleDisplay', 'bool', null);
-        const optLegendDisplay = getValueFromChartContainer(chartConfig, 'legendDisplay', 'bool', null);
-        const optTitleDisplay = getValueFromChartContainer(chartConfig, 'mainTitleDisplay', 'bool', null);
+        const optTitlePosition = self.getValueFromChartContainer(chartConfig, 'mainTitlePosition', 'string', null);
+        const optYScaleTitle = self.getValueFromChartContainer(chartConfig, 'yTitle', 'string', null);
+        const optXScaleTitle = self.getValueFromChartContainer(chartConfig, 'xTitle', 'string', null);
+        const optXScaleType = self.getValueFromChartContainer(chartConfig, 'xType', 'string', null);
+        const optXScaleLabels = self.getValueFromChartContainer(chartConfig, 'xLabels', 'array', null);
+        const optLegendPosition = self.getValueFromChartContainer(chartConfig, 'legendPosition', 'string', null);
+        const optYScaleBeginAtZero = self.getValueFromChartContainer(chartConfig, 'yBeginAtZero', 'bool', null);
+        const optYScaleDisplay = self.getValueFromChartContainer(chartConfig, 'yDisplay', 'bool', null);
+        const optYScaleTitleDisplay = self.getValueFromChartContainer(chartConfig, 'yTitleDisplay', 'bool', null);
+        const optXScaleDisplay = self.getValueFromChartContainer(chartConfig, 'xDisplay', 'bool', null);
+        const optXScaleTitleDisplay = self.getValueFromChartContainer(chartConfig, 'xTitleDisplay', 'bool', null);
+        const optLegendDisplay = self.getValueFromChartContainer(chartConfig, 'legendDisplay', 'bool', null);
+        const optTitleDisplay = self.getValueFromChartContainer(chartConfig, 'mainTitleDisplay', 'bool', null);
 
         const options = {};
-        setContainerValue(options, ['plugins', 'legend', 'display'], optLegendDisplay);
-        setContainerValue(options, ['plugins', 'legend', 'position'], optLegendPosition);
+        self.setContainerValue(options, ['plugins', 'legend', 'display'], optLegendDisplay);
+        self.setContainerValue(options, ['plugins', 'legend', 'position'], optLegendPosition);
 
-        setContainerValue(options, ['plugins', 'title', 'display'], optTitleDisplay);
-        setContainerValue(options, ['plugins', 'title', 'text'], optTitleText);
-        setContainerValue(options, ['plugins', 'title', 'position'], optTitlePosition);
+        self.setContainerValue(options, ['plugins', 'title', 'display'], optTitleDisplay);
+        self.setContainerValue(options, ['plugins', 'title', 'text'], optTitleText);
+        self.setContainerValue(options, ['plugins', 'title', 'position'], optTitlePosition);
 
-        setContainerValue(options, ['scales', 'y', 'beginAtZero'], optYScaleBeginAtZero);
-        setContainerValue(options, ['scales', 'y', 'display'], optYScaleDisplay);
-        setContainerValue(options, ['scales', 'y', 'title', 'display'], optYScaleTitleDisplay);
-        setContainerValue(options, ['scales', 'y', 'title', 'text'], optYScaleTitle);
+        self.setContainerValue(options, ['scales', 'y', 'beginAtZero'], optYScaleBeginAtZero);
+        self.setContainerValue(options, ['scales', 'y', 'display'], optYScaleDisplay);
+        self.setContainerValue(options, ['scales', 'y', 'title', 'display'], optYScaleTitleDisplay);
+        self.setContainerValue(options, ['scales', 'y', 'title', 'text'], optYScaleTitle);
 
         // Work around to avoid RangeError: minimumFractionDigits value is out of range
         // https://github.com/chartjs/Chart.js/issues/8092
-        setContainerValue(options, ['scales', 'y', 'ticks', 'callback'], function (value) {
+        self.setContainerValue(options, ['scales', 'y', 'ticks', 'callback'], function (value) {
             return value;
         });
 
-        setContainerValue(options, ['scales', 'x', 'display'], optXScaleDisplay);
-        setContainerValue(options, ['scales', 'x', 'type'], optXScaleType);
-        setContainerValue(options, ['scales', 'x', 'labels'], optXScaleLabels);
-        setContainerValue(options, ['scales', 'x', 'title', 'display'], optXScaleTitleDisplay);
-        setContainerValue(options, ['scales', 'x', 'title', 'text'], optXScaleTitle);
+        self.setContainerValue(options, ['scales', 'x', 'display'], optXScaleDisplay);
+        self.setContainerValue(options, ['scales', 'x', 'type'], optXScaleType);
+        self.setContainerValue(options, ['scales', 'x', 'labels'], optXScaleLabels);
+        self.setContainerValue(options, ['scales', 'x', 'title', 'display'], optXScaleTitleDisplay);
+        self.setContainerValue(options, ['scales', 'x', 'title', 'text'], optXScaleTitle);
 
         // Work around to avoid RangeError: minimumFractionDigits value is out of range
         // https://github.com/chartjs/Chart.js/issues/8092
-        setContainerValue(options, ['scales', 'x', 'ticks', 'callback'], function (value) {
+        self.setContainerValue(options, ['scales', 'x', 'ticks', 'callback'], function (value) {
             return value;
         });
 
@@ -467,26 +530,26 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      * @param chartRawData {object} the raw chart data.
      * @returns {{datasets: *[]}} The chart data.
      */
-    const createChartPieData = function (facet, chartConfig, chartRawData) {
-        const mainLabels = getValueFromChartContainer(chartConfig, 'mainLabels', 'array', chartRawData.labels);
-        const showAllLabels = getValueFromChartContainer(chartConfig, 'mainLabelsShowAll', 'bool', true);
-        const chartLabels = getArraySubset(mainLabels, showAllLabels, chartRawData.totalTerms);
+    self.createChartPieData = function (facet, chartConfig, chartRawData) {
+        const mainLabels = self.getValueFromChartContainer(chartConfig, 'mainLabels', 'array', chartRawData.labels);
+        const showAllLabels = self.getValueFromChartContainer(chartConfig, 'mainLabelsShowAll', 'bool', true);
+        const chartLabels = self.getArraySubset(mainLabels, showAllLabels, chartRawData.totalTerms);
 
-        const optTitleText = getMainTitle(chartConfig, chartRawData.totalRecords);
+        const optTitleText = self.getMainTitle(chartConfig, chartRawData.totalRecords);
 
-        const bgColorsAvailable = getValueFromChartContainer(chartConfig, 'bgColorsAvailable', 'array', null);
-        const bgColors = getArraySubset(bgColorsAvailable, showAllLabels, chartRawData.totalTerms);
+        const bgColorsAvailable = self.getValueFromChartContainer(chartConfig, 'bgColorsAvailable', 'array', null);
+        const bgColors = self.getArraySubset(bgColorsAvailable, showAllLabels, chartRawData.totalTerms);
 
-        const chartHoverOffset = getValueFromChartContainer(chartConfig, 'hoverOffset', 'int', null);
+        const chartHoverOffset = self.getValueFromChartContainer(chartConfig, 'hoverOffset', 'int', null);
 
         const result = {datasets: []};
-        setContainerValue(result, ['labels'], chartLabels);
+        self.setContainerValue(result, ['labels'], chartLabels);
 
         const dataset = {};
-        setContainerValue(dataset, ['label'], optTitleText);
-        setContainerValue(dataset, ['data'], chartRawData.data);
-        setContainerValue(dataset, ['backgroundColor'], bgColors);
-        setContainerValue(dataset, ['hoverOffset'], chartHoverOffset);
+        self.setContainerValue(dataset, ['label'], optTitleText);
+        self.setContainerValue(dataset, ['data'], chartRawData.data);
+        self.setContainerValue(dataset, ['backgroundColor'], bgColors);
+        self.setContainerValue(dataset, ['hoverOffset'], chartHoverOffset);
         result.datasets.push(dataset);
 
         return result;
@@ -499,18 +562,19 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      * @param chartRawData {object} the raw chart data.
      * @returns {{}} The chart options.
      */
-    const createChartPieOptions = function (facet, chartConfig, chartRawData) {
-        const optTitleText = getMainTitle(chartConfig, chartRawData.totalRecords);
+    self.createChartPieOptions = function (facet, chartConfig, chartRawData) {
+        const optTitleText = self.getMainTitle(chartConfig, chartRawData.totalRecords);
 
-        const optPosition = getValueFromChartContainer(chartConfig, 'mainTitlePosition', 'string', 'top');
-        const optDisplay = getValueFromChartContainer(chartConfig, 'mainTitleDisplay', 'bool', true);
-        const optResponsive = getValueFromChartContainer(chartConfig, 'responsive', 'bool', null);
+        const optPosition = self.getValueFromChartContainer(chartConfig, 'mainTitlePosition', 'string', 'top');
+        const optDisplay = self.getValueFromChartContainer(chartConfig, 'mainTitleDisplay', 'bool', true);
+        const optResponsive = self.getValueFromChartContainer(chartConfig, 'responsive', 'bool', null);
 
         const result = {};
-        setContainerValue(result, ['responsive'], optResponsive);
-        setContainerValue(result, ['plugins', 'legend', 'position'], optPosition);
-        setContainerValue(result, ['plugins', 'title', 'display'], optDisplay);
-        setContainerValue(result, ['plugins', 'title', 'text'], optTitleText);
+        self.setContainerValue(result, ['responsive'], optResponsive);
+        self.setContainerValue(result, ['plugins', 'legend', 'position'], optPosition);
+        self.setContainerValue(result, ['plugins', 'title', 'display'], optDisplay);
+        self.setContainerValue(result, ['plugins', 'title', 'text'], optTitleText);
+
         return result;
     };
 
@@ -521,28 +585,28 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      * @param chartRawData {object} The raw chart data.
      * @returns {{datasets: *[]}} The chart data.
      */
-    const createChartLineData = function (facet, chartConfig, chartRawData) {
-        const chartFill = getValueFromChartContainer(chartConfig, 'lineChartFill', 'bool', null);
-        const chartTension = getValueFromChartContainer(chartConfig, 'lineChartTension', 'float', null);
+    self.createChartLineData = function (facet, chartConfig, chartRawData) {
+        const chartFill = self.getValueFromChartContainer(chartConfig, 'lineChartFill', 'bool', null);
+        const chartTension = self.getValueFromChartContainer(chartConfig, 'lineChartTension', 'float', null);
 
-        const optTitleText = getMainTitle(chartConfig, chartRawData.totalRecords);
+        const optTitleText = self.getMainTitle(chartConfig, chartRawData.totalRecords);
 
-        const mainLabels = getValueFromChartContainer(chartConfig, 'mainLabels', 'array', null);
-        const showAllLabels = getValueFromChartContainer(chartConfig, 'mainLabelsShowAll', 'bool', true);
-        const chartLabels = getArraySubset(mainLabels, showAllLabels, chartRawData.totalTerms);
+        const mainLabels = self.getValueFromChartContainer(chartConfig, 'mainLabels', 'array', null);
+        const showAllLabels = self.getValueFromChartContainer(chartConfig, 'mainLabelsShowAll', 'bool', true);
+        const chartLabels = self.getArraySubset(mainLabels, showAllLabels, chartRawData.totalTerms);
 
-        const bgColorsAvailable = getValueFromChartContainer(chartConfig, 'bgColorsAvailable', 'array', null);
-        const borderColors = getArraySubset(bgColorsAvailable, showAllLabels, chartRawData.totalTerms);
+        const bgColorsAvailable = self.getValueFromChartContainer(chartConfig, 'bgColorsAvailable', 'array', null);
+        const borderColors = self.getArraySubset(bgColorsAvailable, showAllLabels, chartRawData.totalTerms);
 
         const result = {datasets: []};
-        setContainerValue(result, ['labels'], chartLabels || chartRawData.labels);
+        self.setContainerValue(result, ['labels'], chartLabels || chartRawData.labels);
 
         const dataset = {};
-        setContainerValue(dataset, ['label'], optTitleText);
-        setContainerValue(dataset, ['data'], chartRawData.data);
-        setContainerValue(dataset, ['fill'], chartFill);
-        setContainerValue(dataset, ['borderColor'], borderColors);
-        setContainerValue(dataset, ['tension'], chartTension);
+        self.setContainerValue(dataset, ['label'], optTitleText);
+        self.setContainerValue(dataset, ['data'], chartRawData.data);
+        self.setContainerValue(dataset, ['fill'], chartFill);
+        self.setContainerValue(dataset, ['borderColor'], borderColors);
+        self.setContainerValue(dataset, ['tension'], chartTension);
         result.datasets.push(dataset);
 
         return result;
@@ -555,11 +619,11 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      * @param chartRawData {object} The raw chart data.
      * @returns {{}} The chart options.
      */
-    const createChartLineOptions = function (facet, chartConfig, chartRawData) {
-        const optStacked = getValueFromChartContainer(chartConfig, 'yStacked', 'bool', null);
+    self.createChartLineOptions = function (facet, chartConfig, chartRawData) {
+        const optStacked = self.getValueFromChartContainer(chartConfig, 'yStacked', 'bool', null);
 
         const result = {};
-        setContainerValue(result, ['scales', 'y', 'stacked'], optStacked);
+        self.setContainerValue(result, ['scales', 'y', 'stacked'], optStacked);
         return result;
     };
 
@@ -587,9 +651,17 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         const chartRawData = self.transients.chartRawData();
         const builder = self.transients.getChartBuilder();
 
-        return facet && chartConfig && chartRawData && builder
-            ? builder.data(facet, chartConfig, chartRawData)
-            : null;
+        if (facet && chartConfig && chartRawData && builder) {
+            return builder.data(facet, chartConfig, chartRawData);
+        } else {
+            // console.error("[Chart] Could not build chart data.",
+            //     JSON.parse(JSON.stringify(facet)),
+            //     JSON.parse(JSON.stringify(chartConfig)),
+            //     JSON.parse(JSON.stringify(chartRawData)),
+            //     JSON.parse(JSON.stringify(builder))
+            // );
+            return null;
+        }
     });
     self.chartOptions = ko.pureComputed(function () {
         const facet = self.transients.facet();
@@ -597,9 +669,17 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         const chartRawData = self.transients.chartRawData();
         const builder = self.transients.getChartBuilder();
 
-        return facet && chartConfig && chartRawData && builder
-            ? builder.options(facet, chartConfig, chartRawData)
-            : null;
+        if (facet && chartConfig && chartRawData && builder) {
+            return builder.options(facet, chartConfig, chartRawData);
+        } else {
+            // console.error("[Chart] Could not build chart options.",
+            //     JSON.parse(JSON.stringify(facet)),
+            //     JSON.parse(JSON.stringify(chartConfig)),
+            //     JSON.parse(JSON.stringify(chartRawData)),
+            //     JSON.parse(JSON.stringify(builder))
+            //     );
+            return null;
+        }
     });
 
     /*
@@ -619,11 +699,11 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         const chartType = self.chartType();
         switch (chartType) {
             case 'pie':
-                return {data: createChartPieData, options: createChartPieOptions};
+                return {data: self.createChartPieData, options: self.createChartPieOptions};
             case 'bar':
-                return {data: createChartBarData, options: createChartBarOptions};
+                return {data: self.createChartBarData, options: self.createChartBarOptions};
             case 'line':
-                return {data: createChartLineData, options: createChartLineOptions};
+                return {data: self.createChartLineData, options: self.createChartLineOptions};
             default:
                 console.error("[Chart] Unrecognised chart type '" + chartType + "'.");
                 return null;
@@ -638,7 +718,7 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         const facetType = facet.type;
         const facetName = facet.name();
         const chartConfig = self.transients.chartConfig();
-        const facetAllTerms = facet.ref.showMoreTermList();
+        const facetAllTerms = facet.allTermsList();
         let facetItems = facet.terms() || [];
         const facetTermCountLimit = facet.ref.flimit;
 
@@ -649,28 +729,28 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         // When the full term list has loaded, this computed should be re-evaluated because
         // it depends on the observable that holds the full list: 'showMoreTermList'.
 
-        if (facetType === 'terms' && facetItems.length >= facetTermCountLimit) {
+        // if (facetType === 'terms' && facetItems.length >= facetTermCountLimit) {
 
-            // TODO: finish building the load more terms functionality
-            // if (isTypeTerms && facetAllTerms.length < 1) {
-            console.warn("[Chart] Retrieving all facet terms for '" + facetName + "'.");
-            facet.loadMoreTerms();
+        // TODO: finish building the load more terms functionality
+        if (isTypeTerms && facetAllTerms.length < 1) {
+            console.log("[Chart] Retrieving all terms for facet '" + facetName + "'. Not providing chart data.");
+            facet.getAllFacetTerms();
             return null;
         } else if (isTypeTerms && facetAllTerms.length > 1) {
+            console.log("[Chart] Obtained full list of terms for facet '" + facetName + "'. The chart data will be provided.");
             facetItems = facetAllTerms;
         }
 
         // get settings for processing chart data
-        let useCount = getValueFromChartContainer(chartConfig, 'dataUseCount', 'bool', false);
-        let applyRanges = getValueFromChartContainer(chartConfig, 'dataApplyRanges', 'array', []);
-        const shouldApplyRanges = applyRanges.length > 0
-        const toPercentages = getValueFromChartContainer(chartConfig, 'dataToPercentage', 'bool', false);
-        let isCustomChartData = getValueFromChartContainer(chartConfig, 'dataIsCustomChartData', 'bool', false);
+        let useCount = self.getValueFromChartContainer(chartConfig, 'dataUseCount', 'bool', false);
+        let applyRanges = self.getValueFromChartContainer(chartConfig, 'dataApplyRanges', 'array', []);
+        let shouldApplyRanges = applyRanges.length > 0
+        const toPercentages = self.getValueFromChartContainer(chartConfig, 'dataToPercentage', 'bool', false);
+        let isCustomChartData = self.getValueFromChartContainer(chartConfig, 'dataIsCustomChartData', 'bool', false);
 
         // check settings make sense
-        // TODO: how does useCount interact with ranges (either range facet or created from term facet)?
-        // range facet can only use dataToPercentage
-        // term facet can do useCount (first), applyRange (second), toPercentages (third), all optional.
+        // range facet can only use dataToPercentage. Note that ranges use the count as the value.
+        // term facet can do useCount (first), applyRange (second), toPercentages (third), all optional, if specified are applied in this order.
         if (!isTypeTerms && isCustomChartData) {
             console.error("[Chart] Custom chart data must be provided by term facet only, given '" + facetType + "' for facet '" + facetName + "'. " +
                 "Will set isCustomChartData to false.");
@@ -680,9 +760,10 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         if (isTypeRange && shouldApplyRanges) {
             console.error("[Chart] Cannot apply ranges to range facet '" + facetName + "'. Will set applyRanges to empty array.");
             applyRanges = [];
+            shouldApplyRanges = false;
         }
 
-        if (isTypeRange && useCount){
+        if (isTypeRange && useCount) {
             console.error("[Chart] Cannot use count for range facet '" + facetName + "'. Will set useCount to false.");
             useCount = false;
         }
@@ -693,68 +774,73 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         // parse the raw data
         if (isTypeTerms && isCustomChartData) {
             console.log("[Chart] Parsing '" + facetItems.length + "' facet term custom chart items for facet '" + facetName + "'.");
-            rawData = getChartDataCustomTerms(facetItems);
+            rawData = self.getChartDataCustomTerms(facetItems);
 
         } else if (isTypeTerms && !isCustomChartData) {
             console.log("[Chart] Parsing '" + facetItems.length + "' facet term items for facet '" + facetName + "'.");
             rawData = facetItems.map(function (item) {
-                return buildChartDataItem(item.term(), null, null, item.count());
+                return self.buildChartDataItem(item);
             });
 
         } else if (isTypeRange) {
             console.log("[Chart] Parsing '" + facetItems.length + "' facet range items for facet '" + facetName + "'.");
             rawData = facetItems.map(function (item) {
-                return buildChartDataItem(null, item.from(), item.to(), item.count());
+                return self.buildChartDataItem(item);
             });
 
         } else {
             console.error("[Chart] Did not parse '" + facetItems.length + "' facet items for facet '" + facetName + "'.");
         }
 
-        // convert term facet to range if requested
-        if (isTypeTerms && shouldApplyRanges) {
-            console.log("[Chart] Converting term data to range for facet '" + facetName + "'.");
-            // bucket values for a term facet
-            rawData = getChartDataRange(rawData, applyRanges);
+        // convert term facet to use counts if requested
+        if (useCount) {
+            console.log("[Chart] Converting to counts for facet '" + facetName + "'.");
+            rawData.forEach(function (item) {
+                item.value = item.count;
+            });
+            console.warn("[Chart] Converted to counts for facet '" + facetName + "'.", JSON.parse(JSON.stringify(rawData)));
         }
 
+        // convert term facet to range if requested
+        if (shouldApplyRanges) {
+            console.log("[Chart] Converting term data to range for facet '" + facetName + "'.");
+            // bucket values for a term facet
+            rawData = self.getChartDataRange(rawData, applyRanges);
+        }
+
+        // get total term count and total record count
         const totalTerms = rawData.length;
         const totalRecords = rawData.reduce(function (previous, current) {
             return previous + current.count;
         }, 0);
 
-        // convert to chart data and chart labels
-        let chartData = [];
-        const chartLabels = [];
-        console.log("[Chart] Obtaining data " + (useCount ? "counts" : "values") + " for facet '" + facetName + "'.");
-        rawData.forEach(function (item, index) {
-            const facetItem = facetItems[index];
-
-            let chartLabel;
-            if (facetItem.displayNameWithoutCount) {
-                chartLabel = facetItem.displayNameWithoutCount();
-            } else if (facetItem.displayName) {
-                chartLabel = facetItem.displayName();
-            } else {
-                chartLabel = facetItem.title() || facetItem.name() || 'Item ' + (index + 1).toString();
-            }
-            chartLabel += (useCount ? "" : "(" + item.count.toString() + ")");
-            chartLabels.push(chartLabel);
-
-            chartData.push(useCount ? item.count : item.value);
-        });
-
         // convert to percentages
         if (toPercentages) {
             console.log("[Chart] Obtaining data percentages for facet '" + facetName + "'.");
-            chartData = getChartDataPercentages(chartData, totalRecords);
+            rawData = self.getChartDataPercentages(rawData, totalRecords);
         }
 
+        // get the chart labels
+        const chartLabels = [];
+        for (let index = 0; index < rawData.length; index++) {
+            const rawDataItem = rawData[index];
+            let chartLabel = rawDataItem.title;
+            chartLabels.push(chartLabel);
+        }
+
+        // convert raw data to chart data
+        const chartData = rawData.map(function (item) {
+            return item.value;
+        });
+
+        // validate output items
         if (!chartLabels || chartLabels.length < 1 || !chartData || chartData.length < 1 || totalTerms < 1 || totalRecords < 1) {
             console.warn("[Chart] Some data not available for chart for facet '" + facetName + "' " +
-                "with chart type '" + chartType + "'.", chartLabels, chartData, totalTerms, totalRecords);
-        } else {
-            console.log("Done");
+                "with chart type '" + chartType + "'.",
+                JSON.parse(JSON.stringify(chartLabels)),
+                JSON.parse(JSON.stringify(chartData)),
+                JSON.parse(JSON.stringify(totalTerms)),
+                JSON.parse(JSON.stringify(totalRecords)));
         }
         return {
             labels: chartLabels,

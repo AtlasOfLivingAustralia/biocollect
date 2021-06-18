@@ -314,6 +314,11 @@ function FilterViewModel(config){
         })
     };
 
+    // provide access to just the promise that loads the full facet term list
+    self.getAllFacetTermItemsPromise = function(facetVM) {
+        return parent.getFacetTerms(facetVM.name());
+    };
+
     self.displayTitle = function (title) {
         if(self.showMoreFacet()){
             return title + ' ' + self.showMoreFacet().displayName();
@@ -378,6 +383,9 @@ function FacetViewModel(facet) {
     }
     self.state = ko.observable(state);
 
+    // stores the complete list of facet terms after is it loaded
+    self.allTermsList = ko.observableArray([]);
+
 
     self.showTermPanel = ko.computed(function () {
         var count = 0;
@@ -401,21 +409,20 @@ function FacetViewModel(facet) {
     self.ref = facet.ref;
 
     self.getTerms = function (facet) {
-        switch (facet.type){
+        switch (facet.type) {
             case 'terms':
-                var terms = $.map(facet.terms || [], function (term, index) {
+                return (facet.terms || []).map(function (term, index) {
                     term.facet = self;
                     return new FacetTermViewModel(term);
                 });
-                return terms;
-                break;
             case 'range':
-                var ranges = $.map(facet.ranges || [], function (term, index) {
+                return (facet.ranges || []).map(function (term, index) {
                     term.facet = self;
                     return new FacetRangeViewModel(term);
                 });
-                return ranges;
-                break;
+            default:
+                console.error("Cannot get terms for facet type '" + facet.type + "'.");
+                return null;
         }
     };
 
@@ -441,6 +448,24 @@ function FacetViewModel(facet) {
      */
     self.loadMoreTerms = function () {
         self.ref.getFacetTerms(self);
+    };
+
+    /**
+     * Get the whole list of terms for this facet, and store it in allTermsList.
+     */
+    self.getAllFacetTerms = function () {
+        const promise = self.ref.getAllFacetTermItemsPromise(self);
+        promise.then(function (data) {
+            const facets = data.facets;
+            const facet = facets && $.grep(facets, function (facet) {
+                return facet.name === self.name();
+            });
+
+            if(facet && facet.length === 1){
+                const terms = self.getTerms(facet[0]);
+                self.allTermsList(terms);
+            }
+        });
     };
 
     self.showChooseMore = function () {
