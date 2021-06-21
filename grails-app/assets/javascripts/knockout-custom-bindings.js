@@ -1104,7 +1104,7 @@ ko.bindingHandlers.chartjs = {
             bindingContext.$data.setChartInstance(chart);
         } else {
             console.warn("[Chart] NOT creating chart for facet '" + facetName + "' with chart type '" + chartType + "' " +
-                "because some required data was not available.",
+                "because some required data was not available yet.",
                 JSON.parse(JSON.stringify(chartData)),
                 JSON.parse(JSON.stringify(chartOptions)));
         }
