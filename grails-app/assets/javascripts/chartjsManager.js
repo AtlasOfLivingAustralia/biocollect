@@ -17,7 +17,7 @@ function ChartjsManagerViewModel() {
     /**
      * The options for number of charts to show per line.
      */
-    self.chartjsPerRowOptions = ko.observableArray(['2', '3', '4']);
+    self.chartjsPerRowOptions = ko.observableArray(['1', '2', '3', '4']);
 
     /**
      * The selected number of charts to show per line.
@@ -460,8 +460,6 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         self.setContainerValue(dataset, ['borderWidth'], borderWidth);
         result.datasets.push(dataset);
 
-        console.warn(JSON.parse(JSON.stringify(result)));
-
         return result;
     };
 
@@ -802,7 +800,6 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
             rawData.forEach(function (item) {
                 item.value = item.count;
             });
-            console.warn("[Chart] Converted to counts for facet '" + facetName + "'.", JSON.parse(JSON.stringify(rawData)));
         }
 
         // convert term facet to range if requested
