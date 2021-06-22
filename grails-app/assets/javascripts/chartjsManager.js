@@ -721,14 +721,14 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
 
         let orderedData = [];
 
-        if(configLabels != undefined && configLabels.length > 0 && !shouldApplyRanges) {
+        if(configLabels !== undefined && configLabels.length > 0 && !shouldApplyRanges) {
 
             console.log("[Chart] ordering data and labels based on the order defined in the config labels");
-            console.log("[Chart] facetLabels match the order of current data "+facetLabels);
-            console.log("[Chart] data before reordering "+data);
-            console.log("[Chart] configLabels will stablish final chart data ordering "+configLabels);
+            console.log("[Chart] facetLabels match the order of current data: ",JSON.parse(JSON.stringify(facetLabels)));
+            console.log("[Chart] data before reordering: ",JSON.parse(JSON.stringify(data)));
+            console.log("[Chart] configLabels will stablish final chart data ordering: ",JSON.parse(JSON.stringify(configLabels)));
 
-            configLabels.forEach(function(item, index) {
+            configLabels.forEach(function(item) {
                 let existingIndex = facetLabels.findIndex(function (element) {
                     return element === item;
                 });
@@ -736,7 +736,7 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
             });
 
         } else {
-
+            //if conditions are not met for ordering then return the same data 
             orderedData = data;
         }
 
@@ -757,7 +757,6 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
 
         const isTypeTerms = facetType === 'terms';
         const isTypeRange = facetType === 'range';
-
 
         // A term facet that has more terms needs to load them first
         // When the full term list has loaded, this computed should be re-evaluated because
@@ -872,7 +871,7 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         const showAllLabels = self.getValueFromChartContainer(chartConfig, 'mainLabelsShowAll', 'bool', true);
         const mainLabels = self.getArraySubset(mainLabelsFromConfig, showAllLabels, chartData.totalTerms);
         const chartDataOrdered = orderDataFromLabels(chartData,chartLabels,mainLabels, shouldApplyRanges);
-        console.log("[Chart] chartDataOrdered "+chartDataOrdered);
+        console.log("[Chart] chartDataOrdered: "+chartDataOrdered);
 
         // validate output items
         if (!mainLabels || mainLabels.length < 1 || !chartDataOrdered || chartDataOrdered.length < 1 || totalTerms < 1 || totalRecords < 1) {
