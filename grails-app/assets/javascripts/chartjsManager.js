@@ -383,7 +383,7 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
     };
 
     /**
-     * Parse facet terms in 'unique count' format: 'CustomChartDataItem|||[key]|||[count]'
+     * Parse facet terms in 'record level count' format: 'CustomChartDataItem|||[key]|||[count]'
      * @param facetTerms The facet terms.
      * @returns {*[]} Parsed terms matching the standard facet term array.
      */
@@ -656,6 +656,7 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         if (facet && chartConfig && chartRawData && builder) {
             return builder.data(facet, chartConfig, chartRawData);
         } else {
+            // Uncomment this block if/when required that can be useful for debugging
             // console.error("[Chart] Could not build chart data.",
             //     JSON.parse(JSON.stringify(facet)),
             //     JSON.parse(JSON.stringify(chartConfig)),
@@ -674,6 +675,7 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         if (facet && chartConfig && chartRawData && builder) {
             return builder.options(facet, chartConfig, chartRawData);
         } else {
+            // Uncomment this block if/when required that can be useful for debugging
             // console.error("[Chart] Could not build chart options.",
             //     JSON.parse(JSON.stringify(facet)),
             //     JSON.parse(JSON.stringify(chartConfig)),
@@ -712,6 +714,35 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         }
     });
 
+    // ensure that if the charts config has labels defined then these labels and the order defined by this labels
+    // will take precedence otherwise if labels are not defined in the config the labels used for the charts will
+    // be based from the facets data and in the order that the facets data is retrieved from the elastic search 
+    const orderDataFromLabels =  function(data, facetLabels, configLabels, shouldApplyRanges) {
+
+        let orderedData = [];
+
+        if(configLabels != undefined && configLabels.length > 0 && !shouldApplyRanges) {
+
+            console.log("[Chart] ordering data and labels based on the order defined in the config labels");
+            console.log("[Chart] facetLabels match the order of current data "+facetLabels);
+            console.log("[Chart] data before reordering "+data);
+            console.log("[Chart] configLabels will stablish final chart data ordering "+configLabels);
+
+            configLabels.forEach(function(item, index) {
+                let existingIndex = facetLabels.findIndex(function (element) {
+                    return element === item;
+                });
+                orderedData.push(data[existingIndex]);
+            });
+
+        } else {
+
+            orderedData = data;
+        }
+
+        return orderedData;
+    }
+
     /**
      * Extract the chart data from the facet and config data.
      */
@@ -724,17 +755,17 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         let facetItems = facet.terms() || [];
         const facetTermCountLimit = facet.ref.flimit;
 
-        const isTypeTerms = facetType === 'terms'
-        const isTypeRange = facetType === 'range'
+        const isTypeTerms = facetType === 'terms';
+        const isTypeRange = facetType === 'range';
+
 
         // A term facet that has more terms needs to load them first
         // When the full term list has loaded, this computed should be re-evaluated because
         // it depends on the observable that holds the full list: 'showMoreTermList'.
 
-        // if (facetType === 'terms' && facetItems.length >= facetTermCountLimit) {
-
-        // TODO: finish building the load more terms functionality
-        if (isTypeTerms && facetAllTerms.length < 1) {
+        // Uncomment the line below to test the all facets terms
+        // if (isTypeTerms && facetAllTerms.length < 1) {
+        if (isTypeTerms && facetItems.length >= facetTermCountLimit) {
             console.log("[Chart] Retrieving all terms for facet '" + facetName + "'. Not providing chart data.");
             facet.getAllFacetTerms();
             return null;
@@ -746,7 +777,7 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         // get settings for processing chart data
         let useCount = self.getValueFromChartContainer(chartConfig, 'dataUseCount', 'bool', false);
         let applyRanges = self.getValueFromChartContainer(chartConfig, 'dataApplyRanges', 'array', []);
-        let shouldApplyRanges = applyRanges.length > 0
+        let shouldApplyRanges = applyRanges.length > 0;
         const toPercentages = self.getValueFromChartContainer(chartConfig, 'dataToPercentage', 'bool', false);
         let isCustomChartData = self.getValueFromChartContainer(chartConfig, 'dataIsCustomChartData', 'bool', false);
 
@@ -834,18 +865,27 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
             return item.value;
         });
 
+        // ensure that if the charts config has labels defined then these labels and the order defined by this labels
+        // will take precedence otherwise if labels are not defined in the config the labels used for the charts will
+        // be based from the facets data and in the order that the facets data is retrieved from the elastic search 
+        const mainLabelsFromConfig = self.getValueFromChartContainer(chartConfig, 'mainLabels', 'array', chartData.labels);
+        const showAllLabels = self.getValueFromChartContainer(chartConfig, 'mainLabelsShowAll', 'bool', true);
+        const mainLabels = self.getArraySubset(mainLabelsFromConfig, showAllLabels, chartData.totalTerms);
+        const chartDataOrdered = orderDataFromLabels(chartData,chartLabels,mainLabels, shouldApplyRanges);
+        console.log("[Chart] chartDataOrdered "+chartDataOrdered);
+
         // validate output items
-        if (!chartLabels || chartLabels.length < 1 || !chartData || chartData.length < 1 || totalTerms < 1 || totalRecords < 1) {
+        if (!mainLabels || mainLabels.length < 1 || !chartDataOrdered || chartDataOrdered.length < 1 || totalTerms < 1 || totalRecords < 1) {
             console.warn("[Chart] Some data not available for chart for facet '" + facetName + "' " +
                 "with chart type '" + chartType + "'.",
-                JSON.parse(JSON.stringify(chartLabels)),
-                JSON.parse(JSON.stringify(chartData)),
+                JSON.parse(JSON.stringify(mainLabels)),
+                JSON.parse(JSON.stringify(chartDataOrdered)),
                 JSON.parse(JSON.stringify(totalTerms)),
                 JSON.parse(JSON.stringify(totalRecords)));
         }
         return {
-            labels: chartLabels,
-            data: chartData,
+            labels: mainLabels,
+            data: chartDataOrdered,
             totalTerms: totalTerms,
             totalRecords: totalRecords,
         };
