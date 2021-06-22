@@ -214,7 +214,7 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
      */
     self.getMainTitle = function (chartConfig, totalRecords) {
         const facetTitle = (facet.displayName ? facet.displayName() : (facet.title ? ko.unwrap(facet.title) : facet.name));
-        const mainTitle = self.getValueFromChartContainer(chartConfig, 'mainTitle', 'string', ' items for ' + facetTitle);
+        const mainTitle = self.getValueFromChartContainer(chartConfig, 'mainTitle', 'string', 'items for ' + facetTitle);
         const insertTotalAt = self.getValueFromChartContainer(chartConfig, 'mainTitleInsertTotalAt', 'int', 0);
 
         let result = '';
