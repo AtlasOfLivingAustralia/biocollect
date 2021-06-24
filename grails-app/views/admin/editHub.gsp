@@ -1286,14 +1286,15 @@
     </div>
 </script>
 <script id="templateDataPageFacetConfiguration" type="text/html">
-<table class="table table-custom-border borderless">
+<table class="table">
     <thead>
     <tr>
         <th>Facet name</th>
-        <th>Facet term type</th>
-        <th>Expand or Collapse</th>
-        <th>Display interval</th>
         <th>Display name</th>
+        <th>Display State</th>
+        <th>Facet term type</th>
+        <th>Display interval</th>
+        <th>Chart type</th>
         <th>Help text</th>
         <th>Action</th>
     </tr>
@@ -1301,11 +1302,23 @@
     <tbody>
     <!-- ko foreach: facets -->
     <tr>
-        <td data-bind="text: formattedName">
+        <td>
+            <p style="width: 170px;" data-bind="text: title"></p>
 
+            <p class="muted" style="width: 170px;" data-bind="text: name"></p>
         </td>
         <td>
-            <select data-bind="value: facetTermType">
+            <input type="text" data-bind="value:title" placeholder="Give a custom name for facet.">
+        </td>
+        <td>
+            <select style="width: 210px;" data-bind="value: state">
+                <option value="Expanded">Show - Expanded</option>
+                <option value="Collapsed">Show - Collapsed</option>
+                <option value="Hidden">Hidden - used for chart data</option>
+            </select>
+        </td>
+        <td>
+            <select style="width: 170px;" data-bind="value: facetTermType">
                 <option value="Default">Default</option>
                 <option value="ActiveOrCompleted">Active or Completed</option>
                 <option value="PresenceOrAbsence">Presence or Absence</option>
@@ -1315,28 +1328,31 @@
             </select>
         </td>
         <td>
-            <select data-bind="value: state">
-                <option value="Expanded">Expanded</option>
-                <option value="Collapsed">Collapsed</option>
+            <input style="width: 120px;" type="number" data-bind="value:interval, disable: isNotHistogram" step="1" min="0">
+        </td>
+        <td>
+            <select style="width: 100px;" data-bind="value: chartjsType">
+                <option value="none">None</option>
+                <option value="pie">Pie</option>
+                <option value="bar">Bar</option>
+                <option value="line">Line</option>
             </select>
+            <button class="btn btn-small" style="margin-top:5px;" data-bind="visible: chartjsType() !== 'none', click: editChartjsConfig">Edit Config</button>
         </td>
         <td>
-            <input type="number"  data-bind="value:interval, disable: isNotHistogram" min="0">
+            <textarea style="width: 170px;" rows="2" data-bind="value:helpText"
+                      placeholder="Add custom help text"></textarea>
         </td>
         <td>
-            <input type="text"  data-bind="value:title" placeholder="Give a custom name for facet.">
-        </td>
-        <td>
-            <textarea data-bind="value:helpText" placeholder="Add custom help text"></textarea>
-        </td>
-        <td>
-            <button class="btn btn-small btn-danger" data-bind="click: $parent.remove"><i class="icon-remove icon-white"></i> Remove</button>
+            <button class="btn btn-small btn-danger" style="width:85px;" data-bind="click: $parent.remove">
+                <i class="icon-remove icon-white"></i> Remove
+            </button>
         </td>
     </tr>
     <!-- /ko -->
     <!-- ko ifnot: facets().length -->
     <tr>
-        <td colspan="7">
+        <td colspan="8">
             No Facets selected.
         </td>
     </tr>
@@ -1344,9 +1360,12 @@
     </tbody>
     <tfoot>
     <tr>
-        <td colspan="6">
-            Pick a facet <select data-bind="options: transients.facetList, optionsText:'formattedName', value: transients.selectedFacet"></select>
-            <button class="btn btn-small btn-default" data-bind="click: add"><i class="icon-plus"></i> Add</button></td>
+        <td colspan="8">
+            Pick a facet
+            <select style="width: 400px;" data-bind="options: transients.facetList,
+            optionsText:'formattedName', value: transients.selectedFacet"></select>
+            <button class="btn btn-small btn-default" data-bind="click: add"><i class="icon-plus"></i> Add</button>
+        </td>
         <td>
 
         </td>
@@ -1453,5 +1472,6 @@
 
 </asset:script>
 
+<g:render template="/shared/jsonEditorModal"/>
 </body>
 </html>
