@@ -106,7 +106,7 @@ $(function(){
     $('#save').click(function () {
         if ($('#projectDetails').validationEngine('validate')) {
             if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
-                bootbox.dialog("${message(code:'project.create.warningdatacollection')}",
+                bootbox.dialog({message:"${message(code:'project.create.warningdatacollection')}"},
                     [{
                       label: "Continue",
                       className: "btn-primary",

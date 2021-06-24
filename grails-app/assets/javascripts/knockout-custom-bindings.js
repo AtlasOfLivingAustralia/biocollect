@@ -1044,3 +1044,71 @@ $.fn.availableWidth = function() {
         return this.width();
     }
 };
+
+ko.bindingHandlers.chartjs = {
+    /**
+     * The update callback:
+     * Knockout will call the update callback initially when the binding is applied to an element
+     * and track any dependencies (observables/computeds) that you access.
+     * When any of these dependencies change, the update callback will be called once again.
+     *
+     * The init callback:
+     * Knockout will call your init function once for each DOM element that you use the binding on.
+     * There are two main uses for init:
+     * - To set any initial state for the DOM element
+     * - To register any event handlers so that, for example, when the user clicks on or modifies the DOM element,
+     * you can change the state of the associated observable
+     *
+     * KO will pass exactly the same set of parameters that it passes to the update callback.
+     *
+     * Ref: https://knockoutjs.com/documentation/custom-bindings.html
+     *
+     * @param element The DOM element involved in this binding
+     * @param valueAccessor A JavaScript function that you can call to get the current model property that is involved in this binding.
+     * @param allBindings A JavaScript object that you can use to access all the model values bound to this DOM element.
+     * @param viewModel Use bindingContext.$data or bindingContext.$rawData to access the view model instead.
+     * @param bindingContext An object that holds the binding context available to this element’s bindings.
+     */
+    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        // First get the latest data that we're bound to
+        const value = valueAccessor();
+
+        // Next, whether or not the supplied model property is observable, get its current value
+        const valueUnwrapped = ko.unwrap(value);
+
+        // obtain the binding's properties
+        const facetName = ko.unwrap(valueUnwrapped.facetName);
+        const chartType = ko.unwrap(valueUnwrapped.type);
+        const chartData = ko.unwrap(valueUnwrapped.data);
+        const chartOptions = ko.unwrap(valueUnwrapped.options);
+
+        // remove any existing chart
+        const chartInstance = bindingContext.$data.chartInstance;
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+
+        // set up the new chart
+        if (chartType === 'none' || !chartType) {
+            return;
+        }
+
+        if (chartType && chartData && chartOptions) {
+            console.log("[Chart] Creating chart for facet '" + facetName + "' with chart type '" + chartType + "'.");
+            const chartDataConfig = {
+                type: chartType,
+                data: chartData,
+                options: chartOptions
+            };
+            const chart = new Chart(element, chartDataConfig);
+            bindingContext.$data.setChartInstance(chart);
+        } else {
+            console.warn("[Chart] NOT creating chart for facet '" + facetName + "' with chart type '" + chartType + "' " +
+                "because some required data was not available yet.",
+                JSON.parse(JSON.stringify(chartData)),
+                JSON.parse(JSON.stringify(chartOptions)));
+        }
+    }
+}
+
+            

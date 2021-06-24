@@ -91,8 +91,8 @@ $(function(){
     });
     $('#save').click(function () {
     if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
-        bootbox.dialog("Use of this system for data collection is not available for non-biodiversity related projects." +
-            " Press continue to turn data collection feature off. Otherwise, press cancel to modify the form.", [{
+        bootbox.dialog({message:"Use of this system for data collection is not available for non-biodiversity related projects." +
+            " Press continue to turn data collection feature off. Otherwise, press cancel to modify the form."}, [{
               label: "Continue",
               className: "btn-primary",
               callback: function() {

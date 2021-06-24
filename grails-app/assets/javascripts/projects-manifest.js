@@ -32,6 +32,7 @@
 //= require document.js
 
 // myActivity
+//= require chartjsManager.js
 //= require activity.js
 //= require facets.js
 
