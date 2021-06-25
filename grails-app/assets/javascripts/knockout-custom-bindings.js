@@ -1088,6 +1088,14 @@ ko.bindingHandlers.chartjs = {
             chartInstance.destroy();
         }
 
+        // is chart.js supported? Test is from Modernizr.
+        const supportsProxy = 'Proxy' in window;
+        if (supportsProxy !== true) {
+            console.warn("[Chart] NOT creating chart for facet '" + facetName + "' with chart type '" + chartType + "' " +
+                "because this browser does not support chart.js.");
+            return;
+        }
+
         // set up the new chart
         if (chartType === 'none' || !chartType) {
             return;
