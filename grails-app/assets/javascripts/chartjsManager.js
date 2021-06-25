@@ -340,7 +340,7 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
                 console.warn("[Chart] Value '" + termValue + "' did not fit any of the ranges.",
                     JSON.parse(JSON.stringify(chartData)),
                     JSON.parse(JSON.stringify(data)),
-                    JSON.parse(JSON.stringify(ranges)),
+                    JSON.parse(JSON.stringify(ranges))
                 );
             }
         }
