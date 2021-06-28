@@ -22,6 +22,7 @@ var BIOCOLLECT_ALA_FACET_MAPPING = {
     'organisationNameFacet':undefined,
     'projectActivityNameFacet':undefined,
     'embargoedFacet':undefined,
+    'verificationStatusFacet':undefined,
     'surveyMonthFacet': {
         'name': 'month',
         'transform': function (month) {
@@ -427,6 +428,7 @@ function FacetViewModel(facet) {
     });
     self.type = facet.type;
     self.styleName;
+    self.adminOnly = ko.observable(facet.adminOnly || false);
 
     if(facet.ref.isFacetSelected(self)){
         state = 'Expanded'

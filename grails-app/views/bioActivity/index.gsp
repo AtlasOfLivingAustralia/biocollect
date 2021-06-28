@@ -75,6 +75,20 @@
                     <h2><g:message code="record.view.title"></g:message></h2>
                 </div>
                 %{-- quick links --}%
+                <g:if test="${pActivity?.adminVerification && pActivity?.showVerificationStatus}">
+                    <div class="row-fluid">
+                        <div class="span12 text-right">
+                        <g:if test="${activity.verificationStatus == 'approved'}">
+                            <span class="badge badge-success"><g:message code="record.view.verificationStatus"></g:message>: 
+                            ${activity.verificationStatus}</span>
+                        </g:if>
+                        <g:else >
+                            <span class="badge badge-important"><g:message code="record.view.verificationStatus"></g:message>: 
+                            ${activity.verificationStatus}</span>
+                        </g:else>
+                        </div>
+                    </div>
+                </g:if>
                 <div class="span8">
                     <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
                 </div>

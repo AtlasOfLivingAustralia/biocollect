@@ -817,6 +817,7 @@ function FacetConfigurationViewModel(config, availableFacets) {
             facetVM.facetTermType(facet.facetTermType || facetVM.facetTermType());
             facetVM.helpText(facet.helpText || facetVM.helpText());
             facetVM.interval(facet.interval || facetVM.interval());
+            facetVM.adminOnly(facet.adminOnly || facetVM.adminOnly());
 
             var index = self.transients.facetList.indexOf(facetVM);
             if(index >= 0){
@@ -839,6 +840,7 @@ function FacetViewModel(config){
     self.helpText = ko.observable(config.helpText||'');
     self.facetTermType = ko.observable(config.facetTermType||'Default');
     self.interval = ko.observable(config.interval || 10);
+    self.adminOnly = ko.observable(config.adminOnly || false);
 
     self.formattedName = ko.computed(function () {
         return self.title() + ' (' + self.name() + ')'
