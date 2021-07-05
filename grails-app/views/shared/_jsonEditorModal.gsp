@@ -42,7 +42,7 @@
         };
 
         self.save = function() {
-            var rawValue = $('#jsonEditorInput').val();
+            var rawValue = $('#jsonEditorInput').val() || '""';
             var newValue = JSON.parse(rawValue);
             self.callback(newValue);
             $modal.modal('hide');
