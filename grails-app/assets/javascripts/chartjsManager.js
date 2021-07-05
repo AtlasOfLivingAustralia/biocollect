@@ -998,7 +998,7 @@ function ChartjsViewModel(facet, chartType, chartConfig) {
         // get total term count and total record count
         const totalTerms = rawData.length;
         const totalRecords = rawData.reduce(function (previous, current) {
-            return previous + current.count;
+            return previous + (useCount ? current.value : current.count);
         }, 0);
 
         // convert to percentages
