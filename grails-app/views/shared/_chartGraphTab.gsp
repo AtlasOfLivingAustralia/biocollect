@@ -23,11 +23,6 @@
     </div>
     <!-- /ko -->
 
-    <hr>
-    <p>
-        <g:message code="project.search.graphTab.footer"/>
-    </p>
-
     <!-- /ko -->
 </div>
 <!-- /ko -->

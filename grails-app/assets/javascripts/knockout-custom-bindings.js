@@ -1102,19 +1102,22 @@ ko.bindingHandlers.chartjs = {
         }
 
         if (chartType && chartData && chartOptions) {
-            console.log("[Chart] Creating chart for facet '" + facetName + "' with chart type '" + chartType + "'.");
             const chartDataConfig = {
                 type: chartType,
                 data: chartData,
                 options: chartOptions
             };
+
+            console.log("[Chart] Creating chart for facet '" + facetName + "' with chart type '" + chartType + "'.",
+                JSON.parse(JSON.stringify(chartDataConfig)));
+
             const chart = new Chart(element, chartDataConfig);
             bindingContext.$data.setChartInstance(chart);
+
         } else {
             console.warn("[Chart] NOT creating chart for facet '" + facetName + "' with chart type '" + chartType + "' " +
                 "because some required data was not available yet.",
-                JSON.parse(JSON.stringify(chartData)),
-                JSON.parse(JSON.stringify(chartOptions)));
+                JSON.parse(JSON.stringify({chartData:chartData, chartOptions:chartOptions})));
         }
     }
 }
