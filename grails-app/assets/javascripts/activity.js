@@ -1,4 +1,4 @@
-var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit, doNotStoreFacetFiltering, columnConfig) {
+var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit, doNotStoreFacetFiltering, columnConfig, facetConfig) {
     var self = this;
 
     var features, featureType = 'record', alaMap, results, radio;
@@ -23,7 +23,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.filter = ko.observable(false);
     self.version = ko.observable(fcConfig.version);
     self.columnConfig = columnConfig || [];
-    
+    self.facetConfig = facetConfig || [];
+    self.chartjsManager = ko.observable();
+
     self.toggleFilter = function () {
         self.filter(!self.filter())
     };
@@ -197,6 +199,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         self.activities(activities);
 
         self.filterViewModel.setFacets(data.facets || []);
+
+        var chartjsManagerViewModel = new ChartjsManagerViewModel();
+        chartjsManagerViewModel.setChartsFromFacets(self.filterViewModel.facets(), self.facetConfig);
+        self.chartjsManager(chartjsManagerViewModel);
 
         // only initialise the pagination if we are on the first page load
         if (page == 0) {

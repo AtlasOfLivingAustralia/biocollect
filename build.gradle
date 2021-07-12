@@ -15,7 +15,7 @@ buildscript {
 plugins {
     id 'war'
 }
-version "5.1.4"
+version "5.2-SNAPSHOT"
 
 group "au.org.ala"
 
@@ -131,6 +131,10 @@ assets {
     minifyJs = true
     minifyCss = true
 
+    minifyOptions = [
+            languageMode  : 'ES6', //languageIn
+            targetLanguage: 'ES5', // languageOut
+    ]
 }
 
 if (inplace) {
