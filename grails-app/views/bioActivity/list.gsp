@@ -62,6 +62,7 @@
     <asset:javascript src="enterBioActivityData.js"/>
     <asset:javascript src="projectActivityInfo.js"/>
     <asset:javascript src="facets.js"/>
+    <asset:javascript src="chartjsManager.js"/>
     <asset:javascript src="projects.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
