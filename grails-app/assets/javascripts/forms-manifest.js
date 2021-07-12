@@ -48,6 +48,7 @@
 //= require modals.js
 
 // myActivity
+//= require chartjsManager.js
 //= require activity.js
 
 // sites
