@@ -39,6 +39,7 @@
                     <li class="active"><a id="recordVis-tab" href="#recordVis" data-toggle="tab" >List</a></li>
                     <li class=""><a href="#mapVis" id="dataMapTab" data-bind="attr:{'data-toggle': activities().length > 0 ? 'tab' : ''}">Map</a></li>
                     <li class=""><a id="dataImageTab" href="#imageGallery" data-toggle="tab">Images</a></li>
+                    <li class=""><a id="chartGraphTab" href="#chartGraph" data-toggle="tab">Graphs</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="recordVis">
@@ -379,13 +380,18 @@
                         <span data-bind="visible: transients.totalPoints() > 0 && !transients.loadingMap() ">
                             <m:map height="800px" width="auto" id="recordOrActivityMap" />
                         </span>
-                        
                     </div>
+
                     <!-- ko stopBinding:true -->
                     <div class="tab-pane" id="imageGallery">
                         <g:render template="/shared/imageGallery"></g:render>
                     </div>
                     <!-- /ko -->
+
+                    <div class="tab-pane" id="chartGraph">
+                        <g:render template="/shared/chartGraphTab"></g:render>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -393,7 +399,9 @@
 </div>
 <!-- /ko -->
 
+<asset:javascript src="chartjs/chart.min.js"/>
 <asset:script type="text/javascript">
+
     var activitiesAndRecordsViewModel, alaMap, results;
     function initialiseData(view) {
         var user = '${user ? user as grails.converters.JSON : "{}"}',
@@ -406,7 +414,28 @@
 
         var columnConfig =${ hubConfig.getDataColumns(grailsApplication) as grails.converters.JSON}
 
-        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false}, columnConfig);
+        var facetConfig; 
+
+        if(view === 'allrecords') {
+            facetConfig = ${ hubConfig.getFacetConfigForPage('allRecords') };
+        } else if (view === 'myrecords') {
+            facetConfig = ${ hubConfig.getFacetConfigForPage('myRecords') };
+        } else if (view === 'project') {
+            facetConfig = ${ hubConfig.getFacetConfigForPage('project') };
+        } else if (view === 'projectrecords') {
+            facetConfig = ${ hubConfig.getFacetConfigForPage('projectrecords') };
+        } else if (view === 'myprojectrecords') {
+            facetConfig = ${ hubConfig.getFacetConfigForPage('myprojectrecords') };
+        } else if (view === 'userprojectactivityrecords') {
+            facetConfig = ${ hubConfig.getFacetConfigForPage('userprojectactivityrecords') };
+        } else {
+            console.warn("[Facets] Unrecognised view name '" + view + "', using allRecords facet config.");
+            facetConfig = ${ hubConfig.getFacetConfigForPage('allRecords') };
+        }
+
+        var hubConfig = ${ hubConfig }
+
+        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false}, columnConfig, facetConfig);
         ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('survey-all-activities-and-records-content'));
         $('#dataMapTab').on('shown',function(){
             activitiesAndRecordsViewModel.transients.alaMap.redraw();
@@ -444,7 +473,11 @@
         case 'image':
             tabId = '#dataImageTab';
             break;
+        case 'Graph':
+            tabId = '#chartGraphTab';
+            break;
     }
 
     tabId && $(tabId).tab('show');
+
 </asset:script>
