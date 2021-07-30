@@ -1,32 +1,35 @@
 <g:set var="modalName" value="${modalId?:'chooseMore'}"></g:set>
 <div class="row-fluid">
     <div class="span12">
+    <g:set var="userIsAdmin" value="${userIsAdmin || false}"></g:set>
         <!-- ko foreach: facets -->
             <!-- ko if: $data instanceof FacetViewModel -->
-            <div class="row-fluid" data-bind="visible: showTermPanel">
-                <button data-bind="click: toggleState" class="btn btn-block btn-text-left">
-                    &nbsp;
-                    <i data-bind="css: {'icon-plus': state() == 'Collapsed', 'icon-minus': state() == 'Expanded'}"></i>
-                    <strong data-bind="text: displayName"></strong>
-                    <a href="#" tabindex="-1" data-bind="visible: helpText, popover: {placement:'right', content: helpText }">
-                        <i class="icon-question-sign">&nbsp;</i>
-                    </a>
-                </button>
-                <div data-bind="slideVisible: state() == 'Expanded'" class="margin-top-10">
-                    <div class=" facet-display-height">
-                        <!-- ko foreach: terms -->
-                        <label class="control-label checkbox" data-bind="visible: !refined()">
-                            <input type="checkbox" data-bind="checked: checked" style="display: inline-block;">
-                            <span class="label-ellipsis" data-bind="text:displayName, click: filterNow, attr:{title: displayName}"></span>
-                        </label>
-                        <!-- /ko -->
+                <!-- ko if: !adminOnly() || ${userIsAdmin} -->
+                    <div class="row-fluid" data-bind="visible: showTermPanel">
+                        <button data-bind="click: toggleState" class="btn btn-block btn-text-left">
+                            &nbsp;
+                            <i data-bind="css: {'icon-plus': state() == 'Collapsed', 'icon-minus': state() == 'Expanded'}"></i>
+                            <strong data-bind="text: displayName"></strong>
+                            <a href="#" tabindex="-1" data-bind="visible: helpText, popover: {placement:'right', content: helpText }">
+                                <i class="icon-question-sign">&nbsp;</i>
+                            </a>
+                        </button>
+                        <div data-bind="slideVisible: state() == 'Expanded'" class="margin-top-10">
+                            <div class=" facet-display-height">
+                                <!-- ko foreach: terms -->
+                                <label class="control-label checkbox" data-bind="visible: !refined()">
+                                    <input type="checkbox" data-bind="checked: checked" style="display: inline-block;">
+                                    <span class="label-ellipsis" data-bind="text:displayName, click: filterNow, attr:{title: displayName}"></span>
+                                </label>
+                                <!-- /ko -->
+                            </div>
+                            <a href="#" role="button" class="moreFacets tooltips" data-toggle="modal" title="" data-target="#${modalName}"
+                            data-original-title="View full list of values" data-bind="click: loadMoreTerms, visible: showChooseMore()">
+                                <i class="fa fa-hand-o-right"></i> choose more...
+                            </a>
+                        </div>
                     </div>
-                    <a href="#" role="button" class="moreFacets tooltips" data-toggle="modal" title="" data-target="#${modalName}"
-                       data-original-title="View full list of values" data-bind="click: loadMoreTerms, visible: showChooseMore()">
-                        <i class="fa fa-hand-o-right"></i> choose more...
-                    </a>
-                </div>
-            </div>
+                <!-- /ko -->
             <!-- /ko -->
             <!-- ko if: $data instanceof DatePickerViewModel -->
             <div class="row-fluid">
