@@ -331,6 +331,40 @@
                 </div>
             </div>
 
+            <div class="row-fluid">
+                <div class="span4 text-right">
+                    <label class="control-label" for="adminVerification"><g:message code="project.survey.info.adminVerificationLbl"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.adminVerificationLbl"/>', content:'<g:message code="project.survey.info.adminVerification.help"/>'}">
+                            <i class="icon-question-sign"></i>
+                        </a>
+                        <span class="right-padding"></span>
+                    </label>
+                </div>
+
+                <div class="span8">
+                    <div class="controls">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <label class="checkbox"><g:message code="project.survey.info.adminVerification.allow"/>
+                                    <input id="adminVerification" type="checkbox" data-bind="checked: adminVerification">
+                                </label>
+                            </div>
+                            <div class="span6">
+                                <label class="checkbox"><g:message code="project.survey.info.adminVerification.showStatus"/>
+                                    <input id="showVerificationStatus" type="checkbox" data-bind="checked: showVerificationStatus">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="offset4 span8">
+                    <hr class="border-bottom-separator"/>
+                </div>
+            </div>
+
 
             <div class="row-fluid">
                 <div class="span4 text-right">
