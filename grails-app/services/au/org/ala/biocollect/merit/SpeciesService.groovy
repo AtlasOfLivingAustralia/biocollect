@@ -154,30 +154,14 @@ class SpeciesService {
 
     def searchSpeciesList(String sort = 'listName', Integer max = 100, Integer offset = 0, String guid = null, String order = "asc", String searchTerm = null) {
         def list
-        String url = "${grailsApplication.config.lists.baseURL}/ws/speciesList?sort=${sort}&max=${max}&offset=${offset}&order=${order}"
+        String url = "${grailsApplication.config.lists.baseURL}/ws/speciesList?sort=${sort}&max=${max}&offset=${offset}&order=${order}&q=${searchTerm?:''}"
 
-        if (!guid & !searchTerm) {
+        if (!guid) {
             list = webService.getJson(url)
         } else {
-            if (guid) {
-                // Search List by species in the list
-                url = "${url}&items=createAlias:items&items.guid=eq:${guid}"
-                list = webService.getJson(url)
-            }
-            if (searchTerm) {
-                // Search list by list name
-                def searchList = getAllSpeciesList()
-                def toLowerSearchTerm = searchTerm.toLowerCase()
-                // remove list that don't match the name
-                searchList.lists.removeAll { !(it.listName.toLowerCase() =~ /\A${toLowerSearchTerm}/) }
-                if (list) {
-                    list.lists.addAll(searchList.lists)
-                } else {
-                    list = searchList
-                }
-                list.lists.unique()
-                list.listCount = list.lists.size()
-            }
+            // Search List by species in the list
+            url = "${url}&items=createAlias:items&items.guid=eq:${guid}"
+            list = webService.getJson(url)
         }
 
         list
