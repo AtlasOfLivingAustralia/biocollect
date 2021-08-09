@@ -230,12 +230,8 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     };
 
     self.saveForm = function () {
-        return self.genericUpdate("form");
-    };
-
-    self.saveSpecies = function () {
         if(self.current().areSpeciesValid()) {
-            self.genericUpdate("species");
+            self.genericUpdate("form");
         } else {
             showAlert("All species field(s) must be configured before saving.", "alert-error", self.placeHolder);
         }
