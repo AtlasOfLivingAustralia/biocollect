@@ -107,7 +107,7 @@ dependencies {
 
     if (!inplace) {
         compile "org.grails.plugins:ala-map-plugin:3.0"
-        compile "org.grails.plugins:ecodata-client-plugin:3.0.5"
+        compile "org.grails.plugins:ecodata-client-plugin:3.1"
     }
 }
 
