@@ -3,6 +3,8 @@ package au.org.ala.biocollect
 import au.org.ala.biocollect.merit.CommonService
 import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.merit.WebService
+import org.apache.commons.io.FilenameUtils
+
 class DownloadController {
 
     WebService webService
@@ -36,6 +38,39 @@ class DownloadController {
             } else {
                 response.status = 404
             }
+        }
+    }
+
+    /***
+     * This method is used to read custom Js files under /data/scripts directory.
+     * @return
+     */
+    def getScriptFile() {
+        if (params.filename && params.hub) {
+            String filename = FilenameUtils.getName(params.filename)
+
+            if (filename != params.filename) {
+                response.status = 404
+                return
+            }
+
+            String path = "${grailsApplication.config.app.file.script.path}${File.separator}${params.hub}${File.separator}${params.filename}"
+
+            File file = new File(path)
+
+            if (!file.exists()) {
+                response.status = 404
+                return null
+            }
+            response.setContentType('text/javascript')
+            response.outputStream << new FileInputStream(file)
+            response.outputStream.flush()
+
+            return null
+
+        } else {
+            response.status = 400
+            render status:400, text: 'filename or hub is missing'
         }
     }
 }
