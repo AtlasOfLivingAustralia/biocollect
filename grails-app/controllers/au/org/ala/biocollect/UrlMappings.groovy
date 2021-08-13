@@ -110,6 +110,7 @@ class UrlMappings {
                 }
                 "/download/file"(controller: "download", action: [GET: "file"])
                 "/download/$id"(controller: "download", action: [GET: "downloadProjectDataFile"])
+                "/download/getScriptFile"(controller: "download", action: [GET: "getScriptFile"])
                 "500"(controller:'error', action:'response500')
                 "404"(controller:'error', action:'response404')
 
