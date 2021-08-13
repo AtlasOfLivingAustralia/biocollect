@@ -47,6 +47,8 @@ class DownloadController {
      */
     def getScriptFile() {
         if (params.filename && params.hub) {
+            println("Script name: " + params.filename)
+            println("Hub: " + params.hub)
             String filename = FilenameUtils.getName(params.filename)
 
             if (filename != params.filename) {
@@ -55,6 +57,7 @@ class DownloadController {
             }
 
             String path = "${grailsApplication.config.app.file.script.path}${File.separator}${params.hub}${File.separator}${params.filename}"
+            println("Script path: " + path)
 
             File file = new File(path)
 
