@@ -46,9 +46,10 @@ class DownloadController {
      * @return
      */
     def getScriptFile() {
-        if (params.filename && params.hub) {
-            println("Script name: " + params.filename)
-            println("Hub: " + params.hub)
+        if (params.filename && params.hub && params.model) {
+            log.debug("Script name: " + params.filename)
+            log.debug("Hub: " + params.hub)
+            log.debug("Model: " + params.model)
             String filename = FilenameUtils.getName(params.filename)
 
             if (filename != params.filename) {
@@ -56,8 +57,14 @@ class DownloadController {
                 return
             }
 
-            String path = "${grailsApplication.config.app.file.script.path}${File.separator}${params.hub}${File.separator}${params.filename}"
-            println("Script path: " + path)
+            def extension = FilenameUtils.getExtension(params.filename)?.toLowerCase()
+            if (extension && !grailsApplication.config.script.read.extensions.list.contains(extension)){
+                response.status = 404
+                return
+            }
+
+            String path = "${grailsApplication.config.app.file.script.path}${File.separator}${params.hub}${File.separator}${params.model}${File.separator}${params.filename}"
+            log.debug("Script path: " + path)
 
             File file = new File(path)
 
@@ -65,7 +72,10 @@ class DownloadController {
                 response.status = 404
                 return null
             }
-            response.setContentType('text/javascript')
+
+            if(extension == 'js' || extension == 'min.js') {
+                response.setContentType('text/javascript')
+            }
             response.outputStream << new FileInputStream(file)
             response.outputStream.flush()
 
@@ -73,7 +83,7 @@ class DownloadController {
 
         } else {
             response.status = 400
-            render status:400, text: 'filename or hub is missing'
+            render status:400, text: 'filename, hub or model is missing'
         }
     }
 }
