@@ -687,6 +687,9 @@ var ProjectActivity = function (params) {
         if (by == "form") {
             jsData = {};
             jsData.pActivityFormName = self.pActivityFormName();
+            jsData.speciesFields = $.map(self.speciesFields(), function (obj, i) {
+                return obj.asJson();
+            });
         }
         else if (by == "info") {
             var ignore = self.ignore.concat(['current',
@@ -697,13 +700,6 @@ var ProjectActivity = function (params) {
             });
             jsData = ko.mapping.toJS(self, {ignore: ignore});
             jsData.endDate = moment(self.endDate(), 'YYYY-MM-DDThh:mm:ssZ').isValid() ? self.endDate() : "";
-        }
-        else if (by == "species") {
-            jsData = {};
-
-            jsData.speciesFields = $.map(self.speciesFields(), function (obj, i) {
-                return obj.asJson();
-            });
         }
         else if (by == "sites") {
             jsData = {};

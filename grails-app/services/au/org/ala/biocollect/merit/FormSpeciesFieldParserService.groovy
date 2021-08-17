@@ -1,7 +1,10 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.ecodata.forms.ActivityFormService
+
 class FormSpeciesFieldParserService {
     MetadataService metadataService
+    ActivityFormService activityFormService
 
     /**
      * Get the list of species fields, for the specified survey, grouped by outputs
@@ -13,15 +16,7 @@ class FormSpeciesFieldParserService {
      * @return the list of species fields
      */
     Map getSpeciesFieldsForSurvey(String id) {
-        def model = [:]
-
-        // the activity meta-model
-        model.metaModel = metadataService.getActivityModel(id)
-        // the array of output models
-        model.outputModels = model.metaModel?.outputs?.collectEntries {
-            [it, metadataService.getDataModelFromOutputName(it)]
-        }
-
+        def model = activityFormService.getActivityAndOutputMetadata(id)
 
         def fields = []
 

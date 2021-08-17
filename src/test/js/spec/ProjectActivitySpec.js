@@ -46,10 +46,11 @@ describe("ProjectActivityViewModel Spec", function () {
         expect(pActivity.status()).toEqual("active");
     });
 
-    it("species asJS('species') should return a map with species and speciesFields", function () {
+    it("species asJS('form') should return a map with form name, species and speciesFields", function () {
 
         var params = {
             pActivity: {
+                pActivityFormName: "speciesForm1",
                 speciesFields: [
                     {
                         label: "species field 1",
@@ -76,7 +77,7 @@ describe("ProjectActivityViewModel Spec", function () {
         }
 
         var speciesVM = new ProjectActivity(params);
-        expect(speciesVM.asJS("species")).toEqual(params.pActivity);
+        expect(speciesVM.asJS("form")).toEqual(params.pActivity);
     });
 
     it("surveySiteOption change should clear selected sites and draw options", function () {

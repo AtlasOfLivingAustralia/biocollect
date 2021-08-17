@@ -205,7 +205,7 @@ class MetadataService {
 
 
     def clearEcodataCache() {
-        webService.get(grailsApplication.config.ecodata.service.url + "/admin/clearMetadataCache")
+        webService.doGet(grailsApplication.config.ecodata.service.url + "/admin/clearMetadataCache" , null)
     }
 
     def outputTypesList() {
