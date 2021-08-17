@@ -2,6 +2,7 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.*
 import au.org.ala.biocollect.merit.hub.HubSettings
+import au.org.ala.ecodata.forms.ActivityFormService
 import au.org.ala.web.AuthService
 import au.org.ala.web.UserDetails
 import grails.converters.JSON
@@ -33,6 +34,7 @@ class BioActivityController {
     SettingService settingService
     AuthService authService
     UtilService utilService
+    ActivityFormService activityFormService
 
     static int MAX_FLIMIT = 500
     static allowedMethods = ['bulkDelete': 'POST', bulkRelease: 'POST', bulkEmbargo: 'POST']
@@ -883,10 +885,8 @@ class BioActivityController {
     }
 
     def addOutputModel(model) {
-        model.metaModel = metadataService.getActivityModel(model.activity.type)
-        model.outputModels = model.metaModel?.outputs?.collectEntries {
-            [it, metadataService.getDataModelFromOutputName(it)]
-        }
+        model.putAll(activityFormService.getActivityAndOutputMetadata(model.activity.type))
+        model
     }
 
     def defaultData

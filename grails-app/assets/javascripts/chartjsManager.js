@@ -11,7 +11,14 @@ function ChartjsManagerViewModel() {
      * Whether to show the list of charts.
      */
     self.chartjsListShow = ko.computed(function () {
-        return self.chartjsList().length > 0;
+        var ifChartjsListShow = self.chartjsList().length > 0
+        if(ifChartjsListShow){
+            $('#chartGraphTab').show()
+        }
+        else {
+            $('#chartGraphTab').hide()
+        }
+        return ifChartjsListShow;
     });
 
     /**
