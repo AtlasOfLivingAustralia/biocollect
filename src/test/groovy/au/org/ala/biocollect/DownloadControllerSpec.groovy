@@ -28,8 +28,8 @@ class DownloadControllerSpec extends Specification {
         File validFile =  new File(modelPath, "validFile.js")
         validFile.createNewFile()
 
-        File jsonFile =  new File(modelPath, "validFile.json")
-        jsonFile.createNewFile()
+        File txtFile =  new File(modelPath, "validFile.txt")
+        txtFile.createNewFile()
 
         File privateFile = new File(temp, "privateFile.js")
         privateFile.createNewFile()
@@ -73,7 +73,7 @@ class DownloadControllerSpec extends Specification {
     void "Tyring to read a file with extension which are not allowed to read"() {
         when:
         params.hub = "tempHub"
-        params.filename = "validFile.json"
+        params.filename = "validFile.txt"
         params.model = "tempModel"
         controller.getScriptFile()
 
