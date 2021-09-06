@@ -5,6 +5,8 @@ import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.merit.WebService
 import org.apache.commons.io.FilenameUtils
 
+import java.nio.charset.StandardCharsets
+
 class DownloadController {
 
     WebService webService
@@ -75,6 +77,10 @@ class DownloadController {
 
             if(extension == 'js' || extension == 'min.js') {
                 response.setContentType('text/javascript')
+                response.setCharacterEncoding(StandardCharsets.UTF_8.toString())
+            }
+            else if(extension == 'png'){
+                response.setContentType('image/png')
             }
             response.outputStream << new FileInputStream(file)
             response.outputStream.flush()
