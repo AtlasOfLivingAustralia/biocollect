@@ -4,6 +4,8 @@ import grails.test.mixin.TestFor
 import org.apache.http.HttpStatus
 import spock.lang.Specification
 
+import java.nio.charset.StandardCharsets
+
 @TestFor(DownloadController)
 class DownloadControllerSpec extends Specification {
 
@@ -27,6 +29,9 @@ class DownloadControllerSpec extends Specification {
         // Setup three files, one that should be accessible, and others that should not
         File validFile =  new File(modelPath, "validFile.js")
         validFile.createNewFile()
+
+        File validImageFile =  new File(modelPath, "validPng.png")
+        validImageFile.createNewFile()
 
         File txtFile =  new File(modelPath, "validFile.txt")
         txtFile.createNewFile()
@@ -80,5 +85,30 @@ class DownloadControllerSpec extends Specification {
         then:
         new File(modelPath, params.filename).exists()
         response.status == HttpStatus.SC_NOT_FOUND
+    }
+
+    void "Test images"() {
+        when:
+        params.hub = "tempHub"
+        params.filename = "validPng.png"
+        params.model = "tempModel"
+        controller.getScriptFile()
+
+        then:
+        response.contentType == "image/png"
+        response.status == HttpStatus.SC_OK
+    }
+
+    void "Test character encoding"() {
+        when:
+        params.hub = "tempHub"
+        params.filename = "validFile.js"
+        params.model = "tempModel"
+        controller.getScriptFile()
+
+        then:
+        response.contentType == "text/javascript"
+        response.characterEncoding == StandardCharsets.UTF_8.toString()
+        response.status == HttpStatus.SC_OK
     }
 }
