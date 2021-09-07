@@ -31,7 +31,6 @@
 
     <footer class="site-footer" id="footer">
 
-
         <div class="footer-top">
             <div class="container">
                 <div class="row align-items-center">

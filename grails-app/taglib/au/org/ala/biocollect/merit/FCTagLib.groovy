@@ -439,16 +439,24 @@ class FCTagLib {
 
         def username = userService.currentUserDisplayName
         if (username) {
-            output = "<a id='logout-btn' href='${logoutUrl}" +
+            /*output = "<a id='logout-btn' href='${logoutUrl}" +
                     "?casUrl=${casLogoutUrl}" +
                     "&appUrl=${logoutReturnToUrl}' " +
                     "class='${cssClass}'><i class='${iconLogout}'></i> Logout</a>"
+             */
+            output = "<a id='logout-btn' href='${logoutUrl}" +
+                    "?casUrl=${casLogoutUrl}" +
+                    "&appUrl=${logoutReturnToUrl}' " +
+                    "class='btn btn-primary btn-sm' title='logout'>Logout</a>"
+
         } else {
             // currently logged out
-            output =  "<a href='${casLoginUrl}?service=${loginReturnToUrl}' class='${cssClass}'><span><i class='${iconLogin}'></i> Log in</span></a>"
+            //output =  "<a href='${casLoginUrl}?service=${loginReturnToUrl}' class='${cssClass}'><span><i class='${iconLogin}'></i> Log in</span></a>"
+            output =  "<a href='${casLoginUrl}?service=${loginReturnToUrl}' class='btn btn-primary btn-sm'><span> Login</span></a>"
         }
         out << output
     }
+
 
     def loginInNewWindow = { attr, body ->
         def casLoginUrl = grailsApplication.config.security.cas.loginUrl ?: "https://auth.ala.org.au/cas/login"
