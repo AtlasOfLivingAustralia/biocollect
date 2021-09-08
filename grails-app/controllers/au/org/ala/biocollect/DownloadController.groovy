@@ -44,7 +44,7 @@ class DownloadController {
     }
 
     /***
-     * This method is used to read custom Js files under /data/scripts directory.
+     * This method is used to read custom Js files under /data/biocollect/scripts directory.
      * @return
      */
     def getScriptFile() {
@@ -53,19 +53,21 @@ class DownloadController {
             log.debug("Hub: " + params.hub)
             log.debug("Model: " + params.model)
             String filename = FilenameUtils.getName(params.filename)
+            String hub = FilenameUtils.getName(params.hub)
+            String model = FilenameUtils.getName(params.model)
 
-            if (filename != params.filename) {
+            if (filename != params.filename || hub != params.hub || hub.contains(".") || model != params.model || model.contains(".")) {
                 response.status = 404
                 return
             }
 
-            def extension = FilenameUtils.getExtension(params.filename)?.toLowerCase()
+            def extension = FilenameUtils.getExtension(filename)?.toLowerCase()
             if (extension && !grailsApplication.config.script.read.extensions.list.contains(extension)){
                 response.status = 404
                 return
             }
 
-            String path = "${grailsApplication.config.app.file.script.path}${File.separator}${params.hub}${File.separator}${params.model}${File.separator}${params.filename}"
+            String path = "${grailsApplication.config.app.file.script.path}${File.separator}${hub}${File.separator}${model}${File.separator}${filename}"
             log.debug("Script path: " + path)
 
             File file = new File(path)

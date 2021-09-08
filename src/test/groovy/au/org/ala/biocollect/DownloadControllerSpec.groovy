@@ -13,6 +13,7 @@ class DownloadControllerSpec extends Specification {
     File temp
     File hubPath
     File modelPath
+    File configPath
 
     void setup() {
 
@@ -23,6 +24,9 @@ class DownloadControllerSpec extends Specification {
         hubPath.mkdir()
         modelPath = new File(hubPath, "tempModel")
         modelPath.mkdir()
+
+        configPath = new File(temp, "config")
+        configPath.mkdir()
 
         controller.grailsApplication.config.app.file.script.path = scriptsPath.getAbsolutePath()
 
@@ -38,6 +42,9 @@ class DownloadControllerSpec extends Specification {
 
         File privateFile = new File(temp, "privateFile.js")
         privateFile.createNewFile()
+
+        File privateFile2 = new File(configPath, "privateFile2.js")
+        privateFile2.createNewFile()
     }
 
     void "Files can be retrieved from the temporary scripts directory by filename"() {
@@ -71,7 +78,7 @@ class DownloadControllerSpec extends Specification {
         controller.getScriptFile()
 
         then:
-        new File(modelPath, params.filename).exists()
+        new File("${scriptsPath}${File.separator}${params.hub}${File.separator}${params.model}", params.filename).exists()
         response.status == HttpStatus.SC_NOT_FOUND
     }
 
@@ -83,7 +90,7 @@ class DownloadControllerSpec extends Specification {
         controller.getScriptFile()
 
         then:
-        new File(modelPath, params.filename).exists()
+        new File("${scriptsPath}${File.separator}${params.hub}${File.separator}${params.model}", params.filename).exists()
         response.status == HttpStatus.SC_NOT_FOUND
     }
 
@@ -110,5 +117,29 @@ class DownloadControllerSpec extends Specification {
         response.contentType == "text/javascript"
         response.characterEncoding == StandardCharsets.UTF_8.toString()
         response.status == HttpStatus.SC_OK
+    }
+
+    void "A file cannot be retrieved via hub property which is from outside the designated scripts directory"() {
+        when:
+        params.hub = ".."
+        params.filename = "privateFile2.js"
+        params.model = "config"
+        controller.getScriptFile()
+
+        then:
+        new File("${scriptsPath}${File.separator}${params.hub}${File.separator}${params.model}", params.filename).exists()
+        response.status == HttpStatus.SC_NOT_FOUND
+    }
+
+    void "A file cannot be retrieved via model property which is from outside the designated scripts directory"() {
+        when:
+        params.hub = "tempHub"
+        params.filename = "privateFile2.js"
+        params.model = "../../config"
+        controller.getScriptFile()
+
+        then:
+        new File("${scriptsPath}${File.separator}${params.hub}${File.separator}${params.model}", params.filename).exists()
+        response.status == HttpStatus.SC_NOT_FOUND
     }
 }
