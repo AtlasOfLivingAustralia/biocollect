@@ -4,7 +4,7 @@ import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.VocabService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
-import grails.test.mixin.TestFor
+import grails.testing.web.controllers.ControllerUnitTest
 import spock.lang.Specification
 
 import static org.apache.http.HttpStatus.SC_OK
@@ -12,8 +12,7 @@ import static org.apache.http.HttpStatus.SC_REQUEST_TIMEOUT
 /**
  * Specification for the ProjectController
  */
-@TestFor(ProjectController)
-class ProjectControllerSpec extends Specification {
+class ProjectControllerSpec extends Specification implements ControllerUnitTest<ProjectController> {
 
     def userServiceStub = Stub(UserService)
     def metadataServiceStub = Stub(MetadataService)

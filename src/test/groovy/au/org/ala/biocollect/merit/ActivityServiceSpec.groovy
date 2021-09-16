@@ -1,14 +1,17 @@
 package au.org.ala.biocollect.merit
 
-import au.org.ala.biocollect.merit.ActivityService
-import grails.test.mixin.TestFor
+import grails.testing.spring.AutowiredTest
 import spock.lang.Specification
 
 /**
  * Tests for the ActivityService
  */
-@TestFor(ActivityService)
-public class ActivityServiceSpec extends Specification {
+public class ActivityServiceSpec extends Specification implements AutowiredTest{
+    Closure doWithSpring() {{ ->
+        service ActivityService
+    }}
+
+    ActivityService service
 
     def "progress can be compared correctly"() {
 
