@@ -1,8 +1,8 @@
 package au.org.ala.biocollect.merit
 
-import grails.test.mixin.TestFor
 import grails.test.mixin.TestMixin
 import grails.test.mixin.services.ServiceUnitTestMixin
+import grails.testing.spring.AutowiredTest
 import spock.lang.Specification
 
 /*
@@ -22,17 +22,15 @@ import spock.lang.Specification
  * Created by Temi on 3/8/21.
  */
 
-@TestFor(SpeciesService)
-@TestMixin(ServiceUnitTestMixin)
-class SpeciesServiceSpec extends Specification {
+class SpeciesServiceSpec extends Specification implements AutowiredTest{
+    Closure doWithSpring() {{ ->
+        service SpeciesService
+    }}
+
+    SpeciesService service
     def setup() {
-        service.grailsApplication = [
-                "config": [
-                        "lists": [
-                                "baseURL": "xyz"
-                        ]
-                ]
-        ]
+        service.grailsApplication = grailsApplication
+        service.grailsApplication.config.lists.baseURL = "xyz"
 
         service.webService = Mock(WebService)
     }

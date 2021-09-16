@@ -1,11 +1,10 @@
 package au.org.ala.biocollect
 
-import grails.test.mixin.TestFor
+import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
 import spock.lang.Specification
 
-@TestFor(DownloadController)
-class DownloadControllerSpec extends Specification {
+class DownloadControllerSpec extends Specification implements ControllerUnitTest<DownloadController> {
 
     File scriptsPath
     File temp

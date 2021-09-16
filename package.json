@@ -6,14 +6,13 @@
   "directories": {
     "test": "test"
   },
-  "dependencies": {},
   "devDependencies": {
     "@metahub/karma-jasmine-jquery": "^2.0.1",
     "chromedriver": "^79.0.0",
     "jasmine-core": "^3.5.0",
     "jasmine-jquery": "^2.0.0",
     "jquery": "^3.4.1",
-    "karma": "^4.4.1",
+    "karma": "^6.3.4",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^2.0.1",
     "karma-firefox-launcher": "^1.2.0",
@@ -21,10 +20,10 @@
     "karma-jquery": "^0.2.4",
     "karma-remote-reporter": "^0.2.0",
     "knockout": "^3.5.1",
+    "leaflet": "0.7.7",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.27",
-    "leaflet": "0.7.7"
+    "moment-timezone": "^0.5.27"
   },
   "scripts": {
     "test": "karma start karma.conf.js",

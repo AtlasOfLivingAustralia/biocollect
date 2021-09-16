@@ -3,12 +3,15 @@ package au.org.ala.biocollect
 import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.merit.hub.HubSettings
-import grails.test.mixin.TestFor
+import grails.testing.spring.AutowiredTest
 import spock.lang.Specification
 
-@TestFor(MapService)
-class MapServiceSpec extends Specification {
-    def grailsApplication
+class MapServiceSpec extends Specification implements AutowiredTest{
+    Closure doWithSpring() {{ ->
+        service MapService
+    }}
+
+    MapService service
     def projectActivity
     def project
     def userService = Stub(UserService)
