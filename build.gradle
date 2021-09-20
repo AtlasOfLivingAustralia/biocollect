@@ -31,6 +31,7 @@ apply plugin: "org.grails.grails-gsp"
 if (Boolean.valueOf(enableClover)) {
     apply from: "${project.projectDir}/gradle/clover.gradle"
 }
+apply from: "${project.projectDir}/gradle/publish.gradle"
 
 repositories {
     mavenLocal()
