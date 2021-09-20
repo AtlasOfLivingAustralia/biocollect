@@ -33,6 +33,21 @@ New server side classes that are custom to Biocollect should be under the packag
 * [Use this guide to setup Biocollect in Intellij](setup.md)
 
 
+### Running Grails4 version
+Run Biocollect:
+```
+./gradlew bootRun
+```
+
+To run Biocollect with support for hot-reloading of changes to the ecodata-client-plugin, clone the ecodata-client-plugin repository into the same parent folder as the Biocollect project.
+Run Biocollect with additional parameters:
+```
+./gradlew :bootRun -Dgrails.run.active=true -Pinplace=true
+```
+
+Note the leading colon before the bootRun task - this is required as when inplace=true gradle is configured in a multi-project build configuration.
+
+
 ### Running Javascript automatic tests
 * Executing the tests requires node.js
 * It is recommended to install the Intellij node.js and karma plugins.
