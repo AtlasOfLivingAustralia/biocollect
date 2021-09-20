@@ -121,6 +121,36 @@ google:
 
 headerAndFooter:
   baseURL: "https://www.ala.org.au/commonui-bs2" #"https://www.ala.org.au/commonui-bs2-v2/commonui-bs2"
+  header:
+    - contentType: "content"
+      displayName: "Search"
+      href: "/project/projectFinder"
+    - contentType: "allrecords"
+      displayName: "All records"
+    - contentType: "content"
+      displayName: "Sites"
+      href: "/site/list"
+    - contentType: "newproject"
+      displayName: "New Project"
+    - contentType: "admin"
+      displayName: "Admin"
+    - contentType: "login"
+      displayName: "Logout"
+  footer:
+    - contentType: "content"
+      displayName: "Search"
+      href: "/project/projectFinder"
+    - contentType: "allrecords"
+      displayName: "All records"
+    - contentType: "content"
+      displayName: "Sites"
+      href: "/site/list"
+    - contentType: "newproject"
+      displayName: "New Project"
+    - contentType: "admin"
+      displayName: "Admin"
+    - contentType: "login"
+      displayName: "Logout"
 
 images:
   baseURL: "https://images.ala.org.au"
