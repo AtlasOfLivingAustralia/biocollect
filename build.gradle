@@ -28,10 +28,14 @@ apply plugin:"com.github.erdi.webdriver-binaries"
 apply plugin: "asset-pipeline"
 apply plugin: "org.grails.grails-gsp"
 
+if (Boolean.valueOf(enableClover)) {
+    apply from: "${project.projectDir}/gradle/clover.gradle"
+}
+
 repositories {
     mavenLocal()
     //for missing jai_core.jar
-    maven { url "https://mvnrepository.com" }
+   //maven { url "https://mvnrepository.com" }
     maven { url "http://maven.geotoolkit.org" }
     maven { url "https://repo.grails.org/grails/core" }
     maven { url "https://nexus.ala.org.au/content/groups/public/" }
@@ -43,7 +47,6 @@ def imgscalrVersion = "4.2"
 def httpmimeVersion = "4.2.1"
 def jtsVersion = "1.8"
 def geoToolsVersion = "11.2"
-boolean inplace = false // Set to true it needed only for development
 
 configurations {
     developmentOnly
@@ -120,8 +123,10 @@ dependencies {
     compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
     compile 'au.org.ala:ala-cas-client:2.5'
     runtime("org.springframework.boot:spring-boot-properties-migrator")
+    assets 'com.bertramlabs.plugins:less-asset-pipeline:3.3.1'
+    compile 'org.codehaus.groovy:groovy-dateutil:2.5.0'
 
-    if (!inplace) {
+    if (!Boolean.valueOf(inplace)) {
         compile "org.grails.plugins:ala-map-plugin:3.0"
         compile "org.grails.plugins:ecodata-client-plugin:4.0-SNAPSHOT"
     }
@@ -145,6 +150,7 @@ bootRun {
 bootJar {
     enabled = true
     classifier = 'exec'
+    launchScript()
 }
 
 assets {
@@ -157,7 +163,7 @@ assets {
     ]
 }
 
-if (inplace) {
+if (Boolean.valueOf(inplace)) {
     grails {
         exploded = true
         plugins {
