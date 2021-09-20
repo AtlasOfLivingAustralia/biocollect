@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>${site?.name?.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
@@ -48,8 +48,8 @@
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
             mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
-            },
-            here = "${createLink(controller: 'site', action: 'index', id: site.siteId)}";
+        },
+        here = "${createLink(controller: 'site', action: 'index', id: site.siteId)}";
     </asset:script>
     <asset:stylesheet src="sites-manifest.css"/>
     <asset:stylesheet src="leaflet-manifest.css"/>
@@ -61,76 +61,80 @@
 
 <body>
 <div class="container-fluid">
-    <div class="alert alert-block hide well" data-bind="slideVisible: message" id="message">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <div class="alert alert-info alert-dismissible" id="message" data-bind="slideVisible: message">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
         <span data-bind="text: message"></span>
     </div>
-    <div class="alert alert-info">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong><g:message code="site.details.headsUp"/></strong> <g:message code="site.details.editWarning"/> 
+
+    <div class="alert alert-info alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong><g:message code="site.details.headsUp"/></strong> <g:message code="site.details.editWarning"/>
     </div>
-    <ul class="breadcrumb pull-right margin-top-10">
-        <li>
+    <ul class="list-inline text-right">
+        <li class="list-inline-item btn-space">
             <g:set var="disabled">${(!user) ? "disabled='disabled' title='login required'" : ''}</g:set>
         %{--Favourite functionality only available to authenticated users --}%
             <g:if test="${!hubConfig?.systematic}">
-                <g:link action="edit" id="${site.siteId}" class="btn btn-small"><i
-                    class="icon-edit"></i> <g:message code="site.details.editSite"/> </g:link>
-                %{-- TODO - delete button could be for volunteers too but maybe have an alert before delete happens --}%
+                <g:link action="edit" id="${site.siteId}" class="btn btn-sm btn-primary-dark"><i
+                        class="fas fa-pencil-alt"></i> <g:message code="site.details.editSite"/></g:link>
+            %{-- TODO - delete button could be for volunteers too but maybe have an alert before delete happens --}%
                 <g:if test="${fc.userIsAlaAdmin()}">
-                    <div class="btn btn-small btn-danger" onclick="deleteSite()"><i
-                            class="fa fa-remove"></i> <g:message code="site.details.deleteSite"/> 
+                    <div class="btn btn-sm btn-danger" onclick="deleteSite()"><i
+                            class="fa fa-remove"></i> <g:message code="site.details.deleteSite"/>
                     </div>
                 </g:if>
             </g:if>
             <g:if test="${hubConfig?.systematic}">
-                <g:link action="editSystematic" id="${site.siteId}" class="btn btn-small"><i
-                    class="icon-edit"></i> <g:message code="site.details.editSystematic"/> </g:link>
+                <g:link action="editSystematic" id="${site.siteId}" class="btn btn-sm btn-dark"><i
+                        class="fas fa-pencil-alt"></i> <g:message code="site.details.editSystematic"/></g:link>
             </g:if>
             <g:if test="${site?.extent?.geometry?.pid}">
                 <a href="${grailsApplication.config.spatial.layersUrl}/shape/shp/${site.extent.geometry.pid}"
-                   class="btn btn-small">
-                    <i class="icon-download"></i>
+                   class="btn btn-sm btn-dark">
+                    <i class="fas fa-download"></i>
                     <g:message code="site.details.downloadShp"/>
                 </a>
                 <a href="${grailsApplication.config.spatial.baseURL}/?pid=${site.extent.geometry.pid}"
-                   class="btn btn-small"><i class="fa fa-map"></i> <g:message code="site.details.viewInSpatialPortal"/></a>
+                   class="btn btn-sm btn-dark"><i class="fa fa-map"></i> <g:message
+                        code="site.details.viewInSpatialPortal"/></a>
             </g:if>
         </li>
     </ul>
-    <div class="row-fluid space-after">
-        <div class="span6"><!-- left block of header -->
+
+    <div class="row">
+        <div class="col-12 col-md-6"><!-- left block of header -->
             <g:if test="${flash.errorMessage || flash.message}">
-                <div>
-                    <div class="alert alert-error">
-                        <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-                        ${flash.errorMessage ?: flash.message}
-                    </div>
+                <div class="alert alert-error alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert"
+                            onclick="$('.alert').fadeOut();" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    ${flash.errorMessage ?: flash.message}
                 </div>
             </g:if>
-            <div>
-                <div class="clearfix">
-                    <h1 class="pull-left"><strong>${site?.name?.encodeAsHTML()}</strong></h1>
-                </div>
-                <g:if test="${site.description?.encodeAsHTML()}">
-                    <dl>
-                        <dt><h3><g:message code="site.details.siteDescription"/></h3></dt>
-                        <dd>${site.description?.encodeAsHTML()}</dd>
-                    </dl>
-                </g:if>
-            </div>
+            <h1>${site?.name?.encodeAsHTML()}</h1>
+            <g:if test="${site.description?.encodeAsHTML()}">
+                <dl class="row">
+                    <dt class="col-3"><h3><g:message code="site.details.siteDescription"/></h3></dt>
+                    <dd class="col-9">${site.description?.encodeAsHTML()}</dd>
+                </dl>
+            </g:if>
 
             <h3><g:message code="site.details.siteMetadata"/></h3>
             <g:if test="${!hubConfig?.systematic}">
-                <dl class="dl-horizontal">
-                    <dt><g:message code="site.details.externalId"/></dt>
-                    <dd>${site.externalId ?: 'Not specified'}</dd>
-                    <dt><g:message code="site.details.type"/></dt>
-                    <dd>${site.type ?: 'Not specified'}</dd>
-                    <dt><g:message code="site.details.catchment"/></dt>
-                    <dd>${site.catchment ?: 'Not specified'}</dd>
-                    <dt><g:message code="site.details.area"/></dt>
-                    <dd>
+                <dl class="row">
+                    <dt class="col-3"><g:message code="site.details.externalId"/></dt>
+                    <dd class="col-9">${site.externalId ?: 'Not specified'}</dd>
+                    <dt class="col-3"><g:message code="site.details.type"/></dt>
+                    <dd class="col-9">${site.type ?: 'Not specified'}</dd>
+                    <dt class="col-3"><g:message code="site.details.catchment"/></dt>
+                    <dd class="col-9">${site.catchment ?: 'Not specified'}</dd>
+                    <dt class="col-3"><g:message code="site.details.area"/></dt>
+                    <dd class="col-9">
                         <g:if test="${site?.extent?.geometry?.area}">
                             ${site.extent.geometry.area} <g:message code="site.details.area.sqKm"/>
                         </g:if>
@@ -139,15 +143,19 @@
                         </g:else>
                     </dd>
                     <g:if test="${site.extent?.geometry}">
-                        <fc:siteFacet site="${site}" label="State/territory" facet="state" showPreview="${true}" trimSize="${80}"/>
-                        <fc:siteFacet label="Local government area" site="${site}" facet="lga" showPreview="${true}" trimSize="${80}"/>
+                        <fc:siteFacet site="${site}" label="State/territory" facet="state" showPreview="${true}"
+                                      trimSize="${80}"/>
+                        <fc:siteFacet label="Local government area" site="${site}" facet="lga" showPreview="${true}"
+                                      trimSize="${80}"/>
                         <fc:siteFacet label="NRM" site="${site}" facet="nrm" showPreview="${true}" trimSize="${80}"/>
-                        <dt><g:message code="site.metadata.locality"/></dt>
-                        <dd>${site.extent.geometry.locality ?: 'Not specified'}</dd>
-                        <dt data-toggle="tooltip" title="NVIS major vegetation group"><g:message code="site.metadata.nvisGroup"/></dt>
-                        <dd>${site.extent.geometry.mvg ?: 'Not specified'}</dd>
-                        <dt data-toggle="tooltip" title="NVIS major vegetation subgroup"><g:message code="site.metadata.nvisSubgroup"/></dt>
-                        <dd>${site.extent.geometry.mvs ?: 'Not specified'}</dd>
+                        <dt class="col-3"><g:message code="site.metadata.locality"/></dt>
+                        <dd class="col-9">${site.extent.geometry.locality ?: 'Not specified'}</dd>
+                        <dt class="col-3" data-toggle="tooltip" title="NVIS major vegetation group"><g:message
+                                code="site.metadata.nvisGroup"/></dt>
+                        <dd class="col-9">${site.extent.geometry.mvg ?: 'Not specified'}</dd>
+                        <dt class="col-3" data-toggle="tooltip" title="NVIS major vegetation subgroup"><g:message
+                                code="site.metadata.nvisSubgroup"/></dt>
+                        <dd class="col-9">${site.extent.geometry.mvs ?: 'Not specified'}</dd>
                     </g:if>
                     <g:if test="${site.notes}">
                         <dt><g:message code="site.details.notes"/></dt>
@@ -156,24 +164,24 @@
                 </dl>
             </g:if>
             <g:if test="${hubConfig?.systematic}">
-                <dl class="dl-horizontal">
-                    <dt><g:message code="site.transect.title"/></dt>
+                <dl class="row">
+                    <dt class="col-3"><g:message code="site.transect.title"/></dt>
                     <g:each in="${site.transectParts}">
-                        <dd>${it.name} - ${it?.habitat} - ${it?.detail} </dd>
+                        <dd class="col-9">${it.name} - ${it?.habitat} - ${it?.detail}</dd>
                     </g:each>
 
                     <g:if test="${site.notes}">
-                        <dt><g:message code="site.details.notes"/></dt>
-                        <dd>${site.notes?.encodeAsHTML()}</dd>
+                        <dt class="col-3"><g:message code="site.details.notes"/></dt>
+                        <dd class="col-9">${site.notes?.encodeAsHTML()}</dd>
                     </g:if>
                 </dl>
             </g:if>
             <script>
-                $('.dl-horizontal').tooltip()
+                $('dt[data-toggle="tooltip"]').tooltip()
             </script>
         </div>
 
-        <div class="span6">
+        <div class="col-12 col-md-6">
             <div id="siteNotDefined" class="hide pull-right">
                 <span class="label label-important"><g:message code="site.details.noGeoreference"/></span>
             </div>
@@ -182,16 +190,20 @@
     </div>
 
     <h3><g:message code="site.associated.title"/>:</h3>
+
     <div id="detailsLinkedToSite">
-        <ul class="nav nav-tabs" id="myTab">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
             <g:if test="${site.projects}">
-                <li><a href="#siteProjects" data-toggle="tab"><g:message code="g.projects"/></a></li>
+                <li class="nav-item"><a class="nav-link" href="#siteProjects" data-toggle="tab"><g:message
+                        code="g.projects"/></a></li>
             </g:if>
-            <li class="active"><a href="#siteActivities" data-toggle="tab"><g:message code="site.details.associated.surveysAndActivities"/></a></li>
-            <li><a href="#sitePhotopoints" data-toggle="tab"><g:message code="site.details.photoPoints"/></a></li>
+            <li class="nav-item"><a class="nav-link active" href="#siteActivities" data-toggle="tab"><g:message
+                    code="site.details.associated.surveysAndActivities"/></a></li>
+            <li class="nav-item"><a class="nav-link" href="#sitePhotopoints" data-toggle="tab"><g:message
+                    code="site.details.photoPoints"/></a></li>
         </ul>
 
-        <div class="tab-content">
+        <div class="tab-content mt-3">
             <!-- ko stopBinding: true -->
             <div class="tab-pane" id="sitePhotopoints">
                 <g:render template="poiGallery"
@@ -201,7 +213,7 @@
             <div class="tab-pane" id="siteProjects">
                 <g:if test="${site.projects}">
                     <div>
-                        <p> <g:message code="site.details.associated.projects"/> -</p>
+                        <p><g:message code="site.details.associated.projects"/> -</p>
                         <ol>
                             <g:each in="${site.projects}" var="p" status="count">
                                 <li>
@@ -216,34 +228,39 @@
 
             <div class="tab-pane active" id="siteActivities">
                 <!-- ko if: activities().length == 0 -->
-                <div class="row-fluid">
-                    <h4 class="text-left margin-bottom-five">
-                        <!-- ko if: $root.searchTerm() != "" || $root.selectedFilters().length > 0 -->
-                        <g:message code="site.details.noResults"/>
-                        <!-- /ko -->
-                    </h4>
+                <div class="row">
+                    <div class="col-12">
+                        <h4 class="text-left margin-bottom-five">
+                            <!-- ko if: $root.searchTerm() != "" || $root.selectedFilters().length > 0 -->
+                            <g:message code="site.details.noResults"/>
+                            <!-- /ko -->
+                        </h4>
+                    </div>
                 </div>
                 <!-- /ko -->
 
                 <!-- ko if: activities().length > 0 -->
 
-                <div class="alert alert-info hide" id="downloadStartedMsg"><i
-                        class="fa fa-spin fa-spinner">&nbsp;&nbsp;</i><g:message code="site.details.downloading"/>...</div>
+                <div class="alert alert-info hide" id="downloadStartedMsg">
+                    <i class="fas fa-spinner"></i>
+                    <g:message code="site.details.downloading"/>...
+                </div>
 
-                <div class="row-fluid">
-                    <div class="span9">
-                        <h3 class="text-left margin-bottom-2"><g:message code="g.found"/> <span data-bind="text: total()"></span> <g:message code="g.records"/>
+                <div class="row">
+                    <div class="col-12 col-md-9">
+                        <h3 class="text-left margin-bottom-2"><g:message code="g.found"/> <span
+                                data-bind="text: total()"></span> <g:message code="g.records"/>
                         </h3>
                     </div>
                 </div>
-                <g:render template="/shared/pagination"/>
-                <!-- ko foreach : activities -->
-                <div class="row-fluid">
-                    <div class="span12">
-                        <div data-bind="attr:{class: embargoed() ? 'searchResultSection locked' : 'searchResultSection'}">
-
-                            <div class="span9 text-left">
-                                <div>
+                <g:render template="/shared/pagination" model="${[bs: 4]}"/>
+                <div class="records-list row d-flex flex-wrap mt-4 mt-md-4 mb-3">
+                    <!-- ko foreach : activities -->
+                    <div class="col-12 col-md-3 d-flex">
+                        <div class="record flex-grow-1">
+                            <div class="row"
+                                 data-bind="attr:{class: embargoed() ? 'searchResultSection locked' : 'searchResultSection'}">
+                                <div class="col-12 pl-sm-1">
                                     <h4>
                                         <!-- ko if: embargoed() -->
                                         <a href="#" class="helphover"
@@ -256,91 +273,66 @@
                                             <span data-bind="text: name"></span>
                                         </a>
                                     </h4>
-                                </div>
-
-                                <div class="row-fluid">
-                                    <div class="span12">
-                                        <div class="span7">
-                                            <div>
-                                                <h6><g:message code="site.details.projectName"/>: <a
-                                                        data-bind="attr:{'href': projectUrl()}"><span
-                                                            data-bind="text: projectName"></span></a></h6>
-                                            </div>
-
-                                            <div>
-                                                <h6><g:message code="site.details.submittedBy"/>: <span
-                                                        data-bind="text: ownerName"></span> on <span
-                                                        data-bind="text: lastUpdated.formattedDate"></span>
-                                                </h6>
-                                            </div>
-                                        </div>
-
-                                        <div class="span5">
-                                            <!-- ko if : records().length > 0 -->
-                                            <div>
-                                                <h6>
-                                                    <g:message code="g.species"/> :
-                                                    <!-- ko foreach : records -->
-                                                    <a target="_blank"
-                                                       data-bind="visible: guid, attr:{href: $root.transients.bieUrl + '/species/' + guid()}">
-                                                        <span data-bind="text: $index()+1"></span>. <span
-                                                            data-bind="text: name"></span>
-                                                    </a>
-                                                    <span data-bind="visible: !guid()">
-                                                        <span data-bind="text: $index()+1"></span>. <span
-                                                            data-bind="text: name"></span>
-                                                    </span>
-                                                    <span data-bind="if: $parent.records().length != $index()+1">
-                                                        <b>|</b>
-                                                    </span>
-                                                    <!-- /ko -->
-                                                </h6>
-                                            </div>
+                                    <ul class="detail-list">
+                                        <li>
+                                            <span class="label"><g:message code="site.details.projectName"/>:</span>
+                                            <a data-bind="attr:{'href': projectUrl()}" rel="noopener">
+                                                <span data-bind="text: projectName"></span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <span class="label"><g:message code="site.details.submittedBy"/>:</span>
+                                            <span data-bind="text: ownerName"></span> on
+                                            <span data-bind="text: lastUpdated.formattedDate"></span>
+                                        </li>
+                                        <li data-bind="if: records().length > 0">
+                                            <span class="label"><g:message code="g.species"/>:</span>
+                                            <!-- ko foreach : records -->
+                                            <a target="_blank"
+                                               data-bind="visible: guid, attr:{href: $root.transients.bieUrl + '/species/' + guid()}, text: name">
+                                            </a>
+                                            <span data-bind="visible: !guid(), text: name"></span>
+                                            <span data-bind="if: $parent.records().length != $index()+1">
+                                                <b>|</b>
+                                            </span>
                                             <!-- /ko -->
+                                        </li>
+                                    </ul>
 
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="span3 text-right">
-
-                                <!-- looks awkward to show view eye icon by itself. Users can view the survey by clicking the survey title.-->
-                                <div class="padding-top-0" data-bind="if: showCrud()">
-                                    <span class="margin-left-1">
-                                        <a data-bind="attr:{'href': transients.viewUrl}"><i
-                                                class="fa fa-eye" title="View survey"></i></a>
-                                    </span>
-                                    <span class="margin-left-1" data-bind="visible: showAdd()">
-                                        <a data-bind="attr:{'href': transients.addUrl}"><i
-                                                class="fa fa-plus" title="Add survey"></i></a>
-                                    </span>
-                                    <span class="margin-left-1">
-                                        <a data-bind="attr:{'href': transients.editUrl}"><i
-                                                class="fa fa-edit" title="Edit survey"></i></a>
-                                    </span>
-                                    <span class="margin-left-1" data-bind="visible: false">
-                                        <a href="#" data-bind="click: $parent.remove"><i
-                                                class="fa fa-remove" title="Delete survey"></i></a>
-                                    </span>
+                                    <!-- ko if: showCrud() -->
+                                    <a class="btn btn-primary-dark btn-sm"
+                                       data-bind="attr:{'href': transients.viewUrl}">
+                                        <i class="far fa-eye"></i>
+                                        View
+                                    </a>
+                                    <a class="btn btn-dark btn-sm" data-bind="visible: showAdd(), attr:{'href': transients.addUrl}">
+                                        <i class="fa fa-plus"></i>
+                                        Add
+                                    </a>
+                                    <a class="btn btn-dark btn-sm" data-bind="attr:{'href': transients.editUrl}">
+                                        <i class="fa fa-edit"></i>
+                                        Edit
+                                    </a>
+                                    <a class="btn btn-sm btn-danger" href="#" data-bind="click: $parent.remove">
+                                        <i class="fa fa-remove" title="Delete survey"></i>
+                                        Delete
+                                    </a>
+                                    <!-- /ko -->
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- /ko -->
                 </div>
-                <hr/>
-                <!-- /ko -->
-                <div class="margin-top-2"></div>
-                <g:render template="/shared/pagination"/>
-                <!-- ko if : activities().length > 0 -->
-                <div class="row-fluid">
-                    <div class="span12 pull-right">
-                        <div class="span12 text-right">
-                            <div><small class="text-right"><span class="fa fa-lock"></span> <g:message code="site.details.accessRestrictedTip"/>
-                            </small></div>
-                        </div>
 
+                <div class="margin-top-2"></div>
+                <g:render template="/shared/pagination" model="${[bs: 4]}"/>
+                <!-- ko if : activities().length > 0 -->
+                <div class="row">
+                    <div class="col-12 text-right">
+                        <small>
+                            <span class="fa fa-lock"></span> <g:message code="site.details.accessRestrictedTip"/>
+                        </small>
                     </div>
                 </div>
                 <!-- /ko -->
@@ -349,11 +341,16 @@
             </div>
         </div>
     </div>
-    <small class="pull-right"><em><g:message code="site.details.createdOn"/> <fc:formatDateString date="${site.dateCreated}"
-                                                                  inputFormat="yyyy-MM-dd'T'HH:mm:ss'Z'"
-                                                                  format="dd-MM-yyyy"/>
-    <g:message code="site.details.lastUpdated"/> <fc:formatDateString date="${site.lastUpdated}" inputFormat="yyyy-MM-dd'T'HH:mm:ss'Z'"
-                                             format="dd-MM-yyyy"/></em></small>
+    <small class="text-right">
+        <em>
+            <g:message code="site.details.createdOn"/> <fc:formatDateString date="${site.dateCreated}"
+                                                                            inputFormat="yyyy-MM-dd'T'HH:mm:ss'Z'"
+                                                                            format="dd-MM-yyyy"/>
+            <g:message code="site.details.lastUpdated"/> <fc:formatDateString date="${site.lastUpdated}"
+                                                                              inputFormat="yyyy-MM-dd'T'HH:mm:ss'Z'"
+                                                                              format="dd-MM-yyyy"/>
+        </em>
+    </small>
     <g:if env="development">
         <div class="expandable-debug">
             <hr/>
@@ -376,8 +373,8 @@
     </g:if>
 </div>
 <asset:script type="text/javascript">
-        $(function(){
-            var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
+    $(function(){
+        var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
             var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
 

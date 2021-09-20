@@ -70,3 +70,14 @@
 .clear-line-height{
     line-height: 20px;
 }
+
+.projectLogo {
+    width: 200px;
+    height: 150px;
+    line-height: 146px;
+    overflow: hidden;
+    padding: 3px;
+    text-align: center;
+    border: 1px solid #e3e3e3;
+    background-color: white;
+}
