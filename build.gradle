@@ -162,6 +162,9 @@ assets {
             languageMode  : 'ES6', //languageIn
             targetLanguage: 'ES5', // languageOut
     ]
+
+    includes = []
+    excludes = ['**/*.less']
 }
 
 if (Boolean.valueOf(inplace)) {
