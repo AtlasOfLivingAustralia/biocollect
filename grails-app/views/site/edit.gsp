@@ -20,23 +20,6 @@
         <meta name="breadcrumb" content="Edit"/>
     </g:else>
 
-%{--    <style type="text/css">--}%
-%{--    legend {--}%
-%{--        border: none;--}%
-%{--        margin-bottom: 5px;--}%
-%{--    }--}%
-%{--    h1 input[type="text"] {--}%
-%{--        color: #333a3f;--}%
-%{--        font-size: 28px;--}%
-%{--        /*line-height: 40px;*/--}%
-%{--        font-weight: bold;--}%
-%{--        font-family: Arial, Helvetica, sans-serif;--}%
-%{--        height: 42px;--}%
-%{--    }--}%
-%{--    .no-border { border-top: none !important; }--}%
-%{--  </style>--}%
-%{--    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>--}%
-%{--    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>--}%
     <asset:script type="text/javascript">
     var fcConfig = {
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -83,7 +66,7 @@
             <g:render template="siteDetails" model="${[showLine: true]}"/>
             <div class="row mt-3">
                 <div class="form-actions col-12">
-                    <button type="button" id="save" class="btn btn-primary">Save changes</button>
+                    <button type="button" id="save" class="btn btn-primary-dark">Save changes</button>
                     <button type="button" id="cancel" class="btn btn-dark">Cancel</button>
                 </div>
             </div>

@@ -1,21 +1,17 @@
 <bc:koLoading>
 <div class="row">
     <div class="col-12">
-        <!-- ko if: !isSitesEmpty() -->
-        <div class="text-right">Image sort order :
+        <div class="text-right" data-bind="visible: !isSitesEmpty()">Image sort order :
             <div class="btn-group btn-group-toggle" data-toggle="buttons" role="group"
                  aria-label="<g:message code="label.order.image"/>">
-                <label class="btn btn-sm btn-secondary active" data-value="asc"
-                       data-bind="event:{click: setSortDirection}">
-                    <input type="radio" name="order" id="option1"> <g:message code="label.order.asc"/>
+                <label class="btn btn-sm btn-outline-dark">
+                    <input type="radio" name="order" id="ascending" value="asc" data-bind="event: {change: setSortDirection}"> <g:message code="label.order.asc"/>
                 </label>
-                <label class="btn btn-sm btn-secondary" data-value="asc"
-                       data-bind="event:{click: setSortDirection}">
-                    <input type="radio" name="order" id="option2" checked> <g:message code="label.order.desc"/>
+                <label class="btn btn-sm btn-outline-dark active">
+                    <input type="radio" name="order" id="descending" value="desc" data-bind="event: {change: setSortDirection}" checked> <g:message code="label.order.desc"/>
                 </label>
             </div>
-    </div>
-        <!-- /ko -->
+        </div>
         <div>
             <!-- ko foreach: sites -->
             <!-- ko if: !isPhotoPointsEmpty() -->
