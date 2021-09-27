@@ -8,6 +8,7 @@ buildscript {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:2.0"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.3.1"
+        classpath 'com.bertramlabs.plugins:less-asset-pipeline:3.3.1'
         classpath 'com.bmuschko:gradle-clover-plugin:3.0.1'
         classpath 'org.grails.plugins:quartz:2.0.13'
     }
@@ -124,7 +125,7 @@ dependencies {
     compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
     compile 'au.org.ala:ala-cas-client:2.5'
     runtime("org.springframework.boot:spring-boot-properties-migrator")
-    assets 'com.bertramlabs.plugins:less-asset-pipeline:3.3.1'
+    runtime 'com.bertramlabs.plugins:less-asset-pipeline:3.3.1'
     compile 'org.codehaus.groovy:groovy-dateutil:2.5.0'
 
     if (!Boolean.valueOf(inplace)) {
@@ -164,7 +165,7 @@ assets {
     ]
 
     includes = []
-    excludes = ['**/*.less']
+    excludes = ['**/*.less','**/build/hintrc.js', 'hintrc.unminified.js', '**/spec/spec.hintrc.js', 'spec.hintrc.unminified.js']
 }
 
 if (Boolean.valueOf(inplace)) {
