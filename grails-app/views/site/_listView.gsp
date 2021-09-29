@@ -1,25 +1,61 @@
 <bc:koLoading>
-    <!-- ko foreach: sites -->
-    <div data-bind="visible: name">
-        <div class="pull-right margin-right-20">
-            <a data-bind="click:addSiteToFavourites,visible: showAddToFavourites" class="margin-left-20"><i class="fa fa-star-o" title="Add to favourites"></i></a>
-            <a data-bind="click:removeSiteFromFavourites,visible: showRemoveFromFavourites" class="margin-left-10"><i class="fa fa-star" title="Remove from favourites"></i></a>
-            <a data-bind="attr:{href:getSiteUrl()}" class="margin-left-10"><i class="fa fa-eye" title="View site"></i></a>
-            <a data-bind="attr:{href:getSiteEditUrl()},visible: canEdit" class="margin-left-10"><i class="fa fa-edit" title="Edit site"></i></a>
-            <a href="#" data-bind="visible: canDelete, click: deleteSite" class="margin-left-10"><i class="fa fa-remove" title="Delete site"></i></a>
+    <div class="row">
+        <!-- ko foreach: sites -->
+        %{--    --}%
+        <div class="col-12 col-lg-6 d-flex" data-bind="visible: name">
+            <div class="record flex-grow-1">
+                <div class="row">
+                    <div class="col-12 pl-sm-1">
+                        <h4><a data-bind="attr:{href:getSiteUrl()}, text: name"></a></h4>
+                        <ul class="detail-list">
+                            <li data-bind="visible: description"><span class="label"><g:message
+                                    code="label.description"/>:</span> <span data-bind="text: description"></span></li>
+                            <li data-bind="visible: type"><span class="label"><g:message
+                                    code="label.site.type"/>:</span> Echinda CSI</li>
+                            <li data-bind="visible: numberOfPoi() != undefined"><span class="label"><g:message
+                                    code="label.poi"/>:</span> <span data-bind="text: numberOfPoi"></span></li>
+                            <li data-bind="visible: numberOfProjects() != undefined"><span class="label"><g:message
+                                    code="label.project"/>:</span> <span data-bind="text: numberOfProjects"></span></li>
+                        </ul>
+
+                        <div class="btn-space">
+                            <a class="btn btn-sm btn-primary-dark" role="button" title="View Record"
+                               data-bind="attr:{href:getSiteUrl()}">
+                                <i class="far fa-eye"></i>
+                                <g:message code="label.view"/>
+                            </a>
+                            <a class="btn btn-sm btn-dark" role="button" title="View Record"
+                               data-bind="attr:{href:getSiteEditUrl()},visible: canEdit">
+                                <i class="fas fa-pencil-alt"></i>
+                                <g:message code="label.edit"/>
+                            </a>
+                            <a class="btn btn-sm btn-dark" role="button"
+                               title="<g:message code="title.add.favourites"/>"
+                               data-bind="click:addSiteToFavourites,visible: showAddToFavourites">
+                                <i class="far fa-solid fa-heart"></i>
+                                <g:message code="label.add.favourite"/>
+                            </a>
+                            <a class="btn btn-sm btn-dark" role="button"
+                               title="<g:message code="title.remove.favourites"/>"
+                               data-bind="click:removeSiteFromFavourites,visible: showRemoveFromFavourites">
+                                <i class="fas fa-heart-broken"></i>
+                                <g:message code="label.remove.favourite"/>
+                            </a>
+                            <a class="btn btn-sm btn-dark" role="button" title="<g:message code="title.delete"/>"
+                               data-bind="visible: canDelete, click: deleteSite">
+                                <i class="far fa-trash-alt"></i>
+                                <g:message code="label.delete"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <h4><a data-bind="attr:{href:getSiteUrl()}, text: name"></a></h4>
-        <div class="margin-left-20">
-            <div data-bind="visible: description"><span data-bind="text: description"></span></div>
-            <div data-bind="visible: type"><span>Site type:</span> <span data-bind="text: type"></span></div>
-            <div data-bind="visible: numberOfPoi() != undefined"><span>Number of POI:</span> <span data-bind="text: numberOfPoi"></span><br></div>
-            <div data-bind="visible: numberOfProjects() != undefined"><span>Number of associated projects:</span> <span data-bind="text: numberOfProjects"></span></div>
+        <!-- /ko -->
+        <!-- ko if: sites().length == 0 -->
+        <div class="col-12 col-lg-6 d-flex mt-3">
+            <h4 data-bind="visible: sitesLoaded()">No sites found</h4>
         </div>
-        <hr>
+        <!-- /ko -->
     </div>
-    <!-- /ko -->
-    <!-- ko if: sites().length == 0 -->
-    <h4 data-bind="visible: !sitesLoaded()"><span class="fa fa-spin fa-spinner"></span>&nbsp;Sites Loading...</h4>
-    <h4 data-bind="visible: sitesLoaded()">No sites found</h4>
-    <!-- /ko -->
 </bc:koLoading>

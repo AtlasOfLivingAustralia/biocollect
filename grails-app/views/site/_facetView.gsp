@@ -1,22 +1,21 @@
-<div class="row-fluid">
-    <div class="span12">
-        <!-- ko foreach:facets -->
-        <div class="row-fluid" data-bind="visible: terms().length">
-            <button data-bind="click: toggle" class="btn btn-block btn-text-left">
-                &nbsp;
-                <i data-bind="css: {'icon-plus': !show(), 'icon-minus': show}"></i>
-                <strong data-bind="text: metadata.displayName"></strong>
-            </button>
-            <div data-bind="slideVisible: show" class="facet-window">
-                <!-- ko foreach: terms -->
-                <label class="control-label checkbox" data-bind="visible:count, attr:{title:displayName}">
-                    <input type="checkbox" data-bind="checked: checked"/>
-                    <span data-bind="click: $root.addFacetTerm, attr: {title:displayName}" class="label-ellipsis"> <!-- ko text: displayName --> <!-- /ko --> (<span data-bind="text:count"></span>)</span>
-                </label>
-                <!-- /ko -->
-            </div>
+<div class="filter-group">
+    <!-- ko foreach:facets -->
+    <!-- ko if: terms().length -->
+    <button class="accordion-header collapsed" type="button" data-toggle="collapse" data-bind="text: metadata.displayName, attr: { 'data-target': '#' + name()}" aria-expanded="false" aria-controls="types">
+
+    </button>
+    <div class="accordion-body collapse" data-bind="attr: { id: name}">
+        <!-- ko foreach: terms -->
+%{--        <div class="custom-checkbox">--}%
+%{--            <input type="checkbox" name="types" data-bind="checked: checked, attr: {id: term}">--}%
+%{--            <label class="label-ellipsis" data-bind="click: $root.addFacetTerm, attr: {title:displayName, for: term}"><!-- ko text: displayName --> <!-- /ko --> (<span data-bind="text:count"></span>)</label>--}%
+%{--        </div>--}%
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" data-bind="checked: checked, attr: {id: term}">
+            <label class="form-check-label label-ellipsis" data-bind="click: $root.addFacetTerm, attr: {title:displayName, for: term}"><!-- ko text: displayName --> <!-- /ko --> (<span data-bind="text:count"></span>)</label>
         </div>
-        &nbsp;
         <!-- /ko -->
     </div>
+    <!-- /ko -->
+    <!-- /ko -->
 </div>

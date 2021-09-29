@@ -31,7 +31,7 @@ class FCTagLib {
         def forAttr = id ? " for='${id}'" : ''
         def label = attrs.remove 'label'
         if (label) {
-            out << """<label class="${labelClass ?: 'control-label'}" ${forAttr}>${label}</label>"""
+            out << """<label class="${labelClass ?: ''}" ${forAttr}>${label}</label>"""
         }
         def value = attrs.remove 'value'
         //println "${id}: ${value?.toString()}: ${value?.getClass()}"
@@ -39,9 +39,9 @@ class FCTagLib {
         def classes = attrs.remove('class')
         if (outerClass) {
             if (classes) {
-                classes += ' span12'
+                classes += ' form-control'
             } else {
-                classes = 'span12'
+                classes = 'form-control'
             }
         }
         log.trace "data-bind = " + attrs['data-bind']
@@ -72,14 +72,14 @@ class FCTagLib {
         def id = attrs.id ?: attrs.name
         def label = attrs.remove 'label'
         if (label) {
-            out << """<label class="control-label" for="${id}">${label}</label>"""
+            out << """<label for="${id}">${label}</label>"""
         }
         def rows = attrs.rows ?: 3
         def value = attrs.remove 'value'
         if (!value || value == 'null' || value?.toString() == 'null') { value = ""}
 
         //out << "<div class='controls'>"
-        out << "<textarea name='${id}' rows='${rows}' " << org.github.bootstrap.Attribute.outputAttributes(attrs, out) << ">${value}</textarea>"
+        out << "<textarea class=\"form-control\" name='${id}' rows='${rows}' " << org.github.bootstrap.Attribute.outputAttributes(attrs, out) << ">${value}</textarea>"
         //out << "</div>"
 
         if (outerClass) {
@@ -200,7 +200,7 @@ class FCTagLib {
                 anchorAttrs << ['data-container':attrs.container]
             }
             mb.a(anchorAttrs) {
-                i(class:'icon-question-sign') {
+                i(class:'fas fa-question-circle') {
                     mkp.yieldUnescaped("&nbsp;")
                 }
             }
@@ -738,7 +738,7 @@ class FCTagLib {
         Object facetValue = geom[facetName]
         if (facetValue) {
             String label = attrs.label ?: g.message(code:'label.'+facetName+'Facet', default:facetName)
-            mb.dt(label)
+            mb.dt(class: 'col-3', label)
 
             if (!(facetValue instanceof List)) {
                 facetValue = [facetValue]
@@ -760,7 +760,7 @@ class FCTagLib {
                     def idName =  "${facetName}Facet"
                     preview = details.substring(0, trimSize - 1) + " ..."
 
-                    mb.dd() {
+                    mb.dd(class: 'col-9') {
                         mb.div(id: idName) {
                             mb.div(class: "facet-data collapse in") {
                                 mkp.yield(preview)
@@ -780,10 +780,10 @@ class FCTagLib {
                     }
                 }
                 else
-                    mb.dd(details)
+                    mb.dd(class: 'col-9', details )
             }
             else
-                mb.dd(details)
+                mb.dd(class: 'col-9', details)
         }
 
         mb
