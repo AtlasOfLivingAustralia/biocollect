@@ -1,10 +1,12 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.OrganisationService
+import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.VocabService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
 import grails.testing.web.controllers.ControllerUnitTest
+import org.apache.http.HttpStatus
 import spock.lang.Specification
 
 import static org.apache.http.HttpStatus.SC_OK
@@ -29,6 +31,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
     def documentServiceStub = Stub(DocumentService)
     def settingServiceStub = Stub(SettingService)
     def collectoryServiceStub = Stub(CollectoryService)
+    def projectActivityServiceStub = Stub(ProjectActivityService)
 
     void setup() {
         controller.userService = userServiceStub
@@ -46,6 +49,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.documentService = documentServiceStub
         controller.settingService = settingServiceStub
         controller.collectoryService = collectoryServiceStub
+        controller.projectActivityService = projectActivityServiceStub
         auditServiceStub.getAuditMessagesForProject(_) >> []
         metadataServiceStub.activitiesModel() >> [activities: []]
         metadataServiceStub.getActivityModel(*_) >> [type:'Activity']
@@ -134,6 +138,57 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         model.projectContent.about.visible == true
         model.projectContent.documents.visible == true
         model.projectContent.activities.visible == true
+        model.projectContent.admin.visible == false
+    }
+
+    void "get project - no project"() {
+        setup:
+        def projectId = 'project1'
+        userServiceStub.getUser() >> null
+        projectServiceStub.isCitizenScience(_) >> true
+        projectServiceStub.get(projectId, _, _, _) >> [error:'Error']
+
+        when:
+        controller.index(projectId)
+
+        then:
+        response.status == HttpStatus.SC_MOVED_TEMPORARILY
+    }
+
+    void "get project - merit project"() {
+        setup:
+        def projectId = 'project1'
+        userServiceStub.getUser() >> null
+        projectServiceStub.isCitizenScience(_) >> true
+        projectServiceStub.get(projectId, _, _, _) >> [isMERIT:true]
+
+        when:
+        controller.index(projectId)
+
+        then:
+        response.status == HttpStatus.SC_MOVED_TEMPORARILY
+    }
+
+    void "get project - EcoScience project"() {
+        setup:
+        def projectId = 'project1'
+        def siteId = 'site1'
+        def citizenScience = false
+        def external = true
+        userServiceStub.getUser() >> null
+        projectServiceStub.isCitizenScience(_) >> false
+        projectServiceStub.isEcoScience(_) >> true
+        projectServiceStub.get(projectId, _, _, _) >>
+                [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:'survey', isExternal:external]
+
+        when:
+        controller.index(projectId)
+
+        then:
+        view == '/project/csProjectTemplate'
+        model.projectContent.about.visible == true
+        model.projectContent.documents.visible == true
+        model.projectContent.activities.visible == false
         model.projectContent.admin.visible == false
     }
 
@@ -287,6 +342,77 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         then:
         model.pActivityForms == [[name:'1', images:null], [name:'2', images:null], [name:'3', images:null]]
+    }
+
+    void "get survey of the projects"() {
+        setup:
+        def projectId = 'project1'
+        def siteId = 'site1'
+        def citizenScience = true
+        def external = false
+        projectServiceStub.get(projectId, _, _, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE, isExternal:external]
+        projectActivityServiceStub.getAllByProject(projectId, "docs", null) >> [[name:'PActivity 1']]
+
+        when:
+        controller.listSurveys(projectId)
+
+        then:
+        response.text == '[{"name":"PActivity 1"}]'
+    }
+
+    void "get new Project Intros"() {
+        setup:
+        def projectId = 'project1'
+        def siteId = 'site1'
+        def citizenScience = true
+        def external = false
+        def project = [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, citizenScience:citizenScience, projectType:ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE, isExternal:external]
+        projectServiceStub.get(projectId, _) >> project
+        settingServiceStub.getSettingText(SettingPageType.NEW_CITIZEN_SCIENCE_PROJECT_INTRO) >> "test"
+
+        when:
+        def result = controller.newProjectIntro(projectId)
+
+        then:
+        response.status == SC_OK
+        result.project == project
+        result.text == 'test'
+    }
+
+    void "get new Project Intros - error"() {
+        setup:
+        def projectId = 'project1'
+        def siteId = 'site1'
+        def citizenScience = true
+        def external = false
+        projectServiceStub.get(projectId, _) >> null
+
+        when:
+        controller.newProjectIntro(projectId)
+
+        then:
+        response.forwardedUrl == '/project/list'
+    }
+
+    void "get my Citizen Science Projects"() {
+        setup:
+        userServiceStub.getUser() >> [userId:'1234', userName:"test", displayName:"test"]
+        SettingService.setHubConfig(new HubSettings([defaultProgram:'my program', defaultFacetQuery:"isCitizenScience:true"]))
+
+        when:
+        params.tag = true
+        controller.myProjects()
+
+        then:
+        view == "/project/projectFinder"
+        model.user.userId == "1234"
+        model.user.userName == "test"
+        model.user.displayName == "test"
+        model.showTag == true
+        model.downloadLink == "/ws/project/search?initiator=biocollect&download=true"
+        model.isUserPage == true
+        model.showProjectDownloadButton == false
+        model.isCitizenScience == true
     }
 
     private def stubProjectAdmin(userId, projectId) {

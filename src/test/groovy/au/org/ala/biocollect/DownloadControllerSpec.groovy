@@ -3,6 +3,9 @@ package au.org.ala.biocollect
 import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
 import spock.lang.Specification
+import au.org.ala.biocollect.merit.WebService
+
+import java.nio.charset.StandardCharsets
 
 class DownloadControllerSpec extends Specification implements ControllerUnitTest<DownloadController> {
 
@@ -10,8 +13,13 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
     File temp
     File hubPath
     File modelPath
+    File configPath
+    def webServiceStub = Mock(WebService)
 
     void setup() {
+
+        controller.webService = webServiceStub
+        controller.grailsApplication.config.ecodata.service.url = "http://test"
 
         temp = File.createTempDir("tmp", "")
         scriptsPath = new File(temp, "scripts")
@@ -20,6 +28,9 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         hubPath.mkdir()
         modelPath = new File(hubPath, "tempModel")
         modelPath.mkdir()
+
+        controller.grailsApplication.config.app.file.script.path = scriptsPath.getAbsolutePath()
+        controller.grailsApplication.config.upload.images.path = modelPath
 
         configPath = new File(temp, "config")
         configPath.mkdir()
@@ -137,5 +148,95 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         then:
         new File("${scriptsPath}${File.separator}${params.hub}${File.separator}${params.model}", params.filename).exists()
         response.status == HttpStatus.SC_NOT_FOUND
+    }
+    void "Check mandatory params"() {
+        when:
+        params.filename = "validFile.js"
+        params.model = "tempModel"
+        controller.getScriptFile()
+
+        then:
+        response.status == HttpStatus.SC_BAD_REQUEST
+        response.text == "filename, hub or model is missing"
+
+        when:
+        params.hub = "tempHub"
+        params.model = "tempModel"
+        controller.getScriptFile()
+
+        then:
+        response.status == HttpStatus.SC_BAD_REQUEST
+        response.text == "filename, hub or model is missing"
+
+        when:
+        params.hub = "tempHub"
+        params.filename = "validFile.js"
+        controller.getScriptFile()
+
+        then:
+        response.status == HttpStatus.SC_BAD_REQUEST
+        response.text == "filename, hub or model is missing"
+    }
+
+    void "Download Project Data File - missing mandatory"() {
+        when:
+        params.id = null
+        controller.downloadProjectDataFile()
+
+        then:
+        response.status == HttpStatus.SC_BAD_REQUEST
+        response.text == "A download ID is required"
+    }
+
+    void "Download Project Data File"() {
+        when:
+        params.id = '1'
+        params.fileExtension = 'zip'
+        controller.downloadProjectDataFile()
+
+        then:
+        1 * webServiceStub.proxyGetRequest(response, 'http://test/search/downloadProjectDataFile/1?fileExtension=zip', true, true)
+        response.status == HttpStatus.SC_OK
+    }
+
+    void "Get File - using id"() {
+        when:
+        params.id = '1'
+        controller.file()
+
+        then:
+        1 * webServiceStub.proxyGetRequest(response, 'http://test/document/1/file', true, true)
+        response.status == HttpStatus.SC_OK
+    }
+
+    void "Get File - using filename - invalid file"() {
+        when:
+        params.filename = 'invalidFile.js'
+        controller.file()
+
+        then:
+        response.status == HttpStatus.SC_NOT_FOUND
+    }
+
+    void "Get File - using filename - valid file"() {
+        when:
+        params.filename = 'validFile.js'
+        controller.file()
+
+        then:
+        response.status == HttpStatus.SC_OK
+        response.getHeader('Content-Disposition') == "Attachment;Filename=\"validFile.js\""
+    }
+
+    void "Get File - using filename - valid file - force download"() {
+        when:
+        params.filename = 'validFile.js'
+        params.forceDownload = true
+        controller.file()
+
+        then:
+        response.status == HttpStatus.SC_OK
+        response.getHeader('Content-Disposition') == "Attachment;Filename=\"validFile.js\""
+        response.contentType == "application/octet-stream"
     }
 }

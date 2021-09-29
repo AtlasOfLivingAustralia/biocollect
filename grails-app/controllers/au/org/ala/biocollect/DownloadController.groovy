@@ -80,6 +80,9 @@ class DownloadController {
                 response.setContentType('text/javascript')
                 response.setCharacterEncoding(StandardCharsets.UTF_8.toString())
             }
+            else if(extension == 'json') {
+                response.setCharacterEncoding(StandardCharsets.UTF_8.toString())
+            }
             else if(extension == 'png'){
                 response.setContentType('image/png')
             }
