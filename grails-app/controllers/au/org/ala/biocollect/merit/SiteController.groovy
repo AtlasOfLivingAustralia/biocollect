@@ -560,7 +560,7 @@ class SiteController {
         if (!site || site.error) {
             md = [error: 'no such site']
         } else {
-            md = siteService.getLocati onMetadata(site)
+            md = siteService.getLocationMetadata(site)
             if (!md) {
                 md = [error: 'no metadata found']
             }
