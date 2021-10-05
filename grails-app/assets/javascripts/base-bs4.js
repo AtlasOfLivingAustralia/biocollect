@@ -5,6 +5,6 @@
 //= require jquery-ui/1.9.2/jquery-ui-1.9.2.custom.js
 //= require jquery.appear/jquery.appear.js
 //= require bootstrap4/js/bootstrap.bundle.min.js
-// require bootstrap-combobox/bootstrap-combobox.js
+//= require bootstrap-combobox/bootstrap-combobox.js
 //= require ala-map-no-jquery-us.js
 //= require fieldcapture-application.js
