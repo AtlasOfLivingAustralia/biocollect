@@ -8,7 +8,7 @@
         <title>Print | ${activity.type} | <g:message code="g.biocollect"/></title>
     </g:if>
     <g:else>
-        <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
+        <meta name="layout" content="${mobile ? 'mobile' : 'bs4'}"/>
         <title>View | ${activity.type} | <g:message code="g.biocollect"/></title>
     </g:else>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
@@ -58,7 +58,7 @@
         here = document.location.href;
     </asset:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterBioActivityData.js"/>
 </head>
