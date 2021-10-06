@@ -4,13 +4,13 @@
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
         <g:if test="${!mobile}">
-            <div class="row-fluid">
+            <div class="row">
                 %{--page title--}%
-                <div class="span4">
+                <div class="col-12 col-md-4">
                     <h2>${title}</h2>
                 </div>
                 %{-- quick links --}%
-                <div class="span8">
+                <div class="col-12 col-md-8">
                     <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
                 </div>
                 %{--quick links END--}%
