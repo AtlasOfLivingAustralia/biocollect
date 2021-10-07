@@ -3,12 +3,10 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title><g:message code="hub.projectFinder"/> | ${hubConfig.title}</title>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
-    <asset:stylesheet src="projects-manifest.css" />
-    <asset:stylesheet src="project-finder.css" />
+    <asset:stylesheet src="project-finder-manifest.css"/>
+%{--    <asset:stylesheet src="project-finder.css" />--}%
     <asset:script type="text/javascript">
     var fcConfig = {
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -66,40 +64,46 @@
     <asset:javascript src="projects-manifest.js" />
     <asset:javascript src="project-finder.js" />
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <style>
-        %{-- Added to this page only to make image slider full page width --}%
-        #main-content, #bannerHubContainer{
-            padding-right: 0px;
-            padding-left: 0px;
-        }
-    </style>
 </head>
 <body>
-<div id="headerBannerSpace" class="container-fluid">
-    <div class="row-fluid">
-        <g:render template="/shared/projectFinderQueryInput"/>
-    </div>
-</div>
-
-<g:render template="/shared/bannerHub"/>
-
-<div id="wrapper" class="content container-fluid">
-    <div class="row-fluid">
-        <div class="span6" id="heading">
-            <h1 class="pull-left">${hubConfig.title}</h1>
-        </div>
-        <div class="span6">
-            <g:if test="${!hubConfig.content?.hideProjectFinderHelpButtons}">
-            <div class="pull-right margin-top-10 margin-bottom-10">
-                <button class="btn btn-gettingstarted btn-info" onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}'"><i class="icon-info-sign icon-white"></i> Getting started</button>
-                <button class="btn btn-whatisthis btn-info" onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}'"><i class="icon-question-sign icon-white"></i> What is this?</button>
+<content tag="pagefinderbuttons">
+    <g:if test="${isUserPage}">
+        <button id="newPortal" type="button" class="btn btn-primary-dark"><g:message
+                code="project.citizenScience.portalLink"/></button>
+    </g:if>
+    <g:else>
+        <g:if test="${!hubConfig.content?.hideProjectFinderHelpButtons}">
+            <button class="btn btn-primary-dark btn-gettingstarted"
+                    onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}'">
+                <i class="fas fa-info"></i> Getting started</button>
+            <button class="btn btn-primary-dark btn-whatisthis"
+                    onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}'">
+                <i class="fas fa-question"></i> What is this?</button>
+        </g:if>
+    </g:else>
+</content>
+<section class="text-center section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-10 offset-0 offset-md-1" id="heading">
+                <h1>
+                    ${hubConfig.title}
+                </h1>
             </div>
-            </g:if>
         </div>
     </div>
+</section>
+<section id="catalogueSection">
+    <div id="project-finder-container">
+        <div class="container-fluid show expander projects-container">
+            <g:render template="/shared/projectFinderResultSummary" />
+            <g:render template="/shared/projectFinderResultPanel"/>
+        </div>
+        <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch: false]}"/>
+        <!-- /#filters -->
+    </div>
+</section>
 
-    <g:render template="/shared/projectFinder" model="${[doNotShowSearchBtn: true]}"/>
-</div>
 <asset:script type="text/javascript">
     if (!amplify.store('pt-view-state')) {
     <g:if test="${hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.defaultView == 'grid'}">

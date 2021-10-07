@@ -96,6 +96,7 @@
 %{--    }--}%
 %{--    </style>--}%
     <g:render template="/shared/conditionalLazyLoad"/>
+    <asset:stylesheet src="project-finder-manifest.css"/>
 %{--    <asset:stylesheet src="base.css"/>--}%
 %{--    <asset:stylesheet src="facets-filter-view.css"/>--}%
 %{--    <asset:stylesheet src="projects-manifest.css"/>--}%
@@ -108,7 +109,7 @@
 
 <g:render template="banner" model="${[organisation: organisation]}"/>
 
-<div id="organisationDetails" class="container">
+<div id="organisationDetails" class="container-fluid">
 
     <g:render template="/shared/flashScopeMessage"/>
 
