@@ -1,3 +1,4 @@
+<g:render template="/shared/pagination" model="[bs:4, classes:'mb-3']"/>
 <div id="pt-table">
     <bc:koLoading>
         <div class="project-results">
@@ -51,3 +52,4 @@
         </div>
     </bc:koLoading>
 </div>
+<g:render template="/shared/pagination" model="[bs:4]"/>

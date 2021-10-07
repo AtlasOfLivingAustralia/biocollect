@@ -2,7 +2,6 @@
  * Created by Temi Varghese on 22/10/15.
  */
 //= require lz-string-1.4.4/lz-string.min.js
-//= require button-toggle-events.js
 //= require facets.js
 // leaflet
 //= require leaflet-manifest.js
