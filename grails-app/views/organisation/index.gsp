@@ -1,19 +1,20 @@
 <%@ page import="grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
 <g:set var="mapService" bean="mapService"></g:set>
+<g:set var="organisationService" bean="organisationService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>${organisation.name.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
     <meta name="breadcrumb" content="${organisation.name}"/>
-
+    <meta name="bannerURL" content="${organisationService.getMainImageURL(organisation.documents)}"/>
     <g:set var="loadPermissionsUrl"
            value="${createLink(controller: 'organisation', action: 'getMembersForOrganisation', id: organisation.organisationId)}"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
+%{--    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>--}%
+%{--    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>--}%
     <asset:script type="text/javascript">
         var fcConfig = {
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -81,51 +82,47 @@
             mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
         };
     </asset:script>
-    <style type="text/css">
-    #projectList th {
-        white-space: normal;
-    }
+%{--    <style type="text/css">--}%
+%{--    #projectList th {--}%
+%{--        white-space: normal;--}%
+%{--    }--}%
 
-    .admin-action {
-        width: 7em;
-    }
+%{--    .admin-action {--}%
+%{--        width: 7em;--}%
+%{--    }--}%
 
-    .smallFont {
-        margin: 5px 0;
-    }
-    </style>
+%{--    .smallFont {--}%
+%{--        margin: 5px 0;--}%
+%{--    }--}%
+%{--    </style>--}%
     <g:render template="/shared/conditionalLazyLoad"/>
-    <asset:stylesheet src="base.css"/>
-    <asset:stylesheet src="organisation.css"/>
-    <asset:stylesheet src="facets-filter-view.css"/>
-    <asset:stylesheet src="projects-manifest.css"/>
-    <asset:stylesheet src="project-finder.css"/>
-    <asset:javascript src="common.js"/>
-    <asset:javascript src="organisation.js"/>
-    <asset:javascript src="projectActivityInfo.js"/>
-    <asset:javascript src="facets.js"/>
-    <asset:javascript src="projects.js"/>
-    <asset:javascript src="project-activity-manifest.js"/>
-    <asset:javascript src="projects-manifest.js"/>
-    <asset:javascript src="project-finder.js"/>
+%{--    <asset:stylesheet src="base.css"/>--}%
+%{--    <asset:stylesheet src="facets-filter-view.css"/>--}%
+%{--    <asset:stylesheet src="projects-manifest.css"/>--}%
+%{--    <asset:stylesheet src="project-finder.css"/>--}%
+    <asset:javascript src="org-index-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 
 <body>
 
-<g:render template="banner" model="${[imageUrl: asset.assetPath(src: 'filetypes')]}"/>
+<g:render template="banner" model="${[organisation: organisation]}"/>
 
-<div id="organisationDetails" class="container-fluid">
+<div id="organisationDetails" class="container">
 
     <g:render template="/shared/flashScopeMessage"/>
 
-    <div class="row-fluid" id="heading">
-        <ul class="nav nav-tabs" data-tabs="tabs">
+    <content tag="tab">
+        <ul class="nav nav-tabs" data-tabs="tabs" role="tablist">
             <fc:tabList tabs="${content}"/>
         </ul>
+    </content>
 
-        <div class="tab-content">
-            <fc:tabContent tabs="${content}"/>
+    <div class="row" id="heading">
+        <div class="col-12">
+            <div class="tab-content">
+                <fc:tabContent tabs="${content}"/>
+            </div>
         </div>
     </div>
 
@@ -193,7 +190,7 @@
         populatePermissionsTable(fcConfig.organisationMembersUrl);
     </g:if>
 
-    initialiseData("allrecords");
+    // initialiseData("allrecords");
 });
 $(function() {
     var projectFinder = new ProjectFinder({enablePartialSearch: ${hubConfig.content.enablePartialSearch ?: false}});

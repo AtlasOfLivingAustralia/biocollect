@@ -1,0 +1,72 @@
+/* todo needed? */
+.output-block .required label, .validationEngineContainer .required label {
+    position: relative;
+}
+
+.output-block .required label:after, .output-block th.required:after, .validationEngineContainer .required label:after {
+    content: "*";
+    font-weight: bold;
+    color: red;
+}
+
+.ie .output-block .required label:after, .ie .output-block th.required:after, .ie .validationEngineContainer .required label:after {
+    font-size: 1em;
+}
+
+/* end todo */
+
+/* project finder */
+.scistarter-logo-pf {
+    right: 0;
+    top: 0;
+    padding-right: 15px;
+}
+
+.project-logo {
+    width: 200px;
+    height: 150px;
+    line-height: 146px;
+    overflow: hidden;
+    padding: 3px;
+    text-align: center;
+    border: 1px solid #e3e3e3;
+    background-color: white;
+}
+
+.image-logo {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.wide {
+    width: 100%;
+    height: auto;
+}
+
+.tall {
+    width: auto;
+    height: 100%;
+}
+
+.logo-small {
+    width: 25px;
+    margin: 0 2px;
+}
+
+.logo-icon {
+    width: 16px;
+    max-width: 16px;
+    height: 16px;
+    max-height: 16px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.project-tag {
+    background: orange;
+    color: white;
+    padding: 4px;
+    white-space: nowrap;
+}
+
+/* end project finder */

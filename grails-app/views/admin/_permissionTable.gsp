@@ -1,23 +1,23 @@
 
-<div class="row-fluid">
-    <div class="span6">
-        <table class="table table-condensed" id="existingMembersTable" style="">
-            <thead><tr><th width="10%">User&nbsp;Id</th><th>User&nbsp;Name</th><th width="15%">Role</th><th width="5%">&nbsp;</th><th width="5%">&nbsp;</th></tr></thead>
+<div class="row">
+    <div class="col-6">
+        <table class="table" id="existingMembersTable">
+            <thead><tr><th>User&nbsp;Id</th><th>User&nbsp;Name</th><th>Role</th><th>&nbsp;</th><th>&nbsp;</th></tr></thead>
             <tbody class="membersTbody">
-            <tr class="hide">
+            <tr class="d-none">
                 <td class="memUserId"></td>
                 <td class="memUserName"></td>
-                <td class="memUserRole"><span style="white-space: nowrap">&nbsp;</span><g:render template="/admin/userRolesSelect" model="[roles:roles, selectClass:'hide']"/></td>
-                <td><a class="memEditRole icon-edit tooltips" href="" title="edit this user and role combination"></a></td>
-                <td><a class="memRemoveRole icon-remove tooltips" href="" title="remove this user and role combination"></a></td>
+                <td class="memUserRole"><span style="white-space: nowrap">&nbsp;</span><g:render template="/admin/userRolesSelect" model="[roles:roles, selectClass:'d-none']"/></td>
+                <td><a class="memEditRole tooltips" href="" title="edit this user and role combination"><i class="fa fa-pencil-alt"></i> </a></td>
+                <td><a class="memRemoveRole tooltips" href="" title="remove this user and role combination"><i class="fas fa-minus"></i></a></td>
             </tr>
             <tr id="spinnerRow"><td colspan="5">loading data... <g:img uri="${asset.assetPath(src:'spinner.gif')}" id="spinner2" class="spinner" alt="spinner icon"/></td></tr>
-            <tr id="messageRow" class="hide"><td colspan="5">No project members set</td></tr>
+            <tr id="messageRow" class="d-none"><td colspan="5">No project members set</td></tr>
             </tbody>
         </table>
     </div>
-    <div class="span5">
-        <div id="formStatus" class="hide alert alert-success">
+    <div class="col-6">
+        <div id="formStatus" class="d-none alert alert-success">
             <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
             <span></span>
         </div>
@@ -45,8 +45,8 @@
                     if (data.length > 0) {
                         $("#messageRow").hide();
                         $.each(data, function(i, el) {
-                            var $clone = $('.membersTbody tr.hide').clone();
-                            $clone.removeClass("hide");
+                            var $clone = $('.membersTbody tr.d-none').clone();
+                            $clone.removeClass("d-none");
                             $clone.addClass("cloned");
                             $clone.data("userid", el.userId);
                             $clone.data("role", el.role);
@@ -141,12 +141,12 @@
                 // hide/show the role select for editting role
                 $('.membersTbody').on("click", ".memEditRole", function(e) {
                     e.preventDefault();
-                    if ($(this).parent().parent().find("span").is(':visible')) {
-                        $(this).parent().parent().find("span").hide();
-                        $(this).parent().parent().find("select").fadeIn();
+                    if ($(this).closest('.cloned').find("span").is(':visible')) {
+                        $(this).closest('.cloned').find("span").hide();
+                        $(this).closest('.cloned').find("select").removeClass('d-none');
                     } else {
-                        $(this).parent().parent().find("span").fadeIn();
-                        $(this).parent().parent().find("select").hide();
+                        $(this).closest('.cloned').find("span").show();
+                        $(this).closest('.cloned').find("select").addClass('d-none');
                     }
                 });
 

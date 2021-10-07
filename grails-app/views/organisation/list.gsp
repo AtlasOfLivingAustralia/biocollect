@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Organisations | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="Organisations"/>
@@ -17,7 +17,6 @@
             noLogoImageUrl: "${asset.assetPath(src: 'no-image-2.png')}"
             };
     </asset:script>
-    <asset:stylesheet src="organisation.css"/>
     <asset:javascript src="common.js"/>
     <asset:javascript src="organisation.js"/>
 </head>

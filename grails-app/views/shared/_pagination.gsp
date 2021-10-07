@@ -1,6 +1,6 @@
 <g:if test="${bs == 4}">
     <!-- ko if: pagination.info() && (pagination.totalResults() >= pagination.rppOptions[0]-1) -->
-        <div class="pagination-container pagination-footer row">
+        <div class="pagination-container pagination-footer row ${classes?:''}">
             <div class="col-xs-12 col-lg-4 d-flex align-items-center justify-content-center justify-content-lg-start">
                 <div class="showing" data-bind="text: pagination.info()"></div>
             </div>
