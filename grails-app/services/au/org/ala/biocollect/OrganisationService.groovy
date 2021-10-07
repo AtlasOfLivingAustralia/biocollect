@@ -168,4 +168,17 @@ class OrganisationService {
         results
     }
 
+    String getMainImageURL(List documents) {
+        documents?.find {
+            it.role == 'mainImage' && it.status != 'deleted'
+        }?.url
+    }
+
+    String getLogoURL(List documents) {
+        Map document = documents?.find {
+            it.role == 'logo' && it.status != 'deleted'
+        }
+
+        document?.thumbnailUrl ?: document?.url
+    }
 }

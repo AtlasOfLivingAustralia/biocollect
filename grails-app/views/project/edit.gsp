@@ -42,7 +42,6 @@
         here = window.location.href;
 
     </asset:script>
-    <asset:stylesheet src="organisation.css"/>
     <asset:stylesheet src="project-create-manifest.css"/>
     <asset:javascript src="common.js"/>
     <asset:javascript src="organisation.js"/>

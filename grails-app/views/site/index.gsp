@@ -84,7 +84,7 @@
             %{-- TODO - delete button could be for volunteers too but maybe have an alert before delete happens --}%
                 <g:if test="${fc.userIsAlaAdmin()}">
                     <div class="btn btn-sm btn-danger" onclick="deleteSite()"><i
-                            class="fa fa-remove"></i> <g:message code="site.details.deleteSite"/>
+                            class="far fa-trash-alt"></i> <g:message code="site.details.deleteSite"/>
                     </div>
                 </g:if>
             </g:if>
@@ -314,7 +314,7 @@
                                         Edit
                                     </a>
                                     <a class="btn btn-sm btn-danger" href="#" data-bind="click: $parent.remove">
-                                        <i class="fa fa-remove" title="Delete survey"></i>
+                                        <i class="far fa-trash-alt" title="Delete survey"></i>
                                         Delete
                                     </a>
                                     <!-- /ko -->
