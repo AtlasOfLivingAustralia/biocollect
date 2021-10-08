@@ -47,7 +47,7 @@
     </div>
 </div>
 
-<div class="filter-bar d-flex align-items-center">
+<div class="filter-bar d-flex align-items-center mb-0">
     <h4>Applied Filters: </h4>
     <!-- ko if: isGeoSearchEnabled -->
     <span class="filter-item"> <g:message code="projectfinder.geofilter"/> <button class="remove" data-bind="click: clearGeoSearch"><i class="far fa-times-circle"></i></button></span>
@@ -56,4 +56,23 @@
     <span class="filter-item"><strong data-bind="if: exclude">[EXCLUDE]</strong> <!-- ko text: displayNameWithoutCount() --> <!-- /ko --> <button class="remove" data-bind="click: remove"><i class="far fa-times-circle"></i></button></span>
     <!-- /ko -->
     <button type="button" class="btn btn-sm btn-dark clear-filters" data-bind="click: reset" aria-label="Clear all filters"><i class="far fa-times-circle"></i> Clear All</button>
+</div>
+
+<div class="information-bar d-flex align-items-center justify-content-between">
+    <div id="pt-result-heading">
+        <span id="pt-resultsReturned"></span>
+        <span class="search-spinner spinner ml-1 d-none">
+            <i class='fa fa-spin fa-spinner'></i> Updating...
+        </span>
+    </div>
+
+    <div class="">
+        <g:if test="${showProjectDownloadButton}">
+            <a class="btn btn-dark btn-sm" id="pt-downloadLink"
+               data-bind="visible: pageProjects().length > 0, click: download" href="${downloadLink}"
+               title="${message(code: 'project.download.tooltip')}">
+                <i class="fas fa-download"></i>&nbsp;<g:message code="g.download"/>
+            </a>
+        </g:if>
+    </div>
 </div>

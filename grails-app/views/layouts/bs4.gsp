@@ -73,7 +73,7 @@
                     </div>
                 </g:if>
                 <g:else>
-                <div id="banner" class="page-banner"></div>
+                <div id="banner" class="page-banner no-image"></div>
                 </g:else>
                 <g:set var="tabList" value="${pageProperty(name: 'page.tab')}"/>
                 <g:if test="${tabList}">
@@ -83,6 +83,14 @@
                         </div>
                     </div>
                 </g:if>
+                <g:else>
+                    <div class="nav-row nav-row-height">
+                        <div class="container">
+                            <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">
+                            </ul>
+                        </div>
+                    </div>
+                </g:else>
                 <div id="titleBar">
                     <div class="container">
                         <div class="row d-flex title-row">

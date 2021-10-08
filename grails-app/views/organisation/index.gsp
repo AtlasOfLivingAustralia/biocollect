@@ -114,7 +114,7 @@
     <g:render template="/shared/flashScopeMessage"/>
 
     <content tag="tab">
-        <ul class="nav nav-tabs" data-tabs="tabs" role="tablist">
+        <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">
             <fc:tabList tabs="${content}"/>
         </ul>
     </content>

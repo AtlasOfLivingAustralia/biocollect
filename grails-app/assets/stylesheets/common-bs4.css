@@ -15,6 +15,20 @@
 
 /* end todo */
 
+/* bs4 layout */
+#banner.no-image {
+    height: 80px;
+}
+
+#banner.no-image:after {
+    background-color: rgba(0,0,0,0);
+}
+
+.nav-row-height {
+    height: 80px;
+}
+/* end bs4 layout */
+
 /* project finder */
 .scistarter-logo-pf {
     right: 0;
