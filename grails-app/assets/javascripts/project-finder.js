@@ -451,6 +451,7 @@ function ProjectFinder(config) {
                 pageWindow.pagination.loadOffset(offset, total);
                 pageWindow.pageProjects(projectVMs);
                 pageWindow.filterViewModel.setFacets(data.facets || []);
+                self.updateTotal();
                 updateLazyLoad();
                 setTimeout(scrollToProject, 500);
                 // Issue map search in parallel to 'standard' search
@@ -519,6 +520,23 @@ function ProjectFinder(config) {
         pageWindow.filterViewModel.origSelectedFacet.removeAll();
         pageWindow.filterViewModel.redefineFacet(false);
     }
+
+    /** display the current size of the filtered list **/
+    this.updateTotal = function () {
+        // $('#pt-resultsReturned').html("Found <strong>" + total + "</strong> " + (total == 1 ? 'project.' : 'projects.'));
+        $('#pt-resultsReturned').html(this.paginationInfo());
+    };
+
+    this.paginationInfo = function () {
+        if (total > 0) {
+            var start = parseInt(offset) + 1;
+            var end = Math.min(total, start + pageWindow.pagination.resultsPerPage() - 1);
+            var message = fcConfig.paginationMessage || 'Showing XXXX to YYYY of ZZZZ projects';
+            return message.replace('XXXX', start).replace('YYYY', end).replace('ZZZZ', total);
+        } else {
+            return "No projects found."
+        }
+    };
 
     this.augmentVM = function (vm) {
         var x;

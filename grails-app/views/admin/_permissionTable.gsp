@@ -8,7 +8,7 @@
                 <td class="memUserId"></td>
                 <td class="memUserName"></td>
                 <td class="memUserRole"><span style="white-space: nowrap">&nbsp;</span><g:render template="/admin/userRolesSelect" model="[roles:roles, selectClass:'d-none']"/></td>
-                <td><a class="memEditRole tooltips" href="" title="edit this user and role combination"><i class="fa fa-pencil-alt"></i> </a></td>
+                <td><a class="memEditRole tooltips" href="" title="edit this user and role combination"><i class="fas fa-pencil-alt"></i> </a></td>
                 <td><a class="memRemoveRole tooltips" href="" title="remove this user and role combination"><i class="fas fa-minus"></i></a></td>
             </tr>
             <tr id="spinnerRow"><td colspan="5">loading data... <g:img uri="${asset.assetPath(src:'spinner.gif')}" id="spinner2" class="spinner" alt="spinner icon"/></td></tr>
