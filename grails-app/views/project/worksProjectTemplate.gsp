@@ -101,7 +101,9 @@
         canAddActivity: ${user?.isAdmin ? 'true' : 'false'},
         canAddSite: ${projectContent?.site?.canEditSites? 'true' : 'false'},
         worksScheduleIntroUrl: "${createLink(controller: 'staticPage', action:'index', params: [page:"workScheduleHelp"])}",
-        outputTargetMetadata: ${((outputTargetMetadata?:[]) as grails.converters.JSON).toString()},
+        <g:applyCodec encodeAs="none">
+            outputTargetMetadata: ${((outputTargetMetadata?:[]) as grails.converters.JSON).toString()},
+        </g:applyCodec>
         activityTypes: ${((activityTypes?:[]) as JSON).toString()},
         themes: ${((themes?:[]) as JSON).toString()},
         sites: ${((project?.sites ?: []) as JSON).toString()},
@@ -115,9 +117,11 @@
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        <g:applyCodec encodeAs="none">
+            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        </g:applyCodec>
         sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}"
         },
         here = window.location.href;

@@ -523,7 +523,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             results = data;
             self.generateDotsFromResult(data);
             alaMap.finishLoading();
-        }).error(function (request, status, error) {
+        }).fail(function (request, status, error) {
             console.error("AJAX error", status, error);
             alaMap.finishLoading();
         });

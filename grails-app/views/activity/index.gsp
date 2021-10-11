@@ -38,17 +38,19 @@
         deleteCommentUrl:"${commentUrl}",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         surveyName: "${metaModel.name}",
-        speciesConfig: ${fc.modelAsJavascript(model: speciesConfig)},
+        speciesConfig: ${raw(fc.modelAsJavascript(model: speciesConfig))},
         speciesSearch: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
         speciesSearchUrl: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
         searchBieUrl: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
-        project:${fc.modelAsJavascript(model: project)},
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        project:${raw(fc.modelAsJavascript(model: project))},
+        <g:applyCodec encodeAs="none">
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        </g:applyCodec>
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
-        sites: ${fc.modelAsJavascript(model: project?.sites)}
+        sites: ${raw(fc.modelAsJavascript(model: project?.sites))}
         },
         here = document.location.href;
     </asset:script>

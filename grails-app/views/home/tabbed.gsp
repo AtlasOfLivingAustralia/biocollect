@@ -401,7 +401,7 @@
 
             alaMap.map.fitBounds(bounds);
 
-        }).error(function (request, status, error) {
+        }).fail(function (request, status, error) {
             console.error("AJAX error", status, error);
         });
     }

@@ -43,7 +43,9 @@
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
         sites: <fc:modelAsJavascript model="${project?.sites ?: []}"/>,
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        <g:applyCodec encodeAs="none">
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        </g:applyCodec>
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         addCreatedSiteToListOfSelectedSites: ${canEditSites}
         },
@@ -361,8 +363,8 @@
             elementId = "ko${blockId}";
 
         var output = <fc:modelAsJavascript model="${output}"/>;
-        var config = ${fc.modelAsJavascript(model:metaModel.outputConfig?.find{it.outputName == outputName}, default:'{}')};
-        config.model = ${fc.modelAsJavascript(model:model)};
+        var config = ${raw(fc.modelAsJavascript(model:metaModel.outputConfig?.find{it.outputName == outputName}, default:'{}'))};
+        config.model = ${raw(fc.modelAsJavascript(model:model))};
         config = _.extend({}, outputModelConfig, config, activityLevelData);
 
         initialiseOutputViewModel(viewModelName, config.model.dataModel, elementId, activityLevelData.activity, output, master, config, viewModel);
