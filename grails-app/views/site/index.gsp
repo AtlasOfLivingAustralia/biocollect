@@ -47,7 +47,9 @@
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+            <g:applyCodec encodeAs="none">
+                mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+            </g:applyCodec>
         },
         here = "${createLink(controller: 'site', action: 'index', id: site.siteId)}";
     </asset:script>

@@ -51,7 +51,9 @@
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
         speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        <g:applyCodec encodeAs="none">
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        </g:applyCodec>
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         ${(params?.version) ? ',version: ' + params?.version : ''}
         },

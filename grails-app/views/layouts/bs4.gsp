@@ -115,10 +115,10 @@
                                 <g:if test="${hubConfig.templateConfiguration?.footer?.socials}">
                                     <g:each in="${hubConfig.templateConfiguration?.footer?.socials}" var="social">
                                         <g:if test="${social.contentType == 'facebook'}">
-                                            <li><a href="${social.href}" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
+                                            <li><a href="${raw(social.href)}" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
                                         </g:if>
                                         <g:if test="${social.contentType == 'twitter'}">
-                                            <li><a href="${social.href}" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a></li>
+                                            <li><a href="${raw(social.href)}" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a></li>
                                         </g:if>
                                     </g:each>
                                 </g:if>

@@ -78,7 +78,9 @@
             spatialUrl: "",
             paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
             absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+            <g:applyCodec encodeAs="none">
+                mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+            </g:applyCodec>
         };
     </asset:script>
     <style type="text/css">

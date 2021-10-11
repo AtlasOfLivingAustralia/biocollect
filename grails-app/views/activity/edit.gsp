@@ -31,7 +31,9 @@
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        <g:applyCodec encodeAs="none">
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        </g:applyCodec>
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/"
         },
         here = document.location.href;
@@ -373,13 +375,13 @@
             self.dirtyFlag = ko.dirtyFlag(self, false);
         };
 
-
-        var viewModel = new ViewModel(
-            ${(activity as JSON).toString()},
-            ${project ?: 'null'},
-            ${(activityTypes as JSON).toString()},
-            ${themes});
-
+        <g:applyCodec encodeAs="none">
+            var viewModel = new ViewModel(
+                ${(activity as JSON).toString()},
+                ${project ?: 'null'},
+                ${(activityTypes as JSON).toString()},
+                ${themes});
+        </g:applyCodec>
 
         ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
 
