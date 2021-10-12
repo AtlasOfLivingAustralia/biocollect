@@ -195,11 +195,11 @@ class FCTagLib {
     def iconHelp = { attrs, body ->
         if (!attrs.printable) {
             def mb = new MarkupBuilder(out)
-            def anchorAttrs = [href:'#', tabindex: '-1', class:'helphover', 'data-original-title':attrs.title, 'data-placement':'top', 'data-content':body()]
+            def spanAttrs = [tabindex: '-1', 'data-original-title':attrs.title, 'data-placement':'top', 'title':body(), 'data-toggle': 'tooltip']
             if (attrs.container) {
-                anchorAttrs << ['data-container':attrs.container]
+                spanAttrs << ['data-container':attrs.container]
             }
-            mb.a(anchorAttrs) {
+            mb.span(spanAttrs) {
                 i(class:'fas fa-question-circle') {
                     mkp.yieldUnescaped("&nbsp;")
                 }
@@ -650,8 +650,8 @@ class FCTagLib {
         attrs.tabs.each { name, details ->
 
             if (details.type == 'tab' && details.visible) {
-                def liClass = details.default ? 'active':''
-                def linkAttributes = [href:'#'+name, id:name+'-tab']
+                def liClass = details.default ? 'active nav-item':'nav-item'
+                def linkAttributes = [href:'#'+name, id:name+'-tab', class: "nav-link"]
                 if (!details.disabled) {
                     linkAttributes << ["data-toggle":"tab"]
                 }

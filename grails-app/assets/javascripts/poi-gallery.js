@@ -88,7 +88,7 @@ function SitesGalleryViewModel(props) {
     }
 
     self.setSortDirection = function(viewmodel, event){
-        self.sortDirection($(event.target).attr('data-value'))
+        self.sortDirection($(event.target).val());
     }
 
     self.sortDirection.subscribe(self.loadGallery)

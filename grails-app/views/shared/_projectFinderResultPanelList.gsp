@@ -1,41 +1,64 @@
-<div class="row-fluid">
+<div class="row">
         <g:set var="noImageUrl" value="${asset.assetPath(src: "no-image-2.png")}"/>
-        <table data-table-list class="project-finder-table">
+        <table data-table-list class="table">
             <tbody data-bind="foreach:pageProjects">
                 <tr data-bind="attr: {id: transients.projectId}">
                     <td class="projectLogoTd">
-                        <div class="projectLogo project-row-layout" data-bind="visible: !(!transients.imageUrl && ${hubConfig?.content?.hideProjectFinderNoImagePlaceholderList == true})">
+                        <div class="project-logo" data-bind="visible: !(!transients.imageUrl && ${hubConfig?.content?.hideProjectFinderNoImagePlaceholderList == true})">
                             <img class="image-logo lazy" alt="${message(code:'g.noImage')}" data-bind="attr:{title:name, 'data-src':transients.imageUrl || '${noImageUrl}'}" onload="findLogoScalingClass(this)" onerror="imageError(this, '${noImageUrl}');"/>
                         </div>
                     </td>
                     <td>
-                        <div class="project-row-layout pf-project-text">
+                        <div class="">
                             <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
                                 <span data-bind="text:name" style="font-size:150%;font-weight:bold"></span>
                             </a>
                             <div data-bind="visible:transients.orgUrl">
-                                <span data-bind="visible:transients.daysSince() >= 0" style="font-size:80%;color:grey">Started <!--ko text:transients.since--><!--/ko-->&nbsp;</span>
-                                <g:if test="${controllerName != 'organisation'}">
-                                    <a data-bind="text:organisationName,attr:{href:transients.orgUrl}"></a>
-                                </g:if>
+                                <small data-bind="visible:transients.daysSince() >= 0">
+                                    Started <!--ko text:transients.since--><!--/ko-->&nbsp;
+                                    <g:if test="${controllerName != 'organisation'}">
+                                        <a data-bind="text:organisationName,attr:{href:transients.orgUrl}"></a>
+                                    </g:if>
+                                </small>
                             </div>
                             <div data-bind="text:aim"></div>
-                            <div data-bind="if: transients.links.length > 0" class="inline-block">
-                                <i class="icon-info-sign"></i>&nbsp;<span data-bind="html:transients.links"/>
+                            <div class="d-inline-block">
+                                <span>
+                                    <!-- ko if: urlWeb -->
+                                        |&nbsp;
+                                        <i class="fas fa-info-circle"></i>&nbsp;
+                                        <a data-bind="attr: {href:urlWeb}"><g:message code="g.website"/></a>
+                                        &nbsp;
+                                    <!-- /ko -->
+                                    <!-- ko if: transients.mobileApps().length > 0-->
+                                        |&nbsp;<g:message code="g.appsLinks"/>
+                                        <!-- ko foreach: transients.mobileApps -->
+                                            <a class="do-not-mark-external" data-bind="attr: {href: link.url}"><i data-bind="attr: {class: icon()}"></i></a>
+                                        <!-- /ko -->
+                                        &nbsp;
+                                    <!-- /ko -->
+                                    <!-- ko if: transients.socialMedia().length > 0-->
+                                        |&nbsp;<g:message code="g.socialMedia"/>
+                                        <!-- ko foreach: transients.socialMedia -->
+                                            <a class="do-not-mark-external" data-bind="attr: {href: link.url}"><i data-bind="attr: {class: icon()}"></i></a>
+                                        <!-- /ko -->
+                                        &nbsp;
+                                    <!-- /ko -->
+                                </span>
                             </div>
-                            <div data-bind="visible: isSciStarter" class="inline-block">&nbsp;|&nbsp;<img class="logo-small" src="${asset.assetPath(src: 'robot.png')}" title="Project is sourced from SciStarter"></div>
+                            <div class="d-inline-block"><div data-bind="visible: isSciStarter">|&nbsp;<img class="logo-small mb-1" src="${asset.assetPath(src: 'robot.png')}" title="Project is sourced from SciStarter"></div></div>
                             <g:if test="${hubConfig?.content?.hideProjectFinderProjectTags != true}">
-                            <div style="line-height:2.2em" data-bind="visible:!isMERIT()">
+                            <div class="" data-bind="visible:!isMERIT()">
                                 TAGS:&nbsp;<g:render template="/project/tags"/>
                             </div>
                             </g:if>
                             <div data-bind="if: !isExternal()">
-                                <img src="${asset.assetPath(src: "ala-logo-small.png")}" class="logo-icon" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
+                                <img class="logo-icon" src="${asset.assetPath(src: "ala-logo-small.png")}" alt="Atlas of Living Australia logo"><g:message code="project.contributingToALA"/>
                             </div>
                         </div>
                     </td>
-                    <td class="span2">
-                        <div class="project-row-layout project-row-status">
+                    <td class="align-top">
+                        <div>
                             <g:if test="${hubConfig?.content?.hideProjectFinderStatusIndicatorList != true}">
                             <g:render template="/project/dayscount"/>
                             </g:if>

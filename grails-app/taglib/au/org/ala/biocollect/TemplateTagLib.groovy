@@ -200,6 +200,47 @@ class TemplateTagLib {
         }
     }
 
+    def getSocialMediaIcons = { attrs ->
+        String icon
+        switch (attrs.document.role) {
+            case "facebook":
+                icon = "fab fa-facebook-f"
+                break;
+            case "flickr":
+                icon = "fab fa-flickr"
+                break;
+            case "googlePlus":
+                icon = "fab fa-google-plus-g"
+                break;
+            case "instagram":
+                icon = "fab fa-instagram"
+                break;
+            case "linkedIn":
+                icon = "fab fa-linkedin-in"
+                break;
+            case "pinterest":
+                icon = "fab fa-pinterest-p"
+                break;
+            case "rssFeed":
+                icon = "fas fa-rss"
+                break;
+            case "tumblr":
+                icon = "fab fa-tumblr"
+                break;
+            case "twitter":
+                icon = "fab fa-twitter"
+                break;
+            case "vimeo":
+                icon = "fab fa-vimeo-v"
+                break;
+            case "youtube":
+                icon = "fab fa-youtube"
+                break;
+        }
+
+        out << icon
+    }
+
     def getStyleSheet = { attrs ->
         if(attrs.file){
             def scss = grailsApplication.parentContext.getResource("css/template/${attrs.file}")
