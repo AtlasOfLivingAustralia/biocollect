@@ -669,6 +669,52 @@ function Documents() {
             },
             logo: function(dir) {
                 return dir + "/" + role.role.toLowerCase() + ".png";
+            },
+            icon: function(){
+                var icon;
+                switch (this.role) {
+                    case "android":
+                        icon = "fab fa-android";
+                        break;
+                    case "facebook":
+                        icon = "fab fa-facebook-f"
+                        break;
+                    case "flickr":
+                        icon = "fab fa-flickr"
+                        break;
+                    case "googlePlus":
+                        icon = "fab fa-google-plus-g"
+                        break;
+                    case "instagram":
+                        icon = "fab fa-instagram"
+                        break;
+                    case "itunes":
+                        icon = "fab fa-apple";
+                        break;
+                    case "linkedIn":
+                        icon = "fab fa-linkedin-in"
+                        break;
+                    case "pinterest":
+                        icon = "fab fa-pinterest-p"
+                        break;
+                    case "rssFeed":
+                        icon = "fas fa-rss"
+                        break;
+                    case "tumblr":
+                        icon = "fab fa-tumblr"
+                        break;
+                    case "twitter":
+                        icon = "fab fa-twitter"
+                        break;
+                    case "vimeo":
+                        icon = "fab fa-vimeo-v"
+                        break;
+                    case "youtube":
+                        icon = "fab fa-youtube"
+                        break;
+                }
+
+                return icon;
             }
         });
     }

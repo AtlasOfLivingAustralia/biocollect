@@ -66,14 +66,31 @@
     <div class="wrapper" id="catalogue">
         <main class="site-main">
             <article class="page">
-                <g:if test="${hubConfig?.templateConfiguration?.banner?.images?.size() > 0}">
-                    <div id="banner" class="page-banner" style="background-image: url('${hubConfig.templateConfiguration.banner.images[0].url}');">
+                <g:set var="bannerURL" value="${pageProperty(name: 'meta.bannerURL') ?: hubConfig.templateConfiguration.banner.images[0]?.url}"/>
+                <g:if test="${pageProperty(name: 'meta.bannerURL')}">
+                <div id="banner" class="page-banner" style="background-image: url('${bannerURL}');">
+                        <g:pageProperty name="page.banner"/>
                     </div>
                 </g:if>
                 <g:else>
-                    <div id="banner" class="page-banner"></div>
+                <div id="banner" class="page-banner no-image"></div>
                 </g:else>
-
+                <g:set var="tabList" value="${pageProperty(name: 'page.tab')}"/>
+                <g:if test="${tabList}">
+                    <div class="nav-row">
+                        <div class="container">
+                            ${raw(tabList)}
+                        </div>
+                    </div>
+                </g:if>
+                <g:else>
+                    <div class="nav-row nav-row-height">
+                        <div class="container">
+                            <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">
+                            </ul>
+                        </div>
+                    </div>
+                </g:else>
                 <div id="titleBar">
                     <div class="container">
                         <div class="row d-flex title-row">
@@ -85,13 +102,11 @@
                                 </div>
                             </g:if>
 
-                            <div class="col d-flex align-items-center justify-content-center justify-content-lg-end">
-                                <a href="#" class="btn btn-lg btn-primary-dark" title="Getting Started"><i
-                                        class="fas fa-info-circle"></i>
-                                    Getting Started</a>
-                                <a href="#" class="btn btn-lg btn-primary-dark" title="What is this?"><i
-                                        class="far fa-question-circle"></i> What is this?</a>
-                            </div>
+                            <g:if test="${pageProperty(name: 'page.pagefinderbuttons')}">
+                                <div class="col d-flex align-items-center justify-content-center justify-content-lg-end">
+                                    <g:pageProperty name="page.pagefinderbuttons"/>
+                                </div>
+                            </g:if>
                         </div>
                     </div>
                 </div>

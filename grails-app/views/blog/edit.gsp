@@ -25,7 +25,9 @@
             };
     </asset:script>
     <asset:javascript src="common.js"/>
+    %{-- Todo: cors/jquery.xdr-transport.js needed?--}%
     <asset:javascript src="fileupload-manifest.js"/>
+    <asset:javascript src="cors/jquery.xdr-transport.js"/>
     <asset:javascript src="document.js"/>
 </head>
 <body>
