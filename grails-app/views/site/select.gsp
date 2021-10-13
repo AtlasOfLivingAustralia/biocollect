@@ -29,7 +29,7 @@
         returnTo = "${params.returnTo}";
     </asset:script>
     <asset:stylesheet src="leaflet-manifest.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="siteSelection.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>

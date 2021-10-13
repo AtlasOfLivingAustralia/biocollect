@@ -14,7 +14,7 @@ ko.bindingHandlers.popover = {
     update: function (element, valueAccessor) {
 
         var $element = $(element);
-        $element.popover('dispose');
+        $element.popover('destroy');
         var options = ko.bindingHandlers.popover.initPopover(element, valueAccessor);
         if (options.autoShow) {
             if ($element.data('firstPopover') === false) {
@@ -52,7 +52,7 @@ ko.bindingHandlers.popover = {
         $(element).popover(combinedOptions);
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
-            $(element).popover("dispose");
+            $(element).popover("destroy");
         });
         return options;
     }

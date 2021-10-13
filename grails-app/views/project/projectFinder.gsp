@@ -99,7 +99,7 @@
     </asset:script>
     <g:render template="/shared/conditionalLazyLoad"/>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <asset:javascript src="project-finder.js"/>
