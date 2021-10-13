@@ -98,7 +98,7 @@
             window.location = "${createLink(controller: 'admin')}";
         });
         $('.btnNewProject').click(function(e) {
-            window.location = "${createLink(controller: 'project', action:'create', params: [citizenScience:true])}"
+            window.location = "${raw(createLink(controller: 'project', action:'create', params: [citizenScience:true]))}"
         });
 
         $(".btnProfile").click(function (e) {
@@ -178,13 +178,13 @@
         });
         $('.btnNewProject').click(function(e) {
     <g:if test="${!hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-        window.location = "${createLink(controller: 'project', action:'create', params: [citizenScience:true])}"
+        window.location = "${raw(createLink(controller: 'project', action:'create', params: [citizenScience:true]))}"
     </g:if>
     <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
-        window.location = "${createLink(controller: 'project', action:'create', params: [works:true])}"
+        window.location = "${raw(createLink(controller: 'project', action:'create', params: [works:true]))}"
     </g:if>
     <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
-        window.location = "${createLink(controller: 'project', action:'create', params: [ecoScience:true])}"
+        window.location = "${raw(createLink(controller: 'project', action:'create', params: [ecoScience:true]))}"
     </g:if>
     });
 

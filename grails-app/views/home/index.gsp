@@ -19,7 +19,7 @@
         spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
-        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
+        dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}",
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         <g:applyCodec encodeAs="none">
             mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}

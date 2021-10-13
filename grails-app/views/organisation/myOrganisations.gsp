@@ -14,7 +14,7 @@
             noLogoImageUrl: "${asset.assetPath(src: 'no-image-2.png')}"
             };
     </asset:script>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="organisation.js"/>
 </head>
 

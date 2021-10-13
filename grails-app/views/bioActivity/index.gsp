@@ -46,7 +46,7 @@
         activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
-        searchBieUrl: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10])}",
+        searchBieUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10]))}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',

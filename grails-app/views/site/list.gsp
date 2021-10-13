@@ -33,7 +33,7 @@
     </script>
     <asset:stylesheet src="sites-manifest.css"/>
     <asset:stylesheet src="leaflet-manifest.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
