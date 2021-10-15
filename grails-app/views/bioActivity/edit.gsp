@@ -14,7 +14,7 @@
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${pActivity.projectId},Project"/>
     <meta name="breadcrumb" content="${pActivity.name}"/>
-    <asset:stylesheet src="common.css"/>
+    <asset:stylesheet src="common-bs4.css"/>
     <asset:stylesheet src="forms-manifest.css"/>
     <g:if test="${mobile}">
         <asset:stylesheet src="mobile_activity.css"/>
@@ -65,6 +65,8 @@
     <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterBioActivityData.js"/>
+    <link rel="stylesheet" type="text/css"
+          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">
 </head>
 
 

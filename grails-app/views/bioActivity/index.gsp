@@ -63,6 +63,8 @@
     <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterBioActivityData.js"/>
+    <link rel="stylesheet" type="text/css"
+          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">
 </head>
 
 <body>
@@ -71,13 +73,13 @@
     <div id="koActivityMainBlock">
         <bc:koLoading>
         <g:if test="${!mobile}">
-            <div class="row-fluid">
+            <div class="row">
                 %{--page title--}%
-                <div class="span4">
+                <div class="col-12 col-md-4">
                     <h2><g:message code="record.view.title"></g:message></h2>
                 </div>
                 %{-- quick links --}%
-                <div class="span8">
+                <div class="col-12 col-md-8">
                     <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
                 </div>
                 %{--quick links END--}%
@@ -85,7 +87,7 @@
         </g:if>
 
         <g:if test="${params?.version}">
-            <div class="well">
+            <div class="card">
                 <h4>
                     Version:
                     <span id="versionMsg"></span>
@@ -94,17 +96,17 @@
         </g:if>
 
         <g:if test="${metaModel?.supportsSites?.toBoolean()}">
-            <h3 class="text-error text-center well-title">Site location: <span data-bind="text: transients.site.name"></span></h3>
+            <h3 class="text-error text-center card-title">Site location: <span data-bind="text: transients.site.name"></span></h3>
             <div data-bind="if: transients.site">
-                <div class="output-block well text-center">
+                <div class="output-block card text-center">
                     <m:map id="activitySiteMap" width="90%" height="300px"/>
                 </div>
             </div>
         </g:if>
 
         <g:if test="${metaModel?.supportsPhotoPoints?.toBoolean()}">
-            <h3 class="text-center text-error well-title">Photo Points</h3>
-            <div class="output-block well" data-bind="with:transients.photoPointModel">
+            <h3 class="text-center text-error card-title">Photo Points</h3>
+            <div class="output-block card" data-bind="with:transients.photoPointModel">
                 <g:render template="/site/photoPoints" model="[readOnly: true]"/>
             </div>
         </g:if>
@@ -118,9 +120,9 @@
                 <g:set var="output" value="[name: outputName]"/>
             </g:if>
             <g:render template="/output/outputJSModelWithGeodata" plugin="ecodata-client-plugin"
-                      model="${[edit:false, readonly: true, model:model, outputName:outputName]}"></g:render>
+                      model="${raw([edit:false, readonly: true, model:model, outputName:outputName])}"></g:render>
 
-            <div class="output-block well" id="ko${blockId}">
+            <div class="output-block card" id="ko${blockId}">
                 <div data-bind="if:outputNotCompleted">
                     <label class="checkbox" ><input type="checkbox" disabled="disabled" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>
                 </div>
