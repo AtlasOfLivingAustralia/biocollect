@@ -53,7 +53,7 @@ class OrganisationController {
 
         [about   : [label: 'About', visible: true, stopBinding: false, type: 'tab', default: true, includeProjectList: includeProjectList],
          projects: [label: 'Projects', visible: true, stopBinding: true, type: 'tab', template: '/shared/projectFinder', model: [allowGeographicFilter: false]],
-//         data    : [label: 'Data', visible: true, stopBinding: true, type: 'tab', template: '/bioActivity/activities', modalId: 'chooseMoreFacets'],
+         data    : [label: 'Data', visible: true, stopBinding: true, type: 'tab', template: '/bioActivity/activities', modalId: 'chooseMoreFacets'],
          admin   : [label: 'Admin', visible: hasAdminAccess, type: 'tab']]
     }
 

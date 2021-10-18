@@ -36,7 +36,7 @@ Biocollect.SiteDisplay = function() {
             }
 
             self.initialiseMap(features);
-        }).error(function (request, status, error) {
+        }).fail(function (request, status, error) {
                 console.error("AJAX error", status, error);
             }
         );

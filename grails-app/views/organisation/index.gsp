@@ -191,7 +191,7 @@
         populatePermissionsTable(fcConfig.organisationMembersUrl);
     </g:if>
 
-    // initialiseData("allrecords");
+    initialiseData("allrecords");
 });
 $(function() {
     var projectFinder = new ProjectFinder({enablePartialSearch: ${hubConfig.content.enablePartialSearch ?: false}});

@@ -84,3 +84,10 @@
 }
 
 /* end project finder */
+
+/* all records or data pages*/
+/* ajax-opactity also works project */
+.searching-opacity, .ajax-opacity{
+    opacity: 0.5;
+}
+/* end all records */

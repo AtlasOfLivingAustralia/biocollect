@@ -15,7 +15,7 @@
     </p>
 
     <!-- ko foreach: chartjsPerRowGroupedItems -->
-    <div class="row-fluid" data-bind="foreach: $data">
+    <div class="row" data-bind="foreach: $data">
         <div data-bind="attr: {class: $parents[1].chartjsPerRowSpan }">
             <canvas data-bind="chartjs: { facetName: chartFacetName, type: chartType, data: chartData, options: chartOptions }"
                     width="2" height="2"></canvas>
