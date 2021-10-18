@@ -1,16 +1,22 @@
 package au.org.ala.biocollect
 
-import grails.test.mixin.TestFor
+import grails.testing.spring.AutowiredTest
 import spock.lang.Specification
 import au.org.ala.biocollect.merit.ProjectService
 import au.org.ala.biocollect.merit.WebService
 import au.org.ala.biocollect.merit.MetadataService
 
-@TestFor(ProjectActivityService)
-class ProjectActivityServiceSpec extends Specification {
+class ProjectActivityServiceSpec extends Specification implements AutowiredTest{
+    Closure doWithSpring() {{ ->
+        service ProjectActivityService
+    }}
+
+    ProjectActivityService service
     def projectActivity
 
     def setup() {
+        service.grailsApplication = grailsApplication
+        grailsApplication.config.ecodata.service.url = "http://test"
         service.projectService = Stub(ProjectService)
         service.projectService.get(_) >> [:]
         service.webService = Stub(WebService)

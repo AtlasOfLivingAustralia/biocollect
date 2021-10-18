@@ -8,13 +8,13 @@
         <title>Print | ${activity.type} | <g:message code="g.biocollect"/></title>
     </g:if>
     <g:else>
-        <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
+        <meta name="layout" content="${mobile ? 'mobile' : 'bs4'}"/>
         <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
     </g:else>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${pActivity.projectId},Project"/>
     <meta name="breadcrumb" content="${pActivity.name}"/>
-    <asset:stylesheet src="common.css"/>
+    <asset:stylesheet src="common-bs4.css"/>
     <asset:stylesheet src="forms-manifest.css"/>
     <g:if test="${mobile}">
         <asset:stylesheet src="mobile_activity.css"/>
@@ -31,7 +31,7 @@
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
-        activityDeleteAndReturnToUrl: "${createLink(action: 'delete', id: activity.activityId, params: [returnTo: grailsApplication.config.grails.serverURL + '/' + returnTo])}",
+        activityDeleteAndReturnToUrl: "${raw(createLink(action: 'delete', id: activity.activityId, params: [returnTo: grailsApplication.config.grails.serverURL + '/' + returnTo]))}",
         documentUpdateUrl: "${g.createLink(controller:"proxy", action:"documentUpdate")}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
@@ -39,14 +39,14 @@
         siteDeleteUrl: "${createLink(controller: 'site', action: 'forceDelete')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
-        searchBieUrl: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10])}",
+        searchBieUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10]))}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
         speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
         imageLocation:"${asset.assetPath(src:'')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
-        speciesSearchUrl: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10])}",
-        bioActivityUpdate: "${createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId, id: id])}",
-        bioActivityMobileUpdate: "${createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId, id: id, isMobile: true])}",
+        speciesSearchUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10]))}",
+        bioActivityUpdate: "${raw(createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId, id: id]))}",
+        bioActivityMobileUpdate: "${raw(createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId, id: id, isMobile: true]))}",
         excelDataUploadUrl: "${createLink(controller:'bioActivity', action:'extractDataFromExcelTemplate', id:projectActivityId)}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
@@ -55,14 +55,18 @@
         returnTo: "${returnTo}",
         returnToMobile: "${createLink(controller: 'mobile', action: 'status')}#successfully-posted",
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+        <g:applyCodec encodeAs="none">
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        </g:applyCodec>
         },
         here = document.location.href;
     </asset:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterBioActivityData.js"/>
+    <link rel="stylesheet" type="text/css"
+          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">
 </head>
 
 

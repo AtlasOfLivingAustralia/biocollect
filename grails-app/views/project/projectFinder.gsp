@@ -48,8 +48,8 @@
         defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
         imageLocation:"${asset.assetPath(src: '')}",
         logoLocation:"${asset.assetPath(src: 'filetypes')}",
-        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
-        projectListUrl: "${createLink(controller: 'project', action: 'search', params: [initiator: 'biocollect'])}",
+        dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}",
+        projectListUrl: "${raw(createLink(controller: 'project', action: 'search', params: [initiator: 'biocollect']))}",
         projectIndexBaseUrl : "${createLink(controller: 'project', action: 'index')}/",
         organisationBaseUrl : "${createLink(controller: 'organisation', action: 'index')}/",
         isCitizenScience: true,
@@ -61,8 +61,9 @@
         paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
         enablePartialSearch: ${hubConfig.content.enablePartialSearch ?: false},
         downloadWorksProjectsUrl: "${createLink(controller: 'project', action: 'downloadWorksProjects')}",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-
+        <g:applyCodec encodeAs="none">
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        </g:applyCodec>
         <g:if test="${isUserPage}">
             <g:if test="${isWorks}">
                 isUserWorksPage: true,
@@ -98,7 +99,7 @@
     </asset:script>
     <g:render template="/shared/conditionalLazyLoad"/>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <asset:javascript src="project-finder.js"/>
@@ -167,13 +168,13 @@
 <asset:script type="text/javascript">
     $("#newPortal").on("click", function() {
     <g:if test="${isCitizenScience}">
-        document.location.href = "${createLink(controller: 'project', action: 'create', params: [citizenScience: true])}";
+        document.location.href = "${raw(createLink(controller: 'project', action: 'create', params: [citizenScience: true]))}";
     </g:if>
     <g:if test="${isWorks}">
-        document.location.href = "${createLink(controller: 'project', action: 'create', params: [works: true])}";
+        document.location.href = "${raw(createLink(controller: 'project', action: 'create', params: [works: true]))}";
     </g:if>
     <g:if test="${isEcoScience}">
-        document.location.href = "${createLink(controller: 'project', action: 'create', params: [ecoScience: true])}";
+        document.location.href = "${raw(createLink(controller: 'project', action: 'create', params: [ecoScience: true]))}";
     </g:if>
     });
     var projectFinder = new ProjectFinder(fcConfig);

@@ -1,11 +1,9 @@
-package au.org.ala.biocollect.au.org.ala.biocollect.merit
+package au.org.ala.biocollect.merit
 
-import au.org.ala.biocollect.merit.FCTagLib
-import grails.test.mixin.TestFor
+import grails.testing.web.taglib.TagLibUnitTest
 import spock.lang.Specification
 
-@TestFor(FCTagLib)
-class FCTagLibSpec extends Specification {
+class FCTagLibSpec extends Specification implements TagLibUnitTest<FCTagLib> {
 
     void "siteFacet should output a label and facet value when the value is a String"() {
         setup:

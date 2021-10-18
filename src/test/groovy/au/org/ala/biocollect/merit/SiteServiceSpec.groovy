@@ -1,8 +1,11 @@
 package au.org.ala.biocollect.merit
 
-import grails.test.mixin.TestFor
 import grails.test.mixin.TestMixin
+import grails.test.mixin.integration.Integration
 import grails.test.mixin.web.ControllerUnitTestMixin
+import grails.testing.spring.AutowiredTest
+import org.grails.plugins.converters.ConvertersGrailsPlugin
+import org.grails.web.converters.configuration.ConvertersConfigurationHolder
 import spock.lang.Specification
 
 /*
@@ -21,28 +24,19 @@ import spock.lang.Specification
  * 
  * Created by Temi on 24/6/20.
  */
-@TestFor(SiteService)
-// adding the below Mixin to enable JSON conversion
-@TestMixin(ControllerUnitTestMixin)
-class SiteServiceSpec extends Specification {
-    def projectSite, projectSiteWithPid
+class SiteServiceSpec extends Specification implements AutowiredTest{
+    Closure doWithSpring() {{ ->
+        service SiteService
+    }}
+
+    SiteService service
+    Map projectSite, projectSiteWithPid
 
     def setup() {
-        service.grailsApplication = [
-                "config": [
-                        spatial : [
-                                baseURL: ""
-                        ],
-                        ecodata : [
-                                service: [url: ""]
-                        ],
-                        google : [
-                                api: [
-                                        key: ""
-                                ]
-                        ]
-                ]
-        ]
+        service.grailsApplication = grailsApplication
+        service.grailsApplication.config.spatial.baseURL = ""
+        service.grailsApplication.config.ecodata.service.url = ""
+        service.grailsApplication.config.google.api.key = ""
         service.projectService = Mock(ProjectService)
         service.webService = Mock(WebService)
         service.commonService = Mock(CommonService)
@@ -60,6 +54,11 @@ class SiteServiceSpec extends Specification {
                         ]
                 ]
         ]
+        defineBeans(new ConvertersGrailsPlugin())
+    }
+
+    def tearDown(){
+        ConvertersConfigurationHolder.clear()
     }
 
     def "checkPointInsideProjectAreaAndAddress should detect if point falls inside or outside project area"() {

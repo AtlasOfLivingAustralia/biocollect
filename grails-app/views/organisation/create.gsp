@@ -20,7 +20,7 @@
     </asset:script>
     <asset:stylesheet src="fileupload-ui-manifest.css"/>
     <asset:stylesheet src="wmd/wmd.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="fileupload-manifest.js"/>
     <asset:javascript src="cors/jquery.xdr-transport.js"/>
     <asset:javascript src="organisation.js"/>
