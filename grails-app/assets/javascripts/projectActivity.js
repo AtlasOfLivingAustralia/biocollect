@@ -823,7 +823,7 @@ var ProjectActivity = function (params) {
                 bootbox.alert("There are no records for this dataset or records cannot be retrieved.");
             }
 
-        }).error(function (request, status, error) {
+        }).fail(function (request, status, error) {
             bootbox.alert("Something went wrong when retrieving activity records.");
         });
 

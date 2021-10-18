@@ -3,7 +3,7 @@
     <!-- ko foreach: pageProjects -->
     <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 project-item">
         <a class="project-image" title="Project Title"
-           data-bind="visible: !(!transients.imageUrl && ${hubConfig?.content?.hideProjectFinderNoImagePlaceholderTile == true}), attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
+           data-bind="visible: !(${hubConfig?.content?.hideProjectFinderNoImagePlaceholderTile == true}), attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
             <div class="project-image-inner">
                 <img class="image-logo lazy" alt="${message(code: 'g.noImage')}"
                      data-bind="attr:{title:name, 'data-src':transients.imageUrl || '${noImageUrl}'}"
