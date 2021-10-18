@@ -90,4 +90,26 @@
 .searching-opacity, .ajax-opacity{
     opacity: 0.5;
 }
+#projectData {
+    position: relative;
+}
+
+#survey-all-activities-and-records-content .data-container {
+    display: block !important;
+    height: auto !important;
+    -webkit-transition: padding 500ms ease;
+    transition: padding 500ms ease;
+}
+
+@media (min-width: 576px) {
+    #survey-all-activities-and-records-content .data-container.show {
+        padding-left:330px
+    }
+}
+
+@media (min-width: 768px) {
+    #survey-all-activities-and-records-content .data-container.show {
+        padding-left:360px
+    }
+}
 /* end all records */
