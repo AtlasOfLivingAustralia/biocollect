@@ -202,11 +202,11 @@ class WebService {
      */
     def responseText(urlConnection) {
 
-        def charset = 'UTF-8' // default
+        String charset = 'UTF-8' // default
         def contentType = urlConnection.getContentType()
         if (contentType) {
-            def mediaType = MediaType.parseMediaType(contentType)
-            charset = (mediaType.charSet)?mediaType.charSet.toString():'UTF-8'
+            MediaType mediaType = MediaType.parseMediaType(contentType)
+            charset = (mediaType.charset)?mediaType.charset.toString():'UTF-8'
         }
         return urlConnection.content.getText(charset)
     }

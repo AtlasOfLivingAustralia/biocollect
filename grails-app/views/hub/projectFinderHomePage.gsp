@@ -21,7 +21,7 @@
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
-        geocodeUrl: "${grailsApplication.config.google.geocode.url}",
+        geocodeUrl: "${raw(grailsApplication.config.google.geocode.url)}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
         spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
@@ -31,7 +31,7 @@
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         imageLocation:"${asset.assetPath(src:'')}",
         logoLocation:"${asset.assetPath(src:'filetypes')}",
-        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
+        dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}",
         isUserPage: false,
         <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
             isUserWorksPage: true,
@@ -42,7 +42,7 @@
         <g:if test="${hubConfig.defaultFacetQuery.contains('isCitizenScience:true')}">
             isCitizenScience: true,
         </g:if>
-        projectListUrl: "${createLink(controller: 'project', action: 'search', params:[initiator:'biocollect'])}",
+        projectListUrl: "${raw(createLink(controller: 'project', action: 'search', params:[initiator:'biocollect']))}",
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
         defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
@@ -56,11 +56,13 @@
         paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
         enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false},
         downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+        <g:applyCodec encodeAs="none">
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+        </g:applyCodec>
   }
     </asset:script>
     <g:render template="/shared/conditionalLazyLoad"/>
-    <asset:javascript src="common.js" />
+    <asset:javascript src="common-bs4.js" />
     <asset:javascript src="projects-manifest.js" />
     <asset:javascript src="project-finder.js" />
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>

@@ -17,8 +17,10 @@
             listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}",
             listDataColumnsUrl: "${createLink(controller: 'bioActivity', action: 'getDataColumns')}",
             defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}",
-            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+            <g:applyCodec encodeAs="none">
+                allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+                allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+            </g:applyCodec>
             leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
         };
     </asset:script>

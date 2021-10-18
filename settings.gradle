@@ -1,7 +1,6 @@
 rootProject.name = 'biocollect'
-boolean inplace = false
 
-if (inplace) {
+if (settings.hasProperty('inplace') && Boolean.valueOf(settings.inplace)) {
     include ':ecodata-client-plugin'
     project(':ecodata-client-plugin').projectDir = new File(settingsDir, '../ecodata-client-plugin')
     include ':ala-map-plugin'

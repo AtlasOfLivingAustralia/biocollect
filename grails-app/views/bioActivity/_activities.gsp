@@ -570,6 +570,7 @@
 
 <asset:javascript src="chartjs/chart.min.js"/>
 <asset:script type="text/javascript">
+    <g:applyCodec encodeAs="none">
 
     var activitiesAndRecordsViewModel, alaMap, results;
     function initialiseData(view) {
@@ -651,5 +652,5 @@
     }
 
     tabId && $(tabId).tab('show');
-
+    </g:applyCodec>
 </asset:script>

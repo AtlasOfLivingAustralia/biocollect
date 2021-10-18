@@ -47,13 +47,15 @@
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+            <g:applyCodec encodeAs="none">
+                mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+            </g:applyCodec>
         },
         here = "${createLink(controller: 'site', action: 'index', id: site.siteId)}";
     </asset:script>
     <asset:stylesheet src="sites-manifest.css"/>
     <asset:stylesheet src="leaflet-manifest.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>

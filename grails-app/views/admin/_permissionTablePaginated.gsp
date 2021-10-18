@@ -20,6 +20,6 @@
 </div>
 <asset:script type="text/javascript">
     $(window).load(function () {
-        initialise(${roles.inspect()}, ${user?.userId}, "${project.projectId}");
+        initialise(${raw(roles.inspect())}, ${raw(user?.userId)}, "${raw(project.projectId)}");
      })
 </asset:script>

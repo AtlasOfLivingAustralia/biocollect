@@ -1,12 +1,10 @@
 package au.org.ala.biocollect.merit
 
-import grails.test.mixin.TestFor
-import org.apache.commons.io.IOUtils
+import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
 import spock.lang.Specification
 
-@TestFor(ImageController)
-class ImageControllerSpec extends Specification {
+class ImageControllerSpec extends Specification implements ControllerUnitTest<ImageController> {
 
     File uploadPath
     File temp

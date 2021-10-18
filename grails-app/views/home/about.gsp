@@ -22,7 +22,7 @@
                 <h1>${settingType.title?:'About the website'}
                     <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole)}">
                         <span style="display: inline-block; margin: 0 10px;">
-                            <a href="${g.createLink(controller:"admin",action:"editSettingText", id: settingType.name, params: [layout: hubConfig.skin, returnUrl: g.createLink(controller: params.controller, action: params.action, id: params.id, absolute: true)])}"
+                            <a href="${raw(g.createLink(controller:"admin",action:"editSettingText", id: settingType.name, params: [layout: hubConfig.skin, returnUrl: raw(g.createLink(controller: params.controller, action: params.action, id: params.id, absolute: true))]))}"
                                class="btn btn-small"><i class="icon-edit"></i> Edit</a>
                         </span>
                     </g:if>
@@ -39,7 +39,7 @@
             <g:set var="newsText"><fc:getSettingContent settingType="${SettingPageType.NEWS}"/></g:set>
             <div class="span5 well well-small">
                 <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole)}">
-                    <a href="${g.createLink(controller:"admin",action:"editSettingText", id: SettingPageType.NEWS.name, params: [layout: hubConfig.skin, returnUrl: g.createLink(controller: params.controller, action: params.action, absolute: true)])}"
+                    <a href="${raw(g.createLink(controller:"admin",action:"editSettingText", id: SettingPageType.NEWS.name, params: [layout: hubConfig.skin, returnUrl: raw(g.createLink(controller: params.controller, action: params.action, absolute: true))]))}"
                        class="btn btn-small pull-right"><i class="icon-edit"></i> Edit</a>
                 </g:if>
                 ${newsText}

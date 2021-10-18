@@ -21,7 +21,9 @@
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         saveUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        <g:applyCodec encodeAs="none">
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        </g:applyCodec>
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         returnTo: "${params.returnTo}"
         },
@@ -68,7 +70,7 @@
     }
 
     </style>
-    <g:set var="thisPage" value="${g.createLink(absolute: true, action: 'report', params: params)}"/>
+    <g:set var="thisPage" value="${raw(g.createLink(absolute: true, action: 'report', params: params))}"/>
     <g:set var="loginUrl"
            value="${grailsApplication.config.security.cas.loginUrl ?: 'https://auth.ala.org.au/cas/login'}?service=${thisPage.encodeAsURL()}"/>
 </head>
