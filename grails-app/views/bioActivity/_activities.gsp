@@ -1,7 +1,5 @@
 <%@ page import="grails.converters.JSON" %>
 <g:set var="noImageUrl" value="${asset.assetPath([src: "no-image-2.png"])}"/>
-%{--todo: add legend on info bar--}%
-%{--<g:render template="/shared/legend"/>--}%
 <!-- ko stopBinding: true -->
 <div id="projectData" class="my-4 my-md-5">
     <div id="survey-all-activities-and-records-content">
@@ -111,23 +109,26 @@
                             <button data-bind="click: asyncDownload" class="btn btn-primary-dark pt-1"><i class="fas fa-download">&nbsp;</i>Download</button>
                         </div>
                     </div>
+                    <g:set var="divideSection" value="${hubConfig.content?.showNote && isProjectContributingDataToALA}"/>
                     <g:if test="${hubConfig.content?.showNote || isProjectContributingDataToALA}">
                         <div class="row d-flex my-3 align-items-center">
                             <g:if test="${hubConfig.content?.showNote}">
-                                <div class="col-12 col-md-8">
+                                <div class="col-12 ${divideSection ? "col-md-8" : "col-md-12"}">
                                     <div class="alert alert-info mb-0" role="alert">
                                         <strong>Note!</strong> ${hubConfig.content?.recordNote?.encodeAsHTML()}
                                     </div>
                                 </div>
                             </g:if>
                             <g:if test="${isProjectContributingDataToALA}">
-                                <div class="col-12 col-md-4 text-right">
-                                    <a class="btn btn-dark" data-bind="attr:{href: biocacheUrl}">
-                                        <i class="fas fa-globe"></i> View in occurrence explorer
-                                    </a>
-                                    <a class="btn btn-dark" data-bind="attr:{href: spatialUrl}">
-                                        <i class="fas fa-map"></i> View in spatial portal
-                                    </a>
+                                <div class="col-12 ${divideSection ? "col-md-4" : "col-md-12"} text-right">
+                                    <div class="btn-space">
+                                        <a class="btn btn-sm btn-dark" data-bind="attr:{href: biocacheUrl}">
+                                            <i class="fas fa-globe"></i> View in occurrence explorer
+                                        </a>
+                                        <a class="btn btn-sm btn-dark" data-bind="attr:{href: spatialUrl}">
+                                            <i class="fas fa-map"></i> View in spatial portal
+                                        </a>
+                                    </div>
                                 </div>
                             </g:if>
                         </div>

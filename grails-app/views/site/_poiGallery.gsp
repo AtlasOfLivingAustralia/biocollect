@@ -66,7 +66,7 @@
                             <!-- /ko -->
                             <!-- ko if: isEmbargoed -->
                             <strong>EMBARGOED</strong>
-                            <span class="clear-line-height"><i class="icon-question-sign"
+                            <span class="clear-line-height"><i class="fas fa-info-circle"
                                                                data-bind="popover: {placement:'top', content: 'You do not have permission to view this image.' }"></i>
                             </span>
                             <!-- /ko -->
@@ -76,7 +76,7 @@
                     <!-- ko if: hasNextPage -->
                     <li>
                         <div class="projectLogo text-center">
-                            <a href="#" data-bind="click:nextPage"><i class="icon-plus"></i> Load more</a>
+                            <a href="#" data-bind="click:nextPage"><i class="fas fa-chevron-circle-down"></i> Load more</a>
                         </div>
                     </li>
                     <!-- /ko -->
