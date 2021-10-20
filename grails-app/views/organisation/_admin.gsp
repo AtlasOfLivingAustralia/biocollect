@@ -13,8 +13,8 @@
 
                 <div class="row mb-2">
                     <div class="col-12">
-                        <button class="btn btn-sm btn-dark admin-action" data-bind="click:editOrganisation"><i
-                            class="icon-edit"></i> Edit
+                        <button class="btn btn-sm btn-dark admin-action" data-bind="click:editOrganisation">
+                            <i class="fas fa-pencil-alt"></i> Edit
                         </button>
                         Edit the organisation details and content
                     </div>
@@ -23,7 +23,7 @@
                 <div class="row">
                     <div class="col-12">
                         <button class="admin-action btn btn-sm btn-danger" data-bind="click:deleteOrganisation">
-                            <i class="icon-remove icon-white"></i> Delete
+                            <i class="far fa-trash-alt"></i> Delete
                         </button>
                         Delete this organisation from the system.
                         <strong>This cannot be undone</strong>
