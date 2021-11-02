@@ -689,6 +689,7 @@ function Documents() {
                         icon = "fab fa-instagram"
                         break;
                     case "itunes":
+                    case "iTunes":
                         icon = "fab fa-apple";
                         break;
                     case "linkedIn":

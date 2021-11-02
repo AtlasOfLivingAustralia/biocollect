@@ -100,7 +100,7 @@
 
 </div>
 <asset:script type="text/javascript">
-$(window).load(function(){
+$(window).on('load',function(){
 
     var SpeciesList = function(data) {
         this.listId = data.dataResourceUid;
@@ -111,7 +111,7 @@ $(window).load(function(){
 
     function SpeciesViewModel (data) {
         var self = this;
-        
+
         self.speciesLists = ko.observableArray(data.speciesLists !== undefined ? data.speciesLists : []);
 
         self.availableLists = [];

@@ -8,9 +8,9 @@
 
     <body>
     <asset:stylesheet src="datatables-manifest.css"/>
-    <asset:stylesheet src="validationEngine.jquery.css"/>
-    <asset:javascript src="jquery.validationEngine/jquery.validationEngine.js"/>
-    <asset:javascript src="jquery.validationEngine/jquery.validationEngine-en.js"/>
+    <asset:stylesheet src="jquery.validationEngine/3.1.0/validationEngine.jquery.css"/>
+    <asset:javascript src="jquery.validationEngine/3.1.0/jquery.validationEngine.js"/>
+    <asset:javascript src="jquery.validationEngine/3.1.0/jquery.validationEngine-en.js"/>
     <asset:javascript src="permissionTable.js"/>
     <asset:javascript src="datatables-manifest.js"/>
     <content tag="pageTitle">Users</content>

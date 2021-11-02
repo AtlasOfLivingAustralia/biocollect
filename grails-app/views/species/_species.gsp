@@ -50,7 +50,7 @@
     </div><!-- /.row-fluid -->
 </div>
 <asset:script type="text/javascript">
-    $(window).load(function(){
+    $(window).on('load',function(){
         // click event for submit species List
         $("#submitSpeciesList").click(function(e) {
             e.preventDefault();

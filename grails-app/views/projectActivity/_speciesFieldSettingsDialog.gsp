@@ -1,23 +1,25 @@
 <g:set bean="settingService" var="settingService"></g:set>
-<div id="configureSpeciesFieldModal" class="species-modal fade" role="dialog">
-    <div class="species-modal-dialog modal-lg">
+<div id="configureSpeciesFieldModal" class="species-modal modal fade" role="dialog">
+    <div class="species-modal-dialog modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-bind="click:cancel">&times;</button>
                 <h4 class="modal-title">Configure <span
                         data-bind="visible: transients.fieldName, text: transients.fieldName()"></span></h4>
+                <button type="button" class="close" data-bind="click:cancel" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
 
                 <div id="species-dialog-alert-placeholder"></div>
             </div>
 
-            <div class="modal-main">
+            <div class="modal-main modal-body">
                 <div class="species-modal-body">
-                    <div class="row-fluid">
-                        <div class="span12">
+                    <div class="row">
+                        <div class="col-12">
                             <div class="controls">
                                 <h5>Step 1. Constrain species available for selection</h5>
                                 <span class="req-field">
-                                    <select data-validation-engine="validate[required]"
+                                    <select class="form-control" data-validation-engine="validate[required]"
                                             data-prompt-position="centerRight"
                                             data-bind="options: speciesOptions, optionsText:'name', optionsValue:'id', value: type, optionsCaption: 'Please select'"></select>
                                 </span>
@@ -47,37 +49,41 @@
                                 </div>
                             </g:if>
 
-                            <div data-bind="visible: groupInfoVisible">
+                            <div class="btn-space" data-bind="visible: groupInfoVisible">
                                 <h5>Step 2. Create or select species list</h5>
-
-                                <div class="btn-group">
-                                    <button class="btn btn-xs btn-small btn-default"
-                                            data-bind="click: transients.toggleShowExistingSpeciesLists">Choose from existing species lists</button>
-                                    <button class="btn btn-xs btn-small btn-default" target="blank"
-                                            data-bind="click: transients.toggleShowAddSpeciesLists">Create new species lists</button>
-                                </div>
+                                <button class="btn btn-sm btn-dark"
+                                        data-bind="click: transients.toggleShowExistingSpeciesLists"><i
+                                        class="fas fa-list-ol"></i> Choose from existing species lists</button>
+                                <button class="btn btn-sm btn-dark" target="blank"
+                                        data-bind="click: transients.toggleShowAddSpeciesLists"><i
+                                        class="fas fa-plus"></i> Create new species lists</button>
                             </div>
 
-                            <div data-bind="visible: singleInfoVisible" class="margin-top-10">
+                            <div data-bind="visible: singleInfoVisible" class="mt-2">
                                 <h5>Step 2. Search and select a species below</h5>
 
-                                <div class="row-fluid">
-                                    <div class="span6">
-                                        <span class="req-field">
-                                            <input class="input-xlarge" type="text" placeholder="Search species"
-                                                   data-bind="value:singleSpecies.name,
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-group row">
+                                            <label class="col-form-label col-1"><span class="req-field"></span></label>
+
+                                            <div class="col-11">
+                                                <input class="form-control" type="text" placeholder="Search species"
+                                                       data-bind="value:singleSpecies.name,
                                                     event:{focusout: singleSpecies.focusLost},
                                                     fusedAutocomplete:{
                                                         source: transients.bioSearch,
                                                         name: singleSpecies.transients.name,
                                                         guid: singleSpecies.transients.guid,
                                                         scientificName: singleSpecies.transients.scientificName,
-                                                        commonName: singleSpecies.transients.commonName
+                                                        commonName: singleSpecies.transients.commonName,
+                                                        classes: {'ui-autocomplete': 'modal-zindex'}
                                                     }" data-validation-engine="validate[required]">
-                                        </span>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class="span6">
+                                    <div class="col-12 col-md-6">
                                         <span data-bind="visible: singleSpecies.transients.guid">
                                             <a data-bind="attr:{href: transients.bioProfileUrl}" target="_blank"><small
                                                     data-bind="text:  singleSpecies.transients.name"></small></a>
@@ -92,12 +98,12 @@
                         <h5><span class="req-field">No lists selected</span></h5>
                     </div>
 
-                    <div class="row-fluid" data-bind="slideVisible: groupInfoVisible, if: speciesLists().length > 0">
+                    <div class="mt-2" data-bind="slideVisible: groupInfoVisible, if: speciesLists().length > 0">
                         <h5>Step 3. Construct species name using the following columns</h5>
-                        <label class="inline">Scientific name is associated with column <select
+                        <label class="d-block">Scientific name is associated with column <select class="form-control"
                                 data-bind="options: commonFields, value: scientificNameField, valueAllowUnset: true"></select>
                         </label>
-                        <label class="inline">Common name is associated with column <select
+                        <label class="d-block">Common name is associated with column <select class="form-control"
                                 data-bind="options: commonFields, value: commonNameField, valueAllowUnset: true"></select>
                         </label>
 
@@ -105,7 +111,7 @@
                         <ol>
                             <!-- ko foreach: speciesLists -->
                             <li>
-                                <a class="btn-link" target="_blank"
+                                <a class="btn btn-link" target="_blank"
                                    data-bind="attr:{href: transients.url, title: listName }">
                                     <small data-bind="text: transients.truncatedListName"></small>
                                 </a>
@@ -118,12 +124,6 @@
 
                 </div>
 
-                <div class="modal-footer control-group">
-                    <div class="controls">
-                        <button type="button" class="btn btn-success" data-bind="click:accept">Apply</button>
-                        <button class="btn" data-bind="click:cancel">Cancel</button>
-                    </div>
-                </div>
                 <!-- Group species -->
                 <div class="species-modal-body"
                      data-bind="visible: groupInfoVisible() && (transients.showAddSpeciesLists() || transients.showExistingSpeciesLists())">
@@ -133,6 +133,13 @@
                         <g:render template="/projectActivity/chooseSpecies"/>
                     </span>
                 </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary-dark" data-bind="click:accept"><i
+                        class="fas fa-check"></i> Apply</button>
+                <button class="btn btn-dark" data-bind="click:cancel"><i class="far fa-times-circle"></i> Cancel
+                </button>
             </div>
         </div>
     </div>

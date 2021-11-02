@@ -1,4 +1,4 @@
-<span>
+<span class="float-right">
     <!-- ko if: published()-->
     <a href="#" class="helphover" data-bind="popover: {title:'Survey status', content:'Survey is listed on the survey page and ready for data entry'}">
         <span class="badge badge-success">Published</span>
@@ -7,7 +7,7 @@
 
     <!-- ko if: !published()-->
     <a href="#" class="helphover" data-bind="popover: {title:'Survey status', content:'Survey is not visible on the survey page and no survey data is accessible.'}">
-        <span class="badge badge-important">Unpublished</span>
+        <span class="badge badge-info">Unpublished</span>
     </a>
     <!-- /ko -->
 </span>
