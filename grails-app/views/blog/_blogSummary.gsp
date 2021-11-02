@@ -1,31 +1,35 @@
 <!-- ko stopBinding:true -->
 <div id="site-blog">
     <g:if test="${blog.size() > 0}">
-        <ul class="unstyled" data-bind="foreach:entries">
-            <li>
-                <img data-bind="visible:imageUrl(), attr:{src:imageUrl}" class="margin-right-10 pull-left" width="50" height="50">
-                <i class="blog-icon pull-left fa fa-3x" data-bind="visible:stockIcon(), css:stockIcon"></i>
-                <div>
-                    <div class="row-fluid">
-                        <strong data-bind="text:title"></strong>
-                        <div class="pull-right">
-                            <a href data-bind="click:$parent.editBlogEntry">Edit</a> |
-                            <a href data-bind="click:$parent.deleteBlogEntry">Delete</a>
+        <!-- ko foreach:entries -->
+        <div class="row">
+            <div class="col-12 media">
+                <img data-bind="visible:imageUrl(), attr:{src:imageUrl}" class="mr-2" width="50" height="50">
+                <i class="blog-icon pull-left fa fa-3x mr-2" data-bind="visible:stockIcon(), css:stockIcon"></i>
+                <div class="media-body">
+                    <h5 data-bind="text:title"></h5>
+                    <p class="excerpt" data-bind="text:shortContent"></p>
+                    <div class="row">
+                        <div class="col-12">
+                            <a class="btn btn-sm btn-primary-dark" href="#" data-bind="click:$parent.editBlogEntry">
+                                <i class="fas fa-pencil-alt"></i> Edit</a>
+                            <a class="btn btn-sm btn-danger" href="#" data-bind="click:$parent.deleteBlogEntry">
+                                <i class="far fa-trash-alt"></i> Delete</a>
                         </div>
                     </div>
-                    <p data-bind="text:shortContent"></p>
                 </div>
-                <hr/>
-            </li>
-
-        </ul>
+            </div>
+        </div>
+        <!-- /ko -->
     </g:if>
     <g:else>
         No blog entries.
     </g:else>
 
-    <div class="form-actions">
-        <button data-bind="click:newBlogEntry" type="button" id="new" class="btn btn-primary">New Entry</button>
+    <div class="row mt-2">
+        <div class="col-12">
+            <button data-bind="click:newBlogEntry" type="button" id="new" class="btn btn-sm btn-primary-dark "><i class="fas fa-plus"></i> New Entry</button>
+        </div>
     </div>
 </div>
 <!-- /ko -->

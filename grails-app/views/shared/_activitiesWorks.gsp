@@ -595,7 +595,7 @@
         return target;
     };
 
-    $(window).load(function () {
+    $(window).on('load',function () {
      var project = <fc:modelAsJavascript model="${project}"/>;
      var config = {
             activities: ${activities ?: []},

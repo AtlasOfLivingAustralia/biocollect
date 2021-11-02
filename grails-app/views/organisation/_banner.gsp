@@ -1,5 +1,5 @@
-<g:set var="orgService" bean="organisationService"/>
-<g:set var="logo" value="${orgService.getLogoURL(organisation.documents)}"/>
+<g:set var="utilService" bean="utilService"/>
+<g:set var="logo" value="${utilService.getLogoURL(organisation.documents)}"/>
 <content tag="banner">
     <div class="project-title">
         <div class="container">
@@ -7,7 +7,7 @@
                 <g:if test="${logo}">
                 <div class="col-12 col-lg-auto flex-shrink-1 d-flex justify-content-center justify-content-lg-end">
                     <div class="main-image">
-                        <img src="${logo}" alt="<g:message code="organisation.logo.img.alt" args="${[organisation.name]}"/>">
+                        <img src="${logo}" alt="<g:message code="logo.img.alt" args="${[organisation.name]}"/>">
                     </div>
                 </div>
                 </g:if>

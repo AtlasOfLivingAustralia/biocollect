@@ -313,7 +313,7 @@
 <asset:script type="text/javascript">
     var projectListIds = [], facetList = [], mapDataHasChanged = false, mapBounds, projectSites, siteDisplay; // globals
 
-    $(window).load(function () {
+    $(window).on('load',function () {
         $.fn.clicktoggle = function(a, b) {
             return this.each(function() {
                 var clicked = false;

@@ -1,7 +1,7 @@
 <!-- ko stopBinding: true -->
 <g:set var="modalId" value="${ modalId?:'attachDocument' }"/>
 <div id="${modalId}" class="modal fade">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="title">Attach Document</h4>
@@ -42,7 +42,7 @@
                         <label class="col-form-label col-sm-3" for="documentRole">Document type</label>
 
                         <div class="col-sm-9">
-                            <select class="form-control" id="documentRole" style="width: 97%;" data-bind="options:roles, optionsText: 'name', optionsValue: 'id', value:role"></select>
+                            <select class="form-control" id="documentRole" data-bind="options:roles, optionsText: 'name', optionsValue: 'id', value:role"></select>
                         </div>
                     </div>
 
@@ -67,20 +67,24 @@
 
                     <div class="row form-group" data-bind="visible:settings.showSettings">
                         <label class="col-form-label col-sm-3" for="public">Settings</label>
-                        <div class="col-sm-9 form-check">
-                            <input class="form-check-input" id="public" type="checkbox" data-bind="checked:public"/>
-                            <label class="checkbox form-check-label" for="public">make this document public on the project "Resources" tab</label>
+                        <div class="col-sm-9">
+                            <div class="form-check">
+                                <input class="form-check-input" id="public" type="checkbox" data-bind="checked:public"/>
+                                <label class="checkbox form-check-label" for="public">make this document public on the project "Resources" tab</label>
+                            </div>
                         </div>
 
                     </div>
 
                     <div class="row form-group" data-bind="visible:thirdPartyConsentDeclarationRequired">
                         <label for="thirdPartyConsentDeclarationMade" class="col-sm-3 col-form-label">Privacy declaration</label>
-                        <div id="thirdPartyConsentDeclarationMade" class="col-sm-9 form-check">
-                            <input class="validate[required] form-check-input" id="thirdPartyConsentCheckbox" type="checkbox" name="thirdPartyConsentDeclarationMade" data-bind="checked:thirdPartyConsentDeclarationMade">
-                            <label class="form-check-label" id="thirdPartyDeclarationText" for="thirdPartyConsentCheckbox">
-                                <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.THIRD_PARTY_PHOTO_CONSENT_DECLARATION}"/>
-                            </label>
+                        <div id="thirdPartyConsentDeclarationMade" class="col-sm-9">
+                            <div class=" form-check">
+                                <input class="validate[required] form-check-input" id="thirdPartyConsentCheckbox" type="checkbox" name="thirdPartyConsentDeclarationMade" data-bind="checked:thirdPartyConsentDeclarationMade">
+                                <label class="form-check-label" id="thirdPartyDeclarationText" for="thirdPartyConsentCheckbox">
+                                    <fc:getSettingContent settingType="${au.org.ala.biocollect.merit.SettingPageType.THIRD_PARTY_PHOTO_CONSENT_DECLARATION}"/>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
@@ -104,10 +108,10 @@
 
                             <div class="col-sm-9">
 
-                                <span class="btn btn-dark" data-bind="visible:filename()">
+                                <span data-bind="visible:filename()">
                                     <input id="fileLabel" type="text" readonly="readonly" data-bind="value:fileLabel"/>
-                                    <button class="btn" data-bind="click:removeFile">
-                                        <span class="fas fa-minus"></span>
+                                    <button class="btn btn-sm btn-danger" data-bind="click:removeFile">
+                                        <i class="far fa-trash-alt"></i>
                                     </button>
                                 </span>
                             </div>
