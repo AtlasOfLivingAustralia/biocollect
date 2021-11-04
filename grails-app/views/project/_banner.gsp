@@ -1,5 +1,6 @@
 <g:set var="utilService" bean="utilService"/>
 <g:set var="logo" value="${utilService.getLogoURL(project.documents)}"/>
+<content tag="projectLogo">${logo?"margin-buffer":""}</content>
 <content tag="banner">
     <bc:koLoading>
         <div class="project-title">
