@@ -1,30 +1,6 @@
 <div class="row bg-selected-color padding-5">
-    <div class="col-12">
+    <div class="col-12 col-xl-6">
         <h6>Base layers</h6>
-        <div class="row">
-            <div class="col-12">
-                <div class="alert alert-info">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h6><strong>Base Layer Help!</strong></h6>
-                    <p>
-                        To control the appearance of the map users will see, do the following:
-                    </p>
-                    <ol>
-                        <li class="alert-info">
-                            Select the base layer(s) that you want users to be able choose from.
-                        </li>
-                        <li class="alert-info">
-                            Select which one of the layers you want to display on forms by default.
-                        </li>
-                        <li class="alert-info">
-                            Move the display sequence of available layers up/down as required.
-                        </li>
-                    </ol>
-                </div>
-            </div>
-        </div>
         <div class="row">
             <div class="col-12 table-responsive">
                 <div class="form-group row">
@@ -35,10 +11,15 @@
                         </a>
                     </label>
                     <div class="col-8 btn-space">
-                        <select class="form-control" data-bind="options: allBaseLayers, optionsText: 'displayText', value: selectedBaseLayer, optionCaption: 'Choose base layer ...'"></select>
-                        <button class="btn btn-sm btn-dark add-base-layer" data-bind="click: addBaseLayerClickHandler, disable: allBaseLayers().length == 0">
-                            <i class="fas fa-plus"></i> Add
-                        </button>
+                        <div class="input-group">
+                            <select class="custom-select" data-bind="options: allBaseLayers, optionsText: 'displayText', value: selectedBaseLayer, optionCaption: 'Choose base layer ...'"></select>
+                            <div class="input-group-append">
+                                <button class="btn btn-dark add-base-layer" data-bind="click: addBaseLayerClickHandler, disable: allBaseLayers().length == 0">
+                                    <i class="fas fa-plus"></i> Add
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 <table class="table table-bordered">
@@ -89,7 +70,7 @@
                                         <button class="btn btn-sm  btn-dark move-up-base-layer mt-1" data-bind="click: moveUp, enable: canMoveUp($data)"><i
                                                 class="fas fa-arrow-up"></i> Move up
                                         </button>
-                                        <button class="btn btn-sm btn-dark move-down-base-layer  mt-1" data-bind="click: moveDown, enable: canMoveDown($data)"><i
+                                        <button class="btn btn-sm btn-dark move-down-base-layer mt-1" data-bind="click: moveDown, enable: canMoveDown($data)"><i
                                                 class="fas fa-arrow-down"></i> Move down
                                         </button>
                                     </div>
@@ -112,24 +93,33 @@
                 </table>
             </div>
         </div>
-    </div>
-    <div class="col-12 bg-selected-color">
-        <h6>Overlays</h6>
         <div class="row">
             <div class="col-12">
                 <div class="alert alert-info">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h6><strong>Overlay Help!</strong></h6>
+                    <h6><strong>Base Layer Help!</strong></h6>
                     <p>
-                        If you want to change the default overlay selections, please follow steps 1-3 as per base layer settings.
-                        Note that you can select multiple overlays to display by default.
-                        You can also change the opacity (transparency) of each layer. Limited styling of layers is also available.
+                        To control the appearance of the map users will see, do the following:
                     </p>
+                    <ol>
+                        <li class="alert-info">
+                            Select the base layer(s) that you want users to be able choose from.
+                        </li>
+                        <li class="alert-info">
+                            Select which one of the layers you want to display on forms by default.
+                        </li>
+                        <li class="alert-info">
+                            Move the display sequence of available layers up/down as required.
+                        </li>
+                    </ol>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="col-12 col-xl-6 bg-selected-color">
+        <h6>Overlays</h6>
         <div class="row">
             <div class="col-12 table-responsive">
                 <div class="form-group row">
@@ -141,10 +131,14 @@
                         </a>
                     </div>
                     <div class="col-8 btn-space">
-                        <select class="form-control" data-bind="options: allOverlays, optionsText: 'title', value: selectedOverlay, optionCaption: 'Choose overlay ...'"></select>
-                        <button class="btn btn-sm btn-dark add-overlay" data-bind="click: addOverlayClickHandler, disable: allOverlays().length == 0">
-                            <i class="fas fa-plus"></i> Add
-                        </button>
+                        <div class="input-group">
+                            <select class="custom-select" data-bind="options: allOverlays, optionsText: 'title', value: selectedOverlay, optionCaption: 'Choose overlay ...'"></select>
+                            <div class="input-group-append">
+                                <button class="btn btn-dark add-overlay" data-bind="click: addOverlayClickHandler, disable: allOverlays().length == 0">
+                                    <i class="fas fa-plus"></i> Add
+                                </button>
+                            </div>
+                            </div>
                     </div>
                 </div>
                 <table class="table table-bordered">
@@ -201,7 +195,7 @@
                                 <button class="btn btn-sm btn-dark move-up-overlay mt-1" data-bind="click: moveUp, enable: canMoveUp($data)"><i
                                         class="fas fa-arrow-up"></i> Move up
                                 </button>
-                                <button class="btn btn-sm btn-dark move-up-overlay mt-1" data-bind="click: moveDown, enable: canMoveDown($data)"><i
+                                <button class="btn btn-sm btn-dark move-down-overlay mt-1" data-bind="click: moveDown, enable: canMoveDown($data)"><i
                                         class="fas fa-arrow-down"></i> Move down
                                 </button>
                             </div>
@@ -215,7 +209,7 @@
                                         More settings
                                     </button>
                                     <!-- /ko -->
-                                    <button class="btn btn-sm btn-danger" data-bind="click: removeOverlay">
+                                    <button class="btn btn-sm btn-danger remove-overlay" data-bind="click: removeOverlay">
                                         <i class="far fa-trash-alt"></i> Remove
                                     </button>
                                 </div>
@@ -322,6 +316,21 @@
                     </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h6><strong>Overlay Help!</strong></h6>
+                    <p>
+                        If you want to change the default overlay selections, please follow steps 1-3 as per base layer settings.
+                        Note that you can select multiple overlays to display by default.
+                        You can also change the opacity (transparency) of each layer. Limited styling of layers is also available.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
