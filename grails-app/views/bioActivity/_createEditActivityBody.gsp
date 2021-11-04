@@ -52,7 +52,7 @@
 
 <g:if test="${metaModel?.supportsSites?.toBoolean()}">
     <div >
-        <h3 class="text-center text-error card-title">Site Details</h3>
+        <h3 class="text-center text-error">Site Details</h3>
         <div class="output-block text-center card">
             <fc:select
                     data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
@@ -64,7 +64,7 @@
 </g:if>
 
 <g:if test="${metaModel?.supportsPhotoPoints?.toBoolean()}">
-    <h3 class="text-center text-error card-title">Photo Points</h3>
+    <h3 class="text-center text-error">Photo Points</h3>
     <div class="output-block card" data-bind="with:transients.photoPointModel">
         <g:render template="/site/photoPoints"></g:render>
     </div>
