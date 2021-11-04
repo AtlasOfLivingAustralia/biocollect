@@ -6,6 +6,6 @@
 //= require jquery.appear/jquery.appear.js
 //= require bootstrap4/js/bootstrap.bundle.min.js
 //= require bootstrap4/js/bootstrap.bundle.js
-//= require bootstrap-combobox/bootstrap-combobox.js
+//= require bootstrap-combobox/js/bootstrap-combobox.js
 //= require ala-map-no-jquery-us.js
 //= require fieldcapture-application.js
