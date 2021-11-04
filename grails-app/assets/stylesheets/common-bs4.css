@@ -19,6 +19,21 @@
 #banner.no-image {
     height: 250px;
 }
+@media (min-width: 768px) {
+    #banner.no-image {
+        height: 150px;
+    }
+}
+
+@media (min-width: 992px) {
+    #banner.no-image {
+        height: 250px;
+    }
+
+    #banner.no-image.margin-buffer {
+        margin-top: 150px;
+    }
+}
 
 #banner.no-content.no-image {
     height: 150px;

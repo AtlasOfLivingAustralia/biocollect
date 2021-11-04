@@ -14,7 +14,7 @@
 </head>
 
 <body class="carousel">
-<div class="site" id="page">
+<div class="site " id="page">
     %{--    navbar start--}%
     <div id="wrapper-navbar" itemscope="" itemtype="http://schema.org/WebSite">
         <a class="skip-link sr-only sr-only-focusable" href="#content">Skip to content</a>
@@ -69,7 +69,7 @@
                 <g:set var="bannerURL" value="${pageProperty(name: 'meta.bannerURL') ?: hubConfig.templateConfiguration.banner.images[0]?.url}"/>
                 <g:set var="banner" value="${pageProperty(name: 'page.banner')}"/>
                 <g:if test="${bannerURL || banner}">
-                    <div id="banner" class="page-banner ${pageProperty(name: 'meta.bannerClass') ?: ''} ${bannerURL? "": "no-image"}" style="${bannerURL ? "background-image: url('${bannerURL}');" : ""}">
+                    <div id="banner" class="page-banner ${pageProperty(name: 'meta.bannerClass') ?: ''} ${bannerURL? "": "no-image"} ${pageProperty(name: 'page.projectLogo')}" style="${bannerURL ? "background-image: url('${bannerURL}');" : ""}">
                         ${raw(banner?:"")}
                     </div>
                 </g:if>
@@ -346,5 +346,15 @@
     </footer>
 </div>
 <asset:deferredScripts />
+<script>
+    $(document).ready(function () {
+        /**
+         * Mobile (off-canvas) menu
+         */
+        $('[data-toggle="offcanvas"]').on('click', function () {
+            $('#page.site').toggleClass('offcanvas-open');
+        });
+    })
+</script>
 </body>
 </html>
