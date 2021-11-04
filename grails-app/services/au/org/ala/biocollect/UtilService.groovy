@@ -134,4 +134,20 @@ class UtilService {
 
         value
     }
+
+    String getMainImageURL(List documents) {
+        Map doc = documents?.find {
+            it.role == 'mainImage' && it.status != 'deleted'
+        }
+
+        doc?.url ?: doc?.externalUrl
+    }
+
+    String getLogoURL(List documents) {
+        Map document = documents?.find {
+            it.role == 'logo' && it.status != 'deleted'
+        }
+
+        document?.thumbnailUrl ?: document?.url
+    }
 }

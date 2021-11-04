@@ -672,9 +672,13 @@ function Documents() {
             },
             icon: function(){
                 var icon;
+                console.log(this.role);
                 switch (this.role) {
                     case "android":
                         icon = "fab fa-android";
+                        break;
+                    case "blackberry":
+                        icon = "fab fa-blackberry";
                         break;
                     case "facebook":
                         icon = "fab fa-facebook-f"
@@ -689,6 +693,7 @@ function Documents() {
                         icon = "fab fa-instagram"
                         break;
                     case "itunes":
+                    case "iTunes":
                         icon = "fab fa-apple";
                         break;
                     case "linkedIn":
@@ -708,6 +713,9 @@ function Documents() {
                         break;
                     case "vimeo":
                         icon = "fab fa-vimeo-v"
+                        break;
+                    case "windowsPhone":
+                        icon = "fab fa-windows"
                         break;
                     case "youtube":
                         icon = "fab fa-youtube"

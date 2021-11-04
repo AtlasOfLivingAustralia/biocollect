@@ -183,7 +183,7 @@
 
 </div>
 <asset:script type="text/javascript">
-    $(window).load(function () {
+    $(window).on('load',function () {
         $('.tooltips').tooltip({placement: "right"});
     });
 </asset:script>

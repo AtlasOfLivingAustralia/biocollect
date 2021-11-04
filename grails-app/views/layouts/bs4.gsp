@@ -14,7 +14,7 @@
 </head>
 
 <body class="carousel">
-<div class="site" id="page">
+<div class="site " id="page">
     %{--    navbar start--}%
     <div id="wrapper-navbar" itemscope="" itemtype="http://schema.org/WebSite">
         <a class="skip-link sr-only sr-only-focusable" href="#content">Skip to content</a>
@@ -67,13 +67,14 @@
         <main class="site-main">
             <article class="page">
                 <g:set var="bannerURL" value="${pageProperty(name: 'meta.bannerURL') ?: hubConfig.templateConfiguration.banner.images[0]?.url}"/>
-                <g:if test="${pageProperty(name: 'meta.bannerURL')}">
-                <div id="banner" class="page-banner" style="background-image: url('${bannerURL}');">
-                        <g:pageProperty name="page.banner"/>
+                <g:set var="banner" value="${pageProperty(name: 'page.banner')}"/>
+                <g:if test="${bannerURL || banner}">
+                    <div id="banner" class="page-banner ${pageProperty(name: 'meta.bannerClass') ?: ''} ${bannerURL? "": "no-image"} ${pageProperty(name: 'page.projectLogo')}" style="${bannerURL ? "background-image: url('${bannerURL}');" : ""}">
+                        ${raw(banner?:"")}
                     </div>
                 </g:if>
                 <g:else>
-                <div id="banner" class="page-banner no-image"></div>
+                    <div id="banner" class="no-image no-content"></div>
                 </g:else>
                 <g:set var="tabList" value="${pageProperty(name: 'page.tab')}"/>
                 <g:if test="${tabList}">
@@ -83,24 +84,24 @@
                         </div>
                     </div>
                 </g:if>
-                <g:else>
-                    <div class="nav-row nav-row-height">
-                        <div class="container">
-                            <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">
-                            </ul>
-                        </div>
-                    </div>
-                </g:else>
+%{--                <g:else>--}%
+%{--                    <div class="nav-row nav-row-height">--}%
+%{--                        <div class="container">--}%
+%{--                            <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">--}%
+%{--                            </ul>--}%
+%{--                        </div>--}%
+%{--                    </div>--}%
+%{--                </g:else>--}%
                 <div id="titleBar">
                     <div class="container">
                         <div class="row d-flex title-row">
-                            <g:if test="${hubConfig.logoUrl}">
-                                <div class="col-12 col-lg-auto flex-shrink-1 d-flex mb-4 mb-lg-0 justify-content-center justify-content-lg-end">
-                                    <div class="main-image">
-                                        <img src="${hubConfig.logoUrl}" alt="<g:message code="hub.logo.alttext"/> ${hubConfig.title}">
-                                    </div>
-                                </div>
-                            </g:if>
+%{--                            <g:if test="${hubConfig.logoUrl}">--}%
+%{--                                <div class="col-12 col-lg-auto flex-shrink-1 d-flex mb-4 mb-lg-0 justify-content-center justify-content-lg-end">--}%
+%{--                                    <div class="main-image">--}%
+%{--                                        <img src="${hubConfig.logoUrl}" alt="<g:message code="hub.logo.alttext"/> ${hubConfig.title}">--}%
+%{--                                    </div>--}%
+%{--                                </div>--}%
+%{--                            </g:if>--}%
 
                             <g:if test="${pageProperty(name: 'page.pagefinderbuttons')}">
                                 <div class="col d-flex align-items-center justify-content-center justify-content-lg-end">
@@ -345,5 +346,15 @@
     </footer>
 </div>
 <asset:deferredScripts />
+<script>
+    $(document).ready(function () {
+        /**
+         * Mobile (off-canvas) menu
+         */
+        $('[data-toggle="offcanvas"]').on('click', function () {
+            $('#page.site').toggleClass('offcanvas-open');
+        });
+    })
+</script>
 </body>
 </html>

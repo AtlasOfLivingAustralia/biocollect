@@ -296,7 +296,13 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
                 uploadUrl,
                 {document:documentViewModel.toJSONString()},
                 function(result) {
-                    var resp = JSON.parse(result).resp;
+                    var resp;
+                    if (typeof result == "string") {
+                        resp = JSON.parse(result).resp
+                    } else {
+                        resp = result.resp
+                    }
+
                     documentViewModel.fileUploaded(resp);
                 })
                 .fail(function() {
@@ -348,20 +354,23 @@ function showDocumentAttachInModal(uploadUrl, documentViewModel, modalSelector, 
     // Close the modal and tidy up the bindings.
     var closeModal = function() {
         $modal.modal('hide');
-        $fileUpload.find(previewSelector).empty();
-        ko.cleanNode($fileUpload[0]);
     };
 
     ko.applyBindings(documentViewModel, $fileUpload[0]);
 
     // Do the binding from the model to the view?  Or assume done already?
     $modal.modal({backdrop:'static'});
-    $modal.on('shown', function() {
+    $modal.on('shown.bs.modal', function() {
         $modal.find('form').validationEngine({'custom_error_messages': {
             '#thirdPartyConsentCheckbox': {
                 'required': {'message':'The privacy declaration is required for images viewable by everyone'}
             }
         }, 'autoPositionUpdate':true, promptPosition:'inline'});
+    });
+
+    $modal.on('hidden.bs.modal', function (event) {
+        $fileUpload.find(previewSelector).empty();
+        ko.cleanNode($fileUpload[0]);
     });
 
     return result;

@@ -6,8 +6,8 @@
 //= require knockout/3.4.0/knockout-3.4.0.js
 // require knockout/3.4.0/knockout-3.4.0.debug.js
 //= require knockout.js/knockout.mapping-latest.js
-//= require jquery.validationEngine/jquery.validationEngine.js
-//= require jquery.validationEngine/jquery.validationEngine-en.js
+//= require jquery.validationEngine/3.1.0/jquery.validationEngine.js
+//= require jquery.validationEngine/3.1.0/jquery.validationEngine-en.js
 //= require jquery.blockUI/jquery.blockUI.js
 //= require jquery.columnizer/jquery.columnizer.js
 //= require jquery.shorten/jquery.shorten.js
@@ -15,7 +15,7 @@
 //= require moment/moment-timezone-with-data.min.js
 //= require vkbeautyfy/vkbeautify.0.99.00.beta.js
 //= require knockout-dates.js
-//= require knockout-custom-bindings-bs4.js
+//= require knockout-custom-bindings.js
 //= require knockout-custom-extenders.js
 //= require wmd/wmd.js
 //= require wmd/showdown.js

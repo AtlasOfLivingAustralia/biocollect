@@ -348,7 +348,7 @@
     </g:if>
 </div>
     <asset:script type="text/javascript">
-        $(window).load(function () {
+        $(window).on('load',function () {
             var map;
             // setup 'read more' for long text
             $('.more').shorten({
@@ -515,7 +515,7 @@
     <g:if test="${user?.isAdmin || user?.isCaseManager}">
         <asset:script type="text/javascript">
             // Admin JS code only exposed to admin users
-            $(window).load(function () {
+            $(window).on('load',function () {
 
                 // remember state of admin nav (vertical tabs)
                 $('#adminNav a[data-toggle="tab"]').on('shown', function (e) {
