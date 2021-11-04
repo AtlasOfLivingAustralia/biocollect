@@ -112,34 +112,30 @@ class FCTagLib {
      * @attr name
      * @attr targetField
      * @attr printable
+     * @attr required
+     * @attr bs4
      * @attr size optionally overrides the bootstrap size class for the input
      */
     def datePicker = { attrs ->
         /**
-            <div class="input-append">
-                <input data-bind="datepicker:startDate.date" name="startDate" id="startDate" type="text" size="16"
-                    data-validation-engine="validate[required]" class="input-xlarge"/>
-                <span class="add-on open-datepicker"><i class="icon-calendar"></i></span>
-            <div>
+         <input data-bind="datepicker:startDate.date" name="startDate" id="startDate" type="text" size="16"
+         data-validation-engine="validate[required]" class="input-xlarge"/>
+         <span class="add-on open-datepicker"><i class="fa fa-th"></i></span>
          */
 
         def mb = new MarkupBuilder(out)
 
         if (!attrs.printable) {
-            Map inputAppend = [
-                class: 'input-append datepicker'
-            ]
-
             def inputAttrs = [
-                "data-bind":"datepicker:${attrs.targetField}",
-                name:"${attrs.name}",
-                id:"${attrs.id ?: attrs.name}",
-                type:'text',
-                size:'16',
-                class: attrs.size ?: 'input-xlarge'
+                    "data-bind":"datepicker:${attrs.targetField}",
+                    name:"${attrs.name}",
+                    id:"${attrs.id ?: attrs.name}",
+                    type:'text',
+                    size:'16',
+                    class: attrs.size ?: 'input-xlarge'
             ]
 
-            def ignoreList = ['name', 'id']
+            def ignoreList = ['name', 'id', 'theme', 'bs4']
             attrs.each {
                 if (!ignoreList.contains(it.key)) {
                     inputAttrs[it.key] = it.value
@@ -149,25 +145,41 @@ class FCTagLib {
             if (attrs.required) {
                 inputAttrs["data-validation-engine"] = "validate[required]"
             }
-            mb.div(inputAppend){
+
+            def content = {
                 mb.input(inputAttrs) {
                 }
-
-                mb.span(class:'add-on open-datepicker') {
-                    mb.i(class:'icon-calendar') {
-                        mkp.yieldUnescaped("&nbsp;")
-                    }
-                }
-
-                if (attrs.clearBtn?.toBoolean()){
-                    mb.span(class:'add-on clear-date') {
-                        mb.i(class: 'icon-remove') {
+                String addOnClass = attrs.bs4 ? "btn ${attrs.theme ?: ''}" : "input-group-text add-on"
+                String buttonClass = "fa fa-th "
+                def spanDateWrapper = {
+                    mb.span(class: "${addOnClass} open-datepicker") {
+                        mb.i(class: buttonClass) {
                             mkp.yieldUnescaped("&nbsp;")
                         }
                     }
                 }
+                def clearDateWrapper = {
+                    if (attrs.clearBtn?.toBoolean()){
+                        mb.span(class:"${addOnClass} clear-date") {
+                            mb.i(class: 'far fa-times-circle') {
+                                mkp.yieldUnescaped("&nbsp;")
+                            }
+                        }
+                    }
+                }
 
-            };
+                //  Bootstrap 4 needs the control to be wrapped in an input-group class
+                if (attrs.bs4){
+                    mb.div(class: "input-group-append") {
+                        spanDateWrapper()
+                        clearDateWrapper()
+                    }
+                } else {
+                    spanDateWrapper()
+                    clearDateWrapper()
+                }
+            }
+            content()
         } else {
             def inputAttrs = [
                 name:"${attrs.name}",
@@ -650,8 +662,8 @@ class FCTagLib {
         attrs.tabs.each { name, details ->
 
             if (details.type == 'tab' && details.visible) {
-                def liClass = details.default ? 'active nav-item':'nav-item'
-                def linkAttributes = [href:'#'+name, id:name+'-tab', class: "nav-link"]
+                def liClass = 'nav-item'
+                def linkAttributes = [href:'#'+name, id:name+'-tab', class: details.default ? 'active nav-link':"nav-link"]
                 if (!details.disabled) {
                     linkAttributes << ["data-toggle":"tab"]
                 }

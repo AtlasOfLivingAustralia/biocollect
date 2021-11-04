@@ -354,10 +354,6 @@ function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, templateSele
     // Close the modal and tidy up the bindings.
     var closeModal = function() {
         $modal.modal('hide');
-        $modal.removeClass("modal-open");
-        $("body").removeClass("modal-open");
-        $modal.find('form').validationEngine('detach');
-        ko.cleanNode(template);
     };
 
     ko.applyBindings(speciesFieldConfigViewModel, template);
@@ -376,8 +372,15 @@ function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, templateSele
     $("body").addClass("modal-open");
     $modal.modal('show');
 
-    $modal.on('shown', function() {
+    $modal.on('shown.bs.modal', function() {
         $modal.find('form').validationEngine();
+    });
+
+    $modal.on('hidden.bs.modal', function(){
+        $modal.removeClass("modal-open");
+        $("body").removeClass("modal-open");
+        $modal.find('form').validationEngine('detach');
+        ko.cleanNode(template);
     });
 
     return result;
@@ -426,8 +429,8 @@ var SpeciesListsViewModel = function (o) {
     var self = this;
     if (!o) o = {};
 
-    self.ascIconClass = "icon-chevron-up";
-    self.descIconClass = "icon-chevron-down";
+    self.ascIconClass = "fas fa-sort-up";
+    self.descIconClass = "fas fa-sort-down";
 
     self.searchGuid = ko.observable();
     self.searchName = ko.observable();

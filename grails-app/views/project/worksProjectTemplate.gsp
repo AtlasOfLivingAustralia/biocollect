@@ -331,7 +331,8 @@
                                 nextEffect:'fade',
                                 previousEffect:'fade'
                             });
-                            $(window).load(function() {
+                            // todo: is this needed?
+                            $(window).on('load',function() {
 
                             });
                         });

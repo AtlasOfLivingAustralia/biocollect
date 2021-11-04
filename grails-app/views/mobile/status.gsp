@@ -1,6 +1,6 @@
 <%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
+<html>
 <head>
     <meta name="layout" content="mobile"/>
     <title> Mobile | <g:message code="g.biocollect"/></title>
@@ -16,8 +16,8 @@
 <!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
 <div id="main-content">
 
-    <div class="row-fluid">
-        <div class="col-lg-12">
+    <div class="row">
+        <div class="col-12">
             <h2>Processing...</h2>
         </div>
     </div>

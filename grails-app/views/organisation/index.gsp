@@ -1,6 +1,6 @@
 <%@ page import="grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
 <g:set var="mapService" bean="mapService"></g:set>
-<g:set var="organisationService" bean="organisationService"></g:set>
+<g:set var="utilService" bean="utilService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,11 +10,9 @@
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
     <meta name="breadcrumb" content="${organisation.name}"/>
-    <meta name="bannerURL" content="${organisationService.getMainImageURL(organisation.documents)}"/>
+    <meta name="bannerURL" content="${utilService.getMainImageURL(organisation.documents)}"/>
     <g:set var="loadPermissionsUrl"
            value="${createLink(controller: 'organisation', action: 'getMembersForOrganisation', id: organisation.organisationId)}"/>
-%{--    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>--}%
-%{--    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>--}%
     <asset:script type="text/javascript">
         var fcConfig = {
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",

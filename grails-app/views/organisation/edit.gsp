@@ -44,8 +44,8 @@
     <div class="row mt-3">
         <div class="col-12">
             <div class="form-actions">
-                <button type="button" id="save" data-bind="click:save" class="btn btn-primary-dark">Save</button>
-                <button type="button" id="cancel" class="btn">Cancel</button>
+                <button type="button" id="save" data-bind="click:save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Save</button>
+                <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> Cancel</button>
             </div>
         </div>
     </div>

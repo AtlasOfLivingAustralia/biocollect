@@ -162,7 +162,7 @@
 <asset:script type="text/javascript">
     var projectListIds = []; // list of strings
 
-    $(window).load(function () {
+    $(window).on('load',function () {
         var delay = (function(){
             var timer = 0;
             return function(callback, ms){

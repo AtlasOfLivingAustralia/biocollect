@@ -38,7 +38,7 @@
     </table>
 </div>
 <asset:script type="text/javascript">
-    $(window).load(function () {
+    $(window).on('load',function () {
         function ActivitiesViewModel(activities, sites) {
             var self = this;
             this.loadActivities = function (activities) {

@@ -17,11 +17,35 @@
 
 /* bs4 layout */
 #banner.no-image {
-    height: 80px;
+    height: 250px;
+}
+@media (min-width: 768px) {
+    #banner.no-image {
+        height: 150px;
+    }
+}
+
+@media (min-width: 992px) {
+    #banner.no-image {
+        height: 250px;
+    }
+
+    #banner.no-image.margin-buffer {
+        margin-top: 150px;
+    }
+}
+
+#banner.no-content.no-image {
+    height: 150px;
 }
 
 #banner.no-image:after {
     background-color: rgba(0,0,0,0);
+}
+
+#banner.no-image .project-title {
+    background-color: inherit;
+    color: inherit;
 }
 
 .nav-row-height {
@@ -39,7 +63,7 @@
 .project-logo {
     width: 200px;
     height: 150px;
-    line-height: 146px;
+    /*line-height: 146px;*/
     overflow: hidden;
     padding: 3px;
     text-align: center;
@@ -113,3 +137,101 @@
     }
 }
 /* end all records */
+
+/* project resources */
+.preview {
+    min-height: 600px;
+}
+/* END project resources */
+
+/**
+ * used in project activities for colour coding reliability tags
+ */
+.high {
+    background: #4cbc4c;
+    color: white;
+    padding: 5px 10px;
+    min-height: 30px;
+    overflow-y: auto;
+    font-size: 11px;
+}
+
+.moderate {
+    background: #f3f61f;
+    color: black;
+    padding: 5px 10px;
+    min-height: 30px;
+    overflow-y: auto;
+    font-size: 11px;
+}
+
+.low {
+    background: #e22019;
+    color: white;
+    padding: 5px 10px;
+    min-height: 30px;
+    overflow-y: auto;
+    font-size: 11px;
+}
+
+.na {
+    background: #a5a9a5;
+    color: #ffffff;
+    padding: 5px 10px;
+    min-height: 30px;
+    overflow-y: auto;
+    font-size: 11px;
+}
+/* END used in project activities for colour coding reliability tags */
+
+
+/* needed by project index, edit pages */
+/*
+ *= require jquery.validationEngine/3.1.0/validationEngine.jquery.css
+*/
+/* END needed by project index, edit pages */
+
+/** Permissions table */
+.dataTables_length > label{
+    width: 100%;
+}
+select[name='member-list_length']{
+    max-width: 100px
+}
+/** END Permissions table */
+
+/** audit table */
+.dataTables_length > label {
+    width: 100%;
+}
+select[name=project-list_length]{
+    max-width: 100px
+}
+
+#project-list_filter > label {
+    width: 100%;
+}
+
+#project-list_filter input[type=search] {
+    width: 50%;
+    min-width: 200px;
+    display: inline;
+}
+
+/** END Permissions table */
+
+/** form field **/
+.req-field:after {
+    content: "*";
+    color: red;
+    font-weight: bold;
+    font-size: 1.5em;
+    white-space: nowrap;
+}
+/** END form field **/
+
+/** bootstrap modifier */
+.modal-zindex {
+    z-index: 1050 !important;
+}
+/** END bootstrap modifier */

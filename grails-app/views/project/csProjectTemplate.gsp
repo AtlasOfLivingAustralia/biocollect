@@ -1,16 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" import="grails.converters.JSON;"%>
 <g:set var="mapService" bean="mapService"></g:set>
+<g:set var="utilService" bean="utilService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
+    <meta name="layout" content="${mobile ? 'mobile' : 'bs4'}"/>
     <title>${project?.name.encodeAsHTML()} | Project | BioCollect</title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
-    <asset:stylesheet src="forms-manifest.css"/>
-    <asset:stylesheet src="projects.css"/>
+    <meta name="bannerURL" content="${utilService.getMainImageURL(project.documents)}"/>
+    <meta name="bannerClass" content="project-banner"/>
+%{--    <meta name="logo" content="${utilService.getLogoURL(project.documents)}"/>--}%
+    <asset:stylesheet src="project-index-manifest.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -121,23 +122,19 @@
         here = window.location.href;
 
     </asset:script>
-
-    <style type="text/css">
-
-    </style>
-
-    <!--[if gte IE 8]>
-        <style>
-           .thumbnail > img {
-                max-width: 400px;
-            }
-            .thumbnail {
-                max-width: 410px;
-            }
-        </style>
-    <![endif]-->
-    <asset:stylesheet src="projects-manifest.css"/>
-    <asset:javascript src="common.js"/>
+%{--    todo delete? --}%
+%{--    <!--[if gte IE 8]>--}%
+%{--        <style>--}%
+%{--           .thumbnail > img {--}%
+%{--                max-width: 400px;--}%
+%{--            }--}%
+%{--            .thumbnail {--}%
+%{--                max-width: 410px;--}%
+%{--            }--}%
+%{--        </style>--}%
+%{--    <![endif]-->--}%
+%{--    <asset:stylesheet src="projects-manifest.css"/>--}%
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
@@ -145,17 +142,18 @@
 <body>
 
 <bc:koLoading>
-    <g:render template="/shared/backToSearchResults"/>
-    <g:if test="${!mobile}">
-        <g:render template="banner"/>
-    </g:if>
+    <div class="container-fluid">
+        <g:render template="/shared/backToSearchResults"/>
+    </div>
+
+    <g:render template="banner"/>
 
     <div class="container-fluid" id="csProjectContent">
         <div id="project-results-placeholder"></div>
         <g:render template="/shared/flashScopeMessage"/>
 
         <g:if test="${params?.version}">
-            <div class="well">
+            <div>
                 <h4>
                     Version:
                     <span id="versionMsg"></span>
@@ -167,13 +165,17 @@
             <g:render template="/project/mobile"/>
         </g:if>
         <g:else>
-            <div class="row-fluid">
-                <!-- content  -->
-                <ul id="ul-main-project" class="nav nav-pills">
+            <content tag="tab">
+                <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">
                     <fc:tabList tabs="${projectContent}"/>
-            </div>
-            <div class="pill-content">
-                <fc:tabContent tabs="${projectContent}" tabClass="pill-pane"/>
+                </ul>
+            </content>
+            <div class="row" id="heading">
+                <div class="col-12">
+                    <div class="tab-content">
+                        <fc:tabContent tabs="${projectContent}"/>
+                    </div>
+                </div>
             </div>
         </g:else>
 

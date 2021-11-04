@@ -25,7 +25,7 @@
     <g:else><div class="alert alert-error"><g:message code="project.admin.permissions.missingmodel"/></div></g:else>
     <div class="row form-group">
         <div class="col-md-9 offset-md-3">
-            <button id="addUserRoleBtn" class="btn btn-sm btn-primary-dark"><g:message code="g.submit"/></button>
+            <button id="addUserRoleBtn" class="btn btn-sm btn-primary-dark"><i class="fas fa-upload"></i> <g:message code="g.submit"/></button>
             <g:img uri="${asset.assetPath(src:'spinner.gif')}" id="spinner1" class="d-none spinner" alt="spinner icon"/>
         </div>
     </div>
