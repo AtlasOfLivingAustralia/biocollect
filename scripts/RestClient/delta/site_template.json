@@ -1,0 +1,31 @@
+{
+  "pActivityId": "",
+  "projectId": "",
+  "site": {
+    "area": 0,
+    "catchment": "",
+    "description": "",
+    "externalId": "",
+    "notes": "",
+    "poi": [],
+    "siteId": "",
+    "name": "",
+    "projects": ["dea9729b-d9fe-42b7-ac74-af5e157933e0"],
+    "extent": {
+      "geometry": {
+        "centre": [
+          136.58507823944092,
+          -28.310023107055127
+        ],
+        "type": "Point",
+        "areaKmSq": 0,
+        "coordinates": [
+          136.58507823944092,
+          -28.310023107055127
+        ]
+      },
+      "source": "Point"
+    },
+    "asyncUpdate": true
+  }
+}
