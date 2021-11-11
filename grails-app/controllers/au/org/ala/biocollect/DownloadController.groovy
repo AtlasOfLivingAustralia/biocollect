@@ -20,6 +20,7 @@ class DownloadController {
         } else {
             String fileExtension = params.fileExtension ?: 'zip'
             webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/search/downloadProjectDataFile/${params.id}?fileExtension=${fileExtension}", true, true)
+            return null
         }
     }
 
