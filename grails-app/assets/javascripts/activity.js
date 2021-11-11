@@ -219,7 +219,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         var elem = event.target ? event.target : event.srcElement;
         var asyncDownloadThreshold = DEFAULT_EMAIL_DOWNLOAD_THRESHOLD;
         if (elem) {
-                asyncDownloadThreshold = $(elem).attr("dataemailthreshold");
+                asyncDownloadThreshold = $(elem).data("email-threshold");
         }
 
         var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
