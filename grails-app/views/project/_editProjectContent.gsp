@@ -7,7 +7,7 @@
     </div>
 </div>
 <div class="row-fluid">
-    <div class="span5 alert" data-bind="visible:message(), css:{'alert-error':error(), 'alert-success':success()}">
+    <div class="span5 alert" data-bind="visible:message(), css:{'alert-danger':error(), 'alert-success':success()}">
         <button class="close" data-bind="click:clearMessage" href="#">×</button>
         <span data-bind="text:message"></span>
     </div>

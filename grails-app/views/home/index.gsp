@@ -38,7 +38,7 @@
 <div class="row-fluid">
     <g:if test="${flash.errorMessage}">
         <div class="container-fluid">
-            <div class="alert alert-error">
+            <div class="alert alert-danger">
                 ${flash.errorMessage}
             </div>
         </div>
@@ -68,7 +68,7 @@
 <g:if test="${flash.error || results.error}">
     <g:set var="error" value="${flash.error?:results.error}"/>
     <div class="row-fluid">
-        <div class="alert alert-error large-space-before">
+        <div class="alert alert-danger large-space-before">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             <span>Error: ${error}</span>
         </div>
@@ -301,7 +301,7 @@
 <g:else>
     <div class="row-fluid ">
         <div class="span12">
-            <div class="alert alert-error large-space-before">
+            <div class="alert alert-danger large-space-before">
                 Error: search index returned 0 results
             </div>
         </div>

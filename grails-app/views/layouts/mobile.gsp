@@ -4,9 +4,6 @@
 <head>
     <title><g:layoutTitle/></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    %{--    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap.min.css"/>--}%
-    %{--    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/bootstrap-responsive.min.css"/>--}%
-    %{--    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/ala-styles.css"/>--}%
     <asset:stylesheet src="base-bs4.css"/>
     <asset:javascript src="base-bs4.js"/>
     <g:layoutHead/>
@@ -33,8 +30,6 @@
         padding-top: 0px;
     }
     </style>
-    %{--    <link rel="stylesheet" type="text/css"--}%
-    %{--          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">--}%
 </head>
 
 <body class="carousel">

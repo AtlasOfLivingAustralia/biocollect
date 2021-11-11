@@ -257,7 +257,7 @@ var ProjectActivity = function (params) {
                 // contentType: 'application/json',
                 success: function (data) {
                     if (data.error) {
-                        showAlert("Error :" + data.error, "alert-error", divId);
+                        showAlert("Error :" + data.error, "alert-danger", divId);
                     }
                     else {
                         self.speciesFields.removeAll();
@@ -271,7 +271,7 @@ var ProjectActivity = function (params) {
                     }
                 },
                 error: function (data) {
-                    showAlert("Error : An unhandled error occurred" + data.status, "alert-error", divId);
+                    showAlert("Error : An unhandled error occurred" + data.status, "alert-danger", divId);
                 }
             });
         }
@@ -1058,7 +1058,7 @@ var AlertViewModel = function (alert) {
         });
 
         if (invalidEmail) {
-            showAlert("Invalid email address (" + message + ")", "alert-error", "project-activities-result-placeholder");
+            showAlert("Invalid email address (" + message + ")", "alert-danger", "project-activities-result-placeholder");
         } else {
             $.each(emails, function (index, email) {
                 if (self.emailAddresses.indexOf(email) < 0) {

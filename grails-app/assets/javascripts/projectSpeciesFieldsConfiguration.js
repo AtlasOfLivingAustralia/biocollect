@@ -251,14 +251,14 @@ function ProjectSpeciesFieldsConfigurationViewModel (projectId, speciesFieldsSet
                 },
                 error: function (data) {
                     var status = data.status;
-                    showAlert('An unhandled error occurred: ' + data.status, "alert-error", self.placeHolder);
+                    showAlert('An unhandled error occurred: ' + data.status, "alert-danger", self.placeHolder);
                 },
                 complete: function () {
                     self.transients.isSaving(false);
                 }
             });
         } else {
-            showAlert("Project default configuration and all species fields (if any) must be configured before saving.", "alert-error", self.placeHolder);
+            showAlert("Project default configuration and all species fields (if any) must be configured before saving.", "alert-danger", self.placeHolder);
         }
     };
     self.removeActivity = function () {

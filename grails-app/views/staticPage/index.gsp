@@ -19,37 +19,46 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta name="layout" content="${mobile ? "mobile" : hubConfig.skin}"/>
+    <meta name="layout" content="${mobile ? "mobile" : "bs4"}"/>
     <title></title>
 </head>
 
 <body>
-    <div class="${fluidLayout?'container-fluid':'container'}">
-        <auth:ifAnyGranted roles="ROLE_ADMIN">
-            <div class="row-fluid">
+<div class="${fluidLayout ? 'container-fluid' : 'container'}">
+    <auth:ifAnyGranted roles="ROLE_ADMIN">
+        <div class="row">
+            <div class="col-12">
                 <g:if test="${flash.errorMessage}">
-                    <div class="row-fluid">
-                        <div class="span6 alert alert-error">
+                    <div class="row">
+                        <div class="col-12 alert alert-danger fade show">
                             ${flash.errorMessage}
                         </div>
                     </div>
                 </g:if>
 
                 <g:if test="${flash.message}">
-                    <div class="row-fluid">
-                        <div class="span6 alert alert-info">
-                            <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-                            ${flash.message}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-info alert-dismissible fade show">
+                                ${flash.message}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </g:if>
             </div>
-            <a href="${g.createLink(controller: 'staticPage', action:'edit',
-                    params:[page:setting, editMode:true])}"
-               class="btn btn-default">edit
+        </div>
+
+        <div class="btn-space">
+            <a href="${g.createLink(controller: 'staticPage', action: 'edit',
+                    params: [page: setting, editMode: true])}"
+               class="btn btn-dark"><i class="fas fa-pencil-alt"></i> Edit
             </a>
-        </auth:ifAnyGranted>
-        <fc:getSettingContentForDynamicKey key="${setting}"></fc:getSettingContentForDynamicKey>
-    </div>
+        </div>
+    </auth:ifAnyGranted>
+    <fc:getSettingContentForDynamicKey key="${setting}"></fc:getSettingContentForDynamicKey>
+</div>
 </body>
 </html>

@@ -110,7 +110,7 @@
     <div class="row">
         <div class="col-12 col-md-6"><!-- left block of header -->
             <g:if test="${flash.errorMessage || flash.message}">
-                <div class="alert alert-error alert-dismissible">
+                <div class="alert alert-danger alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert"
                             onclick="$('.alert').fadeOut();" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
