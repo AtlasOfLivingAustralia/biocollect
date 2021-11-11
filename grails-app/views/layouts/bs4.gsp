@@ -68,11 +68,16 @@
             <article class="page">
                 <g:set var="bannerURL" value="${pageProperty(name: 'meta.bannerURL') ?: hubConfig.templateConfiguration.banner.images[0]?.url}"/>
                 <g:set var="banner" value="${pageProperty(name: 'page.banner')}"/>
-                <g:if test="${bannerURL || banner}">
-                    <div id="banner" class="page-banner ${pageProperty(name: 'meta.bannerClass') ?: ''} ${bannerURL? "": "no-image"} ${pageProperty(name: 'page.projectLogo')}" style="${bannerURL ? "background-image: url('${bannerURL}');" : ""}">
+                <g:if test="${pageProperty(name: 'page.slider')}">
+                    <g:pageProperty name="page.slider"></g:pageProperty>
+                </g:if>
+                <g:elseif test="${bannerURL || banner}">
+                    <div id="banner" class="page-banner ${pageProperty(name: 'meta.bannerClass') ?: ''} ${bannerURL? "": "no-image"} ${pageProperty(name: 'page.projectLogo')}"
+%{--                         style="${bannerURL ? "background-image: url('${bannerURL}');" : ""}"--}%
+                    >
                         ${raw(banner?:"")}
                     </div>
-                </g:if>
+                </g:elseif>
                 <g:else>
                     <div id="banner" class="no-image no-content"></div>
                 </g:else>

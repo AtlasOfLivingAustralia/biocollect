@@ -69,7 +69,7 @@
             <div class="span9">
                 <g:if test="${flash.errorMessage}">
                     <div class="container-fluid">
-                        <div class="alert alert-error">
+                        <div class="alert alert-danger">
                             ${flash.errorMessage}
                         </div>
                     </div>

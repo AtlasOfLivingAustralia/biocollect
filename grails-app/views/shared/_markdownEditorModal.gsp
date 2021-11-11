@@ -19,8 +19,8 @@
 
       </div>
       <div class="modal-footer ">
-        <button class="btn btn-primary-dark" type="button" data-bind="click:save">Done</button>
-        <button class="btn btn-dark" data-bind="click:cancel">Cancel</button>
+        <button class="btn btn-primary-dark" type="button" data-bind="click:save"><i class="fas fa-hdd"></i> Done</button>
+        <button class="btn btn-dark" data-bind="click:cancel"><i class="far fa-times-circle"></i> Cancel</button>
       </div>
 
     </div>

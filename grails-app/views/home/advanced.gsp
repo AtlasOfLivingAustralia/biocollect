@@ -36,7 +36,7 @@
 
     <g:if test="${flash.error}">
         <div class="row-fluid">
-            <div class="alert alert-error">
+            <div class="alert alert-danger">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <span>${flash.error}</span>
             </div>

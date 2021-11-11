@@ -189,8 +189,8 @@ function formatBytes(bytes) {
  Bootstrap Alerts -
  Function Name - showAlert()
  Inputs - message,alerttype,target
- Example - showalert("Invalid Login","alert-error","alert-placeholder")
- Types of alerts -- "alert-error","alert-success","alert-info"
+ Example - showalert("Invalid Login","alert-danger","alert-placeholder")
+ Types of alerts -- "alert-danger","alert-success","alert-info"
  Required - You only need to add a alert_placeholder div in your html page wherever you want to display these alerts "<div id="alert_placeholder"></div>"
  Written On - 14-Jun-2013
  **/
