@@ -1,5 +1,6 @@
 package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.WebService
 import grails.test.mixin.TestFor
 import org.apache.http.HttpStatus
 import spock.lang.Specification
@@ -17,6 +18,7 @@ class DownloadControllerSpec extends Specification {
     File hubPath
     File modelPath
     File configPath
+    WebService webService
 
     void setup() {
 
@@ -32,6 +34,7 @@ class DownloadControllerSpec extends Specification {
         configPath.mkdir()
 
         controller.grailsApplication.config.app.file.script.path = scriptsPath.getAbsolutePath()
+        controller.grailsApplication.config.ecodata.service.url = ""
 
         // Setup three files, one that should be accessible, and others that should not
         File validFile =  new File(modelPath, "validFile.js")
@@ -144,5 +147,25 @@ class DownloadControllerSpec extends Specification {
         then:
         new File("${scriptsPath}${File.separator}${params.hub}${File.separator}${params.model}", params.filename).exists()
         response.status == HttpStatus.SC_NOT_FOUND
+    }
+
+    def "Data can be downloaded for a created file if id and file extension is provided"(String inputFormat, String expectedOutputFormat) {
+        setup:
+        String projectId = 'p1'
+        controller.webService = webService = Mock(WebService)
+
+        when:
+        params.id = projectId
+        params.fileExtension = inputFormat
+        Map result = controller.downloadProjectDataFile()
+
+        then:
+        1 * webService.proxyGetRequest(response, '/search/downloadProjectDataFile/'+projectId+'?fileExtension='+expectedOutputFormat, true, true)
+        result == null
+
+        where:
+        inputFormat | expectedOutputFormat
+        'zip'       | 'zip'
+        ''          | 'zip'
     }
 }
