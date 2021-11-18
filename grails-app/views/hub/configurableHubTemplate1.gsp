@@ -404,7 +404,7 @@ section#breadcrumb {
 #main-content #headerBannerSpace {
   background-color: ${headerbannerspacebackgroundcolor};
 }
-#main-content .output-section {
+#main-content .output-section,  #content .output-section{
   position: relative;
   margin: 15px 0;
   padding: 50px 15px 14px;
@@ -475,7 +475,7 @@ section#breadcrumb {
   color: #fff;
   background-color: #c44d34;
 }
-#main-content .dropzone {
+#main-content .dropzone, #content .dropzone  {
   width: 205px;
   font-weight: 500;
   font-size: 20px;
