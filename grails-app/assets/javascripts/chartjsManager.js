@@ -55,7 +55,7 @@ function ChartjsManagerViewModel() {
     self.chartjsPerRowSpan = ko.pureComputed(function () {
         const selected = self.chartjsPerRowSelected();
         const perRow = 12 / parseInt(selected || '2');
-        return 'span' + perRow.toString();
+        return 'col-sm-' + perRow.toString();
     });
 
     /**

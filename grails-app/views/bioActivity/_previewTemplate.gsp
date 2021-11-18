@@ -16,7 +16,7 @@
             </div>
 
             <div class="modal-footer" id="footer">
-                <button type="button" id="cancel" class="btn btn-dark" data-bind="click: hideModal">Cancel</button>
+                <button type="button" id="cancel" class="btn btn-dark" data-bind="click: hideModal"><i class="far fa-times-circle"></i> Cancel</button>
             </div>
         </div>
    </div>
