@@ -25,7 +25,7 @@ describe('Test chart.js view models', function () {
 
         expect(vm.chartjsPerRowOptions()).toEqual(['1', '2', '3', '4']);
         expect(vm.chartjsPerRowSelected()).toEqual('2');
-        expect(vm.chartjsPerRowSpan()).toEqual('span6');
+        expect(vm.chartjsPerRowSpan()).toEqual('col-sm-6');
 
         let chartList = vm.chartjsList()
         expect(chartList.length).toEqual(1);
@@ -104,7 +104,7 @@ describe('Test chart.js view models', function () {
 
         expect(vm.chartjsPerRowOptions()).toEqual(['1', '2', '3', '4']);
         expect(vm.chartjsPerRowSelected()).toEqual('2');
-        expect(vm.chartjsPerRowSpan()).toEqual('span6');
+        expect(vm.chartjsPerRowSpan()).toEqual('col-sm-6');
 
         let chartList = vm.chartjsList()
         expect(chartList.length).toEqual(1);
@@ -242,7 +242,7 @@ describe('Test chart.js view models', function () {
 
         expect(vm.chartjsPerRowOptions()).toEqual(['1', '2', '3', '4']);
         expect(vm.chartjsPerRowSelected()).toEqual('2');
-        expect(vm.chartjsPerRowSpan()).toEqual('span6');
+        expect(vm.chartjsPerRowSpan()).toEqual('col-sm-6');
 
         let chartList = vm.chartjsList();
         expect(chartList.length).toEqual(3);
