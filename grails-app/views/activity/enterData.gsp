@@ -8,7 +8,7 @@
         <title>Print | ${activity.type} | <g:message code="g.biocollect"/></title>
     </g:if>
     <g:else>
-        <meta name="layout" content="${hubConfig.skin}"/>
+        <meta name="layout" content="bs4"/>
         <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
     </g:else>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
@@ -53,18 +53,20 @@
     </asset:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
     <asset:stylesheet src="forms-manifest.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterActivityData.js"/>
     <asset:javascript src="meritActivity.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <link rel="stylesheet" type="text/css"
+          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">
 </head>
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <div class="row-fluid title-block input-block-level">
-            <div class="span12 title-attribute">
+        <div class="row form-group col-sm-12 title-block input-block-level">
+            <div class="col-sm-12 title-attribute">
                 <h1><span data-bind="click:goToProject"
                           class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
 
@@ -76,93 +78,97 @@
         </div>
 
 
-        <div class="row-fluid">
-            <div class="span9">
+        <div class="row col-sm-12">
+            <div class="col-sm-9">
                 <!-- Common activity fields -->
 
-                <div class="row-fluid space-after">
+                <div class="row form-group space-after">
 
-                    <div class="span9 required">
+                    <div class="col-sm-9 required">
                         <label class="for-readonly" for="description">Description</label>
-                        <input id="description" type="text" class="input-xxlarge" data-bind="value:description"
+                        <input id="description" type="text" class="form-control" data-bind="value:description"
                                data-validation-engine="validate[required]"></span>
                     </div>
                 </div>
 
-                <div class="row-fluid space-after">
-                    <div class="span6" data-bind="visible:transients.themes && transients.themes.length > 1">
+                <div class="row space-after">
+                    <div class="col-sm-9 form-group" data-bind="visible:transients.themes && transients.themes.length > 1">
                         <label for="theme">Major theme</label>
                         <select id="theme"
                                 data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'"
-                                class="input-xlarge">
+                                class="form-control">
                         </select>
                     </div>
 
-                    <div class="span6" data-bind="visible:transients.themes && transients.themes.length == 1">
+                    <div class="col-sm-9 form-group" data-bind="visible:transients.themes && transients.themes.length == 1">
                         <label for="theme">Major theme</label>
                         <span data-bind="text:mainTheme">
                         </span>
                     </div>
                 </div>
 
-                <div class="row-fluid space-after">
-                    <div class="span6">
+                <div class="row space-after form-group">
+                    <div class="col-sm-6 d-flex flex-column">
                         <label class="for-readonly inline">Activity progress</label>
-                        <button type="button" class="btn btn-small"
-                                data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-inverse':progress()=='cancelled'}"
+                        <button type="button" class="btn col-sm-2"
+                                data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-dark':progress()=='cancelled'}"
                                 style="line-height:16px;cursor:default;color:white">
                             <span data-bind="text: progress"></span>
                         </button>
                     </div>
                 </div>
 
-                <div class="row-fluid space-after">
+                <div class="row space-after form-group">
 
-                    <div class="span6" data-bind="visible:plannedStartDate()">
-                        <label class="for-readonly inline">Planned start date</label>
-                        <span class="readonly-text" data-bind="text:plannedStartDate.formattedDate"></span>
+                    <div class="col-sm-6" data-bind="visible:plannedStartDate()">
+                        <div class="d-flex flex-column">
+                            <label class="for-readonly inline">Planned start date</label>
+                            <span class="readonly-text" data-bind="text:plannedStartDate.formattedDate"></span>
+                        </div>
                     </div>
 
-                    <div class="span6" data-bind="visible:plannedEndDate()">
-                        <label class="for-readonly inline">Planned end date</label>
-                        <span class="readonly-text" data-bind="text:plannedEndDate.formattedDate"></span>
+                    <div class="col-sm-6" data-bind="visible:plannedEndDate()">
+                        <div class="d-flex flex-column">
+                            <label class="for-readonly inline">Planned end date</label>
+                            <span class="readonly-text" data-bind="text:plannedEndDate.formattedDate"></span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="row-fluid">
-                    <div class="span6 required">
+                <div class="row form-group">
+                    <div class="col-sm-6 required">
                         <label for="startDate"><b>Actual start date</b>
                             <fc:iconHelp title="Start date"
                                          printable="${printView}">Date the activity was started.</fc:iconHelp>
                         </label>
                         <g:if test="${printView}">
-                            <div class="row-fluid">
+                            <div class="row">
                                 <fc:datePicker targetField="startDate.date" name="startDate"
                                                data-validation-engine="validate[required]" printable="${printView}"/>
                             </div>
                         </g:if>
                         <g:else>
-                            <div class="input-append">
+                            <div class="input-group-append">
                                 <fc:datePicker targetField="startDate.date" name="startDate"
                                                data-validation-engine="validate[required]" printable="${printView}"/>
                             </div>
                         </g:else>
                     </div>
 
-                    <div class="span6 required">
+                    <div class="col-sm-6 required">
                         <label for="endDate"><b>Actual end date</b>
                             <fc:iconHelp title="End date"
                                          printable="${printView}">Date the activity finished.</fc:iconHelp>
                         </label>
                         <g:if test="${printView}">
-                            <div class="row-fluid">
+                            <div class="row">
                                 <fc:datePicker targetField="endDate.date" name="endDate"
                                                data-validation-engine="validate[future[startDate]]"
                                                printable="${printView}"/>
                             </div>
                         </g:if>
                         <g:else>
-                            <div class="input-append">
+                            <div class="input-group-append">
                                 <fc:datePicker targetField="endDate.date" name="endDate"
                                                data-validation-engine="validate[future[startDate]]"
                                                printable="${printView}"/>
@@ -203,7 +209,7 @@
             </div>
         </g:if>
     </div>
-
+    <div class="col-sm-12">
 <!-- ko stopBinding: true -->
     <g:each in="${metaModel?.outputs}" var="outputName">
         <g:if test="${outputName != 'Photo Points'}">
@@ -245,16 +251,18 @@
     </g:if>
 
     <g:if test="${!printView}">
-        <div class="form-actions">
+        <div class="col-sm-12 form-actions">
             <g:render template="/shared/termsOfUse"/>
-            <button type="button" id="save" class="btn btn-primary">Save changes</button>
-            <button type="button" id="cancel" class="btn">Cancel</button>
-            <label class="checkbox inline">
-                <input data-bind="checked:transients.markedAsFinished" type="checkbox"> Mark this activity as finished.
-            </label>
+            <div class="">
+                <button type="button" id="save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Save changes</button>
+                <button type="button" id="cancel" class="btn btn-dark btn-large"><i class="far fa-times-circle"></i> Cancel</button>
+                <label class="checkbox inline">
+                    <input data-bind="checked:transients.markedAsFinished" type="checkbox"> Mark this activity as finished.
+                </label>
+            </div>
         </div>
     </g:if>
-
+    </div>
 </div>
 
 <div id="timeoutMessage" class="hide">

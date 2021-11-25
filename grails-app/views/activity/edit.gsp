@@ -8,7 +8,7 @@
         <title>Print | ${activity.type} | <g:message code="g.biocollect"/></title>
     </g:if>
     <g:else>
-        <meta name="layout" content="${hubConfig.skin}"/>
+        <meta name="layout" content="bs4"/>
         <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
     </g:else>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
@@ -16,7 +16,7 @@
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
     <meta name="breadcrumb" content="${activity.type}"/>
     <asset:stylesheet src="forms-manifest.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
@@ -44,25 +44,25 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <div class="row-fluid title-block well well-small input-block-level">
-            <div class="span12 title-attribute">
+        <div class="row form-group title-block card input-block-level">
+            <div class="col-sm-12 title-attribute">
                 <h1><span data-bind="click:goToProject" class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
                 <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">Activity: <span data-bind="text:type"></span><i class="icon-asterisk modified-icon" data-bind="visible:dirtyFlag.isDirty" title="Has been modified"></i></h3>
                 <h4><span>${project.associatedProgram?.encodeAsHTML()}</span> <span>${project.associatedSubProgram?.encodeAsHTML()}</span></h4>
             </div>
         </div>
 
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col-sm-12">
                 <!-- Common activity fields -->
-                <div class="row-fluid" data-bind="visible:transients.typeWarning()" style="display:none">
+                <div class="row col-sm-12 form-group" data-bind="visible:transients.typeWarning()" style="display:none">
                     <div class="alert alert-error">
                         <strong>Warning!</strong> This activity has data recorded.  Changing the type of the activity will cause this data to be lost!
                     </div>
                 </div>
 
-                <div class="row-fluid">
-                    <div class="span6">
+                <div class="row col-sm-12 form-group">
+                    <div class="col-sm-6">
                         <label for="type">Type of activity</label>
                         <select data-bind="value: type, popover:{title:'', content:transients.activityDescription, trigger:'manual', autoShow:true}" id="type" data-validation-engine="validate[required]" class="input-xlarge">
                             <g:each in="${activityTypes}" var="t" status="i">
@@ -77,25 +77,25 @@
                             </g:each>
                         </select>
                     </div>
-                    <div class="span6" data-bind="visible:transients.themes && transients.themes.length > 1">
+                    <div class="col-sm-6" data-bind="visible:transients.themes && transients.themes.length > 1">
                         <label for="theme">Major theme</label>
                         <select id="theme" data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'" class="input-xlarge">
                         </select>
                     </div>
-                    <div class="span6" data-bind="visible:transients.themes && transients.themes.length == 1">
+                    <div class="col-sm-6" data-bind="visible:transients.themes && transients.themes.length == 1">
                         <label for="theme">Major theme</label>
                         <span data-bind="text:mainTheme">
                         </span>
                     </div>
                 </div>
 
-                <div class="row-fluid">
-                    <div class="span10 required">
-                        <fc:textField data-bind="value: description" id="description" label="Description" class="span12"  data-validation-engine="validate[required]" />
+                <div class="row col-sm-12 form-group">
+                    <div class="col-sm-10 required">
+                        <fc:textField data-bind="value: description" id="description" label="Description" class="col-sm-12"  data-validation-engine="validate[required]" />
                     </div>
                 </div>
 
-                <div class="row-fluid" data-bind="template:transients.isMilestone() ? 'milestoneTmpl' : 'activityTmpl'">
+                <div class="row col-sm-12" data-bind="template:transients.isMilestone() ? 'milestoneTmpl' : 'activityTmpl'">
 
                 </div>
             </div>
@@ -103,9 +103,9 @@
     </div>
 
     <g:if test="${!printView}">
-        <div class="form-actions">
-            <button type="button" id="save" class="btn btn-primary">Save changes</button>
-            <button type="button" id="cancel" class="btn">Cancel</button>
+        <div class="col-sm-12 form-actions">
+            <button type="button" id="save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Save changes</button>
+            <button type="button" id="cancel" class="btn btn-dark btn-large"><i class="far fa-times-circle"></i> Cancel</button>
         </div>
     </g:if>
 
@@ -113,29 +113,31 @@
 
 <!-- templates -->
 <script type="text/html" id="activityTmpl">
-<div class="span6 required">
-    <label for="plannedStartDate">Planned start date
-    <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
-    </label>
-    <div class="input-append">
-        <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
+<div class="row col-sm-12 form-group">
+    <div class="form-group col-sm-6 required">
+        <label for="plannedStartDate">Planned start date
+        <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
+        </label>
+        <div class="input-group-append">
+            <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
+        </div>
     </div>
-</div>
-<div class="span6 required">
-    <label for="plannedEndDate">Planned end date
-    <fc:iconHelp title="Planned end date" printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
-    </label>
-    <div class="input-append">
-        <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate" data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]" printable="${printView}" />
+    <div class="form-group col-sm-6 required">
+        <label for="plannedEndDate">Planned end date
+        <fc:iconHelp title="Planned end date" printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
+        </label>
+        <div class="input-group-append">
+            <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate" data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]" printable="${printView}" />
+        </div>
     </div>
 </div>
 </script>
 <script type="text/html" id="milestoneTmpl">
-<div class="span6 required">
+<div class="col-sm-6 required">
     <label for="plannedStartDate">Milestone date
     <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
     </label>
-    <div class="input-append">
+    <div class="input-group-append">
         <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
     </div>
 </div>
