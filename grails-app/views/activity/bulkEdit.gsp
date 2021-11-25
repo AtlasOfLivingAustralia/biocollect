@@ -2,7 +2,7 @@
 <g:set var="mapService" bean="mapService"></g:set>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Create | Activity | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
@@ -29,7 +29,7 @@
         },
         here = document.location.href;
     </asset:script>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <style type="text/css">
     input.editor-text {
@@ -78,7 +78,7 @@
 <body>
 
 <div class="container-fluid">
-    <div class="row-fluid">
+    <div class="row">
         <h2>${title}</h2>
     </div>
 
@@ -90,17 +90,17 @@
     <g:render template="/shared/restoredData" model="[id: 'restoredData', cancelButton: 'Cancel']"/>
 
 
-    <div class="row-fluid">
-        <span class="span12">
+    <div class="row">
+        <span class="col-sm-12">
             <div id="myGrid" class="validationEngineContainer" style="width:100%;"></div>
         </span>
     </div>
 
 
-    <div class="row-fluid">
+    <div class="row">
 
         <div class="form-actions">
-            <span class="span3">
+            <span class="col-sm-3">
                 <button type="button" id="bulkUploadTrigger" class="btn btn-small"><i
                         class="icon-upload"></i> Upload data for this table</button>
 
@@ -117,7 +117,7 @@
                     </div>
                 </div>
             </span>
-            <span class="span9" style="text-align:right">
+            <span class="col-sm-9" style="text-align:right">
                 <button type="button" id="save" class="btn btn-primary"
                         title="Save edits and return to the previous page">Save</button>
                 <buttom type="button" id="cancel" class="btn btn"
