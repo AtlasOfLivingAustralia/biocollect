@@ -1,0 +1,90 @@
+var path = '';
+load(path + "document.js")
+load(path+'uuid.js');
+
+print("Loaded all dependent files...");
+
+var projectId = 0;
+var title = projectId + 1;
+var description = title + 1;
+var documentUrl = description + 1;
+
+var csvData = cat(path+'NESP_MARINE_ARTEFACTS_FOR_TEST.txt');
+print("Loaded csv file");
+var csvRows = csvData.split('\r');
+print("Total rows "+ csvRows.length);
+
+for(var i = 1; i < csvRows.length; i++) {
+    print("PRINT "+csvRows.length)
+
+    var row = csvRows[i];
+    var fields = row.split('\t');
+
+    if(fields[projectId]) {
+        document.projectId = fields[projectId]
+        document.documentId = UUID.generate()
+        document.description = ""
+        document.name = ""
+        document.filename = ""
+        document.contentType = ""
+
+        if (fields[description]) {
+            if (fields[description].indexOf(',') != -1) {
+                print("CHECKING DESC" + fields[description])
+                var tempDescription = fields[description].replace(/""/g, '"');
+                document.description = tempDescription.substring(1, tempDescription.length - 1);
+            }
+            else {
+                document.description = fields[description]
+            }
+        }
+
+        if (fields[title]) {
+            if (fields[title].indexOf(',') != -1) {
+                var tempTitle = fields[title];
+                document.name = tempTitle.substring(1, tempTitle.length - 1);
+            }
+            else {
+                document.name = fields[title]
+            }
+        }
+
+        if (fields[documentUrl]) {
+            var docUrl = fields[documentUrl]
+            var urlSplitBySlash = docUrl.split('/')
+            var fileName = urlSplitBySlash[urlSplitBySlash.length - 1]
+
+            var contentType = ""
+
+            if (fileName.endsWith(".pdf")) {
+                contentType = "application/pdf"
+            } else if (fileName.endsWith(".doc") || fileName.endsWith(".docx")) {
+                contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            }
+
+            document.filename = fileName
+            document.contentType = contentType
+        }
+
+        print("PROJECT ID: " + document.projectId)
+        print("DOCUMENT ID: " + document.documentId)
+        print("FILE NAME: " + document.filename)
+
+        var today = new ISODate();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+        var dateUTC = yyyy + "-" + ("0" + mm).slice(-2) + "-" + ("0" + dd).slice(-2) + "T00:00:00Z";
+
+        document.dateCreated = ISODate(dateUTC);
+        document.lastUpdated = ISODate(dateUTC);
+
+        var documentResult = db.document.insert(document);
+
+        print("documentResult " + documentResult)
+    }
+}
+
+//print(">>>>>>>>>>>>>>>>>>>>")
+print("Created " + (i-1) + " projects");
+print("<<<<<<<<<<<<<<<<<<<")
