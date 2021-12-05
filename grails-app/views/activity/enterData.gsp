@@ -65,7 +65,7 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <div class="row form-group col-sm-12 title-block input-block-level">
+        <div class="row title-block input-block-level">
             <div class="col-sm-12 title-attribute">
                 <h1><span data-bind="click:goToProject"
                           class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
@@ -78,11 +78,11 @@
         </div>
 
 
-        <div class="row col-sm-12">
+        <div class="row">
             <div class="col-sm-9">
                 <!-- Common activity fields -->
 
-                <div class="row form-group space-after">
+                <div class="form-group row space-after">
 
                     <div class="col-sm-9 required">
                         <label class="for-readonly" for="description">Description</label>
@@ -91,8 +91,8 @@
                     </div>
                 </div>
 
-                <div class="row space-after">
-                    <div class="col-sm-9 form-group" data-bind="visible:transients.themes && transients.themes.length > 1">
+                <div class="form-group row space-after">
+                    <div class="col-sm-9 " data-bind="visible:transients.themes && transients.themes.length > 1">
                         <label for="theme">Major theme</label>
                         <select id="theme"
                                 data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'"
@@ -100,14 +100,14 @@
                         </select>
                     </div>
 
-                    <div class="col-sm-9 form-group" data-bind="visible:transients.themes && transients.themes.length == 1">
+                    <div class="col-sm-9" data-bind="visible:transients.themes && transients.themes.length == 1">
                         <label for="theme">Major theme</label>
                         <span data-bind="text:mainTheme">
                         </span>
                     </div>
                 </div>
 
-                <div class="row space-after form-group">
+                <div class="form-group row space-after">
                     <div class="col-sm-6 d-flex flex-column">
                         <label class="for-readonly inline">Activity progress</label>
                         <button type="button" class="btn col-sm-2"
@@ -118,7 +118,7 @@
                     </div>
                 </div>
 
-                <div class="row space-after form-group">
+                <div class="form-group row space-after">
 
                     <div class="col-sm-6" data-bind="visible:plannedStartDate()">
                         <div class="d-flex flex-column">
@@ -135,7 +135,7 @@
                     </div>
                 </div>
 
-                <div class="row form-group">
+                <div class="form-group row">
                     <div class="col-sm-6 required">
                         <label for="startDate"><b>Actual start date</b>
                             <fc:iconHelp title="Start date"
@@ -208,8 +208,9 @@
                 </div>
             </div>
         </g:if>
-    </div>
-    <div class="col-sm-12">
+
+    <div class="row">
+        <div class="col-sm-12">
 <!-- ko stopBinding: true -->
     <g:each in="${metaModel?.outputs}" var="outputName">
         <g:if test="${outputName != 'Photo Points'}">
@@ -262,6 +263,8 @@
             </div>
         </div>
     </g:if>
+    </div>
+    </div>
     </div>
 </div>
 

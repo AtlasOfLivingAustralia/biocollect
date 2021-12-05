@@ -44,58 +44,66 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <div class="row form-group title-block card input-block-level">
+        <div class="row title-block card input-block-level mt-3">
             <div class="col-sm-12 title-attribute">
                 <h1><span data-bind="click:goToProject" class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
-                <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">Activity: <span data-bind="text:type"></span><i class="icon-asterisk modified-icon" data-bind="visible:dirtyFlag.isDirty" title="Has been modified"></i></h3>
+                <h3 data-bind="css:{modified:dirtyFlag.isDirty},attr:{title:'Has been modified'}">Activity: <span data-bind="text:type"></span><i class="fas fa-asterisk modified-icon" data-bind="visible:dirtyFlag.isDirty" title="Has been modified"></i></h3>
                 <h4><span>${project.associatedProgram?.encodeAsHTML()}</span> <span>${project.associatedSubProgram?.encodeAsHTML()}</span></h4>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-12 ml-3">
                 <!-- Common activity fields -->
-                <div class="row col-sm-12 form-group" data-bind="visible:transients.typeWarning()" style="display:none">
-                    <div class="alert alert-error">
+                <div class="row" data-bind="visible:transients.typeWarning()" style="display:none">
+                    <div class="col-sm-12 alert alert-error">
                         <strong>Warning!</strong> This activity has data recorded.  Changing the type of the activity will cause this data to be lost!
                     </div>
                 </div>
 
-                <div class="row col-sm-12 form-group">
-                    <div class="col-sm-6">
-                        <label for="type">Type of activity</label>
-                        <select data-bind="value: type, popover:{title:'', content:transients.activityDescription, trigger:'manual', autoShow:true}" id="type" data-validation-engine="validate[required]" class="input-xlarge">
-                            <g:each in="${activityTypes}" var="t" status="i">
-                                <g:if test="${i == 0 && create}">
-                                    <option></option>
-                                </g:if>
-                                <optgroup label="${t.name}">
-                                    <g:each in="${t.list}" var="opt">
-                                        <option>${opt.name}</option>
+                <div class="row mt-3 mb-3">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="type">Type of activity</label>
+                                <select data-bind="value: type, popover:{title:'', content:transients.activityDescription, trigger:'manual', autoShow:true}" id="type" data-validation-engine="validate[required]" class="input-xlarge">
+                                    <g:each in="${activityTypes}" var="t" status="i">
+                                        <g:if test="${i == 0 && create}">
+                                            <option></option>
+                                        </g:if>
+                                        <optgroup label="${t.name}">
+                                            <g:each in="${t.list}" var="opt">
+                                                <option>${opt.name}</option>
+                                            </g:each>
+                                        </optgroup>
                                     </g:each>
-                                </optgroup>
-                            </g:each>
-                        </select>
-                    </div>
-                    <div class="col-sm-6" data-bind="visible:transients.themes && transients.themes.length > 1">
-                        <label for="theme">Major theme</label>
-                        <select id="theme" data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'" class="input-xlarge">
-                        </select>
-                    </div>
-                    <div class="col-sm-6" data-bind="visible:transients.themes && transients.themes.length == 1">
-                        <label for="theme">Major theme</label>
-                        <span data-bind="text:mainTheme">
-                        </span>
-                    </div>
-                </div>
-
-                <div class="row col-sm-12 form-group">
-                    <div class="col-sm-10 required">
-                        <fc:textField data-bind="value: description" id="description" label="Description" class="col-sm-12"  data-validation-engine="validate[required]" />
+                                </select>
+                            </div>
+                            <div class="col-sm-6" data-bind="visible:transients.themes && transients.themes.length > 1">
+                                <label for="theme">Major theme</label>
+                                <select id="theme" data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'" class="input-xlarge">
+                                </select>
+                            </div>
+                            <div class="col-sm-6" data-bind="visible:transients.themes && transients.themes.length == 1">
+                                <label for="theme">Major theme</label>
+                                <span data-bind="text:mainTheme">
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="row col-sm-12" data-bind="template:transients.isMilestone() ? 'milestoneTmpl' : 'activityTmpl'">
+                <div class="row mb-3">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-10 required">
+                                <fc:textField data-bind="value: description" id="description" label="Description" class="col-sm-12"  data-validation-engine="validate[required]" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" data-bind="template:transients.isMilestone() ? 'milestoneTmpl' : 'activityTmpl'">
 
                 </div>
             </div>
@@ -103,7 +111,7 @@
     </div>
 
     <g:if test="${!printView}">
-        <div class="col-sm-12 form-actions">
+        <div class="col-sm-12 form-actions mt-3">
             <button type="button" id="save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Save changes</button>
             <button type="button" id="cancel" class="btn btn-dark btn-large"><i class="far fa-times-circle"></i> Cancel</button>
         </div>
@@ -113,24 +121,26 @@
 
 <!-- templates -->
 <script type="text/html" id="activityTmpl">
-<div class="row col-sm-12 form-group">
-    <div class="form-group col-sm-6 required">
-        <label for="plannedStartDate">Planned start date
-        <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
-        </label>
-        <div class="input-group-append">
-            <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
+    <div class="col-sm-6 required">
+        <div class="form-group">
+            <label for="plannedStartDate">Planned start date
+            <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
+            </label>
+            <div class="input-group-append">
+                <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
+            </div>
         </div>
     </div>
-    <div class="form-group col-sm-6 required">
-        <label for="plannedEndDate">Planned end date
-        <fc:iconHelp title="Planned end date" printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
-        </label>
-        <div class="input-group-append">
-            <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate" data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]" printable="${printView}" />
+    <div class="col-sm-6 required">
+        <div class="form-group">
+            <label for="plannedEndDate">Planned end date
+            <fc:iconHelp title="Planned end date" printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
+            </label>
+            <div class="input-group-append">
+                <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate" data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]" printable="${printView}" />
+            </div>
         </div>
     </div>
-</div>
 </script>
 <script type="text/html" id="milestoneTmpl">
 <div class="col-sm-6 required">

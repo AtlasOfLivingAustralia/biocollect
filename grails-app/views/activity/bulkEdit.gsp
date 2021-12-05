@@ -107,20 +107,20 @@
                 <div id="bulkUpload" style="display:none;">
                     <div class="text-left" style="margin:5px">
                         <a target="_blank" id="downloadTemplate"
-                           class="btn btn-small">Step 1 - Download template (.xlsx)</a>
+                           class="btn btn-dark btn-sm">Step 1 - Download template (.xlsx)</a>
                     </div>
 
                     <div class="text-left" style="margin:5px">
-                        <span class="btn btn-small fileinput-button">
+                        <span class="btn btn-dark btn-sm fileinput-button">
                             Step 2 - Upload populated template <input id="fileupload" type="file" name="templateFile">
                         </span>
                     </div>
                 </div>
             </span>
             <span class="col-sm-9" style="text-align:right">
-                <button type="button" id="save" class="btn btn-primary"
+                <button type="button" id="save" class="btn btn-primary-dark"
                         title="Save edits and return to the previous page">Save</button>
-                <buttom type="button" id="cancel" class="btn btn"
+                <buttom type="button" id="cancel" class="btn btn-dark"
                         title="Cancel edits and return to previous page">Cancel</buttom>
             </span>
         </div>
