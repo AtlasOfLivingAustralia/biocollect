@@ -1,7 +1,7 @@
 <div class="budget-table-read-only margin-bottom-10 margin-right-20">
     <label><b>Project Budget</b></label>
-    <table class="budget">
-        <thead>
+    <table class="budget table table-bordered">
+        <thead class="thead-dark">
         <tr>
             <th class="index"></th>
             <th class="category">Investment/Priority Area</th>

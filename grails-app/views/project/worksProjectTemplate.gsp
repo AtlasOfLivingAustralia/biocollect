@@ -1,13 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="grails.converters.JSON" %>
 <g:set var="mapService" bean="mapService"></g:set>
+<g:set var="utilService" bean="utilService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>${project?.name.encodeAsHTML()} | Project | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
+    <meta name="bannerURL" content="${utilService.getMainImageURL(project.documents)}"/>
+    <meta name="bannerClass" content="project-banner"/>
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
 
@@ -104,14 +107,14 @@
         <g:applyCodec encodeAs="none">
             outputTargetMetadata: ${((outputTargetMetadata?:[]) as grails.converters.JSON).toString()},
         </g:applyCodec>
-        activityTypes: ${((activityTypes?:[]) as JSON).toString()},
-        themes: ${((themes?:[]) as JSON).toString()},
-        sites: ${((project?.sites ?: []) as JSON).toString()},
-        siteIds: ${((project.mapConfiguration?.sites ?: []) as JSON).toString()},
-        project: ${((project?: [:]) as JSON).toString()},
+        activityTypes: ${raw(((activityTypes?:[]) as JSON).toString())},
+        themes: ${raw(((themes?:[]) as JSON).toString())},
+        sites: ${raw(((project?.sites ?: []) as JSON).toString())},
+        siteIds: ${raw(((project.mapConfiguration?.sites ?: []) as JSON).toString())},
+        project: ${raw(((project?: [:]) as JSON).toString())},
         commonKeysUrl: "${createLink(controller: 'search', action: 'getCommonKeys')}",
         searchBieUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
-        defaultSpeciesConfiguration: ${(grailsApplication.config.speciesConfiguration.default as JSON).toString()},
+        defaultSpeciesConfiguration: ${raw((grailsApplication.config.speciesConfiguration.default as JSON).toString())},
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -132,19 +135,20 @@
 
     </style>
 
-    <!--[if gte IE 8]>
-        <style>
-           .thumbnail > img {
-                max-width: 400px;
-            }
-            .thumbnail {
-                max-width: 410px;
-            }
-        </style>
-    <![endif]-->
+%{--    <!--[if gte IE 8]>--}%
+%{--        <style>--}%
+%{--           .thumbnail > img {--}%
+%{--                max-width: 400px;--}%
+%{--            }--}%
+%{--            .thumbnail {--}%
+%{--                max-width: 410px;--}%
+%{--            }--}%
+%{--        </style>--}%
+%{--    <![endif]-->--}%
     <script src="${grailsApplication.config.google.maps.url}"></script>
     <asset:stylesheet src="projects-manifest.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:stylesheet src="project-index-manifest.css"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <asset:javascript src="wms.js"/>
@@ -153,14 +157,18 @@
 <body>
 
 <bc:koLoading>
-    <g:render template="/shared/backToSearchResults"/>
+    <div class="container-fluid">
+        <g:render template="/shared/backToSearchResults"/>
+    </div>
+
     <g:render template="banner"/>
+
     <div class="container-fluid" id="worksProjectContent">
         <div id="project-results-placeholder"></div>
         <g:render template="/shared/flashScopeMessage"/>
 
         <g:if test="${params?.version}">
-            <div class="well">
+            <div>
                 <h4>
                     Version:
                     <span id="versionMsg"></span>
@@ -168,13 +176,17 @@
             </div>
         </g:if>
 
-        <div class="row-fluid">
-            <!-- content  -->
-            <ul id="ul-main-project" class="nav nav-pills">
+        <content tag="tab">
+            <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">
                 <fc:tabList tabs="${projectContent}"/>
-        </div>
-        <div class="pill-content">
-            <fc:tabContent tabs="${projectContent}" tabClass="pill-pane"/>
+            </ul>
+        </content>
+        <div class="row" id="heading">
+            <div class="col-12">
+                <div class="tab-content">
+                    <fc:tabContent tabs="${projectContent}"/>
+                </div>
+            </div>
         </div>
    </div>
 </bc:koLoading>
