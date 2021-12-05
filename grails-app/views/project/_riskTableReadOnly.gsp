@@ -3,8 +3,8 @@
     <div align="right">
         <b> Overall project risk profile : <span data-bind="text: risks.overallRisk, css: overAllRiskHighlight" ></span></b>
     </div>
-    <table style="width:100%;">
-        <thead >
+    <table class="table table-bordered">
+        <thead class="thead-dark">
         <tr>
             <th>Type of threat / risk</th>
             <th>Description</th>

@@ -39,6 +39,7 @@
 $(function(){
 
     var blog = ${raw(fc.modelAsJavascript(model:blog, default:'[]'))};
+    ko.cleanNode(document.getElementById('site-blog'));
     ko.applyBindings(new BlogSummary(blog), document.getElementById('site-blog'));
 });
 

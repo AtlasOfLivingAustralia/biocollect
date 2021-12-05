@@ -11,7 +11,8 @@
 <!-- This section is bound to a secondary KO viewModel. The following line prevents binding
          to the main viewModel. -->
 <!-- ko stopBinding: true -->
-<div class="row-fluid" id="planContainer">
+<div class="container-fluid">
+    <div class="row" id="planContainer">
 <bc:koLoading>
     <div id="status-update-error-placeholder"></div>
 
@@ -19,8 +20,8 @@
         <h4 class="inline">Planned Activities</h4>
 
         <ul class="nav nav-tabs nav-tab-small space-before">
-            <li class="active"><a href="#tablePlan" data-toggle="tab">Tabular</a></li>
-            <li><a href="#ganttPlan" data-toggle="tab">Gantt chart</a></li>
+            <li class="nav-item"><a class="nav-link active" href="#tablePlan" data-toggle="tab">Tabular</a></li>
+            <li class="nav-item"><a class="nav-link" href="#ganttPlan" data-toggle="tab">Gantt chart</a></li>
         </ul>
 
         <div class="tab-content" style="padding:0;border:none;overflow:visible">
@@ -62,14 +63,16 @@
 
 
     <!-- ko with: selectedWorksActivityViewModel -->
-    <div class="modal hide fade" id="createOrUpdateActivity" data-bind="dismissModal: transients.dismissModal">
-        <div class="modal-body">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <div data-bind="validateOnClick:  { callback: save, selector: '.save-activity'}, css: {'ajax-opacity': transients.isSaving}" class="validationEngineContainer">
+    <div class="modal hide fade" id="createOrUpdateActivity" data-bind="dismissModal: transients.dismissModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <div data-bind="validateOnClick:  { callback: save, selector: '.save-activity'}, css: {'ajax-opacity': transients.isSaving}" class="validationEngineContainer">
                 <h4><!-- ko text: activityId ? 'Update activity': 'Add a new activity' --> <!-- /ko --></h4>
                 <div id="add-new-activity">
-                    <div class="row-fluid">
-                        <div class="span4 required">
+                    <div class="row form-group">
+                        <div class="col-sm-4 required">
                             <label>Type of activity</label>
                             <select data-bind="value: type,
                                 popover:{title:'', content: transients.activityDescription,
@@ -86,7 +89,7 @@
                             </select>
                         </div>
 
-                        <div class="span2">
+                        <div class="col-sm-2">
                             <div data-bind="visible:fcConfig.themes && fcConfig.themes.length > 1">
                                 <label>Major theme</label>
                                 <select class="full-width form-control"
@@ -96,30 +99,32 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="span6 required">
+                        <div class="col-sm-6 required">
                             <fc:textArea data-bind="value: description" id="description"
                                          label="Description" class="full-width form-control" row="5"
                                          data-validation-engine="validate[required]"/>
                         </div>
                     </div>
 
-                    <div class="row-fluid"
+                    <div class="row"
                          data-bind="template:transients.isMilestone() ? 'milestoneTmpl' : 'activityTmpl'">
 
                     </div>
 
-                    <div class="row-fluid">
-                        <div class="span12">
-                            <button class="btn btn-primary save-activity">
-                                <i class="icon icon-white"
-                                   data-bind="css: {'icon-plus': !activityId, 'icon-file': activityId}">
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary-dark save-activity">
+                                <i class="fas "
+                                   data-bind="css: {'fa-plus': !activityId, 'fa-file-alt': activityId}">
                                 </i>
                                 <!-- ko text: activityId ? '<g:message code="project.works.workschedule.activitymodal.save"/>': '<g:message code="project.works.workschedule.activitymodal.create"/>' --> <!-- /ko -->
                             </button>
-                            <button class="btn" data-bind="click: transients.stopEditing"><g:message code="project.works.workschedule.activitymodal.close"/></button>
+                            <button class="btn btn-dark" data-bind="click: transients.stopEditing"><i class="far fa-times-circle"></i><g:message code="project.works.workschedule.activitymodal.close"/></button>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
             </div>
         </div>
     </div>
@@ -208,6 +213,7 @@
     </g:if>
 </bc:koLoading>
 </div>
+</div>
 <!-- /ko -->
 
 <!-- ko stopBinding: true -->
@@ -215,8 +221,8 @@
 <!-- /ko -->
 
 <!-- ko stopBinding: true -->
-<div id="attachReasonDocument" class="modal fade" style="display:none;">
-    <div class="modal-dialog">
+<div id="attachReasonDocument" class="modal fade" style="display:none;" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="title">Activity Deferral</h4>
@@ -241,7 +247,7 @@
 
                         <div class="controls">
                             <span class="btn fileinput-button" data-bind="visible:!filename()">
-                                <i class="icon-plus"></i>
+                                <i class="fas fa-plus"></i>
                                 <input id="documentFile" type="file" name="files"/>
                                 Attach file
                             </span>
@@ -283,7 +289,7 @@
 
                             <div>
                                 <h4>Document model</h4>
-                                <pre class="row-fluid" data-bind="text:toJSONString()"></pre>
+                                <pre class="row" data-bind="text:toJSONString()"></pre>
                             </div>
                         </div>
                     </g:if>
@@ -309,18 +315,18 @@
 <!-- templates -->
 <script id="activityHeaderTmpl" type="text/html">
 <tr>
-    <th style="width:128px;">Actions</th>
-    <th style="min-width:64px">From</th>
-    <th style="min-width:64px">To</th>
-    <th style="width:25%;">Description</th>
+    <th>Actions</th>
+    <th>From</th>
+    <th>To</th>
+    <th>Description</th>
     <th>Activity &nbsp;
-        <a href="#createOrUpdateActivity" role="button" class="btn btn-default btn-small" data-toggle="modal"
-                    data-bind="click: openActivityModal(newActivityViewModel), visible: fcConfig.canAddActivity"><i class="icon-plus"></i>
+        <a href="#createOrUpdateActivity" role="button" class="btn btn-dark btn-sm" data-toggle="modal"
+                    data-bind="click: openActivityModal(newActivityViewModel), visible: fcConfig.canAddActivity"><i class="fas fa-plus"></i>
         <g:message code="project.works.createNewActivity"/> </a>
     </th>
     <th>Site &nbsp;
-        <a class="btn btn-default btn-small" data-bind="attr: {href: fcConfig.siteCreateUrl}, visible: fcConfig.canAddSite">
-            <i class="icon-plus"></i>
+        <a class="btn btn-dark btn-sm" data-bind="attr: {href: fcConfig.siteCreateUrl}, visible: fcConfig.canAddSite">
+            <i class="fas fa-plus"></i>
             <g:message code="project.works.workschedule.button.createsite"/>
         </a>
     </th>
@@ -330,12 +336,12 @@
 <script id="activityRow" type="text/html">
 
 <td>
-    <a class="btn btn-mini" href="#createOrUpdateActivity" role="button" data-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
-            class="icon-edit" title="Edit Activity"></i></a>
-    <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
-            class="icon-eye-open" title="View Activity"></i></button>
-    <button type="button" class="btn btn-mini"
-            data-bind="click:deleteActivity, visible: canDeleteActivity"><i class="icon-remove" title="Delete activity"></i>
+    <a class="btn btn-light btn-sm" href="#createOrUpdateActivity" role="button" data-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
+            class="fas fa-pencil-alt" title="Edit Activity"></i></a>
+    <button type="button" class="btn btn-light btn-sm" data-bind="click:viewActivity"><i
+            class="far fa-eye" title="View Activity"></i></button>
+    <button type="button" class="btn btn-light btn-sm"
+            data-bind="click:deleteActivity, visible: canDeleteActivity"><i class="far fa-trash-alt" title="Delete activity"></i>
     </button>
 </td>
 <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
@@ -346,17 +352,17 @@
 </td>
 <td>
     <a href="#" data-bind="text:type,click: editActivity"></a>
-    <button class="btn btn-default btn-mini pull-right" data-bind="click: transients.editSpeciesConfiguration, visible: transients.canEditSpeciesConfiguration">
-        <i data-bind="css: {'icon-arrow-down': transients.speciesConfigurationToggle, 'icon-arrow-up': !transients.speciesConfigurationToggle() }"></i>
+    <button class="btn btn-dark btn-mini pull-right" data-bind="click: transients.editSpeciesConfiguration, visible: transients.canEditSpeciesConfiguration">
+        <i class="fas " data-bind="css: { 'fa-arrow-down': transients.speciesConfigurationToggle, 'fa-arrow-up': !transients.speciesConfigurationToggle() }"></i>
         <g:message code="project.survey.activity.editSpecies"/>
     </button>
 </td>
 <td>
-    <div class="row-fluid" data-bind="css: {'ajax-opacity': transients.isSaving}">
-        <div class="span12">
+    <div class="row" data-bind="css: {'ajax-opacity': transients.isSaving}">
+        <div class="col-sm-12">
             <select data-bind="options: resolveSites(fcConfig.siteIds, true), optionsText: 'name', optionsValue: 'siteId', optionsCaption: 'Please choose', value: siteId"></select>
             <span class="margin-left-1">
-                <a href="#" data-bind="click:$parent.openSite, attr: {title: siteName}, visible: siteId"><i class="icon-info-sign"></i></a>
+                <a href="#" data-bind="click:$parent.openSite, attr: {title: siteName}, visible: siteId"><i class="fas fa-info-circle"></i></a>
                 <span data-bind="visible: transients.siteArea">
                     <!-- ko text: transients.siteArea -->
                     <!-- /ko -->
@@ -374,11 +380,11 @@
 
     <td>
         <a class="btn btn-mini" href="#createOrUpdateActivity" role="button" data-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
-                class="icon-edit" title="Edit Milestone"></i></a>
+                class="fas fa-pencil-alt" title="Edit Milestone"></i></a>
         <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
-                class="icon-eye-open" title="View Milestone"></i></button>
+                class="far fa-eye" title="View Milestone"></i></button>
         <button type="button" class="btn btn-mini"
-                data-bind="click:deleteActivity, visible: canDeleteActivity"><i class="icon-remove" title="Delete Milestone"></i>
+                data-bind="click:deleteActivity, visible: canDeleteActivity"><i class="far fa-trash-alt" title="Delete Milestone"></i>
         </button>
     </td>
     <td><span data-bind="text:plannedStartDate.formattedDate"></span></td>
@@ -396,8 +402,8 @@
 </script>
 <script id="updateStatusTmpl" type="text/html">
 <div class="btn-group">
-    <button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown"
-            data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-inverse':progress()=='cancelled'}"
+    <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+            data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-dark':progress()=='cancelled'}"
             style="line-height:16px;min-width:86px;text-align:left;">
         <span data-bind="text: progress"></span> <span class="caret pull-right" style="margin-top:6px;"></span>
     </button>
@@ -413,47 +419,47 @@
 </a>
 <!-- ko with: deferReason -->
 <span data-bind="visible: $parent.progress()=='deferred' || $parent.progress()=='cancelled'">
-    <i class="icon-list-alt"
+    <i class="fas fa-list"
        data-bind="popover: {title: 'Reason for deferral<br><small>(Click icon to edit reason.)</small>', content: notes, placement: 'left'}, click:$parent.displayReasonModal.editReason">
     </i>
 </span>
 <!-- /ko -->
 </script>
 <script id="viewStatusTmpl" type="text/html">
-<button type="button" class="btn btn-small"
-        data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-inverse':progress()=='cancelled'}"
+<button type="button" class="btn btn-sm"
+        data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-dark':progress()=='cancelled'}"
         style="line-height:16px;min-width:75px;text-align:left;cursor:default;color:white">
     <span data-bind="text: progress"></span>
 </button>
 <!-- ko with: deferReason -->
 <span data-bind="visible: $parent.progress()=='deferred' || $parent.progress()=='cancelled'">
-    <i class="icon-list-alt"
+    <i class="fas fa-list"
        data-bind="popover: {title: 'Reason for deferral', content: notes, placement: 'left'}">
     </i>
 </span>
 <!-- /ko -->
 </script>
 <script type="text/html" id="activityTmpl">
-<div class="span6 required">
+<div class="col-sm-6 required">
     <label for="plannedStartDate">Planned start date
     <fc:iconHelp title="Planned start date"
                  printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
     </label>
 
-    <div class="input-append">
+    <div class="input-group-append">
         <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate"
                        data-validation-engine="validate[required,future[${formattedStartDate}]]"
                        printable="${printView}"/>
     </div>
 </div>
 
-<div class="span6 required">
+<div class="col-sm-6 required">
     <label for="plannedEndDate">Planned end date
     <fc:iconHelp title="Planned end date"
                  printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
     </label>
 
-    <div class="input-append">
+    <div class="input-group-append">
         <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate"
                        data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]"
                        printable="${printView}"/>
@@ -461,13 +467,13 @@
 </div>
 </script>
 <script type="text/html" id="milestoneTmpl">
-<div class="span6 required">
+<div class="col-sm-6 required">
     <label for="plannedStartDate">Milestone date
     <fc:iconHelp title="Planned start date"
                  printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
     </label>
 
-    <div class="input-append">
+    <div class="input-group-append">
         <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate"
                        data-validation-engine="validate[required,future[${formattedStartDate}]]"
                        printable="${printView}"/>
@@ -485,28 +491,28 @@
             <th>
                 <label class="control-label"><g:message code="project.survey.species.fieldName"/>
                     <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.fieldName"/>', content:'<g:message code="project.survey.species.fieldName.content"/>'}">
-                        <i class="icon-question-sign"></i>
+                        <i class="fas fa-question-circle"></i>
                     </a>
                 </label>
             </th>
             <th>
                 <label class="control-label"><g:message code="project.survey.species.settings"/>
                     <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.settings"/>', content:'<g:message code="project.survey.species.settings.content.works"/>'}">
-                        <i class="icon-question-sign"></i>
+                        <i class="fas fa-question-circle"></i>
                     </a>
                 </label>
             </th>
             <th>
                 <label class="control-label"><g:message code="project.survey.species.displayAs"/>
                     <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.displayAs"/>', content:'<g:message code="project.survey.species.displayAs.content"/>'}">
-                        <i class="icon-question-sign"></i>
+                        <i class="fas fa-question-circle"></i>
                     </a>
                 </label>
             </th>
             <th>
                 <label class="control-label"><g:message code="project.survey.species.actions"/>
                     <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.actions"/>', content:'<g:message code="project.survey.species.actions.content"/>'}">
-                        <i class="icon-question-sign"></i>
+                        <i class="fas fa-question-circle"></i>
                     </a>
                 </label>
             </th>
@@ -526,9 +532,9 @@
                     </select>
                 </td>
                 <td>
-                    <button data-bind="click: showSpeciesConfiguration" class="btn btn-default" ><i class="icon-cog"></i> <g:message code="project.survey.species.configure.works"/></button>
-                    <button class="btn btn-default" data-bind="click: $parent.transients.parent.copySettings">
-                        <i class="icon-bookmark"/>
+                    <button data-bind="click: showSpeciesConfiguration" class="btn btn-dark" ><i class="fas fa-cog"></i> <g:message code="project.survey.species.configure.works"/></button>
+                    <button class="btn btn-dark" data-bind="click: $parent.transients.parent.copySettings">
+                        <i class="fas fa-bookmark"/>
                         <g:message code="project.survey.species.setdefault"/>
                     </button>
                 </td>
@@ -536,12 +542,12 @@
         <!-- /ko -->
         </tbody>
     </table>
-    <button class="btn btn-primary" data-bind="click: transients.parent.save">
-        <i class="icon-white icon-file"/>
+    <button class="btn btn-primary-dark" data-bind="click: transients.parent.save">
+        <i class="fas fa-hdd"></i>
         <g:message code="project.survey.species.saveButton"/>
     </button>
-    <button class="btn btn-default" data-bind="click: $parent.transients.editSpeciesConfiguration">
-        <i class="icon-minus"/>
+    <button class="btn btn-dark" data-bind="click: $parent.transients.editSpeciesConfiguration">
+        <i class="far fa-times-circle"></i>
         <g:message code="project.survey.species.closeButton"/>
     </button>
 
@@ -552,10 +558,10 @@
 <g:render template="/projectActivity/speciesFieldSettingsDialog"></g:render>
 </script>
 <script type="text/html" id="workScheduleActionButtonsTmpl">
-<div class="row-fluid">
-    <div class="span12">
+<div class="row">
+    <div class="col-sm-12">
         <div class="pull-right">
-            <a class="btn btn-info" data-bind="attr: {href: fcConfig.worksScheduleIntroUrl}"><i class="icon-question-sign icon-white"></i>
+            <a class="btn btn-info" data-bind="attr: {href: fcConfig.worksScheduleIntroUrl}"><i class="fas fa-question-circle"></i>
                 <g:message code="project.works.workschedule.button.help"/></a>
         </div>
     </div>
@@ -598,13 +604,14 @@
     $(window).on('load',function () {
      var project = <fc:modelAsJavascript model="${project}"/>;
      var config = {
-            activities: ${activities ?: []},
+            activities: <fc:modelAsJavascript model="${activities ?: []}"/>,
             outputTargets: project.outputTargets || {},
             project: project,
             placeholder: 'status-update-error-placeholder',
             speciesPlaceholder: 'species-validation-result-placeholder'
      }
     var planViewModel = new PlanViewModel(config);
+        ko.cleanNode(document.getElementById('planContainer'));
         ko.applyBindings(planViewModel, document.getElementById('planContainer'));
 
         // the following code handles resize-sensitive truncation of the description field

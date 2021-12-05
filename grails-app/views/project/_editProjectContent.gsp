@@ -1,18 +1,18 @@
 <!-- ko stopBinding: true -->
 <div id="edit${attributeName}Content">
 <h3>${header}</h3>
-<div class="row-fluid">
-    <div class="span5 alert">This functionality is now deprecated, please create any new ${header} using
+<div class="row-">
+    <div class="col-sm-5 alert">This functionality is now deprecated, please create any new ${header} using
         <a href="#" onclick="$('#editProjectBlog-tab').click()" >Edit Blog</a></li>
     </div>
 </div>
-<div class="row-fluid">
-    <div class="span5 alert" data-bind="visible:message(), css:{'alert-error':error(), 'alert-success':success()}">
+<div class="row">
+    <div class="col-sm-5 alert" data-bind="visible:message(), css:{'alert-error':error(), 'alert-success':success()}">
         <button class="close" data-bind="click:clearMessage" href="#">×</button>
         <span data-bind="text:message"></span>
     </div>
 </div>
-<div class="row-fluid space-after well well-small">
+<div class="row space-after card">
 
         <h4>Update project "${header}"</h4>
         <div id="${attributeName}-button-bar" style="width:100%;background-color: white;"></div>
@@ -22,14 +22,14 @@
         </div>
         <div class="hide"><input type="text" name="${attributeName}Output" id="${attributeName}Output" class="hide"></div>
 </div>
-<div class="row-fluid">
+<div class="row">
         <h4>Preview</h4>
-        <div id="${attributeName}-preview" class="well well-small"></div>
+        <div id="${attributeName}-preview" class="card"></div>
 </div>
-<div class="row-fluid">
-    <span class="span3">
-        <button class="btn btn-primary btn-small" data-bind="click:save${attributeName}"><i class="icon-white icon-hdd"></i> Save changes</button>
-        <button class="btn  btn-small" data-bind="click:cancelEdit${attributeName}">Cancel</button>
+<div class="row">
+    <span class="col-sm-3">
+        <button class="btn btn-primary-dark btn-sm" data-bind="click:save${attributeName}"><i class="icon-white icon-hdd"></i> Save changes</button>
+        <button class="btn  btn-sm" data-bind="click:cancelEdit${attributeName}">Cancel</button>
 
     </span>
 </div>
