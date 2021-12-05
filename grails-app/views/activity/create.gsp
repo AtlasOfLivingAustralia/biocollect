@@ -63,7 +63,7 @@
 
         <div class="form-actions">
             <button type="button" data-bind="click: next" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Next</button>
-            <button type="button" id="cancel" class="btnbtn-dark"><i class="far fa-times-circle"></i> Cancel</button>
+            <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> Cancel</button>
         </div>
     </div>
 
