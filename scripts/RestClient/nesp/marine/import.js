@@ -22,8 +22,7 @@ var associatedSubProgram = associatedProgram + 1;
 var projectSiteId = associatedSubProgram + 1;
 var projectType = projectSiteId + 1;
 var organisationId = projectType + 1;
-var organisationName = organisationId + 1;
-var organisationUrl = organisationName + 1;
+var organisationUrl = organisationId + 1;
 var organisationLogo = organisationUrl + 1;
 var projectName = organisationLogo + 1;
 var aim = projectName + 1;
@@ -48,15 +47,13 @@ print("Loaded csv file");
 var csvRows = csvData.split('\r');
 print("Total rows "+ csvRows.length);
 
-// key value pairs of assoiated orgs
+// Include name, organisationId pairs for all assoiated orgs
 var organisations = [
-    {name:"CSIRO", organisationId:"8c3a7806-6d5e-4b60-97d7-b76ba495750e"},
-    {name:"Charles Darwin University", organisationId:"9fe1c64f-ad8c-487d-b7f7-b975563d5e4b"},
-    {name:"Curtin University", organisationId:"sdsdc64f-ad8c-487d-b7f7-b975563d5e4b"},
-    {name:"Murdoch University", organisationId:"sddwc64f-ad8c-487d-b7f7-b975563d5e4b"}
+    {name:"Curtin University", organisationId:"0f65d21c-f876-4a01-ad81-2132094c8fb4"},
+    {name:"Murdoch University", organisationId:"c23d36ed-2e4a-4b56-b807-fbff825b56ca"}
 ];
 
-for(var i = 1; i < csvRows.length; i++) {
+for(var i = 1; i < 3; i++) {
     print("PRINT "+csvRows.length)
     var projectId = UUID.generate();
     var siteId = UUID.generate();
@@ -104,17 +101,23 @@ for(var i = 1; i < csvRows.length; i++) {
     }
 
     if(fields[projectName].indexOf(',') != -1){
-        var tempProjectName = fields[projectName];
+        var tempProjectName = fields[projectName].replace(/""/g, '"');;
         project.name = tempProjectName.substring(1, tempProjectName.length-1);
     }
     else {
         project.name = fields[projectName]
     }
 
-    project.associatedProgram = fields[associatedProgram]
+    if(fields[associatedProgram].indexOf(',') != -1){
+        var tempAssociatedProgram = fields[associatedProgram].replace(/""/g, '"');;
+        project.associatedProgram = tempAssociatedProgram.substring(1, tempAssociatedProgram.length-1);
+    }
+    else {
+        project.associatedProgram = fields[associatedProgram]
+    }
 
     if(fields[associatedSubProgram].indexOf(',') != -1){
-        var tempAssociatedSubProgram = fields[associatedSubProgram];
+        var tempAssociatedSubProgram = fields[associatedSubProgram].replace(/""/g, '"');;
         project.associatedSubProgram = tempAssociatedSubProgram.substring(1, tempAssociatedSubProgram.length-1);
     }
     else {
@@ -138,13 +141,18 @@ for(var i = 1; i < csvRows.length; i++) {
         tempAssociatedOrgsArr = tempStr.split(',');
     }
 
-    for (var k = 0; k < tempAssociatedOrgsArr.length; k++) {
-        var org = organisations.find(obj => obj.name === tempAssociatedOrgsArr[k]);
-        project.associatedOrgs.push({organisationId: org.organisationId});
-    }
-
-    //assign organisationId from excelsheet for the first organisationName in excelsheet
+    //assign organisationId for the main organisation from excel sheet
     project.associatedOrgs.push({organisationId: fields[organisationId]});
+
+    for (var k = 0; k < tempAssociatedOrgsArr.length; k++) {
+        if (organisations.find(obj => obj.name === tempAssociatedOrgsArr[k])) {
+            var org = organisations.find(obj => obj.name === tempAssociatedOrgsArr[k]);
+            project.associatedOrgs.push({organisationId: org.organisationId});
+        }
+        else {
+            print("Could not find org id for: "+tempAssociatedOrgsArr[k]);
+        }
+    }
 
     var tempKeywords = fields[keywords].replace(/""/g, '"');
     project.keywords = tempKeywords.substring(1, tempKeywords.length-1);
@@ -216,7 +224,7 @@ for(var i = 1; i < csvRows.length; i++) {
     var userPermission = {};
     userPermission.accessLevel = 'admin';
     userPermission.entityId = project.projectId;
-    userPermission.userId = '8443';
+    userPermission.userId = '130548';
     userPermission.entityType = 'au.org.ala.ecodata.Project';
 
     var documentResult = db.document.insert(document);
