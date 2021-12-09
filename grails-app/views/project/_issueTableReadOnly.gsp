@@ -1,7 +1,7 @@
 <div class="project-issues margin-bottom-10 margin-right-20">
     <label><b>Project issues</b></label>
-    <table class="table-striped" style="width:100%;">
-        <thead >
+    <table class="table table-bordered">
+        <thead class="thead-dark">
         <tr>
         <tr>
             <th class="type">Type of issue </th>

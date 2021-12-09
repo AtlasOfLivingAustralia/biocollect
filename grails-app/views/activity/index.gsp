@@ -8,7 +8,7 @@
         <title>Print | ${activity.type} | <g:message code="g.biocollect"/></title>
     </g:if>
     <g:else>
-        <meta name="layout" content="${hubConfig.skin}"/>
+        <meta name="layout" content="bs4"/>
         <title>View | ${activity.type} | <g:message code="g.biocollect"/></title>
     </g:else>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
@@ -55,11 +55,13 @@
         here = document.location.href;
     </asset:script>
     <asset:stylesheet src="forms-manifest.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="meritActivity.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
     <g:set var="pActivity" value="${[commentsAllowed: false]}"/>
+    <link rel="stylesheet" type="text/css"
+          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">
 </head>
 
 <body>
@@ -74,8 +76,8 @@
         </g:if>
 
 
-        <div class="row-fluid title-block well well-small input-block-level">
-            <div class="span12 title-attribute">
+        <div class="row form-group title-block card input-block-level">
+            <div class="col-sm-12 title-attribute">
                 <h1><span data-bind="click:goToProject"
                           class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
 
@@ -85,31 +87,31 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="${mapFeatures.toString() != '{}' ? 'span9' : 'span12'}" style="font-size: 1.2em">
+        <div class="row col-sm-12">
+            <div class="${mapFeatures.toString() != '{}' ? 'col-sm-9' : 'col-sm-12'}" style="font-size: 1.2em">
                 <!-- Common activity fields -->
-                <div class="row-fluid">
-                    <span class="span6"><span class="label">Description:</span> <span
+                <div class="row form-group">
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Description:</span> <span
                             data-bind="text:description"></span></span>
-                    <span class="span6"><span class="label">Type:</span> <span data-bind="text:type"></span></span>
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Type:</span> <span data-bind="text:type"></span></span>
                 </div>
 
-                <div class="row-fluid">
-                    <span class="span6"><span class="label">Starts:</span> <span
+                <div class="row form-group">
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Starts:</span> <span
                             data-bind="text:startDate.formattedDate"></span></span>
-                    <span class="span6"><span class="label">Ends:</span> <span
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Ends:</span> <span
                             data-bind="text:endDate.formattedDate"></span></span>
                 </div>
 
-                <div class="row-fluid">
-                    <span class="span6"><span class="label">Project stage:</span> <span
+                <div class="row form-group">
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Project stage:</span> <span
                             data-bind="text:projectStage"></span></span>
-                    <span class="span6"><span class="label">Major theme:</span> <span data-bind="text:mainTheme"></span>
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Major theme:</span> <span data-bind="text:mainTheme"></span>
                     </span>
                 </div>
 
-                <div class="row-fluid">
-                    <span class="span6"><span class="label">Activity status:</span> <span
+                <div class="row form-group">
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Activity status:</span> <span
                             data-bind="text:progress"></span></span>
                 </div>
             </div>
@@ -144,31 +146,32 @@
             </div>
         </g:if>
     </div>
+    <div class="col-sm-12">
+        <!-- ko stopBinding: true -->
+        <g:each in="${metaModel?.outputs}" var="outputName">
 
-    <!-- ko stopBinding: true -->
-    <g:each in="${metaModel?.outputs}" var="outputName">
+            <g:if test="${outputName != 'Photo Points'}">
+                <g:render template="/output/outputJSModel" plugin="ecodata-client-plugin"
+                          model="${[viewModelInstance: activity.activityId + fc.toSingleWord([name: outputName]) + 'ViewModel',
+                                    edit             : false, model: outputModels[outputName],
+                                    outputName       : outputName]}"></g:render>
+                <g:render template="/output/readOnlyOutput"
+                          model="${[activity     : activity,
+                                    outputModel  : outputModels[outputName],
+                                    outputName   : outputName,
+                                    activityModel: metaModel,
+                                    disablePrepop: activity.progress != au.org.ala.biocollect.merit.ActivityService.PROGRESS_PLANNED]}"
+                          plugin="ecodata-client-plugin"></g:render>
 
-        <g:if test="${outputName != 'Photo Points'}">
-            <g:render template="/output/outputJSModel" plugin="ecodata-client-plugin"
-                      model="${[viewModelInstance: activity.activityId + fc.toSingleWord([name: outputName]) + 'ViewModel',
-                                edit             : false, model: outputModels[outputName],
-                                outputName       : outputName]}"></g:render>
-            <g:render template="/output/readOnlyOutput"
-                      model="${[activity     : activity,
-                                outputModel  : outputModels[outputName],
-                                outputName   : outputName,
-                                activityModel: metaModel,
-                                disablePrepop: activity.progress != au.org.ala.biocollect.merit.ActivityService.PROGRESS_PLANNED]}"
-                      plugin="ecodata-client-plugin"></g:render>
-
+            </g:if>
+        </g:each>
+        <!-- /ko -->
+        <g:if test="${pActivity?.commentsAllowed}">
+            <g:render template="/comment/comment"></g:render>
         </g:if>
-    </g:each>
-    <!-- /ko -->
-    <g:if test="${projectActivity?.commentsAllowed}">
-        <g:render template="/comment/comment"></g:render>
-    </g:if>
-    <div class="form-actions">
-        <button type="button" id="cancel" class="btn">return</button>
+        <div class="form-actions">
+            <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> return</button>
+        </div>
     </div>
 </div>
 

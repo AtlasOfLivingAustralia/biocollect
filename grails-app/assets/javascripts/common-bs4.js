@@ -1,7 +1,7 @@
 //= require js-iso8601/js-iso8601.min.js
 //= require underscore/underscore-1.8.3.min.js
 //= require amplify/amplify.min.js
-//= require bootstrap-datepicker/js/bootstrap-datepicker.js
+//= require bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.js
 //= require bootbox/bootbox.min.js
 //= require knockout/3.4.0/knockout-3.4.0.js
 // require knockout/3.4.0/knockout-3.4.0.debug.js
