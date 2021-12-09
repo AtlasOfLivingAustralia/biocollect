@@ -11,7 +11,7 @@
     <tbody>
     <!-- ko foreach:details.outcomeProgress -->
     <tr>
-        <td class="date">
+        <td class="date input-group-append">
             <fc:datePicker class="input-small" targetField="date.date" name="date" data-validation-engine="validate[required]" printable="${printView}"/>
         </td>
         <td class="type">
@@ -30,8 +30,8 @@
     <tr>
 
         <td>
-            <button type="button" class="btn btn-small" data-bind="click: addOutcomeProgress">
-                <i class="icon-plus"></i> Add a row</button>
+            <button type="button" class="btn btn-dark btn-sm" data-bind="click: addOutcomeProgress">
+                <i class="fas fa-plus"></i> Add a row</button>
         </td>
         <td></td>
         <td></td>
@@ -40,12 +40,12 @@
     </tfoot>
 </table>
 
-<div class="row-fluid space-after">
-    <div class="span12">
+<div class="row space-after">
+    <div class="col-sm-12">
         <div class="form-actions">
 
-            <button type="button" data-bind="click: saveMeriPlan" id="project-details-save" class="btn btn-primary">Save changes</button>
-            <button type="button" id="details-cancel" class="btn" data-bind="click: cancelMeriPlanEdits">Cancel</button>
+            <button type="button" data-bind="click: saveMeriPlan" id="project-details-save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Save changes</button>
+            <button type="button" id="details-cancel" class="btn btn-dark" data-bind="click: cancelMeriPlanEdits"><i class="far fa-times-circle"></i> Cancel</button>
         </div>
 
     </div>

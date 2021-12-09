@@ -5,8 +5,9 @@ layout:
   skin: "ala2"
 
 server:
-  session:
-    timeout: 3600
+  servlet:
+    session:
+      timeout: 3600
 
 environments:
     development:
@@ -59,7 +60,6 @@ app:
 
 security:
    cas:
-#      casProperties: "casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,uriExclusionFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath,gatewayStorageClass"
       uriExclusionFilterPattern: ['/assets/.*','/images.*','/css.*','/js.*','/less.*','/ajax/(bulkLookupQuestions|saveBookmarkLocation|getBookmarkLocations)','/uploads/.*']
       authenticateOnlyIfLoggedInPattern: "/*"
       uriFilterPattern: ['/user/.*','/site/(?!(index|list|elasticsearch|getImages|getPoiImages|ajaxUpdate|checkSiteName|ajaxList|checkPointInsideProjectAreaAndAddress)).*','/project/(?!(index|search|citizenScience|listRecordImages|projectSummaryReportCallback)).*','/activity/(?!index).*','/output/(?!index).*','/image/(?!index).*','/admin/.*','/proxy/speciesListPost','/proxy/documentUpdate','/proxy/deleteDocument','/home/advanced','/organisation/(?!index).*','/organisation/(?!list).*','/bioActivity/create/.*','/bioActivity/edit/.*','/bioActivity/list','/sight/.*']
@@ -71,6 +71,7 @@ security:
       casServerLoginUrl: "https://auth.ala.org.au/cas/login"
       casServerUrlPrefix: "https://auth.ala.org.au/cas"
       logoutUrl: "https://auth.ala.org.au/cas/logout"
+      loginUrl: "https://auth.ala.org.au/cas/login"
 
 #External URL
 aekosEnabled: false

@@ -1,14 +1,14 @@
 <div>
     <!-- ko with: mapConfiguration -->
     <div data-bind="css: {'ajax-opacity': transients.loading}">
-        <div class="row-fluid">
-            <div class="span12 text-left">
+        <div class="row">
+            <div class="col-sm-12 text-left">
                 <h2 class="strong"><g:message code="mapConfiguration.heading"/></h2>
             </div>
         </div>
 
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col-sm-12">
                 <h3><g:message code="mapConfiguration.step.one.title"/></h3>
             </div>
         </div>
@@ -115,24 +115,24 @@
             </div>
         </div>
 
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col-sm-12">
                 <h3><g:message code="mapConfiguration.step.two.title"/></h3>
             </div>
         </div>
 
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col-sm-12">
                 <map-config-selector
                         params="allBaseLayers: fcConfig.allBaseLayers, allOverlays: fcConfig.allOverlays, mapLayersConfig: $parent.mapLayersConfig, type: 'project'"></map-config-selector>
             </div>
         </div>
 
 
-        <div class="row-fluid">
-            <div class="span12">
-                <button class="btn-primary btn btn-small block" data-bind="click: $parent.saveMapConfig"><i
-                        class="icon-white  icon-hdd"></i>  Save</button>
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-primary-dark btn-sm block" data-bind="click: $parent.saveMapConfig"><i
+                        class="fas fa-hdd"></i>  Save</button>
             </div>
         </div>
     </div>
@@ -147,11 +147,11 @@
      data-position-type="inline" data-prompt-target="sites-pick-one-message-container">
     <div id="sites-pick-one-message-container"></div>
 
-    <div id="survey-site-list" class="row-fluid">
-        <div class="span12">
+    <div id="survey-site-list" class="row">
+        <div class="col-sm-12">
             <div style="max-height: 500px; overflow-y: auto;">
-                <div class="row-fluid" data-bind="if: transients.sites.length > 1">
-                    <div class="span6">
+                <div class="row" data-bind="if: transients.sites.length > 1">
+                    <div class="col-sm-6">
                         <div class="large-checkbox">
                             <input id="selectall" type="checkbox" data-bind="checked: transients.isSelectAllSites, click: transients.selectAllSites">
                             <label for="selectall"><span></span> <g:message code="mapConfiguration.site.selectall.title"/></label>
@@ -159,8 +159,8 @@
                     </div>
                 </div>
                 <!-- ko foreach: transients.sites -->
-                <div class="row-fluid">
-                    <div class="span6">
+                <div class="row">
+                    <div class="col-sm-6">
                         <label class="checkbox">
                             <input type="checkbox" data-bind="checkedValue: $data.siteId, checked: $parent.sites">
                             <a class="btn-link" target="_blank"
@@ -168,8 +168,8 @@
                         </label>
                     </div>
 
-                    <div class="span6">
-                        <a class="btn btn-mini btn-default" target="_blank"
+                    <div class="col-sm-6">
+                        <a class="btn btn-mini btn-dark" target="_blank"
                            data-bind="attr:{href: $parent.transients.siteUrl($data)}" role="button">
                             <i class="icon-eye-open"></i>
                             <g:message code="btn.view"/>
@@ -191,17 +191,17 @@
         </div>
     </div>
 
-    <div class="row-fluid">
-        <div class="span12">
+    <div class="row">
+        <div class="col-sm-12">
             <label>
                 <g:message code="mapConfiguration.site.create.choose.title"></g:message>
-                <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToSelect"><i
+                <button class="btn-dark btn btn-sm block" data-bind="click: $parent.redirectToSelect"><i
                         class="icon-folder-open"></i> <g:message code="mapConfiguration.site.existing.selection"/>
                 </button>
-                <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToCreate"><i
+                <button class="btn-dark btn btn-sm block" data-bind="click: $parent.redirectToCreate"><i
                         class="icon-plus"></i> <g:message code="mapConfiguration.site.create"/>
                 </button>
-                <button class="btn-default btn btn-small block" data-bind="click: $parent.redirectToUpload"><i
+                <button class="btn-dark btn btn-sm block" data-bind="click: $parent.redirectToUpload"><i
                         class="icon-arrow-up"></i> <g:message code="mapConfiguration.site.upload"/></button>
             </label>
         </div>
@@ -211,11 +211,11 @@
 <script id="template-site-create" type="text/html">
 <div>
     <div id="site-create-message-container"></div>
-    <div class="row-fluid" data-validation-engine="validate[funcCall[isUserSiteCreationConfigValid]]"
+    <div class="row" data-validation-engine="validate[funcCall[isUserSiteCreationConfigValid]]"
          data-prompt-position="inline" data-position-type="inline" data-prompt-target="site-create-message-container">
-        <div class="span12">
-            <div id="survey-site-create" class="row-fluid">
-                <div class="span12">
+        <div class="col-sm-12">
+            <div id="survey-site-create" class="row">
+                <div class="col-sm-12">
                     <label class="checkbox">
                         <input type="checkbox" data-bind="checked: allowPoints"/>  <g:message code="mapConfiguration.site.point"/>
                     </label>
@@ -232,8 +232,8 @@
 </div>
 </script>
 <script id="template-site-add-to-project" type="text/html">
-<div class="row-fluid">
-    <div class="span6">
+<div class="row">
+    <div class="col-sm-6">
         <label class="checkbox">
             <input type="checkbox"
                    data-bind="checked: addCreatedSiteToListOfSelectedSites, disable: !!isUserSiteCreationConfigValid()"/> <g:message

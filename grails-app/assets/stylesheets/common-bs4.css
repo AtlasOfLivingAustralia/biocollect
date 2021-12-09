@@ -1,4 +1,4 @@
-/* todo needed? */
+/* *= require validationEngine.jquery.css */
 .output-block .required label, .validationEngineContainer .required label {
     position: relative;
 }

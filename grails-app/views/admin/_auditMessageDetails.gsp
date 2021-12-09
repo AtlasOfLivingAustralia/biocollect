@@ -35,8 +35,8 @@
 <div class="row float-right">
     <table>
         <tr>
-            <td class="p-2" style="background: #c6ffc6;"></td><td>Inserted</td>
-            <td class="p-2" style="background: #ffc6c6;"></td><td>Deleted</td>
+            <td style="background: #c6ffc6;"></td><td>Inserted</td>
+            <td style="background: #ffc6c6;"></td><td>Deleted</td>
         </tr>
     </table>
 </div>

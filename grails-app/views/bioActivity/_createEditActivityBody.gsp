@@ -52,7 +52,7 @@
 
 <g:if test="${metaModel?.supportsSites?.toBoolean()}">
     <div >
-        <h3 class="text-center text-danger card-title">Site Details</h3>
+        <h3 class="text-center text-error card-title">Site Details</h3>
         <div class="output-block text-center card">
             <fc:select
                     data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
@@ -75,11 +75,11 @@
         <g:render template="/shared/termsOfUse"/>
         <br>
         <g:if test="${!preview}">
-            <button type="button" id="save" class="btn btn-primary btn-large">Submit</button>
+            <button type="button" id="save" class="btn btn-primary btn-lg"><i class="fas fa-upload"></i> Submit</button>
         </g:if>
         <g:if test="${showCreate && !mobile}">
             <g:if test="${!preview}">
-                <button type="button" id="cancel" class="btn btn-large">Cancel</button>
+                <button type="button" id="cancel" class="btn btn-dark btn-lg"><i class="far fa-times-circle"></i> Cancel</button>
             </g:if>
         </g:if>
     </div>

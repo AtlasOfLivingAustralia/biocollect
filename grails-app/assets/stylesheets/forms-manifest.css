@@ -70,10 +70,9 @@
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    font-size: 14px;
-    border-radius: 4px;
-    border: 1px solid #cccccc;
-    color: #555555;
+    border: 1px solid black;
+    border-radius: 0;
+    height: 40px;
 }
 .input-append .select2-container--default .select2-selection--single .select2-selection__rendered {
     border-radius: 4px 0 0 4px;
@@ -83,4 +82,30 @@
 }
 .input-prepend.input-append .select2-container--default .select2-selection--single .select2-selection__rendered {
     border-radius: 0;
+}
+
+.input-group .input-group-append .input-group-text, table .autocompleteSpecies .input-group-text {
+    height: auto;
+}
+
+.card input[type=text], .card input[type=search], .card input[type=number], .card input[type=tel] {
+    border: 1px solid black;
+}
+
+.table .table {
+    background-color: #f2f2f2;
+}
+
+.table th, .table td {
+    border-top: 1px solid #dee2e6 !important;
+}
+
+.select2-selection__placeholder, .select2-selection__rendered {
+    font-size: 90%;
+    color: #565656;
+}
+
+.select2-selection__rendered {
+    font-size: 80%;
+    color: #565656;
 }

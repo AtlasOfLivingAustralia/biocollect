@@ -1,7 +1,7 @@
 <div class="validationEngineContainer edit-view-meri-plan"  id="edit-meri-plan">
 	<p data-bind="if:detailsLastUpdated">Last updated <span data-bind="if:detailsLastUpdatedDisplayName"> by <span data-bind="text:detailsLastUpdatedDisplayName"></span></span> at <span data-bind="text:detailsLastUpdated.formattedDate"></span></p>
 
-	<div class="row-fluid space-after">
+	<div class="row space-after">
 		<div>
 			<div class="margin-bottom-10 margin-right-20">
 				<label><b>Project Outcomes</b></label>
@@ -34,7 +34,7 @@
 					<tr>
 						<td></td>
 						<td colspan="0" style="text-align:left;">
-							<button type="button" class="btn btn-small" data-bind="disable:isProjectDetailsLocked(), click: addOutcome">
+							<button type="button" class="btn btn-dark btn-sm" data-bind="disable:isProjectDetailsLocked(), click: addOutcome">
 								<i class="icon-plus"></i> Add a row</button>
 						</td>
 					</tr>
@@ -64,7 +64,7 @@
 					<tr>
 						<td></td>
 						<td colspan="0" style="text-align:left;">
-							<button type="button" class="btn btn-small" data-bind="disable:isProjectDetailsLocked(), click: addObjectives">
+							<button type="button" class="btn btn-dark btn-sm" data-bind="disable:isProjectDetailsLocked(), click: addObjectives">
 								<i class="icon-plus"></i> Add a row</button>
 						</td>
 					</tr>
@@ -74,7 +74,7 @@
 		</div>
 	</div>
 
-	<div class="row-fluid space-after">
+	<div class="row space-after">
 		<div>
 			<div id="national-priorities" class="margin-bottom-10 margin-right-20">
 				<label><b>National and regional priorities</b></label>
@@ -104,7 +104,7 @@
 					<tr>
 						<td></td>
 						<td colspan="0" style="text-align:left;">
-							<button type="button" class="btn btn-small" data-bind="disable: isProjectDetailsLocked(), click: addNationalAndRegionalPriorities">
+							<button type="button" class="btn btn-dark btn-sm" data-bind="disable: isProjectDetailsLocked(), click: addNationalAndRegionalPriorities">
 								<i class="icon-plus"></i> Add a row</button></td>
 					</tr>
 					</tfoot>
@@ -114,7 +114,7 @@
 	</div>
 
 
-	<div class="row-fluid space-after">
+	<div class="row space-after">
 		<div>
 			<div id="project-implementation" class="margin-bottom-10 margin-right-20">
 				<label><b>Project implementation / delivery mechanism</b></label>
@@ -126,7 +126,7 @@
 		</div>
 	</div>
 
-	<div class="row-fluid space-after">
+	<div class="row space-after">
 		<div id="project-partnership" class="margin-bottom-10 margin-right-20">
 			<label><b>Project partnerships</b></label>
 			<p>Provide details on all project partners and the nature and scope of their participation in the project.</p>
@@ -156,7 +156,7 @@
 				<tr>
 					<td></td>
 					<td colspan="0" style="text-align:left;">
-						<button type="button" class="btn btn-small"  data-bind="disable: isProjectDetailsLocked(), click: addPartnership">
+						<button type="button" class="btn btn-dark btn-sm"  data-bind="disable: isProjectDetailsLocked(), click: addPartnership">
 							<i class="icon-plus"></i> Add a row</button></td>
 				</tr>
 				</tfoot>
@@ -164,7 +164,7 @@
 		</div>
 	</div>
 
-	<div class="row-fluid space-after">
+	<div class="row space-after">
 		<div>
 			<div id="keq" class="margin-bottom-10 margin-right-20">
 				<label><b>Key evaluation question</b>  <fc:iconHelp title="Key evaluation question">Please list the Key Evaluation Questions for your project. Evaluation questions should cover the effectiveness of the project and whether it delivered what was intended; the impact of the project; the efficiency of the delivery mechanism/s; and the appropriateness of the methodology. These need to be answerable within the resources and time available to the project.</fc:iconHelp></label>
@@ -198,7 +198,7 @@
 					<tr>
 						<td></td>
 						<td colspan="0" style="text-align:left;">
-							<button type="button" class="btn btn-small" data-bind="disable: isProjectDetailsLocked(), click: addKEQ">
+							<button type="button" class="btn btn-dark btn-sm" data-bind="disable: isProjectDetailsLocked(), click: addKEQ">
 								<i class="icon-plus"></i> Add a row</button></td>
 					</tr>
 					</tfoot>
@@ -208,7 +208,7 @@
 	</div>
 
 	<!-- Budget table -->
-	<div class="row-fluid space-after">
+	<div class="row space-after">
 		<div>
 			<div class="margin-bottom-10 margin-right-20">
 				<label><b>Project Budget</b><fc:iconHelp title="Project Budget">Include the planned budget expenditure against each programme objective. This information will be used to report on the use of public money.</fc:iconHelp></label>
@@ -255,7 +255,7 @@
 					<tr>
 						<td></td>
 						<td colspan="0" style="text-align:left;">
-							<button type="button" class="btn btn-small" data-bind="disable: isProjectDetailsLocked(), click: addBudget">
+							<button type="button" class="btn btn-dark btn-sm" data-bind="disable: isProjectDetailsLocked(), click: addBudget">
 								<i class="icon-plus"></i> Add a row</button></td>
                         <td></td>
                         <td></td>
@@ -273,13 +273,13 @@
 		</div>
 	</div>
 
-	<div class="row-fluid space-after">
+	<div class="row space-after">
 		<!-- ko with: details -->
 		<g:render template="riskTable"></g:render>
 		<!-- /ko -->
 	</div>
 
-	<div class="row-fluid space-after">
+	<div class="row space-after">
 		<!-- ko with: details.issues -->
 		<g:render template="issueTable"></g:render>
 		<!-- /ko -->
@@ -287,11 +287,11 @@
 
 	<div id="save-details-result-placeholder"></div>
 
-	<div class="row-fluid space-after">
-		<div class="span12">
+	<div class="row space-after">
+		<div class="col-sm-12">
 			<div class="form-actions">
 
-				<button type="button" data-bind="click: saveMeriPlan" id="project-details-save" class="btn btn-primary">Save changes</button>
+				<button type="button" data-bind="click: saveMeriPlan" id="project-details-save" class="btn btn-primary-dark">Save changes</button>
 				<button type="button" id="details-cancel" class="btn" data-bind="click: cancelMeriPlanEdits">Cancel</button>
 			</div>
 
