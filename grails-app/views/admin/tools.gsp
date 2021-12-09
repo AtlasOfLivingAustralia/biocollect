@@ -133,7 +133,7 @@
 
         </script>
         <content tag="pageTitle">Tools</content>
-        <table class="table table-bordered table-striped">
+        <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
                     <th>Tool</th>
@@ -143,7 +143,7 @@
             <tbody>
                 <tr>
                     <td>
-                        <button id="btnReloadConfig" class="btn btn-small btn-info">Reload&nbsp;External&nbsp;Config</button>
+                        <button id="btnReloadConfig" class="btn btn-warning"><i class="fas fa-sync"></i> Reload&nbsp;External&nbsp;Config</button>
                     </td>
                     <td>
                         Reads any defined config files and merges new config with old. Usually used after a change is
@@ -153,8 +153,11 @@
                 </tr>
                 <tr>
                     <td>
-                        <button id="btnClearMetadataCache" class="btn btn-small btn-info">Clear&nbsp;Metadata&nbsp;Cache</button>
-                        <label class="checkbox" style="padding-top:5px;"><input type="checkbox" id="clearEcodataCache" checked="checked">Also clear ecodata cache</label>
+                        <button id="btnClearMetadataCache" class="btn btn-warning"><i class="far fa-times-circle"></i> Clear&nbsp;Metadata&nbsp;Cache</button>
+                        <div class="form-group form-check">
+                            <input type="checkbox" id="clearEcodataCache" checked="checked">
+                            <label class="form-check-label" for="clearEcodataCache">Also clear ecodata cache</label>
+                        </div>
                     </td>
                     <td>
                         Removes all cached values for metadata requests and causes the metadata to be requested
@@ -162,38 +165,54 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><button disabled id="btnLoadProjectData" class="btn btn-small btn-info" title="Load project data">Load Projects from CSV</button>
+                    <td><button disabled id="btnLoadProjectData" class="btn btn-info" title="Load project data"><i class="fas fa-file-upload"></i> Load Projects from CSV</button>
                     </td>
                     <td>
                         Loads (or reloads) project information from a csv file.
-                        <p><g:uploadForm class="loadProjectData" controller="admin" action="importProjectData"><input id="projectData" type="file" accept="text/csv" name="projectData"/><input type="checkbox" name="importWithErrors">Force import (even with validation errors)</g:uploadForm></p>
+                        <p>
+                            <g:uploadForm class="loadProjectData" controller="admin" action="importProjectData">
+                                <input id="projectData" type="file" accept="text/csv" name="projectData"/>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" name="importWithErrors" id="importWithErrors">
+                                    <label class="form-check-label" for="importWithErrors">Force import (even with validation errors)</label>
+                                </div>
+                            </g:uploadForm>
+                        </p>
                     </td>
                 </tr>
                 <tr>
-                    <td><button disabled id="btnLoadPlanData" class="btn btn-small btn-info" title="Load project data">Load Plans from CSV</button>
+                    <td><button disabled id="btnLoadPlanData" class="btn btn-info" title="Load project data"><i class="fas fa-file-upload"></i> Load Plans from CSV</button>
                     </td>
                     <td>
                         Loads (or reloads) project plan information from a csv file.
-                        <p><g:uploadForm class="loadPlanData" controller="admin" action="importPlanData"><input id="planData" type="file" accept="text/csv" name="planData"/><input type="checkbox" name="overwriteActivities">Replace existing activities</g:uploadForm></p>
+                        <p>
+                            <g:uploadForm class="loadPlanData" controller="admin" action="importPlanData">
+                                <input id="planData" type="file" accept="text/csv" name="planData"/>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" name="overwriteActivities" id="overwriteActivities">
+                                    <label class="form-check-label" for="overwriteActivities">Replace existing activities</label>
+                                </div>
+                            </g:uploadForm>
+                        </p>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <a style="color:white" class="btn btn-small btn-info" href="${createLink(controller:'admin', action:'bulkLoadUserPermissions')}">Bulk Load Permissions</a>
+                        <a style="color:white" class="btn btn-info" href="${createLink(controller:'admin', action:'bulkLoadUserPermissions')}"><i class="fas fa-upload"></i> Bulk Load Permissions</a>
                     </td>
                     <td>
                         Loads user project roles from a csv file
                     </td>
                 </tr>
                 <tr>
-                    <td><button id="btnReindexAll" class="btn btn-small btn-info" title="Re-index all data">Re-index all</button>
+                    <td><button id="btnReindexAll" class="btn btn-danger" title="Re-index all data"><i class="fas fa-sync"></i> Re-index all</button>
                     </td>
                     <td>
                         Re-indexes all data in the search index.
                     </td>
                 </tr>
                 <tr>
-                    <td><button id="btnSyncCollectoryOrgs" class="btn btn-small btn-info" title="Sync collectory organisations">Sync collectory orgs</button>
+                    <td><button id="btnSyncCollectoryOrgs" class="btn btn-warning" title="Sync collectory organisations"><i class="fas fa-sync"></i> Sync collectory orgs</button>
                     </td>
                     <td>
                         Ensures that all institutions in collectory have a corresponding organisation in ecodata.
@@ -201,7 +220,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <button id="btnSyncSciStarter" class="btn btn-small btn-info" title="Synchronise Biocollect with SciStarter">Import SciStarter Projects</button>
+                        <button id="btnSyncSciStarter" class="btn btn-info" title="Synchronise Biocollect with SciStarter"><i class="fas fa-file-import"></i> Import SciStarter Projects</button>
                     </td>
                     <td>
                         Import projects from SciStarter to Biocollect. Note: this might take a long time
@@ -209,14 +228,14 @@
                 </tr>
                 <tr>
                     <td>
-                        <button id="btnSyncRematchSpeciesId" class="btn btn-small btn-info" title="Synchronise Biocollect with SciStarter">Rematch species guid</button>
+                        <button id="btnSyncRematchSpeciesId" class="btn btn-warning" title="Synchronise Biocollect with SciStarter"><i class="fas fa-sync"></i> Rematch species guid</button>
                     </td>
                     <td>
                         Re-match species guid
                     </td>
                 </tr>
                 <tr>
-                    <td><button disabled id="btnLoadSightingsData" class="btn btn-small btn-info" title="Load sightings data">Load Sightings from JSON</button>
+                    <td><button disabled id="btnLoadSightingsData" class="btn btn-info" title="Load sightings data"><i class="fas fa-file-upload"></i> Load Sightings from JSON</button>
                     </td>
                     <td>
                         Loads sightings information from JSON file. To produce JSON file for import

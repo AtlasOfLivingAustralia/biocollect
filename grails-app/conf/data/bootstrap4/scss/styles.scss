@@ -1,0 +1,102 @@
+@import 'settings';
+@import "bootstrap/bootstrap";
+
+@import 'partials/swiper';
+//@import "partials/jqueryui-datepicker";
+
+@import "partials/header";
+@import "partials/footer";
+@import "partials/common";
+@import "partials/hero";
+@import "partials/modal";
+@import "partials/posts";
+@import "partials/catalogue";
+@import "partials/project";
+
+.btn-space>.btn {
+  margin-top: .25rem;
+  margin-bottom: .25rem;
+}
+
+@if $what-is-btn {
+  .btn-whatisthis {
+    @include button-variant($what-is-this-button-background-color, $what-is-this-button-background-color);
+  }
+}
+
+@if $getting-started-btn {
+  .btn-gettingstarted {
+    @include button-variant($getting-started-button-background-color, $getting-started-button-background-color);
+  }
+}
+
+@if $add-a-record-btn {
+  .btn-addarecord {
+    @include button-variant($add-a-record-button-background-color, $add-a-record-button-background-color);
+  }
+}
+@if $view-records-btn {
+  .btn-viewrecords {
+    @include button-variant($view-records-button-background-color, $view-records-button-background-color);
+  }
+}
+
+$nav-background-color: $body-bg !default;
+$nav-text-color: $body-color !default;
+
+.homePageNav {
+  background-color: $nav-background-color;
+  border-color: $nav-background-color;
+  color: $nav-text-color;
+}
+
+$facet-background-color: $body-bg !default;
+#filters {
+  background-color: $facet-background-color;
+}
+
+$tile-background-color: $body-bg !default;
+#projects .project-item {
+  background-color: $tile-background-color;
+}
+
+$tag-background-color: orange !default;
+$tag-text-color: white !default;
+.project-tag {
+  background-color: $tag-background-color;
+  color: $tag-text-color;
+}
+
+$footer-background-color: $c-text !default;
+$footer-text-color: white !default;
+#footer .footer-top {
+  background-color: $footer-background-color;
+  color: $footer-text-color;
+}
+
+$social-text-color: white !default;
+#footer .footer-top .social a {
+  color: $social-text-color;
+}
+
+$menu-text-color: white !default;
+$menu-background-color: black !default;
+#page .wrapper-nav-bar .nav-bar {
+  background-color: rgba($menu-background-color, 0.6);
+  color: $menu-text-color;
+}
+//@if $make-primary-btn {
+//  .btn-primary-dark {
+//    //@include button-outline-variant($primary-button-outline-text-color);
+//  }
+//}
+
+//@if $make-default-btn {
+//  .btn-dark {
+//    //@include button-outline-variant($default-button-outline-text-color);
+//  }
+//}
+
+// carousel #hubCarouselBanner
+
+// END carousel
