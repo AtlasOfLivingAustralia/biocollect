@@ -54,4 +54,24 @@ class HubController {
     def defaultOverriddenLabels() {
         render text: grailsApplication.config.content.defaultOverriddenLabels as JSON, contentType: 'application/json'
     }
+
+    def generateStylesheet(){
+        HubSettings hubSettings = SettingService.hubConfig
+        Map result = settingService.generateStyleSheetForHub(hubSettings)
+
+
+        if (Environment.current == Environment.DEVELOPMENT) {
+            header 'Cache-Control', 'no-cache, no-store, must-revalidate'
+        } else {
+            Calendar cal = new GregorianCalendar()
+            cal.add(Calendar.DATE, 365)
+            Date date = cal.getTime()
+            header 'Cache-Control', 'public, max-age=31536000'
+            response.setDateHeader('Expires', date.time)
+            // override grails pragma header
+            header 'Pragma', 'cache'
+        }
+
+        render text: result.css, contentType: 'text/css', status: result.status
+    }
 }

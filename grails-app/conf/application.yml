@@ -14,6 +14,8 @@ environments:
            config:
               locations:
                  - file:///data/biocollect/config/biocollect-config-grails3.properties
+        temp:
+          dir: /data/biocollect/temp
         #system level config
         server:
            port: 8087
@@ -369,3 +371,11 @@ management:
       exposure:
         exclude:
     enabled-by-default: false
+
+# bootstrap4 theme
+bootstrap4:
+  themeDirectory: "/bootstrap4/scss"
+  themeFileName: "styles"
+  themeExtension: "scss"
+  copyFromDir: "bootstrap4"
+  copyToDir: "bootstrap4"

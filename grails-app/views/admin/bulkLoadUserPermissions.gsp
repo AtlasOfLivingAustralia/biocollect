@@ -10,7 +10,7 @@
         <asset:javascript src="common.js"/>
         <content tag="pageTitle">Users - Bulk Load User Permissions</content>
         <div class="container">
-            <div class="well">Logged in user is <b class="tooltips" title="${user}">${user.getDisplayName()}</b></div>
+            <div>Logged in user is <b class="tooltips" title="${user}">${user.getDisplayName()}</b></div>
             <div>
                 <p>
                     Upload a csv whose first row contains column headers, and has at least the following 5 columns (in any order):
@@ -27,21 +27,11 @@
                 </p>
             </div>
             <g:uploadForm class="form-horizontal" action="uploadUserPermissionsCSV" enctype="multipart/form-data">
-                <div class="control-group">
-                    <label class="control-label" for="userPermissions">
-                        Select a CSV file to upload
-                    </label>
-                    <div class="controls">
-                        <input type="file" accept="text/csv" name="projectData" />
-                    </div>
+                <div class="form-group">
+                    <label for="userPermissions">Select a CSV file to upload</label>
+                    <input type="file" accept="text/csv" class="form-control" name="projectData" id="userPermissions"/>
                 </div>
-
-                <div class="control-group">
-                    <div class="controls">
-                        <g:submitButton name="uploadCSV" value="Load Permissions" class="btn btn-primary" />
-                    </div>
-                </div>
-
+                <g:submitButton name="uploadCSV" value="Load Permissions" class="btn btn-primary-dark" />
             </g:uploadForm>
             <g:if test="${results}">
             <div class="alert alert-danger">
