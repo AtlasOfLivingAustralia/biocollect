@@ -736,6 +736,12 @@ class BioActivityController {
         queryParams.fq = queryParams.fq ?: ''
         queryParams.searchTerm = queryParams.searchTerm ?: ''
         queryParams.view = queryParams.view
+        // Only include the data in the response that we need to return to the client.
+        // Possibly could reduce this more by trimming the record data but need to understand which fields
+        // the javascript uses first.
+        queryParams.include = ['activityId', 'projectActivityId', 'type', 'projectActivity.name',
+                               'projectActivity.name', 'projectActivity.activityOwnerName', 'projectActivity.records',
+                               'projectActivity.projectId', 'projectActivity.projectName', 'sites', 'coordinates']
 
         Map searchResult = searchService.searchProjectActivity(queryParams)
         List activities = searchResult?.hits?.hits
