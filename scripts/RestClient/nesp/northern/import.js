@@ -79,7 +79,7 @@ var organisations = [
     {name:"University of Tasmania", organisationId:"a5e86f4e-553a-4144-b77c-cadbe60a3a0b"}
 ];
 
-for(var i = 40; i < 43; i++) {
+for(var i = 1; i < csvRows.length; i++) {
     print("PRINT "+csvRows.length)
     var projectId = UUID.generate();
     var siteId = UUID.generate();
@@ -157,6 +157,11 @@ for(var i = 40; i < 43; i++) {
     var tempAssociatedOrgs = "";
     var tempStr = "";
 
+    //assign organisationId for the main organisation from excel sheet first
+    if (fields[organisationId]) {
+        project.associatedOrgs.push({organisationId: fields[organisationId]});
+    }
+
     //get comma separated values from associatedOrgs field in excelsheet
     if(fields[associatedOrgs].indexOf(',') != -1) {
         tempAssociatedOrgs = fields[associatedOrgs].replace(/""/g, '"');
@@ -169,11 +174,6 @@ for(var i = 40; i < 43; i++) {
 
     if (tempStr) {
         tempAssociatedOrgsArr = tempStr.split(',');
-    }
-
-    //assign organisationId for the main organisation from excel sheet
-    if (fields[organisationId]) {
-        project.associatedOrgs.push({organisationId: fields[organisationId]});
     }
 
     for (var k = 0; k < tempAssociatedOrgsArr.length; k++) {
