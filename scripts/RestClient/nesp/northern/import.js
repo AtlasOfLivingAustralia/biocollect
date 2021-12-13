@@ -42,19 +42,44 @@ var contactMail = associatedOrgs + 1;
 var keywords = contactMail + 1;
 var termsOfUseAgreement = keywords + 1;
 
-var csvData = cat(path+'Marine_Biodiversity_Hub_Projects_tab.txt');
+var csvData = cat(path+'Northern_Australia_Hub_Projects.txt');
 print("Loaded csv file");
 var csvRows = csvData.split('\r');
 print("Total rows "+ csvRows.length);
 
 // Include name, organisationId pairs for all associated orgs
 var organisations = [
+    {name:"Australian National University", organisationId:"e3a71de2-1266-4740-afff-7fb66d94e7af"},
+    {name:"Australian Land Conservation Alliance", organisationId:"aa886565-f115-4adc-9d9b-68d196db2f30"},
+    {name:"Bush Heritage Australia", organisationId:"cbdee359-e5f3-455f-b9fe-82a8f4018195"},
+    {name:"Charles Darwin University", organisationId:"9fe1c64f-ad8c-487d-b7f7-b975563d5e4b"},
+    {name:"Cooperative Research Centre for Developing Northern Australia", organisationId:"781b398d-e367-48dc-ab24-0dc049f9860e"},
     {name:"CSIRO", organisationId:"98250704-d244-42d3-abdb-a15e95107560"},
     {name:"Curtin University", organisationId:"0f65d21c-f876-4a01-ad81-2132094c8fb4"},
-    {name:"Murdoch University", organisationId:"c23d36ed-2e4a-4b56-b807-fbff825b56ca"}
+    {name:"Department of Agriculture Water and the Environment", organisationId:"0f65d21c-f876-4a01-ad81-2132094c8fb4"},
+    {name:"Geoscience Australia", organisationId:"19c473e2-9add-49b9-bb78-903114e4cddc"},
+    {name:"Government of Western Australia", organisationId:"c1dc5075-affb-4427-b401-ebe5fcebb386"},
+    {name:"Griffith University", organisationId:"d7ec26b1-bf35-4499-bfe3-b86fd9b2e971"},
+    {name:"James Cook University", organisationId:"4b037317-9813-41b3-b8bc-6225033c479d"},
+    {name:"Kimberley Land Council", organisationId:"32be3f2b-d845-407d-a6bd-6cf8e2b25499"},
+    {name:"Max Plank Institute", organisationId:"3619c9b9-a1a0-48aa-9026-b6d392eaa7b6"},
+    {name:"Monash University", organisationId:"179d9e3b-5e40-410c-a2b6-be01144df89e"},
+    {name:"Murdoch University", organisationId:"c23d36ed-2e4a-4b56-b807-fbff825b56ca"},
+    {name:"NAILSMA", organisationId:"7e3ddaf9-5a16-4a16-8a64-3d767b49e118"},
+    {name:"National Indigenous Australians Agency", organisationId:"176a8283-a416-4bd7-b486-fc670d8af4c4"},
+    {name:"Northern Land Council", organisationId:"316ba939-8931-48ee-8375-4a8c9161b885"},
+    {name:"Northern Territory Government", organisationId:"15fbf132-27b2-4010-88b9-d75dffab8191"},
+    {name:"Parks Australia", organisationId:"87ea0fad-6587-4ad9-8cd8-5cb0c3dc2e47"},
+    {name:"Queensland State Government", organisationId:"eb3706c2-df24-4647-bc64-ae8ad9e58ab7"},
+    {name:"The Australian Institute of Marine Science", organisationId:"9596b6f2-193d-4c8b-aa06-926f24abfbf2"},
+    {name:"The Nature Conservancy", organisationId:"d44d2f0c-d262-4e2a-b0af-b74dc8aa6cfd"},
+    {name:"The University of Queensland", organisationId:"8e595164-0ad8-48b7-aefe-473a6e97259e"},
+    {name:"University of Western Australia", organisationId:"8c3a7806-6d5e-4b60-97d7-b76ba495750e"},
+    {name:"University of Melbourne", organisationId:"d0728e03-5944-4faf-8742-fbb72d06caeb"},
+    {name:"University of Tasmania", organisationId:"a5e86f4e-553a-4144-b77c-cadbe60a3a0b"}
 ];
 
-for(var i = 1; i < 3; i++) {
+for(var i = 40; i < 43; i++) {
     print("PRINT "+csvRows.length)
     var projectId = UUID.generate();
     var siteId = UUID.generate();
@@ -65,7 +90,7 @@ for(var i = 1; i < 3; i++) {
     project.urlWeb = fields[projectUrl];
     project.projectSiteId = siteId
     project.projectType = "ecoScience"
-    project.organisationId = "8a53da29-bbbe-4a76-81c8-13f0bafd2f85" // hub's organisation id
+    project.organisationId = "a75b1b5d-6880-4b15-92a8-896f45878288" // hub's organisation id
 
     //When there are commas, tsv adds double quotes in the beginning and end of text, following string
     //manipulations are done to avoid that
@@ -133,9 +158,13 @@ for(var i = 1; i < 3; i++) {
     var tempStr = "";
 
     //get comma separated values from associatedOrgs field in excelsheet
-    if(fields[associatedOrgs]) {
+    if(fields[associatedOrgs].indexOf(',') != -1) {
         tempAssociatedOrgs = fields[associatedOrgs].replace(/""/g, '"');
         tempStr = tempAssociatedOrgs.substring(1, tempAssociatedOrgs.length - 1);
+    }
+    else {
+        var organisation = organisations.find(obj => obj.name === fields[associatedOrgs]);
+        project.associatedOrgs.push({organisationId: organisation.organisationId});
     }
 
     if (tempStr) {
