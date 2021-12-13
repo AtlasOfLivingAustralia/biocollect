@@ -737,8 +737,6 @@ class BioActivityController {
         queryParams.searchTerm = queryParams.searchTerm ?: ''
         queryParams.view = queryParams.view
         // Only include the data in the response that we need to return to the client.
-        // Possibly could reduce this more by trimming the record data but need to understand which fields
-        // the javascript uses first.
         queryParams.include = ['activityId', 'projectActivity.name',
                                'projectActivity.records.coordinates', 'projectActivity.records.individualCount',
                                'projectActivity.records.multimedia.identifier', 'projectActivity.records.name',
