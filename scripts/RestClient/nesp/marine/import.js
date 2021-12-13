@@ -54,7 +54,7 @@ var organisations = [
     {name:"Murdoch University", organisationId:"c23d36ed-2e4a-4b56-b807-fbff825b56ca"}
 ];
 
-for(var i = 1; i < 3; i++) {
+for(var i = 1; i < csvRows.length; i++) {
     print("PRINT "+csvRows.length)
     var projectId = UUID.generate();
     var siteId = UUID.generate();
