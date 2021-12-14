@@ -17,7 +17,7 @@
                     <div>
                         <div class="row">
                             <div class="col">
-                                <h1>${project.name}</h1>
+                                <h1 class="text-white">${project.name}</h1>
                             </div>
                         </div>
                         <div class="row">

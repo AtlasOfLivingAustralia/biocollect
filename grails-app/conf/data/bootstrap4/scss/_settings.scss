@@ -118,9 +118,9 @@ $body-color: $c-text-light !default;
 $block-spacing: 70px;
 $block-spacing-small: 30px;
 
-$border-radius: 0;
-$border-radius-lg: 0;
-$border-radius-sm: 0;
+$border-radius:               .25rem !default;
+$border-radius-lg:            .3rem !default;
+$border-radius-sm:            .2rem !default;
 
 // stylelint-disable value-keyword-case
 $font-family-sans-serif: 'Roboto', sans-serif;
@@ -235,7 +235,7 @@ $card-spacer-x: 1.25rem ;
 $card-border-width: $border-width !default;
 $card-border-radius: $border-radius !default;
 $card-border-color: rgba($black, .125) ;
-$card-inner-border-radius: 0;
+$card-inner-border-radius: $border-radius;
 $card-cap-bg: $c-page-background;
 $card-bg: $c-page-background;
 
