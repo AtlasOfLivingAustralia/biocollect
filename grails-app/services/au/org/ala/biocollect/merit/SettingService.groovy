@@ -44,14 +44,18 @@ class SettingService {
 //    @PostConstruct
     def initService () {
 //        copy scss file to temp directory
-
-        File source = new File(getClass().getResource("/data/${grailsApplication.config.bootstrap4.copyFromDir}").path)
-        File target = new File("${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}")
+        String targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}"
+        File target = new File(targetDir)
         FileUtils.deleteDirectory(target)
-        FileUtils.copyDirectory(source, target)
+        String sourceDir = "classpath:/data/${grailsApplication.config.bootstrap4.copyFromDir}"
+        URL resource = getClass().getResource(sourceDir)
+        if(resource == null) {
+            sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
+            resource = getClass().getResource(sourceDir)
+        }
+        au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)
         generateStyleSheetForHubs()
     }
-
 
     /**
      * Checks if there is a configuration defined for the specified hub.
