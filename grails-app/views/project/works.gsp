@@ -27,7 +27,7 @@
         imageLocation:"${asset.assetPath(src:'')}",
         logoLocation:"${asset.assetPath(src:'filetypes')}",
         dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}",
-        projectListUrl: "${createLink(controller: 'project', action: 'search', params:[initiator:'biocollect'])}",
+        projectListUrl: "${raw(createLink(controller: 'project', action: 'search', params:[initiator:'biocollect']))}",
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
         paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
@@ -71,7 +71,7 @@
 </div>
 <asset:script type="text/javascript">
     $("#newPortal").on("click", function() {
-        document.location.href = "${createLink(controller:'project',action:'create',params:[works:true])}";
+        document.location.href = "${raw(createLink(controller:'project',action:'create',params:[works:true]))}";
     });
 
     var projectFinder = new ProjectFinder({enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false}});

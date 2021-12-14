@@ -384,8 +384,9 @@ function WorksProjectViewModel(project, isEditor, organisations, options) {
     // Save MERI plan
     self.saveMeriPlan = function(){
         if ($(config.meriPlanSelector).validationEngine('validate', {
-                'showPrompts':true
-            })) {
+                'showPrompts':true,
+                validateAttribute: "data-validation-engine"
+        })) {
             self.details.status('active');
             var now = moment().toDate().toISOStringNoMillis();
             self.details.lastUpdated(now);

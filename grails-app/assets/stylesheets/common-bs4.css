@@ -1,9 +1,12 @@
-/* *= require validationEngine.jquery.css */
+/*  *= require wmd/wmd.css
+ *= require wmd-editor.css
+ *= require validationEngine.jquery.css
+ *= require jquery.dataTables/1.11.3/datatables.css */
 .output-block .required label, .validationEngineContainer .required label {
     position: relative;
 }
 
-.output-block .required label:after, .output-block th.required:after, .validationEngineContainer .required label:after {
+.output-block .required label:after, .output-block th.required:after, .validationEngineContainer .required label:after, th.required:after {
     content: "*";
     font-weight: bold;
     color: red;
@@ -218,6 +221,31 @@ select[name=project-list_length]{
     display: inline;
 }
 
+#floating-save {
+    position: fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:40px;
+}
+#floating-save .transparent-background {
+    background-color:#000000;
+    opacity: 0.2;
+}
+#floating-save div {
+    width: 100%;
+    height:40px;
+
+    position: absolute;
+    top: 0;
+    left:0;
+    padding-top: 5px;
+    padding-bottom:5px;
+    text-align:center;
+}
+#floating-save button {
+    top:5px;
+}
 /** END Permissions table */
 
 /** form field **/

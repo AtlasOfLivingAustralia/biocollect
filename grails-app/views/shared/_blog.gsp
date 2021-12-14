@@ -7,7 +7,7 @@
         </div>
     </span>
     <!-- ko foreach:entries -->
-    <article class="blog col-12 post mb-5 mb-md-4">
+    <article class="blog col-12 post mb-5 mb-md-4" style="border-bottom: ridge">
         <div class="row blog-entry">
             <div class="col-12 col-md-3">
                 <!-- ko if: imageUrl() -->
