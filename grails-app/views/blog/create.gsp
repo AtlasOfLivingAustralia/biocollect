@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Create | Blog Entry | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
@@ -24,19 +24,21 @@
             returnTo: "${params.returnTo?:g.createLink(controller:'project', id:params.projectId)}"
             };
     </asset:script>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="fileupload-manifest.js"/>
     %{-- Todo: cors/jquery.xdr-transport.js needed? --}%
     <asset:javascript src="cors/jquery.xdr-transport.js"/>
     <asset:javascript src="document.js"/>
 </head>
 <body>
-<div class="${containerType}">
-    <g:render template="editBlogEntry"/>
+<div class="container-fluid ml-4">
+    <div class="row">
+        <g:render template="editBlogEntry"/>
+    </div>
 
     <div class="form-actions">
-        <button type="button" id="save" data-bind="click:save" class="btn btn-primary">Create</button>
-        <button type="button" id="cancel" data-bind="click:cancel" class="btn">Cancel</button>
+        <button type="button" id="save" data-bind="click:save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Create</button>
+        <button type="button" id="cancel" data-bind="click:cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> Cancel</button>
     </div>
 </div>
 
@@ -58,7 +60,7 @@ var EditableBlogEntryViewModel = function(blogEntry, options) {
     self.title = ko.observable(blogEntry.title || '');
     self.date = ko.observable(blogEntry.date || now).extend({simpleDate:false});
     self.content = ko.observable(blogEntry.content);
-    self.stockIcon = ko.observable(blogEntry.stockImageName);
+    self.stockIcon = ko.observable(blogEntry.stockIcon);
     self.documents = ko.observableArray();
     self.image = ko.observable();
     self.type = ko.observable(blogEntry.type);

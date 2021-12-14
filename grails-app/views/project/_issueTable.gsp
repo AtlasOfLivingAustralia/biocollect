@@ -2,21 +2,21 @@
 <g:render template="/shared/restoredData"
           model="[id: 'restoredIssueData', saveButton: 'Save issues', cancelButton: 'Cancel edits to issues']"/>
 
-<div class="row-fluid space-after">
-    <div class="required">
+<div class="row space-after">
+    <div class="col-sm-12 required">
         <p>Please enter project issues and the mitigation strategies being used to manage them:</p>
 
-        <div class="project-issues margin-bottom-10 margin-right-20">
-            <table style="width:100%;">
-                <thead>
+        <div class="project-issues">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
                 <tr>
                     <th class="required type">Type of issue </th>
-                    <th class="required">Date</th>
+                    <th class="required">Date </th>
                     <th class="required status">Status </th>
                     <th class="required priority">Priority </th>
-                    <th class="required description">Description</th>
+                    <th class="required description">Description </th>
                     <th class="required actionPlan">Action plan </th>
-                    <th class="required impact">Impact</th>
+                    <th class="required impact">Impact </th>
                     <th></th>
                 </tr>
                 </thead>
@@ -25,8 +25,8 @@
                     <td class="type">
                         <input data-validation-engine="validate[required]" data-bind="value:type">
                     </td>
-                    <td class="date">
-                        <fc:datePicker class="input-small" targetField="date.date" name="date" data-validation-engine="validate[required]"/>
+                    <td class="date input-group-append mt-5" style="border: none !important;">
+                        <fc:datePicker targetField="date.date" name="date" data-validation-engine="validate[required]"/>
                     </td>
 
                     <td class="status">
@@ -49,15 +49,15 @@
                     </td>
 
                     <td width="4%">
-                        <span><i class="icon-remove" data-bind="click: $parent.removeIssue"></i></span>
+                        <span><i class="fas fa-times" data-bind="click: $parent.removeIssue"></i></span>
                     </td>
                 </tr>
                 </tbody>
                 <tfoot>
                 <tr>
                     <td colspan="0" style="text-align:left;">
-                        <button type="button" class="btn btn-small" data-bind="click: addIssue">
-                            <i class="icon-plus"></i> Add an issue</button></td>
+                        <button type="button" class="btn btn-dark btn-sm" data-bind="click: addIssue">
+                            <i class="fas fa-plus"></i> Add an issue</button></td>
                 </tr>
                 </tfoot>
 

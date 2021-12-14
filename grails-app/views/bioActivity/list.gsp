@@ -48,7 +48,7 @@
             spotterId: ${spotterId?:'undefined'},
             flimit: ${grailsApplication.config.facets.flimit?:10},
             hideProjectAndSurvey: ${hubConfig.content?.hideProjectAndSurvey?:false},
-            occurrenceUrl: "${occurrenceUrl}",
+            occurrenceUrl: "${raw(occurrenceUrl)}",
             spatialUrl: "${spatialUrl}",
             <g:applyCodec encodeAs="none">
                 mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},

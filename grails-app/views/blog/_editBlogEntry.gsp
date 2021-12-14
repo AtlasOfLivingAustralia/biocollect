@@ -1,40 +1,40 @@
-<form id="blogEntry" class="form-horizontal validationEngineContainer">
+<form id="blogEntry" class="form-horizontal validationEngineContainer col-sm-6">
 
-    <div class="control-group required">
-        <label class="control-label col-sm-3"
+    <div class="form-group row required">
+        <label class="col-form-label col-sm-3"
                for="type">Type: <fc:iconHelp>What type of entry is this?</fc:iconHelp></label>
         <div class="col-sm-9">
-            <select id="type" data-bind="options:transients.blogEntryTypes, value:type"></select>
+            <select id="type" data-bind="options:transients.blogEntryTypes, value:type" class="form-control"></select>
         </div>
     </div>
 
-    <div class="control-group required">
-        <label class="control-label col-sm-3"
+    <div class="form-group row required">
+        <label class="col-form-label col-sm-3"
                for="date">Date: <fc:iconHelp>The date for this blog entry</fc:iconHelp></label>
         <div class="col-sm-9">
-            <div class="input-append">
+            <div class="input-group-append">
                 <fc:datePicker targetField="date.date" name="date" data-validation-engine="validate[required]"/>
             </div>
         </div>
     </div>
 
-    <div class="control-group required">
-        <label class="control-label col-sm-3"
+    <div class="form-group row required">
+        <label class="col-form-label col-sm-3"
                for="title">Title: <fc:iconHelp>The title of this blog entry</fc:iconHelp></label>
         <div class="col-sm-9">
-            <input type="text" id="title" class="input-xxlarge" data-bind="value:title" data-validation-engine="validate[required]">
+            <input type="text" id="title" class="form-control" data-bind="value:title" data-validation-engine="validate[required]">
         </div>
     </div>
 
 
-    <div class="control-group">
+    <div class="form-group row">
         <!-- ko if:type() !== 'Photo' -->
-        <label class="control-label col-sm-3"
+        <label class="col-form-label col-sm-3"
                for="image">Feature image: <fc:iconHelp>An image that will be displayed alongside this blog entry</fc:iconHelp>
         </label>
         <!-- /ko -->
         <!-- ko if:type() == 'Photo' -->
-        <label class="control-label col-sm-3"
+        <label class="col-form-label col-sm-3"
                for="image">Project photo: <fc:iconHelp>The photo that will be attached to the project images section of the blog</fc:iconHelp>
         </label>
         <!-- /ko -->
@@ -61,30 +61,30 @@
             <p></p>
             <!-- /ko -->
 
-            <div class="btn fileinput-button"
+            <div class="btn btn-dark fileinput-button"
                   data-url="${grailsApplication.config.grails.serverURL}/image/upload"
                   data-role="blogImage"
                   data-owner-type="blogEntryId"
                   data-owner-id="${blogEntry?.blogEntryId}"
-                  data-bind="stagedImageUpload:documents, visible:!image() && !stockIcon()"><i class="icon-plus"></i> <input
+                  data-bind="stagedImageUpload:documents, visible:!image() && !stockIcon()"><i class="fas fa-plus"></i> <input
                     id="image" type="file" name="files"><span>Attach</span></div>
 
-            <button class="btn main-image-button" data-bind="click:removeBlogImage, visible:image()"><i
-                    class="icon-minus"></i> Remove</button>
+            <button class="btn btn-dark main-image-button" data-bind="click:removeBlogImage, visible:image()"><i
+                    class="fas fa-minus"></i> Remove</button>
 
 
         </div>
     </div>
 
-    <div class="control-group" data-bind="with:image">
-        <label class="control-label col-sm-3"
+    <div class="form-group row" data-bind="with:image">
+        <label class="col-form-label col-sm-3"
                for="attribution">Image attribution: <fc:iconHelp>Will be displayed alongside the image</fc:iconHelp></label>
         <div class="col-sm-9">
-            <input type="text" id="attribution" class="input-xxlarge" data-bind="value:attribution">
+            <input type="text" id="attribution" class="form-control" data-bind="value:attribution">
         </div>
     </div>
-    <div class="control-group" data-bind="with:image">
-        <label class="control-label required col-sm-3"
+    <div class="form-group row" data-bind="with:image">
+        <label class="col-form-label required col-sm-3"
                for="declaration">Privacy declaration: <fc:iconHelp>You must accept the declaration before the image can be saved.</fc:iconHelp></label>
         <div class="col-sm-9">
             <label id="thirdPartyDeclarationText" class="checkbox" for="declaration">
@@ -95,19 +95,19 @@
     </div>
 
     <!-- ko if:type() !== 'Photo' -->
-    <div class="control-group required">
-        <label class="control-label col-sm-3" for="blog-content">Content: <fc:iconHelp>The content of this blog entry</fc:iconHelp></label>
+    <div class="form-group row required">
+        <label class="col-form-label col-sm-3" for="blog-content">Content: <fc:iconHelp>The content of this blog entry</fc:iconHelp></label>
         <div class="col-sm-9">
-            <textarea rows="10" id="blog-content" class="input-xxlarge" data-bind="value:content" data-validation-engine="validate[required]" placeholder="Content goes here..."></textarea>
-            <br/><button class="btn popup-edit" data-bind="click:editContent"><i class="icon-edit"></i> Edit with Markdown Editor</button>
+            <textarea rows="10" id="blog-content" class="form-control" data-bind="value:content" data-validation-engine="validate[required]" placeholder="Content goes here..."></textarea>
+            <br/><button class="btn btn-dark popup-edit" data-bind="click:editContent"><i class="fas fa-pencil-alt"></i> Edit with Markdown Editor</button>
         </div>
     </div>
 
-    <div class="control-group">
-        <label class="control-label col-sm-3"
+    <div class="form-group row">
+        <label class="col-form-label col-sm-3"
                for="title">See More URL: <fc:iconHelp>If supplied, the blog entry will show a "see more" link at the end which will take the user to this URL</fc:iconHelp></label>
         <div class="col-sm-9">
-            <input type="text" id="viewMoreUrl" class="input-xxlarge" data-bind="value:viewMoreUrl" data-validation-engine="validate[custom[url]]">
+            <input type="text" id="viewMoreUrl" class="form-control" data-bind="value:viewMoreUrl" data-validation-engine="validate[custom[url]]">
         </div>
     </div>
     <!-- /ko -->
