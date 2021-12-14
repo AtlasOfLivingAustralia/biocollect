@@ -159,10 +159,10 @@
     <g:if test="${!mobile}">
         <div class="form-actions">
             <g:if test="${hasEditRights}">
-                <a class="btn btn-primary btn-large" href="${createLink(controller: 'bioActivity', action: 'edit')}/${activity.activityId}"><span class="fa fa-edit"></span> Edit</a>
+                <a class="btn btn-primary-dark btn-lg" href="${createLink(controller: 'bioActivity', action: 'edit')}/${activity.activityId}"><span class="fas fa-pencil-alt"></span> Edit</a>
             </g:if>
             <g:if test="${userIsProjectMember}">
-                <a class="btn btn-primary  btn-large" href="${createLink(controller: 'bioActivity', action: 'create')}/${pActivity.projectActivityId}"><span class="fa fa-plus"></span> Add new record</a>
+                <a class="btn btn-primary-dark  btn-lg" href="${createLink(controller: 'bioActivity', action: 'create')}/${pActivity.projectActivityId}"><span class="fas fa-plus"></span> Add new record</a>
             </g:if>
         </div>
     </g:if>

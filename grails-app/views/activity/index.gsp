@@ -76,7 +76,7 @@
         </g:if>
 
 
-        <div class="row form-group title-block card input-block-level">
+        <div class="row title-block card input-block-level">
             <div class="col-sm-12 title-attribute">
                 <h1><span data-bind="click:goToProject"
                           class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
@@ -87,30 +87,30 @@
             </div>
         </div>
 
-        <div class="row col-sm-12">
+        <div class="row mt-3 ml-3">
             <div class="${mapFeatures.toString() != '{}' ? 'col-sm-9' : 'col-sm-12'}" style="font-size: 1.2em">
                 <!-- Common activity fields -->
-                <div class="row form-group">
+                <div class="row">
                     <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Description:</span> <span
                             data-bind="text:description"></span></span>
                     <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Type:</span> <span data-bind="text:type"></span></span>
                 </div>
 
-                <div class="row form-group">
+                <div class="row mt-3">
                     <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Starts:</span> <span
                             data-bind="text:startDate.formattedDate"></span></span>
                     <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Ends:</span> <span
                             data-bind="text:endDate.formattedDate"></span></span>
                 </div>
 
-                <div class="row form-group">
+                <div class="row mt-3">
                     <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Project stage:</span> <span
                             data-bind="text:projectStage"></span></span>
                     <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Major theme:</span> <span data-bind="text:mainTheme"></span>
                     </span>
                 </div>
 
-                <div class="row form-group">
+                <div class="row mt-3">
                     <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Activity status:</span> <span
                             data-bind="text:progress"></span></span>
                 </div>
@@ -146,7 +146,8 @@
             </div>
         </g:if>
     </div>
-    <div class="col-sm-12">
+    <div class="row ml-3 mr-3">
+        <div class="col-sm-12">
         <!-- ko stopBinding: true -->
         <g:each in="${metaModel?.outputs}" var="outputName">
 
@@ -172,6 +173,7 @@
         <div class="form-actions">
             <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> return</button>
         </div>
+    </div>
     </div>
 </div>
 
