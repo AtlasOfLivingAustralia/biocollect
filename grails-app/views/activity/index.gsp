@@ -68,7 +68,7 @@
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
         <g:if test="${editInMerit}">
-            <div class="alert alert-error">
+            <div class="alert alert-danger">
                 <strong>Note:</strong> This activity can only be edited in the <a
                     href="${g.createLink(action: 'edit', id: activity.activityId, base: grailsApplication.config.merit.url)}"
                     target="_merit">MERIT system</a>

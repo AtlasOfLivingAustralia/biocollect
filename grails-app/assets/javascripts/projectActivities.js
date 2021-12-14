@@ -201,7 +201,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         }
 
         if(!current.isEndDateAfterStartDate()) {
-            showAlert("Survey end date must be after start date", "alert-error", self.placeHolder);
+            showAlert("Survey end date must be after start date", "alert-danger", self.placeHolder);
             $('#survey-info-tab').tab('show');
         } else if (current.isInfoValid() &&
             current.areSpeciesValid() &&
@@ -211,7 +211,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
             jsData.published = true;
             return self.publish(jsData);
         } else {
-            showAlert("Mandatory fields in 'Survey Info', 'Species', 'Survey Form' and 'Locations' tab must be completed before publishing the survey.", "alert-error", self.placeHolder);
+            showAlert("Mandatory fields in 'Survey Info', 'Species', 'Survey Form' and 'Locations' tab must be completed before publishing the survey.", "alert-danger", self.placeHolder);
         }
     };
 
@@ -233,7 +233,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         if(self.current().areSpeciesValid()) {
             self.genericUpdate("form");
         } else {
-            showAlert("All species field(s) must be configured before saving.", "alert-error", self.placeHolder);
+            showAlert("All species field(s) must be configured before saving.", "alert-danger", self.placeHolder);
         }
     };
 
@@ -300,10 +300,10 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     // Once records are created, only info and visibility can be updated.
     var canSave = function (pActivity, caller){
         if (caller != "info" && pActivity.projectActivityId() === undefined) {
-            showAlert("Please save 'Survey Info' details before applying other constraints.", "alert-error", self.placeHolder);
+            showAlert("Please save 'Survey Info' details before applying other constraints.", "alert-danger", self.placeHolder);
             return false;
         } else if (caller == "info" && !pActivity.isEndDateAfterStartDate()){
-            showAlert("Survey end date must be after start date", "alert-error", self.placeHolder);
+            showAlert("Survey end date must be after start date", "alert-danger", self.placeHolder);
             return false;
         } else {
             return true;
@@ -416,7 +416,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                 if (data.error) {
                     showAlert("An error happened while deleting the survey. The error might have happened " +
                         "because some mandatory fields in 'Survey Info' tab are empty. Please fill them and " +
-                        "save the survey before trying to delete again.", "alert-error", self.placeHolder);
+                        "save the survey before trying to delete again.", "alert-danger", self.placeHolder);
                 } else {
                     self.projectActivities.remove(pActivity);
                     if (self.projectActivities().length > 0) {
@@ -426,7 +426,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                 }
             },
             error: function (data) {
-                showAlert("Error deleting the survey -" + data.status, "alert-error", self.placeHolder);
+                showAlert("Error deleting the survey -" + data.status, "alert-danger", self.placeHolder);
             }
         });
     };
@@ -448,11 +448,11 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                         window.location.reload(true);
                     }, 1000);
                 } else{
-                    showAlert(data.error ? data.error : "Error publishing the survey", "alert-error", self.placeHolder);
+                    showAlert(data.error ? data.error : "Error publishing the survey", "alert-danger", self.placeHolder);
                 }
             },
             error: function (data) {
-                showAlert("Error publishing the survey -" + data.status, "alert-error", self.placeHolder);
+                showAlert("Error publishing the survey -" + data.status, "alert-danger", self.placeHolder);
             }
         });
     };
@@ -479,12 +479,12 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
                             showAlert (
                                 "An error happened while un-publishing the survey. The error might have happened " +
                                 "because some mandatory fields in 'Survey Info' tab are empty. Please fill them and " +
-                                "save the survey before trying to un-publish again.", "alert-error", self.placeHolder
+                                "save the survey before trying to un-publish again.", "alert-danger", self.placeHolder
                             );
                         }
                     },
                     error: function (data) {
-                        showAlert(errorMsgSurveyInfo, "alert-error", self.placeHolder);
+                        showAlert(errorMsgSurveyInfo, "alert-danger", self.placeHolder);
                     },
                     complete: function(){
                         $.unblockUI();

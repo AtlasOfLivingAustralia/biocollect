@@ -1,0 +1,46 @@
+.search-modal {
+    .modal-dialog {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        display: flex;
+        margin: 0;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.8);
+        transform: translate(0, 0) !important;
+
+        .modal-content {
+            max-width: 500px;
+            background-color: transparent;
+            border: none;
+            color: #FFF;
+            transform: translate(0, -25%);
+            transition: transform 300ms ease;
+
+            .close {
+                color: #FFF;
+                text-shadow: 0 1px 0 #555;
+            }
+        }
+
+        .modal-header {
+            border-bottom: $gray-700 1px solid;
+        }
+
+        .modal-body {
+            .form-control {
+                height: 50px;
+            }
+        }
+    }
+
+    &.show {
+        .modal-content {
+            transform: translate(0, 0);
+        }
+    }
+}

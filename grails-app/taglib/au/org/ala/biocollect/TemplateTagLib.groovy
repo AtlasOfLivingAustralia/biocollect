@@ -15,13 +15,15 @@ class TemplateTagLib {
             return
         }
         if(link){
-            String classes = getSpanClassForColumnNumber(attrs.layout)?:'span4';
+            String classes = getSpanClassForColumnNumber(attrs.layout)?:'col-md-4';
             String url = getLinkUrl(link)
             out << """
             <div class="${classes} homePageNav">
-                <button class="well nav-well text-center" onclick="window.location = '${url}'">
-                    <h3 class="">${link?.displayName}</h3>
-                </button>
+                <div class="w-100 h-100 border border-dark text-center bg-light" onclick="window.location = '${url}'">
+                    <button class="p-5 border-0">
+                        <h3 class="p-0 m-0">${link?.displayName}</h3>
+                    </button>
+                </div>
             </div>
             """
         }
@@ -349,10 +351,10 @@ class TemplateTagLib {
 
     private String getSpanClassForColumnNumber (Integer number){
         if(number){
-            Map numberToSpan = [ '1': 'span12',
-                                 '2': 'span6',
-                                 '3': 'span4',
-                                 '4': 'span3'
+            Map numberToSpan = [ '1': 'col-md-12',
+                                 '2': 'col-md-6',
+                                 '3': 'col-md-4',
+                                 '4': 'col-md-3'
             ]
 
             return numberToSpan[number.toString()]

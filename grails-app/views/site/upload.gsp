@@ -35,7 +35,7 @@
         <g:if test="${flash.errorMessage || flash.message}">
         <div class="row">
             <div class="col-12">
-                <div class="alert alert-error" role="alert">
+                <div class="alert alert-danger" role="alert">
                     <button class="close" data-dismiss="alert" type="button" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

@@ -7,8 +7,8 @@
  Bootstrap Alerts -
  Function Name - showAlertOnTarget() = modified version of showAlert
  Inputs - message,alerttype,DOM
- Example - showalert("Invalid Login","alert-error", DOM)
- Types of alerts -- "alert-error","alert-success","alert-info"
+ Example - showalert("Invalid Login","alert-danger", DOM)
+ Types of alerts -- "alert-danger","alert-success","alert-info"
  Required - You only need to add a alert_placeholder div in your html page wherever you want to display these alerts "<div id="alert_placeholder"></div>"
  Written On - 14-Jun-2013
  **/
@@ -180,7 +180,7 @@ function CommentListViewModel() {
             self.newComment(new CommentViewModel({}));
             self.total(self.total() + 1)
         }, function(){
-            showAlertOnTarget('Could not create your comment. Are you logged in?','alert-error','postComment');
+            showAlertOnTarget('Could not create your comment. Are you logged in?','alert-danger','postComment');
         });
     }
 
@@ -189,7 +189,7 @@ function CommentListViewModel() {
         comment.create(function(){
             comment.edit(false);
         }, function(){
-            showAlertOnTarget('Could not create your comment. Are you logged in?','alert-error',$(event.target).parents('div')[0]);
+            showAlertOnTarget('Could not create your comment. Are you logged in?','alert-danger',$(event.target).parents('div')[0]);
         });
     }
 
@@ -235,7 +235,7 @@ function CommentListViewModel() {
                 self.load(result);
             },
             error: function(){
-                showAlertOnTarget('Could not load comments','alert-error','commentDisplay');
+                showAlertOnTarget('Could not load comments','alert-danger','commentDisplay');
             }
         })
     }
@@ -270,7 +270,7 @@ function CommentListViewModel() {
                 self.load(result);
             },
             error: function(){
-                showAlertOnTarget('Could not load more comments. An error occurred.','alert-error','commentDisplay');
+                showAlertOnTarget('Could not load more comments. An error occurred.','alert-danger','commentDisplay');
             }
         })
     }
@@ -287,7 +287,7 @@ function CommentListViewModel() {
 
     self.update = function(comment){
         comment && comment.update(null,function(){
-            showAlertOnTarget('Could not save your edit. An error occurred.','alert-error',$(event.target).parents('div')[0]);
+            showAlertOnTarget('Could not save your edit. An error occurred.','alert-danger',$(event.target).parents('div')[0]);
         });
     }
 
@@ -302,7 +302,7 @@ function CommentListViewModel() {
             // if a comment is deleted and parent is null, start is adjusted so that when load more is run no comments are missed
             (comment.parent() == null) && (self.page.start -= 1)
         }, function(){
-            showAlertOnTarget('Could not delete comment. An error occurred.','alert-error',$(event.target).parents('div')[0]);
+            showAlertOnTarget('Could not delete comment. An error occurred.','alert-danger',$(event.target).parents('div')[0]);
         })
     }
 

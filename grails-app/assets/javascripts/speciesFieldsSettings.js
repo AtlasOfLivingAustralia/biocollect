@@ -236,7 +236,7 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
             contentType: 'application/json',
             success: function (data) {
                 if (data.error) {
-                    showAlert("Error :" + data.error, "alert-error", divId);
+                    showAlert("Error :" + data.error, "alert-danger", divId);
                 }
                 else {
                     showAlert("Successfully added the new species list - " + self.newSpeciesLists.listName() + " (" + data.id + ")", "alert-success", divId);
@@ -248,7 +248,7 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
                 $("#addNewSpecies-status").hide();
             },
             error: function (data) {
-                showAlert("Error : An unhandled error occurred" + data.status, "alert-error", divId);
+                showAlert("Error : An unhandled error occurred" + data.status, "alert-danger", divId);
                 $("#addNewSpecies-status").hide();
             }
         });
@@ -346,7 +346,7 @@ function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, templateSele
             result.resolve(speciesFieldConfigViewModel.asJson());
             closeModal();
         } else {
-            showAlert(error, 'alert-error', 'species-dialog-alert-placeholder')
+            showAlert(error, 'alert-danger', 'species-dialog-alert-placeholder')
         }
     };
 
@@ -486,7 +486,7 @@ var SpeciesListsViewModel = function (o) {
             },
             success: function (data) {
                 if (data.error) {
-                    showAlert("Error :" + data.text, "alert-error", divId);
+                    showAlert("Error :" + data.text, "alert-danger", divId);
                 }
                 else {
                     self.listCount(data.listCount);
@@ -505,7 +505,7 @@ var SpeciesListsViewModel = function (o) {
             },
             error: function (data) {
                 var status = data.status;
-                showAlert("Error : An unhandled error occurred" + data.status, "alert-error", divId);
+                showAlert("Error : An unhandled error occurred" + data.status, "alert-danger", divId);
             }
         });
     };

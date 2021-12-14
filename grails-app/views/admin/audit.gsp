@@ -5,6 +5,7 @@
 		<title>Admin - Audit | Data capture | Atlas of Living Australia</title>
 		<style type="text/css" media="screen">
 		</style>
+        <content tag="pageTitle">Audit</content>
 	</head>
 	<body>
         <asset:stylesheet src="datatables-manifest.css"/>
@@ -17,8 +18,8 @@
         </form>
         <g:if test="${results}">
         <g:set var="searchTerm" value="${params.searchTerm}"/>
-        <div class="well well-small">
-            <table style="width: 95%;" class="table table-striped table-bordered table-hover" id="project-list">
+        <div class="border bg-light table-responsive">
+            <table class="table table-striped table-bordered table-hover" id="project-list">
                 <thead>
                     <th>Name</th>
                     <th>Description</th>

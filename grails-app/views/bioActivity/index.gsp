@@ -96,7 +96,7 @@
         </g:if>
 
         <g:if test="${metaModel?.supportsSites?.toBoolean()}">
-            <h3 class="text-error text-center">Site location: <span data-bind="text: transients.site.name"></span></h3>
+            <h3 class="text-danger text-center card-title">Site location: <span data-bind="text: transients.site.name"></span></h3>
             <div data-bind="if: transients.site">
                 <div class="output-block card text-center">
                     <m:map id="activitySiteMap" width="90%" height="300px"/>
@@ -105,7 +105,7 @@
         </g:if>
 
         <g:if test="${metaModel?.supportsPhotoPoints?.toBoolean()}">
-            <h3 class="text-center text-error">Photo Points</h3>
+            <h3 class="text-center text-danger card-title">Photo Points</h3>
             <div class="output-block card" data-bind="with:transients.photoPointModel">
                 <g:render template="/site/photoPoints" model="[readOnly: true]"/>
             </div>

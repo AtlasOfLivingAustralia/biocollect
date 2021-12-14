@@ -72,9 +72,12 @@ class WebService {
         def readTimeout = timeout?:defaultTimeout()
         conn.setConnectTimeout(grailsApplication.config.webservice.connectTimeout as int)
         conn.setReadTimeout(readTimeout)
-        def user = getUserService().getUser()
-        if (includeUserId && user) {
-            conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId)
+
+        if (includeUserId) {
+            def user = getUserService().getUser()
+            if (user) {
+                conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId)
+            }
         }
         conn
     }
@@ -161,10 +164,10 @@ class WebService {
         return get(url, true)
     }
 
-    def getJson(String url, Integer timeout = null, boolean includeApiKey = false) {
+    def getJson(String url, Integer timeout = null, boolean includeApiKey = false, boolean includeUserId = true) {
         def conn = null
         try {
-            conn = configureConnection(url, true, timeout)
+            conn = configureConnection(url, includeUserId, timeout)
             if (includeApiKey) {
                 conn.setRequestProperty("Authorization", grailsApplication.config.api_key);
             }

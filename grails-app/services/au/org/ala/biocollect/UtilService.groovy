@@ -7,9 +7,6 @@ import org.apache.http.HttpStatus
 import org.apache.http.entity.mime.HttpMultipartMode
 import org.apache.http.entity.mime.MultipartEntity
 import org.apache.http.entity.mime.content.FileBody
-
-//import org.apache.http.entity.mime.content.ByteArrayBody
-//import org.apache.http.entity.mime.content.InputStreamBody
 import org.apache.http.entity.mime.content.StringBody
 import org.springframework.context.MessageSource
 

@@ -4,13 +4,13 @@
 <g:set var="searchTerm" value="${params.searchTerm}"/>
 
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-6">
         <h4>Edited by: ${userDetails?.displayName} <g:encodeAs codec="HTML">${message?.userId ?: '<anon>'}</g:encodeAs> </h4>
         <h5><small>${message?.eventType} : ${DateUtils.displayFormatWithTime(message?.date)}</small></h5>
     </div>
-    <div class="col-sm-6 text-right">
-        <button id="toggle-ids" type="button" class="btn btn-dark btn-sm">Show Ids</button>
-        <div id="ids" class="col-sm-12 mt-3">
+    <div class="col-6 text-right">
+        <button id="toggle-ids" type="button" class="btn btn-dark btn-sm"><i class="fas fa-chevron-down"></i> Show Ids</button>
+        <div id="ids" class="col-12">
             <h6>
                 <strong>Id: </Strong><small>${message?.id}</small>
             </h6>
@@ -22,12 +22,12 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-12 text-right">
+    <div class="col-12 text-right">
         <g:if test="${backToProject}">
             <a href="${createLink(controller: 'project', action:'index')}/${projectId}" class="btn btn-dark btn-sm"><i class="far fa-arrow-alt-circle-left"></i> Back</a>
         </g:if>
         <g:else>
-            <a href="${raw(createLink(action:'auditProject', params:[id: projectId,searchTerm:searchTerm]))}" class="btn btn-dark btn-sm"><i class="far fa-arrow-alt-circle-left"></i> Back</a>
+            <a href="${createLink(action:'auditProject', params:[id: projectId,searchTerm:searchTerm])}" class="btn btn-dark btn-sm"><i class="far fa-arrow-alt-circle-left"></i> Back</a>
         </g:else>
     </div>
 </div>

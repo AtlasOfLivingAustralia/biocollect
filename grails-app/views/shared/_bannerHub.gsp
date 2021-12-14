@@ -1,35 +1,54 @@
-<div id="bannerHubContainer" class="container-fluid">
-    <div id="bannerHubOuter">
-        <g:if test="${hubConfig.logoUrl}">
-            <div class="logo">
-                <img class="image-logo" src="${hubConfig.logoUrl}" onload="findLogoScalingClass(this)">
-            </div>
-        </g:if>
-
-        <g:if test="${hubConfig.templateConfiguration?.banner?.images?.size()}">
-            <div id="bannerHub" class="carousel slide">
-                <div class="carousel-inner">
-                    <g:set var="images" value="${hubConfig.templateConfiguration.banner.images}"></g:set>
-                    <g:each var="image" in="${images}" status="index">
-                        <div class="item ${index ==0? 'active' :''}">
-                            <div class="" style="background: url(${image.url}) no-repeat center top; max-height: 500px; min-height: 300px; background-size: cover;">
+<asset:javascript src="swiper/swiper.min.js"></asset:javascript>
+<g:set var="images" value="${hubConfig.templateConfiguration.banner.images}"></g:set>
+<content tag="slider">
+    <section class="hero-slider swiper-container">
+        <div class="swiper-wrapper">
+            <g:each var="image" in="${images}" status="index">
+                <div class="swiper-slide" style="background-image: url(${image.url});">
+                    <div class="slide-overlay">
+                        <g:if test="${image.caption}">
+                            <div class="container d-none d-md-block">
+                                <p>${image.caption}</p>
                             </div>
-                            <g:if test="${image.caption}">
-                                <div class="carousel-caption hidden-phone">
-                                    <p>${image.caption}</p>
-                                </div>
-                            </g:if>
-                        </div>
-                    </g:each>
+                        </g:if>
+                    </div>
                 </div>
-            </div>
-        </g:if>
-    </div>
-    <script>
-        $(document).ready(function () {
-            $("#bannerHub").carousel({
-                interval: ${hubConfig.templateConfiguration.banner.transitionSpeed?:3000}
+            </g:each>
+        </div>
+        <div class="swiper-pagination"></div>
+    </section>
+</content>
+
+<script>
+    $(document).ready(function () {
+        /**
+         * Hero Banner
+         */
+        $('.hero-slider').each((index, el) => {
+            $(el).addClass('hero-slide-' + index);
+
+            new Swiper('.hero-slide-' + index, {
+                loop: true,
+                slidesPerView: 1,
+                spaceBetween: 0,
+                speed: 1000,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false
+                },
+                preventClicks: false,
+                effect: 'fade',
+                preloadImages: false,
+                lazy: {
+                    loadPrevNext: true,
+                },
+                navigation: false,
+                pagination: {
+                    el: '.swiper-pagination',
+                    type: 'bullets',
+                    clickable: true,
+                },
             });
         });
-    </script>
-</div>
+    })
+</script>
