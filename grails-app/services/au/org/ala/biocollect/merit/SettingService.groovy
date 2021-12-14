@@ -41,18 +41,26 @@ class SettingService {
     def webService, cacheService, cookieService
     def grailsApplication
 
-//    @PostConstruct
     def initService () {
-//        copy scss file to temp directory
+//        temp directory to copy files
         String targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}"
         File target = new File(targetDir)
+        // clean styles created previously
         FileUtils.deleteDirectory(target)
+        FileUtils.forceMkdir(target)
+        // load resource from classpath when code is run in production environment
         String sourceDir = "classpath:/data/${grailsApplication.config.bootstrap4.copyFromDir}"
         URL resource = getClass().getResource(sourceDir)
+
         if(resource == null) {
+            // load resource from filesystem when code is run in development environment
             sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
             resource = getClass().getResource(sourceDir)
+            targetDir = "${grailsApplication.config.temp.dir}"
+            target = new File(targetDir)
         }
+
+        // copy bootstrap4 directory
         au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)
         generateStyleSheetForHubs()
     }
