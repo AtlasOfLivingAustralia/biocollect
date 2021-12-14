@@ -8,28 +8,32 @@
             <div class="col-xs-12 col-lg-4 d-flex align-items-center justify-content-center pt-3 pt-lg-0 pb-3 pb-lg-0">
                 <nav aria-label="Featured Projects Navigation">
                     <ul class="pagination justify-content-center">
-                        <li class="page-item" data-bind="if: pagination.currentPage() > 1"><a class="page-link" href="#"
+                        <!-- ko if: pagination.currentPage() > 1 -->
+                        <li class="page-item"><a class="page-link" href="#"
                                                                                               data-bind="click:pagination.first"><i
                                     class="fas fa-angle-double-left"></i></a></li>
-                        <li class="page-item" data-bind="if: pagination.currentPage() > 1"><a class="page-link" href="#"
+                        <li class="page-item"><a class="page-link" href="#"
                                                                                               data-bind="click:pagination.previous"><i
                                     class="fa fa-angle-left"></i></a></li>
                         <li class="page-item"
-                            data-bind="if: pagination.currentPage() > 1, click: pagination.previous"><a
+                            data-bind="click: pagination.previous"><a
                                 class="page-link" href="#"><span data-bind="text: pagination.currentPage() - 1"></span>
                         </a></li>
+                        <!-- /ko -->
                         <li class="page-item"><a class="page-link active"
                                                  data-bind="text: pagination.currentPage()"></a></li>
+                        <!-- ko if: pagination.currentPage() < pagination.lastPage() -->
                         <li class="page-item"
-                            data-bind="if: pagination.currentPage() < pagination.lastPage(), click:pagination.next"><a
+                            data-bind="click:pagination.next"><a
                                 class="page-link" href="#"><span data-bind="text:pagination.currentPage() + 1"></span>
                         </a></li>
-                        <li class="page-item" data-bind="if: pagination.currentPage() < pagination.lastPage()"><a
+                        <li class="page-item"><a
                                 class="page-link" href="#" data-bind="click:pagination.next"><i
                                     class="fa fa-angle-right"></i></a></li>
-                        <li class="page-item" data-bind="if: pagination.currentPage() < pagination.lastPage()"><a
+                        <li class="page-item"><a
                                 class="page-link" href="#" data-bind="click:pagination.last"><i
                                     class="fas fa-angle-double-right"></i></a></li>
+                        <!-- /ko -->
                     </ul>
                 </nav>
             </div>

@@ -25,7 +25,7 @@
         </a>
         <g:if test="${controllerName != 'organisation'}">
             <a class="tile-organisation" data-bind="attr:{href:transients.orgUrl}">
-                <h5 data-bind="text:transients.truncatedOrganisationName"></h5>
+                <h6 data-bind="text:transients.truncatedOrganisationName"></h6>
             </a>
         </g:if>
         <div class="excerpt" data-bind="text:transients.truncatedName"></div>

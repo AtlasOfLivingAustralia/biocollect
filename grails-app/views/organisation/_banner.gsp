@@ -12,7 +12,7 @@
                 </div>
                 </g:if>
                 <div class="col d-flex flex-column flex-md-row align-items-center justify-content-between">
-                    <h1>${organisation.name}</h1>
+                    <h1 class="text-white">${organisation.name}</h1>
                     <div class="project-details">
                         <div class="status">
                             <div class="row">
