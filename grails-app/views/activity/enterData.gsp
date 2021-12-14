@@ -256,7 +256,7 @@
             <g:render template="/shared/termsOfUse"/>
             <div class="">
                 <button type="button" id="save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Save changes</button>
-                <button type="button" id="cancel" class="btn btn-dark btn-large"><i class="far fa-times-circle"></i> Cancel</button>
+                <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> Cancel</button>
                 <label class="checkbox inline">
                     <input data-bind="checked:transients.markedAsFinished" type="checkbox"> Mark this activity as finished.
                 </label>
